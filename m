@@ -2,210 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8053C263FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3996263FCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730475AbgIJI0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55438 "EHLO
+        id S1730334AbgIJIaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:30:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730401AbgIJIY0 (ORCPT
+        with ESMTP id S1730224AbgIJI0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:24:26 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD36C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:24:14 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id a16so2900387vsp.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:24:14 -0700 (PDT)
+        Thu, 10 Sep 2020 04:26:21 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C8DC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:26:20 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id c19so1343188wmd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eQRoi7azmXw9DhQr/EkZeyb3raZh2+EzD84kCzPcKmQ=;
-        b=IQpO+ZJN8hEIxKKXEVX6pnZXoK7U8oJe3Rtm3II8W+/5GYDow3YNmnH96hrHx/wuqG
-         SFRb4xr8BLqx8LItlGDnyQjxqZ/ZSlgBH3BGxzq9Os8zm/g0b1gVjHP7PGzx9a5o5B6/
-         EDEc9DE5S5gVqIyGLNhaQAsT9VqTWPTwtmUgu+7ANNK1/QFxxXfUCvyzXmxLmQ44BRGh
-         tkQjJzv5WFK5eilLOXHbkW70t8ezZlDleZTaVT9xdiks1rnLSwa6yuHa2zX5qbzLvNSU
-         Euh7ET4qW9jY4Bw1ryswD3A5u/iQXJd+47RYjxdjBZnNUTUspU1ELTTSyLOg7B8ufiJb
-         ZlxQ==
+        bh=jV15et7Yw8A7Imw4OszYwam1pGezadF7ay4AoPCRTlw=;
+        b=YFX3C21ZwVO7s35wZGtviE1XqbE7aCLtO3wFFDiZBQLPyeEj7XL687V0Ka17r+pHow
+         trvRePYr75Vgj+evG/sbfJ5EEYunaBaoAbSvIka3o38lU7/FKTwwJQ7jj74iOjPtp4iL
+         YrUv5JVWK1FJoTvd7t+cUgJAdvv6LvUo9pvjg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eQRoi7azmXw9DhQr/EkZeyb3raZh2+EzD84kCzPcKmQ=;
-        b=jy0pJnZjyJB9RU4w3wR65PWQqpKYxBUiTKoeJYQZG+ZxQG+askfNeLhPcZcrgkP1/s
-         eLofVbQFTETq2T2eQl5lPsGQfGU5Lnykjh2/QoqwhfQlLU2kEDjDOrTvQLzTCvlOqx1v
-         p/cm1Z2z5BL8RBhOF8JQrTuKLiqDoRUykCwYA1gy1Tj+LFEX3UWexexod3fzzOf3YQyN
-         yRvRiLQJLYIrHS4tKGHepUX17q+R+UsrdSlgxlEkV8cgrOXA2OguJigQ6398KxJN0L1f
-         rBya6aU87CGqxtzZtznqudhpCasu/DW36M9Er8Dz+2WRYU7l4HXIvjVf5Si9xPT6+Kk3
-         c85w==
-X-Gm-Message-State: AOAM533QvqkfFVgl/6E11QdRR1xq2B4No+XK2z3UYNTUOCdVhzgsprbJ
-        uavNXr/LgAJ/nXQBqBxjLegkp/qYXSMtcQ==
-X-Google-Smtp-Source: ABdhPJzr1GXhPuG45YbvdFgS2cj+z0XuaRX7l/WQLasE9SaQCLB48FQrL7jcADXIXadwNJH/IYovOA==
-X-Received: by 2002:a67:9c6:: with SMTP id 189mr2996489vsj.26.1599726252013;
-        Thu, 10 Sep 2020 01:24:12 -0700 (PDT)
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com. [209.85.221.170])
-        by smtp.gmail.com with ESMTPSA id p130sm830990vke.14.2020.09.10.01.24.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 01:24:10 -0700 (PDT)
-Received: by mail-vk1-f170.google.com with SMTP id c25so1369492vkm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:24:10 -0700 (PDT)
-X-Received: by 2002:a1f:964c:: with SMTP id y73mr3236074vkd.8.1599726249873;
- Thu, 10 Sep 2020 01:24:09 -0700 (PDT)
+        bh=jV15et7Yw8A7Imw4OszYwam1pGezadF7ay4AoPCRTlw=;
+        b=p+AXdCPsj9nc+VfpX01l/yo2GOo2UQX9oPlWbagxs09snVUF/8aqAsFsrsrm0DRF3u
+         1cWbZ8UzItOrsNfgfBWR/+/mM+UlNk1J/Jg6tITInEwt+m3knvtX20G6R7NkyWbq9mtK
+         EmXtAzStfk/rKCuboZonxszS8tkc/FQhIL+aVMMpt/O8fOBFu6YJkSof8vjDWTWRUSGm
+         A9qWGkquFkWWc7cgzv3ymBv2do28ojcZ6gyF8Lu3J4I+ccZqIVG2gsQJdYbJHs0BYB+I
+         FE2zsszbqruOVLUsabW7oYihAt5XlI2XHezV2rbVlyQWHYhpu1ni/YQcYT/OGrSn7JVq
+         43lQ==
+X-Gm-Message-State: AOAM533OOKjLXnzG4Xun8EOf31LtvzeaLyY6rhuK01bWb85ox4rQxGtM
+        LKnKAhO5yRt6ggTRYTV/lNw3slYQ7m0JwZmrReMbj2w3hF2IMg==
+X-Google-Smtp-Source: ABdhPJwMw0Wh177JlXOipH/ky7eUTophvRRubdU+aDyAbXNA/Xm+BsW76uAWLWKihoVqdk9x08SGwZLIRGafLV94erc=
+X-Received: by 2002:a7b:c384:: with SMTP id s4mr7073300wmj.138.1599726379101;
+ Thu, 10 Sep 2020 01:26:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910054333.447888-1-xie.he.0141@gmail.com>
-In-Reply-To: <20200910054333.447888-1-xie.he.0141@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 10 Sep 2020 10:23:33 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSdcT70_zyJHiMPT_HK8zJbTg72y-AO2XYUXL28RX+tY9A@mail.gmail.com>
-Message-ID: <CA+FuTSdcT70_zyJHiMPT_HK8zJbTg72y-AO2XYUXL28RX+tY9A@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: Clarify the difference between
- hard_header_len and needed_headroom
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>
+References: <20200909053234.17027-1-srinath.mannam@broadcom.com> <1996b772-774c-3475-05cc-77ae87176c3f@arm.com>
+In-Reply-To: <1996b772-774c-3475-05cc-77ae87176c3f@arm.com>
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+Date:   Thu, 10 Sep 2020 13:56:07 +0530
+Message-ID: <CABe79T6fAmovPdx6ZzBeR8D9mJoX5qoAOG3=ZOt5TYpeT=LUJQ@mail.gmail.com>
+Subject: Re: [PATCH] iommu/dma: Fix IOVA reserve dma ranges
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, poza@codeaurora.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 7:44 AM Xie He <xie.he.0141@gmail.com> wrote:
+On Wed, Sep 9, 2020 at 5:35 PM Robin Murphy <robin.murphy@arm.com> wrote:
 >
-> The difference between hard_header_len and needed_headroom has long been
-> confusing to driver developers. Let's clarify it.
+Hi Robin,
+Thanks for review
+> On 2020-09-09 06:32, Srinath Mannam wrote:
+> > Fix IOVA reserve failure for memory regions listed in dma-ranges in the
+> > following cases.
+> >
+> > - start address of memory region is 0x0.
 >
-> The understanding on this issue in this patch is based on the following
-> reasons:
+> That's fair enough, and in fact generalises to the case of zero-sized
+> gaps between regions, which is indeed an oversight.
+Yes this is the main reason for the requirement of this fix.
 >
-> 1.
+> > - end address of a memory region is equal to start address of next memory
+> >    region.
 >
-> In af_packet.c, the function packet_snd first reserves a headroom of
-> length (dev->hard_header_len + dev->needed_headroom).
-> Then if the socket is a SOCK_DGRAM socket, it calls dev_hard_header,
-> which calls dev->header_ops->create, to create the link layer header.
-> If the socket is a SOCK_RAW socket, it "un-reserves" a headroom of
-> length (dev->hard_header_len), and checks if the user has provided a
-> header of length (dev->hard_header_len) (in dev_validate_header).
+> This part doesn't make much sense, however - if the regions described in
+> bridge->dma_ranges overlap, that's a bug in whoever created a malformed
+> list to begin with. Possibly it's just poor wording, and you're using
+> "memory regions" to refer to any or all of the dma_ranges, the reserved
+> IOVA ranges, and what "start" and "end" in this function represent which
+> isn't quite either of those.
+You are right, this case is very unlikely that nobody lists regions with zero
+gap, in such a case they will combine both the regions. Reason for highlighting
+this point is, the same fix will handle this case also. Here I used memory
+regions to refer entries of dma-ranges(allowed IOVA addresses range) not
+reserved IOVA ranges. start and end variables in this function refers to
+start and end addresses of reserved IOVA ranges which are derived from
+dma ranges resources start and end values.
+>
+> > Fixes: aadad097cd46f ("iommu/dma: Reserve IOVA for PCIe inaccessible DMA address")
+> > Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+> > ---
+> >   drivers/iommu/dma-iommu.c | 15 +++++++++++----
+> >   1 file changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > index 5141d49a046b..0a3f67a4f9ae 100644
+> > --- a/drivers/iommu/dma-iommu.c
+> > +++ b/drivers/iommu/dma-iommu.c
+> > @@ -213,14 +213,21 @@ static int iova_reserve_pci_windows(struct pci_dev *dev,
+> >       resource_list_for_each_entry(window, &bridge->dma_ranges) {
+> >               end = window->res->start - window->offset;
+> >   resv_iova:
+> > +             if (end < start) {
+> > +                     /* dma_ranges list should be sorted */
+> > +                     dev_err(&dev->dev, "Failed to reserve IOVA\n");
+> > +                     return -EINVAL;
+> > +             }
+> > +             /*
+> > +              * Skip the cases when start address of first memory region is
+> > +              * 0x0 and end address of one memory region and start address
+> > +              * of next memory region are equal. Reserve IOVA for rest of
+> > +              * addresses fall in between given memory ranges.
+> > +              */
+> >               if (end > start) {
+> >                       lo = iova_pfn(iovad, start);
+> >                       hi = iova_pfn(iovad, end);
+> >                       reserve_iova(iovad, lo, hi);
+> > -             } else {
+>
+> Surely this only needs to be a one-liner?
+Yes I agree with you this one line is sufficient.
+>
+> -               } else {
+> +               } else if (end < start) {
+>
+> (or possibly "end != start"; I can't quite decide which expresses the
+> semantic intent better)
+I think "end < start" is better choice because it tells list is not sorted
+and "!=" contradicts previous condition "end > start".
+>
+> The rest just looks like unnecessary churn - I don't think it needs
+> commenting that a sorted list may simply not have gaps between entries,
+> and as above I think the wording of that comment is actively misleading.
+I agree with you, these lines were added to explain the issue and fix with
+more details.
+I will send a new patch with a single line change as you said.
+" } else if (end < start) {"
 
-I think if you want to clarify, we have to be exact: [up to]
-dev->hard_header_len. For protocols with variable length link layer
-headers, the length is at least dev->min_header_len.
-
-> This shows the developers of af_packet.c expect hard_header_len to
-> be consistent with header_ops.
+Thanks & Regards,
+Srinath.
 >
-> 2.
+> Robin.
 >
-> In af_packet.c, the function packet_sendmsg_spkt has a FIXME comment.
-> That comment states that prepending an LL header internally in a driver
-> is considered a bug. I believe this bug can be fixed by setting
-> hard_header_len to 0, making the internal header completely invisible
-> to af_packet.c (and requesting the headroom in needed_headroom instead).
->
-> 3.
->
-> There is a commit for a WiFi driver:
-> commit 9454f7a895b8 ("mwifiex: set needed_headroom, not hard_header_len")
-> According to the discussion about it at:
->   https://patchwork.kernel.org/patch/11407493/
-> The author tried to set the WiFi driver's hard_header_len to the Ethernet
-> header length, and request additional header space internally needed by
-> setting needed_headroom. This means this usage is already adopted by
-> driver developers.
->
-> Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Cc: Eric Dumazet <eric.dumazet@gmail.com>
-> Cc: Brian Norris <briannorris@chromium.org>
-> Cc: Cong Wang <xiyou.wangcong@gmail.com>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
-
-Thanks for trying to clarify the behavior.
-
-This patch should target net-next.
-
-> ---
->
-> Change from v1:
-> Small change to the commit message.
->
-> ---
->  include/linux/netdevice.h |  4 ++--
->  net/packet/af_packet.c    | 19 +++++++++++++------
->  2 files changed, 15 insertions(+), 8 deletions(-)
->
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 7bd4fcdd0738..3999b04e435d 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -1691,8 +1691,8 @@ enum netdev_priv_flags {
->   *     @min_mtu:       Interface Minimum MTU value
->   *     @max_mtu:       Interface Maximum MTU value
->   *     @type:          Interface hardware type
-> - *     @hard_header_len: Maximum hardware header length.
-> - *     @min_header_len:  Minimum hardware header length
-> + *     @hard_header_len: Maximum length of the headers created by header_ops
-> + *     @min_header_len:  Minimum length of the headers created by header_ops
-
-This does not help imho. The existing definitions were clear and more
-exact: hardware (i.e., link layer) headers.
-
-Even more explicit, the hardware headers here must (probably) match
-those dictated by dev->type, such as ARPHRD_ETHER.
-
->   *
->   *     @needed_headroom: Extra headroom the hardware may need, but not in all
->   *                       cases can this be guaranteed
-> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> index 2b33e977a905..0e324b08cb2e 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -93,12 +93,15 @@
->
->  /*
->     Assumptions:
-> -   - if device has no dev->hard_header routine, it adds and removes ll header
-> -     inside itself. In this case ll header is invisible outside of device,
-> -     but higher levels still should reserve dev->hard_header_len.
-> -     Some devices are enough clever to reallocate skb, when header
-> -     will not fit to reserved space (tunnel), another ones are silly
-> -     (PPP).
-> +   - If the device has no dev->header_ops, there is no LL header visible
-> +     above the device. In this case, its hard_header_len should be 0.
-> +     The device may prepend its own header internally. In this case, its
-> +     needed_headroom should be set to the space needed for it to add its
-> +     internal header.
-> +     For example, a WiFi driver pretending to be an Ethernet driver should
-> +     set its hard_header_len to be the Ethernet header length, and set its
-> +     needed_headroom to be (the real WiFi header length - the fake Ethernet
-> +     header length).
->     - packet socket receives packets with pulled ll header,
->       so that SOCK_RAW should push it back.
->
-> @@ -2937,10 +2940,14 @@ static int packet_snd(struct socket *sock, struct msghdr *msg, size_t len)
->         skb_reset_network_header(skb);
->
->         err = -EINVAL;
-> +       if (!dev->header_ops)
-> +               WARN_ON_ONCE(dev->hard_header_len != 0);
-
-Please make clear in the commit message that this is not just a
-comment clarification.
-
-
->         if (sock->type == SOCK_DGRAM) {
->                 offset = dev_hard_header(skb, dev, ntohs(proto), addr, NULL, len);
->                 if (unlikely(offset < 0))
->                         goto out_free;
-> +               WARN_ON_ONCE(offset > dev->hard_header_len);
-> +               WARN_ON_ONCE(offset < dev->min_header_len);
-
-This is not necessary. If worthwhile, this would belong inside
-dev_hard_header itself.
+> > -                     /* dma_ranges list should be sorted */
+> > -                     dev_err(&dev->dev, "Failed to reserve IOVA\n");
+> > -                     return -EINVAL;
+> >               }
+> >
+> >               start = window->res->end - window->offset + 1;
+> >
