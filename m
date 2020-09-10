@@ -2,421 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF43263946
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 00:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C339B2639A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 03:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbgIIWme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 18:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        id S1730312AbgIJB7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 21:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgIIWm3 (ORCPT
+        with ESMTP id S1728443AbgIJBhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 18:42:29 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEA8C061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 15:42:29 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id kk9so2067420pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 15:42:29 -0700 (PDT)
+        Wed, 9 Sep 2020 21:37:31 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2062a.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eae::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8117CC061344
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 17:20:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mW57OrhCnN4uBw+wqMcUW8gCrR8Ge7qbBYraXcKn4eianAAjo2sQqozkZf19rBFvMi8S1upsefRQ+OfyQnL5PkXpPBA/it6K7/xRKhR7GgWpc9fIJw91FSGgR+vVgpizfBLS5me1v6v5LArTvAFf0P6OvHCM6c0PeE7Qs2B1Vb5Amtzr7owRi7RUsszK664elz2YCxpArlWjYehOaNJC3300t+13oMVtK1vLTR/TiP6oF+uPMqdf5OjONRyaZM+VQqh/X9PkU5pHkKBb7AFebt06OMD5P5+R+py0mTu2b9Mx2DrLAKf7cRue302IWI2A8sdEIOwKroC675J+ipLm1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m7sVEN/5C6w6Un8NnYDVrTdtV1UPUdXTEKgYPTTmb1o=;
+ b=d9woZ5ipwLXRf2uMqO1Cx4wmbieRhXYz+EHoL9JA/uiRTTOt1JJryrRRfJ8DJzGCbusxb2nKRj6JsV+YJRP2SBUhA8iOMVdh3Fme1mCH5YMmwuOSwDKn82S0t2shADwiT5SF3b+dyVjdzdlWYpvOTaf82OY23qVLE4nyLuXpOvyN/hVILL/JhhrUay/BGEofyrJFNRa5UDWEPzmPtaEwsukEDRf7h7/apOIt1ZsETGf0qlO6BoSAAMmuPZ7XjlKQqI60k1Cj1ngw62InrZfekgr81vnbs6zPuLOIJ4y8neZwNS4poRcYCrqT7iV7XqY5z6jmRelNhns+vmYBBKxbAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FXmhSCNh5np6DB/ruI67bB6lTP49aQo19LK8s/218XU=;
-        b=U2G/KKWJuIKcnnufCpV2DrDInr1BNZlrcjkaxXSorun5pHsKreHmOTTHepT7MniSTy
-         SYy0hOA94SfC8ZpNwaQEVaEnQ0fSowrQvbraMHlzk7tqq3oVqiLGSfKngWBGB+FFUDY2
-         sslLyGrE4pK20FcbyQTmEGfTW3fPAlUkLFbUY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FXmhSCNh5np6DB/ruI67bB6lTP49aQo19LK8s/218XU=;
-        b=eM2hZ3NGw6aVVhwvvRgmG6FxDWEsiFNnn8mI01ZQU2pc0jD1LzlYqp9N+mB0+Wwhr0
-         gr8acyZUHWpvShu2ZHs81ktBoYmhBkRiayEj6inemueewcAX6H2LZ1XRT3IIHve2YnZu
-         8Rxxfq31nKZ0zn8zv74yTArst04phg+IbiMswFwj0cmA1MLSUzT5ykOA754IswHWqFqI
-         m5fGAbB3TxFuI30oxED2fJqTUac6dgmO2kYo5Fs/g3qTj6D8xfKP5wGP5gK7u+KRKw2P
-         4uTqdAsQIJK9qfRe/wsIscX6hwLoe/DnMs/B7JcMqo02QJxZYXHbOx9Ypbulqx3ZJlv/
-         iwHA==
-X-Gm-Message-State: AOAM530jPIkcRbHlvcXC0IVXZP8+V6omoEVyfXg6b6d64JLrh2OGC5M8
-        adQL8/8rvkviB4dW5stDi72DEQ==
-X-Google-Smtp-Source: ABdhPJzQQvroJnkBK/9wpkVrYfNWuT4luTelicgmJT1vIun4qL4rRoIWxh9oEzSW/fZsjWVXFE0esg==
-X-Received: by 2002:a17:90a:1f43:: with SMTP id y3mr2564065pjy.28.1599691348454;
-        Wed, 09 Sep 2020 15:42:28 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id 131sm214284pfc.20.2020.09.09.15.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 15:42:27 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v2] platform/chrome: Don't populate lightbar device if it isn't there
-Date:   Wed,  9 Sep 2020 15:42:26 -0700
-Message-Id: <20200909224226.2177401-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m7sVEN/5C6w6Un8NnYDVrTdtV1UPUdXTEKgYPTTmb1o=;
+ b=B1jq+S1OldURZvYyBzw0vqrRk8Nwb/RhlsI0xWjM7ZgP6gtIcvrbotT1QrYULp7yXxPYEPUxZZzCrQAj9wW7CoUCLL9n4WQKBI6M+6F5EK39Aab/e1M1N6pOdps+y6npcQ7vij5GrY2HetgYCqCQSgNMZJjxYbYHrXc3CU1A7A8=
+Received: from SN1PR12CA0050.namprd12.prod.outlook.com (2603:10b6:802:20::21)
+ by MWHPR02MB3264.namprd02.prod.outlook.com (2603:10b6:301:65::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 10 Sep
+ 2020 00:20:12 +0000
+Received: from SN1NAM02FT019.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:802:20:cafe::18) by SN1PR12CA0050.outlook.office365.com
+ (2603:10b6:802:20::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
+ Transport; Thu, 10 Sep 2020 00:20:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT019.mail.protection.outlook.com (10.152.72.130) with Microsoft SMTP
+ Server id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 00:20:11
+ +0000
+Received: from [149.199.38.66] (port=46238 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <amit.sunil.dhamne@xilinx.com>)
+        id 1kGAJf-0007M1-21; Wed, 09 Sep 2020 17:19:55 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <amit.sunil.dhamne@xilinx.com>)
+        id 1kGAJv-0006Qx-F9; Wed, 09 Sep 2020 17:20:11 -0700
+Received: from xsj-pvapsmtp01 (xsj-smtp1.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp2.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 08A0K6QC001918;
+        Wed, 9 Sep 2020 17:20:08 -0700
+Received: from [10.18.5.8] (helo=xsjamitsuni51.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <amit.sunil.dhamne@xilinx.com>)
+        id 1kGAJp-0006Dg-Uy; Wed, 09 Sep 2020 17:20:06 -0700
+From:   Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+To:     ard.biesheuvel@linaro.org, mingo@kernel.org,
+        gregkh@linuxfoundation.org, matt@codeblueprint.co.uk,
+        sudeep.holla@arm.com, hkallweit1@gmail.com, keescook@chromium.org,
+        dmitry.torokhov@gmail.com, michal.simek@xilinx.com,
+        rajanv@xilinx.com, tejas.patel@xilinx.com, jollys@xilinx.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        rajan.vaja@xilinx.com, jolly.shah@xilinx.com,
+        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+Subject: [PATCH 0/3] firmware: xilinx: Add support to get last reset reason
+Date:   Wed,  9 Sep 2020 17:20:01 -0700
+Message-Id: <1599697204-32103-1-git-send-email-amit.sunil.dhamne@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 90033435-b578-4347-3e60-08d8551f4853
+X-MS-TrafficTypeDiagnostic: MWHPR02MB3264:
+X-Microsoft-Antispam-PRVS: <MWHPR02MB3264688778B6057DAF3865E8A7270@MWHPR02MB3264.namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 44pXPqnZ04v3se/vujX5mOl9pmrfqXWsESkWs7TQr4QETwbJfYrGNdz7NVRZcdgnR3E5/Xp5joJ8mm5wdWHYjx/t7K+8S5LC0wkq+1SyE3i23Dhy2nJtBdfKa1OEhSVkTjkOJhwFCkrq093E9mYIwSIdxZnin81yU/+HrbK7Qwqszw15jV6skCSc+7+bRzmARmNJcfKJc67vC+NKdntcmJOBSorOipo/Qh+0oLK2MLJWVfKYtStBFszrXdoNMGggI5bDEPTaRLe1Yqz7sdl/UTH8MGS7f7Bc4s0w7QzDIJk4uB4yP/OGap3SmHyKqeV9p1SIGLImLWr7ASeH3L7qpMTpehCSGVrSllskJqT0ti/rgQHNMWj0VKZKWC/UuxfZOhjWlKyNWJAjnx8YvyQ8bys1MP3RWfESJ6kCZCKuYgg=
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(39860400002)(346002)(376002)(136003)(396003)(46966005)(2906002)(7416002)(82740400003)(8936002)(9786002)(83380400001)(81166007)(356005)(70206006)(70586007)(82310400003)(4744005)(5660300002)(8676002)(107886003)(6636002)(36756003)(4326008)(47076004)(7696005)(6666004)(426003)(2616005)(316002)(478600001)(26005)(186003)(336012)(921003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 00:20:11.8427
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90033435-b578-4347-3e60-08d8551f4853
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT019.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR02MB3264
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cros ec lightbar driver has a check in probe to fail early if the ec
-device isn't the cros_ec one or if it can't read the lightbar version
-from the EC. Let's move this check to the place where the lightbar
-device is registered. This way we don't expose devices that aren't
-actually there on devices that don't have a lightbar.
+Add support to get last reset reason for Xilinx Versal platform.
 
-This should improve memory and possibly performance too because struct
-devices don't exactly have a small memory footprint and they contribute
-to suspend/resume regardless of driver attachment.
+Tejas Patel (3):
+  firmware: xilinx: Add validation check for IOCTL
+  firmware: xilinx: Add support for GET_LAST_RESET_REASON IOCTL
+  firmware: xilinx: Add sysfs to get last reset reason
 
-Cc: Gwendal Grignou <gwendal@chromium.org>
-Cc: Guenter Roeck <groeck@chromium.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
+ .../ABI/stable/sysfs-driver-firmware-zynqmp        |  13 ++
+ drivers/firmware/xilinx/zynqmp.c                   | 174 +++++++++++++++++=
++---
+ include/linux/firmware/xlnx-zynqmp.h               |  18 +++
+ 3 files changed, 183 insertions(+), 22 deletions(-)
 
-Changes from v1:
- * Rebased on linux-next patches to this file
+--
+2.7.4
 
- drivers/mfd/cros_ec_dev.c                   |  16 ++-
- drivers/platform/chrome/cros_ec_lightbar.c  | 102 ++------------------
- drivers/platform/chrome/cros_ec_proto.c     |  84 ++++++++++++++++
- include/linux/platform_data/cros_ec_proto.h |   4 +
- 4 files changed, 111 insertions(+), 95 deletions(-)
-
-diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
-index d07b43d7c761..9e98b2ec5d92 100644
---- a/drivers/mfd/cros_ec_dev.c
-+++ b/drivers/mfd/cros_ec_dev.c
-@@ -74,6 +74,10 @@ static const struct mfd_cell cros_ec_cec_cells[] = {
- 	{ .name = "cros-ec-cec", },
- };
- 
-+static const struct mfd_cell cros_ec_lightbar_cells[] = {
-+	{ .name = "cros-ec-lightbar", },
-+};
-+
- static const struct mfd_cell cros_ec_rtc_cells[] = {
- 	{ .name = "cros-ec-rtc", },
- };
-@@ -112,7 +116,6 @@ static const struct cros_feature_to_cells cros_subdevices[] = {
- static const struct mfd_cell cros_ec_platform_cells[] = {
- 	{ .name = "cros-ec-chardev", },
- 	{ .name = "cros-ec-debugfs", },
--	{ .name = "cros-ec-lightbar", },
- 	{ .name = "cros-ec-sysfs", },
- };
- 
-@@ -206,6 +209,17 @@ static int ec_device_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (!strcmp(ec_platform->ec_name, CROS_EC_DEV_NAME) &&
-+	    !cros_ec_get_lightbar_version(ec, NULL, NULL)) {
-+		retval = mfd_add_hotplug_devices(ec->dev,
-+				cros_ec_lightbar_cells,
-+				ARRAY_SIZE(cros_ec_lightbar_cells));
-+		if (retval)
-+			dev_err(ec->dev,
-+				"failed to add lightbar	device: %d\n",
-+				retval);
-+	}
-+
- 	/*
- 	 * The PD notifier driver cell is separate since it only needs to be
- 	 * explicitly added on platforms that don't have the PD notifier ACPI
-diff --git a/drivers/platform/chrome/cros_ec_lightbar.c b/drivers/platform/chrome/cros_ec_lightbar.c
-index de8dfb12e486..a7cfde90c8e5 100644
---- a/drivers/platform/chrome/cros_ec_lightbar.c
-+++ b/drivers/platform/chrome/cros_ec_lightbar.c
-@@ -82,77 +82,6 @@ static int lb_throttle(void)
- 	return ret;
- }
- 
--static struct cros_ec_command *alloc_lightbar_cmd_msg(struct cros_ec_dev *ec)
--{
--	struct cros_ec_command *msg;
--	int len;
--
--	len = max(sizeof(struct ec_params_lightbar),
--		  sizeof(struct ec_response_lightbar));
--
--	msg = kmalloc(sizeof(*msg) + len, GFP_KERNEL);
--	if (!msg)
--		return NULL;
--
--	msg->version = 0;
--	msg->command = EC_CMD_LIGHTBAR_CMD + ec->cmd_offset;
--	msg->outsize = sizeof(struct ec_params_lightbar);
--	msg->insize = sizeof(struct ec_response_lightbar);
--
--	return msg;
--}
--
--static int get_lightbar_version(struct cros_ec_dev *ec,
--				uint32_t *ver_ptr, uint32_t *flg_ptr)
--{
--	struct ec_params_lightbar *param;
--	struct ec_response_lightbar *resp;
--	struct cros_ec_command *msg;
--	int ret;
--
--	msg = alloc_lightbar_cmd_msg(ec);
--	if (!msg)
--		return 0;
--
--	param = (struct ec_params_lightbar *)msg->data;
--	param->cmd = LIGHTBAR_CMD_VERSION;
--	msg->outsize = sizeof(param->cmd);
--	msg->result = sizeof(resp->version);
--	ret = cros_ec_cmd_xfer_status(ec->ec_dev, msg);
--	if (ret < 0 && ret != -EINVAL) {
--		ret = 0;
--		goto exit;
--	}
--
--	switch (msg->result) {
--	case EC_RES_INVALID_PARAM:
--		/* Pixel had no version command. */
--		if (ver_ptr)
--			*ver_ptr = 0;
--		if (flg_ptr)
--			*flg_ptr = 0;
--		ret = 1;
--		goto exit;
--
--	case EC_RES_SUCCESS:
--		resp = (struct ec_response_lightbar *)msg->data;
--
--		/* Future devices w/lightbars should implement this command */
--		if (ver_ptr)
--			*ver_ptr = resp->version.num;
--		if (flg_ptr)
--			*flg_ptr = resp->version.flags;
--		ret = 1;
--		goto exit;
--	}
--
--	/* Anything else (ie, EC_RES_INVALID_COMMAND) - no lightbar */
--	ret = 0;
--exit:
--	kfree(msg);
--	return ret;
--}
--
- static ssize_t version_show(struct device *dev,
- 			    struct device_attribute *attr, char *buf)
- {
-@@ -165,7 +94,7 @@ static ssize_t version_show(struct device *dev,
- 		return ret;
- 
- 	/* This should always succeed, because we check during init. */
--	if (!get_lightbar_version(ec, &version, &flags))
-+	if (cros_ec_get_lightbar_version(ec, &version, &flags))
- 		return -EIO;
- 
- 	return scnprintf(buf, PAGE_SIZE, "%d %d\n", version, flags);
-@@ -184,7 +113,7 @@ static ssize_t brightness_store(struct device *dev,
- 	if (kstrtouint(buf, 0, &val))
- 		return -EINVAL;
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -222,7 +151,7 @@ static ssize_t led_rgb_store(struct device *dev, struct device_attribute *attr,
- 	unsigned int val[4];
- 	int ret, i = 0, j = 0, ok = 0;
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -289,7 +218,7 @@ static ssize_t sequence_show(struct device *dev,
- 	int ret;
- 	struct cros_ec_dev *ec = to_cros_ec_dev(dev);
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -324,7 +253,7 @@ static int lb_send_empty_cmd(struct cros_ec_dev *ec, uint8_t cmd)
- 	struct cros_ec_command *msg;
- 	int ret;
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -352,7 +281,7 @@ static int lb_manual_suspend_ctrl(struct cros_ec_dev *ec, uint8_t enable)
- 	struct cros_ec_command *msg;
- 	int ret;
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -399,7 +328,7 @@ static ssize_t sequence_store(struct device *dev, struct device_attribute *attr,
- 			return ret;
- 	}
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -444,7 +373,7 @@ static ssize_t program_store(struct device *dev, struct device_attribute *attr,
- 		return -EINVAL;
- 	}
- 
--	msg = alloc_lightbar_cmd_msg(ec);
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -531,24 +460,9 @@ static struct attribute_group cros_ec_lightbar_attr_group = {
- static int cros_ec_lightbar_probe(struct platform_device *pd)
- {
- 	struct cros_ec_dev *ec_dev = dev_get_drvdata(pd->dev.parent);
--	struct cros_ec_platform *pdata = dev_get_platdata(ec_dev->dev);
- 	struct device *dev = &pd->dev;
- 	int ret;
- 
--	/*
--	 * Only instantiate the lightbar if the EC name is 'cros_ec'. Other EC
--	 * devices like 'cros_pd' doesn't have a lightbar.
--	 */
--	if (strcmp(pdata->ec_name, CROS_EC_DEV_NAME) != 0)
--		return -ENODEV;
--
--	/*
--	 * Ask then for the lightbar version, if it's 0 then the 'cros_ec'
--	 * doesn't have a lightbar.
--	 */
--	if (!get_lightbar_version(ec_dev, NULL, NULL))
--		return -ENODEV;
--
- 	/* Take control of the lightbar from the EC. */
- 	lb_manual_suspend_ctrl(ec_dev, 1);
- 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index dda182132a6a..a08747eec36a 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -922,3 +922,87 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
- 	return sensor_count;
- }
- EXPORT_SYMBOL_GPL(cros_ec_get_sensor_count);
-+
-+struct cros_ec_command *cros_ec_alloc_lightbar_cmd_msg(struct cros_ec_dev *ec)
-+{
-+	struct cros_ec_command *msg;
-+	int len;
-+
-+	len = max(sizeof(struct ec_params_lightbar),
-+		  sizeof(struct ec_response_lightbar));
-+
-+	msg = kmalloc(sizeof(*msg) + len, GFP_KERNEL);
-+	if (!msg)
-+		return NULL;
-+
-+	msg->version = 0;
-+	msg->command = EC_CMD_LIGHTBAR_CMD + ec->cmd_offset;
-+	msg->outsize = sizeof(struct ec_params_lightbar);
-+	msg->insize = sizeof(struct ec_response_lightbar);
-+
-+	return msg;
-+}
-+EXPORT_SYMBOL_GPL(cros_ec_alloc_lightbar_cmd_msg);
-+
-+/**
-+ * cros_ec_get_lightbar_version() - Get the EC lightbar version
-+ *
-+ * @ec: EC device, does not have to be connected directly to the AP,
-+ *      can be daisy chained through another device.
-+ * @ver_ptr: Detected lightbar version number
-+ * @flag_ptr: Detected lightbar flags
-+ *
-+ * Call this function to determine the EC's lightbar version and flags
-+ * information. If it doesn't exist then this function returns a negative
-+ * error value.
-+ *
-+ * Return: 0 on success, negative errno on failure to detect a lightbar.
-+ */
-+int cros_ec_get_lightbar_version(struct cros_ec_dev *ec, uint32_t *ver_ptr,
-+				 uint32_t *flg_ptr)
-+{
-+	struct ec_params_lightbar *param;
-+	struct ec_response_lightbar *resp;
-+	struct cros_ec_command *msg;
-+	int ret;
-+
-+	msg = cros_ec_alloc_lightbar_cmd_msg(ec);
-+	if (!msg)
-+		return -ENOMEM;
-+
-+	param = (struct ec_params_lightbar *)msg->data;
-+	param->cmd = LIGHTBAR_CMD_VERSION;
-+	msg->outsize = sizeof(param->cmd);
-+	msg->result = sizeof(resp->version);
-+	ret = cros_ec_cmd_xfer_status(ec->ec_dev, msg);
-+	if (ret < 0 && ret != -EINVAL)
-+		goto exit;
-+
-+	switch (msg->result) {
-+	case EC_RES_INVALID_PARAM:
-+		/* Pixel had no version command. */
-+		if (ver_ptr)
-+			*ver_ptr = 0;
-+		if (flg_ptr)
-+			*flg_ptr = 0;
-+		ret = 0;
-+		break;
-+	case EC_RES_SUCCESS:
-+		resp = (struct ec_response_lightbar *)msg->data;
-+
-+		/* Future devices w/lightbars should implement this command */
-+		if (ver_ptr)
-+			*ver_ptr = resp->version.num;
-+		if (flg_ptr)
-+			*flg_ptr = resp->version.flags;
-+		ret = 0;
-+		break;
-+	default:
-+		/* Anything else (ie, EC_RES_INVALID_COMMAND) - no lightbar */
-+		ret = -ENODEV;
-+	}
-+exit:
-+	kfree(msg);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(cros_ec_get_lightbar_version);
-diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
-index 4a415ae851ef..50221254956c 100644
---- a/include/linux/platform_data/cros_ec_proto.h
-+++ b/include/linux/platform_data/cros_ec_proto.h
-@@ -229,6 +229,10 @@ u32 cros_ec_get_host_event(struct cros_ec_device *ec_dev);
- 
- int cros_ec_check_features(struct cros_ec_dev *ec, int feature);
- 
-+struct cros_ec_command *cros_ec_alloc_lightbar_cmd_msg(struct cros_ec_dev *ec);
-+int cros_ec_get_lightbar_version(struct cros_ec_dev *ec, uint32_t *ver_ptr,
-+				 uint32_t *flg_ptr);
-+
- int cros_ec_get_sensor_count(struct cros_ec_dev *ec);
- 
- /**
-
-base-commit: 1e7913ff5f9f1b73146ad8522958bd266f22a510
--- 
-Sent by a computer, using git, on the internet
-
+This email and any attachments are intended for the sole use of the named r=
+ecipient(s) and contain(s) confidential information that may be proprietary=
+, privileged or copyrighted under applicable law. If you are not the intend=
+ed recipient, do not read, copy, or forward this email message or any attac=
+hments. Delete this email message and any attachments immediately.
