@@ -2,128 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8594126535A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCD2265371
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgIJVdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:33:11 -0400
-Received: from condef-10.nifty.com ([202.248.20.75]:24393 "EHLO
-        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730964AbgIJNvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:51:06 -0400
-Received: from conuserg-09.nifty.com ([10.126.8.72])by condef-10.nifty.com with ESMTP id 08ADllps001772;
-        Thu, 10 Sep 2020 22:47:48 +0900
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 08ADiY4V001894;
-        Thu, 10 Sep 2020 22:44:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 08ADiY4V001894
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1599745476;
-        bh=QXPqbgb/jFPOd/TSdAMnz6TSWN+Q2fIoPVXFknMy17s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bN2HusAT+ylvtNVf5Yh5sV8NGF8kQVhpVu1+Nkf3esQm92facLGiiItFCHpXazMRJ
-         MfK6FmxRfAOe7UoAOZnFLxVBtZzVj75B3z7+LY+t6vH5ICk+DOxEoLCs2FHcRPHq0O
-         1dX4i0AgJRkZUiGdVrB2WBbzQbsfoYuCnk886vAPxeUbVr05wZjVBgz26Xh4IhRABJ
-         A7OcCPZfCJO4+FBwe5E8cQznTPsNo0DwVhmBE3jkovF4Wxfv9ywSPIol1WaeXwRsRU
-         GEtW1CX18vItsYfbuMGBqECbqXjcfqMPylE+SKUOGdTv60DN6byauDzZPWuQyRY0Vy
-         vXT6Rnc3GFVpg==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] kbuild: move CFLAGS_{KASAN,UBSAN,KCSAN} exports to relevant Makefiles
-Date:   Thu, 10 Sep 2020 22:44:29 +0900
-Message-Id: <20200910134429.3525408-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200910134429.3525408-1-masahiroy@kernel.org>
-References: <20200910134429.3525408-1-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728355AbgIJVfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:35:08 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36678 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730684AbgIJNtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:49:45 -0400
+IronPort-SDR: frqBtvOmunPIHcp1EguglE5KgQk7rF5LOew8jdvSBZ3P1dZUthBRVrHzIfI6KtOGrfIyir9Nj4
+ LzpvlF9dE/fQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="138048791"
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="138048791"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 06:48:40 -0700
+IronPort-SDR: 5me4/pk7ERgAtI+5xYHyCxd56QWCM/wVxFhBWOaD/G94rA2ePtZRaZ6/LSqW5yi144PMxfYG1/
+ /2XeBU2IYuew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="300557767"
+Received: from ssp-icl-u-210.jf.intel.com ([10.54.55.52])
+  by orsmga003.jf.intel.com with ESMTP; 10 Sep 2020 06:48:40 -0700
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2 1/4] perf tools: Rename group to topdown
+Date:   Thu, 10 Sep 2020 06:44:58 -0700
+Message-Id: <20200910134501.11352-2-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200910134501.11352-1-kan.liang@linux.intel.com>
+References: <20200910134501.11352-1-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move CFLAGS_KASAN*, CFLAGS_UBSAN, CFLAGS_KCSAN to Makefile.kasan,
-Makefile.ubsan, Makefile.kcsan, respectively.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-This commit also avoids the same -fsanitize=* flags being added to
-CFLAGS_UBSAN multiple times.
+The group.h/c only include TopDown group related functions. The name
+"group" is too generic and inaccurate. Use the name "topdown" to
+replace it.
 
-Prior to this commit, the ubsan flags were appended by the '+='
-operator, without any initialization. Some build targets such as
-'make bindeb-pkg' recurses to the top Makefile, and ended up with
-adding the same flags to CFLAGS_UBSAN twice.
+Move topdown related functions to a dedicated file, topdown.c.
 
-Clear CFLAGS_UBSAN with ':=' to make it a simply expanded variable.
-This is better than a recursively expanded variable, which evaluates
-$(call cc-option, ...) multiple times before Kbuild starts descending
-to subdirectories.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
+ tools/perf/arch/x86/util/Build                |  2 +-
+ .../perf/arch/x86/util/{group.c => topdown.c} |  2 +-
+ tools/perf/builtin-stat.c                     | 51 +-----------------
+ tools/perf/util/Build                         |  1 +
+ tools/perf/util/topdown.c                     | 53 +++++++++++++++++++
+ tools/perf/util/{group.h => topdown.h}        |  6 ++-
+ 6 files changed, 61 insertions(+), 54 deletions(-)
+ rename tools/perf/arch/x86/util/{group.c => topdown.c} (95%)
+ create mode 100644 tools/perf/util/topdown.c
+ rename tools/perf/util/{group.h => topdown.h} (52%)
 
- Makefile               | 1 -
- scripts/Makefile.kasan | 2 ++
- scripts/Makefile.kcsan | 2 +-
- scripts/Makefile.ubsan | 3 +++
- 4 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index ec2330ce0fc5..4b5a305e30d2 100644
---- a/Makefile
-+++ b/Makefile
-@@ -517,7 +517,6 @@ export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
+index 47f9c56e744f..347c39b960eb 100644
+--- a/tools/perf/arch/x86/util/Build
++++ b/tools/perf/arch/x86/util/Build
+@@ -3,7 +3,7 @@ perf-y += tsc.o
+ perf-y += pmu.o
+ perf-y += kvm-stat.o
+ perf-y += perf_regs.o
+-perf-y += group.o
++perf-y += topdown.o
+ perf-y += machine.o
+ perf-y += event.o
  
- export KBUILD_CPPFLAGS NOSTDINC_FLAGS LINUXINCLUDE OBJCOPYFLAGS KBUILD_LDFLAGS
- export KBUILD_CFLAGS CFLAGS_KERNEL CFLAGS_MODULE
--export CFLAGS_KASAN CFLAGS_KASAN_NOSANITIZE CFLAGS_UBSAN CFLAGS_KCSAN
- export KBUILD_AFLAGS AFLAGS_KERNEL AFLAGS_MODULE
- export KBUILD_AFLAGS_MODULE KBUILD_CFLAGS_MODULE KBUILD_LDFLAGS_MODULE
- export KBUILD_AFLAGS_KERNEL KBUILD_CFLAGS_KERNEL
-diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-index 1532f1a41a8f..1e000cc2e7b4 100644
---- a/scripts/Makefile.kasan
-+++ b/scripts/Makefile.kasan
-@@ -47,3 +47,5 @@ CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
- 		$(instrumentation_flags)
+diff --git a/tools/perf/arch/x86/util/group.c b/tools/perf/arch/x86/util/topdown.c
+similarity index 95%
+rename from tools/perf/arch/x86/util/group.c
+rename to tools/perf/arch/x86/util/topdown.c
+index e2f8034b8973..597e963fb3e7 100644
+--- a/tools/perf/arch/x86/util/group.c
++++ b/tools/perf/arch/x86/util/topdown.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <stdio.h>
+ #include "api/fs/fs.h"
+-#include "util/group.h"
++#include "util/topdown.h"
  
- endif # CONFIG_KASAN_SW_TAGS
-+
-+export CFLAGS_KASAN CFLAGS_KASAN_NOSANITIZE
-diff --git a/scripts/Makefile.kcsan b/scripts/Makefile.kcsan
-index c50f27b3ac56..cec50d74e0d0 100644
---- a/scripts/Makefile.kcsan
-+++ b/scripts/Makefile.kcsan
-@@ -9,7 +9,7 @@ endif
+ /*
+  * Check whether we can use a group for top down.
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 483a28ef4ec4..5583e22ca808 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -56,7 +56,7 @@
+ #include "util/cpumap.h"
+ #include "util/thread_map.h"
+ #include "util/counts.h"
+-#include "util/group.h"
++#include "util/topdown.h"
+ #include "util/session.h"
+ #include "util/tool.h"
+ #include "util/string2.h"
+@@ -1495,55 +1495,6 @@ static int perf_stat_init_aggr_mode_file(struct perf_stat *st)
+ 	return 0;
+ }
  
- # Keep most options here optional, to allow enabling more compilers if absence
- # of some options does not break KCSAN nor causes false positive reports.
--CFLAGS_KCSAN := -fsanitize=thread \
-+export CFLAGS_KCSAN := -fsanitize=thread \
- 	$(call cc-option,$(call cc-param,tsan-instrument-func-entry-exit=0) -fno-optimize-sibling-calls) \
- 	$(call cc-option,$(call cc-param,tsan-instrument-read-before-write=1)) \
- 	$(call cc-param,tsan-distinguish-volatile=1)
-diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
-index 27348029b2b8..c661484ee01f 100644
---- a/scripts/Makefile.ubsan
-+++ b/scripts/Makefile.ubsan
-@@ -1,4 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
+-static int topdown_filter_events(const char **attr, char **str, bool use_group)
+-{
+-	int off = 0;
+-	int i;
+-	int len = 0;
+-	char *s;
+-
+-	for (i = 0; attr[i]; i++) {
+-		if (pmu_have_event("cpu", attr[i])) {
+-			len += strlen(attr[i]) + 1;
+-			attr[i - off] = attr[i];
+-		} else
+-			off++;
+-	}
+-	attr[i - off] = NULL;
+-
+-	*str = malloc(len + 1 + 2);
+-	if (!*str)
+-		return -1;
+-	s = *str;
+-	if (i - off == 0) {
+-		*s = 0;
+-		return 0;
+-	}
+-	if (use_group)
+-		*s++ = '{';
+-	for (i = 0; attr[i]; i++) {
+-		strcpy(s, attr[i]);
+-		s += strlen(s);
+-		*s++ = ',';
+-	}
+-	if (use_group) {
+-		s[-1] = '}';
+-		*s = 0;
+-	} else
+-		s[-1] = 0;
+-	return 0;
+-}
+-
+-__weak bool arch_topdown_check_group(bool *warn)
+-{
+-	*warn = false;
+-	return false;
+-}
+-
+-__weak void arch_topdown_group_warn(void)
+-{
+-}
+-
+ /*
+  * Add default attributes, if there were no attributes specified or
+  * if -d/--detailed, -d -d or -d -d -d is used:
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index cd5e41960e64..eebbd5223cae 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -101,6 +101,7 @@ perf-y += call-path.o
+ perf-y += rwsem.o
+ perf-y += thread-stack.o
+ perf-y += spark.o
++perf-y += topdown.o
+ perf-$(CONFIG_AUXTRACE) += auxtrace.o
+ perf-$(CONFIG_AUXTRACE) += intel-pt-decoder/
+ perf-$(CONFIG_AUXTRACE) += intel-pt.o
+diff --git a/tools/perf/util/topdown.c b/tools/perf/util/topdown.c
+new file mode 100644
+index 000000000000..a085b3c77c27
+--- /dev/null
++++ b/tools/perf/util/topdown.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++#include "pmu.h"
++#include "topdown.h"
 +
-+export CFLAGS_UBSAN :=
++int topdown_filter_events(const char **attr, char **str, bool use_group)
++{
++	int off = 0;
++	int i;
++	int len = 0;
++	char *s;
 +
- ifdef CONFIG_UBSAN_ALIGNMENT
-       CFLAGS_UBSAN += $(call cc-option, -fsanitize=alignment)
- endif
++	for (i = 0; attr[i]; i++) {
++		if (pmu_have_event("cpu", attr[i])) {
++			len += strlen(attr[i]) + 1;
++			attr[i - off] = attr[i];
++		} else
++			off++;
++	}
++	attr[i - off] = NULL;
++
++	*str = malloc(len + 1 + 2);
++	if (!*str)
++		return -1;
++	s = *str;
++	if (i - off == 0) {
++		*s = 0;
++		return 0;
++	}
++	if (use_group)
++		*s++ = '{';
++	for (i = 0; attr[i]; i++) {
++		strcpy(s, attr[i]);
++		s += strlen(s);
++		*s++ = ',';
++	}
++	if (use_group) {
++		s[-1] = '}';
++		*s = 0;
++	} else
++		s[-1] = 0;
++	return 0;
++}
++
++__weak bool arch_topdown_check_group(bool *warn)
++{
++	*warn = false;
++	return false;
++}
++
++__weak void arch_topdown_group_warn(void)
++{
++}
+diff --git a/tools/perf/util/group.h b/tools/perf/util/topdown.h
+similarity index 52%
+rename from tools/perf/util/group.h
+rename to tools/perf/util/topdown.h
+index f36c7e31780a..e3d70e95f4f1 100644
+--- a/tools/perf/util/group.h
++++ b/tools/perf/util/topdown.h
+@@ -1,8 +1,10 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef GROUP_H
+-#define GROUP_H 1
++#ifndef TOPDOWN_H
++#define TOPDOWN_H 1
+ 
+ bool arch_topdown_check_group(bool *warn);
+ void arch_topdown_group_warn(void);
+ 
++int topdown_filter_events(const char **attr, char **str, bool use_group);
++
+ #endif
 -- 
-2.25.1
+2.17.1
 
