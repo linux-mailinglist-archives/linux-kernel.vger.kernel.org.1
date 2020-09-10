@@ -2,174 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5192651E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E21FF2651DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgIJVEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:04:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        id S1727812AbgIJVDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731176AbgIJOhg (ORCPT
+        with ESMTP id S1731190AbgIJOiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:37:36 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734F8C061796;
-        Thu, 10 Sep 2020 07:25:09 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g128so7223528iof.11;
-        Thu, 10 Sep 2020 07:25:09 -0700 (PDT)
+        Thu, 10 Sep 2020 10:38:22 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6844C06179E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:26:25 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m12so5537028otr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NJbG0wJxu+3OkwLFEOd0Ennw5o6VsPA/l71MgV2bL8A=;
-        b=CsIlPa7kgf5QyQFS8hC4+hb0L/bF/jNeX8ymjdfPGndzk6+fjtb6UPlyyDOgn9T/Rj
-         dcNmQZtqRILJ5b0WMWAc4ARCiPRsOwn3OAskLXH4wSnP6Fci/pDDyc9GoV3CkuB65CRE
-         gCg/SteaRqwF7agvOR3wOsgUovXU4Sk9WMgkXj7yL2Q8Osfwx9Q9xYGiSHVOIpXEQ5A/
-         yTEI8iUxit6bTdUVaNNcOqXYtIqzxR47TjMSxqbx8tT+xNLFdbC99+e8WoQz4furBy7G
-         kgFpOOKohzSXDEmsL3JJgxTPGBG3JAgnQ2qg4iT0sUE0gv9NfreIR9dAMEP/R00EWqml
-         ypGQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c09JxSr1XUKKzAFJy15maBise8KOeiPU0mV0zBX6I1c=;
+        b=fmy9E1Sx9ENoBeL3m/Wo9JWXkizgoX9vknkcHVdJ4/9MGJwbIIxKkEzqP1ceAkQE/L
+         8fdAzYONKnHe9rSaYVLU+xFADK0imN+gqrwoPKzPuY/XWOOVdedZKUs0qXbro7pO5qGp
+         lP3j/tCRvrpArnPChyTNjZIom1hRF0/hTwX+M7tAGWKBg14JHv4iCHqEGx/HAqf5F3Kg
+         ntDcTKYgh9CuPNWqjvb1gmQDygz1rGMB3bV7N82F5E4bQyJNU9nmt0vPVhU0T2mb0p7k
+         y2u0pOhFoQZDtvD3z7p6RAGSZWtuQMZTvl6qpYzjBZn+0VgV3r7qT9LkXT6DZJmCHRoa
+         0EGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NJbG0wJxu+3OkwLFEOd0Ennw5o6VsPA/l71MgV2bL8A=;
-        b=m305sujl89sqGb3s93TS12t8M3gcv94pf0kVCn9YMYkglB841PjXYCqgiBKU9bYinG
-         q742Pzm1OKoxTb0qklN2+oOrl+1y2VnMXTu+odTd6w6aT7pI21uP1IJ4pQzgiT5F0Mg+
-         JTKLcMy9psarNhE6VUqFr2y5IP855ZZMyXupnh5kJIigoptUKbmOFfjZ9mMxoCo16fNq
-         +zmYdXdYBfevZXiyl+pNA+bXOMT81nneI7wKqDnMZYCe/nce4UzADf2Lym8SYsajgp5n
-         YZUxOL/GkuMs/oe1VqDUopj4CevUrCBQshEvFZBHTxTjcSoEYD8wW+Ylp7y5/ptw1zGu
-         n6Jg==
-X-Gm-Message-State: AOAM531h5gcPtFfQHdXUg2FXuYUUZUOSlZ5CCxiWXtsMf8nBViXysbVq
-        UDjh/DRM2H22LJT6IaZE8OgLpLmv4ilK3BqVSfM=
-X-Google-Smtp-Source: ABdhPJyHLAehFart54v04ZVzdd9dYoO1X/9VyzBD35P5qq8nrYTHzo/wmLH9Bi9dzeOL0T4JorwX9diu/ssyuf15Fzg=
-X-Received: by 2002:a05:6602:240c:: with SMTP id s12mr7606501ioa.5.1599747907552;
- Thu, 10 Sep 2020 07:25:07 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c09JxSr1XUKKzAFJy15maBise8KOeiPU0mV0zBX6I1c=;
+        b=DvikzACQGjZxao4XdjtATNJ24nTTY00v/HefgPSLKcJLVRo6L9oHHHZM5ElS6yfxJc
+         6ZYmc9Itg7cLkvcPevVJ6ILh5Qci/W/qD91/hMJv1a1DN7YkIczq8wHNzfObpdw3APNp
+         J5if+hOv1Ew7D2jKWt8OorZnK/ee6uXNxUtC356J13WB0uX65FfLDM+Tp8wkd6Z2CwTU
+         FyluCZP7/gDy93ReK4yXg5U2UK0I4X02h3KDr6NjhFEPJZrTODUhIraAuB3P96pchfJm
+         /4egRC52eAmgJb476E5Cj2PN5agaYhboX5lxjmhIw4fqs8TEC9sq4jBlYXPqD6/Chsc7
+         iVnQ==
+X-Gm-Message-State: AOAM530NQGRwYUzGo9C9OIEfgLXa+3eHlLDrGEUnQ7EWbnEGnyID8nKI
+        +mgYEuVvCnieyQ9l+p0Jwm1lkw==
+X-Google-Smtp-Source: ABdhPJwlL4vUAD4hIIHStlYhw9JaO++kDERp7tgLCh1ZDzzlclXpoEbqXjdmVoT3x6hCqA7Td0Avug==
+X-Received: by 2002:a9d:5b7:: with SMTP id 52mr3931033otd.134.1599747984807;
+        Thu, 10 Sep 2020 07:26:24 -0700 (PDT)
+Received: from tuxbook-pro ([2605:6000:e5cb:c100:f65c:89ff:fe90:ceeb])
+        by smtp.gmail.com with ESMTPSA id 106sm861736oth.63.2020.09.10.07.26.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 07:26:23 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 09:26:21 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, Elliot Berman <eberman@codeaurora.org>
+Subject: Re: [PATCH v3 2/2] venus: firmware: Set virtual address ranges
+Message-ID: <20200910142621.GA6485@tuxbook-pro>
+References: <20200910075227.950-1-stanimir.varbanov@linaro.org>
+ <20200910075227.950-3-stanimir.varbanov@linaro.org>
 MIME-Version: 1.0
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <CAKgT0Uc_L-Tz_rVJiHc5GUK_ZWOs2wRvez4QGf2wwEjx38qnbg@mail.gmail.com>
- <alpine.LSU.2.11.2009091640490.10087@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2009091640490.10087@eggly.anvils>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 10 Sep 2020 07:24:56 -0700
-Message-ID: <CAKgT0Ucive3RreD3TJt1Fjch_BH2ygFfUnpAJ_1BhsHy74w88g@mail.gmail.com>
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910075227.950-3-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 5:32 PM Hugh Dickins <hughd@google.com> wrote:
->
-> On Wed, 9 Sep 2020, Alexander Duyck wrote:
-> > On Tue, Sep 8, 2020 at 4:41 PM Hugh Dickins <hughd@google.com> wrote:
-> > > [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
-> > > Most of this consists of replacing "locked" by "lruvec", which is good:
-> > > but please fold those changes back into 20/32 (or would it be 17/32?
-> > > I've not yet looked into the relationship between those two), so we
-> > > can then see more clearly what change this 28/32 (will need renaming!)
-> > > actually makes, to use lruvec_holds_page_lru_lock(). That may be a
-> > > good change, but it's mixed up with the "locked"->"lruvec" at present,
-> > > and I think you could have just used lruvec for locked all along
-> > > (but of course there's a place where you'll need new_lruvec too).
-> >
-> > I am good with my patch being folded in. No need to keep it separate.
->
-> Thanks.  Though it was only the "locked"->"lruvec" changes I was
-> suggesting to fold back, to minimize the diff, so that we could
-> see your use of lruvec_holds_page_lru_lock() more clearly - you
-> had not introduced that function at the stage of the earlier patches.
->
-> But now that I stare at it again, using lruvec_holds_page_lru_lock()
-> there doesn't look like an advantage to me: when it decides no, the
-> same calculation is made all over again in mem_cgroup_page_lruvec(),
-> whereas the code before only had to calculate it once.
->
-> So, the code before looks better to me: I wonder, do you think that
-> rcu_read_lock() is more expensive than I think it?  There can be
-> debug instrumentation that makes it heavier, but by itself it is
-> very cheap (by design) - not worth branching around.
+On Thu 10 Sep 02:52 CDT 2020, Stanimir Varbanov wrote:
 
-Actually what I was more concerned with was the pointer chase that
-required the RCU lock. With this function we are able to compare a
-pair of pointers from the page and the lruvec and avoid the need for
-the RCU lock. The way the old code was working we had to crawl through
-the memcg to get to the lruvec before we could compare it to the one
-we currently hold. The general idea is to use the data we have instead
-of having to pull in some additional cache lines to perform the test.
+> In order to boot some of the new Venus firmware versions TZ call to set
+> virtual address ranges is needed. Add virtual address ranges for CP and
+> CP_NONPIX in resource structure and use them when loading and booting
+> the firmware on remote processor.
+> 
 
-> >
-> > > [PATCH v18 29/32] mm: Identify compound pages sooner in isolate_migratepages_block
-> > > NAK. I agree that isolate_migratepages_block() looks nicer this way, but
-> > > take a look at prep_new_page() in mm/page_alloc.c: post_alloc_hook() is
-> > > where set_page_refcounted() changes page->_refcount from 0 to 1, allowing
-> > > a racing get_page_unless_zero() to succeed; then later prep_compound_page()
-> > > is where PageHead and PageTails get set. So there's a small race window in
-> > > which this patch could deliver a compound page when it should not.
-> >
-> > So the main motivation for the patch was to avoid the case where we
-> > are having to reset the LRU flag.
->
-> That would be satisfying.  Not necessary, but I agree satisfying.
-> Maybe depends also on your "skip" change, which I've not looked at yet?
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-My concern is that we have scenarios where isolate_migratepages_block
-could possibly prevent another page from being able to isolate a page.
-I'm mostly concerned with us potentially creating something like an
-isolation leak if multiple threads are doing something like clearing
-and then resetting the LRU flag. In my mind if we clear the LRU flag
-we should be certain we are going to remove the page as otherwise
-another thread would have done it if it would have been allowed
-access.
+Regards,
+Bjorn
 
-> > One question I would have is what if
-> > we swapped the code block with the __isolate_lru_page_prepare section?
-> > WIth that we would be taking a reference on the page, then verifying
-> > the LRU flag is set, and then testing for compound page flag bit.
-> > Would doing that close the race window since the LRU flag being set
-> > should indicate that the allocation has already been completed has it
-> > not?
->
-> Yes, I think that would be safe, and would look better.  But I am
-> very hesitant to give snap assurances here (I've twice missed out
-> a vital PageLRU check from this sequence myself): it is very easy
-> to deceive myself and only see it later.
-
-I'm not looking for assurances, just sanity checks to make sure I am
-not missing something obvious.
-
-> If you can see a bug in what's there before these patches, certainly
-> we need to fix it.  But adding non-essential patches to the already
-> overlong series risks delaying it.
-
-My concern ends up being that if we are clearing the bit and restoring
-it while holding the LRU lock we can effectively cause pages to become
-pseudo-pinned on the LRU. In my mind I would want us to avoid clearing
-the LRU flag until we know we are going to be pulling the page from
-the list once we take the lruvec lock. I interpret clearing of the
-flag to indicate the page has already been pulled, it just hasn't left
-the list yet. With us resetting the bit we are violating that which I
-worry will lead to issues.
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c     |  4 ++++
+>  drivers/media/platform/qcom/venus/core.h     |  4 ++++
+>  drivers/media/platform/qcom/venus/firmware.c | 19 ++++++++++++++++++-
+>  3 files changed, 26 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index c5af42873aed..3549a094e860 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -540,6 +540,10 @@ static const struct venus_resources sdm845_res_v2 = {
+>  	.vmem_size = 0,
+>  	.vmem_addr = 0,
+>  	.dma_mask = 0xe0000000 - 1,
+> +	.cp_start = 0,
+> +	.cp_size = 0x70800000,
+> +	.cp_nonpixel_start = 0x1000000,
+> +	.cp_nonpixel_size = 0x24800000,
+>  	.fwname = "qcom/venus-5.2/venus.mdt",
+>  };
+>  
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 1a7aee7ee628..3e3f0138e3c3 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -77,6 +77,10 @@ struct venus_resources {
+>  	unsigned int vmem_id;
+>  	u32 vmem_size;
+>  	u32 vmem_addr;
+> +	u32 cp_start;
+> +	u32 cp_size;
+> +	u32 cp_nonpixel_start;
+> +	u32 cp_nonpixel_size;
+>  	const char *fwname;
+>  };
+>  
+> diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+> index 8801a6a7543d..1db64a854b88 100644
+> --- a/drivers/media/platform/qcom/venus/firmware.c
+> +++ b/drivers/media/platform/qcom/venus/firmware.c
+> @@ -181,6 +181,7 @@ static int venus_shutdown_no_tz(struct venus_core *core)
+>  int venus_boot(struct venus_core *core)
+>  {
+>  	struct device *dev = core->dev;
+> +	const struct venus_resources *res = core->res;
+>  	phys_addr_t mem_phys;
+>  	size_t mem_size;
+>  	int ret;
+> @@ -200,7 +201,23 @@ int venus_boot(struct venus_core *core)
+>  	else
+>  		ret = venus_boot_no_tz(core, mem_phys, mem_size);
+>  
+> -	return ret;
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (core->use_tz && res->cp_size) {
+> +		ret = qcom_scm_mem_protect_video_var(res->cp_start,
+> +						     res->cp_size,
+> +						     res->cp_nonpixel_start,
+> +						     res->cp_nonpixel_size);
+> +		if (ret) {
+> +			qcom_scm_pas_shutdown(VENUS_PAS_ID);
+> +			dev_err(dev, "set virtual address ranges fail (%d)\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  int venus_shutdown(struct venus_core *core)
+> -- 
+> 2.17.1
+> 
