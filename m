@@ -2,230 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E7C265407
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFFB265409
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728785AbgIJVoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:44:00 -0400
-Received: from mail-eopbgr1410111.outbound.protection.outlook.com ([40.107.141.111]:28108
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730882AbgIJM42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:56:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NiJzO79xoMcP2uhSfDzleit9hMHLcrmEbj/2kZhpR92Ou+blL5mV/1RjmQ6HFloZ0XNr4xP5EhFIjseE5VhyXZockdNHk5+061nvXK0rUeb1dUtH4TxOvs3sFC6a/gCDjTMfhPAm1K6SuDi7exorHbVia7K04hEtma/Bg/69JLuVC/kPAfCAT5uPHJoHGZ08SH1m47Uwls9oRmhQV0dtszw5Py/mSUU2Vq1N+cSNp+wJMnIRnt5eyutjpJClmQ06abiNSEeUtccqJk9PJVvjaKNX1hTVAq2v0+X8uTtvN9FiR2VSWm16U/0p98uuZFUD7Vj1KkNhDIePKV+4vA4AFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HJZ3Srsu94pbCuY9WWrkaLbtXPLvw4G/ciPj90FSSs4=;
- b=TGpe9Hg63WsujvUbgXnT52ucW4ORrmkdZKdPSSODNSJmgxjbMVT0xccQuOU4KoRubTn6K5SzOnnz2lj2aZiThCRFq+yjxsouXcKkbF4xltrgK5nOrQFuxGNWISYTk8u9oFyH6+G2pErx+Oxr7o7KeBd3S+MgJvtzAMVHohyqgdFZKCX5jpd2xKZvHIh2Y6vnZ8aVTIR1oVWBJ3tE1Nw14JVM/UdvWRwnGXTMmvNJ/dLLQSyqBBBebXNJ5c1BchtppoSlpMMATuU9pK2UCUw9w559id5tbW2nE+1mH3P0BUKObUZY/fv0+Ao8NfTEIF/Y22F0D0BCqkUq3Yf+/CvtDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
+        id S1728771AbgIJVnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730855AbgIJM5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:57:44 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD554C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 05:57:23 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l9so5694083wme.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 05:57:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HJZ3Srsu94pbCuY9WWrkaLbtXPLvw4G/ciPj90FSSs4=;
- b=fuWtlizePv+qhE2bDzOlg9WgEKYOwJlWA+Xg/arRVRWv00SwDtZTRLRPurUib066dx30kbO1L4I4BsdbLEO//pDWirTs3tN3lo/LVSq9VQ3VMpIT6ARKs8uHjmBXfEhqqzKssL/nuMufgX8LrpeeLVqeD02lzrF/cxRHLahnxwM=
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
- by TYAPR01MB1902.jpnprd01.prod.outlook.com (2603:1096:404:7::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.17; Thu, 10 Sep
- 2020 12:56:24 +0000
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::9055:525d:2d64:b625]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::9055:525d:2d64:b625%5]) with mapi id 15.20.3348.019; Thu, 10 Sep 2020
- 12:56:24 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jann Horn <jannh@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Jason Yan <yanaijie@huawei.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Saurav Girepunje <saurav.girepunje@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: RE: [PATCH RESEND v3 04/11] usb: xhci-rcar: convert to
- readl_poll_timeout_atomic()
-Thread-Topic: [PATCH RESEND v3 04/11] usb: xhci-rcar: convert to
- readl_poll_timeout_atomic()
-Thread-Index: AQHWh0vD+aj1y+DFoU+XUmXRM8L6jalh0rag
-Date:   Thu, 10 Sep 2020 12:56:23 +0000
-Message-ID: <TY2PR01MB369214103C701DC5E78D56F9D8270@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-References: <1599726112-4439-1-git-send-email-chunfeng.yun@mediatek.com>
- <1599726112-4439-4-git-send-email-chunfeng.yun@mediatek.com>
-In-Reply-To: <1599726112-4439-4-git-send-email-chunfeng.yun@mediatek.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [240f:60:5f3e:1:29e4:1562:227f:bbc3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 97121736-22b4-4c6b-4841-08d85588ec56
-x-ms-traffictypediagnostic: TYAPR01MB1902:
-x-microsoft-antispam-prvs: <TYAPR01MB1902D95347D2B525BD8F2F2BD8270@TYAPR01MB1902.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nomcnc0c2r0sVRlCOQpQW5zIl5NNFwfxCQotKKfzLk0fbyitIj3Vy3To5zQ6eo522QuV8ewWbyXkBMPuw1tfNmsfJweYoFAdvinE0NDtrBVQmRg95JONbZrWGvhqEf/6P/MOVs5Jn2tAHh7YjcB4WWDLvpi4sB5FpkkBQKicJQI7VCoG6HhMu1rM4j9H4XBrU1Yx8KR17Xu+BEqRYv8r3o3+Fj8o4tYfI6CYt6Umy2OFjmJxXWKwa/Iu5UI+qM6+tItaNVT1f38csDMAhvs5XnIq8crCexR8ItAgzwiBKbrStSEkhKjFabu78XYyvSIlyHVO5U5D7Zlu5BXLm9YDTRZ2ml6XfjPS3Pt+KNH027EyOui8zwNZ65G3Z/D3yvPV
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66446008)(5660300002)(83380400001)(33656002)(66946007)(66476007)(64756008)(7696005)(76116006)(55016002)(52536014)(2906002)(66556008)(9686003)(186003)(110136005)(498600001)(8676002)(86362001)(8936002)(4326008)(54906003)(6506007)(7416002)(71200400001)(309714004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: WldI93QEqaTIN2pBENPyuG2f6YBAgADnTkydEYMosGh67anr2x1r60aNnQk55ncKs+ZA74HJyt2m9hmuVlOs9tvxQIoM5O9uQKe9ETDaYE/IpkFX+PnOyRIr1iFuFj83YeXcfLcsb+rfO+oA/n94gNRgU4czow3F6Gx4CQsaajgTXWPSUFYxj4yNhOIL8maH0YjkR32ZtDo8ZcD9N36JaI+5Bk7Bp3+Zgm438Vx5nHk0YtbFDrFvhyl9Og/ZLZgLvoADkBflgYTik+S7bjP32F7meHFi+o6r9WzI5edTDcMfO1RbXgqqqdsxlI/1xbhZm1ha+ieAUiN/r15UFmtRw1rpKxtuTYVv5mFsxpxLo9hFYw1A/Ws+Sz3egQVOxLrL34dkkkk/0H/AYfRdn+423s/T0j1MO9i4u5MJu9DnlhIoUzJ/mpGFOQ+I8Wx0tbwOgnqiyBQQo6mIhYtAR6BvVZYX4OW9yv6xalfTe+5Y45yq8wG0xOo0GedcgNTgUJBjDKRefTLPKDYmbIgiWtC3KKJUxKG+9tEr+Pf6SgLP+62x07oTx++5zwHX0qL0C2B6IX6756csCXYofojSo7wTL2rgNOOrbKMv8W9fkrLCUyhXFiN2ZH2Jru5X7SiCmiyQMg+R5eCuatKMmb1uVr5lVEI/nc/ASs4TcZDbXnooEp/EzkiYhLV7kUcbhD09dLeZnpVoAkS7DtiJXkLyD8U+NQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KfTQwiBoUpCc3vUH6L1FgmqENSia1GXehWwAnV98mXI=;
+        b=fPPipQ8PHU4D0blE/qCkcWAC5K3leKcjOPMPmGxDIB9d1+UgiSg7kJEBrxSk+Wl0kw
+         XVD+WR9SvDmqz4wetxNAMw8yJUW/AtuYzlUL3PMvXvH1bRj5qE8sqbo22FzvX5lvbSWr
+         AvdxXdeit2S8HLhMPYX7tcVL33D/bPxRmKSa0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KfTQwiBoUpCc3vUH6L1FgmqENSia1GXehWwAnV98mXI=;
+        b=BaevNK8FyVJxr+2UCJOcsZZsWMMU7CvxsDvl3gZCOW6/kAdGyMu7mRmUNVheJplsWd
+         a5V7zEy16uVFOyiSIVVOm2SXfCU79KsD6rNxk08QMLTdr8v9RJ1oPJRvOnHOFO4B9LHY
+         m4K6rObGis59WEQiyqEM2uI0uMjNLSvob4fnH0bwuj2UQEE0RGdvEYrEGFhzg4Oo2tLb
+         xtFq125RPcVT5xgrtyzKWlPmjOued6yqMq5HPeXsgj4gGQeud9VqKV+PamG8NmhNJAZO
+         DmcjQJYOlxH+/vfE5AmPDqLMPPIHGtsb7qEXvSGdb1P+h/0CwaVClYvInqy34ROOppim
+         znsA==
+X-Gm-Message-State: AOAM530jyaWA6xqUNxiKT/3qbLGhgYDQ9tl7n93Jckwvp88C7n3S9dw9
+        KB4f+tXvW8Fho4W/3t02xHhEtyF1bLxG3u/PgmzIl9v4Tr2+kA==
+X-Google-Smtp-Source: ABdhPJxg0if+XXM3axrOLpGf+ouR3+O04vSxnaA9Z0ED7iapGZTlDYmJDCiSB1IKh6EGA/5tHNh5IwoJC6sAQiZBOKg=
+X-Received: by 2002:a1c:bad5:: with SMTP id k204mr8759377wmf.111.1599742642108;
+ Thu, 10 Sep 2020 05:57:22 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97121736-22b4-4c6b-4841-08d85588ec56
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2020 12:56:23.9837
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3DkmQ8FZzvna8lDokA2U5YlBawPGnov6Y2DitNPz+NOVFB6B0H1UQNl6c+yOjNyKMpoXTPzhBlpvlhqQ0DTIJKnFIj6O3IfKynhTg9ScXJP6KQx1LCFMiJ8IO1QsqMJK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB1902
+References: <20200908163248.14330-1-james.quinlan@broadcom.com> <20200910022555.GA749829@bjorn-Precision-5520>
+In-Reply-To: <20200910022555.GA749829@bjorn-Precision-5520>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Thu, 10 Sep 2020 08:57:10 -0400
+Message-ID: <CA+-6iNzyuVm4gw2socQuQtdrXWCam3GfQj61jYJEUa75fnbvtQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v1] PCI: pcie_bus_config can be set at build time
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000f0bc9805aef51b9d"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chunfeng,
+--000000000000f0bc9805aef51b9d
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for the patch!
+Hi Bjorn,
 
-> From: Chunfeng Yun, Sent: Thursday, September 10, 2020 5:22 PM
->=20
-> Use readl_poll_timeout_atomic() to simplify code
->=20
-> Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
-> Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> ---
-> v2~v3: no changes
-> ---
->  drivers/usb/host/xhci-rcar.c | 43 ++++++++++++--------------------------=
------
->  1 file changed, 12 insertions(+), 31 deletions(-)
->=20
-> diff --git a/drivers/usb/host/xhci-rcar.c b/drivers/usb/host/xhci-rcar.c
-> index c1025d3..74f836f 100644
-> --- a/drivers/usb/host/xhci-rcar.c
-> +++ b/drivers/usb/host/xhci-rcar.c
-> @@ -6,6 +6,7 @@
->   */
->=20
->  #include <linux/firmware.h>
-> +#include <linux/iopoll.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/of.h>
-> @@ -127,8 +128,7 @@ static int xhci_rcar_download_firmware(struct usb_hcd=
- *hcd)
->  	void __iomem *regs =3D hcd->regs;
->  	struct xhci_plat_priv *priv =3D hcd_to_xhci_priv(hcd);
->  	const struct firmware *fw;
-> -	int retval, index, j, time;
-> -	int timeout =3D 10000;
-> +	int retval, index, j;
->  	u32 data, val, temp;
->  	u32 quirks =3D 0;
->  	const struct soc_device_attribute *attr;
-> @@ -166,32 +166,19 @@ static int xhci_rcar_download_firmware(struct usb_h=
-cd *hcd)
->  		temp |=3D RCAR_USB3_DL_CTRL_FW_SET_DATA0;
->  		writel(temp, regs + RCAR_USB3_DL_CTRL);
->=20
-> -		for (time =3D 0; time < timeout; time++) {
-> -			val =3D readl(regs + RCAR_USB3_DL_CTRL);
-> -			if ((val & RCAR_USB3_DL_CTRL_FW_SET_DATA0) =3D=3D 0)
-> -				break;
-> -			udelay(1);
-> -		}
-> -		if (time =3D=3D timeout) {
-> -			retval =3D -ETIMEDOUT;
-> +		retval =3D readl_poll_timeout_atomic(regs + RCAR_USB3_DL_CTRL,
-> +				val, !(val & RCAR_USB3_DL_CTRL_FW_SET_DATA0),
-> +				1, 10000);
-> +		if (retval < 0)
->  			break;
-> -		}
->  	}
->=20
->  	temp =3D readl(regs + RCAR_USB3_DL_CTRL);
->  	temp &=3D ~RCAR_USB3_DL_CTRL_ENABLE;
->  	writel(temp, regs + RCAR_USB3_DL_CTRL);
->=20
-> -	for (time =3D 0; time < timeout; time++) {
-> -		val =3D readl(regs + RCAR_USB3_DL_CTRL);
-> -		if (val & RCAR_USB3_DL_CTRL_FW_SUCCESS) {
-> -			retval =3D 0;
-> -			break;
-> -		}
-> -		udelay(1);
-> -	}
-> -	if (time =3D=3D timeout)
-> -		retval =3D -ETIMEDOUT;
-> +	retval =3D readl_poll_timeout_atomic((regs + RCAR_USB3_DL_CTRL),
-> +			val, (val & RCAR_USB3_DL_CTRL_FW_SUCCESS), 1, 10000);
+On Wed, Sep 9, 2020 at 10:25 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Tue, Sep 08, 2020 at 12:32:48PM -0400, Jim Quinlan wrote:
+> > The Kconfig is modified so that the pcie_bus_config setting can be done at
+> > build time in the same manner as the CONFIG_PCIEASPM_XXXX choice.  The
+> > pci_bus_config setting may still be overridden by the bootline param.
+>
+> I guess...  I really hate these build-time config settings for both
+> ASPM and MPS/MRRS.  But Linux just isn't smart or flexible enough to
+> do the right thing at run-time, so I guess we're kind of stuck.
+>
+> I guess you have systems where you need a different default?
+Yes, we've been shipping our kernel with the DEFAULT and since we do
+not have FW it is not configured optimally.  Some customers have
+noticed and I tell them to put 'pci=pcie_bus_safe' on their bootline
+but I'd rather have this setting work for all customers as it yields
+the option we want.
 
-Some parentheses are not needed like below:
+>
+> It'd be nice if we could put a little more detail in the Kconfig to
+> help users choose the correct one.  "Ensure MPS matches upstream
+> bridge" is *accurate*, but it doesn't really tell me why I would
+> choose this rather than a different one.
+IIRC I just copied the comments that were in the bootline settings.
+I'm concerned about there being the same comment in two places; sooner
+or later someone will update one place and not the other.
 
-	retval =3D readl_poll_timeout_atomic(regs + RCAR_USB3_DL_CTRL,
-			val, val & RCAR_USB3_DL_CTRL_FW_SUCCESS, 1, 10000);
+>
+> Maybe we could mention the corresponding command-line parameters,
+> e.g., "This is the same as booting with 'pci=pcie_bus_tune_off'"?
+Will do and resubmit.
 
+Thanks,
+Jim Quinlan
+Broadcom STB
+>
+> > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> > ---
+> >  drivers/pci/Kconfig | 40 ++++++++++++++++++++++++++++++++++++++++
+> >  drivers/pci/pci.c   | 12 ++++++++++++
+> >  2 files changed, 52 insertions(+)
+> >
+> > diff --git a/drivers/pci/Kconfig b/drivers/pci/Kconfig
+> > index 4bef5c2bae9f..efe69b0d9f7f 100644
+> > --- a/drivers/pci/Kconfig
+> > +++ b/drivers/pci/Kconfig
+> > @@ -187,6 +187,46 @@ config PCI_HYPERV
+> >         The PCI device frontend driver allows the kernel to import arbitrary
+> >         PCI devices from a PCI backend to support PCI driver domains.
+> >
+> > +choice
+> > +     prompt "PCIE default bus config setting"
+> > +     default PCIE_BUS_DEFAULT
+> > +     depends on PCI
+> > +     help
+> > +       One of the following choices will set the pci_bus_config at
+> > +       compile time.  This will still be overridden by the appropriate
+> > +       pci bootline parameter.
+> > +
+> > +config PCIE_BUS_TUNE_OFF
+> > +     bool "Tune Off"
+> > +     depends on PCI
+> > +     help
+> > +       Use the BIOS defaults; doesn't touch MPS at all.
+> > +
+> > +config PCIE_BUS_DEFAULT
+> > +     bool "Default"
+> > +     depends on PCI
+> > +     help
+> > +       Ensure MPS matches upstream bridge.
+> > +
+> > +config PCIE_BUS_SAFE
+> > +     bool "Safe"
+> > +     depends on PCI
+> > +     help
+> > +       Use largest MPS boot-time devices support.
+> > +
+> > +config PCIE_BUS_PERFORMANCE
+> > +     bool "Performance"
+> > +     depends on PCI
+> > +     help
+> > +       Use MPS and MRRS for best performance.
+> > +
+> > +config PCIE_BUS_PEER2PEER
+> > +     bool "Peer2peer"
+> > +     depends on PCI
+> > +     help
+> > +       Set MPS = 128 for all devices.
+> > +endchoice
+> > +
+> >  source "drivers/pci/hotplug/Kconfig"
+> >  source "drivers/pci/controller/Kconfig"
+> >  source "drivers/pci/endpoint/Kconfig"
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index e39c5499770f..dfb52ed4a931 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -101,7 +101,19 @@ unsigned long pci_hotplug_mmio_pref_size = DEFAULT_HOTPLUG_MMIO_PREF_SIZE;
+> >  #define DEFAULT_HOTPLUG_BUS_SIZE     1
+> >  unsigned long pci_hotplug_bus_size = DEFAULT_HOTPLUG_BUS_SIZE;
+> >
+> > +
+> > +/* PCIE bus config, can be overridden by bootline param */
+> > +#ifdef CONFIG_PCIE_BUS_TUNE_OFF
+> > +enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_TUNE_OFF;
+> > +#elif defined CONFIG_PCIE_BUS_SAFE
+> > +enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_SAFE;
+> > +#elif defined CONFIG_PCIE_BUS_PERFORMANCE
+> > +enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PERFORMANCE;
+> > +#elif defined CONFIG_PCIE_BUS_PEER2PEER
+> > +enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_PEER2PEER;
+> > +#else
+> >  enum pcie_bus_config_types pcie_bus_config = PCIE_BUS_DEFAULT;
+> > +#endif
+> >
+> >  /*
+> >   * The default CLS is used if arch didn't set CLS explicitly and not
+> > --
+> > 2.17.1
+> >
 
->  	release_firmware(fw);
->=20
-> @@ -200,18 +187,12 @@ static int xhci_rcar_download_firmware(struct usb_h=
-cd *hcd)
->=20
->  static bool xhci_rcar_wait_for_pll_active(struct usb_hcd *hcd)
->  {
-> -	int timeout =3D 1000;
-> +	int retval;
->  	u32 val, mask =3D RCAR_USB3_AXH_STA_PLL_ACTIVE_MASK;
->=20
-> -	while (timeout > 0) {
-> -		val =3D readl(hcd->regs + RCAR_USB3_AXH_STA);
-> -		if ((val & mask) =3D=3D mask)
-> -			return true;
-> -		udelay(1);
-> -		timeout--;
-> -	}
-> -
-> -	return false;
-> +	retval =3D readl_poll_timeout_atomic(hcd->regs + RCAR_USB3_AXH_STA,
-> +			val, ((val & mask) =3D=3D mask), 1, 1000);
+--000000000000f0bc9805aef51b9d
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Likewise above:
-	retval =3D readl_poll_timeout_atomic(hcd->regs + RCAR_USB3_AXH_STA,
-			val, (val & mask) =3D=3D mask, 1, 1000);
-
-> +	return !!retval;
-
-This breaks the code. If I changed this to "return retval < 0 ? false : tru=
-e;",
-it works again.
-
-Best regards,
-Yoshihiro Shimoda
-
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIFI6FipT+dr
+MwGXGvDbWyJgVtvtKdZ+dlZMr2mSHKjUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMDkxMDEyNTcyMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBfRXy5n4p9oTsIUeGs0l894iMIiWcz
+WJ72t/Qca02PiqBZy56O56At6ti0DP6wBqgXZpSLZ37eakdnjOagNoFGMPMQxgZiI4Fxf+YkB8Z1
+JvgceGwRwbdWSB5x38rK8aLlquszPkqfaPFSInFP7I3G7jZp3QCCH8MKdjRcvg8OiUfZpZIGtcp5
+FlbQAuLmRASi+Dtp5OucJp9QQ7m4Ct3dc3BIiGCLpvoLZTwSJIrghiF5FdDyH0UozVcj4vHdU6Ot
+M7AfbDzprFJA7E9ST+SS5M95rMK31NOYC555b2aJimab0/S/f1PHWCV43OZIPG7ZrfvPn7MZtmMY
+ZZ4p2Kif
+--000000000000f0bc9805aef51b9d--
