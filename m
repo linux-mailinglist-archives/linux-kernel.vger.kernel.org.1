@@ -2,169 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EE0264C27
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20476264C88
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgIJSC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:02:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7826 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726415AbgIJSAD (ORCPT
+        id S1725935AbgIJSON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726755AbgIJR6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:00:03 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AHYY7h006938;
-        Thu, 10 Sep 2020 13:57:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=G9Zv2DFfzXQ+AcQ+DZwioP8Um0SpBOmEagJC1mqcw8c=;
- b=YfCX/fYM/+0cU4iK0BOtwuIlzhkFZzTLrSdJXWxJ1k4qvuqNmGqxiyn/KPt+KO86LgCv
- HLH9k4JhR6BcmigWtTWBD6ZPqiZuUa47ahKdOpl8NTgL6knGqAsfYVupChmLtkca9Bsc
- I831JKul4hMzTIOVuB0rQhwZQk9ohHxm25Hjd2rWK5KvyJjzUOFASuUvmuwRLK/W0F3S
- 15Nj4qDZJzISHQuSxWNdTxPuNefS3nEELxbeP0vDnPGrlCROMOBhYiQko1YZndl1q0z+
- /SnTTR+pYYRZOgX5pbpEMBYvpoOAlBwiL4k1va7ddddU5XSao6D8/ff297hykAE5qXrl Yg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33frf88wyt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 13:57:58 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08AHYZQN007007;
-        Thu, 10 Sep 2020 13:57:57 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33frf88wy2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 13:57:57 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AHvttm028822;
-        Thu, 10 Sep 2020 17:57:55 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 33c2a86aw6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 17:57:55 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AHvqcP35914082
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 17:57:52 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 85058A4055;
-        Thu, 10 Sep 2020 17:57:52 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48D47A4053;
-        Thu, 10 Sep 2020 17:57:51 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.93.242])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 10 Sep 2020 17:57:51 +0000 (GMT)
-Date:   Thu, 10 Sep 2020 19:57:49 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200910195749.795232d1@thinkpad>
-In-Reply-To: <20200910130233.GK87483@ziepe.ca>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-        <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
-        <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
-        <20200909142904.00b72921@thinkpad>
-        <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
-        <20200909192534.442f8984@thinkpad>
-        <20200909180324.GI87483@ziepe.ca>
-        <20200910093925.GB29166@oc3871087118.ibm.com>
-        <20200910130233.GK87483@ziepe.ca>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 10 Sep 2020 13:58:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC1BC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:58:32 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id x23so1041508wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ScFF7njHyD7jDn62ILaf2pwzv53IErIyozW137RkZM0=;
+        b=fwMUXdQRPBwBaQOLV3PtXnhu/+LsFl4cER3JSuvH3OI/P8Xil2ZGHhMR3qFFDKCUPs
+         r1FGTIcodXpgKgRgWEj+y5DR9MJDGuExix7iHQdwpKBmWGazagcnNMs5u43NKaMjhnlT
+         yyryOz+eky4nr/3SmuNVyHBEkVBxKt0ER8QfdJlytIw3hQ6t4tNHBT0ALjAJ5h5ahlaR
+         MgHGN8YlvNfvhexi7WVHaty1aqDYFRwfiD1995UfhjbAaRkQRstgYFBgAC76e9vc5IDG
+         moJ+tuMJCZ8BLzGL+GAnpQbGXRsIwQhbvGt+gpam1egv2ql8mQZKLkhBO4jiJwGNlspG
+         A/sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ScFF7njHyD7jDn62ILaf2pwzv53IErIyozW137RkZM0=;
+        b=PxYxTCulypkmBKA3gNRemks4xI2rrKC0XVyCAdCbAWDDEC1TH2RBV48Z2w4llTL+fJ
+         MtOoziYgwsUpbhdlSWayM82V4LozPNh04uN4gNYgxQPfY3RwFl7mEarwJYfHBOS+x9nl
+         4PqrfItvqZhdOLnrXXGXNZINjOafX9EN5c1IibabvkuHvhs02xGYQguwuU9VxuLiRemK
+         lUTv2v+Y3kx25HA5Rq7tY1KI9aZBYVt2b8BUW+z4m8KoZrU/fpMWeJwz9rC8Qblkhs5J
+         GJM31qbGY6aQdijm4kfFM/qdZ5TDOsBpRUPlrYy9U0bfR/9z5HIIrRW9fEScoyuFblCc
+         hyGA==
+X-Gm-Message-State: AOAM531vYOB03Wu+qpVuk9tdHeWO8ayKcUamnkAO+Cz2CUq5J44zfF9a
+        vw0mSAjK1sUHgs25566ZIP5wRgLF4n7nddrIPX5fTg==
+X-Google-Smtp-Source: ABdhPJxbwDIjheT+o4oKTyGMAComWN78ZyxllrySrcHb7r4wjwdFMy3lplV2zL9ugp6yz8B9vQ4JaPEY2bM8GFMUBVk=
+X-Received: by 2002:a1c:81c6:: with SMTP id c189mr1202580wmd.124.1599760710591;
+ Thu, 10 Sep 2020 10:58:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_05:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009100162
+References: <20200910032632.511566-1-irogers@google.com> <20200910032632.511566-3-irogers@google.com>
+ <CAM9d7cjCV8qb2M9CW+NV2KpCwBTBAMWyE36yAL5SMFQ4wfxJfQ@mail.gmail.com>
+In-Reply-To: <CAM9d7cjCV8qb2M9CW+NV2KpCwBTBAMWyE36yAL5SMFQ4wfxJfQ@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 10 Sep 2020 10:58:18 -0700
+Message-ID: <CAP-5=fUCt0s-SV+7MSccvG3rWOhFVu83VVxKE5CwF7QCfJXpYw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] perf metricgroup: Fix uncore metric expressions
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 10:02:33 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Wed, Sep 9, 2020 at 10:51 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Thu, Sep 10, 2020 at 12:26 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
+> > and uncore_imc/case_count_write/. These events open 6 events per socket
+> > with pmu names of uncore_imc_[0-5]. The current metric setup code in
+> > find_evsel_group assumes one ID will map to 1 event to be recorded in
+> > metric_events. For events with multiple matches, the first event is
+> > recorded in metric_events (avoiding matching >1 event with the same
+> > name) and the evlist_used updated so that duplicate events aren't
+> > removed when the evlist has unused events removed.
+> >
+> > Before this change:
+> > $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+> >
+> >  Performance counter stats for 'system wide':
+> >
+> >              41.14 MiB  uncore_imc/cas_count_read/
+> >      1,002,614,251 ns   duration_time
+> >
+> >        1.002614251 seconds time elapsed
+> >
+> > After this change:
+> > $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+> >
+> >  Performance counter stats for 'system wide':
+> >
+> >             157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+> >             126.97 MiB  uncore_imc/cas_count_write/
+> >      1,003,019,728 ns   duration_time
+> >
+> > v2. avoids iterating over the whole evlist as suggested by
+> >     namhyung@kernel.org. It also fixes the metric_leader computation
+> >     that was broken in the same commits.
+> >
+> > Erroneous duplication introduced in:
+> > commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
+> >
+> > Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
+> > Reported-by: Jin Yao <yao.jin@linux.intel.com>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/metricgroup.c | 45 ++++++++++++++++++++++++++++++++---
+> >  1 file changed, 42 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > index 662f4e8777d5..79080de9217d 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -206,6 +206,18 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> >                                 sizeof(struct evsel *) * idnum);
+> >                         current_leader = ev->leader;
+> >                 }
+> > +               /*
+> > +                * Check for duplicate events with the same name. For example,
+> > +                * uncore_imc/cas_count_read/ will turn into 6 events per socket
+> > +                * on skylakex. Only the first such event is placed in
+> > +                * metric_events.
+> > +                */
+> > +               for (i = 0; i < matched_events; i++) {
+> > +                       if (!strcmp(metric_events[i]->name, ev->name))
+> > +                               break;
+> > +               }
+> > +               if (i != matched_events)
+> > +                       continue;
+>
+> We have the same logic in the below.  Maybe it'd better to factor out..
 
-> On Thu, Sep 10, 2020 at 11:39:25AM +0200, Alexander Gordeev wrote:
-> 
-> > As Gerald mentioned, it is very difficult to explain in a clear way.
-> > Hopefully, one could make sense ot of it.
-> 
-> I would say the page table API requires this invariant:
-> 
->         pud = pud_offset(p4d, addr);
->         do {
-> 		WARN_ON(pud != pud_offset(p4d, addr);
->                 next = pud_addr_end(addr, end);
->         } while (pud++, addr = next, addr != end);
-> 
-> ie pud++ is supposed to be a shortcut for 
->   pud_offset(p4d, next)
-> 
+You're right, actually with this loop the below is redundant.
 
-Hmm, IIUC, all architectures with static folding will simply return
-the passed-in p4d pointer for pud_offset(p4d, addr), for 3-level
-pagetables. There is no difference for s390. For gup_fast, that p4d
-pointer is not really a pointer to a value in a pagetable, but
-to some local copy of such a value, and not just for s390.
+>
+> >                 if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+> >                         if (has_constraint) {
+> >                                 /*
+> > @@ -245,9 +257,36 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+> >         metric_events[idnum] = NULL;
+> >
+> >         for (i = 0; i < idnum; i++) {
+> > -               ev = metric_events[i];
+> > -               ev->metric_leader = ev;
+> > -               set_bit(ev->idx, evlist_used);
+> > +               /* Don't free used events. */
+> > +               set_bit(metric_events[i]->idx, evlist_used);
+> > +               /*
+> > +                * The metric leader points to the identically named event in
+> > +                * metric_events.
+> > +                */
+> > +               metric_events[i]->metric_leader = metric_events[i];
+> > +               /*
+> > +                * Mark two events with identical names in the same group (or
+> > +                * globally) as being in use as uncore events may be duplicated
+> > +                * for each pmu. Set the metric leader to be the event that
+> > +                * appears in metric_events.
+> > +                */
+>
+> I thought this again, and it's not guaranteed that the metric leader is
+> a group leader so below won't work IMHO.  Instead we should iterate
+> evlist always, but started from the metric leader with the
+> evlist__for_each_entry_continue.
 
-So, pud = p4d = pointer to copy, and increasing that pud pointer
-cannot be the same as pud_offset(p4d, next). I do see your point
-however, at last I think :-) My problem is that I do not see where
-we would have an s390-specific issue here. Maybe my understanding
-of how it works for others with static folding is wrong. That
-would explain my difficulties in getting your point...
+Thanks for pointing out evlist__for_each_entry_continue! For the
+constraint case it avoids iterating a bunch of list elements. For the
+sibling group case we do know that all the metric's events are
+siblings with the exception of duration time that is pulled out
+specially and not at risk of being aliased.
 
-> While S390 does not follow this. Fixing addr_end brings it into
-> alignment by preventing pud++ from happening.
+Thanks,
+Ian
 
-Exactly, only that nobody seems to follow it, IIUC. Fixing it up
-with pXd_addr_end was my impression of what we need to do, in order to
-have it work the same way as for others.
-
-> The only currently known side effect is that gup_fast crashes, but it
-> sure is an unexpected thing.
-
-Well, from my understanding it feels more unexpected that something
-that is supposed to be a pointer to an entry in a page table, really is
-just a pointer to some copy somewhere.
+> Thanks
+> Namhyung
+>
+>
+> > +               if (!has_constraint) {
+> > +                       for_each_group_evsel(ev, metric_events[i]->leader) {
+> > +                               if (ev != metric_events[i] &&
+> > +                                   !strcmp(metric_events[i]->name, ev->name)) {
+> > +                                       set_bit(ev->idx, evlist_used);
+> > +                                       ev->metric_leader = metric_events[i];
+> > +                               }
+> > +                       }
+> > +               } else {
+> > +                       evlist__for_each_entry(perf_evlist, ev) {
+> > +                               if (ev != metric_events[i] &&
+> > +                                   !strcmp(metric_events[i]->name, ev->name)) {
+> > +                                       set_bit(ev->idx, evlist_used);
+> > +                                       ev->metric_leader = metric_events[i];
+> > +                               }
+> > +                       }
+> > +               }
+> >         }
+> >
+> >         return metric_events[0];
+> > --
+> > 2.28.0.526.ge36021eeef-goog
+> >
