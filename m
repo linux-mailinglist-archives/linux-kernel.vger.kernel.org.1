@@ -2,74 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C908263CC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 07:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A517C263CC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 07:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgIJFyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 01:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbgIJFve (ORCPT
+        id S1726725AbgIJFxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 01:53:34 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39628 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgIJFv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 01:51:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB852C0613ED;
-        Wed,  9 Sep 2020 22:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=d/1oapeqMoUX4fyEWjc4oR9/HMmOIqyxIeXpBbH5I6g=; b=uOu1pQyJkN91O28k3NNeK+gmQF
-        hrvf0kLD+AJr/uyZi5OXbLR3iOtsmxbT10BEvJu+V0Qs0jVvBr/CTgD4ImAAG37J8q5aDlOh2nUlM
-        pliPvINsf86YsBNuz6MyTXIdXiVBn2zoy7xSuV/yvQzhG1sAqw3lvykveX+nL+Dvb4AwDkxCOBJIH
-        8pD7ovGBGDAYCzRlbRN3Z3axTJ3zvbIpOkVCnTgix8b8LiQ2wxfgeWX261plaiaAGclHU/2IpzWzB
-        5D+4jEUmv/3Yd5X9Ta1Sg5WDA32b142gJkiCRM9zlrkJKsL2h+6Cw8E9vVXC4Uy7TSedjMPaiL6bL
-        xv7eJNCw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGFUG-00036l-Oo; Thu, 10 Sep 2020 05:51:12 +0000
-Date:   Thu, 10 Sep 2020 06:51:12 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-mm@kvack.org
-Subject: Re: [PATCH v4 3/4] mm/pageblock: work around multiple arch's cmpxchg
- support issue
-Message-ID: <20200910055112.GA11727@infradead.org>
-References: <1599116482-7410-1-git-send-email-alex.shi@linux.alibaba.com>
- <1599116482-7410-3-git-send-email-alex.shi@linux.alibaba.com>
+        Thu, 10 Sep 2020 01:51:28 -0400
+Received: by mail-wr1-f65.google.com with SMTP id a17so5263935wrn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 22:51:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+5QxPgDamejxhn6ECEdmwxgpxU3vLhZVPh3TAfAaIes=;
+        b=sqcJtooLNuEI/mFetvU/GFvBItHCa/xco2p6D5qWW4C++WfjwH90hP426uJD8358I+
+         bJ34MT0f7rz4v/ZVZjy18utgEIThVrzuZSnjtS7NI+ps7gJrduUAl/8fTk0TJWx5IVUB
+         nNEfKksUj0pJZDkgGhp7x0Kd11PIpP4HxABPIq8NCQlBs2Kuv6uskRPi1UvEbFSmHpOY
+         1Xx4c3l/IiMy/PnubimPVuJPYXtGY3NomzLVo+cv62IBDEHm60iNOWGN+23KOle7W0n7
+         w4HnxK6z1+GBvjLe4Zm+xutrLiPCuKWQwJKos35FPhwOsMnPnx/cIrvo8BKn6/EKXNf6
+         d9dA==
+X-Gm-Message-State: AOAM530FUwumlUxWL7eJSbn6jyLtZPpxXXTvHDFL53LM5kqV7F+RRG32
+        pRwd6uxgoz9NVteBvBJCoQz0+pfoV7YKsVg5Fug=
+X-Google-Smtp-Source: ABdhPJwcAFjZQdLTE0ZVu58CdJSUYlW3kZdTBMqFRrislYy7UHFrhU194SQhy0Ck6lT4drv3BoG6EMuqkB2WSypJAsk=
+X-Received: by 2002:adf:82d5:: with SMTP id 79mr7962253wrc.60.1599717084918;
+ Wed, 09 Sep 2020 22:51:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599116482-7410-3-git-send-email-alex.shi@linux.alibaba.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200910032632.511566-1-irogers@google.com> <20200910032632.511566-3-irogers@google.com>
+In-Reply-To: <20200910032632.511566-3-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 10 Sep 2020 14:51:13 +0900
+Message-ID: <CAM9d7cjCV8qb2M9CW+NV2KpCwBTBAMWyE36yAL5SMFQ4wfxJfQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] perf metricgroup: Fix uncore metric expressions
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 03:01:22PM +0800, Alex Shi wrote:
-> Armv6, sh2, sparc32 and xtensa can not do cmpxchg1, so we have to use
-> cmpxchg4 on it.
-> 
-> Here we mark above 4 arch's NO_CMPXCHG_BYTE, and would add more if we
-> found.
-> 
-> This is the first usages of cmpxchg flase sharing change. We'd better
-> check more cmpxchg usages in current kernel...
+On Thu, Sep 10, 2020 at 12:26 PM Ian Rogers <irogers@google.com> wrote:
+>
+> A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
+> and uncore_imc/case_count_write/. These events open 6 events per socket
+> with pmu names of uncore_imc_[0-5]. The current metric setup code in
+> find_evsel_group assumes one ID will map to 1 event to be recorded in
+> metric_events. For events with multiple matches, the first event is
+> recorded in metric_events (avoiding matching >1 event with the same
+> name) and the evlist_used updated so that duplicate events aren't
+> removed when the evlist has unused events removed.
+>
+> Before this change:
+> $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+>
+>  Performance counter stats for 'system wide':
+>
+>              41.14 MiB  uncore_imc/cas_count_read/
+>      1,002,614,251 ns   duration_time
+>
+>        1.002614251 seconds time elapsed
+>
+> After this change:
+> $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+>
+>  Performance counter stats for 'system wide':
+>
+>             157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+>             126.97 MiB  uncore_imc/cas_count_write/
+>      1,003,019,728 ns   duration_time
+>
+> v2. avoids iterating over the whole evlist as suggested by
+>     namhyung@kernel.org. It also fixes the metric_leader computation
+>     that was broken in the same commits.
+>
+> Erroneous duplication introduced in:
+> commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
+>
+> Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
+> Reported-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/metricgroup.c | 45 ++++++++++++++++++++++++++++++++---
+>  1 file changed, 42 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 662f4e8777d5..79080de9217d 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -206,6 +206,18 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>                                 sizeof(struct evsel *) * idnum);
+>                         current_leader = ev->leader;
+>                 }
+> +               /*
+> +                * Check for duplicate events with the same name. For example,
+> +                * uncore_imc/cas_count_read/ will turn into 6 events per socket
+> +                * on skylakex. Only the first such event is placed in
+> +                * metric_events.
+> +                */
+> +               for (i = 0; i < matched_events; i++) {
+> +                       if (!strcmp(metric_events[i]->name, ev->name))
+> +                               break;
+> +               }
+> +               if (i != matched_events)
+> +                       continue;
 
-I think a positive symbol, e.g. HAVE_CMPXCHG_BYTE is a lot easier to
-understand, and also fool-proof.
+We have the same logic in the below.  Maybe it'd better to factor out..
+
+
+>                 if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+>                         if (has_constraint) {
+>                                 /*
+> @@ -245,9 +257,36 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>         metric_events[idnum] = NULL;
+>
+>         for (i = 0; i < idnum; i++) {
+> -               ev = metric_events[i];
+> -               ev->metric_leader = ev;
+> -               set_bit(ev->idx, evlist_used);
+> +               /* Don't free used events. */
+> +               set_bit(metric_events[i]->idx, evlist_used);
+> +               /*
+> +                * The metric leader points to the identically named event in
+> +                * metric_events.
+> +                */
+> +               metric_events[i]->metric_leader = metric_events[i];
+> +               /*
+> +                * Mark two events with identical names in the same group (or
+> +                * globally) as being in use as uncore events may be duplicated
+> +                * for each pmu. Set the metric leader to be the event that
+> +                * appears in metric_events.
+> +                */
+
+I thought this again, and it's not guaranteed that the metric leader is
+a group leader so below won't work IMHO.  Instead we should iterate
+evlist always, but started from the metric leader with the
+evlist__for_each_entry_continue.
+
+Thanks
+Namhyung
+
+
+> +               if (!has_constraint) {
+> +                       for_each_group_evsel(ev, metric_events[i]->leader) {
+> +                               if (ev != metric_events[i] &&
+> +                                   !strcmp(metric_events[i]->name, ev->name)) {
+> +                                       set_bit(ev->idx, evlist_used);
+> +                                       ev->metric_leader = metric_events[i];
+> +                               }
+> +                       }
+> +               } else {
+> +                       evlist__for_each_entry(perf_evlist, ev) {
+> +                               if (ev != metric_events[i] &&
+> +                                   !strcmp(metric_events[i]->name, ev->name)) {
+> +                                       set_bit(ev->idx, evlist_used);
+> +                                       ev->metric_leader = metric_events[i];
+> +                               }
+> +                       }
+> +               }
+>         }
+>
+>         return metric_events[0];
+> --
+> 2.28.0.526.ge36021eeef-goog
+>
