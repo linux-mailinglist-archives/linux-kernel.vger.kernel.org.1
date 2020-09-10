@@ -2,460 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF442639BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F9E2639C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730480AbgIJCB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:01:29 -0400
-Received: from smtprelay0215.hostedemail.com ([216.40.44.215]:43108 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728663AbgIJBic (ORCPT
+        id S1726642AbgIJCCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:02:34 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:41474 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729413AbgIJBku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:38:32 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 08BE2180255BD;
-        Thu, 10 Sep 2020 00:20:47 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 4D665182CED34;
-        Thu, 10 Sep 2020 00:20:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:69:355:379:599:960:966:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:2110:2194:2196:2199:2200:2393:2553:2559:2562:2638:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3872:3874:4321:4385:4560:5007:9040:10004:10848:11026:11232:11658:11914:12043:12214:12291:12296:12297:12438:12555:12683:12740:12760:12895:12986:13161:13229:13439:14659:21060:21080:21611:21627:21796:21939:21990:30012:30036:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: smoke24_341571c270e1
-X-Filterd-Recvd-Size: 13205
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 10 Sep 2020 00:20:43 +0000 (UTC)
-Message-ID: <c50014e57e77842e4c710231dff829f3f67bbe59.camel@perches.com>
-Subject: Re: [trivial PATCH] treewide: Convert switch/case fallthrough; to
- break;
-From:   Joe Perches <joe@perches.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Kees Cook <kees.cook@canonical.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 09 Sep 2020 17:20:42 -0700
-In-Reply-To: <20200909223540.GA27590@gondor.apana.org.au>
-References: <e6387578c75736d61b2fe70d9783d91329a97eb4.camel@perches.com>
-         <20200909205558.GA3384631@dhcp-10-100-145-180.wdl.wdc.com>
-         <b0c31cbb82aa64027569dff69803ca3ec2f65501.camel@perches.com>
-         <20200909223540.GA27590@gondor.apana.org.au>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 9 Sep 2020 21:40:50 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 5FCBA2BA1F;
+        Wed,  9 Sep 2020 20:23:28 -0400 (EDT)
+Date:   Thu, 10 Sep 2020 10:23:30 +1000 (AEST)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Subject: Re: [PATCH] ide/macide: Convert Mac IDE driver to platform driver
+In-Reply-To: <CAMuHMdWAi6+75Mq0U8x7Ut6viHvF7XEZAcYnxq=jJmtJyAX8pw@mail.gmail.com>
+Message-ID: <alpine.LNX.2.23.453.2009100920001.8@nippy.intranet>
+References: <00ee44fe6ecdce1c783c3cc3b1b9a62b498dcdb2.1597736545.git.fthain@telegraphics.com.au> <CAMuHMdWAi6+75Mq0U8x7Ut6viHvF7XEZAcYnxq=jJmtJyAX8pw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-10 at 08:35 +1000, Herbert Xu wrote:
-> On Wed, Sep 09, 2020 at 02:09:32PM -0700, Joe Perches wrote:
-> > On Wed, 2020-09-09 at 13:55 -0700, Keith Busch wrote:
-> > > On Wed, Sep 09, 2020 at 01:06:39PM -0700, Joe Perches wrote:
-> > > > diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-> > > > index eea0f453cfb6..8aac5bc60f4c 100644
-> > > > --- a/crypto/tcrypt.c
-> > > > +++ b/crypto/tcrypt.c
-> > > > @@ -2464,7 +2464,7 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
-> > > >  		test_hash_speed("streebog512", sec,
-> > > >  				generic_hash_speed_template);
-> > > >  		if (mode > 300 && mode < 400) break;
-> > > > -		fallthrough;
-> > > > +		break;
-> > > >  	case 399:
-> > > >  		break;
-> > > 
-> > > Just imho, this change makes the preceding 'if' look even more
-> > > pointless. Maybe the fallthrough was a deliberate choice? Not that my
-> > > opinion matters here as I don't know this module, but it looked a bit
-> > > odd to me.
-> > 
-> > It does look odd to me too.
-> > 
-> > It's also just a test module though so the
-> > code isn't particularly crucial.
-> > 
-> > Herbert/David? thoughts?
+On Wed, 9 Sep 2020, Geert Uytterhoeven wrote:
+
 > 
-> Please read the function as a whole, that fallthrough (and every other
-> one in do_test) needs to stay.
+> Thanks for your patch!
+> 
 
-Hi Herbert.
+Thanks for your review.
 
-OK, I did.  I think it's odd code.
+> > --- a/arch/m68k/mac/config.c +++ b/arch/m68k/mac/config.c
+> 
+> > @@ -940,6 +941,50 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
+> >         },
+> >  };
+> >
+> > +static const struct resource mac_ide_quadra_rsrc[] __initconst = {
+> > +       {
+> > +               .flags = IORESOURCE_MEM,
+> > +               .start = 0x50F1A000,
+> > +               .end   = 0x50F1A103,
+> > +       }, {
+> > +               .flags = IORESOURCE_IRQ,
+> > +               .start = IRQ_NUBUS_F,
+> > +               .end   = IRQ_NUBUS_F,
+> > +       },
+> > +};
+> > +
+> > +static const struct resource mac_ide_pb_rsrc[] __initconst = {
+> > +       {
+> > +               .flags = IORESOURCE_MEM,
+> > +               .start = 0x50F1A000,
+> > +               .end   = 0x50F1A103,
+> > +       }, {
+> > +               .flags = IORESOURCE_IRQ,
+> > +               .start = IRQ_NUBUS_C,
+> > +               .end   = IRQ_NUBUS_C,
+> > +       },
+> > +};
+> 
+> As the above two variants are almost identical, perhaps it makes sense 
+> to drop one of them, drop the const, and override the irq values 
+> dynamically?
+> 
 
-The do_test function could start at any 3xx or 4xx mode
-and then do all the next tests to the highest 99
-for ranges from 301-399 and 401-499.
+I prefer a declarative or data-driven style, even if it takes a few more 
+lines of code. But there is a compromise:
 
-ie: Pass mode 312, it'll execute test 312 and every
-other test to 399.
+static const struct resource mac_ide_quadra_rsrc[] __initconst = {
+	DEFINE_RES_MEM(0x50F1A000, 0x104),
+	DEFINE_RES_IRQ(IRQ_NUBUS_F),
+}
 
-Not the same for the 500-599 or 600-699 range.
+static const struct resource mac_ide_pb_rsrc[] __initconst = {
+	DEFINE_RES_MEM(0x50F1A000, 0x104),
+	DEFINE_RES_IRQ(IRQ_NUBUS_C),
+}
 
-I probably would've hoisted the code for all of the 0,
-any value from 300-399, and any value from 400-499
-out of the do_test function and into tcrypt_mod_init
-not used fallthrough in do_test at all.
+The reason I didn't use these macros was to avoid making the reader go and 
+look up their definitions. Anyway, would that style be preferred here?
 
-cheers, Joe
+I could do the same with the mac_ide_baboon_rsrc[] initializer:
 
-Perhaps something like:
----
- crypto/tcrypt.c | 190 +++++++++++++++++++++-----------------------------------
- 1 file changed, 72 insertions(+), 118 deletions(-)
+static const struct resource mac_pata_baboon_rsrc[] __initconst = {
+        DEFINE_RES_MEM(0x50F1A000, 0x38),
+        DEFINE_RES_MEM(0x50F1A038, 0x04),
+        DEFINE_RES_IRQ(IRQ_BABOON_1),
+};
 
-diff --git a/crypto/tcrypt.c b/crypto/tcrypt.c
-index eea0f453cfb6..aeb089f6ee27 100644
---- a/crypto/tcrypt.c
-+++ b/crypto/tcrypt.c
-@@ -1660,7 +1660,6 @@ static inline int tcrypt_test(const char *alg)
- 
- static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- {
--	int i;
- 	int ret = 0;
- 
- 	switch (m) {
-@@ -1672,8 +1671,6 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 			break;
- 		}
- 
--		for (i = 1; i < 200; i++)
--			ret += do_test(NULL, 0, 0, i, num_mb);
- 		break;
- 
- 	case 1:
-@@ -2349,123 +2346,93 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 			test_hash_speed(alg, sec, generic_hash_speed_template);
- 			break;
- 		}
--		fallthrough;
-+		break;
- 	case 301:
- 		test_hash_speed("md4", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 302:
- 		test_hash_speed("md5", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 303:
- 		test_hash_speed("sha1", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 304:
- 		test_hash_speed("sha256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 305:
- 		test_hash_speed("sha384", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 306:
- 		test_hash_speed("sha512", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 307:
- 		test_hash_speed("wp256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 308:
- 		test_hash_speed("wp384", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 309:
- 		test_hash_speed("wp512", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 310:
- 		test_hash_speed("tgr128", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 311:
- 		test_hash_speed("tgr160", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 312:
- 		test_hash_speed("tgr192", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 313:
- 		test_hash_speed("sha224", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 314:
- 		test_hash_speed("rmd128", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 315:
- 		test_hash_speed("rmd160", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 316:
- 		test_hash_speed("rmd256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 317:
- 		test_hash_speed("rmd320", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 318:
- 		klen = 16;
- 		test_hash_speed("ghash", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 319:
- 		test_hash_speed("crc32c", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 320:
- 		test_hash_speed("crct10dif", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 321:
- 		test_hash_speed("poly1305", sec, poly1305_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 322:
- 		test_hash_speed("sha3-224", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 323:
- 		test_hash_speed("sha3-256", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 324:
- 		test_hash_speed("sha3-384", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 325:
- 		test_hash_speed("sha3-512", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 326:
- 		test_hash_speed("sm3", sec, generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 327:
- 		test_hash_speed("streebog256", sec,
- 				generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
-+		break;
- 	case 328:
- 		test_hash_speed("streebog512", sec,
- 				generic_hash_speed_template);
--		if (mode > 300 && mode < 400) break;
--		fallthrough;
--	case 399:
- 		break;
- 
- 	case 400:
-@@ -2473,122 +2440,93 @@ static int do_test(const char *alg, u32 type, u32 mask, int m, u32 num_mb)
- 			test_ahash_speed(alg, sec, generic_hash_speed_template);
- 			break;
- 		}
--		fallthrough;
-+		break;
- 	case 401:
- 		test_ahash_speed("md4", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 402:
- 		test_ahash_speed("md5", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 403:
- 		test_ahash_speed("sha1", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 404:
- 		test_ahash_speed("sha256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 405:
- 		test_ahash_speed("sha384", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 406:
- 		test_ahash_speed("sha512", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 407:
- 		test_ahash_speed("wp256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 408:
- 		test_ahash_speed("wp384", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 409:
- 		test_ahash_speed("wp512", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 410:
- 		test_ahash_speed("tgr128", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 411:
- 		test_ahash_speed("tgr160", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 412:
- 		test_ahash_speed("tgr192", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 413:
- 		test_ahash_speed("sha224", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 414:
- 		test_ahash_speed("rmd128", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 415:
- 		test_ahash_speed("rmd160", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 416:
- 		test_ahash_speed("rmd256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 417:
- 		test_ahash_speed("rmd320", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 418:
- 		test_ahash_speed("sha3-224", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 419:
- 		test_ahash_speed("sha3-256", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 420:
- 		test_ahash_speed("sha3-384", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 421:
- 		test_ahash_speed("sha3-512", sec, generic_hash_speed_template);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 422:
- 		test_mb_ahash_speed("sha1", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 423:
- 		test_mb_ahash_speed("sha256", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 424:
- 		test_mb_ahash_speed("sha512", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 425:
- 		test_mb_ahash_speed("sm3", sec, generic_hash_speed_template,
- 				    num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 426:
- 		test_mb_ahash_speed("streebog256", sec,
- 				    generic_hash_speed_template, num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
-+		break;
- 	case 427:
- 		test_mb_ahash_speed("streebog512", sec,
- 				    generic_hash_speed_template, num_mb);
--		if (mode > 400 && mode < 500) break;
--		fallthrough;
--	case 499:
- 		break;
- 
- 	case 500:
-@@ -3034,7 +2972,23 @@ static int __init tcrypt_mod_init(void)
- 			goto err_free_tv;
- 	}
- 
--	err = do_test(alg, type, mask, mode, num_mb);
-+	if (mode == 0) {
-+		err = do_test(alg, type, mask, mode, num_mb);
-+		if (!err) {
-+			for (i = 1; i < 200; i++)
-+				err |= do_test(NULL, 0, 0, i, num_mb);
-+		}
-+	} else if (mode >= 300 && mode < 400) {
-+		err = 0;
-+		for (i = mode; i < 400; i++)
-+			err |= do_test(alg, type, mask, i, num_mb);
-+	} else if (mode >= 400 && mode < 500) {
-+		err = 0;
-+		for (i = mode; i < 500; i++)
-+			err |= do_test(alg, type, mask, i, num_mb);
-+	} else {
-+		err = do_test(alg, type, mask, mode, num_mb);
-+	}
- 
- 	if (err) {
- 		printk(KERN_ERR "tcrypt: one or more tests failed!\n");
+... but that would lose the IORESOURCE_IRQ_SHAREABLE flag. I'm not sure 
+whether that matters (it's a vestige of macide.c).
 
+> > +
+> > +static const struct resource mac_pata_baboon_rsrc[] __initconst = {
+> > +       {
+> > +               .flags = IORESOURCE_MEM,
+> > +               .start = 0x50F1A000,
+> > +               .end   = 0x50F1A037,
+> > +       }, {
+> > +               .flags = IORESOURCE_MEM,
+> > +               .start = 0x50F1A038,
+> > +               .end   = 0x50F1A03B,
+> > +       }, {
+> > +               .flags = IORESOURCE_IRQ | IORESOURCE_IRQ_SHAREABLE,
+> > +               .start = IRQ_BABOON_1,
+> > +               .end   = IRQ_BABOON_1,
+> > +       },
+> > +};
+> > +
+> > +static const struct pata_platform_info mac_pata_baboon_data __initconst = {
+> > +       .ioport_shift  = 2,
+> > +};
+> 
+> Just wondering: how is this implemented in drivers/ide/macide.c, which
+> doesn't use the platform info?
+> 
 
+That factor of 4 is embedded in the address caclulation:
+
+        for (i = 0; i < 8; i++)
+                hw->io_ports_array[i] = base + i * 4;
+
+> > --- a/drivers/ide/macide.c
+> > +++ b/drivers/ide/macide.c
+> > @@ -18,10 +18,11 @@
+> >  #include <linux/delay.h>
+> >  #include <linux/ide.h>
+> >  #include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> >
+> >  #include <asm/macintosh.h>
+> > -#include <asm/macints.h>
+> > -#include <asm/mac_baboon.h>
+> > +
+> > +#define DRV_NAME "mac_ide"
+> >
+> >  #define IDE_BASE 0x50F1A000    /* Base address of IDE controller */
+> 
+> Do you still need this definition?
+> Yes, because it's still used to access IDE_IFR.
+> Ideally, that should be converted to use the base from the resource,
+> too.
+> 
+
+Yes, that was my thought too. I can make the change if you like, but I 
+can't test it until I set up the appropriate hardware (MAC_IDE_QUADRA or 
+MAC_IDE_PB). I do own that hardware but it is located in Melbourne and it 
+is now illegal to visit Melbourne without official papers. Besides, once I 
+can test on that hardware I can replace the entire driver anyway, and 
+this kind of refactoring would become moot.
+
+> >
+> > @@ -109,42 +110,65 @@ static const char *mac_ide_name[] =
+> >   * Probe for a Macintosh IDE interface
+> >   */
+> >
+> > -static int __init macide_init(void)
+> > +static int mac_ide_probe(struct platform_device *pdev)
+> >  {
+> > -       unsigned long base;
+> > -       int irq;
+> > +       struct resource *mem, *irq;
+> >         struct ide_hw hw, *hws[] = { &hw };
+> >         struct ide_port_info d = macide_port_info;
+> > +       struct ide_host *host;
+> > +       int rc;
+> >
+> >         if (!MACH_IS_MAC)
+> >                 return -ENODEV;
+> >
+> > -       switch (macintosh_config->ide_type) {
+> > -       case MAC_IDE_QUADRA:
+> > -               base = IDE_BASE;
+> > -               irq = IRQ_NUBUS_F;
+> > -               break;
+> > -       case MAC_IDE_PB:
+> > -               base = IDE_BASE;
+> > -               irq = IRQ_NUBUS_C;
+> > -               break;
+> > -       case MAC_IDE_BABOON:
+> > -               base = BABOON_BASE;
+> > -               d.port_ops = NULL;
+> 
+> How does the driver know not to use the special port_ops after
+> this change?
+> 
+
+The driver always uses the special port_ops after this change because it 
+no longer handles the MAC_IDE_BABOON case. That case is handled by either 
+drivers/ata/pata_platform.c or drivers/ide/ide_platform.c, depending on 
+.config.
+
+> > -               irq = IRQ_BABOON_1;
+> > -               break;
+> > -       default:
+> > +       mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +       if (!mem)
+> > +               return -ENODEV;
+> > +
+> > +       irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> > +       if (!irq)
+> >                 return -ENODEV;
+> > +
+> > +       if (!devm_request_mem_region(&pdev->dev, mem->start,
+> > +                                    resource_size(mem), DRV_NAME)) {
+> > +               dev_err(&pdev->dev, "resources busy\n");
+> > +               return -EBUSY;
+> >         }
+> >
+> >         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
+> >                          mac_ide_name[macintosh_config->ide_type - 1]);
+> >
+> > -       macide_setup_ports(&hw, base, irq);
+> > +       macide_setup_ports(&hw, mem->start, irq->start);
+> > +
+> > +       rc = ide_host_add(&d, hws, 1, &host);
+> > +       if (rc)
+> > +               goto release_mem;
+> > +
+> > +       platform_set_drvdata(pdev, host);
+> 
+> In general, it's safer to move the platform_set_drvdata() call before
+> the ide_host_add() call, as the IDE core may start calling into your
+> driver as soon as the host has been added.  Fortunately you're using
+> dev_get_drvdata() in the .remove() callback only, and not in other parts
+> of the driver.
+> 
+
+Right.
+
+> > +       return 0;
+> > +
+> > +release_mem:
+> > +       release_mem_region(mem->start, resource_size(mem));
+> 
+> Not needed, as you used devm_*() for allocation.
+> 
+
+OK, I'll remove this. I put it there after I looked at falconide.c and 
+wondered whether the automatic release would take place after both init 
+failure and exit (or just exit). I see now that pata_gayle.c does it 
+differently.
+
+> > +       return rc;
+> > +}
+> > +
+> > +static int mac_ide_remove(struct platform_device *pdev)
+> > +{
+> > +       struct ide_host *host = dev_get_drvdata(&pdev->dev);
+> >
+> > -       return ide_host_add(&d, hws, 1, NULL);
+> > +       ide_host_remove(host);
+> > +       return 0;
+> >  }
+> 
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
