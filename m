@@ -2,230 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19197263F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2727F263F63
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730170AbgIJIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        id S1730214AbgIJIKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgIJIJo (ORCPT
+        with ESMTP id S1726381AbgIJIKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:09:44 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A879C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:09:43 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id w5so5624672wrp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:09:43 -0700 (PDT)
+        Thu, 10 Sep 2020 04:10:02 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61956C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:10:02 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id 19so4229293qtp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 01:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HW5X6FWMv5/e4KSBh82l0NpUQWigGJ0PbEh/1MkAVKU=;
-        b=HfnozHbWaTguajYcFNCVKxZ75ih8D/HaTbS53P9AhX6OU9DY9b7kQa5XoK9ZDPIxub
-         zJe8aLjRn9bjJ5T3+tEDTbLvam1KHVi5P9mMtPf8daiKa/RSLEzjln21/fTxFXLpfTXW
-         DKsaaIKEPDTGy7ODLODbWhH2nMKYMmm144Pz7c5NEuokuV+78OaRiJGNz5ljTTrv2mXi
-         R4VXcAYCkdUJd3ToDY7dbZH2g1UwXOvC74FNzUZlOmnFypZz2GUMA7AXvZ01Rg+0Rh1I
-         uF3+Sc6P73+SmQC1I05a9Kg17PHHd8xtExKuT9X1rujIXJRtv49pCn6nwwP0bHgqVpx0
-         qDfA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0jsxSSyL8qmfNl7zz8ZrmAY+yT5syY9PA5vlsJz041s=;
+        b=elIxQ+rRg9uJQro2RaiZO+Wm+Iuf1aZBh2+e7DTrLJJrAXzNtEUvb0xZpG1snvkw1P
+         lPyqIcD4WqTwECo2m2rhBkx4RHv6KB4eInoksKGbGPqoMV/9oazyd9MAbkVZu3EibLcd
+         f0qBdPR5YF55537SCYe6Mnklo6Vu0vUcgnYaOfZi0UBJAyL7/A7J+yCW/ez0BnFXZdqv
+         /9TFA7/gbpdLgRZvqER72g0SOEyeuYnykR6OVKiE+bYXPN/o1fRrzDVnePGMuaRg6aF4
+         oI5W/2vo0v2RJ858fKpdk89BmdRYH29TONaDtzRaZtV1S4XvXlpZY5CHgR4lPIsYMIB/
+         bIFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HW5X6FWMv5/e4KSBh82l0NpUQWigGJ0PbEh/1MkAVKU=;
-        b=oj/q4pfpaNppadkySznjHHMEtRFe4l/zf9X9g9vp75jI33fuAb0qL4YalvIHNcewNz
-         bh0kH5IzVDbCbjw9Dj66CCEb0LV5NInybs7q1uQTSKV3t2AK+XJcEixqtz/oHmsyADjL
-         AgCWQigspSC9maYw8oTjyJTMZf0mx6ua33P09dv6ZGuR0cil2Mr7UU8+a3YFGSPtQt1V
-         yoAysK9ylkSpdERFJGFIoWejAvg64gnHs0o0rIzljcd9FZeicoXtOzuN94j2Cs3qBBqi
-         tszJhhzsmHnpaYRMcXiT8hNJd42TmIy5ZrJ3w0Z4NimQchxv0JkYWdpzUnBkrZrUsrcz
-         SvDQ==
-X-Gm-Message-State: AOAM531tZzyKxAvM7Mdg4csZDDBXGQGxJk68YhVtVFvgL+Y09AlDdidL
-        xefRganhvVW0MPhfCHREsHhueDqXgVr/KA==
-X-Google-Smtp-Source: ABdhPJyC24439Plq0OYUSmUtWSm/IIc4tZh9ord4BIkHn4H3dQ3W41vvJq9aF+i00RtWqgOdPeQmOw==
-X-Received: by 2002:adf:8544:: with SMTP id 62mr7749987wrh.262.1599725381930;
-        Thu, 10 Sep 2020 01:09:41 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id 197sm2616771wme.10.2020.09.10.01.09.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Sep 2020 01:09:41 -0700 (PDT)
-Subject: Re: [PATCH 2/2] soundwire: qcom: get max rows and cols info from
- compatible
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200909160912.3656-1-srinivas.kandagatla@linaro.org>
- <20200909160912.3656-3-srinivas.kandagatla@linaro.org>
- <20200910063940.GR77521@vkoul-mobl>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <c14cf97f-5a42-95a5-d44c-bc6ac9ea35a3@linaro.org>
-Date:   Thu, 10 Sep 2020 09:09:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0jsxSSyL8qmfNl7zz8ZrmAY+yT5syY9PA5vlsJz041s=;
+        b=Uq81qTgnqLuPar8C+U4l55JHhQAkcCJEbHXUilxR16URo4TLlLz82F3mASwjFdQg6j
+         RPoXao7Ylb83RoGT/iptpcsriMn1BwCF8jS/zlw83utrWul7Eaclni91NTYfwvbeI5Nr
+         /ciL9nSgbucG2gFwGGBtljrV5SP+BivtRUja+3Jv+hdiJg9gqDL6scsoSo4LP1WBK11P
+         PhInU3YC7dDrEknjihgLSzRjXgTSJ7+b6HpnrnDrtaS5WBsF945dIfVaJJQzekS090nr
+         SqEeX6cOpCsAuSYLYVLTwpg37KxHnR1is63Yb10uEtdOufmRje/L/HLXbBIcpX3gVvo7
+         8zXg==
+X-Gm-Message-State: AOAM532W+TPbTchCcDnjT4hz5oGX61PDCIdbuqgOTskQhmbKGiA4x7sr
+        dmaje3ri6oBAEcZ9odg57Um6voQOxPF+4O7XO3dyCA==
+X-Google-Smtp-Source: ABdhPJzgr+scRjBIqbgk7S4mPfcecaJWa1Zkvz5cHMFYxDm6fXIG7eCaN98U531DcaKJ5I6gAEtkpSXW+hJ0xN8DOx8=
+X-Received: by 2002:ac8:bc9:: with SMTP id p9mr7018388qti.50.1599725401201;
+ Thu, 10 Sep 2020 01:10:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200910063940.GR77521@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <000000000000059b7205aa7f906f@google.com> <00000000000026751605aa857914@google.com>
+ <CACT4Y+bUK4icp1TMfhWOj=vEXULbiUQ84RXYaKnB=3J_N3wZCQ@mail.gmail.com> <CAAhDqq0qcnMKdaoRnaGM6G8H1U7SAmTvX=hgEoor1=_eJff-Vw@mail.gmail.com>
+In-Reply-To: <CAAhDqq0qcnMKdaoRnaGM6G8H1U7SAmTvX=hgEoor1=_eJff-Vw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 10 Sep 2020 10:09:50 +0200
+Message-ID: <CACT4Y+ZktT1S1oi5t+s7rrSH_dLEhyzygXdNUs7pkVPuanPXYg@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in __xfrm6_tunnel_spi_lookup
+To:     B K Karthik <bkkarthik@pesu.pes.edu>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     syzbot <syzbot+72ff2fa98097767b5a27@syzkaller.appspotmail.com>,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 10, 2020 at 10:08 AM B K Karthik <bkkarthik@pesu.pes.edu> wrote:
+>
+> On Thu, Sep 10, 2020 at 1:32 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Thu, Sep 10, 2020 at 9:20 AM Anant Thazhemadam
+> > <anant.thazhemadam@gmail.com> wrote:
+> > > Looks like this bug is no longer valid. I'm not sure which commit seems to have fixed it. Can this be marked as invalid or closed yet?
+> >
+> > You can see on the dashboard (or in mailing list archives) that B K
+> > Karthik tested a patch for this bug in July:
+> > https://syzkaller.appspot.com/bug?extid=72ff2fa98097767b5a27
+> >
+> > So perhaps that patch fixes it? Karthik, did you send it? Was it
+> > merged? Did the commit include the syzbot Reported-by tag?
+> >
+>
+> I did send it. I was taking a u32 spi value and casting it to a
+> pointer to an IP address. Steffen Klassert
+> <steffen.klassert@secunet.com> pointed out to me that the approach i
+> was looking at was completely wrong.
+> https://lkml.org/lkml/2020/7/27/361 is the conversation. hope this
+> helps.
 
++Steffen, was there any other fix merged for this?
 
-On 10/09/2020 07:39, Vinod Koul wrote:
-> On 09-09-20, 17:09, Srinivas Kandagatla wrote:
->> currently the max rows and cols values are hardcoded. In reality
->> these values depend on the IP version. So get these based on
->> device tree compatible strings.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   drivers/soundwire/qcom.c | 46 +++++++++++++++++++++++++++-------------
->>   1 file changed, 31 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->> index 1ec0ee931f5b..03c5bc05fc6e 100644
->> --- a/drivers/soundwire/qcom.c
->> +++ b/drivers/soundwire/qcom.c
->> @@ -69,11 +69,6 @@
->>   #define SWRM_REG_VAL_PACK(data, dev, id, reg)	\
->>   			((reg) | ((id) << 16) | ((dev) << 20) | ((data) << 24))
->>   
->> -#define SWRM_MAX_ROW_VAL	0 /* Rows = 48 */
->> -#define SWRM_DEFAULT_ROWS	48
->> -#define SWRM_MIN_COL_VAL	0 /* Cols = 2 */
->> -#define SWRM_DEFAULT_COL	16
->> -#define SWRM_MAX_COL_VAL	7
->>   #define SWRM_SPECIAL_CMD_ID	0xF
->>   #define MAX_FREQ_NUM		1
->>   #define TIMEOUT_MS		(2 * HZ)
->> @@ -107,6 +102,8 @@ struct qcom_swrm_ctrl {
->>   	unsigned int version;
->>   	int num_din_ports;
->>   	int num_dout_ports;
->> +	int cols_index;
->> +	int rows_index;
->>   	unsigned long dout_port_mask;
->>   	unsigned long din_port_mask;
->>   	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
->> @@ -116,6 +113,21 @@ struct qcom_swrm_ctrl {
->>   	int (*reg_write)(struct qcom_swrm_ctrl *ctrl, int reg, int val);
->>   };
->>   
->> +struct qcom_swrm_data {
->> +	int default_cols;
->> +	int default_rows;
-> 
-> unsigned int for these?
-Yes, we could do that but does it really add anything, given the range 
-is up to 256.
-
-> 
->> +};
->> +
->> +static struct qcom_swrm_data swrm_v1_3_data = {
->> +	.default_rows = 48,
->> +	.default_cols = 16,
->> +};
->> +
->> +static struct qcom_swrm_data swrm_v1_5_data = {
->> +	.default_rows = 50,
->> +	.default_cols = 16,
->> +};
->> +
->>   #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
->>   
->>   static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
->> @@ -302,8 +314,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->>   	u32 val;
->>   
->>   	/* Clear Rows and Cols */
->> -	val = (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
->> -	       SWRM_MIN_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
->> +	val = ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
->> +		ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
-> 
-> use FIELD_{GET|SET} / u32_encode_bits for these
-> 
-> Please rebase on sdw-next, this has already been updated in next
-
-Yes, I will do that!
-> 
->>   
->>   	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
->>   
->> @@ -382,8 +394,8 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
->>   	val &= ~SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK;
->>   	val &= ~SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK;
->>   
->> -	val |= (SWRM_MAX_ROW_VAL << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
->> -		SWRM_MAX_COL_VAL << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT);
->> +	val |= ctrl->rows_index << SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_SHFT |
->> +	       ctrl->cols_index << SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_SHFT;
->>   
->>   	return ctrl->reg_write(ctrl, reg, val);
->>   }
->> @@ -784,6 +796,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->>   	struct sdw_master_prop *prop;
->>   	struct sdw_bus_params *params;
->>   	struct qcom_swrm_ctrl *ctrl;
->> +	const struct qcom_swrm_data *data;
->>   	struct resource *res;
->>   	int ret;
->>   	u32 val;
->> @@ -792,6 +805,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->>   	if (!ctrl)
->>   		return -ENOMEM;
->>   
->> +	data = of_device_get_match_data(dev);
-> 
-> how about checking data is valid?
-I think the check would be unnecessary here, as we would not endup here 
-without a matching compatible!
-
---srini
-> 
->> +	ctrl->rows_index = sdw_find_row_index(data->default_rows);
->> +	ctrl->cols_index = sdw_find_col_index(data->default_cols);
->>   #ifdef CONFIG_SLIMBUS
->>   	if (dev->parent->bus == &slimbus_bus) {
->>   #else
->> @@ -844,8 +860,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->>   	params = &ctrl->bus.params;
->>   	params->max_dr_freq = DEFAULT_CLK_FREQ;
->>   	params->curr_dr_freq = DEFAULT_CLK_FREQ;
->> -	params->col = SWRM_DEFAULT_COL;
->> -	params->row = SWRM_DEFAULT_ROWS;
->> +	params->col = data->default_cols;
->> +	params->row = data->default_rows;
->>   	ctrl->reg_read(ctrl, SWRM_MCP_STATUS, &val);
->>   	params->curr_bank = val & SWRM_MCP_STATUS_BANK_NUM_MASK;
->>   	params->next_bank = !params->curr_bank;
->> @@ -855,8 +871,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->>   	prop->num_clk_gears = 0;
->>   	prop->num_clk_freq = MAX_FREQ_NUM;
->>   	prop->clk_freq = &qcom_swrm_freq_tbl[0];
->> -	prop->default_col = SWRM_DEFAULT_COL;
->> -	prop->default_row = SWRM_DEFAULT_ROWS;
->> +	prop->default_col = data->default_cols;
->> +	prop->default_row = data->default_rows;
->>   
->>   	ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &ctrl->version);
->>   
->> @@ -907,8 +923,8 @@ static int qcom_swrm_remove(struct platform_device *pdev)
->>   }
->>   
->>   static const struct of_device_id qcom_swrm_of_match[] = {
->> -	{ .compatible = "qcom,soundwire-v1.3.0", },
->> -	{ .compatible = "qcom,soundwire-v1.5.1", },
->> +	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
->> +	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
->>   	{/* sentinel */},
->>   };
->>   
->> -- 
->> 2.21.0
-> 
+> thanks,
+>
+> karthik
+> >
+> >
+> > On Thu, Jul 16, 2020 at 4:05 AM syzbot
+> > <syzbot+72ff2fa98097767b5a27@syzkaller.appspotmail.com> wrote:
+> > >
+> > > syzbot has found a reproducer for the following issue on:
+> > >
+> > > HEAD commit:    ca0e494a Add linux-next specific files for 20200715
+> > > git tree:       linux-next
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=175099bf100000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=2c76d72659687242
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=72ff2fa98097767b5a27
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112e8dbf100000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109429bf100000
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+72ff2fa98097767b5a27@syzkaller.appspotmail.com
+> > >
+> > > netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+> > > netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+> > > netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+> > > ==================================================================
+> > > BUG: KASAN: use-after-free in __xfrm6_tunnel_spi_lookup+0x3a9/0x3b0 net/ipv6/xfrm6_tunnel.c:79
+> > > Read of size 8 at addr ffff8880934578a8 by task syz-executor437/6811
+> > > CPU: 0 PID: 6811 Comm: syz-executor437 Not tainted 5.8.0-rc5-next-20200715-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > Call Trace:
+> > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > >  dump_stack+0x18f/0x20d lib/dump_stack.c:118
+> > >  print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+> > >  __kasan_report mm/kasan/report.c:513 [inline]
+> > >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+> > >  __xfrm6_tunnel_spi_lookup+0x3a9/0x3b0 net/ipv6/xfrm6_tunnel.c:79
+> > >  xfrm6_tunnel_spi_lookup+0x8a/0x1d0 net/ipv6/xfrm6_tunnel.c:95
+> > >  xfrmi6_rcv_tunnel+0xb9/0x100 net/xfrm/xfrm_interface.c:824
+> > >  tunnel6_rcv+0xef/0x2b0 net/ipv6/tunnel6.c:148
+> > >  ip6_protocol_deliver_rcu+0x2e8/0x1670 net/ipv6/ip6_input.c:433
+> > >  ip6_input_finish+0x7f/0x160 net/ipv6/ip6_input.c:474
+> > >  NF_HOOK include/linux/netfilter.h:307 [inline]
+> > >  NF_HOOK include/linux/netfilter.h:301 [inline]
+> > >  ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:483
+> > >  dst_input include/net/dst.h:449 [inline]
+> > >  ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
+> > >  NF_HOOK include/linux/netfilter.h:307 [inline]
+> > >  NF_HOOK include/linux/netfilter.h:301 [inline]
+> > >  ipv6_rcv+0x28e/0x3c0 net/ipv6/ip6_input.c:307
+> > >  __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5287
+> > >  __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5401
+> > >  netif_receive_skb_internal net/core/dev.c:5503 [inline]
+> > >  netif_receive_skb+0x159/0x990 net/core/dev.c:5562
+> > >  tun_rx_batched.isra.0+0x460/0x720 drivers/net/tun.c:1518
+> > >  tun_get_user+0x23b2/0x35b0 drivers/net/tun.c:1972
+> > >  tun_chr_write_iter+0xba/0x151 drivers/net/tun.c:2001
+> > >  call_write_iter include/linux/fs.h:1879 [inline]
+> > >  new_sync_write+0x422/0x650 fs/read_write.c:515
+> > >  vfs_write+0x59d/0x6b0 fs/read_write.c:595
+> > >  ksys_write+0x12d/0x250 fs/read_write.c:648
+> > >  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > RIP: 0033:0x403d50
+> > > Code: Bad RIP value.
+> > > RSP: 002b:00007ffe8fe93368 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000403d50
+> > > RDX: 000000000000005e RSI: 00000000200007c0 RDI: 00000000000000f0
+> > > RBP: 00007ffe8fe93390 R08: 0000000000000000 R09: 0000000000000000
+> > > R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffe8fe93380
+> > > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > > Allocated by task 6811:
+> > >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+> > >  kasan_set_track mm/kasan/common.c:56 [inline]
+> > >  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+> > >  __do_kmalloc mm/slab.c:3655 [inline]
+> > >  __kmalloc+0x1a8/0x320 mm/slab.c:3664
+> > >  kmalloc include/linux/slab.h:559 [inline]
+> > >  kzalloc include/linux/slab.h:666 [inline]
+> > >  tomoyo_init_log+0x1335/0x1e50 security/tomoyo/audit.c:275
+> > >  tomoyo_supervisor+0x32f/0xeb0 security/tomoyo/common.c:2097
+> > >  tomoyo_audit_path_number_log security/tomoyo/file.c:235 [inline]
+> > >  tomoyo_path_number_perm+0x3ed/0x4d0 security/tomoyo/file.c:734
+> > >  security_file_ioctl+0x50/0xb0 security/security.c:1489
+> > >  ksys_ioctl+0x50/0x180 fs/ioctl.c:747
+> > >  __do_sys_ioctl fs/ioctl.c:762 [inline]
+> > >  __se_sys_ioctl fs/ioctl.c:760 [inline]
+> > >  __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+> > >  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > Freed by task 6811:
+> > >  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+> > >  kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+> > >  kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+> > >  __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+> > >  __cache_free mm/slab.c:3418 [inline]
+> > >  kfree+0x103/0x2c0 mm/slab.c:3756
+> > >  tomoyo_supervisor+0x350/0xeb0 security/tomoyo/common.c:2149
+> > >  tomoyo_audit_path_number_log security/tomoyo/file.c:235 [inline]
+> > >  tomoyo_path_number_perm+0x3ed/0x4d0 security/tomoyo/file.c:734
+> > >  security_file_ioctl+0x50/0xb0 security/security.c:1489
+> > >  ksys_ioctl+0x50/0x180 fs/ioctl.c:747
+> > >  __do_sys_ioctl fs/ioctl.c:762 [inline]
+> > >  __se_sys_ioctl fs/ioctl.c:760 [inline]
+> > >  __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:760
+> > >  do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > The buggy address belongs to the object at ffff888093457800
+> > >  which belongs to the cache kmalloc-512 of size 512
+> > > The buggy address is located 168 bytes inside of
+> > >  512-byte region [ffff888093457800, ffff888093457a00)
+> > > The buggy address belongs to the page:
+> > > page:000000005c2b5911 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x93457
+> > > flags: 0xfffe0000000200(slab)
+> > > raw: 00fffe0000000200 ffffea00028d4308 ffffea0002834c88 ffff8880aa000600
+> > > raw: 0000000000000000 ffff888093457000 0000000100000004 0000000000000000
+> > > page dumped because: kasan: bad access detected
+> > > Memory state around the buggy address:
+> > >  ffff888093457780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > >  ffff888093457800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > >ffff888093457880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > >                                   ^
+> > >  ffff888093457900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > >  ffff888093457980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > ==================================================================
