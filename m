@@ -2,123 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EB7264AC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CDB264AC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgIJRLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S1726167AbgIJRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727032AbgIJRJQ (ORCPT
+        with ESMTP id S1726612AbgIJRLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:09:16 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F82C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:09:16 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id bg5so1311413plb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:09:16 -0700 (PDT)
+        Thu, 10 Sep 2020 13:11:35 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D631BC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:11:34 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o5so7546576wrn.13
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:11:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to;
-        bh=BZ6YdwlTkATP6YcNm1nCerDB1v94oBKP5AayFPJUuNg=;
-        b=fNUWxPRqJeQUZ6YDlSAgmDDsvwxVfzblFY2p1ci7EGZbYmnUUg/DsZmeO+lxF/TRii
-         +Ni2x8RXrw8eiE97Q6bEG+RDk/9nQ+iTYTnYmgEYBI7Jfv3pwwE4+OtIcaqR5/g9g170
-         VovVoljQhlNw9EYmYvZr7N5x8apNcubTckVzVxbtswDOXxkYJNa0E+Yy3uOthBhRfM2n
-         xgOjbeMg21Cy0+KcNJ2TNQRO/FDzPTP8tkKYPeK/IcMjV62Ir1HdvXxRl26ATHtBO7Oi
-         kKtoaCGjiTiDesqTcj7ToD3/MeBJRSjnSJPRWT+ZTbYmLBplDU49MXCGhq5zr/aqIxJS
-         ZzPA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e7jefh25XCKZfPoIkRNxN7N4Tflp0SqsV/tI/tWYRzk=;
+        b=XG1F0moHLQKlC3AzqilBlzA2HA0fK1G/k0lQDl+t35aFaRzrjooU2skfOKLerx6Zpr
+         aU6YzU6ZJZ/zKaE8xcC+nNp0VAcKbPZuR5BZHuXK1f46JHA+yueimFnO63xfUaOObu2B
+         a6KEqTqY8qvD8imR7OJy2tdob5sN4dHzBtqQ9OFtO1alOVwWU8wjmOzFcHO9bjUwDMCP
+         872eO5nSO78xuXnQhncEZ1VUIIBsbB/7ORAtpx+i3CAvAnubYuxfBiDBrQh0RNYa1vGH
+         pl2FeosyK0AxyAbc10rEw4avzsAxWRxIcKVeMMKiOA8kETxcpqtVxC1B/Uy1nrGlciAA
+         Eetg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to;
-        bh=BZ6YdwlTkATP6YcNm1nCerDB1v94oBKP5AayFPJUuNg=;
-        b=GC64Lg5bu/GRKMus/gzh2Rpo4BsQHJwWCId7BiEpqz6Bs3qBj+Y6KDdPdki/gE+iMi
-         gjCtqKN0khAW3/rU5QacPaKBbrLgT4Y9G8hGDEXHkHP6JNf/Eij4qHclDzFoTfyIsP8m
-         AQty0XoLxQqxMOZgfuL8FkYh4krdJgNC/WeZAxm1q+RffNodMLjfV9LxZmJXS0ubKI3t
-         NMFOEWqZRDToM+yKkhfJTHJLOcGZjOuR/UxsF3hIwlTat5rVzirf+kqs3TI99ecq2467
-         krL9ZZouDbLWBPrner/9Szp7lkjSDLpjGkIvRHHPoqRqnvCPnoGkvtmsxLPhn5UsdSIj
-         3S1Q==
-X-Gm-Message-State: AOAM530V7Y8knph1YSP8upZ7K9J+3LH8Y/HXq3lpTIGsuhesXUsJ0yyN
-        8FtaIOlfX8TUeaiCCeelI3PpqfM/sQclA/rU
-X-Google-Smtp-Source: ABdhPJwZ01Mgx0DKAaM8vzoyP8ZZKsF7ddI+fm7+3NEsc2EjFne7JbOL+YmmPt0q+3OXeFXMg2vfeYJLO+WZTj3C
-X-Received: from chu-dev.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:3cfb])
- (user=linchuyuan job=sendgmr) by 2002:a17:902:6ac7:b029:d0:89f3:28d1 with
- SMTP id i7-20020a1709026ac7b02900d089f328d1mr6356139plt.13.1599757753178;
- Thu, 10 Sep 2020 10:09:13 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 17:09:10 +0000
-Message-Id: <20200910170910.1990578-1-linchuyuan@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH] hwmon: pmbus: max20730: adjust the vout reading given voltage divider
-From:   Chu Lin <linchuyuan@google.com>
-To:     linchuyuan@google.com, jdelvare@suse.com, linux@roeck-us.net,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        qiongwang@google.com, zhongqil@google.com, jasonling@google.com,
-        belgaied@google.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e7jefh25XCKZfPoIkRNxN7N4Tflp0SqsV/tI/tWYRzk=;
+        b=kUDg8S6fUWGzMEZ+bpIbwa2iXixlDi+uHF0mkZk2yIDJ2K3bKJK3NKWSeXvCMWVSbB
+         ipHBBrdUwgkuJt6bA3bNcb4hxSM+B8XF7te4BKgHXTPKAPNK26VRrWqO2JE1eslCwYqY
+         E2iTPWqnY3P99e+OMRck9JZ1Y46kNDa7Xrzh4xAc3hnQqy4kvMRLQD80oSm2z1wRSMq0
+         JpslwVhGW8NXmqeOfcr9S/R4YNAUTPTLKWmqL8Ho/TD+tHQLuxLlMH10AjgtddgWkOJB
+         D3hCNRWM49xkXIqLqTS4rnJa4HqLE32q5HXldQpfcPCNRkwMmt0Mm7kxIsZEdcmAbnZG
+         q5dw==
+X-Gm-Message-State: AOAM532LME/rRDRD81LMKKIgRm5POzYyMIycjIxqgFQFl7NacMatOR2E
+        VLokipGDqQn/5K0iddA7WQlXp+PI56Tii/JQ0N/KVw==
+X-Google-Smtp-Source: ABdhPJwtHTt5kfroDQYT7AFrVej7dGgwjf21yW5MaYlzGNNQRhDz4YP5JrYn6cWgBC7NRLjptYY2REfgsATBs5jY8V0=
+X-Received: by 2002:adf:82b1:: with SMTP id 46mr10891426wrc.271.1599757893281;
+ Thu, 10 Sep 2020 10:11:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200908044228.61197-1-namhyung@kernel.org> <20200910155736.jadhmqvnqquammpn@two.firstfloor.org>
+In-Reply-To: <20200910155736.jadhmqvnqquammpn@two.firstfloor.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 10 Sep 2020 10:11:21 -0700
+Message-ID: <CAP-5=fUp90QrY+HcetpgZJeUn2fSqndRCZ8f1m=rFcEwO7ZZew@mail.gmail.com>
+Subject: Re: [PATCHSET 0/4] perf stat: Add --multiply-cgroup option
+To:     Andi Kleen <andi@firstfloor.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem:
-We use voltage dividers so that the voltage presented at the voltage
-sense pins is confusing. We might need to convert these readings to more
-meaningful readings given the voltage divider.
+On Thu, Sep 10, 2020 at 8:57 AM Andi Kleen <andi@firstfloor.org> wrote:
+>
+> On Tue, Sep 08, 2020 at 01:42:24PM +0900, Namhyung Kim wrote:
+> > When we profile cgroup events with perf stat, it's very annoying to
+> > specify events and cgroups on the command line as it requires the
+> > mapping between events and cgroups.  (Note that perf record can use
+> > cgroup sampling but it's not usable for perf stat).
+>
+> The problem is real, but I don't really like your solution.
+> The option is ugly. Should rather be solved with some suitable
+> syntax in the expression parser to express: apply to all,
+> instead of adding adhoc options like this.
+>
+> There are some additional problems that really need to be eventually
+> solved too:
+>
+> - If you use the old syntax and some cgroups are not covered you don't
+> get any warning. At least that should be fixed too.
+>
+> - And of course if everything works it is still very slow for the kernel
+> because there are so many perf events to handle. Long term we probably
+> need some more flexible way to just specify for given perf events which set of
+> cgroups they should apply, so that sharing and low overhead monitoring
+> of many cgroups is possible I hate to say it, but maybe some eBPF filter
+> is the solution here.
+>
+> -Andi
 
-Solution:
-Read the voltage divider resistance from dts and convert the voltage
-reading to a more meaningful reading.
+Just to throw in some 2c worth. A nice thing about Namhyung's approach
+is that it can apply for metrics, events and pfm-events. It would be
+nice if there were a single option for specifying these, perhaps we
+can figure one out.
 
-Testing:
-max20730 with voltage divider
+One thought that came to mind based on Namhyung's multiply name was
+and assuming a cgroup could be a modifier:
 
-Signed-off-by: Chu Lin <linchuyuan@google.com>
----
- drivers/hwmon/pmbus/max20730.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+perf record -e cycles:G1
 
-diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
-index c0bb05487e0e..4b56810fa894 100644
---- a/drivers/hwmon/pmbus/max20730.c
-+++ b/drivers/hwmon/pmbus/max20730.c
-@@ -29,6 +29,7 @@ struct max20730_data {
- 	struct pmbus_driver_info info;
- 	struct mutex lock;	/* Used to protect against parallel writes */
- 	u16 mfr_devset1;
-+	u32 vout_voltage_divider[2];
- };
- 
- #define to_max20730_data(x)  container_of(x, struct max20730_data, info)
-@@ -111,6 +112,12 @@ static int max20730_read_word_data(struct i2c_client *client, int page,
- 		max_c = max_current[data->id][(data->mfr_devset1 >> 5) & 0x3];
- 		ret = val_to_direct(max_c, PSC_CURRENT_OUT, info);
- 		break;
-+	case PMBUS_READ_VOUT:
-+		ret = pmbus_read_word_data(client, page, phase, reg);
-+		if (data->vout_voltage_divider[0] && data->vout_voltage_divider[1])
-+			ret = DIV_ROUND_CLOSEST(ret * data->vout_voltage_divider[1],
-+						data->vout_voltage_divider[0]);
-+		break;
- 	default:
- 		ret = -ENODATA;
- 		break;
-@@ -329,6 +336,15 @@ static int max20730_probe(struct i2c_client *client,
- 	data->id = chip_id;
- 	mutex_init(&data->lock);
- 	memcpy(&data->info, &max20730_info[chip_id], sizeof(data->info));
-+	if (of_property_read_u32_array(client->dev.of_node, "vout-voltage-divider",
-+				       data->vout_voltage_divider,
-+				       ARRAY_SIZE(data->vout_voltage_divider)) != 0)
-+		memset(data->vout_voltage_divider, 0, sizeof(data->vout_voltage_divider));
-+	if (data->vout_voltage_divider[1] < data->vout_voltage_divider[0]) {
-+		dev_err(dev,
-+			"The total resistance of voltage divider is less than output resistance\n");
-+		return -ENODEV;
-+	}
- 
- 	ret = i2c_smbus_read_word_data(client, MAX20730_MFR_DEVSET1);
- 	if (ret < 0)
--- 
-2.28.0.526.ge36021eeef-goog
+there could be equivalent to a new syntax of lists and multiplies of:
 
+perf record -e [cycles]*[:G1]
+
+This would allow expressions like:
+
+perf record -e [{instructions,cycles},branches]*[:u,:k]
+
+which would be equivalent to (showing the effect on sibling groups):
+
+perf record -e {instructions:u,cycles:u},branches:u,{instructions:k,cycles:k},branches:k
+
+Adding in cgroups makes a longer list of events:
+
+perf record -e [{instructions,cycles},branches]*[:u,:k]*[:G1,:G2]
+
+becomes:
+
+perf record -e {instructions:u:G1,cycles:u:G1},branches:u:G1,{instructions:k:G1,cycles:k:G1},branches:k:G1,{instructions:u:G2,cycles:u:G2},branches:u:G2,{instructions:k:G2,cycles:k:G2},branches:k:G2
+
+This is somewhat similar to Arnaldo's proposal but trying to make
+things a bit more generic, avoiding overloading the use of sibling
+groups, .. Perhaps there is a syntax that others prefer or could be
+borrowed from a familiar source like a programming language.
+
+I think for Namhyung's sake it is important not to get too distracted
+by desires for better syntax, as this change makes a benefit in a way
+that works with the existing flags. If it is accepted, the man pages
+need to be updated.
+
+Thanks,
+Ian
