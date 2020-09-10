@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736B7264F1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D2A264F26
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728038AbgIJTe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49654 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgIJTev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:34:51 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D115221D81;
-        Thu, 10 Sep 2020 19:34:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599766491;
-        bh=ksxkD7CoWHBWoeooRpLgc48k96/HNdsGMEUrhw4P95M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=fyJDTrWKH893FaVVt1OBSFJ9f8hlkqYHqiIOG2oJfs84qz/Op1sf/oMRThvCTHSaU
-         hYzRyv2nHZ5cGHRz2s1hRK7BZ+s5xapIW//Kjf3VgsTE07q+fETLVHkAY9n8H69ZmW
-         l2pLX2AP6MuZ7hv25meQ8h6oN9ScbwIh5otsCAR4=
-Date:   Thu, 10 Sep 2020 14:34:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] PCI: dwc: unexport dw_pcie_link_set_max_speed
-Message-ID: <20200910193449.GA807725@bjorn-Precision-5520>
+        id S1727872AbgIJTgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726769AbgIJTgB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:36:01 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149E2C061796
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:35:50 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l17so7500327edq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:35:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n5g2VKT0NX2V9vUtFME4ZGEhrr3w5KhEAQNj+WuBjkQ=;
+        b=eRaklC5d1OINOyJjswenVydz4ubWff2ZOHUDzyUYBYlhwIvLhATs7LPbmS8S82Z4lp
+         dBBLs23oLG1A+i+tpvyMGegBDoBUu7NJEunvws8RCEl+p7/XPm3dFQhGLP+zwto9hZ69
+         aTuANMTAwk4X7SoipEiYWxdEojWxpdVCrajzFV5zC/15j7GkeIt4P6Jdj5IAwzERgxWN
+         ZzLU6B3a+nGAnbO9O6LclWovDfKhopwc3XhQQFjROWvXdnV2bLinzSsSbbGj/O/R6ge8
+         /TDkuxc9tcNX0yee/XK3UWd/vTfdgi+Ld7e39taLQmlJQPaajw1F4ds4WpnQlTzke6W7
+         lE1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n5g2VKT0NX2V9vUtFME4ZGEhrr3w5KhEAQNj+WuBjkQ=;
+        b=HGptNBRK32r90da8CZtu6hoLiIKWHtf+5pRN06cSqdcUXQG4N8xcFDVyX0S43zJdwA
+         qHOFbPHYkTgXyx99NspguLJdIZXWI7+ajOemr+6nC4s91uPblqpogdD8MmV8ZfqEXQNk
+         uUjOzKPuGmblsMmjfHwvmm2g3IgsSO7cU+nW9dWAmuhgsek8XowKLlKoKskX/OFRwDQw
+         AVtI26XVwQpYpiCp5uijfgfgMJ24sLM+x4rMPlErHys5X25Mj8YLsVC/jFquRIybhqpW
+         4ER7tExnmoVar9I2io7qLTGzAHsHXtFrVYD/k9vxZLZB+1TNwG8+OzRWB/PT9Cy0nHn5
+         NF8g==
+X-Gm-Message-State: AOAM532qAGth+ro2vn3gaRjIJupWsr6wZEHbg2ufDqProgKFC3Yv6Sm/
+        dqhGro9WLD4d+1oB1+wz6eAdkfbuwKjrrBIJeiCXtjUolw8=
+X-Google-Smtp-Source: ABdhPJy8lW8ACRd6m8wxRF741QmPd/9at5g6mpJsh4fXdHopAzzHzh6/Rlsqaq8CbAwrVltCpTGsysH1d6lOYQ8FkEY=
+X-Received: by 2002:aa7:c554:: with SMTP id s20mr11006793edr.230.1599766548307;
+ Thu, 10 Sep 2020 12:35:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200909134234.31204-1-yuehaibing@huawei.com>
+References: <20200910134802.3160311-1-lenaptr@google.com>
+In-Reply-To: <20200910134802.3160311-1-lenaptr@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 10 Sep 2020 21:35:22 +0200
+Message-ID: <CAG48ez3x51kkDt19ONXbi8Se+2swMgwfmaj7AFbBqmss=D38Ug@mail.gmail.com>
+Subject: Re: [PATCH] sched.h: drop in_ubsan field when UBSAN is in trap mode
+To:     Elena Petrova <lenaptr@google.com>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 09:42:34PM +0800, YueHaibing wrote:
-> This function has been made static, which causes warning:
-> 
-> WARNING: modpost: "dw_pcie_link_set_max_speed" [vmlinux] is a static EXPORT_SYMBOL_GPL
-> 
-> Fixes: 3af45d34d30c ("PCI: dwc: Centralize link gen setting")
+On Thu, Sep 10, 2020 at 3:48 PM Elena Petrova <lenaptr@google.com> wrote:
+> in_ubsan field of task_struct is only used in lib/ubsan.c, which in its
+> turn is used only `ifneq ($(CONFIG_UBSAN_TRAP),y)`.
+>
+> Removing unnecessary field from a task_struct will help preserve the
+> ABI between vanilla and CONFIG_UBSAN_TRAP'ed kernels. In particular,
+> this will help enabling bounds sanitizer transparently for Android's
+> GKI.
 
-This commit is still on Lorenzo's pci/dwc branch, so he should be able
-to squash this fix in.
+The diff looks reasonable to me, but I'm curious about the
+justification in the commit message:
 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 4d105efb5722..3c3a4d1dbc0b 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -508,7 +508,6 @@ static void dw_pcie_link_set_max_speed(struct dw_pcie *pci, u32 link_gen)
->  	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, cap | link_speed);
->  
->  }
-> -EXPORT_SYMBOL_GPL(dw_pcie_link_set_max_speed);
->  
->  static u8 dw_pcie_iatu_unroll_enabled(struct dw_pcie *pci)
->  {
-> -- 
-> 2.17.1
-> 
-> 
+Is the intent here that you want to be able to build a module without
+CONFIG_UBSAN and load it into a kernel that is built with
+CONFIG_UBSAN? Or the inverse?
+
+Does this mean that in the future, gating new exported functions, or
+new struct fields, on CONFIG_UBSAN (independent of whether
+CONFIG_UBSAN_TRAP is set) will break Android?
+
+If you really want to do this, and using alternatives to patch out the
+ubsan instructions is not an option, I wonder whether it would be more
+reasonable to at least add a configuration where CONFIG_UBSAN is
+enabled but the compiler flag is not actually set. Then you could
+unconditionally build that android kernel and its modules with that
+config option, and wouldn't have to worry about structure size issues,
+dependencies on undefined symbols and so on.
