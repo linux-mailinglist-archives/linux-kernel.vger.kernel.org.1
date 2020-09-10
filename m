@@ -2,135 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165FC264299
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D65826429E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbgIJJmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727090AbgIJJm0 (ORCPT
+        id S1730378AbgIJJnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:43:53 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:38709 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgIJJnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:42:26 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B508C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:42:26 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b17so2773072pji.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tfIByuMMo7C/Clnj6jXryHuR4zdcV5TwuhVI0+9ZXqk=;
-        b=uDmpCbFh1psm0nkusAJFY/dcLXBPE4iE9E7slyes1DD5ltL23+HkFPZPaAoW01eEP4
-         2vXjPNq2s/exWc+Pgplo/DJpbut9xfgknVSIV2dbNNUD8qcqEBJxPnzKiHw8Jkt/XOHj
-         nu4dYmVLRLzHj/bH7I4kO5qUD+ALbAHSdvOaR5Xq4M3FtkIlabCNYWf++M87+AQxYdab
-         F3Ewn9WGLULNvFuJleRF/eZbc2StBBn29B4fq/EM8MLDt6iF6ZdrIYHLNo+jwO2yU4jZ
-         Z5nNdXfEhORhGLmvyvskJcZvaGsVkmCdBLuntcCnFrN/OaHRQu8F/QG00qCXm6X86QhW
-         MnWQ==
+        Thu, 10 Sep 2020 05:43:23 -0400
+Received: by mail-io1-f80.google.com with SMTP id e21so3924604iod.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 02:43:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tfIByuMMo7C/Clnj6jXryHuR4zdcV5TwuhVI0+9ZXqk=;
-        b=I5liVFJV9DnsS2jjm9sCB/7yDzkjNfv6aGpPv3Q+JZ5Js5kHcE14D4x2BtEswxpdC+
-         T6mk5Kq5zMJAygG50pcojpVenvj6yj0msgOSIBBjUwJQVLV3ADpEN2C/zhWNX0saC0j3
-         r1JRZU3e9uLujK4WVMaVT/lSo9BM9JRAJO7cwSiBB+ndxasiyJ6thHBZpJQXQu/TkL3l
-         Hg163jy8Z2svwYArIZWVCV2pafTO/lsYMFzNGw9QSbyGu6rrbwze24Kb0WESZcHWUVf4
-         GRolmxSFZff9CWehX5WfMLizEFj+cC6/0PewEHIg7MRKjzWisFxs6+CabPtnAjSiMnmK
-         YXRg==
-X-Gm-Message-State: AOAM532HIPSPUvCzRs+3kJqXhC07HkYxOKRWnv6LogNmMkcao123jkC3
-        MMCKxH1WrOYbioz3wFvB8N8Ja49u0ZK3zdqV1Cv3BA==
-X-Google-Smtp-Source: ABdhPJz7PvLSYCqK0ku+A1ysRCQYzogbgA6IYq2pcoIqNsN3XrY5qY/AABceMIzcPX+1vQVAyYI6uTYl64B6AvrCmqI=
-X-Received: by 2002:a17:90a:fe07:: with SMTP id ck7mr4517568pjb.20.1599730945276;
- Thu, 10 Sep 2020 02:42:25 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ZVRi8rjz3/qt+k/6SDbI5aRnPUH8LZniKzlR1GEkLI8=;
+        b=oe8xFPM1Ya5WNfHBAetYWBZ1OzP/VOjCiXeD7FTzzZDodLZJ42m79jU3EAiXui4ZDg
+         ErV1339cp9bNfhRcgCSv257TMcOBDOL5V0X4OpwKWNbDb7RlxgmGmLVbVtY+VNnmmMQq
+         XICNPp8faOVNTUsy+kMZ5Z1vRyVKfhudhbuXF9obGpn9oqBLDSQrmwEkUgHO7i0AsSTU
+         WIvGy6gAwa7c89jPzENw6SZY5juZg7OlIGsKok0gUBByvEQ/b9rviFthuUBwvbb26+rU
+         RNgCfis0YYENlz/zTqusO6rN64hkF/GeTRC65GZC7TMzZcm7kJlNHv6gw+iizPNVvY2a
+         C7nQ==
+X-Gm-Message-State: AOAM530xtncAs2loRvFHG9nDfBCdAnxesPNHbf+Ud8AQENTdCG5Ff4XO
+        VKQ+z958H115brXOwicIYZlOXFhQFMpYqSH3KZ2MyqOaQ70L
+X-Google-Smtp-Source: ABdhPJxZQf9abdj2nuyeh/ORXYeZOsBnyCgzS5uibcATuwLOrqXTG1VGkGdqqfU+haJViNXxo4NMj570uKfgP/LMIkPNW7IuIaz9
 MIME-Version: 1.0
-References: <20200902180950.4bc7c4de@canb.auug.org.au> <3abfa193-a56e-66ba-1080-885906fa0196@infradead.org>
- <fdf322d4-cc01-2c85-67cd-86b2d6f4ebff@infradead.org> <CAFd5g44g6OrL3fxQNRZ1rR0PruAty8tBZr8JDzM-oonZJRDZyw@mail.gmail.com>
- <84531c68-2ac8-924b-5e71-077f9abb2503@infradead.org> <20200909104619.0902238c@canb.auug.org.au>
- <dea1bacd-48c2-067b-1bb2-00a0ee91196d@infradead.org> <90719242-ab0e-7bd9-1cce-5aac8940eb23@linuxfoundation.org>
-In-Reply-To: <90719242-ab0e-7bd9-1cce-5aac8940eb23@linuxfoundation.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 10 Sep 2020 02:42:14 -0700
-Message-ID: <CAFd5g452HH1Zfo+tqYzZuMVBnz-x=ePkits6uUnVDBXvaU=nzg@mail.gmail.com>
-Subject: Re: linux-next: Tree for Sep 2 (lib/ubsan.c)
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>
+X-Received: by 2002:a92:c98c:: with SMTP id y12mr7011938iln.272.1599731002162;
+ Thu, 10 Sep 2020 02:43:22 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 02:43:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001ec83b05aef2661e@google.com>
+Subject: BUG: stack guard page was hit in trace_hardirqs_off
+From:   syzbot <syzbot+d634da63c815bcfe7cd7@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, mingo@redhat.com,
+        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 5:55 PM Shuah Khan <skhan@linuxfoundation.org> wrote=
-:
->
-> On 9/8/20 6:49 PM, Randy Dunlap wrote:
-> > On 9/8/20 5:46 PM, Stephen Rothwell wrote:
-> >> Hi Randy,
-> >>
-> >> On Tue, 8 Sep 2020 07:38:31 -0700 Randy Dunlap <rdunlap@infradead.org>=
- wrote:
-> >>>
-> >>> On 9/4/20 12:59 AM, Brendan Higgins wrote:
-> >>>> On Thu, Sep 3, 2020 at 11:12 PM Randy Dunlap <rdunlap@infradead.org>=
- wrote:
-> >>>>>
-> >>>>> On 9/2/20 8:44 AM, Randy Dunlap wrote:
-> >>>>>> On 9/2/20 1:09 AM, Stephen Rothwell wrote:
-> >>>>>>> Hi all,
-> >>>>>>>
-> >>>>>>> Changes since 20200828:
-> >>>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> on i386:
-> >>>>>>
-> >>>>>> ../lib/ubsan.c: In function =E2=80=98ubsan_prologue=E2=80=99:
-> >>>>>> ../lib/ubsan.c:141:2: error: implicit declaration of function =E2=
-=80=98kunit_fail_current_test=E2=80=99; did you mean =E2=80=98kunit_init_te=
-st=E2=80=99? [-Werror=3Dimplicit-function-declaration]
-> >>>>>>    kunit_fail_current_test();
-> >>>>>>
-> >>>>>>
-> >>>>>> Full randconfig file is attached.
-> >>>>>>
-> >>>>>
-> >>>>> Hi Brendan,
-> >>>>>
-> >>>>> Do you know anything about this build error?
-> >>>>>
-> >>>>> I can't find kunit_fail_current_test() anywhere.
-> >>>>
-> >>>> Yeah, this got applied for some reason without the prerequisite
-> >>>> patches. It is from a two patch series, the other being here:
-> >>>>
-> >>>> https://lore.kernel.org/linux-kselftest/20200813205722.1384108-1-uri=
-elguajardojr@gmail.com/
-> >>>>
-> >>>> which in turn depends on another patchset which didn't make it into =
-5.9.
-> >>>>
-> >>>> Again, I don't know why this was applied without it's prereqs. Sorry=
- about that.
-> >>>>
-> >>>
-> >>> Well.  Who is responsible for this small mess?
-> >>> It is still killing linux-next builds for me (2020-0908).
-> >>
-> >> It came in via the kunit-next tree (Shuah cc'd).  I will revert commit
-> >> abe83f7621ee ("kunit: ubsan integration") today.
-> >
-> >
->
-> Sorry about that. I picked this up for 5.10 since it had the reviewed
-> by tags from Brendan.
->
-> I will drop this from kselftest kunit
+Hello,
 
-Thanks for taking care of this!
+syzbot found the following issue on:
+
+HEAD commit:    34d4ddd3 Merge tag 'linux-kselftest-5.9-rc5' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1354ce29900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=d634da63c815bcfe7cd7
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d634da63c815bcfe7cd7@syzkaller.appspotmail.com
+
+BUG: stack guard page was hit at 0000000081fa4d7f (stack is 000000008ed0f837..0000000020f72952)
+kernel stack overflow (double-fault): 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 23783 Comm: syz-executor.5 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:trace_hardirqs_off+0x8/0x210 kernel/trace/trace_preemptirq.c:76
+Code: 1e 45 3a 00 e9 33 ff ff ff 48 89 df e8 11 45 3a 00 e9 fe fe ff ff 66 90 66 2e 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55 53 <e8> f3 3e fa ff 48 8b 7c 24 28 e8 09 90 7a 06 65 8b 1d 62 f9 88 7e
+RSP: 0018:ffffc900181e8000 EFLAGS: 00010046
+RAX: ffff88803dad05c0 RBX: 0000000000000000 RCX: ffffc900139ec000
+RDX: 0000000000040000 RSI: ffffffff81341b7f RDI: ffffc900181e8068
+RBP: ffffc900181e8068 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000008
+R13: 0000000000000002 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0063) knlGS:00000000f5570b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffffc900181e7ff8 CR3: 000000003af1b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ irqentry_enter+0x1d/0x50 kernel/entry/common.c:342
+ exc_page_fault+0x49/0x190 arch/x86/mm/fault.c:1479
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e8110 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e8118 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e8400 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e8408 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e86f0 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e86f8 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e89e0 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e89e8 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e8cd0 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e8cd8 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e8fc0 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e8fc8 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e92b0 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e92b8 R08: 0000000000000000 R09: ffffffff8ab26b8f
+R10: fffffbfff1564d71 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000000
+ rcu_read_unlock_sched_notrace include/linux/rcupdate.h:772 [inline]
+ trace_lock_acquire include/trace/events/lock.h:13 [inline]
+ lock_acquire+0x3f0/0xae0 kernel/locking/lockdep.c:4980
+ down_read_trylock kernel/locking/rwsem.c:1520 [inline]
+ down_read_trylock+0x193/0x350 kernel/locking/rwsem.c:1515
+ mmap_read_trylock include/linux/mmap_lock.h:56 [inline]
+ do_user_addr_fault+0x25e/0xbf0 arch/x86/mm/fault.c:1313
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0xa8/0x190 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0010:preempt_schedule_notrace_thunk+0x5/0x31 arch/x86/entry/thunk_64.S:41
+Code: 00 48 8d a0 58 ff ff ff e8 e9 04 46 00 55 48 89 e5 57 56 52 51 50 41 50 41 51 41 52 41 53 e8 a3 d5 f5 06 eb 18 55 48 89 e5 57 <00> 70 07 00 00 77 00 00 41 52 41 53 e8 eb d5 f5 06 eb 00 41 5b 41
+RSP: 0018:ffffc900181e95a0 EFLAGS: 00010046
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 1ffffffff1308b20
+RDX: dffffc0000000000 RSI: ffffffff89bd6980 RDI: 0000000000000082
+RBP: ffffc900181e95a8 R08:
+Lost 683 message(s)!
+---[ end trace 02af37d385ae66aa ]---
+RIP: 0010:trace_hardirqs_off+0x8/0x210 kernel/trace/trace_preemptirq.c:76
+Code: 1e 45 3a 00 e9 33 ff ff ff 48 89 df e8 11 45 3a 00 e9 fe fe ff ff 66 90 66 2e 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55 53 <e8> f3 3e fa ff 48 8b 7c 24 28 e8 09 90 7a 06 65 8b 1d 62 f9 88 7e
+RSP: 0018:ffffc900181e8000 EFLAGS: 00010046
+RAX: ffff88803dad05c0 RBX: 0000000000000000 RCX: ffffc900139ec000
+RDX: 0000000000040000 RSI: ffffffff81341b7f RDI: ffffc900181e8068
+RBP: ffffc900181e8068 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000008
+R13: 0000000000000002 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0063) knlGS:00000000f5570b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffffc900181e7ff8 CR3: 000000003af1b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
