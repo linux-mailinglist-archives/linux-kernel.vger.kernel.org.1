@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAFA264DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D60264DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgIJS43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:56:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
+        id S1727780AbgIJS5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbgIJSyq (ORCPT
+        with ESMTP id S1726837AbgIJSyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 14:54:46 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA564C061756;
-        Thu, 10 Sep 2020 11:54:37 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 18:54:34 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E47BC061757;
+        Thu, 10 Sep 2020 11:54:38 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 18:54:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599764075;
+        s=2020; t=1599764076;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=I4eoxOywZhMX7yReNjcGDEP+ASWvFXagpPzhA/GiHeM=;
-        b=o6rihI3S4P4rbIIIxxt+IN+jWKAfafYI+G2ns8djPM+bz1Ybq0c5zauM1C42UBAqmiHSeM
-        mgnet2rows95dK4eJAB7TiRhNlAV6pUFkiLI6q4GO24K3HpURz0b+iyZiQ7ir9Iz5Yvpu2
-        3wzirNCQyrNMtSIdgaGxgDDtoE9IprejKglIRO/aC8ZSS7LjKvPliSo7qCc5OMCoW3COKO
-        uetMwnLXXOLRGnQYlCvv2m8Ngx/j2W7KhE0v6RHk7G1KSot/rUxANAvSJiuSZDDQnx4zTq
-        OXGlVNflipKoJ2J1kIihW/Ms+VVOlOPYaqAy6a8twyBSE0G6h8boqqP1ZmaD3g==
+        bh=DSwAXd/5jzZIujZDN7Y8HgKA43b9bCIbb1xoVGCvIz8=;
+        b=4Oz+WMPNdss5ltOezKVGrCfSXJogqDjk+U1qKgtvws2FIOqFrTAMrI5rwz2Va+grHA4QN+
+        2dZStRhTBMqG2DdLNuG6OkZFQjc574tm47rfunG2KvXD2exWHI7Vs2Wi8ZHphs/VqK8+e/
+        StBhCaGdHW6aqR/Jk9rza1+Vr3/WPjWY1jf+nmRkxIkOrSpG7TGFyNfeMwfKX4A+XsBP1Y
+        o4f7ppPqvv9MwlRCijkPKWfJgcl6cdNsYwtC5eBb3PadWf6ElZ0bMlCsVEnPq2NmJaBSxr
+        TyLZWLOgot+Y8DqGUMcK6AUqi1Y3c6rQ9b6xRFT1pABeB9kiXNbDiTylXetVUg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599764075;
+        s=2020e; t=1599764076;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=I4eoxOywZhMX7yReNjcGDEP+ASWvFXagpPzhA/GiHeM=;
-        b=GshCpl6vh/FDJAywWmJXgJob8fNKlnuyfaIGi99XdJ7DJFB+ilAl+vXO7pO6PcUDqGvsKA
-        oTqoruVcFzoaUzBQ==
+        bh=DSwAXd/5jzZIujZDN7Y8HgKA43b9bCIbb1xoVGCvIz8=;
+        b=w/OI6y12DNrzoPW6XPBoHlkMYiOQ117ZCEw6c0t7Sf79SB5eOT0Z1wESYCnhK7B1vwFbMv
+        s9uASgdZKWtemICQ==
 From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Make unwind hint definitions available
- to other architectures
+Subject: [tip: objtool/core] objtool: Rename frame.h -> objtool.h
 Cc:     Julien Thierry <jthierry@redhat.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <159976407489.20229.9379440488493140927.tip-bot2@tip-bot2>
+Message-ID: <159976407592.20229.1653605146880450425.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,473 +55,237 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     ee819aedf34a8f35cd54ee3967c7beb4d1d4a635
-Gitweb:        https://git.kernel.org/tip/ee819aedf34a8f35cd54ee3967c7beb4d1d4a635
+Commit-ID:     00089c048eb4a8250325efb32a2724fd0da68cce
+Gitweb:        https://git.kernel.org/tip/00089c048eb4a8250325efb32a2724fd0da68cce
 Author:        Julien Thierry <jthierry@redhat.com>
-AuthorDate:    Fri, 04 Sep 2020 16:30:27 +01:00
+AuthorDate:    Fri, 04 Sep 2020 16:30:25 +01:00
 Committer:     Josh Poimboeuf <jpoimboe@redhat.com>
 CommitterDate: Thu, 10 Sep 2020 10:43:13 -05:00
 
-objtool: Make unwind hint definitions available to other architectures
+objtool: Rename frame.h -> objtool.h
 
-Unwind hints are useful to provide objtool with information about stack
-states in non-standard functions/code.
+Header frame.h is getting more code annotations to help objtool analyze
+object files.
 
-While the type of information being provided might be very arch
-specific, the mechanism to provide the information can be useful for
-other architectures.
+Rename the file to objtool.h.
 
-Move the relevant unwint hint definitions for all architectures to
-see.
-
-[ jpoimboe: REGS_IRET -> REGS_PARTIAL ]
+[ jpoimboe: add objtool.h to MAINTAINERS ]
 
 Signed-off-by: Julien Thierry <jthierry@redhat.com>
 Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- arch/x86/include/asm/orc_types.h       |  34 +------
- arch/x86/include/asm/unwind_hints.h    |  56 +---------
- arch/x86/kernel/unwind_orc.c           |  11 +-
- include/linux/objtool.h                |  88 ++++++++++++++++-
- tools/arch/x86/include/asm/orc_types.h |  34 +------
- tools/include/linux/objtool.h          | 129 ++++++++++++++++++++++++-
- tools/objtool/check.c                  |   4 +-
- tools/objtool/orc_dump.c               |   9 +-
- tools/objtool/orc_gen.c                |   5 +-
- tools/objtool/sync-check.sh            |   4 +-
- 10 files changed, 249 insertions(+), 125 deletions(-)
- create mode 100644 tools/include/linux/objtool.h
+ MAINTAINERS                          |  1 +-
+ arch/x86/include/asm/nospec-branch.h |  2 +-
+ arch/x86/kernel/kprobes/core.c       |  2 +-
+ arch/x86/kernel/kprobes/opt.c        |  2 +-
+ arch/x86/kernel/reboot.c             |  2 +-
+ arch/x86/kvm/svm/svm.c               |  2 +-
+ arch/x86/kvm/vmx/nested.c            |  2 +-
+ arch/x86/kvm/vmx/vmx.c               |  2 +-
+ arch/x86/xen/enlighten_pv.c          |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c  |  3 +--
+ include/linux/frame.h                | 35 +---------------------------
+ include/linux/objtool.h              | 35 +++++++++++++++++++++++++++-
+ kernel/bpf/core.c                    |  2 +-
+ kernel/kexec_core.c                  |  2 +-
+ 14 files changed, 47 insertions(+), 47 deletions(-)
+ delete mode 100644 include/linux/frame.h
+ create mode 100644 include/linux/objtool.h
 
-diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
-index d255349..fdbffec 100644
---- a/arch/x86/include/asm/orc_types.h
-+++ b/arch/x86/include/asm/orc_types.h
-@@ -39,27 +39,6 @@
- #define ORC_REG_SP_INDIRECT		9
- #define ORC_REG_MAX			15
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e4647c8..2605a08 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12481,6 +12481,7 @@ M:	Josh Poimboeuf <jpoimboe@redhat.com>
+ M:	Peter Zijlstra <peterz@infradead.org>
+ S:	Supported
+ F:	tools/objtool/
++F:	include/linux/objtool.h
  
--/*
-- * ORC_TYPE_CALL: Indicates that sp_reg+sp_offset resolves to PREV_SP (the
-- * caller's SP right before it made the call).  Used for all callable
-- * functions, i.e. all C code and all callable asm functions.
-- *
-- * ORC_TYPE_REGS: Used in entry code to indicate that sp_reg+sp_offset points
-- * to a fully populated pt_regs from a syscall, interrupt, or exception.
-- *
-- * ORC_TYPE_REGS_IRET: Used in entry code to indicate that sp_reg+sp_offset
-- * points to the iret return frame.
-- *
-- * The UNWIND_HINT macros are used only for the unwind_hint struct.  They
-- * aren't used in struct orc_entry due to size and complexity constraints.
-- * Objtool converts them to real types when it converts the hints to orc
-- * entries.
-- */
--#define ORC_TYPE_CALL			0
--#define ORC_TYPE_REGS			1
--#define ORC_TYPE_REGS_IRET		2
--#define UNWIND_HINT_TYPE_RET_OFFSET	3
--
- #ifndef __ASSEMBLY__
- /*
-  * This struct is more or less a vastly simplified version of the DWARF Call
-@@ -78,19 +57,6 @@ struct orc_entry {
- 	unsigned	end:1;
- } __packed;
+ OCELOT ETHERNET SWITCH DRIVER
+ M:	Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index e7752b4..86651e8 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -4,7 +4,7 @@
+ #define _ASM_X86_NOSPEC_BRANCH_H_
  
--/*
-- * This struct is used by asm and inline asm code to manually annotate the
-- * location of registers on the stack for the ORC unwinder.
-- *
-- * Type can be either ORC_TYPE_* or UNWIND_HINT_TYPE_*.
-- */
--struct unwind_hint {
--	u32		ip;
--	s16		sp_offset;
--	u8		sp_reg;
--	u8		type;
--	u8		end;
--};
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ORC_TYPES_H */
-diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
-index 7d903fd..664d461 100644
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -1,51 +1,17 @@
- #ifndef _ASM_X86_UNWIND_HINTS_H
- #define _ASM_X86_UNWIND_HINTS_H
- 
+ #include <linux/static_key.h>
+-#include <linux/frame.h>
 +#include <linux/objtool.h>
-+
- #include "orc_types.h"
  
- #ifdef __ASSEMBLY__
+ #include <asm/alternative.h>
+ #include <asm/alternative-asm.h>
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index fdadc37..ae24886 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -38,9 +38,9 @@
+ #include <linux/kdebug.h>
+ #include <linux/kallsyms.h>
+ #include <linux/ftrace.h>
+-#include <linux/frame.h>
+ #include <linux/kasan.h>
+ #include <linux/moduleloader.h>
++#include <linux/objtool.h>
+ #include <linux/vmalloc.h>
+ #include <linux/pgtable.h>
  
--/*
-- * In asm, there are two kinds of code: normal C-type callable functions and
-- * the rest.  The normal callable functions can be called by other code, and
-- * don't do anything unusual with the stack.  Such normal callable functions
-- * are annotated with the ENTRY/ENDPROC macros.  Most asm code falls in this
-- * category.  In this case, no special debugging annotations are needed because
-- * objtool can automatically generate the ORC data for the ORC unwinder to read
-- * at runtime.
-- *
-- * Anything which doesn't fall into the above category, such as syscall and
-- * interrupt handlers, tends to not be called directly by other functions, and
-- * often does unusual non-C-function-type things with the stack pointer.  Such
-- * code needs to be annotated such that objtool can understand it.  The
-- * following CFI hint macros are for this type of code.
-- *
-- * These macros provide hints to objtool about the state of the stack at each
-- * instruction.  Objtool starts from the hints and follows the code flow,
-- * making automatic CFI adjustments when it sees pushes and pops, filling out
-- * the debuginfo as necessary.  It will also warn if it sees any
-- * inconsistencies.
-- */
--.macro UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=0 type=ORC_TYPE_CALL end=0
--#ifdef CONFIG_STACK_VALIDATION
--.Lunwind_hint_ip_\@:
--	.pushsection .discard.unwind_hints
--		/* struct unwind_hint */
--		.long .Lunwind_hint_ip_\@ - .
--		.short \sp_offset
--		.byte \sp_reg
--		.byte \type
--		.byte \end
--		.balign 4
--	.popsection
--#endif
--.endm
--
- .macro UNWIND_HINT_EMPTY
--	UNWIND_HINT sp_reg=ORC_REG_UNDEFINED end=1
-+	UNWIND_HINT sp_reg=ORC_REG_UNDEFINED type=UNWIND_HINT_TYPE_CALL end=1
- .endm
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index c068e21..9b1cb8f 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -16,7 +16,7 @@
+ #include <linux/kdebug.h>
+ #include <linux/kallsyms.h>
+ #include <linux/ftrace.h>
+-#include <linux/frame.h>
++#include <linux/objtool.h>
+ #include <linux/pgtable.h>
+ #include <linux/static_call.h>
  
--.macro UNWIND_HINT_REGS base=%rsp offset=0 indirect=0 extra=1 iret=0
-+.macro UNWIND_HINT_REGS base=%rsp offset=0 indirect=0 extra=1 partial=0
- 	.if \base == %rsp
- 		.if \indirect
- 			.set sp_reg, ORC_REG_SP_INDIRECT
-@@ -66,24 +32,24 @@
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index a515e2d..db11594 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -10,7 +10,7 @@
+ #include <linux/sched.h>
+ #include <linux/tboot.h>
+ #include <linux/delay.h>
+-#include <linux/frame.h>
++#include <linux/objtool.h>
+ #include <linux/pgtable.h>
+ #include <acpi/reboot.h>
+ #include <asm/io.h>
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 0194336..17ba613 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -19,7 +19,7 @@
+ #include <linux/trace_events.h>
+ #include <linux/slab.h>
+ #include <linux/hashtable.h>
+-#include <linux/frame.h>
++#include <linux/objtool.h>
+ #include <linux/psp-sev.h>
+ #include <linux/file.h>
+ #include <linux/pagemap.h>
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 23b58c2..ae4ff7c 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
  
- 	.set sp_offset, \offset
+-#include <linux/frame.h>
++#include <linux/objtool.h>
+ #include <linux/percpu.h>
  
--	.if \iret
--		.set type, ORC_TYPE_REGS_IRET
-+	.if \partial
-+		.set type, UNWIND_HINT_TYPE_REGS_PARTIAL
- 	.elseif \extra == 0
--		.set type, ORC_TYPE_REGS_IRET
-+		.set type, UNWIND_HINT_TYPE_REGS_PARTIAL
- 		.set sp_offset, \offset + (16*8)
- 	.else
--		.set type, ORC_TYPE_REGS
-+		.set type, UNWIND_HINT_TYPE_REGS
- 	.endif
- 
- 	UNWIND_HINT sp_reg=sp_reg sp_offset=sp_offset type=type
- .endm
- 
- .macro UNWIND_HINT_IRET_REGS base=%rsp offset=0
--	UNWIND_HINT_REGS base=\base offset=\offset iret=1
-+	UNWIND_HINT_REGS base=\base offset=\offset partial=1
- .endm
- 
- .macro UNWIND_HINT_FUNC sp_offset=8
--	UNWIND_HINT sp_offset=\sp_offset
-+	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=\sp_offset type=UNWIND_HINT_TYPE_CALL
- .endm
- 
- /*
-@@ -92,7 +58,7 @@
-  * initial_func_cfi.
+ #include <asm/debugreg.h>
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 819c185..df29fb4 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -13,7 +13,6 @@
+  *   Yaniv Kamay  <yaniv@qumranet.com>
   */
- .macro UNWIND_HINT_RET_OFFSET sp_offset=8
--	UNWIND_HINT type=UNWIND_HINT_TYPE_RET_OFFSET sp_offset=\sp_offset
-+	UNWIND_HINT sp_reg=ORC_REG_SP type=UNWIND_HINT_TYPE_RET_OFFSET sp_offset=\sp_offset
- .endm
  
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index ec88bbe..6a339ce 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
+-#include <linux/frame.h>
+ #include <linux/highmem.h>
+ #include <linux/hrtimer.h>
+ #include <linux/kernel.h>
+@@ -22,6 +21,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/mm.h>
 +#include <linux/objtool.h>
+ #include <linux/sched.h>
+ #include <linux/sched/smt.h>
+ #include <linux/slab.h>
+diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
+index 22e741e..58382d2 100644
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -32,7 +32,7 @@
+ #include <linux/pci.h>
+ #include <linux/gfp.h>
+ #include <linux/edd.h>
+-#include <linux/frame.h>
++#include <linux/objtool.h>
+ 
+ #include <xen/xen.h>
+ #include <xen/events.h>
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
+index e9f448a..15b5bde 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
+@@ -24,7 +24,7 @@
+  *
+  */
+ 
+-#include <linux/frame.h>
++#include <linux/objtool.h>
+ #include <linux/kernel.h>
  #include <linux/module.h>
- #include <linux/sort.h>
- #include <asm/ptrace.h>
-@@ -127,12 +128,12 @@ static struct orc_entry null_orc_entry = {
- 	.sp_offset = sizeof(long),
- 	.sp_reg = ORC_REG_SP,
- 	.bp_reg = ORC_REG_UNDEFINED,
--	.type = ORC_TYPE_CALL
-+	.type = UNWIND_HINT_TYPE_CALL
- };
+ #include <linux/slab.h>
+@@ -599,4 +599,3 @@ out_open:
  
- /* Fake frame pointer entry -- used as a fallback for generated code */
- static struct orc_entry orc_fp_entry = {
--	.type		= ORC_TYPE_CALL,
-+	.type		= UNWIND_HINT_TYPE_CALL,
- 	.sp_reg		= ORC_REG_BP,
- 	.sp_offset	= 16,
- 	.bp_reg		= ORC_REG_PREV_SP,
-@@ -531,7 +532,7 @@ bool unwind_next_frame(struct unwind_state *state)
- 
- 	/* Find IP, SP and possibly regs: */
- 	switch (orc->type) {
--	case ORC_TYPE_CALL:
-+	case UNWIND_HINT_TYPE_CALL:
- 		ip_p = sp - sizeof(long);
- 
- 		if (!deref_stack_reg(state, ip_p, &state->ip))
-@@ -546,7 +547,7 @@ bool unwind_next_frame(struct unwind_state *state)
- 		state->signal = false;
- 		break;
- 
--	case ORC_TYPE_REGS:
-+	case UNWIND_HINT_TYPE_REGS:
- 		if (!deref_stack_regs(state, sp, &state->ip, &state->sp)) {
- 			orc_warn_current("can't access registers at %pB\n",
- 					 (void *)orig_ip);
-@@ -559,7 +560,7 @@ bool unwind_next_frame(struct unwind_state *state)
- 		state->signal = true;
- 		break;
- 
--	case ORC_TYPE_REGS_IRET:
-+	case UNWIND_HINT_TYPE_REGS_PARTIAL:
- 		if (!deref_stack_iret_regs(state, sp, &state->ip, &state->sp)) {
- 			orc_warn_current("can't access iret registers at %pB\n",
- 					 (void *)orig_ip);
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index 15e9997..ab82c79 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -2,9 +2,55 @@
- #ifndef _LINUX_OBJTOOL_H
- #define _LINUX_OBJTOOL_H
- 
-+#ifndef __ASSEMBLY__
-+
-+#include <linux/types.h>
-+
-+/*
-+ * This struct is used by asm and inline asm code to manually annotate the
-+ * location of registers on the stack.
-+ */
-+struct unwind_hint {
-+	u32		ip;
-+	s16		sp_offset;
-+	u8		sp_reg;
-+	u8		type;
-+	u8		end;
-+};
-+#endif
-+
-+/*
-+ * UNWIND_HINT_TYPE_CALL: Indicates that sp_reg+sp_offset resolves to PREV_SP
-+ * (the caller's SP right before it made the call).  Used for all callable
-+ * functions, i.e. all C code and all callable asm functions.
-+ *
-+ * UNWIND_HINT_TYPE_REGS: Used in entry code to indicate that sp_reg+sp_offset
-+ * points to a fully populated pt_regs from a syscall, interrupt, or exception.
-+ *
-+ * UNWIND_HINT_TYPE_REGS_PARTIAL: Used in entry code to indicate that
-+ * sp_reg+sp_offset points to the iret return frame.
-+ */
-+#define UNWIND_HINT_TYPE_CALL		0
-+#define UNWIND_HINT_TYPE_REGS		1
-+#define UNWIND_HINT_TYPE_REGS_PARTIAL	2
-+#define UNWIND_HINT_TYPE_RET_OFFSET	3
-+
- #ifdef CONFIG_STACK_VALIDATION
- 
- #ifndef __ASSEMBLY__
-+
-+#define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
-+	"987: \n\t"						\
-+	".pushsection .discard.unwind_hints\n\t"		\
-+	/* struct unwind_hint */				\
-+	".long 987b - .\n\t"					\
-+	".short " __stringify(sp_offset) "\n\t"			\
-+	".byte " __stringify(sp_reg) "\n\t"			\
-+	".byte " __stringify(type) "\n\t"			\
-+	".byte " __stringify(end) "\n\t"			\
-+	".balign 4 \n\t"					\
-+	".popsection\n\t"
-+
- /*
-  * This macro marks the given function's stack frame as "non-standard", which
-  * tells objtool to ignore the function when doing stack metadata validation.
-@@ -29,12 +75,54 @@
- 	.long 999b;						\
- 	.popsection;
- 
-+/*
-+ * In asm, there are two kinds of code: normal C-type callable functions and
-+ * the rest.  The normal callable functions can be called by other code, and
-+ * don't do anything unusual with the stack.  Such normal callable functions
-+ * are annotated with the ENTRY/ENDPROC macros.  Most asm code falls in this
-+ * category.  In this case, no special debugging annotations are needed because
-+ * objtool can automatically generate the ORC data for the ORC unwinder to read
-+ * at runtime.
-+ *
-+ * Anything which doesn't fall into the above category, such as syscall and
-+ * interrupt handlers, tends to not be called directly by other functions, and
-+ * often does unusual non-C-function-type things with the stack pointer.  Such
-+ * code needs to be annotated such that objtool can understand it.  The
-+ * following CFI hint macros are for this type of code.
-+ *
-+ * These macros provide hints to objtool about the state of the stack at each
-+ * instruction.  Objtool starts from the hints and follows the code flow,
-+ * making automatic CFI adjustments when it sees pushes and pops, filling out
-+ * the debuginfo as necessary.  It will also warn if it sees any
-+ * inconsistencies.
-+ */
-+.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
-+.Lunwind_hint_ip_\@:
-+	.pushsection .discard.unwind_hints
-+		/* struct unwind_hint */
-+		.long .Lunwind_hint_ip_\@ - .
-+		.short \sp_offset
-+		.byte \sp_reg
-+		.byte \type
-+		.byte \end
-+		.balign 4
-+	.popsection
-+.endm
-+
- #endif /* __ASSEMBLY__ */
- 
- #else /* !CONFIG_STACK_VALIDATION */
- 
-+#ifndef __ASSEMBLY__
-+
-+#define UNWIND_HINT(sp_reg, sp_offset, type, end)	\
-+	"\n\t"
- #define STACK_FRAME_NON_STANDARD(func)
-+#else
- #define ANNOTATE_INTRA_FUNCTION_CALL
-+.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
-+.endm
-+#endif
- 
- #endif /* CONFIG_STACK_VALIDATION */
- 
-diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
-index d255349..fdbffec 100644
---- a/tools/arch/x86/include/asm/orc_types.h
-+++ b/tools/arch/x86/include/asm/orc_types.h
-@@ -39,27 +39,6 @@
- #define ORC_REG_SP_INDIRECT		9
- #define ORC_REG_MAX			15
- 
--/*
-- * ORC_TYPE_CALL: Indicates that sp_reg+sp_offset resolves to PREV_SP (the
-- * caller's SP right before it made the call).  Used for all callable
-- * functions, i.e. all C code and all callable asm functions.
-- *
-- * ORC_TYPE_REGS: Used in entry code to indicate that sp_reg+sp_offset points
-- * to a fully populated pt_regs from a syscall, interrupt, or exception.
-- *
-- * ORC_TYPE_REGS_IRET: Used in entry code to indicate that sp_reg+sp_offset
-- * points to the iret return frame.
-- *
-- * The UNWIND_HINT macros are used only for the unwind_hint struct.  They
-- * aren't used in struct orc_entry due to size and complexity constraints.
-- * Objtool converts them to real types when it converts the hints to orc
-- * entries.
-- */
--#define ORC_TYPE_CALL			0
--#define ORC_TYPE_REGS			1
--#define ORC_TYPE_REGS_IRET		2
--#define UNWIND_HINT_TYPE_RET_OFFSET	3
+ 	return -EINVAL;
+ }
 -
- #ifndef __ASSEMBLY__
- /*
-  * This struct is more or less a vastly simplified version of the DWARF Call
-@@ -78,19 +57,6 @@ struct orc_entry {
- 	unsigned	end:1;
- } __packed;
- 
+diff --git a/include/linux/frame.h b/include/linux/frame.h
+deleted file mode 100644
+index 303cda6..0000000
+--- a/include/linux/frame.h
++++ /dev/null
+@@ -1,35 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _LINUX_FRAME_H
+-#define _LINUX_FRAME_H
+-
+-#ifdef CONFIG_STACK_VALIDATION
 -/*
-- * This struct is used by asm and inline asm code to manually annotate the
-- * location of registers on the stack for the ORC unwinder.
+- * This macro marks the given function's stack frame as "non-standard", which
+- * tells objtool to ignore the function when doing stack metadata validation.
+- * It should only be used in special cases where you're 100% sure it won't
+- * affect the reliability of frame pointers and kernel stack traces.
 - *
-- * Type can be either ORC_TYPE_* or UNWIND_HINT_TYPE_*.
+- * For more information, see tools/objtool/Documentation/stack-validation.txt.
 - */
--struct unwind_hint {
--	u32		ip;
--	s16		sp_offset;
--	u8		sp_reg;
--	u8		type;
--	u8		end;
--};
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ORC_TYPES_H */
-diff --git a/tools/include/linux/objtool.h b/tools/include/linux/objtool.h
+-#define STACK_FRAME_NON_STANDARD(func) \
+-	static void __used __section(.discard.func_stack_frame_non_standard) \
+-		*__func_stack_frame_non_standard_##func = func
+-
+-/*
+- * This macro indicates that the following intra-function call is valid.
+- * Any non-annotated intra-function call will cause objtool to issue a warning.
+- */
+-#define ANNOTATE_INTRA_FUNCTION_CALL				\
+-	999:							\
+-	.pushsection .discard.intra_function_calls;		\
+-	.long 999b;						\
+-	.popsection;
+-
+-#else /* !CONFIG_STACK_VALIDATION */
+-
+-#define STACK_FRAME_NON_STANDARD(func)
+-#define ANNOTATE_INTRA_FUNCTION_CALL
+-
+-#endif /* CONFIG_STACK_VALIDATION */
+-
+-#endif /* _LINUX_FRAME_H */
+diff --git a/include/linux/objtool.h b/include/linux/objtool.h
 new file mode 100644
-index 0000000..ab82c79
+index 0000000..358175c
 --- /dev/null
-+++ b/tools/include/linux/objtool.h
-@@ -0,0 +1,129 @@
++++ b/include/linux/objtool.h
+@@ -0,0 +1,35 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#ifndef _LINUX_OBJTOOL_H
 +#define _LINUX_OBJTOOL_H
 +
-+#ifndef __ASSEMBLY__
-+
-+#include <linux/types.h>
-+
-+/*
-+ * This struct is used by asm and inline asm code to manually annotate the
-+ * location of registers on the stack.
-+ */
-+struct unwind_hint {
-+	u32		ip;
-+	s16		sp_offset;
-+	u8		sp_reg;
-+	u8		type;
-+	u8		end;
-+};
-+#endif
-+
-+/*
-+ * UNWIND_HINT_TYPE_CALL: Indicates that sp_reg+sp_offset resolves to PREV_SP
-+ * (the caller's SP right before it made the call).  Used for all callable
-+ * functions, i.e. all C code and all callable asm functions.
-+ *
-+ * UNWIND_HINT_TYPE_REGS: Used in entry code to indicate that sp_reg+sp_offset
-+ * points to a fully populated pt_regs from a syscall, interrupt, or exception.
-+ *
-+ * UNWIND_HINT_TYPE_REGS_PARTIAL: Used in entry code to indicate that
-+ * sp_reg+sp_offset points to the iret return frame.
-+ */
-+#define UNWIND_HINT_TYPE_CALL		0
-+#define UNWIND_HINT_TYPE_REGS		1
-+#define UNWIND_HINT_TYPE_REGS_PARTIAL	2
-+#define UNWIND_HINT_TYPE_RET_OFFSET	3
-+
 +#ifdef CONFIG_STACK_VALIDATION
-+
-+#ifndef __ASSEMBLY__
-+
-+#define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
-+	"987: \n\t"						\
-+	".pushsection .discard.unwind_hints\n\t"		\
-+	/* struct unwind_hint */				\
-+	".long 987b - .\n\t"					\
-+	".short " __stringify(sp_offset) "\n\t"			\
-+	".byte " __stringify(sp_reg) "\n\t"			\
-+	".byte " __stringify(type) "\n\t"			\
-+	".byte " __stringify(end) "\n\t"			\
-+	".balign 4 \n\t"					\
-+	".popsection\n\t"
-+
 +/*
 + * This macro marks the given function's stack frame as "non-standard", which
 + * tells objtool to ignore the function when doing stack metadata validation.
@@ -535,8 +298,6 @@ index 0000000..ab82c79
 +	static void __used __section(.discard.func_stack_frame_non_standard) \
 +		*__func_stack_frame_non_standard_##func = func
 +
-+#else /* __ASSEMBLY__ */
-+
 +/*
 + * This macro indicates that the following intra-function call is valid.
 + * Any non-annotated intra-function call will cause objtool to issue a warning.
@@ -547,145 +308,37 @@ index 0000000..ab82c79
 +	.long 999b;						\
 +	.popsection;
 +
-+/*
-+ * In asm, there are two kinds of code: normal C-type callable functions and
-+ * the rest.  The normal callable functions can be called by other code, and
-+ * don't do anything unusual with the stack.  Such normal callable functions
-+ * are annotated with the ENTRY/ENDPROC macros.  Most asm code falls in this
-+ * category.  In this case, no special debugging annotations are needed because
-+ * objtool can automatically generate the ORC data for the ORC unwinder to read
-+ * at runtime.
-+ *
-+ * Anything which doesn't fall into the above category, such as syscall and
-+ * interrupt handlers, tends to not be called directly by other functions, and
-+ * often does unusual non-C-function-type things with the stack pointer.  Such
-+ * code needs to be annotated such that objtool can understand it.  The
-+ * following CFI hint macros are for this type of code.
-+ *
-+ * These macros provide hints to objtool about the state of the stack at each
-+ * instruction.  Objtool starts from the hints and follows the code flow,
-+ * making automatic CFI adjustments when it sees pushes and pops, filling out
-+ * the debuginfo as necessary.  It will also warn if it sees any
-+ * inconsistencies.
-+ */
-+.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
-+.Lunwind_hint_ip_\@:
-+	.pushsection .discard.unwind_hints
-+		/* struct unwind_hint */
-+		.long .Lunwind_hint_ip_\@ - .
-+		.short \sp_offset
-+		.byte \sp_reg
-+		.byte \type
-+		.byte \end
-+		.balign 4
-+	.popsection
-+.endm
-+
-+#endif /* __ASSEMBLY__ */
-+
 +#else /* !CONFIG_STACK_VALIDATION */
 +
-+#ifndef __ASSEMBLY__
-+
-+#define UNWIND_HINT(sp_reg, sp_offset, type, end)	\
-+	"\n\t"
 +#define STACK_FRAME_NON_STANDARD(func)
-+#else
 +#define ANNOTATE_INTRA_FUNCTION_CALL
-+.macro UNWIND_HINT sp_reg:req sp_offset=0 type:req end=0
-+.endm
-+#endif
 +
 +#endif /* CONFIG_STACK_VALIDATION */
 +
 +#endif /* _LINUX_OBJTOOL_H */
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index a94ad88..95c6e0d 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -14,6 +14,7 @@
- #include "warn.h"
- #include "arch_elf.h"
- 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ed0b357..03e2848 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -25,7 +25,7 @@
+ #include <linux/moduleloader.h>
+ #include <linux/bpf.h>
+ #include <linux/btf.h>
+-#include <linux/frame.h>
 +#include <linux/objtool.h>
- #include <linux/hashtable.h>
- #include <linux/kernel.h>
- #include <linux/static_call_types.h>
-@@ -1805,7 +1806,8 @@ static int update_cfi_state(struct instruction *insn, struct cfi_state *cfi,
- 		return 0;
- 	}
- 
--	if (cfi->type == ORC_TYPE_REGS || cfi->type == ORC_TYPE_REGS_IRET)
-+	if (cfi->type == UNWIND_HINT_TYPE_REGS ||
-+	    cfi->type == UNWIND_HINT_TYPE_REGS_PARTIAL)
- 		return update_cfi_state_regs(insn, cfi, op);
- 
- 	switch (op->dest.type) {
-diff --git a/tools/objtool/orc_dump.c b/tools/objtool/orc_dump.c
-index fca46e0..5e6a953 100644
---- a/tools/objtool/orc_dump.c
-+++ b/tools/objtool/orc_dump.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <unistd.h>
+ #include <linux/rbtree_latch.h>
+ #include <linux/kallsyms.h>
+ #include <linux/rcupdate.h>
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index c19c0da..c5e5e5a 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -36,7 +36,7 @@
+ #include <linux/syscore_ops.h>
+ #include <linux/compiler.h>
+ #include <linux/hugetlb.h>
+-#include <linux/frame.h>
 +#include <linux/objtool.h>
- #include <asm/orc_types.h>
- #include "objtool.h"
- #include "warn.h"
-@@ -37,12 +38,12 @@ static const char *reg_name(unsigned int reg)
- static const char *orc_type_name(unsigned int type)
- {
- 	switch (type) {
--	case ORC_TYPE_CALL:
-+	case UNWIND_HINT_TYPE_CALL:
- 		return "call";
--	case ORC_TYPE_REGS:
-+	case UNWIND_HINT_TYPE_REGS:
- 		return "regs";
--	case ORC_TYPE_REGS_IRET:
--		return "iret";
-+	case UNWIND_HINT_TYPE_REGS_PARTIAL:
-+		return "regs (partial)";
- 	default:
- 		return "?";
- 	}
-diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
-index 22fe439..235663b 100644
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -6,6 +6,9 @@
- #include <stdlib.h>
- #include <string.h>
  
-+#include <linux/objtool.h>
-+#include <asm/orc_types.h>
-+
- #include "check.h"
- #include "warn.h"
- 
-@@ -146,7 +149,7 @@ int create_orc_sections(struct objtool_file *file)
- 	struct orc_entry empty = {
- 		.sp_reg = ORC_REG_UNDEFINED,
- 		.bp_reg  = ORC_REG_UNDEFINED,
--		.type    = ORC_TYPE_CALL,
-+		.type    = UNWIND_HINT_TYPE_CALL,
- 	};
- 
- 	sec = find_section_by_name(file->elf, ".orc_unwind");
-diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
-index cea1c12..606a4b5 100755
---- a/tools/objtool/sync-check.sh
-+++ b/tools/objtool/sync-check.sh
-@@ -6,8 +6,10 @@ if [ -z "$SRCARCH" ]; then
- 	exit 1
- fi
- 
-+FILES="include/linux/objtool.h"
-+
- if [ "$SRCARCH" = "x86" ]; then
--FILES="
-+FILES="$FILES
- arch/x86/include/asm/inat_types.h
- arch/x86/include/asm/orc_types.h
- arch/x86/include/asm/emulate_prefix.h
+ #include <asm/page.h>
+ #include <asm/sections.h>
