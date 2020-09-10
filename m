@@ -2,157 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B052644C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F6D2644CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbgIJKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729663AbgIJKwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:52:40 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77C0C0613ED;
-        Thu, 10 Sep 2020 03:52:38 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so5317202wmb.4;
-        Thu, 10 Sep 2020 03:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xqxwM/Mvfa18vvLY/SDCcgMXW/SBJ2dGdITvWLFzj1E=;
-        b=hc08PSXfEdHk3COElKF3/mNchbHltsWM1NVW016Nef7xJ/Bu/gVPH54E6MsFKRgL3h
-         GKHbCyPIpoZqCeDsQzs5wMDpvQDI4pRY07pPOost7/lMarWSz+k7apLCCdPhDXN1RkGX
-         czsCIFE4B+dW3XXOyBCy1/5/CJac4LLyQjD+peyjlO+cxyRxlYewCTGAS/2oowKqjh+a
-         byRfHewsPXge4IFC+gMrI5ax1hyBFY/5rMBmMfc9KvD2qSyIhqwZ+7hHhk8JqCw3zSbb
-         xMC6QkmkvtdhzCMh6TIDMpAxtn4kCukPD5PHdN5pzWbgnAvGJnS8DqtTqscJYfyyVqZH
-         i3Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xqxwM/Mvfa18vvLY/SDCcgMXW/SBJ2dGdITvWLFzj1E=;
-        b=BYW8XkeQ0nEzYFxJQx9LaWDC2wFA8WZcJE7pN1WC3fo6kpKuzAc8pSUbyPEuUZOePF
-         rDwoM8hIvt15DJtJOpo3o8HOFGJxFFivJ7a5mxA8dZZAtE6UuZ3XosdXD/Mb5azlmcf9
-         JN8dV0oBE6qkuYygib4hDM6L2aer88OiuHCzkDFN5+ojvRW4+WDBxvnCNFYGLSBjWOZh
-         qgtbXJAqaUzRdnGeVVPtt8FR7gKS2TFJPAdb2sqLznppKKujutRjsRWmMhdkc0rA793Y
-         z/uWcE5tCskVSRdzz+HosX+s52RqROY4EIgkWhHaMZp0PHB5y861GT2x+9jr0gBaZktM
-         OypQ==
-X-Gm-Message-State: AOAM530WCS188QfU8ThEPRmxNf0/6VCoYjK2ltp/HZzT/DStoPVRWWXh
-        Y66N9zgdFXCRBuLSHeSEGVV66fS6vEo=
-X-Google-Smtp-Source: ABdhPJwk1Wpe3AlLx/+HN1qYohBdzkjzG9xzrHBAw7o7z5BWCvFB04lhR2xSpqcNQYSX+4AgqzKdNg==
-X-Received: by 2002:a1c:cc0d:: with SMTP id h13mr7614433wmb.44.1599735157246;
-        Thu, 10 Sep 2020 03:52:37 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id a74sm3129769wme.11.2020.09.10.03.52.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 03:52:36 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64: dts: mt8183-kukui: add scp node
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Erin Lo <erin.lo@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200909081422.2412795-1-pihsun@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <161d403a-2a3a-3365-1bb2-5067e8fb7cb8@gmail.com>
-Date:   Thu, 10 Sep 2020 12:52:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730559AbgIJK41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:56:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730604AbgIJKxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:53:23 -0400
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1CE221D6C;
+        Thu, 10 Sep 2020 10:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599735202;
+        bh=426DpA/GVvBchbCt06SpJGjKU4je/b+dpqllLf+JSR8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0V/e/wz1WenVmC3pPaGFBHAG/lV6TCw7GufciP4TkPqRCrKXD3PaFc+keE0TVmYpO
+         76fSGs6njLQh7PZ0I7aXGhNddj1O7NSuxz62HPYrd/HV3MldvZVYMAnf9sW7+yMEVP
+         dJ9JqVaroKHlr3UI74JE3IE0+KZY/lARcC/6l09M=
+Received: by mail-ej1-f46.google.com with SMTP id z22so8016890ejl.7;
+        Thu, 10 Sep 2020 03:53:21 -0700 (PDT)
+X-Gm-Message-State: AOAM532ndb6fn6dvJK+d+byCcdnNk1gSqIi4f9PnlThyGlKdWWkkFFXt
+        RldEvRUGSZhxVv3Db8qW7fYgCtC9H2uAOsc+hqI=
+X-Google-Smtp-Source: ABdhPJxuiAoiRqYvlmScHBYbVBWNtkR54i9+ci/6nlyH6E1t5+auTks3zPtO7XvjIZZjtpRLYuxY1yLuT2dJygU0JIk=
+X-Received: by 2002:a17:906:af53:: with SMTP id ly19mr7845762ejb.503.1599735200004;
+ Thu, 10 Sep 2020 03:53:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200909081422.2412795-1-pihsun@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200906153654.2925-1-krzk@kernel.org> <20200906153654.2925-2-krzk@kernel.org>
+ <20200908194520.GA786466@bogus>
+In-Reply-To: <20200908194520.GA786466@bogus>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 10 Sep 2020 12:53:07 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeexek3Dq1Ly6z=PO51ULTWy+v13i-NDQm-Mz8YAET+iA@mail.gmail.com>
+Message-ID: <CAJKOXPeexek3Dq1Ly6z=PO51ULTWy+v13i-NDQm-Mz8YAET+iA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] dt-bindings: net: nfc: s3fwrn5: Convert to dtschema
+To:     Rob Herring <robh@kernel.org>
+Cc:     netdev@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-nfc@lists.01.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 8 Sep 2020 at 21:45, Rob Herring <robh@kernel.org> wrote:
+>
+> On Sun, 06 Sep 2020 17:36:46 +0200, Krzysztof Kozlowski wrote:
+> > Convert the Samsung S3FWRN5 NCI NFC controller bindings to dtschema.
+> > This is conversion only so it includes properties with invalid prefixes
+> > (s3fwrn5,en-gpios) which should be addressed later.
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> >  .../devicetree/bindings/net/nfc/s3fwrn5.txt   | 25 --------
+> >  .../bindings/net/nfc/samsung,s3fwrn5.yaml     | 61 +++++++++++++++++++
+> >  MAINTAINERS                                   |  1 +
+> >  3 files changed, 62 insertions(+), 25 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/net/nfc/s3fwrn5.t=
+xt
+> >  create mode 100644 Documentation/devicetree/bindings/net/nfc/samsung,s=
+3fwrn5.yaml
+> >
+>
+>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> ./Documentation/devicetree/bindings/net/nfc/samsung,s3fwrn5.yaml: $id: re=
+lative path/filename doesn't match actual path or filename
+>         expected: http://devicetree.org/schemas/net/nfc/samsung,s3fwrn5.y=
+aml#
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/=
+nfc/samsung,s3fwrn5.example.dt.yaml: s3fwrn5@27: 's3fwrn5,en-gpios', 's3fwr=
+n5,fw-gpios' do not match any of the regexes: '^#.*', '^(at25|devbus|dmacap=
+|dsa|exynos|fsi[ab]|gpio-fan|gpio|gpmc|hdmi|i2c-gpio),.*', '^(keypad|m25p|m=
+ax8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pinctrl-single|PowerPC=
+),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*', '^(si=
+mple-audio-card|st-plgpio|st-spics|ts),.*', '^70mai,.*', '^GEFanuc,.*', '^O=
+RCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{0,63}$', '^[a-zA-Z0-=
+9+\\-._]*@[0-9a-zA-Z,]*$', '^abilis,.*', '^abracon,.*', '^acer,.*', '^acme,=
+.*', '^actions,.*', '^active-semi,.*', '^ad,.*', '^adafruit,.*', '^adapteva=
+,.*', '^adaptrum,.*', '^adh,.*', '^adi,.*', '^advantech,.*', '^aeroflexgais=
+ler,.*', '^al,.*', '^allegro,.*', '^allo,.*', '^allwinner,.*', '^alphascale=
+,.*', '^alps,.*', '^altr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^am=
+d,.*', '^amediatech,.*', '^amlogic,.*', '^ampire,.*', '^ams,.*', '^amstaos,=
+.*', '^analogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^aptina,.*', =
+'^arasan,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^ar=
+m,.*', '^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc=
+,.*', '^aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvi=
+dea,.*', '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^awinic,.*', '^=
+axentia,.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^baikal,.*', '^bananapi,=
+.*', '^beacon,.*', '^beagle,.*', '^bhf,.*', '^bitmain,.*', '^boe,.*', '^bos=
+ch,.*', '^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffa=
+lo,.*', '^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^capella,.*', '^casc=
+oda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^cellwise=
+,.*', '^ceva,.*', '^checkpoint,.*', '^chipidea,.*', '^chipone,.*', '^chipsp=
+ark,.*', '^chrontel,.*', '^chrp,.*', '^chunghwa,.*', '^chuwi,.*', '^ciaa,.*=
+', '^cirrus,.*', '^cloudengines,.*', '^cnm,.*', '^cnxt,.*', '^colorfly,.*',=
+ '^compulab,.*', '^coreriver,.*', '^corpro,.*', '^cortina,.*', '^cosmic,.*'=
+, '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^csky,.*', '^csq,.*', '=
+^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,.*', '^dataimage,.*', =
+'^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '^devantech,.*', '^dh,.=
+*', '^difrnce,.*', '^digi,.*', '^digilent,.*', '^dioo,.*', '^dlc,.*', '^dlg=
+,.*', '^dlink,.*', '^dmo,.*', '^domintech,.*', '^dongwoon,.*', '^dptechnics=
+,.*', '^dragino,.*', '^dserve,.*', '^dynaimage,.*', '^ea,.*', '^ebs-systart=
+,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*', '^eeti,.*', '^einfochips,.*', =
+'^elan,.*', '^elgin,.*', '^elida,.*', '^embest,.*', '^emlid,.*', '^emmicro,=
+.*', '^empire-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^en=
+ergymicro,.*', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.=
+*', '^est,.*', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^=
+evervision,.*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^f=
+airphone,.*', '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feixin,.*', '^feiy=
+ang,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^=
+fsl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*'=
+, '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*',=
+ '^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.=
+*', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hanns=
+tar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hisili=
+con,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*', '^honeywell,.*',=
+ '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hugsun,.*', '^hwacom,.*', '^hydis,.*=
+', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '^icplus,.*', '^idt,.*', '^ifi,.*'=
+, '^ilitek,.*', '^img,.*', '^imi,.*', '^incircuit,.*', '^inet-tek,.*', '^in=
+fineon,.*', '^inforce,.*', '^ingenic,.*', '^innolux,.*', '^inside-secure,.*=
+', '^inspur,.*', '^intel,.*', '^intercontrol,.*', '^invensense,.*', '^inver=
+sepath,.*', '^iom,.*', '^isee,.*', '^isil,.*', '^issi,.*', '^ite,.*', '^ite=
+ad,.*', '^ivo,.*', '^iwave,.*', '^jdi,.*', '^jedec,.*', '^jesurun,.*', '^ji=
+anda,.*', '^kam,.*', '^karo,.*', '^keithkoep,.*', '^keymile,.*', '^khadas,.=
+*', '^kiebackpeter,.*', '^kinetic,.*', '^kingdisplay,.*', '^kingnovel,.*', =
+'^kionix,.*', '^kobo,.*', '^koe,.*', '^kontron,.*', '^kosagi,.*', '^kyo,.*'=
+, '^lacie,.*', '^laird,.*', '^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^le=
+adtek,.*', '^leez,.*', '^lego,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '=
+^lgphilips,.*', '^libretech,.*', '^licheepi,.*', '^linaro,.*', '^linksprite=
+,.*', '^linksys,.*', '^linutronix,.*', '^linux,.*', '^linx,.*', '^lltc,.*',=
+ '^logicpd,.*', '^logictechno,.*', '^longcheer,.*', '^loongson,.*', '^lsi,.=
+*', '^lwn,.*', '^lxa,.*', '^macnica,.*', '^mapleboard,.*', '^marvell,.*', '=
+^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*', '^mecer,.*=
+', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*', '^melfas,.*'=
+, '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^merrii,.*', '^micrel,.*', '^=
+microchip,.*', '^microcrystal,.*', '^micron,.*', '^microsoft,.*', '^mikroe,=
+.*', '^mikrotik,.*', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubis=
+hi,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*',=
+ '^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mstar,.*', '^mti,.*', =
+'^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*',=
+ '^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '=
+^netron-dy,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*',=
+ '^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordi=
+c,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.=
+*', '^nxp,.*', '^oceanic,.*', '^okaya,.*', '^oki,.*', '^olimex,.*', '^olpc,=
+.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^opencores,.*'=
+, '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^ortustech,=
+.*', '^osddisplays,.*', '^overkiz,.*', '^ovti,.*', '^oxsemi,.*', '^ozzmaker=
+,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', '^pda,.*', '^pericom,.=
+*', '^pervasive,.*', '^phicomm,.*', '^phytec,.*', '^picochip,.*', '^pine64,=
+.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', '^plathome,.*', '^plda=
+,.*', '^plx,.*', '^pni,.*', '^pocketbook,.*', '^polaroid,.*', '^portwell,.*=
+', '^poslab,.*', '^pov,.*', '^powervr,.*', '^primux,.*', '^probox2,.*', '^p=
+rt,.*', '^pulsedlight,.*', '^purism,.*', '^qca,.*', '^qcom,.*', '^qemu,.*',=
+ '^qi,.*', '^qiaodian,.*', '^qihua,.*', '^qnap,.*', '^radxa,.*', '^raidsoni=
+c,.*', '^ralink,.*', '^ramtron,.*', '^raspberrypi,.*', '^raydium,.*', '^rda=
+,.*', '^realtek,.*', '^renesas,.*', '^rervision,.*', '^richtek,.*', '^ricoh=
+,.*', '^rikomagic,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^rohm,=
+.*', '^ronbo,.*', '^roofull,.*', '^samsung,.*', '^samtec,.*', '^sancloud,.*=
+', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,.*', '^seagate,.*', '=
+^seirobotics,.*', '^semtech,.*', '^sensirion,.*', '^sensortek,.*', '^sff,.*=
+', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '^sharp,.*', '^shimafuji,.*', '^shi=
+ratech,.*', '^si-en,.*', '^si-linux,.*', '^sifive,.*', '^sigma,.*', '^sii,.=
+*', '^sil,.*', '^silabs,.*', '^silead,.*', '^silergy,.*', '^silex-insight,.=
+*', '^siliconmitus,.*', '^simtek,.*', '^sinlinx,.*', '^sinovoip,.*', '^sipe=
+ed,.*', '^sirf,.*', '^sis,.*', '^sitronix,.*', '^skyworks,.*', '^smartlabs,=
+.*', '^smsc,.*', '^snps,.*', '^sochip,.*', '^socionext,.*', '^solidrun,.*',=
+ '^solomon,.*', '^sony,.*', '^spansion,.*', '^sprd,.*', '^sst,.*', '^sstar,=
+.*', '^st,.*', '^st-ericsson,.*', '^starry,.*', '^startek,.*', '^ste,.*', '=
+^stericsson,.*', '^summit,.*', '^sunchip,.*', '^swir,.*', '^syna,.*', '^syn=
+ology,.*', '^tbs,.*', '^tbs-biometrics,.*', '^tcg,.*', '^tcl,.*', '^technex=
+ion,.*', '^technologic,.*', '^techstar,.*', '^tempo,.*', '^terasic,.*', '^t=
+fc,.*', '^thine,.*', '^thingyjp,.*', '^ti,.*', '^tianma,.*', '^tlm,.*', '^t=
+mt,.*', '^topeet,.*', '^toppoly,.*', '^topwise,.*', '^toradex,.*', '^toshib=
+a,.*', '^toumaz,.*', '^tpk,.*', '^tplink,.*', '^tpo,.*', '^tq,.*', '^tronfy=
+,.*', '^tronsmart,.*', '^truly,.*', '^tsd,.*', '^tyan,.*', '^u-blox,.*', '^=
+u-boot,.*', '^ubnt,.*', '^ucrobotics,.*', '^udoo,.*', '^ugoos,.*', '^uniwes=
+t,.*', '^upisemi,.*', '^urt,.*', '^usi,.*', '^utoo,.*', '^v3,.*', '^vaisala=
+,.*', '^vamrs,.*', '^variscite,.*', '^via,.*', '^videostrong,.*', '^virtio,=
+.*', '^vishay,.*', '^visionox,.*', '^vitesse,.*', '^vivante,.*', '^vocore,.=
+*', '^voipac,.*', '^vot,.*', '^vxt,.*', '^waveshare,.*', '^wd,.*', '^we,.*'=
+, '^wetek,.*', '^wexler,.*', '^whwave,.*', '^wi2wi,.*', '^winbond,.*', '^wi=
+nstar,.*', '^wits,.*', '^wlf,.*', '^wm,.*', '^wobo,.*', '^x-powers,.*', '^x=
+es,.*', '^xiaomi,.*', '^xillybus,.*', '^xingbangda,.*', '^xinpeng,.*', '^xl=
+nx,.*', '^xnano,.*', '^xunlong,.*', '^xylon,.*', '^ylm,.*', '^yna,.*', '^yo=
+nes-toptech,.*', '^ysoft,.*', '^zarlink,.*', '^zeitec,.*', '^zidoo,.*', '^z=
+ii,.*', '^zte,.*', '^zyxel,.*'
+>         From schema: /builds/robherring/linux-dt-review/Documentation/dev=
+icetree/bindings/vendor-prefixes.yaml
 
+ My bad, I'll send v3.
 
-On 09/09/2020 10:14, Pi-Hsun Shih wrote:
-> Add scp node to mt8183-kukui
-> 
-> Fixes: 0d5e41709f76 ("arm64: dts: mt8183: add scp node")
-> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-
-Applied to v5.9-next/dts64
-
-I squashed this fix with the first patch to maintain bisectability.
-
-Thanks!
-
-> ---
-> 
-> Change since v1:
-> * Add Fixes tag.
-> 
-> ---
->   .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 30 +++++++++++++++++++
->   1 file changed, 30 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index f0a070535b34..85f7c33ba446 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -90,6 +90,18 @@ pp3300_alw: regulator6 {
->   		regulator-max-microvolt = <3300000>;
->   	};
->   
-> +	reserved_memory: reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		scp_mem_reserved: scp_mem_region {
-> +			compatible = "shared-dma-pool";
-> +			reg = <0 0x50000000 0 0x2900000>;
-> +			no-map;
-> +		};
-> +	};
-> +
->   	max98357a: codec0 {
->   		compatible = "maxim,max98357a";
->   		sdmode-gpios = <&pio 175 0>;
-> @@ -524,6 +536,13 @@ pins_clk {
->   		};
->   	};
->   
-> +	scp_pins: scp {
-> +		pins_scp_uart {
-> +			pinmux = <PINMUX_GPIO110__FUNC_TP_URXD1_AO>,
-> +				 <PINMUX_GPIO112__FUNC_TP_UTXD1_AO>;
-> +		};
-> +	};
-> +
->   	spi0_pins: spi0 {
->   		pins_spi{
->   			pinmux = <PINMUX_GPIO85__FUNC_SPI0_MI>,
-> @@ -651,6 +670,17 @@ pins_wifi_wakeup {
->   	};
->   };
->   
-> +&scp {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&scp_pins>;
-> +
-> +	cros_ec {
-> +		compatible = "google,cros-ec-rpmsg";
-> +		mtk,rpmsg-name = "cros-ec-rpmsg";
-> +	};
-> +};
-> +
->   &soc_data {
->   	status = "okay";
->   };
-> 
+Best regards,
+Krzysztof
