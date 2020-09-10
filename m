@@ -2,104 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2DF264A00
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A090264A5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIJQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgIJQh5 (ORCPT
+        id S1726899AbgIJQyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:54:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41162 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgIJQiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:37:57 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00CBC0617AB;
-        Thu, 10 Sep 2020 09:37:18 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id o16so6682127qkj.10;
-        Thu, 10 Sep 2020 09:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JdFFsE37eiFTRP6BERxF8cO71XTx86+LjItRyfR3qXo=;
-        b=ClOsXW2gu5WYa1DOpSj8Qg6yWGAGzcCI2Y3HA3bciB+WiLOoamEyLaQmn2CqQ0P3wJ
-         fgMTx+umTjA9TeAfZqBrN12gEo5pDLbYZInQ/zTIt2a0XX/VALOFw3Fi4CGDriyA4fXv
-         TP4g7DMxSr+OVQTUJFkz5Qn4y2VxdeXA3PdyzJ8W1uuAbaBQ/LKeydAH0KPwJIysUB8w
-         JZgaJw6/uWPmqydgxe8iTR4ToAgQ8G7G4AuKOCgvxtmV+zhFXrUikBceIuBMBFKYzqgO
-         3qlGjxVfXub25qXG/VxaqxoKpmrp4EJsyF/fZNCc0sF+3tWYTMMjJXOMrduNQjzphCHd
-         P1pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JdFFsE37eiFTRP6BERxF8cO71XTx86+LjItRyfR3qXo=;
-        b=b3/N7Xn1r/fe9EMQFBmmzSGqLksI4+6bVq4kkR4Q5y/jAQLqqyiGWi7athnaylU/dw
-         3P/YQSq9AN+XrafciJSvcLpEN9KhKVAcsQy7iU0L7BMeSwXlkh28asaBEkDCEy1m8sPG
-         AxrwXxar+G4427jknWnXzgFcEjW68UoMU2Cfy1L/zaNNocie1qSp0zYzK9XdGurk79ot
-         kaS9OfC18F3bvQuqiEFX5RzubkwOZuQL1F8AWEEkFoP6vrYCv8T9DvefaAMoyTTow/bB
-         Y7QNObf8VSynC8WMVebRNxvsuPBoKg0IQv1g6pVxRu37WEUmdnLe9WBVO90jhahwqqpI
-         vSCg==
-X-Gm-Message-State: AOAM5302c1BgfFxMBsKRa+BCpydKxhy6bXqd0JofJGNnFU6gBBUnmWcC
-        snNgKkDOhApbZc0neHHyM6UygzasA4A=
-X-Google-Smtp-Source: ABdhPJwmIWRMgSWl7iXkstmJ0pPLM9KnhtDIQ7NDzOEjOhXb6+ZuSpcZwFhxi6ViIB0BIKX8qUa5Dw==
-X-Received: by 2002:a37:e508:: with SMTP id e8mr8499277qkg.380.1599755837906;
-        Thu, 10 Sep 2020 09:37:17 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id y7sm7245670qtn.11.2020.09.10.09.37.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 09:37:17 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 09:37:16 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] kbuild: remove cc-option test of -fno-stack-check
-Message-ID: <20200910163716.GC3119896@ubuntu-n2-xlarge-x86>
-References: <20200910135120.3527468-1-masahiroy@kernel.org>
- <20200910135120.3527468-3-masahiroy@kernel.org>
+        Thu, 10 Sep 2020 12:38:17 -0400
+Date:   Thu, 10 Sep 2020 16:37:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599755865;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=swb/GFKEUcMl6eydIdfu3mru6VX/JUoaSCA+xSouJ7s=;
+        b=S9mE3rMrc8Z3kBHoiyH7BoB8Zk88rtZHKQZ3a15WutxsLGhNIpuz3GUAawtoE8XVn8kErc
+        mNUaDeNQPyvqKThFGIs5AUK/OxtPp9DtWZ7S5LrWI2hAtfsOdQnqbgkSg1zTZfCV1ic5Rv
+        36DIao8oSl5nUoBxlqTaY6vgsPCHG+BBTHo12AzRKlUKH4p6eygnVb/Qfp4RiV8O02ozRB
+        KXqpsYRG2V3rX5C8ilyrgOQgU7TFgeH7g1QwLG8SmuCfCK3F8H8Izclvl9+gHs/9gPHViI
+        7UcjwMsE3tPiXAeT53qvqI84jSaTMivaGuWudtIsyw2lYK96RHZia0RcS7NecQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599755865;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=swb/GFKEUcMl6eydIdfu3mru6VX/JUoaSCA+xSouJ7s=;
+        b=5CY65HomqyX89UGxBYP8iJh8OmbmlITyl+hJRf88LcTDg71O/mzotiq//KZiTBPqgkf9AC
+        68jcz3hacJbNdIAw==
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/fpu] x86/fpu: Allow multiple bits in clearcpuid= parameter
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200907213919.2423441-1-nivedita@alum.mit.edu>
+References: <20200907213919.2423441-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910135120.3527468-3-masahiroy@kernel.org>
+Message-ID: <159975586380.20229.16836491177743031748.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:51:19PM +0900, Masahiro Yamada wrote:
-> The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
-> 
-> Here is the godbolt:
-> https://godbolt.org/z/59cK6o
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+The following commit has been merged into the x86/fpu branch of tip:
 
-This flag is technically ignored by clang (see commit
-05b0798916f01690b5903302e51f3136274e291f) but that obviously does not
-matter for the sake of this.
+Commit-ID:     0a4bb5e5507a585532cc413125b921c8546fc39f
+Gitweb:        https://git.kernel.org/tip/0a4bb5e5507a585532cc413125b921c8546fc39f
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Mon, 07 Sep 2020 17:39:19 -04:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 10 Sep 2020 18:32:05 +02:00
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+x86/fpu: Allow multiple bits in clearcpuid= parameter
 
-> ---
-> 
->  Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 1b6abecc5cab..5102c89d3167 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -934,7 +934,7 @@ KBUILD_CFLAGS	+= -fno-merge-all-constants
->  KBUILD_CFLAGS	+= $(call cc-option,-fmerge-constants)
->  
->  # Make sure -fstack-check isn't enabled (like gentoo apparently did)
-> -KBUILD_CFLAGS  += $(call cc-option,-fno-stack-check,)
-> +KBUILD_CFLAGS  += -fno-stack-check
->  
->  # conserve stack if available
->  KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
-> -- 
-> 2.25.1
-> 
+Commit
+
+  0c2a3913d6f5 ("x86/fpu: Parse clearcpuid= as early XSAVE argument")
+
+changed clearcpuid parsing from __setup() to cmdline_find_option().
+While the __setup() function would have been called for each clearcpuid=
+parameter on the command line, cmdline_find_option() will only return
+the last one, so the change effectively made it impossible to disable
+more than one bit.
+
+Allow a comma-separated list of bit numbers as the argument for
+clearcpuid to allow multiple bits to be disabled again. Log the bits
+being disabled for informational purposes.
+
+Also fix the check on the return value of cmdline_find_option(). It
+returns -1 when the option is not found, so testing as a boolean is
+incorrect.
+
+Fixes: 0c2a3913d6f5 ("x86/fpu: Parse clearcpuid= as early XSAVE argument")
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200907213919.2423441-1-nivedita@alum.mit.edu
+---
+ Documentation/admin-guide/kernel-parameters.txt |  2 +-
+ arch/x86/kernel/fpu/init.c                      | 30 +++++++++++-----
+ 2 files changed, 23 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a106874..ffe8643 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -577,7 +577,7 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
+ 
+-	clearcpuid=BITNUM [X86]
++	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
+ 			numbers. Note the Linux specific bits are not necessarily
+diff --git a/arch/x86/kernel/fpu/init.c b/arch/x86/kernel/fpu/init.c
+index 61ddc3a..f8ff895 100644
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -243,9 +243,9 @@ static void __init fpu__init_system_ctx_switch(void)
+  */
+ static void __init fpu__init_parse_early_param(void)
+ {
+-	char arg[32];
++	char arg[128];
+ 	char *argptr = arg;
+-	int bit;
++	int arglen, res, bit;
+ 
+ #ifdef CONFIG_X86_32
+ 	if (cmdline_find_option_bool(boot_command_line, "no387"))
+@@ -268,12 +268,26 @@ static void __init fpu__init_parse_early_param(void)
+ 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+ 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+ 
+-	if (cmdline_find_option(boot_command_line, "clearcpuid", arg,
+-				sizeof(arg)) &&
+-	    get_option(&argptr, &bit) &&
+-	    bit >= 0 &&
+-	    bit < NCAPINTS * 32)
+-		setup_clear_cpu_cap(bit);
++	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
++	if (arglen <= 0)
++		return;
++
++	pr_info("Clearing CPUID bits:");
++	do {
++		res = get_option(&argptr, &bit);
++		if (res == 0 || res == 3)
++			break;
++
++		/* If the argument was too long, the last bit may be cut off */
++		if (res == 1 && arglen >= sizeof(arg))
++			break;
++
++		if (bit >= 0 && bit < NCAPINTS * 32) {
++			pr_cont(" " X86_CAP_FMT, x86_cap_flag(bit));
++			setup_clear_cpu_cap(bit);
++		}
++	} while (res == 2);
++	pr_cont("\n");
+ }
+ 
+ /*
