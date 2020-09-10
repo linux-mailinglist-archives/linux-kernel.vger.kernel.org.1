@@ -2,142 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B812653EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B16F265494
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729525AbgIJL4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 07:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730461AbgIJLwj (ORCPT
+        id S1725824AbgIJV6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:58:42 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22698 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730206AbgIJLlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 07:52:39 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA194C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 04:27:08 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id v23so7720498ljd.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 04:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V+CYbVm4iZfylHr6znJ5scB0pwHaun1/ypbLhvCUlfc=;
-        b=QsIexGgIAuGkeoJXnsOrSqsMS8jJL57GWSjVe7NGaxMs8A+Z7aCmpgDxGYUqY0Wtm+
-         xjwsavqFNoYEe8AZBkXDebkYkDwOF9fC5DA+s3ivpdvf3qUA1GABJGQcVMbHUikjm2W9
-         WAU3Xxm5RFedDwnZk3oaimOg6pP8quIBa7Vao=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V+CYbVm4iZfylHr6znJ5scB0pwHaun1/ypbLhvCUlfc=;
-        b=Zn2uCZcE+QwOej0KPflcaZEAOMFqfn6zQXYr8lPiTskGsN7UNacL0o7OJIVl3Rl66A
-         IHojLm9virFzMAizx2+6hLdpkmwORPOlgL8H27pEeX8PCJxw39WyRrlfcuW04+3aOPIj
-         2t8jv8iGEbdr3ta1gfLfjEtOV+aezW2jcwsXCkqhduymNN0FVZh00cDrOgEqti4NkFyA
-         la0xTTyxNPFkNzu4skfmaYjz8CLmxBQepV8Gx8gNUARnZ4Vf6WKif4omPTj9CLlGeGvL
-         ijYB55CCdGpNC6g0DXeVsfznlgXQ38cl/Ox/I19eTU/7fUQdU3EdEmIiZw2vlk/Qbvnm
-         /kGg==
-X-Gm-Message-State: AOAM533zdpwIUTuYkkQz1vBY4wkCXAsopfLv1yO8LNVmZODI0S6wD94g
-        BK9R7L8M3FMe5P2OQo+7NIZmvg==
-X-Google-Smtp-Source: ABdhPJyidIcrotwPAJy0jwKnzx667zz0YB0vd99e5F0WuTdgY1Swt9HojTbruWyoJNzTvib83UsJzw==
-X-Received: by 2002:a05:651c:ce:: with SMTP id 14mr4321344ljr.18.1599737227016;
-        Thu, 10 Sep 2020 04:27:07 -0700 (PDT)
-Received: from prevas-ravi.prevas.se (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id i187sm1280792lfd.65.2020.09.10.04.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 04:27:06 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/setlocalversion: make git describe output more reliable
-Date:   Thu, 10 Sep 2020 13:26:57 +0200
-Message-Id: <20200910112701.13853-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.23.0
+        Thu, 10 Sep 2020 07:41:46 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08ABXV2H086899;
+        Thu, 10 Sep 2020 07:35:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=43Zp61683vjVVWofNj/lwqGmm7TBNx9KEoiLeaHuiJw=;
+ b=ni4zoTFNhK2odYrOepHEOrN5j8lxasAW9h6S2BQDJdSrLCw9welaMGLGGPVU1vDgEgq5
+ G66NBANAHz4McE02a3cuF9JDroKS8fszer4zOmzwP7nHvj6cnFC/41nvWCaenKf6N+qA
+ bh56XLkUEcChS6w/5e3ssZ1lbbv4JZ4wy/IolUY/fIUZGwT2XoAr1+CwQn31nnNCnMx/
+ Xj8FnXLZag0C9blTpN73v7Lb0FQI9rNKEiPcdl4dB5y3IKfIViRzdQbS/uXNWdacfv6e
+ kb/G+CsJQBdyConQPz0jm3sUIDkyYKC7vkFlaPXyGPgyfwZIyFJuuf6Lh+NWxCve0WXQ QA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33fh2hmyxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 07:35:39 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08ABY51c089423;
+        Thu, 10 Sep 2020 07:35:38 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33fh2hmywv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 07:35:38 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08ABRKxc002916;
+        Thu, 10 Sep 2020 11:35:36 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 33dxdr35jn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 11:35:36 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08ABZXv036635092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Sep 2020 11:35:33 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6EA9DA4055;
+        Thu, 10 Sep 2020 11:35:33 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B76CBA4051;
+        Thu, 10 Sep 2020 11:35:32 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.147.189])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Sep 2020 11:35:32 +0000 (GMT)
+Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
+ operations
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>, rafael@kernel.org,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        stable@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+References: <5cbd92e1-c00a-4253-0119-c872bfa0f2bc@redhat.com>
+ <20200908170835.85440-1-ldufour@linux.ibm.com>
+ <20200909074011.GD7348@dhcp22.suse.cz>
+ <9faac1ce-c02d-7dbc-f79a-4aaaa5a73d28@linux.ibm.com>
+ <20200909090953.GE7348@dhcp22.suse.cz>
+ <4cdb54be-1a92-4ba4-6fee-3b415f3468a9@linux.ibm.com>
+ <20200909105914.GF7348@dhcp22.suse.cz>
+ <74a62b00-235e-7deb-2814-f3b240fea25e@linux.ibm.com>
+ <20200910072331.GB28354@dhcp22.suse.cz>
+ <31cfdf35-618f-6f56-ef16-0d999682ad02@linux.ibm.com>
+ <20200910111246.GE28354@dhcp22.suse.cz>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <bd6f2d09-f4e2-0a63-3511-e0f9bf283fe3@linux.ibm.com>
+Date:   Thu, 10 Sep 2020 13:35:32 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200910111246.GE28354@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ adultscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 malwarescore=0
+ spamscore=0 mlxlogscore=999 mlxscore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009100107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building for an embedded target using Yocto, we're sometimes
-observing that the version string that gets built into vmlinux (and
-thus what uname -a reports) differs from the path under /lib/modules/
-where modules get installed in the rootfs, but only in the length of
-the -gabc123def suffix. Hence modprobe always fails.
+Le 10/09/2020 à 13:12, Michal Hocko a écrit :
+> On Thu 10-09-20 09:51:39, Laurent Dufour wrote:
+>> Le 10/09/2020 à 09:23, Michal Hocko a écrit :
+>>> On Wed 09-09-20 18:07:15, Laurent Dufour wrote:
+>>>> Le 09/09/2020 à 12:59, Michal Hocko a écrit :
+>>>>> On Wed 09-09-20 11:21:58, Laurent Dufour wrote:
+>>> [...]
+>>>>>> For the point a, using the enum allows to know in
+>>>>>> register_mem_sect_under_node() if the link operation is due to a hotplug
+>>>>>> operation or done at boot time.
+>>>>>
+>>>>> Yes, but let me repeat. We have a mess here and different paths check
+>>>>> for the very same condition by different ways. We need to unify those.
+>>>>
+>>>> What are you suggesting to unify these checks (using a MP_* enum as
+>>>> suggested by David, something else)?
+>>>
+>>> We do have system_state check spread at different places. I would use
+>>> this one and wrap it behind a helper. Or have I missed any reason why
+>>> that wouldn't work for this case?
+>>
+>> That would not work in that case because memory can be hot-added at the
+>> SYSTEM_SCHEDULING system state and the regular memory is also registered at
+>> that system state too. So system state is not enough to discriminate between
+>> the both.
+> 
+> If that is really the case all other places need a fix as well.
+> Btw. could you be more specific about memory hotplug during early boot?
+> How that happens? I am only aware of https://lkml.kernel.org/r/20200818110046.6664-1-osalvador@suse.de
+> and that doesn't happen as early as SYSTEM_SCHEDULING.
 
-The problem is that Yocto has the concept of "sstate" (shared state),
-which allows different developers/buildbots/etc. to share build
-artifacts, based on a hash of all the metadata that went into building
-that artifact - and that metadata includes all dependencies (e.g. the
-compiler used etc.). That normally works quite well; usually a clean
-build (without using any sstate cache) done by one developer ends up
-being binary identical to a build done on another host. However, one
-thing that can cause two developers to end up with different builds
-[and thus make one's vmlinux package incompatible with the other's
-kernel-dev package], which is not captured by the metadata hashing, is
-this `git describe`: The output of that can be affected by
+That points has been raised by David, quoting him here:
 
-(1) git version: before 2.11 git defaulted to a minimum of 7, since
-2.11 (git.git commit e6c587) the default is dynamic based on the
-number of objects in the repo
-(2) hence even if both run the same git version, the output can differ
-based on how many remotes are being tracked (or just lots of local
-development branches or plain old garbage)
-(3) and of course somebody could have a core.abbrev config setting in
-~/.gitconfig
+> IIRC, ACPI can hotadd memory while SCHEDULING, this patch would break that.
+> 
+> Ccing Oscar, I think he mentioned recently that this is the case with ACPI.
 
-So in order to avoid `uname -a` output relying on such random details
-of the build environment which are rather hard to ensure are
-consistent between developers and buildbots, use an explicit
---abbrev=15 option (and for consistency, also use rev-parse --short=15
-for the unlikely case of no signed tags being usable).
+Oscar told that he need to investigate further on that.
 
-Now, why is 60 bits enough for everyone? It's not mathematically
-guaranteed that git won't have to use 16 in some git repo, but it is
-beyond unlikely: Even in a repo with 100M objects, the probability
-that any given commit (i.e. the one being described) clashes with some
-other object in the first 15 hex chars is less than 1e-10, and
-currently a git repo tracking Linus', -stable and -rt only has around
-10M objects.
+On my side I can't get these ACPI "early" hot-plug operations to happen so I 
+can't check that.
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
-I could probably fix things by adding a 'git config --local
-core.abbrev 15' step to the Yocto build process after the repo to
-build from has been cloned but before building has started. But in the
-interest of binary reproducibility outside of just Yocto builds, I
-think it's better if this lives in the kernel.
-
- scripts/setlocalversion | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-index 20f2efd57b11..c5262f0d953d 100755
---- a/scripts/setlocalversion
-+++ b/scripts/setlocalversion
-@@ -45,7 +45,7 @@ scm_version()
- 
- 	# Check for git and a git repo.
- 	if test -z "$(git rev-parse --show-cdup 2>/dev/null)" &&
--	   head=$(git rev-parse --verify --short HEAD 2>/dev/null); then
-+	   head=$(git rev-parse --verify --short=15 HEAD 2>/dev/null); then
- 
- 		# If we are at a tagged commit (like "v2.6.30-rc6"), we ignore
- 		# it, because this version is defined in the top level Makefile.
-@@ -59,7 +59,7 @@ scm_version()
- 			fi
- 			# If we are past a tagged commit (like
- 			# "v2.6.30-rc5-302-g72357d5"), we pretty print it.
--			if atag="$(git describe 2>/dev/null)"; then
-+			if atag="$(git describe --abbrev=15 2>/dev/null)"; then
- 				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),$(NF))}'
- 
- 			# If we don't have a tag at all we print -g{commitish}.
--- 
-2.23.0
-
+If this is clear that ACPI memory hotplug doesn't happen at SYSTEM_SCHEDULING, 
+the patch I proposed at first is enough to fix the issue.
