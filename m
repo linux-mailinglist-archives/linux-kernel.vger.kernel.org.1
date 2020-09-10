@@ -2,246 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD12263AAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC5B263B0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbgIJCkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730627AbgIJCII (ORCPT
+        id S1730179AbgIJCyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:54:14 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:49051 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730193AbgIJB4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:08:08 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB1FC061359
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 17:49:06 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d16so54484pll.13
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 17:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Gbp5El4soX0C+z5m/RfNuwNwoyYLjPi9BYBBMtXuagI=;
-        b=YnVaEwNWE04/qKnEH3GPtGIsOyarRr+pjd3r6DnJAnGIUasut5Q5KzzCacETsTql7z
-         tIJh8GGCblJiCJgWOL/dR2LQ9uPSdtGuG98213yGcoN573Fqhowyb65/3r0e6MSjnGem
-         QpFwPTr6M/d+nyHFyWCdadvmccgM7OskSBy4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Gbp5El4soX0C+z5m/RfNuwNwoyYLjPi9BYBBMtXuagI=;
-        b=ueuq0EOkziDDD7RHc+H41c5jkWpCp1QsEpmrJH4H2GCtwfRzRvAtlr5KNqA8PylPl1
-         DWn2Os2nbeIiORel2v12FsqsVoeG+r+YDNo+kHHPmz0SZvuVst4M8w+GfMsFq1QEW3C2
-         tYoXIKDsAc31EUdNgERPH6IO2vsgttHZ3efs4J+1Li5REI8KAtSNu3gd4IDXehzvz6MD
-         92JSjquBR0JfwkHAMGCjUf5/JlJ+9yyyd8oSSFUoXu/Gdvm2dEnE5GN21Iq7Bz40bCsa
-         YdXD9uTon/Z4rpANFWOb0sUFPVBhR0uJdCt5l2TaodSbrvrkiMIZyyyDlKiJfas4LPWN
-         hvxA==
-X-Gm-Message-State: AOAM531kj1Jx7Gh3fYb6Cwl+9jAyURvdKUE+d3HGa+M1HG1AGEoSJKZq
-        gWZ9RVvDWPWYy3rlz+tGJeznNA==
-X-Google-Smtp-Source: ABdhPJxQlkMNF9bBiBU9hk9zmJeLgnKLfUNce+PpxbkK2vWplfdNiVTww7excDXjEoVorhhVHuuERw==
-X-Received: by 2002:a17:902:be0b:: with SMTP id r11mr3336537pls.84.1599698945850;
-        Wed, 09 Sep 2020 17:49:05 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id c7sm3899050pfj.100.2020.09.09.17.49.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 17:49:05 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Rob Clark <robdclark@chromium.org>
-Subject: [PATCH v3 01/10] dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy information
-Date:   Wed,  9 Sep 2020 17:48:53 -0700
-Message-Id: <20200910004902.2252694-2-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-In-Reply-To: <20200910004902.2252694-1-swboyd@chromium.org>
-References: <20200910004902.2252694-1-swboyd@chromium.org>
+        Wed, 9 Sep 2020 21:56:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599702992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0C1QtHwLo5ZP+Ar8+ErpMK60qaWJInbsQRohKM7A1QA=;
+        b=b4zjHySOiKU+WfwFqg08c1d546JSHBRhPhv+QR5crm4IZB0Htw/xPiVmSilit8D//rG9/R
+        6kmt0Ju/ZkRJwpY9A2BZ6yhxwtcSGE1hU8R5Zdf7gr0vgO4hEFeKxXCvkxLtHyZaK0yctQ
+        c5gPBfQ8FXS6w77GRJJPPAk7PUCqA3o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-ZMZwJTTFNGOE9gvdtSDulw-1; Wed, 09 Sep 2020 21:56:28 -0400
+X-MC-Unique: ZMZwJTTFNGOE9gvdtSDulw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9D6F593B2;
+        Thu, 10 Sep 2020 01:56:24 +0000 (UTC)
+Received: from [10.72.13.124] (ovpn-13-124.pek2.redhat.com [10.72.13.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E0B3B60BF1;
+        Thu, 10 Sep 2020 01:56:06 +0000 (UTC)
+Subject: Re: [PATCH] vhost-vdpa: fix memory leak in error path
+To:     Li Qiang <liq3ea@163.com>, mst@redhat.com
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liq3ea@gmail.com
+References: <20200909154120.363209-1-liq3ea@163.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <bfae5c35-355a-8d8a-5057-a970db24ee41@redhat.com>
+Date:   Thu, 10 Sep 2020 09:56:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200909154120.363209-1-liq3ea@163.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This binding only describes the USB phy inside the USB3 + DP "combo"
-phy. Add information for the DP phy and describe the sub-nodes that
-represent the DP and USB3 phys that exist inside the combo wrapper.
-Remove reg-names from required properties because it isn't required nor
-used by the kernel driver.
 
-Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-Cc: Chandan Uddaraju <chandanu@codeaurora.org>
-Cc: Vara Reddy <varar@codeaurora.org>
-Cc: Tanmay Shah <tanmay@codeaurora.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Manu Gautam <mgautam@codeaurora.org>
-Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Sean Paul <seanpaul@chromium.org>
-Cc: Jonathan Marek <jonathan@marek.ca>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: <devicetree@vger.kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml    | 91 +++++++++++++++++--
- 1 file changed, 81 insertions(+), 10 deletions(-)
+On 2020/9/9 下午11:41, Li Qiang wrote:
+> Free the 'page_list' when the 'npages' is zero.
+>
+> Signed-off-by: Li Qiang <liq3ea@163.com>
+> ---
+>   drivers/vhost/vdpa.c | 8 ++++++--
+>   1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 3fab94f88894..6a9fcaf1831d 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -609,8 +609,10 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>   		gup_flags |= FOLL_WRITE;
+>   
+>   	npages = PAGE_ALIGN(msg->size + (iova & ~PAGE_MASK)) >> PAGE_SHIFT;
+> -	if (!npages)
+> -		return -EINVAL;
+> +	if (!npages) {
+> +		ret = -EINVAL;
+> +		goto free_page;
+> +	}
+>   
+>   	mmap_read_lock(dev->mm);
+>   
+> @@ -666,6 +668,8 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>   		atomic64_sub(npages, &dev->mm->pinned_vm);
+>   	}
+>   	mmap_read_unlock(dev->mm);
+> +
+> +free_page:
+>   	free_page((unsigned long)page_list);
+>   	return ret;
+>   }
 
-diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-index ef8ae9f73092..4154f5748d39 100644
---- a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-@@ -17,13 +17,15 @@ properties:
-       - qcom,sdm845-qmp-usb3-phy
-   reg:
-     items:
--      - description: Address and length of PHY's common serdes block.
-+      - description: Address and length of PHY's USB serdes block.
-       - description: Address and length of the DP_COM control block.
-+      - description: Address and length of PHY's DP serdes block.
- 
-   reg-names:
-     items:
--      - const: reg-base
-+      - const: usb
-       - const: dp_com
-+      - const: dp
- 
-   "#clock-cells":
-     enum: [ 1, 2 ]
-@@ -74,16 +76,74 @@ properties:
- 
- #Required nodes:
- patternProperties:
--  "^phy@[0-9a-f]+$":
-+  "^usb3-phy@[0-9a-f]+$":
-     type: object
-     description:
--      Each device node of QMP phy is required to have as many child nodes as
--      the number of lanes the PHY has.
-+      The USB3 PHY.
-+
-+    properties:
-+      reg:
-+        items:
-+          - description: Address and length of TX.
-+          - description: Address and length of RX.
-+          - description: Address and length of PCS.
-+          - description: Address and length of TX2.
-+          - description: Address and length of RX2.
-+          - description: Address and length of pcs_misc.
-+
-+      clocks:
-+        items:
-+          - description: pipe clock
-+
-+      clock-names:
-+        items:
-+          - const: pipe0
-+
-+      clock-output-names:
-+        items:
-+          - const: usb3_phy_pipe_clk_src
-+
-+      '#clock-cells':
-+        const: 0
-+
-+      '#phy-cells':
-+        const: 0
-+
-+    required:
-+      - reg
-+      - clocks
-+      - clock-names
-+      - '#clock-cells'
-+      - '#phy-cells'
-+
-+  "^dp-phy@[0-9a-f]+$":
-+    type: object
-+    description:
-+      The DP PHY.
-+
-+    properties:
-+      reg:
-+        items:
-+          - description: Address and length of TX.
-+          - description: Address and length of RX.
-+          - description: Address and length of PCS.
-+          - description: Address and length of TX2.
-+          - description: Address and length of RX2.
-+
-+      '#clock-cells':
-+        const: 1
-+
-+      '#phy-cells':
-+        const: 0
-+
-+    required:
-+      - reg
-+      - '#clock-cells'
-+      - '#phy-cells'
- 
- required:
-   - compatible
-   - reg
--  - reg-names
-   - "#clock-cells"
-   - "#address-cells"
-   - "#size-cells"
-@@ -103,12 +163,13 @@ examples:
-     usb_1_qmpphy: phy-wrapper@88e9000 {
-         compatible = "qcom,sdm845-qmp-usb3-phy";
-         reg = <0x088e9000 0x18c>,
--              <0x088e8000 0x10>;
--        reg-names = "reg-base", "dp_com";
-+              <0x088e8000 0x10>,
-+              <0x088ea000 0x40>;
-+        reg-names = "usb", "dp_com", "dp";
-         #clock-cells = <1>;
-         #address-cells = <1>;
-         #size-cells = <1>;
--        ranges = <0x0 0x088e9000 0x1000>;
-+        ranges = <0x0 0x088e9000 0x2000>;
- 
-         clocks = <&gcc GCC_USB3_PRIM_PHY_AUX_CLK>,
-                  <&gcc GCC_USB_PHY_CFG_AHB2PHY_CLK>,
-@@ -123,7 +184,7 @@ examples:
-         vdda-phy-supply = <&vdda_usb2_ss_1p2>;
-         vdda-pll-supply = <&vdda_usb2_ss_core>;
- 
--        phy@200 {
-+        usb3-phy@200 {
-             reg = <0x200 0x128>,
-                   <0x400 0x200>,
-                   <0xc00 0x218>,
-@@ -136,4 +197,14 @@ examples:
-             clock-names = "pipe0";
-             clock-output-names = "usb3_phy_pipe_clk_src";
-         };
-+
-+        dp-phy@88ea200 {
-+            reg = <0xa200 0x200>,
-+                  <0xa400 0x200>,
-+                  <0xaa00 0x200>,
-+                  <0xa600 0x200>,
-+                  <0xa800 0x200>;
-+            #clock-cells = <1>;
-+            #phy-cells = <0>;
-+        };
-     };
--- 
-Sent by a computer, using git, on the internet
+
+Cc: stable@vger.kernel.org
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
 
