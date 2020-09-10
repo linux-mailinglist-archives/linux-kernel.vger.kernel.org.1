@@ -2,161 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8D5265234
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CEE265221
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgIJVKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:10:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49582 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726426AbgIJOen (ORCPT
+        id S1727938AbgIJVJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731061AbgIJOfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:34:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599748466;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=F0wxJ0wmrza6Blg+rp/+7qjxJ27g0EejiFED64QbLBY=;
-        b=EXpZWv+aR/+7n9Yz+TdMrzjQ98efgCebwJeLPiZCl9RXp9D1SzjJ1kiZIVgemZo/7zEJj0
-        RU9fBWY9BUtqTZBWX3Hr5NI5bNZZ3KlUvJIrMoebX8izfDpcOZQupfs/WrKR9XCPKUWbHl
-        13+v/sgdfwlBXYgGF1L9YcQQFoQXTlM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-7z_dfROiOW-xdskS7nQ6AA-1; Thu, 10 Sep 2020 10:34:22 -0400
-X-MC-Unique: 7z_dfROiOW-xdskS7nQ6AA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA3BB1074659;
-        Thu, 10 Sep 2020 14:34:19 +0000 (UTC)
-Received: from [10.36.113.88] (ovpn-113-88.ams2.redhat.com [10.36.113.88])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 646CC27BDD;
-        Thu, 10 Sep 2020 14:34:15 +0000 (UTC)
-Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Nellans <dnellans@nvidia.com>,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@suse.de>
-References: <20200902180628.4052244-1-zi.yan@sent.com>
- <20200903142300.bjq2um5y5nwocvar@box>
- <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
- <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
- <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
- <20200908143503.GE26850@dhcp22.suse.cz>
- <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
- <20200909070445.GA7348@dhcp22.suse.cz>
- <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
- <6135d2c5-2a74-6ca8-4b3b-8ceb25c0d4b1@redhat.com>
- <20200910073213.GC28354@dhcp22.suse.cz>
- <9ffa345f-fd45-aeac-691d-54d1364bff6d@redhat.com>
- <C249991F-A64E-4262-892F-F1587B800264@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <46604da8-55d0-111d-7854-cbaa8bb65925@redhat.com>
-Date:   Thu, 10 Sep 2020 16:34:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 10 Sep 2020 10:35:19 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EB8C061757;
+        Thu, 10 Sep 2020 07:35:09 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id q21so6579413edv.1;
+        Thu, 10 Sep 2020 07:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VuITL6ssVJ2JograAwzCT8JrN+4pTWzj/K7rI7rnj+Y=;
+        b=oF8f1feBcDoWI0Mx+EWnTen+A/7+i3O81kYJqopMLTyZ3z9pKa6wGCuBSL90hzVbB+
+         595QlbNpNJkWybdOcQecZgZkBqntN0ampP0+wgTrpLtkYyBAv4MATvlZrT5r2Cq14bP3
+         8g1/V4My35WNgs5VOxWYkz6L9ZZJuQY/tkhKHrSaPJcTi4kLJ8VDh6oXwpfonYG0gdaj
+         wx3cVmOH4hFGht4wGmHAOWHNqFqasW/cs4N74mAwy4gVBZinIcF8RvbDVisdZwq2QUHf
+         JJFPa14X8cKTQFIfyEs+hEp9i/BkUVt3ynbEoDf2S6mwLEYsh7MTzhSq/iOXR9c/ZQoT
+         CVpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VuITL6ssVJ2JograAwzCT8JrN+4pTWzj/K7rI7rnj+Y=;
+        b=sO1S/Mwo3qedXNfJw0G2g+kXTdMm0qctbv5laiabgi0k82EsiSpoyabe98l8J8DB1A
+         uobu+cz7FZ9yXxpXNdHXC+iuRW2ucClFsJNsUr69G5mwIYmuMGb1ZGgJQZN27ZynarWz
+         NO5rI9D3qxT4wb23ryx8sul28+Un1R83jx6NyEjtr83ZgtjbLVu1+oEX9WJm7oHv77fv
+         r6B0igDW3IB8zOwed48gRy8xXDzENGSSLMyeahVjKvnGnEabsygaoQDogdGJe01I9817
+         PpFjBclNzSi0DGFiEcd2IHKHp5cB+f907Xstsk38ZzcnmoEDNhgKEx+LLYqQdsM/N/FA
+         ggBw==
+X-Gm-Message-State: AOAM531LzAt18Cq0GFKNzdxB3sUi2n4xDxQVHLuSCrKe2zP8SN3lwOAh
+        ItUcwqVTwBBApsJ1uodrvMA=
+X-Google-Smtp-Source: ABdhPJxok/n2ml7Rrcym/ZZrGrg8ZdFjvJOgn8pl+rC9iufO433GRXFiFH5UuFTpp75qUASFb0FgbQ==
+X-Received: by 2002:a50:ee10:: with SMTP id g16mr10111835eds.258.1599748507839;
+        Thu, 10 Sep 2020 07:35:07 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id r8sm7245817edy.87.2020.09.10.07.35.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Sep 2020 07:35:06 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 42F4627C00A0;
+        Thu, 10 Sep 2020 10:35:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 10 Sep 2020 10:35:02 -0400
+X-ME-Sender: <xms:lTlaX3UHxIonHxYav49X4NIXZyTHGUi9W4WQNqLbDKiYAQg79bh_9g>
+    <xme:lTlaX_lm_NHw0r3HLh9ZImkFf-asNzl46fuN_9dMwhTPqcJ05beXYfoqYRTq__w9W
+    3XRoy4DJ916BBzXwQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehjedgjedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhorhhtvggutfgvtghiphdvucdlgedtmdenucfjughrpefhvffufffkofgggfestdek
+    redtredttdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgse
+    hgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeeiueevjeelheduteefveeflefg
+    jeetfeehvdekudekgfegudeghfduhfetveejudenucffohhmrghinhepkhgvrhhnvghlrd
+    horhhgnecukfhppeehvddrudehhedrudduuddrjedunecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhph
+    gvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdr
+    fhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:lTlaXzbm5__xi8H5D0mxniybalMNXdp46InopCxuNcPtPn3nFrvZeQ>
+    <xmx:lTlaXyX1PKHnACNV4J3Jw1jkAwbxshvRNO0qobK5MlWoUghWYFjBLA>
+    <xmx:lTlaXxljk7uR6iCNR2yk9MCkGLprRXirBRBvNOAeog5ShD0G9FK0dA>
+    <xmx:ljlaXzUAowJrUoOj9t9Z2qCuQT6VlvoyhzbNwtzhCUlxfcCn1LYl5eJ7pfM>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8CD33306468B;
+        Thu, 10 Sep 2020 10:35:00 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
+        ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+        mark.rutland@arm.com, maz@kernel.org,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [PATCH v3 00/11] Hyper-V: Support PAGE_SIZE larger than 4K
+Date:   Thu, 10 Sep 2020 22:34:44 +0800
+Message-Id: <20200910143455.109293-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <C249991F-A64E-4262-892F-F1587B800264@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> As long as we stay in safe zone boundaries you get a benefit in most
->> scenarios. As soon as we would have a (temporary) workload that would
->> require more unmovable allocations we would fallback to polluting some
->> pageblocks only.
-> 
-> The idea would work well until unmoveable pages begin to overflow into
-> ZONE_PREFER_MOVABLE or we move the boundary of ZONE_PREFER_MOVABLE to
-> avoid unmoveable page overflow. The issue comes from the lifetime of
-> the unmoveable pages. Since some long-live ones can be around the boundary,
-> there is no guarantee that ZONE_PREFER_MOVABLE cannot grow back
-> even if other unmoveable pages are deallocated. Ultimately,
-> ZONE_PREFER_MOVABLE would be shrink to a small size and the situation is
-> back to what we have now.
+This patchset add the necessary changes to support guests whose page
+size is larger than 4K. And the main architecture which we develop this
+for is ARM64 (also it's the architecture that I use to test this
+feature). Now as the patchset has been deeply reviewed, I change it from
+"RFC" to "PATCH", and also add ARM64 people Cced for broader insights
+(although the code is arch-independent).
 
-As discussed this would not happen in the usual case in case we size it
-reasonable. Of course, if you push it to the extreme (which was never
-suggested!), you would create mess. There is always a way to create a
-mess if you abuse such mechanism. Also see Rik's reply regarding reclaim.
+Previous version:
+v1: https://lore.kernel.org/lkml/20200721014135.84140-1-boqun.feng@gmail.com/
+v2: https://lore.kernel.org/lkml/20200902030107.33380-1-boqun.feng@gmail.com
 
-> 
-> OK. I have a stupid question here. Why not just grow pageblock to a larger
-> size, like 1GB? So the fragmentation of unmoveable pages will be at larger
-> granularity. But it is less likely unmoveable pages will be allocated at
-> a movable pageblock, since the kernel has 1GB pageblock for them after
-> a pageblock stealing. If other kinds of pageblocks run out, moveable and
-> reclaimable pages can fall back to unmoveable pageblocks.
-> What am I missing here?
+Changes since v2:
 
-Oh no. For example pageblocks have to completely fit into a single
-section (that's where metadata is maintained). Please refrain from
-suggesting to increase the section size ;)
+*	Use a simpler and straight-forwards method to set up the payload
+	array for storvsc thanks to the inspiration from Michael Kelley.
 
-There is plenty of code relying on pageblocks/MAX_ORDER - 1 to be
-reasonable in size. Examples in VMs are free page reporting or virtio-mem.
+*	Some typo fixes as per suggestion from Michael Kelley.
+
+*	Fixes compiler warnings due to the different types of two
+	operands for max().
+
+
+Hyper-V always uses 4K as the page size and expects the same page size
+when communicating with guests. That is, all the "pfn"s in the
+hypervisor-guest communication protocol are the page numbers in the unit
+of HV_HYP_PAGE_SIZE rather than PAGE_SIZE. To support guests with larger
+page size, we need to convert between these two page sizes correctly in
+the hypervisor-guest communication, which is basically what this
+patchset does.
+
+In this conversion, one challenge is how to handle the ringbuffer. A
+ringbuffer has two parts: a header and a data part, both of which want
+to be PAGE_SIZE aligned in the guest, because we use the "double
+mapping" trick to map the data part twice in the guest virtual address
+space for faster wrap-around and ease to process data in place. However,
+the Hyper-V hypervisor always treats the ringbuffer headers as 4k pages.
+To overcome this gap, we enlarge the hv_ring_buffer structure to be
+always PAGE_SIZE aligned, and introduce the gpadl type concept to allow
+vmbus_establish_gpadl() to handle ringbuffer cases specially. Note that
+gpadl type is only meaningful to the guest, there is no such concept in
+Hyper-V hypervisor.
+
+This patchset consists of 11 patches:
+
+Patch 1~4: Introduce the types of gpadl, so that we can handle
+	   ringbuffer when PAGE_SIZE != HV_HYP_PAGE_SIZE, and also fix
+	   a few places where we should use HV_HYP_PAGE_SIZE other than
+	   PAGE_SIZE.
+
+Patch 5~6: Add a few helper functions to help calculate the hvpfn (page
+	   number in the unit of HV_HYP_PAGE_SIZE) and other related
+	   data. So that we can use them in the code of drivers.
+
+Patch 7~11: Use the helpers and change the driver code accordingly to
+	    make net/input/util/storage driver work with PAGE_SIZE !=
+	    HV_HYP_PAGE_SIZE
+
+I've done some tests with PAGE_SIZE=64k and PAGE_SIZE=16k configurations
+on ARM64 guests (with Michael's patchset[1] for ARM64 Hyper-V guest
+support), everything worked fine ;-) (I could observe an error caused
+by unaligned firmware data, but it's better to have it fixed in the
+Hyper-V). I also have done a build and boot test on x86, everything
+worked well.
+
+Looking forwards to comments and suggestions!
+
+Regards,
+Boqun
+
+[1]: https://lore.kernel.org/lkml/1598287583-71762-1-git-send-email-mikelley@microsoft.com/
+
+Boqun Feng (11):
+  Drivers: hv: vmbus: Always use HV_HYP_PAGE_SIZE for gpadl
+  Drivers: hv: vmbus: Move __vmbus_open()
+  Drivers: hv: vmbus: Introduce types of GPADL
+  Drivers: hv: Use HV_HYP_PAGE in hv_synic_enable_regs()
+  Drivers: hv: vmbus: Move virt_to_hvpfn() to hyperv header
+  hv: hyperv.h: Introduce some hvpfn helper functions
+  hv_netvsc: Use HV_HYP_PAGE_SIZE for Hyper-V communication
+  Input: hyperv-keyboard: Make ringbuffer at least take two pages
+  HID: hyperv: Make ringbuffer at least take two pages
+  Driver: hv: util: Make ringbuffer at least take two pages
+  scsi: storvsc: Support PAGE_SIZE larger than 4K
+
+ drivers/hid/hid-hyperv.c              |   4 +-
+ drivers/hv/channel.c                  | 461 ++++++++++++++++----------
+ drivers/hv/hv.c                       |   4 +-
+ drivers/hv/hv_util.c                  |  16 +-
+ drivers/input/serio/hyperv-keyboard.c |   4 +-
+ drivers/net/hyperv/netvsc.c           |   2 +-
+ drivers/net/hyperv/netvsc_drv.c       |  46 +--
+ drivers/net/hyperv/rndis_filter.c     |  13 +-
+ drivers/scsi/storvsc_drv.c            |  54 ++-
+ include/linux/hyperv.h                |  64 +++-
+ 10 files changed, 441 insertions(+), 227 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.28.0
 
