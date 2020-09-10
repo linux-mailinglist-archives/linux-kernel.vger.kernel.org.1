@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A3B264EDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E270264EE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgIJT1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
+        id S1727905AbgIJT3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731419AbgIJPsR (ORCPT
+        with ESMTP id S1731424AbgIJPsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 11:48:17 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B94C06134C;
-        Thu, 10 Sep 2020 08:08:27 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:08:25 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42846C061350;
+        Thu, 10 Sep 2020 08:08:29 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 15:08:26 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599750505;
+        s=2020; t=1599750507;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VXlAMEQlQ/7yWi7KPpGqX8AqwvRcq3LnrgUlTuNVad4=;
-        b=dhVKATyqF9+RppPF31jhZrCuKFR5brDDP9o+38a6culVXEZq6+VRebKmYwK1NTeMCmRHVC
-        XlpM9R3Em5YDozkNKUBVQMNMVnubnpGomPOrk2uq4645OKSMLQyN5iwLSdY4Rm4gTZQbFs
-        zwttJ04eFFOqfXSKLzYsxQKopTWjlExgbkONOQT7ZYNDf92qMrySaaftTDFIPbpU5OyFzy
-        P/1FpkOHA7hFgE5fQ3dC1wsTVginyHuI2W8m9QGL03UVI2027C0KHAfEpMs2Hm/4Cpa86l
-        E64DCOWX4btGNaN53tJV7Fzz9myEnUkZg27c7v10vKuG0uzM9v8rFQzhMSVV0g==
+        bh=W6+IFj5KsRwEgGxJPZulh3HA62DooTbJIv60Z+9sE10=;
+        b=m4qSHDnZcxNODEKHI7R7I0n8RVi7blwJ2zeUg3y2wWzvD16qluHu2Vm2nu0htWUIfqsN19
+        N3OlV+FuGAXOxfOl6ZEMkQFVQT9cMixcWmZTv0Hii/WXCm6PkRl6SYhGzRnVwbdG9+Y3Qv
+        Q94oVCmU5W/bp0GkfBtB4U0zTg85kZgSZwfBiG6CMiFuu5rHnzqn5itAi8FpxVkSY4HqtF
+        kIH28Wt5TXFLr5jwGkXLuGLDv3gi/w5MDkFp3Ry+WWlTXUtNFuH3Vc0MyGxvZGVhIvPMQI
+        vxsheCwiy/0wZrNNLDkALHjhsrIo5F8xQLns9CY7vYalRfBsWShpucmII2Ongg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599750505;
+        s=2020e; t=1599750507;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VXlAMEQlQ/7yWi7KPpGqX8AqwvRcq3LnrgUlTuNVad4=;
-        b=tDP5e/b0DUUef+gdOn6QLlbogIR2xKUPNUVN33Bts1OzOlEeEgt0M47kgSbahhn2V6/OhI
-        gl5LK5z0cQ7Ri+CQ==
+        bh=W6+IFj5KsRwEgGxJPZulh3HA62DooTbJIv60Z+9sE10=;
+        b=BirEK82JlKkzGqHVY8zlyFWNLAkEzIUmAPLA5eCyiyj6b/XltzeEwVTwRLVmwY4pCrri/Y
+        e2xv/lwZzia0UiCg==
 From:   "tip-bot2 for Ahmed S. Darwish" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] seqlock: Use unique prefix for seqcount_t
- property accessors
+Subject: [tip: locking/core] x86/tsc: Use seqcount_latch_t
 Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200904153231.11994-3-a.darwish@linutronix.de>
-References: <20200904153231.11994-3-a.darwish@linutronix.de>
+In-Reply-To: <20200827114044.11173-7-a.darwish@linutronix.de>
+References: <20200827114044.11173-7-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <159975050505.20229.14341854260520683075.tip-bot2@tip-bot2>
+Message-ID: <159975050696.20229.10208989556997350425.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,117 +61,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     5cdd25572a29e46f932d3e6eedbd07429de66431
-Gitweb:        https://git.kernel.org/tip/5cdd25572a29e46f932d3e6eedbd07429de66431
+Commit-ID:     a1f1066133d85d5f42217cc72a2490bb7aa889c5
+Gitweb:        https://git.kernel.org/tip/a1f1066133d85d5f42217cc72a2490bb7aa889c5
 Author:        Ahmed S. Darwish <a.darwish@linutronix.de>
-AuthorDate:    Fri, 04 Sep 2020 17:32:28 +02:00
+AuthorDate:    Thu, 27 Aug 2020 13:40:42 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 10 Sep 2020 11:19:30 +02:00
+CommitterDate: Thu, 10 Sep 2020 11:19:29 +02:00
 
-seqlock: Use unique prefix for seqcount_t property accessors
+x86/tsc: Use seqcount_latch_t
 
-At seqlock.h, the following set of functions:
+Latch sequence counters have unique read and write APIs, and thus
+seqcount_latch_t was recently introduced at seqlock.h.
 
-    - __seqcount_ptr()
-    - __seqcount_preemptible()
-    - __seqcount_assert()
+Use that new data type instead of plain seqcount_t. This adds the
+necessary type-safety and ensures that only latching-safe seqcount APIs
+are to be used.
 
-act as plain seqcount_t "property" accessors. Meanwhile, the following
-group:
-
-    - __seqcount_ptr()
-    - __seqcount_lock_preemptible()
-    - __seqcount_assert_lock_held()
-
-act as the equivalent set, but in the generic form, taking either
-seqcount_t or any of the seqcount_LOCKNAME_t variants.
-
-This is quite confusing, especially the first member where it is called
-exactly the same in both groups.
-
-Differentiate the first group by using "__seqprop" as prefix, and also
-use that same prefix for all of seqcount_LOCKNAME_t property accessors.
-
-While at it, constify the property accessors first parameter when
-appropriate.
-
-References: 55f3560df975 ("seqlock: Extend seqcount API with associated locks")
 Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+[peterz: unwreck cyc2ns_read_begin()]
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200904153231.11994-3-a.darwish@linutronix.de
+Link: https://lkml.kernel.org/r/20200827114044.11173-7-a.darwish@linutronix.de
 ---
- include/linux/seqlock.h | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ arch/x86/kernel/tsc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 820ace2..0b4a22f 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -157,7 +157,9 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
-  */
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 49d9250..f70dffc 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -54,7 +54,7 @@ struct clocksource *art_related_clocksource;
  
- /*
-- * SEQCOUNT_LOCKNAME() - Instantiate seqcount_LOCKNAME_t and helpers
-+ * SEQCOUNT_LOCKNAME()	- Instantiate seqcount_LOCKNAME_t and helpers
-+ * seqprop_LOCKNAME_*()	- Property accessors for seqcount_LOCKNAME_t
-+ *
-  * @lockname:		"LOCKNAME" part of seqcount_LOCKNAME_t
-  * @locktype:		LOCKNAME canonical C data type
-  * @preemptible:	preemptibility of above lockname
-@@ -177,19 +179,19 @@ seqcount_##lockname##_init(seqcount_##lockname##_t *s, locktype *lock)	\
- }									\
- 									\
- static __always_inline seqcount_t *					\
--__seqcount_##lockname##_ptr(seqcount_##lockname##_t *s)			\
-+__seqprop_##lockname##_ptr(seqcount_##lockname##_t *s)			\
- {									\
- 	return &s->seqcount;						\
- }									\
- 									\
- static __always_inline bool						\
--__seqcount_##lockname##_preemptible(seqcount_##lockname##_t *s)		\
-+__seqprop_##lockname##_preemptible(const seqcount_##lockname##_t *s)	\
- {									\
- 	return preemptible;						\
- }									\
- 									\
- static __always_inline void						\
--__seqcount_##lockname##_assert(seqcount_##lockname##_t *s)		\
-+__seqprop_##lockname##_assert(const seqcount_##lockname##_t *s)		\
- {									\
- 	__SEQ_LOCK(lockdep_assert_held(lockmember));			\
+ struct cyc2ns {
+ 	struct cyc2ns_data data[2];	/*  0 + 2*16 = 32 */
+-	seqcount_t	   seq;		/* 32 + 4    = 36 */
++	seqcount_latch_t   seq;		/* 32 + 4    = 36 */
+ 
+ }; /* fits one cacheline */
+ 
+@@ -73,14 +73,14 @@ __always_inline void cyc2ns_read_begin(struct cyc2ns_data *data)
+ 	preempt_disable_notrace();
+ 
+ 	do {
+-		seq = this_cpu_read(cyc2ns.seq.sequence);
++		seq = this_cpu_read(cyc2ns.seq.seqcount.sequence);
+ 		idx = seq & 1;
+ 
+ 		data->cyc2ns_offset = this_cpu_read(cyc2ns.data[idx].cyc2ns_offset);
+ 		data->cyc2ns_mul    = this_cpu_read(cyc2ns.data[idx].cyc2ns_mul);
+ 		data->cyc2ns_shift  = this_cpu_read(cyc2ns.data[idx].cyc2ns_shift);
+ 
+-	} while (unlikely(seq != this_cpu_read(cyc2ns.seq.sequence)));
++	} while (unlikely(seq != this_cpu_read(cyc2ns.seq.seqcount.sequence)));
  }
-@@ -198,17 +200,17 @@ __seqcount_##lockname##_assert(seqcount_##lockname##_t *s)		\
-  * __seqprop() for seqcount_t
-  */
  
--static inline seqcount_t *__seqcount_ptr(seqcount_t *s)
-+static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
+ __always_inline void cyc2ns_read_end(void)
+@@ -186,7 +186,7 @@ static void __init cyc2ns_init_boot_cpu(void)
  {
- 	return s;
+ 	struct cyc2ns *c2n = this_cpu_ptr(&cyc2ns);
+ 
+-	seqcount_init(&c2n->seq);
++	seqcount_latch_init(&c2n->seq);
+ 	__set_cyc2ns_scale(tsc_khz, smp_processor_id(), rdtsc());
  }
  
--static inline bool __seqcount_preemptible(seqcount_t *s)
-+static inline bool __seqprop_preemptible(const seqcount_t *s)
- {
- 	return false;
- }
+@@ -203,7 +203,7 @@ static void __init cyc2ns_init_secondary_cpus(void)
  
--static inline void __seqcount_assert(seqcount_t *s)
-+static inline void __seqprop_assert(const seqcount_t *s)
- {
- 	lockdep_assert_preemption_disabled();
- }
-@@ -237,10 +239,10 @@ SEQCOUNT_LOCKNAME(ww_mutex,	struct ww_mutex,	true,	&s->lock->base)
- #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name, lock)
- 
- #define __seqprop_case(s, lockname, prop)				\
--	seqcount_##lockname##_t: __seqcount_##lockname##_##prop((void *)(s))
-+	seqcount_##lockname##_t: __seqprop_##lockname##_##prop((void *)(s))
- 
- #define __seqprop(s, prop) _Generic(*(s),				\
--	seqcount_t:		__seqcount_##prop((void *)(s)),		\
-+	seqcount_t:		__seqprop_##prop((void *)(s)),		\
- 	__seqprop_case((s),	raw_spinlock,	prop),			\
- 	__seqprop_case((s),	spinlock,	prop),			\
- 	__seqprop_case((s),	rwlock,		prop),			\
+ 	for_each_possible_cpu(cpu) {
+ 		if (cpu != this_cpu) {
+-			seqcount_init(&c2n->seq);
++			seqcount_latch_init(&c2n->seq);
+ 			c2n = per_cpu_ptr(&cyc2ns, cpu);
+ 			c2n->data[0] = data[0];
+ 			c2n->data[1] = data[1];
