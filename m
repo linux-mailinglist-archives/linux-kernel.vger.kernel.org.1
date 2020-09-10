@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EC8265427
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFDE265430
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgIJVnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:43:20 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:47251 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730477AbgIJM7f (ORCPT
+        id S1728716AbgIJVnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730560AbgIJNBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:59:35 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 28C9E5C00C3;
-        Thu, 10 Sep 2020 08:59:29 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 10 Sep 2020 08:59:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=sS4bxANMr6xg2qR/hZMWsTq/vX/
-        b6tWWMKIQiRigbQE=; b=knM5OhHJXfCtJlWt5+CqX4Wif+JUanAB+5KN7YGGX0P
-        EltwyRGjJ/mrFWYC5mBqrnx7CjvLoPq4yqyBkOPKsQULHk8V9Nl7Nqfr4tirMZYQ
-        eKW1WIJOg8bEJ9SS/tBb9YgMi7jFgQfRZurnrOqigiEg3whBXx9uko7q0G2oTsNU
-        lZ1nZXmC06ssniIP0jheWg1ANJGj5se6oljTZx01aJ3XzRPJQcfjVmHdu8WE4HTb
-        rYsqa7iEdcez/aaRvRTAxiP+WmUnvsvqZeLzNjZ3BbYxhDtqD83P9Czd04QOOVT3
-        qq6Kt7QF4k8CxO6szq3KorqxLX3YUvbG/PpQunE+pPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=sS4bxA
-        NMr6xg2qR/hZMWsTq/vX/b6tWWMKIQiRigbQE=; b=nEac7f/KFbNEe3+Az8DpBP
-        Ix/9LxJRpbjFIUiJ0mUZbmi9wCz7TWesoQuDkkxgHKRMdSdG9ITSeERsMugtvM5q
-        26ouyAdpEgamV2U8MKnKE1geUpbd2RHmHYTGtxpT0WJntwWVYv22Lr3o1DkeIyMw
-        9wMZMI42ktGqUAZRYTPPQeulzi2uwLWN0gm2IDt9bpLqhs3nYjzA5VMm9CckLTth
-        f1PFggFfa9EU5+/Zo3nWTxoqoUwEiFmxFyTz8cjKUuvV0eAheH4ijzfn7r9q/h9L
-        EmeIA29TBExcgQwvlhy2q9871+GdNqxdljuWAczVkX92zwFS5jxfMkG9WvwNdmCw
-        ==
-X-ME-Sender: <xms:MCNaX81rwQZTtf8P0RRzxz4fbabqsOrecMIQEzydc8jrDcG9Gs8cAQ>
-    <xme:MCNaX3EwJxb9WGSsljgIvLeqFGiEa0lsoCcYhz1ZijPZhNrrAbWNJOwrqJuooRDFT
-    aes9sIjFBcUPp4ARyM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehjedghedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnheptdfggfelgeehieeuieegfefgueduudefheffhfejleekheefjeevveegueel
-    ueefnecuffhomhgrihhnpehlihhnuhigqdhsuhhngihirdhorhhgnecukfhppeeltddrke
-    elrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:MCNaX05-wUET0GjTQjjIpn3k7xJuu5xP2xFok--Pw__JW5uHdb4x9w>
-    <xmx:MCNaX11HqC-07I2CXQb75YDyKb6putjsQnQtnQZLSe1KWPPgf32uZg>
-    <xmx:MCNaX_G0wyYbqCBIkZml-CyEVC7Wc0oszK--AJ728vHg01Tvyhm7JQ>
-    <xmx:MSNaX1MBzNczurbftulWRhbkpZz6E0lQz9VRieg6G0mDcNFrMcSqNw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CA538328005E;
-        Thu, 10 Sep 2020 08:59:27 -0400 (EDT)
-Date:   Thu, 10 Sep 2020 14:59:25 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH] documentation: arm: sunxi: Allwinner H2+/H3 update
-Message-ID: <20200910125925.f3m5gd5ngcv4nxiq@gilmour.lan>
-References: <20200908131808.GA65247@monster.powergraphx.local>
+        Thu, 10 Sep 2020 09:01:44 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CC2C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:01:38 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a17so6609218wrn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:01:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZJ2vHaYqoVGimQqIW+dGq81Ddb4etTQVEuSJ6N8/hV4=;
+        b=Xes36BsZfAJFtqugTewRnG8S2F4SvtKI3ao41dtEndBZ6+tMSuxg2QYTyWuc2rLsv2
+         dOk8MBtBz6erlo84rPylqikZUL3dr7mKIs4oRostt0NTudrbX3JzMzoH5PWdpmAIgOOL
+         P9svCMAyrJaFMjzvfAtZ/O1Ob2HskNoICrLWNoSR3QDsHWfC80vnXy+F9RD11BpTEZJH
+         J0SyhjkPnjODgRtc7CLZqHm8fG6KIcdOX1nJ7uV2CuKxEpunYhM+OsitUxa3e2UJnWs6
+         lL6jtrqQAa477lPUpx+VmiChJcvPAh80Jnxc5+IibbSGDYBFtm2NxdOsd6oEqlDfAGaI
+         fJCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZJ2vHaYqoVGimQqIW+dGq81Ddb4etTQVEuSJ6N8/hV4=;
+        b=WcNOCbOiv5p85LYd3GBJtG5UCB1o66bRvKbFJjfRsfHndF+xeEYc1pnGr6Qrm2mbF1
+         CFjBkf7RmWBkKCYMivkvqsQ/3XmWyhqGbBGwrS+V4haNRtViHFaFkPDHpp03FxhyQNkP
+         Dbu557wl2WBCndzUo1eCyHdIoQ1MGSw7TpXwTwbsV2UP0JKx72RtnXtt7k5bLFMdabfz
+         A+PbFidCFxkM3j2dalgo754BDqnro99e+31GgVBpkBDQO3vJT6+4HhYUetMe4RefYqEr
+         33BpXUrzdaSdefBeXVH6+s7dgBys7sKdg5hsfgLsICExWRxeozhaSjHxZul8ysJjJmu8
+         zbnA==
+X-Gm-Message-State: AOAM531r41XJuUDWoBTklH97/FnhBBoAMXmiZjxNc6RJwgyNKwAx8NyN
+        dVviaxsMzESLAnUFOX+9qljDbw==
+X-Google-Smtp-Source: ABdhPJwTMfl8B7RyFT52ujmfWEzGY2zJt6LYENlU0R1nqA53iSiN5gy6cYDGYtwKp1dHNpKPfW+fFg==
+X-Received: by 2002:a5d:444e:: with SMTP id x14mr8524324wrr.235.1599742897157;
+        Thu, 10 Sep 2020 06:01:37 -0700 (PDT)
+Received: from alex-xps13.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id y1sm9488269wru.87.2020.09.10.06.01.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 06:01:36 -0700 (PDT)
+From:   Alexandre Bailon <abailon@baylibre.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        matthias.bgg@gmail.com, mathieu.poirier@linaro.org
+Cc:     linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stephane.leprovost@mediatek.com, gpain@baylibre.com,
+        Alexandre Bailon <abailon@baylibre.com>
+Subject: [PATCH v2 0/4] Add support of mt8183 APU
+Date:   Thu, 10 Sep 2020 15:01:44 +0200
+Message-Id: <20200910130148.8734-1-abailon@baylibre.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jqmigleombspvxe5"
-Content-Disposition: inline
-In-Reply-To: <20200908131808.GA65247@monster.powergraphx.local>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some Mediatek's SoC have an Accelerated Processing Unit.
+This adds support of the one available in the mt8183
+(aswell some derivative SoC).
 
---jqmigleombspvxe5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series depends on two other series:
+- Mediatek MT8183 scpsys support  
+- arm64: dts: Add m4u and smi-larbs nodes for mt8183
 
-Hi,
+Changes in v2:
+- Drop the workarounds needed to load bad firmwares
+- There are many name for the APU (most common one is VPU).
+  Rename many functions and dts nodes to be more consistent.
+- Use the bulk clock API, and enable / disable clock at a better place
+- add few comments explaining how to start the APU
+- update the way to use pinctl for JTAG
+- fix some minors issues
+- fix device tree bindings
 
-On Tue, Sep 08, 2020 at 03:18:08PM +0200, Wilken Gottwalt wrote:
-> Updated information about H2+ and H3 difference and added a link to a
-> slightly newer datasheet.
->=20
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> ---
->  Documentation/arm/sunxi.rst | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/Documentation/arm/sunxi.rst b/Documentation/arm/sunxi.rst
-> index b037428aee98..50b9199d929d 100644
-> --- a/Documentation/arm/sunxi.rst
-> +++ b/Documentation/arm/sunxi.rst
-> @@ -103,12 +103,15 @@ SunXi family
-> =20
->          * No document available now, but is known to be working properly=
- with
->            H3 drivers and memory map.
-> +        * It is basically a H3 where the GMAC block was replaced by a 10=
-0 MBit only MAC block.
+Alexandre Bailon (4):
+  dt bindings: remoteproc: Add bindings for MT8183 APU
+  remoteproc: Add a remoteproc driver for the MT8183's APU
+  remoteproc: mtk_vpu_rproc: Add support of JTAG
+  ARM64: mt8183: Add support of APU to mt8183
 
-There's more to it (like 4k output in the display engine iirc), but I'm
-not really sure that it's this file purpose to document each variation
-between SoCs.
+ .../bindings/remoteproc/mtk,apu.yaml          | 107 +++++
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  39 ++
+ drivers/remoteproc/Kconfig                    |  19 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/mtk_apu.c                  | 437 ++++++++++++++++++
+ 5 files changed, 603 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml
+ create mode 100644 drivers/remoteproc/mtk_apu.c
 
->        - Allwinner H3 (sun8i)
-> =20
->          * Datasheet
-> =20
->            http://dl.linux-sunxi.org/H3/Allwinner_H3_Datasheet_V1.0.pdf
-> +          or a slightly more up to date version
-> +          https://linux-sunxi.org/images/4/4b/Allwinner_H3_Datasheet_V1.=
-2.pdf
+-- 
+2.26.2
 
-Why not just update the link?
-
-Maxime
-
---jqmigleombspvxe5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1ojLQAKCRDj7w1vZxhR
-xfDUAP9jgdE8x0VrdXyNBbWljUomEg0TrJa3egeYncWwYJzb2gEAzQmvOrQUSQTB
-kzN0nK4mfgx7QIWetU0KDy3rWfpQ0go=
-=sRYe
------END PGP SIGNATURE-----
-
---jqmigleombspvxe5--
