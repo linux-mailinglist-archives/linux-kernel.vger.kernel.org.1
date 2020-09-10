@@ -2,264 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BBE264624
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA37264634
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730734AbgIJMhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:37:03 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43390 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730677AbgIJMdL (ORCPT
+        id S1730677AbgIJMlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727805AbgIJMfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:33:11 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08ACX7Eq023252;
-        Thu, 10 Sep 2020 07:33:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599741187;
-        bh=9MfYfkkDqOw/trWck0yzA/hd6grSgCWN8JA+FBuRH3I=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=AFLnWfAhSK5UtAC/1ofsRVTJlstRnJRQsEwqMtD4iXsBZmziEwCZUAuxhky9Up1pb
-         f5roRuurQ1OEuIsU2a8Xxd8h/49cllRNVVBqX7ty4VAIPTFGK7b1LChxEZT/EUis/v
-         u+uo+YbPLndDzIekaZPDSBZIw70Q4uMgw7XdwoqU=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08ACX7NU045957
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 07:33:07 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 07:33:07 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 07:33:07 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08ACX56O010384;
-        Thu, 10 Sep 2020 07:33:06 -0500
-Subject: Re: [PATCH] dmaengine: ti: k3-udma: Use soc_device_match() for SoC
- dependent parameters
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <linux-kernel@vger.kernel.org>, <lokeshvutla@ti.com>, <nm@ti.com>
-References: <20200904120009.30941-1-peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <34734bc8-6013-cbed-4f20-b7c19146fadd@ti.com>
-Date:   Thu, 10 Sep 2020 15:33:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 10 Sep 2020 08:35:09 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E646DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 05:34:59 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so6546106wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 05:34:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ou9injEFK3ynx6TLorApjrz9C+IV+NUJDgRb4FiGCd0=;
+        b=JpErupGX9fulmYZvxtdV0U32w7X1pxyfApvEkhWK8zhYuxW1uI+EqU5Fjv9BaF9H/V
+         YurieurqjypG7BJAUBnBCH5arbZ3tVER2qmEt+rAqI4sfn3j4bXg9iz0fRz0pKoPNL3y
+         YSW2fRVwWb6wg82ODMDH5pUFWZ0GjjH48pGAH5EmstenSokAdTz7Xt7zn4OgIwRIR4l9
+         0fLwBGV8McXKD8aluzhihwYePyApjjulnhMvLjwOH3WO1/cwpNtD7nu9TdVZ4OCMjA8S
+         c9CQIJkAS0fQVUjZIlIZtaLGjr0eQHoBc0Ml2c5fY6fYDFZIe4MRDXrAX2YVoKmv1DK0
+         bwYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ou9injEFK3ynx6TLorApjrz9C+IV+NUJDgRb4FiGCd0=;
+        b=XqUfkq2om2vcnCJXv5EkyVfTKE9q2uUftjiWxp9/yhzJmspE9cNp79QgNwKqJZ5dhD
+         BrmI8TnqCgt3vhrGRFQtluwYAAUrjiUlxU2Jo2WQLtCDhFXGBULi7N3YF/Sd5O0Mgl+E
+         e6MykB6oGp8X8YWpbaxDi8uNgCj8FnEV+ynF8YGSWtqWOkkJTwDhJn7pXIYKaHQkwwlv
+         qC9xc6i9BJws4tBroNXhkeVTDrEP3riQSGMZeEavDHL7THJ/U8gjFo+QGEM1mjk0fau2
+         PbJHceFO0jbAR9Ez6u07og5uU13yL2JD9IWYQgl4Rs3r+cBbjhSg7iUUo3ix5jDdlmMz
+         06kw==
+X-Gm-Message-State: AOAM532g47z9p0Fsjr3MHxrIiF2W57trAnimd6GQoxPqllmPj6u7xtZ2
+        8wOS5YrijqSBl3m6tWNED0hJpg==
+X-Google-Smtp-Source: ABdhPJzW0hcZaP/tw8LsHLMPTKiwkkYHFromXeW07uLdryNq4J0OhAM1tb62eb6pB/v/hKExJM8Mhg==
+X-Received: by 2002:a5d:6886:: with SMTP id h6mr9066135wru.374.1599741297317;
+        Thu, 10 Sep 2020 05:34:57 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:109:4a0f:cfff:fe4a:6363])
+        by smtp.gmail.com with ESMTPSA id n21sm3532461wmi.21.2020.09.10.05.34.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 05:34:56 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 13:34:52 +0100
+From:   Andrew Scull <ascull@google.com>
+To:     David Brazdil <dbrazdil@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 04/10] kvm: arm64: Remove hyp_adr/ldr_this_cpu
+Message-ID: <20200910123452.GD93664@google.com>
+References: <20200903091712.46456-1-dbrazdil@google.com>
+ <20200903091712.46456-5-dbrazdil@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200904120009.30941-1-peter.ujfalusi@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903091712.46456-5-dbrazdil@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 03, 2020 at 11:17:06AM +0200, 'David Brazdil' via kernel-team wrote:
+> The hyp_adr/ldr_this_cpu helpers were introduced for use in hyp code
+> because they always needed to use TPIDR_EL2 for base, while
+> adr/ldr_this_cpu from kernel proper would select between TPIDR_EL2 and
+> _EL1 based on VHE/nVHE.
+> 
+> Simplify this now that the nVHE hyp mode case can be handled using the
+> __KVM_NVHE_HYPERVISOR__ macro. VHE selects _EL2 with alternatives.
+> 
+> Signed-off-by: David Brazdil <dbrazdil@google.com>
 
+Acked-by: Andrew Scull <ascull@google.com>
 
-On 04/09/2020 15.00, Peter Ujfalusi wrote:
-> Use separate data for SoC dependent parameters. These parameters depend=
-s
-> on the DMA integration (either in HW or in SYSFW), the DMA controller
-> itself remains compatible with either the am654 or j721e variant.
->=20
-> j7200 have the same DMA as j721e with different number of channels, whi=
-ch
-> can be queried from HW, but SYSFW defines different rchan_oes_offset
-> number for j7200 (0x80) compared to j721e (0x400).
->=20
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
-> Hi Vinod,
->=20
-> this patch is going to be needed when the j7200 support is upstream (we=
- already
-> have the psil map in dmaengine/next for the UDMA).
->=20
-> Since the hardware itself is the same (but different number of channels=
-) I
-> wanted to avoid a new set of compatible just becase STSFW is not using =
-the same
-> rchan_oes_offset value for j7200 and j721e.
->=20
-> Vinod: this patch will not apply cleanly on dmaengine/next because it i=
-s on top
-> of dmaengine/next + the dmaengine/fixes. This might cause issues.
->=20
-> "dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3.=
-0" in
-> fixes changes the rchan_oes_offset for am654 from 0x2000 to 0x200 and t=
-his patch
-> assumes 0x200...
->=20
-> is there anything I can do to make it easier for you?
->=20
-> Regards,
-> Peter
->=20
->  drivers/dma/ti/k3-udma.c | 42 +++++++++++++++++++++++++++++++++-------=
+> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> index 54d181177656..b392a977efb6 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -218,6 +218,21 @@ lr	.req	x30		// link register
+>  	str	\src, [\tmp, :lo12:\sym]
+>  	.endm
+>  
+> +	/*
+> +	 * @dst: destination register (32 or 64 bit wide)
+> +	 */
+> +	.macro	this_cpu_offset, dst
+> +#ifdef __KVM_NVHE_HYPERVISOR__
+> +	mrs	\dst, tpidr_el2
 
->  1 file changed, 35 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-> index 9a7048bcf0f1..ec7c5f320f7f 100644
-> --- a/drivers/dma/ti/k3-udma.c
-> +++ b/drivers/dma/ti/k3-udma.c
-> @@ -16,6 +16,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
-> +#include <linux/sys_soc.h>
->  #include <linux/of.h>
->  #include <linux/of_dma.h>
->  #include <linux/of_device.h>
-> @@ -91,6 +92,9 @@ struct udma_match_data {
->  	bool enable_memcpy_support;
->  	u32 flags;
->  	u32 statictr_z_mask;
-> +};
-> +
-> +struct udma_soc_data {
->  	u32 rchan_oes_offset;
->  };
-> =20
-> @@ -117,6 +121,7 @@ struct udma_dev {
->  	struct device *dev;
->  	void __iomem *mmrs[MMR_LAST];
->  	const struct udma_match_data *match_data;
-> +	const struct udma_soc_data *soc_data;
-> =20
->  	u8 tpl_levels;
->  	u32 tpl_start_idx[3];
-> @@ -1679,7 +1684,7 @@ static int udma_alloc_chan_resources(struct dma_c=
-han *chan)
->  {
->  	struct udma_chan *uc =3D to_udma_chan(chan);
->  	struct udma_dev *ud =3D to_udma_dev(chan->device);
-> -	const struct udma_match_data *match_data =3D ud->match_data;
-> +	const struct udma_soc_data *soc_data =3D ud->soc_data;
->  	struct k3_ring *irq_ring;
->  	u32 irq_udma_idx;
->  	int ret;
-> @@ -1779,7 +1784,7 @@ static int udma_alloc_chan_resources(struct dma_c=
-han *chan)
->  					K3_PSIL_DST_THREAD_ID_OFFSET;
-> =20
->  		irq_ring =3D uc->rflow->r_ring;
-> -		irq_udma_idx =3D match_data->rchan_oes_offset + uc->rchan->id;
-> +		irq_udma_idx =3D soc_data->rchan_oes_offset + uc->rchan->id;
-> =20
->  		ret =3D udma_tisci_rx_channel_config(uc);
->  		break;
-> @@ -3091,14 +3096,12 @@ static struct udma_match_data am654_main_data =3D=
- {
->  	.psil_base =3D 0x1000,
->  	.enable_memcpy_support =3D true,
->  	.statictr_z_mask =3D GENMASK(11, 0),
-> -	.rchan_oes_offset =3D 0x200,
->  };
-> =20
->  static struct udma_match_data am654_mcu_data =3D {
->  	.psil_base =3D 0x6000,
->  	.enable_memcpy_support =3D false,
->  	.statictr_z_mask =3D GENMASK(11, 0),
-> -	.rchan_oes_offset =3D 0x200,
->  };
-> =20
->  static struct udma_match_data j721e_main_data =3D {
-> @@ -3106,7 +3109,6 @@ static struct udma_match_data j721e_main_data =3D=
- {
->  	.enable_memcpy_support =3D true,
->  	.flags =3D UDMA_FLAG_PDMA_ACC32 | UDMA_FLAG_PDMA_BURST,
->  	.statictr_z_mask =3D GENMASK(23, 0),
-> -	.rchan_oes_offset =3D 0x400,
->  };
-> =20
->  static struct udma_match_data j721e_mcu_data =3D {
-> @@ -3114,7 +3116,6 @@ static struct udma_match_data j721e_mcu_data =3D =
-{
->  	.enable_memcpy_support =3D false, /* MEM_TO_MEM is slow via MCU UDMA =
-*/
->  	.flags =3D UDMA_FLAG_PDMA_ACC32 | UDMA_FLAG_PDMA_BURST,
->  	.statictr_z_mask =3D GENMASK(23, 0),
-> -	.rchan_oes_offset =3D 0x400,
->  };
-> =20
->  static const struct of_device_id udma_of_match[] =3D {
-> @@ -3135,6 +3136,25 @@ static const struct of_device_id udma_of_match[]=
- =3D {
->  	{ /* Sentinel */ },
->  };
-> =20
-> +struct udma_soc_data am654_soc_data =3D {
-> +	.rchan_oes_offset =3D 0x200,
-> +};
-> +
-> +struct udma_soc_data j721e_soc_data =3D {
-> +	.rchan_oes_offset =3D 0x400,
-> +};
-> +
-> +struct udma_soc_data j7200_soc_data =3D {
-> +	.rchan_oes_offset =3D 0x80,
-> +};
+Another part that might also apply to __KVM_VHE_HYPERVISOR__.
 
-These should have been marked as static, I'll send a v2
+> +#else
+> +alternative_if_not ARM64_HAS_VIRT_HOST_EXTN
+> +	mrs	\dst, tpidr_el1
+> +alternative_else
+> +	mrs	\dst, tpidr_el2
+> +alternative_endif
+> +#endif
+> +	.endm
 
-> +
-> +static const struct soc_device_attribute k3_soc_devices[] =3D {
-> +	{ .family =3D "AM65X", .data =3D &am654_soc_data },
-> +	{ .family =3D "J721E", .data =3D &j721e_soc_data },
-> +	{ .family =3D "J7200", .data =3D &j7200_soc_data },
-> +	{ /* sentinel */ }
-> +};
-> +
->  static int udma_get_mmrs(struct platform_device *pdev, struct udma_dev=
- *ud)
->  {
->  	struct resource *res;
-> @@ -3277,7 +3297,7 @@ static int udma_setup_resources(struct udma_dev *=
-ud)
->  	rm_res =3D tisci_rm->rm_ranges[RM_RANGE_RCHAN];
->  	for (j =3D 0; j < rm_res->sets; j++, i++) {
->  		irq_res.desc[i].start =3D rm_res->desc[j].start +
-> -					ud->match_data->rchan_oes_offset;
-> +					ud->soc_data->rchan_oes_offset;
->  		irq_res.desc[i].num =3D rm_res->desc[j].num;
->  	}
->  	ret =3D ti_sci_inta_msi_domain_alloc_irqs(ud->dev, &irq_res);
-> @@ -3487,6 +3507,7 @@ static void udma_dbg_summary_show(struct seq_file=
- *s,
->  static int udma_probe(struct platform_device *pdev)
->  {
->  	struct device_node *navss_node =3D pdev->dev.parent->of_node;
-> +	const struct soc_device_attribute *soc;
->  	struct device *dev =3D &pdev->dev;
->  	struct udma_dev *ud;
->  	const struct of_device_id *match;
-> @@ -3551,6 +3572,13 @@ static int udma_probe(struct platform_device *pd=
-ev)
->  	}
->  	ud->match_data =3D match->data;
-> =20
-> +	soc =3D soc_device_match(k3_soc_devices);
-> +	if (!soc) {
-> +		dev_err(dev, "No compatible SoC found\n");
-> +		return -ENODEV;
-> +	}
-> +	ud->soc_data =3D soc->data;
-> +
->  	dma_cap_set(DMA_SLAVE, ud->ddev.cap_mask);
->  	dma_cap_set(DMA_CYCLIC, ud->ddev.cap_mask);
-> =20
->=20
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
