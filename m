@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F13263B73
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65410263B75
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730278AbgIJD1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S1730099AbgIJD2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730244AbgIJD0j (ORCPT
+        with ESMTP id S1730030AbgIJD0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:26:39 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C717C061756
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:26:39 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 184so3106867pgg.11
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:26:39 -0700 (PDT)
+        Wed, 9 Sep 2020 23:26:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B653C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:26:41 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v3so4108290ybb.22
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=MD8ea/IkxRwSIEFvRM2gPJ3l2x2PVS2E7Uygw6h8m9k=;
-        b=rfvF2iep/LJAN1tl9ytlByh0kIYkrEYjNvwNY8ZdgcSQ+RMDMcI/n9va8fdTgFAPqJ
-         7rJYiOuev+olV5L/57furWPSqo2bhbeGJrH85QX0eor8V/ixp8yFslDA884AgBxSw1hm
-         uvZBRjg5DfBC46F47lJuAQwxYLGN0eOYinE29+Bo/zEwUJ1+gvhC/ZdjQF6WDTdarQGA
-         lgCsD2hGoCrgKdJp0CuLvPfTYmWyzFQ2iQKiQiUuJb/O6MQdvJjczrv20KljqkvD/ks5
-         4MEqBKtuurvErMV9n+G9dfMi+yVSZZUdtEA6Dxvo7Rv4ZZx+vAi9tnOK9Pv7WFyC1nxK
-         0Q5Q==
+        bh=s1b7E0huzhjO63i42S0YmedtL3oR6qijaC60+IFuPgk=;
+        b=lDQLoSbqZVvAgbDpz1vvz4awAiq2k2TMGbIXn5KxMuYHB4wRhSSqIzr1WbvoWfbKh2
+         6KBr01hsZ98thjEZnoXFvEeXUZGz1O02RjIs6n6xxkHLHGV5uThZ8ya86LSnwsmbMlhP
+         h+wF1ZwU5WfYfcYFGBgFhBo3DD0zdMnMWkRxclFmGouZhboB2sX7IPaSdxoxJDjRRfzO
+         xdLU3kRHlQ6htYJJtZm0vMKq8th4YZ16N9yEMizP4WgHyhFmlG82V3e9W+Ese3zR1t+j
+         XLAM3UUspgVGV6MrpHmD2aTaR+Kk5iY5siwt16ZYXWeDFshnZ5PWHnHg80Hm3wBTNaO0
+         r84g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=MD8ea/IkxRwSIEFvRM2gPJ3l2x2PVS2E7Uygw6h8m9k=;
-        b=LxKsAtgpyImXue/zRWQJY2R7/ISTc7mTGblsDtfEqJ8ip/llrUp4WBePtuGCLNja72
-         v/IswhV7ahOXnCMoXMb97MPI1FI15UnlyfWaG7LRHtI/IxLWA9QlKxPej00matab+vg8
-         /qIeExxcEL/gNRm2uC4Bihge48BvQBIU7AH2Xqfy7e/wupoelIV6+CV0SDCtZ6jTFs9r
-         Ko7EcGq9DJzZYdos1Z1V3G3gcLjX62oJNvvAf0kohnQrP0Fj2sLF34UOl/jkRjo4/L2f
-         Ium2NFk7hpeD2t0TFJE/RdoleFi0vP+KLNeFLaF7iZNdtF3nh4Z2Njfd64mRvLjfI7eZ
-         N7XA==
-X-Gm-Message-State: AOAM5308/ewZxg7ldN8UNe2ccom8qlWyPhMCsx38xcdgCp27YHVFXyMq
-        fMjc2WZN6/aiuwoNElIPJsxfQNAibitg
-X-Google-Smtp-Source: ABdhPJwj1XuXlyqlo7PExCqXnd8CK49QZhpdhJDj7IzodEeCA8QzCVhC1n9NMxUiPLjH+bTQTl28HRPEqPAV
+        bh=s1b7E0huzhjO63i42S0YmedtL3oR6qijaC60+IFuPgk=;
+        b=ScgPGTXPaLOhRnzB76FWI9D9YAkDnsdGpHPl1fVbR4w3eH5DHzb7xn7oCw3wSs6OCh
+         wemAyJBIlyMjGQYbVojmLDGGQPcQ9+YavlDe8/S68R/T78Ml5w88hC6f8kbz1k3Ood4J
+         RQofghpdJqfSd1qinO4sVUs8LHlrNTB25L9V+0Hfm+uVWYw+sAkUnmZKJrVASDXirx8+
+         8ZlUF6SYbx4zvv88UI2hDVU1Vr0YM7xR2E740+2vw/RP9IdVI58Pi2XYRW+gBuGB6our
+         K1JYtT9ycLx+UEcfiCwirQLMJp4layoo3D+EadVK2ViCgqSzG72rdFLifiW+Pc9Nu8oo
+         4NjA==
+X-Gm-Message-State: AOAM533HsAlZnIMZ/efPVQheierY13zOdoacN2j3Ma+De3z67MXLuzUy
+        mPy8rkclZSYP2YcUJO1xVP3A4tyQ63VQ
+X-Google-Smtp-Source: ABdhPJwzVOWe3M5Y3U3FN+0SL5A6O0J4pWgkpcVSLpBV8nZ+0b+gODgxIl6eL3xldI0fyRCrNgekgtXwhAG/
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a17:90b:15c6:: with SMTP id
- lh6mr285501pjb.0.1599708398338; Wed, 09 Sep 2020 20:26:38 -0700 (PDT)
-Date:   Wed,  9 Sep 2020 20:26:31 -0700
+ (user=irogers job=sendgmr) by 2002:a25:d2cf:: with SMTP id
+ j198mr10048036ybg.418.1599708400805; Wed, 09 Sep 2020 20:26:40 -0700 (PDT)
+Date:   Wed,  9 Sep 2020 20:26:32 -0700
 In-Reply-To: <20200910032632.511566-1-irogers@google.com>
-Message-Id: <20200910032632.511566-2-irogers@google.com>
+Message-Id: <20200910032632.511566-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20200910032632.511566-1-irogers@google.com>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v2 2/3] perf metricgroup: Fix typo in comment.
+Subject: [PATCH v2 3/3] perf metricgroup: Fix uncore metric expressions
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,26 +73,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing character.
+A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
+and uncore_imc/case_count_write/. These events open 6 events per socket
+with pmu names of uncore_imc_[0-5]. The current metric setup code in
+find_evsel_group assumes one ID will map to 1 event to be recorded in
+metric_events. For events with multiple matches, the first event is
+recorded in metric_events (avoiding matching >1 event with the same
+name) and the evlist_used updated so that duplicate events aren't
+removed when the evlist has unused events removed.
 
+Before this change:
+$ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+             41.14 MiB  uncore_imc/cas_count_read/
+     1,002,614,251 ns   duration_time
+
+       1.002614251 seconds time elapsed
+
+After this change:
+$ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+            157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+            126.97 MiB  uncore_imc/cas_count_write/
+     1,003,019,728 ns   duration_time
+
+v2. avoids iterating over the whole evlist as suggested by
+    namhyung@kernel.org. It also fixes the metric_leader computation
+    that was broken in the same commits.
+
+Erroneous duplication introduced in:
+commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
+
+Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/metricgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/metricgroup.c | 45 ++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8831b964288f..662f4e8777d5 100644
+index 662f4e8777d5..79080de9217d 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -150,7 +150,7 @@ static void expr_ids__exit(struct expr_ids *ids)
- }
+@@ -206,6 +206,18 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+ 				sizeof(struct evsel *) * idnum);
+ 			current_leader = ev->leader;
+ 		}
++		/*
++		 * Check for duplicate events with the same name. For example,
++		 * uncore_imc/cas_count_read/ will turn into 6 events per socket
++		 * on skylakex. Only the first such event is placed in
++		 * metric_events.
++		 */
++		for (i = 0; i < matched_events; i++) {
++			if (!strcmp(metric_events[i]->name, ev->name))
++				break;
++		}
++		if (i != matched_events)
++			continue;
+ 		if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
+ 			if (has_constraint) {
+ 				/*
+@@ -245,9 +257,36 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+ 	metric_events[idnum] = NULL;
  
- /**
-- * Find a group of events in perf_evlist that correpond to those from a parsed
-+ * Find a group of events in perf_evlist that correspond to those from a parsed
-  * metric expression. Note, as find_evsel_group is called in the same order as
-  * perf_evlist was constructed, metric_no_merge doesn't need to test for
-  * underfilling a group.
+ 	for (i = 0; i < idnum; i++) {
+-		ev = metric_events[i];
+-		ev->metric_leader = ev;
+-		set_bit(ev->idx, evlist_used);
++		/* Don't free used events. */
++		set_bit(metric_events[i]->idx, evlist_used);
++		/*
++		 * The metric leader points to the identically named event in
++		 * metric_events.
++		 */
++		metric_events[i]->metric_leader = metric_events[i];
++		/*
++		 * Mark two events with identical names in the same group (or
++		 * globally) as being in use as uncore events may be duplicated
++		 * for each pmu. Set the metric leader to be the event that
++		 * appears in metric_events.
++		 */
++		if (!has_constraint) {
++			for_each_group_evsel(ev, metric_events[i]->leader) {
++				if (ev != metric_events[i] &&
++				    !strcmp(metric_events[i]->name, ev->name)) {
++					set_bit(ev->idx, evlist_used);
++					ev->metric_leader = metric_events[i];
++				}
++			}
++		} else {
++			evlist__for_each_entry(perf_evlist, ev) {
++				if (ev != metric_events[i] &&
++				    !strcmp(metric_events[i]->name, ev->name)) {
++					set_bit(ev->idx, evlist_used);
++					ev->metric_leader = metric_events[i];
++				}
++			}
++		}
+ 	}
+ 
+ 	return metric_events[0];
 -- 
 2.28.0.526.ge36021eeef-goog
 
