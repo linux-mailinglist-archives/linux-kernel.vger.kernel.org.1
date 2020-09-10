@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6D72647A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585442647E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730688AbgIJOB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 10:01:56 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1914 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730989AbgIJNzO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:55:14 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5a2ce40001>; Thu, 10 Sep 2020 06:40:52 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 10 Sep 2020 06:43:08 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 10 Sep 2020 06:43:08 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep
- 2020 13:43:08 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 10 Sep 2020 13:43:08 +0000
-Received: from moonraker.nvidia.com (Not Verified[10.26.73.219]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f5a2d6a0002>; Thu, 10 Sep 2020 06:43:08 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH 5/5] arm64: tegra: Populate EEPROMs for Jetson Xavier NX
-Date:   Thu, 10 Sep 2020 14:42:39 +0100
-Message-ID: <20200910134239.192030-6-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200910134239.192030-1-jonathanh@nvidia.com>
-References: <20200910134239.192030-1-jonathanh@nvidia.com>
+        id S1731031AbgIJOVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731114AbgIJOKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:10:31 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E99121D79;
+        Thu, 10 Sep 2020 13:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599745479;
+        bh=2rpnh2RBD5R8RyuJb8iyA1MzLro0dvc3KgNjFzIDVuE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bFaQIQNda2L/zgJFisbB6HcjzJzEwgktRzodCLDh5GSC2QkY63lALnClSCNIfic78
+         i9E4FbbSJu2aO8gccL/lgqJaVZrlPVgFwRVvIs5cwAiu9h/Gjc66jHBx3d6Ka4ayE8
+         u5PlTvF3xUplHGXeFQ5FPcP6mYpaS7ctOEayPkFw=
+Date:   Thu, 10 Sep 2020 16:44:35 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH -rc v1] gcov: Disable gcov build with GCC 10
+Message-ID: <20200910134435.GK421756@unreal>
+References: <20200904155808.4997-1-leon@kernel.org>
+ <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599745252; bh=yUbtCK0PckeSjkBV0tkSuiBjwH6LDZxGlJ3jgLQJf/4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=EsqOhFI0RyLoudnJKCMysoRtwISSB5x3SrUmaCJzk171m0z3z5GV7r+Uz/ZNobu0M
-         tVUIX/4LOveouGLU8dxAlrdlPm2UVJkSux6SofGS9ke27KI79W0Taf98lH4y8GPLf0
-         HPr/wqddBYwS1iFjKXwkD6T1MkJ5K8HxJCosciqNrY7/7umP8STCMqZ/WJiaMV1G5U
-         ub2wiEr6A3WmxcN+598qoj/z3+nacN3uVWZ7Qryj365g1+xVDx/FgdGaVgQE1caOhg
-         U3CH+LTSchQ60oG2MZBq3ISNOhMClcSi+HMGrzbRfAlI3pKTyGfNFktqO4F9NfLeOF
-         InCXE2dH+y8Xw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Populate the EEPROMs that are present on the Jetson Xavier NX developer
-platform.
+On Thu, Sep 10, 2020 at 02:52:01PM +0200, Peter Oberparleiter wrote:
+> On 04.09.2020 17:58, Leon Romanovsky wrote:
+> > GCOV built with GCC 10 doesn't initialize n_function variable.
+> > This produces different kernel panics as was seen by Colin in
+> > Ubuntu [1] and me in FC 32 [2].
+> >
+> > As a workaround, let's disable GCOV build for broken GCC 10 version.
+> >
+> > [1] https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1891288
+> > [2] https://lore.kernel.org/lkml/20200827133932.3338519-1-leon@kernel.org
+> > Cc: Colin Ian King <colin.king@canonical.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>
+> The following patch should fix the problem with gcov and GCC 10.
+> I successfully tested it with kernel 5.9-rc4 on s390 using GCC 10.1.1
+> and also with GCC 9.1.1 to see that it didn't break support for previous
+> GCC versions. In both cases there were no kernel panics and gcov worked
+> fine.
+>
+> Could you try this patch to see if it also fixes the problem in your
+> environment?
 
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- .../nvidia/tegra194-p3509-0000+p3668-0000.dts    | 14 ++++++++++++++
- .../boot/dts/nvidia/tegra194-p3668-0000.dtsi     | 16 ++++++++++++++++
- 2 files changed, 30 insertions(+)
+It worked for me, Thanks
+Tested-by: Leon Romanovsky <leonro@nvidia.com>
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts =
-b/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-index c1c589805d6b..7f97b34216a0 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p3509-0000+p3668-0000.dts
-@@ -27,6 +27,20 @@ ddc: i2c@3190000 {
- 			status =3D "okay";
- 		};
-=20
-+		i2c@3160000 {
-+			eeprom@57 {
-+				compatible =3D "atmel,24c02";
-+				reg =3D <0x57>;
-+
-+				label =3D "system";
-+				vcc-supply =3D <&vdd_1v8>;
-+				address-width =3D <8>;
-+				pagesize =3D <8>;
-+				size =3D <256>;
-+				read-only;
-+			};
-+		};
-+
- 		hda@3510000 {
- 			nvidia,model =3D "jetson-xavier-nx-hda";
- 			status =3D "okay";
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi b/arch/arm=
-64/boot/dts/nvidia/tegra194-p3668-0000.dtsi
-index 10cb836aea7e..a2893be80507 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p3668-0000.dtsi
-@@ -58,6 +58,22 @@ serial@c280000 {
- 			status =3D "okay";
- 		};
-=20
-+		i2c@3160000 {
-+			status =3D "okay";
-+
-+			eeprom@50 {
-+				compatible =3D "atmel,24c02";
-+				reg =3D <0x50>;
-+
-+				label =3D "module";
-+				vcc-supply =3D <&vdd_1v8ls>;
-+				address-width =3D <8>;
-+				pagesize =3D <8>;
-+				size =3D <256>;
-+				read-only;
-+			};
-+		};
-+
- 		/* SDMMC1 (SD/MMC) */
- 		mmc@3400000 {
- 			status =3D "okay";
---=20
-2.25.1
-
+>
+> ---8<---
+> From: Peter Oberparleiter <oberpar@linux.ibm.com>
+> Subject: [PATCH] gcov: add support for GCC 10.1
+>
+> Using gcov to collect coverage data for kernels compiled with GCC 10.1
+> causes random malfunctions and kernel crashes. This is the result of a
+> changed GCOV_COUNTERS value in GCC 10.1 that causes a mismatch between
+> the layout of the gcov_info structure created by GCC profiling code and
+> the related structure used by the kernel.
+>
+> Fix this by updating the in-kernel GCOV_COUNTERS value. Also re-enable
+> config GCOV_KERNEL for use with GCC 10.
+>
+> Reported-by: Colin Ian King <colin.king@canonical.com>
+> Reported-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Peter Oberparleiter <oberpar@linux.ibm.com>
+> ---
+>  kernel/gcov/Kconfig   | 1 -
+>  kernel/gcov/gcc_4_7.c | 4 +++-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> index bb4b680e8455..3110c77230c7 100644
+> --- a/kernel/gcov/Kconfig
+> +++ b/kernel/gcov/Kconfig
+> @@ -4,7 +4,6 @@ menu "GCOV-based kernel profiling"
+>  config GCOV_KERNEL
+>  	bool "Enable gcov-based kernel profiling"
+>  	depends on DEBUG_FS
+> -	depends on !CC_IS_GCC || GCC_VERSION < 100000
+>  	select CONSTRUCTORS if !UML
+>  	default n
+>  	help
+> diff --git a/kernel/gcov/gcc_4_7.c b/kernel/gcov/gcc_4_7.c
+> index 908fdf5098c3..53c67c87f141 100644
+> --- a/kernel/gcov/gcc_4_7.c
+> +++ b/kernel/gcov/gcc_4_7.c
+> @@ -19,7 +19,9 @@
+>  #include <linux/vmalloc.h>
+>  #include "gcov.h"
+>
+> -#if (__GNUC__ >= 7)
+> +#if (__GNUC__ >= 10)
+> +#define GCOV_COUNTERS			8
+> +#elif (__GNUC__ >= 7)
+>  #define GCOV_COUNTERS			9
+>  #elif (__GNUC__ > 5) || (__GNUC__ == 5 && __GNUC_MINOR__ >= 1)
+>  #define GCOV_COUNTERS			10
+> --
+> 2.21.0
+>
