@@ -2,100 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69A3264F63
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D18264F5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgIJTlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S1728069AbgIJTkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731316AbgIJPgr (ORCPT
+        with ESMTP id S1731376AbgIJPiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:36:47 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2217C06138E
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:36:47 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w7so4853063pfi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:36:47 -0700 (PDT)
+        Thu, 10 Sep 2020 11:38:01 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A54C06138E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:37:51 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l9so491360wme.3
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:37:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+NphFAz+bbbGOLPoViKWvapYAGN08JtmjYnLzZIKOxo=;
-        b=GKVS6dK77bx/0jZLujlXrhsPEnEfKJjffubPbjyONPpDBt8aKV+/WikhO98lFUcqBg
-         fknNlKQUgg0UcuMI4rvH6oQicx7azui4MD9+lZC8HzP87Vi4TbpnL5wsy+KtaRvsh2LC
-         56er56VCnPG1cwnDpL+FZu4sdinoEO6m0lag595MpAp4J3HgJxKTp/ftgfAClZ5xpG9e
-         IGh4od5fDmnNKVRLqhekiwgA0ji4hW/l6rP7Ub0rdSacgB+QsToPnSt5fJEOro/bh0y5
-         tfWDEo6mZ+GCGnCsbnFxd4FHFyfq+MjpuaQe3PdZTqbmYXIk7DHpN7njMs/8y0p1rs/E
-         iOwA==
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zOv4Yx7m8nr1wvMGpIto7eo/RQlcFF6HnuE7bwkiImk=;
+        b=V26TF9RU0H8cqirlOmhma1qZPwsk3YxxchuEmGY/8twdnEK1YS2MnwDIeU1daMBFjs
+         k/DEqCZBPo+G3W8UJ3nwpjPLtJjQbu2fLnXWV3q6NvmLqgrkj/4oIPhIC96AyL4vEACU
+         oLwgH5LsRkqY4EuIRR6v6oz0RQ8G5aBWM23n856vUQLnoO/xuVXDgswv8J6xhwi2kpKl
+         QVgcffQn+sVZAA4xX3KYJNFGZRyJnC17+7gRQa4MkfGLw3j8aSq5N/ApJ9NL5VR7z/sd
+         H/YDNse7EeeDDIlEDMJvfuMEZPAbrWqQXds7sG8j235L5cFAWeaEMHAXfFnQEeUJC5Wo
+         2kbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+NphFAz+bbbGOLPoViKWvapYAGN08JtmjYnLzZIKOxo=;
-        b=LDxbVRX/9O6Ak8TXqgctU2zsmxggeRzdSOCBjtTahYK8aGhDiemCMvRqFd15DLfql5
-         1Mrx/r1SVvg+PsQAI2QY2X9UjOFmaCxEXPqGp/5DV5jFjbBOqdNGqkkgAVbGnHfa7qyR
-         GZyxQfyKcYGXDQUjZmNfvxvNRkZj4kWXgcxyNMF3QAw78Y8+j9yER/SSCphOsEHfO7fz
-         1ane7AUQeqm/1nXgemBR666+PMihDrUTJSoF33uS4aKGWJiAdeBOFcSwQi60JuUiIjVc
-         8mR/Zdx0xwtrQF8HyD3MQkfjezH3rqO0y/LZPhJyTSZOUzP71q3LTPUa1M0dEN6Nm47f
-         4DVg==
-X-Gm-Message-State: AOAM530VoUJL4fY0yBiSHfpbup8Nfm7tigEByG0UPHVgXvDk8h1N3Z4A
-        6B0Qqbk7sN2wCpYdKrrOG1XvmA==
-X-Google-Smtp-Source: ABdhPJxIZ4y5XTc4IrXUnrqP73HVFyQx7PSmSplY3yEEr1jJKnjEfVZhyGyxvSD2g5MX5wlOI8kPiA==
-X-Received: by 2002:aa7:8bd4:0:b029:13c:1611:6538 with SMTP id s20-20020aa78bd40000b029013c16116538mr6137309pfd.10.1599752207202;
-        Thu, 10 Sep 2020 08:36:47 -0700 (PDT)
-Received: from [192.168.1.11] ([71.212.141.89])
-        by smtp.gmail.com with ESMTPSA id s187sm6690150pfc.134.2020.09.10.08.36.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 08:36:46 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
-To:     Steven Price <steven.price@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Peter Maydell <Peter.Maydell@arm.com>,
-        Haibo Xu <Haibo.Xu@arm.com>
-References: <20200904160018.29481-1-steven.price@arm.com>
- <8e661984-70bc-790c-8636-39dcd8b00131@linaro.org>
- <842807ac-562a-36ce-8061-aa323341b605@arm.com>
-From:   Richard Henderson <richard.henderson@linaro.org>
-Message-ID: <c6043c5c-4bf1-e42c-1337-a892e6fd7402@linaro.org>
-Date:   Thu, 10 Sep 2020 08:36:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zOv4Yx7m8nr1wvMGpIto7eo/RQlcFF6HnuE7bwkiImk=;
+        b=DFo04yAx7kG6vjuN/VMFiIOkKPOmk4IY+PTxOdJgkaMW14R2wp/l34m0o5FvmcOyMI
+         uxFssxMAHkU2ov/IOCXCn5q5mIn8RoYprHMR/FOhRt6bFJhN4L5z+PYm25eXwKKbYsZG
+         gQGOEM3bQY+KN3dkPPcctePDkHE47/whi9RKwxImUkLUJv0o0a0YQXE1RexB9ddVg+no
+         udwa459X/El6x9R3TWhWniRM2DStMOq6GEI8MEOucafN6tO+QehKL7xpvOAPOD/UxXPO
+         lEyX0UPHbX8mJL0I8zGBDJ+0aRlOOfbxl4XZgYm6ZpRbluzIJpW1Pl+ci5ZZTwTvcazg
+         GJMQ==
+X-Gm-Message-State: AOAM533xyEX8pHeskgjOdDqxEKdUEkCzLgv7xRs20OyqkKaoBrcpYhpQ
+        KPVtrELz38TiBaUr0YsNsQ5R7EFNQ7z3Nlb36u6XRQ==
+X-Google-Smtp-Source: ABdhPJyIDFrKOnnP30G4eKbpPJvXcHHi4rzlnfXVwO1u6UWNESErT1eGx5zOz+KoNtJPUTNu7uY0AyPiHI2z0b5arVY=
+X-Received: by 2002:a1c:6346:: with SMTP id x67mr607078wmb.42.1599752269789;
+ Thu, 10 Sep 2020 08:37:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <842807ac-562a-36ce-8061-aa323341b605@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200908200314.22771-1-rad@semihalf.com> <50db252a-1274-f681-d5e7-e7fba839c0ee@linux.intel.com>
+In-Reply-To: <50db252a-1274-f681-d5e7-e7fba839c0ee@linux.intel.com>
+From:   =?UTF-8?Q?Rados=C5=82aw_Biernacki?= <rad@semihalf.com>
+Date:   Thu, 10 Sep 2020 17:37:34 +0200
+Message-ID: <CAOs-w0+2uk56-R6RVhno=uTbK4m5UH+tmeiOfcTVgydUdPuXog@mail.gmail.com>
+Subject: Re: [PATCH V3] ASoC: Intel: boards: Use FS as nau8825 sysclk in
+ nau88125_* machine
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Lech Betlej <Lech.Betlej@intel.com>,
+        alsa-devel@alsa-project.org, Todd Broch <tbroch@google.com>,
+        Harshapriya <harshapriya.n@intel.com>,
+        John Hsu <KCHSU0@nuvoton.com>, linux-kernel@vger.kernel.org,
+        "Sienkiewicz, Michal" <michal.sienkiewicz@intel.com>,
+        Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>, Marcin Wojtas <mw@semihalf.com>,
+        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
+        Alex Levin <levinale@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 3:24 AM, Steven Price wrote:
-> It is a shame, however I suspect this is because to use those instructions you
-> need to know the block size held in GMID_EL1. And at least in theory that could
-> vary between CPUs.
+Thank you Pierre.
+All your comments are addressed in V4.
+skylake_nau8825_resume_post() is in fact unnecessary as my test shows
+no difference if we do the FLL setup in skylake_nau8825_trigger().
+patch is coming...
 
-Which is no different from having to read DCZID_EL0 in order to implement
-memset, in my opinion.  But, whatever.
-
-
-> When we have some real hardware it would be worth profiling this. At the moment
-> I've no idea whether the kernel entry overhead would make such an interface
-> useful from a performance perspective or not.
-
-Yep.
+wt., 8 wrz 2020 o 22:59 Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> napisa=C5=82(a):
 
 
-r~
+>
+> Sorry, I couldn't resist adding three more comments to improve further:
+>
+> > -static int skylake_nau8825_hw_params(struct snd_pcm_substream *substre=
+am,
+> > -     struct snd_pcm_hw_params *params)
+> > +static int skylake_nau8825_trigger(struct snd_pcm_substream *substream=
+, int cmd)
+> >   {
+> >       struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> > +     struct snd_pcm_runtime *runtime =3D substream->runtime;
+> >       struct snd_soc_dai *codec_dai =3D asoc_rtd_to_codec(rtd, 0);
+> > -     int ret;
+> > -
+> > -     ret =3D snd_soc_dai_set_sysclk(codec_dai,
+> > -                     NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
+> > +     int ret =3D 0;
+> >
+> > -     if (ret < 0)
+> > -             dev_err(rtd->dev, "snd_soc_dai_set_sysclk err =3D %d\n", =
+ret);
+> > +     switch (cmd) {
+> > +     case SNDRV_PCM_TRIGGER_START:
+> > +             ret =3D snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL=
+_FS, 0,
+> > +                                          SND_SOC_CLOCK_IN);
+>
+> Maybe a simple comment to explain what this does?
+>
+> > +             if (ret < 0) {
+> > +                     dev_err(codec_dai->dev, "can't set FS clock %d\n"=
+, ret);
+> > +                     break;
+> > +             }
+> > +             ret =3D snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rat=
+e,
+> > +                                       runtime->rate * 256);
+> > +             if (ret < 0)
+> > +                     dev_err(codec_dai->dev, "can't set FLL: %d\n", re=
+t);
+> > +             break;
+>
+> You could replace this by a /* fallthrough */ statement?
+>
+> > +     case SNDRV_PCM_TRIGGER_RESUME:
+> > +             ret =3D snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rat=
+e,
+> > +                                       runtime->rate * 256);
+> > +             if (ret < 0)
+> > +                     dev_err(codec_dai->dev, "can't set FLL: %d\n", re=
+t);
+> > +             break;
+> > +     }
+>
+> > +static int __maybe_unused skylake_nau8825_resume_post(struct snd_soc_c=
+ard *card)
+> > +{
+> > +     struct snd_soc_dai *codec_dai;
+> > +
+> > +     codec_dai =3D snd_soc_card_get_codec_dai(card, SKL_NUVOTON_CODEC_=
+DAI);
+> > +     if (!codec_dai) {
+> > +             dev_err(card->dev, "Codec dai not found\n");
+> > +             return -EIO;
+> > +     }
+> > +
+> > +     dev_dbg(codec_dai->dev, "playback_active:%d playback_widget->acti=
+ve:%d codec_dai->rate:%d\n",
+> > +             codec_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK],
+> > +             codec_dai->playback_widget->active,
+> > +             codec_dai->rate);
+> > +
+> > +     if (codec_dai->stream_active[SNDRV_PCM_STREAM_PLAYBACK] &&
+> > +         codec_dai->playback_widget->active)
+> > +             snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
+> > +                                    SND_SOC_CLOCK_IN);
+>
+> And that part is also worthy of a comment, e.g. why not do this as part
+> of the TRIGGER_RESUME and why only for playback?
+>
+>
+> > --- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+> > +++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+>
+> same comments for this other machine driver.
+>
