@@ -2,73 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8D82650C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7822650C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgIJU1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:27:45 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:35970 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbgIJUZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:25:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 62CDA1C0B76; Thu, 10 Sep 2020 22:25:10 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 22:25:10 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Gene Chen <gene.chen.richtek@gmail.com>, robh+dt@kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-Message-ID: <20200910202510.GB18431@ucw.cz>
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
- <20200908222544.GF1005@bug>
- <CAE+NS34h9qbdHkYDYDnHGgk+9mFNTRpKEMKNEFZ+Secf6JyoZg@mail.gmail.com>
- <20200910122958.GF7907@duo.ucw.cz>
- <489fc92f-f6f5-839e-e417-7761d404e6ae@gmail.com>
+        id S1726705AbgIJU0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:26:49 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56290 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726928AbgIJUZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 16:25:16 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kGT85-00E8Ic-7o; Thu, 10 Sep 2020 22:25:13 +0200
+Date:   Thu, 10 Sep 2020 22:25:13 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 00/15] Adding GAUDI NIC code to habanalabs driver
+Message-ID: <20200910202513.GH3354160@lunn.ch>
+References: <20200910161126.30948-1-oded.gabbay@gmail.com>
+ <20200910130112.1f6bd9e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAFCwf13SbXqjyu6JHKSTf-EqUxcBZUe4iAfggLhKXOi6DhXYcg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <489fc92f-f6f5-839e-e417-7761d404e6ae@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAFCwf13SbXqjyu6JHKSTf-EqUxcBZUe4iAfggLhKXOi6DhXYcg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+> Can you please elaborate on how to do this with a single driver that
+> is already in misc ?
+> As I mentioned in the cover letter, we are not developing a
+> stand-alone NIC. We have a deep-learning accelerator with a NIC
+> interface.
 
-> > > 1. set FLED1 brightness
-> > > # echo 1 > /sys/class/leds/white:flash1/flash_brightness
-> > > 2. enable FLED1 strobe
-> > > # echo 1 > /sys/class/leds/white:flash1/flash_strobe
-> > > 3 . turn off FLED1 strobe (just used to gaurantee the strobe mode
-> > > flash leds must be turned off)
-> > > # echo 0 > /sys/class/leds/white:flash1/flash_strobe
-> > 
-> > I believe I'd preffer only exposing torch functionality in
-> > /sys/class/leds. .. strobe can be supported using v4l2 APIs.
-> 
-> Actually having LED flash class without strobe is pointless.
-> If you looked at led_classdev_flash_register_ext() you would see that
-> it fails with uninitialized strobe_set op. And V4L2 API for strobing
-> flash calls strobe_set from LED flash class beneath.
-> 
-> That was the idea behind LED and V4L2 flash API unification - there
-> is one hardware driver needed, the V4L2 Flash layer just takes over
-> control over it when needed.
+This sounds like an MFD.
 
-I agree that one driver is enough.
-
-But we should not need flash_strobe file in sysfs. Simply use V4L2 for
-that.
-
-Best regards,
-								Pavel
+     Andrew
