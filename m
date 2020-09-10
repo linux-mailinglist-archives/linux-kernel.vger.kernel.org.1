@@ -2,203 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF6C265393
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9850F26538C
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgIJVhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:37:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:36190 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728442AbgIJNeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:34:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D844106F;
-        Thu, 10 Sep 2020 06:34:21 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69B3C3F66E;
-        Thu, 10 Sep 2020 06:34:19 -0700 (PDT)
-Subject: Re: [PATCH 11/12] dma-mapping: move dma_common_{mmap,get_sgtable} out
- of mapping.c
-To:     Christoph Hellwig <hch@lst.de>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        iommu@lists.linux-foundation.org
-Cc:     Tomasz Figa <tfiga@chromium.org>, Joerg Roedel <joro@8bytes.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20200908164758.3177341-1-hch@lst.de>
- <20200908164758.3177341-12-hch@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <88bae26e-d5f4-7a00-a88a-b69194d519a4@arm.com>
-Date:   Thu, 10 Sep 2020 14:34:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728340AbgIJVhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730187AbgIJNfH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:35:07 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F14C06179A
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:34:50 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id b6so7051819iof.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tcd-ie.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h8Tpj5wYSQjiK+TAJfFO0Tf9jiEY5yGG/m2aEP5Z4pw=;
+        b=YqA5PLut0xGMj0S2JsZ1nqoWnAI87qW2iB6rBuyzlNr/i8p2GIELK1QX+lKWUsTwzK
+         J2dSARVPeG4IwzzuA8pE1P+5OVAa2eHFRKGaWb7NjIZv2LfVgNFdgO/O5efipKLRnyRj
+         59Ivydb0yd96322f4OP7eAyli9gq1bJJqNWwr7UQp7WOJw13CiHGa50UV4LiwaciCZ54
+         rPVab7PqDAVXapxusuMo+bEb8iCDOteeaNoCp92DVDajkbd2ofZmMkGtoG3Skprhh9uL
+         /U8Q1jK9UaeuY5X3L97dgHkQYmRrGLYCXPbuv3z5NyjgpChQ4n/amkDeY/PGFcsIM7Fy
+         bAqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h8Tpj5wYSQjiK+TAJfFO0Tf9jiEY5yGG/m2aEP5Z4pw=;
+        b=r0TtAK1mIEqQAx0JgsFjPg46XpDYnvxVVXAramPYsR62iSCKUxdRdx0YZUZh1CLmTL
+         Fjp0U3pRAK50iE759SFpo+gkoseLKPcyYGsnrcJQedpq5cQjapsRYX2v6W03Yo5LGfbd
+         o2my9jY0IC5Ohh3f2GSV43C0ehc+NoBo1RfsfjZw8FxmdrI9OrPsMvIJLzt/gTczP3ZY
+         fdRSud8u+qGKWSDysNw19h4TWWP2ufj6uv3veUp1zL5/rmey3J9hkNQP6+ocr+Zww6DI
+         SPCjV+c6k+p4yzD+E0bby8pQTt68WjQxmBHodNlP7/uL9z7nwUVNWlKOkN2VeyowteDP
+         2uWw==
+X-Gm-Message-State: AOAM531Db/gO+er0STPPEQCkrHwY8zawvExquF2Pwhco52I7+mC+qnjn
+        JZlAU3m21DzkmOjWEh9qAdr8Me+58u5KOUqqfdvEAQ==
+X-Google-Smtp-Source: ABdhPJwu6upi5knKzGwyXFCyYTEZCPzreSot+419n5zt9A65oGcyQgjDJ6G718nc8PHKFashtF6vKw91+qlabsYr8+c=
+X-Received: by 2002:a02:b199:: with SMTP id t25mr8370395jah.124.1599744889300;
+ Thu, 10 Sep 2020 06:34:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200908164758.3177341-12-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20191221150402.13868-1-murphyt7@tcd.ie> <465815ae-9292-f37a-59b9-03949cb68460@deltatee.com>
+ <20200529124523.GA11817@infradead.org> <CGME20200529190523eucas1p2c086133e707257c0cdc002f502d4f51d@eucas1p2.samsung.com>
+ <33137cfb-603c-86e8-1091-f36117ecfaf3@deltatee.com> <ef2150d5-7b6a-df25-c10d-e43316fe7812@samsung.com>
+ <b9140772-0370-a858-578c-af503a06d8e9@deltatee.com> <CALQxJuutRaeX89k2o4ffTKYRMizmMu0XbRnzpFuSSrkQR02jKg@mail.gmail.com>
+ <766525c3-4da9-6db7-cd90-fb4b82cd8083@deltatee.com> <60a82319-cbee-4cd1-0d5e-3c407cc51330@linux.intel.com>
+ <e598fb31-ef7a-c2ee-8a54-bf62d50c480c@deltatee.com> <b27cae1f-07ff-bef2-f125-a5f0d968016d@linux.intel.com>
+ <CALQxJut5c=cWdi+SVkN3JnbkhPSYmLkOyRUhduL-UJ9gyKn9Ow@mail.gmail.com>
+ <7106602a-9964-851e-9c4e-d8acf4033b89@linux.intel.com> <ea24e077-5aa6-dd8e-69a7-d186b606703f@linux.intel.com>
+ <CALQxJus4prs0T6G9Z4bw5BDgwmkaiynBcoknLsYEY45SNZ6Ukg@mail.gmail.com>
+In-Reply-To: <CALQxJus4prs0T6G9Z4bw5BDgwmkaiynBcoknLsYEY45SNZ6Ukg@mail.gmail.com>
+From:   Tom Murphy <murphyt7@tcd.ie>
+Date:   Thu, 10 Sep 2020 14:34:38 +0100
+Message-ID: <CALQxJuuU4vpx=5Dg07epSWws-fshC6PJnrPWu-ir5nadgXspKw@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH 0/8] Convert the intel iommu driver to the
+ dma-iommu api
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Julien Grall <julien.grall@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-samsung-soc@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-rockchip@lists.infradead.org, Andy Gross <agross@kernel.org>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Kukjin Kim <kgene@kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 17:47, Christoph Hellwig wrote:
-> Add a new file that contains helpera for misc DMA ops, which is only
+On Thu, 10 Sep 2020 at 14:33, Tom Murphy <murphyt7@tcd.ie> wrote:
+>
+> On Wed, 9 Sep 2020 at 13:56, Tvrtko Ursulin
+> <tvrtko.ursulin@linux.intel.com> wrote:
+> >
+> >
+> > On 09/09/2020 10:16, Tvrtko Ursulin wrote:
+> > > On 08/09/2020 23:43, Tom Murphy wrote:
+> > >> On Tue, 8 Sep 2020 at 16:56, Tvrtko Ursulin
+> > >> <tvrtko.ursulin@linux.intel.com> wrote:
+> > >>> On 08/09/2020 16:44, Logan Gunthorpe wrote:
+> > >>>> On 2020-09-08 9:28 a.m., Tvrtko Ursulin wrote:
+> > >>>>>>
+> > >>>>>> diff --git a/drivers/gpu/drm/i915/i915_scatterlist.h
+> > >>>>>> b/drivers/gpu/drm/i915/i915
+> > >>>>>> index b7b59328cb76..9367ac801f0c 100644
+> > >>>>>> --- a/drivers/gpu/drm/i915/i915_scatterlist.h
+> > >>>>>> +++ b/drivers/gpu/drm/i915/i915_scatterlist.h
+> > >>>>>> @@ -27,13 +27,19 @@ static __always_inline struct sgt_iter {
+> > >>>>>>     } __sgt_iter(struct scatterlist *sgl, bool dma) {
+> > >>>>>>            struct sgt_iter s = { .sgp = sgl };
+> > >>>>>>
+> > >>>>>> +       if (sgl && !sg_dma_len(s.sgp))
+> > >>>>>
+> > >>>>> I'd extend the condition to be, just to be safe:
+> > >>>>>       if (dma && sgl && !sg_dma_len(s.sgp))
+> > >>>>>
+> > >>>>
+> > >>>> Right, good catch, that's definitely necessary.
+> > >>>>
+> > >>>>>> +               s.sgp = NULL;
+> > >>>>>> +
+> > >>>>>>            if (s.sgp) {
+> > >>>>>>                    s.max = s.curr = s.sgp->offset;
+> > >>>>>> -               s.max += s.sgp->length;
+> > >>>>>> -               if (dma)
+> > >>>>>> +
+> > >>>>>> +               if (dma) {
+> > >>>>>> +                       s.max += sg_dma_len(s.sgp);
+> > >>>>>>                            s.dma = sg_dma_address(s.sgp);
+> > >>>>>> -               else
+> > >>>>>> +               } else {
+> > >>>>>> +                       s.max += s.sgp->length;
+> > >>>>>>                            s.pfn = page_to_pfn(sg_page(s.sgp));
+> > >>>>>> +               }
+> > >>>>>
+> > >>>>> Otherwise has this been tested or alternatively how to test it?
+> > >>>>> (How to
+> > >>>>> repro the issue.)
+> > >>>>
+> > >>>> It has not been tested. To test it, you need Tom's patch set without
+> > >>>> the
+> > >>>> last "DO NOT MERGE" patch:
+> > >>>>
+> > >>>> https://lkml.kernel.org/lkml/20200907070035.GA25114@infradead.org/T/
+> > >>>
+> > >>> Tom, do you have a branch somewhere I could pull from? (Just being lazy
+> > >>> about downloading a bunch of messages from the archives.)
+> > >>
+> > >> I don't unfortunately. I'm working locally with poor internet.
+> > >>
+> > >>>
+> > >>> What GPU is in your Lenovo x1 carbon 5th generation and what
+> > >>> graphical/desktop setup I need to repro?
+> > >>
+> > >>
+> > >> Is this enough info?:
+> > >>
+> > >> $ lspci -vnn | grep VGA -A 12
+> > >> 00:02.0 VGA compatible controller [0300]: Intel Corporation HD
+> > >> Graphics 620 [8086:5916] (rev 02) (prog-if 00 [VGA controller])
+> > >>      Subsystem: Lenovo ThinkPad X1 Carbon 5th Gen [17aa:224f]
+> > >>      Flags: bus master, fast devsel, latency 0, IRQ 148
+> > >>      Memory at eb000000 (64-bit, non-prefetchable) [size=16M]
+> > >>      Memory at 60000000 (64-bit, prefetchable) [size=256M]
+> > >>      I/O ports at e000 [size=64]
+> > >>      [virtual] Expansion ROM at 000c0000 [disabled] [size=128K]
+> > >>      Capabilities: [40] Vendor Specific Information: Len=0c <?>
+> > >>      Capabilities: [70] Express Root Complex Integrated Endpoint, MSI 00
+> > >>      Capabilities: [ac] MSI: Enable+ Count=1/1 Maskable- 64bit-
+> > >>      Capabilities: [d0] Power Management version 2
+> > >>      Capabilities: [100] Process Address Space ID (PASID)
+> > >>      Capabilities: [200] Address Translation Service (ATS)
+> > >
+> > > Works for a start. What about the steps to repro? Any desktop
+> > > environment and it is just visual corruption, no hangs/stalls or such?
+> > >
+> > > I've submitted a series consisting of what I understood are the patches
+> > > needed to repro the issue to our automated CI here:
+> > >
+> > > https://patchwork.freedesktop.org/series/81489/
+> > >
+> > > So will see if it will catch something, or more targeted testing will be
+> > > required. Hopefully it does trip over in which case I can add the patch
+> > > suggested by Logan on top and see if that fixes it. Or I'll need to
+> > > write a new test case.
+> > >
+> > > If you could glance over my series to check I identified the patches
+> > > correctly it would be appreciated.
+> >
+> > Our CI was more than capable at catching the breakage so I've copied you
+> > on a patch (https://patchwork.freedesktop.org/series/81497/) which has a
+> > good potential to fix this. (Or improve the robustness of our sg walks,
+> > depends how you look at it.)
+> >
+> > Would you be able to test it in your environment by any chance? If it
+> > works I understand it unblocks your IOMMU work, right?
 
-The Latin plural of the singular "helperum", I guess? :P
+And yes this does unblock the iommu work
 
-> built when CONFIG_DMA_OPS is set.
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   kernel/dma/Makefile      |  1 +
->   kernel/dma/mapping.c     | 47 +-----------------------------------
->   kernel/dma/ops_helpers.c | 51 ++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 53 insertions(+), 46 deletions(-)
->   create mode 100644 kernel/dma/ops_helpers.c
-> 
-> diff --git a/kernel/dma/Makefile b/kernel/dma/Makefile
-> index 32c7c1942bbd6c..dc755ab68aabf9 100644
-> --- a/kernel/dma/Makefile
-> +++ b/kernel/dma/Makefile
-> @@ -1,6 +1,7 @@
->   # SPDX-License-Identifier: GPL-2.0
->   
->   obj-$(CONFIG_HAS_DMA)			+= mapping.o direct.o
-> +obj-$(CONFIG_DMA_OPS)			+= ops_helpers.o
->   obj-$(CONFIG_DMA_OPS)			+= dummy.o
->   obj-$(CONFIG_DMA_CMA)			+= contiguous.o
->   obj-$(CONFIG_DMA_DECLARE_COHERENT)	+= coherent.o
-> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
-> index 0d129421e75fc8..848c95c27d79ff 100644
-> --- a/kernel/dma/mapping.c
-> +++ b/kernel/dma/mapping.c
-> @@ -8,7 +8,7 @@
->   #include <linux/memblock.h> /* for max_pfn */
->   #include <linux/acpi.h>
->   #include <linux/dma-direct.h>
-> -#include <linux/dma-noncoherent.h>
-> +#include <linux/dma-mapping.h>
->   #include <linux/export.h>
->   #include <linux/gfp.h>
->   #include <linux/of_device.h>
-> @@ -295,22 +295,6 @@ void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
->   }
->   EXPORT_SYMBOL(dma_sync_sg_for_device);
->   
-> -/*
-> - * Create scatter-list for the already allocated DMA buffer.
-> - */
-> -int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
-> -		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> -		 unsigned long attrs)
-> -{
-> -	struct page *page = virt_to_page(cpu_addr);
-> -	int ret;
-> -
-> -	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-> -	if (!ret)
-> -		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
-> -	return ret;
-> -}
-> -
->   /*
->    * The whole dma_get_sgtable() idea is fundamentally unsafe - it seems
->    * that the intention is to allow exporting memory allocated via the
-> @@ -358,35 +342,6 @@ pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
->   }
->   #endif /* CONFIG_MMU */
->   
-> -/*
-> - * Create userspace mapping for the DMA-coherent memory.
-> - */
-> -int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
-> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> -		unsigned long attrs)
-> -{
-> -#ifdef CONFIG_MMU
-> -	unsigned long user_count = vma_pages(vma);
-> -	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
-> -	unsigned long off = vma->vm_pgoff;
-> -	int ret = -ENXIO;
-> -
-> -	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
-> -
-> -	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
-> -		return ret;
-> -
-> -	if (off >= count || user_count > count - off)
-> -		return -ENXIO;
-> -
-> -	return remap_pfn_range(vma, vma->vm_start,
-> -			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-> -			user_count << PAGE_SHIFT, vma->vm_page_prot);
-> -#else
-> -	return -ENXIO;
-> -#endif /* CONFIG_MMU */
-> -}
-> -
->   /**
->    * dma_can_mmap - check if a given device supports dma_mmap_*
->    * @dev: device to check
-> diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-> new file mode 100644
-> index 00000000000000..e443c69be4299f
-> --- /dev/null
-> +++ b/kernel/dma/ops_helpers.c
-> @@ -0,0 +1,51 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Helpers for DMA ops implementations.  These generally rely on the fact that
-> + * the allocated memory contains normal pages in the direct kernel mapping.
-> + */
-> +#include <linux/dma-noncoherent.h>
-> +
-> +/*
-> + * Create scatter-list for the already allocated DMA buffer.
-> + */
-> +int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
-> +		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> +		 unsigned long attrs)
-> +{
-> +	struct page *page = virt_to_page(cpu_addr);
-> +	int ret;
-> +
-> +	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-> +	if (!ret)
-> +		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Create userspace mapping for the DMA-coherent memory.
-> + */
-> +int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
-> +		void *cpu_addr, dma_addr_t dma_addr, size_t size,
-> +		unsigned long attrs)
-> +{
-> +#ifdef CONFIG_MMU
-> +	unsigned long user_count = vma_pages(vma);
-> +	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
-> +	unsigned long off = vma->vm_pgoff;
-> +	int ret = -ENXIO;
-> +
-> +	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
-> +
-> +	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
-> +		return ret;
-> +
-> +	if (off >= count || user_count > count - off)
-> +		return -ENXIO;
-> +
-> +	return remap_pfn_range(vma, vma->vm_start,
-> +			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-> +			user_count << PAGE_SHIFT, vma->vm_page_prot);
-> +#else
-> +	return -ENXIO;
-> +#endif /* CONFIG_MMU */
-> +}
-> 
+>
+> I tested your latest patch set ([PATCH 1/2] drm/i915: Fix DMA mapped
+> scatterlist walks) and it fixes the issue. great work!
+>
+> >
+> > Regards,
+> >
+> > Tvrtko
