@@ -2,312 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98DB265367
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB6726536E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgIJVe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:34:26 -0400
-Received: from mga12.intel.com ([192.55.52.136]:36844 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730953AbgIJNuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:50:17 -0400
-IronPort-SDR: pndPM9rKxvqCLy7YSZFcofhKlNxQZguMUbFHTCKCMFmjrdnjyMFY3c68+tbzTCNGQCl8GsBioc
- NLF0zaHa8eKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="138048793"
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="138048793"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 06:48:40 -0700
-IronPort-SDR: ieCnkKiO40YmtjSVVF9hduw7eod3dTHu4fwROcqJpvPhvn69ICjQEpOoRg/RNSL0Lm5v48FwNX
- H26hhSTyBrkw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="300557769"
-Received: from ssp-icl-u-210.jf.intel.com ([10.54.55.52])
-  by orsmga003.jf.intel.com with ESMTP; 10 Sep 2020 06:48:40 -0700
-From:   kan.liang@linux.intel.com
-To:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V2 3/4] perf stat: Support new per thread TopDown metrics
-Date:   Thu, 10 Sep 2020 06:45:00 -0700
-Message-Id: <20200910134501.11352-4-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910134501.11352-1-kan.liang@linux.intel.com>
-References: <20200910134501.11352-1-kan.liang@linux.intel.com>
+        id S1728367AbgIJVfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:35:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730923AbgIJNt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:49:28 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93059C061796
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:48:26 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id x15so2254276wrm.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=CKC4riJvJK5v9Z9Ok50HMBgYPff3aChRh0QJLVpJjvg=;
+        b=WgG0SFGnDfGbjr63kBibCRJ2m30nMFyLODKO7uNWW8B11XC1UwmPIs+QtSGJ9LWSsg
+         9u74K8ShTi8lfKM8fOFrrE3iPMvEPHrLBNqAtSHRKL8hTEwoyHZSZV837a92ZZexxqyR
+         DGBHW1zi/gx6uKdESbNPxmI3gIK+PrbZU483OVXEelYoY+UBrFa3gypGemNz1jC+7L4B
+         osZ1fQVDztT3Z7ZbUlUHHmdprHw3yV3cWhSiSDcDwhf9wy4UHlPpMa0t0Y4SDteGyM8M
+         Wsw1dGDSsoexSvilfwqdewaJXBRgiDyytB2ffdovKX7/xDlDk1RcSslRxR332JpOwrDs
+         wLdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=CKC4riJvJK5v9Z9Ok50HMBgYPff3aChRh0QJLVpJjvg=;
+        b=jxKua5Rsn4hl4d/yxmpGh0vF7zzvAO6zW0wdFnfBFCGDWTb5sLhCaHn5d6XlQvkQij
+         qRF8ehndxrbhzeuFaG4cuv9Q55mQZFBM5veZzYRGxy53JNxLakN0ARxMi6t6e23eQwlZ
+         /dtKTXqpGEc129RoeJJ2wFh9jDu5R8VJqsW7RX3LY/r3r7LLKHe6zEn0Ilv8e/dUL0Mv
+         d8edccbSVFDsQo4tWK366HAh4PCgmPDsYOKefD8UIwl6ugiiz0U5MAHmXlFlQAXSd83x
+         52VqLhTulGzwYJyzGH2HpZoOeHIsOjlptbJPEPNneXlOJOvciQkCL7XJbGMOvXtyJXU1
+         JCwg==
+X-Gm-Message-State: AOAM531oC+AyYYy6YdEz0r2xyxX6Dw8YYklgNMcAS3i/58O7wdzBYwuo
+        jeWYsZ997zjbQcCHWBaKnPBZFtEIuo64
+X-Google-Smtp-Source: ABdhPJzXGzHqMjZogwlFUVQYV32E/MmMQjyUoqvNm+QW2oFEVjVBfHVxiQC+Yt6DXR0L9wrVPmfbdeimv9tD
+X-Received: from lenaptr.lon.corp.google.com ([2a00:79e0:d:210:f693:9fff:fef4:29c9])
+ (user=lenaptr job=sendgmr) by 2002:a5d:44cc:: with SMTP id
+ z12mr9413494wrr.189.1599745699562; Thu, 10 Sep 2020 06:48:19 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 14:48:02 +0100
+Message-Id: <20200910134802.3160311-1-lenaptr@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH] sched.h: drop in_ubsan field when UBSAN is in trap mode
+From:   Elena Petrova <lenaptr@google.com>
+To:     kernel-hardening@lists.openwall.com
+Cc:     Elena Petrova <lenaptr@google.com>, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+in_ubsan field of task_struct is only used in lib/ubsan.c, which in its
+turn is used only `ifneq ($(CONFIG_UBSAN_TRAP),y)`.
 
-Icelake has support for reporting per thread TopDown metrics.
-These are reported differently than the previous TopDown support,
-each metric is standalone, but scaled to pipeline "slots".
-We don't need to do anything special for HyperThreading anymore.
-Teach perf stat --topdown to handle these new metrics and
-print them in the same way as the previous TopDown metrics.
-The restrictions of only being able to report information per core is
-gone.
+Removing unnecessary field from a task_struct will help preserve the
+ABI between vanilla and CONFIG_UBSAN_TRAP'ed kernels. In particular,
+this will help enabling bounds sanitizer transparently for Android's
+GKI.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Elena Petrova <lenaptr@google.com>
 ---
- tools/perf/Documentation/perf-stat.txt |  7 +-
- tools/perf/builtin-stat.c              | 30 ++++++++-
- tools/perf/util/stat-shadow.c          | 89 ++++++++++++++++++++++++++
- tools/perf/util/stat.c                 |  4 ++
- tools/perf/util/stat.h                 |  8 +++
- 5 files changed, 134 insertions(+), 4 deletions(-)
+ include/linux/sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-index c9bfefc051fb..e803dbdc88a8 100644
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -357,6 +357,11 @@ if the workload is actually bound by the CPU and not by something else.
- For best results it is usually a good idea to use it with interval
- mode like -I 1000, as the bottleneck of workloads can change often.
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index afe01e232935..5c7b8dec236e 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1008,7 +1008,7 @@ struct task_struct {
+ 	struct held_lock		held_locks[MAX_LOCK_DEPTH];
+ #endif
  
-+This enables --metric-only, unless overridden with --no-metric-only.
-+
-+The following restrictions only apply to older Intel CPUs and Atom,
-+on newer CPUs (IceLake and later) TopDown can be collected for any thread:
-+
- The top down metrics are collected per core instead of per
- CPU thread. Per core mode is automatically enabled
- and -a (global monitoring) is needed, requiring root rights or
-@@ -368,8 +373,6 @@ echo 0 > /proc/sys/kernel/nmi_watchdog
- for best results. Otherwise the bottlenecks may be inconsistent
- on workload with changing phases.
+-#ifdef CONFIG_UBSAN
++#if defined(CONFIG_UBSAN) && !defined(CONFIG_UBSAN_TRAP)
+ 	unsigned int			in_ubsan;
+ #endif
  
--This enables --metric-only, unless overridden with --no-metric-only.
--
- To interpret the results it is usually needed to know on which
- CPUs the workload runs on. If needed the CPUs can be forced using
- taskset.
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 5583e22ca808..6290da5bd142 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -128,6 +128,15 @@ static const char * topdown_attrs[] = {
- 	NULL,
- };
- 
-+static const char *topdown_metric_attrs[] = {
-+	"slots",
-+	"topdown-retiring",
-+	"topdown-bad-spec",
-+	"topdown-fe-bound",
-+	"topdown-be-bound",
-+	NULL,
-+};
-+
- static const char *smi_cost_attrs = {
- 	"{"
- 	"msr/aperf/,"
-@@ -1691,6 +1700,24 @@ static int add_default_attributes(void)
- 		char *str = NULL;
- 		bool warn = false;
- 
-+		if (!force_metric_only)
-+			stat_config.metric_only = true;
-+
-+		if (topdown_filter_events(topdown_metric_attrs, &str, 1) < 0) {
-+			pr_err("Out of memory\n");
-+			return -1;
-+		}
-+		if (topdown_metric_attrs[0] && str) {
-+			if (!stat_config.interval && !stat_config.metric_only) {
-+				fprintf(stat_config.output,
-+					"Topdown accuracy may decrease when measuring long periods.\n"
-+					"Please print the result regularly, e.g. -I1000\n");
-+			}
-+			goto setup_metrics;
-+		}
-+
-+		str = NULL;
-+
- 		if (stat_config.aggr_mode != AGGR_GLOBAL &&
- 		    stat_config.aggr_mode != AGGR_CORE) {
- 			pr_err("top down event configuration requires --per-core mode\n");
-@@ -1702,8 +1729,6 @@ static int add_default_attributes(void)
- 			return -1;
- 		}
- 
--		if (!force_metric_only)
--			stat_config.metric_only = true;
- 		if (topdown_filter_events(topdown_attrs, &str,
- 				arch_topdown_check_group(&warn)) < 0) {
- 			pr_err("Out of memory\n");
-@@ -1712,6 +1737,7 @@ static int add_default_attributes(void)
- 		if (topdown_attrs[0] && str) {
- 			if (warn)
- 				arch_topdown_group_warn();
-+setup_metrics:
- 			err = parse_events(evsel_list, str, &errinfo);
- 			if (err) {
- 				fprintf(stderr,
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index e1ba6c1b916a..3204084161c9 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -241,6 +241,18 @@ void perf_stat__update_shadow_stats(struct evsel *counter, u64 count,
- 	else if (perf_stat_evsel__is(counter, TOPDOWN_RECOVERY_BUBBLES))
- 		update_runtime_stat(st, STAT_TOPDOWN_RECOVERY_BUBBLES,
- 				    ctx, cpu, count);
-+	else if (perf_stat_evsel__is(counter, TOPDOWN_RETIRING))
-+		update_runtime_stat(st, STAT_TOPDOWN_RETIRING,
-+				    ctx, cpu, count);
-+	else if (perf_stat_evsel__is(counter, TOPDOWN_BAD_SPEC))
-+		update_runtime_stat(st, STAT_TOPDOWN_BAD_SPEC,
-+				    ctx, cpu, count);
-+	else if (perf_stat_evsel__is(counter, TOPDOWN_FE_BOUND))
-+		update_runtime_stat(st, STAT_TOPDOWN_FE_BOUND,
-+				    ctx, cpu, count);
-+	else if (perf_stat_evsel__is(counter, TOPDOWN_BE_BOUND))
-+		update_runtime_stat(st, STAT_TOPDOWN_BE_BOUND,
-+				    ctx, cpu, count);
- 	else if (evsel__match(counter, HARDWARE, HW_STALLED_CYCLES_FRONTEND))
- 		update_runtime_stat(st, STAT_STALLED_CYCLES_FRONT,
- 				    ctx, cpu, count);
-@@ -705,6 +717,47 @@ static double td_be_bound(int ctx, int cpu, struct runtime_stat *st)
- 	return sanitize_val(1.0 - sum);
- }
- 
-+/*
-+ * Kernel reports metrics multiplied with slots. To get back
-+ * the ratios we need to recreate the sum.
-+ */
-+
-+static double td_metric_ratio(int ctx, int cpu,
-+			      enum stat_type type,
-+			      struct runtime_stat *stat)
-+{
-+	double sum = runtime_stat_avg(stat, STAT_TOPDOWN_RETIRING, ctx, cpu) +
-+		runtime_stat_avg(stat, STAT_TOPDOWN_FE_BOUND, ctx, cpu) +
-+		runtime_stat_avg(stat, STAT_TOPDOWN_BE_BOUND, ctx, cpu) +
-+		runtime_stat_avg(stat, STAT_TOPDOWN_BAD_SPEC, ctx, cpu);
-+	double d = runtime_stat_avg(stat, type, ctx, cpu);
-+
-+	if (sum)
-+		return d / sum;
-+	return 0;
-+}
-+
-+/*
-+ * ... but only if most of the values are actually available.
-+ * We allow two missing.
-+ */
-+
-+static bool full_td(int ctx, int cpu,
-+		    struct runtime_stat *stat)
-+{
-+	int c = 0;
-+
-+	if (runtime_stat_avg(stat, STAT_TOPDOWN_RETIRING, ctx, cpu) > 0)
-+		c++;
-+	if (runtime_stat_avg(stat, STAT_TOPDOWN_BE_BOUND, ctx, cpu) > 0)
-+		c++;
-+	if (runtime_stat_avg(stat, STAT_TOPDOWN_FE_BOUND, ctx, cpu) > 0)
-+		c++;
-+	if (runtime_stat_avg(stat, STAT_TOPDOWN_BAD_SPEC, ctx, cpu) > 0)
-+		c++;
-+	return c >= 2;
-+}
-+
- static void print_smi_cost(struct perf_stat_config *config,
- 			   int cpu, struct evsel *evsel,
- 			   struct perf_stat_output_ctx *out,
-@@ -1071,6 +1124,42 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
- 					be_bound * 100.);
- 		else
- 			print_metric(config, ctxp, NULL, NULL, name, 0);
-+	} else if (perf_stat_evsel__is(evsel, TOPDOWN_RETIRING) &&
-+			full_td(ctx, cpu, st)) {
-+		double retiring = td_metric_ratio(ctx, cpu,
-+						  STAT_TOPDOWN_RETIRING, st);
-+
-+		if (retiring > 0.7)
-+			color = PERF_COLOR_GREEN;
-+		print_metric(config, ctxp, color, "%8.1f%%", "retiring",
-+				retiring * 100.);
-+	} else if (perf_stat_evsel__is(evsel, TOPDOWN_FE_BOUND) &&
-+			full_td(ctx, cpu, st)) {
-+		double fe_bound = td_metric_ratio(ctx, cpu,
-+						  STAT_TOPDOWN_FE_BOUND, st);
-+
-+		if (fe_bound > 0.2)
-+			color = PERF_COLOR_RED;
-+		print_metric(config, ctxp, color, "%8.1f%%", "frontend bound",
-+				fe_bound * 100.);
-+	} else if (perf_stat_evsel__is(evsel, TOPDOWN_BE_BOUND) &&
-+			full_td(ctx, cpu, st)) {
-+		double be_bound = td_metric_ratio(ctx, cpu,
-+						  STAT_TOPDOWN_BE_BOUND, st);
-+
-+		if (be_bound > 0.2)
-+			color = PERF_COLOR_RED;
-+		print_metric(config, ctxp, color, "%8.1f%%", "backend bound",
-+				be_bound * 100.);
-+	} else if (perf_stat_evsel__is(evsel, TOPDOWN_BAD_SPEC) &&
-+			full_td(ctx, cpu, st)) {
-+		double bad_spec = td_metric_ratio(ctx, cpu,
-+						  STAT_TOPDOWN_BAD_SPEC, st);
-+
-+		if (bad_spec > 0.1)
-+			color = PERF_COLOR_RED;
-+		print_metric(config, ctxp, color, "%8.1f%%", "bad speculation",
-+				bad_spec * 100.);
- 	} else if (evsel->metric_expr) {
- 		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
- 				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
-diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-index cdb154381a87..bd0decd6d753 100644
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@ -95,6 +95,10 @@ static const char *id_str[PERF_STAT_EVSEL_ID__MAX] = {
- 	ID(TOPDOWN_SLOTS_RETIRED, topdown-slots-retired),
- 	ID(TOPDOWN_FETCH_BUBBLES, topdown-fetch-bubbles),
- 	ID(TOPDOWN_RECOVERY_BUBBLES, topdown-recovery-bubbles),
-+	ID(TOPDOWN_RETIRING, topdown-retiring),
-+	ID(TOPDOWN_BAD_SPEC, topdown-bad-spec),
-+	ID(TOPDOWN_FE_BOUND, topdown-fe-bound),
-+	ID(TOPDOWN_BE_BOUND, topdown-be-bound),
- 	ID(SMI_NUM, msr/smi/),
- 	ID(APERF, msr/aperf/),
- };
-diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-index f8778cffd941..6c944d81d726 100644
---- a/tools/perf/util/stat.h
-+++ b/tools/perf/util/stat.h
-@@ -28,6 +28,10 @@ enum perf_stat_evsel_id {
- 	PERF_STAT_EVSEL_ID__TOPDOWN_SLOTS_RETIRED,
- 	PERF_STAT_EVSEL_ID__TOPDOWN_FETCH_BUBBLES,
- 	PERF_STAT_EVSEL_ID__TOPDOWN_RECOVERY_BUBBLES,
-+	PERF_STAT_EVSEL_ID__TOPDOWN_RETIRING,
-+	PERF_STAT_EVSEL_ID__TOPDOWN_BAD_SPEC,
-+	PERF_STAT_EVSEL_ID__TOPDOWN_FE_BOUND,
-+	PERF_STAT_EVSEL_ID__TOPDOWN_BE_BOUND,
- 	PERF_STAT_EVSEL_ID__SMI_NUM,
- 	PERF_STAT_EVSEL_ID__APERF,
- 	PERF_STAT_EVSEL_ID__MAX,
-@@ -82,6 +86,10 @@ enum stat_type {
- 	STAT_TOPDOWN_SLOTS_RETIRED,
- 	STAT_TOPDOWN_FETCH_BUBBLES,
- 	STAT_TOPDOWN_RECOVERY_BUBBLES,
-+	STAT_TOPDOWN_RETIRING,
-+	STAT_TOPDOWN_BAD_SPEC,
-+	STAT_TOPDOWN_FE_BOUND,
-+	STAT_TOPDOWN_BE_BOUND,
- 	STAT_SMI_NUM,
- 	STAT_APERF,
- 	STAT_MAX
 -- 
-2.17.1
+2.28.0.526.ge36021eeef-goog
 
