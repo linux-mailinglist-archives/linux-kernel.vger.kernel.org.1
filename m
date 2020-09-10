@@ -2,126 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634EF264628
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BBE264624
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730685AbgIJMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730396AbgIJMdB (ORCPT
+        id S1730734AbgIJMhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:37:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43390 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730677AbgIJMdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:33:01 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA80C061757;
-        Thu, 10 Sep 2020 05:33:00 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d16so831768pll.13;
-        Thu, 10 Sep 2020 05:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4mAC7AY2dom2okuDhz5TwwH+eN++c0Zg21VAJ30tmZE=;
-        b=qG/rKcK2HhixjeHOwx22cnu5vsq8XLz5RXaPsgu9QDXQi0LEGNYwf6bpkI5tuOVfQT
-         qL94/g9KbH0MlePhTboZv1bJUtR36YPqv+MbGfsqVXmu+Pc7gs527U0DLNOq2WYytdgI
-         P3KsMw7cWHxNhbHzImQRJBSsk2vprNBqSXj/tC3ub/BKPPqhSgOxjhXzbseGFv15Jxlx
-         LmmPekD31CngpQVRV1iRcLrwUXYE9y7kymgY5eNhL5o9G9grrXtPUj6862e9XZd7kBFP
-         u/qtP2vXk/DHK7cOlm6L2z46IB1k2nCopfwArf4KK0oRAfF+B33VAl4wFMWfUYLcT/T9
-         vtSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4mAC7AY2dom2okuDhz5TwwH+eN++c0Zg21VAJ30tmZE=;
-        b=IvznwsfCnS262FikdhG5KNk+Q6736DELg7yHjNIvE4zJotlmWroF6QF53JeB4qLR+h
-         d1K7oxyXUfRuY/6/MuAVSJy1fzJVYj13fYYJxBK7fnG2YWJHYOWXB5Mwnzyue4u90ty1
-         dABEar+eU5fKNlx16LWfrlhouCk/LmDGSxkwZtdL7JWnEjiIS5SuD8fcEPDuupaAAPEj
-         5epe0uvU3YF5j3qKCC6iurzanCOZk/rU4zTwjKvHNEUwlFRACWzzT7+rmAx0NCr+yb2H
-         +rXktMmw4mw8E1p0iTLjvYOXVRersRxN2TfhyeA1DceO2MA9j6DgY3YSY0wcr95A85dG
-         seDA==
-X-Gm-Message-State: AOAM533YJuH6/eLHFqYsFT8sTBaMRuBnl9VloKNjIcXfSIzz7C7u365g
-        BcYH4P6NIVJpNBuVReDmI14=
-X-Google-Smtp-Source: ABdhPJxLK5IOkPuZQSvSgkg8AkXwFKqrh/T7qtwK4UBm7gI5yfAXyN4l5FBr5fZALkKhZHOCS02vEg==
-X-Received: by 2002:a17:902:74c8:: with SMTP id f8mr5383439plt.78.1599741180451;
-        Thu, 10 Sep 2020 05:33:00 -0700 (PDT)
-Received: from nish-HP-Pavilion ([2409:4072:6218:54d7:9928:e984:12bb:783d])
-        by smtp.gmail.com with ESMTPSA id j14sm5031485pgf.76.2020.09.10.05.32.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 05:32:59 -0700 (PDT)
-From:   Nishant Malpani <nish.malpani25@gmail.com>
-To:     jic23@kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, andy.shevchenko@gmail.com,
-        Nishant Malpani <nish.malpani25@gmail.com>
-Subject: [PATCH v3 3/3] iio: gyro: adxrs290: Add debugfs register access support
-Date:   Thu, 10 Sep 2020 18:02:49 +0530
-Message-Id: <20200910123249.17204-1-nish.malpani25@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 10 Sep 2020 08:33:11 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08ACX7Eq023252;
+        Thu, 10 Sep 2020 07:33:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599741187;
+        bh=9MfYfkkDqOw/trWck0yzA/hd6grSgCWN8JA+FBuRH3I=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=AFLnWfAhSK5UtAC/1ofsRVTJlstRnJRQsEwqMtD4iXsBZmziEwCZUAuxhky9Up1pb
+         f5roRuurQ1OEuIsU2a8Xxd8h/49cllRNVVBqX7ty4VAIPTFGK7b1LChxEZT/EUis/v
+         u+uo+YbPLndDzIekaZPDSBZIw70Q4uMgw7XdwoqU=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08ACX7NU045957
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Sep 2020 07:33:07 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Sep 2020 07:33:07 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Sep 2020 07:33:07 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08ACX56O010384;
+        Thu, 10 Sep 2020 07:33:06 -0500
+Subject: Re: [PATCH] dmaengine: ti: k3-udma: Use soc_device_match() for SoC
+ dependent parameters
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
+        <linux-kernel@vger.kernel.org>, <lokeshvutla@ti.com>, <nm@ti.com>
+References: <20200904120009.30941-1-peter.ujfalusi@ti.com>
+X-Pep-Version: 2.0
+Message-ID: <34734bc8-6013-cbed-4f20-b7c19146fadd@ti.com>
+Date:   Thu, 10 Sep 2020 15:33:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200904120009.30941-1-peter.ujfalusi@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend support to read/write byte data from/to the device using
-debugfs iio interface.
 
-Signed-off-by: Nishant Malpani <nish.malpani25@gmail.com>
----
 
-Changes in v3:
-  - refactor code based on Andy's suggestions
+On 04/09/2020 15.00, Peter Ujfalusi wrote:
+> Use separate data for SoC dependent parameters. These parameters depend=
+s
+> on the DMA integration (either in HW or in SYSFW), the DMA controller
+> itself remains compatible with either the am654 or j721e variant.
+>=20
+> j7200 have the same DMA as j721e with different number of channels, whi=
+ch
+> can be queried from HW, but SYSFW defines different rchan_oes_offset
+> number for j7200 (0x80) compared to j721e (0x400).
+>=20
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi Vinod,
+>=20
+> this patch is going to be needed when the j7200 support is upstream (we=
+ already
+> have the psil map in dmaengine/next for the UDMA).
+>=20
+> Since the hardware itself is the same (but different number of channels=
+) I
+> wanted to avoid a new set of compatible just becase STSFW is not using =
+the same
+> rchan_oes_offset value for j7200 and j721e.
+>=20
+> Vinod: this patch will not apply cleanly on dmaengine/next because it i=
+s on top
+> of dmaengine/next + the dmaengine/fixes. This might cause issues.
+>=20
+> "dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3.=
+0" in
+> fixes changes the rchan_oes_offset for am654 from 0x2000 to 0x200 and t=
+his patch
+> assumes 0x200...
+>=20
+> is there anything I can do to make it easier for you?
+>=20
+> Regards,
+> Peter
+>=20
+>  drivers/dma/ti/k3-udma.c | 42 +++++++++++++++++++++++++++++++++-------=
 
-No changes in v2
----
- drivers/iio/gyro/adxrs290.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/iio/gyro/adxrs290.c b/drivers/iio/gyro/adxrs290.c
-index 41b1f995a143..ca6fc234076e 100644
---- a/drivers/iio/gyro/adxrs290.c
-+++ b/drivers/iio/gyro/adxrs290.c
-@@ -436,6 +436,31 @@ static int adxrs290_read_avail(struct iio_dev *indio_dev,
- 	}
- }
- 
-+static int adxrs290_reg_access_rw(struct spi_device *spi, unsigned int reg,
-+				  unsigned int *readval)
-+{
-+	int ret;
-+
-+	ret = spi_w8r8(spi, ADXRS290_READ_REG(reg));
-+	if (ret < 0)
-+		return ret;
-+
-+	*readval = ret;
-+
-+	return 0;
-+}
-+
-+static int adxrs290_reg_access(struct iio_dev *indio_dev, unsigned int reg,
-+			       unsigned int writeval, unsigned int *readval)
-+{
-+	struct adxrs290_state *st = iio_priv(indio_dev);
-+
-+	if (readval)
-+		return adxrs290_reg_access_rw(st->spi, reg, readval);
-+	else
-+		return adxrs290_spi_write_reg(st->spi, reg, writeval);
-+}
-+
- static int adxrs290_data_rdy_trigger_set_state(struct iio_trigger *trig,
- 					       bool state)
+>  1 file changed, 35 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+> index 9a7048bcf0f1..ec7c5f320f7f 100644
+> --- a/drivers/dma/ti/k3-udma.c
+> +++ b/drivers/dma/ti/k3-udma.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> +#include <linux/sys_soc.h>
+>  #include <linux/of.h>
+>  #include <linux/of_dma.h>
+>  #include <linux/of_device.h>
+> @@ -91,6 +92,9 @@ struct udma_match_data {
+>  	bool enable_memcpy_support;
+>  	u32 flags;
+>  	u32 statictr_z_mask;
+> +};
+> +
+> +struct udma_soc_data {
+>  	u32 rchan_oes_offset;
+>  };
+> =20
+> @@ -117,6 +121,7 @@ struct udma_dev {
+>  	struct device *dev;
+>  	void __iomem *mmrs[MMR_LAST];
+>  	const struct udma_match_data *match_data;
+> +	const struct udma_soc_data *soc_data;
+> =20
+>  	u8 tpl_levels;
+>  	u32 tpl_start_idx[3];
+> @@ -1679,7 +1684,7 @@ static int udma_alloc_chan_resources(struct dma_c=
+han *chan)
+>  {
+>  	struct udma_chan *uc =3D to_udma_chan(chan);
+>  	struct udma_dev *ud =3D to_udma_dev(chan->device);
+> -	const struct udma_match_data *match_data =3D ud->match_data;
+> +	const struct udma_soc_data *soc_data =3D ud->soc_data;
+>  	struct k3_ring *irq_ring;
+>  	u32 irq_udma_idx;
+>  	int ret;
+> @@ -1779,7 +1784,7 @@ static int udma_alloc_chan_resources(struct dma_c=
+han *chan)
+>  					K3_PSIL_DST_THREAD_ID_OFFSET;
+> =20
+>  		irq_ring =3D uc->rflow->r_ring;
+> -		irq_udma_idx =3D match_data->rchan_oes_offset + uc->rchan->id;
+> +		irq_udma_idx =3D soc_data->rchan_oes_offset + uc->rchan->id;
+> =20
+>  		ret =3D udma_tisci_rx_channel_config(uc);
+>  		break;
+> @@ -3091,14 +3096,12 @@ static struct udma_match_data am654_main_data =3D=
  {
-@@ -551,6 +576,7 @@ static const struct iio_info adxrs290_info = {
- 	.read_raw = &adxrs290_read_raw,
- 	.write_raw = &adxrs290_write_raw,
- 	.read_avail = &adxrs290_read_avail,
-+	.debugfs_reg_access = &adxrs290_reg_access,
- };
- 
- static int adxrs290_probe_trigger(struct iio_dev *indio_dev)
--- 
-2.20.1
+>  	.psil_base =3D 0x1000,
+>  	.enable_memcpy_support =3D true,
+>  	.statictr_z_mask =3D GENMASK(11, 0),
+> -	.rchan_oes_offset =3D 0x200,
+>  };
+> =20
+>  static struct udma_match_data am654_mcu_data =3D {
+>  	.psil_base =3D 0x6000,
+>  	.enable_memcpy_support =3D false,
+>  	.statictr_z_mask =3D GENMASK(11, 0),
+> -	.rchan_oes_offset =3D 0x200,
+>  };
+> =20
+>  static struct udma_match_data j721e_main_data =3D {
+> @@ -3106,7 +3109,6 @@ static struct udma_match_data j721e_main_data =3D=
+ {
+>  	.enable_memcpy_support =3D true,
+>  	.flags =3D UDMA_FLAG_PDMA_ACC32 | UDMA_FLAG_PDMA_BURST,
+>  	.statictr_z_mask =3D GENMASK(23, 0),
+> -	.rchan_oes_offset =3D 0x400,
+>  };
+> =20
+>  static struct udma_match_data j721e_mcu_data =3D {
+> @@ -3114,7 +3116,6 @@ static struct udma_match_data j721e_mcu_data =3D =
+{
+>  	.enable_memcpy_support =3D false, /* MEM_TO_MEM is slow via MCU UDMA =
+*/
+>  	.flags =3D UDMA_FLAG_PDMA_ACC32 | UDMA_FLAG_PDMA_BURST,
+>  	.statictr_z_mask =3D GENMASK(23, 0),
+> -	.rchan_oes_offset =3D 0x400,
+>  };
+> =20
+>  static const struct of_device_id udma_of_match[] =3D {
+> @@ -3135,6 +3136,25 @@ static const struct of_device_id udma_of_match[]=
+ =3D {
+>  	{ /* Sentinel */ },
+>  };
+> =20
+> +struct udma_soc_data am654_soc_data =3D {
+> +	.rchan_oes_offset =3D 0x200,
+> +};
+> +
+> +struct udma_soc_data j721e_soc_data =3D {
+> +	.rchan_oes_offset =3D 0x400,
+> +};
+> +
+> +struct udma_soc_data j7200_soc_data =3D {
+> +	.rchan_oes_offset =3D 0x80,
+> +};
+
+These should have been marked as static, I'll send a v2
+
+> +
+> +static const struct soc_device_attribute k3_soc_devices[] =3D {
+> +	{ .family =3D "AM65X", .data =3D &am654_soc_data },
+> +	{ .family =3D "J721E", .data =3D &j721e_soc_data },
+> +	{ .family =3D "J7200", .data =3D &j7200_soc_data },
+> +	{ /* sentinel */ }
+> +};
+> +
+>  static int udma_get_mmrs(struct platform_device *pdev, struct udma_dev=
+ *ud)
+>  {
+>  	struct resource *res;
+> @@ -3277,7 +3297,7 @@ static int udma_setup_resources(struct udma_dev *=
+ud)
+>  	rm_res =3D tisci_rm->rm_ranges[RM_RANGE_RCHAN];
+>  	for (j =3D 0; j < rm_res->sets; j++, i++) {
+>  		irq_res.desc[i].start =3D rm_res->desc[j].start +
+> -					ud->match_data->rchan_oes_offset;
+> +					ud->soc_data->rchan_oes_offset;
+>  		irq_res.desc[i].num =3D rm_res->desc[j].num;
+>  	}
+>  	ret =3D ti_sci_inta_msi_domain_alloc_irqs(ud->dev, &irq_res);
+> @@ -3487,6 +3507,7 @@ static void udma_dbg_summary_show(struct seq_file=
+ *s,
+>  static int udma_probe(struct platform_device *pdev)
+>  {
+>  	struct device_node *navss_node =3D pdev->dev.parent->of_node;
+> +	const struct soc_device_attribute *soc;
+>  	struct device *dev =3D &pdev->dev;
+>  	struct udma_dev *ud;
+>  	const struct of_device_id *match;
+> @@ -3551,6 +3572,13 @@ static int udma_probe(struct platform_device *pd=
+ev)
+>  	}
+>  	ud->match_data =3D match->data;
+> =20
+> +	soc =3D soc_device_match(k3_soc_devices);
+> +	if (!soc) {
+> +		dev_err(dev, "No compatible SoC found\n");
+> +		return -ENODEV;
+> +	}
+> +	ud->soc_data =3D soc->data;
+> +
+>  	dma_cap_set(DMA_SLAVE, ud->ddev.cap_mask);
+>  	dma_cap_set(DMA_CYCLIC, ud->ddev.cap_mask);
+> =20
+>=20
+
+- P=C3=A9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
