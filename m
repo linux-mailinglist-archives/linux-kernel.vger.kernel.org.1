@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A187265510
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543FD265515
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgIJW2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 18:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S1725841AbgIJW3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 18:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgIJW2O (ORCPT
+        with ESMTP id S1725355AbgIJW3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 18:28:14 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4B8C061573;
-        Thu, 10 Sep 2020 15:28:13 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2C9B4135EDBF1;
-        Thu, 10 Sep 2020 15:11:25 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 15:28:11 -0700 (PDT)
-Message-Id: <20200910.152811.210183159970625640.davem@davemloft.net>
-To:     natechancellor@gmail.com
-Cc:     kuba@kernel.org, rmk+kernel@armlinux.org.uk, andrew@lunn.ch,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] net: mvpp2: Initialize link in
- mvpp2_isr_handle_{xlg,gmac_internal}
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200910174826.511423-1-natechancellor@gmail.com>
-References: <20200910174826.511423-1-natechancellor@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 10 Sep 2020 15:11:25 -0700 (PDT)
+        Thu, 10 Sep 2020 18:29:07 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0ACC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 15:29:07 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id q21so8017041edv.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 15:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RemceQYpfwTMZI7GvmZz01XxDX57S6jy8i4dk7JJMAA=;
+        b=anjWYdkLN4gIBWfzcuYV32XXsJNNWFlJieTFfjQBtCxv7TQFjfdJIYWsKDwJv67SJt
+         X3lRg3LAFe3yemCNMT3YNeSLRgw9zEjXIH6bER9PF3Y6qiUSYAx52hv82P/TWh+y59Xy
+         /xcdM7RHlcTX1Em272Zhy/29KdOtrFqkATOH6IUIBShC0a2Ix2R4+glwUOTbMh5/n4VQ
+         V6j9rcO961M8qh6Q/5MeOjV0cnZl78WXT+SfWk/5rBmUJZmzR7iB4hP9O29636iNsO7k
+         +N99UIYyS2wwaNbrUwZ047GZ1Tku8kpFLfNbown9eZV2HEX5SA7NyvtWfsI7BRXWNmVb
+         Ux0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RemceQYpfwTMZI7GvmZz01XxDX57S6jy8i4dk7JJMAA=;
+        b=nbNHRkTsKQTyg24+EfYazBV/NMibaQITW7IheIJqElLOYe+xLeespmwg4Nq4CsQdqM
+         /A/xzAPb0iyeTtqxjKrYdw0OvY0edVykK/nFtwk4wG+ASFzfMNE3/CQkwVZvmQOiqLwV
+         WB2pPVgtI9U818o3kdnoYIVaJb66hcofSL/bRRCTNepUR1Iz4XpAW3Qfy8c2AjV4VTAc
+         UmLED+JVz0QxGZ0ybaiBx2yyqUzhfXA44JLbh/iGbDSv/sEqZhLJVyjKJCEkyQ+Rn/bR
+         JIIoLzZikG1kxUwpuj90f6tKD72lgqv1poSOTq1Uv1ZqDw77Lq0nMDj8t1Vox/iUNOoK
+         Gblg==
+X-Gm-Message-State: AOAM530fb7aVp1s8SCHpZw2Kt9ztsRp1fM8SVUEpdLBr7kyuwWntOzHY
+        c5jQOSv4pqWA0ahY2gUibttgrd4e9QpLktDtp2+rcA==
+X-Google-Smtp-Source: ABdhPJxByr+VKSmMGcDLHRgmPssigxjSr+wMirCzz5iMdKine6/IsGRjO23WjHzNFw4NLOMWaVGp/bAiryc5Pa+xxVs=
+X-Received: by 2002:a05:6402:1544:: with SMTP id p4mr11588205edx.346.1599776945630;
+ Thu, 10 Sep 2020 15:29:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <1599770859-14826-1-git-send-email-vijayb@linux.microsoft.com> <20200910220145.5j7iogqulmvg5vr6@black.fi.intel.com>
+In-Reply-To: <20200910220145.5j7iogqulmvg5vr6@black.fi.intel.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 10 Sep 2020 18:28:29 -0400
+Message-ID: <CA+CK2bACLNVqKP9Mgr37HQKOY=7+-PwuLCtqN6+saW7uuiMCfw@mail.gmail.com>
+Subject: Re: [[PATCH]] mm: khugepaged: recalculate min_free_kbytes after
+ memory hotplug as expected by khugepaged
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Vijay Balakrishna <vijayb@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Allen Pais <apais@microsoft.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
-Date: Thu, 10 Sep 2020 10:48:27 -0700
+Hi Kirill,
 
-> Clang warns (trimmed for brevity):
-> 
-> drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3073:7: warning:
-> variable 'link' is used uninitialized whenever 'if' condition is false
-> [-Wsometimes-uninitialized]
->                 if (val & MVPP22_XLG_STATUS_LINK_UP)
->                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3075:31: note:
-> uninitialized use occurs here
->                 mvpp2_isr_handle_link(port, link);
->                                             ^~~~
-> ...
-> drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3090:8: warning:
-> variable 'link' is used uninitialized whenever 'if' condition is false
-> [-Wsometimes-uninitialized]
->                         if (val & MVPP2_GMAC_STATUS0_LINK_UP)
->                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:3092:32: note:
-> uninitialized use occurs here
->                         mvpp2_isr_handle_link(port, link);
->                                                     ^~~~
-> 
-> Initialize link to false like it was before the refactoring that
-> happened around link status so that a valid valid is always passed into
-> mvpp2_isr_handle_link.
-> 
-> Fixes: 36cfd3a6e52b ("net: mvpp2: restructure "link status" interrupt handling")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1151
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+On Thu, Sep 10, 2020 at 6:01 PM Kirill A. Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+>
+> On Thu, Sep 10, 2020 at 01:47:39PM -0700, Vijay Balakrishna wrote:
+> > When memory is hotplug added or removed the min_free_kbytes must be
+> > recalculated based on what is expected by khugepaged.  Currently
+> > after hotplug, min_free_kbytes will be set to a lower default and higher
+> > default set when THP enabled is lost. This leaves the system with small
+> > min_free_kbytes which isn't suitable for systems especially with network
+> > intensive loads.  Typical failure symptoms include HW WATCHDOG reset,
+> > soft lockup hang notices, NETDEVICE WATCHDOG timeouts, and OOM process
+> > kills.
+> >
+> > Fixes: f000565adb77 ("thp: set recommended min free kbytes")
+> >
+> > Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
+> > Cc: stable@vger.kernel.org
+>
+> NAK. It would override min_free_kbytes set by user.
 
-This got fixed via another change, a much mode simply one in fact,
-changing the existing assignments to be unconditional and of the
-form "link = (bits & MASK);"
+Hi Kirill,
+
+Thank you for looking into this. How is this different from when
+khugepaged modifies it?
+
+echo always >/sys/kernel/mm/transparent_hugepage/enabled
+
+Which results in:
+
+start_stop_khugepaged
+  set_recommended_min_free_kbytes
+
+Which will also adjust min_free_kbytes according to hugepaged requirement?
+
+This bug that Vijay described is another hot-plug related issue that
+we have found on our system where we perform memory hot add and hot
+remove on every reboot.
+
+Thank you,
+Pasha
