@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7DC265165
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A72E265166
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgIJUyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730677AbgIJOuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:50:40 -0400
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F21B20809;
-        Thu, 10 Sep 2020 13:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599746101;
-        bh=8uitls0FwMbXxeUeaJe4v+UryX88G0t2cRNAeu715Ig=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q4zDVMQ/4u5dTCoj1HmW39yDoXKxpPkpsIHUR9BNTRhKKd5sATQbWkpHJJ4bCVCin
-         0Oal+bJrb5SFqHNOLs5ZNiLOqPA0HXqezywrZmj8EpmrzFqk3gNOvYl7NjBcwkXu5q
-         IXJnVZLiPY+zotF6RtpwTNtAK77Lz8zJ5uwNoolI=
-Received: by mail-oo1-f41.google.com with SMTP id 4so1448305ooh.11;
-        Thu, 10 Sep 2020 06:55:01 -0700 (PDT)
-X-Gm-Message-State: AOAM531FIDH6C6K7Or/KR59yiP+G5/K2iexICPb58oKwKfFyEUP+lYXJ
-        oq9GWoq9xcVRGIoQDzTMrMv+Wl6gDlaFjrCgfg==
-X-Google-Smtp-Source: ABdhPJy+lHlOja04YRvhjttbYYqlKO/f60ffG9yIDtiL2dYnlDTTuqAcRCeqB1xYH1rB13Um+cg0/NOEacjYYhVASrQ=
-X-Received: by 2002:a4a:d306:: with SMTP id g6mr4550240oos.25.1599746100549;
- Thu, 10 Sep 2020 06:55:00 -0700 (PDT)
+        id S1727823AbgIJUyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:54:02 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:52364 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730669AbgIJOuq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 10:50:46 -0400
+Date:   Thu, 10 Sep 2020 10:19:36 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     linux-sh@vger.kernel.org
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Rob Landley <rob@landley.net>, linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH] sh: remove spurious circular inclusion from asm/smp.h
+Message-ID: <20200910141934.GF3265@brightrain.aerifal.cx>
 MIME-Version: 1.0
-References: <20200909134234.31204-1-yuehaibing@huawei.com>
-In-Reply-To: <20200909134234.31204-1-yuehaibing@huawei.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 10 Sep 2020 07:54:49 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+mdgAF5bq5wv8JYj6bMyRAYyUSYnx3ab_UQzrRYpeAug@mail.gmail.com>
-Message-ID: <CAL_Jsq+mdgAF5bq5wv8JYj6bMyRAYyUSYnx3ab_UQzrRYpeAug@mail.gmail.com>
-Subject: Re: [PATCH -next] PCI: dwc: unexport dw_pcie_link_set_max_speed
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 7:42 AM YueHaibing <yuehaibing@huawei.com> wrote:
->
-> This function has been made static, which causes warning:
->
-> WARNING: modpost: "dw_pcie_link_set_max_speed" [vmlinux] is a static EXPORT_SYMBOL_GPL
->
-> Fixes: 3af45d34d30c ("PCI: dwc: Centralize link gen setting")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 1 -
->  1 file changed, 1 deletion(-)
+Commit 0cd39f4600ed4de8 added inclusion of smp.h to lockdep.h,
+creating a circular include dependency where arch/sh's asm/smp.h in
+turn includes spinlock.h which depends on lockdep.h. Since our
+asm/smp.h does not actually need spinlock.h, just remove it.
 
-Thanks for fixing.
+Fixes: 0cd39f4600ed4de8 ("locking/seqlock, headers: Untangle the spaghetti monster")
+Signed-off-by: Rich Felker <dalias@libc.org>
+---
+ arch/sh/include/asm/smp.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Acked-by: Rob Herring <robh@kernel.org>
+diff --git a/arch/sh/include/asm/smp.h b/arch/sh/include/asm/smp.h
+index 1a0d7cf71c10..100bf241340b 100644
+--- a/arch/sh/include/asm/smp.h
++++ b/arch/sh/include/asm/smp.h
+@@ -8,7 +8,6 @@
+ 
+ #ifdef CONFIG_SMP
+ 
+-#include <linux/spinlock.h>
+ #include <linux/atomic.h>
+ #include <asm/current.h>
+ #include <asm/percpu.h>
+-- 
+2.21.0
+
