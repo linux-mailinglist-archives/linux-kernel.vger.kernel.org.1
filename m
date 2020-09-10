@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C94264F91
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E615264FAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgIJTqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        id S1725991AbgIJTtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726966AbgIJTpr (ORCPT
+        with ESMTP id S1726683AbgIJTsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:45:47 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250CCC0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:45:47 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id v196so5435292pfc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kT3st5L2W/yGrskNA7hV4WTKcp+VzTZ5Pgaqe30vqT8=;
-        b=eC6xHFZebGzDOu2iJFlC4sYhGBsPBPtk9a7oklICzLNlEMzSAdGnasLCc1rhvVduzw
-         WWGkAB927UqclP1++HPY0zndFIqCAsSEoCB33GsJW1zgx9zdnqi9fNwkG+wGtFEr+T3z
-         bUYjH1Oc2jBMRnj0f0FQ3tH0tHQIOzzYF+914=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kT3st5L2W/yGrskNA7hV4WTKcp+VzTZ5Pgaqe30vqT8=;
-        b=ZG4tp+t71CqLf458mTUuC2iYKl38mD407TkRDBbMwpg1rP/cLxZnel3nZJD24CSXWD
-         ocsUx2oE+pcRJ0RtAseW9f2Fix6WanLSAMRxB1aOOt9AWAHNuml5vpQoaGQrClISumWB
-         BHJLVuIVd7gWwMSJ/Rh3i2COLdLdMN6A8TPZqmMySqqLQqYsmknBoWla9Uxt7zg3l8vg
-         YPT9BcCjv5ve3EE739kAMGORrrVCTPF/pyPtLlh17rxKzJWLcRnH+Rp+O+F7Y1vRV05K
-         3dzDVJ8H+uo0oLG1Jhroo/+WaTSkwEE/sREe49Zel7J1i+C06QmRs7Qa2cVswmFR5a9r
-         ET2Q==
-X-Gm-Message-State: AOAM530cO+IW6pGMkULtT/XdZ1ofQ3X/hSdFWFpuD6OyBfMqCTe5OVcj
-        ExQEhoL6GgCWdHzpCCKsQ/apXw==
-X-Google-Smtp-Source: ABdhPJwWpKs77i2Pw4YhFhAT5cZe6s0qx17kIVE+as0BWVJNc55TKLnEBagdP5cQWEjWPugWxrbACw==
-X-Received: by 2002:aa7:858e:: with SMTP id w14mr2753410pfn.95.1599767146631;
-        Thu, 10 Sep 2020 12:45:46 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l79sm2905776pfd.210.2020.09.10.12.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 12:45:45 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 12:45:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-ia64@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-arch@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
+        Thu, 10 Sep 2020 15:48:52 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE625C061757;
+        Thu, 10 Sep 2020 12:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2c66nEBP3DnG4HoyZXJPOlNFvLsRVtjflHnzpM04Cds=; b=WVt7qUC3KvQkSyJfCLY4neNlzG
+        5roByh4wUvdqv/vQ1V2RMcthBqRUdn+vthIURckBn8mMTPbtkU1y84Uxtzb+Kum2q/NTBRrJ4sPOu
+        mAuqdWRs3XovrKECyu+zzODbwxAkJsqvkYslQ+rhNBQOrYsV3zeQSqRtAIX71GfJ2p2U=;
+Received: from p200300ccff0e43001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0e:4300:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kGSYb-0007Sl-NR; Thu, 10 Sep 2020 21:48:34 +0200
+Date:   Thu, 10 Sep 2020 21:48:32 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, Adam Ford-BE <aford@beaconembedded.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        kernel test robot <lkp@intel.com>,
+        Tony Lindgren <tony@atomide.com>,
         Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>, Jeff Dike <jdike@addtoit.com>,
-        Jessica Yu <jeyu@kernel.org>, linux-um@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, Tony Luck <tony.luck@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] kbuild: preprocess module linker script
-Message-ID: <202009101245.493610D05@keescook>
-References: <20200904133122.133071-1-masahiroy@kernel.org>
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 1/2] thermal: ti-soc-thermal: Enable addition power
+ management
+Message-ID: <20200910214832.0041b3aa@aktux>
+In-Reply-To: <CAHCN7xLUrh7xr0pr5Bz0unWQXGkiKDK88hZKx7WXGyr2RBWTVg@mail.gmail.com>
+References: <20200819125925.2119434-1-aford173@gmail.com>
+        <20200910200152.72cc5d9f@aktux>
+        <4770327e-84fb-0543-097c-6525d762a01f@linaro.org>
+        <CAHCN7xLUrh7xr0pr5Bz0unWQXGkiKDK88hZKx7WXGyr2RBWTVg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904133122.133071-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 10:31:21PM +0900, Masahiro Yamada wrote:
-> There was a request to preprocess the module linker script like we do
-> for the vmlinux one (https://lkml.org/lkml/2020/8/21/512).
-> 
-> The difference between vmlinux.lds and module.lds is that the latter
-> is needed for external module builds, thus must be cleaned up by
-> 'make mrproper' instead of 'make clean' (also, it must be created by
-> 'make modules_prepare').
-> 
-> You cannot put it in arch/*/kernel/ because 'make clean' descends into
-> it. I moved arch/*/kernel/module.lds to arch/*/include/asm/module.lds.h,
-> which is included from scripts/module.lds.S.
-> 
-> scripts/module.lds is fine because 'make clean' keeps all the build
-> artifacts under scripts/.
-> 
-> You can add arch-specific sections in <asm/module.lds.h>.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Thu, 10 Sep 2020 14:33:13 -0500
+Adam Ford <aford173@gmail.com> wrote:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> On Thu, Sep 10, 2020 at 2:14 PM Daniel Lezcano <daniel.lezcano@linaro.org>
+> wrote:
+> 
+> > On 10/09/2020 20:01, Andreas Kemnade wrote:  
+> > > On Wed, 19 Aug 2020 07:59:23 -0500
+> > > Adam Ford <aford173@gmail.com> wrote:
+> > >  
+> > >> The bandgap sensor can be idled when the processor is too, but it
+> > >> isn't currently being done, so the power consumption of OMAP3
+> > >> boards can elevated if the bangap sensor is enabled.
+> > >>
+> > >> This patch attempts to use some additional power management
+> > >> to idle the clock to the bandgap when not needed.
+> > >>
+> > >> Signed-off-by: Adam Ford <aford173@gmail.com>
+> > >> Reported-by: kernel test robot <lkp@intel.com>
+> > >> ---
+> > >> V2: Fix issue where variable stating the suspend mode isn't being
+> > >>     properly set and cleared.
+> > >>  
+> > > hmm, it is not in linux-next. Can we expect that for v5.10?  
+> >
+> > The reason I did not pick this patch is because lkp reported an error on
+> > it.
+> >
+> > https://marc.info/?l=linux-pm&m=159788472017308&w=2
+> >
+> >
+> >  
+> That error message shows it's trying to be built with 'sh' cross compiler,
+> but should be build with an ARM.
+> 
+> I can run a manual test of the patch against a different branch if
+> necessary, but I had built and tested it, so I know it worked at one time.
+> 
+hmm, what about compile-testing without CONFIG_PM_SLEEP?
 
--- 
-Kees Cook
+The function definition is guarded by that.
+So it is not a sh-specific problem.
+
+Regards,
+Andreas
