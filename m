@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F552645E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A4D2645F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730688AbgIJMXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:23:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730474AbgIJMUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:20:52 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5126A206A2;
-        Thu, 10 Sep 2020 12:20:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599740450;
-        bh=n/nYytuB1Q25l16PO534yoS6vNLUD0xrSYrjXKcSBTA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I6dF2Wdx2QuguwnmDa6l9q/qdYqfncMSjCUJrEoD77LtQZptYekUr9rIqSbRPR/lY
-         7ALXjDCnIEyXhxwwKY1mOUBUwE4oUCm35fMavvaUJmu4igodWuOBoEPuSYXvviJrFn
-         4FsB/0jAn0NzN7rXyi8c/odw9zEHs3yYmq8XcF04=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 638B140D3D; Thu, 10 Sep 2020 09:20:48 -0300 (-03)
-Date:   Thu, 10 Sep 2020 09:20:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Kajol Jain <kjain@linux.ibm.com>, peterz@infradead.org,
-        mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, pc@us.ibm.com,
-        namhyung@kernel.org, ak@linux.intel.com, yao.jin@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        irogers@google.com, maddy@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com, john.garry@huawei.com
-Subject: Re: [PATCH v9 0/5] powerpc/perf: Add json file support for hv_24x7
- core level events
-Message-ID: <20200910122048.GD4018363@kernel.org>
-References: <20200907064133.75090-1-kjain@linux.ibm.com>
- <20200907100529.GF1199773@krava>
+        id S1725971AbgIJM0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:26:39 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:41632 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730654AbgIJMWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:22:47 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 30DA81C0B9C; Thu, 10 Sep 2020 14:22:41 +0200 (CEST)
+Date:   Thu, 10 Sep 2020 14:22:40 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next + leds v2 5/7] net: phy: add support for LEDs
+ controlled by ethernet PHY chips
+Message-ID: <20200910122240.GB7907@duo.ucw.cz>
+References: <20200909162552.11032-1-marek.behun@nic.cz>
+ <20200909162552.11032-6-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="R3G7APHDIzY6R/pk"
 Content-Disposition: inline
-In-Reply-To: <20200907100529.GF1199773@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200909162552.11032-6-marek.behun@nic.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 07, 2020 at 12:05:29PM +0200, Jiri Olsa escreveu:
-> On Mon, Sep 07, 2020 at 12:11:28PM +0530, Kajol Jain wrote:
-> > Patchset enhance current runtime parameter support. It introduces new
-> > fields like "PerChip" and "PerCore" similar to the field "PerPkg" which is
-> > used to specify perpkg events.
-> > 
-> > The "PerCore" and "PerChip" specifies whether its core or chip events.
-> > Based on which we can decide which runtime parameter user want to
-> > access. Now character  '?' can refers different parameter based on user
-> > requirement.
-> > 
-> > Initially, every time we want to add new terms like chip, core, thread
-> > etc, we need to create corrsponding fields in pmu_events and event
-> > struct.
-> > This patchset adds an enum called 'aggr_mode_class' which store all these
-> > aggregation like perchip/percore. It also adds new field 'AggregationMode'
-> > to capture these terms.
-> > Now, if user wants to add any new term, they just need to add it in
-> > the enum defined.
-> > 
-> > This patchset also adds  changes of adding new structure
-> > called 'json_event' inside jevents.c
-> > file to improve the callback prototype inside jevent file.
-> > Initially, whenever user want to add new field, they need to update
-> > in all function callback which makes it more and more complex with
-> > increased number of parmeters.
-> > With this change, we just need to add it in new structure 'json_event'.
-> > link to the RFC patch: https://lkml.org/lkml/2020/8/25/217
-> > 
-> > Changelog:
-> > v8 -> v9
-> > - Free aggr_mode memory [Jiri Olsa].
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Thanks, applied.
+--R3G7APHDIzY6R/pk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- Arnaldo
+On Wed 2020-09-09 18:25:50, Marek Beh=FAn wrote:
+> This patch uses the new API for HW controlled LEDs to add support for
+> probing and control of LEDs connected to an ethernet PHY chip.
+>=20
+> A PHY driver wishing to utilize this API needs to implement the methods
+> in struct hw_controlled_led_ops and set the member led_ops in struct
+> phy_driver to point to that structure.
+>=20
+> Signed-off-by: Marek Beh=FAn <marek.behun@nic.cz>
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--R3G7APHDIzY6R/pk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX1oakAAKCRAw5/Bqldv6
+8uUTAKCLN7qshmbM2XNee7PS+Fxx3IsflACgm4lcbbH6gCzPO0xUOjAz10xDqGg=
+=GLyw
+-----END PGP SIGNATURE-----
+
+--R3G7APHDIzY6R/pk--
