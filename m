@@ -2,174 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056C1263B4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AA4263B69
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgIJDWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgIJDV6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:21:58 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64234C061573;
-        Wed,  9 Sep 2020 20:21:58 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id o8so6521355ejb.10;
-        Wed, 09 Sep 2020 20:21:58 -0700 (PDT)
+        id S1730240AbgIJDZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:25:48 -0400
+Received: from mail-co1nam11on2064.outbound.protection.outlook.com ([40.107.220.64]:33473
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729622AbgIJDZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 23:25:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jfQyFtk/MFur9sQv9npVk0YfBJs2IFhEVsAh8m18BgyrMlORSla5v0ad4PqD6LW4YmjSa8ZeryVnN+0Elzs5I3AxPeVR0SOk1dnwbrubqHwK6qfcUzmhSkbkwb+ElRLw5rKACEiYn4T79aSYpPfetoMgH0bArZ7H3qsCReBVvNhnEOjHqddboCfcYhSeQMF6zZ+BTXrM+ZPaFlhhwocdc/l/KgPHxNeBGicmqBGq6QzCkjZvh57HR+1WzoFGyqo3/5/lGpC1oqJEzzVLtDXuCo06XpNYJsh6vVJaOZ3OiZTOd6nAOmDpnmJyUb+8/IbZgork0L563wwI//ZyfSJkDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/a0pLtH3FMtmYY8qhLGOrzYTOrxVfCp+1WruXjFAsMY=;
+ b=VJkdZeRZbjdhuKBcLJTbFhdK8raPjkK4n6h3KRVRDR1jFturpCAdfw29pDH0Y/Q2nB04Zl87mxXz1QeTqbUgHWilj5f8ur/oNEbs8QQK65F3+CxC2W6t0dzcOEMO/UoWY6xT8bjZEyDgSGxNcS2x7TSm1XrDV+B/v+OAO0bnEaorZ713xunlaivPykPipmfS3b3GojTXdlWLzTchCA4JjV9MVdHXRXpames6H+LPp4gGffQZ4pYSm3OZX2BTsg3774MKSBNjsvvTTMymOwOyUcbX/re2EvwLkSU6ysDwL6a1Q/nqNYR8VekU+PIskosBBagcOQuhw4YGBByfF7VUWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A79j38TeGo0FTeKhZJ6Z5HVKC+rNAm+2XLbIiEuCKUY=;
-        b=aVrMkYlo/d+zmyouXTJxSqtB33bFfF1/mNixCVCCODQPmxJhhUiurbpS/1nRAOrm6o
-         M8pON54OhrBwxLNcItuOcyfQnJK26edZu8Do4NxxPQoqMoGIeDFGaWwG3ADZCs9fUq1m
-         8zuZ4YYIv1t1KKfwfaGw+isSSyNpgR6Cm4ZpU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A79j38TeGo0FTeKhZJ6Z5HVKC+rNAm+2XLbIiEuCKUY=;
-        b=AbqWG5ulRkvDqCSuW46bK6/hgR3CybMvdP7CVxtwW9YM0GgqYzmngRh8PVIL8kkgQ7
-         E1P9efkn+Hfe/vPOT99LVmh/AVRGkk7N9IILhyKDAADtgFFzIwGSLyaRATOyTUvsfZ7V
-         v/V12qFbGXFvbH5bSz9te1k63McQicC2Bze/prFp2G+jjSkWyMQxtI1zc403XfaFWAjQ
-         NMJun/zD5c5vy939ugTS7hfL1eb6ZpZxSmcFWoC4IShtpPT/ugiKb/5ycmt6NujwK27d
-         OVr+Zisf8GzkOGu/73QHWZ0VdguZSeEe53PrSlMEKY+ee1fMeHC56o1bgD62wx0ocDKC
-         0Gaw==
-X-Gm-Message-State: AOAM533aaJYpHwX8dzzwt3Y/9zm/eFDoHt9rqWJXtjksSoqhhp0y9+P6
-        dcbfiohbPJSlG58M/S0exVnwMwwxojDR2cv28gc=
-X-Google-Smtp-Source: ABdhPJyKppctq6u7ic9iz13bTUlMW2PIg2/iotUNWAl8CNxSQjvLXnJMdPO7f/onda7kLt48QCQ9ONhY4jV5TO6/oKg=
-X-Received: by 2002:a17:906:4c58:: with SMTP id d24mr7092918ejw.108.1599708116944;
- Wed, 09 Sep 2020 20:21:56 -0700 (PDT)
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/a0pLtH3FMtmYY8qhLGOrzYTOrxVfCp+1WruXjFAsMY=;
+ b=TtAS9CXBKpmYdmKjhmBXVLb0x9/Y0LvhODjY6Vy6VSsSbBBoXOnCx8dCdaWopspZQNKkiWj04DfqWdSNlcmL/u9sKy5GqrdHNiiQu+62lsELnLIMiNbC7pHRGVkhLQmfX0VTCouZAHWsGqleLZWDwcO/QMuqXil06RcUblPtHC0=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB2840.namprd11.prod.outlook.com (2603:10b6:a02:c9::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
+ 2020 03:25:28 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::21a8:8895:6487:5126%6]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
+ 03:25:28 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: =?gb2312?B?u9i4tDogUkNVOiAgUXVlc3Rpb24gICByY3VfcHJlZW1wdF9ibG9ja2VkX3Jl?=
+ =?gb2312?B?YWRlcnNfY2dwICBpbiAgcmN1X2dwX2Zxc19sb29wIGZ1bmM=?=
+Thread-Topic: RCU:  Question   rcu_preempt_blocked_readers_cgp  in
+  rcu_gp_fqs_loop func
+Thread-Index: AQHWhnNgdtT3KSvnnU6Qd/KLSreZGalf2jJUgABP9oCAAQtz+g==
+Date:   Thu, 10 Sep 2020 03:25:27 +0000
+Message-ID: <BYAPR11MB2632658A901238BB518A53F4FF270@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200818220245.GO27891@paulmck-ThinkPad-P72>
+ <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
+ <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200819135654.GB3875610@google.com>
+ <20200819152159.GX27891@paulmck-ThinkPad-P72> <20200819155808.GA8817@pc636>
+ <20200820223957.GB120898@google.com>
+ <20200821153328.GH2855@paulmck-ThinkPad-P72>
+ <BYAPR11MB263285B19261BE8096D87F65FF260@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <BYAPR11MB2632FD34F68A89CCE039018BFF260@BYAPR11MB2632.namprd11.prod.outlook.com>,<20200909112241.GE29330@paulmck-ThinkPad-P72>
+In-Reply-To: <20200909112241.GE29330@paulmck-ThinkPad-P72>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9bcd49ba-355d-4692-a2e8-08d855392a18
+x-ms-traffictypediagnostic: BYAPR11MB2840:
+x-microsoft-antispam-prvs: <BYAPR11MB2840817EA2BA907E984DBADFFF270@BYAPR11MB2840.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Mh/LynNVM0yS261uxtTlvpuaoRNA8ngFSw2G3FLxtEHSn1KWCW7xCbiOYt9cQuJegs3jQQ0LpI9HDjK4YW6eZ4KWB4RHMEBzUu6wPxx8haaBsOLzUlcnLZRHb+UigIO1qeGi0uR4Nblptifv8iQdH7JlLv0GVwJgsjY1MvHPKs1upQ04SA5qOxPiIVD+0Q/U0+CLT5W0HFCaqVHk87pi+5e9sbYSYLUtuaujq9FZ1vR/pOYMbsZ/0hNIqTmCDut3ZRMDpWmiu46LDSfaMbL749R9kvHWT0wrCxeT7BhTr76LFMNEh3EelVcYEC6+Alz8
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(39850400004)(396003)(136003)(64756008)(66476007)(83380400001)(6506007)(55016002)(54906003)(91956017)(2906002)(7696005)(316002)(86362001)(4326008)(224303003)(76116006)(66446008)(66556008)(66946007)(9686003)(478600001)(52536014)(186003)(71200400001)(26005)(8936002)(33656002)(5660300002)(6916009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: uHYWqpji8Q31iUUNAQxYfgaHf08OuznVEmYRXv0453epyFiDmS7d7yFAZwvHCxnZJQosGeNnmOZ6/4LvMUQoBv/LKoWiEkEPnrV3+YBuj0M+IkA5PLBgJZfEPsRrX7SfwTasOcL+d8ziRwAtWjOH2AFLiph2ok1k/PMEDbEl/tgtDwmH/xPBGptSSpCG/iVAe2gWyHwcpM4R9B06LbeHbKOLBSigG/N8COBK8dhJy9mTXzzPTT32sJ1V/41DHKRnOnF9MNMiYlehrQdzlAeedElNTHo3Dq3wmGFurjgbQcCYzNkzVjteWSlQiyJPtKNyEjYUuLHAqOh8hdCCRkQrEmvZQ9NMdRYDoZAeqtbP8NMO2nA/97wYogw4HRFv5o4i63Jakfwp0hWmTqIr+hD9jBXFIctEAzce/Uf8oyWoiqly3gN7Qom2AYgUVYlbpbXVbuicLd3WDZMjVcImprRVrmtiABecAR9Xgkd5Jltenq4pAfMT58XerMItVzHOv1+kXSPhEh5fxnz30ZZxF5l4/BR5pwCUKd9uTGkLuNY2s2h/vdm4PmZ2T+yT5G0GJBG/HSVlv204ERxH6TNxMCxGYsNptrIhaJF5ptRe1Hok+OerhbGsvF1bdyOfRTHSO2pNjiWr2K+4ZEE666djdcP43A==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200826071916.3081953-1-joel@jms.id.au>
-In-Reply-To: <20200826071916.3081953-1-joel@jms.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 10 Sep 2020 03:21:43 +0000
-Message-ID: <CACPK8XcNc=O99Fuup=OnFacJJnRHd0bt0BiuSrYUCTSVs_shuw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: config: aspeed: Fix selection of media drivers
-To:     Andrew Jeffery <andrew@aj.id.au>, Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bcd49ba-355d-4692-a2e8-08d855392a18
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2020 03:25:27.9590
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QR+jSxG4d+OGWYMQlp9251IyG5audR7hEapfr2uFAu0KwGIK6KCmviFWG+gVTXhKzlMfKB3m7A0/SFso85ac1KJwhI3Q/krHbFqLhoe7qeQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2840
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 at 07:19, Joel Stanley <joel@jms.id.au> wrote:
->
-> In the 5.7 merge window the media kconfig was restructued. For most
-> platforms these changes set CONFIG_MEDIA_SUPPORT_FILTER=y which keeps
-> unwanted drivers disabled.
->
-> The exception is if a config sets EMBEDDED or EXPERT (see b0cd4fb27665).
-> In that case the filter is set to =n, causing a bunch of DVB tuner drivers
-> (MEDIA_TUNER_*) to be accidentally enabled. This was noticed as it blew
-> out the build time for the Aspeed defconfigs.
->
-> Enabling the filter means the Aspeed config also needs to set
-> CONFIG_MEDIA_PLATFORM_SUPPORT=y in order to have the CONFIG_VIDEO_ASPEED
-> driver enabled.
->
-> Fixes: 06b93644f4d1 ("media: Kconfig: add an option to filter in/out platform drivers")
-> Fixes: b0cd4fb27665 ("media: Kconfig: on !EMBEDDED && !EXPERT, enable driver filtering")
-> Cc: stable@vger.kernel.org
-> CC: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
-> ---
->
-> Another solution would be to revert b0cd4fb27665 ("media: Kconfig: on
-> !EMBEDDED && !EXPERT, enable driver filtering"). I assume this was done
-> to be helpful, but in practice it has enabled the TUNER drivers (and
-> others) for the following configs that didn't have them before:
-
-Mauro, did you have any thoughts here?
-
-Otherwise I'll merge the fix for the aspeed configs for 5.10.
-
-Cheers,
-
-Joel
-
->
-> $ git grep -lE "(CONFIG_EXPERT|CONFIG_EMBEDDED)"  arch/*/configs/ | xargs grep -l MEDIA_SUPPORT
-> arch/arm/configs/aspeed_g4_defconfig
-> arch/arm/configs/aspeed_g5_defconfig
-> arch/arm/configs/at91_dt_defconfig
-> arch/arm/configs/bcm2835_defconfig
-> arch/arm/configs/davinci_all_defconfig
-> arch/arm/configs/ezx_defconfig
-> arch/arm/configs/imote2_defconfig
-> arch/arm/configs/imx_v4_v5_defconfig
-> arch/arm/configs/imx_v6_v7_defconfig
-> arch/arm/configs/milbeaut_m10v_defconfig
-> arch/arm/configs/multi_v7_defconfig
-> arch/arm/configs/omap2plus_defconfig
-> arch/arm/configs/pxa_defconfig
-> arch/arm/configs/qcom_defconfig
-> arch/arm/configs/sama5_defconfig
-> arch/arm/configs/tegra_defconfig
-> arch/mips/configs/ci20_defconfig
-> arch/mips/configs/lemote2f_defconfig
-> arch/mips/configs/loongson3_defconfig
-> arch/mips/configs/pistachio_defconfig
->
-> I've cc'd the maintainers of these defconfigs so they are aware.
->
-> ---
->  arch/arm/configs/aspeed_g4_defconfig | 3 ++-
->  arch/arm/configs/aspeed_g5_defconfig | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm/configs/aspeed_g4_defconfig b/arch/arm/configs/aspeed_g4_defconfig
-> index 303f75a3baec..58d293b63581 100644
-> --- a/arch/arm/configs/aspeed_g4_defconfig
-> +++ b/arch/arm/configs/aspeed_g4_defconfig
-> @@ -160,7 +160,8 @@ CONFIG_SENSORS_TMP421=y
->  CONFIG_SENSORS_W83773G=y
->  CONFIG_WATCHDOG_SYSFS=y
->  CONFIG_MEDIA_SUPPORT=y
-> -CONFIG_MEDIA_CAMERA_SUPPORT=y
-> +CONFIG_MEDIA_SUPPORT_FILTER=y
-> +CONFIG_MEDIA_PLATFORM_SUPPORT=y
->  CONFIG_V4L_PLATFORM_DRIVERS=y
->  CONFIG_VIDEO_ASPEED=y
->  CONFIG_DRM=y
-> diff --git a/arch/arm/configs/aspeed_g5_defconfig b/arch/arm/configs/aspeed_g5_defconfig
-> index b0d056d49abe..cc2449ed6e6d 100644
-> --- a/arch/arm/configs/aspeed_g5_defconfig
-> +++ b/arch/arm/configs/aspeed_g5_defconfig
-> @@ -175,7 +175,8 @@ CONFIG_SENSORS_TMP421=y
->  CONFIG_SENSORS_W83773G=y
->  CONFIG_WATCHDOG_SYSFS=y
->  CONFIG_MEDIA_SUPPORT=y
-> -CONFIG_MEDIA_CAMERA_SUPPORT=y
-> +CONFIG_MEDIA_SUPPORT_FILTER=y
-> +CONFIG_MEDIA_PLATFORM_SUPPORT=y
->  CONFIG_V4L_PLATFORM_DRIVERS=y
->  CONFIG_VIDEO_ASPEED=y
->  CONFIG_DRM=y
-> --
-> 2.28.0
->
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogUGF1bCBF
+LiBNY0tlbm5leSA8cGF1bG1ja0BrZXJuZWwub3JnPgq3osvNyrG85DogMjAyMMTqOdTCOcjVIDE5
+OjIyCsrVvP7IyzogWmhhbmcsIFFpYW5nCrOty806IEpvZWwgRmVybmFuZGVzOyBVbGFkemlzbGF1
+IFJlemtpOyBKb3NoIFRyaXBsZXR0OyBTdGV2ZW4gUm9zdGVkdDsgTWF0aGlldSBEZXNub3llcnM7
+IExhaSBKaWFuZ3NoYW47IHJjdTsgTEtNTArW98ziOiBSZTogUkNVOiAgUXVlc3Rpb24gICByY3Vf
+cHJlZW1wdF9ibG9ja2VkX3JlYWRlcnNfY2dwICBpbiAgcmN1X2dwX2Zxc19sb29wIGZ1bmMKCk9u
+IFdlZCwgU2VwIDA5LCAyMDIwIGF0IDA3OjAzOjM5QU0gKzAwMDAsIFpoYW5nLCBRaWFuZyB3cm90
+ZToKPgo+IFdoZW4gY29uZmlnIHByZWVtcHQgUkNVLCAgYW5kIHRoZW4gIHRoZXJlIGFyZSBtdWx0
+aXBsZSBsZXZlbHMgIG5vZGUsICB0aGUgY3VycmVudCB0YXNrIGlzIHByZWVtcHRlZCAgaW4gcmN1
+ICByZWFkIGNyaXRpY2FsIHJlZ2lvbi4KPiB0aGUgY3VycmVudCB0YXNrIGJlIGFkZCB0byAicm5w
+LT5ibGtkX3Rhc2tzIiBsaW5rIGxpc3QsICBhbmQgdGhlICJybnAtPmdwX3Rhc2tzIiAgbWF5IGJl
+IGFzc2lnbmVkIGEgdmFsdWUgLiAgdGhlc2Ugcm5wIGlzIGxlYWYgbm9kZSBpbiBSQ1UgdHJlZS4K
+Pgo+IEJ1dCBpbiAicmN1X2dwX2Zxc19sb29wIiBmdW5jLCB3ZSBjaGVjayBibG9ja2VkIHJlYWRl
+cnMgaW4gcm9vdCBub2RlLgo+Cj4gc3RhdGljIHZvaWQgcmN1X2dwX2Zxc19sb29wKHZvaWQpCj4g
+IHsKPiAgICAgICAgICAgICAuLi4uLgo+ICAgICAgICAgICAgIHN0cnVjdCByY3Vfbm9kZSAqcm5w
+ID0gcmN1X2dldF9yb290KCk7Cj4gICAgICAgICAgICAgLi4uLi4KPiAgICAgICAgICAgICBpZiAo
+IVJFQURfT05DRShybnAtPnFzbWFzaykgJiYKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIXJjdV9wcmVlbXB0X2Jsb2NrZWRfcmVhZGVyc19jZ3Aocm5wKSkgICAgLS0tLS0tPiBybnAg
+aXMgcm9vdCBub2RlCj4gICAgICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4gICAgICAgICAgICAg
+Li4uLgo+IH0KPgo+IHRoZSByb290IG5vZGUncyBibGtkX3Rhc2tzIG5ldmVyIGFkZCB0YXNrLCB0
+aGUgInJucC0+Z3BfdGFza3MiIGlzIG5ldmVyIGJlIGFzc2lnbmVkIHZhbHVlLCAgdGhpcyBjaGVj
+ayBpcyBpbnZhaWxlZC4KPiAgU2hvdWxkIHdlIGNoZWNrIGxlYWYgbm9kZXMgbGlrZSB0aGlzCgo+
+VGhlcmUgYXJlIHR3byBjYXNlczoKCj4xLiAgICAgIFRoZXJlIGlzIG9ubHkgYSBzaW5nbGUgcmN1
+X25vZGUgc3RydWN0dXJlLCB3aGljaCBpcyBib3RoIHJvb3QKPiAgICAgICBhbmQgbGVhZi4gIElu
+IHRoaXMgY2FzZSwgdGhlIGN1cnJlbnQgY2hlY2sgaXMgcmVxdWlyZWQ6ICBCb3RoCj4gICAgICAg
+LT5xc21hc2sgYW5kIHRoZSAtPmJsa2RfdGFza3MgbGlzdCBtdXN0IGJlIGNoZWNrZWQuICBZb3Vy
+Cj4gICAgICAgIHJjdV9wcmVlbXB0X2Jsb2NrZWRfcmVhZGVycygpIHdvdWxkIHdvcmsgaW4gdGhp
+cyBjYXNlLCBidXQKPiAgICAgICAgdGhlIGN1cnJlbnQgY29kZSBpcyBhIGJpdCBmYXN0ZXIgYmVj
+YXVzZSBpdCBkb2VzIG5vdCBuZWVkCj4gICAgICAgIHRvIGFjcXVpcmUgdGhlIC0+bG9jayBub3Ig
+ZG9lcyBpdCBuZWVkIHRoZSBsb29wIG92ZXJoZWFkLgoKPjIuICAgICAgVGhlcmUgYXJlIG11bHRp
+cGxlIGxldmVscy4gIEluIHRoaXMgY2FzZSwgYXMgeW91IHNheSwgdGhlIHJvb3QKPiAgICAgICAg
+cmN1X25vZGUgc3RydWN0dXJlJ3MgLT5ibGtkX3Rhc2tzIGxpc3Qgd2lsbCBhbHdheXMgYmUgZW1w
+dHkuCj4gICAgICAgIEJ1dCBhbHNvIGluIHRoaXMgY2FzZSwgdGhlIHJvb3QgcmN1X25vZGUgc3Ry
+dWN0dXJlJ3MgLT5xc21hc2sKPiAgICAgICAgY2Fubm90IGJlIHplcm8gdW50aWwgYWxsIHRoZSBs
+ZWFmIHJjdV9ub2RlIHN0cnVjdHVyZXMnIC0+cXNtYXNrCj4gICAgICAgIGZpZWxkcyBhcmUgemVy
+byBhbmQgdGhlaXIgLT5ibGtkX3Rhc2tzIGxpc3RzIG5vIGxvbmdlciBoYXZlCj4gICAgICAgIHRh
+c2tzIGJsb2NraW5nIHRoZSBjdXJyZW50IGdyYWNlIHBlcmlvZC4gIFRoaXMgbWVhbnMgdGhhdCB5
+b3VyCiA+ICAgICAgIHJjdV9wcmVlbXB0X2Jsb2NrZWRfcmVhZGVycygpIGZ1bmN0aW9uIHdvdWxk
+IG5ldmVyIHJldHVybgogPiAgICAgICB0cnVlIGluIHRoaXMgY2FzZS4KCj5TbyB0aGUgY3VycmVu
+dCBjb2RlIGlzIGZpbmUuCgo+QXJlIHlvdSBzZWVpbmcgZmFpbHVyZXMgb24gbWFpbmxpbmUga2Vy
+bmVscz8gIElmIHNvLCB3aGF0IGlzIHRoZSBmYWlsdXJlCj5tb2RlPwoKIFllcyBpdCdzIHJpZ2h0
+LCB0aGFuayB5b3UgZm9yIHlvdXIgZXhwbGFuYXRpb24uCiAgCiAgdGhhbmtzCiAgUWlhbmcKCiA+
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRo
+YW54LCBQYXVsCgo+IC0tLSBhL2tlcm5lbC9yY3UvdHJlZS5jCj4gKysrIGIva2VybmVsL3JjdS90
+cmVlLmMKPiBAQCAtMTg0Niw2ICsxODQ2LDI1IEBAIHN0YXRpYyBib29sIHJjdV9ncF9pbml0KHZv
+aWQpCj4gICAgICAgcmV0dXJuIHRydWU7Cj4gIH0KPgo+ICtzdGF0aWMgYm9vbCByY3VfcHJlZW1w
+dF9ibG9ja2VkX3JlYWRlcnModm9pZCkKPiArewo+ICsgICAgIHN0cnVjdCByY3Vfbm9kZSAqcm5w
+Owo+ICsgICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3M7Cj4gKyAgICAgYm9vbCByZXQgPSBmYWxzZTsK
+PiArCj4gKyAgICAgcmN1X2Zvcl9lYWNoX2xlYWZfbm9kZShybnApIHsKPiArICAgICAgICAgICAg
+IHJhd19zcGluX2xvY2tfaXJxc2F2ZV9yY3Vfbm9kZShybnAsIGZsYWdzKTsKPiArICAgICAgICAg
+ICAgIGlmIChyY3VfcHJlZW1wdF9ibG9ja2VkX3JlYWRlcnNfY2dwKHJucCkpIHsKPiArICAgICAg
+ICAgICAgICAgICAgICAgcmV0ID0gdHJ1ZTsKPiArICAgICAgICAgICAgICAgICAgICAgcmF3X3Nw
+aW5fdW5sb2NrX2lycXJlc3RvcmVfcmN1X25vZGUocm5wLCBmbGFncyk7Cj4gKyAgICAgICAgICAg
+ICAgICAgICAgIGJyZWFrOwo+ICsgICAgICAgICAgICAgfQo+ICsgICAgICAgICAgICAgcmF3X3Nw
+aW5fdW5sb2NrX2lycXJlc3RvcmVfcmN1X25vZGUocm5wLCBmbGFncyk7Cj4gKyAgICAgfQo+ICsK
+PiArICAgICByZXR1cm4gcmV0Owo+ICt9Cj4gKwo+ICAvKgo+ICAgKiBIZWxwZXIgZnVuY3Rpb24g
+Zm9yIHN3YWl0X2V2ZW50X2lkbGVfZXhjbHVzaXZlKCkgd2FrZXVwIGF0IGZvcmNlLXF1aWVzY2Vu
+dC1zdGF0ZQo+ICAgKiB0aW1lLgo+IEBAIC0xODY0LDcgKzE4ODMsNyBAQCBzdGF0aWMgYm9vbCBy
+Y3VfZ3BfZnFzX2NoZWNrX3dha2UoaW50ICpnZnApCj4gICAgICAgICAgICAgICByZXR1cm4gdHJ1
+ZTsKPgo+ICAgICAgIC8vIFRoZSBjdXJyZW50IGdyYWNlIHBlcmlvZCBoYXMgY29tcGxldGVkLgo+
+IC0gICAgIGlmICghUkVBRF9PTkNFKHJucC0+cXNtYXNrKSAmJiAhcmN1X3ByZWVtcHRfYmxvY2tl
+ZF9yZWFkZXJzX2NncChybnApKQo+ICsgICAgIGlmICghUkVBRF9PTkNFKHJucC0+cXNtYXNrKSAm
+JiAhcmN1X3ByZWVtcHRfYmxvY2tlZF9yZWFkZXJzKCkpCj4gICAgICAgICAgICAgICByZXR1cm4g
+dHJ1ZTsKPgo+ICAgICAgIHJldHVybiBmYWxzZTsKPiBAQCAtMTkyNyw3ICsxOTQ2LDcgQEAgc3Rh
+dGljIHZvaWQgcmN1X2dwX2Zxc19sb29wKHZvaWQpCj4gICAgICAgICAgICAgICAvKiBMb2NraW5n
+IHByb3ZpZGVzIG5lZWRlZCBtZW1vcnkgYmFycmllcnMuICovCj4gICAgICAgICAgICAgICAvKiBJ
+ZiBncmFjZSBwZXJpb2QgZG9uZSwgbGVhdmUgbG9vcC4gKi8KPiAgICAgICAgICAgICAgIGlmICgh
+UkVBRF9PTkNFKHJucC0+cXNtYXNrKSAmJgo+IC0gICAgICAgICAgICAgICAgICFyY3VfcHJlZW1w
+dF9ibG9ja2VkX3JlYWRlcnNfY2dwKHJucCkpCj4gKyAgICAgICAgICAgICAgICAgIXJjdV9wcmVl
+bXB0X2Jsb2NrZWRfcmVhZGVycygpKQo+ICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKPiAg
+ICAgICAgICAgICAgIC8qIElmIHRpbWUgZm9yIHF1aWVzY2VudC1zdGF0ZSBmb3JjaW5nLCBkbyBp
+dC4gKi8KPiAgICAgICAgICAgICAgIGlmICghdGltZV9hZnRlcihyY3Vfc3RhdGUuamlmZmllc19m
+b3JjZV9xcywgamlmZmllcykgfHwKPiAtLQo+Cj4KPiB0aGFua3MKPiBRaWFuZwo=
