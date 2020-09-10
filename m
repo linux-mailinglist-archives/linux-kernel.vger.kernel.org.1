@@ -2,129 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9EE263E3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7574263E06
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbgIJHNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:13:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730021AbgIJG7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:59:11 -0400
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D585821D40;
-        Thu, 10 Sep 2020 06:59:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599721151;
-        bh=xOzDDEuhcg0+WXu//QXZGuTvH72fhH7NrPswesxiZA8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gXL+ijTBw11FfLjLqyYUZfKHTa4Zvs2N1LU7JLoiGcBQ7DNHaV/PzX6MCoDp00EAp
-         wlCG83HzbzCGx6nVtzWC2pIby9quHCEjEIqQec3QmfPoutTorFkcOj+v+bXRg2MhHa
-         jwCRShpKk3NeYVaSR0bdXRVGBByi3LEGRCE3M3wI=
-Received: by mail-ej1-f54.google.com with SMTP id r7so7071637ejs.11;
-        Wed, 09 Sep 2020 23:59:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530WBIRzWslzlsBcuGP2kDBY0deZMa9dTEbWrs4Th51duXFWR8HV
-        UG88jKwJDE3Dr0BsAM36V7dWEf6+3rDs6rqwgNE=
-X-Google-Smtp-Source: ABdhPJyaVrBohjZL8QO712q55aVYmvP/Im4PscZba1DFwlJPfAPVYEdWgkk0QsgOlmQCRth1GWIRcKjY7V63cmwrs/Y=
-X-Received: by 2002:a17:907:724f:: with SMTP id ds15mr7191226ejc.119.1599721149291;
- Wed, 09 Sep 2020 23:59:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200829064726.26268-1-krzk@kernel.org> <20200829064726.26268-8-krzk@kernel.org>
- <20200909193600.41970d8c@archlinux> <CAJKOXPeo8SXWaRmiFG6z+t9jcnaSMRpvRPm2X22Rf6rtEeKVew@mail.gmail.com>
- <a37c69f2-1f16-2680-2716-0c1b77748d55@axentia.se> <CAHp75Vc4-zkkWtOz8w7pA0Vu1yMAVodhPSLQ1NJH4K+j9XD52g@mail.gmail.com>
-In-Reply-To: <CAHp75Vc4-zkkWtOz8w7pA0Vu1yMAVodhPSLQ1NJH4K+j9XD52g@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 10 Sep 2020 08:58:57 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdNAw8scFKCGaC_hp4jMyLD_mFLKr=+fGKSm6nCkcRF9g@mail.gmail.com>
-Message-ID: <CAJKOXPdNAw8scFKCGaC_hp4jMyLD_mFLKr=+fGKSm6nCkcRF9g@mail.gmail.com>
-Subject: Re: [PATCH v3 08/18] iio: adc: stm32: Simplify with dev_err_probe()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S1730315AbgIJHH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:07:29 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:37667 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730386AbgIJHFD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 03:05:03 -0400
+X-UUID: e0fcb27b161b4c75b82a42694f659e49-20200910
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qQ3o5wuN2rg8uyEANSJYR8YzzG9Gaxvo1A2sTkhF+DE=;
+        b=VjtBL01j/HoBXflC5GlI+QlUTjud9emFvNHY1ZJq5wY5TPnDX0DrA0dAMn2YeH8262sE/pt5GH2zcs6H+rEm2EvEbV51k3i4iQpuYfj+7BkX9ki3ztgQ+yYcMUxmWSSNBsGB64xkUXFky1+gs0UeZbamElxF76eiTWXFtuP9A4g=;
+X-UUID: e0fcb27b161b4c75b82a42694f659e49-20200910
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chuanjia.liu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1743303145; Thu, 10 Sep 2020 15:04:47 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 10 Sep
+ 2020 15:04:46 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Sep 2020 15:04:44 +0800
+Message-ID: <1599721372.7466.15.camel@mhfsdcap03>
+Subject: Re: Aw: Re: [PATCH v4 0/4] Split PCIe node to comply with hardware
+ design
+From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
+To:     Frank Wunderlich <frank-w@public-files.de>
+CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, <jianjun.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <yong.wu@mediatek.com>
+Date:   Thu, 10 Sep 2020 15:02:52 +0800
+In-Reply-To: <trinity-74abdbb2-2ddc-440a-85c8-97e80e9eb2ed-1599545604475@3c-app-gmx-bs38>
+References: <20200721074915.14516-1-Chuanjia.Liu@mediatek.com>
+         <1596440772.7361.35.camel@mhfsdcap03>
+         <trinity-74abdbb2-2ddc-440a-85c8-97e80e9eb2ed-1599545604475@3c-app-gmx-bs38>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 7D884D44EC4ED2C18A83C4ECE5BF2DBC5AB661AF82EEBCB6FFD4697B9FB981372000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 at 08:52, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Thursday, September 10, 2020, Peter Rosin <peda@axentia.se> wrote:
->>
->> Hi!
->>
->> On 2020-09-09 21:57, Krzysztof Kozlowski wrote:
->> > On Wed, 9 Sep 2020 at 20:36, Jonathan Cameron <jic23@kernel.org> wrote:
->> >>
->> >> On Sat, 29 Aug 2020 08:47:16 +0200
->> >> Krzysztof Kozlowski <krzk@kernel.org> wrote:
->> >>
->> >>> Common pattern of handling deferred probe can be simplified with
->> >>> dev_err_probe().  Less code and also it prints the error value.
->> >>>
->> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->> >>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->> >>>
->> >> I don't have the thread to hand, but this tripped a warning next
->> >> and the patch was dropped as a result. See below.
->> >
->> > Thanks for letting me know. If you mean the warning caused by:
->> > https://lore.kernel.org/lkml/20200909073716.GA560912@kroah.com/
->> > then the driver-core patch was dropped, not the iio one:
->> > https://lore.kernel.org/linux-next/20200909074130.GB561485@kroah.com/T/#t
->> >
->> > So we are good here :)
->>
->> No, we are definitely not good. See below. That means "See below", and
->> not "Please take a guess at what is being talking about".
->
->
->
->>
->> >>> @@ -596,12 +594,9 @@ static int stm32_adc_core_switches_probe(struct device *dev,
->> >>>               priv->booster = devm_regulator_get_optional(dev, "booster");
->> >>>               if (IS_ERR(priv->booster)) {
->> >>>                       ret = PTR_ERR(priv->booster);
->> >>> -                     if (ret != -ENODEV) {
->> >>> -                             if (ret != -EPROBE_DEFER)
->> >>> -                                     dev_err(dev, "can't get booster %d\n",
->> >>> -                                             ret);
->> >>> -                             return ret;
->> >>> -                     }
->> >>> +                     if (ret != -ENODEV)
->> >>> +                             dev_err_probe(dev, ret, "can't get booster\n");
->> >>
->> >> This tripped a warning and got the patch dropped because we no longer
->> >> return on error.
->>
->> As Jonathan already said, we no longer return in this hunk. I.e., you have
->> clobbered the error path.
->
->
-> Exactly my point why I proposed _must_check in the first place.
+T24gVHVlLCAyMDIwLTA5LTA4IGF0IDA4OjEzICswMjAwLCBGcmFuayBXdW5kZXJsaWNoIHdyb3Rl
+Og0KPiBIaSwNCj4gDQo+IGkgZG9uJ3Qgc2VlIHRoaXMgUGF0Y2hzZXQgaW4gNS45LXJjNA0KPiAN
+Cj4gaXMgYW55dGhpbmcgbWlzc2luZz8NCj4gDQo+IHJlZ2FyZHMgRnJhbmsNCg0KVGhhbmtzIGZv
+ciBwaW5nIHRoaXMgbWFpbCwNCjx2Z2VyLmtlcm5lbC5vcmc+IG1hbGkgbGlzdCBjb25zaWRlciB0
+aGlzIHBhdGNoc2V0IGlzIFNQQU0gDQpiZWNhdXNlIG9mIG15IGVudmlyb25tZW50YWwgcHJvYmxl
+bXMuDQpJIGhhdmUgZml4ZWQgdGhpcyBwcm9ibGVtIGFuZCBzZW5kIHRoZSBWNSB2ZXJzaW9uLg0K
+SXQgY2FuIGJlIHNlZW4gY29ycmVjdGx5IGluIGxpbnV4LXBjaSBtYWlsIGxpc3QuDQpOb3cgSSBn
+dWVzcyB0aGUgbWFpbnRhaW5lciB3aWxsIGhlbHAgcmV2aWV3IGFuZCBhcHBseSB0aGlzLg0KDQpy
+ZWdhcmRzIENodWFuamlhDQoNCg==
 
-That was not exactly that point as you did not mention possible errors
-but only "miss the opportunity to optimize". Optimization is different
-things than a mistake.
-
-Best regards,
-Krzysztof
