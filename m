@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E358F264C65
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88818264C2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726833AbgIJSK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:10:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726800AbgIJR7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:59:16 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B0AE20BED;
-        Thu, 10 Sep 2020 17:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599760755;
-        bh=c2tztsNpwyNu1D1MBTKVqE3luU/B7LUoBEm+xm+5A7o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2E2+d3GeM49R0VN2KDJsfGVusvUohciSPnXQmvjkUOoKiwaFB8uKEqtoGErfm+O9B
-         tBeKn1rsXMX98zLwnXboGz9QXAMKfhuCRKONJIBRyHxoGpM1ZjggFrq0aht8xTr54w
-         1nOpQiWLxk4ryGTluyrIM2Mhee4w1PgJ0RZb4igI=
-Date:   Thu, 10 Sep 2020 19:59:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org
-Subject: Re: [PATCH v2 0/3] Expose recovery/coredump configuration from sysfs
-Message-ID: <20200910175923.GB3076593@kroah.com>
-References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
- <20200901220542.GA121362@xps15>
- <20200903235944.GC3715@yoga>
- <20200904220213.GA404035@xps15>
+        id S1726847AbgIJSDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:03:13 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:33007 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726728AbgIJSBm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:01:42 -0400
+Received: by mail-ej1-f65.google.com with SMTP id j11so10113674ejk.0;
+        Thu, 10 Sep 2020 11:01:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vzlILYYSQksxsWvenp+0BQ/ZzGG+3vsuxeefhQwKuys=;
+        b=mwTzLPsoHkTZHv7eITzwGJGiLpcSM9a0eSAiXuJS0Pkbr8WAQm6yt5JR1TK/HanrZF
+         blUI7hI/ATdAwNbw/jVLBIwryzQijskvDIEy5CYtIQ7SdrUj2i6Lp3y/YeQgz2ysX3T+
+         XiPuF5PnN0WdLmACkie6BDqDAxY6uluk8d2FzNbx7D5qK0pHbcy5xmlXTjdiZl1uRAfv
+         oSDf1Yj0+R7Qf/+41FGSHtkNPkrncvOciByv/PRg4dQ9qpdNcfL02e6GS53looXZE9GE
+         b6l0JhxxlxSeALw2PbZ5JnDmKJFTSR/V+TU5y/hkzAk0IXFe/IDH21V9R3fkX0pAg/9J
+         t9kQ==
+X-Gm-Message-State: AOAM531DM/OBR9DpuVNXvd2Abg7Nf0u5QzTFnjjtF6+HoTAycDPP0kQD
+        aizNvnSMAF3ZSA+pZwbS6aI=
+X-Google-Smtp-Source: ABdhPJwT6JbyXfUrGZCRSOFBx+boMTdYFSDTFrULKEN0eqYHOZ15ua7zgfpIH84oBBIKMt8Sze2wOQ==
+X-Received: by 2002:a17:906:a4b:: with SMTP id x11mr10673914ejf.368.1599760899958;
+        Thu, 10 Sep 2020 11:01:39 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.174])
+        by smtp.googlemail.com with ESMTPSA id 1sm7839797ejn.50.2020.09.10.11.01.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 10 Sep 2020 11:01:38 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 20:01:35 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v2 08/15] ARM: dts: am335x: lxm: fix PCA9539 GPIO
+ expander properties
+Message-ID: <20200910180135.GA11154@kozik-lap>
+References: <20200910175733.11046-1-krzk@kernel.org>
+ <20200910175733.11046-9-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200904220213.GA404035@xps15>
+In-Reply-To: <20200910175733.11046-9-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 04:02:13PM -0600, Mathieu Poirier wrote:
-> On Thu, Sep 03, 2020 at 06:59:44PM -0500, Bjorn Andersson wrote:
-> > On Tue 01 Sep 17:05 CDT 2020, Mathieu Poirier wrote:
-> > 
-> > > Hi Rishabh,
-> > > 
-> > > On Thu, Aug 27, 2020 at 12:48:48PM -0700, Rishabh Bhatnagar wrote:
-> > > > From Android R onwards Google has restricted access to debugfs in user
-> > > > and user-debug builds. This restricts access to most of the features
-> > > > exposed through debugfs. This patch series adds a configurable option
-> > > > to move the recovery/coredump interfaces to sysfs. If the feature
-> > > > flag is selected it would move these interfaces to sysfs and remove
-> > > > the equivalent debugfs interface.
-> > > 
-> > > What I meant wast to move the coredump entry from debugfs to sysfs and from
-> > > there make it available to user space using a kernel config.
-> > 
-> > Why would we not always make this available in sysfs?
+On Thu, Sep 10, 2020 at 07:57:26PM +0200, Krzysztof Kozlowski wrote:
+> The PCA9539 GPIO expander requires GPIO controller properties to operate
+> properly.
 > 
-> At this time the options are in debugfs and vendors can decide to make that
-> available on products if they want to.  The idea behind using a kernel
-> configuration once moved to sysfs was to give the same kind of options.
-> 
-> > 
-> > > But thinking further on this it may be better to simply provide an API
-> > > to set the coredump mode from the platform driver, the same way
-> > > rproc_coredump_set_elf_info() works.
-> > 
-> > Being able to invoke these from the platform drivers sounds like a new
-> > feature. What would trigger the platform drivers to call this? Or are
-> > you perhaps asking for the means of the drivers to be able to select the
-> > default mode?
-> 
-> My ultimate goal is to avoid needlessly stuffing things in sysfs.  My hope in
-> suggesting a new API was that platform drivers could recognise the kind of
-> build/environment they operate in and setup the coredump mode accordingly.  That
-> would have allowed us to leave debugfs options alone.
-> 
-> > 
-> > Regarding the default mode, I think it would make sense to make the
-> > default "disabled", because this is the most sensible configuration in a
-> > "production" environment. And the sysfs means we have a convenient
-> > mechanism to configure it, even on production environments.
-> >
-> 
-> I am weary of changing something that hasn't been requested.  
->  
-> > > That will prevent breaking a fair amount of user space code...
-> > > 
-> > 
-> > We typically don't guarantee that the debugfs interfaces are stable and
-> > if I understand the beginning of you reply you still want to move it
-> > from debugfs to sysfs - which I presume would break such scripts in the
-> > first place?
-> 
-> Correct - I am sure that moving coredump and recovery options to sysfs will
-> break user space scripts.  Even if debugfs is not part of the ABI it would be
-> nice to avoid disrupting people as much as possible.
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Don't move the files, keep them in both places.  Lots of systems
-restrict debugfs, so moving "stable" stuff like this into sysfs makes
-sense.
+I forgot to add here Ack from v1:
+Acked-by: Tony Lindgren <tony@atomide.com>
 
-thanks,
+Tony,
 
-greg k-h
+I think it should go through sub-architecture maintainers, not as entire
+series.
+
+Best regards,
+Krzysztof
+
