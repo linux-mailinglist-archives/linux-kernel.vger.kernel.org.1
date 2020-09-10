@@ -2,150 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC942654C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071882654CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 00:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725812AbgIJWEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 18:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbgIJWDy (ORCPT
+        id S1725835AbgIJWGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 18:06:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25289 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725294AbgIJWGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 18:03:54 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C780CC061573;
-        Thu, 10 Sep 2020 15:03:53 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x23so2179706wmi.3;
-        Thu, 10 Sep 2020 15:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XwFesGR4NbCLq0zixfOqhv5ARStJ9CjQZ3o4UAP9K2k=;
-        b=Ryg27q/gAZXbg6huhbkDvo7fSvYgt+GSFoQpCeq1JnM98lYeNn1mU0FPPQjx8+zCR7
-         HO7cWjwGxLY+h/9hS+8lXwfAdzU25b/SOByjCW516cHROFpUlc4E84piriVXDA48SJ/M
-         /AAdslZCcSarc31hmEtZQSGY8Q4GXkfi1BfK/281hA6gGFH62+hTlrfivfTpcxXfECkf
-         b6MATUAd7FQDf1Fer5hJHd61DSrCV/PjwZVnBYKKUMSGFBT0prFUD2qcQ0Lupkp1ye7H
-         uJOdx9f4noBxv6I1KggJpV17U/pj6gg3zA/oppkQKW1iCBL5V1OelDW1gvcGqFZhjCqW
-         SFdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XwFesGR4NbCLq0zixfOqhv5ARStJ9CjQZ3o4UAP9K2k=;
-        b=mEygLPC3mXo3buF+1VH688becNg/sJwRSLyNwVa+ssWw2u/2ssuT0+Yjc5mjA/i6Zf
-         fC2r1sx9mb42FPLvLJzx5wX6H7t9/mSjW3Q8Sl207ymTOMvuZDMGJX4cebyAylN9hL6/
-         ksFRsMkG1DJsvh+5bVI63tIEBZMq1D+4dQV8vtuOMZCrYxiBBUA8XnCEy3EnYUXMXMaf
-         5clcH7iErVaJiYH9Pt+oN1m+lR6Z2vzfP0G+nVGTYgn9Na+r2dh+CO1oQz+mmB/R/qwb
-         vFWoJQEhi8aBcTBKk3Ka8wSSOzAzfSFGLHZVyOBepfCm+zo/KODmChpUb7jLIaCWy9Uh
-         dSrg==
-X-Gm-Message-State: AOAM530/HjeSK/ZK1TgL2OrTJ0hp47k/eXAL/9tK4r/h6IfD5chuzV7Y
-        TVUCFlrvnrucMRBp2a8xgOWUga7f8p0Z6P36XWY=
-X-Google-Smtp-Source: ABdhPJzKmH/rmiHX/MqNIlb9eckwnYeH5cxMnEa8h0PE/vcCG2cB5ok8HqYzXdjuavUOrjkKgumjScxKYz3UVx9VSr4=
-X-Received: by 2002:a7b:cf1a:: with SMTP id l26mr2030447wmg.164.1599775431560;
- Thu, 10 Sep 2020 15:03:51 -0700 (PDT)
+        Thu, 10 Sep 2020 18:06:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599775561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RnbUoGq7xwlkckcej6HmOURWq1SLDS1pk1FaTeyjhKo=;
+        b=D3fgLNragIKoJhgUySfTj73gQtOvd7Gu1nVjSpz/88bRbCiYJ+0PWV+ryQzMiUoQkEtnjr
+        au+GyioVAN6+G5u92k3shhYuuemJ4ii3bhjWnVZ2dGlHOLlXFGC1myZoQmuxDs1eHS+SsU
+        P2ZDMSHPXqJ209EB9sWgVsv5WE0Q9kw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-xtVDWkvJNJqf0IYWvWalPg-1; Thu, 10 Sep 2020 18:05:57 -0400
+X-MC-Unique: xtVDWkvJNJqf0IYWvWalPg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4123C1084CA2;
+        Thu, 10 Sep 2020 22:05:49 +0000 (UTC)
+Received: from w520.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 02B537512B;
+        Thu, 10 Sep 2020 22:05:47 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 16:05:47 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] iommu: Add iommu_at(de)tach_subdev_group()
+Message-ID: <20200910160547.0a8b9891@w520.home>
+In-Reply-To: <20200901033422.22249-3-baolu.lu@linux.intel.com>
+References: <20200901033422.22249-1-baolu.lu@linux.intel.com>
+        <20200901033422.22249-3-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-References: <1594899334-19772-1-git-send-email-kalyan_t@codeaurora.org>
- <1594899334-19772-2-git-send-email-kalyan_t@codeaurora.org> <20200910220037.GA472@uller>
-In-Reply-To: <20200910220037.GA472@uller>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 10 Sep 2020 15:04:47 -0700
-Message-ID: <CAF6AEGvriNYkeaBVmK2mEG1OVojun2nQ7c2X6BuE-E-B4DRujA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] arm64: dts: sc7180: add bus clock to mdp node for
- sc7180 target
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        nganji@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 3:00 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Thu 16 Jul 11:35 UTC 2020, Kalyan Thota wrote:
->
-> > From: Krishna Manikandan <mkrishn@codeaurora.org>
-> >
-> > Move the bus clock to mdp device node,in order
-> > to facilitate bus band width scaling on sc7180
-> > target.
-> >
-> > The parent device MDSS will not vote for bus bw,
-> > instead the vote will be triggered by mdp device
-> > node. Since a minimum vote is required to turn
-> > on bus clock, move the clock node to mdp device
-> > from where the votes are requested.
-> >
-> > This patch has dependency on the below series
-> > https://patchwork.kernel.org/patch/11468783/
-> >
->
-> Isn't this dependency on an old revision of patch 3/3 in this series?
->
-> Regardless, I don't see either the linked patch or patch 3 merged in
-> linux-next, so I presume I should not merge this?
+On Tue,  1 Sep 2020 11:34:19 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-I guess that would be "drm/msm/dpu: add support for clk and bw scaling
-for display" on msm-next-staging[1] (about to be msm-next)
+> This adds two new APIs for the use cases like vfio/mdev where subdevices
+> derived from physical devices are created and put in an iommu_group. The
+> new IOMMU API interfaces mimic the vfio_mdev_at(de)tach_domain() directly,
+> testing whether the resulting device supports IOMMU_DEV_FEAT_AUX and using
+> an aux vs non-aux at(de)tach.
+> 
+> By doing this we could
+> 
+> - Set the iommu_group.domain. The iommu_group.domain is private to iommu
+>   core (therefore vfio code cannot set it), but we need it set in order
+>   for iommu_get_domain_for_dev() to work with a group attached to an aux
+>   domain.
+> 
+> - Prefer to use the _attach_group() interfaces while the _attach_device()
+>   interfaces are relegated to special cases.
+> 
+> Link: https://lore.kernel.org/linux-iommu/20200730134658.44c57a67@x1.home/
+> Link: https://lore.kernel.org/linux-iommu/20200730151703.5daf8ad4@x1.home/
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/iommu.c | 136 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/iommu.h |  20 +++++++
+>  2 files changed, 156 insertions(+)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 38cdfeb887e1..fb21c2ff4861 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -2757,6 +2757,142 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+>  
+> +static int __iommu_aux_attach_device(struct iommu_domain *domain,
+> +				     struct device *phys_dev,
+> +				     struct device *sub_dev)
+> +{
+> +	int ret;
+> +
+> +	if (unlikely(!domain->ops->aux_attach_dev))
+> +		return -ENODEV;
+> +
+> +	ret = domain->ops->aux_attach_dev(domain, phys_dev, sub_dev);
+> +	if (!ret)
+> +		trace_attach_device_to_domain(sub_dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void __iommu_aux_detach_device(struct iommu_domain *domain,
+> +				      struct device *phys_dev,
+> +				      struct device *sub_dev)
+> +{
+> +	if (unlikely(!domain->ops->aux_detach_dev))
+> +		return;
+> +
+> +	domain->ops->aux_detach_dev(domain, phys_dev, sub_dev);
+> +	trace_detach_device_from_domain(sub_dev);
+> +}
+> +
+> +static int __iommu_attach_subdev_group(struct iommu_domain *domain,
+> +				       struct iommu_group *group,
+> +				       iommu_device_lookup_t fn)
+> +{
+> +	struct group_device *device;
+> +	struct device *phys_dev;
+> +	int ret = -ENODEV;
+> +
+> +	list_for_each_entry(device, &group->devices, list) {
+> +		phys_dev = fn(device->dev);
+> +		if (!phys_dev) {
+> +			ret = -ENODEV;
+> +			break;
+> +		}
+> +
+> +		if (iommu_dev_feature_enabled(phys_dev, IOMMU_DEV_FEAT_AUX))
+> +			ret = __iommu_aux_attach_device(domain, phys_dev,
+> +							device->dev);
+> +		else
+> +			ret = __iommu_attach_device(domain, phys_dev);
+> +
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static void __iommu_detach_subdev_group(struct iommu_domain *domain,
+> +					struct iommu_group *group,
+> +					iommu_device_lookup_t fn)
+> +{
+> +	struct group_device *device;
+> +	struct device *phys_dev;
+> +
+> +	list_for_each_entry(device, &group->devices, list) {
+> +		phys_dev = fn(device->dev);
+> +		if (!phys_dev)
+> +			break;
 
-[1] https://gitlab.freedesktop.org/drm/msm/-/commits/msm-next-staging
 
+Seems like this should be a continue rather than a break.  On the
+unwind path maybe we're relying on holding the group mutex and
+deterministic behavior from the fn() callback to unwind to the same
+point, but we still have an entirely separate detach interface and I'm
+not sure we couldn't end up with an inconsistent state if we don't
+iterate each group device here.  Thanks,
 
-> Regards,
-> Bjorn
->
-> > Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > index 4f2c0d1..31fed6d 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> > @@ -1510,10 +1510,9 @@
-> >                       power-domains = <&dispcc MDSS_GDSC>;
-> >
-> >                       clocks = <&gcc GCC_DISP_AHB_CLK>,
-> > -                              <&gcc GCC_DISP_HF_AXI_CLK>,
-> >                                <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> >                                <&dispcc DISP_CC_MDSS_MDP_CLK>;
-> > -                     clock-names = "iface", "bus", "ahb", "core";
-> > +                     clock-names = "iface", "ahb", "core";
-> >
-> >                       assigned-clocks = <&dispcc DISP_CC_MDSS_MDP_CLK>;
-> >                       assigned-clock-rates = <300000000>;
-> > @@ -1539,12 +1538,13 @@
-> >                                     <0 0x0aeb0000 0 0x2008>;
-> >                               reg-names = "mdp", "vbif";
-> >
-> > -                             clocks = <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> > +                             clocks = <&gcc GCC_DISP_HF_AXI_CLK>,
-> > +                                      <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> >                                        <&dispcc DISP_CC_MDSS_ROT_CLK>,
-> >                                        <&dispcc DISP_CC_MDSS_MDP_LUT_CLK>,
-> >                                        <&dispcc DISP_CC_MDSS_MDP_CLK>,
-> >                                        <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-> > -                             clock-names = "iface", "rot", "lut", "core",
-> > +                             clock-names = "bus", "iface", "rot", "lut", "core",
-> >                                             "vsync";
-> >                               assigned-clocks = <&dispcc DISP_CC_MDSS_MDP_CLK>,
-> >                                                 <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-> > --
-> > 1.9.1
-> >
+Alex
+
+> +
+> +		if (iommu_dev_feature_enabled(phys_dev, IOMMU_DEV_FEAT_AUX))
+> +			__iommu_aux_detach_device(domain, phys_dev, device->dev);
+> +		else
+> +			__iommu_detach_device(domain, phys_dev);
+> +	}
+> +}
+> +
+> +/**
+> + * iommu_attach_subdev_group - attach domain to an iommu_group which
+> + *			       contains subdevices.
+> + *
+> + * @domain: domain
+> + * @group:  iommu_group which contains subdevices
+> + * @fn:     callback for each subdevice in the @iommu_group to retrieve the
+> + *          physical device where the subdevice was created from.
+> + *
+> + * Returns 0 on success, or an error value.
+> + */
+> +int iommu_attach_subdev_group(struct iommu_domain *domain,
+> +			      struct iommu_group *group,
+> +			      iommu_device_lookup_t fn)
+> +{
+> +	int ret = -ENODEV;
+> +
+> +	mutex_lock(&group->mutex);
+> +	if (group->domain) {
+> +		ret = -EBUSY;
+> +		goto unlock_out;
+> +	}
+> +
+> +	ret = __iommu_attach_subdev_group(domain, group, fn);
+> +	if (ret)
+> +		__iommu_detach_subdev_group(domain, group, fn);
+> +	else
+> +		group->domain = domain;
+> +
+> +unlock_out:
+> +	mutex_unlock(&group->mutex);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_attach_subdev_group);
+> +
+> +/**
+> + * iommu_detach_subdev_group - detach domain from an iommu_group which
+> + *			       contains subdevices
+> + *
+> + * @domain: domain
+> + * @group:  iommu_group which contains subdevices
+> + * @fn:     callback for each subdevice in the @iommu_group to retrieve the
+> + *          physical device where the subdevice was created from.
+> + *
+> + * The domain must have been attached to @group via iommu_attach_subdev_group().
+> + */
+> +void iommu_detach_subdev_group(struct iommu_domain *domain,
+> +			       struct iommu_group *group,
+> +			       iommu_device_lookup_t fn)
+> +{
+> +	mutex_lock(&group->mutex);
+> +	if (!group->domain)
+> +		goto unlock_out;
+> +
+> +	__iommu_detach_subdev_group(domain, group, fn);
+> +	group->domain = NULL;
+> +
+> +unlock_out:
+> +	mutex_unlock(&group->mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_detach_subdev_group);
+> +
+>  /**
+>   * iommu_sva_bind_device() - Bind a process address space to a device
+>   * @dev: the device
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 871267104915..b9df8b510d4f 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -48,6 +48,7 @@ struct iommu_fault_event;
+>  typedef int (*iommu_fault_handler_t)(struct iommu_domain *,
+>  			struct device *, unsigned long, int, void *);
+>  typedef int (*iommu_dev_fault_handler_t)(struct iommu_fault *, void *);
+> +typedef struct device *(*iommu_device_lookup_t)(struct device *);
+>  
+>  struct iommu_domain_geometry {
+>  	dma_addr_t aperture_start; /* First address that can be mapped    */
+> @@ -631,6 +632,12 @@ bool iommu_dev_feature_enabled(struct device *dev, enum iommu_dev_features f);
+>  int iommu_aux_attach_device(struct iommu_domain *domain, struct device *dev);
+>  void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
+>  int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
+> +int iommu_attach_subdev_group(struct iommu_domain *domain,
+> +			      struct iommu_group *group,
+> +			      iommu_device_lookup_t fn);
+> +void iommu_detach_subdev_group(struct iommu_domain *domain,
+> +			       struct iommu_group *group,
+> +			       iommu_device_lookup_t fn);
+>  
+>  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+>  					struct mm_struct *mm,
+> @@ -1019,6 +1026,19 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+>  	return -ENODEV;
+>  }
+>  
+> +static inline int
+> +iommu_attach_subdev_group(struct iommu_domain *domain, struct iommu_group *group,
+> +			  iommu_device_lookup_t fn)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +static inline void
+> +iommu_detach_subdev_group(struct iommu_domain *domain, struct iommu_group *group,
+> +			  iommu_device_lookup_t fn)
+> +{
+> +}
+> +
+>  static inline struct iommu_sva *
+>  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
+>  {
+
