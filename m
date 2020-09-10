@@ -2,110 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F23264901
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970622648DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731426AbgIJPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:48:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35822 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731397AbgIJPno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:43:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B1D59B012;
-        Thu, 10 Sep 2020 13:54:20 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 15:54:04 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        akpm@linux-foundation.org, rafael@kernel.org,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200910135404.GJ28354@dhcp22.suse.cz>
-References: <4cdb54be-1a92-4ba4-6fee-3b415f3468a9@linux.ibm.com>
- <20200909105914.GF7348@dhcp22.suse.cz>
- <74a62b00-235e-7deb-2814-f3b240fea25e@linux.ibm.com>
- <20200910072331.GB28354@dhcp22.suse.cz>
- <31cfdf35-618f-6f56-ef16-0d999682ad02@linux.ibm.com>
- <20200910111246.GE28354@dhcp22.suse.cz>
- <bd6f2d09-f4e2-0a63-3511-e0f9bf283fe3@linux.ibm.com>
- <20200910120343.GA6635@linux>
- <20200910124755.GG28354@dhcp22.suse.cz>
- <27e73d7d-c172-aa84-dad2-f97ed6123db4@redhat.com>
+        id S1731309AbgIJPfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:35:33 -0400
+Received: from smtprelay0026.hostedemail.com ([216.40.44.26]:60906 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731335AbgIJPdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:33:49 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 07CE118353A5E
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 14:43:36 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 41FA812FD;
+        Thu, 10 Sep 2020 14:42:35 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3871:3874:4321:5007:7903:10004:10400:10848:11232:11658:11914:12050:12297:12533:12740:12760:12895:13019:13069:13160:13229:13311:13357:13439:14659:14721:14777:21080:21451:21627:30026:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bomb99_3c0c88c270e6
+X-Filterd-Recvd-Size: 1556
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 10 Sep 2020 14:42:34 +0000 (UTC)
+Message-ID: <73afd93d520c15edd00b7729e12f578028f8913e.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: accept longer commit description lines
+From:   Joe Perches <joe@perches.com>
+To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Thu, 10 Sep 2020 07:42:33 -0700
+In-Reply-To: <20200910143208.3837-1-penguin-kernel@I-love.SAKURA.ne.jp>
+References: <20200910143208.3837-1-penguin-kernel@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <27e73d7d-c172-aa84-dad2-f97ed6123db4@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10-09-20 14:49:28, David Hildenbrand wrote:
-> On 10.09.20 14:47, Michal Hocko wrote:
-> > On Thu 10-09-20 14:03:48, Oscar Salvador wrote:
-> >> On Thu, Sep 10, 2020 at 01:35:32PM +0200, Laurent Dufour wrote:
-> >>  
-> >>> That points has been raised by David, quoting him here:
-> >>>
-> >>>> IIRC, ACPI can hotadd memory while SCHEDULING, this patch would break that.
-> >>>>
-> >>>> Ccing Oscar, I think he mentioned recently that this is the case with ACPI.
-> >>>
-> >>> Oscar told that he need to investigate further on that.
-> >>
-> >> I think my reply got lost.
-> >>
-> >> We can see acpi hotplugs during SYSTEM_SCHEDULING:
-> >>
-> >> $QEMU -enable-kvm -machine pc -smp 4,sockets=4,cores=1,threads=1 -cpu host -monitor pty \
-> >>         -m size=$MEM,slots=255,maxmem=4294967296k  \
-> >>         -numa node,nodeid=0,cpus=0-3,mem=512 -numa node,nodeid=1,mem=512 \
-> >>         -object memory-backend-ram,id=memdimm0,size=134217728 -device pc-dimm,node=0,memdev=memdimm0,id=dimm0,slot=0 \
-> >>         -object memory-backend-ram,id=memdimm1,size=134217728 -device pc-dimm,node=0,memdev=memdimm1,id=dimm1,slot=1 \
-> >>         -object memory-backend-ram,id=memdimm2,size=134217728 -device pc-dimm,node=0,memdev=memdimm2,id=dimm2,slot=2 \
-> >>         -object memory-backend-ram,id=memdimm3,size=134217728 -device pc-dimm,node=0,memdev=memdimm3,id=dimm3,slot=3 \
-> >>         -object memory-backend-ram,id=memdimm4,size=134217728 -device pc-dimm,node=1,memdev=memdimm4,id=dimm4,slot=4 \
-> >>         -object memory-backend-ram,id=memdimm5,size=134217728 -device pc-dimm,node=1,memdev=memdimm5,id=dimm5,slot=5 \
-> >>         -object memory-backend-ram,id=memdimm6,size=134217728 -device pc-dimm,node=1,memdev=memdimm6,id=dimm6,slot=6 \
-> >>
-> >> kernel: [    0.753643] __add_memory: nid: 0 start: 0100000000 - 0108000000 (size: 134217728)
-> >> kernel: [    0.756950] register_mem_sect_under_node: system_state= 1
-> >>
-> >> kernel: [    0.760811]  register_mem_sect_under_node+0x4f/0x230
-> >> kernel: [    0.760811]  walk_memory_blocks+0x80/0xc0
-> >> kernel: [    0.760811]  link_mem_sections+0x32/0x40
-> >> kernel: [    0.760811]  add_memory_resource+0x148/0x250
-> >> kernel: [    0.760811]  __add_memory+0x5b/0x90
-> >> kernel: [    0.760811]  acpi_memory_device_add+0x130/0x300
-> >> kernel: [    0.760811]  acpi_bus_attach+0x13c/0x1c0
-> >> kernel: [    0.760811]  acpi_bus_attach+0x60/0x1c0
-> >> kernel: [    0.760811]  acpi_bus_scan+0x33/0x70
-> >> kernel: [    0.760811]  acpi_scan_init+0xea/0x21b
-> >> kernel: [    0.760811]  acpi_init+0x2f1/0x33c
-> >> kernel: [    0.760811]  do_one_initcall+0x46/0x1f4
-> > 
-> > Is there any actual usecase for a configuration like this? What is the
-> > point to statically define additional memory like this when the same can
-> > be achieved on the same command line?
-> 
-> You can online it movable right away to unplug later.
+On Thu, 2020-09-10 at 23:32 +0900, Tetsuo Handa wrote:
+> Given that commit bdc48fa11e46f867 ("checkpatch/coding-style: deprecate
+> 80-column warning") was introduced because nowadays most of us are using
+> screens that can print more than 100 columns, most of us will be also
+> using mail clients that can print more than 100 columns. Since 75 chars
+> limit for commit description lines is sometimes inconvenient for obeying
+> 'commit <12+ chars of sha1> ("<title line>")' style or embedding URLs,
+> loosen the limit by 20 chars.
 
-You can use movable_node for that. IIRC this would only all hotplugable
-memory as movable.
+My inclination ks to say thanks, but no thanks.
 
-> Also, under QEMU, just do a reboot with hotplugged memory and you're in
-> the very same situation.
+My standard terminal window is a different width than
+my standard editing window.
 
-OK, I didn't know that. I thought the memory would be presented as a
-normal memory after reboot. Thanks for the clarification.
 
--- 
-Michal Hocko
-SUSE Labs
+
