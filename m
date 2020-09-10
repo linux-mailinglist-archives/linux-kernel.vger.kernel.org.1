@@ -2,103 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB11264FFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E82264FD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgIJT6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S1727119AbgIJTxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730261AbgIJPDb (ORCPT
+        with ESMTP id S1731228AbgIJPEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:03:31 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79974C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:03:27 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id q13so9185448ejo.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:03:27 -0700 (PDT)
+        Thu, 10 Sep 2020 11:04:02 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576DBC061798
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:03:41 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z22so9198364ejl.7
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:03:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=64bErnrxP6141PPO+iBi7bI0Jax7pIFKoQlwFvD435o=;
-        b=hXR1vMBGzCG2exEz0wPgoYVdXGmLobgTooWR5FS7eYdzhraeNtWSn0jqofTs/GBh8K
-         cskQNKv3eN2KKv4zn7hsWelW7cWkQg8hLNnQXAHi5wIt+DZiPEjJE7Y6vCcNNdYPFL6x
-         ANUlLQYRpAEFpIz4V76FU/ecov7vR6UvXHpfE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=HqUXASV8/J3adrJxXgdebB7pk8ZpozkrNnLZPnpPNz4=;
+        b=Pkj3AoKbeUgiieMQGOBBSCv4hAIabp6HD4z7SwRKSQXzeQVnvUY9NclvHaMBB3AukI
+         OeZ16zao3mj/tA5K/qnV/UXvBhDqtj9kXfih1Z/95CYitvGGUuH12OSbVwqGiBEPKc2X
+         mPunU57VHbofMqqE2WILflqHCZ5aniN756WNwZQ8IntDcxuEK8fxG9FRXcvYoCG0ZIzH
+         SXQNBBfPhHgLeP4gKejeaq1080pHRA8dYpoqkpV7HEaO3VMM8ukwpTCCFJG3cx0ML2Av
+         U3XgwHp2t4S5mkZYftyAGZJ8yHB3QqZal3VKugtR4Oyci0plvPjq24R4rdVh7+H9ojXl
+         JFLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=64bErnrxP6141PPO+iBi7bI0Jax7pIFKoQlwFvD435o=;
-        b=MSFawRwf2lsfOrzPByicEtSd6AIKfcV31/YB5Sx6n/NQEH94iY5XtrwqB7VJar4+dq
-         /iGbNWTBwXBaNpv8yRLuwMGdtAEl07BupDxrVCds86qBYhN9zwL6GkRAoYlqgg7ACFkO
-         sDnZlBRyzA/2CfkBtxsQHUkoM/QgtPRl7UJYnXVNiYohPy543Y/3O/cnL610QAEQEqA+
-         BLbAocxr3/d4xds8zILCocmmV1w/2yaBk3HsOhUDUe/eHRzORK1CGUfyYO679jmtoof4
-         N7G9QTNnny1eLEwOhNnirA61+eXgTnZWln3uiF/qdbpqLEomV/yPT0xW3puImDEjaHXt
-         y9wg==
-X-Gm-Message-State: AOAM533AoyKd4j1vAqi8OUN+/WU/ci4aa/S+FNkGcG7pF1j2uqLstayl
-        YZ2Lwqsc4QI4l0P3Jq3QO3tiVF9Ghk/+3dU+sYMtug==
-X-Google-Smtp-Source: ABdhPJyEEwhVKJjxjsFjKDv+BExQkzADJBSk0rheBv1Vwh51yrN2C934wVW5yl/yhDjnhsVQV3FdbpwKyKk3eqBoYDY=
-X-Received: by 2002:a17:906:46d5:: with SMTP id k21mr8986027ejs.247.1599750206137;
- Thu, 10 Sep 2020 08:03:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200731160324.142097-1-jagan@amarulasolutions.com>
-In-Reply-To: <20200731160324.142097-1-jagan@amarulasolutions.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Thu, 10 Sep 2020 20:33:14 +0530
-Message-ID: <CAMty3ZCO5iY6g4uRp7xuCquQNEMiwbeiy=sN9y0dR1TX+0AGzw@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: defconfig: Enable REGULATOR_MP8859
-To:     Heiko Stuebner <heiko@sntech.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Markus Reichl <m.reichl@fivetechno.de>,
-        Suniel Mahesh <sunil@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=HqUXASV8/J3adrJxXgdebB7pk8ZpozkrNnLZPnpPNz4=;
+        b=rNikSS03uwe/qPWJAibweUmFdnWZEVZ8RBz7lmItl1kPAOLc+wNPohDZW9s+j+0E5/
+         0JArIAyh+ShNAY/CMIMXEmNjc70cEv/2WHpuERCYdGbaxpTXpKYY7HVKe0E997vLCgfJ
+         3q6gfpJWspLSxzTNWsiLGfKcR47AnTBqmtf4aatAR1RN/HAZzTHKbyWb/XT8F5tBemHX
+         hvXq0bHZH4TcPiC1CyGVwvoc5TjrqMuTgZmRnsPPA6DEx3Epwb0jcUkCpH/NJpscjV3w
+         YCpW8Aw/aWB7TkRvfyjATzr1LIgwPOmLCXAVt77uKepcJtnEwFmp6/n7R4G3pIMsyGz4
+         ujFg==
+X-Gm-Message-State: AOAM530DYm6e8E4R2wxP5Q39x0hsBtLQojUBg4lwvNRDZ3ooxXvK4Jrx
+        XNUOwE3sOcvxDiZ0S/5raCfrqEaORFg=
+X-Google-Smtp-Source: ABdhPJyy8pgpuxkqHnwZgy5ljQ60MBDVDbkq2sTdP45lagzvQroYJGthXP4LKBlNHEuyDs4OX9jrYA==
+X-Received: by 2002:a17:907:2055:: with SMTP id pg21mr9619393ejb.501.1599750219086;
+        Thu, 10 Sep 2020 08:03:39 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id o3sm7443925edt.79.2020.09.10.08.03.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 08:03:38 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Cc:     gregkh@linuxfoundation.org, Omer Shpigelman <oshpigelman@habana.ai>
+Subject: [PATCH 02/15] habanalabs/gaudi: add NIC firmware-related definitions
+Date:   Thu, 10 Sep 2020 18:03:15 +0300
+Message-Id: <20200910150328.20545-3-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200910150328.20545-1-oded.gabbay@gmail.com>
+References: <20200910150328.20545-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+From: Omer Shpigelman <oshpigelman@habana.ai>
 
-On Fri, Jul 31, 2020 at 9:33 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
->
-> RK3399 boards like ROC-RK3399-PC is using MP8859 DC/DC converter
-> for 12V supply.
->
-> roc-rk3399-pc initially used 12V fixed regulator for this supply,
-> but the below commit has switched to use MP8859.
->
-> commit <1fc61ed04d309b0b8b3562acf701ab988eee12de> "arm64: dts: rockchip:
-> Enable mp8859 regulator on rk3399-roc-pc"
->
-> So, enable bydefault on the defconfig.
->
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> Tested-by: Suniel Mahesh <sunil@amarulasolutions.com>
-> ---
-> Changes for v2:
-> - none
->
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 883e8bace3ed..62bcbf987a70 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -556,6 +556,7 @@ CONFIG_REGULATOR_HI6421V530=y
->  CONFIG_REGULATOR_HI655X=y
->  CONFIG_REGULATOR_MAX77620=y
->  CONFIG_REGULATOR_MAX8973=y
-> +CONFIG_REGULATOR_MP8859=y
->  CONFIG_REGULATOR_PFUZE100=y
->  CONFIG_REGULATOR_PWM=y
->  CONFIG_REGULATOR_QCOM_RPMH=y
+Add new structures and messages that the driver use to interact with the
+firmware to receive information and events (errors) about GAUDI's NIC.
 
-Can you apply this patch? w/o this regulator the default defconfig is
-unable to boot the Linux.
+Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ .../misc/habanalabs/include/common/cpucp_if.h | 34 ++++++++++++++++---
+ .../habanalabs/include/gaudi/gaudi_fw_if.h    | 24 +++++++++++++
+ 2 files changed, 54 insertions(+), 4 deletions(-)
 
-Jagan.
+diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
+index dcde440427b4..ace746bb206e 100644
+--- a/drivers/misc/habanalabs/include/common/cpucp_if.h
++++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
+@@ -9,6 +9,7 @@
+ #define CPUCP_IF_H
+ 
+ #include <linux/types.h>
++#include <linux/if_ether.h>
+ 
+ /*
+  * EVENT QUEUE
+@@ -199,6 +200,11 @@ enum pq_init_status {
+  *       CpuCP to write to the structure, to prevent data corruption in case of
+  *       mismatched driver/FW versions.
+  *
++ * CPUCP_PACKET_NIC_INFO_GET -
++ *       Fetch information from the device regarding the NIC. the host's driver
++ *       passes the max size it allows the CpuCP to write to the structure, to
++ *       prevent data corruption in case of mismatched driver/FW versions.
++ *
+  * CPUCP_PACKET_TEMPERATURE_SET -
+  *       Set the value of the offset property of a specified thermal sensor.
+  *       The packet's arguments specify the desired sensor and the field to
+@@ -238,12 +244,12 @@ enum cpucp_packet_id {
+ 	CPUCP_PACKET_MAX_POWER_GET,		/* sysfs */
+ 	CPUCP_PACKET_MAX_POWER_SET,		/* sysfs */
+ 	CPUCP_PACKET_EEPROM_DATA_GET,		/* sysfs */
+-	CPUCP_RESERVED,
++	CPUCP_PACKET_NIC_INFO_GET,		/* internal */
+ 	CPUCP_PACKET_TEMPERATURE_SET,		/* sysfs */
+ 	CPUCP_PACKET_VOLTAGE_SET,		/* sysfs */
+ 	CPUCP_PACKET_CURRENT_SET,		/* sysfs */
+-	CPUCP_PACKET_PCIE_THROUGHPUT_GET,		/* internal */
+-	CPUCP_PACKET_PCIE_REPLAY_CNT_GET,		/* internal */
++	CPUCP_PACKET_PCIE_THROUGHPUT_GET,	/* internal */
++	CPUCP_PACKET_PCIE_REPLAY_CNT_GET,	/* internal */
+ 	CPUCP_PACKET_TOTAL_ENERGY_GET,		/* internal */
+ };
+ 
+@@ -288,7 +294,7 @@ struct cpucp_packet {
+ 		/* For led set */
+ 		__le32 led_index;
+ 
+-		/* For get CpuCP info/EEPROM data */
++		/* For get CpuCP info/EEPROM data/NIC info */
+ 		__le32 data_max_size;
+ 	};
+ 
+@@ -367,6 +373,12 @@ struct eq_generic_event {
+ #define CARD_NAME_MAX_LEN		16
+ #define VERSION_MAX_LEN			128
+ #define CPUCP_MAX_SENSORS		128
++#define CPUCP_MAX_NICS			128
++#define CPUCP_LANES_PER_NIC		4
++#define CPUCP_NIC_QSFP_EEPROM_MAX_LEN	1024
++#define CPUCP_MAX_NIC_LANES		(CPUCP_MAX_NICS * CPUCP_LANES_PER_NIC)
++#define CPUCP_NIC_MASK_ARR_LEN		((CPUCP_MAX_NICS + 63) / 64)
++#define CPUCP_NIC_POLARITY_ARR_LEN	((CPUCP_MAX_NIC_LANES + 63) / 64)
+ 
+ struct cpucp_sensor {
+ 	__le32 type;
+@@ -415,4 +427,18 @@ struct cpucp_info {
+ 	char card_name[CARD_NAME_MAX_LEN];
+ };
+ 
++struct cpucp_mac_addr {
++	__u8 mac_addr[ETH_ALEN];
++};
++
++struct cpucp_nic_info {
++	struct cpucp_mac_addr mac_addrs[CPUCP_MAX_NICS];
++	__le64 link_mask[CPUCP_NIC_MASK_ARR_LEN];
++	__le64 pol_tx_mask[CPUCP_NIC_POLARITY_ARR_LEN];
++	__le64 pol_rx_mask[CPUCP_NIC_POLARITY_ARR_LEN];
++	__le64 link_ext_mask[CPUCP_NIC_MASK_ARR_LEN];
++	__u8 qsfp_eeprom[CPUCP_NIC_QSFP_EEPROM_MAX_LEN];
++	__le64 auto_neg_mask[CPUCP_NIC_MASK_ARR_LEN];
++};
++
+ #endif /* CPUCP_IF_H */
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+index 8aadc6357da1..d61a4c87b765 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+@@ -8,6 +8,8 @@
+ #ifndef GAUDI_FW_IF_H
+ #define GAUDI_FW_IF_H
+ 
++#include <linux/types.h>
++
+ #define GAUDI_EVENT_QUEUE_MSI_IDX	8
+ #define GAUDI_NIC_PORT1_MSI_IDX		10
+ #define GAUDI_NIC_PORT3_MSI_IDX		12
+@@ -31,6 +33,28 @@ enum gaudi_pll_index {
+ 	IF_PLL
+ };
+ 
++enum gaudi_nic_axi_error {
++	RXB,
++	RXE,
++	TXS,
++	TXE,
++	QPC_RESP,
++	NON_AXI_ERR,
++};
++
++/*
++ * struct eq_nic_sei_event - describes an AXI error cause.
++ * @axi_error_cause: one of the events defined in enum gaudi_nic_axi_error.
++ * @id: can be either 0 or 1, to further describe unit with interrupt cause
++ *      (i.e. TXE0 or TXE1).
++ * @pad[6]: padding structure to 64bit.
++ */
++struct eq_nic_sei_event {
++	__u8 axi_error_cause;
++	__u8 id;
++	__u8 pad[6];
++};
++
+ #define GAUDI_PLL_FREQ_LOW		200000000 /* 200 MHz */
+ 
+ #endif /* GAUDI_FW_IF_H */
+-- 
+2.17.1
+
