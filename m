@@ -2,124 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F4F263EA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2860E263E51
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbgIJHX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:23:27 -0400
-Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:56820
-        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729993AbgIJHWs (ORCPT
+        id S1729942AbgIJHQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730172AbgIJHPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:22:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599722567;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=FbfkJJzgGeSFmEA1EYRQ444NqK/AGNGzOuF92HpnCDo=;
-        b=hwTf+FG96AslNxIvJh/+GN8kQcSvUSqgY1PflN9+EfTonVdl9G76hFVlhFGBgvXj
-        JkVMXyAJKAyMbBNFIbm6F3ifVSvG+Druc3q6L/syekGg6PdvDu+gz5N8vn8t18DIJcQ
-        rJwIE6uDIn2RcmCkBMjED7SFlGjtQr6gpyQDqVRA=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599722567;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=FbfkJJzgGeSFmEA1EYRQ444NqK/AGNGzOuF92HpnCDo=;
-        b=PS0LDCRA1i4lIBm0WJJdB2rjR5af8p8zeRky6ZcuwPdnEYwUTQtHBROrUFWE5FLb
-        UePqevIgBRReqw84dTjs5b5hODST/8acMq2wf5zrkbNjbhK7OoZR5mKtLjy2I6wA2Qc
-        j7ZmsI2jRnORgHgcukWFMpfykIJsZ0tdUsP4JFpo=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
+        Thu, 10 Sep 2020 03:15:37 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4B7C061756;
+        Thu, 10 Sep 2020 00:15:30 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id a12so5179552eds.13;
+        Thu, 10 Sep 2020 00:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PYvTFQ+A4YAM71gMLAYrqttsL6XopiHaMQSLIkfSeg4=;
+        b=DnyeY9UGXLvPTKeSDifoA6oF4MNddPwFaNFMl0e2Ho/3E4mF4P0PqXha3/a9y9Pk72
+         0kDqwVGY/CDlIiX9UNGldYk7910AlO6hO+/cdqc/W8RXpNbKLYFE5HKz5Ymb3ITUE1Ri
+         p3Ai5slTSnrHin5AcVLAh/0DOus3oFfeDyJ8TJhLGHDfi0DuOkd5Xk32oHZwCXHPeYS/
+         PTS/DoYjFfBzXuJ+fl8/LFgBl5Tq/aAsZdpIRjUWWrCBB2foObtGFC1Av2FViywtPenn
+         sMYekFGtMuUwNIKVDRM52g/4lhxuLAv+qVLbZnkTw829F+FaIXawvkPYV1IHpMICnyN0
+         d+Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PYvTFQ+A4YAM71gMLAYrqttsL6XopiHaMQSLIkfSeg4=;
+        b=hfg9kDjKJHozJjEokwsxja91bDj1AeqmncII/2TYhKmMnH0/iVefNWEPQsnhWR6ghB
+         lvK8C6IIekXNPkVOhTpLzwi4DKAHtXtNOHAiIA4SYFzby7dQhLu0UVZMYIiM/L76flXD
+         3Ug4mfkm2GJ3CHXWsZgzKcx02TRNtaxPAAqcGSRuX8vYWSLXSw4obrD1nyPo6pByLV+y
+         lSC2Cs6VlbHEGM1CrIpUSy91z3dNZx+vuVhIcGKONxEaEVvh6IHreEEFRlQQEmQXkq/s
+         VEX1KbJieZ3wmMAzsldJ9GvE4nbGStL8lIXvQO4oiDcgwi8IqKLNmtyP8p7NGi/ifRda
+         yxBA==
+X-Gm-Message-State: AOAM531YjpZ6hhlIDGxu8naeDV5X8dOR+7FmxdzF+aoayQwbAY/NHWRN
+        QUpfpx6lSR6C35JsxC8EcSs=
+X-Google-Smtp-Source: ABdhPJwbvDZtK8W1otGDzENhdSL1h60FEZD2dOhpsPJUh1cDSFU2HIklW10wnGEZT9gHtEHoBXI1oQ==
+X-Received: by 2002:a50:f28b:: with SMTP id f11mr7718109edm.44.1599722129674;
+        Thu, 10 Sep 2020 00:15:29 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id q27sm5507955ejd.74.2020.09.10.00.15.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Sep 2020 00:15:28 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 65CF727C0054;
+        Thu, 10 Sep 2020 03:15:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 10 Sep 2020 03:15:26 -0400
+X-ME-Sender: <xms:jdJZX989laUuIhoIK8JFdPxLc4Pt4b-MGHDcqK02BU9qoI4Wn4W-dQ>
+    <xme:jdJZXxvOq0mAhVVZAnqiZ7yJpP6hvKJtGxRdZvkrm3sYxJXwRsYZqHC1elO7MZ1Jo
+    Knf7ICx5GqzkLwuXA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehiedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecuogfuuhhsphgvtghtffhomhgrihhnucdlgeelmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeegueetveeigefhgedvleeutdejjeefhfelfeeuteeigefhgeegteeuieev
+    gfeuffenucffohhmrghinheprghpphhsphhothdrtghomhdpghhoohdrghhlnecukfhppe
+    ehvddrudehhedrudduuddrjedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlih
+    hthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhm
+    rghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:jdJZX7BblxuUq5gBnJWjAoPc1tjJ3UZkRyXzjURwHuRZf1bSdom1lQ>
+    <xmx:jdJZXxeW9SZXFh35If40IHA_yX-P4zAP9rjNEGNdyKmFRl5WoBtpQA>
+    <xmx:jdJZXyNW4cYOm9aPugjoYjLz7dUmy-hFwonK2RALde0M7M3lWAMYpw>
+    <xmx:jtJZXziQlPPHsb_CB6xlbDtjuKsZWmaC1DFzSnH5SklBdCr5kON650mDiZE>
+Received: from localhost (unknown [52.155.111.71])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 520973064683;
+        Thu, 10 Sep 2020 03:15:25 -0400 (EDT)
+Date:   Thu, 10 Sep 2020 15:15:23 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     syzbot <syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com>
+Cc:     bfields@fieldses.org, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        will@kernel.org
+Subject: Re: WARNING: HARDIRQ-safe -> HARDIRQ-unsafe lock order detected (2)
+Message-ID: <20200910071523.GF7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <0000000000002cdf7305aedd838d@google.com>
+ <000000000000d7136005aee14bf9@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 10 Sep 2020 07:10:47 +0000
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     khilman@kernel.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        gregkh@linuxfoundation.org, pavel@ucw.cz, len.brown@intel.com,
-        rnayak@codeaurora.org, dianders@chromium.org, mka@chromium.org,
-        linux-kernel-owner@vger.kernel.org, clew@codeaurora.org
-Subject: Re: [PATCH v2 1/2] PM / Domains: Add GENPD_FLAG_NO_SUSPEND/RESUME
- flags
-In-Reply-To: <20200825175345.GC3715@yoga>
-References: <20200821204921.32536-1-sibis@codeaurora.org>
- <159804608868.334488.2486130699850456264@swboyd.mtv.corp.google.com>
- <20200824164212.GA3715@yoga>
- <159834001729.334488.11862381163144726708@swboyd.mtv.corp.google.com>
- <20200825175345.GC3715@yoga>
-Message-ID: <0101017476da3906-412a2e35-dc56-43ee-8644-83a998279c2d-000000@us-west-2.amazonses.com>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.10-54.240.27.11
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000d7136005aee14bf9@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-25 23:23, Bjorn Andersson wrote:
-> On Tue 25 Aug 02:20 CDT 2020, Stephen Boyd wrote:
->> Quoting Bjorn Andersson (2020-08-24 09:42:12)
->> > On Fri 21 Aug 14:41 PDT 2020, Stephen Boyd wrote:
-> [..]
->> > > I find it odd that this is modeled as a power domain instead of some
->> > > Qualcomm specific message that the remoteproc driver sends to AOSS. Is
->> > > there some sort of benefit the driver gets from using the power domain
->> > > APIs for this vs. using a custom API?
->> >
->> > We need to send "up" and "down" notifications and this needs to happen
->> > at the same time as other standard resources are enabled/disabled.
->> >
->> > Further more, at the time the all resources handled by the downstream
->> > driver was either power-domains (per above understanding) or clocks, so
->> > it made sense to me not to spin up a custom API.
->> >
->> 
->> So the benefit is not spinning up a custom API? I'm not Ulf, but it
->> looks like this is hard to rationalize about as a power domain. It
->> doesn't have any benefit to model it this way besides to make it
->> possible to turn on with other power domains.
->> 
->> This modem remoteproc drivers isn't SoC agnostic anyway, it relies on
->> SMEM APIs, so standing up another small qmp_remoteproc_booted() and
->> qmp_remoteproc_shutdown() API would avoid adding a genpd flag here 
->> that
->> probably will never be used outside of this corner-case. There is also
->> some get/put EPROBE_DEFER sort of logic to implement, but otherwise it
->> would be possible to do this outside of power domains, and that seems
->> better given that this isn't really a power domain to start with.
+Thanks!
+
+On Wed, Sep 09, 2020 at 06:19:06AM -0700, syzbot wrote:
+> syzbot has bisected this issue to:
 > 
-> In later platforms a few new users of the AOSS communication interface
-> is introduced that certainly doesn't fit any existing API/framework in
-> the kernel. So the plan was to pretty much expose qmp_send() to these
-> drivers.
+> commit f08e3888574d490b31481eef6d84c61bedba7a47
+> Author: Boqun Feng <boqun.feng@gmail.com>
+> Date:   Fri Aug 7 07:42:30 2020 +0000
 > 
-> My worry with using this interface is that we'll probably have to come
-> up with some DT binding pieces and probably we'll end up adding yet
-> another piece of hard coded information in the remoteproc drivers.
+>     lockdep: Fix recursive read lock related safe->unsafe detection
 > 
-> But I'm not against us doing this work in favor of not having to
-> introduce a one-off for this corner case.
-
-Bjorn/Stephen,
-
-So the consensus is to stop modelling
-aoss load_state as pds and expose qmp_send
-to drivers?
-
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13034be1900000
+> start commit:   dff9f829 Add linux-next specific files for 20200908
+> git tree:       linux-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10834be1900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17034be1900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=37b3426c77bda44c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=22e87cdf94021b984aa6
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108b740d900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12daa9ed900000
 > 
-> Regards,
-> Bjorn
+> Reported-by: syzbot+22e87cdf94021b984aa6@syzkaller.appspotmail.com
+> Fixes: f08e3888574d ("lockdep: Fix recursive read lock related safe->unsafe detection")
+> 
 
+This is another deadlock possibility detected by lockdep's new detection
+algorithm.
 
+The deadlock happens as follow:
 
+	CPU 0				CPU 1			CPU 2
+	read_lock(&fown->lock);
+					spin_lock_irqsave(&dev->event_lock, ...)
+								write_lock_irq(&filp->f_owner.lock); // wait for the lock
+					read_lock(&fown-lock); // have to wait until the writer release
+							       // due to the fairness
+	<interrupted>
+	spin_lock_irqsave(&dev->event_lock); // wait for the lock
 
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+The lock dependency on CPU 1 happens if there exists a call sequence:
+
+	input_inject_event():
+	  spin_lock_irqsave(&dev->event_lock,...);
+	  input_handle_event():
+	    input_pass_values():
+	      input_to_handler():
+	        handler->event(): // evdev_event()
+	          evdev_pass_values():
+	            spin_lock(&client->buffer_lock);
+	            __pass_event():
+	              kill_fasync():
+	                kill_fasync_rcu():
+	                  read_lock(&fa->fa_lock);
+	                  send_sigio():
+	                    read_lock(&fown->lock);
+
+A possible fix would be replacing the read_lock() with read_lock_irq()
+or read_lock_irqsave().
+
+Regards,
+Boqun
+
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
