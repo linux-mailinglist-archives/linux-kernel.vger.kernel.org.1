@@ -2,146 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1856E264F04
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E4B264F1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgIJTdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgIJTcb (ORCPT
+        id S1727989AbgIJTez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:34:55 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:40130 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727977AbgIJTds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:32:31 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6710BC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:32:24 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id k25so9731430ljk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nTbGWidANXm2pjjCI9iaMQBY/df45EdumvXop+9a4ao=;
-        b=gkhGKJWFcLTHyB5x5aFfN6rnXH8dCRqQWjJKd9NZmHZK/NC/oX0q6HVDmBmeekhRv6
-         GTPYMsgUuX5KTeHU91CyIJtiMizZNYrRnX9QG0ENhdKweAOaB0W4mGxVSrji+PC28UP6
-         VshPJp7YLq+DwXcjz/A/kXWDuc/ae+MhCxRmA=
+        Thu, 10 Sep 2020 15:33:48 -0400
+Received: by mail-pf1-f194.google.com with SMTP id x123so5272705pfc.7;
+        Thu, 10 Sep 2020 12:33:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nTbGWidANXm2pjjCI9iaMQBY/df45EdumvXop+9a4ao=;
-        b=c2ZH5sV/Mm0/NWAhnFLpVnUe2pD1GcaIgJcKi+ImIef/K1YmOiCCI31tCzecQTpcOH
-         hUgHjlttlQ+vkz2MuH68Dmt9ULdUcBSwUHHoZWW0FOhTb1oUT5PDSHJLoeBE7/0XRixZ
-         SDYILq8it4iaWA+sVo0soPQJfvH7m5xbp+X3m5Ig6dpATAYGiRDMhq95Nm0k55L9e6SF
-         X9Rusg9H27kRny5rgS8+meGmc+h6AV9m/vYxUeQweI1smyxJElFZ+vrj16aXcf9l+rE1
-         xSPoLBGXjYdSIsmKG0ykBbbljkoZ1CUKGfpSmUhjLV11BMSebKiAweSUfvZfn4y08NyU
-         pPqw==
-X-Gm-Message-State: AOAM530HmLBW4voBmTvorr9z/XEPlEAIZHLw/MEjSR6t9Fo2rs73316/
-        SbvdjBySIcTIAmUDzIHHEkTlqVOpK+svdA==
-X-Google-Smtp-Source: ABdhPJzmNePhsjN2hIWbsgPhIenG5kGXElwpO2C8PxKGUtODX8ehCZTBhoZFrNe31lwbPEFHcAf/6Q==
-X-Received: by 2002:a05:651c:107b:: with SMTP id y27mr4844962ljm.338.1599766342760;
-        Thu, 10 Sep 2020 12:32:22 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id v25sm1821740ljh.102.2020.09.10.12.32.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 12:32:22 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id y4so9669671ljk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:32:22 -0700 (PDT)
-X-Received: by 2002:a2e:7819:: with SMTP id t25mr5043564ljc.371.1599766341582;
- Thu, 10 Sep 2020 12:32:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E825qm/7EG/v1qMJRENDdr8UrJ7c6Yo1KshoI/I0ueg=;
+        b=RHO8ZaK3FlihxqjCxq6T3hxIjMvu1amZ9KskbVEwh84B8cbMQiqFOfHhA8pG/xlr0B
+         qOXi8rrDMayttEX070fhGlwp0c2G3fJnbTRMfPGa8D6NPCv5QmntaQH9ATY42kVk++cJ
+         l168ikQY/ShNuJfXdaLW6IC+3CK4Dvbq6DSDlImPCyI74LpatrUii+7+DyAx6gL8CWkf
+         Z78HkgBv8qRO0YgtQW7ViCKIC2hoMdqtClk65/vJZVnYWQA0MnotrjC1P4PtBh89+Mfy
+         5OlupzTh/1Qw/ImKMMcP5s3Nqv10h4CBscfLJZo9qUMYhKMklzbajpMIkmv55YW98grm
+         TpwA==
+X-Gm-Message-State: AOAM531PJApI1N+OPJcp82IH4SSkWyNyHB7eE0WSQEkgg7DKzMWRnqMt
+        TJK78DIi/ayVjxLqAAyHLx4=
+X-Google-Smtp-Source: ABdhPJwkAXtdVJDC5/PQROYD2FplK9h+zyPV3N2nLTb28vrgLb0yHjLqShdxF8N1anfjedmdVafZXQ==
+X-Received: by 2002:a17:902:ee15:: with SMTP id z21mr4329526plb.103.1599766427635;
+        Thu, 10 Sep 2020 12:33:47 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id y7sm5525188pgk.73.2020.09.10.12.33.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 12:33:47 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 12:33:45 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Lucy Yan <lucyyan@google.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Moritz Fischer <mdf@kernel.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dec: de2104x: Increase receive ring size for
+ Tulip
+Message-ID: <20200910193345.GA28525@archbook>
+References: <20200910190509.81755-1-lucyyan@google.com>
 MIME-Version: 1.0
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-2-gerald.schaefer@linux.ibm.com> <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad> <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad> <20200909180324.GI87483@ziepe.ca>
- <20200910093925.GB29166@oc3871087118.ibm.com> <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
- <20200910181319.GO87483@ziepe.ca> <CAHk-=wh3SjOE2r4WCfagL5Zq4Oj4Jsu1=1jTTi2GxGDTxP-J0Q@mail.gmail.com>
- <20200910211010.46d064a7@thinkpad>
-In-Reply-To: <20200910211010.46d064a7@thinkpad>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 10 Sep 2020 12:32:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg3ggXU98Mnv-ss-hEcvUNc9vCtgSRc7GpcGfvyOw_h3g@mail.gmail.com>
-Message-ID: <CAHk-=wg3ggXU98Mnv-ss-hEcvUNc9vCtgSRc7GpcGfvyOw_h3g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table folding
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910190509.81755-1-lucyyan@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:11 PM Gerald Schaefer
-<gerald.schaefer@linux.ibm.com> wrote:
->
-> That sounds a lot like the pXd_offset_orig() from Martins first approach
-> in this thread:
-> https://lore.kernel.org/linuxppc-dev/20190418100218.0a4afd51@mschwideX1/
+On Thu, Sep 10, 2020 at 12:05:09PM -0700, Lucy Yan wrote:
+> Increase Rx ring size to address issue where hardware is reaching
+> the receive work limit.
+> 
+> Before:
+> 
+> [  102.223342] de2104x 0000:17:00.0 eth0: rx work limit reached
+> [  102.245695] de2104x 0000:17:00.0 eth0: rx work limit reached
+> [  102.251387] de2104x 0000:17:00.0 eth0: rx work limit reached
+> [  102.267444] de2104x 0000:17:00.0 eth0: rx work limit reached
+> 
+> Signed-off-by: Lucy Yan <lucyyan@google.com>
+Reviewed-by: Moritz Fischer <mdf@kernel.org>
+> ---
+>  drivers/net/ethernet/dec/tulip/de2104x.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
+> index cb116b530f5e..2610efe4f873 100644
+> --- a/drivers/net/ethernet/dec/tulip/de2104x.c
+> +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
+> @@ -85,7 +85,7 @@ MODULE_PARM_DESC (rx_copybreak, "de2104x Breakpoint at which Rx packets are copi
+>  #define DSL			CONFIG_DE2104X_DSL
+>  #endif
+>  
+> -#define DE_RX_RING_SIZE		64
+> +#define DE_RX_RING_SIZE		128
+>  #define DE_TX_RING_SIZE		64
+>  #define DE_RING_BYTES		\
+>  		((sizeof(struct de_desc) * DE_RX_RING_SIZE) +	\
+> -- 
+> 2.28.0.526.ge36021eeef-goog
+> 
 
-I have to admit to finding that name horrible, but aside from that, yes.
-
-I don't think "pXd_offset_orig()" makes any sense as a name. Yes,
-"orig" may make sense as the variable name (as in "this was the
-original value we read"), but a function name should describe what it
-*does*, not what the arguments are.
-
-Plus "original" doesn't make sense to me anyway, since we're not
-modifying it. To me, "original" means that there's a final version
-too, which this interface in no way implies. It's just "this is the
-value we already read".
-
-("orig" does make some sense in that fault path - because by
-definition we *are* going to modify the page table entry, that's the
-whole point of the fault - we need to do something to not keep
-faulting. But here, we're not at all necessarily modifying the page
-table contents, we're just following them and readign the values once)
-
-Of course, I don't know what a better name would be to describe what
-is actually going on, I'm just explaining why I hate that naming.
-
-*Maybe* something like just "pXd_offset_value()" together with a
-comment explaining that it's given the upper pXd pointer _and_ the
-value behind it, and it needs to return the next level offset? I
-dunno. "value" doesn't really seem horribly descriptive either, but at
-least it doesn't feel actively misleading to me.
-
-Yeah, I get hung up on naming sometimes. I don't tend to care much
-about private local variables ("i" is a perfectly fine variable name),
-but these kinds of somewhat subtle cross-architecture definitions I
-feel matter.
-
-               Linus
+Thanks,
+Moritz
