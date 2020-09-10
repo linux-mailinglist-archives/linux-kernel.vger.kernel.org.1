@@ -2,70 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3147A263B72
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FA3263B71
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730257AbgIJD1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730270AbgIJD1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 9 Sep 2020 23:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37336 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgIJD0T (ORCPT
+        with ESMTP id S1729993AbgIJD0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:26:19 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F87C0613ED;
-        Wed,  9 Sep 2020 20:26:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=PO7aEW0T3IkS0F8WxlPuWO3uzY5WLy4/PEV7R6Fm92Y=; b=YBzOWM+473iDNGf0tqrCsfnVVg
-        6EICnUdAiPaGy31jDdtvyC+TL3FbzGxCBWZk0qWQYWqJZsopT//UK/PVydlfeUaJX0cxTtPcEeJTV
-        /Gbzk1GaavQ9NcH6lu3C3cHNnFa3fAlbv2yGZiRtYKV9jdCoTV6yBXh/kxbLoU4HPqmwGHMC5d4kv
-        1VgVfS4150lf5cF93/cCK9/CwUa/ptPhvQ/RQbNttsRR4amBp50VBMBxGTH8tKfYbG97USo4lR1gq
-        xV9H7XbW+bN5JUw1w07BDl5vlqYRP+pp3PosEmMKb3Zv1GR8PP84aLhU12bo8yp4jPVgCydED9bHo
-        Zazn+ZNA==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGDE0-000659-TW; Thu, 10 Sep 2020 03:26:17 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH 3/3] Documentation/admin-guide: kernel-parameters: add early_param() to list of types of boot parameters
-Date:   Wed,  9 Sep 2020 20:26:06 -0700
-Message-Id: <20200910032606.7355-4-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200910032606.7355-1-rdunlap@infradead.org>
-References: <20200910032606.7355-1-rdunlap@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 9 Sep 2020 23:26:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F7EC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:26:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id t127so4121141ybf.16
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:26:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=W0rChnPqNSNQDFGEVqMxvWAcydmR3hcrHf+MA3EENZo=;
+        b=NDCrCoAOOFRQd9QMP6oeo5D/YSJmGJ9qZRBlmP/ovRtzqr+VCBrGuN0Hk6EKwHssSe
+         EvH+GErYfxq/WfqA8sLdzI5NCoOBOPM45+IIb+mLhlB4k1tcs9ZBZ5EVgqOScTBDokcB
+         /ZwUVQM6ynrIj8OUF2iysx/SZyCiC6t2rflon6uPChntCiPXHGzVvtdCveHUx9fYBzHt
+         VrKXbfctPCM0Emmmh6kAYugjFDU2uzP/Ax1AtsCB7mRUItw6aD+2Ntzk6hkO7izvq81I
+         zpdW1e4KJr1/hfevujiDxTsIkeT5sZ8B043/pE8K+m7mzmGwrCJOJuUSW1dvQHXBzM4J
+         x0hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=W0rChnPqNSNQDFGEVqMxvWAcydmR3hcrHf+MA3EENZo=;
+        b=aHV0GWYhN2jWu+bLa12lpRYUu0ZMRUUqdTL3KAjTR5vN8qX1lyLYYE/gqf6F9AyDzn
+         KOoXVB+TUzrBJ83bAxrnjP43RZIbPQTgwSGDBRtFyNlMhsteQH5Oje1KDgGIceLAwALl
+         hBLmdDDJFiIqC6qalc4yZd4ljp6oui5oN2NqelKvo7RulBl9vGrVrldyLHwixfrKkVlE
+         R+nIFpQvCZcPNpYFwFLB4je7mQIeQG+gOmCyH12VInyDsJOsHNshGmJhl251ZbWUvVuM
+         JrRoprNXKgKroy6RLSklfpdwH3yhOqUh/vsFHjzxq7Nz2ryDc6NbJdLhtTUY+NrN6SsN
+         6r2A==
+X-Gm-Message-State: AOAM5305+QDPxF8y9XJdnywfFAtmTm5CNddMoGnb8ITYaNkhtdvTXTWm
+        pxrVqIxieltmxXWz3izWV8CZ2OKvvs2A
+X-Google-Smtp-Source: ABdhPJxxSO48kT0YRv9fnwNdNWKA1Z9ftioz9tYsiuZ2ElBZPH7BTX3LV8OENek4PCyZKr4VWt9kLySJh9Jk
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a25:c50b:: with SMTP id
+ v11mr9880975ybe.426.1599708396451; Wed, 09 Sep 2020 20:26:36 -0700 (PDT)
+Date:   Wed,  9 Sep 2020 20:26:30 -0700
+Message-Id: <20200910032632.511566-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v2 1/3] perf stat: Remove dead code
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-early_param() is missing from the list of types of kernel command line
-parameters that are listed in kernel-parameters.txt, so add it
-(so that I can find parameters more easily).
+No need to set os.evsel twice.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- Documentation/admin-guide/kernel-parameters.rst |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/util/stat-display.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- linux-next-20200909.orig/Documentation/admin-guide/kernel-parameters.rst
-+++ linux-next-20200909/Documentation/admin-guide/kernel-parameters.rst
-@@ -3,8 +3,8 @@
- The kernel's command-line parameters
- ====================================
- 
--The following is a consolidated list of the kernel parameters as
--implemented by the __setup(), core_param() and module_param() macros
-+The following is a consolidated list of the kernel parameters as implemented
-+by the __setup(), early_param(), core_param() and module_param() macros
- and sorted into English Dictionary order (defined as ignoring all
- punctuation and sorting digits before letters in a case insensitive
- manner), and with descriptions where known.
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index 493ec372fdec..4b57c0c07632 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -946,7 +946,6 @@ static void print_metric_headers(struct perf_stat_config *config,
+ 		out.print_metric = print_metric_header;
+ 		out.new_line = new_line_metric;
+ 		out.force_header = true;
+-		os.evsel = counter;
+ 		perf_stat__print_shadow_stats(config, counter, 0,
+ 					      0,
+ 					      &out,
+-- 
+2.28.0.526.ge36021eeef-goog
+
