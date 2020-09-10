@@ -2,65 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533752650DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A54C2650FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgIJUdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56970 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgIJUbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 16:31:00 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF6EA206E9;
-        Thu, 10 Sep 2020 20:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599769860;
-        bh=7lYML09NJIhF4amEUFSTp7nrcxK75B3+CJqmxANN14U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LQI2toSw+bXD2I63/ENGJ4v+j2dIiqm1jYDEiZJZg5iyxNKI1JlPwA3k8yL7821NY
-         dnt3Ug+M8kKNN3m0LiaGUna3EM3SxH5A53R/ON189nmr+l4DWyhHFpCqSEefwwTbVK
-         lzmzHJFFdglaEXO0XBJhT6Z+kPPCtU6xmGaQgdBc=
-Date:   Thu, 10 Sep 2020 13:30:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Omer Shpigelman <oshpigelman@habana.ai>
-Subject: Re: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
-Message-ID: <20200910133058.0fe0f5e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAFCwf10XdCDhLeyiArc29PAJ_7=BGpdiUvFRotvFHieiaRn=aA@mail.gmail.com>
-References: <20200910161126.30948-1-oded.gabbay@gmail.com>
-        <20200910161126.30948-13-oded.gabbay@gmail.com>
-        <20200910130138.6d595527@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf113A_=da2fGxgMbq_V0OcHsxdp5MpfHiUfeew+gEdnjaQ@mail.gmail.com>
-        <20200910131629.65b3e02c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf10XdCDhLeyiArc29PAJ_7=BGpdiUvFRotvFHieiaRn=aA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727790AbgIJUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:37:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60128 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726781AbgIJUbU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 16:31:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599769875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oG4VtYBGXuzb613fx5hBBNMTZQ49H6hy0YeFdmvTD8g=;
+        b=N0o4Jr5PcYTMPx6n//feqv4Uglx21vVaPykquu5MNn4Dh+IzDcuxuQgiCVDjxkw2YAhZ6m
+        zgbDPdutXNRV1OAlMnbgXmD9M5bU4FdpghIfYMDnPHScdJ3hytILcB0/Zts5NZxI4EpDgR
+        0F1BFFCFhKxUiE2FvzJ51d0Y+wddX6o=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-hirjGdpVMoCeQMCuV-R7GQ-1; Thu, 10 Sep 2020 16:31:12 -0400
+X-MC-Unique: hirjGdpVMoCeQMCuV-R7GQ-1
+Received: by mail-ej1-f71.google.com with SMTP id e13so3387861ejk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 13:31:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=oG4VtYBGXuzb613fx5hBBNMTZQ49H6hy0YeFdmvTD8g=;
+        b=UbvsBQXVc9KxfjP/kXEY51rjTxuMn5ix5r+XzF9iCnJ0B8wr4+f/sKK9tZjV1YdI7F
+         GHGkbWeZwY3UarUCOVMoMCNDBo+vgNnXwiRgtX1xetVAOvv52OB3Su+a0kxyOza97gXW
+         wpZAAO5kxienDggm8q3NB3EpKtaboDeAAV9N1qz84HE5yLUZe0DH4TcHWzFUaVfOWd+p
+         yJGInEHyiKPVYTuvBnIvmgz1VJiLnJqny3EvzJWWZt1h6aaxgc9sONWi53wjaXcITdWw
+         DoNX60qBA0QrxjgjwVJcIs1OMUgCxGIMS7dopj6hi5PV3V4xjfG+rXg7/pLKGr0dUb0K
+         P2XA==
+X-Gm-Message-State: AOAM533ZRPkR+hyLaMOTNdP3KEXpZYDF3nr17GWu6yZjtMJUaazTYKMK
+        hMFkZ2iU3xMnd1D4dwsiLoKtpSFRkUZHVlsuuN+VYxe92BTzRlk6mmtX4UDyzmL9Xu/fZoySrgO
+        KG4d7a2FM3AAXmvCM0kE9OPlo
+X-Received: by 2002:a17:906:4d4d:: with SMTP id b13mr10371714ejv.221.1599769871000;
+        Thu, 10 Sep 2020 13:31:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwH4nFbqdIdClpGW3cyhzIHHW/NNlAPR9E4pCL3OlvSjq9ChPfVJPacAk9tIeJ6YFp4UpQGsg==
+X-Received: by 2002:a17:906:4d4d:: with SMTP id b13mr10371701ejv.221.1599769870830;
+        Thu, 10 Sep 2020 13:31:10 -0700 (PDT)
+Received: from [192.168.3.122] (p5b0c6042.dip0.t-ipconnect.de. [91.12.96.66])
+        by smtp.gmail.com with ESMTPSA id d6sm21881edm.31.2020.09.10.13.31.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Sep 2020 13:31:10 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device ?
+Date:   Thu, 10 Sep 2020 22:31:09 +0200
+Message-Id: <3E00A442-7107-48DA-8172-EED95F6E1663@redhat.com>
+References: <f14f7f00-0501-bb93-88cc-780ae4fbaad3@intel.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Jan_H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-api@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <f14f7f00-0501-bb93-88cc-780ae4fbaad3@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+X-Mailer: iPhone Mail (17G68)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 23:17:59 +0300 Oded Gabbay wrote:
-> > Doesn't seem like this one shows any more information than can be
-> > queried with ethtool, right?  
-> correct, it just displays it in a format that is much more readable
 
-You can cat /sys/class/net/$ifc/carrier if you want 0/1.
 
-> > > nic_mac_loopback
-> > > is to set a port to loopback mode and out of it. It's not really
-> > > configuration but rather a mode change.  
-> >
-> > What is this loopback for? Testing?  
-> 
-> Correct.
+> Am 10.09.2020 um 22:01 schrieb Dave Hansen <dave.hansen@intel.com>:
+>=20
+> =EF=BB=BFOn 9/10/20 3:20 AM, David Hildenbrand wrote:
+>> I was just exploring how /sys/devices/system/memory/memoryX/phys_device
+>> is/was used. It's one of these interfaces that most probably never
+>> should have been added but now we are stuck with it.
+>=20
+> While I'm all for cleanups, what specific problems is phys_device causing?=
 
-Loopback test is commonly implemented via ethtool -t
+>=20
+
+Mostly stumbling over it, understanding that it is basically unused with new=
+ userspace for good reason, questioning its existence.
+
+E.g., I am working on virtio-mem support for s390x. Displaying misleading/wr=
+ong phys_device indications isn=E2=80=98t particularly helpful - especially o=
+nce there are different ways to hotplug memory for an architecture.
+
+> Are you hoping that we can just remove users of memoryX/* until there
+> are no more left, and this is the easiest place to start?
+
+At least reducing it to a minimum with clear semantics. Even with automatic o=
+nlining there are still reasons why we need to keep the interface for now (e=
+.g., reloading kexec to update the kdump headers on memory hot(un)plug). But=
+ also standby memory handling on s399x requires it (->manual onlining).=
+
