@@ -2,90 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19144264378
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F7026437F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbgIJKO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        id S1730729AbgIJKPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730588AbgIJKOf (ORCPT
+        with ESMTP id S1730637AbgIJKOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:14:35 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2044C061756;
-        Thu, 10 Sep 2020 03:14:34 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id md22so1101399pjb.0;
-        Thu, 10 Sep 2020 03:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mlowAeJMKqkcl7Mu0ko5uXG5nR+oH8UXp7jLCOmoM+M=;
-        b=evFgao75kuYNkt4R4dISzYava/Hdxgc2lluO6j07su8K+myo53OpZtCtl37/d5cS92
-         iTYUyvuFwZguUgUCQ2Q4twgDdnkWDU1+3wqUmETya2d9shKYYHhVbJRJ29NohU3zjfbO
-         0hPe/FN/pykg2pFbX/9Bn4tXEhjHqg+QWc5DyPFqJ0zpcHM/nZIFXuuYDDrSkfP/oxOm
-         zQt+2mseYJF7JJSuCb8qZVdvvupT5bMsJLpPUha1ya3oe3CnDCzRG2+cfjdVkfTTMU2l
-         RAFklVbQz5EJhk10yu/kZWq60PprxrPUvu4Y5jYbDSOcErUlJSrXQI783WXagVbizV5q
-         RZRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mlowAeJMKqkcl7Mu0ko5uXG5nR+oH8UXp7jLCOmoM+M=;
-        b=BWtKavMvRfuGuVIEvNwguscdJYRlLJ98KNbLoY1iZLUQuWzdU1WyS9z/XQqLIDT+1c
-         lhOoOEjXM+sgzrrXlt07sq3vbne6uWU/NT8xZm6nXKAb9USdkGjZ580ANAN1hrwmg0Ae
-         GJT4N8ADMjnj/EzCfTakl+kDijLeGjAfnDnRI9NqmigGKBLM3BeQZ8QwsxX5vSfDz8kt
-         TuhvLFETUXO956MgDA+TVFTz0uGIx4N+OOIoprgOA0G/tGyvIDvEszeLq8zaM+ViRpKM
-         6CkH2jbKis1z0vz797CQMDTs6UPIIVQkYNiZvNwLFq9Qfa87c406pN1/AYcQr2VdFX3b
-         /wfQ==
-X-Gm-Message-State: AOAM533XYS0C4xLRK+nj6jPkXqbe6c4kauJIWkuunbdqwEaYJzOcfK1a
-        Sd3wMDT3ZRs7wHFSSJET9nQ=
-X-Google-Smtp-Source: ABdhPJwG0X9iBwFstxXRg+m9cgl4mftTgFYyg5wVNa4+LLL10Xlckr4+OdMweuV+oonbp2xPkWTYOg==
-X-Received: by 2002:a17:902:6ac1:: with SMTP id i1mr4961217plt.60.1599732874441;
-        Thu, 10 Sep 2020 03:14:34 -0700 (PDT)
-Received: from localhost ([2401:fa00:8f:203:a6ae:11ff:fe11:4b46])
-        by smtp.gmail.com with ESMTPSA id t24sm4723914pgo.51.2020.09.10.03.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 03:14:33 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 19:14:31 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-Message-ID: <20200910101431.GC97481@google.com>
-References: <20200820044347.GA4533@lst.de>
- <20200820052004.GA5305@lst.de>
- <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
- <20200820165407.GD12693@lst.de>
- <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
- <20200901110617.GA13232@lst.de>
- <CAAFQd5CmPVSxmZJVn7HnNUn8srZbAbnfzpNMYw3KcDzn7xD2cg@mail.gmail.com>
- <CAAFQd5BDh05DNPShr54opY2GyY-FcH7g8=V2t4xBwz0OwRu9xQ@mail.gmail.com>
- <20200910094921.GB97481@google.com>
- <f92991e1-e0d7-69ca-9541-1546bb139dd3@xs4all.nl>
+        Thu, 10 Sep 2020 06:14:53 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5675CC061573;
+        Thu, 10 Sep 2020 03:14:52 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f133200fd9e4f04ab274470.dip0.t-ipconnect.de [IPv6:2003:ec:2f13:3200:fd9e:4f04:ab27:4470])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 916231EC04C0;
+        Thu, 10 Sep 2020 12:14:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1599732889;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Nfhs/ikKxjcFj07w0NPIX+lSHCHW+iotJoF44hLqXtw=;
+        b=fMXOIPyyo3Zl9Mgw9810U7+J+m05FzCk+T+0bGVIb4xXLlFOcqwpKRGcqHO5lzpSPB3LqM
+        I4mjeZzIUrxVNJgIGC4bxDJt4h4Mpwyo/4TaudJz7lXhE/8PoNeCaYXoyDT6GGyTOuuQ6D
+        sY7sJkc0hDVu4VFpzJ+IP7muMPw1t+c=
+Date:   Thu, 10 Sep 2020 12:14:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 1/8] x86/CPU/AMD: Save NodeId on AMD-based systems
+Message-ID: <20200910101443.GC8357@zn.tnic>
+References: <20200903200144.310991-1-Yazen.Ghannam@amd.com>
+ <20200903200144.310991-2-Yazen.Ghannam@amd.com>
+ <20200909180647.GF12237@zn.tnic>
+ <20200909201755.GB3014671@yaz-nikka.amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f92991e1-e0d7-69ca-9541-1546bb139dd3@xs4all.nl>
+In-Reply-To: <20200909201755.GB3014671@yaz-nikka.amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/10 11:57), Hans Verkuil wrote:
+On Wed, Sep 09, 2020 at 03:17:55PM -0500, Yazen Ghannam wrote:
+> We need to access specific instances of hardware registers in the
+> Northbridge or Data Fabric. The code in arch/x86/kernel/amd_nb.c does
+> this.
+
+So you don't need the node_id - you need the northbridge/data fabric ID?
+I'm guessing NB == DF, i.e., it was NB before Zen and it is DF now.
+
+Yes?
+
+> Package = Socket, i.e. a field replaceable unit. Socket may not be
+> useful for software, but I think it helps users identify the hardware.
 > 
-> Perhaps, but this patch is meant to revert *all* changes relating to
-> V4L2_FLAG_MEMORY_NON_CONSISTENT. We don't want to have unused fields
-> in the public API.
+> I think the following could be changed in the documentation:
+> 
+> "In the past a socket always contained a single package (see below), but
+> with the advent of Multi Chip Modules (MCM) a socket can hold more than one
+> package."
+> 
+> Replace "package" with "die".
 
-OK, would you prefer a squashed patch for all the kernel rollbacks and
-cleanups or a patch series?
+So first of all, we have:
 
-	-ss
+"AMD nomenclature for package is 'Node'."
+
+so we either change that because as you explain, node != package on AMD.
+
+What you need is the ID of that northbridge or data fabric instance,
+AFAIU.
+
+> You take multiple dies from the foundry and you "package" them together
+> into a single unit.
+
+I think you're overloading the word "package" here and that leads to
+more confusion. Package in our definition - Linux' - is:
+
+"Packages contain a number of cores plus shared resources, e.g. DRAM
+controller, shared caches etc." If you glue several packages together,
+you get an MCM.
+
+> They could be equal depending on the system. The values are different on
+> MCM systems like Bulldozer and Naples though.
+> 
+> The functions and structures in amd_nb.c are indexed by the node_id.
+> This is done implicitly right now by using amd_get_nb_id()/cpu_llc_id.
+> But the LLC isn't always equal to the Node/Die like in Naples. So the
+> patches in this set save and explicitly use the node_id when needed.
+> 
+> What do you think?
+
+Sounds to me that you want to ID that data fabric instance which
+logically belongs to one or multiple packages. Or can a DF a single
+package?
+
+So let's start simple: how does a DF instance map to a logical NUMA
+node or package? Can a DF serve multiple packages?
+
+You could use the examples at the end of Documentation/x86/topology.rst
+to explain how those things play together. And remember to not think
+about the physical aspect of the hardware structure because it doesn't
+mean anything to software. All you wanna do is address the proper DF
+instance so this needs to be enumerable and properly represented by sw.
+
+Confused?
+
+I am.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
