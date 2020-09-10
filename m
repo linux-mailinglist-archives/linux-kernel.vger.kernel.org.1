@@ -2,161 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9141E26470D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355CB264723
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730165AbgIJNc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 09:32:57 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47814 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730889AbgIJN2u (ORCPT
+        id S1730909AbgIJNgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 09:36:47 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:49224 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727770AbgIJNdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:28:50 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AD94Eo037586;
-        Thu, 10 Sep 2020 09:28:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=QtnNxGocXqrzxtXmh+zLwW3RigR1FCEkXLBN5xsO/Y4=;
- b=AxLsjwHIqfhbwB3BlU3gQerUcgHBbiiujRjuEGnjixXIOpKn0sd0QNxwU/pdnG/FOmdm
- 8t+i8v20g0JTEsQ8HE/C9qq+EJpqIuMXS+uEKpHRi/b0/7pCht5fq1XCcXcHXW8BTK2s
- PQT2DcPYGyiyFV7kr62kvhUJPBAUBbf9gI4N3lJNwfILIVDVAvigsgF14nfZxu0uUyxt
- oVBvSmFHpcWk2pB8cgUr7J/n6gkgcF1KAI1tvrzXNCInY46LR+vMUfnPHIzLamCI8scl
- whX6wQsS7WfN6HaWVWfwRxe8yCOQFG1rloDtKfqoiAIKn4Hf7Zg0xN9kZC1PsB2JXiAJ Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33fms90naw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 09:28:12 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08ADA9wC048915;
-        Thu, 10 Sep 2020 09:28:11 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33fms90n9e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 09:28:11 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08ADS9ZL026002;
-        Thu, 10 Sep 2020 13:28:09 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 33e5gmsj7p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 13:28:09 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08ADS5Qk31260946
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 13:28:06 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDCEA11C04A;
-        Thu, 10 Sep 2020 13:28:05 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C79811C050;
-        Thu, 10 Sep 2020 13:28:04 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.93.242])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 10 Sep 2020 13:28:04 +0000 (GMT)
-Date:   Thu, 10 Sep 2020 15:28:03 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200910152803.1a930afc@thinkpad>
-In-Reply-To: <20200910130233.GK87483@ziepe.ca>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
-        <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
-        <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
-        <20200909142904.00b72921@thinkpad>
-        <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
-        <20200909192534.442f8984@thinkpad>
-        <20200909180324.GI87483@ziepe.ca>
-        <20200910093925.GB29166@oc3871087118.ibm.com>
-        <20200910130233.GK87483@ziepe.ca>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 10 Sep 2020 09:33:31 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kGMh2-0006FE-1B; Thu, 10 Sep 2020 09:32:52 -0400
+Message-ID: <b3dc8cca3689ea69491370449801ffe8d828c66c.camel@surriel.com>
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+From:   Rik van Riel <riel@surriel.com>
+To:     Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Roman Gushchin <guro@fb.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@suse.de>
+Date:   Thu, 10 Sep 2020 09:32:51 -0400
+In-Reply-To: <20200910073213.GC28354@dhcp22.suse.cz>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
+         <20200903142300.bjq2um5y5nwocvar@box>
+         <20200903163020.GG60440@carbon.dhcp.thefacebook.com>
+         <8e677ead-206d-08dd-d73e-569bd3803e3b@redhat.com>
+         <7E20392E-5ED7-4C22-9555-F3BAABF3CBE9@nvidia.com>
+         <20200908143503.GE26850@dhcp22.suse.cz>
+         <7ed82cb06074b30c2956638082c515fb179f69a3.camel@surriel.com>
+         <20200909070445.GA7348@dhcp22.suse.cz>
+         <054d02f3b34d9946905929ff268b685c91494b3e.camel@surriel.com>
+         <6135d2c5-2a74-6ca8-4b3b-8ceb25c0d4b1@redhat.com>
+         <20200910073213.GC28354@dhcp22.suse.cz>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-G7jPvQFniVHuvttGpe5D"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 clxscore=1015
- malwarescore=0 phishscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 10:02:33 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-> On Thu, Sep 10, 2020 at 11:39:25AM +0200, Alexander Gordeev wrote:
-> 
-> > As Gerald mentioned, it is very difficult to explain in a clear way.
-> > Hopefully, one could make sense ot of it.  
-> 
-> I would say the page table API requires this invariant:
-> 
->         pud = pud_offset(p4d, addr);
->         do {
-> 		WARN_ON(pud != pud_offset(p4d, addr);
->                 next = pud_addr_end(addr, end);
->         } while (pud++, addr = next, addr != end);
-> 
-> ie pud++ is supposed to be a shortcut for 
->   pud_offset(p4d, next)
-> 
-> While S390 does not follow this. Fixing addr_end brings it into
-> alignment by preventing pud++ from happening.
-> 
-> The only currently known side effect is that gup_fast crashes, but it
-> sure is an unexpected thing.
+--=-G7jPvQFniVHuvttGpe5D
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-It only is unexpected in a "top-level folding" world, see my other reply.
-Consider it an optimization, which was possible because of how our dynamic
-folding works, and e.g. because we can determine the correct pagetable
-level from a pXd value in pXd_offset.
+On Thu, 2020-09-10 at 09:32 +0200, Michal Hocko wrote:
+> [Cc Vlastimil and Mel - the whole email thread starts
+>  http://lkml.kernel.org/r/20200902180628.4052244-1-zi.yan@sent.com
+>  but this particular subthread has diverged a bit and you might find
+> it
+>  interesting]
+>=20
+> On Wed 09-09-20 15:43:55, David Hildenbrand wrote:
+> >=20
+> > I am not sure I like the trend towards CMA that we are seeing,
+> > reserving
+> > huge buffers for specific users (and eventually even doing it
+> > automatically).
+> >=20
+> > What we actually want is ZONE_MOVABLE with relaxed guarantees, such
+> > that
+> > anybody who requires large, unmovable allocations can use it.
+> >=20
+> > I once played with the idea of having ZONE_PREFER_MOVABLE, which
+> > a) Is the primary choice for movable allocations
+> > b) Is allowed to contain unmovable allocations (esp., gigantic
+> > pages)
+> > c) Is the fallback for ZONE_NORMAL for unmovable allocations,
+> > instead of
+> > running out of memory
+>=20
+> I might be missing something but how can this work longterm? Or put
+> in
+> another words why would this work any better than existing
+> fragmentation
+> avoidance techniques that page allocator implements already -=20
 
-> This suggests another fix, which is to say that pud++ is undefined and
-> pud_offset() must always be called, but I think that would cause worse
-> codegen on all other archs.
+One big difference is reclaim. If ZONE_NORMAL runs low on
+free memory, page reclaim would kick in and evict some
+movable/reclaimable things, to free up more space for
+unmovable allocations.
 
-There really is nothing to fix for s390 outside of gup_fast, or other
-potential future READ_ONCE pagetable walkers. We do take the side-effect
-of the generic change on all other pagetable walkers for s390, but it
-really is rather a slight degradation than a fix.
+The current fragmentation avoidance techniques don't do
+things like reclaim, or proactively migrating movable
+pages out of unmovable page blocks to prevent unmovable
+allocations in currently movable page blocks.
+
+> My suspicion is that a separate zone would work in a similar fashion.
+> As
+> long as there is a lot of free memory then zone will be effectively
+> MOVABLE. Similar applies to normal zone when unmovable allocations
+> are
+> in minority. As long as the Normal zone gets full of unmovable
+> objects
+> they start overflowing to ZONE_PREFER_MOVABLE and it will resemble
+> page
+> block stealing when unmovable objects start spreading over movable
+> page
+> blocks.
+
+You are right, with the difference being reclaim and/or
+migration, which could make a real difference in limiting
+the number of pageblocks that have unmovable allocations.
+
+--=20
+All Rights Reversed.
+
+--=-G7jPvQFniVHuvttGpe5D
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl9aKwMACgkQznnekoTE
+3oMhTwf6AoqGVXG7ULgvW3VwQU3fHYeVY7XdxCw0eYfEWQ5mmjdh7pMVL4+9IEJS
+OhK3nlbmC63C3TYpa1asQUSy6hAx0Apo/E7Cx9VJkP2+3oVkbP6ibqtZmJh4X1IQ
+9HbBHX8YOxpUXl3/RHARzTo4cnwYrgQTLpumSG0B+207FmQc7zLoNsfXGXsLFPrP
+I/KKiSDlQ4asbeHlQU/PW87xXNCWCyjbZedPPx98WIgQE3LeRvWD3ZhlwtEQEJXP
+Xsy1hT0aKsjg9dFpWFPClDs8f+EV+gcNIqidHMXrPAIUMySGL+C/VBHKeg2ioSyB
+Qu4W/1woZ6HdiWlE4jweWiTy+6RAug==
+=m/ZB
+-----END PGP SIGNATURE-----
+
+--=-G7jPvQFniVHuvttGpe5D--
+
