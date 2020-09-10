@@ -2,87 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56627264FC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A845264FE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgIJTv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgIJTvL (ORCPT
+        id S1726996AbgIJTy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:54:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:42172 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgIJTwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:51:11 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF66C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:51:10 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d6so5307637pfn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+cHRkT8sNFeWTbynGyxN3PPYP8ykbg0LglvItAS32tg=;
-        b=e3QOW6liZzQXG+Kv2AcwAesvbHXZXtz83QCDVvrluTaPKCOoFGrEp8/WJIbrbwBrvn
-         h4scUnJ51PfrgEOp3GFTHmUzxVSBoQuw0WKCBUKih20chmEnh1bNIhopi9J3wcIWomN9
-         rieGPxZXAOcUJ9GBL/9QNZzYnFo7NmUnIfdY8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+cHRkT8sNFeWTbynGyxN3PPYP8ykbg0LglvItAS32tg=;
-        b=Oat6S2TeIaeSodslPA250dK37HS+4DiJy5p7VHntytLRjp+TZGDEJoGPllUNeosMUO
-         ILGJ6abYNszT94D6r4w3f3uKsLFKa06rSsy3E5BGS+p2ZVdpCZQOGhj8czxeImbW6ZZN
-         Xrd0Qse4mvFrMquD0HULXnmMreTDiKtaxjnq1qkmtV29nkRMNRP4OG1xxgKznaccV4Eg
-         muFQP/fMhlQ5i+CR7l8hdMHTMTtHl57nEwc+J3K7dcQVFz/iWeH4g2g1w0cCHu3NBBxL
-         GLuWQi2kGZlKAAWk9DvPec4Hmw+OXmTxtAt3ro9Za4abspBsYhS6oX+iIdWABrsumPry
-         K13A==
-X-Gm-Message-State: AOAM532S4xrQAAvUT7N4CZHWi/N5A3JGzXQ3qHE2TkkvvmqvAAIe7Bd1
-        dp7LvNYmymJkRdfDxmiSoIVoMQ==
-X-Google-Smtp-Source: ABdhPJy3Vb6fYslObxnLlySxaRWzrc6tYBUQWTnl/9XhUVGIeStG6vd//sipTl6dmBxBI1gqfF58iQ==
-X-Received: by 2002:aa7:9730:0:b029:13e:d13d:a091 with SMTP id k16-20020aa797300000b029013ed13da091mr7054551pfg.40.1599767470434;
-        Thu, 10 Sep 2020 12:51:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l1sm6732890pfc.164.2020.09.10.12.51.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 12:51:09 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 12:51:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Denis Efremov <efremov@linux.com>, julia.lawall@inria.fr
-Subject: Re: [PATCH] checkpatch: Warn on self-assignments
-Message-ID: <202009101250.FBB416D@keescook>
-References: <20200811210127.11889-1-efremov@linux.com>
- <20200901094812.428896-1-efremov@linux.com>
- <afc2cffdd315d3e4394af149278df9e8af7f49f4.camel@perches.com>
+        Thu, 10 Sep 2020 15:52:36 -0400
+Date:   Thu, 10 Sep 2020 19:52:33 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599767554;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dhBA5DB3uM3jz6b3+VK8IjWpmv4Aa40MZCnMXEBoZuw=;
+        b=RB3TPVf8PntijWABrEv+XIuvVRnI6OB5ZNqbYq8qqZNyuFRXgW2NSQUuVfxVtxkEGyUHNr
+        cfvQ4DVHCJli45Mo5pO6xlUpNHbpJgR6nAXL14FYaz1k8jWO+Ok8cucpNQ3k8AcKPwsnF0
+        vf+bg6nKeMvlnY/B8pqRWDrZIobpZ+wbsG7tvSUcBznjANZvZC370fQ6lXMXUO1PHAEC4W
+        BMmNVG4byBvN1NEN67cK+TdIgAIR1SxRb+d2Mz5OrnFwXMHDSVmIUuX+bc63EgCOysmqCV
+        DmM1k1e4DViMZEflni4VcEjY45MKv4SUyWCQcOI6oJ+GyW0g+arKkSoLe/KEvA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599767554;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dhBA5DB3uM3jz6b3+VK8IjWpmv4Aa40MZCnMXEBoZuw=;
+        b=pUeJ1MNSBlgV9thU2wkOhXbfk2ehvKBNMupfRnCQShy4VLiuuG4V7gvLaAjr30d8scxT1v
+        tLOxKV23Y52emQCQ==
+From:   "tip-bot2 for Martin Radev" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/seves] x86/sev-es: Check required CPU features for SEV-ES
+Cc:     Martin Radev <martin.b.radev@gmail.com>,
+        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200907131613.12703-73-joro@8bytes.org>
+References: <20200907131613.12703-73-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afc2cffdd315d3e4394af149278df9e8af7f49f4.camel@perches.com>
+Message-ID: <159976755355.20229.4941386595177142074.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 05, 2020 at 10:58:29AM -0700, Joe Perches wrote:
-> The uninitialized_var() macro was removed recently via
-> commit 63a0895d960a ("compiler: Remove uninitialized_var() macro")
-> as it's not a particularly useful warning and its use can
-> "paper over real bugs".
-> 
-> Add a checkpatch test to warn on self-assignments as a means
-> to avoid compiler warnings and as a back-door mechanism to
-> reproduce the old uninitialized_var macro behavior.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+The following commit has been merged into the x86/seves branch of tip:
 
-I like it! :)
+Commit-ID:     f5ed777586e08e09c4b6f1e87161a145ee1431cf
+Gitweb:        https://git.kernel.org/tip/f5ed777586e08e09c4b6f1e87161a145ee1431cf
+Author:        Martin Radev <martin.b.radev@gmail.com>
+AuthorDate:    Mon, 07 Sep 2020 15:16:13 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 10 Sep 2020 21:49:25 +02:00
 
-Can you add a section to code style and include a link in the checkpatch
-warning to it? (Feel free to just reuse the text removed from
-deprecated.rst)
+x86/sev-es: Check required CPU features for SEV-ES
 
--- 
-Kees Cook
+Make sure the machine supports RDRAND, otherwise there is no trusted
+source of randomness in the system.
+
+To also check this in the pre-decompression stage, make has_cpuflag()
+not depend on CONFIG_RANDOMIZE_BASE anymore.
+
+Signed-off-by: Martin Radev <martin.b.radev@gmail.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lkml.kernel.org/r/20200907131613.12703-73-joro@8bytes.org
+---
+ arch/x86/boot/compressed/cpuflags.c |  4 ----
+ arch/x86/boot/compressed/misc.h     |  5 +++--
+ arch/x86/boot/compressed/sev-es.c   |  3 +++
+ arch/x86/kernel/sev-es-shared.c     | 15 +++++++++++++++
+ arch/x86/kernel/sev-es.c            |  3 +++
+ 5 files changed, 24 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/cpuflags.c b/arch/x86/boot/compressed/cpuflags.c
+index 6448a81..0cc1323 100644
+--- a/arch/x86/boot/compressed/cpuflags.c
++++ b/arch/x86/boot/compressed/cpuflags.c
+@@ -1,6 +1,4 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#ifdef CONFIG_RANDOMIZE_BASE
+-
+ #include "../cpuflags.c"
+ 
+ bool has_cpuflag(int flag)
+@@ -9,5 +7,3 @@ bool has_cpuflag(int flag)
+ 
+ 	return test_bit(flag, cpu.flags);
+ }
+-
+-#endif
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index c0e0ffe..6d31f1b 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -85,8 +85,6 @@ void choose_random_location(unsigned long input,
+ 			    unsigned long *output,
+ 			    unsigned long output_size,
+ 			    unsigned long *virt_addr);
+-/* cpuflags.c */
+-bool has_cpuflag(int flag);
+ #else
+ static inline void choose_random_location(unsigned long input,
+ 					  unsigned long input_size,
+@@ -97,6 +95,9 @@ static inline void choose_random_location(unsigned long input,
+ }
+ #endif
+ 
++/* cpuflags.c */
++bool has_cpuflag(int flag);
++
+ #ifdef CONFIG_X86_64
+ extern int set_page_decrypted(unsigned long address);
+ extern int set_page_encrypted(unsigned long address);
+diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
+index 2a6c7c3..954cb27 100644
+--- a/arch/x86/boot/compressed/sev-es.c
++++ b/arch/x86/boot/compressed/sev-es.c
+@@ -145,6 +145,9 @@ void sev_es_shutdown_ghcb(void)
+ 	if (!boot_ghcb)
+ 		return;
+ 
++	if (!sev_es_check_cpu_features())
++		error("SEV-ES CPU Features missing.");
++
+ 	/*
+ 	 * GHCB Page must be flushed from the cache and mapped encrypted again.
+ 	 * Otherwise the running kernel will see strange cache effects when
+diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
+index 4be8af2..5f83cca 100644
+--- a/arch/x86/kernel/sev-es-shared.c
++++ b/arch/x86/kernel/sev-es-shared.c
+@@ -9,6 +9,21 @@
+  * and is included directly into both code-bases.
+  */
+ 
++#ifndef __BOOT_COMPRESSED
++#define error(v)	pr_err(v)
++#define has_cpuflag(f)	boot_cpu_has(f)
++#endif
++
++static bool __init sev_es_check_cpu_features(void)
++{
++	if (!has_cpuflag(X86_FEATURE_RDRAND)) {
++		error("RDRAND instruction not supported - no trusted source of randomness available\n");
++		return false;
++	}
++
++	return true;
++}
++
+ static void sev_es_terminate(unsigned int reason)
+ {
+ 	u64 val = GHCB_SEV_TERMINATE;
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 8cac9f8..6fcfdd3 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -665,6 +665,9 @@ void __init sev_es_init_vc_handling(void)
+ 	if (!sev_es_active())
+ 		return;
+ 
++	if (!sev_es_check_cpu_features())
++		panic("SEV-ES CPU Features missing");
++
+ 	/* Enable SEV-ES special handling */
+ 	static_branch_enable(&sev_es_enable_key);
+ 
