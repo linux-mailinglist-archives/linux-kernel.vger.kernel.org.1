@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B8C2641FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C52126421D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730635AbgIJJbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:31:05 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47160 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730131AbgIJJak (ORCPT
+        id S1730727AbgIJJdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:33:06 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:12144 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730718AbgIJJcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:30:40 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08A9RTiE023463;
-        Thu, 10 Sep 2020 11:30:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=STMicroelectronics;
- bh=xox1I5UO1epX6kVCHl56hmhohy3ktvgmviCBxGkTYTw=;
- b=Xeu5Vifb09dvU1eQoeEA5oOjNqaX8QtkfXjZkubfzpNV8+pwJ5RmvXeMI/3ZcmCZflSH
- LX8jlHQAwMGWpPnV6ECxIOTh8vdAoKLNAeeKJc2A9Xo+1ZkUrI5BsDKsOAN7y9wKG/74
- mZkEL7EfvRWHRKlND6RQBGrtdpt2s2yZyAyGNflG7+P2Cpb9oxa0+h5K7RwfffSyhNny
- /CBM+SIosSU/InH0JRN8z1JOEyznG7cc5H5t2QsDPuMLopQanCM2OrVZytUVFRvT71U3
- ARySzXTps8PN8Cp5scitbQ24ACfmDxUqLGLgsvT/xyiZd2dnedA5A4uSHXL1QO/MhcbS qg== 
+        Thu, 10 Sep 2020 05:32:41 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08A9QfoN032717;
+        Thu, 10 Sep 2020 11:32:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=+COKLz+6WybyodfwHJziasnDtJLeiuO/fCZoNZW0ReY=;
+ b=qhQd43AVtcAtVe1yYjZgrjJKsZeHIsn1fMqBGqkh+uy30fFquTmT/YHAAL1uGSygckVw
+ J7GZh0ITHhQ1o0Grnr2Mz/GrSIWVo8cDQzyUFEmOdptjbUpQBxUmO36gpqiCCIofoDaq
+ qI4Tq3/x5tgZfSrvhIP1TejKWVHFsVjUdzxYmUnwie6MGn1YweQrgtMhfqbCcX3YUFUY
+ vLvcQk63RKwJUMrTnNGbHUXBSx2SGM6MX7iP0T6zQL3iPXIc40IMcumcPhURaDx/Ls1t
+ X+6t92qT2TPCZni9udW0lPvH8lKdoSunFHLFeD+CtL6vbsnZpEZ5XEbM5rPWtcDEof0L Pw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33c1jfaju0-1
+        by mx07-00178001.pphosted.com with ESMTP id 33c0ev27vd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 11:30:24 +0200
+        Thu, 10 Sep 2020 11:32:29 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B298010002A;
-        Thu, 10 Sep 2020 11:30:23 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7F34C10002A;
+        Thu, 10 Sep 2020 11:32:29 +0200 (CEST)
 Received: from Webmail-eu.st.com (gpxdag3node5.st.com [10.75.127.72])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9C807220AD7;
-        Thu, 10 Sep 2020 11:30:23 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.51) by GPXDAG3NODE5.st.com
- (10.75.127.72) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep
- 2020 11:30:22 +0200
-Date:   Thu, 10 Sep 2020 11:30:19 +0200
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 756DB21CA68;
+        Thu, 10 Sep 2020 11:32:29 +0200 (CEST)
+Received: from localhost (10.75.127.50) by GPXDAG3NODE5.st.com (10.75.127.72)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep 2020 11:32:28
+ +0200
 From:   Alain Volmat <alain.volmat@st.com>
-To:     Holger Assmann <h.assmann@pengutronix.de>
-CC:     Pierre Yves MORDRET <pierre-yves.mordret@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Etienne CARRIERE <etienne.carriere@st.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
+To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
+CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] i2c: stm32: remove unnecessary DMA kernel error log
-Message-ID: <20200910093019.GA1975@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Holger Assmann <h.assmann@pengutronix.de>,
-        Pierre Yves MORDRET <pierre-yves.mordret@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Etienne CARRIERE <etienne.carriere@st.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200814141355.3816-1-h.assmann@pengutronix.de>
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
+        <alain.volmat@st.com>
+Subject: [PATCH] i2c: stm32: do not display error when DMA is not requested
+Date:   Thu, 10 Sep 2020 11:32:29 +0200
+Message-ID: <1599730349-2160-1-git-send-email-alain.volmat@st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200814141355.3816-1-h.assmann@pengutronix.de>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG8NODE1.st.com (10.75.127.22) To GPXDAG3NODE5.st.com
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG8NODE3.st.com (10.75.127.24) To GPXDAG3NODE5.st.com
  (10.75.127.72)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-10_01:2020-09-10,2020-09-10 signatures=0
@@ -81,66 +59,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Holger,
+DMA usage is optional for the I2C driver. check for the -ENODEV
+error in order to avoid displaying an error when no DMA
+has been requested.
 
-Thanks for your patch.
-there is an ongoing tree wide action to update all those common pattern
-of checking for the -EPROBE_DEFER.
+Signed-off-by: Alain Volmat <alain.volmat@st.com>
+---
+This patch should be applied on top of the patch [i2c: stm32: Simplify with dev_err_probe()]
+---
+ drivers/i2c/busses/i2c-stm32.c   | 16 ++++++++++------
+ drivers/i2c/busses/i2c-stm32f7.c |  5 +++++
+ 2 files changed, 15 insertions(+), 6 deletions(-)
 
-I thus propose, to first integrate the patch [i2c: stm32: Simplify with dev_err_probe()] that has been proposed few days ago, and on top of that add an
-additional patch to check for the -ENODEV error case due to DMA being
-optional.
+diff --git a/drivers/i2c/busses/i2c-stm32.c b/drivers/i2c/busses/i2c-stm32.c
+index 198f848b7be9..91767156d63d 100644
+--- a/drivers/i2c/busses/i2c-stm32.c
++++ b/drivers/i2c/busses/i2c-stm32.c
+@@ -25,8 +25,11 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
+ 	/* Request and configure I2C TX dma channel */
+ 	dma->chan_tx = dma_request_chan(dev, "tx");
+ 	if (IS_ERR(dma->chan_tx)) {
+-		ret = dev_err_probe(dev, PTR_ERR(dma->chan_tx),
+-				    "can't request DMA tx channel\n");
++		if (PTR_ERR(dma->chan_tx) == -ENODEV)
++			ret = PTR_ERR(dma->chan_tx);
++		else
++			ret = dev_err_probe(dev, PTR_ERR(dma->chan_tx),
++					    "can't request DMA tx channel\n");
+ 		goto fail_al;
+ 	}
+ 
+@@ -44,8 +47,11 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
+ 	/* Request and configure I2C RX dma channel */
+ 	dma->chan_rx = dma_request_chan(dev, "rx");
+ 	if (IS_ERR(dma->chan_rx)) {
+-		ret = dev_err_probe(dev, PTR_ERR(dma->chan_rx),
+-				    "can't request DMA rx channel\n");
++		if (PTR_ERR(dma->chan_tx) == -ENODEV)
++			ret = PTR_ERR(dma->chan_tx);
++		else
++			ret = dev_err_probe(dev, PTR_ERR(dma->chan_rx),
++					    "can't request DMA rx channel\n");
+ 		goto fail_tx;
+ 	}
+ 
+@@ -73,8 +79,6 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
+ 	dma_release_channel(dma->chan_tx);
+ fail_al:
+ 	devm_kfree(dev, dma);
+-	if (ret != -EPROBE_DEFER)
+-		dev_info(dev, "can't use DMA\n");
+ 
+ 	return ERR_PTR(ret);
+ }
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index a8f1758e4c5b..58f342aea3c1 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -2049,6 +2049,11 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
+ 					     STM32F7_I2C_TXDR,
+ 					     STM32F7_I2C_RXDR);
+ 	if (PTR_ERR(i2c_dev->dma) == -ENODEV) {
++		/*
++		 * DMA usage is not mandatory for the I2C, it is not an error
++		 * to receive -ENODEV
++		 */
++		dev_dbg(i2c_dev->dev, "not using DMA\n");
+ 		i2c_dev->dma = NULL;
+ 	} else if (IS_ERR(i2c_dev->dma)) {
+ 		ret = dev_err_probe(&pdev->dev, PTR_ERR(i2c_dev->dma),
+-- 
+2.7.4
 
-I've prepared a patch for that and will post it now, could you consider it ?
-
-Alain
-
-On Fri, Aug 14, 2020 at 02:13:55PM +0000, Holger Assmann wrote:
-> We currently print errors twice when there is an actual error
-> when requesting a DMA channel, once in stm32f7_i2c_probe()
-> when stm32_i2c_dma_request() fails and once more in
-> stm32_i2c_dma_request() itself. stm32_i2c_dma_request() is only
-> called from stm32f7_i2c_probe(), so we could drop the duplicate
-> error message.
-> 
-> This has the effect that we no longer warn about absence of a
-> DMA channel. This is intended as it is not mandatory for the
-> i2c-stm32 devices to have DMA enabled.  Also, the overall number
-> of DMA channels on the STM32 is limited and has to be shared
-> with other peripherals. This may lead to DMA being intentionally
-> off for specific devices.
-> 
-> This patch removes the unnecessary error message.
-> 
-> Fixes: e07a89775c71 ("i2c: stm32: don't print an error on probe deferral")
-> Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
-> ---
->  drivers/i2c/busses/i2c-stm32.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-stm32.c b/drivers/i2c/busses/i2c-stm32.c
-> index 3f69a3bb6119..cc05a4202559 100644
-> --- a/drivers/i2c/busses/i2c-stm32.c
-> +++ b/drivers/i2c/busses/i2c-stm32.c
-> @@ -26,8 +26,6 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
->  	dma->chan_tx = dma_request_chan(dev, "tx");
->  	if (IS_ERR(dma->chan_tx)) {
->  		ret = PTR_ERR(dma->chan_tx);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "can't request DMA tx channel\n");
->  		goto fail_al;
->  	}
->  
-> @@ -46,9 +44,6 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
->  	dma->chan_rx = dma_request_chan(dev, "rx");
->  	if (IS_ERR(dma->chan_rx)) {
->  		ret = PTR_ERR(dma->chan_rx);
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(dev, "can't request DMA rx channel\n");
-> -
->  		goto fail_tx;
->  	}
->  
-> -- 
-> 2.20.1
-> 
