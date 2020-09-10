@@ -2,187 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A019264FE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D88C264FEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbgIJTyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:54:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42186 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgIJTwh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:52:37 -0400
-Date:   Thu, 10 Sep 2020 19:52:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599767554;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=txick5ALC6qL2ykJRTautBk8DbO3VkbKX42YfmaBpbM=;
-        b=kZmnTX3FFcCbCG+L3BrefarI3tkpGuUt+FhVbdKNmgb5/lmdZ8d+ktnhK7gul0E8eSZeLm
-        Ld+VB4FKE7qq3p0vL/39zhh6geLpQ7yO8+kDGah/UPW3zPokRNgYNO/+bgL70WyRrinLJA
-        1ICHdUbSkR2bi/qKLeGOZv4eILYCWwqqzY/lJ5l3cgXBpmKMRkG3oW2GMnKFCovQ60BOtA
-        b51wkIltXr13IA3Jkn9BIy/GaszjyKMQshnE8cNqjY/YEBENdrnKKbaxf1PYxA8Mkhb0xZ
-        MT2Tap9Fw9+4hHZ73+9n+tzfRW1W4AHlae2eIaXomQ1PeS3JteJWgHT5HAosKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599767554;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=txick5ALC6qL2ykJRTautBk8DbO3VkbKX42YfmaBpbM=;
-        b=GQL9apK209A/3+foBWH6zTET29SRNIcKfgEZLm/ZeaKR0bZkiD0BPWSGTuOtm9NCO6SQKo
-        ZXGyrS8LPUlcbxCg==
-From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/efi: Add GHCB mappings when SEV-ES is active
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200907131613.12703-72-joro@8bytes.org>
-References: <20200907131613.12703-72-joro@8bytes.org>
+        id S1726385AbgIJT4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:56:12 -0400
+Received: from marcansoft.com ([212.63.210.85]:60602 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgIJTyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:54:19 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id EAA7A41982;
+        Thu, 10 Sep 2020 19:54:10 +0000 (UTC)
+Subject: Re: [PATCH v2] usb: serial: Repair FTDI FT232R bricked eeprom
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        Lars Melin <larsm17@gmail.com>,
+        Oliver Neukum <oneukum@suse.de>, linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russ Dill <Russ.Dill@gmail.com>
+References: <20200909193419.2006744-1-james.hilliard1@gmail.com>
+ <1599706954.10822.3.camel@suse.de>
+ <a1161f77-5b37-39ea-eb91-7b0b59278960@gmail.com>
+ <20200910080850.GD24441@localhost>
+ <CADvTj4rDdj8KtLhGZEZP+XZcF4DTE4oW9sNf=zNWaRPzkny93A@mail.gmail.com>
+ <20200910085541.GA1099591@kroah.com>
+ <CADvTj4pYR9H1X1_f4DYTkb5ViXAdx9sO5yBgHgM5vFaDMs_miQ@mail.gmail.com>
+ <26a723e4-e166-6377-875a-f737a15dc6b1@marcansoft.com>
+ <CADvTj4o9GL5p6eZq+0Q_Pw_ZKuYHvAtav79==CJDdnTj7q+bBg@mail.gmail.com>
+From:   Hector Martin <hector@marcansoft.com>
+Message-ID: <0bcb0208-04bc-40c8-7b42-56b4dcf93f21@marcansoft.com>
+Date:   Fri, 11 Sep 2020 04:54:08 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Message-ID: <159976755405.20229.8190086156867136296.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CADvTj4o9GL5p6eZq+0Q_Pw_ZKuYHvAtav79==CJDdnTj7q+bBg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+On 11/09/2020 03.51, James Hilliard wrote:
+> I haven't tested this yet but my assumption was that either a kernel driver
+> or libusb can issue usb control messages, but both can not be bound to
+> a device at the same time. I figured this wouldn't have come up when you
+> tested your python script since the script likely predated adding the brick PID
+> to the ftdi_sio Linux kernel driver.
 
-Commit-ID:     39336f4ffb2478ad384075cf4ba7ef2e5db2bbd7
-Gitweb:        https://git.kernel.org/tip/39336f4ffb2478ad384075cf4ba7ef2e5db2bbd7
-Author:        Tom Lendacky <thomas.lendacky@amd.com>
-AuthorDate:    Mon, 07 Sep 2020 15:16:12 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Thu, 10 Sep 2020 21:48:50 +02:00
+Binding to interfaces is exclusive, but global device control messages 
+are not issued to an interface. I think it should work even if the 
+kernel driver is bound (this is how lsusb works too, since it issues 
+control requests even to devices bound to drivers). Even if it is 
+necessary to unbind it, though, libusb already provides a single 
+function to do that (libusb_detach_kernel_driver).
 
-x86/efi: Add GHCB mappings when SEV-ES is active
-
-Calling down to EFI runtime services can result in the firmware
-performing VMGEXIT calls. The firmware is likely to use the GHCB of the
-OS (e.g., for setting EFI variables), so each GHCB in the system needs
-to be identity-mapped in the EFI page tables, as unencrypted, to avoid
-page faults.
-
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-[ jroedel@suse.de: Moved GHCB mapping loop to sev-es.c ]
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Link: https://lkml.kernel.org/r/20200907131613.12703-72-joro@8bytes.org
----
- arch/x86/boot/compressed/sev-es.c |  1 +-
- arch/x86/include/asm/sev-es.h     |  2 ++-
- arch/x86/kernel/sev-es.c          | 30 ++++++++++++++++++++++++++++++-
- arch/x86/platform/efi/efi_64.c    | 10 ++++++++++-
- 4 files changed, 43 insertions(+)
-
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index 5f15e58..2a6c7c3 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -12,6 +12,7 @@
-  */
- #include "misc.h"
- 
-+#include <asm/pgtable_types.h>
- #include <asm/sev-es.h>
- #include <asm/trapnr.h>
- #include <asm/trap_pf.h>
-diff --git a/arch/x86/include/asm/sev-es.h b/arch/x86/include/asm/sev-es.h
-index e919f09..cf1d957 100644
---- a/arch/x86/include/asm/sev-es.h
-+++ b/arch/x86/include/asm/sev-es.h
-@@ -102,11 +102,13 @@ static __always_inline void sev_es_nmi_complete(void)
- 	if (static_branch_unlikely(&sev_es_enable_key))
- 		__sev_es_nmi_complete();
- }
-+extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
- static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { return 0; }
- static inline void sev_es_nmi_complete(void) { }
-+static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
- #endif
- 
- #endif
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index b6518e9..8cac9f8 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -491,6 +491,36 @@ int sev_es_setup_ap_jump_table(struct real_mode_header *rmh)
- 	return 0;
- }
- 
-+/*
-+ * This is needed by the OVMF UEFI firmware which will use whatever it finds in
-+ * the GHCB MSR as its GHCB to talk to the hypervisor. So make sure the per-cpu
-+ * runtime GHCBs used by the kernel are also mapped in the EFI page-table.
-+ */
-+int __init sev_es_efi_map_ghcbs(pgd_t *pgd)
-+{
-+	struct sev_es_runtime_data *data;
-+	unsigned long address, pflags;
-+	int cpu;
-+	u64 pfn;
-+
-+	if (!sev_es_active())
-+		return 0;
-+
-+	pflags = _PAGE_NX | _PAGE_RW;
-+
-+	for_each_possible_cpu(cpu) {
-+		data = per_cpu(runtime_data, cpu);
-+
-+		address = __pa(&data->ghcb_page);
-+		pfn = address >> PAGE_SHIFT;
-+
-+		if (kernel_map_pages_in_pgd(pgd, pfn, address, 1, pflags))
-+			return 1;
-+	}
-+
-+	return 0;
-+}
-+
- static enum es_result vc_handle_msr(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
- 	struct pt_regs *regs = ctxt->regs;
-diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-index 6af4da1..8f5759d 100644
---- a/arch/x86/platform/efi/efi_64.c
-+++ b/arch/x86/platform/efi/efi_64.c
-@@ -47,6 +47,7 @@
- #include <asm/realmode.h>
- #include <asm/time.h>
- #include <asm/pgalloc.h>
-+#include <asm/sev-es.h>
- 
- /*
-  * We allocate runtime services regions top-down, starting from -4G, i.e.
-@@ -230,6 +231,15 @@ int __init efi_setup_page_tables(unsigned long pa_memmap, unsigned num_pages)
- 	}
- 
- 	/*
-+	 * When SEV-ES is active, the GHCB as set by the kernel will be used
-+	 * by firmware. Create a 1:1 unencrypted mapping for each GHCB.
-+	 */
-+	if (sev_es_efi_map_ghcbs(pgd)) {
-+		pr_err("Failed to create 1:1 mapping for the GHCBs!\n");
-+		return 1;
-+	}
-+
-+	/*
- 	 * When making calls to the firmware everything needs to be 1:1
- 	 * mapped and addressable with 32-bit pointers. Map the kernel
- 	 * text and allocate a new stack because we can't rely on the
+-- 
+Hector Martin (hector@marcansoft.com)
+Public Key: https://mrcn.st/pub
