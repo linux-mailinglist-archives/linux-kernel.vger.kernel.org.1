@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F54263B60
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482B3263B5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730158AbgIJDZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:25:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11331 "EHLO huawei.com"
+        id S1730082AbgIJDYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:24:37 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11336 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729296AbgIJDXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:23:07 -0400
+        id S1727893AbgIJDYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 23:24:16 -0400
 Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 82174D9B1BCA02E82597;
-        Thu, 10 Sep 2020 11:22:59 +0800 (CST)
+        by Forcepoint Email with ESMTP id 92071518D3DB16E300B0;
+        Thu, 10 Sep 2020 11:23:04 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.253) by
  DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 10 Sep 2020 11:22:53 +0800
+ 14.3.487.0; Thu, 10 Sep 2020 11:22:54 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -25,9 +25,9 @@ CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Libin <huawei.libin@huawei.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>,
         Jianguo Chen <chenjianguo3@huawei.com>
-Subject: [PATCH 5/6] clocksource: sp804: add support for Hisilicon sp804 timer
-Date:   Thu, 10 Sep 2020 11:14:18 +0800
-Message-ID: <20200910031419.2790-6-thunder.leizhen@huawei.com>
+Subject: [PATCH 6/6] clocksource: sp804: enable Hisilicon sp804 timer 64bit mode
+Date:   Thu, 10 Sep 2020 11:14:19 +0800
+Message-ID: <20200910031419.2790-7-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200910031419.2790-1-thunder.leizhen@huawei.com>
 References: <20200910031419.2790-1-thunder.leizhen@huawei.com>
@@ -41,76 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ARM SP804 supports a maximum of 32-bit counter, but Hisilicon extends
-it to 64-bit. That means, the registers: TimerXload, TimerXValue and
-TimerXBGLoad are 64bits, all other registers are the same as those in the
-SP804. The driver code can be completely reused except that the register
-offset is different.
+A 100MHZ 32-bit timer will be wrapped up less than 43s. Although the
+kernel maintains a software high 32-bit count in the tick IRQ. But it's
+not applicable to the user mode APPs.
 
-Use compatible = "hisi,sp804" mark as Hisilicon sp804 timer.
+Note: The kernel still uses the lower 32 bits of the timer.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/clocksource/timer-sp.h    | 12 ++++++++++++
- drivers/clocksource/timer-sp804.c | 15 +++++++++++++++
- 2 files changed, 27 insertions(+)
+ drivers/clocksource/timer-sp.h    | 9 +++++++++
+ drivers/clocksource/timer-sp804.c | 8 ++++++++
+ 2 files changed, 17 insertions(+)
 
 diff --git a/drivers/clocksource/timer-sp.h b/drivers/clocksource/timer-sp.h
-index 1ab75cbed0e0..6ca8d82e8544 100644
+index 6ca8d82e8544..6c0a902926eb 100644
 --- a/drivers/clocksource/timer-sp.h
 +++ b/drivers/clocksource/timer-sp.h
-@@ -31,6 +31,18 @@
- #define TIMER_MIS	0x14			/*  CVR ro */
- #define TIMER_BGLOAD	0x18			/*  CVR rw */
+@@ -35,22 +35,28 @@
+ #define HISI_TIMER_1_BASE	0x00
+ #define HISI_TIMER_2_BASE	0x40
+ #define HISI_TIMER_LOAD		0x00
++#define HISI_TIMER_LOAD_H	0x04
+ #define HISI_TIMER_VALUE	0x08
++#define HISI_TIMER_VALUE_H	0x0c
+ #define HISI_TIMER_CTRL		0x10
+ #define HISI_TIMER_INTCLR	0x14
+ #define HISI_TIMER_RIS		0x18
+ #define HISI_TIMER_MIS		0x1c
+ #define HISI_TIMER_BGLOAD	0x20
++#define HISI_TIMER_BGLOAD_H	0x24
  
-+
-+#define HISI_TIMER_1_BASE	0x00
-+#define HISI_TIMER_2_BASE	0x40
-+#define HISI_TIMER_LOAD		0x00
-+#define HISI_TIMER_VALUE	0x08
-+#define HISI_TIMER_CTRL		0x10
-+#define HISI_TIMER_INTCLR	0x14
-+#define HISI_TIMER_RIS		0x18
-+#define HISI_TIMER_MIS		0x1c
-+#define HISI_TIMER_BGLOAD	0x20
-+
-+
+ 
  struct sp804_timer {
  	int load;
++	int load_h;
  	int value;
++	int value_h;
+ 	int ctrl;
+ 	int intclr;
+ 	int ris;
+ 	int mis;
+ 	int bgload;
++	int bgload_h;
+ 	int timer_base[NR_TIMERS];
+ 	int width;
+ };
+@@ -58,12 +64,15 @@ struct sp804_timer {
+ struct sp804_clkevt {
+ 	void __iomem *base;
+ 	void __iomem *load;
++	void __iomem *load_h;
+ 	void __iomem *value;
++	void __iomem *value_h;
+ 	void __iomem *ctrl;
+ 	void __iomem *intclr;
+ 	void __iomem *ris;
+ 	void __iomem *mis;
+ 	void __iomem *bgload;
++	void __iomem *bgload_h;
+ 	unsigned long reload;
+ 	int width;
+ };
 diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
-index 68440e139dfd..736b0476629f 100644
+index 736b0476629f..53498cf63c3b 100644
 --- a/drivers/clocksource/timer-sp804.c
 +++ b/drivers/clocksource/timer-sp804.c
-@@ -29,6 +29,15 @@ struct sp804_timer __initdata arm_sp804_timer = {
- 	.width		= 32,
- };
+@@ -31,7 +31,9 @@ struct sp804_timer __initdata arm_sp804_timer = {
  
-+struct sp804_timer __initdata hisi_sp804_timer = {
-+	.load		= HISI_TIMER_LOAD,
-+	.value		= HISI_TIMER_VALUE,
-+	.ctrl		= HISI_TIMER_CTRL,
-+	.intclr		= HISI_TIMER_INTCLR,
-+	.timer_base	= {HISI_TIMER_1_BASE, HISI_TIMER_2_BASE},
-+	.width		= 64,
-+};
-+
- static struct sp804_clkevt sp804_clkevt[NR_TIMERS];
+ struct sp804_timer __initdata hisi_sp804_timer = {
+ 	.load		= HISI_TIMER_LOAD,
++	.load_h		= HISI_TIMER_LOAD_H,
+ 	.value		= HISI_TIMER_VALUE,
++	.value_h	= HISI_TIMER_VALUE_H,
+ 	.ctrl		= HISI_TIMER_CTRL,
+ 	.intclr		= HISI_TIMER_INTCLR,
+ 	.timer_base	= {HISI_TIMER_1_BASE, HISI_TIMER_2_BASE},
+@@ -117,6 +119,10 @@ int __init sp804_clocksource_and_sched_clock_init(void __iomem *base,
+ 	writel(0, clkevt->ctrl);
+ 	writel(0xffffffff, clkevt->load);
+ 	writel(0xffffffff, clkevt->value);
++	if (clkevt->width == 64) {
++		writel(0xffffffff, clkevt->load_h);
++		writel(0xffffffff, clkevt->value_h);
++	}
+ 	writel(TIMER_CTRL_32BIT | TIMER_CTRL_ENABLE | TIMER_CTRL_PERIODIC,
+ 		clkevt->ctrl);
  
- static long __init sp804_get_clock_rate(struct clk *clk, const char *name)
-@@ -315,6 +324,12 @@ static int __init arm_sp804_of_init(struct device_node *np)
- }
- TIMER_OF_DECLARE(sp804, "arm,sp804", arm_sp804_of_init);
- 
-+static int __init hisi_sp804_of_init(struct device_node *np)
-+{
-+	return sp804_of_init(np, &hisi_sp804_timer);
-+}
-+TIMER_OF_DECLARE(hisi_sp804, "hisi,sp804", hisi_sp804_of_init);
-+
- static int __init integrator_cp_of_init(struct device_node *np)
- {
- 	static int init_count = 0;
+@@ -233,7 +239,9 @@ static void __init sp804_clkevt_init(struct sp804_timer *timer, void __iomem *ba
+ 		clkevt = &sp804_clkevt[i];
+ 		clkevt->base	= timer_base;
+ 		clkevt->load	= timer_base + timer->load;
++		clkevt->load_h	= timer_base + timer->load_h;
+ 		clkevt->value	= timer_base + timer->value;
++		clkevt->value_h	= timer_base + timer->value_h;
+ 		clkevt->ctrl	= timer_base + timer->ctrl;
+ 		clkevt->intclr	= timer_base + timer->intclr;
+ 		clkevt->width	= timer->width;
 -- 
 2.26.0.106.g9fadedd
 
