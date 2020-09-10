@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E70826530B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA958265301
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgIJV16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:27:58 -0400
-Received: from mail-io1-f77.google.com ([209.85.166.77]:56678 "EHLO
-        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731098AbgIJOJr (ORCPT
+        id S1726898AbgIJV1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:27:44 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:44014 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731099AbgIJOJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:09:47 -0400
-Received: by mail-io1-f77.google.com with SMTP id d21so4363809iow.23
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:09:25 -0700 (PDT)
+        Thu, 10 Sep 2020 10:09:48 -0400
+Received: by mail-il1-f205.google.com with SMTP id o2so4623850ilg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 07:09:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ziOw32O95sze9u8CJpe9gs4JHZ+Uz+yoAuTHi7kjDRc=;
-        b=b0otvuSIlp8GTicSNvJ3/rtbhHiASwIiBZ7VXZp2YAfanJy/88Zg7XcrYXmIKfYPIa
-         SdP9jnw0k/th4WnJtGwml3EO4D5TL/oavzVj2dLeRn4Nz/BZMrq4EMxJDHufh8Tt//SN
-         ZQAYljRl6Lf+cg5KrLlwkbIV39du/f4Ij5iDLqC3V5QyzR7MNDYq7WtMsGj3a3dJiA16
-         v5lquuaGCKcni66jwxsk0OT66DgAv4YX3sRxCWfK7+yg6HjqHo5rObmIjpTV7WEgsw/O
-         BTAuHCMymrabpJKrXnkgzyJrS+46FvLyETbWOL2YRwSOYk5khkpYc+fkwTa8abjKxZPW
-         Va2Q==
-X-Gm-Message-State: AOAM532BAiT+GvlMvE3oKVZEXXCS3UoRFbK9BBojANPcxAq8w0P3oL7g
-        ugxFmj4uNSO6Q9KYjllSBnlPN77LwPbUUd9u1bPKAXabZvuK
-X-Google-Smtp-Source: ABdhPJyVzD4q2XfFxYGBcsECrvAnCIle4pAH9rHxhi5nGa57FyzEBPeSM+aE9H+smqh70d6Z1BDkWGKZkB7dEHS9+gKrlZhH7cOl
+        bh=zVqSsWX+nI5HXEyIHZ7ZaxwHe+dDtC+0l7LqQAeVjBM=;
+        b=Cwa3Rg3U52RM0l29YOh+ZVmKwzefVAlsiDX6jMKaQoCpBtxE+yzu8a7aKdgEeKLKM1
+         ul28/kjYifK3sFqcNeTWgO8UeGqVZyHKAbroiBi9sgcDeeHSePwsOGFbZOH7TaTCJZUj
+         EU1S8rXBnYiZqir70rH/84j09j3kqShFXOGE2I2oB6q6vC1vNaaTJlFr+iBijld0Dwcm
+         RrNqOJPeODAVlUOF6UdDjfmWDawk130ZFn9ag9zIa83PPRCD9hhk81mXj0kCZrr90auq
+         FtS4B2Q8ljns7pDgQv/XvmW6UJ5EbfyUH2sgPKXn5jczSHQOiZFAVabIIClH9tLrBkjA
+         LRnQ==
+X-Gm-Message-State: AOAM533f3B3hGB0xcZhNeiBONRTtVVB2DoCh/7qmep3GfCEbN6rAqH7z
+        52L+ooeSsYyj8Jh6sHHqvMwgkEOyOyH6CDu0bqUp4yXV77GZ
+X-Google-Smtp-Source: ABdhPJxPWT1Q8/TP1NXh/xIeSW78G9A8i63k6ycgGU/3/OEQZmP1D6dEMJqfScus9pU65THHIFnKDRqW7jtXdrB/AvOYzftXQJOE
 MIME-Version: 1.0
-X-Received: by 2002:a92:15c5:: with SMTP id 66mr7970147ilv.44.1599746964616;
+X-Received: by 2002:a05:6602:2e87:: with SMTP id m7mr7487680iow.106.1599746964353;
  Thu, 10 Sep 2020 07:09:24 -0700 (PDT)
 Date:   Thu, 10 Sep 2020 07:09:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008e7c8f05aef61d8d@google.com>
-Subject: KASAN: use-after-free Read in ucma_close (2)
-From:   syzbot <syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000008a7ae505aef61db1@google.com>
+Subject: KMSAN: uninit-value in aes_encrypt (4)
+From:   syzbot <syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -49,95 +49,136 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    34d4ddd3 Merge tag 'linux-kselftest-5.9-rc5' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1002ea2d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc6fc752b3819e082d0c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1600e053900000
+HEAD commit:    3b3ea602 x86: add failure injection to get/put/clear_user
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1030dda5900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ee5f7a0b2e48ed66
+dashboard link: https://syzkaller.appspot.com/bug?extid=828dfc12440b4f6f305d
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17b15055900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12931621900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com
+Reported-by: syzbot+828dfc12440b4f6f305d@syzkaller.appspotmail.com
 
-==================================================================
-BUG: KASAN: use-after-free in ucma_close+0x2a4/0x310 drivers/infiniband/core/ucma.c:1839
-Read of size 4 at addr ffff8880a748b538 by task syz-executor.0/7260
-
-CPU: 0 PID: 7260 Comm: syz-executor.0 Not tainted 5.9.0-rc4-syzkaller #0
+=====================================================
+BUG: KMSAN: uninit-value in subshift lib/crypto/aes.c:149 [inline]
+BUG: KMSAN: uninit-value in aes_encrypt+0x12c5/0x1bc0 lib/crypto/aes.c:282
+CPU: 0 PID: 8537 Comm: syz-executor872 Not tainted 5.8.0-rc5-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- ucma_close+0x2a4/0x310 drivers/infiniband/core/ucma.c:1839
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ subshift lib/crypto/aes.c:149 [inline]
+ aes_encrypt+0x12c5/0x1bc0 lib/crypto/aes.c:282
+ aesti_encrypt+0xe8/0x130 crypto/aes_ti.c:31
+ cipher_crypt_one crypto/cipher.c:75 [inline]
+ crypto_cipher_encrypt_one+0x1e2/0x3a0 crypto/cipher.c:82
+ crypto_cbcmac_digest_update+0x3e3/0x560 crypto/ccm.c:830
+ crypto_shash_update+0x455/0x5a0 crypto/shash.c:119
+ shash_ahash_finup+0x20b/0x7a0 crypto/shash.c:291
+ shash_async_finup+0xbb/0x110 crypto/shash.c:306
+ crypto_ahash_op+0x1c3/0x770 crypto/ahash.c:370
+ crypto_ahash_finup+0x8c/0xb0 crypto/ahash.c:395
+ crypto_ccm_auth+0x16b6/0x1780 crypto/ccm.c:221
+ crypto_ccm_encrypt+0x285/0x850 crypto/ccm.c:300
+ crypto_aead_encrypt+0x107/0x190 crypto/aead.c:94
+ tls_do_encryption net/tls/tls_sw.c:528 [inline]
+ tls_push_record+0x3cb9/0x4fc0 net/tls/tls_sw.c:762
+ bpf_exec_tx_verdict+0x195a/0x29e0 net/tls/tls_sw.c:802
+ tls_sw_do_sendpage+0x138a/0x1e30 net/tls/tls_sw.c:1213
+ tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
+ inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
+ kernel_sendpage net/socket.c:3642 [inline]
+ sock_sendpage+0x1dc/0x2b0 net/socket.c:945
+ pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
+ splice_from_pipe_feed fs/splice.c:502 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
+ splice_from_pipe fs/splice.c:661 [inline]
+ generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
+ do_splice_from fs/splice.c:846 [inline]
+ do_splice+0x2727/0x39e0 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1419 [inline]
+ __se_sys_splice+0x323/0x500 fs/splice.c:1401
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x416f01
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007ffd5e376f90 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000004 RCX: 0000000000416f01
-RDX: 0000000000000001 RSI: 0000000000000080 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffd5e377080 R11: 0000000000000293 R12: 0000000001190ed0
-R13: 000000000007fa65 R14: ffffffffffffffff R15: 000000000118cfec
+RIP: 0033:0x446a29
+Code: Bad RIP value.
+RSP: 002b:00007f91f8c0bd98 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+RAX: ffffffffffffffda RBX: 00000000006dbc48 RCX: 0000000000446a29
+RDX: 0000000000000004 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00000000006dbc40 R08: 00080000fffffffc R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc4c
+R13: 0000000020000680 R14: 00000000004ae948 R15: 20c49ba5e353f7cf
 
-Allocated by task 7261:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x174/0x2c0 mm/slab.c:3550
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- ucma_alloc_ctx+0x4b/0x480 drivers/infiniband/core/ucma.c:212
- ucma_create_id+0x11b/0x590 drivers/infiniband/core/ucma.c:502
- ucma_write+0x288/0x350 drivers/infiniband/core/ucma.c:1768
- vfs_write+0x2b0/0x730 fs/read_write.c:576
- ksys_write+0x1ee/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
+ __msan_chain_origin+0x50/0x90 mm/kmsan/kmsan_instr.c:165
+ __crypto_xor+0x251/0x1610 crypto/algapi.c:1000
+ crypto_xor include/crypto/algapi.h:152 [inline]
+ crypto_cbcmac_digest_update+0x2b8/0x560 crypto/ccm.c:824
+ crypto_shash_update+0x455/0x5a0 crypto/shash.c:119
+ shash_ahash_finup+0x20b/0x7a0 crypto/shash.c:291
+ shash_async_finup+0xbb/0x110 crypto/shash.c:306
+ crypto_ahash_op+0x1c3/0x770 crypto/ahash.c:370
+ crypto_ahash_finup+0x8c/0xb0 crypto/ahash.c:395
+ crypto_ccm_auth+0x16b6/0x1780 crypto/ccm.c:221
+ crypto_ccm_encrypt+0x285/0x850 crypto/ccm.c:300
+ crypto_aead_encrypt+0x107/0x190 crypto/aead.c:94
+ tls_do_encryption net/tls/tls_sw.c:528 [inline]
+ tls_push_record+0x3cb9/0x4fc0 net/tls/tls_sw.c:762
+ bpf_exec_tx_verdict+0x195a/0x29e0 net/tls/tls_sw.c:802
+ tls_sw_do_sendpage+0x138a/0x1e30 net/tls/tls_sw.c:1213
+ tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
+ inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
+ kernel_sendpage net/socket.c:3642 [inline]
+ sock_sendpage+0x1dc/0x2b0 net/socket.c:945
+ pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
+ splice_from_pipe_feed fs/splice.c:502 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
+ splice_from_pipe fs/splice.c:661 [inline]
+ generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
+ do_splice_from fs/splice.c:846 [inline]
+ do_splice+0x2727/0x39e0 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1419 [inline]
+ __se_sys_splice+0x323/0x500 fs/splice.c:1401
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Freed by task 7261:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x10e/0x2b0 mm/slab.c:3756
- ucma_free_ctx+0x7f6/0xae0 drivers/infiniband/core/ucma.c:600
- ucma_destroy_id+0x30c/0x460 drivers/infiniband/core/ucma.c:644
- ucma_write+0x288/0x350 drivers/infiniband/core/ucma.c:1768
- vfs_write+0x2b0/0x730 fs/read_write.c:576
- ksys_write+0x1ee/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:144
+ kmsan_internal_alloc_meta_for_pages mm/kmsan/kmsan_shadow.c:269 [inline]
+ kmsan_alloc_page+0xc5/0x1a0 mm/kmsan/kmsan_shadow.c:293
+ __alloc_pages_nodemask+0xdf0/0x1030 mm/page_alloc.c:4889
+ alloc_pages_current+0x685/0xb50 mm/mempolicy.c:2292
+ alloc_pages include/linux/gfp.h:545 [inline]
+ skb_page_frag_refill+0x540/0x780 net/core/sock.c:2487
+ sk_page_frag_refill+0xa3/0x3b0 net/core/sock.c:2507
+ sk_msg_alloc+0x26e/0x1340 net/core/skmsg.c:38
+ tls_alloc_encrypted_msg net/tls/tls_sw.c:289 [inline]
+ tls_sw_do_sendpage+0xb0d/0x1e30 net/tls/tls_sw.c:1191
+ tls_sw_sendpage+0x1da/0x250 net/tls/tls_sw.c:1277
+ inet_sendpage+0x1dc/0x2f0 net/ipv4/af_inet.c:828
+ kernel_sendpage net/socket.c:3642 [inline]
+ sock_sendpage+0x1dc/0x2b0 net/socket.c:945
+ pipe_to_sendpage+0x3f4/0x530 fs/splice.c:448
+ splice_from_pipe_feed fs/splice.c:502 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:626
+ splice_from_pipe fs/splice.c:661 [inline]
+ generic_splice_sendpage+0x1d5/0x2d0 fs/splice.c:834
+ do_splice_from fs/splice.c:846 [inline]
+ do_splice+0x2727/0x39e0 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1419 [inline]
+ __se_sys_splice+0x323/0x500 fs/splice.c:1401
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1401
+ do_syscall_64+0xad/0x160 arch/x86/entry/common.c:386
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880a748b400
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 312 bytes inside of
- 512-byte region [ffff8880a748b400, ffff8880a748b600)
-The buggy address belongs to the page:
-page:000000002b52c09c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xa748b
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002416c48 ffff8880aa041750 ffff8880aa040600
-raw: 0000000000000000 ffff8880a748b000 0000000100000004 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880a748b400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a748b480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8880a748b500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                        ^
- ffff8880a748b580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880a748b600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+=====================================================
 
 
 ---
