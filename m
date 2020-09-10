@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72385264414
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8780D2643E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730949AbgIJK0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:26:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35584 "EHLO mail.kernel.org"
+        id S1730115AbgIJKZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:25:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730712AbgIJKYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:24:22 -0400
+        id S1730633AbgIJKYQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:24:16 -0400
 Received: from mail.kernel.org (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C02221D90;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D3B521D91;
         Thu, 10 Sep 2020 10:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599733450;
-        bh=m2A+Rzm0QXUwCl96Bxiy3ZH3xuPHHZOxt+ALBjD9Gu0=;
+        bh=fXbQXOaYjx72zqTGIw4X5zbM9zC7or8CP+BA7YjUllo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mP7GdaHtr1UKn2xgBKL9t8aJ0yDeefsmYBgRq9Se06csS2+W906IqkwLPWIuvk66l
-         p6Kna6Ln5PVqoSakrwboKoFTqAxCULBcBn25RmbcTlcfBSm7aHJCdvy+p4vrw2E8/Z
-         +yw9mrvXrCfKymmGxJ80EPwwAiW5MXX2QUvAD3eM=
+        b=pgGAaeAyek3TLUjXyHworDsQs9TIbSF3FJF2y87ysMsG25t1JhxjL5wXN0UeLvrk+
+         sE8Oa5pkxG5b94pYCi8Xx0wH67/ur2NzbjlepfD8k+ixXlql3vRr8WoC46j9imgpEW
+         4Gd4OpcbUOj9yDzBtGgOzoAagXw05XZVb0FBN2z0=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kGJkO-00EINs-GU; Thu, 10 Sep 2020 12:24:08 +0200
+        id 1kGJkO-00EINw-I1; Thu, 10 Sep 2020 12:24:08 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 07/14] IB/srpt: docs: add a description for cq_size member
-Date:   Thu, 10 Sep 2020 12:24:00 +0200
-Message-Id: <9f7e93204581a25e4b90273da7bc288459afae12.1599732764.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 08/14] rcu/tree: docs: document bkvcache new members at struct kfree_rcu_cpu
+Date:   Thu, 10 Sep 2020 12:24:01 +0200
+Message-Id: <40164da02303db3f9bafa6719cf509ffe6af1518.1599732764.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1599732764.git.mchehab+huawei@kernel.org>
 References: <cover.1599732764.git.mchehab+huawei@kernel.org>
@@ -44,32 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
-added a new member for struct srpt_rdma_ch, but didn't add the
-corresponding kernel-doc markup, as repoted when doing
+Changeset 53c72b590b3a ("rcu/tree: cache specified number of objects")
+added new members for struct kfree_rcu_cpu, but didn't add the
+corresponding at the kernel-doc markup, as repoted when doing
 "make htmldocs":
-	./drivers/infiniband/ulp/srpt/ib_srpt.h:331: warning: Function parameter or member 'cq_size' not described in 'srpt_rdma_ch'
+	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'bkvcache' not described in 'kfree_rcu_cpu'
+	./kernel/rcu/tree.c:3113: warning: Function parameter or member 'nr_bkv_objs' not described in 'kfree_rcu_cpu'
 
-Add a description for it.
+So, move the description for bkvcache to kernel-doc, and add a
+description for nr_bkv_objs.
 
-Fixes: c804af2c1d31 ("IB/srpt: use new shared CQ mechanism")
+Fixes: 53c72b590b3a ("rcu/tree: cache specified number of objects")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/infiniband/ulp/srpt/ib_srpt.h | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/tree.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/srpt/ib_srpt.h b/drivers/infiniband/ulp/srpt/ib_srpt.h
-index 41435a699b53..e5d6af14d073 100644
---- a/drivers/infiniband/ulp/srpt/ib_srpt.h
-+++ b/drivers/infiniband/ulp/srpt/ib_srpt.h
-@@ -256,6 +256,7 @@ enum rdma_ch_state {
-  * @rdma_cm:	   See below.
-  * @rdma_cm.cm_id: RDMA CM ID associated with the channel.
-  * @cq:            IB completion queue for this channel.
-+ * @cq_size:	   Size of the @cq pool.
-  * @zw_cqe:	   Zero-length write CQE.
-  * @rcu:           RCU head.
-  * @kref:	   kref for this channel.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 7623128d0020..395e69cda916 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3085,6 +3085,12 @@ struct kfree_rcu_cpu_work {
+  * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+  * @initialized: The @rcu_work fields have been initialized
+  * @count: Number of objects for which GP not started
++ * @bkvcache:
++ *	A simple cache list that contains objects for reuse purpose.
++ *	In order to save some per-cpu space the list is singular.
++ *	Even though it is lockless an access has to be protected by the
++ *	per-cpu lock.
++ * @nr_bkv_objs: number of allocated objects at @bkvcache.
+  *
+  * This is a per-CPU structure.  The reason that it is not included in
+  * the rcu_data structure is to permit this code to be extracted from
+@@ -3100,14 +3106,6 @@ struct kfree_rcu_cpu {
+ 	bool monitor_todo;
+ 	bool initialized;
+ 	int count;
+-
+-	/*
+-	 * A simple cache list that contains objects for
+-	 * reuse purpose. In order to save some per-cpu
+-	 * space the list is singular. Even though it is
+-	 * lockless an access has to be protected by the
+-	 * per-cpu lock.
+-	 */
+ 	struct llist_head bkvcache;
+ 	int nr_bkv_objs;
+ };
 -- 
 2.26.2
 
