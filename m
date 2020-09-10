@@ -2,199 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22D1265597
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 01:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469092655A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 01:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725372AbgIJXpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 19:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
+        id S1725320AbgIJXr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 19:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgIJXps (ORCPT
+        with ESMTP id S1725283AbgIJXrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 19:45:48 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B0AC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 16:45:48 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id cy2so4291919qvb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 16:45:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1cv5j35BABg4q2f4/PUHEsEap0GTGj1LrVIdAlf5e5I=;
-        b=qGkU2ngtRzd1MnDmFePrSWXuIuG33/CjbOW7gF6fH38AAZidSofTZ4SdeT0s5s4a/9
-         bX1NKKOffNfkiv9lf5K8aeMoAfFO+NmlQ1ZcLxSs/U2QLdmuAFauBA9AeGFzx8a+ABR0
-         Ze8wJG4i7ZztnJ53Zh2v2JxyEWHMAs1MVXfUzWspSNk0DdKyToJJMwtjPx92K5BJT02M
-         D3gFxhIfQiQO8spmv6UqzaqU3cdZBCENZERhgLFy3snm7Ik12B64AT+gCrEekGA6rXLe
-         jjAxLweP+D+wLZUJvLyiYhVpw2K10W0JHNjHuo2xPqdDOtbC8WLPCbeJ5ETd2C5mKwGB
-         ylnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1cv5j35BABg4q2f4/PUHEsEap0GTGj1LrVIdAlf5e5I=;
-        b=MFTMqOvC0xzl0an9+IbtYOl3JzxIrizxFnbNgQPwuFoa3pVKc1F+sEkv0Zwh+mCdX0
-         13J8VHqiPxgIanvurzI0vzKStB55Hpk7914gtSyfvB3vTBWxk9ftADlcwnwSDkhjz9CK
-         RVrfPWQpd2Sv592rHswJJxHpNNbs5S54WRKAmoytCkEP00aw1fGhiYVnqnDTUVIjdGQJ
-         +LLYs5wV4P42cLeRMWGCina2qIb2kbc1ZUrDSAo/rARxjDmkxoyIYHPbWQ9jTboqymLa
-         saP2HOppqiQ78HfUHZl0o3TeH3hlnyU9sC7HFpAtuyDchWjpKGJD57DCEx6E0mP62WSW
-         LhYw==
-X-Gm-Message-State: AOAM532jzVQHUJ/0R2saMNty60VddH+ItkKaZwZtlMlDXnTITou5Lcpk
-        BqJNjInjK7sWUJzDF+p3FjiQtA==
-X-Google-Smtp-Source: ABdhPJw8zaFnhCta+8BO94bH8EWlMXGJLBrw/PW+lcHMmANnFPR+jOwF9U7s/VpS5KmvZX1sAal6BA==
-X-Received: by 2002:ad4:56a6:: with SMTP id bd6mr11148014qvb.22.1599781546904;
-        Thu, 10 Sep 2020 16:45:46 -0700 (PDT)
-Received: from uller (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
-        by smtp.gmail.com with ESMTPSA id g5sm332403qtx.43.2020.09.10.16.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 16:45:46 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 23:45:44 +0000
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>, gregkh@linuxfoundation.org,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
-        rojay@codeaurora.org, msavaliy@qti.qualcomm.com,
-        dianders@chromium.org
-Subject: Re: [PATCH V5 2/4] arm64: dts: qcom: sc7180: Add necessary pinctrl
- and interrupt config for BT UART
-Message-ID: <20200910234544.GC472@uller>
-References: <1599742438-16811-1-git-send-email-skakit@codeaurora.org>
- <1599742438-16811-3-git-send-email-skakit@codeaurora.org>
+        Thu, 10 Sep 2020 19:47:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1CCC061756;
+        Thu, 10 Sep 2020 16:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=gATiEIJ5yym8gDZW7pIpWvARxJPI7Am+GdMp2jh+5MM=; b=NU+A3j4UiyhwWUqTbemQKJ7NoT
+        bJbdq0iulAfED6zqYzsugnRZeP4UFzoCZXBTUxe3UU0nxN1pxpDgbXamafmx7vgty1r6sztkFceoc
+        uhCtLXWHHlRk8UEarcpLejYVsKtGgEDyGzsi1+3zAjHhmygjlNrGDioIz9zRv1FhKFM6KhSKpk31W
+        9giPinWY+QjDf/q+iQqddSd89v8Xi9iu/rSoc6Qc49vUBRfO7hQxKyAA3RwyRbQ3MzGLfQgWh0J7X
+        BFCVnyNyY/g0MCXWFxTQJUOtq/pm5rcIOT9stXwsB8VLtzKhCFJprAB/2wZXJI9/bYGDR9edkQMRp
+        lHM6Bawg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGWHU-0001RW-R5; Thu, 10 Sep 2020 23:47:08 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net
+Subject: [PATCH v2 0/9] THP iomap patches for 5.10
+Date:   Fri, 11 Sep 2020 00:46:58 +0100
+Message-Id: <20200910234707.5504-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599742438-16811-3-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Sep 12:53 UTC 2020, satya priya wrote:
+These patches are carefully plucked from the THP series.  I would like
+them to hit 5.10 to make the THP patchset merge easier.  Some of these
+are just generic improvements that make sense on their own terms, but
+the overall intent is to support THPs in iomap.
 
-> Add a suitable sleep configuration for uart3 to support Bluetooth wakeup.
-> 
-> If QUP function is selected in sleep state, UART RTS/RFR is pulled high
-> during suspend and BT SoC not able to send wakeup bytes. So, configure
-> GPIO mode in sleep state to keep it low during suspend.
-> 
+v2:
+ - Move the call to flush_dcache_page (Christoph)
+ - Clarify comments (Darrick)
+ - Rename read_count to read_bytes_pending (Christoph)
+ - Rename write_count to write_bytes_pending (Christoph)
+ - Restructure iomap_readpage_actor() (Christoph)
+ - Change return type of the zeroing functions from loff_t to s64
 
-But patch 4 says that you change this behavior, is that patch really
-needed if we switch the pins to GPIO, or if this patch really needed if
-we merge patch 4?
+Matthew Wilcox (Oracle) (9):
+  iomap: Fix misplaced page flushing
+  fs: Introduce i_blocks_per_page
+  iomap: Use kzalloc to allocate iomap_page
+  iomap: Use bitmap ops to set uptodate bits
+  iomap: Support arbitrarily many blocks per page
+  iomap: Convert read_count to read_bytes_pending
+  iomap: Convert write_count to write_bytes_pending
+  iomap: Convert iomap_write_end types
+  iomap: Change calling convention for zeroing
 
-Could it be that in lower power states we drop the power to the uart
-block and rely on the PDC to wait for the BT chip to start sending the
-wakeup bytes on the rx pin?
+ fs/dax.c                |  13 ++-
+ fs/iomap/buffered-io.c  | 173 +++++++++++++++++-----------------------
+ fs/jfs/jfs_metapage.c   |   2 +-
+ fs/xfs/xfs_aops.c       |   2 +-
+ include/linux/dax.h     |   3 +-
+ include/linux/pagemap.h |  16 ++++
+ 6 files changed, 96 insertions(+), 113 deletions(-)
 
+-- 
+2.28.0
 
-This commit will become the reference for all other platforms where we
-enable the same functionality, so better document it properly.
-
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
-> ---
-> Changes in V2:
->  - This patch adds sleep state for BT UART. Newly added in V2.
-> 
-> Changes in V3:
->  - Remove "output-high" for TX from both sleep and default states
->    as it is not required. Configure pull-up for TX in sleep state.
-> 
-> Changes in V4:
->  - As per Matthias's comment, removed drive-strength for sleep state
->    and fixed nit-pick.
-> 
-> Changes in V5:
->  - As per Matthias's comments, moved pinmux change for sleep state,
->    pinctrl and interrupt config to the board specific file.
-> 
->  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 48 +++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-> index 04888df..e529a41 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
-> @@ -344,6 +344,10 @@
->  };
->  
->  &uart3 {
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-1 = <&qup_uart3_sleep>;
-> +	interrupts-extended = <&intc GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
-> +				<&tlmm 41 IRQ_TYPE_EDGE_FALLING>;
->  	status = "okay";
->  
->  	bluetooth: wcn3990-bt {
-> @@ -545,3 +549,47 @@
->  	};
->  };
->  
-> +&tlmm {
-> +	qup_uart3_sleep: qup-uart3-sleep {
-> +		pinmux {
-> +			pins = "gpio38", "gpio39",
-> +			       "gpio40", "gpio41";
-> +			function = "gpio";
-> +		};
-> +
-> +		pinconf-cts {
-> +			/*
-> +			 * Configure a pull-down on CTS to match the pull of
-> +			 * the Bluetooth module.
-> +			 */
-> +			pins = "gpio38";
-> +			bias-pull-down;
-> +		};
-> +
-> +		pinconf-rts {
-> +			/*
-> +			 * Configure pull-down on RTS to make sure that the BT SoC can
-> +			 * wake up the system by sending wakeup bytes during suspend.
-
-So "request to send" is active low and pulling it low will indicate to
-the BT chip that it's allowed to wake us up by pulling rx low?
-
-I would like this comment to really describe what's actually going on.
-
-> +			 */
-> +			 pins = "gpio39";
-> +			 bias-pull-down;
-> +		};
-> +
-> +		pinconf-tx {
-> +			/* Configure pull-up on TX when it isn't actively driven */
-
-Sure, but why? Wouldn't that be to prevent the BT chip from receiving
-garbage while the SoC is asleep?
-
-> +			pins = "gpio40";
-> +			bias-pull-up;
-> +		};
-> +
-> +		pinconf-rx {
-> +			/*
-> +			 * Configure a pull-up on RX. This is needed to avoid
-> +			 * garbage data when the TX pin of the Bluetooth module is
-> +			 * in tri-state (module powered off or not driving the
-> +			 * signal yet).
-> +			 */
-
-It's nice to avoid "garbage data", but isn't the real reason that the
-floating pin on the other side would cause spurious wakeups?
-
-Regards,
-Bjorn
-
-> +			pins = "gpio41";
-> +			bias-pull-up;
-> +		};
-> +	};
-> +};
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
