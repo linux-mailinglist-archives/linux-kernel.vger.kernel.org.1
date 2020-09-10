@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9691264F47
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3D4264EF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgIJTj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40702 "EHLO mail.kernel.org"
+        id S1727101AbgIJTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731263AbgIJPmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:42:09 -0400
-Received: from localhost.localdomain (unknown [194.230.155.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727943AbgIJT3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 15:29:20 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F3E0F2087C;
-        Thu, 10 Sep 2020 15:41:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 077E0207DE;
+        Thu, 10 Sep 2020 19:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599752519;
-        bh=P91+gTcFqZsVXHGB3OESB5O/+DN+aXhnKMJXknOiXEE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gK7UKUQXnZfxgXKXiWYA2RFHQC2GxckJQpn1qPSGEYxp1QBGvdF86cm775y+PARHW
-         sNWZ2Se3EXiwgExLq5sEnNY5gwNWE76BeeYDIoiBxv+SL13Air3hHqqwasg+jEzrPk
-         ZcHVtgevAPLG5EQBScqj/fz5CdHEW/tsbft/1RlI=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tomasz Figa <t.figa@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org
-Subject: [PATCH 1/2] ARM: samsung: fix PM debug build with DEBUG_LL but !MMU
-Date:   Thu, 10 Sep 2020 17:41:49 +0200
-Message-Id: <20200910154150.3318-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        s=default; t=1599766159;
+        bh=xdEi+nnHPoX5+tUHKLW+zfHZQoV5peod/7jyP2Gpm2M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RLBqZtOnV1AeXSaA467zCMMCU+znsxkYt803axM7g++QJ8p3fwxC9VyJmfswYrA8l
+         bJOgluRzemVb3+QGs8hx+httc+U05KpcvvPbBG+aRmZjznhs0UEfOFVVHc63VY/oFO
+         qLVDZhOitrvd11Sb/WFEArDcs0vQpWck4UBWDb94=
+Date:   Thu, 10 Sep 2020 12:29:12 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
+        <joabreu@synopsys.com>, <davem@davemloft.net>,
+        <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: Re: [PATCH net-next] net: stmmac: Remove unused variable 'ret' at
+ stmmac_rx_buf1_len()
+Message-ID: <20200910122912.5792f657@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1599705765-15562-1-git-send-email-luojiaxing@huawei.com>
+References: <1599705765-15562-1-git-send-email-luojiaxing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Selecting CONFIG_SAMSUNG_PM_DEBUG (depending on CONFIG_DEBUG_LL) but
-without CONFIG_MMU leads to build errors:
+On Thu, 10 Sep 2020 10:42:45 +0800 Luo Jiaxing wrote:
+> Fixes the following warning when using W=3D1 to build kernel:
+>=20
+> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3634:6: warning: variab=
+le =E2=80=98ret=E2=80=99 set but not used [-Wunused-but-set-variable]
+> int ret, coe =3D priv->hw->rx_csum;
+>=20
+> When digging stmmac_get_rx_header_len(), dwmac4_get_rx_header_len() and
+> dwxgmac2_get_rx_header_len() return 0 by default. Therefore, ret do not
+> need to check the error value and can be directly deleted.
+>=20
+> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/=
+net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 89b2b34..7e95412 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -3631,15 +3631,15 @@ static unsigned int stmmac_rx_buf1_len(struct stm=
+mac_priv *priv,
+>  				       struct dma_desc *p,
+>  				       int status, unsigned int len)
+>  {
+> -	int ret, coe =3D priv->hw->rx_csum;
+>  	unsigned int plen =3D 0, hlen =3D 0;
+> +	int coe =3D priv->hw->rx_csum;
+> =20
+>  	/* Not first descriptor, buffer is always zero */
+>  	if (priv->sph && len)
+>  		return 0;
+> =20
+>  	/* First descriptor, get split header length */
+> -	ret =3D stmmac_get_rx_header_len(priv, p, &hlen);
+> +	stmmac_get_rx_header_len(priv, p, &hlen);
 
-  arch/arm/plat-samsung/pm-debug.c: In function ‘s3c_pm_uart_base’:
-  arch/arm/plat-samsung/pm-debug.c:57:2: error:
-    implicit declaration of function ‘debug_ll_addr’ [-Werror=implicit-function-declaration]
+This function should return void if there never are any errors to
+report.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 99b2fc2b8b40 ("ARM: SAMSUNG: Use debug_ll_addr() to get UART base address")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
----
-
-Patchset is rebased on v5.9-rc1.
----
- arch/arm/plat-samsung/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/plat-samsung/Kconfig b/arch/arm/plat-samsung/Kconfig
-index 301e572651c0..790c87ee7271 100644
---- a/arch/arm/plat-samsung/Kconfig
-+++ b/arch/arm/plat-samsung/Kconfig
-@@ -241,6 +241,7 @@ config SAMSUNG_PM_DEBUG
- 	depends on PM && DEBUG_KERNEL
- 	depends on PLAT_S3C24XX || ARCH_S3C64XX || ARCH_S5PV210
- 	depends on DEBUG_EXYNOS_UART || DEBUG_S3C24XX_UART || DEBUG_S3C2410_UART
-+	depends on DEBUG_LL && MMU
- 	help
- 	  Say Y here if you want verbose debugging from the PM Suspend and
- 	  Resume code. See <file:Documentation/arm/samsung-s3c24xx/suspend.rst>
--- 
-2.17.1
+>  	if (priv->sph && hlen) {
+>  		priv->xstats.rx_split_hdr_pkt_n++;
+>  		return hlen;
 
