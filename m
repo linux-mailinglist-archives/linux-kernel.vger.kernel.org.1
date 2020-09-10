@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D2426420E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E13264268
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730699AbgIJJcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730493AbgIJJYT (ORCPT
+        id S1730726AbgIJJh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:37:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38814 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730315AbgIJJWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:24:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4132CC0617A3;
-        Thu, 10 Sep 2020 02:22:18 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 09:22:13 -0000
+        Thu, 10 Sep 2020 05:22:20 -0400
+Date:   Thu, 10 Sep 2020 09:22:14 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599729734;
+        s=2020; t=1599729735;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CZJz1Y6M5PqMAlDrDRPUbV+0BJlWMteh6oW10ZkxtQU=;
-        b=Pmk0wK5G5jmddpwn+jiidAe8oeEG/m9TuaFM4Swq+HFJV3MkA9BQ6Iy2l6kxSIiE0Gpd/N
-        B3Q4LYMSE/S0r1nM2pY/0k385fAMPnivqQIOh9S4ZN4NMkq/b4q+4jZ0I3bC53xBQ3N7zt
-        pU04obwYpGAa0K+vQZ1S6UnXpK4iwvT1Fq86bLkTTNZa2XMb1bv6bUOhBXw0jl1hqrXtxa
-        5GbuOBWara/N8vJqG5zXUaE6s8VByO8OuPaZ8R/yPOPsA4zDocTy6+/0q/Ik2ukKJRfCDq
-        UJ25gglMFElvxeenXJVkAzbR/WTy3XD3HBQKyTRsWMaiLUPIjXcvHKlUkebF9w==
+        bh=+70YWtja6WPMVg/d2lG2PVX2t6THV+3luU+Y6CfzNko=;
+        b=1aI9dYC/fLWdDSfEr89kwhXiDnT4y1/lRctb7ZSoumDc0k9FYjVKIf6Gqje3pZOD7Ectgx
+        nw7FrxQnv7WudrwCKBaX21Y6I+depJm+EXq7WnGs1gdAqxe8IrH79O/SeUIBBct07SlIAH
+        drlPKDkC1FJI/lgRCEISnD2KdLXbUh88tV2SI8T6713M2VyIYPB6CeeL1s+V4f/5NaBP4V
+        TkAtVzBvWxbjaTNyWDqif3kt+hv4kSDdTszXV0XCVI7QThVXue9+Klb+AcnytGg4f0vX3I
+        CRSfRPuSx+jwGXLkslotDG3TqzCmNH0uQWfhtQ8QMGNh6CF99bPWJDuRjLau2g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599729734;
+        s=2020e; t=1599729735;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CZJz1Y6M5PqMAlDrDRPUbV+0BJlWMteh6oW10ZkxtQU=;
-        b=fDLfw5cbNAptVG3SqigErv4AtCppFrEcepLzSKKEWrkmV8MZQrDedjqLazhLsktFNQkB7M
-        eezy87JVeqYKdsCA==
+        bh=+70YWtja6WPMVg/d2lG2PVX2t6THV+3luU+Y6CfzNko=;
+        b=do972AqbgmoOcvwQH+oinIpTk+NXXqXY0VhBK8CkLWiHuquZIA9DCISMx9LWwdSlBJjF+X
+        MdHnj559g75An/Dg==
 From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/dumpstack/64: Add noinstr version of get_stack_info()
+Subject: [tip: x86/seves] x86/sev-es: Allocate and map an IST stack for #VC handler
 Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200907131613.12703-45-joro@8bytes.org>
-References: <20200907131613.12703-45-joro@8bytes.org>
+In-Reply-To: <20200907131613.12703-43-joro@8bytes.org>
+References: <20200907131613.12703-43-joro@8bytes.org>
 MIME-Version: 1.0
-Message-ID: <159972973395.20229.434586447788491195.tip-bot2@tip-bot2>
+Message-ID: <159972973476.20229.9157533137509962211.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,153 +57,222 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/seves branch of tip:
 
-Commit-ID:     6b27edd74a5e9669120f7bd0ae1f475d124c1042
-Gitweb:        https://git.kernel.org/tip/6b27edd74a5e9669120f7bd0ae1f475d124c1042
+Commit-ID:     02772fb9b68e6a72a5e17f994048df832fe2b15e
+Gitweb:        https://git.kernel.org/tip/02772fb9b68e6a72a5e17f994048df832fe2b15e
 Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Mon, 07 Sep 2020 15:15:45 +02:00
+AuthorDate:    Mon, 07 Sep 2020 15:15:43 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
 CommitterDate: Wed, 09 Sep 2020 11:33:19 +02:00
 
-x86/dumpstack/64: Add noinstr version of get_stack_info()
+x86/sev-es: Allocate and map an IST stack for #VC handler
 
-The get_stack_info() functionality is needed in the entry code for the
-#VC exception handler. Provide a version of it in the .text.noinstr
-section which can be called safely from there.
+Allocate and map an IST stack and an additional fall-back stack for
+the #VC handler.  The memory for the stacks is allocated only when
+SEV-ES is active.
+
+The #VC handler needs to use an IST stack because a #VC exception can be
+raised from kernel space with unsafe stack, e.g. in the SYSCALL entry
+path.
+
+Since the #VC exception can be nested, the #VC handler switches back to
+the interrupted stack when entered from kernel space. If switching back
+is not possible, the fall-back stack is used.
 
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200907131613.12703-45-joro@8bytes.org
+Link: https://lkml.kernel.org/r/20200907131613.12703-43-joro@8bytes.org
 ---
- arch/x86/include/asm/stacktrace.h |  2 ++-
- arch/x86/kernel/dumpstack.c       |  7 +++---
- arch/x86/kernel/dumpstack_64.c    | 38 +++++++++++++++++-------------
- arch/x86/mm/cpu_entry_area.c      |  3 +-
- 4 files changed, 30 insertions(+), 20 deletions(-)
+ arch/x86/include/asm/cpu_entry_area.h | 33 ++++++++++++++++----------
+ arch/x86/include/asm/page_64_types.h  |  1 +-
+ arch/x86/kernel/cpu/common.c          |  2 ++-
+ arch/x86/kernel/dumpstack_64.c        |  8 ++++--
+ arch/x86/kernel/sev-es.c              | 33 ++++++++++++++++++++++++++-
+ 5 files changed, 63 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/include/asm/stacktrace.h b/arch/x86/include/asm/stacktrace.h
-index 5ae5a68..4960064 100644
---- a/arch/x86/include/asm/stacktrace.h
-+++ b/arch/x86/include/asm/stacktrace.h
-@@ -35,6 +35,8 @@ bool in_entry_stack(unsigned long *stack, struct stack_info *info);
+diff --git a/arch/x86/include/asm/cpu_entry_area.h b/arch/x86/include/asm/cpu_entry_area.h
+index 8902fdb..3d52b09 100644
+--- a/arch/x86/include/asm/cpu_entry_area.h
++++ b/arch/x86/include/asm/cpu_entry_area.h
+@@ -11,25 +11,29 @@
+ #ifdef CONFIG_X86_64
  
- int get_stack_info(unsigned long *stack, struct task_struct *task,
- 		   struct stack_info *info, unsigned long *visit_mask);
-+bool get_stack_info_noinstr(unsigned long *stack, struct task_struct *task,
-+			    struct stack_info *info);
+ /* Macro to enforce the same ordering and stack sizes */
+-#define ESTACKS_MEMBERS(guardsize)		\
+-	char	DF_stack_guard[guardsize];	\
+-	char	DF_stack[EXCEPTION_STKSZ];	\
+-	char	NMI_stack_guard[guardsize];	\
+-	char	NMI_stack[EXCEPTION_STKSZ];	\
+-	char	DB_stack_guard[guardsize];	\
+-	char	DB_stack[EXCEPTION_STKSZ];	\
+-	char	MCE_stack_guard[guardsize];	\
+-	char	MCE_stack[EXCEPTION_STKSZ];	\
+-	char	IST_top_guard[guardsize];	\
++#define ESTACKS_MEMBERS(guardsize, optional_stack_size)		\
++	char	DF_stack_guard[guardsize];			\
++	char	DF_stack[EXCEPTION_STKSZ];			\
++	char	NMI_stack_guard[guardsize];			\
++	char	NMI_stack[EXCEPTION_STKSZ];			\
++	char	DB_stack_guard[guardsize];			\
++	char	DB_stack[EXCEPTION_STKSZ];			\
++	char	MCE_stack_guard[guardsize];			\
++	char	MCE_stack[EXCEPTION_STKSZ];			\
++	char	VC_stack_guard[guardsize];			\
++	char	VC_stack[optional_stack_size];			\
++	char	VC2_stack_guard[guardsize];			\
++	char	VC2_stack[optional_stack_size];			\
++	char	IST_top_guard[guardsize];			\
  
- const char *stack_type_name(enum stack_type type);
- 
-diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
-index 48ce445..74147f7 100644
---- a/arch/x86/kernel/dumpstack.c
-+++ b/arch/x86/kernel/dumpstack.c
-@@ -29,8 +29,8 @@ static int die_counter;
- 
- static struct pt_regs exec_summary_regs;
- 
--bool in_task_stack(unsigned long *stack, struct task_struct *task,
--		   struct stack_info *info)
-+bool noinstr in_task_stack(unsigned long *stack, struct task_struct *task,
-+			   struct stack_info *info)
- {
- 	unsigned long *begin = task_stack_page(task);
- 	unsigned long *end   = task_stack_page(task) + THREAD_SIZE;
-@@ -46,7 +46,8 @@ bool in_task_stack(unsigned long *stack, struct task_struct *task,
- 	return true;
- }
- 
--bool in_entry_stack(unsigned long *stack, struct stack_info *info)
-+/* Called from get_stack_info_noinstr - so must be noinstr too */
-+bool noinstr in_entry_stack(unsigned long *stack, struct stack_info *info)
- {
- 	struct entry_stack *ss = cpu_entry_stack(smp_processor_id());
- 
-diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
-index c49cf59..1dd8513 100644
---- a/arch/x86/kernel/dumpstack_64.c
-+++ b/arch/x86/kernel/dumpstack_64.c
-@@ -85,7 +85,7 @@ struct estack_pages estack_pages[CEA_ESTACK_PAGES] ____cacheline_aligned = {
- 	EPAGERANGE(VC2),
+ /* The exception stacks' physical storage. No guard pages required */
+ struct exception_stacks {
+-	ESTACKS_MEMBERS(0)
++	ESTACKS_MEMBERS(0, 0)
  };
  
--static bool in_exception_stack(unsigned long *stack, struct stack_info *info)
-+static __always_inline bool in_exception_stack(unsigned long *stack, struct stack_info *info)
- {
- 	unsigned long begin, end, stk = (unsigned long)stack;
- 	const struct estack_pages *ep;
-@@ -126,7 +126,7 @@ static bool in_exception_stack(unsigned long *stack, struct stack_info *info)
- 	return true;
- }
+ /* The effective cpu entry area mapping with guard pages. */
+ struct cea_exception_stacks {
+-	ESTACKS_MEMBERS(PAGE_SIZE)
++	ESTACKS_MEMBERS(PAGE_SIZE, EXCEPTION_STKSZ)
+ };
  
--static bool in_irq_stack(unsigned long *stack, struct stack_info *info)
-+static __always_inline bool in_irq_stack(unsigned long *stack, struct stack_info *info)
- {
- 	unsigned long *end   = (unsigned long *)this_cpu_read(hardirq_stack_ptr);
- 	unsigned long *begin = end - (IRQ_STACK_SIZE / sizeof(long));
-@@ -151,32 +151,38 @@ static bool in_irq_stack(unsigned long *stack, struct stack_info *info)
- 	return true;
- }
+ /*
+@@ -40,6 +44,8 @@ enum exception_stack_ordering {
+ 	ESTACK_NMI,
+ 	ESTACK_DB,
+ 	ESTACK_MCE,
++	ESTACK_VC,
++	ESTACK_VC2,
+ 	N_EXCEPTION_STACKS
+ };
  
--int get_stack_info(unsigned long *stack, struct task_struct *task,
--		   struct stack_info *info, unsigned long *visit_mask)
-+bool noinstr get_stack_info_noinstr(unsigned long *stack, struct task_struct *task,
-+				    struct stack_info *info)
- {
--	if (!stack)
--		goto unknown;
--
--	task = task ? : current;
--
- 	if (in_task_stack(stack, task, info))
--		goto recursion_check;
-+		return true;
+@@ -139,4 +145,7 @@ static inline struct entry_stack *cpu_entry_stack(int cpu)
+ #define __this_cpu_ist_top_va(name)					\
+ 	CEA_ESTACK_TOP(__this_cpu_read(cea_exception_stacks), name)
  
- 	if (task != current)
--		goto unknown;
-+		return false;
- 
- 	if (in_exception_stack(stack, info))
--		goto recursion_check;
-+		return true;
- 
- 	if (in_irq_stack(stack, info))
--		goto recursion_check;
-+		return true;
- 
- 	if (in_entry_stack(stack, info))
--		goto recursion_check;
-+		return true;
++#define __this_cpu_ist_bottom_va(name)					\
++	CEA_ESTACK_BOT(__this_cpu_read(cea_exception_stacks), name)
 +
-+	return false;
+ #endif
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 288b065..d0c6c10 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -28,6 +28,7 @@
+ #define	IST_INDEX_NMI		1
+ #define	IST_INDEX_DB		2
+ #define	IST_INDEX_MCE		3
++#define	IST_INDEX_VC		4
+ 
+ /*
+  * Set __PAGE_OFFSET to the most negative possible address +
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index c5d6f17..81fba4d 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1829,6 +1829,8 @@ static inline void tss_setup_ist(struct tss_struct *tss)
+ 	tss->x86_tss.ist[IST_INDEX_NMI] = __this_cpu_ist_top_va(NMI);
+ 	tss->x86_tss.ist[IST_INDEX_DB] = __this_cpu_ist_top_va(DB);
+ 	tss->x86_tss.ist[IST_INDEX_MCE] = __this_cpu_ist_top_va(MCE);
++	/* Only mapped when SEV-ES is active */
++	tss->x86_tss.ist[IST_INDEX_VC] = __this_cpu_ist_top_va(VC);
+ }
+ 
+ #else /* CONFIG_X86_64 */
+diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
+index 4a94d38..c49cf59 100644
+--- a/arch/x86/kernel/dumpstack_64.c
++++ b/arch/x86/kernel/dumpstack_64.c
+@@ -24,11 +24,13 @@ static const char * const exception_stack_names[] = {
+ 		[ ESTACK_NMI	]	= "NMI",
+ 		[ ESTACK_DB	]	= "#DB",
+ 		[ ESTACK_MCE	]	= "#MC",
++		[ ESTACK_VC	]	= "#VC",
++		[ ESTACK_VC2	]	= "#VC2",
+ };
+ 
+ const char *stack_type_name(enum stack_type type)
+ {
+-	BUILD_BUG_ON(N_EXCEPTION_STACKS != 4);
++	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
+ 
+ 	if (type == STACK_TYPE_IRQ)
+ 		return "IRQ";
+@@ -79,6 +81,8 @@ struct estack_pages estack_pages[CEA_ESTACK_PAGES] ____cacheline_aligned = {
+ 	EPAGERANGE(NMI),
+ 	EPAGERANGE(DB),
+ 	EPAGERANGE(MCE),
++	EPAGERANGE(VC),
++	EPAGERANGE(VC2),
+ };
+ 
+ static bool in_exception_stack(unsigned long *stack, struct stack_info *info)
+@@ -88,7 +92,7 @@ static bool in_exception_stack(unsigned long *stack, struct stack_info *info)
+ 	struct pt_regs *regs;
+ 	unsigned int k;
+ 
+-	BUILD_BUG_ON(N_EXCEPTION_STACKS != 4);
++	BUILD_BUG_ON(N_EXCEPTION_STACKS != 6);
+ 
+ 	begin = (unsigned long)__this_cpu_read(cea_exception_stacks);
+ 	/*
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 720b1b6..fae8145 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -17,6 +17,7 @@
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
+ 
++#include <asm/cpu_entry_area.h>
+ #include <asm/sev-es.h>
+ #include <asm/insn-eval.h>
+ #include <asm/fpu/internal.h>
+@@ -37,10 +38,41 @@ static struct ghcb __initdata *boot_ghcb;
+ /* #VC handler runtime per-CPU data */
+ struct sev_es_runtime_data {
+ 	struct ghcb ghcb_page;
++
++	/* Physical storage for the per-CPU IST stack of the #VC handler */
++	char ist_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
++
++	/*
++	 * Physical storage for the per-CPU fall-back stack of the #VC handler.
++	 * The fall-back stack is used when it is not safe to switch back to the
++	 * interrupted stack in the #VC entry code.
++	 */
++	char fallback_stack[EXCEPTION_STKSZ] __aligned(PAGE_SIZE);
+ };
+ 
+ static DEFINE_PER_CPU(struct sev_es_runtime_data*, runtime_data);
+ 
++static void __init setup_vc_stacks(int cpu)
++{
++	struct sev_es_runtime_data *data;
++	struct cpu_entry_area *cea;
++	unsigned long vaddr;
++	phys_addr_t pa;
++
++	data = per_cpu(runtime_data, cpu);
++	cea  = get_cpu_entry_area(cpu);
++
++	/* Map #VC IST stack */
++	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC);
++	pa    = __pa(data->ist_stack);
++	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
++
++	/* Map VC fall-back stack */
++	vaddr = CEA_ESTACK_BOT(&cea->estacks, VC2);
++	pa    = __pa(data->fallback_stack);
++	cea_set_pte((void *)vaddr, pa, PAGE_KERNEL);
 +}
 +
-+int get_stack_info(unsigned long *stack, struct task_struct *task,
-+		   struct stack_info *info, unsigned long *visit_mask)
-+{
-+	task = task ? : current;
+ /* Needed in vc_early_forward_exception */
+ void do_early_exception(struct pt_regs *regs, int trapnr);
  
--	goto unknown;
-+	if (!stack)
-+		goto unknown;
-+
-+	if (!get_stack_info_noinstr(stack, task, info))
-+		goto unknown;
+@@ -249,6 +281,7 @@ void __init sev_es_init_vc_handling(void)
+ 	for_each_possible_cpu(cpu) {
+ 		alloc_runtime_data(cpu);
+ 		init_ghcb(cpu);
++		setup_vc_stacks(cpu);
+ 	}
+ }
  
--recursion_check:
- 	/*
- 	 * Make sure we don't iterate through any given stack more than once.
- 	 * If it comes up a second time then there's something wrong going on:
-diff --git a/arch/x86/mm/cpu_entry_area.c b/arch/x86/mm/cpu_entry_area.c
-index 770b613..f5e1e60 100644
---- a/arch/x86/mm/cpu_entry_area.c
-+++ b/arch/x86/mm/cpu_entry_area.c
-@@ -21,7 +21,8 @@ DEFINE_PER_CPU(struct cea_exception_stacks*, cea_exception_stacks);
- DECLARE_PER_CPU_PAGE_ALIGNED(struct doublefault_stack, doublefault_stack);
- #endif
- 
--struct cpu_entry_area *get_cpu_entry_area(int cpu)
-+/* Is called from entry code, so must be noinstr */
-+noinstr struct cpu_entry_area *get_cpu_entry_area(int cpu)
- {
- 	unsigned long va = CPU_ENTRY_AREA_PER_CPU + cpu * CPU_ENTRY_AREA_SIZE;
- 	BUILD_BUG_ON(sizeof(struct cpu_entry_area) % PAGE_SIZE != 0);
