@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2DA2646D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967482646EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgIJNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 09:22:22 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44310 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730637AbgIJNS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:18:56 -0400
-Received: by mail-wr1-f66.google.com with SMTP id s12so6645175wrw.11
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:18:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jBLcgxMKAbS1n+eV0fIrOxnLTOdgcrxYXmGgYjmbzNc=;
-        b=cYGgBsovPCI9GsQi3tgODPRsJ++Nk/Q1do7WRDofOANKw+ZuAQzf9RtkUVMgzmMGKd
-         YULPVk1jC1sTsc8onNX/QUtCqR04n8HTSQdeJfc2Eu+4tZL2mm3/OzGkrv6z4L70kOPB
-         J4UteWYTZzAzUfTiOul3mWqUqtadcZ/CRM98MypVbXilRjBEN3tpOUxtpiDZUtdyjf6v
-         Vtge5yqh4wVFx3ugkCFeK7Tv4L13YiWe4XThXEi/IB3PORhc7eCGbO5KtKMfRH1ZHQ0d
-         rXk+gx8rUC6sY9noBGEZ9JuG+2XpiOoPz6OaFSwiWnikk4QCEmMA6MTuI1XiX9nLjOaM
-         E7cw==
-X-Gm-Message-State: AOAM533gjDvh948+ws7C3z76X2tAuaZg5zIeNE4zVOcSBHUQz9YEgaUT
-        EzSAJIa4s5IvgcqjkrSxjRh7k+WAeVnwg09NdBw=
-X-Google-Smtp-Source: ABdhPJzwRRz7MSfItsm5iWwVdskWnMYjeP04rqzvvAMNaPw6svYw4kD6cZVFQAKjysexDmFJVxl8DysHd1uaoDBDmE8=
-X-Received: by 2002:adf:a3c9:: with SMTP id m9mr9159127wrb.80.1599743916042;
- Thu, 10 Sep 2020 06:18:36 -0700 (PDT)
+        id S1730432AbgIJN0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 09:26:14 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11774 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730674AbgIJNY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:24:56 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1B9D3F4FDC170165F4B4;
+        Thu, 10 Sep 2020 21:24:41 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
+ 21:24:35 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <laurent.pinchart@ideasonboard.com>,
+        <kieran.bingham+renesas@ideasonboard.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] drm: rcar-du: add missing put_device() call in rcar_du_vsp_init()
+Date:   Thu, 10 Sep 2020 21:23:54 +0800
+Message-ID: <20200910132354.692397-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200908044228.61197-1-namhyung@kernel.org> <20200908044228.61197-2-namhyung@kernel.org>
- <20200910085926.GC1627030@krava>
-In-Reply-To: <20200910085926.GC1627030@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 10 Sep 2020 22:18:25 +0900
-Message-ID: <CAM9d7chYfxQWNkDVXk2vLPgn4EhkH3WcAve+zzVGc7Jshri5VA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] perf evsel: Add evsel__clone() function
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+if of_find_device_by_node() succeed, rcar_du_vsp_init() doesn't have
+a corresponding put_device(). Thus add a jump target to fix the exception
+handling for this function implementation.
 
-On Thu, Sep 10, 2020 at 5:59 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Tue, Sep 08, 2020 at 01:42:25PM +0900, Namhyung Kim wrote:
-> > The evsel__clone() is to create an exactly same evsel from same
-> > attributes.  Note that metric events will be handled by later patch.
-> >
-> > It will be used by perf stat to generate separate events for each
-> > cgroup.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/evsel.c | 57 +++++++++++++++++++++++++++++++++++++++++
-> >  tools/perf/util/evsel.h |  1 +
-> >  2 files changed, 58 insertions(+)
-> >
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index fd865002cbbd..4f50f9499973 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -331,6 +331,63 @@ struct evsel *evsel__new_cycles(bool precise)
-> >       goto out;
-> >  }
-> >
-> > +/**
-> > + * evsel__clone - create a new evsel copied from @orig
-> > + * @orig: original evsel
-> > + *
-> > + * The assumption is that @orig is not configured nor opened yet.
-> > + * So we only care about the attributes that can be set while it's parsed.
-> > + */
-> > +struct evsel *evsel__clone(struct evsel *orig)
-> > +{
-> > +     struct evsel *evsel;
-> > +     struct evsel_config_term *pos, *tmp;
-> > +
-> > +     BUG_ON(orig->core.fd);
-> > +
-> > +     evsel = evsel__new(&orig->core.attr);
-> > +     if (evsel == NULL)
-> > +             return NULL;
-> > +
-> > +     *evsel = *orig;
->
-> this seems wild ;-) I saw that assumption above,
-> but I wonder we could add some check or zero/init
-> the rest of the fields fields
+Fixes: 6d62ef3ac30b ("drm: rcar-du: Expose the VSP1 compositor through KMS planes")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/gpu/drm/rcar-du/rcar_du_vsp.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-Alternatively, we could only copy relevant fields explicitly.
-Other fields will remain zero by evsel__new() above.
-But it might be easy to be missed by future changes..
+diff --git a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+index f1a81c9b184d..172ee3f3b21c 100644
+--- a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
++++ b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+@@ -352,14 +352,16 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+ 
+ 	/* Find the VSP device and initialize it. */
+ 	pdev = of_find_device_by_node(np);
+-	if (!pdev)
+-		return -ENXIO;
++	if (!pdev) {
++		ret = -ENXIO;
++		goto put_device;
++	}
+ 
+ 	vsp->vsp = &pdev->dev;
+ 
+ 	ret = vsp1_du_init(vsp->vsp);
+ 	if (ret < 0)
+-		return ret;
++		goto put_device;
+ 
+ 	 /*
+ 	  * The VSP2D (Gen3) has 5 RPFs, but the VSP1D (Gen2) is limited to
+@@ -369,8 +371,10 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+ 
+ 	vsp->planes = devm_kcalloc(rcdu->dev, vsp->num_planes,
+ 				   sizeof(*vsp->planes), GFP_KERNEL);
+-	if (!vsp->planes)
+-		return -ENOMEM;
++	if (!vsp->planes) {
++		ret = -ENOMEM;
++		goto put_device;
++	}
+ 
+ 	for (i = 0; i < vsp->num_planes; ++i) {
+ 		enum drm_plane_type type = i < num_crtcs
+@@ -387,7 +391,7 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+ 					       ARRAY_SIZE(rcar_du_vsp_formats),
+ 					       NULL, type, NULL);
+ 		if (ret < 0)
+-			return ret;
++			goto put_device;
+ 
+ 		drm_plane_helper_add(&plane->plane,
+ 				     &rcar_du_vsp_plane_helper_funcs);
+@@ -403,4 +407,7 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+ 	}
+ 
+ 	return 0;
++put_device:
++	put_device(&pdev->dev);
++	return ret;
+ }
+-- 
+2.25.4
 
-Thanks
-Namhyung
