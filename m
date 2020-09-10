@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF05B26402A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FDF26401A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726976AbgIJIha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:37:30 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2803 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730172AbgIJIfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:35:53 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id DE293607B043E8409500;
-        Thu, 10 Sep 2020 09:35:50 +0100 (IST)
-Received: from [127.0.0.1] (10.47.1.235) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 10 Sep
- 2020 09:35:49 +0100
-Subject: Re: [PATCH v8 13/18] scsi: core: Show nr_hw_queues in sysfs
-To:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <don.brace@microsemi.com>,
-        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <dgilbert@interlog.com>,
-        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>
-CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <1597850436-116171-14-git-send-email-john.garry@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <7b9a1f0e-04c4-e473-0ff8-4843e0f1af34@huawei.com>
-Date:   Thu, 10 Sep 2020 09:33:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1730355AbgIJIfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:35:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42614 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730551AbgIJIfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 04:35:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D18B8B20B;
+        Thu, 10 Sep 2020 08:35:17 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 10:34:59 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [RFC 1/5] mm, page_alloc: clean up pageset high and batch update
+Message-ID: <20200910083459.GB2285@linux>
+References: <20200907163628.26495-1-vbabka@suse.cz>
+ <20200907163628.26495-2-vbabka@suse.cz>
+ <20200910083116.GA2285@linux>
 MIME-Version: 1.0
-In-Reply-To: <1597850436-116171-14-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.1.235]
-X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910083116.GA2285@linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2020 16:20, John Garry wrote:
-> So that we don't use a value of 0 for when Scsi_Host.nr_hw_queues is unset,
-> use the tag_set->nr_hw_queues (which holds 1 for this case).
+On Thu, Sep 10, 2020 at 10:31:20AM +0200, Oscar Salvador wrote:
+> On Mon, Sep 07, 2020 at 06:36:24PM +0200, Vlastimil Babka wrote:
+> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-
-Note that there has been no review on this patch yet.
-
-It's not strictly necessary, but I see it as useful. The same info can 
-be derived indirectly from block debugfs, but that's not always 
-available (debugfs, that is).
-
-Thanks,
-john
-
-> ---
->   drivers/scsi/scsi_sysfs.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
+> >  	for_each_possible_cpu(cpu)
+> > -		setup_pageset(&per_cpu(boot_pageset, cpu), 0);
+> > +		setup_pageset(&per_cpu(boot_pageset, cpu));
 > 
-> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-> index 163dbcb741c1..d6e344fa33ad 100644
-> --- a/drivers/scsi/scsi_sysfs.c
-> +++ b/drivers/scsi/scsi_sysfs.c
-> @@ -393,6 +393,16 @@ show_use_blk_mq(struct device *dev, struct device_attribute *attr, char *buf)
->   }
->   static DEVICE_ATTR(use_blk_mq, S_IRUGO, show_use_blk_mq, NULL);
->   
-> +static ssize_t
-> +show_nr_hw_queues(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct Scsi_Host *shost = class_to_shost(dev);
-> +	struct blk_mq_tag_set *tag_set = &shost->tag_set;
-> +
-> +	return snprintf(buf, 20, "%d\n", tag_set->nr_hw_queues);
-> +}
-> +static DEVICE_ATTR(nr_hw_queues, S_IRUGO, show_nr_hw_queues, NULL);
-> +
->   static struct attribute *scsi_sysfs_shost_attrs[] = {
->   	&dev_attr_use_blk_mq.attr,
->   	&dev_attr_unique_id.attr,
-> @@ -411,6 +421,7 @@ static struct attribute *scsi_sysfs_shost_attrs[] = {
->   	&dev_attr_prot_guard_type.attr,
->   	&dev_attr_host_reset.attr,
->   	&dev_attr_eh_deadline.attr,
-> +	&dev_attr_nr_hw_queues.attr,
->   	NULL
->   };
->   
+> This is not really anything important but I realized we have like 7 functions
+> messing with pcp lists, and everytime I try to follow them my head spins.
 > 
+> Since setup_pageset is only being called here, could we replace it by the
+> pageset_init and pageset_update?
+> 
+> (As I said, not important and probably a matter of taste. I just think that
+> having so many mini functions around is not always cool,
+> e.g: setup_zone_pageset->zone_pageset_init)
 
+Sorry, I did not see that you just did that in Patch#3, bleh.
+
+
+-- 
+Oscar Salvador
+SUSE L3
