@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622E226492D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C798B2648F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731323AbgIJP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:57:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48190 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731513AbgIJPzU (ORCPT
+        id S1731362AbgIJPjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:39:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42266 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730736AbgIJPiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:55:20 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AF20KA110560;
-        Thu, 10 Sep 2020 11:18:45 -0400
+        Thu, 10 Sep 2020 11:38:08 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AF2EN3074908;
+        Thu, 10 Sep 2020 11:18:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=RUjE8geQUfKJdleFxhslp2zP2B33QNPoIINZYifD8iU=;
- b=FMEDkw733leENqm6oVNBrKXrUlkoJX10udLb+AphbqatfaLEA3KgFRC4msJ+iMpDPlZa
- 0+N5Xx28E9/JTDmU9HiExKyuT8T81QDpBTN0onDPC2oZJn/yzvo+N5qiviHDIo+1F4u/
- 16qYfex3vHHgf9hwGfnm86ztj6kyPBQaoM0PZw4GbUXFOZQVL0uUy9+IutDIbV9slfXW
- M9paM6IA2GNodtdoDx6semhD0AR5662XyhCpRbbA6LBproPOOp+xYoxxtq6DsnT3wlts
- CTUAsigwf/ToeNSfItp4vnXL1qdE76O+SzEAZhF8jOz98Som3cPzFjOYWpS6gn09dcTR sA== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33fp6ss20d-1
+ bh=GbDZ7CBL/LYipeJIp2XxF3Pn1ncBwSbgSFF+3KzbL8k=;
+ b=XqNu86gtYDuMVkhJSOVDKsZb2ErtTuItMVO1cbHSnmirE6ANLxP0BZFyfwkGeyT1nbR9
+ 0W6ky73O1um/vKY4qTX+u/I5oePs52W/Xh/WVUpO+VbUkT5PUPRgGaYGmSTfh9zuZVa5
+ a6AMC6MXpVK1znA4R7KtHY0u7VTv81uN7k9k15xvM4rTsKh2XkHSUlWt9rgg2/jdEQUZ
+ SMRaJU/gOtQI+plnecPhc012W+XVM8w9ePf9kYs/NUFcYHauR+rI4dD4XpKb50HZRDll
+ /hdxPxHMfLroVAADQZAKuZEeABJ0VSvO3DsNX5Sv8ErmdJVQAd3+NgENSH3RIRtoOKos qg== 
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33fpd60nmw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Thu, 10 Sep 2020 11:18:45 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AFCAE0021779;
-        Thu, 10 Sep 2020 15:18:44 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 33c2a9teqy-1
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AFDZqI013601;
+        Thu, 10 Sep 2020 15:18:45 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04wdc.us.ibm.com with ESMTP id 33c2a98c31-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 15:18:44 +0000
+        Thu, 10 Sep 2020 15:18:45 +0000
 Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AFIe0N47448510
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AFIiTI55312666
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 15:18:40 GMT
+        Thu, 10 Sep 2020 15:18:44 GMT
 Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 946946E050;
-        Thu, 10 Sep 2020 15:18:43 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 3DEDF6E050;
+        Thu, 10 Sep 2020 15:18:44 +0000 (GMT)
 Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 083AA6E053;
+        by IMSVA (Postfix) with ESMTP id A47DC6E052;
         Thu, 10 Sep 2020 15:18:43 +0000 (GMT)
 Received: from SHADE6A.ibmuc.com (unknown [9.211.140.115])
         by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Sep 2020 15:18:42 +0000 (GMT)
+        Thu, 10 Sep 2020 15:18:43 +0000 (GMT)
 From:   Eddie James <eajames@linux.ibm.com>
 To:     linux-clk@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         andrew@aj.id.au, joel@jms.id.au, robh+dt@kernel.org,
         sboyd@kernel.org, mturquette@baylibre.com, alistair@popple.id.au,
         jk@ozlabs.org
-Subject: [PATCH 3/4] dt-bindings: fsi: Aspeed master: Add bus-frequency property
-Date:   Thu, 10 Sep 2020 10:18:39 -0500
-Message-Id: <20200910151840.25333-4-eajames@linux.ibm.com>
+Subject: [PATCH 4/4] fsi: Aspeed master: Set bus frequency from devicetree
+Date:   Thu, 10 Sep 2020 10:18:40 -0500
+Message-Id: <20200910151840.25333-5-eajames@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200910151840.25333-1-eajames@linux.ibm.com>
 References: <20200910151840.25333-1-eajames@linux.ibm.com>
@@ -65,36 +65,50 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_04:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- bulkscore=0 priorityscore=1501 malwarescore=0 adultscore=0 impostorscore=0
- lowpriorityscore=0 suspectscore=1 spamscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009100130
+ definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1015 priorityscore=1501 spamscore=0 suspectscore=1 bulkscore=0
+ mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100130
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bus-frequency property.
+Set the FSI bus frequency based on the value encoded in the
+devicetree. The default value is 166MHz, which is the highest
+frequency some FSI slaves can accept.
 
 Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 ---
- Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/fsi/fsi-master-aspeed.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt b/Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
-index a513e65ec0c9..d84bd19526ca 100644
---- a/Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
-+++ b/Documentation/devicetree/bindings/fsi/fsi-master-aspeed.txt
-@@ -17,6 +17,7 @@ Optional properties:
+diff --git a/drivers/fsi/fsi-master-aspeed.c b/drivers/fsi/fsi-master-aspeed.c
+index c006ec008a1a..be19fee0bece 100644
+--- a/drivers/fsi/fsi-master-aspeed.c
++++ b/drivers/fsi/fsi-master-aspeed.c
+@@ -515,6 +515,7 @@ static int fsi_master_aspeed_probe(struct platform_device *pdev)
+ 	struct fsi_master_aspeed *aspeed;
+ 	struct resource *res;
+ 	int rc, links, reg;
++	u32 bus_freq = 166666666;
+ 	__be32 raw;
  
-  - fsi-routing-gpios: GPIO for setting the FSI mux (internal or cabled)
-  - fsi-mux-gpios: GPIO for detecting the desired FSI mux state
-+ - bus-frequency: the frequency of the FSI bus
- 
- 
- Examples:
+ 	rc = tacoma_cabled_fsi_fixup(&pdev->dev);
+@@ -539,6 +540,10 @@ static int fsi_master_aspeed_probe(struct platform_device *pdev)
+ 		dev_err(aspeed->dev, "couldn't get clock\n");
+ 		return PTR_ERR(aspeed->clk);
+ 	}
++
++	of_property_read_u32(pdev->dev.of_node, "bus-frequency", &bus_freq);
++	clk_set_rate(aspeed->clk, bus_freq);
++
+ 	rc = clk_prepare_enable(aspeed->clk);
+ 	if (rc) {
+ 		dev_err(aspeed->dev, "couldn't enable clock\n");
 -- 
 2.26.2
 
