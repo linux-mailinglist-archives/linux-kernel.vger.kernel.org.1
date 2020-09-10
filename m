@@ -2,159 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC51264C9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C094264CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgIJSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:16:38 -0400
-Received: from mail-bn8nam12on2086.outbound.protection.outlook.com ([40.107.237.86]:23745
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726287AbgIJSO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:14:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N6oBzjH+ltOGFYRajrtU1Tmlk+jVEm/P6si+t0v7qj9T3wYCtcDjISMpmnFOcne4/UsWtVsDqXE83ViOLp7jSUHY2y18K5Vv7+hurcypnZ6S57eJMtapRLqto3JOzsZ1E3BXMUGEIyJOs6fitbbPngQFWZFTwvFPVTsnndnjqCtlfUuYixkczs8kClT7nqnt66/jK6hJWSyPIXyZZo9VNEkAkT9z0ZaF4Kbfe1vCBX3WQTLHOa7EsHHlW7mDNeLd5d7DG0S+z/V0fT2moxIL7RLyt4ERnKC6zTCuSN/fuBpEZTcj1uwsNBeFLbfbnSSXAS3KGWEIW2OxULeBMWDyYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MHjB2unu+9Et4mo9cnxLh3GBS2bINldpk93zFl43Gzk=;
- b=gKa/Amvm7RvLB0dhff7ewfzXOXyVbTcVOdZ5RrRkwyLliG1byH6vERq62RS4P160fj3eMaLxFpP7FZA7lOFdhv/vEgBFFVkN90zCwcBRbT4z/8xPqjFOPzFVtPV/pYdx5FMeieXhNoWn711ZUWzrSu+TLGf1/hzsbCabfjF7vRg482c35SEWkvGkXxOsVs1JocFo01OSdMKYCY4dVLeqgHE9Dj4e+GN1lSHd/+BeGq0VfL0+FW9yQ+Ca47J8YKHhqgDknQmaV/IcyRec/B7bAd+oaSudBkLNh7jFP0s9IqR+t6ITDRrfWFsEkImKcK1PeucZOSU5v1zO0QSdVXSMzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
- is 149.199.60.83) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=xilinx.com;
- dmarc=none action=none header.from=xilinx.com; dkim=none (message not
- signed); arc=none
+        id S1726780AbgIJSUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgIJSPz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:15:55 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FD7C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:15:41 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id nw23so10121016ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:15:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MHjB2unu+9Et4mo9cnxLh3GBS2bINldpk93zFl43Gzk=;
- b=IVEuEPA7u40Gyu9wJ0tOyAgecrHHOlosMKJxUAUBCruBoPK+BoHpOg5ZJGxLsAb0ppjpnJihIHgU8V2Fxl/asSHVHoFz8tI5CLRs9ThXy3NvMm5VKlkhHVP+FoIkSGhyogjSjxbAhgCWAxGsFi3PATmr8F9QNbLqkgWis8xFFLc=
-Received: from BL0PR02CA0023.namprd02.prod.outlook.com (2603:10b6:207:3c::36)
- by DM6PR02MB7003.namprd02.prod.outlook.com (2603:10b6:5:255::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
- 2020 18:14:26 +0000
-Received: from BL2NAM02FT010.eop-nam02.prod.protection.outlook.com
- (2603:10b6:207:3c:cafe::ea) by BL0PR02CA0023.outlook.office365.com
- (2603:10b6:207:3c::36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend
- Transport; Thu, 10 Sep 2020 18:14:26 +0000
-X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
- 149.199.60.83) smtp.mailfrom=xilinx.com; ffwll.ch; dkim=none (message not
- signed) header.d=none;ffwll.ch; dmarc=none action=none
- header.from=xilinx.com;
-Received-SPF: TempError (protection.outlook.com: error in processing during
- lookup of xilinx.com: DNS Timeout)
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT010.mail.protection.outlook.com (10.152.77.53) with Microsoft SMTP
- Server id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 18:14:25
- +0000
-Received: from [149.199.38.66] (port=37327 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <hyun.kwon@xilinx.com>)
-        id 1kGR5D-0003IK-S1; Thu, 10 Sep 2020 11:14:07 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by smtp.xilinx.com with smtp (Exim 4.63)
-        (envelope-from <hyun.kwon@xilinx.com>)
-        id 1kGR5V-0002dy-Bn; Thu, 10 Sep 2020 11:14:25 -0700
-Received: from [172.19.75.82] (helo=xsjsycl40.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <hyun.kwon@xilinx.com>)
-        id 1kGR5O-0002cu-98; Thu, 10 Sep 2020 11:14:18 -0700
-Received: by xsjsycl40.xilinx.com (Postfix, from userid 13638)
-        id 4003F352C02; Thu, 10 Sep 2020 11:14:18 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 11:14:18 -0700
-From:   Hyun Kwon <hyun.kwon@xilinx.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        Michal Simek <michals@xilinx.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] drm: xlnx: remove defined but not used
- 'scaling_factors_666'
-Message-ID: <20200910181418.GA3187626@xilinx.com>
-References: <20200910140630.1191782-1-yanaijie@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200910140630.1191782-1-yanaijie@huawei.com>
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f78f61b6-73a3-402f-b8ee-08d855b559d9
-X-MS-TrafficTypeDiagnostic: DM6PR02MB7003:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB7003EEBD33BA17B8D8BF7B06D6270@DM6PR02MB7003.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:923;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yQwHXJqIyAnEQ9dQ2qu+IwQKxbYxX7EbC04QDo8smL6uCD+5e00xAVMwFPmG8Iw5XpRQotE3Ji5Aa/ofwKbpowlq8lGB3ZG2gMuWDc82YiBoy+jDYMnlP9rWsIo2gMCFKNIwYXHLp8g2ltY3kh37uXtirtwc994Iuizuk4j2kG50jd0p70zb8fCpwRHCq1hJjL1Uux80AdG/JUkkzqs0wey6dgQYi212Pma3xYVS7d1qEn/EGXP19t3QtptHYO23mz8G2yAR7I2wa4W14piTQtvYFp3GA3+sT2+sdQvI6oeSvcfBlJzhnV4q3+pDexb48kioi2HYQJL6QVIwK/hC7bphGEyA+ltbCOPwhrj1oEmpk+jdaaBYyorYovYMvs6JyeHTQtEPxvUs87enXc7Mpw==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:ErrorRetry;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(46966005)(44832011)(81166007)(316002)(83380400001)(82740400003)(336012)(54906003)(33656002)(70206006)(2906002)(6266002)(426003)(2616005)(356005)(1076003)(26005)(8676002)(5660300002)(82310400003)(8936002)(186003)(42186006)(6916009)(478600001)(70586007)(36756003)(47076004)(63350400001)(4326008);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 18:14:25.7702
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f78f61b6-73a3-402f-b8ee-08d855b559d9
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT010.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB7003
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=voYR5muBlLbTVdG6m15hKxjJNNGpvc6FUli5ewyzpv0=;
+        b=Iod7zEfabBVVCSca6KQ7ZovDtE7lL5zlGxXMtprkOpOOx2JTBG7T27itE116bwbSut
+         ll6fZk0Ttv7hi3TZ47+piCNPl5JaQgWFyCHTWXOfGJFSJID1DqJdGRGrnm518Wb86WXU
+         lXgFGM6VFuxqGwrqM3VUltDlxmQtemH8ueuH9tdASZqioc1UpaTWiQFHZ/+hRF06cCXA
+         CPbh7z597QB+hR3DUIFpr4AktWjcC1nq3QC9/q7fgYE/M/ylm+ryZwFhv+PAxWmwL1eW
+         fOYf0TqQnX8ZR7szGxiFcAN+ctIIUCcGIdfQirPZ/nPksRlhaupGR5pZYdusgqzHsYjD
+         8cHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=voYR5muBlLbTVdG6m15hKxjJNNGpvc6FUli5ewyzpv0=;
+        b=TKK7pFr6NdIZIYeMyt00DI2Ea5Bqtz4Ls2vVPm6sTG2PmQ8YYVq+7ipbVaIR+ZVPR+
+         DV88W/HCo5BHDVNct8l0K3+GbiJWUliqrqWm5vOEPSumGqkFesKUZsClSLIikA3nXQ6S
+         lggfh8+0CM4XvNdbhIzG95mmR/tP8Ir054zWWi5ll5vKZy70CFqwtMbm43qoA/OITlao
+         bDTmLjnh7V+e4lXisAnuLisUyisyIUBbXZZjIJK5vgl5d9cbzVp6rdfv0h6IXqSQ52sg
+         4tejpsPvfXhm/qz04rNa5AUpxpA5/0v8q4pjNAn0AIiR6eNVJe0d/eKXI9t6swklgUQT
+         w42A==
+X-Gm-Message-State: AOAM532rogqvZlCp/KGtN8AkhIsN5h99E7NDlvr2hOsOGnC/DPbUXJWh
+        nnF8dbSqqhgJ5NXh+JI1xiSBT1M7cvQ=
+X-Google-Smtp-Source: ABdhPJxuWuTUkTyk5EwTyK+or4QHGX4423i67UqhcdHmGRNqOcdjG7yuT1M7EnD17pMULfnEDxKcSA==
+X-Received: by 2002:a17:906:4956:: with SMTP id f22mr9596001ejt.62.1599761738514;
+        Thu, 10 Sep 2020 11:15:38 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id y6sm8636117edj.50.2020.09.10.11.15.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 11:15:37 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Cc:     gregkh@linuxfoundation.org, Moti Haimovski <mhaimovski@habana.ai>
+Subject: [PATCH 05/11] habanalabs: add debugfs support for MMU with 6 HOPs
+Date:   Thu, 10 Sep 2020 21:15:18 +0300
+Message-Id: <20200910181524.21460-5-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200910181524.21460-1-oded.gabbay@gmail.com>
+References: <20200910181524.21460-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+From: Moti Haimovski <mhaimovski@habana.ai>
 
-On Thu, Sep 10, 2020 at 07:06:30AM -0700, Jason Yan wrote:
-> This addresses the following gcc warning with "make W=3D1":
->=20
-> drivers/gpu/drm/xlnx/zynqmp_disp.c:245:18: warning:
-> =E2=80=98scaling_factors_666=E2=80=99 defined but not used [-Wunused-co=
-nst-variable=3D]
->   245 | static const u32 scaling_factors_666[] =3D {
->       |                  ^~~~~~~~~~~~~~~~~~~
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+This commit modify the existing debugfs code to support future devices that
+have a 6 HOPs MMU implementation instead of 5 HOPs implementation.
 
-Reviewed-by: Hyun Kwon <hyun.kwon@xilinx.com>
+Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/common/debugfs.c | 70 ++++++++++++++++++++----
+ 1 file changed, 60 insertions(+), 10 deletions(-)
 
-Thanks!
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index 9398a21e0398..7b1fb49c3501 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -354,6 +354,14 @@ static inline u64 get_hop4_pte_addr(struct hl_ctx *ctx,
+ 					mmu_specs->hop4_shift);
+ }
+ 
++static inline u64 get_hop5_pte_addr(struct hl_ctx *ctx,
++					struct hl_mmu_properties *mmu_specs,
++					u64 hop_addr, u64 vaddr)
++{
++	return get_hopN_pte_addr(ctx, hop_addr, vaddr, mmu_specs->hop5_mask,
++					mmu_specs->hop5_shift);
++}
++
+ static inline u64 get_next_hop_addr(u64 curr_pte)
+ {
+ 	if (curr_pte & PAGE_PRESENT_MASK)
+@@ -377,6 +385,7 @@ static int mmu_show(struct seq_file *s, void *data)
+ 		hop2_addr = 0, hop2_pte_addr = 0, hop2_pte = 0,
+ 		hop3_addr = 0, hop3_pte_addr = 0, hop3_pte = 0,
+ 		hop4_addr = 0, hop4_pte_addr = 0, hop4_pte = 0,
++		hop5_addr = 0, hop5_pte_addr = 0, hop5_pte = 0,
+ 		virt_addr = dev_entry->mmu_addr;
+ 
+ 	if (!hdev->mmu_enable)
+@@ -428,20 +437,49 @@ static int mmu_show(struct seq_file *s, void *data)
+ 	hop3_pte_addr = get_hop3_pte_addr(ctx, mmu_prop, hop3_addr, virt_addr);
+ 	hop3_pte = hdev->asic_funcs->read_pte(hdev, hop3_pte_addr);
+ 
+-	if (!(hop3_pte & LAST_MASK)) {
++	if (mmu_prop->num_hops == MMU_ARCH_5_HOPS) {
++		if (!(hop3_pte & LAST_MASK)) {
++			hop4_addr = get_next_hop_addr(hop3_pte);
++
++			if (hop4_addr == ULLONG_MAX)
++				goto not_mapped;
++
++			hop4_pte_addr = get_hop4_pte_addr(ctx, mmu_prop,
++							hop4_addr, virt_addr);
++			hop4_pte = hdev->asic_funcs->read_pte(hdev,
++								hop4_pte_addr);
++			if (!(hop4_pte & PAGE_PRESENT_MASK))
++				goto not_mapped;
++		} else {
++			if (!(hop3_pte & PAGE_PRESENT_MASK))
++				goto not_mapped;
++		}
++	} else {
+ 		hop4_addr = get_next_hop_addr(hop3_pte);
+ 
+ 		if (hop4_addr == ULLONG_MAX)
+ 			goto not_mapped;
+ 
+-		hop4_pte_addr = get_hop4_pte_addr(ctx, mmu_prop, hop4_addr,
+-							virt_addr);
+-		hop4_pte = hdev->asic_funcs->read_pte(hdev, hop4_pte_addr);
+-		if (!(hop4_pte & PAGE_PRESENT_MASK))
+-			goto not_mapped;
+-	} else {
+-		if (!(hop3_pte & PAGE_PRESENT_MASK))
+-			goto not_mapped;
++		hop4_pte_addr = get_hop4_pte_addr(ctx, mmu_prop,
++						hop4_addr, virt_addr);
++		hop4_pte = hdev->asic_funcs->read_pte(hdev,
++							hop4_pte_addr);
++		if (!(hop4_pte & LAST_MASK)) {
++			hop5_addr = get_next_hop_addr(hop4_pte);
++
++			if (hop5_addr == ULLONG_MAX)
++				goto not_mapped;
++
++			hop5_pte_addr = get_hop5_pte_addr(ctx, mmu_prop,
++							hop5_addr, virt_addr);
++			hop5_pte = hdev->asic_funcs->read_pte(hdev,
++								hop5_pte_addr);
++			if (!(hop5_pte & PAGE_PRESENT_MASK))
++				goto not_mapped;
++		} else {
++			if (!(hop4_pte & PAGE_PRESENT_MASK))
++				goto not_mapped;
++		}
+ 	}
+ 
+ 	seq_printf(s, "asid: %u, virt_addr: 0x%llx\n",
+@@ -463,10 +501,22 @@ static int mmu_show(struct seq_file *s, void *data)
+ 	seq_printf(s, "hop3_pte_addr: 0x%llx\n", hop3_pte_addr);
+ 	seq_printf(s, "hop3_pte: 0x%llx\n", hop3_pte);
+ 
+-	if (!(hop3_pte & LAST_MASK)) {
++	if (mmu_prop->num_hops == MMU_ARCH_5_HOPS) {
++		if (!(hop3_pte & LAST_MASK)) {
++			seq_printf(s, "hop4_addr: 0x%llx\n", hop4_addr);
++			seq_printf(s, "hop4_pte_addr: 0x%llx\n", hop4_pte_addr);
++			seq_printf(s, "hop4_pte: 0x%llx\n", hop4_pte);
++		}
++	} else {
+ 		seq_printf(s, "hop4_addr: 0x%llx\n", hop4_addr);
+ 		seq_printf(s, "hop4_pte_addr: 0x%llx\n", hop4_pte_addr);
+ 		seq_printf(s, "hop4_pte: 0x%llx\n", hop4_pte);
++
++		if (!(hop4_pte & LAST_MASK)) {
++			seq_printf(s, "hop5_addr: 0x%llx\n", hop5_addr);
++			seq_printf(s, "hop5_pte_addr: 0x%llx\n", hop5_pte_addr);
++			seq_printf(s, "hop5_pte: 0x%llx\n", hop5_pte);
++		}
+ 	}
+ 
+ 	goto out;
+-- 
+2.17.1
 
--hyun
-
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c | 6 ------
->  1 file changed, 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/=
-zynqmp_disp.c
-> index a455cfc1bee5..98bd48f13fd1 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -242,12 +242,6 @@ static const u32 scaling_factors_565[] =3D {
->  	ZYNQMP_DISP_AV_BUF_5BIT_SF,
->  };
-> =20
-> -static const u32 scaling_factors_666[] =3D {
-> -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
-> -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
-> -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
-> -};
-> -
->  static const u32 scaling_factors_888[] =3D {
->  	ZYNQMP_DISP_AV_BUF_8BIT_SF,
->  	ZYNQMP_DISP_AV_BUF_8BIT_SF,
-> --=20
-> 2.25.4
->=20
