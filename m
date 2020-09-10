@@ -2,103 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072EA26537D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B55F265366
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgIJVgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:36:20 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32996 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730936AbgIJNjx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:39:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599745170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Y7Gme+6mP2kIxJBsfheP4T3JUU/zqQQOzX9yjwzzBo=;
-        b=D9TZyo6uXx6mj06bbbawo+LblPkI/7v+A46HkQFYn+na65PfB/cVeX3CU94MNXTidxRijV
-        RQ4hsfEMTUQ4FSY61zPL0vWw/pdaJSY0GTUjRbD9+8URn8zg8yM6L7YGRDtUkLIjVyZsaw
-        k1apCuZhCTBY1YmpixdvOARXJEwoLiI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-D1iJLJKcOje_PlRAcUXcZg-1; Thu, 10 Sep 2020 09:39:28 -0400
-X-MC-Unique: D1iJLJKcOje_PlRAcUXcZg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34B0118BA283;
-        Thu, 10 Sep 2020 13:39:26 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ACD1E5D9E8;
-        Thu, 10 Sep 2020 13:39:22 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 15:39:19 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Richard Henderson <richard.henderson@linaro.org>,
-        Steven Price <steven.price@arm.com>,
-        Peter Maydell <Peter.Maydell@arm.com>,
-        Juan Quintela <quintela@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        qemu-devel@nongnu.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
-Message-ID: <20200910133919.rkmki6x7iscbaymh@kamzik.brq.redhat.com>
-References: <20200904160018.29481-1-steven.price@arm.com>
- <20200909152540.ylnrljd6aelxoxrf@kamzik.brq.redhat.com>
- <5cb1d7ed-54a5-4337-6c3d-2e3e7df89f17@linaro.org>
- <20200910054440.pvnzk7p7riiy45e2@kamzik.brq.redhat.com>
- <20200910132748.GF2814@work-vm>
+        id S1727116AbgIJVe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:34:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:36620 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730951AbgIJNuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:50:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 429D011B3;
+        Thu, 10 Sep 2020 06:43:27 -0700 (PDT)
+Received: from [192.168.1.79] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14D603F66E;
+        Thu, 10 Sep 2020 06:43:25 -0700 (PDT)
+Subject: Re: [PATCH] drm/panfrost: Ensure GPU quirks are always initialised
+To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        "Marty E. Plummer" <hanetzer@startmail.com>
+References: <20200909122957.51667-1-steven.price@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <dd65be77-7410-3365-24b0-91d88c24568e@arm.com>
+Date:   Thu, 10 Sep 2020 14:42:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910132748.GF2814@work-vm>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200909122957.51667-1-steven.price@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 02:27:48PM +0100, Dr. David Alan Gilbert wrote:
-> * Andrew Jones (drjones@redhat.com) wrote:
-> > On Wed, Sep 09, 2020 at 06:45:33PM -0700, Richard Henderson wrote:
-> > > On 9/9/20 8:25 AM, Andrew Jones wrote:
-> > > >>  * Provide a KVM-specific method to extract the tags from guest memory.
-> > > >>    This might also have benefits in terms of providing an easy way to
-> > > >>    read bulk tag data from guest memory (since the LDGM instruction
-> > > >>    isn't available at EL0).
-> > > > 
-> > > > Maybe we need a new version of KVM_GET_DIRTY_LOG that also provides
-> > > > the tags for all addresses of each dirty page.
-> > > 
-> > > KVM_GET_DIRTY_LOG just provides one bit per dirty page, no?  Then VMM copies
-> > > the data out from its local address to guest memory.
-> > > 
-> > > There'd be no difference with or without tags, afaik.  It's just about how VMM
-> > > copies the data, with or without tags.
-> > 
-> > Right, as long as it's fast enough to do
-> > 
-> >   for_each_dirty_page(page, dirty_log)
-> >     for (i = 0; i < host-page-size/16; i += 16)
-> >       append_tag(LDG(page + i))
-> > 
-> > to get all the tags for each dirty page. I understood it would be faster
-> > to use LDGM, but we'd need a new ioctl for that. So I was proposing we
-> > just piggyback on a new dirty-log ioctl instead.
+On 09/09/2020 13:29, Steven Price wrote:
+> The GPU 'CONFIG' registers used to work around hardware issues are
+> cleared on reset so need to be programmed every time the GPU is reset.
+> However panfrost_device_reset() failed to do this.
 > 
-> That feels a bad idea to me; there's a couple of different ways dirty
-> page checking work; lets keep extracting the tags separate.
->
+> To avoid this in future instead move the call to
+> panfrost_gpu_init_quirks() to panfrost_gpu_power_on() so that the
+> regsiters are always programmed just before the cores are powered.
+> 
+> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+> Signed-off-by: Steven Price <steven.price@arm.com>
 
-It's sounding like it was a premature optimization anyway. We don't yet
-know if an ioctl for LDGM is worth it. Looping over LDG may work fine.
+Applied to drm-misc-next
 
-Thanks,
-drew 
-
+Steve
