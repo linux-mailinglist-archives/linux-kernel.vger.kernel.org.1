@@ -2,112 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE8B264FA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278B6264F21
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbgIJTr2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 10 Sep 2020 15:47:28 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:44044 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731268AbgIJPZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:25:14 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-193-SwYyQJkFN1CKNX6P6arlLA-1; Thu, 10 Sep 2020 16:23:41 +0100
-X-MC-Unique: SwYyQJkFN1CKNX6P6arlLA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 10 Sep 2020 16:23:40 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 10 Sep 2020 16:23:40 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Rich Felker' <dalias@libc.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
-CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] vfs: add fchmodat2 syscall
-Thread-Topic: [PATCH] vfs: add fchmodat2 syscall
-Thread-Index: AQHWh4NogO4zJqm73EG5GUWCltp+Valh+9/A
-Date:   Thu, 10 Sep 2020 15:23:40 +0000
-Message-ID: <1111806ca0344527a8855616e46346c5@AcuMS.aculab.com>
-References: <20200910142335.GG3265@brightrain.aerifal.cx>
-In-Reply-To: <20200910142335.GG3265@brightrain.aerifal.cx>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726410AbgIJTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:35:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35968 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731398AbgIJPnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:43:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 06CFEACC8;
+        Thu, 10 Sep 2020 15:24:33 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 17:24:47 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Martin Doucha <mdoucha@suse.cz>
+Cc:     ltp@lists.linux.it,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [LTP] [PATCH v2] syscall/ptrace08: Simplify the test.
+Message-ID: <20200910152447.GA10844@yuki.lan>
+References: <20200904140931.10153-1-chrubis@suse.cz>
+ <5d127ee5-56d1-01c5-c364-dcb004204e9d@suse.cz>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.002
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d127ee5-56d1-01c5-c364-dcb004204e9d@suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rich Felker
-> Sent: 10 September 2020 15:24
+Hi!
+> looks good and the test passes on older fixed kernels. Just one
+> compatibility issue below.
+
+I've fixed that and also the kernel version when the behavior had
+changed and pushed, thanks for the review and testing.
+
 ...
-> index 9af548fb841b..570a21f4d81e 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -610,15 +610,30 @@ SYSCALL_DEFINE2(fchmod, unsigned int, fd, umode_t, mode)
->  	return err;
->  }
+
+> > +	if (TST_RET != -1) {
+> > +		tst_res(TFAIL, "ptrace() breakpoint with kernel addr succeeded");
+> > +	} else {
+> > +		if (TST_ERR == EINVAL) {
+> > +			tst_res(TPASS | TTERRNO,
+> > +				"ptrace() breakpoint with kernel addr failed");
+> > +		} else {
+> > +			tst_res(TFAIL | TTERRNO,
+> > +				"ptrace() breakpoint on kernel addr should return EINVAL, got");
+> > +		}
+> > +	}
+> > +
+> > +	unsigned long addr;
 > 
-> -static int do_fchmodat(int dfd, const char __user *filename, umode_t mode)
-> +static int do_fchmodat(int dfd, const char __user *filename, umode_t mode, int flags)
->  {
->  	struct path path;
->  	int error;
->  	unsigned int lookup_flags = LOOKUP_FOLLOW;
-> +
-> +	if (flags & AT_SYMLINK_NOFOLLOW)
-> +		lookup_flags &= ~LOOKUP_FOLLOW;
-> +	if (flags & ~AT_SYMLINK_NOFOLLOW)
-> +		return -EINVAL;
+> AFAICT, we're not compiling with --std=c99 so older compilers may
+> complain about the variable declaration here.
 
-I think I'd swap over those two tests.
-So unsupported flags are clearly errored.
+The default std for gcc has been at least gnu90 for ages, which includes
+subset of c99 features as well including this one. So unless you
+explicitly pass --std=c90 or older it will work just fine.
 
->  retry:
->  	error = user_path_at(dfd, filename, lookup_flags, &path);
->  	if (!error) {
-> -		error = chmod_common(&path, mode);
-> +		/* Block chmod from getting to fs layer. Ideally the
-> +		 * fs would either allow it or fail with EOPNOTSUPP,
-> +		 * but some are buggy and return an error but change
-> +		 * the mode, which is non-conforming and wrong.
-> +		 * Userspace emulation of AT_SYMLINK_NOFOLLOW in
-> +		 * glibc and musl blocked it too, for same reason. */
-> +		if (S_ISLNK(path.dentry->d_inode->i_mode)
-> +		    && (flags & AT_SYMLINK_NOFOLLOW))
-> +			error = -EOPNOTSUPP;
+I've moved the declaration to the top of the function nevertheless.
 
-Again swap the order of the tests. I think it reads better as:
-		if ((flags & AT_SYMLINK_NOFOLLOW)
-		    && S_ISLNK(path.dentry->d_inode->i_mode))
-			error = -EOPNOTSUPP;
-As well as saving a few clock cycles.
-
-> +		else
-> +			error = chmod_common(&path, mode);
->  		path_put(&path);
->  		if (retry_estale(error, lookup_flags)) {
->  			lookup_flags |= LOOKUP_REVAL;
-...
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
