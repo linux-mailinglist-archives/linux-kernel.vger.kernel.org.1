@@ -2,557 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5084264F6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A469B264F69
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbgIJTl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:41:57 -0400
-Received: from mga05.intel.com ([192.55.52.43]:62918 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731289AbgIJPfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:35:17 -0400
-IronPort-SDR: 1WZODubuqXkAmxt3kGUuYnE8y1TODvmQtLT8ZI6Iq7DmwlCt95WNUI9zBluguTQAY1ItoFj6wi
- Eio6W5y9GY/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="243381262"
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="243381262"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 08:35:00 -0700
-IronPort-SDR: woEb2L4zufAPtC2C09arSbpf887dYcJdTMHl/Ha057Wnt7Y/7+YHxdDxFCjx7wKlsiF2+jof8l
- hdRZPaTribsQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
-   d="scan'208";a="505162258"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 10 Sep 2020 08:34:58 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D66E11D7; Thu, 10 Sep 2020 18:34:56 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Joe Perches <joe@perches.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] kernel.h: Split out min()/max() et al. helpers
-Date:   Thu, 10 Sep 2020 18:34:56 +0300
-Message-Id: <20200910153456.27129-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1727892AbgIJTlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:41:45 -0400
+Received: from mail-eopbgr750051.outbound.protection.outlook.com ([40.107.75.51]:42510
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730886AbgIJPfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:35:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sq3FmL6PfgQkoZ5OTvFHXmtIda03ZOvyoPVdrOXRidRKQ61a1ARVVQoH2FWLzBm5HpE9BUIDUy3xluukMvXz4ADv/13jtpzHiVFf6FghvLwevaUyz7br4Y77U0r43/p9mMJXgSefBZNFI+AhL7y7XZq5JvwAo2aKHb2yvNKmvJHetmbnTAUwGtCN4SyKkvvS6+7fI3SH+pMdY+fJ+Z42Kf5/I2w90+G6j3Tb0ZTHdGr4K/uTUEo2TGV9WFPOCIaspJ53763Xdk7K2P/1CCZfjlssLo9vAGpnRFe4JxYfrHnghgZORX/2CmUHtman+N6hb4vaSOG+3HQ5755cbb5Zfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lIV3+JJlx7srWtGGABzob7MYMJ7FcNqDiitRjtd+mGo=;
+ b=SBzh6yoBLPyHmMrrbotlfjQqY17Iel7LXx9DszBSP9YURYfOGzblQ6D/gmyhTG4irxlAtl8kEgkcMVhqDfGC58sn+oI7/6j8dAQ1BmVyD2yA7b4PuQUDY5ZNvAdK1s1nNnZYRrQRn3WRLg0GkRQKuofMRuGF52XAUO+vf/r2LuFxjYDYNTudXrt00kkwbaCipN66/ed3lNm90HXPtlDMEDg7lLkf50TxF/5O0MU/7+7NwEH5IEvTKFQyoN29CHWZEK973fqtGZyDjWET5FD3qk8TI4Kklp1KKX+CPdN4/aK2IJnfR6BdltnVB8O0mRJY1mxVQIj5wLYKmQ2j1+PNIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lIV3+JJlx7srWtGGABzob7MYMJ7FcNqDiitRjtd+mGo=;
+ b=RZyE479epyiylW2I8CMGtyWs8r2ocEQ8udBM9Qpkix5C0vcDU057pvZvxDumr8s4bWvCtIBQUaL3vgV+fPT41xDo1es7vOcwObWxvedNrC0G6erU/SB1YZCIPZADJtwHNGQipqz2rorQXlD7iRAH90VsRB5sQH7gRLLpExiJ4gc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
+ by MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
+ 2020 15:35:18 +0000
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::5dc0:bafc:6040:a8fe]) by MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::5dc0:bafc:6040:a8fe%2]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
+ 15:35:18 +0000
+Subject: Re: [PATCH -next] drm/amd/display: Create trigger_hotplug entry
+To:     YueHaibing <yuehaibing@huawei.com>, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, mikita.lipski@amd.com,
+        eryk.brol@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20200910031352.39992-1-yuehaibing@huawei.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <dcdc327c-c0d1-85cb-28fa-5b7cb5d4e555@amd.com>
+Date:   Thu, 10 Sep 2020 11:35:15 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20200910031352.39992-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT1PR01CA0147.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::26) To MW3PR12MB4379.namprd12.prod.outlook.com
+ (2603:10b6:303:5e::11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.29.235.206] (165.204.55.250) by YT1PR01CA0147.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 15:35:17 +0000
+X-Originating-IP: [165.204.55.250]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 7d431826-ef87-476f-0d57-08d8559f1f13
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4379:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW3PR12MB4379CDE5871D14CCC007D3CF8C270@MW3PR12MB4379.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:296;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2LF79ldZOjaHWcPxbffaso1OqNaV+svLC/v2/ugcGTkxzHh87MhVzTHnhUu4/ukmKiCEay7EgaRqWP7sVLX3k06rtENl+kP5XzMuoa2+V8ZwRUInSqbP/XJVi0Li6RfIvns7qBWC5txGX9O9neZmrCuyq0fAQPeyqtLoFMIZDZJa54VcHm3SqFFXUfWMIxhqQ/ikyw8ZmGeSVhEQrSNcH0MvSaBRwp4+jX6izTXgJcSuvGiIhBKz0mJkpEyLUSIhqKstaf7nTLfnAmUS4zZp8IaLq1PPbhxt05kDisWEBGREkUYdkOqUnJaAg4B4KjrFTI1JMJLMf5KtaHWKNWlbXt7mjIOLMNtDE0uc52dwXwBX/31RKa7A9B3qhPHClTJd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(26005)(2616005)(66946007)(956004)(36756003)(86362001)(6636002)(6486002)(8936002)(8676002)(66476007)(66556008)(4326008)(478600001)(31686004)(31696002)(186003)(44832011)(5660300002)(53546011)(16526019)(2906002)(316002)(16576012)(52116002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: IvXRaheIc0EmL1/gxqEjgtIv6HqunWa9lMXBy/miEyUj80CVpACy1+/t3n/PjgNEDd/nktmW+FAjOo9SEbJxE+nO30H52A3Ib+O3AFS8CUSp3Xd43cj5ypxPoyz78GUFwqdK5QaRjF9mLmINEiakJse8ZIP7G7Z1/CSioz7KPFd+ZYe+nkLyBSj3/WzGd/1Rd+LLUppuQOpKlbmjnNN15gu1yD3PUUxoIj194hvwPGeALrFb+WvaHo1tDkXK2pgS5gD4lzrR5g2mK6fEN7lODE/WB6qPKrypichETFCLfHg2jbri/S+CA8BwL8YKQKl00z4rMC0r/1zuv4gNVOpuRdr3cm10vAEOhQeinbzDWZDhLTml561/LBk7vINNKPASW5nBZToNs1asCR9x1pd2UiyzlB9+0fJF4ZXHrlSE0WpIUv+FgE+AkOhdTi2Nf7uPI1/fXCH9Vp4jgXukFMcW2YM/98CUaVSQN7kpmag6RhyU1uPhS/sO/uF5Dzyqc6ikjClWcyEvd6+4LrqEkwMm1QUNmjcayqWUBsgpRiaBMsGhasMuY0TKRKyCHmfU0VWuQI9HJMjXpewW5uhl3r5Xh+U6yzQahCCNUPgXJefgZTm4CBqtpdbbXRN6tmqptSfYZ4MT/Jo1j386qp6M9/MP4w==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d431826-ef87-476f-0d57-08d8559f1f13
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 15:35:18.4325
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hYJOFPP0E/PE4atlOLRKmcOAISYA0GU3gX/ErLSt1bSb23gF3rgI0H5CEeVvt/7Tjigja5itoRvmabFU+xSaCg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4379
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h is being used as a dump for all kinds of stuff for a long time.
-Here is the attempt to start cleaning it up by splitting out min()/max()
-et al. helpers.
+On 2020-09-09 11:13 p.m., YueHaibing wrote:
+> Add trigger_hotplug debugfs entry.
+> 
+> Fixes: 6f77b2ac6280 ("drm/amd/display: Add connector HPD trigger debugfs entry")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-At the same time convert users in header and lib folder to use new header.
-Though for time being include new header back to kernel.h to avoid twisted
-indirected includes for other existing users.
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+Harry
 
-This header being standalone makes possible to avoid unnecessary inclusion of
-kernel.h and its content to many places which would like to use min()/max()
-helpers and/or related without being poisoned like [1].
-
-I heard earlier opinions about this, like [2] or [3] and would like to see if
-this is a way to go.
-
-I have Cc'ed parties gathered from all previous submissions of this + Linus.
-
-[1]: https://lore.kernel.org/linux-acpi/20200817163647.48982-4-andriy.shevchenko@linux.intel.com/
-[2]: https://lore.kernel.org/patchwork/patch/1189564/
-[3]: https://lore.kernel.org/lkml/94bec618-5e06-e72b-45a5-29318e09a29a@rasmusvillemoes.dk/
-
- include/linux/blkdev.h    |   1 +
- include/linux/bvec.h      |   6 +-
- include/linux/jiffies.h   |   3 +-
- include/linux/kernel.h    | 150 +------------------------------------
- include/linux/minmax.h    | 153 ++++++++++++++++++++++++++++++++++++++
- include/linux/nodemask.h  |   2 +-
- include/linux/uaccess.h   |   1 +
- kernel/range.c            |   3 +-
- lib/find_bit.c            |   1 +
- lib/hexdump.c             |   1 +
- lib/math/rational.c       |   2 +-
- lib/math/reciprocal_div.c |   1 +
- 12 files changed, 170 insertions(+), 154 deletions(-)
- create mode 100644 include/linux/minmax.h
-
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 37ec5a73d027..7d5dc329c41c 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -8,6 +8,7 @@
- #include <linux/genhd.h>
- #include <linux/list.h>
- #include <linux/llist.h>
-+#include <linux/minmax.h>
- #include <linux/timer.h>
- #include <linux/workqueue.h>
- #include <linux/pagemap.h>
-diff --git a/include/linux/bvec.h b/include/linux/bvec.h
-index dd74503f7e5e..2efec10bf792 100644
---- a/include/linux/bvec.h
-+++ b/include/linux/bvec.h
-@@ -7,10 +7,14 @@
- #ifndef __LINUX_BVEC_ITER_H
- #define __LINUX_BVEC_ITER_H
- 
--#include <linux/kernel.h>
- #include <linux/bug.h>
- #include <linux/errno.h>
-+#include <linux/limits.h>
-+#include <linux/minmax.h>
- #include <linux/mm.h>
-+#include <linux/types.h>
-+
-+struct page;
- 
- /**
-  * struct bio_vec - a contiguous range of physical memory addresses
-diff --git a/include/linux/jiffies.h b/include/linux/jiffies.h
-index fed6ba96c527..5e13f801c902 100644
---- a/include/linux/jiffies.h
-+++ b/include/linux/jiffies.h
-@@ -3,8 +3,9 @@
- #define _LINUX_JIFFIES_H
- 
- #include <linux/cache.h>
-+#include <linux/limits.h>
- #include <linux/math64.h>
--#include <linux/kernel.h>
-+#include <linux/minmax.h>
- #include <linux/types.h>
- #include <linux/time.h>
- #include <linux/timex.h>
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 6a4e875f198e..d5bac994a5e4 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -11,6 +11,7 @@
- #include <linux/compiler.h>
- #include <linux/bitops.h>
- #include <linux/log2.h>
-+#include <linux/minmax.h>
- #include <linux/typecheck.h>
- #include <linux/printk.h>
- #include <linux/build_bug.h>
-@@ -835,155 +836,6 @@ ftrace_vprintk(const char *fmt, va_list ap)
- static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
- #endif /* CONFIG_TRACING */
- 
--/*
-- * min()/max()/clamp() macros must accomplish three things:
-- *
-- * - avoid multiple evaluations of the arguments (so side-effects like
-- *   "x++" happen only once) when non-constant.
-- * - perform strict type-checking (to generate warnings instead of
-- *   nasty runtime surprises). See the "unnecessary" pointer comparison
-- *   in __typecheck().
-- * - retain result as a constant expressions when called with only
-- *   constant expressions (to avoid tripping VLA warnings in stack
-- *   allocation usage).
-- */
--#define __typecheck(x, y) \
--		(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
--
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
--#define __no_side_effects(x, y) \
--		(__is_constexpr(x) && __is_constexpr(y))
--
--#define __safe_cmp(x, y) \
--		(__typecheck(x, y) && __no_side_effects(x, y))
--
--#define __cmp(x, y, op)	((x) op (y) ? (x) : (y))
--
--#define __cmp_once(x, y, unique_x, unique_y, op) ({	\
--		typeof(x) unique_x = (x);		\
--		typeof(y) unique_y = (y);		\
--		__cmp(unique_x, unique_y, op); })
--
--#define __careful_cmp(x, y, op) \
--	__builtin_choose_expr(__safe_cmp(x, y), \
--		__cmp(x, y, op), \
--		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
--
--/**
-- * min - return minimum of two values of the same or compatible types
-- * @x: first value
-- * @y: second value
-- */
--#define min(x, y)	__careful_cmp(x, y, <)
--
--/**
-- * max - return maximum of two values of the same or compatible types
-- * @x: first value
-- * @y: second value
-- */
--#define max(x, y)	__careful_cmp(x, y, >)
--
--/**
-- * min3 - return minimum of three values
-- * @x: first value
-- * @y: second value
-- * @z: third value
-- */
--#define min3(x, y, z) min((typeof(x))min(x, y), z)
--
--/**
-- * max3 - return maximum of three values
-- * @x: first value
-- * @y: second value
-- * @z: third value
-- */
--#define max3(x, y, z) max((typeof(x))max(x, y), z)
--
--/**
-- * min_not_zero - return the minimum that is _not_ zero, unless both are zero
-- * @x: value1
-- * @y: value2
-- */
--#define min_not_zero(x, y) ({			\
--	typeof(x) __x = (x);			\
--	typeof(y) __y = (y);			\
--	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
--
--/**
-- * clamp - return a value clamped to a given range with strict typechecking
-- * @val: current value
-- * @lo: lowest allowable value
-- * @hi: highest allowable value
-- *
-- * This macro does strict typechecking of @lo/@hi to make sure they are of the
-- * same type as @val.  See the unnecessary pointer comparisons.
-- */
--#define clamp(val, lo, hi) min((typeof(val))max(val, lo), hi)
--
--/*
-- * ..and if you can't take the strict
-- * types, you can specify one yourself.
-- *
-- * Or not use min/max/clamp at all, of course.
-- */
--
--/**
-- * min_t - return minimum of two values, using the specified type
-- * @type: data type to use
-- * @x: first value
-- * @y: second value
-- */
--#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
--
--/**
-- * max_t - return maximum of two values, using the specified type
-- * @type: data type to use
-- * @x: first value
-- * @y: second value
-- */
--#define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
--
--/**
-- * clamp_t - return a value clamped to a given range using a given type
-- * @type: the type of variable to use
-- * @val: current value
-- * @lo: minimum allowable value
-- * @hi: maximum allowable value
-- *
-- * This macro does no typechecking and uses temporary variables of type
-- * @type to make all the comparisons.
-- */
--#define clamp_t(type, val, lo, hi) min_t(type, max_t(type, val, lo), hi)
--
--/**
-- * clamp_val - return a value clamped to a given range using val's type
-- * @val: current value
-- * @lo: minimum allowable value
-- * @hi: maximum allowable value
-- *
-- * This macro does no typechecking and uses temporary variables of whatever
-- * type the input argument @val is.  This is useful when @val is an unsigned
-- * type and @lo and @hi are literals that will otherwise be assigned a signed
-- * integer type.
-- */
--#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
--
--
--/**
-- * swap - swap values of @a and @b
-- * @a: first value
-- * @b: second value
-- */
--#define swap(a, b) \
--	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
--
- /* This counts to 12. Any more, it will return 13th argument. */
- #define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
- #define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-new file mode 100644
-index 000000000000..c0f57b0c64d9
---- /dev/null
-+++ b/include/linux/minmax.h
-@@ -0,0 +1,153 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_MINMAX_H
-+#define _LINUX_MINMAX_H
-+
-+/*
-+ * min()/max()/clamp() macros must accomplish three things:
-+ *
-+ * - avoid multiple evaluations of the arguments (so side-effects like
-+ *   "x++" happen only once) when non-constant.
-+ * - perform strict type-checking (to generate warnings instead of
-+ *   nasty runtime surprises). See the "unnecessary" pointer comparison
-+ *   in __typecheck().
-+ * - retain result as a constant expressions when called with only
-+ *   constant expressions (to avoid tripping VLA warnings in stack
-+ *   allocation usage).
-+ */
-+#define __typecheck(x, y) \
-+	(!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-+
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
-+#define __no_side_effects(x, y) \
-+		(__is_constexpr(x) && __is_constexpr(y))
-+
-+#define __safe_cmp(x, y) \
-+		(__typecheck(x, y) && __no_side_effects(x, y))
-+
-+#define __cmp(x, y, op)	((x) op (y) ? (x) : (y))
-+
-+#define __cmp_once(x, y, unique_x, unique_y, op) ({	\
-+		typeof(x) unique_x = (x);		\
-+		typeof(y) unique_y = (y);		\
-+		__cmp(unique_x, unique_y, op); })
-+
-+#define __careful_cmp(x, y, op) \
-+	__builtin_choose_expr(__safe_cmp(x, y), \
-+		__cmp(x, y, op), \
-+		__cmp_once(x, y, __UNIQUE_ID(__x), __UNIQUE_ID(__y), op))
-+
-+/**
-+ * min - return minimum of two values of the same or compatible types
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define min(x, y)	__careful_cmp(x, y, <)
-+
-+/**
-+ * max - return maximum of two values of the same or compatible types
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define max(x, y)	__careful_cmp(x, y, >)
-+
-+/**
-+ * min3 - return minimum of three values
-+ * @x: first value
-+ * @y: second value
-+ * @z: third value
-+ */
-+#define min3(x, y, z) min((typeof(x))min(x, y), z)
-+
-+/**
-+ * max3 - return maximum of three values
-+ * @x: first value
-+ * @y: second value
-+ * @z: third value
-+ */
-+#define max3(x, y, z) max((typeof(x))max(x, y), z)
-+
-+/**
-+ * min_not_zero - return the minimum that is _not_ zero, unless both are zero
-+ * @x: value1
-+ * @y: value2
-+ */
-+#define min_not_zero(x, y) ({			\
-+	typeof(x) __x = (x);			\
-+	typeof(y) __y = (y);			\
-+	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
-+
-+/**
-+ * clamp - return a value clamped to a given range with strict typechecking
-+ * @val: current value
-+ * @lo: lowest allowable value
-+ * @hi: highest allowable value
-+ *
-+ * This macro does strict typechecking of @lo/@hi to make sure they are of the
-+ * same type as @val.  See the unnecessary pointer comparisons.
-+ */
-+#define clamp(val, lo, hi) min((typeof(val))max(val, lo), hi)
-+
-+/*
-+ * ..and if you can't take the strict
-+ * types, you can specify one yourself.
-+ *
-+ * Or not use min/max/clamp at all, of course.
-+ */
-+
-+/**
-+ * min_t - return minimum of two values, using the specified type
-+ * @type: data type to use
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
-+
-+/**
-+ * max_t - return maximum of two values, using the specified type
-+ * @type: data type to use
-+ * @x: first value
-+ * @y: second value
-+ */
-+#define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
-+
-+/**
-+ * clamp_t - return a value clamped to a given range using a given type
-+ * @type: the type of variable to use
-+ * @val: current value
-+ * @lo: minimum allowable value
-+ * @hi: maximum allowable value
-+ *
-+ * This macro does no typechecking and uses temporary variables of type
-+ * @type to make all the comparisons.
-+ */
-+#define clamp_t(type, val, lo, hi) min_t(type, max_t(type, val, lo), hi)
-+
-+/**
-+ * clamp_val - return a value clamped to a given range using val's type
-+ * @val: current value
-+ * @lo: minimum allowable value
-+ * @hi: maximum allowable value
-+ *
-+ * This macro does no typechecking and uses temporary variables of whatever
-+ * type the input argument @val is.  This is useful when @val is an unsigned
-+ * type and @lo and @hi are literals that will otherwise be assigned a signed
-+ * integer type.
-+ */
-+#define clamp_val(val, lo, hi) clamp_t(typeof(val), val, lo, hi)
-+
-+/**
-+ * swap - swap values of @a and @b
-+ * @a: first value
-+ * @b: second value
-+ */
-+#define swap(a, b) \
-+	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
-+
-+#endif	/* _LINUX_MINMAX_H */
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index 27e7fa36f707..7f38399cc9fe 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -90,9 +90,9 @@
-  * for such situations. See below and CPUMASK_ALLOC also.
-  */
- 
--#include <linux/kernel.h>
- #include <linux/threads.h>
- #include <linux/bitmap.h>
-+#include <linux/minmax.h>
- #include <linux/numa.h>
- 
- typedef struct { DECLARE_BITMAP(bits, MAX_NUMNODES); } nodemask_t;
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 8a004bcd6c20..6deff827dc9d 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -4,6 +4,7 @@
- 
- #include <linux/fault-inject-usercopy.h>
- #include <linux/instrumented.h>
-+#include <linux/minmax.h>
- #include <linux/sched.h>
- #include <linux/thread_info.h>
- 
-diff --git a/kernel/range.c b/kernel/range.c
-index d84de6766472..56435f96da73 100644
---- a/kernel/range.c
-+++ b/kernel/range.c
-@@ -2,8 +2,9 @@
- /*
-  * Range add and subtract
-  */
--#include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/minmax.h>
-+#include <linux/printk.h>
- #include <linux/sort.h>
- #include <linux/string.h>
- #include <linux/range.h>
-diff --git a/lib/find_bit.c b/lib/find_bit.c
-index 49f875f1baf7..4a8751010d59 100644
---- a/lib/find_bit.c
-+++ b/lib/find_bit.c
-@@ -16,6 +16,7 @@
- #include <linux/bitmap.h>
- #include <linux/export.h>
- #include <linux/kernel.h>
-+#include <linux/minmax.h>
- 
- #if !defined(find_next_bit) || !defined(find_next_zero_bit) ||			\
- 	!defined(find_next_bit_le) || !defined(find_next_zero_bit_le) ||	\
-diff --git a/lib/hexdump.c b/lib/hexdump.c
-index 147133f8eb2f..9301578f98e8 100644
---- a/lib/hexdump.c
-+++ b/lib/hexdump.c
-@@ -7,6 +7,7 @@
- #include <linux/ctype.h>
- #include <linux/errno.h>
- #include <linux/kernel.h>
-+#include <linux/minmax.h>
- #include <linux/export.h>
- #include <asm/unaligned.h>
- 
-diff --git a/lib/math/rational.c b/lib/math/rational.c
-index df75c8809693..9781d521963d 100644
---- a/lib/math/rational.c
-+++ b/lib/math/rational.c
-@@ -11,7 +11,7 @@
- #include <linux/rational.h>
- #include <linux/compiler.h>
- #include <linux/export.h>
--#include <linux/kernel.h>
-+#include <linux/minmax.h>
- 
- /*
-  * calculate best rational approximation for a given fraction
-diff --git a/lib/math/reciprocal_div.c b/lib/math/reciprocal_div.c
-index bf043258fa00..32436dd4171e 100644
---- a/lib/math/reciprocal_div.c
-+++ b/lib/math/reciprocal_div.c
-@@ -4,6 +4,7 @@
- #include <asm/div64.h>
- #include <linux/reciprocal_div.h>
- #include <linux/export.h>
-+#include <linux/minmax.h>
- 
- /*
-  * For a description of the algorithm please have a look at
--- 
-2.28.0
-
+> ---
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> index 94fcb086154c..83da24aced45 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> @@ -2098,6 +2098,7 @@ static const struct {
+>   	const struct file_operations *fops;
+>   } dp_debugfs_entries[] = {
+>   		{"link_settings", &dp_link_settings_debugfs_fops},
+> +		{"trigger_hotplug", &dp_trigger_hotplug_debugfs_fops},
+>   		{"phy_settings", &dp_phy_settings_debugfs_fop},
+>   		{"test_pattern", &dp_phy_test_pattern_fops},
+>   #ifdef CONFIG_DRM_AMD_DC_HDCP
+> 
