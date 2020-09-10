@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B289263AA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8612D263AA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbgIJCgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:36:54 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:41882 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728286AbgIJCeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:34:01 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6ED9E922509EC3D6151A;
-        Thu, 10 Sep 2020 10:33:59 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 10:33:50 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] drm/ttm/agp: Fix Wunused-variable warning
-Date:   Thu, 10 Sep 2020 10:33:45 +0800
-Message-ID: <20200910023345.20428-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1730629AbgIJCjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730870AbgIJCgS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:36:18 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90ADC061573
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 19:36:17 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j7so175622plk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 19:36:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Qi/C9aaUBtjbfZdmUnacP7NMqMiArkbulm9um4Od9hw=;
+        b=pMxYK2/Pkb0EZMXzFIXZUb6i3ZFLn1ko9Syhefb9p3U0eQsJxrLTbXusA8P70M5CT1
+         8OaC7qRD2zdgicdwfeVKJlgVkWTlRsAH0SdhHr0hIR5zwzLmPGuCpl2IuZNHv0Pc9xj3
+         BOC0fSJHik5f1LzVopnGUaF/QLaXqno0bZRRXC3gwpKHEwAlEzehzkS7voGPGxTqqnnh
+         tifUkmYJgkLubTgcQbn/Acy9Xq71HDbvKid54UCDspt6u7L/Qf/Nw7NMvAo+5PC+FfPt
+         GXQnCvAde4Mvz2b9/OjnzIgnhwKg2SktKcz40RdDNw+TI9PSCQXMazxo8P4GYADd2tk+
+         aWvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Qi/C9aaUBtjbfZdmUnacP7NMqMiArkbulm9um4Od9hw=;
+        b=EJ4BrRWyFJFD3E+GjAZqOZY91p5PKiqMQxnOa6HVpwdmhAwrLG8ZSzpuZSezm1gQFf
+         oyvHzUKDAJguFtl2xs2FoQgVX5rgEIQq36u6i/t3crW5mm0bEljfL0CNXr1Apf9nuQ0g
+         cGqGm9WL94UXien+kW7pewGkLFd9GotVrkegzoovK2yRYDQ7src1u/qjoyyBwhVb2y3J
+         QM+aERDR0tVj6j/mHBYDyLSMiqnPdKdq6BkhhCzCGg9/DeRjoGt1gTX4UCMiioew6cWg
+         gyysjXqQI/U77qwABpSKEcHe5pdl83CEG7XGctEfWH8la4Ph7DfkEBQJdAmR0dtCs+HO
+         1tjw==
+X-Gm-Message-State: AOAM533nFpO3prRPgfkXXjudRSRvkRk4kwPUnizRRPdN93Ut53q2trUk
+        O2VFlJMICIxJfxDt1UhfWOo=
+X-Google-Smtp-Source: ABdhPJyB/gDClpFCWVlduVuK4BaWMjZ2z2J8E2w9T/1NXHxm4i56LLkl2BnupOFpqNKNYfWvC7cqsQ==
+X-Received: by 2002:a17:902:7d92:: with SMTP id a18mr3549422plm.68.1599705377388;
+        Wed, 09 Sep 2020 19:36:17 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id x9sm3975288pfj.96.2020.09.09.19.36.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Sep 2020 19:36:16 -0700 (PDT)
+Subject: Re: [GIT PULL 1/1] bcm2835-dt-next-2020-09-08
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200908185427.4196-1-nsaenzjulienne@suse.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6ce1010d-b3e5-d795-5702-41590eb1bb67@gmail.com>
+Date:   Wed, 9 Sep 2020 19:36:15 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200908185427.4196-1-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CONFIG_AGP is not set, gcc warns:
 
-drivers/gpu/drm/radeon/radeon_ttm.c: In function ‘radeon_ttm_tt_bind’:
-drivers/gpu/drm/radeon/radeon_ttm.c:692:24: warning: unused variable ‘rdev’ [-Wunused-variable]
-  struct radeon_device *rdev = radeon_get_rdev(bdev);
-                        ^~~~
 
-Move it to ifdef block to fix this.
+On 9/8/2020 11:54 AM, Nicolas Saenz Julienne wrote:
+> Hi Florian,
+> 
+> The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+> 
+>    Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+> 
+> are available in the Git repository at:
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2020-09-08
+> 
+> for you to fetch changes up to 4564363351e2680e55edc23c7953aebd2acb4ab7:
+> 
+>    ARM: dts: bcm2711: Enable the display pipeline (2020-09-08 18:28:23 +0200)
+> 
+> ----------------------------------------------------------------
+> Maxime Ripard enables vc4 on BCM2711 (RPi4), which among other things
+> adds HDMI functionality (no 4K yet).
+> 
+> ----------------------------------------------------------------
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/gpu/drm/radeon/radeon_ttm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
-index 31c63d339629..449e77eb75f9 100644
---- a/drivers/gpu/drm/radeon/radeon_ttm.c
-+++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-@@ -689,9 +689,9 @@ static int radeon_ttm_tt_bind(struct ttm_bo_device *bdev,
- 			      struct ttm_tt *ttm,
- 			      struct ttm_resource *bo_mem)
- {
-+#if IS_ENABLED(CONFIG_AGP)
- 	struct radeon_device *rdev = radeon_get_rdev(bdev);
- 
--#if IS_ENABLED(CONFIG_AGP)
- 	if (rdev->flags & RADEON_IS_AGP)
- 		return ttm_agp_bind(ttm, bo_mem);
- #endif
+Merged into devicetree/next, thanks Nicolas.
 -- 
-2.17.1
-
-
+Florian
