@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC5A2649C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3095264A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgIJQas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:30:48 -0400
-Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:51052
-        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726612AbgIJQal (ORCPT
+        id S1726961AbgIJQmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgIJQi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:30:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599755440;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date;
-        bh=PSzMYC4YNqc6rv73jtWgLdWzj8wLx0nM62wh0UhzA3w=;
-        b=QMpbJZtggpUxK/s7kMxhd201XxmhOgurjCbKBVNnWtEczOeB6s6zzFmTPuQd7vtH
-        Q5HIzXEgAIcz/zUO/2qcuvAvvgPjNVE9jMOORHIO/LAQNQT2DNBdyCefw2etp3HlKxI
-        k4yT0IboyVkkHRj2JwE8hYdMsOw1+oxByGUCFbqE=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599755440;
-        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:From:In-Reply-To:References:To:Cc:Message-Id:Date:Feedback-ID;
-        bh=PSzMYC4YNqc6rv73jtWgLdWzj8wLx0nM62wh0UhzA3w=;
-        b=L+tFjzKy9zpXIj5hgvu8FvfmSOdL22JXUjaBvL3JmUa+qx5RtcvoUChAlETfCR/A
-        RWJtKKeZ4KQJQ7eMG0x8JCjALZiVFnYuulpfHHujisjd2BcQvHMUtqVqIfkDUKjD/MK
-        2oKxTOqIZgBr9qxUuBxxBKRFLJ+Uc4Szp7mZ0huI=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3B64DC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 23/29] ath6kl: wmi: Remove unused variable 'rate'
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200910065431.657636-24-lee.jones@linaro.org>
-References: <20200910065431.657636-24-lee.jones@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-ID: <0101017478dad1ec-ffcb8c6b-abde-41f9-b802-2fea9970bd9b-000000@us-west-2.amazonses.com>
-Date:   Thu, 10 Sep 2020 16:30:40 +0000
-X-SES-Outgoing: 2020.09.10-54.240.27.188
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+        Thu, 10 Sep 2020 12:38:56 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D61C06179B;
+        Thu, 10 Sep 2020 09:31:13 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id c10so5833649otm.13;
+        Thu, 10 Sep 2020 09:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=ZLflO+6y2CV3/36DCXEjAkXxKljpWSRITCgyl2EiC0E=;
+        b=h+WxcfKUGurTr1Vg8vZwYENOYIbO1DOxXVl8Xda6agOKRjwLTrSyAgxMznXVpYX8Mi
+         CccsFN7kQjAUeB5YIr7unKtqjkw5h/ArbKznGmFNlJ8hYiCeCwClYWFh+EUHv0ATdSzW
+         O7vxYexA0wV+sXea809M/UT2QghMMY5dhB1GvjHZZJwltFyCUuY2DfvjvhoQemxhs+sX
+         OMeI5MGuF++hiKL0OY1eC0pcr6WxkV4EY78J6f8GlXUJrFUJry1PvY7SkVBz7vdytA3O
+         iW6gDpqS/OtQU2NURMBg9xiXuuUnKid1k/x48K1c3Zc3EcfuPuYXUQBWA0IFBTkWGJDv
+         mKaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=ZLflO+6y2CV3/36DCXEjAkXxKljpWSRITCgyl2EiC0E=;
+        b=a5P/vTLY7X6wFJIpDHCtjxc4cFBNiTl2guTLLSu5iNi/XJmyKXpBDfFE0ExWf+hRMv
+         1kLlNXZ92Jum3Lfv9HmYRSf5Kn3Fv8TKFdumDDzZooeQ3ro20DZic5jUWCnGni2hYrg/
+         pO/zLXh66kY+6GN0Zlut1J3Bus37HQ5C5jri/WfnshcqUhQvtCNGAhKpWzHG3SXvHUYt
+         aw2SVQHnzL58l+rlR6HNP18rRN36kc0kXpiV2E83PogdOxbyjH74WzYlmYkDCXOa9yk0
+         OLo7ctioGyz53/wiFVtlNgNWLOgPuwBmuIDONEFx4iNE4J0SAHlNs3rcnBzrM9FcSMjJ
+         ljew==
+X-Gm-Message-State: AOAM531E1HkjbMMRis7m6lB/Ixmzu+YHsvtz5opqJd/Y3Emv5Hcj5XBA
+        EhZwE5OJBBc17DrHexS8NIyh8kBpJpM=
+X-Google-Smtp-Source: ABdhPJzhynudBwKeLwB1Aj9BrSLpIfKd4RBlv+9wHJEWtWQ/FAL6Libb8a9POXIeNWNMewacJ82phQ==
+X-Received: by 2002:a05:6830:1e8a:: with SMTP id n10mr4610427otr.371.1599755472414;
+        Thu, 10 Sep 2020 09:31:12 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d83sm965480oib.43.2020.09.10.09.31.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 10 Sep 2020 09:31:11 -0700 (PDT)
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Subject: [PATCH 1/2] watchdog: sp5100: Fix definition of EFCH_PM_DECODEEN3
+Date:   Thu, 10 Sep 2020 09:31:08 -0700
+Message-Id: <20200910163109.235136-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> wrote:
+EFCH_PM_DECODEEN3 is supposed to access DECODEEN register bits 24..31,
+in other words the register at byte offset 3.
 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/net/wireless/ath/ath6kl/wmi.c: In function ‘ath6kl_wmi_bitrate_reply_rx’:
->  drivers/net/wireless/ath/ath6kl/wmi.c:1204:6: warning: variable ‘rate’ set but not used [-Wunused-but-set-variable]
-> 
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Fixes: 887d2ec51e34b ("watchdog: sp5100_tco: Add support for recent FCH versions")
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/watchdog/sp5100_tco.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Already fixed in ath.git.
-
-error: patch failed: drivers/net/wireless/ath/ath6kl/wmi.c:1201
-error: drivers/net/wireless/ath/ath6kl/wmi.c: patch does not apply
-stg import: Diff does not apply cleanly
-
-Patch set to Rejected.
-
+diff --git a/drivers/watchdog/sp5100_tco.h b/drivers/watchdog/sp5100_tco.h
+index 87eaf357ae01..adf015aa4126 100644
+--- a/drivers/watchdog/sp5100_tco.h
++++ b/drivers/watchdog/sp5100_tco.h
+@@ -70,7 +70,7 @@
+ #define EFCH_PM_DECODEEN_WDT_TMREN	BIT(7)
+ 
+ 
+-#define EFCH_PM_DECODEEN3		0x00
++#define EFCH_PM_DECODEEN3		0x03
+ #define EFCH_PM_DECODEEN_SECOND_RES	GENMASK(1, 0)
+ #define EFCH_PM_WATCHDOG_DISABLE	((u8)GENMASK(3, 2))
+ 
 -- 
-https://patchwork.kernel.org/patch/11766815/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
 
