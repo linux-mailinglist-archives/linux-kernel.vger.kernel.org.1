@@ -2,145 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C95263E13
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9EE263E3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 09:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgIJHJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 03:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730212AbgIJHBa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 03:01:30 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F339FC061373
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 23:55:27 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id e16so5448504wrm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 23:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/zDMT6nbFqbhZHba3WX8w2cu4960tHUb5zkPcYbpeIM=;
-        b=tL6+bIkh8G7HqBgucCbpBctHS9j+I2AJgR6G49WHHWrcfJGS1GWrRY+zOduX5bNnmp
-         XwEMjo52Sr2j5+KKnUGpRdkT17kCz542Em6ZWz+F67g7UjluqnoZCLUtOIQQoUsdZ6yx
-         11//MDz21fLJyAhQRayi5tFo9NdrADRlwjbuMrwLTcoN5ItXF7fox9TKwZFHHGVcxrHK
-         EoCtUSwP7GVeYUAc6r0t/CpQGNqS83EmDot6qao2ORB8J1cDaolslhu2hV5s0HRSt1Te
-         v/symznRHA4ChYd/6CMxuy7KsAM+MwhH7v+BSxZHCpJJcxroS12fStSuVMKNKeN4ltRW
-         e28w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/zDMT6nbFqbhZHba3WX8w2cu4960tHUb5zkPcYbpeIM=;
-        b=m5KsM6JOE2MmxJYP5aMFVuRgjVauaMGjgQ/UdO99Ya9XS6W/U9S6ESVkBpNHj/6xB+
-         /bOZLVOi4ZE5Q7MpB0RX6QilGahIAqA4yQvlajNkKutpN7AC9XykbgvzYLbJHC36c1g9
-         s0x/i0y1bAi66gaNrElXiMThz9sJQy2bb35qphcAQvNiTizlA1BWmtfplSSMyzb9gJmm
-         LpdyNOInm5Xie9R7MrfPa95uuYCwUYl+uBLd2/TQMz7JLJxVFdKW8VmtES4NT1w/nKcb
-         kA1WKZXMXgYPAe4dNs57QGsnVaNjZ73PJ75CyVNHZ+gZwjIXa8p7s/4PtR+4ergoXHFL
-         0DsA==
-X-Gm-Message-State: AOAM533y3e/0zz3d04ByY2uaXmzUTd6vEVwiy5Ciqyd9x+KnQhsuc2y0
-        h6D0rYyepk70262Y4NHQ5V6Gmg==
-X-Google-Smtp-Source: ABdhPJyk20V9H1NNPnqtUHlIgQaIzDY7mmVMEIQUDafx1slmQBnfmIizNpGswUF/Rjdi6TlRcOLd7A==
-X-Received: by 2002:a5d:43cb:: with SMTP id v11mr7886927wrr.188.1599720926684;
-        Wed, 09 Sep 2020 23:55:26 -0700 (PDT)
-Received: from dell.default ([91.110.221.246])
-        by smtp.gmail.com with ESMTPSA id m3sm2444028wme.31.2020.09.09.23.55.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 23:55:26 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 29/29] brcmsmac: phy_lcn: Remove unused variable 'lcnphy_rx_iqcomp_table_rev0'
-Date:   Thu, 10 Sep 2020 07:54:31 +0100
-Message-Id: <20200910065431.657636-30-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200910065431.657636-1-lee.jones@linaro.org>
-References: <20200910065431.657636-1-lee.jones@linaro.org>
+        id S1730287AbgIJHNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 03:13:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730021AbgIJG7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 02:59:11 -0400
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D585821D40;
+        Thu, 10 Sep 2020 06:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599721151;
+        bh=xOzDDEuhcg0+WXu//QXZGuTvH72fhH7NrPswesxiZA8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gXL+ijTBw11FfLjLqyYUZfKHTa4Zvs2N1LU7JLoiGcBQ7DNHaV/PzX6MCoDp00EAp
+         wlCG83HzbzCGx6nVtzWC2pIby9quHCEjEIqQec3QmfPoutTorFkcOj+v+bXRg2MhHa
+         jwCRShpKk3NeYVaSR0bdXRVGBByi3LEGRCE3M3wI=
+Received: by mail-ej1-f54.google.com with SMTP id r7so7071637ejs.11;
+        Wed, 09 Sep 2020 23:59:10 -0700 (PDT)
+X-Gm-Message-State: AOAM530WBIRzWslzlsBcuGP2kDBY0deZMa9dTEbWrs4Th51duXFWR8HV
+        UG88jKwJDE3Dr0BsAM36V7dWEf6+3rDs6rqwgNE=
+X-Google-Smtp-Source: ABdhPJyaVrBohjZL8QO712q55aVYmvP/Im4PscZba1DFwlJPfAPVYEdWgkk0QsgOlmQCRth1GWIRcKjY7V63cmwrs/Y=
+X-Received: by 2002:a17:907:724f:: with SMTP id ds15mr7191226ejc.119.1599721149291;
+ Wed, 09 Sep 2020 23:59:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200829064726.26268-1-krzk@kernel.org> <20200829064726.26268-8-krzk@kernel.org>
+ <20200909193600.41970d8c@archlinux> <CAJKOXPeo8SXWaRmiFG6z+t9jcnaSMRpvRPm2X22Rf6rtEeKVew@mail.gmail.com>
+ <a37c69f2-1f16-2680-2716-0c1b77748d55@axentia.se> <CAHp75Vc4-zkkWtOz8w7pA0Vu1yMAVodhPSLQ1NJH4K+j9XD52g@mail.gmail.com>
+In-Reply-To: <CAHp75Vc4-zkkWtOz8w7pA0Vu1yMAVodhPSLQ1NJH4K+j9XD52g@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 10 Sep 2020 08:58:57 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdNAw8scFKCGaC_hp4jMyLD_mFLKr=+fGKSm6nCkcRF9g@mail.gmail.com>
+Message-ID: <CAJKOXPdNAw8scFKCGaC_hp4jMyLD_mFLKr=+fGKSm6nCkcRF9g@mail.gmail.com>
+Subject: Re: [PATCH v3 08/18] iio: adc: stm32: Simplify with dev_err_probe()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Thu, 10 Sep 2020 at 08:52, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+>
+>
+> On Thursday, September 10, 2020, Peter Rosin <peda@axentia.se> wrote:
+>>
+>> Hi!
+>>
+>> On 2020-09-09 21:57, Krzysztof Kozlowski wrote:
+>> > On Wed, 9 Sep 2020 at 20:36, Jonathan Cameron <jic23@kernel.org> wrote:
+>> >>
+>> >> On Sat, 29 Aug 2020 08:47:16 +0200
+>> >> Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>> >>
+>> >>> Common pattern of handling deferred probe can be simplified with
+>> >>> dev_err_probe().  Less code and also it prints the error value.
+>> >>>
+>> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>> >>> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>> >>>
+>> >> I don't have the thread to hand, but this tripped a warning next
+>> >> and the patch was dropped as a result. See below.
+>> >
+>> > Thanks for letting me know. If you mean the warning caused by:
+>> > https://lore.kernel.org/lkml/20200909073716.GA560912@kroah.com/
+>> > then the driver-core patch was dropped, not the iio one:
+>> > https://lore.kernel.org/linux-next/20200909074130.GB561485@kroah.com/T/#t
+>> >
+>> > So we are good here :)
+>>
+>> No, we are definitely not good. See below. That means "See below", and
+>> not "Please take a guess at what is being talking about".
+>
+>
+>
+>>
+>> >>> @@ -596,12 +594,9 @@ static int stm32_adc_core_switches_probe(struct device *dev,
+>> >>>               priv->booster = devm_regulator_get_optional(dev, "booster");
+>> >>>               if (IS_ERR(priv->booster)) {
+>> >>>                       ret = PTR_ERR(priv->booster);
+>> >>> -                     if (ret != -ENODEV) {
+>> >>> -                             if (ret != -EPROBE_DEFER)
+>> >>> -                                     dev_err(dev, "can't get booster %d\n",
+>> >>> -                                             ret);
+>> >>> -                             return ret;
+>> >>> -                     }
+>> >>> +                     if (ret != -ENODEV)
+>> >>> +                             dev_err_probe(dev, ret, "can't get booster\n");
+>> >>
+>> >> This tripped a warning and got the patch dropped because we no longer
+>> >> return on error.
+>>
+>> As Jonathan already said, we no longer return in this hunk. I.e., you have
+>> clobbered the error path.
+>
+>
+> Exactly my point why I proposed _must_check in the first place.
 
- drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c:361:25: warning: unused variable 'lcnphy_rx_iqcomp_table_rev0' [-Wunused-const-variable]
- struct lcnphy_rx_iqcomp lcnphy_rx_iqcomp_table_rev0[] = {
-                         ^
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- .../broadcom/brcm80211/brcmsmac/phy/phy_lcn.c | 55 -------------------
- 1 file changed, 55 deletions(-)
+That was not exactly that point as you did not mention possible errors
+but only "miss the opportunity to optimize". Optimization is different
+things than a mistake.
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-index b8193c99e8642..7071b63042cd4 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c
-@@ -357,61 +357,6 @@ u16 rxiq_cal_rf_reg[11] = {
- 	RADIO_2064_REG12A,
- };
- 
--static const
--struct lcnphy_rx_iqcomp lcnphy_rx_iqcomp_table_rev0[] = {
--	{1, 0, 0},
--	{2, 0, 0},
--	{3, 0, 0},
--	{4, 0, 0},
--	{5, 0, 0},
--	{6, 0, 0},
--	{7, 0, 0},
--	{8, 0, 0},
--	{9, 0, 0},
--	{10, 0, 0},
--	{11, 0, 0},
--	{12, 0, 0},
--	{13, 0, 0},
--	{14, 0, 0},
--	{34, 0, 0},
--	{38, 0, 0},
--	{42, 0, 0},
--	{46, 0, 0},
--	{36, 0, 0},
--	{40, 0, 0},
--	{44, 0, 0},
--	{48, 0, 0},
--	{52, 0, 0},
--	{56, 0, 0},
--	{60, 0, 0},
--	{64, 0, 0},
--	{100, 0, 0},
--	{104, 0, 0},
--	{108, 0, 0},
--	{112, 0, 0},
--	{116, 0, 0},
--	{120, 0, 0},
--	{124, 0, 0},
--	{128, 0, 0},
--	{132, 0, 0},
--	{136, 0, 0},
--	{140, 0, 0},
--	{149, 0, 0},
--	{153, 0, 0},
--	{157, 0, 0},
--	{161, 0, 0},
--	{165, 0, 0},
--	{184, 0, 0},
--	{188, 0, 0},
--	{192, 0, 0},
--	{196, 0, 0},
--	{200, 0, 0},
--	{204, 0, 0},
--	{208, 0, 0},
--	{212, 0, 0},
--	{216, 0, 0},
--};
--
- static const u32 lcnphy_23bitgaincode_table[] = {
- 	0x200100,
- 	0x200200,
--- 
-2.25.1
-
+Best regards,
+Krzysztof
