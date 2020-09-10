@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA61B264E75
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FF6264E92
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgIJTOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:14:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12228 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731495AbgIJQAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:00:44 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 42A4D83AE29647AE89B5;
-        Thu, 10 Sep 2020 23:12:23 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
- 23:12:18 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <intel-wired-lan@lists.osuosl.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 2/3] i40e: Fix some kernel-doc warnings in i40e_common.c
-Date:   Thu, 10 Sep 2020 23:09:33 +0800
-Message-ID: <20200910150934.34605-3-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200910150934.34605-1-wanghai38@huawei.com>
-References: <20200910150934.34605-1-wanghai38@huawei.com>
+        id S1727825AbgIJTTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:19:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7020 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731368AbgIJPy3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:54:29 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AF2tjt169967;
+        Thu, 10 Sep 2020 11:18:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=8Mlftey53B/H6IK5E2iIO4KQDXor/nn1hnefl9i/DEI=;
+ b=nZV1c6SyU/XJM+SmfzYYQR45GhzOfmVxod/LNdlKa+UEedZzQp/XQHjkAKYw7IYLtcaC
+ XN8wgVcRxkiOOCHEOJUdbof1ywbgr6RR9gXlK7ST7JIZ9wh27Fev1XpyzykkqmNNx6EH
+ jKT43RXBgitOfZhzugXp9mYslQ3ww7H9OaU1x7Mph3GQeLTYadxWarB4SZhbTiMI3yfP
+ WKUUkMrnPsfYEpxaNhTE3XeOZ6Dfodum+2hzPN3HY7GCK1TK5C8dZLfIwDPuXdV8xQJ+
+ BmvLJPjBCI6xj7G1JauBrmYGBuPMDdCmcJGEXshrDeC6+jb8hCFTD3R4YnH+151rWzjF jw== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33fms8vt4y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 11:18:43 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AFBvXo012745;
+        Thu, 10 Sep 2020 15:18:42 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma01dal.us.ibm.com with ESMTP id 33d46n59xc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 10 Sep 2020 15:18:42 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AFIfSB61407558
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Sep 2020 15:18:41 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1C6A6E04C;
+        Thu, 10 Sep 2020 15:18:41 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0D9F36E04E;
+        Thu, 10 Sep 2020 15:18:40 +0000 (GMT)
+Received: from SHADE6A.ibmuc.com (unknown [9.211.140.115])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 10 Sep 2020 15:18:40 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-clk@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-fsi@lists.ozlabs.org,
+        andrew@aj.id.au, joel@jms.id.au, robh+dt@kernel.org,
+        sboyd@kernel.org, mturquette@baylibre.com, alistair@popple.id.au,
+        jk@ozlabs.org
+Subject: [PATCH 0/4] clk: AST2600 and FSI: Add APLL to control FSI bus frequency
+Date:   Thu, 10 Sep 2020 10:18:36 -0500
+Message-Id: <20200910151840.25333-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-10_04:2020-09-10,2020-09-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 adultscore=0 phishscore=0
+ clxscore=1011 malwarescore=0 impostorscore=0 mlxlogscore=754
+ suspectscore=1 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009100135
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Add functionality to control the APLL clock on the AST2600. The APLL provides
+the clock for the FSI master on the AST2600. Then add a devicetree property to
+set the AST2600 FSI master bus frequency.
 
-drivers/net/ethernet/intel/i40e/i40e_common.c:3778: warning: Excess function parameter 'buff' description in 'i40e_aq_start_lldp'
-drivers/net/ethernet/intel/i40e/i40e_common.c:3778: warning: Excess function parameter 'buff_size' description in 'i40e_aq_start_lldp'
+Eddie James (4):
+  dt-bindings: clock: Add AST2600 APLLdivN definition
+  clk: ast2600: Add functionality to the APLL clock
+  dt-bindings: fsi: Aspeed master: Add bus-frequency property
+  fsi: Aspeed master: Set bus frequency from devicetree
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/ethernet/intel/i40e/i40e_common.c | 2 --
- 1 file changed, 2 deletions(-)
+ .../bindings/fsi/fsi-master-aspeed.txt        |   1 +
+ drivers/clk/clk-ast2600.c                     | 177 ++++++++++++++++--
+ drivers/fsi/fsi-master-aspeed.c               |   5 +
+ include/dt-bindings/clock/ast2600-clock.h     |   1 +
+ 4 files changed, 172 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/ethernet/intel/i40e/i40e_common.c
-index 6ab52cbd697a..361329874d98 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_common.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
-@@ -3766,9 +3766,7 @@ i40e_status i40e_aq_stop_lldp(struct i40e_hw *hw, bool shutdown_agent,
- /**
-  * i40e_aq_start_lldp
-  * @hw: pointer to the hw struct
-- * @buff: buffer for result
-  * @persist: True if start of LLDP should be persistent across power cycles
-- * @buff_size: buffer size
-  * @cmd_details: pointer to command details structure or NULL
-  *
-  * Start the embedded LLDP Agent on all ports.
 -- 
-2.17.1
+2.26.2
 
