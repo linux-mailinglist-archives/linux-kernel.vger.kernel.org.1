@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE6A2641C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50172641CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbgIJJ2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:28:43 -0400
-Received: from verein.lst.de ([213.95.11.211]:60174 "EHLO verein.lst.de"
+        id S1730338AbgIJJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:29:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:58960 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728936AbgIJJ2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:28:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C27726736F; Thu, 10 Sep 2020 11:28:13 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 11:28:13 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, martin.petersen@oracle.com,
-        Hans de Goede <hdegoede@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, drbd-dev@tron.linbit.com,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
- block layer
-Message-ID: <20200910092813.GA27229@lst.de>
-References: <20200726150333.305527-1-hch@lst.de> <20200726150333.305527-7-hch@lst.de> <20200826220737.GA25613@redhat.com> <20200902151144.GA1738@lst.de> <20200902162007.GB5513@redhat.com>
+        id S1726760AbgIJJ25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:28:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60584101E;
+        Thu, 10 Sep 2020 02:28:57 -0700 (PDT)
+Received: from [10.163.71.250] (unknown [10.163.71.250])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C4ED3F68F;
+        Thu, 10 Sep 2020 02:28:55 -0700 (PDT)
+Subject: Re: [PATCH 2/2] arm64/mm: Use CONT_SHIFT to define CONT_PTE_SHIFT
+To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, shan.gavin@gmail.com
+References: <20200908071931.47767-1-gshan@redhat.com>
+ <20200908071931.47767-2-gshan@redhat.com>
+ <459d0f64-fea9-a060-91a5-17a37834fb1b@arm.com>
+ <283283a2-f516-6890-ae25-101d2b1b46a2@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <966505a6-16f6-8129-804b-fcf890429fb8@arm.com>
+Date:   Thu, 10 Sep 2020 14:58:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902162007.GB5513@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <283283a2-f516-6890-ae25-101d2b1b46a2@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 12:20:07PM -0400, Mike Snitzer wrote:
-> On Wed, Sep 02 2020 at 11:11am -0400,
-> Christoph Hellwig <hch@lst.de> wrote:
-> 
-> > On Wed, Aug 26, 2020 at 06:07:38PM -0400, Mike Snitzer wrote:
-> > > On Sun, Jul 26 2020 at 11:03am -0400,
-> > > Christoph Hellwig <hch@lst.de> wrote:
-> > > 
-> > > > Drivers shouldn't really mess with the readahead size, as that is a VM
-> > > > concept.  Instead set it based on the optimal I/O size by lifting the
-> > > > algorithm from the md driver when registering the disk.  Also set
-> > > > bdi->io_pages there as well by applying the same scheme based on
-> > > > max_sectors.
-> > > > 
-> > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > > ---
-> > > >  block/blk-settings.c         |  5 ++---
-> > > >  block/blk-sysfs.c            |  1 -
-> > > >  block/genhd.c                | 13 +++++++++++--
-> > > >  drivers/block/aoe/aoeblk.c   |  2 --
-> > > >  drivers/block/drbd/drbd_nl.c | 12 +-----------
-> > > >  drivers/md/bcache/super.c    |  4 ----
-> > > >  drivers/md/dm-table.c        |  3 ---
-> > > >  drivers/md/raid0.c           | 16 ----------------
-> > > >  drivers/md/raid10.c          | 24 +-----------------------
-> > > >  drivers/md/raid5.c           | 13 +------------
-> > > >  10 files changed, 16 insertions(+), 77 deletions(-)
-> > > 
-> > > 
-> > > In general these changes need a solid audit relative to stacking
-> > > drivers.  That is, the limits stacking methods (blk_stack_limits)
-> > > vs lower level allocation methods (__device_add_disk).
-> > > 
-> > > You optimized for lowlevel __device_add_disk establishing the bdi's
-> > > ra_pages and io_pages.  That is at the beginning of disk allocation,
-> > > well before any build up of stacking driver's queue_io_opt() -- which
-> > > was previously done in disk_stack_limits or driver specific methods
-> > > (e.g. dm_table_set_restrictions) that are called _after_ all the limits
-> > > stacking occurs.
-> > > 
-> > > By inverting the setting of the bdi's ra_pages and io_pages to be done
-> > > so early in __device_add_disk it'll break properly setting these values
-> > > for at least DM afaict.
-> > 
-> > ra_pages never got inherited by stacking drivers, check it by modifying
-> > it on an underlying device and then creating a trivial dm or md one.
-> 
-> Sure, not saying that it did.  But if the goal is to set ra_pages based
-> on io_opt then to do that correctly on stacking drivers it must be done
-> in terms of limits stacking right?  Or at least done at a location that
-> is after the limits stacking has occurred?  So should DM just open-code
-> setting ra_pages like it did for io_pages?
-> 
-> Because setting ra_pages in __device_add_disk() is way too early for DM
-> -- given it uses device_add_disk_no_queue_reg via add_disk_no_queue_reg
-> at DM device creation (before stacking all underlying devices' limits).
 
-I'll move it to blk_register_queue, which should work just fine.
+
+On 09/10/2020 02:01 PM, Gavin Shan wrote:
+> Hi Anshuman,
+> 
+> On 9/10/20 4:17 PM, Anshuman Khandual wrote:
+>> On 09/08/2020 12:49 PM, Gavin Shan wrote:
+>>> The macro CONT_PTE_SHIFT actually depends on CONT_SHIFT, which has
+>>> been defined in page-def.h, based on CONFIG_ARM64_CONT_SHIFT. Lets
+>>> reflect the dependency.
+>>>
+>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>> ---
+>>>   arch/arm64/include/asm/pgtable-hwdef.h | 4 +---
+>>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+>>> index 8a399e666837..0bd9469f4323 100644
+>>> --- a/arch/arm64/include/asm/pgtable-hwdef.h
+>>> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
+>>> @@ -81,14 +81,12 @@
+>>>   /*
+>>>    * Contiguous page definitions.
+>>>    */
+>>> +#define CONT_PTE_SHIFT        (CONT_SHIFT + PAGE_SHIFT)
+>>>   #ifdef CONFIG_ARM64_64K_PAGES
+>>> -#define CONT_PTE_SHIFT        (5 + PAGE_SHIFT)
+>>>   #define CONT_PMD_SHIFT        (5 + PMD_SHIFT)
+>>>   #elif defined(CONFIG_ARM64_16K_PAGES)
+>>> -#define CONT_PTE_SHIFT        (7 + PAGE_SHIFT)
+>>>   #define CONT_PMD_SHIFT        (5 + PMD_SHIFT)
+>>>   #else
+>>> -#define CONT_PTE_SHIFT        (4 + PAGE_SHIFT)
+>>>   #define CONT_PMD_SHIFT        (4 + PMD_SHIFT)
+>>>   #endif
+>> Could not a similar CONT_PMD be created from a new CONFIG_ARM64_CONT_PMD
+>> config option, which would help unify CONT_PMD_SHIFT here as well ?
+>>
+> 
+> I was thinking of it, to have CONFIG_ARM64_CONT_PMD and defined the
+> following macros in arch/arm64/include/asm/page-def.h:
+> 
+>    #define CONT_PMD_SHIFT    CONFIG_ARM64_CONT_PMD_SHIFT
+>    #define CONT_PMD_SIZE        (_AC(1, UL) << (CONT_PMD_SHIFT + PMD_SHIFT)
+>    #define CONT_PMD_MASK        (~(CONT_PMD_SIZE - 1))
+> 
+> PMD_SHIFT is variable because PMD could be folded into PUD or PGD,
+> depending on the kernel configuration. PMD_SHIFT is declared
+
+Even CONT_PMD_SHIFT via the new CONFIG_ARM64_CONT_PMD_SHIFT will
+be a variable as well depending on page size.
+
+> in arch/arm64/include/asm/pgtable-types.h, which isn't supposed
+> to be included in "page-def.h".
+
+Are there build failures if <pgtable-types.h> is included from <page-def.h> ?
+
+> 
+> So the peroper way to handle this might be drop the continuous page
+> macros in page-def.h and introduce the following ones into pgtable-hwdef.h.
+> I will post v2 to do this if it sounds good to you.
+
+Sure, go ahead if that builds. But unifying both these macros seems cleaner.
+
+> 
+>    #define CONT_PTE_SHIFT         (CONFIG_ARM64_CONT_PTE_SHIFT + PAGE_SHIFT)
+>    #define CONT_PMD_SHIFT         (CONFIG_ARM64_CONT_PMD_SHIFT + PMD_SHIFT)
+> 
+> Thanks,
+> Gavin
+> 
+>
