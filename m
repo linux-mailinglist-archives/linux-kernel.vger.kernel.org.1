@@ -2,122 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF02264A1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AA6264A6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgIJQou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgIJQnu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:43:50 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89479C061757;
-        Thu, 10 Sep 2020 09:43:32 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id f142so6680724qke.13;
-        Thu, 10 Sep 2020 09:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3BNUww9/1V/edxdYConYkSugtndkLik3doexYMvLDMU=;
-        b=K+Agj25OfS7jnopwKfDlTq510BD9rZmww7eKHfUIVJO9KMvg+LuWWBkViC/W6KaVZF
-         eMApdxaLbCGJJy56W3o2RbdU1dxDhrWb4tbajIGLRmhyuY00KrXkdAVlGCjB7pevULkD
-         UMPGdVcKh39bRqAYBxBjyT/or63Uel7WZtV20NTe7RPKYxGun/j5JOWE1W0uqX4SZpfn
-         pp1Bvf0lU/t0sP86BTcao8wLaOP9H1fXen/aRlI7sPZ2tTQS113fwle4j07o3P8OSmBv
-         S23DvHepf0rpS6rUmpUiYsJGPGqjoTQVOIw+NxXG/KFCabgR17CgBqELVPMs1QjxpL5C
-         Mdhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3BNUww9/1V/edxdYConYkSugtndkLik3doexYMvLDMU=;
-        b=leQGU/aGR0PWhTliBVxDrfhdTMIZJ4QAtUg8kMKQI9ur2sd6rpVSMVIfXt63Bt47hq
-         SjM493ziHLEVWs3p3lP8SI9KozGQmFakR/CqDxVDP2fRei8ZxSagtO/k62usr3X26AHD
-         DsVXzW25JxKi4L6hh423rxqtGRMUe5zY9jaUkImGzN7kA05L0nJ4S/abs3P8R1bk4jaE
-         PDlNLUo3odjxGpEoJIMbqZuIneo+aFJ6X5zq50XXksDGxX9N7n39aP6xtikTtOXLEwdn
-         CZf4J5/zU10jNE2KixeDXg7WPo8VbzqV7wVEq71hat21OZhKUgjLd2gnnnoRxfmFCwfq
-         cHEQ==
-X-Gm-Message-State: AOAM531w4oMQgwxblfHg0D/OhJsOmjHPhGF2gi6snUj3mKtdxqymeEsE
-        yY/NhItNqnGX/T7B6zCUB5c=
-X-Google-Smtp-Source: ABdhPJxVbc8a6vlWQlbZ8mkuXKtPhwScCC4mrhFLmXahuFar/1Uo1ZEA9M+HwGhpdYF4VMn08ZvP4w==
-X-Received: by 2002:a05:620a:211c:: with SMTP id l28mr8443893qkl.395.1599756211766;
-        Thu, 10 Sep 2020 09:43:31 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id o13sm6729211qkm.16.2020.09.10.09.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 09:43:30 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 09:43:29 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] kbuild: remove cc-option test of -Werror=date-time
-Message-ID: <20200910164329.GD3119896@ubuntu-n2-xlarge-x86>
-References: <20200910135120.3527468-1-masahiroy@kernel.org>
- <20200910135120.3527468-4-masahiroy@kernel.org>
+        id S1727796AbgIJQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727001AbgIJQza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 12:55:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7139D21D90;
+        Thu, 10 Sep 2020 16:46:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599756389;
+        bh=GIOd68aD5s2ODT6PXYS1Bo0/NkpEhMffA97SHDguaXw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RF5IhkyJvKQ42gsqx2D/gQfZlHzoIpDVmcHqxvAmvjl7IWLEuZrl58dI9C+JsaGMC
+         2DqpxvowGWWDtciqv5eAjQMoRQUIN/PeHNRcYWG/IPBIGMOhOjt/vGW10lbTRY3zHp
+         zK/G9vaYeThaHWggcw7W4QhxUpwQzqzyRzLMXJuM=
+Date:   Thu, 10 Sep 2020 18:46:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     jim.cromie@gmail.com, Petr Mladek <pmladek@suse.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: kernel BUG at /usr/src/kernel/lib/dynamic_debug.c:267!
+Message-ID: <20200910164636.GA1458062@kroah.com>
+References: <CA+G9fYvg7voMNArr3nPpv_dRn10RwYos075NW_b5rFbBLZ=-8g@mail.gmail.com>
+ <20200909144745.504c4cbfeea9bc298e3c6b9b@kernel.org>
+ <20200909080025.GC3864@alley>
+ <20200909122502.GB668220@kroah.com>
+ <CAJfuBxzNFmgY=Wbz99K8QTxkBVDaJn5+gTTxUTJTtkJe7nxfsQ@mail.gmail.com>
+ <20200909181251.GA1007128@kroah.com>
+ <20200910082323.59e41def@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910135120.3527468-4-masahiroy@kernel.org>
+In-Reply-To: <20200910082323.59e41def@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:51:20PM +0900, Masahiro Yamada wrote:
-> The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
+On Thu, Sep 10, 2020 at 08:23:23AM +1000, Stephen Rothwell wrote:
+> Hi Greg,
 > 
-> Here is the godbolt:
-> https://godbolt.org/z/xvjcMa
+> On Wed, 9 Sep 2020 20:12:51 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> >
+> > I'll go revert both patches from my tree in the morning, which should
+> > clear these issues up.
 > 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> I have reverted them from linux-next today.
+> 
 
-Introduced in clang 3.5.0, see commit
-4f43e554081ecac149fe360bee6eef2ed7dab8ea in LLVM.
+Dropped in my tree now too, thanks.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-
-> ---
-> 
->  Makefile                          | 2 +-
->  arch/arm64/kernel/vdso32/Makefile | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 5102c89d3167..1d7c58684fda 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -940,7 +940,7 @@ KBUILD_CFLAGS  += -fno-stack-check
->  KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
->  
->  # Prohibit date/time macros, which would make the build non-deterministic
-> -KBUILD_CFLAGS   += $(call cc-option,-Werror=date-time)
-> +KBUILD_CFLAGS   += -Werror=date-time
->  
->  # enforce correct pointer usage
->  KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index dfffd55175a3..1feb4f8e556e 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -92,7 +92,7 @@ VDSO_CFLAGS += $(call cc32-option,-Wdeclaration-after-statement,)
->  VDSO_CFLAGS += $(call cc32-option,-Wno-pointer-sign)
->  VDSO_CFLAGS += -fno-strict-overflow
->  VDSO_CFLAGS += $(call cc32-option,-Werror=strict-prototypes)
-> -VDSO_CFLAGS += $(call cc32-option,-Werror=date-time)
-> +VDSO_CFLAGS += -Werror=date-time
->  VDSO_CFLAGS += $(call cc32-option,-Werror=incompatible-pointer-types)
->  
->  # The 32-bit compiler does not provide 128-bit integers, which are used in
-> -- 
-> 2.25.1
-> 
+greg k-h
