@@ -2,239 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D8B264B57
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA77264B71
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgIJRdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727808AbgIJR2w (ORCPT
+        id S1727044AbgIJRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:38:14 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:60122 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726899AbgIJReU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:28:52 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CC6C061795;
-        Thu, 10 Sep 2020 10:28:51 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id CD68729BB09
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        weiyi.lu@mediatek.com, Matthias Brugger <mbrugger@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 12/12] arm64: dts: mediatek: Add mt8183 power domains controller
-Date:   Thu, 10 Sep 2020 19:28:26 +0200
-Message-Id: <20200910172826.3074357-13-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200910172826.3074357-1-enric.balletbo@collabora.com>
-References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+        Thu, 10 Sep 2020 13:34:20 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AHYAOU012934;
+        Thu, 10 Sep 2020 12:34:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599759250;
+        bh=w/1pWFuQbg23uoRnZS+pLtiGKqGvx6oYjiN6Hcvqabo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=urHuQFYd2CTFPgRLbOo+EWXVbJR57kzBvFJ3f7s3mvG4mKsgoeg2rH9Im5Se/t2UT
+         LGKy5aCD1MDMwUQ6Dlv1RqKrvjsGWOKbNWrNG19F8TtYGeRURxh4SNCS+gNZ4xSRTH
+         gdXNPi6IqFZ3aN01FsrnJDG4wlc7WRflzCS7vH+w=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08AHY9r3059716
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Sep 2020 12:34:09 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
+ Sep 2020 12:34:09 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 10 Sep 2020 12:34:09 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AHY9Po113734;
+        Thu, 10 Sep 2020 12:34:09 -0500
+Subject: Re: [PATCH net-next v3 2/3] net: phy: dp83869: support Wake on LAN
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200903114259.14013-1-dmurphy@ti.com>
+ <20200903114259.14013-3-dmurphy@ti.com>
+ <20200905113428.5bd7dc95@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <5051f1e2-4f8e-a021-df6c-d4066938422f@ti.com>
+Date:   Thu, 10 Sep 2020 12:34:09 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200905113428.5bd7dc95@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+Jakub
 
-Add power domains controller node for SoC mt8183
+Thanks for the review
 
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+On 9/5/20 1:34 PM, Jakub Kicinski wrote:
+> On Thu, 3 Sep 2020 06:42:58 -0500 Dan Murphy wrote:
+>> This adds WoL support on TI DP83869 for magic, magic secure, unicast and
+>> broadcast.
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   drivers/net/phy/dp83869.c | 128 ++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 128 insertions(+)
+>>
+>> diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
+>> index 48a68474f89c..5045df9515a5 100644
+>> --- a/drivers/net/phy/dp83869.c
+>> +++ b/drivers/net/phy/dp83869.c
+>> @@ -4,6 +4,7 @@
+>>    */
+>>   
+>>   #include <linux/ethtool.h>
+>> +#include <linux/etherdevice.h>
+>>   #include <linux/kernel.h>
+>>   #include <linux/mii.h>
+>>   #include <linux/module.h>
+>> @@ -27,6 +28,13 @@
+>>   #define DP83869_RGMIICTL	0x0032
+>>   #define DP83869_STRAP_STS1	0x006e
+>>   #define DP83869_RGMIIDCTL	0x0086
+>> +#define DP83869_RXFCFG		0x0134
+>> +#define DP83869_RXFPMD1		0x0136
+>> +#define DP83869_RXFPMD2		0x0137
+>> +#define DP83869_RXFPMD3		0x0138
+>> +#define DP83869_RXFSOP1		0x0139
+>> +#define DP83869_RXFSOP2		0x013A
+>> +#define DP83869_RXFSOP3		0x013B
+>>   #define DP83869_IO_MUX_CFG	0x0170
+>>   #define DP83869_OP_MODE		0x01df
+>>   #define DP83869_FX_CTRL		0x0c00
+>> @@ -105,6 +113,14 @@
+>>   #define DP83869_OP_MODE_MII			BIT(5)
+>>   #define DP83869_SGMII_RGMII_BRIDGE		BIT(6)
+>>   
+>> +/* RXFCFG bits*/
+>> +#define DP83869_WOL_MAGIC_EN		BIT(0)
+>> +#define DP83869_WOL_PATTERN_EN		BIT(1)
+>> +#define DP83869_WOL_BCAST_EN		BIT(2)
+>> +#define DP83869_WOL_UCAST_EN		BIT(4)
+>> +#define DP83869_WOL_SEC_EN		BIT(5)
+>> +#define DP83869_WOL_ENH_MAC		BIT(7)
+>> +
+>>   enum {
+>>   	DP83869_PORT_MIRRORING_KEEP,
+>>   	DP83869_PORT_MIRRORING_EN,
+>> @@ -156,6 +172,115 @@ static int dp83869_config_intr(struct phy_device *phydev)
+>>   	return phy_write(phydev, MII_DP83869_MICR, micr_status);
+>>   }
+>>   
+>> +static int dp83869_set_wol(struct phy_device *phydev,
+>> +			   struct ethtool_wolinfo *wol)
+>> +{
+>> +	struct net_device *ndev = phydev->attached_dev;
+>> +	u16 val_rxcfg, val_micr;
+>> +	u8 *mac;
+>> +
+>> +	val_rxcfg = phy_read_mmd(phydev, DP83869_DEVADDR, DP83869_RXFCFG);
+>> +	val_micr = phy_read(phydev, MII_DP83869_MICR);
+> In the previous patch you checked if phy_read() failed, here you don't.
+I will add it back
+>
+>> +	if (wol->wolopts & (WAKE_MAGIC | WAKE_MAGICSECURE | WAKE_UCAST |
+>> +			    WAKE_BCAST)) {
+>> +		val_rxcfg |= DP83869_WOL_ENH_MAC;
+>> +		val_micr |= MII_DP83869_MICR_WOL_INT_EN;
+>> +
+>> +		if (wol->wolopts & WAKE_MAGIC) {
+>> +			mac = (u8 *)ndev->dev_addr;
+>> +
+>> +			if (!is_valid_ether_addr(mac))
+>> +				return -EINVAL;
+>> +
+>> +			phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFPMD1,
+>> +				      (mac[1] << 8 | mac[0]));
+> parenthesis unnecessary
+OK
+>
+>> +			phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFPMD2,
+>> +				      (mac[3] << 8 | mac[2]));
+>> +			phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFPMD3,
+>> +				      (mac[5] << 8 | mac[4]));
+> Why only program mac addr for wake_magic, does magic_secure or unicast
+> not require it?
 
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 160 +++++++++++++++++++++++
- 1 file changed, 160 insertions(+)
+Unicast and broadcast are the ways to send the magic packet.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 102105871db2..7012cdb22bf0 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -8,6 +8,7 @@
- #include <dt-bindings/clock/mt8183-clk.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/power/mt8183-power.h>
- #include <dt-bindings/reset-controller/mt8183-resets.h>
- #include <dt-bindings/phy/phy.h>
- #include "mt8183-pinfunc.h"
-@@ -316,6 +317,160 @@ pio: pinctrl@10005000 {
- 			#interrupt-cells = <2>;
- 		};
- 
-+		scpsys: syscon@10006000 {
-+			compatible = "mediatek,mt8183-power-controller", "syscon";
-+			reg = <0 0x10006000 0 0x1000>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			audio@MT8183_POWER_DOMAIN_AUDIO {
-+				reg = <MT8183_POWER_DOMAIN_AUDIO>;
-+				clocks = <&topckgen CLK_TOP_MUX_AUD_INTBUS>,
-+					 <&infracfg CLK_INFRA_AUDIO>,
-+					 <&infracfg CLK_INFRA_AUDIO_26M_BCLK>;
-+				clock-names = "audio", "audio1", "audio2";
-+				#power-domain-cells = <0>;
-+			};
-+
-+			conn@MT8183_POWER_DOMAIN_CONN {
-+				reg = <MT8183_POWER_DOMAIN_CONN>;
-+				mediatek,infracfg = <&infracfg>;
-+				#power-domain-cells = <0>;
-+			};
-+
-+			mfg_async@MT8183_POWER_DOMAIN_MFG_ASYNC {
-+				reg = <MT8183_POWER_DOMAIN_MFG_ASYNC>;
-+
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				clocks =  <&topckgen CLK_TOP_MUX_MFG>;
-+				clock-names = "mfg";
-+				#power-domain-cells = <1>;
-+
-+				mfg@MT8183_POWER_DOMAIN_MFG {
-+					reg = <MT8183_POWER_DOMAIN_MFG>;
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					#power-domain-cells = <1>;
-+
-+					mfg_core0@MT8183_POWER_DOMAIN_MFG_CORE0 {
-+						reg = <MT8183_POWER_DOMAIN_MFG_CORE0>;
-+						#power-domain-cells = <0>;
-+					};
-+
-+					mfg_core1@MT8183_POWER_DOMAIN_MFG_CORE1 {
-+						reg = <MT8183_POWER_DOMAIN_MFG_CORE1>;
-+						#power-domain-cells = <0>;
-+					};
-+
-+					mfg_2d@MT8183_POWER_DOMAIN_MFG_2D {
-+						reg = <MT8183_POWER_DOMAIN_MFG_2D>;
-+						mediatek,infracfg = <&infracfg>;
-+						#power-domain-cells = <0>;
-+					};
-+				};
-+			};
-+
-+			disp@MT8183_POWER_DOMAIN_DISP {
-+				reg = <MT8183_POWER_DOMAIN_DISP>;
-+				clocks = <&topckgen CLK_TOP_MUX_MM>,
-+					 <&mmsys CLK_MM_SMI_COMMON>,
-+					 <&mmsys CLK_MM_SMI_LARB0>,
-+					 <&mmsys CLK_MM_SMI_LARB1>,
-+					 <&mmsys CLK_MM_GALS_COMM0>,
-+					 <&mmsys CLK_MM_GALS_COMM1>,
-+					 <&mmsys CLK_MM_GALS_CCU2MM>,
-+					 <&mmsys CLK_MM_GALS_IPU12MM>,
-+					 <&mmsys CLK_MM_GALS_IMG2MM>,
-+					 <&mmsys CLK_MM_GALS_CAM2MM>,
-+					 <&mmsys CLK_MM_GALS_IPU2MM>;
-+				clock-names = "mm", "mm-0", "mm-1", "mm-2", "mm-3",
-+					      "mm-4", "mm-5", "mm-6", "mm-7",
-+					      "mm-8", "mm-9";
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				mediatek,infracfg = <&infracfg>;
-+				mediatek,smi = <&smi_common>;
-+				#power-domain-cells = <1>;
-+
-+				cam@MT8183_POWER_DOMAIN_CAM {
-+					reg = <MT8183_POWER_DOMAIN_CAM>;
-+					clocks = <&topckgen CLK_TOP_MUX_CAM>,
-+						 <&camsys CLK_CAM_LARB6>,
-+						 <&camsys CLK_CAM_LARB3>,
-+						 <&camsys CLK_CAM_SENINF>,
-+						 <&camsys CLK_CAM_CAMSV0>,
-+						 <&camsys CLK_CAM_CAMSV1>,
-+						 <&camsys CLK_CAM_CAMSV2>,
-+						 <&camsys CLK_CAM_CCU>;
-+					clock-names = "cam", "cam-0", "cam-1",
-+						      "cam-2", "cam-3", "cam-4",
-+						      "cam-5", "cam-6";
-+					mediatek,infracfg = <&infracfg>;
-+					mediatek,smi = <&smi_common>;
-+					#power-domain-cells = <0>;
-+				};
-+
-+				isp@MT8183_POWER_DOMAIN_ISP {
-+					reg = <MT8183_POWER_DOMAIN_ISP>;
-+					clocks = <&topckgen CLK_TOP_MUX_IMG>,
-+						 <&imgsys CLK_IMG_LARB5>,
-+						 <&imgsys CLK_IMG_LARB2>;
-+					clock-names = "isp", "isp-0", "isp-1";
-+					mediatek,infracfg = <&infracfg>;
-+					mediatek,smi = <&smi_common>;
-+					#power-domain-cells = <0>;
-+				};
-+
-+				vdec@MT8183_POWER_DOMAIN_VDEC {
-+					reg = <MT8183_POWER_DOMAIN_VDEC>;
-+					mediatek,smi = <&smi_common>;
-+					#power-domain-cells = <0>;
-+				};
-+
-+				venc@MT8183_POWER_DOMAIN_VENC {
-+					reg = <MT8183_POWER_DOMAIN_VENC>;
-+					mediatek,smi = <&smi_common>;
-+					#power-domain-cells = <0>;
-+				};
-+
-+				vpu_top@MT8183_POWER_DOMAIN_VPU_TOP {
-+					reg = <MT8183_POWER_DOMAIN_VPU_TOP>;
-+					clocks = <&topckgen CLK_TOP_MUX_IPU_IF>,
-+						 <&topckgen CLK_TOP_MUX_DSP>,
-+						 <&ipu_conn CLK_IPU_CONN_IPU>,
-+						 <&ipu_conn CLK_IPU_CONN_AHB>,
-+						 <&ipu_conn CLK_IPU_CONN_AXI>,
-+						 <&ipu_conn CLK_IPU_CONN_ISP>,
-+						 <&ipu_conn CLK_IPU_CONN_CAM_ADL>,
-+						 <&ipu_conn CLK_IPU_CONN_IMG_ADL>;
-+					clock-names = "vpu", "vpu1", "vpu-0", "vpu-1",
-+						      "vpu-2", "vpu-3", "vpu-4", "vpu-5";
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+					mediatek,infracfg = <&infracfg>;
-+					mediatek,smi = <&smi_common>;
-+					#power-domain-cells = <1>;
-+
-+					vpu_core0@MT8183_POWER_DOMAIN_VPU_CORE0 {
-+						reg = <MT8183_POWER_DOMAIN_VPU_CORE0>;
-+						clocks = <&topckgen CLK_TOP_MUX_DSP1>;
-+						clock-names = "vpu2";
-+						mediatek,infracfg = <&infracfg>;
-+						#power-domain-cells = <0>;
-+					};
-+
-+					vpu_core1@MT8183_POWER_DOMAIN_VPU_CORE1 {
-+						reg = <MT8183_POWER_DOMAIN_VPU_CORE1>;
-+						clocks = <&topckgen CLK_TOP_MUX_DSP2>;
-+						clock-names = "vpu3";
-+						mediatek,infracfg = <&infracfg>;
-+						#power-domain-cells = <0>;
-+					};
-+				};
-+			};
-+		};
-+
- 		watchdog: watchdog@10007000 {
- 			compatible = "mediatek,mt8183-wdt",
- 				     "mediatek,mt6589-wdt";
-@@ -754,6 +909,11 @@ mmsys: syscon@14000000 {
- 			#clock-cells = <1>;
- 		};
- 
-+		smi_common: smi@14019000 {
-+			compatible = "mediatek,mt8183-smi-common", "syscon";
-+			reg = <0 0x14019000 0 0x1000>;
-+		};
-+
- 		imgsys: syscon@15020000 {
- 			compatible = "mediatek,mt8183-imgsys", "syscon";
- 			reg = <0 0x15020000 0 0x1000>;
--- 
-2.28.0
+Magic secure is programmed below into the SOP (secure on pass) registers
+
+>
+>> +
+>> +			val_rxcfg |= DP83869_WOL_MAGIC_EN;
+>> +		} else {
+>> +			val_rxcfg &= ~DP83869_WOL_MAGIC_EN;
+>> +		}
+>> +
+>> +		if (wol->wolopts & WAKE_MAGICSECURE) {
+>> +			phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFSOP1,
+>> +				      (wol->sopass[1] << 8) | wol->sopass[0]);
+>> +			phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFSOP2,
+>> +				      (wol->sopass[3] << 8) | wol->sopass[2]);
+>> +			phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFSOP3,
+>> +				      (wol->sopass[5] << 8) | wol->sopass[4]);
+>> +
+>> +			val_rxcfg |= DP83869_WOL_SEC_EN;
+>> +		} else {
+>> +			val_rxcfg &= ~DP83869_WOL_SEC_EN;
+>> +		}
+>> +
+>> +		if (wol->wolopts & WAKE_UCAST)
+>> +			val_rxcfg |= DP83869_WOL_UCAST_EN;
+>> +		else
+>> +			val_rxcfg &= ~DP83869_WOL_UCAST_EN;
+>> +
+>> +		if (wol->wolopts & WAKE_BCAST)
+>> +			val_rxcfg |= DP83869_WOL_BCAST_EN;
+>> +		else
+>> +			val_rxcfg &= ~DP83869_WOL_BCAST_EN;
+>> +	} else {
+>> +		val_rxcfg &= ~DP83869_WOL_ENH_MAC;
+>> +		val_micr &= ~MII_DP83869_MICR_WOL_INT_EN;
+>> +	}
+>> +
+>> +	phy_write_mmd(phydev, DP83869_DEVADDR, DP83869_RXFCFG, val_rxcfg);
+>> +	phy_write(phydev, MII_DP83869_MICR, val_micr);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void dp83869_get_wol(struct phy_device *phydev,
+>> +			    struct ethtool_wolinfo *wol)
+>> +{
+>> +	u16 value, sopass_val;
+>> +
+>> +	wol->supported = (WAKE_UCAST | WAKE_BCAST | WAKE_MAGIC |
+>> +			WAKE_MAGICSECURE);
+>> +	wol->wolopts = 0;
+>> +
+>> +	value = phy_read_mmd(phydev, DP83869_DEVADDR, DP83869_RXFCFG);
+>> +
+>> +	if (value & DP83869_WOL_UCAST_EN)
+>> +		wol->wolopts |= WAKE_UCAST;
+>> +
+>> +	if (value & DP83869_WOL_BCAST_EN)
+>> +		wol->wolopts |= WAKE_BCAST;
+>> +
+>> +	if (value & DP83869_WOL_MAGIC_EN)
+>> +		wol->wolopts |= WAKE_MAGIC;
+>> +
+>> +	if (value & DP83869_WOL_SEC_EN) {
+>> +		sopass_val = phy_read_mmd(phydev, DP83869_DEVADDR,
+>> +					  DP83869_RXFSOP1);
+>> +		wol->sopass[0] = (sopass_val & 0xff);
+>> +		wol->sopass[1] = (sopass_val >> 8);
+>> +
+>> +		sopass_val = phy_read_mmd(phydev, DP83869_DEVADDR,
+>> +					  DP83869_RXFSOP2);
+>> +		wol->sopass[2] = (sopass_val & 0xff);
+>> +		wol->sopass[3] = (sopass_val >> 8);
+>> +
+>> +		sopass_val = phy_read_mmd(phydev, DP83869_DEVADDR,
+>> +					  DP83869_RXFSOP3);
+>> +		wol->sopass[4] = (sopass_val & 0xff);
+>> +		wol->sopass[5] = (sopass_val >> 8);
+>> +
+>> +		wol->wolopts |= WAKE_MAGICSECURE;
+>> +	}
+>> +
+>> +	if (!(value & DP83869_WOL_ENH_MAC))
+>> +		wol->wolopts = 0;
+> What does ENH stand for?
+Enhanced MAC - Enables enhanced RX features. This bit should be set when 
+using
+wakeup abilities, CRC check or RX 1588 indication
+>
+> Perhaps it would be cleaner to make a helper like this:
+>
+> u32 helper(u16 rxfsop1)
+> {
+> 	u32 wolopts;
+>
+> 	if (!(value & DP83869_WOL_ENH_MAC))
+> 		return 0;
+>
+> 	if (value & DP83869_WOL_UCAST_EN)
+> 		wolopts |= WAKE_UCAST;
+> 	if (value & DP83869_WOL_BCAST_EN)
+> 		wolopts |= WAKE_BCAST;
+> 	if (value & DP83869_WOL_MAGIC_EN)
+> 		wolopts |= WAKE_MAGIC;
+> 	if (value & DP83869_WOL_SEC_EN)
+> 		wolopts |= WAKE_MAGICSECURE;
+>
+> 	return wolopts;
+> }
+>
+> wol->wolopts = helper(value);
+>
+> setting the bits and then clearing the value looks strange.
+A helper is a bit overkill see below.
+>
+>> +}
+>> +
+>>   static int dp83869_config_port_mirroring(struct phy_device *phydev)
+>>   {
+>>   	struct dp83869_private *dp83869 = phydev->priv;
+> Overall this code looks quite similar to dp83867, is there no way to
+> factor this out?
+
+Factor what out?  Yes the DP83867 and DP83869 are very similar in 
+registers and bitmaps.  They just differ in their feature sets.
+
+The WoL code was copied and pasted to the 869 and I would like to keep 
+the two files as similar as I can as it will be easier to fix and find bugs.
 
