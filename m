@@ -2,169 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD0426490F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:51:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633D926493E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgIJPvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731431AbgIJPtb (ORCPT
+        id S1731492AbgIJQAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:00:00 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:44489 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731529AbgIJP5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:49:31 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAC1C061795
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:48:46 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id cv8so3546098qvb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mzZ2lLN/xoCXQCadMP3KD01lnN0CJF5729OTiX4TA1k=;
-        b=rZS11rVGYL5ep4IWino2NQi6goYHWye6jCPxILs3Ix3/bXbZEy+oW9dhA3uWl/9kSl
-         OvQfGVC3GCJPLaseAZRCG0qA4mfMcw8hk8EBu8VZ8OFLPZe1Axx64ljgqCtxruwPkZAD
-         Q3vWzxZws/NIoaTu71iD4PPu6sScpp4aytj00Dg/7lyKydCTfnXeY4h4sgEM5ROww+f4
-         v+N4GT/+MGo71yWSm45kTtU8uEhY8SrLw8ak87gYoy4h1Mq1a8eSEGmMCOJRpdevtoS9
-         VuZUWtwRqZY8/t5WvHtrRTz1Osj7MVCaplXa1UIZPf3Hm8YvfrB0Uqc6QR+WoN8whxAZ
-         7Uvg==
+        Thu, 10 Sep 2020 11:57:15 -0400
+Received: by mail-il1-f195.google.com with SMTP id h11so6095177ilj.11;
+        Thu, 10 Sep 2020 08:56:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mzZ2lLN/xoCXQCadMP3KD01lnN0CJF5729OTiX4TA1k=;
-        b=cabUPJKRLESdlkW7AHwTIf4nQcPHNPa4ZfoJQ52teKCaA73NIBUu6o4VCtP6F0PXmS
-         7liiIQJQWpJePbZrqDbxYptec32mPGlE/dKnjr3yriIUmR4TDtIg3CAdqLxL2ooS9QIT
-         d82kRIrq9ZJAj7gaTMyX7E+fK/eHklnkdkMat66ZLF6eAWIt7n0BbcyGuzGRKVw1ULl+
-         zlXJPFEeGfOR+6/GyEqrsNqMmYuOWEuc6IKHPxQzjL2f+0gRJMfYAUyrJBwtqmoJaeuY
-         /As0BCDP+TdG5pMPestuLLuvO51BuaFyCSWav5dZv+9aG+Qafre8X4oazkpeqKNbg6LW
-         gVeA==
-X-Gm-Message-State: AOAM531EuDMjbsKnh4LfNG1OpG3ptWiL0zSO4QJQBQEj2AFQs9bktirt
-        t/E593BXQgIJ4NbI6R7p8ntz7r0pemDBzPHZz7EfkA==
-X-Google-Smtp-Source: ABdhPJxh2XVwiSK5Cy8rwdS2ADng5rr5wnF88amN70Agx8Eq7w/KffAyyLi/G4AzlUPalDqC/TNQ17vsb+5sAfyNH4U=
-X-Received: by 2002:a0c:e543:: with SMTP id n3mr9296354qvm.11.1599752925133;
- Thu, 10 Sep 2020 08:48:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=75EPNsIBYVup6AIGiJwzSdSJw0NGHqRELWm5o6mzFMs=;
+        b=OFDjh6hXcTEHijVpQPKY2/5EJ9quxQApX6oyZHIpX8M2xXFg+f+Z7HwXbjiexxblCb
+         6LNbcVaev6A3zSUmi42nhcqgTr7D/DVyfOH5FWibGfMNKVlXNO00LwZlv10eNdBW/gvv
+         lHJBcMZs+GRUToF14HtoW0tQzNXTQHryrO9b2XMNlccxSBxXrDsz3ozBzB+zMVvVHdHV
+         wmp5I5dZOe1gV03HNErhwQaCwjp+nHeDB/KaV5XvpMW690SCCgPCb6dpxIy/giNWQZxI
+         fyz1twZJpg6Pq7X6k/P9pfKV+sqidHiMqk8PjIjqqzX09rSsT5iIg3tqIlHxomkWiC0c
+         M4fg==
+X-Gm-Message-State: AOAM530QzhnanBZRfYCj/+zKcYWquXqhlzcfDRvJzXT95yhaQK4D8OCL
+        JXRZ1T2+GprIJvDHIQVeMiTNnwkeAToe
+X-Google-Smtp-Source: ABdhPJy4YBC4Og5nCPNZgXln9mIj11eNmiP8UC9Zd2pwLdDntsNRTIUnoo41piAt35aUn1jJdSewgA==
+X-Received: by 2002:a92:7984:: with SMTP id u126mr7266050ilc.139.1599753398667;
+        Thu, 10 Sep 2020 08:56:38 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id s17sm1301374ilb.24.2020.09.10.08.56.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 08:56:38 -0700 (PDT)
+Received: (nullmailer pid 439332 invoked by uid 1000);
+        Thu, 10 Sep 2020 15:56:37 -0000
+Date:   Thu, 10 Sep 2020 09:56:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v11 04/11] PCI: brcmstb: Add suspend and resume pm_ops
+Message-ID: <20200910155637.GA423872@bogus>
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <20200824193036.6033-5-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
- <CACT4Y+aBpeQYOWGrCoaJ=HAa0BsSekyL88kcLBTGwc--C+Ch0w@mail.gmail.com> <CANpmjNN7qAtnUmibwGJEnxd+UcjBM1WeocoLeW0SO24NW3SkVA@mail.gmail.com>
-In-Reply-To: <CANpmjNN7qAtnUmibwGJEnxd+UcjBM1WeocoLeW0SO24NW3SkVA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 10 Sep 2020 17:48:34 +0200
-Message-ID: <CACT4Y+Z2Nay4mDjnHjooRa7u3ZXf72AFkF=EfkrZjCg9YEduMw@mail.gmail.com>
-Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200824193036.6033-5-james.quinlan@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 5:06 PM Marco Elver <elver@google.com> wrote:
-> > On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
-> > > +config KFENCE_NUM_OBJECTS
-> > > +       int "Number of guarded objects available"
-> > > +       default 255
-> > > +       range 1 65535
-> > > +       help
-> > > +         The number of guarded objects available. For each KFENCE object, 2
-> > > +         pages are required; with one containing the object and two adjacent
-> > > +         ones used as guard pages.
-> >
-> > Hi Marco,
-> >
-> > Wonder if you tested build/boot with KFENCE_NUM_OBJECTS=65535? Can a
-> > compiler create such a large object?
->
-> Indeed, I get a "ld: kernel image bigger than KERNEL_IMAGE_SIZE".
-> Let's lower it to something more reasonable.
->
-> The main reason to have the limit is to constrain random configs and
-> avoid the inevitable error reports.
->
-> > > +config KFENCE_FAULT_INJECTION
-> > > +       int "Fault injection for stress testing"
-> > > +       default 0
-> > > +       depends on EXPERT
-> > > +       help
-> > > +         The inverse probability with which to randomly protect KFENCE object
-> > > +         pages, resulting in spurious use-after-frees. The main purpose of
-> > > +         this option is to stress-test KFENCE with concurrent error reports
-> > > +         and allocations/frees. A value of 0 disables fault injection.
-> >
-> > I would name this differently. "FAULT_INJECTION" is already taken for
-> > a different thing, so it's a bit confusing.
-> > KFENCE_DEBUG_SOMETHING may be a better name.
-> > It would also be good to make it very clear in the short description
-> > that this is for testing of KFENCE itself. When I configure syzbot I
-> > routinely can't figure out if various DEBUG configs detect user
-> > errors, or enable additional unit tests, or something else.
->
-> Makes sense, we'll change the name.
->
-> > Maybe it should depend on DEBUG_KERNEL as well?
->
-> EXPERT selects DEBUG_KERNEL, so depending on DEBUG_KERNEL doesn't make sense.
->
-> > > +/*
-> > > + * Get the canary byte pattern for @addr. Use a pattern that varies based on the
-> > > + * lower 3 bits of the address, to detect memory corruptions with higher
-> > > + * probability, where similar constants are used.
-> > > + */
-> > > +#define KFENCE_CANARY_PATTERN(addr) ((u8)0xaa ^ (u8)((unsigned long)addr & 0x7))
-> >
-> > (addr) in macro body
->
-> Done for v2.
->
-> > > +       seq_con_printf(seq,
-> > > +                      "kfence-#%zd [0x" PTR_FMT "-0x" PTR_FMT
-> >
-> > PTR_FMT is only used in this file, should it be declared in report.c?
->
-> It's also used by the test.
->
-> > Please post example reports somewhere. It's hard to figure out all
-> > details of the reporting/formatting.
->
-> They can be seen in Documentation added later in the series (also
-> viewable here: https://github.com/google/kasan/blob/kfence/Documentation/dev-tools/kfence.rst)
+On Mon, Aug 24, 2020 at 03:30:17PM -0400, Jim Quinlan wrote:
+> From: Jim Quinlan <jquinlan@broadcom.com>
+> 
+> Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
+> and resume.  Now the PCIe driver may do so as well.
+> 
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 47 +++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index c2b3d2946a36..3d588ab7a6dd 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -978,6 +978,47 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+>  	brcm_pcie_bridge_sw_init_set(pcie, 1);
+>  }
+>  
+> +static int brcm_pcie_suspend(struct device *dev)
+> +{
+> +	struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> +
+> +	brcm_pcie_turn_off(pcie);
+> +	clk_disable_unprepare(pcie->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int brcm_pcie_resume(struct device *dev)
+> +{
+> +	struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> +	void __iomem *base;
+> +	u32 tmp;
+> +	int ret;
+> +
+> +	base = pcie->base;
+> +	clk_prepare_enable(pcie->clk);
+> +
+> +	/* Take bridge out of reset so we can access the SERDES reg */
+> +	brcm_pcie_bridge_sw_init_set(pcie, 0);
+> +
+> +	/* SERDES_IDDQ = 0 */
+> +	tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+> +	u32p_replace_bits(&tmp, 0, PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK);
+> +	writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+> +
+> +	/* wait for serdes to be stable */
+> +	udelay(100);
 
+Really needs to be a spinloop?
 
-Looking at the first report. I got impression we are trying to skip
-__kfence frames, but this includes it:
+> +
+> +	ret = brcm_pcie_setup(pcie);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (pcie->msi)
+> +		brcm_msi_set_regs(pcie->msi);
+> +
+> +	return 0;
+> +}
+> +
+>  static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+>  {
+>  	brcm_msi_remove(pcie);
+> @@ -1087,12 +1128,18 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>  
+>  MODULE_DEVICE_TABLE(of, brcm_pcie_match);
+>  
+> +static const struct dev_pm_ops brcm_pcie_pm_ops = {
+> +	.suspend_noirq = brcm_pcie_suspend,
+> +	.resume_noirq = brcm_pcie_resume,
 
-kfence-#17 [0xffffffffb672f000-0xffffffffb672f01f, size=32,
-cache=kmalloc-32] allocated in:
-   __kfence_alloc+0x42d/0x4c0
-   __kmalloc+0x133/0x200
+Why do you need interrupts disabled? There's 39 cases of .suspend_noirq 
+and 1352 of .suspend in the tree.
 
-Is it working as intended?
+Is doing a clk unprepare even safe in .suspend_noirq? IIRC, 
+prepare/unprepare can sleep.
+
+> +};
+> +
+>  static struct platform_driver brcm_pcie_driver = {
+>  	.probe = brcm_pcie_probe,
+>  	.remove = brcm_pcie_remove,
+>  	.driver = {
+>  		.name = "brcm-pcie",
+>  		.of_match_table = brcm_pcie_match,
+> +		.pm = &brcm_pcie_pm_ops,
+>  	},
+>  };
+>  module_platform_driver(brcm_pcie_driver);
+> -- 
+> 2.17.1
+> 
