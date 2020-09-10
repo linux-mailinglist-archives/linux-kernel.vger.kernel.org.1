@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D9B264703
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB57264707
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 15:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730764AbgIJNan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 09:30:43 -0400
-Received: from mx08-001d1705.pphosted.com ([185.183.30.70]:46671 "EHLO
-        mx08-001d1705.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730650AbgIJN1p (ORCPT
+        id S1730450AbgIJNbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 09:31:40 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21196 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730821AbgIJN2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:27:45 -0400
-Received: from pps.filterd (m0209323.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08ADO8WN015850;
-        Thu, 10 Sep 2020 13:26:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=S1;
- bh=arcA9O00QGAee96fxt+qaG2HVn1O98qDtc24cNsTEVg=;
- b=cgc4R62Jbfp9KS5ybfE35zFCtDqQW5n2/FO+yMUiJcbRvMtxmwtQCpLoDFJz0mIVgPQ1
- GER5/7CNL87dvTuEQkcbndF8g0ZWdDpUgYUw8HYTnf3IMAKVeuE1TVh30gvgKauATsb4
- aCIRU/vB2PIeIa58PjMGz6pTsKrZ0jWulLlvyKmQ3DqujDkhnjwee94YqIz5CLBtSLdG
- lBBkOyIXzdaJxmY+PEMg57mvQkr0b3ZQciKUcCQECgVVSFQ1bcvGxHMnmrpP1LbNLMSY
- zgV0EAdZCI+h5g4M/tDVyhvX84uSp0jm/xJlCvUIqH/Bv4zF9GjBL4NqbJxgSeKY5IdN fw== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
-        by mx08-001d1705.pphosted.com with ESMTP id 33f5wj8ghw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 13:26:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eFLD3H0W9eSXzYyqkG9l402G3C6Kq+VA2djq2npS1294LGqEd89vaOXd7vrNJUB31EZ5xVoo4ynrejgyPR0nXvqxnh2T9/G6WnKjvV2kHb10ulyuFdujgOG+AWxvatIMD7lo4byJoEzhxGr0JHW6Ho1pbFOfr4ctFe8mP6jT01Z0R9jrPa4Do+3TA9AMBjTr7Bh7yOcmtuS/CtMTyaExUvOP4JqFFHtmSZOW6DqCXbmvbZCmw/3nG1s1FdESB8qzZB4m1euey8a83ghzBC+hBmWK93q0vGyTbajP/nBa4KkNwOpdDgafRkDhXenIgYlpfOrpeBD3w5GoqRR03NYPdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=arcA9O00QGAee96fxt+qaG2HVn1O98qDtc24cNsTEVg=;
- b=gKDBZYBiOEQNmEHhhy+QTnAn+6NuxOXiFOE5oK5kGjcp59DxISLrwS0qqqfHpkaeXI+mGMebF44yyeIbcueR86wanbN5omEzKPotAVn7vdEFhuL68ZbDsZXXoVpjvhcxq3fWPx5htwsHQRyxG+S2CmEYVaxZBNaBVm5e2wbY4/4khWivRIxPpSsuX5TcwH0pevET5w+9HH/Nts0OFWyHfW7COGJYlSu8t1Lxy7pkA7e+Tt2oAw2vErwJZGm7iE0JmZXhdiZ5kITs2860PxCrhVKk/0ZB/q9FTNPVbRbQ0UCLqJeGnObaQrBIsBCxtTAI4FGmuKUd56bhCLGRKNqKtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-Received: from CY4PR13MB1175.namprd13.prod.outlook.com (2603:10b6:903:40::23)
- by CY4PR13MB1638.namprd13.prod.outlook.com (2603:10b6:903:156::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.8; Thu, 10 Sep
- 2020 13:26:05 +0000
-Received: from CY4PR13MB1175.namprd13.prod.outlook.com
- ([fe80::5c0c:3d3a:c493:efa]) by CY4PR13MB1175.namprd13.prod.outlook.com
- ([fe80::5c0c:3d3a:c493:efa%11]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
- 13:26:05 +0000
-From:   "Bird, Tim" <Tim.Bird@sony.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Subject: RE: [PATCH v3 3/8] Documentation: tracing: Add tracing_on option to
- boot-time tracer
-Thread-Topic: [PATCH v3 3/8] Documentation: tracing: Add tracing_on option to
- boot-time tracer
-Thread-Index: AQHWh1BRWsK5gHw3hE2ET0CGqzU6s6lh3Oig
-Date:   Thu, 10 Sep 2020 13:26:05 +0000
-Message-ID: <CY4PR13MB1175F981AB2931C228EBF42FFD270@CY4PR13MB1175.namprd13.prod.outlook.com>
-References: <159972809455.428528.4737752126800169128.stgit@devnote2>
- <159972812521.428528.4047280962991773996.stgit@devnote2>
-In-Reply-To: <159972812521.428528.4047280962991773996.stgit@devnote2>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=sony.com;
-x-originating-ip: [192.34.114.49]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e77ec83b-6c92-40d9-5eea-08d8558d121e
-x-ms-traffictypediagnostic: CY4PR13MB1638:
-x-microsoft-antispam-prvs: <CY4PR13MB1638B87A15E3E2F97A6D7DF3FD270@CY4PR13MB1638.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HMlD4yx8GoEOCIhORJILDEadD2GUkp5qS9MD5kN7HvJWgxiWUY3OKj9GRhC3fNGmE/LhVjcP0R07fuL9ha4CO2/5bDkJQcMZpWGWThJgTdoJSJ16+Wo07OO6Hww2JVS3UjsYvf9PDg8Ef9UfDV5FNQkGqsYjDiAcO0ek6lmeSY+5Qg/jgSOdnKyYaOMHw0AG3bLh8Zf2lOu4TIXWRIkqd7gfk6V5bmnRKL4l+cN5mNibmZ427ILIReTuRKx2V84LqtAHpta3MWmB7THY1Z3ecbxvAjMvodipK0NTelhs8UD5rQc10WJhVyZFv2o4vfqQNsCYUmwzVqf7Zl0otKP6JQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR13MB1175.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(64756008)(33656002)(66946007)(66476007)(66446008)(71200400001)(54906003)(110136005)(83380400001)(4326008)(4744005)(86362001)(5660300002)(478600001)(66556008)(9686003)(52536014)(76116006)(55016002)(8676002)(316002)(26005)(2906002)(186003)(7696005)(8936002)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: o7kVbAfPk5ns2QzKPziGuLJYMdNZjrfBFqpDGYJeVXzz6xPylukcHQz4KrDOI3TTdOAnxfn9dM7JaVJOzQ8wJOOL7vhqTSimmrd1AhZWi1dUaoQL2JiiLgXd5IsaOw+GU4pUzjcGyfnKXzAGOA5uTgFc78jxU+xb4nD9DZwSTeAflEYRuJ7c/+r1hDPQOpHPWrNx0L7G6HFuBAb/7nwIPLrAbxQpVRNoD+4O7GTO8eyPhylMyp3tCerJYAKiHXXYRXyPVWI978+SpRFpJjNwi+dboWPmvLYfXQ6PUHaQT3BkK8vN8X2HeokxM1WFOa9FQNHI+0ipMqN5KLLxfqNmL1uQ1PaclaobsE0tEzcwoWSAJUZylVF84SbB8qSJZn9PmAPIqeDN6gyTQ+eI+FjxXlzcQGkrAgxxyK0W2iywt7M/JHY1DKjpQfGUaYez6lPh4x+Ybk2qyrHoCiiIIyaucifxH2DU16pGkyh0+I0sXLq0nr32loI2PKh1lN4njYajPx8Y4Y6FVTo+Meon7zY++jDiT3lY6mspe9L4mKGpIkatgqLSFp7NFxKTsTYBmkwo5vV2WD0mcgRXKfY7a+cXD2B0BBudFupxpPHnevfRlraMekbUaZUNi8jFW+zTe3D80ZRo+mqzcGZbZohjISPZuw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 10 Sep 2020 09:28:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599744477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/m+8BzcTQhMcOHlC8kleMb4zFUjUqXj7v07BC3dfEx0=;
+        b=DzGgN564wsyfSk9eWic4PI8FLT5q1/IDt782KpTB+aRcM1h6imlJdrs3Q4QRSVKaf9TdRI
+        rIRnsKVcn9B+6nHMf07P6w0j4oUAQ0756mTE2lp0vZLhYGOByj8uVvK1uJjbfqu2hKUyq6
+        SOJ4/CP1FtIv92q+4sRPVxA8LbRaPEY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-GGMbtMqWME-oXJaqIo8ZqA-1; Thu, 10 Sep 2020 09:27:55 -0400
+X-MC-Unique: GGMbtMqWME-oXJaqIo8ZqA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B93B425D2;
+        Thu, 10 Sep 2020 13:27:54 +0000 (UTC)
+Received: from work-vm (ovpn-113-128.ams2.redhat.com [10.36.113.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6612F19C59;
+        Thu, 10 Sep 2020 13:27:51 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 14:27:48 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Richard Henderson <richard.henderson@linaro.org>,
+        Steven Price <steven.price@arm.com>,
+        Peter Maydell <Peter.Maydell@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        qemu-devel@nongnu.org, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] MTE support for KVM guest
+Message-ID: <20200910132748.GF2814@work-vm>
+References: <20200904160018.29481-1-steven.price@arm.com>
+ <20200909152540.ylnrljd6aelxoxrf@kamzik.brq.redhat.com>
+ <5cb1d7ed-54a5-4337-6c3d-2e3e7df89f17@linaro.org>
+ <20200910054440.pvnzk7p7riiy45e2@kamzik.brq.redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR13MB1175.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e77ec83b-6c92-40d9-5eea-08d8558d121e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2020 13:26:05.4875
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NbeQVxcjqKjPcp22ZKRFSYjhf4V1e4HQ4EKFVKDkpY1KgJfrdOuAHVOs9JdTwec/6KgKdKKH64dEfjNO9e/Fzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR13MB1638
-X-Sony-Outbound-GUID: sjd35qng0o4dlAc5ymtIGR9KlUpY5e3X
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 clxscore=1011 phishscore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100123
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910054440.pvnzk7p7riiy45e2@kamzik.brq.redhat.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFzYW1pIEhpcmFtYXRz
-dQ0KID4gDQo+IEFkZCB0cmFjaW5nX29uIG9wdGlvbiBkZXNjcmlwdGlvbiB0byB0aGUgYm9vdC10
-aW1lIHRyYWNlci4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1hc2FtaSBIaXJhbWF0c3UgPG1oaXJh
-bWF0QGtlcm5lbC5vcmc+DQo+IC0tLQ0KPiAgRG9jdW1lbnRhdGlvbi90cmFjZS9ib290dGltZS10
-cmFjZS5yc3QgfCAgICA0ICsrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL3RyYWNlL2Jvb3R0aW1lLXRyYWNlLnJz
-dCBiL0RvY3VtZW50YXRpb24vdHJhY2UvYm9vdHRpbWUtdHJhY2UucnN0DQo+IGluZGV4IGRjYjM5
-MDA3NWNhMS4uMTM0MWI0NDlhY2FhIDEwMDY0NA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9uL3RyYWNl
-L2Jvb3R0aW1lLXRyYWNlLnJzdA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL3RyYWNlL2Jvb3R0aW1l
-LXRyYWNlLnJzdA0KPiBAQCAtNjEsNiArNjEsMTAgQEAgVGhlc2Ugb3B0aW9ucyBjYW4gYmUgdXNl
-ZCBmb3IgZWFjaCBpbnN0YW5jZSBpbmNsdWRpbmcgZ2xvYmFsIGZ0cmFjZSBub2RlLg0KPiAgZnRy
-YWNlLltpbnN0YW5jZS5JTlNUQU5DRS5db3B0aW9ucyA9IE9QVDFbLCBPUFQyWy4uLl1dDQo+ICAg
-ICBFbmFibGUgZ2l2ZW4gZnRyYWNlIG9wdGlvbnMuDQo+IA0KPiArZnRyYWNlLltpbnN0YW5jZS5J
-TlNUQU5DRS5ddHJhY2luZ19vbiA9IDB8MQ0KPiArICAgRW5hYmxlL0Rpc2FibGUgdHJhY2luZyBv
-biB0aGlzIGluc3RhbmNlIHdoZW4gYm9vdC4NCg0Kd2hlbiBib290LiAtPiB3aGVuIGJvb3Rpbmcu
-DQoob3Igd2hlbiBib290LiAtPiBvbiBib290LikNCiAtLSBUaW0NCg0KPiArICAgKHlvdSBjYW4g
-ZW5hYmxlIGl0IGJ5IHRoZSAidHJhY2VvbiIgZXZlbnQgdHJpZ2dlciBhY3Rpb24pDQo+ICsNCj4g
-IGZ0cmFjZS5baW5zdGFuY2UuSU5TVEFOQ0UuXXRyYWNlX2Nsb2NrID0gQ0xPQ0sNCj4gICAgIFNl
-dCBnaXZlbiBDTE9DSyB0byBmdHJhY2UncyB0cmFjZV9jbG9jay4NCj4gDQoNCg==
+* Andrew Jones (drjones@redhat.com) wrote:
+> On Wed, Sep 09, 2020 at 06:45:33PM -0700, Richard Henderson wrote:
+> > On 9/9/20 8:25 AM, Andrew Jones wrote:
+> > >>  * Provide a KVM-specific method to extract the tags from guest memory.
+> > >>    This might also have benefits in terms of providing an easy way to
+> > >>    read bulk tag data from guest memory (since the LDGM instruction
+> > >>    isn't available at EL0).
+> > > 
+> > > Maybe we need a new version of KVM_GET_DIRTY_LOG that also provides
+> > > the tags for all addresses of each dirty page.
+> > 
+> > KVM_GET_DIRTY_LOG just provides one bit per dirty page, no?  Then VMM copies
+> > the data out from its local address to guest memory.
+> > 
+> > There'd be no difference with or without tags, afaik.  It's just about how VMM
+> > copies the data, with or without tags.
+> 
+> Right, as long as it's fast enough to do
+> 
+>   for_each_dirty_page(page, dirty_log)
+>     for (i = 0; i < host-page-size/16; i += 16)
+>       append_tag(LDG(page + i))
+> 
+> to get all the tags for each dirty page. I understood it would be faster
+> to use LDGM, but we'd need a new ioctl for that. So I was proposing we
+> just piggyback on a new dirty-log ioctl instead.
+
+That feels a bad idea to me; there's a couple of different ways dirty
+page checking work; lets keep extracting the tags separate.
+
+Dave
+
+> Thanks,
+> drew 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
