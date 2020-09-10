@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FA3263B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F13263B73
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730270AbgIJD1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 23:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
+        id S1730278AbgIJD1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729993AbgIJD0i (ORCPT
+        with ESMTP id S1730244AbgIJD0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:26:38 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F7EC061573
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:26:37 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id t127so4121141ybf.16
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:26:37 -0700 (PDT)
+        Wed, 9 Sep 2020 23:26:39 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C717C061756
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 20:26:39 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 184so3106867pgg.11
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 20:26:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=W0rChnPqNSNQDFGEVqMxvWAcydmR3hcrHf+MA3EENZo=;
-        b=NDCrCoAOOFRQd9QMP6oeo5D/YSJmGJ9qZRBlmP/ovRtzqr+VCBrGuN0Hk6EKwHssSe
-         EvH+GErYfxq/WfqA8sLdzI5NCoOBOPM45+IIb+mLhlB4k1tcs9ZBZ5EVgqOScTBDokcB
-         /ZwUVQM6ynrIj8OUF2iysx/SZyCiC6t2rflon6uPChntCiPXHGzVvtdCveHUx9fYBzHt
-         VrKXbfctPCM0Emmmh6kAYugjFDU2uzP/Ax1AtsCB7mRUItw6aD+2Ntzk6hkO7izvq81I
-         zpdW1e4KJr1/hfevujiDxTsIkeT5sZ8B043/pE8K+m7mzmGwrCJOJuUSW1dvQHXBzM4J
-         x0hA==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=MD8ea/IkxRwSIEFvRM2gPJ3l2x2PVS2E7Uygw6h8m9k=;
+        b=rfvF2iep/LJAN1tl9ytlByh0kIYkrEYjNvwNY8ZdgcSQ+RMDMcI/n9va8fdTgFAPqJ
+         7rJYiOuev+olV5L/57furWPSqo2bhbeGJrH85QX0eor8V/ixp8yFslDA884AgBxSw1hm
+         uvZBRjg5DfBC46F47lJuAQwxYLGN0eOYinE29+Bo/zEwUJ1+gvhC/ZdjQF6WDTdarQGA
+         lgCsD2hGoCrgKdJp0CuLvPfTYmWyzFQ2iQKiQiUuJb/O6MQdvJjczrv20KljqkvD/ks5
+         4MEqBKtuurvErMV9n+G9dfMi+yVSZZUdtEA6Dxvo7Rv4ZZx+vAi9tnOK9Pv7WFyC1nxK
+         0Q5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=W0rChnPqNSNQDFGEVqMxvWAcydmR3hcrHf+MA3EENZo=;
-        b=aHV0GWYhN2jWu+bLa12lpRYUu0ZMRUUqdTL3KAjTR5vN8qX1lyLYYE/gqf6F9AyDzn
-         KOoXVB+TUzrBJ83bAxrnjP43RZIbPQTgwSGDBRtFyNlMhsteQH5Oje1KDgGIceLAwALl
-         hBLmdDDJFiIqC6qalc4yZd4ljp6oui5oN2NqelKvo7RulBl9vGrVrldyLHwixfrKkVlE
-         R+nIFpQvCZcPNpYFwFLB4je7mQIeQG+gOmCyH12VInyDsJOsHNshGmJhl251ZbWUvVuM
-         JrRoprNXKgKroy6RLSklfpdwH3yhOqUh/vsFHjzxq7Nz2ryDc6NbJdLhtTUY+NrN6SsN
-         6r2A==
-X-Gm-Message-State: AOAM5305+QDPxF8y9XJdnywfFAtmTm5CNddMoGnb8ITYaNkhtdvTXTWm
-        pxrVqIxieltmxXWz3izWV8CZ2OKvvs2A
-X-Google-Smtp-Source: ABdhPJxxSO48kT0YRv9fnwNdNWKA1Z9ftioz9tYsiuZ2ElBZPH7BTX3LV8OENek4PCyZKr4VWt9kLySJh9Jk
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=MD8ea/IkxRwSIEFvRM2gPJ3l2x2PVS2E7Uygw6h8m9k=;
+        b=LxKsAtgpyImXue/zRWQJY2R7/ISTc7mTGblsDtfEqJ8ip/llrUp4WBePtuGCLNja72
+         v/IswhV7ahOXnCMoXMb97MPI1FI15UnlyfWaG7LRHtI/IxLWA9QlKxPej00matab+vg8
+         /qIeExxcEL/gNRm2uC4Bihge48BvQBIU7AH2Xqfy7e/wupoelIV6+CV0SDCtZ6jTFs9r
+         Ko7EcGq9DJzZYdos1Z1V3G3gcLjX62oJNvvAf0kohnQrP0Fj2sLF34UOl/jkRjo4/L2f
+         Ium2NFk7hpeD2t0TFJE/RdoleFi0vP+KLNeFLaF7iZNdtF3nh4Z2Njfd64mRvLjfI7eZ
+         N7XA==
+X-Gm-Message-State: AOAM5308/ewZxg7ldN8UNe2ccom8qlWyPhMCsx38xcdgCp27YHVFXyMq
+        fMjc2WZN6/aiuwoNElIPJsxfQNAibitg
+X-Google-Smtp-Source: ABdhPJwj1XuXlyqlo7PExCqXnd8CK49QZhpdhJDj7IzodEeCA8QzCVhC1n9NMxUiPLjH+bTQTl28HRPEqPAV
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a25:c50b:: with SMTP id
- v11mr9880975ybe.426.1599708396451; Wed, 09 Sep 2020 20:26:36 -0700 (PDT)
-Date:   Wed,  9 Sep 2020 20:26:30 -0700
-Message-Id: <20200910032632.511566-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a17:90b:15c6:: with SMTP id
+ lh6mr285501pjb.0.1599708398338; Wed, 09 Sep 2020 20:26:38 -0700 (PDT)
+Date:   Wed,  9 Sep 2020 20:26:31 -0700
+In-Reply-To: <20200910032632.511566-1-irogers@google.com>
+Message-Id: <20200910032632.511566-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200910032632.511566-1-irogers@google.com>
 X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v2 1/3] perf stat: Remove dead code
+Subject: [PATCH v2 2/3] perf metricgroup: Fix typo in comment.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -70,25 +73,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to set os.evsel twice.
+Add missing character.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/stat-display.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/perf/util/metricgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index 493ec372fdec..4b57c0c07632 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -946,7 +946,6 @@ static void print_metric_headers(struct perf_stat_config *config,
- 		out.print_metric = print_metric_header;
- 		out.new_line = new_line_metric;
- 		out.force_header = true;
--		os.evsel = counter;
- 		perf_stat__print_shadow_stats(config, counter, 0,
- 					      0,
- 					      &out,
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 8831b964288f..662f4e8777d5 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -150,7 +150,7 @@ static void expr_ids__exit(struct expr_ids *ids)
+ }
+ 
+ /**
+- * Find a group of events in perf_evlist that correpond to those from a parsed
++ * Find a group of events in perf_evlist that correspond to those from a parsed
+  * metric expression. Note, as find_evsel_group is called in the same order as
+  * perf_evlist was constructed, metric_no_merge doesn't need to test for
+  * underfilling a group.
 -- 
 2.28.0.526.ge36021eeef-goog
 
