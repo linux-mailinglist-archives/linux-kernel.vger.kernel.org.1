@@ -2,192 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AD4264E45
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73173264E59
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgIJTH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
+        id S1726705AbgIJTLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgIJTFU (ORCPT
+        with ESMTP id S1726301AbgIJTFv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 15:05:20 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FD3C061786;
-        Thu, 10 Sep 2020 12:05:20 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g96so6255369otb.12;
-        Thu, 10 Sep 2020 12:05:20 -0700 (PDT)
+        Thu, 10 Sep 2020 15:05:51 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD83C06179B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:05:46 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id z9so1443943wmk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 12:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X2a+io7eZCknDRboBJU+6Va+kAjyZl5v5V2EWH90Jks=;
-        b=oxG1nASqkwFkAsl7zxPL5FUPHjiePdxFCSNI5jjvY8hDwhIXPK5ltJCAZw4oel8TO4
-         yfVuXjv7fGkwkFDIgOF2b/vGDKQp4L3u8B/jdsM621QnCVyZhezagnXELLkifjDAxvC+
-         IrgRAD4f25VHYDD5KUFUNpXGYdGFxBGp6Mv/mPnP+pnH+41ECSzlfClM8lJepxY2Lt6X
-         4kDFdbqBlT6b107gNm5CfKedUNFr8STdA6zFwhRbdjKjcUz/4l/x+3fTMLJck3RE9YXX
-         7Xps/bU9iw0LeNntos72SxptfGySJUoYicUWJskvB3Q80rnxKEQOIbqaLB+BOiFHyuUc
-         B3rA==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JTg4k6vet7EQh4DzWnz74Qr6ZRyLW1om2lD8kq6uIf4=;
+        b=XtsBMeQWXn4wIpyzA8S5MMzJ2c772DRMdvO9fx1pAvWIuy1CzxGB8JbEMfROeMDixz
+         kDKZcGkQsh7DwvTFyOy2UoCO1WxWjEOp2Zo280ctQFUl+HxobFTCahJhAZt1rlDMEeGV
+         c9woiBK5G+R/EOMX/sgW7KKfZROeRHp3ds0uQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=X2a+io7eZCknDRboBJU+6Va+kAjyZl5v5V2EWH90Jks=;
-        b=HDwLuuHvSk8dGDYuiaJlwvosp9C9ul9eSHnbS/5UdLOYIYSwGMSna+lAOFGqvBQV9Z
-         aeTVPvyvZuTASAaDB6v6X2VLRk71ep9uIxLsTdRMgSLfNBMaCjoD117SJDPqm/KIs71e
-         JNuFUr/qzZJI2EM5q8nYnVQWOx40wnERcSBBwHFgV0Zq87LYmArdefCKGcvigxmpd8/U
-         XsI0TlCpw+Y/QqDMF1DQIrr8dIHtmV12RX7kuhPA52YQa/nSOZKNIPXKE/dhQvOHw8QS
-         Scz9ceLz6d1Go/O1Td54yDfHNFZa/2PZ+EP+taJVJ1WH3tMR9AzBY9Om4+pZLMrbUI5s
-         hFuA==
-X-Gm-Message-State: AOAM5326GZTpt+1LlQ2c9HYqFLZ2VAzvKc01aKGchqzg/4LKMdXPgPNx
-        U+Q7RHoe5pB38BMfN0ZveGtbTbmc6MI=
-X-Google-Smtp-Source: ABdhPJwQFtTbNRNiDxefnIREi0s5V5RCZ1ITrZYWQ3spoxdvQ8bPF6YObVqSBmrwLJZ3rbe4Q/VR5g==
-X-Received: by 2002:a9d:6d1a:: with SMTP id o26mr5066666otp.52.1599764719517;
-        Thu, 10 Sep 2020 12:05:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j37sm1060521ooi.2.2020.09.10.12.05.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 12:05:18 -0700 (PDT)
-Subject: Re: [PATCH] hwmon: pmbus: max20730: adjust the vout reading given
- voltage divider
-To:     Chu Lin <linchuyuan@google.com>, jdelvare@suse.com,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        qiongwang@google.com, zhongqil@google.com, jasonling@google.com,
-        belgaied@google.com
-References: <20200910170821.1988467-1-linchuyuan@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <95072a4c-0827-8f82-b977-e66bf61ef536@roeck-us.net>
-Date:   Thu, 10 Sep 2020 12:05:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JTg4k6vet7EQh4DzWnz74Qr6ZRyLW1om2lD8kq6uIf4=;
+        b=GPZ9rAC5/mh/lCov50NdnbaAxElPAyUzkjZheQh9gUiFHESc5lbwDGoKueqnINCy5y
+         QKkNngJPAwxeDiNEdV1rGD1R6PCr0lChR8JNrAt/z0aNSn2tW0NRZkqqqQEWTCofMxAl
+         QlgnlshctNrxIcW1HKC31LrGeBCciFmG7+gYHtG5Vfs6u1v97o0GeMIUvrYi/gsr0PpG
+         KxrDO9hOZHImomz/BAxWJuqJeWUWrZoRcNTVEIs8GMDIGURA1B+OKjFPIGz5FHcJYIiK
+         ZKnMNEJ8NGeJ+g8BRL/n1MtKWUTJey5cFp8DGdJFmFP5l4XrhnbNWr1slrsh4Wdh/oOH
+         MtaA==
+X-Gm-Message-State: AOAM5313L7SFQZYGWYftUmHoCtWQkrN4EVJeG512ehqMECq8PX89RMIN
+        /IR9utELHgdU8RCIH8L7ThWU57gGUZa7r6h2NyOJKQ==
+X-Google-Smtp-Source: ABdhPJwlD5Q8lj0SVn7hyv2oM08lwqVl9n3zHuU4m0J6RFUUa3UT7tAEeix8XxulZJFNFcxbZaGYBHG0hpS+ZuHN8gk=
+X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr1545489wmt.92.1599764744932;
+ Thu, 10 Sep 2020 12:05:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200910170821.1988467-1-linchuyuan@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200824193036.6033-1-james.quinlan@broadcom.com>
+ <20200824193036.6033-5-james.quinlan@broadcom.com> <20200910155637.GA423872@bogus>
+ <CA+-6iNy9g8fhJvd7SOKtc-SZcL8_gLLN1HEs-W8fe-=q6n430A@mail.gmail.com> <CAL_JsqJR4wALnsFKKPQ8h2y-o-933rzxHbV29zGXiptgYuuHTg@mail.gmail.com>
+In-Reply-To: <CAL_JsqJR4wALnsFKKPQ8h2y-o-933rzxHbV29zGXiptgYuuHTg@mail.gmail.com>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Thu, 10 Sep 2020 15:05:31 -0400
+Message-ID: <CA+-6iNwcLZcQcge2E6GUi71rveFaneeCBwxBTfn8MipwhaPvEQ@mail.gmail.com>
+Subject: Re: [PATCH v11 04/11] PCI: brcmstb: Add suspend and resume pm_ops
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000005effa805aefa4109"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 10:08 AM, Chu Lin wrote:
-> Problem:
-> We use voltage dividers so that the voltage presented at the voltage
-> sense pins is confusing. We might need to convert these readings to more
-> meaningful readings given the voltage divider.
-> 
-> Solution:
-> Read the voltage divider resistance from dts and convert the voltage
-> reading to a more meaningful reading.
-> 
-> Testing:
-> max20730 with voltage divider
-> 
-> Signed-off-by: Chu Lin <linchuyuan@google.com>
-> ---
->  drivers/hwmon/pmbus/max20730.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
-> index c0bb05487e0e..4b56810fa894 100644
-> --- a/drivers/hwmon/pmbus/max20730.c
-> +++ b/drivers/hwmon/pmbus/max20730.c
-> @@ -29,6 +29,7 @@ struct max20730_data {
->  	struct pmbus_driver_info info;
->  	struct mutex lock;	/* Used to protect against parallel writes */
->  	u16 mfr_devset1;
-> +	u32 vout_voltage_divider[2];
->  };
->  
->  #define to_max20730_data(x)  container_of(x, struct max20730_data, info)
-> @@ -111,6 +112,12 @@ static int max20730_read_word_data(struct i2c_client *client, int page,
->  		max_c = max_current[data->id][(data->mfr_devset1 >> 5) & 0x3];
->  		ret = val_to_direct(max_c, PSC_CURRENT_OUT, info);
->  		break;
-> +	case PMBUS_READ_VOUT:
-> +		ret = pmbus_read_word_data(client, page, phase, reg);
+--0000000000005effa805aefa4109
+Content-Type: text/plain; charset="UTF-8"
 
-		if (ret < 0)
-			return ret;
+On Thu, Sep 10, 2020 at 2:50 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Sep 10, 2020 at 10:42 AM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+> >
+> > On Thu, Sep 10, 2020 at 11:56 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Mon, Aug 24, 2020 at 03:30:17PM -0400, Jim Quinlan wrote:
+> > > > From: Jim Quinlan <jquinlan@broadcom.com>
+> > > >
+> > > > Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
+> > > > and resume.  Now the PCIe driver may do so as well.
+> > > >
+> > > > Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> > > > Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> > > > ---
+> > > >  drivers/pci/controller/pcie-brcmstb.c | 47 +++++++++++++++++++++++++++
+> > > >  1 file changed, 47 insertions(+)
+> > > >
+> > > > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> > > > index c2b3d2946a36..3d588ab7a6dd 100644
+> > > > --- a/drivers/pci/controller/pcie-brcmstb.c
+> > > > +++ b/drivers/pci/controller/pcie-brcmstb.c
+> > > > @@ -978,6 +978,47 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+> > > >       brcm_pcie_bridge_sw_init_set(pcie, 1);
+> > > >  }
+> > > >
+> > > > +static int brcm_pcie_suspend(struct device *dev)
+> > > > +{
+> > > > +     struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> > > > +
+> > > > +     brcm_pcie_turn_off(pcie);
+> > > > +     clk_disable_unprepare(pcie->clk);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +static int brcm_pcie_resume(struct device *dev)
+> > > > +{
+> > > > +     struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> > > > +     void __iomem *base;
+> > > > +     u32 tmp;
+> > > > +     int ret;
+> > > > +
+> > > > +     base = pcie->base;
+> > > > +     clk_prepare_enable(pcie->clk);
+> > > > +
+> > > > +     /* Take bridge out of reset so we can access the SERDES reg */
+> > > > +     brcm_pcie_bridge_sw_init_set(pcie, 0);
+> > > > +
+> > > > +     /* SERDES_IDDQ = 0 */
+> > > > +     tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+> > > > +     u32p_replace_bits(&tmp, 0, PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK);
+> > > > +     writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+> > > > +
+> > > > +     /* wait for serdes to be stable */
+> > > > +     udelay(100);
+> > >
+> > > Really needs to be a spinloop?
+> > >
+> > > > +
+> > > > +     ret = brcm_pcie_setup(pcie);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     if (pcie->msi)
+> > > > +             brcm_msi_set_regs(pcie->msi);
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > >  static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+> > > >  {
+> > > >       brcm_msi_remove(pcie);
+> > > > @@ -1087,12 +1128,18 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+> > > >
+> > > >  MODULE_DEVICE_TABLE(of, brcm_pcie_match);
+> > > >
+> > > > +static const struct dev_pm_ops brcm_pcie_pm_ops = {
+> > > > +     .suspend_noirq = brcm_pcie_suspend,
+> > > > +     .resume_noirq = brcm_pcie_resume,
+> > >
+> > > Why do you need interrupts disabled? There's 39 cases of .suspend_noirq
+> > > and 1352 of .suspend in the tree.
+> >
+> > I will test switching this to  suspend_late/resume_early.
+>
+> Why not just the 'regular' flavor suspend/resume?
+>
+> Rob
+We must have our PCIe driver suspend last and resume first because our
+current driver turns off/on the power for the EPs.  Note that this
+code isn't in the driver as we are still figuring out a way to make it
+upstreamable.
 
-> +		if (data->vout_voltage_divider[0] && data->vout_voltage_divider[1])
-> +			ret = DIV_ROUND_CLOSEST(ret * data->vout_voltage_divider[1],
-> +						data->vout_voltage_divider[0]);
+Jim
 
-With no range checks, ret * data->vout_voltage_divider[1] can
-easily overflow if vout_voltage_divider[] is larger than 0xffff.
-Also, the pmbus core does not expect register values larger than 0xffff
-(it typecasts the returned value explicitly to u16).
+--0000000000005effa805aefa4109
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-[ Grumble. The PMBus specification has VOUT_SCALE commands to handle
-  this situation. It is quite annoying that this chip does not support it. ]
-
-Guenter
-
-> +		break;
->  	default:
->  		ret = -ENODATA;
->  		break;
-> @@ -329,6 +336,15 @@ static int max20730_probe(struct i2c_client *client,
->  	data->id = chip_id;
->  	mutex_init(&data->lock);
->  	memcpy(&data->info, &max20730_info[chip_id], sizeof(data->info));
-> +	if (of_property_read_u32_array(client->dev.of_node, "vout-voltage-divider",
-> +				       data->vout_voltage_divider,
-> +				       ARRAY_SIZE(data->vout_voltage_divider)) != 0)
-> +		memset(data->vout_voltage_divider, 0, sizeof(data->vout_voltage_divider));
-> +	if (data->vout_voltage_divider[1] < data->vout_voltage_divider[0]) {
-> +		dev_err(dev,
-> +			"The total resistance of voltage divider is less than output resistance\n");
-> +		return -ENODEV;
-> +	}
->  
->  	ret = i2c_smbus_read_word_data(client, MAX20730_MFR_DEVSET1);
->  	if (ret < 0)
-> 
-
+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
+mOxPm7sNHsn0TVdPryi9+T2d8fVC/kUmuEdTYP/Hdu4W4b4T9BcW57fInYrmaJ+uotS6X59rAgMB
+AAGjggHRMIIBzTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAC
+hkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEy
+ZzNvY3NwLmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVy
+c29uYWxzaWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYm
+aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8E
+PTA7MDmgN6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJn
+My5jcmwwJQYDVR0RBB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0OBBYEFNYm4GDl
+4WOt3laB3gNKFfYyaM8bMA0GCSqGSIb3DQEBCwUAA4IBAQBD+XYEgpG/OqeRgXAgDF8sa+lQ/00T
+wCP/3nBzwZPblTyThtDE/iaL/YZ5rdwqXwdCnSFh9cMhd/bnA+Eqw89clgTixvz9MdL9Vuo8LACI
+VpHO+sxZ2Cu3bO5lpK+UVCyr21y1zumOICsOuu4MJA5mtkpzBXQiA7b/ogjGxG+5iNjt9FAMX4JP
+V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
+lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
+5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIH/jrDjRLmdN
+HxnNO4Qi19S0/eLulickePCcVAYtHj3MMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMDkxMDE5MDU0NVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCB/luJ0vpygCgikA/uVk5idXyig5D0
+eZpj7FXLEFq8puvjgz/3hojmCF4C347zxz+dfPV5HGEqrkUNXFpZcoKUqiHgWO+hDSdiXZmE+T3C
+LmqH9PKyG/OYC1VqLF3R6r7rTD31TC5VT3LxMy2PNruWkKK1/Skwvw+gVF1YtikMno2APpBhu8l6
+IevujpLLR+Kl9EVhCvOnihTsSaBUWW4WLxnWUJXJ9EUKfGxdpFI/Rl8HDc95kTD8j146sB9qOVlA
+pUepQijNc/5maj57wJCKfoW2N/3WaBIB+7Yql/ESqwi6N8gLNof0Z33QKFzh6p94oj3JRg3kh+14
+GLcjBmuS
+--0000000000005effa805aefa4109--
