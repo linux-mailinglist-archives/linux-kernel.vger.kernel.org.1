@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C52126421D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA08626422F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730727AbgIJJdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:33:06 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:12144 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730718AbgIJJcl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:32:41 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08A9QfoN032717;
-        Thu, 10 Sep 2020 11:32:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=+COKLz+6WybyodfwHJziasnDtJLeiuO/fCZoNZW0ReY=;
- b=qhQd43AVtcAtVe1yYjZgrjJKsZeHIsn1fMqBGqkh+uy30fFquTmT/YHAAL1uGSygckVw
- J7GZh0ITHhQ1o0Grnr2Mz/GrSIWVo8cDQzyUFEmOdptjbUpQBxUmO36gpqiCCIofoDaq
- qI4Tq3/x5tgZfSrvhIP1TejKWVHFsVjUdzxYmUnwie6MGn1YweQrgtMhfqbCcX3YUFUY
- vLvcQk63RKwJUMrTnNGbHUXBSx2SGM6MX7iP0T6zQL3iPXIc40IMcumcPhURaDx/Ls1t
- X+6t92qT2TPCZni9udW0lPvH8lKdoSunFHLFeD+CtL6vbsnZpEZ5XEbM5rPWtcDEof0L Pw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33c0ev27vd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 11:32:29 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7F34C10002A;
-        Thu, 10 Sep 2020 11:32:29 +0200 (CEST)
-Received: from Webmail-eu.st.com (gpxdag3node5.st.com [10.75.127.72])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 756DB21CA68;
-        Thu, 10 Sep 2020 11:32:29 +0200 (CEST)
-Received: from localhost (10.75.127.50) by GPXDAG3NODE5.st.com (10.75.127.72)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep 2020 11:32:28
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
-CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH] i2c: stm32: do not display error when DMA is not requested
-Date:   Thu, 10 Sep 2020 11:32:29 +0200
-Message-ID: <1599730349-2160-1-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
+        id S1730791AbgIJJeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:34:08 -0400
+Received: from mga18.intel.com ([134.134.136.126]:32879 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730433AbgIJJeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:34:01 -0400
+IronPort-SDR: bR6YK92waCsZSd6Ooij8Utr5tRLTxBE9sDcGD0iPyO8Ue9j2tXVpnJfiooMABL2lX+ExO01Swj
+ MW0xATa/SSUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="146219723"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="146219723"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 02:33:59 -0700
+IronPort-SDR: QNL2ND1L1tyhKLpG+ZKs4Uxjdz2jyVmYfTfMOhFiTmMbn76ZfN/EJu0efVynxxtX+NeB2iCJOB
+ qmxWV+qox5Fg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="334122407"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 10 Sep 2020 02:33:56 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kGIxl-00FeZu-IU; Thu, 10 Sep 2020 12:33:53 +0300
+Date:   Thu, 10 Sep 2020 12:33:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net, p.zabel@pengutronix.de,
+        linux-hwmon@vger.kernel.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rtanwar@maxlinear.com
+Subject: Re: [PATCH 2/2] Add driver for Moortec MR75203 PVT controller
+Message-ID: <20200910093353.GN1891694@smile.fi.intel.com>
+References: <cover.1599634208.git.rahul.tanwar@linux.intel.com>
+ <ecb6794a8f2ef6576421e6d5fbdf4e6a91f06b91.1599634208.git.rahul.tanwar@linux.intel.com>
+ <20200909103317.GL1891694@smile.fi.intel.com>
+ <41cf7b4d-2476-4d0e-0dae-f0200649d7dd@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG8NODE3.st.com (10.75.127.24) To GPXDAG3NODE5.st.com
- (10.75.127.72)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_01:2020-09-10,2020-09-10 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41cf7b4d-2476-4d0e-0dae-f0200649d7dd@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMA usage is optional for the I2C driver. check for the -ENODEV
-error in order to avoid displaying an error when no DMA
-has been requested.
+On Thu, Sep 10, 2020 at 03:26:04PM +0800, Tanwar, Rahul wrote:
+> On 9/9/2020 6:33 pm, Andy Shevchenko wrote:
+> > On Wed, Sep 09, 2020 at 02:52:05PM +0800, Rahul Tanwar wrote:
 
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
-This patch should be applied on top of the patch [i2c: stm32: Simplify with dev_err_probe()]
----
- drivers/i2c/busses/i2c-stm32.c   | 16 ++++++++++------
- drivers/i2c/busses/i2c-stm32f7.c |  5 +++++
- 2 files changed, 15 insertions(+), 6 deletions(-)
+...
 
-diff --git a/drivers/i2c/busses/i2c-stm32.c b/drivers/i2c/busses/i2c-stm32.c
-index 198f848b7be9..91767156d63d 100644
---- a/drivers/i2c/busses/i2c-stm32.c
-+++ b/drivers/i2c/busses/i2c-stm32.c
-@@ -25,8 +25,11 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
- 	/* Request and configure I2C TX dma channel */
- 	dma->chan_tx = dma_request_chan(dev, "tx");
- 	if (IS_ERR(dma->chan_tx)) {
--		ret = dev_err_probe(dev, PTR_ERR(dma->chan_tx),
--				    "can't request DMA tx channel\n");
-+		if (PTR_ERR(dma->chan_tx) == -ENODEV)
-+			ret = PTR_ERR(dma->chan_tx);
-+		else
-+			ret = dev_err_probe(dev, PTR_ERR(dma->chan_tx),
-+					    "can't request DMA tx channel\n");
- 		goto fail_al;
- 	}
- 
-@@ -44,8 +47,11 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
- 	/* Request and configure I2C RX dma channel */
- 	dma->chan_rx = dma_request_chan(dev, "rx");
- 	if (IS_ERR(dma->chan_rx)) {
--		ret = dev_err_probe(dev, PTR_ERR(dma->chan_rx),
--				    "can't request DMA rx channel\n");
-+		if (PTR_ERR(dma->chan_tx) == -ENODEV)
-+			ret = PTR_ERR(dma->chan_tx);
-+		else
-+			ret = dev_err_probe(dev, PTR_ERR(dma->chan_rx),
-+					    "can't request DMA rx channel\n");
- 		goto fail_tx;
- 	}
- 
-@@ -73,8 +79,6 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
- 	dma_release_channel(dma->chan_tx);
- fail_al:
- 	devm_kfree(dev, dma);
--	if (ret != -EPROBE_DEFER)
--		dev_info(dev, "can't use DMA\n");
- 
- 	return ERR_PTR(ret);
- }
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index a8f1758e4c5b..58f342aea3c1 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -2049,6 +2049,11 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 					     STM32F7_I2C_TXDR,
- 					     STM32F7_I2C_RXDR);
- 	if (PTR_ERR(i2c_dev->dma) == -ENODEV) {
-+		/*
-+		 * DMA usage is not mandatory for the I2C, it is not an error
-+		 * to receive -ENODEV
-+		 */
-+		dev_dbg(i2c_dev->dev, "not using DMA\n");
- 		i2c_dev->dma = NULL;
- 	} else if (IS_ERR(i2c_dev->dma)) {
- 		ret = dev_err_probe(&pdev->dev, PTR_ERR(i2c_dev->dma),
+> >> +#include <linux/of.h>
+> > I don't see anything special about OF here.
+> > Perhaps
+> > 	mod_devicetable.h
+> > 	property.h
+> > ?
+> 
+> of.h is needed because of of_property_read_u8_array(). I will add
+> mod_devicetable.h.
+> property.h seems not required at all.
+
+if you use device property API then it will be more generic.
+
+...
+
+> >> +static struct regmap_config pvt_regmap_config = {
+> >> +	.reg_bits = 32,
+> >> +	.reg_stride = 4,
+> >> +	.val_bits = 32,
+> > How do you use regmap's lock?
+> 
+> We mutex lock whenever read temperature or voltage values from the registers.
+> All non-probe/non-init paths. We do not override regmap's internal lock.
+
+Exactly and my point is why do we have too many locks?
+
+> >> +};
+
 -- 
-2.7.4
+With Best Regards,
+Andy Shevchenko
+
 
