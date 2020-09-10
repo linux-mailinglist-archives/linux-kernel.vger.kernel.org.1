@@ -2,91 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5364D264E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A61264E6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIJTU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:20:59 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39849 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731454AbgIJPwd (ORCPT
+        id S1725820AbgIJTNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:13:44 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:52430 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731313AbgIJQAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:52:33 -0400
-Received: by mail-pf1-f193.google.com with SMTP id n14so4870571pff.6;
-        Thu, 10 Sep 2020 08:52:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yt6inZ4UVSNp7xfQ5Plp2PnI8YcMVVKMln56iwBh8fs=;
-        b=F0qPmPKaR71w7SxVOhw3Hj46grlXMK8kT5UdunY/7kwzLLUSEKQw7oS1UFGPdRe6C3
-         pptJp2O1VyL1kCOg/m6YnSDQFaDoxdRn5eMuwCMLseK/E4CwBXQ+NQY0xXzQz0x7/OeC
-         tLMGp7ppwuWoO+CdyAaC5anTasnnKk9v4qwijLi9ZnoAJyURzpYAxaD9oo2mHayDizq2
-         iTLT/b20GUAKtb/IAv2pz1hGhYlPRHe7h776lcxLKtqrkgZq+cYwrOe3JygWT+Q6lysc
-         L13x7UZuVFskF/WyJCHBzhQHlKY8fiX9KiAaKxiCCqGdKRBgNBQ1J4dr8Ux3P0fi1Yd4
-         EpxA==
-X-Gm-Message-State: AOAM533i2S4SviFv8mcW67sIp/ArakZr0eErpYHMvwAEBiJTmhytREd4
-        PzV9Qw46BiP1u1vEQeEhjE6gMR1hk/Zj
-X-Google-Smtp-Source: ABdhPJz6scHFdf953mHrwXN0AX9Pbo0NXFqGtbx0EruBY0rGXTEyV/UoIGrIfI2nDFwWE4bP1rfySg==
-X-Received: by 2002:a5d:928a:: with SMTP id s10mr7999788iom.166.1599752680735;
-        Thu, 10 Sep 2020 08:44:40 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id m87sm3388997ilb.58.2020.09.10.08.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:44:40 -0700 (PDT)
-Received: (nullmailer pid 423370 invoked by uid 1000);
-        Thu, 10 Sep 2020 15:44:37 -0000
-Date:   Thu, 10 Sep 2020 09:44:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 03/11] PCI: brcmstb: Add bcm7278 register info
-Message-ID: <20200910154437.GA415514@bogus>
-References: <20200824193036.6033-1-james.quinlan@broadcom.com>
- <20200824193036.6033-4-james.quinlan@broadcom.com>
+        Thu, 10 Sep 2020 12:00:51 -0400
+Date:   Thu, 10 Sep 2020 11:45:17 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfs: add fchmodat2 syscall
+Message-ID: <20200910154516.GH3265@brightrain.aerifal.cx>
+References: <20200910142335.GG3265@brightrain.aerifal.cx>
+ <20200910151828.GD1236603@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200824193036.6033-4-james.quinlan@broadcom.com>
+In-Reply-To: <20200910151828.GD1236603@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:30:16PM -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
+On Thu, Sep 10, 2020 at 04:18:28PM +0100, Al Viro wrote:
+> On Thu, Sep 10, 2020 at 10:23:37AM -0400, Rich Felker wrote:
 > 
-> Add in compatibility strings and code for three Broadcom STB chips.  Some
-> of the register locations, shifts, and masks are different for certain
-> chips, requiring the use of different constants based on of_id.
+> > It was determined (see glibc issue #14578 and commit a492b1e5ef) that,
+> > on some filesystems, performing chmod on the link itself produces a
+> > change in the inode's access mode, but returns an EOPNOTSUPP error.
 > 
-> We would like to add the following at this time to the match list but we
-> need to wait until the end of this patchset so that everything works.
-> 
->     { .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
->     { .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
->     { .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
->     { .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
-> 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 105 +++++++++++++++++++++++---
->  1 file changed, 93 insertions(+), 12 deletions(-)
+> Which filesystem types are those?
 
-I think a better abstraction would be to have 2 versions of the 2 
-functions that need to be different. But as-is is fine.
+It's been a long time and I don't know if the details were recorded.
+It was reported for xfs but I believe we later found it happening for
+others. See:
 
-Acked-by: Rob Herring <robh@kernel.org>
+https://sourceware.org/bugzilla/show_bug.cgi?id=14578#c17
+https://sourceware.org/legacy-ml/libc-alpha/2020-02/msg00467.html
+
+and especially:
+
+https://sourceware.org/legacy-ml/libc-alpha/2020-02/msg00518.html
+
+where Christoph seems to have endorsed the approach in my patch. I'm
+fine with doing it differently if you'd prefer, though.
+
+Rich
