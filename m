@@ -2,326 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E38264936
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230972649BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731468AbgIJP64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        id S1726937AbgIJQaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731442AbgIJP5k (ORCPT
+        with ESMTP id S1726871AbgIJQ1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:57:40 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0334BC061757
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:57:40 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a15so8902154ljk.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:57:39 -0700 (PDT)
+        Thu, 10 Sep 2020 12:27:51 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7CCC0617BE
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:06:38 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id u25so5620139otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:06:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=fXxlnm6mzZkdPNyQX2gzT9535bgLY4RyP7V7YRZOFEU=;
-        b=D478FXgW9K+R8hcKL9eH1QRG9D62zukErZ9Iu4D4TFLwDUCvtU/YO98qIh0FlU/LUr
-         s+grxASJc2NesL23S3XIzq21tSkHX5xEIZmt+RtBx5H/ju4kmcykC9dTxGmtCl+Bk90A
-         Fxae/aR34Hgn767VBY3XezCiGJxLBTZO5fLB1/09JZX8+OQcAXC5V9ZVTPnJCLzvvauv
-         soD6gaHGKY6mnQzHeL4fMtCRNcmlDZE7At25OU5vxBRIsEtl032/pXx0ZEd1tybGtUMI
-         am8Rb9K9hTP1QQt1Jn+RkWcgAeRX5k6w9NygDwDapGp2n/0aY4OwotjYbq6HQDLfuYGe
-         GDog==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2DiBsMVuHaQKweeTOQHLBykKJQg8tEScxOxVWMIr6f4=;
+        b=d7rj+8QpSjUscxArZ7XYKcuFoi7B/GFxbmwxY/YeAJFpXkDE4GqonTwAilQRs3eHCr
+         9wgqUUGp2M2uZqGrS8oyOuUHtC72NS+g+HPsaSoYo3tcxRVgrIlDea7prwP0aii0bjkR
+         WJcgjPHMGb1+5uTKdiVpFY05RsxeiG/It4ZrCaBrC3jeXnxUb3JdE5uIwvrsGaNyS4x7
+         Dq11bilXPZ9dpQgxS66wkRODkNr/rumXomg4AH7YlQffk8K2MBnEZSd4mbQm+F4nV39/
+         Hyi0MLbwb0o8rTE3Z9b1JJf241U+CBVEHuof+AYwXeSrnN4RIb7n+OlXgrSBFjT/81j6
+         ySxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fXxlnm6mzZkdPNyQX2gzT9535bgLY4RyP7V7YRZOFEU=;
-        b=j7h6fyipuIifPsJs6AxTYnGnYeujsxue+mfMweYJ7oQG/31UQabKgS8RHvk5nBeysc
-         GGn4Cx4t6EZcIajBwCKmXP7pPLOG6G5HoeAbAHu1hLbtZ6VUk0l+CoA75En1eIYx9buJ
-         HKsFCsc1z1IdvjjHbOFRmtPUYZS9XXhNBlZMjbVdZIZZEzp+FY/UNbTlCNHEfsybha7a
-         mrjVLgjE93bfs8icCBGXmvJ6AgC5wkH35mKY6i1dxM0EYiRs7qx8v0nEsQAb1a1zIzSe
-         +QoXsLmLXDHMF9i16azQII4mBzxgRq4MNQedc51kv8Rw03yxnqIrB8lXZ4FHkK4xLe9a
-         +r3w==
-X-Gm-Message-State: AOAM5312KFRgDHkSrQtQOfFIgDuESsRyKNG8X34LPg9ICJBDwLY+f84N
-        Jn4fWwVjP52h/OhpRYz4IFTjPA==
-X-Google-Smtp-Source: ABdhPJy0susvnGKtbcQCxas4yxAG6dVdRWhW07I56q5zY4qihIPpchpCLvfYSKtfmi1sV0Lkj1jt9g==
-X-Received: by 2002:a2e:800e:: with SMTP id j14mr4742770ljg.145.1599753458323;
-        Thu, 10 Sep 2020 08:57:38 -0700 (PDT)
-Received: from rad-H81M-S1.semihalf.local (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id k14sm1445494lfm.90.2020.09.10.08.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 08:57:37 -0700 (PDT)
-From:   Radoslaw Biernacki <rad@semihalf.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Ben Zhang <benzh@chromium.org>, Marcin Wojtas <mw@semihalf.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Vamshi Krishna <vamshi.krishna.gopal@intel.com>,
-        Harshapriya <harshapriya.n@intel.com>,
-        michal.sienkiewicz@intel.com, Lech Betlej <Lech.Betlej@intel.com>,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        John Hsu <KCHSU0@nuvoton.com>, Yong Zhi <yong.zhi@intel.com>,
-        Mac Chiang <mac.chiang@intel.com>
-Subject: [PATCH V5] ASoC: Intel: boards: Use FS as nau8825 sysclk in nau88125_* machine
-Date:   Thu, 10 Sep 2020 17:57:34 +0200
-Message-Id: <20200910155734.31101-1-rad@semihalf.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2DiBsMVuHaQKweeTOQHLBykKJQg8tEScxOxVWMIr6f4=;
+        b=b+14SKsITf4Gh06DI37b9qYyuZ2aZtQpk2s8x2/KZxOEJPE+Ik0xW4Se8lI5O8bwNk
+         e/BB5RukG5cbY0p1ow8/HUGFP8r8yBo5/knxxyt1/0fttkxwFTcVvgwpZGypn8egWiC0
+         P5HXOpt1qsFp6V/KMaaCwIJr+bkaAfqMazGKJLi2C7RtlLHytyZxwQ6TuIUd61dMh/Sx
+         ZE+CQiGX7MCXdp2FhTe5C+QpnGwDdpkBcnOrfaC+i+t9t726v3J8Urwb2NCzWYTz6TUV
+         jtLwHdVjR2+6W/Xtr9BzjZf5/7vw/m3qPzyGja/rBZOj2hkzwR9voJPgKDk4QzwQrOEQ
+         sUJw==
+X-Gm-Message-State: AOAM533g+86jnMsscIc1jI1D3vDVciw0VnyFUQPJckWKvOTDq9j7pCo9
+        2sU6rkPJc8LqGBLezKdxM6MQquaPLrs0joJLGvuM+g==
+X-Google-Smtp-Source: ABdhPJxdJ+UeiRt911/9A7d8J232d9N9212FdeXDAshArM9b5lcwP3AeLW4qnCw6pMgyGhpwo76X6VTJZQhXKQnltDA=
+X-Received: by 2002:a9d:3da1:: with SMTP id l30mr4426034otc.233.1599750397232;
+ Thu, 10 Sep 2020 08:06:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
+ <CACT4Y+aBpeQYOWGrCoaJ=HAa0BsSekyL88kcLBTGwc--C+Ch0w@mail.gmail.com>
+In-Reply-To: <CACT4Y+aBpeQYOWGrCoaJ=HAa0BsSekyL88kcLBTGwc--C+Ch0w@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 10 Sep 2020 17:06:25 +0200
+Message-ID: <CANpmjNN7qAtnUmibwGJEnxd+UcjBM1WeocoLeW0SO24NW3SkVA@mail.gmail.com>
+Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 256xFS clocks cannot be generated by SKL, the NAU8825 is
-configured to re-generate its system clock from the BCLK using the
-FLL. The link is configured to use a 48kHz frame rate, and 24 bits in
-25-bit slot. The SSP configuration is extracted from NHLT settings and
-not dynamically changed. Listening tests and measurements do not show
-any distortion or issues
+On Thu, 10 Sep 2020 at 16:58, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
+> > +config KFENCE_NUM_OBJECTS
+> > +       int "Number of guarded objects available"
+> > +       default 255
+> > +       range 1 65535
+> > +       help
+> > +         The number of guarded objects available. For each KFENCE object, 2
+> > +         pages are required; with one containing the object and two adjacent
+> > +         ones used as guard pages.
+>
+> Hi Marco,
+>
+> Wonder if you tested build/boot with KFENCE_NUM_OBJECTS=65535? Can a
+> compiler create such a large object?
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Signed-off-by: Ben Zhang <benzh@chromium.org>
-Signed-off-by: Radoslaw Biernacki <rad@semihalf.com>
----
+Indeed, I get a "ld: kernel image bigger than KERNEL_IMAGE_SIZE".
+Let's lower it to something more reasonable.
 
-Notes:
-    v1 -> v2:
-    - adding same changes to skl_nau88l25_max98357a.c
-    v2 -> v3:
-    - removing msleep() in SNDRV_PCM_TRIGGER_RESUME as it unnecessarily increase
-      playback/capture latency while actually FLL does not require it.
-    - simplifing commit message
-    v3 -> v4:
-    - simplifing the PM resume callback code for setting the FLL
-    - adding comment for the stream START/RESUME sequence which prevent audio pops
-    - fixing mising var initialization in platform_clock_control()
-    V4 -> V5:
-    - removed stray change ~ SSP0 ops
+The main reason to have the limit is to constrain random configs and
+avoid the inevitable error reports.
 
- .../soc/intel/boards/skl_nau88l25_max98357a.c | 63 ++++++++++++------
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 64 +++++++++++++------
- 2 files changed, 85 insertions(+), 42 deletions(-)
+> > +config KFENCE_FAULT_INJECTION
+> > +       int "Fault injection for stress testing"
+> > +       default 0
+> > +       depends on EXPERT
+> > +       help
+> > +         The inverse probability with which to randomly protect KFENCE object
+> > +         pages, resulting in spurious use-after-frees. The main purpose of
+> > +         this option is to stress-test KFENCE with concurrent error reports
+> > +         and allocations/frees. A value of 0 disables fault injection.
+>
+> I would name this differently. "FAULT_INJECTION" is already taken for
+> a different thing, so it's a bit confusing.
+> KFENCE_DEBUG_SOMETHING may be a better name.
+> It would also be good to make it very clear in the short description
+> that this is for testing of KFENCE itself. When I configure syzbot I
+> routinely can't figure out if various DEBUG configs detect user
+> errors, or enable additional unit tests, or something else.
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index d7b8154c43a4..2f0abbd2dd8d 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/delay.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -47,12 +48,12 @@ enum {
- };
- 
- static int platform_clock_control(struct snd_soc_dapm_widget *w,
--	struct snd_kcontrol *k, int  event)
-+	struct snd_kcontrol *k, int event)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_card *card = dapm->card;
- 	struct snd_soc_dai *codec_dai;
--	int ret;
-+	int ret = 0;
- 
- 	codec_dai = snd_soc_card_get_codec_dai(card, SKL_NUVOTON_CODEC_DAI);
- 	if (!codec_dai) {
-@@ -60,14 +61,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		return -EIO;
- 	}
- 
--	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		ret = snd_soc_dai_set_sysclk(codec_dai,
--				NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
--		if (ret < 0) {
--			dev_err(card->dev, "set sysclk err = %d\n", ret);
--			return -EIO;
--		}
--	} else {
-+	if (!SND_SOC_DAPM_EVENT_ON(event)) {
- 		ret = snd_soc_dai_set_sysclk(codec_dai,
- 				NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
- 		if (ret < 0) {
-@@ -292,24 +286,51 @@ static const struct snd_soc_ops skylake_nau8825_fe_ops = {
- 	.startup = skl_fe_startup,
- };
- 
--static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
-+static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	int ret;
--
--	ret = snd_soc_dai_set_sysclk(codec_dai,
--			NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
--
--	if (ret < 0)
--		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		/* Since 256xFS clocks cannot be generated by SKL, the NAU8825
-+		 * is configured to re-generate its system clock from the BCLK
-+		 * using the FLL.
-+		 * We must switch system clock (FLL to use BCLK) here as it is
-+		 * not given eariler by FW (like in hw_param). We let nau8825 to
-+		 * use internal VCO clock till now which reduces the audiable
-+		 * pop's. */
-+
-+		/* fall through */
-+
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		/* Once device resumes, the system will only enable power
-+		 * sequence for playback without doing hardware parameter, audio
-+		 * format, and PLL configure. In the mean time, the jack
-+		 * detecion sequence has changed PLL parameters and switched to
-+		 * internal clock. Thus, the playback signal distorted without
-+		 * correct PLL parameters. Therefore we need to configure PLL
-+		 * again */
-+		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-+			break;
-+		}
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-+					  runtime->rate * 256);
-+		if (ret < 0)
-+			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-+		break;
-+	}
- 
- 	return ret;
- }
- 
--static const struct snd_soc_ops skylake_nau8825_ops = {
--	.hw_params = skylake_nau8825_hw_params,
-+static struct snd_soc_ops skylake_nau8825_ops = {
-+	.trigger = skylake_nau8825_trigger,
- };
- 
- static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 4b317bcf6ea0..6791be63c866 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -12,6 +12,7 @@
- 
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/delay.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-@@ -57,12 +58,12 @@ static const struct snd_kcontrol_new skylake_controls[] = {
- };
- 
- static int platform_clock_control(struct snd_soc_dapm_widget *w,
--		struct snd_kcontrol *k, int  event)
-+		struct snd_kcontrol *k, int event)
- {
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_card *card = dapm->card;
- 	struct snd_soc_dai *codec_dai;
--	int ret;
-+	int ret = 0;
- 
- 	codec_dai = snd_soc_card_get_codec_dai(card, SKL_NUVOTON_CODEC_DAI);
- 	if (!codec_dai) {
-@@ -70,14 +71,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		return -EIO;
- 	}
- 
--	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		ret = snd_soc_dai_set_sysclk(codec_dai,
--				NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
--		if (ret < 0) {
--			dev_err(card->dev, "set sysclk err = %d\n", ret);
--			return -EIO;
--		}
--	} else {
-+	if (!SND_SOC_DAPM_EVENT_ON(event)) {
- 		ret = snd_soc_dai_set_sysclk(codec_dai,
- 				NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
- 		if (ret < 0) {
-@@ -85,6 +79,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 			return -EIO;
- 		}
- 	}
-+
- 	return ret;
- }
- 
-@@ -344,24 +339,51 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
--static int skylake_nau8825_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
-+static int skylake_nau8825_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	int ret;
--
--	ret = snd_soc_dai_set_sysclk(codec_dai,
--			NAU8825_CLK_MCLK, 24000000, SND_SOC_CLOCK_IN);
--
--	if (ret < 0)
--		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
-+	int ret = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		/* Since 256xFS clocks cannot be generated by SKL, the NAU8825
-+		 * is configured to re-generate its system clock from the BCLK
-+		 * using the FLL.
-+		 * We must switch system clock (FLL to use BCLK) here as it is
-+		 * not given eariler by FW (like in hw_param). We let nau8825 to
-+		 * use internal VCO clock till now which reduces the audiable
-+		 * pop's. */
-+
-+		/* fall through */
-+
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+		/* Once device resumes, the system will only enable power
-+		 * sequence for playback without doing hardware parameter, audio
-+		 * format, and PLL configure. In the mean time, the jack
-+		 * detecion sequence has changed PLL parameters and switched to
-+		 * internal clock. Thus, the playback signal distorted without
-+		 * correct PLL parameters. Therefore we need to configure PLL
-+		 * again */
-+		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_FLL_FS, 0,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(codec_dai->dev, "can't set FS clock %d\n", ret);
-+			break;
-+		}
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, 0, runtime->rate,
-+					  runtime->rate * 256);
-+		if (ret < 0)
-+			dev_err(codec_dai->dev, "can't set FLL: %d\n", ret);
-+		break;
-+	}
- 
- 	return ret;
- }
- 
--static const struct snd_soc_ops skylake_nau8825_ops = {
--	.hw_params = skylake_nau8825_hw_params,
-+static struct snd_soc_ops skylake_nau8825_ops = {
-+	.trigger = skylake_nau8825_trigger,
- };
- 
- static const unsigned int channels_dmic[] = {
--- 
-2.17.1
+Makes sense, we'll change the name.
 
+> Maybe it should depend on DEBUG_KERNEL as well?
+
+EXPERT selects DEBUG_KERNEL, so depending on DEBUG_KERNEL doesn't make sense.
+
+> > +/*
+> > + * Get the canary byte pattern for @addr. Use a pattern that varies based on the
+> > + * lower 3 bits of the address, to detect memory corruptions with higher
+> > + * probability, where similar constants are used.
+> > + */
+> > +#define KFENCE_CANARY_PATTERN(addr) ((u8)0xaa ^ (u8)((unsigned long)addr & 0x7))
+>
+> (addr) in macro body
+
+Done for v2.
+
+> > +       seq_con_printf(seq,
+> > +                      "kfence-#%zd [0x" PTR_FMT "-0x" PTR_FMT
+>
+> PTR_FMT is only used in this file, should it be declared in report.c?
+
+It's also used by the test.
+
+> Please post example reports somewhere. It's hard to figure out all
+> details of the reporting/formatting.
+
+They can be seen in Documentation added later in the series (also
+viewable here: https://github.com/google/kasan/blob/kfence/Documentation/dev-tools/kfence.rst)
+
+Thank you!
+
+-- Marco
