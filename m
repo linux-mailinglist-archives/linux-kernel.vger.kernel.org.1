@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C382649F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2DF264A00
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 18:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgIJQiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 12:38:16 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:52458 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726853AbgIJQfw (ORCPT
+        id S1726415AbgIJQkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 12:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727037AbgIJQh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:35:52 -0400
-Date:   Thu, 10 Sep 2020 12:35:24 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-api@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfs: add fchmodat2 syscall
-Message-ID: <20200910163524.GI3265@brightrain.aerifal.cx>
-References: <20200910142335.GG3265@brightrain.aerifal.cx>
- <20200910161615.GA1180022@kroah.com>
+        Thu, 10 Sep 2020 12:37:57 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00CBC0617AB;
+        Thu, 10 Sep 2020 09:37:18 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id o16so6682127qkj.10;
+        Thu, 10 Sep 2020 09:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JdFFsE37eiFTRP6BERxF8cO71XTx86+LjItRyfR3qXo=;
+        b=ClOsXW2gu5WYa1DOpSj8Qg6yWGAGzcCI2Y3HA3bciB+WiLOoamEyLaQmn2CqQ0P3wJ
+         fgMTx+umTjA9TeAfZqBrN12gEo5pDLbYZInQ/zTIt2a0XX/VALOFw3Fi4CGDriyA4fXv
+         TP4g7DMxSr+OVQTUJFkz5Qn4y2VxdeXA3PdyzJ8W1uuAbaBQ/LKeydAH0KPwJIysUB8w
+         JZgaJw6/uWPmqydgxe8iTR4ToAgQ8G7G4AuKOCgvxtmV+zhFXrUikBceIuBMBFKYzqgO
+         3qlGjxVfXub25qXG/VxaqxoKpmrp4EJsyF/fZNCc0sF+3tWYTMMjJXOMrduNQjzphCHd
+         P1pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JdFFsE37eiFTRP6BERxF8cO71XTx86+LjItRyfR3qXo=;
+        b=b3/N7Xn1r/fe9EMQFBmmzSGqLksI4+6bVq4kkR4Q5y/jAQLqqyiGWi7athnaylU/dw
+         3P/YQSq9AN+XrafciJSvcLpEN9KhKVAcsQy7iU0L7BMeSwXlkh28asaBEkDCEy1m8sPG
+         AxrwXxar+G4427jknWnXzgFcEjW68UoMU2Cfy1L/zaNNocie1qSp0zYzK9XdGurk79ot
+         kaS9OfC18F3bvQuqiEFX5RzubkwOZuQL1F8AWEEkFoP6vrYCv8T9DvefaAMoyTTow/bB
+         Y7QNObf8VSynC8WMVebRNxvsuPBoKg0IQv1g6pVxRu37WEUmdnLe9WBVO90jhahwqqpI
+         vSCg==
+X-Gm-Message-State: AOAM5302c1BgfFxMBsKRa+BCpydKxhy6bXqd0JofJGNnFU6gBBUnmWcC
+        snNgKkDOhApbZc0neHHyM6UygzasA4A=
+X-Google-Smtp-Source: ABdhPJwmIWRMgSWl7iXkstmJ0pPLM9KnhtDIQ7NDzOEjOhXb6+ZuSpcZwFhxi6ViIB0BIKX8qUa5Dw==
+X-Received: by 2002:a37:e508:: with SMTP id e8mr8499277qkg.380.1599755837906;
+        Thu, 10 Sep 2020 09:37:17 -0700 (PDT)
+Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id y7sm7245670qtn.11.2020.09.10.09.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 09:37:17 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 09:37:16 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] kbuild: remove cc-option test of -fno-stack-check
+Message-ID: <20200910163716.GC3119896@ubuntu-n2-xlarge-x86>
+References: <20200910135120.3527468-1-masahiroy@kernel.org>
+ <20200910135120.3527468-3-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910161615.GA1180022@kroah.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200910135120.3527468-3-masahiroy@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 06:16:15PM +0200, Greg KH wrote:
-> On Thu, Sep 10, 2020 at 10:23:37AM -0400, Rich Felker wrote:
-> > POSIX defines fchmodat as having a 4th argument, flags, that can be
-> > AT_SYMLINK_NOFOLLOW. Support for changing the access mode of symbolic
-> > links is optional (EOPNOTSUPP allowed if not supported), but this flag
-> > is important even on systems where symlinks do not have access modes,
-> > since it's the only way to safely change the mode of a file which
-> > might be asynchronously replaced with a symbolic link, without a race
-> > condition whereby the link target is changed.
-> > 
-> > It's possible to emulate AT_SYMLINK_NOFOLLOW in userspace, and both
-> > musl libc and glibc do this, by opening an O_PATH file descriptor and
-> > performing chmod on the corresponding magic symlink in /proc/self/fd.
-> > However, this requires procfs to be mounted and accessible.
-> > 
-> > It was determined (see glibc issue #14578 and commit a492b1e5ef) that,
-> > on some filesystems, performing chmod on the link itself produces a
-> > change in the inode's access mode, but returns an EOPNOTSUPP error.
-> > This is non-conforming and wrong. Rather than try to fix all the
-> > broken filesystem backends, block attempts to change the symlink
-> > access mode via fchmodat2 at the frontend layer. This matches the
-> > userspace emulation done in libc implementations. No change is made to
-> > the underlying chmod_common(), so it's still possible to attempt
-> > changes via procfs, if desired. If at some point all filesystems have
-> > been fixed, this could be relaxed to allow filesystems to make their
-> > own decision whether changing access mode of links is supported.
+On Thu, Sep 10, 2020 at 10:51:19PM +0900, Masahiro Yamada wrote:
+> The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
 > 
-> A new syscall just because we have broken filesystems seems really odd,
-> why not just fix the filesystems instead?
+> Here is the godbolt:
+> https://godbolt.org/z/59cK6o
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-The part about broken filesystems is just the justification for doing
-the EOPNOTSUPP check at this layer rather than relying on the
-filesystem to do it, not the purposse for the syscall.
+This flag is technically ignored by clang (see commit
+05b0798916f01690b5903302e51f3136274e291f) but that obviously does not
+matter for the sake of this.
 
-The purpose of the syscall is fixing the deficiency in the original
-one, which lacked the flags argument, making it so you have to do a
-complicated emulation dance involving O_PATH and procfs magic symlinks
-to implement the standard functionality.
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Rich
+> ---
+> 
+>  Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index 1b6abecc5cab..5102c89d3167 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -934,7 +934,7 @@ KBUILD_CFLAGS	+= -fno-merge-all-constants
+>  KBUILD_CFLAGS	+= $(call cc-option,-fmerge-constants)
+>  
+>  # Make sure -fstack-check isn't enabled (like gentoo apparently did)
+> -KBUILD_CFLAGS  += $(call cc-option,-fno-stack-check,)
+> +KBUILD_CFLAGS  += -fno-stack-check
+>  
+>  # conserve stack if available
+>  KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
+> -- 
+> 2.25.1
+> 
