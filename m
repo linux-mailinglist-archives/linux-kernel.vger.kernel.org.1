@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D41626544F
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095C4265473
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgIJVmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:42:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:35488 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730715AbgIJNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:02:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 205931063;
-        Thu, 10 Sep 2020 06:02:05 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 71A813F66E;
-        Thu, 10 Sep 2020 06:02:03 -0700 (PDT)
-Subject: Re: [PATCH 07/12] dma-direct: lift gfp_t manipulation out
- of__dma_direct_alloc_pages
-To:     Christoph Hellwig <hch@lst.de>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        iommu@lists.linux-foundation.org
-Cc:     linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20200908164758.3177341-1-hch@lst.de>
- <20200908164758.3177341-8-hch@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3658a0b7-c2b7-8b03-86c6-219f77799999@arm.com>
-Date:   Thu, 10 Sep 2020 14:02:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728392AbgIJVma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:42:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729908AbgIJNDE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:03:04 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC59C06179B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:02:38 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id d20so5922269qka.5
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZMHVjl3+9TgVg2XMpsqEGzDzTL85oyvjl7Ly6KJECZs=;
+        b=f2+BlMuUGxSPKYE1QP62oEt/bC0dGgrFO/pevuVdYEPal0FxZbbtojVdbZbQ6sqmoz
+         jaJs9e7Yg3oQ36AJtmPt+bWSweDM603M+W0NfngEfLnlu8waQhxBgX6HgQdgQkAOsQvN
+         Imc2Ip25I3geF80IGGT4DFhCwFFWUwFOfv4oqMhYXEEoXV/3te0bj60yPFJV8SXZ1nIN
+         1cOGfWeoU7Qerilj2IP4cT0hDPg8C8eGeDjj8ADKqV0CudBo5FDoF28Zeb24SsNY1XCA
+         ye3tKdEeX5uSb4xgr1Zl54/2+vf6Hqdh4TzuL59fwFBW+mdrXHCpM+fh1UX1VSvqoYEC
+         Wv+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZMHVjl3+9TgVg2XMpsqEGzDzTL85oyvjl7Ly6KJECZs=;
+        b=biYOQN+w6LtIPsW/ZsDJ12IYfA+gyd3JQJzBHBUZ2mzrZ9TYiVQmS8v4ogW9OxSZvK
+         EAePhIzPVeRNTzOVXWkVCgu/ScclPKIGNmCal7GgnceecJumiPqnGuDoL5oRloKpk22o
+         HAPt/oqcpbf1hf/FSnp5e2wO7I7mJxr5u/9kgtl8R43SyRcoUp+j+LMpSb8GPoDK9mvk
+         RIO7CzKzKcficGajy7zIqWwoOgcUOnfj6er7wja03XoqJbbTl5IpJ9u+tSm2k73Cf+YR
+         5bgArME1xhrm/aed7+pgfvFqjmFwYmxAjF7NKrvtoPuUIjiksftgbBxBwnG07MpQ9EyR
+         J+Vw==
+X-Gm-Message-State: AOAM531M7/KuCM28CGPGU/uhYy2EwLvb8axGlWqih59A61Tlg4SZ28vC
+        ryeZr8lw7JkaliJxy6uu0ccREA==
+X-Google-Smtp-Source: ABdhPJxqOTcVzVF1zXXEOkRZLnf0cpg1VMvwjaF3fePKiOG08DrkmppE8sGHLJTo61W1PPeWEXyFQQ==
+X-Received: by 2002:a05:620a:410:: with SMTP id 16mr7289645qkp.133.1599742955509;
+        Thu, 10 Sep 2020 06:02:35 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id i1sm6457907qkd.58.2020.09.10.06.02.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 06:02:34 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kGMDh-004Ksi-Dp; Thu, 10 Sep 2020 10:02:33 -0300
+Date:   Thu, 10 Sep 2020 10:02:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
+ folding
+Message-ID: <20200910130233.GK87483@ziepe.ca>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+ <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
+ <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
+ <20200909142904.00b72921@thinkpad>
+ <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
+ <20200909192534.442f8984@thinkpad>
+ <20200909180324.GI87483@ziepe.ca>
+ <20200910093925.GB29166@oc3871087118.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200908164758.3177341-8-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910093925.GB29166@oc3871087118.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 17:47, Christoph Hellwig wrote:
-> Move the detailed gfp_t setup from __dma_direct_alloc_pages into the
-> caller to clean things up a little.
+On Thu, Sep 10, 2020 at 11:39:25AM +0200, Alexander Gordeev wrote:
 
-Other than a mild nitpick that it might be nicer to spend one extra line 
-to keep both gfp adjustments next to each other,
+> As Gerald mentioned, it is very difficult to explain in a clear way.
+> Hopefully, one could make sense ot of it.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+I would say the page table API requires this invariant:
 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   kernel/dma/direct.c | 12 +++++-------
->   1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 1d564bea58571b..12e9f5f75dfe4b 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -108,7 +108,7 @@ static inline bool dma_should_free_from_pool(struct device *dev,
->   }
->   
->   static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
-> -		gfp_t gfp, unsigned long attrs)
-> +		gfp_t gfp)
->   {
->   	int node = dev_to_node(dev);
->   	struct page *page = NULL;
-> @@ -116,11 +116,6 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
->   
->   	WARN_ON_ONCE(!PAGE_ALIGNED(size));
->   
-> -	if (attrs & DMA_ATTR_NO_WARN)
-> -		gfp |= __GFP_NOWARN;
-> -
-> -	/* we always manually zero the memory once we are done: */
-> -	gfp &= ~__GFP_ZERO;
->   	gfp |= dma_direct_optimal_gfp_mask(dev, dev->coherent_dma_mask,
->   					   &phys_limit);
->   	page = dma_alloc_contiguous(dev, size, gfp);
-> @@ -164,6 +159,8 @@ void *dma_direct_alloc(struct device *dev, size_t size,
->   		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
->   
->   	size = PAGE_ALIGN(size);
-> +	if (attrs & DMA_ATTR_NO_WARN)
-> +		gfp |= __GFP_NOWARN;
->   
->   	if (dma_should_alloc_from_pool(dev, gfp, attrs)) {
->   		u64 phys_mask;
-> @@ -177,7 +174,8 @@ void *dma_direct_alloc(struct device *dev, size_t size,
->   		goto done;
->   	}
->   
-> -	page = __dma_direct_alloc_pages(dev, size, gfp, attrs);
-> +	/* we always manually zero the memory once we are done */
-> +	page = __dma_direct_alloc_pages(dev, size, gfp & ~__GFP_ZERO);
->   	if (!page)
->   		return NULL;
->   
-> 
+        pud = pud_offset(p4d, addr);
+        do {
+		WARN_ON(pud != pud_offset(p4d, addr);
+                next = pud_addr_end(addr, end);
+        } while (pud++, addr = next, addr != end);
+
+ie pud++ is supposed to be a shortcut for 
+  pud_offset(p4d, next)
+
+While S390 does not follow this. Fixing addr_end brings it into
+alignment by preventing pud++ from happening.
+
+The only currently known side effect is that gup_fast crashes, but it
+sure is an unexpected thing.
+
+This suggests another fix, which is to say that pud++ is undefined and
+pud_offset() must always be called, but I think that would cause worse
+codegen on all other archs.
+
+Jason
+
