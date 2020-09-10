@@ -2,131 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC832264491
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2C62644A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgIJKsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729455AbgIJKqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:46:46 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE69C0617A0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:45:12 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a12so5776859eds.13
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 03:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l79SfYkBrB8eBkLTxTm30QFDMV6D/aEjgGf7kz6GKH8=;
-        b=DJxGtKQq3fNqzbw0NV15QU2g+lXd31Rj8IJvgRkmxSITdEZjWipc09xOc3NSbzlnqS
-         LSWzMMePsttylmJYWDnCSaRWKb1BYhCdX7DUHwmW8C64BFBOOtybEiKeNpWtlPUualiy
-         9nhq5tFslI0ABxnJmKxf47Qt/oRWwgsEcvLfJkoiQ/mcBOPLdXTxj77V1xZKt/Jv6KNx
-         WA1MGxYBceEanw4cq8b4bqV/K34C0NkTNfaxjw7nHmvTtZDCulOx+OE8uiQukw5GHNe2
-         9H8f2YIbQFfcfqQbpj3AiCW8R+QLENQTIBzSErnivxE0WcjL9tyGzxCgH0aREro/gI6W
-         37yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l79SfYkBrB8eBkLTxTm30QFDMV6D/aEjgGf7kz6GKH8=;
-        b=oUywZ0Kx4kyM5qLgc0oy9SxiRADi09qOy4khkmrooEccvcUiJT1X0Rxy54jwddiJDk
-         Oi2A9E8UYxNUnlPuMFGyA5Aafr6PLRubSQgLcIyGmzU1x8tuJsBg6oPhvA0Tksf82BSJ
-         +LafGLtFvipOnjY/CygF18jMNi2xRc+JO/wACdUAArBHdiJ+wvahXw//rC89F4gAzuVz
-         g7s+mGqxm/+PB/ZUsSe0BSZe6+8kNjxjbPTgG6KV2dvry7EWuoYyXneWo9Euk6HbtFqE
-         NQww5yodM0y6FkeBevidjgM6Rq9eK/KqIisgEtQ3oYcQMBwRAyD6Mh7QfUan3MUDlliP
-         N12w==
-X-Gm-Message-State: AOAM532TUaJkY+J832FTAHuvbQPNURUhXD3LP3YTEjA5VWH5Go87FTBI
-        AzeO/RTsgtNUzvwrQhHCENng4ZNCgQQyBAlg
-X-Google-Smtp-Source: ABdhPJxLPpOYGdfGam7C5qx7e4pq7eM8ctQGw5CrrVjQtFNkfIXN7oOEb+gcnV3V6HeJNWuS3cornA==
-X-Received: by 2002:aa7:dc05:: with SMTP id b5mr8908207edu.137.1599734710690;
-        Thu, 10 Sep 2020 03:45:10 -0700 (PDT)
-Received: from [192.168.1.8] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id f13sm6324424ejb.81.2020.09.10.03.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Sep 2020 03:45:10 -0700 (PDT)
-Subject: Re: [PATCH 06/38] media: venus: place extern venus_fw_debug on a
- header file
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1599062230.git.mchehab+huawei@kernel.org>
- <64a99ecb3e7cfae697a16c6b6ca05034f73ad985.1599062230.git.mchehab+huawei@kernel.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <8886c59a-02e3-1762-23ad-fdc6960309c8@linaro.org>
-Date:   Thu, 10 Sep 2020 13:45:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730321AbgIJKvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:51:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:57470 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725887AbgIJKtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:49:17 -0400
+IronPort-SDR: p2AkMGkK7lb4tMc+mTrUukjggEV2VnvkVlPETInT8Li5IHOwHBUi2OnSX6dd08z1z3Y364nWXV
+ kk/rMi5K8LkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9739"; a="146212598"
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="146212598"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 03:49:14 -0700
+IronPort-SDR: np3Lz2Hdt8aRmnjvTDOHJHxP4Gyse2oTaxFQvBAKPXAxPxbhbpIR0nycZ2ZApuDyzWewj3OQ1I
+ 6O+NW+FG8icA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,412,1592895600"; 
+   d="scan'208";a="407725912"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 10 Sep 2020 03:49:12 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 10 Sep 2020 13:49:11 +0300
+Date:   Thu, 10 Sep 2020 13:49:11 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>
+Subject: Re: linux-next: Tree for Sep 9
+ (drivers/usb/typec/mux/intel_pmc_mux.c)
+Message-ID: <20200910104911.GA3709033@kuha.fi.intel.com>
+References: <20200909202624.2cc6c3d1@canb.auug.org.au>
+ <f2de7078-db94-6914-87af-c0a553daa5cc@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <64a99ecb3e7cfae697a16c6b6ca05034f73ad985.1599062230.git.mchehab+huawei@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f2de7078-db94-6914-87af-c0a553daa5cc@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Wed, Sep 09, 2020 at 09:04:53AM -0700, Randy Dunlap wrote:
+> On 9/9/20 3:26 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20200908:
+> > 
+> 
+> on x86_64:
+> 
+>   CC [M]  drivers/usb/typec/mux/intel_pmc_mux.o
+> ../drivers/usb/typec/mux/intel_pmc_mux.c: In function ‘update_port_status’:
+> ../drivers/usb/typec/mux/intel_pmc_mux.c:151:21: error: implicit declaration of function ‘readl’ [-Werror=implicit-function-declaration]
+>   port->iom_status = readl(port->pmc->iom_base + IOM_PORT_STATUS_OFFSET +
+>                      ^~~~~
+> ../drivers/usb/typec/mux/intel_pmc_mux.c: In function ‘is_memory’:
+> ../drivers/usb/typec/mux/intel_pmc_mux.c:524:10: error: implicit declaration of function ‘acpi_dev_resource_memory’; did you mean ‘acpi_os_read_memory’? [-Werror=implicit-function-declaration]
+>   return !acpi_dev_resource_memory(res, &r);
+>           ^~~~~~~~~~~~~~~~~~~~~~~~
+>           acpi_os_read_memory
+> ../drivers/usb/typec/mux/intel_pmc_mux.c: In function ‘pmc_usb_probe_iom’:
+> ../drivers/usb/typec/mux/intel_pmc_mux.c:539:8: error: implicit declaration of function ‘acpi_dev_get_resources’; did you mean ‘acpi_get_event_resources’? [-Werror=implicit-function-declaration]
+>   ret = acpi_dev_get_resources(adev, &resource_list, is_memory, NULL);
+>         ^~~~~~~~~~~~~~~~~~~~~~
+>         acpi_get_event_resources
+>   CC      drivers/net/ethernet/broadcom/bnxt/bnxt_vfr.o
+> ../drivers/usb/typec/mux/intel_pmc_mux.c:547:2: error: implicit declaration of function ‘acpi_dev_free_resource_list’; did you mean ‘acpi_get_event_resources’? [-Werror=implicit-function-declaration]
+>   acpi_dev_free_resource_list(&resource_list);
+>   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   acpi_get_event_resources
+> ../drivers/usb/typec/mux/intel_pmc_mux.c:550:19: error: dereferencing pointer to incomplete type ‘struct acpi_device’
+>    put_device(&adev->dev);
 
-Thanks for the fix!
+It looks like we are missing ACPI dependency in Kconfig and a include.
+I'll prepare the fixes.
 
-On 9/2/20 7:10 PM, Mauro Carvalho Chehab wrote:
-> Sparse warns about this symbol:
-> 
-> 	drivers/media/platform/qcom/venus/hfi_venus.c:133:5:  warning: symbol 'venus_fw_debug' was not declared. Should it be static?
-> 
-> Because hfi_venus.c doesn't include a header file with the
-> extern. So, move it to core.h, with is included by both
-> hfi_venus.c and dbgfs.c.
-> 
-> This way, if something changes with it, warnings or errors
-> will be produced.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/platform/qcom/venus/core.h  | 2 ++
->  drivers/media/platform/qcom/venus/dbgfs.c | 2 --
->  2 files changed, 2 insertions(+), 2 deletions(-)
-
-Acked-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> index 8e75a199f9f7..1a7aee7ee628 100644
-> --- a/drivers/media/platform/qcom/venus/core.h
-> +++ b/drivers/media/platform/qcom/venus/core.h
-> @@ -24,6 +24,8 @@
->  #define VIDC_VCODEC_CLKS_NUM_MAX	2
->  #define VIDC_PMDOMAINS_NUM_MAX		3
->  
-> +extern int venus_fw_debug;
-> +
->  struct freq_tbl {
->  	unsigned int load;
->  	unsigned long freq;
-> diff --git a/drivers/media/platform/qcom/venus/dbgfs.c b/drivers/media/platform/qcom/venus/dbgfs.c
-> index 782d54ac1b8f..52de47f2ca88 100644
-> --- a/drivers/media/platform/qcom/venus/dbgfs.c
-> +++ b/drivers/media/platform/qcom/venus/dbgfs.c
-> @@ -7,8 +7,6 @@
->  
->  #include "core.h"
->  
-> -extern int venus_fw_debug;
-> -
->  void venus_dbgfs_init(struct venus_core *core)
->  {
->  	core->root = debugfs_create_dir("venus", NULL);
-> 
+Thanks Randy,
 
 -- 
-regards,
-Stan
+heikki
