@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB6C264642
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAE626463E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgIJMph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:45:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58376 "EHLO mail.kernel.org"
+        id S1730849AbgIJMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:43:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730717AbgIJMkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730654AbgIJMkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 08:40:11 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F30521D7E;
-        Thu, 10 Sep 2020 12:39:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28F9A21D90;
+        Thu, 10 Sep 2020 12:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599741561;
-        bh=XEkvMKygs9JcPL5/1o66Pvj/zS3t7Yf8iNmlW4M5nk4=;
+        s=default; t=1599741570;
+        bh=d23ElutQoLsVdLLOs3nz6q2kPUfQWTA4Z/VuhTPRCNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wdc0Ha0Q40NwP/GzjI5Pge5jsRFaDTPCd1b4FkhE4oD+A0nxnyfbWeaLaLPtjnL4m
-         YkTx36P59UuRTfmz7ebvitlUgF4YIS+igxbzmYlRsNpJy1OfA3spPHtvpuxQjrO+Pr
-         cdMru46eu06b0AtBTzhzLb2nHqCJ0WqYY7IHLD40=
+        b=W1KeAjvxnrUSt8kuM5CyHb8jFIS0ciUzBq+pN9QmrkxPyIQamcVeUt2Na+NAwNC0R
+         CEGxK0Xk+eve9aoen6RUnr7aFcvg+AekAQzd9Abnx4LYOJ4sahiaBTskdJRhjTg8Li
+         3wImoC1wjDfQnwAyTleW6ylxmnWBNlLies1iBKho=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5/6] tracing/boot,kprobe,synth: Initialize boot-time tracing earlier
-Date:   Thu, 10 Sep 2020 21:39:17 +0900
-Message-Id: <159974155727.478751.7486926132902849578.stgit@devnote2>
+Subject: [PATCH 6/6] Documentation: tracing: Add the startup timing of boot-time tracing
+Date:   Thu, 10 Sep 2020 21:39:27 +0900
+Message-Id: <159974156678.478751.10215894815285734481.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <159974150897.478751.17933810682730471522.stgit@devnote2>
 References: <159974150897.478751.17933810682730471522.stgit@devnote2>
@@ -44,93 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize boot-time tracing in core_initcall_sync instead of
-fs_initcall, and initialize required tracers (kprobes and synth)
-in core_initcall. This will allow the boot-time tracing to trace
-__init code from the beginning of postcore_initcall stage.
+Add the note about when to start the boot-time tracing.
+This will be needed for the people who wants to trace
+earlier boot sequence.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- kernel/trace/trace_boot.c         |    7 +++++--
- kernel/trace/trace_events_synth.c |   22 ++++++++++++++++------
- kernel/trace/trace_kprobe.c       |    6 +++---
- 3 files changed, 24 insertions(+), 11 deletions(-)
+ Documentation/trace/boottime-trace.rst |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index d52d441a17e8..754e3cf2df3a 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -340,5 +340,8 @@ static int __init trace_boot_init(void)
+diff --git a/Documentation/trace/boottime-trace.rst b/Documentation/trace/boottime-trace.rst
+index c216f5695ae2..3931b43f902c 100644
+--- a/Documentation/trace/boottime-trace.rst
++++ b/Documentation/trace/boottime-trace.rst
+@@ -120,6 +120,20 @@ instance node, but those are also visible from other instances. So please
+ take care for event name conflict.
  
- 	return 0;
- }
--
--fs_initcall(trace_boot_init);
-+/*
-+ * Start tracing at the end of core-initcall, so that it starts tracing
-+ * from the beginning of postcore_initcall.
-+ */
-+core_initcall_sync(trace_boot_init);
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index c6cca0d1d584..6eb77d95fd64 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -1754,17 +1754,27 @@ static const struct file_operations synth_events_fops = {
- 	.release        = seq_release,
- };
  
--static __init int trace_events_synth_init(void)
-+/*
-+ * Register dynevent at core_initcall. This allows kernel to setup kprobe
-+ * events in postcore_initcall without tracefs.
-+ */
-+static __init int trace_events_synth_init_early(void)
- {
--	struct dentry *entry = NULL;
--	struct dentry *d_tracer;
- 	int err = 0;
- 
- 	err = dyn_event_register(&synth_event_ops);
--	if (err) {
-+	if (err)
- 		pr_warn("Could not register synth_event_ops\n");
--		return err;
--	}
++When to Start
++=============
 +
-+	return err;
-+}
-+core_initcall(trace_events_synth_init_early);
++All boot-time tracing options starting with ``ftrace`` will be enabled at the
++end of core_initcall. This means you can trace the events from postcore_initcall.
++Most of the subsystems and architecture dependent drivers will be initialized
++after that (arch_initcall or subsys_initcall). Thus, you can trace those with
++boot-time tracing.
++If you want to trace events before core_initcall, you can use the options
++starting with ``kernel``. Some of them will be enabled eariler than the initcall
++processing (for example,. ``kernel.ftrace=function`` and ``kernel.trace_event``
++will start before the initcall.)
 +
-+static __init int trace_events_synth_init(void)
-+{
-+	struct dentry *entry = NULL;
-+	struct dentry *d_tracer;
-+	int err = 0;
++
+ Examples
+ ========
  
- 	d_tracer = tracing_init_dentry();
- 	if (IS_ERR(d_tracer)) {
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index e33690a12255..a6a08199e79f 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1896,8 +1896,8 @@ static __init void setup_boot_kprobe_events(void)
- }
- 
- /*
-- * Register dynevent at subsys_initcall. This allows kernel to setup kprobe
-- * events in fs_initcall without tracefs.
-+ * Register dynevent at core_initcall. This allows kernel to setup kprobe
-+ * events in postcore_initcall without tracefs.
-  */
- static __init int init_kprobe_trace_early(void)
- {
-@@ -1912,7 +1912,7 @@ static __init int init_kprobe_trace_early(void)
- 
- 	return 0;
- }
--subsys_initcall(init_kprobe_trace_early);
-+core_initcall(init_kprobe_trace_early);
- 
- /* Make a tracefs interface for controlling probe points */
- static __init int init_kprobe_trace(void)
 
