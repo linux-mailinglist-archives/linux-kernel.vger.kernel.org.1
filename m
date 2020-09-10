@@ -2,72 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB67264C68
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0856264C7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgIJSMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34574 "EHLO
+        id S1726914AbgIJSNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgIJSMP (ORCPT
+        with ESMTP id S1726109AbgIJSNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:12:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1EEC061573;
-        Thu, 10 Sep 2020 11:12:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GJFNj3LJXM5inEjcMlpYk5NsvVZoANjG6yDaNXtOQ30=; b=lSmfzfKQqqcZo41ZNtr3bnrgR4
-        +oCiqbseC0eG8Qb0mENU6p9HScVlmOiyyM1D/WsCKITLnLrqtYU2uSs83TNc2H7nb3CWqc5NptNNk
-        eoQXGoLaw95Xu62UgQpdgGC+Iqi8qH0NWOmNiYc9/1RolRzHEPpk/vyGATU1ebBHGk6vDDNM2CcX9
-        TaX6KjY56oFftWnxzn5DcUii5inCbDzwfhiWPgz4RIVc13hX2FwuCKj8MsdBhnVNxTNUpZg3UJWpM
-        xgUnFjHIv4drBCNsM3tQkHR7MwJYt1gWzxiJBLlf1Z5B6uY382Y8QqZ00ZOLGmOJldB+qjNM5EBsa
-        ZZXGcqWw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGR3I-0003sC-H5; Thu, 10 Sep 2020 18:12:08 +0000
-Date:   Thu, 10 Sep 2020 19:12:08 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 00/14] get rid of the remaining kernel-doc warnings when
- building the docs
-Message-ID: <20200910181208.GW6583@casper.infradead.org>
-References: <cover.1599732764.git.mchehab+huawei@kernel.org>
+        Thu, 10 Sep 2020 14:13:34 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F9AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:13:21 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id y11so5587825qtn.9
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vsgOBuvd+PmHZlIl6zNL7J0E+9iuQlAQQf0cZFL5gMI=;
+        b=QjySHJ/1iTMrz5prM8y+VncJt3fFZa9ZyFpYw/Th/jKpZaffgf1LyWVdNJm/j/vjyA
+         nLjh8OzRb1c9mhAkanY5btD+efOqZZ+Udi6ZslYCr7YtJIfes2snd5UrIRKpUyv8hkdr
+         36M2e6eOhe91VaA9oyoKzmgg9xjBknxyQhh5BZGAXX5wie19agL2HJs44WBmda9L90te
+         rB4sfQyqX1cSC/80uyvJQCn48IBDTjUyr7fuRqyi1tok7cmTDWGXQTd1b0rwTzF0s+WH
+         TbjL9aVyKRcQ18FE4ZG1EMR1arXpN/YNqyXD5nLN+6IKf2BR7oX+4/YatX70bdzY6jl7
+         k0sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vsgOBuvd+PmHZlIl6zNL7J0E+9iuQlAQQf0cZFL5gMI=;
+        b=qi9WmDXxZZWuUFS7W5qWsfv6XLk/dlIh1KZeJeqVqV/9VJjqfqJWStCQh1jxu32t7v
+         JDmxLnMibdarQqWf9vaJI81Iahn5R9vr1mnfwXeXMKyGSHTIQTwl8KwzBsFNk82MDc7j
+         7BcdE4aTxL5tz7jYbmc6qkAH91qCChB6+4r5HAOrPprC7UCSOcHfk7/AiIC7UUEPaY7y
+         CggLIIx//PS9Bxr67YGZSdlRbUmjfwVNmmcT+uI2JUXfHjD9TOKkTx/HBMg9mraiCe/X
+         kIoguRt074+QFX4vXAIU51fhkVMzn7F+vg7iQ0VJg+c5pzX215We3rm8rX1Up2pCz2py
+         yWJw==
+X-Gm-Message-State: AOAM5320dQDjwoMIQXVHl+HaF90QivIYvsX/tki2bZJnVEZEQL/RCCKY
+        yTpKSW02Jl3l5RiXN/egHbOgWQ==
+X-Google-Smtp-Source: ABdhPJz+K3felhpgzzPG4kmFLTMR9ObyhixIit5uSjGLCBi1hY0YGP7pJ4KyC/qC7hkyspfqqr9PsQ==
+X-Received: by 2002:ac8:7108:: with SMTP id z8mr9521321qto.55.1599761600525;
+        Thu, 10 Sep 2020 11:13:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id c43sm8103713qtk.24.2020.09.10.11.13.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 11:13:19 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kGR4R-004OkZ-38; Thu, 10 Sep 2020 15:13:19 -0300
+Date:   Thu, 10 Sep 2020 15:13:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
+ folding
+Message-ID: <20200910181319.GO87483@ziepe.ca>
+References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
+ <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
+ <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
+ <20200909142904.00b72921@thinkpad>
+ <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
+ <20200909192534.442f8984@thinkpad>
+ <20200909180324.GI87483@ziepe.ca>
+ <20200910093925.GB29166@oc3871087118.ibm.com>
+ <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1599732764.git.mchehab+huawei@kernel.org>
+In-Reply-To: <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 12:23:53PM +0200, Mauro Carvalho Chehab wrote:
-> As described on its subject, this series finally get rid of all kernel-doc warnings.
+On Thu, Sep 10, 2020 at 10:35:38AM -0700, Linus Torvalds wrote:
+> On Thu, Sep 10, 2020 at 2:40 AM Alexander Gordeev
+> <agordeev@linux.ibm.com> wrote:
+> >
+> > It is only gup_fast case that exposes the issue. It hits because
+> > pointers to stack copies are passed to gup_pXd_range iterators, not
+> > pointers to real page tables itself.
 > 
-> With this series applied (plus my last series fixing other warnings), building
-> the docs is now clean[1] against next-20200909:
+> Can we possibly change fast-gup to not do the stack copies?
+>
+> I'd actually rather do something like that, than the "addr_end" thing.
 
-Thanks, this has been a truly heroic effort.
+> As you say, none of the other page table walking code does what the
+> GUP code does, and I don't think it's required.
 
-I'd suggest that we change the kernel build to always run the CHKDOC
-instead of at W=1 (or rather, as the patch I just sent out demonstrates,
-not at all (oops)).  Otherwise you're just going to have to continue
-doing this.
+As I understand it, the requirement is because fast-gup walks without
+the page table spinlock, or mmap_sem held so it must READ_ONCE the
+*pXX.
 
-At some point, perhaps we can add some other warnings at W=1, like
-an EXPORT_SYMBOL of a function which doesn't have kernel-doc.
+It then checks that it is a valid page table pointer, then calls
+pXX_offset().
+
+The arch implementation of pXX_offset() derefs again the passed pXX
+pointer. So it defeats the READ_ONCE and the 2nd load could observe
+something that is no longer a page table pointer and crash.
+
+Passing it the address of the stack value is a way to force
+pXX_offset() to use the READ_ONCE result which has already been tested
+to be a page table pointer.
+
+Other page walking code that holds the mmap_sem tends to use
+pmd_trans_unstable() which solves this problem by injecting a
+barrier. The load hidden in pte_offset() after a pmd_trans_unstable()
+can't be re-ordered and will only see a page table entry under the
+mmap_sem.
+
+However, I think that logic would have been much clearer following the
+GUP model of READ_ONCE vs extra reads and a hidden barrier. At least
+it took me a long time to work it out :(
+
+I also think there are real bugs here where places are reading *pXX
+multiple times without locking the page table. One was found recently
+in the wild in the huge tlb code IIRC.
+
+The mm/pagewalk.c has these missing READ_ONCE bugs too.
+
+So.. To change away from the stack option I think we'd have to pass
+the READ_ONCE value to pXX_offset() as an extra argument instead of it
+derefing the pointer internally.
+
+Jason
