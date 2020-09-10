@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3660626530A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1A8265309
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgIJV17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:27:59 -0400
-Received: from condef-02.nifty.com ([202.248.20.67]:35240 "EHLO
-        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730976AbgIJOJr (ORCPT
+        id S1728281AbgIJV1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:27:52 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42952 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731065AbgIJOJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 10:09:47 -0400
-Received: from conuserg-10.nifty.com ([10.126.8.73])by condef-02.nifty.com with ESMTP id 08ADtFZO023217;
-        Thu, 10 Sep 2020 22:55:15 +0900
-Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 08ADpSJ0001308;
-        Thu, 10 Sep 2020 22:51:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 08ADpSJ0001308
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1599745893;
-        bh=K01RYjZ9wy1tuci78KttomtfIouE9FTDhkSr4QzxpNo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1OH9UBl3mJpDIo0SH3Q8bILjszIxHdnVNj6Za9phRQiubjlbRAFg0W4DpIhREkpfY
-         IzcvFpjVKKtz83ChLHqV5HavmKP3HuDNxXrlFawgFJVBCsn1jUQdfbiY4fON3vFkRB
-         n7JQj++2onXAhbaUjzwcrT9Z2g022EgyV76pJ12+JwE8YsDGuJqA7xC5eBJMvQfg0k
-         u8Tbx7HcDmKf8KxpAWs1rEIU9S8UorSqDOOGdCFBZAeQTG5ZdJUcbiJVUMDcYDHKy6
-         ttp/K1VP/fUSA8NSW2NRyi5xldWaoRUxztJ+067BgCmzvWoDpskFgfy0y3McjFqte4
-         gbl5M7iRalKfA==
-X-Nifty-SrcIP: [126.90.211.135]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] kbuild: remove cc-option test of -Werror=date-time
-Date:   Thu, 10 Sep 2020 22:51:20 +0900
-Message-Id: <20200910135120.3527468-4-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200910135120.3527468-1-masahiroy@kernel.org>
-References: <20200910135120.3527468-1-masahiroy@kernel.org>
+Received: by mail-ot1-f67.google.com with SMTP id g10so5429198otq.9;
+        Thu, 10 Sep 2020 07:06:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/JTzeYOL/MUZ0luIwiE6sB1J7IDRIRK13Ar1a9wfQGM=;
+        b=ADAZL5aU0reK9wzydvINildKyiP25tbMkIkKvuMN62OMTC/g7POyN7mSYie06k/wC5
+         p/BZyXjM3867TRaj0+S9KZ7jxk/dIUYuuq96frjGMfsDxfXmJZyNbBK5YsJWEO4DDmRt
+         0K1woiTvI2n7u/eJJkdQ454VAqGrO2h1Uo6QSQgpS39F2c/B4IuBjAh8A5e6ujg1EsZi
+         YOVKKwBdjwpCMo2Z9lkHbWYeoxSjWD+eHzp6Fs8imy7Dx+b/R2HRwRJn17FQ9qqzTBcP
+         OsqwD8E3rm3lxH4epclQ0BhwiN/oFyACYLMoEe0j/rYmK2TqCkt1BtRNk2H6CKM6yl2S
+         Y4FQ==
+X-Gm-Message-State: AOAM532kVCChnQDVlO/ueXXBlnKS3UcffeXkd/+q90FYPFP9bVd3S4fT
+        25SWhZvvZt+dT1a43PuHY1hHywBUIiNzCOm/4HoFU6W9
+X-Google-Smtp-Source: ABdhPJzA8ekVNoPsDkNHeejFHRZriL9kziI6Qhs0VkHhQmXcp1PivgYbXh7+aNN+IChJD8Ai6bvaxJtyBepAoJpLn5A=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr4110588otb.250.1599746170203;
+ Thu, 10 Sep 2020 06:56:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200907144509.8861-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200907144509.8861-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200907144509.8861-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 10 Sep 2020 15:55:59 +0200
+Message-ID: <CAMuHMdUyRagPz-Fv+Z-30BbaxrZJkPzV=PSAUe4_GhGUozeYKg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: r8a7742: Add VIN DT nodes
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
+On Mon, Sep 7, 2020 at 4:46 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add VIN[0123] instances found in the r8a7742 SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Here is the godbolt:
-https://godbolt.org/z/xvjcMa
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.10.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Gr{oetje,eeting}s,
 
- Makefile                          | 2 +-
- arch/arm64/kernel/vdso32/Makefile | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+                        Geert
 
-diff --git a/Makefile b/Makefile
-index 5102c89d3167..1d7c58684fda 100644
---- a/Makefile
-+++ b/Makefile
-@@ -940,7 +940,7 @@ KBUILD_CFLAGS  += -fno-stack-check
- KBUILD_CFLAGS   += $(call cc-option,-fconserve-stack)
- 
- # Prohibit date/time macros, which would make the build non-deterministic
--KBUILD_CFLAGS   += $(call cc-option,-Werror=date-time)
-+KBUILD_CFLAGS   += -Werror=date-time
- 
- # enforce correct pointer usage
- KBUILD_CFLAGS   += $(call cc-option,-Werror=incompatible-pointer-types)
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index dfffd55175a3..1feb4f8e556e 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -92,7 +92,7 @@ VDSO_CFLAGS += $(call cc32-option,-Wdeclaration-after-statement,)
- VDSO_CFLAGS += $(call cc32-option,-Wno-pointer-sign)
- VDSO_CFLAGS += -fno-strict-overflow
- VDSO_CFLAGS += $(call cc32-option,-Werror=strict-prototypes)
--VDSO_CFLAGS += $(call cc32-option,-Werror=date-time)
-+VDSO_CFLAGS += -Werror=date-time
- VDSO_CFLAGS += $(call cc32-option,-Werror=incompatible-pointer-types)
- 
- # The 32-bit compiler does not provide 128-bit integers, which are used in
--- 
-2.25.1
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
