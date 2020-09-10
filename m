@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98332640C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EF32640CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730502AbgIJI6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:58:39 -0400
-Received: from mail-eopbgr770043.outbound.protection.outlook.com ([40.107.77.43]:39883
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730437AbgIJI63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:58:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gJlo2kUJDPlzOsXSA1pk0pRcOHEYHOpiDgFoyfeHPHZYHTXLnhJc9LeANBAP8jbCo/07247/ojpFePP7/pdjTnlL2eOQlroIAvZy/16Kc9SpUgjSiGipLbwIkesHLYN0umEq9ciVBvMeH/TGIJIt03HWKIbmtupvlx6TTQhqbMK9fBZbLMj5outmu8odVXrdbhtqK6cnuVUvjlcY1dmhB0xfjYBbScDdoEswMkiaDUsi9R48hijQ/ne82Kj09IU5waF1yxZbzyNjDTyAPjdGSOAkZRERhBC9GOfnBjCNw7BRitf097HHtdVIqEIU3/nQKCGCQk6KiVIoAvU/nRM/Ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vW4+qfcQLNPWhArgkNch29pKkZBLs8RnjSOq48xgozQ=;
- b=iauW6/6booB5YzLkFIpv2uw9Tt8ZbGpRSOm/RZ+Af4OM//su2rck08PszPvpxP5rvuEHjVa3qdTDz6FIn4FSyDiL8myQ2R569AFRW0/Wcze3+3Q9FO6ukadLdlZVvWXa11AAv7zliwR62k5J8BWpYQyfYNPMB/mXq6eU10WCffJhliNq0/C3ciLuXN3S4MAmksMoiwVNYa8xDrqlj5zwzOnK0HyzQsBtP41b6JfQeOmZORi/jRE4pIv7XXxF9HM4G+LqqIUBlY69c1F61gHxdjy/2IKAYL/mGvu88MEiX6L6lUlW/YiJVDDSR7MxTamnZofwUTX/stVjDvUsjdt/gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vW4+qfcQLNPWhArgkNch29pKkZBLs8RnjSOq48xgozQ=;
- b=ngTV6DesFiK06YqDcVy9B4Qo71Vya4miPHdY/Fbf9BDIRHuBquwGE6dyIN/xoyWjPBVWveVulQFTQHsWQRs4jRkWFpYl+wNnCRQqfqErbSPc5XaIfXk/CIig/QtqFqS/cvBnCuvlG6BEBIwZyy5pej52F3X6LiuoOukP8/tYF5E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4125.namprd12.prod.outlook.com (2603:10b6:208:1d9::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
- 2020 08:58:27 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::f8f7:7403:1c92:3a60%6]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
- 08:58:27 +0000
-Subject: Re: [PATCH] drm/mm: prevent a potential null-pointer dereference
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        nirmoy.das@amd.com
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200910023858.43759-1-jingxiangfeng@huawei.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <f6c93d83-b47d-a004-8da9-92305024c4b7@amd.com>
-Date:   Thu, 10 Sep 2020 10:58:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200910023858.43759-1-jingxiangfeng@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR10CA0062.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::15) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S1730270AbgIJI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:59:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33999 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728626AbgIJI7g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 04:59:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599728375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2a/EJ89FfsuwaDD7HE+E0f+GMRTiKlf5IsOp1OnZBa4=;
+        b=YNnndJOIOrHtwDXIs0XPVDBcZH4nx76P/5G4jTUiTiLLGvB3E6G5T73nDBDmrBiqRrjbOR
+        THyAMyiyDg8COenXJziDiZn/c0EibpdPpn0xVlsLzMCfChO1FH34/2yPwAZUggP99qER6s
+        7QngAxqIms/aQCSADz1BwjswWosWYcA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-SlM1TaA1PcuzPgnmpyZtBw-1; Thu, 10 Sep 2020 04:59:31 -0400
+X-MC-Unique: SlM1TaA1PcuzPgnmpyZtBw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 482021882FA8;
+        Thu, 10 Sep 2020 08:59:30 +0000 (UTC)
+Received: from krava (unknown [10.40.192.38])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 71A8483562;
+        Thu, 10 Sep 2020 08:59:27 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 10:59:26 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/4] perf evsel: Add evsel__clone() function
+Message-ID: <20200910085926.GC1627030@krava>
+References: <20200908044228.61197-1-namhyung@kernel.org>
+ <20200908044228.61197-2-namhyung@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM0PR10CA0062.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 08:58:25 +0000
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7653d191-cd8c-417f-1769-08d85567ae91
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4125:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4125A7B50FDC2A84E1DD12F583270@MN2PR12MB4125.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:785;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mfKL9ZOhbnVeWRH9OwgUSulU5dG3XiejaXY/ObrZWWtkx5TfJ685H2DUp9viAJqK4ZtALin9+NCwJUNn3HBbrzs5ch/CdxKS6CrdqRZlfXKiwofCKcbNsRUhD/yhWm2bB6/kQJKWj+RvQnz50ZhyY9rk63483uqv87jNNMhpTYuDJazpGQkSBzmeRk+XjFbLXso1ajb/D9YF3T96UBHjk5fyjXe11QuYEBEIHdtBLU5Tng+RCDFeIgwjmpGGNLSHws1HgLrgDhQttxpM7yVODrc1rwad2n5qG3ybNvPnd2Q5unan4AKyvQha6ND4IkCpUSN3KsGSjL1x3mZ6hZEUEC17VxSk2gX53QjZqWpS1pJyk0JqCSDYsK2UohLsj6xC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(366004)(346002)(136003)(396003)(6636002)(5660300002)(16526019)(2616005)(4326008)(31696002)(36756003)(8676002)(8936002)(52116002)(66946007)(66556008)(66476007)(86362001)(478600001)(316002)(6666004)(186003)(2906002)(31686004)(6486002)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: P2En7LclLCWjFYX9JX9IqEGyDui7PCi/aePqyXFcJg4rl7dWX0GMCoeYArpvsdGHFwPmbyCbOhZO8lUjvoM32g1EDIORz8bvFySxBiV32JTjFuObUc9xZKx59peFFnr3xthZmym25VNqvAA33ZKFMvXyp3aIfnSjWl6rtsuWL8UvpOX+HZPlAVOBbBklGZRIOow7iwpupJQykiFuT+vt2imMlUOEfD5ErDuJuCmeidPOKUPdXjq/DTvGlXBS5IPpkZgr6zO1Xid7xpSFx656z4mK7HtiT9mQNIcsf7SuTuZZULA+1FK3TvZxUVlg1EMxaM0s/+NGUZkG3vussH8ksgbf/9WzvcO8vKKPf50lRNQ7BLAAsBBqt6ayb84TVBvJ5H9wB+ZAwnse+1NhSVDp2BAa/e/VjrSA10u/iasDGu461Zg+uW/SqodY88uQVuNjzdr4gWAPXYCysMqnixeDvedjuts2IMAe+dKUhVapsmAdoLRsg6KeCjnGeVIuxXd08VmFpPRlz6KP+mu3Aid7547Z2XCS9lIWfNMeJEPu0GlzVFusryEfC67x7ml1RH6toxEKbAqvJSs/sexVUbtuylISmoYNOrZ+Fio4VQxeYihq7NyyVrmJLdouUQUcER3/CvnYlQT8Ybm/l0kcJ/+w/K6oQOrINhVv+Kjab5mEQ/wUupKbhdpiIsr4J+LrMsT1VcpUS7EqucpO3NfQWDyRkQ==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7653d191-cd8c-417f-1769-08d85567ae91
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 08:58:27.4510
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q5u58wATuqdeheLkf2QQnTcwcMxjTdXmXRrtEG8jCjUD7Mu7juk3aDTet1tQRag+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4125
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908044228.61197-2-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 10.09.20 um 04:38 schrieb Jing Xiangfeng:
-> The macro 'DECLARE_NEXT_HOLE_ADDR' may hit a potential null-pointer
-> dereference. So use 'entry' after checking it.
-
-I don't see a potential null-pointer dereference here.
-
-Where should that be?
-
-Christian.
-
->
-> Fixes: 5fad79fd66ff ("drm/mm: cleanup and improve next_hole_*_addr()")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+On Tue, Sep 08, 2020 at 01:42:25PM +0900, Namhyung Kim wrote:
+> The evsel__clone() is to create an exactly same evsel from same
+> attributes.  Note that metric events will be handled by later patch.
+> 
+> It will be used by perf stat to generate separate events for each
+> cgroup.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->   drivers/gpu/drm/drm_mm.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_mm.c b/drivers/gpu/drm/drm_mm.c
-> index a4a04d246135..6fcf70f71962 100644
-> --- a/drivers/gpu/drm/drm_mm.c
-> +++ b/drivers/gpu/drm/drm_mm.c
-> @@ -392,11 +392,14 @@ first_hole(struct drm_mm *mm,
->   #define DECLARE_NEXT_HOLE_ADDR(name, first, last)			\
->   static struct drm_mm_node *name(struct drm_mm_node *entry, u64 size)	\
->   {									\
-> -	struct rb_node *parent, *node = &entry->rb_hole_addr;		\
-> +	struct rb_node *parent, *node;					\
->   									\
-> -	if (!entry || RB_EMPTY_NODE(node))				\
-> +	if (!entry)							\
->   		return NULL;						\
->   									\
-> +	node = &entry->rb_hole_addr;					\
-> +	if (RB_EMPTY_NODE(node))					\
-> +		return NULL;						\
->   	if (usable_hole_addr(node->first, size)) {			\
->   		node = node->first;					\
->   		while (usable_hole_addr(node->last, size))		\
+>  tools/perf/util/evsel.c | 57 +++++++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/evsel.h |  1 +
+>  2 files changed, 58 insertions(+)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index fd865002cbbd..4f50f9499973 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -331,6 +331,63 @@ struct evsel *evsel__new_cycles(bool precise)
+>  	goto out;
+>  }
+>  
+> +/**
+> + * evsel__clone - create a new evsel copied from @orig
+> + * @orig: original evsel
+> + *
+> + * The assumption is that @orig is not configured nor opened yet.
+> + * So we only care about the attributes that can be set while it's parsed.
+> + */
+> +struct evsel *evsel__clone(struct evsel *orig)
+> +{
+> +	struct evsel *evsel;
+> +	struct evsel_config_term *pos, *tmp;
+> +
+> +	BUG_ON(orig->core.fd);
+> +
+> +	evsel = evsel__new(&orig->core.attr);
+> +	if (evsel == NULL)
+> +		return NULL;
+> +
+> +	*evsel = *orig;
+
+this seems wild ;-) I saw that assumption above,
+but I wonder we could add some check or zero/init
+the rest of the fields fields
+
+jirka
 
