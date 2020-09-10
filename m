@@ -2,149 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFB8263A8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0030263A99
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730662AbgIJCdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:33:21 -0400
-Received: from mail-eopbgr80075.outbound.protection.outlook.com ([40.107.8.75]:29869
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730634AbgIJCax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:30:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q/pXSkcIM6rWD+kcch0H70nPFz3Dk7uB4myO99Py/momFS01tqmXPAVVOA7izdakNuAGA9axIjH5MAi9CinbfhapCP+XdSe/RKoh9VV1PxmcEA+EPuzuDxkIq1uGb1OS1AJUn6TjRduQBO3mjuUUP0Ij7afQqlNACf1uptZoPI9Fgs6j6NeCiyfJoLCG44FZU8ps2LRob4RtkQmyh9LC4y5EcgiRC0KFsK2jP3Ftc9y/tSLsKmD8k/+7eQsh+x/YL6yn2xFMps4PY3FmXZCEHjkI7Jt9lMM/9YHYFlkQ90nU/AVQZvEcrmC6vUFihIbR7vHlpzFda0oeSasXmZNZwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ragtvvEZhMhTHcnUyly5YrqrUbVOsN5Ae3DkGYSbKfg=;
- b=Rkn9b8UKZIbaUqB5+ExCaxRSgtfom9iZTiVt30BIpLu1SPgX4Bg4mAwn8/FfKOvNhWbw5852m+i5VZokCeEavMDi4CzPTl0D2sYvhbQRs1h5i3IbAZKcnioEGwb6vMFBT7EEG5U2cGS26I5Etna/dL6L4pvwKPQC19npsX+hq2HkhtBbhc3k/Nl5QEIO7qrsMwmxEnlEs/G955mUJKAq7YuMqPsHzG/gYrYAvuHhgeTbF/NJfkmJJCrY04lLzP1eEwIQV3lbb/VsnTlOs6/Z5JI/U0Px1gpj5eiQh2X9H/zAFvpi22R8/Qk/iIe1hXexHmcoIgI5q3c7GOSolsgX7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ragtvvEZhMhTHcnUyly5YrqrUbVOsN5Ae3DkGYSbKfg=;
- b=UarEVr9noXEqyXeHF8LE/6DdNVXsZ6xFc7ezfRshU7W/yMXtDpcYeRPSMKuaanQ3T+C6GvYB5YXbmqwQcoX5vBLBAHKgdvplED1RwJYM1CTXW9jZ7RspZb6OjzaytSgn3I9dBx20n2CGsZl9+OLBdxkGsiMpoBDzyOSyE0dzX2A=
-Received: from AM0PR04MB4772.eurprd04.prod.outlook.com (2603:10a6:208:c2::17)
- by AM0PR04MB3954.eurprd04.prod.outlook.com (2603:10a6:208:63::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
- 2020 02:30:49 +0000
-Received: from AM0PR04MB4772.eurprd04.prod.outlook.com
- ([fe80::b00e:440a:6ac6:b3c4]) by AM0PR04MB4772.eurprd04.prod.outlook.com
- ([fe80::b00e:440a:6ac6:b3c4%3]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
- 02:30:49 +0000
-From:   Jiafei Pan <jiafei.pan@nxp.com>
-To:     Jiafei Pan <jiafei.pan@nxp.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "romain.perier@gmail.com" <romain.perier@gmail.com>,
-        "will@kernel.org" <will@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Jiafei Pan <jiafei.pan@nxp.com>
-Subject: RE: [PATCH v2] softirq: add irq off checking for
- __raise_softirq_irqoff
-Thread-Topic: [PATCH v2] softirq: add irq off checking for
- __raise_softirq_irqoff
-Thread-Index: AQHWcfgudE7i05P+bEWkZs6dF3c1EqlhT3yg
-Date:   Thu, 10 Sep 2020 02:30:49 +0000
-Message-ID: <AM0PR04MB4772CDBA2B752409916D69AE8A270@AM0PR04MB4772.eurprd04.prod.outlook.com>
-References: <20200814045522.45719-1-Jiafei.Pan@nxp.com>
-In-Reply-To: <20200814045522.45719-1-Jiafei.Pan@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8156b475-48ea-4903-77cc-08d855318807
-x-ms-traffictypediagnostic: AM0PR04MB3954:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR04MB3954AB330521FEC90F4C18D08A270@AM0PR04MB3954.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1417;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l9V0OsSU9rDP0Tvq7O+yz7EkKkvGGuzgQs+pdqxtKZBBSQdzZEaVbe/4xLIALkX9NZcS7ePK0AFwsr7JIdMG1l8z1lxmxXWHQ9J9/0ifcN9/sMyzXcE7y0o98SZQGz1drjmrgnWjzOH7n0F55Z4OYal78nSuHtpnfNn+9WIwFBO4RuZdb6xo3GxEgrCCkwfQnSLLyK2zM0tzZqxFByTONGVR8fwe7qkL1Ock26qKxckXP9oRqy8vfOPk+KWZvuyDKayUJUGsgEpPUFP4iSG8Sc3DlbKcAkU9fY/ujA/5BFLXMpkcadp2FtSzkY1GQHCkbPaM9tUzFULUALNmRvF2vw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4772.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(66556008)(66446008)(76116006)(66946007)(66476007)(64756008)(8936002)(33656002)(44832011)(5660300002)(71200400001)(83380400001)(316002)(52536014)(7696005)(53546011)(26005)(186003)(2906002)(9686003)(55016002)(8676002)(86362001)(4326008)(6506007)(54906003)(478600001)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 6fjLStTioXN3AYXa8qGYWNy3vicQEP2G7YNoAtwMKlcmrvOsSNsWjD/AuqHA4Jd7KXZb1XeYXtPJJQEX5H4XWmU99W/jnu1QSSsUrYe5f6msPFQPKZsIoilepl3fS7/N6efs48dxheVDcaGbxj2e08a/HskXIrGrlD02XS3TxebZY96R//uq8CQ0YjskOGHsMiZz0aSgOZYDtJi45UVBoMpEVbSpf+o4BWahsPP1gXylXdDQN/3ZBZt0JQ3qrgvLKd3EyAyeCxRP0iivYRyyXZj50tcnq2qbmA2dKLuraQEfLchJHq9VACdr512ZD7dAIcn0OPgVA/QzHqM8Y8bqxzA7P9CmI9aXhCVmdJbalhq1EPbV3u6rnKPk0xNPgZyzfTVykHj1gARII6m+RSqlRC41zNuTPFPcRpE8dCoP8mWwYu23fNk7NUBoR2QM1HlqRKkxjeME4kYkixRx91VNmD/1f2IDYoPC2qZTeoZ6jDuVBkbO+Mq9mlj7Vis5D9xZqVJJ+Il0q8BInO7V05+9sO22enFk7MY/90KBEAvbtGs97EXQrqcDPq7WfAxZwadDy4Ia2N0UXcf/qyLV5p/5ya+1Md3ke99q2p5C/9b1XX+EZx7PnSYceTk0q6RsIGWhNAlaTLY1vZ3WIp4m8aIwTg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730853AbgIJCfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:35:34 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38494 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730449AbgIJCdI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 22:33:08 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A2SWH3127504;
+        Thu, 10 Sep 2020 02:32:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=an7L+UH4c4nfLl3pql5CjoOv/Ddb1mwYqyEWS3Cvcyk=;
+ b=fCx4BGZUczIglj7jc1RleSkP1Uk1MKnS7WBWvEvM3C+PIEG5YjEErUSGNugY+u8VevXV
+ vWf0b0eEZmtGm/mvU7cIQrUKsDxLaqD0g85JWx5p0fDIXD5X/7B291fW6XjHZrRAMt5u
+ e78t9dE9iVxYXgwv6TPFSHY/yaRLzpknyTYYi5T1N6aoV7j5s5WEc0Qkgwa8zivfIbNf
+ AG/MhvSZPWhnlyDQNkljeSrtjs0qt+MLqhq3sYiWyKxO6gu25PjAU1jt/Sh4sA6iXeDp
+ kurY2NckGubMTnEJwF1hvrn5UEpbMwxrWkZQlH3dPEU6SKWD3t1stdXioGFBZ7opw5wO SA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33c2mm5868-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 10 Sep 2020 02:32:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08A2UT2u140713;
+        Thu, 10 Sep 2020 02:32:50 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 33cmkyyw9m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Sep 2020 02:32:50 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08A2WlZF013885;
+        Thu, 10 Sep 2020 02:32:47 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Sep 2020 19:32:47 -0700
+To:     Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Abort tasks before clear them from
+ doorbell
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq14ko62wn5.fsf@ca-mkp.ca.oracle.com>
+References: <1599099873-32579-1-git-send-email-cang@codeaurora.org>
+        <1599099873-32579-2-git-send-email-cang@codeaurora.org>
+        <1599627906.10803.65.camel@linux.ibm.com>
+Date:   Wed, 09 Sep 2020 22:32:43 -0400
+In-Reply-To: <1599627906.10803.65.camel@linux.ibm.com> (James Bottomley's
+        message of "Tue, 08 Sep 2020 22:05:06 -0700")
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB4772.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8156b475-48ea-4903-77cc-08d855318807
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Sep 2020 02:30:49.4955
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fm8M4VtfYhkWY2r5SpqbOLuF6PpkK4lxc9jz0A1/0KaRhBFIFOtPQjInVLrxpfd49dlQqgzVmp2Y7p86rJChww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB3954
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=1
+ spamscore=0 mlxlogscore=964 adultscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009100022
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9739 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=952
+ malwarescore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009100022
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@Thomas Gleixner, any more comments for v2 patch? Can we merge it? Thanks.
 
-Best Regards,
-Jiafei.
+Can and Stanley,
 
-> -----Original Message-----
-> From: Jiafei Pan <Jiafei.Pan@nxp.com>
-> Sent: Friday, August 14, 2020 12:55 PM
-> To: peterz@infradead.org; mingo@kernel.org; tglx@linutronix.de;
-> rostedt@goodmis.org; romain.perier@gmail.com; will@kernel.org
-> Cc: linux-kernel@vger.kernel.org; linux-rt-users@vger.kernel.org; Jiafei =
-Pan
-> <jiafei.pan@nxp.com>; Leo Li <leoyang.li@nxp.com>; Vladimir Oltean
-> <vladimir.oltean@nxp.com>; Jiafei Pan <jiafei.pan@nxp.com>
-> Subject: [PATCH v2] softirq: add irq off checking for __raise_softirq_irq=
-off
->=20
-> __raise_softirq_irqoff() will update per-CPU mask of pending softirqs,
-> it need to be called in irq disabled context in order to keep it atomic
-> operation, otherwise it will be interrupted by hardware interrupt,
-> and per-CPU softirqs pending mask will be corrupted, the result is
-> there will be unexpected issue, for example hrtimer soft irq will
-> be losed and soft hrtimer will never be expire and handled.
->=20
-> Enable CONFIG_PROVE_LOCKING to use lockdep_assert_irqs_disabled() to
-> check hardirqs and softirqs status, and provide warning in irqs enabled
-> context.
->=20
-> Signed-off-by: Jiafei Pan <Jiafei.Pan@nxp.com>
-> ---
-> Changes in v2:
-> - use lockdep_assert_irqs_disabled()
-> - removed extra comments
-> - changed commit message
->=20
->  kernel/softirq.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index bf88d7f62433..09229ad82209 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -481,6 +481,7 @@ void raise_softirq(unsigned int nr)
->=20
->  void __raise_softirq_irqoff(unsigned int nr)
->  {
-> +	lockdep_assert_irqs_disabled();
->  	trace_softirq_raise(nr);
->  	or_softirq_pending(1UL << nr);
->  }
-> --
-> 2.17.1
+> I can't reconcile this hunk:
 
+Please provide a resolution for these conflicting commits in fixes and
+queue:
+
+307348f6ab14 scsi: ufs: Abort tasks before clearing them from doorbell
+
+b10178ee7fa8 scsi: ufs: Clean up completed request without interrupt
+notification
+
+Thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
