@@ -2,99 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D7B264662
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1A5264671
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 14:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730785AbgIJMxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 08:53:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42112 "EHLO mx2.suse.de"
+        id S1730901AbgIJM6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 08:58:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730740AbgIJMsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:48:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2BC9FACF2;
-        Thu, 10 Sep 2020 12:49:04 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 14:48:47 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Laurent Dufour <ldufour@linux.ibm.com>, akpm@linux-foundation.org,
-        David Hildenbrand <david@redhat.com>, rafael@kernel.org,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200910124847.GH28354@dhcp22.suse.cz>
-References: <20200909090953.GE7348@dhcp22.suse.cz>
- <4cdb54be-1a92-4ba4-6fee-3b415f3468a9@linux.ibm.com>
- <20200909105914.GF7348@dhcp22.suse.cz>
- <74a62b00-235e-7deb-2814-f3b240fea25e@linux.ibm.com>
- <20200910072331.GB28354@dhcp22.suse.cz>
- <31cfdf35-618f-6f56-ef16-0d999682ad02@linux.ibm.com>
- <20200910111246.GE28354@dhcp22.suse.cz>
- <bd6f2d09-f4e2-0a63-3511-e0f9bf283fe3@linux.ibm.com>
- <20200910120343.GA6635@linux>
- <20200910124755.GG28354@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910124755.GG28354@dhcp22.suse.cz>
+        id S1730694AbgIJMwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:52:07 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DB0B208FE;
+        Thu, 10 Sep 2020 12:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599742327;
+        bh=UD5TaEy8wxsIp8mgrsHiGFMm82kAp/qRHT62V05wZ/c=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=pigTNppn4yTAbkkFsKlwZKc5rp/cZDxXMIjQKcrl38XBMQDNgsoeyJbc+xT2FrbuE
+         5hwVtobENa27f1/CUF47R+egESEI/eWR8qsrXlzO8BJIfLORRvXcBxqvHpmEZbL/yi
+         cFr835WK9hubS7YEGVv8FrkwYDn/yzJ6a4jERk6g=
+Date:   Thu, 10 Sep 2020 13:51:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     alsa-devel@alsa-project.org, plai@codeaurora.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com,
+        bgoswami@codeaurora.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20200910101732.23484-1-srinivas.kandagatla@linaro.org>
+References: <20200910101732.23484-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/8] ASoC: q6dsp: Add support to Codec Ports.
+Message-Id: <159974228224.39114.1744393464890136484.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10-09-20 14:47:56, Michal Hocko wrote:
-> On Thu 10-09-20 14:03:48, Oscar Salvador wrote:
-> > On Thu, Sep 10, 2020 at 01:35:32PM +0200, Laurent Dufour wrote:
-> >  
-> > > That points has been raised by David, quoting him here:
-> > > 
-> > > > IIRC, ACPI can hotadd memory while SCHEDULING, this patch would break that.
-> > > > 
-> > > > Ccing Oscar, I think he mentioned recently that this is the case with ACPI.
-> > > 
-> > > Oscar told that he need to investigate further on that.
-> > 
-> > I think my reply got lost.
-> > 
-> > We can see acpi hotplugs during SYSTEM_SCHEDULING:
-> > 
-> > $QEMU -enable-kvm -machine pc -smp 4,sockets=4,cores=1,threads=1 -cpu host -monitor pty \
-> >         -m size=$MEM,slots=255,maxmem=4294967296k  \
-> >         -numa node,nodeid=0,cpus=0-3,mem=512 -numa node,nodeid=1,mem=512 \
-> >         -object memory-backend-ram,id=memdimm0,size=134217728 -device pc-dimm,node=0,memdev=memdimm0,id=dimm0,slot=0 \
-> >         -object memory-backend-ram,id=memdimm1,size=134217728 -device pc-dimm,node=0,memdev=memdimm1,id=dimm1,slot=1 \
-> >         -object memory-backend-ram,id=memdimm2,size=134217728 -device pc-dimm,node=0,memdev=memdimm2,id=dimm2,slot=2 \
-> >         -object memory-backend-ram,id=memdimm3,size=134217728 -device pc-dimm,node=0,memdev=memdimm3,id=dimm3,slot=3 \
-> >         -object memory-backend-ram,id=memdimm4,size=134217728 -device pc-dimm,node=1,memdev=memdimm4,id=dimm4,slot=4 \
-> >         -object memory-backend-ram,id=memdimm5,size=134217728 -device pc-dimm,node=1,memdev=memdimm5,id=dimm5,slot=5 \
-> >         -object memory-backend-ram,id=memdimm6,size=134217728 -device pc-dimm,node=1,memdev=memdimm6,id=dimm6,slot=6 \
-> > 
-> > kernel: [    0.753643] __add_memory: nid: 0 start: 0100000000 - 0108000000 (size: 134217728)
-> > kernel: [    0.756950] register_mem_sect_under_node: system_state= 1
-> > 
-> > kernel: [    0.760811]  register_mem_sect_under_node+0x4f/0x230
-> > kernel: [    0.760811]  walk_memory_blocks+0x80/0xc0
-> > kernel: [    0.760811]  link_mem_sections+0x32/0x40
-> > kernel: [    0.760811]  add_memory_resource+0x148/0x250
-> > kernel: [    0.760811]  __add_memory+0x5b/0x90
-> > kernel: [    0.760811]  acpi_memory_device_add+0x130/0x300
-> > kernel: [    0.760811]  acpi_bus_attach+0x13c/0x1c0
-> > kernel: [    0.760811]  acpi_bus_attach+0x60/0x1c0
-> > kernel: [    0.760811]  acpi_bus_scan+0x33/0x70
-> > kernel: [    0.760811]  acpi_scan_init+0xea/0x21b
-> > kernel: [    0.760811]  acpi_init+0x2f1/0x33c
-> > kernel: [    0.760811]  do_one_initcall+0x46/0x1f4
+On Thu, 10 Sep 2020 11:17:24 +0100, Srinivas Kandagatla wrote:
+> LPASS IP on SoCs like SM8250 has Digital Codec part integrated into it.
+> This ports are exposed in Q6DSP as Codec ports. This patchset adds
+> support to those q6afe ports along with q6routing and q6afe-dai.
 > 
-> Is there any actual usecase for a configuration like this? What is the
-> point to statically define additional memory like this when the same can
-> be achieved on the same command line?
+> This patchset has been tested along with other patches on
+> Qualcomm Robotics RB5 Platform with Soundwire and WSA8815 Codec.
+> 
+> [...]
 
-Forgot to ask one more thing. Who is going to online that memory when
-userspace is not running yet?
--- 
-Michal Hocko
-SUSE Labs
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/8] ASoC: q6dsp: q6afe: add support to Codec DMA ports
+      commit: 150b2e86c54ad09c26e60f32925aeaf1fca1a5d3
+[2/8] ASoC: q6dsp: q6routing: add support to Codec DMA ports
+      commit: 825492cb518bcf654e9205b3c723585191314d1a
+[3/8] ASoC: q6dsp: q6afe: prepare afe_apr_send_pkt to take response opcode
+      commit: 342a4f8ca12b1cac812151b05f8a837eebc6885c
+[4/8] ASoC: q6dsp: q6afe: add global q6afe waitqueue
+      commit: 181202d021f51d4c0442e71adc34e9629a35a6d8
+[5/8] ASoC: q6dsp: q6afe: add lpass hw voting support
+      commit: 55e07531d922540c656c7fc2e21d76e1b751f279
+[6/8] ASoC: q6dsp: q6afe: update q6afe_set_param to support global clocks
+      commit: 84ab3b9f19f6ff0bb5df6c6deea75ab4c1d2aff8
+[7/8] ASoC: q6dsp: q6afe: add codec lpass clocks
+      commit: 0c3e35fc1ebe22a5254ba3bff2599a2c49b00abe
+[8/8] ASoC: q6dsp: q6afe-dai: add support to Codec DMA ports
+      commit: 1fdbcfa9fdee6f9cc00129f0f5ed0ff29cfef646
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
