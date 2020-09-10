@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C262639D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBF42639F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730508AbgIJCHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730157AbgIJByb (ORCPT
+        id S1730466AbgIJCP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:15:58 -0400
+Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186]:44120
+        "EHLO a27-186.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728970AbgIJCM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 21:54:31 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49205C06138A
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 16:54:09 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id bh1so14307plb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 16:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gTez5zBL4O/mFCX1yAYIY6uoJGixvvecrhH5yeefCRU=;
-        b=SxkcIkqSWelb6AuUlXuHUzy1a16hhmWXJWuq8Eo/23y2lOyPcWQDUSskXt1hEJUyn6
-         u1wOiYNDBdX/GAOiEZ/EkYArPHBOHNGFUNcC9AVgOMGKko3iXNgtwmArngx7TwMORv1T
-         Q14fEfQF9K7z06eGlkuJ30cEupLsJdCrymIDQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gTez5zBL4O/mFCX1yAYIY6uoJGixvvecrhH5yeefCRU=;
-        b=IDJ2x1Job0MHkpPBTWegM09jMY6Pr/N6fu0MIQ2epwANuhrkaTu1qew8gLEM3N/4z0
-         3n2efGTmxrW3tyr9Zzw8JTaAwX4BlmJ1eM/gEvYiZ1bx3G+AS2WTiqbOiQMjN806ov8e
-         suAu/kB4boqhdCW7/FMiA3vaR5b2lqy0afaXIDkZ1Xb+ubSeUoX+m+EtyD3lLiZAoss+
-         TvKSUug2bqC4EhDuEHcjN5UZ/KzTl3MZNyuyzytzDKx3XOqeToUYS8T3D95+16CtnUjc
-         QigKDhP31DyAQZS/BEVFaN2drm5BPSLWUraJo1OIku7SYh3Gt0TOQ65wcm3URKVSGD26
-         P+JA==
-X-Gm-Message-State: AOAM532/Dahn922YUCgi8yxMGQW/6zki5wIW7Yk80S4h5pBb82w9TEhU
-        FelZGnejf67qrMNB/mIfzswhOQ==
-X-Google-Smtp-Source: ABdhPJypCzWo/RzU1A0vkyKGMWGcM+gWL4C+xJq9bpuP3YaGcMPrw6MsySxwiLzgR4TsTQNBxd3ARg==
-X-Received: by 2002:a17:90a:4ec4:: with SMTP id v4mr2793960pjl.62.1599695646992;
-        Wed, 09 Sep 2020 16:54:06 -0700 (PDT)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
-        by smtp.gmail.com with ESMTPSA id h14sm3817937pfe.67.2020.09.09.16.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Sep 2020 16:54:06 -0700 (PDT)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     marcel@holtmann.org, linux-bluetooth@vger.kernel.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH] Bluetooth: Re-order clearing suspend tasks
-Date:   Wed,  9 Sep 2020 16:53:59 -0700
-Message-Id: <20200909165317.1.Ie55bb8dde9847e8005f24402f3f2d66ea09cd7b2@changeid>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 9 Sep 2020 22:12:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599696158;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References;
+        bh=k0CVrHNZHjKDxCYHpx5Zfcww4H7NJod+HjFj1v8y6r8=;
+        b=OPo6HIRRoh+itG87IiC0xOtfzjIfYwaDz5cUI5+ORDXexmX+4WkcMOW+C1jRdP5/
+        dvbaqsNaMfff0lMTZOkalczdvBO5coX+79NyzjqpHzXUj1ijH8myOM/m5iuwdBa5M2G
+        xrq9MWVsfR5Doa1sJVYjouJM6X9g1zT3HNb1j74Q=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599696158;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:Feedback-ID;
+        bh=k0CVrHNZHjKDxCYHpx5Zfcww4H7NJod+HjFj1v8y6r8=;
+        b=LThhPK0i3L1gsbZJ1rGSfYvhkH1wz8uhapBdXIUZv7FAXjloJTrahEh405vksW1I
+        5OV2DdbMHR+M7MV69n8vu+V5gUVYf721iZasYaHOxKxfQvrZFPrkxtKiFnQPeF81Byg
+        xtClDm4wbxKKw0Hon6kn0/H60zmHqYRO4okKeHZE=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 98448C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org,
+        linux-doc@vger.kernel.org, Gurbir Arora <gurbaror@codeaurora.org>
+Subject: [PATCH v3 1/3] remoteproc: core: Add ops to enable custom coredump functionality
+Date:   Thu, 10 Sep 2020 00:02:38 +0000
+Message-ID: <0101017475523e2d-7bba9c78-bfd2-4c08-854a-cac8f3cc1cf3-000000@us-west-2.amazonses.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1599696147-30585-1-git-send-email-sidgup@codeaurora.org>
+References: <1599696147-30585-1-git-send-email-sidgup@codeaurora.org>
+X-SES-Outgoing: 2020.09.10-54.240.27.186
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unregister_pm_notifier is a blocking call so suspend tasks should be
-cleared beforehand. Otherwise, the notifier will wait for completion
-before returning (and we encounter a 2s timeout on resume).
+Each remoteproc might have different requirements for coredumps and might
+want to choose the type of dumps it wants to collect. This change allows
+remoteproc drivers to specify their own custom dump function to be executed
+in place of rproc_coredump. If the coredump op is not specified by the
+remoteproc driver it will be set to rproc_coredump by default.The
+priv_cleanup op cleans up the private resources used by the remoteproc.
 
-Fixes: 0e9952804ec9c8 (Bluetooth: Clear suspend tasks on unregister)
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Signed-off-by: Gurbir Arora <gurbaror@codeaurora.org>
+Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
 ---
-Should have caught that unregister_pm_notifier was blocking last time
-but when testing the earlier patch, I got unlucky and saw that the error
-message was never hit (the suspend timeout).
+ drivers/remoteproc/remoteproc_core.c | 6 +++++-
+ include/linux/remoteproc.h           | 4 ++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-When re-testing this patch on the same device, I was able to reproduce
-the problem on an older build with the 0e9952804ec9c8 but not on a newer
-build with the same patch. Changing the order correctly fixes it
-everywhere. Confirmed this by adding debug logs in btusb_disconnect and
-hci_suspend_notifier to confirm what order things were getting called.
-
-Sorry about the churn. Next I'm going try to do something about the palm
-shaped indentation on my forehead...
-
- net/bluetooth/hci_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index efc0fe2b47dac2..be9cdf5dabe5dc 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3794,8 +3794,8 @@ void hci_unregister_dev(struct hci_dev *hdev)
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 7f90eee..dcc1341 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -1681,7 +1681,7 @@ int rproc_trigger_recovery(struct rproc *rproc)
+ 		goto unlock_mutex;
  
- 	cancel_work_sync(&hdev->power_on);
+ 	/* generate coredump */
+-	rproc_coredump(rproc);
++	rproc->ops->coredump(rproc);
  
--	unregister_pm_notifier(&hdev->suspend_notifier);
- 	hci_suspend_clear_tasks(hdev);
-+	unregister_pm_notifier(&hdev->suspend_notifier);
- 	cancel_work_sync(&hdev->suspend_prepare);
+ 	/* load firmware */
+ 	ret = request_firmware(&firmware_p, rproc->firmware, dev);
+@@ -2103,6 +2103,10 @@ static int rproc_alloc_ops(struct rproc *rproc, const struct rproc_ops *ops)
+ 	if (!rproc->ops)
+ 		return -ENOMEM;
  
- 	hci_dev_do_close(hdev);
++	/* Default to rproc_coredump if no coredump function is specified */
++	if (!rproc->ops->coredump)
++		rproc->ops->coredump = rproc_coredump;
++
+ 	if (rproc->ops->load)
+ 		return 0;
+ 
+diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+index 2fa68bf..a489aec 100644
+--- a/include/linux/remoteproc.h
++++ b/include/linux/remoteproc.h
+@@ -375,6 +375,8 @@ enum rsc_handling_status {
+  * @get_boot_addr:	get boot address to entry point specified in firmware
+  * @panic:	optional callback to react to system panic, core will delay
+  *		panic at least the returned number of milliseconds
++ * @coredump:	  collect firmware dump after the subsystem is shutdown
++ * @priv_cleanup: cleans up the private resources used by the rproc
+  */
+ struct rproc_ops {
+ 	int (*prepare)(struct rproc *rproc);
+@@ -393,6 +395,8 @@ struct rproc_ops {
+ 	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+ 	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware *fw);
+ 	unsigned long (*panic)(struct rproc *rproc);
++	void (*coredump)(struct rproc *rproc);
++	void (*priv_cleanup)(struct rproc *rproc);
+ };
+ 
+ /**
 -- 
-2.28.0.618.gf4bc123cb7-goog
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
