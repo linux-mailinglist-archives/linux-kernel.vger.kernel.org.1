@@ -2,131 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C77263B90
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7DC263BA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 05:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgIJDrK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 9 Sep 2020 23:47:10 -0400
-Received: from marcansoft.com ([212.63.210.85]:38072 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgIJDrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 23:47:07 -0400
-X-Greylist: delayed 1779 seconds by postgrey-1.27 at vger.kernel.org; Wed, 09 Sep 2020 23:47:05 EDT
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 4C1AA425DF;
-        Thu, 10 Sep 2020 03:47:01 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 12:46:57 +0900
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CADvTj4oznyY=sfbmtmdcYMgkYriV_Ujk=+0Fz--XumNa8ZvD=A@mail.gmail.com>
-References: <20200909193419.2006744-1-james.hilliard1@gmail.com> <1599706954.10822.3.camel@suse.de> <CADvTj4oznyY=sfbmtmdcYMgkYriV_Ujk=+0Fz--XumNa8ZvD=A@mail.gmail.com>
+        id S1730077AbgIJDsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 23:48:47 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:49871 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729822AbgIJDsb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 9 Sep 2020 23:48:31 -0400
+X-UUID: 2df7bd4b00f14007921cf70cb6f6ce8e-20200910
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=h4KTk5shQrSyQDIxPJZftxCwDg7ngCtftlyh+RM3c1o=;
+        b=TWtYHWM+f2I2op8pMxtixr3wdhqoFJJr9dvWVQBh0Fp+CtK87F3Bhu4kFBd2fXNoYTiLTUQG9VbLClJ04eRvkkosGnHB4H6sG8U2rEdSFs4+LvPJXgEzSz0mD+GdX8nGaL9bEgC8CtnPIR1XWAHyvwEZbfpABlX6KoR7WOhyX2A=;
+X-UUID: 2df7bd4b00f14007921cf70cb6f6ce8e-20200910
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 379000295; Thu, 10 Sep 2020 11:48:26 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 10 Sep 2020 11:48:21 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 10 Sep 2020 11:48:22 +0800
+Message-ID: <1599709702.7042.1.camel@mtkswgap22>
+Subject: Re: [PATCH v6 1/2] cpufreq: mediatek-hw: Add support for Mediatek
+ cpufreq HW driver
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rob Herring" <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Thu, 10 Sep 2020 11:48:22 +0800
+In-Reply-To: <20200910034245.eqya625p7la33dkc@vireshk-i7>
+References: <1599658476-16562-1-git-send-email-hector.yuan@mediatek.com>
+         <1599658476-16562-2-git-send-email-hector.yuan@mediatek.com>
+         <20200910034245.eqya625p7la33dkc@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Subject: Re: [PATCH v2] usb: serial: Repair FTDI FT232R bricked eeprom
-To:     James Hilliard <james.hilliard1@gmail.com>,
-        Oliver Neukum <oneukum@suse.de>
-CC:     linux-usb@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russ Dill <Russ.Dill@gmail.com>
-From:   "Hector Martin \"marcan\"" <hector@marcansoft.com>
-Message-ID: <36F0CEB4-DE2E-41DA-9569-4706B00FCF7D@marcansoft.com>
+X-TM-SNTS-SMTP: A78FA5853F92044C4771A9B1C8BF1BDA2274661E2593E21FCABB848E93EDED232000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVGh1LCAyMDIwLTA5LTEwIGF0IDA5OjEyICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+IE9uIDA5LTA5LTIwLCAyMTozNCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gK3N0YXRpYyB1bnNp
+Z25lZCBpbnQgbXRrX2NwdWZyZXFfaHdfZ2V0KHVuc2lnbmVkIGludCBjcHUpDQo+ID4gK3sNCj4g
+PiArCXN0cnVjdCBjcHVmcmVxX210ayAqYzsNCj4gPiArCXN0cnVjdCBjcHVmcmVxX3BvbGljeSAq
+cG9saWN5Ow0KPiA+ICsJdW5zaWduZWQgaW50IGluZGV4Ow0KPiA+ICsNCj4gPiArCXBvbGljeSA9
+IGNwdWZyZXFfY3B1X2dldF9yYXcoY3B1KTsNCj4gPiArCWlmICghcG9saWN5KQ0KPiA+ICsJCXJl
+dHVybiAwOw0KPiANCj4gV2h5IGRpZG4ndCB5b3UgZHJvcCBwb2xpY3kgYXMgd2UgZGlzY3Vzc2Vk
+IGluIHByZXZpb3VzIHZlcnNpb24gPw0KPiANClNvcnJ5IEkgbWlzc2VkIHRoYXQuIFRoYW5rIHlv
+dS4NCj4gPiArCWMgPSBtdGtfZnJlcV9kb21haW5fbWFwW2NwdV07DQo+ID4gKw0KPiA+ICsJaW5k
+ZXggPSByZWFkbF9yZWxheGVkKGMtPnJlZ19iYXNlc1tSRUdfUEVSRl9TVEFURV0pOw0KPiA+ICsJ
+aW5kZXggPSBtaW4oaW5kZXgsIExVVF9NQVhfRU5UUklFUyAtIDEpOw0KPiA+ICsNCj4gPiArCXJl
+dHVybiBwb2xpY3ktPmZyZXFfdGFibGVbaW5kZXhdLmZyZXF1ZW5jeTsNCj4gDQo+IHBvbGljeS0+
+ZnJlcV90YWJsZSBhbmQgYy0+dGFibGUgYXJlIHNhbWUsIGlzbid0IGl0ID8NCj4gDQpZZXMsIHlv
+dSBhcmUgcmlnaHQuDQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1f
+ZHJpdmVyIG10a19jcHVmcmVxX2h3X2RyaXZlciA9IHsNCj4gPiArCS5wcm9iZSA9IG10a19jcHVm
+cmVxX2h3X2RyaXZlcl9wcm9iZSwNCj4gPiArCS5yZW1vdmUgPSBtdGtfY3B1ZnJlcV9od19kcml2
+ZXJfcmVtb3ZlLA0KPiA+ICsJLmRyaXZlciA9IHsNCj4gPiArCQkubmFtZSA9ICJtdGstY3B1ZnJl
+cS1odyIsDQo+ID4gKwkJLm9mX21hdGNoX3RhYmxlID0gbXRrX2NwdWZyZXFfaHdfbWF0Y2gsDQo+
+ID4gKwl9LA0KPiA+ICt9Ow0KPiA+ICsNCj4gDQo+IFJlbW92ZSB0aGlzIGJsYW5rIGxpbmUuDQo+
+IA0KT0sNCj4gPiArbW9kdWxlX3BsYXRmb3JtX2RyaXZlcihtdGtfY3B1ZnJlcV9od19kcml2ZXIp
+Ow0KPiA+ICsNCj4gPiArTU9EVUxFX0RFU0NSSVBUSU9OKCJtdGsgQ1BVRlJFUSBIVyBEcml2ZXIi
+KTsNCj4gDQo+IE1heWJlIHdyaXRlIHRoaXMgaXMgIk1lZGlhdGVrIGNwdWZyZXEtaHcgZHJpdmVy
+IiA/DQo+IA0KT0sNCj4gPiArTU9EVUxFX0xJQ0VOU0UoIkdQTCB2MiIpOw0KPiA+IC0tIA0KPiA+
+IDEuNy45LjUNCj4gDQoNCg==
 
-
-On September 10, 2020 12:40:59 PM GMT+09:00, James Hilliard <james.hilliard1@gmail.com> wrote:
->On Wed, Sep 9, 2020 at 9:02 PM Oliver Neukum <oneukum@suse.de> wrote:
->>
->> Am Mittwoch, den 09.09.2020, 13:34 -0600 schrieb James Hilliard:
->> > This patch detects and reverses the effects of the malicious FTDI
->> > Windows driver version 2.12.00(FTDIgate).
->>
->> Hi,
->>
->> this raises questions.
->> Should we do this unconditionally without asking?
->Well I think since we can reliably detect devices that have been
->bricked by the malicious windows driver it's fine. I was careful to
->ensure that this will bail out and not try to change anything unless
->all
->conditions match this specific brick attack.
->> Does this belong into kernel space?
->This seemed to be by far the simplest option for embedded systems
->that need to automatically detect and repair the bricked eeproms.
->
->People seem to have plugged a bunch of counterfeit FTDI Arduino's
->that normally attach to an embedded Linux host into windows for
->some reason for a kiosk platform of mine which messed up the
->userspace detection/mappings. This seemed like the best way to
->avoid this being a support issue requiring manual unbricking
->prochedures.
-
-If you need to update the kernel on this platform anyway to use this feature, why not just introduce a userspace script to fix the bricked units instead?
-
-Needing this autofixed seems like somewhat of a niche use case better served by a script on platforms where it might be a problem, rather than upstream kernel code.
-
->>
->> > +static int ftdi_repair_brick(struct usb_serial_port *port)
->> > +{
->> > +     struct ftdi_private *priv = usb_get_serial_port_data(port);
->> > +     int orig_latency;
->> > +     int rv;
->> > +     u16 *eeprom_data;
->> > +     u16 checksum;
->> > +     int eeprom_size;
->> > +     int result;
->> > +
->> > +     switch (priv->chip_type) {
->> > +     case FT232RL:
->> > +             eeprom_size = 0x40;
->> > +             break;
->> > +     default:
->> > +             /* Unsupported for brick repair */
->> > +             return 0;
->> > +     }
->> > +
->> > +     /* Latency timer needs to be 0x77 to unlock EEPROM
->programming */
->> > +     if (priv->latency != 0x77) {
->> > +             orig_latency = priv->latency;
->> > +             priv->latency = 0x77;
->> > +             rv = write_latency_timer(port);
->> > +             priv->latency = orig_latency;
->> > +             if (rv < 0)
->> > +                     return -EIO;
->> > +     }
->>
->> Do you really want to change this without returning to the original?
->> @@ -2255,6 +2364,12 @@ static int ftdi_sio_port_probe(struct
->usb_serial_port *port)
->>         ftdi_set_max_packet_size(port);
->>         if (read_latency_timer(port) < 0)
->>                 priv->latency = 16;
->> +       vendor_id =
->le16_to_cpu(port->serial->dev->descriptor.idVendor);
->> +       product_id =
->le16_to_cpu(port->serial->dev->descriptor.idProduct);
->> +       if (vendor_id == FTDI_VID &&
->> +               product_id == FTDI_BRICK_PID &&
->> +               priv->chip_type == FT232RL)
->> +               ftdi_repair_brick(port);
->>         write_latency_timer(port);
->It should get restored here.
->>         create_sysfs_attrs(port);
->>
->>
->>         Regards
->>                 Oliver
->>
-
--- 
-Hector Martin "marcan" (hector@marcansoft.com)
-Public key: https://mrcn.st/pub
