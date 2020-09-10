@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20AC72653DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F9C2653D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgIJVl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        id S1728347AbgIJVlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730154AbgIJNFf (ORCPT
+        with ESMTP id S1730201AbgIJNFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:05:35 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C466C061799
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:03 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w2so5571078wmi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:03 -0700 (PDT)
+        Thu, 10 Sep 2020 09:05:37 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61021C06179B
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:04 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so5571972wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0uif8G7qHTGRhCmGeHPmCwg86SJ2eGD23rP8ij/IiTw=;
-        b=gb8G4Fxh3KQ3n8CxPbVo6AHusqeWeHNuQJv14YbC8w5o71a/LD/mUEJs06V1WBrKsI
-         ujHkimYi85EqYVCRha+Jv5LxryYkLKVNKolPcztATkaHBYykPu8IauwcsofY7ObUlh4j
-         d5bv/pRE2isIvJo3a5oINc0ZQ4AT+WnOfOwTFnA+iR3vtpuLRxVByd8sBQrkV2CjpgkS
-         aR4E/HefjSqMtrwz0b9+aKqB3B4TLfPvoL7QH+UXIrgkegP9kdGroVBwwtbb78V4Bm+5
-         5Q53aou/xPtCJuJIMx12893gxth82y4pJrhmBGrIWGiZ67NNr3kor/VjBNynOttHGylu
-         J7FQ==
+        bh=33HvCzmAdaLlwRHDyqC4pE+Fu8CzZCLUT7jQwq64ZmM=;
+        b=zLiBumH9bdvbhME9635lK8sWPXtz3wvQnRLN9BiB1M3oT8+jGRsuYqrEYl+HeFpVPG
+         MdHF/TDk9l9J0Khjw/HFvFlLyZfaw67RZCjWroX8eHw6n48Tr9jad0k0BIasBeGXYfIU
+         3fVh1gOEHYnyoQpHZ5BPOYIM1skUomvAwszglWpp5nY4i/0JoDX84drE1t6NW03tIHeR
+         2d5icLUkSlc+ub6SILnCplsWfcN+XDnnxdYkkUbgKX6cL6oqYRiR4ZgD2MklsIo2afH1
+         kfLKs+85otXaNLZlj84TYTmMSG3P0n7EhURwz5xJ83A1N/q/shHrH1j3Dyc0PLFOHZ3B
+         Zksw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0uif8G7qHTGRhCmGeHPmCwg86SJ2eGD23rP8ij/IiTw=;
-        b=TDU/ALM9mCY1M3C7+QTYFbj0vgtGmREiVLXNEnstYO4/AyUc27uLvD0FFW4YGTiCgd
-         608k68uRd8ScQf/XLJmuU8qmpO3seGA6tANgpN2oFVmkEbZNYIHHfi6Yq9T7S/BJrGCO
-         XaXXxq08CJ7TTndUxixbJPYJ/WtxedeIbaEvr0+1kI8GfGDpIy+0l9xvV0XIk8ZB/JJT
-         dJwJ34g0HUTX0NIBkWoE0ANDHUROfWNSRpuPigsmcPLCwb9Qodita6T4taF3DmNm6LYL
-         6Pu7GT0UiY+23cjpmY2aX25op7N8QmQIHEKTAEdJYbUC5vy8NhkYq/hvebHORMHjBXyE
-         hkOQ==
-X-Gm-Message-State: AOAM531asbaxhOVgQhysiohs0EIYJDfJx8kbsyVXLzyk4z4xYFFHx6R1
-        G3XsgkSXD7g7A8s47ExU97nrng==
-X-Google-Smtp-Source: ABdhPJyicW4ns45b8xZhcFkK1PbXfBjeX/nBAc4igspZuSMMeFcb4ULvJxC9mxlgL33Lek65yIZOWA==
-X-Received: by 2002:a7b:cc0b:: with SMTP id f11mr8868118wmh.31.1599743101924;
-        Thu, 10 Sep 2020 06:05:01 -0700 (PDT)
+        bh=33HvCzmAdaLlwRHDyqC4pE+Fu8CzZCLUT7jQwq64ZmM=;
+        b=Bx3H/t/YtRXoH3KsF9PGDcgYhOZnHU10Za6PlZAjictae2++02/9Qc7xezIIerZ4MN
+         AG99SKukGc1SogK7d6CtOH55RMdhi7V56RDgdfZ/MSHoLNAJJUW+qAI6PfJ95aQs3j77
+         IM181MoARl1hIZ0TMh74fE69hdGcGd3R7P0sqUGKXCBC6PLLNul+2pCbvWfP67PoBhm5
+         mCND1MIgZlisdPncaZQM01JyhoRyeTDRZvDBdanWU0sh0MbcXEthMCTA6n9YfSH9J7Kc
+         WtU+c92NC5NSGPxshG3fxEnS4PXXn0QH5M1GkjwUtdQ7HQPD7Vk3ss0t6jIqKA4cHfho
+         3kZA==
+X-Gm-Message-State: AOAM5318hHXfo2ga5ruZP7i9fWXQhir1mp3QIKkQdqVkRWQMK2bnt8f6
+        rpgdpSbqXSiMIfuiT2SdE7rzUi9NMMHZ+Q==
+X-Google-Smtp-Source: ABdhPJy3raa9gr29pIrx1im1S+1sVLkicexIz3zya//5Zki/QyyDsHCxqhFkSJOUK1G18zoRaAeIQg==
+X-Received: by 2002:a1c:7c1a:: with SMTP id x26mr2709wmc.112.1599743103105;
+        Thu, 10 Sep 2020 06:05:03 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id p16sm9321988wro.71.2020.09.10.06.05.01
+        by smtp.gmail.com with ESMTPSA id p16sm9321988wro.71.2020.09.10.06.05.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 06:05:01 -0700 (PDT)
+        Thu, 10 Sep 2020 06:05:02 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 04/11] rtc: rx8010: rename ret to err in rx8010_set_time()
-Date:   Thu, 10 Sep 2020 15:04:39 +0200
-Message-Id: <20200910130446.5689-5-brgl@bgdev.pl>
+Subject: [PATCH v2 05/11] rtc: rx8010: don't use magic values for time buffer length
+Date:   Thu, 10 Sep 2020 15:04:40 +0200
+Message-Id: <20200910130446.5689-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200910130446.5689-1-brgl@bgdev.pl>
 References: <20200910130446.5689-1-brgl@bgdev.pl>
@@ -68,76 +68,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-All other functions in this driver use 'err' for integer return values.
-Do the same in rx8010_set_time() for consistency.
+The time buffer len is used directly in this driver. For readability
+it's better to define it as the difference between the date register
+offsets and use sizeof() whenever referencing it.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-rx8010.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ drivers/rtc/rtc-rx8010.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index 2038700a3e8e..67ff06a76629 100644
+index 67ff06a76629..b065973b8a14 100644
 --- a/drivers/rtc/rtc-rx8010.c
 +++ b/drivers/rtc/rtc-rx8010.c
-@@ -140,7 +140,7 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+@@ -108,7 +108,7 @@ static irqreturn_t rx8010_irq_1_handler(int irq, void *dev_id)
+ static int rx8010_get_time(struct device *dev, struct rtc_time *dt)
  {
  	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 date[7];
--	int ctrl, flagreg, ret;
-+	int ctrl, flagreg, err;
- 
- 	if ((dt->tm_year < 100) || (dt->tm_year > 199))
- 		return -EINVAL;
-@@ -150,10 +150,10 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- 	if (ctrl < 0)
- 		return ctrl;
- 	rx8010->ctrlreg = ctrl | RX8010_CTRL_STOP;
--	ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
-+	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
- 					rx8010->ctrlreg);
--	if (ret < 0)
--		return ret;
-+	if (err < 0)
-+		return err;
- 
- 	date[RX8010_SEC - RX8010_SEC] = bin2bcd(dt->tm_sec);
- 	date[RX8010_MIN - RX8010_SEC] = bin2bcd(dt->tm_min);
-@@ -163,27 +163,27 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- 	date[RX8010_YEAR - RX8010_SEC] = bin2bcd(dt->tm_year - 100);
- 	date[RX8010_WDAY - RX8010_SEC] = bin2bcd(1 << dt->tm_wday);
- 
--	ret = i2c_smbus_write_i2c_block_data(rx8010->client,
-+	err = i2c_smbus_write_i2c_block_data(rx8010->client,
- 					     RX8010_SEC, 7, date);
--	if (ret < 0)
--		return ret;
-+	if (err < 0)
-+		return err;
- 
- 	/* clear STOP bit after changing clock/calendar */
- 	ctrl = i2c_smbus_read_byte_data(rx8010->client, RX8010_CTRL);
- 	if (ctrl < 0)
- 		return ctrl;
- 	rx8010->ctrlreg = ctrl & ~RX8010_CTRL_STOP;
--	ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
-+	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
- 					rx8010->ctrlreg);
--	if (ret < 0)
--		return ret;
-+	if (err < 0)
-+		return err;
+-	u8 date[7];
++	u8 date[RX8010_YEAR - RX8010_SEC + 1];
+ 	int flagreg, err;
  
  	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
- 	if (flagreg < 0)
- 		return flagreg;
+@@ -121,8 +121,8 @@ static int rx8010_get_time(struct device *dev, struct rtc_time *dt)
+ 	}
  
- 	if (flagreg & RX8010_FLAG_VLF)
--		ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
-+		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
- 						flagreg & ~RX8010_FLAG_VLF);
+ 	err = i2c_smbus_read_i2c_block_data(rx8010->client, RX8010_SEC,
+-					    7, date);
+-	if (err != 7)
++					    sizeof(date), date);
++	if (err != sizeof(date))
+ 		return err < 0 ? err : -EIO;
  
- 	return 0;
+ 	dt->tm_sec = bcd2bin(date[RX8010_SEC - RX8010_SEC] & 0x7f);
+@@ -139,7 +139,7 @@ static int rx8010_get_time(struct device *dev, struct rtc_time *dt)
+ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ {
+ 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
+-	u8 date[7];
++	u8 date[RX8010_YEAR - RX8010_SEC + 1];
+ 	int ctrl, flagreg, err;
+ 
+ 	if ((dt->tm_year < 100) || (dt->tm_year > 199))
+@@ -164,7 +164,8 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ 	date[RX8010_WDAY - RX8010_SEC] = bin2bcd(1 << dt->tm_wday);
+ 
+ 	err = i2c_smbus_write_i2c_block_data(rx8010->client,
+-					     RX8010_SEC, 7, date);
++					     RX8010_SEC, sizeof(date),
++					     date);
+ 	if (err < 0)
+ 		return err;
+ 
 -- 
 2.26.1
 
