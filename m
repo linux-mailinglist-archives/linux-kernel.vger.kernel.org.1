@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAFB264126
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E39264142
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730277AbgIJJOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:14:50 -0400
-Received: from verein.lst.de ([213.95.11.211]:60117 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727090AbgIJJOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:14:02 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 7F59E6736F; Thu, 10 Sep 2020 11:13:51 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 11:13:51 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg KH <greg@kroah.com>
-Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
-        Russell King <linux@armlinux.org.uk>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 3/3] dma-mapping: introduce DMA range map, supplanting
- dma_pfn_offset
-Message-ID: <20200910091351.GA25883@lst.de>
-References: <20200910054038.324517-1-hch@lst.de> <20200910054038.324517-4-hch@lst.de> <20200910075351.GA1092435@kroah.com>
+        id S1730154AbgIJJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:16:38 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22700 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726600AbgIJJPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 05:15:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599729353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=czuBZIOscqzQk5jqJ84r8SXPBiAZdteJChFUgK2pz/I=;
+        b=O5xaxV9olVMenq2pzjZRTSPnh9pnm+D/94A2KvJxFUBfDt1+/g8VCvLjpjZ/E59WRKrKMk
+        QDgw+zxDV1m0sKG043Ss+XcJfaGpoRoj6lGsqFFDrn0zQYB/SQeHU/a/AdgRmNBB++xs4U
+        zMw4UwGnePPS7FohR2+0DSq4bpI1iwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-pzU5tW4tNKu4eAeCAvzTYA-1; Thu, 10 Sep 2020 05:15:49 -0400
+X-MC-Unique: pzU5tW4tNKu4eAeCAvzTYA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C4D3801FDA;
+        Thu, 10 Sep 2020 09:15:46 +0000 (UTC)
+Received: from krava (unknown [10.40.192.38])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 89C3C9CBA;
+        Thu, 10 Sep 2020 09:15:43 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 11:15:42 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET 0/4] perf stat: Add --multiply-cgroup option
+Message-ID: <20200910091542.GD1627030@krava>
+References: <20200908044228.61197-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910075351.GA1092435@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200908044228.61197-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 09:53:51AM +0200, Greg KH wrote:
-> >  		/*
-> >  		 * Please refer to usb_alloc_dev() to see why we set
-> > -		 * dma_mask and dma_pfn_offset.
-> > +		 * dma_mask and dma_range_map.
-> >  		 */
-> >  		intf->dev.dma_mask = dev->dev.dma_mask;
-> > -		intf->dev.dma_pfn_offset = dev->dev.dma_pfn_offset;
-> > +		if (dma_direct_copy_range_map(&intf->dev, &dev->dev))
-> > +			dev_err(&dev->dev, "failed to copy DMA map\n");
+On Tue, Sep 08, 2020 at 01:42:24PM +0900, Namhyung Kim wrote:
+> Hello,
 > 
-> We tell the user, but then just keep on running?  Is there anything that
-> we can do here?
+> When we profile cgroup events with perf stat, it's very annoying to
+> specify events and cgroups on the command line as it requires the
+> mapping between events and cgroups.  (Note that perf record can use
+> cgroup sampling but it's not usable for perf stat).
 > 
-> If not, why not have dma_direct_copy_range_map() print out the error?
+> I guess most cases we just want to use a same set of events (N) for
+> all cgroups (M), but we need to specify NxM events and NxM cgroups.
+> This is not good especially when profiling large number of cgroups:
+> say M=200.
+> 
+> So I added --multiply-cgroup option to make it easy for that case.  It
+> will create NxM events from N events and M cgroups.  One more upside
+> is that it can handle metrics too.
 
-At least for USB I'm pretty sure this isn't required at all.  I've been
-running with the patch below on my desktop for two days now trying all
-the usb toys I have (in addition to grepping for obvious abuses in
-the drivers).  remoteproc is a different story, but the DMA handling
-seems there is sketchy to start with..
+agreed that it's PITA to use -G option ;-)
 
----
-From 8bae3e6833f2ca431dcfcbc8f9cced7d5e972a01 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 9 Sep 2020 08:28:59 +0200
-Subject: usb: don't inherity DMA properties for USB devices
+> 
+> For example, the following example measures IPC metric for 3 cgroups
+> 
+>   $ cat perf-multi-cgrp.sh
+>   #!/bin/sh
+>   
+>   METRIC=${1:-IPC}
+>   CGROUP_DIR=/sys/fs/cgroup/perf_event
+>   
+>   sudo mkdir $CGROUP_DIR/A $CGROUP_DIR/B $CGROUP_DIR/C
+>   
+>   # add backgroupd workload for each cgroup
+>   echo $$ | sudo tee $CGROUP_DIR/A/cgroup.procs > /dev/null
+>   yes > /dev/null &
+>   echo $$ | sudo tee $CGROUP_DIR/B/cgroup.procs > /dev/null
+>   yes > /dev/null &
+>   echo $$ | sudo tee $CGROUP_DIR/C/cgroup.procs > /dev/null
+>   yes > /dev/null &
+> 
+>   # run 'perf stat' in the root cgroup
+>   echo $$ | sudo tee $CGROUP_DIR/cgroup.procs > /dev/null
+>   perf stat -a -M $METRIC --multiply-cgroup -G A,B,C sleep 1
 
-As the comment in usb_alloc_dev correctly states, drivers can't use
-the DMA API on usb device, and at least calling dma_set_mask on them
-is highly dangerous.  Unlike what the comment states upper level drivers
-also can't really use the presence of a dma mask to check for DMA
-support, as the dma_mask is set by default for most busses.
+would it be easier to have new option for this? like:
 
-Remove the copying over of DMA information, and remove the now unused
-dma_direct_copy_range_map export.
+  perf stat -a -M $METRIC --for-cgroup A,B,C
+  perf stat -a -M $METRIC --for-each-cgroup A,B,C
+  perf stat -a -M $METRIC --attach-cgroup A,B,C
+  perf stat -a -M $METRIC --attach-to-cgroup A,B,C
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/usb/core/message.c |  7 -------
- drivers/usb/core/usb.c     | 13 -------------
- kernel/dma/direct.c        |  1 -
- 3 files changed, 21 deletions(-)
+I'm still not sure how the --multiply-cgroup deals with empty
+cgroup A,,C but looks like we don't need this behaviour now?
 
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 935ee98e049f65..9e45732dc1d1d1 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1954,13 +1954,6 @@ int usb_set_configuration(struct usb_device *dev, int configuration)
- 		intf->dev.bus = &usb_bus_type;
- 		intf->dev.type = &usb_if_device_type;
- 		intf->dev.groups = usb_interface_groups;
--		/*
--		 * Please refer to usb_alloc_dev() to see why we set
--		 * dma_mask and dma_range_map.
--		 */
--		intf->dev.dma_mask = dev->dev.dma_mask;
--		if (dma_direct_copy_range_map(&intf->dev, &dev->dev))
--			dev_err(&dev->dev, "failed to copy DMA map\n");
- 		INIT_WORK(&intf->reset_ws, __usb_queue_reset_device);
- 		intf->minor = -1;
- 		device_initialize(&intf->dev);
-diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-index 23d451f6894d70..9b4ac4415f1a47 100644
---- a/drivers/usb/core/usb.c
-+++ b/drivers/usb/core/usb.c
-@@ -599,19 +599,6 @@ struct usb_device *usb_alloc_dev(struct usb_device *parent,
- 	dev->dev.bus = &usb_bus_type;
- 	dev->dev.type = &usb_device_type;
- 	dev->dev.groups = usb_device_groups;
--	/*
--	 * Fake a dma_mask/offset for the USB device:
--	 * We cannot really use the dma-mapping API (dma_alloc_* and
--	 * dma_map_*) for USB devices but instead need to use
--	 * usb_alloc_coherent and pass data in 'urb's, but some subsystems
--	 * manually look into the mask/offset pair to determine whether
--	 * they need bounce buffers.
--	 * Note: calling dma_set_mask() on a USB device would set the
--	 * mask for the entire HCD, so don't do that.
--	 */
--	dev->dev.dma_mask = bus->sysdev->dma_mask;
--	if (dma_direct_copy_range_map(&dev->dev, bus->sysdev))
--		dev_err(&dev->dev, "failed to copy DMA map\n");
- 	set_dev_node(&dev->dev, dev_to_node(bus->sysdev));
- 	dev->state = USB_STATE_ATTACHED;
- 	dev->lpm_disable_count = 1;
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index fc815f7375e282..3af257571a3b42 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -552,4 +552,3 @@ int dma_direct_copy_range_map(struct device *to, struct device *from)
- 	to->dma_range_map = new_map;
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(dma_direct_copy_range_map);
--- 
-2.28.0
+thanks,
+jirka
 
