@@ -2,142 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86F3264E39
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42513264E2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgIJTGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:06:16 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45252 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731490AbgIJQES (ORCPT
+        id S1727019AbgIJTE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgIJQLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 12:04:18 -0400
-Received: by mail-il1-f195.google.com with SMTP id q6so6107072ild.12;
-        Thu, 10 Sep 2020 09:04:16 -0700 (PDT)
+        Thu, 10 Sep 2020 12:11:51 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1959FC061796;
+        Thu, 10 Sep 2020 09:11:51 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id q13so9520280ejo.9;
+        Thu, 10 Sep 2020 09:11:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=HqUXASV8/J3adrJxXgdebB7pk8ZpozkrNnLZPnpPNz4=;
+        b=rMuYKT/nO+bCs0/PjntzsIL3yMzZX12bky9TbQC+p43luWertUNdPLHCmcEs5/s7lp
+         aMpTMrWua4TtNULcw07fDXqnBINgH1XrvxHJIWztJiFx9CIAoONLTv76jjyb+KOeLXL4
+         3qmjjJrxKDsUmixe4O0e3mLWt4BvDxNO1+n8YOYjPOKMM0yfFlv4kSV1DlHu3Z0QPt7G
+         Sxrsc/6AClS5S8cVFamdUGYaYYcHJHUvI6NA0fp98W23kR+wAlUGCJVjXUX2jHRNMIGQ
+         TLbSysOhH3k1zkQVt0nz4NR3HuPfLYLXBInwj2Z1XkO9opu57YWwgd5Y6odJPo4mqKpI
+         qwhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ebp5z+46rHgEspLwslVPrPQpZSFjnRSho3Me2D+xH8o=;
-        b=T/eCReFLd2aPNzyT7ZHj2N/pB6N+N6GsdfSCtpIWCA3oUUPXT/XTzBRZVziCM/4kch
-         oHxZYl9M9GcuoYdluXs+n1lzdBPVIFlWK3H+RPXl20yYfbT2YqNbhHtEFCUzHBDWlOOU
-         VyAOlUbFkhs8E682dQf9xUfjGvZw9ZdzXk7rz9pwn96YpMZTtUoRr7eLN0R8+WNb5EaG
-         ZvW3rzaeDQzP5pG+2gb/Iw5AdzLuXi9vQE0O0DZ6Tp+eUpHOBnIo1lhtBYloN7WnbSZa
-         XqvODt5lH7QxmwEbXc8EpssNy3FY8sOkG0LUo/adr0CdXoLDs3kCOpqzICtTd+3tJr3b
-         +nnA==
-X-Gm-Message-State: AOAM531y4ZlgwRMDnUmdhd3YnXE+z5iw6r9pFvwOYkAIUq+bH78t2G1y
-        nm9zJ4LyjF2O8Hj9KsfBLI3AT9Im1uYL
-X-Google-Smtp-Source: ABdhPJwEriHzybxiHldBLmDpi2mvi2cZg5tHwCiO7MmmEqZLF4YSjxhJdd6BIxqEmm2n29ddo/Nobg==
-X-Received: by 2002:a92:906:: with SMTP id y6mr8750650ilg.106.1599753852523;
-        Thu, 10 Sep 2020 09:04:12 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id e22sm3035082ioc.43.2020.09.10.09.04.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=HqUXASV8/J3adrJxXgdebB7pk8ZpozkrNnLZPnpPNz4=;
+        b=S30Y7hc+qClbrgkk1YPhBWzYQo9Q27AYjcpcQMTquqF4s4If7L5Q2Nh0Ew19OV4bXj
+         6TyOXdq3jSJuYAOzfzmDt+MzHKvStGJlLUJ2yvGnSHPuh4GBMdO9gem7Y5UQgaA+YmdU
+         0wFxGbBNsDODTI8/pMkW2Bu8GwAv6PV3j8tfbq9Md+GGagbAF3zDtKQnhpHVf8nwxYFF
+         6IgGFGRXGWjf2JAhMy7D/WNQLAEoIOiwJm8kJHfsRBu3qcpvGiwhThdWej2OQkmCyhFH
+         Pxv5XDbQ+35W96+AK5Ijmukb+/7xrOEITMh/O3PWFi78/hcAfSmY9GHrCJcjok6TnaNS
+         qRBg==
+X-Gm-Message-State: AOAM532ldCcj00tjlj9jZT+ZY+cOb1dK7cgdDjKLo9aDG+fhEX27oO54
+        0fTQWKV0VIlXb/bD1VNJ1tSP8XSE/aw=
+X-Google-Smtp-Source: ABdhPJwGOMYluoHBIFuyJ+aF+8vL+XdnHF/jHh1znvtHTiq4P26wtwfyKLhzusCwoGLiDFzFFEzN4Q==
+X-Received: by 2002:a17:906:8c8:: with SMTP id o8mr9460993eje.91.1599754308990;
+        Thu, 10 Sep 2020 09:11:48 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id k8sm7282911ejz.60.2020.09.10.09.11.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 09:04:12 -0700 (PDT)
-Received: (nullmailer pid 449332 invoked by uid 1000);
-        Thu, 10 Sep 2020 16:04:11 -0000
-Date:   Thu, 10 Sep 2020 10:04:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v11 05/11] PCI: brcmstb: Add bcm7278 PERST# support
-Message-ID: <20200910160411.GA439527@bogus>
-References: <20200824193036.6033-1-james.quinlan@broadcom.com>
- <20200824193036.6033-6-james.quinlan@broadcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824193036.6033-6-james.quinlan@broadcom.com>
+        Thu, 10 Sep 2020 09:11:47 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, gregkh@linuxfoundation.org,
+        davem@davemloft.net, kuba@kernel.org,
+        Omer Shpigelman <oshpigelman@habana.ai>
+Subject: [PATCH 02/15] habanalabs/gaudi: add NIC firmware-related definitions
+Date:   Thu, 10 Sep 2020 19:11:13 +0300
+Message-Id: <20200910161126.30948-3-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200910161126.30948-1-oded.gabbay@gmail.com>
+References: <20200910161126.30948-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 03:30:18PM -0400, Jim Quinlan wrote:
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> The PERST# bit was moved to a different register in 7278-type STB chips.
-> In addition, the polarity of the bit was also changed; for other chips
-> writing a 1 specified assert; for 7278-type chips, writing a 0 specifies
-> assert.
-> 
-> Of course, PERST# is a PCIe asserted-low signal.
-> 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index 3d588ab7a6dd..acf2239b0251 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -83,6 +83,7 @@
->  
->  #define PCIE_MISC_PCIE_CTRL				0x4064
->  #define  PCIE_MISC_PCIE_CTRL_PCIE_L23_REQUEST_MASK	0x1
-> +#define PCIE_MISC_PCIE_CTRL_PCIE_PERSTB_MASK		0x4
->  
->  #define PCIE_MISC_PCIE_STATUS				0x4068
->  #define  PCIE_MISC_PCIE_STATUS_PCIE_PORT_MASK		0x80
-> @@ -684,9 +685,16 @@ static inline void brcm_pcie_perst_set(struct brcm_pcie *pcie, u32 val)
->  {
->  	u32 tmp;
->  
-> -	tmp = readl(pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
-> -	u32p_replace_bits(&tmp, val, PCIE_RGR1_SW_INIT_1_PERST_MASK);
-> -	writel(tmp, pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
-> +	if (pcie->type == BCM7278) {
-> +		/* Perst bit has moved and assert value is 0 */
-> +		tmp = readl(pcie->base + PCIE_MISC_PCIE_CTRL);
-> +		u32p_replace_bits(&tmp, !val, PCIE_MISC_PCIE_CTRL_PCIE_PERSTB_MASK);
-> +		writel(tmp, pcie->base +  PCIE_MISC_PCIE_CTRL);
-> +	} else {
-> +		tmp = readl(pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
-> +		u32p_replace_bits(&tmp, val, PCIE_RGR1_SW_INIT_1_PERST_MASK);
-> +		writel(tmp, pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
+From: Omer Shpigelman <oshpigelman@habana.ai>
 
-Humm, now we have a mixture of a code path based on the chip and 
-variables to abstract the register details. Just do a function per chip.
+Add new structures and messages that the driver use to interact with the
+firmware to receive information and events (errors) about GAUDI's NIC.
 
-I have some notion to abstract out the PERST# handling from the host 
-bridges. We have several cases of GPIO based handling and random 
-assertion times. So having an ops function here will move in that 
-direction.
+Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ .../misc/habanalabs/include/common/cpucp_if.h | 34 ++++++++++++++++---
+ .../habanalabs/include/gaudi/gaudi_fw_if.h    | 24 +++++++++++++
+ 2 files changed, 54 insertions(+), 4 deletions(-)
 
-> +	}
->  }
->  
->  static inline int brcm_pcie_get_rc_bar2_size_and_offset(struct brcm_pcie *pcie,
-> @@ -771,7 +779,10 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
->  
->  	/* Reset the bridge */
->  	brcm_pcie_bridge_sw_init_set(pcie, 1);
-> -	brcm_pcie_perst_set(pcie, 1);
+diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
+index dcde440427b4..ace746bb206e 100644
+--- a/drivers/misc/habanalabs/include/common/cpucp_if.h
++++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
+@@ -9,6 +9,7 @@
+ #define CPUCP_IF_H
+ 
+ #include <linux/types.h>
++#include <linux/if_ether.h>
+ 
+ /*
+  * EVENT QUEUE
+@@ -199,6 +200,11 @@ enum pq_init_status {
+  *       CpuCP to write to the structure, to prevent data corruption in case of
+  *       mismatched driver/FW versions.
+  *
++ * CPUCP_PACKET_NIC_INFO_GET -
++ *       Fetch information from the device regarding the NIC. the host's driver
++ *       passes the max size it allows the CpuCP to write to the structure, to
++ *       prevent data corruption in case of mismatched driver/FW versions.
++ *
+  * CPUCP_PACKET_TEMPERATURE_SET -
+  *       Set the value of the offset property of a specified thermal sensor.
+  *       The packet's arguments specify the desired sensor and the field to
+@@ -238,12 +244,12 @@ enum cpucp_packet_id {
+ 	CPUCP_PACKET_MAX_POWER_GET,		/* sysfs */
+ 	CPUCP_PACKET_MAX_POWER_SET,		/* sysfs */
+ 	CPUCP_PACKET_EEPROM_DATA_GET,		/* sysfs */
+-	CPUCP_RESERVED,
++	CPUCP_PACKET_NIC_INFO_GET,		/* internal */
+ 	CPUCP_PACKET_TEMPERATURE_SET,		/* sysfs */
+ 	CPUCP_PACKET_VOLTAGE_SET,		/* sysfs */
+ 	CPUCP_PACKET_CURRENT_SET,		/* sysfs */
+-	CPUCP_PACKET_PCIE_THROUGHPUT_GET,		/* internal */
+-	CPUCP_PACKET_PCIE_REPLAY_CNT_GET,		/* internal */
++	CPUCP_PACKET_PCIE_THROUGHPUT_GET,	/* internal */
++	CPUCP_PACKET_PCIE_REPLAY_CNT_GET,	/* internal */
+ 	CPUCP_PACKET_TOTAL_ENERGY_GET,		/* internal */
+ };
+ 
+@@ -288,7 +294,7 @@ struct cpucp_packet {
+ 		/* For led set */
+ 		__le32 led_index;
+ 
+-		/* For get CpuCP info/EEPROM data */
++		/* For get CpuCP info/EEPROM data/NIC info */
+ 		__le32 data_max_size;
+ 	};
+ 
+@@ -367,6 +373,12 @@ struct eq_generic_event {
+ #define CARD_NAME_MAX_LEN		16
+ #define VERSION_MAX_LEN			128
+ #define CPUCP_MAX_SENSORS		128
++#define CPUCP_MAX_NICS			128
++#define CPUCP_LANES_PER_NIC		4
++#define CPUCP_NIC_QSFP_EEPROM_MAX_LEN	1024
++#define CPUCP_MAX_NIC_LANES		(CPUCP_MAX_NICS * CPUCP_LANES_PER_NIC)
++#define CPUCP_NIC_MASK_ARR_LEN		((CPUCP_MAX_NICS + 63) / 64)
++#define CPUCP_NIC_POLARITY_ARR_LEN	((CPUCP_MAX_NIC_LANES + 63) / 64)
+ 
+ struct cpucp_sensor {
+ 	__le32 type;
+@@ -415,4 +427,18 @@ struct cpucp_info {
+ 	char card_name[CARD_NAME_MAX_LEN];
+ };
+ 
++struct cpucp_mac_addr {
++	__u8 mac_addr[ETH_ALEN];
++};
++
++struct cpucp_nic_info {
++	struct cpucp_mac_addr mac_addrs[CPUCP_MAX_NICS];
++	__le64 link_mask[CPUCP_NIC_MASK_ARR_LEN];
++	__le64 pol_tx_mask[CPUCP_NIC_POLARITY_ARR_LEN];
++	__le64 pol_rx_mask[CPUCP_NIC_POLARITY_ARR_LEN];
++	__le64 link_ext_mask[CPUCP_NIC_MASK_ARR_LEN];
++	__u8 qsfp_eeprom[CPUCP_NIC_QSFP_EEPROM_MAX_LEN];
++	__le64 auto_neg_mask[CPUCP_NIC_MASK_ARR_LEN];
++};
++
+ #endif /* CPUCP_IF_H */
+diff --git a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+index 8aadc6357da1..d61a4c87b765 100644
+--- a/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
++++ b/drivers/misc/habanalabs/include/gaudi/gaudi_fw_if.h
+@@ -8,6 +8,8 @@
+ #ifndef GAUDI_FW_IF_H
+ #define GAUDI_FW_IF_H
+ 
++#include <linux/types.h>
++
+ #define GAUDI_EVENT_QUEUE_MSI_IDX	8
+ #define GAUDI_NIC_PORT1_MSI_IDX		10
+ #define GAUDI_NIC_PORT3_MSI_IDX		12
+@@ -31,6 +33,28 @@ enum gaudi_pll_index {
+ 	IF_PLL
+ };
+ 
++enum gaudi_nic_axi_error {
++	RXB,
++	RXE,
++	TXS,
++	TXE,
++	QPC_RESP,
++	NON_AXI_ERR,
++};
++
++/*
++ * struct eq_nic_sei_event - describes an AXI error cause.
++ * @axi_error_cause: one of the events defined in enum gaudi_nic_axi_error.
++ * @id: can be either 0 or 1, to further describe unit with interrupt cause
++ *      (i.e. TXE0 or TXE1).
++ * @pad[6]: padding structure to 64bit.
++ */
++struct eq_nic_sei_event {
++	__u8 axi_error_cause;
++	__u8 id;
++	__u8 pad[6];
++};
++
+ #define GAUDI_PLL_FREQ_LOW		200000000 /* 200 MHz */
+ 
+ #endif /* GAUDI_FW_IF_H */
+-- 
+2.17.1
 
-If these 2 functions are always called together, then you just need 1 
-per chip function.
-
-> +
-> +	/* BCM7278 fails when PERST# is set here */
-> +	if (pcie->type != BCM7278)
-> +		brcm_pcie_perst_set(pcie, 1);
->  
->  	usleep_range(100, 200);
->  
-> -- 
-> 2.17.1
-> 
