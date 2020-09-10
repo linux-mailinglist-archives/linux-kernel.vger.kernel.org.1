@@ -2,116 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4672B263A22
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C90263A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 04:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730650AbgIJCVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 9 Sep 2020 22:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
+        id S1730518AbgIJCVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 9 Sep 2020 22:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730521AbgIJCSv (ORCPT
+        with ESMTP id S1730523AbgIJCUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 9 Sep 2020 22:18:51 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339CDC06179B;
-        Wed,  9 Sep 2020 19:18:34 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id n2so4493637oij.1;
-        Wed, 09 Sep 2020 19:18:34 -0700 (PDT)
+        Wed, 9 Sep 2020 22:20:44 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C9FC061796
+        for <linux-kernel@vger.kernel.org>; Wed,  9 Sep 2020 19:20:34 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id gf14so2273549pjb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 09 Sep 2020 19:20:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oOk59Y9agev+P1pRd+FxE/mXDXASrAFWiJH4a1Tl+Zw=;
-        b=AZyRw62QIBBWqODqgus8QIlDN9ibQ7DqITmcyT1IhPcNEonrlcxsqhKKDp8Ak7WyJj
-         rB/O10IRiA8Hu2uF7zkMR/gTloOBd3ArSRLEnZWOxbM5HvZKROv281KCgRRCK8E1U8+/
-         EnH4Ltms45F4lU3oeU3utrA763/BcUK7OM4BsZ0/6i/ra3vl2MTrh/c2zcL8HraOgp8+
-         AkKRju51Kr/fWnIRVPtDkLhI9RFc6JnO6fembZvQH8X9Xqs8AZgnj2F6vYzH42q9+IAD
-         EIqb+H6j2VTi181/k82+ylN0/UuwaBCLoEMDhT8nqpNkiLTe13hE7lIadoIQG75RsgyB
-         d1fA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=uZtoOwKYtsNFinbEP17eK0TcjEDx3wgWg9ndpqP7KNU=;
+        b=Pnkoe39bqJabvoo0ojb/o9LLCXqc1onnL4qfdvXXN0/K1OsPwsfjivIL5vQDSGnSrO
+         P02SnjA3159MaHvxZZyNdFWY7b1mM6uIi36g9edeoXtUuCLd+dgBXfGzsranod+EIBa0
+         VxqS4ufxRWaw3081ZcwaJlD3y/1v1FQYUgplOEG32nGnC6Su8JtNasPueRFL04Jb+lj3
+         7myYYhWKpL18SADIJBZC7AmqWix9Ra0eHkwop0I4f7GQwzvqdJmvuRVGN20z8yIojo7+
+         5kHqFbb/NJDrB0pGfLOHKBrU3vbgmq3fAXpX5U/IQLoAm5m8g+qGnAmLjQzsJ2u1sw3J
+         A7JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oOk59Y9agev+P1pRd+FxE/mXDXASrAFWiJH4a1Tl+Zw=;
-        b=n0PakEsG9HQ2u9vaMxhzCFsFY5g6p6mpX7jPnY9r8V+j2ti7FRm09v6VxLFh1jN58Y
-         vEFYWI9+GAllZ78UtUW/VpoujOsW0uQRmWqlM5U7jRlLo70ad+QZ+WSlsqBarbEQEJrU
-         xNFXE+C8U9DdOl9y6JG1Xxkt9bCf/y0S3us3AVcLkYPE1e1hW5cob4mPJSoPSDta4FUv
-         9l+tPQRDeFo8nZPrtOgGzw+X2Vru1W9q8qoUqRHs7iHjtWTxTVA6kV8fO1zrElYVaaWd
-         2RMHrSvoWHvhd8wX5nSwTr/YwWKyPqWkgMFU6HRPrldsKkQ9pJwVHEcHaGIytz4wIh7t
-         fmSg==
-X-Gm-Message-State: AOAM533jdegbRjy5i/QMYbMGp/WS8oP2vnjgY4jYQE1nMz+V9F2nK5Gh
-        aWlpvI9t1gm/TEjWLT8gwfg0AREqrlbxitMepuP11f01
-X-Google-Smtp-Source: ABdhPJwpsA7xA/pdpr3ILoTVp47C6lLv9rrw4dQ9G6VM5XmEXEcVZC0d3lzZK9HRNJmv413CJZyiiSGNfWvBaOMtIX8=
-X-Received: by 2002:a05:6808:3d6:: with SMTP id o22mr2296687oie.150.1599704313667;
- Wed, 09 Sep 2020 19:18:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAPJCdB=HzNJp36tjD0=-R-cs4+8=xhxAfmR-tZ2DkpcyiugH-g@mail.gmail.com>
- <20200910015950.GA748330@bjorn-Precision-5520>
-In-Reply-To: <20200910015950.GA748330@bjorn-Precision-5520>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Thu, 10 Sep 2020 10:18:22 +0800
-Message-ID: <CAPJCdB=3hjZiC4P3G9T0G5XFnkxRvfpx_+3Qj5AQESAG-kpbEw@mail.gmail.com>
-Subject: Re: [PATCH] driver/pci: reduce the single block time in pci_read_config
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>,
-        Bin Lai <robinlai@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uZtoOwKYtsNFinbEP17eK0TcjEDx3wgWg9ndpqP7KNU=;
+        b=d8ILLjGgzhm1KJicr6tFt5s9flwAGIL8lazXiUBaT/yKPQN5zBVsVWrjPzJlhe/zQg
+         j//alIHGnIdNDSQ3Rgu/OQ/LgxB70bCY5oG1QeYx/qGAWOBzU5zIXfhbzDb+8ry/QLV8
+         6cB3p33MjywIocbeMF7dIukz7OyyrLxpVqWiiL/zMtitICq1W8dMyJmwTicqNJbpJQrL
+         gcvf9Oxz8/5jarrFlxIBleo0JFQzFwfqyh123gHB9KbdcHxu8Tdtum6r1pmRj7eyiYZp
+         x7ytu80KsHN2e3xeCwaTVURfvUlRXHDSeBS7Q35HpQYZYzwALZe7oxmkSwS4Nj68BQsI
+         7mLg==
+X-Gm-Message-State: AOAM532TOEQSaNrXRZiXpJws1rZUjDtTD42Jfnn8kBkoMBs6oWoJiqfk
+        kmXwB0zjqB1ssEoc3VETNDYvJA==
+X-Google-Smtp-Source: ABdhPJw1VwIuxeCYOYqJLuox6GtHjWg3dPNyTtj4gQflfBSTKC8v0l+FkgTB0W5JxGpfQ6GPlMFn6Q==
+X-Received: by 2002:a17:902:c253:: with SMTP id 19mr3444489plg.65.1599704433135;
+        Wed, 09 Sep 2020 19:20:33 -0700 (PDT)
+Received: from libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id o1sm3781664pfg.83.2020.09.09.19.20.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Sep 2020 19:20:32 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     axboe@kernel.dk
+Cc:     pizhenwei@bytedance.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] block: add io_error stat for block device
+Date:   Thu, 10 Sep 2020 10:20:26 +0800
+Message-Id: <20200910022026.632617-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently if hitting block req error, block layer only prints error
+log with a rate limitation. Then agent has to parse kernel log to
+record what happens.
 
-On Thu, 10 Sep 2020 at 09:59, Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Thu, Sep 10, 2020 at 09:54:02AM +0800, Jiang Biao wrote:
-> > Hi,
-> >
-> > On Thu, 10 Sep 2020 at 09:25, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >
-> > > On Mon, Aug 24, 2020 at 01:20:25PM +0800, Jiang Biao wrote:
-> > > > From: Jiang Biao <benbjiang@tencent.com>
-> > > >
-> > > > pci_read_config() could block several ms in kernel space, mainly
-> > > > caused by the while loop to call pci_user_read_config_dword().
-> > > > Singel pci_user_read_config_dword() loop could consume 130us+,
-> > > >               |    pci_user_read_config_dword() {
-> > > >               |      _raw_spin_lock_irq() {
-> > > > ! 136.698 us  |        native_queued_spin_lock_slowpath();
-> > > > ! 137.582 us  |      }
-> > > >               |      pci_read() {
-> > > >               |        raw_pci_read() {
-> > > >               |          pci_conf1_read() {
-> > > >   0.230 us    |            _raw_spin_lock_irqsave();
-> > > >   0.035 us    |            _raw_spin_unlock_irqrestore();
-> > > >   8.476 us    |          }
-> > > >   8.790 us    |        }
-> > > >   9.091 us    |      }
-> > > > ! 147.263 us  |    }
-> > > > and dozens of the loop could consume ms+.
-> > > >
-> > > > If we execute some lspci commands concurrently, ms+ scheduling
-> > > > latency could be detected.
-> > > >
-> > > > Add scheduling chance in the loop to improve the latency.
-> > >
-> > > Thanks for the patch, this makes a lot of sense.
-> > >
-> > > Shouldn't we do the same in pci_write_config()?
-> > Yes, IMHO, that could be helpful too.
->
-> If it's feasible, it would be nice to actually verify that it makes a
-> difference.  I know config writes should be faster than reads, but
-> they're certainly not as fast as a CPU can pump out data, so there
-> must be *some* mechanism that slows the CPU down.
-We did catch 5ms+ latency caused by pci_read_config() triggered by
-concurrent lspcis, and latency disappeared after this patch.
-For pci_write_config path, we have not met the case actually.:)
-I'll have some tries to verify that, and would send another patch if verified.
+In this patch, add read/write/discard/flush stat counter to record
+io errors.
 
-Thx.
-Regards,
-Jiang
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+---
+ block/blk-core.c          | 14 +++++++++++---
+ block/genhd.c             | 19 +++++++++++++++++++
+ include/linux/part_stat.h |  1 +
+ 3 files changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 10c08ac50697..8f1424835700 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1558,9 +1558,17 @@ bool blk_update_request(struct request *req, blk_status_t error,
+ 		req->q->integrity.profile->complete_fn(req, nr_bytes);
+ #endif
+ 
+-	if (unlikely(error && !blk_rq_is_passthrough(req) &&
+-		     !(req->rq_flags & RQF_QUIET)))
+-		print_req_error(req, error, __func__);
++	if (unlikely(error && !blk_rq_is_passthrough(req))) {
++		if (op_is_flush(req_op(req)))
++			part_stat_inc(&req->rq_disk->part0,
++				io_errors[STAT_FLUSH]);
++		else
++			part_stat_inc(&req->rq_disk->part0,
++				io_errors[op_stat_group(req_op(req))]);
++
++		if (!(req->rq_flags & RQF_QUIET))
++			print_req_error(req, error, __func__);
++	}
+ 
+ 	blk_account_io_completion(req, nr_bytes);
+ 
+diff --git a/block/genhd.c b/block/genhd.c
+index 99c64641c314..852035095485 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -104,6 +104,7 @@ static void part_stat_read_all(struct hd_struct *part, struct disk_stats *stat)
+ 			stat->sectors[group] += ptr->sectors[group];
+ 			stat->ios[group] += ptr->ios[group];
+ 			stat->merges[group] += ptr->merges[group];
++			stat->io_errors[group] += ptr->io_errors[group];
+ 		}
+ 
+ 		stat->io_ticks += ptr->io_ticks;
+@@ -1374,6 +1375,22 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
+ 	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
+ }
+ 
++static ssize_t io_error_show(struct device *dev,
++		      struct device_attribute *attr, char *buf)
++{
++	struct hd_struct *p = dev_to_part(dev);
++	struct disk_stats stat;
++
++	part_stat_read_all(p, &stat);
++
++	return sprintf(buf,
++		"%8lu %8lu %8lu %8lu\n",
++		stat.io_errors[STAT_READ],
++		stat.io_errors[STAT_WRITE],
++		stat.io_errors[STAT_DISCARD],
++		stat.io_errors[STAT_FLUSH]);
++}
++
+ static DEVICE_ATTR(range, 0444, disk_range_show, NULL);
+ static DEVICE_ATTR(ext_range, 0444, disk_ext_range_show, NULL);
+ static DEVICE_ATTR(removable, 0444, disk_removable_show, NULL);
+@@ -1386,6 +1403,7 @@ static DEVICE_ATTR(capability, 0444, disk_capability_show, NULL);
+ static DEVICE_ATTR(stat, 0444, part_stat_show, NULL);
+ static DEVICE_ATTR(inflight, 0444, part_inflight_show, NULL);
+ static DEVICE_ATTR(badblocks, 0644, disk_badblocks_show, disk_badblocks_store);
++static DEVICE_ATTR(io_error, 0444, io_error_show, NULL);
+ 
+ #ifdef CONFIG_FAIL_MAKE_REQUEST
+ ssize_t part_fail_show(struct device *dev,
+@@ -1437,6 +1455,7 @@ static struct attribute *disk_attrs[] = {
+ #ifdef CONFIG_FAIL_IO_TIMEOUT
+ 	&dev_attr_fail_timeout.attr,
+ #endif
++	&dev_attr_io_error.attr,
+ 	NULL
+ };
+ 
+diff --git a/include/linux/part_stat.h b/include/linux/part_stat.h
+index 24125778ef3e..4fe3836d2308 100644
+--- a/include/linux/part_stat.h
++++ b/include/linux/part_stat.h
+@@ -9,6 +9,7 @@ struct disk_stats {
+ 	unsigned long sectors[NR_STAT_GROUPS];
+ 	unsigned long ios[NR_STAT_GROUPS];
+ 	unsigned long merges[NR_STAT_GROUPS];
++	unsigned long io_errors[NR_STAT_GROUPS];
+ 	unsigned long io_ticks;
+ 	local_t in_flight[2];
+ };
+-- 
+2.11.0
+
