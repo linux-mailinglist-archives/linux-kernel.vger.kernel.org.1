@@ -2,189 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B1A265428
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EC8265427
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgIJVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:43:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:35410 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730898AbgIJM6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 08:58:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDF1313D5;
-        Thu, 10 Sep 2020 05:57:55 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54FF43F66E;
-        Thu, 10 Sep 2020 05:57:51 -0700 (PDT)
-Subject: Re: [PATCH 06/12] dma-direct: remove dma_direct_{alloc,free}_pages
-To:     Christoph Hellwig <hch@lst.de>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        iommu@lists.linux-foundation.org
-Cc:     linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-References: <20200908164758.3177341-1-hch@lst.de>
- <20200908164758.3177341-7-hch@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d944983d-fd7e-f59b-75a9-c6e60919f3a5@arm.com>
-Date:   Thu, 10 Sep 2020 13:57:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728755AbgIJVnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:43:20 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:47251 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730477AbgIJM7f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 08:59:35 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 28C9E5C00C3;
+        Thu, 10 Sep 2020 08:59:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 10 Sep 2020 08:59:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=sS4bxANMr6xg2qR/hZMWsTq/vX/
+        b6tWWMKIQiRigbQE=; b=knM5OhHJXfCtJlWt5+CqX4Wif+JUanAB+5KN7YGGX0P
+        EltwyRGjJ/mrFWYC5mBqrnx7CjvLoPq4yqyBkOPKsQULHk8V9Nl7Nqfr4tirMZYQ
+        eKW1WIJOg8bEJ9SS/tBb9YgMi7jFgQfRZurnrOqigiEg3whBXx9uko7q0G2oTsNU
+        lZ1nZXmC06ssniIP0jheWg1ANJGj5se6oljTZx01aJ3XzRPJQcfjVmHdu8WE4HTb
+        rYsqa7iEdcez/aaRvRTAxiP+WmUnvsvqZeLzNjZ3BbYxhDtqD83P9Czd04QOOVT3
+        qq6Kt7QF4k8CxO6szq3KorqxLX3YUvbG/PpQunE+pPw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=sS4bxA
+        NMr6xg2qR/hZMWsTq/vX/b6tWWMKIQiRigbQE=; b=nEac7f/KFbNEe3+Az8DpBP
+        Ix/9LxJRpbjFIUiJ0mUZbmi9wCz7TWesoQuDkkxgHKRMdSdG9ITSeERsMugtvM5q
+        26ouyAdpEgamV2U8MKnKE1geUpbd2RHmHYTGtxpT0WJntwWVYv22Lr3o1DkeIyMw
+        9wMZMI42ktGqUAZRYTPPQeulzi2uwLWN0gm2IDt9bpLqhs3nYjzA5VMm9CckLTth
+        f1PFggFfa9EU5+/Zo3nWTxoqoUwEiFmxFyTz8cjKUuvV0eAheH4ijzfn7r9q/h9L
+        EmeIA29TBExcgQwvlhy2q9871+GdNqxdljuWAczVkX92zwFS5jxfMkG9WvwNdmCw
+        ==
+X-ME-Sender: <xms:MCNaX81rwQZTtf8P0RRzxz4fbabqsOrecMIQEzydc8jrDcG9Gs8cAQ>
+    <xme:MCNaX3EwJxb9WGSsljgIvLeqFGiEa0lsoCcYhz1ZijPZhNrrAbWNJOwrqJuooRDFT
+    aes9sIjFBcUPp4ARyM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehjedghedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnheptdfggfelgeehieeuieegfefgueduudefheffhfejleekheefjeevveegueel
+    ueefnecuffhomhgrihhnpehlihhnuhigqdhsuhhngihirdhorhhgnecukfhppeeltddrke
+    elrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:MCNaX05-wUET0GjTQjjIpn3k7xJuu5xP2xFok--Pw__JW5uHdb4x9w>
+    <xmx:MCNaX11HqC-07I2CXQb75YDyKb6putjsQnQtnQZLSe1KWPPgf32uZg>
+    <xmx:MCNaX_G0wyYbqCBIkZml-CyEVC7Wc0oszK--AJ728vHg01Tvyhm7JQ>
+    <xmx:MSNaX1MBzNczurbftulWRhbkpZz6E0lQz9VRieg6G0mDcNFrMcSqNw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CA538328005E;
+        Thu, 10 Sep 2020 08:59:27 -0400 (EDT)
+Date:   Thu, 10 Sep 2020 14:59:25 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH] documentation: arm: sunxi: Allwinner H2+/H3 update
+Message-ID: <20200910125925.f3m5gd5ngcv4nxiq@gilmour.lan>
+References: <20200908131808.GA65247@monster.powergraphx.local>
 MIME-Version: 1.0
-In-Reply-To: <20200908164758.3177341-7-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jqmigleombspvxe5"
+Content-Disposition: inline
+In-Reply-To: <20200908131808.GA65247@monster.powergraphx.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-08 17:47, Christoph Hellwig wrote:
-> Just merge these helpers into the main dma_direct_{alloc,free} routines,
-> as the additional checks are always false for the two callers.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+--jqmigleombspvxe5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Hi,
+
+On Tue, Sep 08, 2020 at 03:18:08PM +0200, Wilken Gottwalt wrote:
+> Updated information about H2+ and H3 difference and added a link to a
+> slightly newer datasheet.
+>=20
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 > ---
->   arch/x86/kernel/amd_gart_64.c |  6 +++---
->   include/linux/dma-direct.h    |  4 ----
->   kernel/dma/direct.c           | 39 ++++++++++++++---------------------
->   kernel/dma/pool.c             |  2 +-
->   4 files changed, 19 insertions(+), 32 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/amd_gart_64.c b/arch/x86/kernel/amd_gart_64.c
-> index bccc5357bffd6c..153374b996a279 100644
-> --- a/arch/x86/kernel/amd_gart_64.c
-> +++ b/arch/x86/kernel/amd_gart_64.c
-> @@ -467,7 +467,7 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
->   {
->   	void *vaddr;
->   
-> -	vaddr = dma_direct_alloc_pages(dev, size, dma_addr, flag, attrs);
-> +	vaddr = dma_direct_alloc(dev, size, dma_addr, flag, attrs);
->   	if (!vaddr ||
->   	    !force_iommu || dev->coherent_dma_mask <= DMA_BIT_MASK(24))
->   		return vaddr;
-> @@ -479,7 +479,7 @@ gart_alloc_coherent(struct device *dev, size_t size, dma_addr_t *dma_addr,
->   		goto out_free;
->   	return vaddr;
->   out_free:
-> -	dma_direct_free_pages(dev, size, vaddr, *dma_addr, attrs);
-> +	dma_direct_free(dev, size, vaddr, *dma_addr, attrs);
->   	return NULL;
->   }
->   
-> @@ -489,7 +489,7 @@ gart_free_coherent(struct device *dev, size_t size, void *vaddr,
->   		   dma_addr_t dma_addr, unsigned long attrs)
->   {
->   	gart_unmap_page(dev, dma_addr, size, DMA_BIDIRECTIONAL, 0);
-> -	dma_direct_free_pages(dev, size, vaddr, dma_addr, attrs);
-> +	dma_direct_free(dev, size, vaddr, dma_addr, attrs);
->   }
->   
->   static int no_agp;
-> diff --git a/include/linux/dma-direct.h b/include/linux/dma-direct.h
-> index 95e3e28bd93f47..20eceb2e4f91f8 100644
-> --- a/include/linux/dma-direct.h
-> +++ b/include/linux/dma-direct.h
-> @@ -77,10 +77,6 @@ void *dma_direct_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
->   		gfp_t gfp, unsigned long attrs);
->   void dma_direct_free(struct device *dev, size_t size, void *cpu_addr,
->   		dma_addr_t dma_addr, unsigned long attrs);
-> -void *dma_direct_alloc_pages(struct device *dev, size_t size,
-> -		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs);
-> -void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
-> -		dma_addr_t dma_addr, unsigned long attrs);
->   int dma_direct_get_sgtable(struct device *dev, struct sg_table *sgt,
->   		void *cpu_addr, dma_addr_t dma_addr, size_t size,
->   		unsigned long attrs);
-> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> index 949c1cbf08b2d5..1d564bea58571b 100644
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -151,13 +151,18 @@ static struct page *__dma_direct_alloc_pages(struct device *dev, size_t size,
->   	return page;
->   }
->   
-> -void *dma_direct_alloc_pages(struct device *dev, size_t size,
-> +void *dma_direct_alloc(struct device *dev, size_t size,
->   		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
->   {
->   	struct page *page;
->   	void *ret;
->   	int err;
->   
-> +	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> +	    dma_alloc_need_uncached(dev, attrs))
-> +		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
-> +
->   	size = PAGE_ALIGN(size);
->   
->   	if (dma_should_alloc_from_pool(dev, gfp, attrs)) {
-> @@ -256,11 +261,18 @@ void *dma_direct_alloc_pages(struct device *dev, size_t size,
->   	return NULL;
->   }
->   
-> -void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
-> -		dma_addr_t dma_addr, unsigned long attrs)
-> +void dma_direct_free(struct device *dev, size_t size,
-> +		void *cpu_addr, dma_addr_t dma_addr, unsigned long attrs)
->   {
->   	unsigned int page_order = get_order(size);
->   
-> +	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> +	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> +	    dma_alloc_need_uncached(dev, attrs)) {
-> +		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
-> +		return;
-> +	}
-> +
->   	/* If cpu_addr is not from an atomic pool, dma_free_from_pool() fails */
->   	if (dma_should_free_from_pool(dev, attrs) &&
->   	    dma_free_from_pool(dev, cpu_addr, PAGE_ALIGN(size)))
-> @@ -284,27 +296,6 @@ void dma_direct_free_pages(struct device *dev, size_t size, void *cpu_addr,
->   	dma_free_contiguous(dev, dma_direct_to_page(dev, dma_addr), size);
->   }
->   
-> -void *dma_direct_alloc(struct device *dev, size_t size,
-> -		dma_addr_t *dma_handle, gfp_t gfp, unsigned long attrs)
-> -{
-> -	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> -	    dma_alloc_need_uncached(dev, attrs))
-> -		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
-> -	return dma_direct_alloc_pages(dev, size, dma_handle, gfp, attrs);
-> -}
-> -
-> -void dma_direct_free(struct device *dev, size_t size,
-> -		void *cpu_addr, dma_addr_t dma_addr, unsigned long attrs)
-> -{
-> -	if (!IS_ENABLED(CONFIG_ARCH_HAS_DMA_SET_UNCACHED) &&
-> -	    !IS_ENABLED(CONFIG_DMA_DIRECT_REMAP) &&
-> -	    dma_alloc_need_uncached(dev, attrs))
-> -		arch_dma_free(dev, size, cpu_addr, dma_addr, attrs);
-> -	else
-> -		dma_direct_free_pages(dev, size, cpu_addr, dma_addr, attrs);
-> -}
-> -
->   #if defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
->       defined(CONFIG_SWIOTLB)
->   void dma_direct_sync_sg_for_device(struct device *dev,
-> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> index 1281c0f0442bc5..fe11643ff9cc7b 100644
-> --- a/kernel/dma/pool.c
-> +++ b/kernel/dma/pool.c
-> @@ -115,7 +115,7 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
->   #endif
->   	/*
->   	 * Memory in the atomic DMA pools must be unencrypted, the pools do not
-> -	 * shrink so no re-encryption occurs in dma_direct_free_pages().
-> +	 * shrink so no re-encryption occurs in dma_direct_free().
->   	 */
->   	ret = set_memory_decrypted((unsigned long)page_to_virt(page),
->   				   1 << order);
-> 
+>  Documentation/arm/sunxi.rst | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/arm/sunxi.rst b/Documentation/arm/sunxi.rst
+> index b037428aee98..50b9199d929d 100644
+> --- a/Documentation/arm/sunxi.rst
+> +++ b/Documentation/arm/sunxi.rst
+> @@ -103,12 +103,15 @@ SunXi family
+> =20
+>          * No document available now, but is known to be working properly=
+ with
+>            H3 drivers and memory map.
+> +        * It is basically a H3 where the GMAC block was replaced by a 10=
+0 MBit only MAC block.
+
+There's more to it (like 4k output in the display engine iirc), but I'm
+not really sure that it's this file purpose to document each variation
+between SoCs.
+
+>        - Allwinner H3 (sun8i)
+> =20
+>          * Datasheet
+> =20
+>            http://dl.linux-sunxi.org/H3/Allwinner_H3_Datasheet_V1.0.pdf
+> +          or a slightly more up to date version
+> +          https://linux-sunxi.org/images/4/4b/Allwinner_H3_Datasheet_V1.=
+2.pdf
+
+Why not just update the link?
+
+Maxime
+
+--jqmigleombspvxe5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1ojLQAKCRDj7w1vZxhR
+xfDUAP9jgdE8x0VrdXyNBbWljUomEg0TrJa3egeYncWwYJzb2gEAzQmvOrQUSQTB
+kzN0nK4mfgx7QIWetU0KDy3rWfpQ0go=
+=sRYe
+-----END PGP SIGNATURE-----
+
+--jqmigleombspvxe5--
