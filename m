@@ -2,63 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69412647BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064BD2647B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 16:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731068AbgIJOGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 10:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730995AbgIJNxs (ORCPT
+        id S1726059AbgIJOEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 10:04:39 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1913 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730988AbgIJNyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:53:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3ECC061573;
-        Thu, 10 Sep 2020 06:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qid5VVZzlgwDQXJxhD3JSaTvS0/ROxlbq6Lq5kL7DUU=; b=sJt12gg0bTIr+NVG+ai4i7knDT
-        bUTdAzzbk/uv3Q0XwvdXU5kChmZXiXoSe1cHeg5Fa+M4oQd/MV5G1OMLh3fZZY/wSmjInR/T0g34f
-        knMQQvnhBJguSgRQQoU4cV5ZrLLgQLgkD8QGK8F2ex96tMqX4kEID3PSzYe0GjlYLL8PBuZWDM/HD
-        vBAcaL2Pr9kp3uX+kXfwwLiKy6iFv21DmkGgx4G6PmmvtW66MxJ1IBaa/FxzlYXfvQ2ku1gD8z8jP
-        0g6gyvlSJzwG/5iVRYYFL8D+5oEKJ0R7m0nAwFi01zVQG5wH1f65UHEK+KOPZSHhZvCJVWTBbSakq
-        u09qqaow==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGMoc-0002pZ-It; Thu, 10 Sep 2020 13:40:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B994303F45;
-        Thu, 10 Sep 2020 15:40:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 15E812B83026D; Thu, 10 Sep 2020 15:40:40 +0200 (CEST)
-Date:   Thu, 10 Sep 2020 15:40:40 +0200
-From:   peterz@infradead.org
-To:     Anatoly Pugachev <matorola@gmail.com>
-Cc:     Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [sparc64] kernel OOPS bisected from "lockdep: improve
- current->(hard|soft)irqs_enabled synchronisation with actual irq state"
-Message-ID: <20200910134040.GZ1362448@hirez.programming.kicks-ass.net>
-References: <CADxRZqwGH3c5SvByBB3WSQhR_0NLCY=3RZ6541m8afX-scA4HA@mail.gmail.com>
+        Thu, 10 Sep 2020 09:54:47 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f5a2ce20002>; Thu, 10 Sep 2020 06:40:50 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 10 Sep 2020 06:43:06 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 10 Sep 2020 06:43:06 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 10 Sep
+ 2020 13:43:06 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Thu, 10 Sep 2020 13:43:06 +0000
+Received: from moonraker.nvidia.com (Not Verified[10.26.73.219]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f5a2d680002>; Thu, 10 Sep 2020 06:43:05 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH 4/5] arm64: tegra: Add label properties for EEPROMs
+Date:   Thu, 10 Sep 2020 14:42:38 +0100
+Message-ID: <20200910134239.192030-5-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200910134239.192030-1-jonathanh@nvidia.com>
+References: <20200910134239.192030-1-jonathanh@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxRZqwGH3c5SvByBB3WSQhR_0NLCY=3RZ6541m8afX-scA4HA@mail.gmail.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599745250; bh=TmFIrEhD/r+lnGd7gZPolkozi/diWzcIkACJ6iIO42g=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
+         Content-Transfer-Encoding:Content-Type;
+        b=LFm5fyixUUN/5Lc9Ix7kMM8WLtunmR3y7Evl9sIaanXTMG3BdpbjcNHSjcErRZ1az
+         YDGY5MjLo83dn+VX5N6nTwgPi43Ve3eIySDAZVFbgxU+9RU8YbKwA9EvUKIv8vIFu+
+         doMQVWIYEiMDnmoFonAOIVWNyMPfdnabXg2SXrHMlYVl+4mNs6sh3dLmPnEwXWwc6L
+         khHDW3rMKDI/oSy6ulYe09vBrQMM3zKJ8GeH+/sDmsFnUzt13Etv1BPVBR5b6+79uG
+         K1yBsgISr9sJs2zIlOb2W0UvQKvCQ0mVriLi/oSxzJyPx6d4hiaHSVodAZDhGpP9tR
+         Q78o4RMqMeRnA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 02:43:13PM +0300, Anatoly Pugachev wrote:
-> Hello!
-> 
-> The following git patch 044d0d6de9f50192f9697583504a382347ee95ca
-> (linux git master branch) introduced the following kernel OOPS upon
-> kernel boot on my sparc64 T5-2 ldom (VM):
+Populate the label property for the AT24 EEPROMs on the various Jetson
+platforms. Note that the name 'module' is used to identify the EEPROM
+on the processor module board and the name 'system' is used to identify
+the EEPROM on the main base board (which is sometimes referred to as
+the carrier board).
 
-https://lkml.kernel.org/r/20200908154157.GV1362448@hirez.programming.kicks-ass.net
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts | 1 +
+ arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi     | 1 +
+ arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi     | 1 +
+ arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts | 1 +
+ arch/arm64/boot/dts/nvidia/tegra210-p2180.dtsi     | 1 +
+ arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts | 1 +
+ arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts | 2 ++
+ 7 files changed, 8 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts b/arch/arm6=
+4/boot/dts/nvidia/tegra186-p2771-0000.dts
+index 802b8c52489a..381a84912ba8 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra186-p2771-0000.dts
+@@ -222,6 +222,7 @@ eeprom@57 {
+ 			compatible =3D "atmel,24c02";
+ 			reg =3D <0x57>;
+=20
++			label =3D "system";
+ 			vcc-supply =3D <&vdd_1v8>;
+ 			address-width =3D <8>;
+ 			pagesize =3D <8>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi b/arch/arm64/bo=
+ot/dts/nvidia/tegra186-p3310.dtsi
+index 53d92fdd7f06..fd9177447711 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
+@@ -173,6 +173,7 @@ eeprom@50 {
+ 			compatible =3D "atmel,24c02";
+ 			reg =3D <0x50>;
+=20
++			label =3D "module";
+ 			vcc-supply =3D <&vdd_1v8>;
+ 			address-width =3D <8>;
+ 			pagesize =3D <8>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi b/arch/arm64/bo=
+ot/dts/nvidia/tegra194-p2888.dtsi
+index 0ea0bd83cb8e..d71b7a1140fe 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
+@@ -64,6 +64,7 @@ eeprom@50 {
+ 				compatible =3D "atmel,24c02";
+ 				reg =3D <0x50>;
+=20
++				label =3D "module";
+ 				vcc-supply =3D <&vdd_1v8ls>;
+ 				address-width =3D <8>;
+ 				pagesize =3D <8>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts b/arch/arm6=
+4/boot/dts/nvidia/tegra194-p2972-0000.dts
+index 4d8a0e10250f..54d057beec59 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra194-p2972-0000.dts
+@@ -28,6 +28,7 @@ eeprom@56 {
+ 				compatible =3D "atmel,24c02";
+ 				reg =3D <0x56>;
+=20
++				label =3D "system";
+ 				vcc-supply =3D <&vdd_1v8ls>;
+ 				address-width =3D <8>;
+ 				pagesize =3D <8>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2180.dtsi b/arch/arm64/bo=
+ot/dts/nvidia/tegra210-p2180.dtsi
+index 85ee7e6b71ac..6077d572d828 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra210-p2180.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra210-p2180.dtsi
+@@ -273,6 +273,7 @@ eeprom@50 {
+ 			compatible =3D "atmel,24c02";
+ 			reg =3D <0x50>;
+=20
++			label =3D "module";
+ 			vcc-supply =3D <&vdd_1v8>;
+ 			address-width =3D <8>;
+ 			pagesize =3D <8>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts b/arch/arm6=
+4/boot/dts/nvidia/tegra210-p2371-2180.dts
+index 56adf287a82c..4c9c2a054642 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra210-p2371-2180.dts
+@@ -86,6 +86,7 @@ eeprom@57 {
+ 			compatible =3D "atmel,24c02";
+ 			reg =3D <0x57>;
+=20
++			label =3D "system";
+ 			vcc-supply =3D <&vdd_1v8>;
+ 			address-width =3D <8>;
+ 			pagesize =3D <8>;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts b/arch/arm6=
+4/boot/dts/nvidia/tegra210-p3450-0000.dts
+index ba892cd4b5a9..859241db4b4d 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
++++ b/arch/arm64/boot/dts/nvidia/tegra210-p3450-0000.dts
+@@ -144,6 +144,7 @@ eeprom@50 {
+ 			compatible =3D "atmel,24c02";
+ 			reg =3D <0x50>;
+=20
++			label =3D "module";
+ 			vcc-supply =3D <&vdd_1v8>;
+ 			address-width =3D <8>;
+ 			pagesize =3D <8>;
+@@ -155,6 +156,7 @@ eeprom@57 {
+ 			compatible =3D "atmel,24c02";
+ 			reg =3D <0x57>;
+=20
++			label =3D "system";
+ 			vcc-supply =3D <&vdd_1v8>;
+ 			address-width =3D <8>;
+ 			pagesize =3D <8>;
+--=20
+2.25.1
+
