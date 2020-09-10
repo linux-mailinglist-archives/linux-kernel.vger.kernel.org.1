@@ -2,119 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FEF264AA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79B9264A92
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgIJRGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
+        id S1727838AbgIJREZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726980AbgIJRFw (ORCPT
+        with ESMTP id S1726937AbgIJREH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:05:52 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C793C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:05:52 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id w12so6803432qki.6
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kX63D1UHED1kS8hbCxUzu+mEWg7ZHS1VFvzltaxjL10=;
-        b=KFEjsz6dsif7THN645xuBX/Te4+yd6MQ/TqEo10SYpgYzr6PqmPiUvOnofhZTm8pLJ
-         i1MSGyiUENF2fRYa4g7GQyXxK3QGxk0ORzFvLkYrquAF92ONVfZSpirXIun2NYHPJjA/
-         SklQ2A5KYMnTEbIBXPvILYPo87Bh4Mtyif+RUApWr4mGX9fMK0BgMEh72V8C35BkVVhZ
-         k6gq97Fv/tAkKyUTFXItuHq5Xp4FrAITe3pZgmcixtymxAzJAZFpbtyXIUMfeWKHaCmU
-         GUojq/Qd0HEpx0bdDj14qXy97BfhZsdn85u6NEhuJddW8wrCVxfshFetMeUfhMjEgqlG
-         43Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kX63D1UHED1kS8hbCxUzu+mEWg7ZHS1VFvzltaxjL10=;
-        b=UV9sEMZPWjcV0k0OAh1vW4A6EOHJcH8hQmqfqukBpbrOJ+XK/H6f/ml5YcosuNihtb
-         hTTLo0rfB5VzzYVoewhPoZEjnvFV6hKkECiYAbqP22oNoYPxZny0Rlgh+EJtOHaOKeHp
-         CNIK68uSRrfftXpO/yYaH51ZDR0vVX33kG+CX8mKHqq9pLvurNbH206xuRSQ7RWipB+3
-         UQlbwmtOgQJm33sRhTcSpykuSkEciRYTslQe3/ibi0NrZpEuF/ytD5s4kmaG3Ikwyrn8
-         OWnzSgtclJRdaHZKw53AkKlNV7IMN2+5cTBt6lfpdloggIw/V1b+t28j0wQ5RmrRN7dS
-         R9Tg==
-X-Gm-Message-State: AOAM5315UxRe50XZK9/tgRPnsvWJAoFzUaYDmS2iaYWBTOOo7QUWtWqi
-        ymsAZF/dbIRFjmn+Xowuz3k=
-X-Google-Smtp-Source: ABdhPJzfkyubjrBmIlbp6+8/VJ+krP7Kmjd4yU/hWgCJgzQjIQ0+RGK4MS0ntgOg5NX5QZvDFILGMQ==
-X-Received: by 2002:a05:620a:8c8:: with SMTP id z8mr8748406qkz.63.1599757551410;
-        Thu, 10 Sep 2020 10:05:51 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id j11sm6924193qko.111.2020.09.10.10.05.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 10:05:50 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Eric Anholt <eric@anholt.net>, Maxime Ripard <maxime@cerno.tech>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] drm/vc4: Update type of reg parameter in vc4_hdmi_{read,write}
-Date:   Thu, 10 Sep 2020 10:04:02 -0700
-Message-Id: <20200910170401.3857250-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 10 Sep 2020 13:04:07 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C62C061757;
+        Thu, 10 Sep 2020 10:04:07 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 60E78735;
+        Thu, 10 Sep 2020 17:04:07 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 11:04:06 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/3] Documentation/admin-guide: kernel-parameters:
+ update CMA entries
+Message-ID: <20200910110406.7db7ffe0@lwn.net>
+In-Reply-To: <20200910032606.7355-2-rdunlap@infradead.org>
+References: <20200910032606.7355-1-rdunlap@infradead.org>
+        <20200910032606.7355-2-rdunlap@infradead.org>
+Organization: LWN.net
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns 100+ times in the vc4 driver along the lines of:
+On Wed,  9 Sep 2020 20:26:04 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-drivers/gpu/drm/vc4/vc4_hdmi_phy.c:518:13: warning: implicit conversion
-from enumeration type 'enum vc4_hdmi_field' to different enumeration
-type 'enum vc4_hdmi_regs' [-Wenum-conversion]
-        HDMI_WRITE(HDMI_TX_PHY_POWERDOWN_CTL,
-        ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+> Add qualifying build option legend [CMA] to kernel boot options
+> that requirce CMA support to be enabled for them to be usable.
+> 
+> Also capitalize 'CMA' when it is used as an acronym.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
 
-The HDMI_READ and HDMI_WRITE macros pass in enumerators of type
-vc4_hdmi_field but vc4_hdmi_write and vc4_hdmi_read expect a enumerator
-of type vc4_hdmi_regs, causing a warning for every instance of this.
-Update the parameter type so there is no more mismatch.
+This doesn't apply to docs-next; it seems you're fixing 5.10 stuff in
+linux-next that went through Christoph's tree?  So this patch will need to
+go to him.
 
-Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1149
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
+Thanks,
 
-Note, the variable names in these functions do not really make much
-sense after this patch but attempting to flip the variable names made
-everything feel even weirder. Feel free to rewrite this in whatever way
-you prefer, I just don't want my builds to be chalk full of warnings :)
-
- drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-index 47364bd3960d..7c6b4818f245 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-@@ -392,7 +392,7 @@ void __iomem *__vc4_hdmi_get_field_base(struct vc4_hdmi *hdmi,
- }
- 
- static inline u32 vc4_hdmi_read(struct vc4_hdmi *hdmi,
--				enum vc4_hdmi_regs reg)
-+				enum vc4_hdmi_field reg)
- {
- 	const struct vc4_hdmi_register *field;
- 	const struct vc4_hdmi_variant *variant = hdmi->variant;
-@@ -417,7 +417,7 @@ static inline u32 vc4_hdmi_read(struct vc4_hdmi *hdmi,
- #define HDMI_READ(reg)		vc4_hdmi_read(vc4_hdmi, reg)
- 
- static inline void vc4_hdmi_write(struct vc4_hdmi *hdmi,
--				  enum vc4_hdmi_regs reg,
-+				  enum vc4_hdmi_field reg,
- 				  u32 value)
- {
- 	const struct vc4_hdmi_register *field;
-
-base-commit: 8c3c818c23a5bbce6ff180dd2ee04415241df77c
--- 
-2.28.0
-
+jon
