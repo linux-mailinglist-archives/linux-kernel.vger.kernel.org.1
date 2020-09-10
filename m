@@ -2,179 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78517264BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DA6264C0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgIJR4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:56:18 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:34026 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726947AbgIJRyq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:54:46 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AHsbT9018071;
-        Thu, 10 Sep 2020 12:54:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599760477;
-        bh=8VF0Oh1yZo2QlXy6xBN4Gt3CcNyVN/I/9Gy0UvsoIXU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UgYZ5CSL624P7uM0B+sWwneSViI7gMKHxrCkFCnOwxcSz52zz8TEh+LaomP82bCC2
-         hpelQPhIYMPWrXsEuHBr/949V/0o++fCTww3UbIDKZR94+TgOSIUO3ODcoxNVXmJrH
-         BgGXL4pP8yugGAdDgGzYoLrBV6iXyDNNT6BZuKXw=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08AHsbb9087262
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 12:54:37 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 12:54:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 12:54:37 -0500
-Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AHsaNs000740;
-        Thu, 10 Sep 2020 12:54:36 -0500
-Subject: Re: [PATCH net-next v3 1/3] net: dp83869: Add ability to advertise
- Fiber connection
-To:     Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200903114259.14013-1-dmurphy@ti.com>
- <20200903114259.14013-2-dmurphy@ti.com>
- <20200905111755.4bd874b2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200907142911.GT3112546@lunn.ch>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <aea8db25-88a9-d8d2-1a26-ecb81dbeb2b5@ti.com>
-Date:   Thu, 10 Sep 2020 12:54:36 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200907142911.GT3112546@lunn.ch>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S1726384AbgIJR6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725807AbgIJR5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 13:57:48 -0400
+Received: from localhost.localdomain (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3808820BED;
+        Thu, 10 Sep 2020 17:57:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599760667;
+        bh=muQ6zjVn/mf+iXsfCUdXzl3dZG6B8J8l8bbNbkMxaHs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1/dJz17PLrZMeRIjQd6sFEAce0o7eu4K+r0dL+zosiqq0luiYlHoWB51FielsPqaO
+         Wa3TSJxOyAyZi6SExx28ze23dGlUmJasReiKbjSU4S7it/I5rb2rMggP0mkbcOPGUV
+         cSry5a/sdkrgJlogKXiGfjplhGDzzPpiCOwVMjVI=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 00/15] ARM: dts: / gpio: Add dtschema for NXP PCA953x and correct dts
+Date:   Thu, 10 Sep 2020 19:57:18 +0200
+Message-Id: <20200910175733.11046-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+Hi,
 
-On 9/7/20 9:29 AM, Andrew Lunn wrote:
-> On Sat, Sep 05, 2020 at 11:17:55AM -0700, Jakub Kicinski wrote:
->> On Thu, 3 Sep 2020 06:42:57 -0500 Dan Murphy wrote:
->>> Add the ability to advertise the Fiber connection if the strap or the
->>> op-mode is configured for 100Base-FX.
->>>
->>> Auto negotiation is not supported on this PHY when in fiber mode.
->>>
->>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> Some comments, I'm not very phy-knowledgeable so bear with me
->> (hopefully PHY maintainers can correct me, too).
->>
->>> diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
->>> index 58103152c601..48a68474f89c 100644
->>> --- a/drivers/net/phy/dp83869.c
->>> +++ b/drivers/net/phy/dp83869.c
->>> @@ -52,6 +52,11 @@
->>>   					 BMCR_FULLDPLX | \
->>>   					 BMCR_SPEED1000)
->>>   
->>> +#define MII_DP83869_FIBER_ADVERTISE    (ADVERTISED_TP | ADVERTISED_MII | \
->>> +					ADVERTISED_FIBRE | ADVERTISED_BNC |  \
->> I'm not actually sure myself what the semantics of port type advertise
->> bits are, but if this is fiber why advertise TP and do you really have
->> BNC connectors? :S
-> Hi Jakub
->
-> Normally, we start with a base of ETHTOOL_LINK_MODE_TP_BIT,
-> ETHTOOL_LINK_MODE_MII_BIT and then use genphy_read_abilities() to read
-> the standard registers in the PHY to determine what the PHY
-> supports. The PHY driver has the ability of provide its own function
-> to get the supported features, which is happening here. As far as i
-> remember, there is no standard way to indicate a PHY is doing Fibre,
-> not copper.
->
-> I agree that TP and BMC make no sense here, since my understanding is
-> that the device only supports Fibre when strapped for Fibre. It cannot
-> swap to TP, and it has been at least 20 years since i last had a BNC
-> cable in my hands.
->
-> In this context, i've no idea what MII means.
+Changes since v1:
+1. Patch 1: Use additionalProperties, Add wakeup-source, Add hogs, Extend example with hogs.
+2. New patches: 3, 4, 5, 6, 7, 9, 10, 12, 14 and 15.
 
-I will remove the TP and BNC.
+The patches could be picked up independently if dtschema makes sense.
+The fixes for pins make sense anyway, regardless of dtschema.
+
+Best regards,
+Krzysztof
 
 
->
->>> +					ADVERTISED_Pause | ADVERTISED_Asym_Pause | \
->>> +					ADVERTISED_100baseT_Full)
->> You say 100Base-FX, yet you advertise 100Base-T?
-> 100Base-FX does not actually exist in ADVERTISED_X form. I guess this
-> is historical. It was not widely supported, the broadcom PHYs appear
-> to support it, but not much else. We were also running out of bits to
-> represent these ADVERTISED_X values. Now that we have changed to linux
-> bitmaps and have unlimited number of bits, it makes sense to add it.
+Krzysztof Kozlowski (15):
+  dt-bindings: gpio: convert bindings for NXP PCA953x family to dtschema
+  dt-bindings: gpio: convert bindings for Maxim MAX732x family to
+    dtschema
+  arm64: dts: mediatek: fix tca6416 reset GPIOs in pumpkin
+  arm64: dts: mediatek: align GPIO hog names with dtschema
+  arm64: dts: renesas: align GPIO hog names with dtschema
+  arm64: dts: ti: align GPIO hog names with dtschema
+  arm64: dts: xilinx: align GPIO hog names with dtschema
+  ARM: dts: am335x: lxm: fix PCA9539 GPIO expander properties
+  ARM: dts: am335x: t335: align GPIO hog names with dtschema
+  ARM: dts: am3874: iceboard: fix GPIO expander reset GPIOs
+  ARM: dts: aspeed: fix PCA95xx GPIO expander properties on Portwell
+  ARM: dts: aspeed: align GPIO hog names with dtschema
+  ARM: dts: dove: fix PCA95xx GPIO expander properties on A510
+  ARM: dts: armada: align GPIO hog names with dtschema
+  ARM: dts: imx6q: align GPIO hog names with dtschema
 
-The note in the ethtool.h says
+ .../devicetree/bindings/gpio/gpio-max732x.txt |  58 -----
+ .../devicetree/bindings/gpio/gpio-pca953x.txt |  90 -------
+ .../bindings/gpio/gpio-pca95xx.yaml           | 234 ++++++++++++++++++
+ .../devicetree/bindings/trivial-devices.yaml  |   4 -
+ arch/arm/boot/dts/am335x-lxm.dts              |   4 +
+ arch/arm/boot/dts/am335x-sbc-t335.dts         |   4 +-
+ arch/arm/boot/dts/am3874-iceboard.dts         |   8 +-
+ arch/arm/boot/dts/armada-388-clearfog.dts     |   4 +-
+ arch/arm/boot/dts/armada-388-clearfog.dtsi    |  10 +-
+ arch/arm/boot/dts/armada-388-helios4.dts      |   6 +-
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts  |   2 +-
+ arch/arm/boot/dts/aspeed-bmc-opp-mihawk.dts   |  16 +-
+ .../boot/dts/aspeed-bmc-portwell-neptune.dts  |   2 +
+ arch/arm/boot/dts/dove-sbc-a510.dts           |   1 +
+ arch/arm/boot/dts/imx6q-b450v3.dts            |  14 +-
+ arch/arm/boot/dts/imx6q-b650v3.dts            |  12 +-
+ arch/arm/boot/dts/imx6q-b850v3.dts            |   4 +-
+ arch/arm/boot/dts/imx6q-bx50v3.dtsi           |  12 +-
+ .../boot/dts/mediatek/pumpkin-common.dtsi     |  28 +--
+ .../boot/dts/renesas/r8a77951-salvator-xs.dts |   2 +-
+ .../boot/dts/renesas/r8a77965-salvator-xs.dts |   2 +-
+ arch/arm64/boot/dts/renesas/ulcb-kf.dtsi      |  14 +-
+ .../dts/ti/k3-j721e-common-proc-board.dts     |   4 +-
+ .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    |   8 +-
+ 24 files changed, 316 insertions(+), 227 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-max732x.txt
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
 
-     /* Last allowed bit for __ETHTOOL_LINK_MODE_LEGACY_MASK is bit
-      * 31. Please do NOT define any SUPPORTED_* or ADVERTISED_*
-      * macro for bits > 31. The only way to use indices > 31 is to
-      * use the new ETHTOOL_GLINKSETTINGS/ETHTOOL_SLINKSETTINGS API.
-      */
-
-Which was added by Heiner
-
-I guess I would prefer to add this in a separate patchset once I figure 
-out how the ETHTOOL_GLINKSETTINGS/ETHTOOL_SLINKSETTINGS API works
-
->
->>> @@ -383,7 +389,37 @@ static int dp83869_configure_mode(struct phy_device *phydev,
->>>   
->>>   		break;
->>>   	case DP83869_RGMII_1000_BASE:
->>> +		break;
->>>   	case DP83869_RGMII_100_BASE:
->>> +		/* Only allow advertising what this PHY supports */
->>> +		linkmode_and(phydev->advertising, phydev->advertising,
->>> +			     phydev->supported);
->>> +
->>> +		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
->>> +				 phydev->supported);
->>> +		linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT,
->>> +				 phydev->advertising);
->>> +
->>> +		/* Auto neg is not supported in fiber mode */
->>> +		bmcr = phy_read(phydev, MII_BMCR);
->>> +		if (bmcr < 0)
->>> +			return bmcr;
->>> +
->>> +		phydev->autoneg = AUTONEG_DISABLE;
->>> +		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
->>> +				   phydev->supported);
->>> +		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
->>> +				   phydev->advertising);
->>> +
->>> +		if (bmcr & BMCR_ANENABLE) {
->>> +			ret =  phy_modify(phydev, MII_BMCR, BMCR_ANENABLE, 0);
->>> +			if (ret < 0)
->>> +				return ret;
->>> +		}
->>> +
->>> +		phy_modify_changed(phydev, MII_ADVERTISE,
->>> +				   MII_DP83869_FIBER_ADVERTISE,
->>> +				   MII_DP83869_FIBER_ADVERTISE);
->> This only accesses standard registers, should it perhaps be a helper in
->> the kernel's phy code?
-> I suspect the PHY is not following the standard when strapped to
-> fibre.
-
-No its a bit wonky in that respect.
-
-Dan
+-- 
+2.17.1
 
