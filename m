@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C798B2648F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0E42648D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 17:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731362AbgIJPjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 11:39:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42266 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730736AbgIJPiI (ORCPT
+        id S1731351AbgIJPet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 11:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731028AbgIJPcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:38:08 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08AF2EN3074908;
-        Thu, 10 Sep 2020 11:18:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=GbDZ7CBL/LYipeJIp2XxF3Pn1ncBwSbgSFF+3KzbL8k=;
- b=XqNu86gtYDuMVkhJSOVDKsZb2ErtTuItMVO1cbHSnmirE6ANLxP0BZFyfwkGeyT1nbR9
- 0W6ky73O1um/vKY4qTX+u/I5oePs52W/Xh/WVUpO+VbUkT5PUPRgGaYGmSTfh9zuZVa5
- a6AMC6MXpVK1znA4R7KtHY0u7VTv81uN7k9k15xvM4rTsKh2XkHSUlWt9rgg2/jdEQUZ
- SMRaJU/gOtQI+plnecPhc012W+XVM8w9ePf9kYs/NUFcYHauR+rI4dD4XpKb50HZRDll
- /hdxPxHMfLroVAADQZAKuZEeABJ0VSvO3DsNX5Sv8ErmdJVQAd3+NgENSH3RIRtoOKos qg== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33fpd60nmw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 11:18:45 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08AFDZqI013601;
-        Thu, 10 Sep 2020 15:18:45 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04wdc.us.ibm.com with ESMTP id 33c2a98c31-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Sep 2020 15:18:45 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08AFIiTI55312666
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Sep 2020 15:18:44 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3DEDF6E050;
-        Thu, 10 Sep 2020 15:18:44 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A47DC6E052;
-        Thu, 10 Sep 2020 15:18:43 +0000 (GMT)
-Received: from SHADE6A.ibmuc.com (unknown [9.211.140.115])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Sep 2020 15:18:43 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, linux-fsi@lists.ozlabs.org,
-        andrew@aj.id.au, joel@jms.id.au, robh+dt@kernel.org,
-        sboyd@kernel.org, mturquette@baylibre.com, alistair@popple.id.au,
-        jk@ozlabs.org
-Subject: [PATCH 4/4] fsi: Aspeed master: Set bus frequency from devicetree
-Date:   Thu, 10 Sep 2020 10:18:40 -0500
-Message-Id: <20200910151840.25333-5-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200910151840.25333-1-eajames@linux.ibm.com>
-References: <20200910151840.25333-1-eajames@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-10_03:2020-09-10,2020-09-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
- clxscore=1015 priorityscore=1501 spamscore=0 suspectscore=1 bulkscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009100130
+        Thu, 10 Sep 2020 11:32:39 -0400
+Received: from mail-oi1-x263.google.com (mail-oi1-x263.google.com [IPv6:2607:f8b0:4864:20::263])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072B9C06136A
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:26:05 -0700 (PDT)
+Received: by mail-oi1-x263.google.com with SMTP id i17so6267469oig.10
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 08:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=N9KMfAmv5gz9m6lApSf8P0rQ6LhDYejBww8cNrHpQok=;
+        b=PH7EqfcrI9gbwFUc67/qdfVoPVX/x4PJuxUjvJeXseMzxwVdhBcsyHdWLOP5cGyfx5
+         7ZSBopRHdt6dSl26MJHlVEZbcs2PNDaWG3QYJWdgHtTwLu6T/ib8f2QzZMy+M/cSbnFa
+         5MjLhstOsdMcqMcTFdZvluz11qF37cAKikXTk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=N9KMfAmv5gz9m6lApSf8P0rQ6LhDYejBww8cNrHpQok=;
+        b=JhWfJEC1HrLWKQwkRZSbNr/T7J/RKYVZt0og1aQxlRRoEsExjcbymOC9Ep6MjKz53Q
+         2aibbNbg9hLKrMLHkmCixrzi9klEhcKSJDjWIQnswZKP3oPWLeISLLUw16Yk82yVtSSY
+         /8RwmQ+qn3O2nHvTDHYdQWAmOGoWedaLzd4JWylT8/ZRf+77iDD9rVfitFrYdegecD52
+         bgzRiHHVJQUps0I9P/9sZl2wUwVV3TKIZOathPqrgmufSDChFVYrPGl07x2zRuO6T1e4
+         ekTTFkRRlCt3DGCp6yCVmlF+YcZWBK20WS64kJ5aqlAX2d1vz82SsuX255hmlUaJpIKG
+         E3jg==
+X-Gm-Message-State: AOAM530XcriX9b43rE9UgK/DQnMwV1FLPgTcqMcXaW0h9Hf892GpZQa9
+        YeTfl7X9+jg3890WgPBaCA2ordFLzo6e8Y4iTOQhN5icvImU
+X-Google-Smtp-Source: ABdhPJxW+wUZjy6K9BKtFZv7NGBFSRSsF5MWXPbl2+IX73/JOQCBJl9BEXktjrUDKBXePb25dMK3bpyfrhPr
+X-Received: by 2002:aca:b454:: with SMTP id d81mr350910oif.150.1599751563367;
+        Thu, 10 Sep 2020 08:26:03 -0700 (PDT)
+Received: from rj-aorus.ric.broadcom.com ([192.19.228.250])
+        by smtp-relay.gmail.com with ESMTPS id h4sm943004oom.19.2020.09.10.08.25.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 08:26:03 -0700 (PDT)
+X-Relaying-Domain: broadcom.com
+From:   Ray Jui <ray.jui@broadcom.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Ray Jui <ray.jui@broadcom.com>
+Subject: [PATCH 1/4] dt-bindings: spi: Add compatible string for brcmstb SoCs
+Date:   Thu, 10 Sep 2020 08:25:36 -0700
+Message-Id: <20200910152539.45584-1-ray.jui@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the FSI bus frequency based on the value encoded in the
-devicetree. The default value is 166MHz, which is the highest
-frequency some FSI slaves can accept.
+Add compatible string for brcmstb 7445 SoCs.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Ray Jui <ray.jui@broadcom.com>
 ---
- drivers/fsi/fsi-master-aspeed.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/fsi/fsi-master-aspeed.c b/drivers/fsi/fsi-master-aspeed.c
-index c006ec008a1a..be19fee0bece 100644
---- a/drivers/fsi/fsi-master-aspeed.c
-+++ b/drivers/fsi/fsi-master-aspeed.c
-@@ -515,6 +515,7 @@ static int fsi_master_aspeed_probe(struct platform_device *pdev)
- 	struct fsi_master_aspeed *aspeed;
- 	struct resource *res;
- 	int rc, links, reg;
-+	u32 bus_freq = 166666666;
- 	__be32 raw;
- 
- 	rc = tacoma_cabled_fsi_fixup(&pdev->dev);
-@@ -539,6 +540,10 @@ static int fsi_master_aspeed_probe(struct platform_device *pdev)
- 		dev_err(aspeed->dev, "couldn't get clock\n");
- 		return PTR_ERR(aspeed->clk);
- 	}
-+
-+	of_property_read_u32(pdev->dev.of_node, "bus-frequency", &bus_freq);
-+	clk_set_rate(aspeed->clk, bus_freq);
-+
- 	rc = clk_prepare_enable(aspeed->clk);
- 	if (rc) {
- 		dev_err(aspeed->dev, "couldn't enable clock\n");
+diff --git a/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt b/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
+index f5e518d099f2..9d4d5d866fa0 100644
+--- a/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
++++ b/Documentation/devicetree/bindings/spi/brcm,spi-bcm-qspi.txt
+@@ -32,6 +32,8 @@ Required properties:
+     			     			  			    BRCMSTB  SoCs
+     "brcm,spi-bcm7435-qspi", "brcm,spi-bcm-qspi", "brcm,spi-brcmstb-mspi" : Second Instance of MSPI
+     			     			  			    BRCMSTB  SoCs
++    "brcm,spi-bcm7445-qspi", "brcm,spi-bcm-qspi", "brcm,spi-brcmstb-mspi" : Second Instance of MSPI
++                                                                            BRCMSTB  SoCs
+     "brcm,spi-bcm7216-qspi", "brcm,spi-bcm-qspi", "brcm,spi-brcmstb-mspi" : Second Instance of MSPI
+     			     			  			    BRCMSTB  SoCs
+     "brcm,spi-bcm7278-qspi", "brcm,spi-bcm-qspi", "brcm,spi-brcmstb-mspi" : Second Instance of MSPI
 -- 
-2.26.2
+2.17.1
 
