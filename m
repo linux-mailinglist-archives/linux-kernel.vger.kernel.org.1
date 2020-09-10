@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2C4264204
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8962D264266
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 11:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730203AbgIJJbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 05:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730511AbgIJJYe (ORCPT
+        id S1730474AbgIJJhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 05:37:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38868 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730340AbgIJJWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:24:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17B2C0617AB;
-        Thu, 10 Sep 2020 02:22:20 -0700 (PDT)
-Date:   Thu, 10 Sep 2020 09:22:18 -0000
+        Thu, 10 Sep 2020 05:22:21 -0400
+Date:   Thu, 10 Sep 2020 09:22:19 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1599729739;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EsAEaxQcfMykCCgzeZIxtb2g345dmR2OX7KSezQw0dM=;
-        b=PVSKCUpGQ1r6z0GB3BqnNXGouS9HGO4ivrn+Gcb6psT4rySTqr6rZ7HOsfmJKjF1SoPo/Z
-        XBdqf81l1CP/lVHalGWkdEw4ZHLYB4Ette6c1T0a+53sLHN60JF41ycPylpmpdMjHzjJRU
-        JST1y0H3UmB6n+s/ScuUq4szjM/zWio/VWRG1WHGg9ndp08xyejAaPfvqrAYBZvMSwJ5nZ
-        0V6hZINEBs9T3lRvq6Krx3PMChZAQbwfFHVwGAgFvryzzpUu6qA57kMWxc81hwKmm9hcEu
-        r8Wv8TMO9A3b9xCcV7iuZJKsFu298v3+cp3PrlnQlK8kADyYc2OcKxi7OLIfZw==
+        bh=7QD1v8bsZImEeiNSDgX6Ze2YQSeBDgl0KHzGM1X9wHA=;
+        b=lnsq3jEFXayscGrg3a6BT8ZJUNgrcMG1TKHZslj/WBziSbqiW4aCox7XGiuve0k0HLu//F
+        9EGMndoWb0JYdcjM76uquztqDPgtlO+A5m2M7KK/L6i2fAMf1wQNQyEtc4pGy0RUtZavoD
+        sWwE3vInh1RHRtxoRQRRth3XEyAuezqheoKf36+IsNHa0h/WqAHmIQf3/vuJW7ZcdTlvRu
+        smJwzgh9onoBttTW7wP7ZAO13NSx680jXKjiUxOXOu7Xri6CcMAwD+NVB/B04hAFhxscrn
+        afyPrqGxcgMmbXt67nMJ/eiqhhk8jUau09f0qL8MIDDENMP15jnh2IfFHgL/zA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1599729739;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,19 +33,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EsAEaxQcfMykCCgzeZIxtb2g345dmR2OX7KSezQw0dM=;
-        b=g00rlTSQjly2O9ruPCz/Fnf9KEfKvcfl7wNSPMYf4tywVO/OHeaAbxlqBeig7de1ZIaPZC
-        HQH+ecfHOxw+JzBw==
+        bh=7QD1v8bsZImEeiNSDgX6Ze2YQSeBDgl0KHzGM1X9wHA=;
+        b=+vdysP987g2ZMweL7dvG/rDbgnvZOqxiCTv/qcg9sf+7xeUgo9A/NK06eEP2sVFyBTAXcb
+        OEaUON76m+Fo1xBg==
 From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/head/64: Install a CPU bringup IDT
+Subject: [tip: x86/seves] x86/head/64: Switch to initial stack earlier
 Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200907131613.12703-34-joro@8bytes.org>
-References: <20200907131613.12703-34-joro@8bytes.org>
+        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200907131613.12703-33-joro@8bytes.org>
+References: <20200907131613.12703-33-joro@8bytes.org>
 MIME-Version: 1.0
-Message-ID: <159972973867.20229.1265262773282852755.tip-bot2@tip-bot2>
+Message-ID: <159972973918.20229.8742099836749431075.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,138 +58,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/seves branch of tip:
 
-Commit-ID:     f5963ba7a45fc6ff298a34976064354be437e1d8
-Gitweb:        https://git.kernel.org/tip/f5963ba7a45fc6ff298a34976064354be437e1d8
+Commit-ID:     3add38cb96a1ae7d152db69ab4329e809c2af2d4
+Gitweb:        https://git.kernel.org/tip/3add38cb96a1ae7d152db69ab4329e809c2af2d4
 Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Mon, 07 Sep 2020 15:15:34 +02:00
+AuthorDate:    Mon, 07 Sep 2020 15:15:33 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 07 Sep 2020 22:18:38 +02:00
+CommitterDate: Mon, 07 Sep 2020 21:44:01 +02:00
 
-x86/head/64: Install a CPU bringup IDT
+x86/head/64: Switch to initial stack earlier
 
-Add a separate bringup IDT for the CPU bringup code that will be used
-until the kernel switches to the idt_table. There are two reasons for a
-separate IDT:
+Make sure there is a stack once the kernel runs from virtual addresses.
+At this stage any secondary CPU which boots will have lost its stack
+because the kernel switched to a new page-table which does not map the
+real-mode stack anymore.
 
-	1) When the idt_table is set up and the secondary CPUs are
-	   booted, it contains entries (e.g. IST entries) which
-	   require certain CPU state to be set up. This includes a
-	   working TSS (for IST), MSR_GS_BASE (for stack protector) or
-	   CR4.FSGSBASE (for paranoid_entry) path. By using a
-	   dedicated IDT for early boot this state need not to be set
-	   up early.
-
-	2) The idt_table is static to idt.c, so any function
-	   using/modifying must be in idt.c too. That means that all
-	   compiler driven instrumentation like tracing or KASAN is
-	   also active in this code. But during early CPU bringup the
-	   environment is not set up for this instrumentation to work
-	   correctly.
-
-To avoid all of these hassles and make early exception handling robust,
-use a dedicated bringup IDT.
-
-The IDT is loaded two times, first on the boot CPU while the kernel is
-still running on direct mapped addresses, and again later after the
-switch to kernel addresses has happened. The second IDT load happens on
-the boot and secondary CPUs.
+This is needed for handling early #VC exceptions caused by instructions
+like CPUID.
 
 Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200907131613.12703-34-joro@8bytes.org
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://lkml.kernel.org/r/20200907131613.12703-33-joro@8bytes.org
 ---
- arch/x86/include/asm/setup.h |  1 +-
- arch/x86/kernel/head64.c     | 39 +++++++++++++++++++++++++++++++++++-
- arch/x86/kernel/head_64.S    |  5 ++++-
- 3 files changed, 45 insertions(+)
+ arch/x86/kernel/head_64.S |  9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/setup.h b/arch/x86/include/asm/setup.h
-index 5c2fd05..4b3ca5a 100644
---- a/arch/x86/include/asm/setup.h
-+++ b/arch/x86/include/asm/setup.h
-@@ -50,6 +50,7 @@ extern unsigned long __startup_64(unsigned long physaddr, struct boot_params *bp
- extern unsigned long __startup_secondary_64(void);
- extern void startup_64_setup_env(unsigned long physbase);
- extern int early_make_pgtable(unsigned long address);
-+extern void early_setup_idt(void);
- 
- #ifdef CONFIG_X86_INTEL_MID
- extern void x86_intel_mid_early_setup(void);
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 8c82be4..7bfd5c2 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -36,6 +36,8 @@
- #include <asm/microcode.h>
- #include <asm/kasan.h>
- #include <asm/fixmap.h>
-+#include <asm/realmode.h>
-+#include <asm/desc.h>
- 
- /*
-  * Manage page tables very early on.
-@@ -509,6 +511,41 @@ void __init x86_64_start_reservations(char *real_mode_data)
- }
- 
- /*
-+ * Data structures and code used for IDT setup in head_64.S. The bringup-IDT is
-+ * used until the idt_table takes over. On the boot CPU this happens in
-+ * x86_64_start_kernel(), on secondary CPUs in start_secondary(). In both cases
-+ * this happens in the functions called from head_64.S.
-+ *
-+ * The idt_table can't be used that early because all the code modifying it is
-+ * in idt.c and can be instrumented by tracing or KASAN, which both don't work
-+ * during early CPU bringup. Also the idt_table has the runtime vectors
-+ * configured which require certain CPU state to be setup already (like TSS),
-+ * which also hasn't happened yet in early CPU bringup.
-+ */
-+static gate_desc bringup_idt_table[NUM_EXCEPTION_VECTORS] __page_aligned_data;
-+
-+static struct desc_ptr bringup_idt_descr = {
-+	.size		= (NUM_EXCEPTION_VECTORS * sizeof(gate_desc)) - 1,
-+	.address	= 0, /* Set at runtime */
-+};
-+
-+/* This runs while still in the direct mapping */
-+static void startup_64_load_idt(unsigned long physbase)
-+{
-+	struct desc_ptr *desc = fixup_pointer(&bringup_idt_descr, physbase);
-+
-+	desc->address = (unsigned long)fixup_pointer(bringup_idt_table, physbase);
-+	native_load_idt(desc);
-+}
-+
-+/* This is used when running on kernel addresses */
-+void early_setup_idt(void)
-+{
-+	bringup_idt_descr.address = (unsigned long)bringup_idt_table;
-+	native_load_idt(&bringup_idt_descr);
-+}
-+
-+/*
-  * Setup boot CPU state needed before kernel switches to virtual addresses.
-  */
- void __head startup_64_setup_env(unsigned long physbase)
-@@ -521,4 +558,6 @@ void __head startup_64_setup_env(unsigned long physbase)
- 	asm volatile("movl %%eax, %%ds\n"
- 		     "movl %%eax, %%ss\n"
- 		     "movl %%eax, %%es\n" : : "a"(__KERNEL_DS) : "memory");
-+
-+	startup_64_load_idt(physbase);
- }
 diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 83050c9..1de09b5 100644
+index f402087..83050c9 100644
 --- a/arch/x86/kernel/head_64.S
 +++ b/arch/x86/kernel/head_64.S
-@@ -198,6 +198,11 @@ SYM_CODE_START(secondary_startup_64)
- 	 */
- 	movq initial_stack(%rip), %rsp
+@@ -192,6 +192,12 @@ SYM_CODE_START(secondary_startup_64)
+ 	movl	initial_gs+4(%rip),%edx
+ 	wrmsr
  
-+	/* Setup and Load IDT */
-+	pushq	%rsi
-+	call	early_setup_idt
-+	popq	%rsi
++	/*
++	 * Setup a boot time stack - Any secondary CPU will have lost its stack
++	 * by now because the cr3-switch above unmaps the real-mode stack
++	 */
++	movq initial_stack(%rip), %rsp
 +
  	/* Check if nx is implemented */
  	movl	$0x80000001, %eax
  	cpuid
+@@ -212,9 +218,6 @@ SYM_CODE_START(secondary_startup_64)
+ 	/* Make changes effective */
+ 	movq	%rax, %cr0
+ 
+-	/* Setup a boot time stack */
+-	movq initial_stack(%rip), %rsp
+-
+ 	/* zero EFLAGS after setting rsp */
+ 	pushq $0
+ 	popfq
