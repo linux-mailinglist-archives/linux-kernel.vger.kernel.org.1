@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FEA26516B
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAC72651B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgIJUyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:54:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49941 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730921AbgIJOuF (ORCPT
+        id S1727981AbgIJVAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731127AbgIJOsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 10:50:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599749402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bvnl+oZNY7fSyrT1rYfr08kEJ6c9MI0yMW+cHdyj6Us=;
-        b=BhxXHjiTwtv9WHCCuq+wUgPt6McGP5ocihLphql9cXHjoyClq/VbdGQ9yAbbBg55pJMfU7
-        0xAB+L2r7aml4jojc3cuZ6E6vbx6Pzw2FYYSjZj6FZmXsvpuN6yAhRAjoAN9sEm22X3z6x
-        sqe0tixqPMzGgY6iR/06iexiM0mX1bc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-1fCbfGeXMlCHyZyhcD0t6g-1; Thu, 10 Sep 2020 10:49:13 -0400
-X-MC-Unique: 1fCbfGeXMlCHyZyhcD0t6g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 01AF5425CE;
-        Thu, 10 Sep 2020 14:47:48 +0000 (UTC)
-Received: from krava (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D79865C22E;
-        Thu, 10 Sep 2020 14:47:45 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 16:47:44 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Wade Mealing <wmealing@redhat.com>
-Subject: Re: [PATCH] perf: Fix race in perf_mmap_close function
-Message-ID: <20200910144744.GA1663813@krava>
-References: <20200910104153.1672460-1-jolsa@kernel.org>
- <CAM9d7cjqq8+wcZWJ77oONKXu-FsaT_YvRxzaGbRT8PjLOw-AkQ@mail.gmail.com>
+        Thu, 10 Sep 2020 10:48:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5F6C06179A;
+        Thu, 10 Sep 2020 07:48:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=G/ynTjiiaQImGikICL0Gi3SQqZvoYMtx3vuRG4L2Av0=; b=qOtT7aIVEPRamwsXqaXgrJlja8
+        q2wS41r86uBmexZ/oqJQzqwyKpAFJXnGBEmvOQk5iJqrYtbDECr3uG2rXmaqm0KlEWHXxZo2RHcQy
+        0ryEeRmnT6dbxMtwimADAon7dOEyWt5hJQSsPWE6p/JAwPBc8YUj6xx4fCFPJeHAAdBN+sM5S9MTg
+        FowMF/Yyd3yg13KFYySdeZtHRrjTC7AE6aXk69XxPAfc8CnAwaBcAaGX3hEcgxs0NxH9mubGzqUma
+        0rP4/e+qVoXjVmX1AxpSX++MdR/eFn4iF7Y/DBtWhBj3C+HnendB6PWzU0TdPvPX5Jy2Fu7b2tnFc
+        EAdhi49A==;
+Received: from [2001:4bb8:184:af1:3ecc:ac5b:136f:434a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGNsH-0006vT-Ul; Thu, 10 Sep 2020 14:48:34 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: bdi cleanups v4
+Date:   Thu, 10 Sep 2020 16:48:20 +0200
+Message-Id: <20200910144833.742260-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cjqq8+wcZWJ77oONKXu-FsaT_YvRxzaGbRT8PjLOw-AkQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:48:02PM +0900, Namhyung Kim wrote:
+Hi Jens,
 
-SNIP
+this series contains a bunch of different BDI cleanups.  The biggest item
+is to isolate block drivers from the BDI in preparation of changing the
+lifetime of the block device BDI in a follow up series.
 
-> >   _do_fork+0x83/0x3a0
-> >   __do_sys_wait4+0x83/0x90
-> >   __do_sys_clone+0x85/0xa0
-> >   do_syscall_64+0x5b/0x1e0
-> >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Using atomic decrease and check instead of separated calls.
-> > This fixes CVE-2020-14351.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/events/core.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 7ed5248f0445..29313cc54d9e 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -5903,8 +5903,6 @@ static void perf_mmap_close(struct vm_area_struct *vma)
-> >                 mutex_unlock(&event->mmap_mutex);
-> >         }
-> >
-> > -       atomic_dec(&rb->mmap_count);
-> > -
-> >         if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
-> >                 goto out_put;
-> 
-> But when it takes the goto, rb->mmap_count won't decrement anymore..
 
-event->mmap_count is per event, so if we have have race in here,
-2 threads can go through with each event->mmap_count reaching zero
+Changes since v3:
+ - rebased on the lasted block tree, which has some of the prep
+   changes merged
+ - extend the ->ra_pages changes to ->io_pages
+ - move initializing ->ra_pages and ->io_pages for block devices to
+   blk_register_queue
 
-jirka
+Changes since v2:
+ - fix a rw_page return value check
+ - fix up various changelogs
 
+Changes since v1:
+ - rebased to the for-5.9/block-merge branch
+ - explicitly set the readahead to 0 for ubifs, vboxsf and mtd
+ - split the zram block_device operations
+ - let rw_page users fall back to bios in swap_readpage
+
+
+Diffstat:
+ block/blk-core.c              |    3 -
+ block/blk-integrity.c         |    4 +-
+ block/blk-mq-debugfs.c        |    1 
+ block/blk-settings.c          |    5 +-
+ block/blk-sysfs.c             |    4 +-
+ block/genhd.c                 |   13 +++++--
+ drivers/block/aoe/aoeblk.c    |    2 -
+ drivers/block/brd.c           |    1 
+ drivers/block/drbd/drbd_nl.c  |   18 ---------
+ drivers/block/drbd/drbd_req.c |    4 --
+ drivers/block/rbd.c           |    2 -
+ drivers/block/zram/zram_drv.c |   19 +++++++---
+ drivers/md/bcache/super.c     |    4 --
+ drivers/md/dm-table.c         |    9 +---
+ drivers/md/raid0.c            |   16 --------
+ drivers/md/raid10.c           |   46 ++++++++----------------
+ drivers/md/raid5.c            |   31 +++++++---------
+ drivers/mmc/core/queue.c      |    3 -
+ drivers/mtd/mtdcore.c         |    2 +
+ drivers/nvdimm/btt.c          |    2 -
+ drivers/nvdimm/pmem.c         |    1 
+ drivers/nvme/host/core.c      |    3 -
+ drivers/nvme/host/multipath.c |   10 +----
+ drivers/scsi/iscsi_tcp.c      |    4 +-
+ fs/9p/vfs_file.c              |    2 -
+ fs/9p/vfs_super.c             |    6 ++-
+ fs/afs/super.c                |    1 
+ fs/btrfs/disk-io.c            |    2 -
+ fs/fs-writeback.c             |    7 ++-
+ fs/fuse/inode.c               |    4 +-
+ fs/namei.c                    |    4 +-
+ fs/nfs/super.c                |    9 ----
+ fs/super.c                    |    2 +
+ fs/ubifs/super.c              |    2 +
+ fs/vboxsf/super.c             |    2 +
+ include/linux/backing-dev.h   |   78 +++++++-----------------------------------
+ include/linux/blkdev.h        |    3 +
+ include/linux/drbd.h          |    1 
+ include/linux/fs.h            |    2 -
+ mm/backing-dev.c              |   13 +++----
+ mm/filemap.c                  |    4 +-
+ mm/memcontrol.c               |    2 -
+ mm/memory-failure.c           |    2 -
+ mm/migrate.c                  |    2 -
+ mm/mmap.c                     |    2 -
+ mm/page-writeback.c           |   18 ++++-----
+ mm/page_io.c                  |   18 +++++----
+ mm/swapfile.c                 |    4 +-
+ 48 files changed, 144 insertions(+), 253 deletions(-)
