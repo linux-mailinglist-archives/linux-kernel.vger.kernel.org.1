@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDF8264044
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7315326404A
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 10:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729525AbgIJInD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 04:43:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50062 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730270AbgIJIlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 04:41:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D9032B3D9;
-        Thu, 10 Sep 2020 08:41:44 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Joshua Kinard <kumba@gentoo.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] rtc: ds1685: Fix bank switching to avoid endless loop
-Date:   Thu, 10 Sep 2020 10:41:24 +0200
-Message-Id: <20200910084124.138560-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.16.4
+        id S1729779AbgIJIpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 04:45:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52322 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729455AbgIJInX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 04:43:23 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A6A026E2D7F30463F3E5;
+        Thu, 10 Sep 2020 16:43:17 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 10 Sep 2020
+ 16:43:07 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <davem@davemloft.net>, <steffen.klassert@secunet.com>,
+        <willemb@google.com>, <mstarovoitov@marvell.com>,
+        <kuba@kernel.org>, <mchehab+huawei@kernel.org>,
+        <antoine.tenart@bootlin.com>, <edumazet@google.com>,
+        <Jason@zx2c4.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v2] net: Correct the comment of dst_dev_put()
+Date:   Thu, 10 Sep 2020 04:41:53 -0400
+Message-ID: <20200910084153.52078-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ds1685_rtc_begin_data_access() tried to access an extended register before
-enabling access to it by switching to bank 1. Depending on content in NVRAM
-this could lead to an endless loop. While at it fix also switch back to
-bank 0 in ds1685_rtc_end_data_access().
+Since commit 8d7017fd621d ("blackhole_netdev: use blackhole_netdev to
+invalidate dst entries"), we use blackhole_netdev to invalidate dst entries
+instead of loopback device anymore.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- drivers/rtc/rtc-ds1685.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/core/dst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-ds1685.c b/drivers/rtc/rtc-ds1685.c
-index 56c670af2e50..dfbd7b88b2b9 100644
---- a/drivers/rtc/rtc-ds1685.c
-+++ b/drivers/rtc/rtc-ds1685.c
-@@ -193,12 +193,12 @@ ds1685_rtc_begin_data_access(struct ds1685_priv *rtc)
- 	rtc->write(rtc, RTC_CTRL_B,
- 		   (rtc->read(rtc, RTC_CTRL_B) | RTC_CTRL_B_SET));
+diff --git a/net/core/dst.c b/net/core/dst.c
+index d6b6ced0d451..0c01bd8d9d81 100644
+--- a/net/core/dst.c
++++ b/net/core/dst.c
+@@ -144,7 +144,7 @@ static void dst_destroy_rcu(struct rcu_head *head)
  
-+	/* Switch to Bank 1 */
-+	ds1685_rtc_switch_to_bank1(rtc);
-+
- 	/* Read Ext Ctrl 4A and check the INCR bit to avoid a lockout. */
- 	while (rtc->read(rtc, RTC_EXT_CTRL_4A) & RTC_CTRL_4A_INCR)
- 		cpu_relax();
--
--	/* Switch to Bank 1 */
--	ds1685_rtc_switch_to_bank1(rtc);
- }
- 
- /**
-@@ -213,7 +213,7 @@ static inline void
- ds1685_rtc_end_data_access(struct ds1685_priv *rtc)
- {
- 	/* Switch back to Bank 0 */
--	ds1685_rtc_switch_to_bank1(rtc);
-+	ds1685_rtc_switch_to_bank0(rtc);
- 
- 	/* Clear the SET bit in Ctrl B */
- 	rtc->write(rtc, RTC_CTRL_B,
+ /* Operations to mark dst as DEAD and clean up the net device referenced
+  * by dst:
+- * 1. put the dst under loopback interface and discard all tx/rx packets
++ * 1. put the dst under blackhole interface and discard all tx/rx packets
+  *    on this route.
+  * 2. release the net_device
+  * This function should be called when removing routes from the fib tree
 -- 
-2.16.4
+2.19.1
 
