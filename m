@@ -2,136 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667E3264F7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01521264F6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 21:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgIJToy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 15:44:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730896AbgIJPcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 11:32:15 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CF7C061375;
-        Thu, 10 Sep 2020 08:32:07 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id c10so5662469otm.13;
-        Thu, 10 Sep 2020 08:32:07 -0700 (PDT)
+        id S1728108AbgIJTmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 15:42:08 -0400
+Received: from mail-eopbgr760088.outbound.protection.outlook.com ([40.107.76.88]:31038
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731105AbgIJPem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 11:34:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MMb2pCeXxvDuHzTLe/5M5OzwgmA+6e81dhWr7Vh8MkdFHNJa6NAgFZensPYgtqDbWX3S+q9BBing2Ji3JEDz/5mYd3RaoinWD6NWxe7G8YyLDAnLGr35ttwQ+LKigaaiyZN7XFC8gAselm+cildoYWGE39opYyhXSaB22+wVzL+JqYc7qJaD4HjZ9M2PQ8Qpy14CfxIwRL7pYU0dQuimshLsjyeuM3dI3iPUK9EgNOWFrhSAUu4XLVDQkSFRND/SKpAGnzd2a1G121tB2MgprmIBS9z/yThWbUKLUiZOPP2QzOJmVPfut9EnUd4y8mm0wCzGSh08+/jsmQlHRS5ghA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TDQvN2Wf7R8oj8Cj5LTY4US5V4A/UCxCVK2fc6qpAYw=;
+ b=S0el9BFB8nx0OL9Vs+ArARGyZABiAvwRnrbSrlS4TE/SYAzXjN/2+Fzin06MQdBNXrVw0ZyHCCeHKJ9aXJDhb1fYsjDZ1QXPkySP4Mihyc+kVGOp1j/ACVAJz5fPxlx5Fu+h6669bUmyT506UqyU54l2ATVTg5YQ2H7zAQQwekYoCFj4eYVC7Y9KpBmYkWy/3a7mL0+2gn3N6eZrEZpTLsBXI0pKYalKiTJtfSdh0JD5lhjFB17K/BPglsSMJ2a2rcZqCUWJllT9v872FGPxaqkbugExMvwB7FlJ7ply5JxE9BlVg2t764qguYBffr5wD5XjWyexsTwjIqV+e+4csw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=JiSCidLpAFauFqzkl7i2+9u0fMatvu0gGkE6KN/KG9U=;
-        b=BVu5wJvWAgAn7anPmfckOEzsLzv87rlFrOI+NlJOALnxFmUatLy9YcYLoNHR2I8w6E
-         bQ4bdVIAs28MSeQkmdCl5c225NIHlKHE4SIFZva2s2CTxxLCDIC1dn/SwHSCpwb92UYt
-         8ZthJCksGq3uYaXgPSKvvcZYdJ4YpSj5SjUiaTzgR5b3UiEoFTRZL+e0O+keGHBNzrkD
-         kKay6ibxlrMCvcH3ymEyU9LR9McKlvrekkgZlDr9K1lfzA7OF5rHM2wNvK6FUdVYtPog
-         lXXKtGtFuq9QZg/zt1JW5gfDC6ohtmEkV84wbrmtP6iTPRcvsK7EX6euy5FI8UCRO6ml
-         jw/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=JiSCidLpAFauFqzkl7i2+9u0fMatvu0gGkE6KN/KG9U=;
-        b=eIfoRYLgcWzqSRGjmwL345OXsyEyj4JEUOHxzzEyeIsbh0slMlt1+/Ke+6DHER8kNa
-         mIuciS7aBWgGP2tDlmNTjdFfJE1XvmJo2eNCulCwnnbRhBpVtAqAdSXC3tBUKXdW/nz+
-         YOq27g9XslKo8gK4rqaD3oPq4efP1vxTPMy+ip6L39yT9cp/GEaR774RewyDjc8U6cEi
-         UDG5p8XZqhZt0J4ReQSAJHx9gJFBrDRWXfxejbeMrpaWoaZsQEcObqbV1pLCW8BCgRLX
-         vIsP02FKRAJT2VCQaBDX0BoVBeCtEg4UaxMoMw5cssADnL4uIQfGNzLK6IEhVClYTxvx
-         ks6g==
-X-Gm-Message-State: AOAM530eXz8cIT/NfRoLFARKLhv79T04vIZ0FgwzJifHxSn3XvgU49q1
-        6aPed82lLkJB8U377CDQyE/sXHfaD/s=
-X-Google-Smtp-Source: ABdhPJxMyTwNAXwvzU2ykEwYZlouGnvaDbkicUpfWN823STLrYt6/gwSKbdqSCmGlnQOeB3NIxHc/A==
-X-Received: by 2002:a05:6830:10ca:: with SMTP id z10mr4305280oto.208.1599751926843;
-        Thu, 10 Sep 2020 08:32:06 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 126sm991772oof.28.2020.09.10.08.32.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 10 Sep 2020 08:32:06 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] kbuild: Try up to eight kallsyms link passes
-Date:   Thu, 10 Sep 2020 08:32:04 -0700
-Message-Id: <20200910153204.156871-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TDQvN2Wf7R8oj8Cj5LTY4US5V4A/UCxCVK2fc6qpAYw=;
+ b=Tzaw1A2aqbnjxqPZzGklE3UfIn9Fgs4unT6vZCeEFiO9ZbFM0cqHW7BMXY4He1IzF4g8gmG6rOqDmQFoVMYlQzzGkRRO2xb/2KbcYXdbYzcwPTiME4GmQJle2wULHeyR2lNLi+3B2DMrxX0SOEr+CzjKP4W3ePV0HdcCnYf/57Q=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com (2603:10b6:303:5e::11)
+ by MWHPR12MB1694.namprd12.prod.outlook.com (2603:10b6:301:11::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
+ 2020 15:34:37 +0000
+Received: from MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::5dc0:bafc:6040:a8fe]) by MW3PR12MB4379.namprd12.prod.outlook.com
+ ([fe80::5dc0:bafc:6040:a8fe%2]) with mapi id 15.20.3370.016; Thu, 10 Sep 2020
+ 15:34:37 +0000
+Subject: Re: [PATCH -next] drm/amd/display: Fix possible memleak in
+ dp_trigger_hotplug()
+To:     YueHaibing <yuehaibing@huawei.com>, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, mikita.lipski@amd.com,
+        eryk.brol@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20200910032636.27296-1-yuehaibing@huawei.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+Message-ID: <62c4312b-9e92-23bb-0823-7f1aca125c0f@amd.com>
+Date:   Thu, 10 Sep 2020 11:34:34 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <20200910032636.27296-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT1PR01CA0148.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::27) To MW3PR12MB4379.namprd12.prod.outlook.com
+ (2603:10b6:303:5e::11)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.29.235.206] (165.204.55.250) by YT1PR01CA0148.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 15:34:35 +0000
+X-Originating-IP: [165.204.55.250]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 294fd88d-10da-45b5-3612-08d8559f0662
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1694:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB16949BBDC03A31EFA489CF4E8C270@MWHPR12MB1694.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lhNoKU2TARfga15JzKfNFfRxxw6Fyjj1rfv8omMoHxO51sfQ3TCdgFsv9pCThkM0tTrncF6k9AXZV9ZmI4Dd0DuQrmp7zrAkwe9r11279z9eGgGYElkp6s3wusgoQmi9yUJZm6+BWNBWEo+1d2/2r6rCADtQtqhqpEuukVBy3iB4kDUbBwIx8h5m9oxfg9kEfC6x0qMu5ojzHhCr48JVXIOEadIqZ5q2hhKIhQHPHf4Rz2UYhcukVD2PbQ3FuOPuKqOyaCX2ykR1vd6koZ9jKJ9n2jA/fmyfsHVU6/AiPmqIE0yE8+vxcQ353AOx1JK7chfrrKttSQl5XqQqrge0260Ifa432gd34pve4Gp2kIGkPzE+D1ZvFoiHL3kCmJLL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39860400002)(396003)(366004)(66556008)(16576012)(36756003)(53546011)(16526019)(478600001)(8936002)(6636002)(186003)(4326008)(6486002)(66476007)(956004)(316002)(66946007)(83380400001)(44832011)(52116002)(31686004)(26005)(8676002)(31696002)(5660300002)(86362001)(2616005)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: uNwPU5UyzaF3Zx4OqeNcjt4+hyNUb7i0eY3T1a/BC+556jG8llP+9LUB5g91MFPj2KjS2TlqMXCsBN/13byXJwHr5ODNvn3c6/rvLGbhey0yxOF1YKCcmBaZgM+xyKpHz6mgQ2nAq7L8ap7YOXLDNv/FpaNLKTzJ3WrOVGyV9NIyp67U0I1WwK8mf2PM7RBvahxcnny6gl23asOUyTY4qjqHu2tMNqjIrVglhhTZKeuBsz40ZJ1lOqw8bChWRB7LHPn4iw9O5vwIJxHR9urE8XkefrshyTG+bWUpnrlMdBSY4FHWSHKuGYCYndDLXA13GQ5ea/9/dKaoSTzmivyCBe0rRrd4RSfBBqc0k00svJa6YArsdf2kk5Qjksn5JHE1/WOQ3SAv8Qi38een+QQWD4UjT6lA2GOU1/SpjLhX2hxuBjpP+77BYKWRjOpEthi7zLOuzmBwJfaDHquHSoXDV4gGFVO2TqFnjHg8dkd48J4YCn7uZHmZ5Pm7cvCnPPLhfTV3rqyoGvmxwDrBuPNrvk2tlkYCVRzgJlLqqQa9fRM6Oufuuv+do7mx+T/K+yF90jDOwRcJey/BUP9H+KLIsyg8xgZnXyrrTDBcfVysKpmu64sunL/uA7yfreoVscPvZEppfgnm5P3wV6L7AOYdVQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 294fd88d-10da-45b5-3612-08d8559f0662
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 15:34:37.0137
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UnwJHbnljMRAuq0bnH0efeEo07sewBv6w/Hk2VgTO/845LvKmIjnruodQFZqBxRrFWgz4q1coJKtBMou/SWLfA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1694
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since v5.8, powerpc:allmodconfig often fails to build with the following
-error message.
+On 2020-09-09 11:26 p.m., YueHaibing wrote:
+> If parse_write_buffer_into_params() fails, we should free
+> wr_buf before return.
+> 
+> Fixes: 6f77b2ac6280 ("drm/amd/display: Add connector HPD trigger debugfs entry")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-	Inconsistent kallsyms data
-	Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
 
-Setting KALLSYMS_EXTRA_PASS=1 does not help. As it turns out, the build
-currently needs up to four link passes to succeed.
+Harry
 
-Similar problems have been observed over time for other architectures.
-
-Make the number of link passes dynamic to solve the problem. Try up to
-eight passes before giving up. If KALLSYMS_EXTRA_PASS is set, add one
-additional pass after succeeding.
-
-Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- scripts/link-vmlinux.sh | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
-
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index e6e2d9e5ff48..72abdee0e649 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -316,11 +316,10 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
- 	#     From here, we generate a correct .tmp_kallsyms2.o
- 	# 3)  That link may have expanded the kernel image enough that
- 	#     more linker branch stubs / trampolines had to be added, which
--	#     introduces new names, which further expands kallsyms. Do another
--	#     pass if that is the case. In theory it's possible this results
--	#     in even more stubs, but unlikely.
--	#     KALLSYMS_EXTRA_PASS=1 may also used to debug or work around
--	#     other bugs.
-+	#     introduces new names, which further expands kallsyms. Try up
-+	#     to eight passes to handle that situation before giving up.
-+	#     KALLSYMS_EXTRA_PASS=1 may be used to add an extra step
-+	#     for debugging or to work around other bugs.
- 	# 4)  The correct ${kallsymso} is linked into the final vmlinux.
- 	#
- 	# a)  Verify that the System.map from vmlinux matches the map from
-@@ -329,13 +328,21 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
- 	kallsyms_step 1
- 	kallsyms_step 2
- 
--	# step 3
--	size1=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso_prev})
--	size2=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso})
--
--	if [ $size1 -ne $size2 ] || [ -n "${KALLSYMS_EXTRA_PASS}" ]; then
--		kallsyms_step 3
--	fi
-+	# step n
-+	step=3
-+	while [ $step -le 8 ]; do
-+		size1=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso_prev})
-+		size2=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" ${kallsymso})
-+
-+		if [ $size1 -eq $size2 ]; then
-+			if [ -z "${KALLSYMS_EXTRA_PASS}" ]; then
-+				break
-+			fi
-+			KALLSYMS_EXTRA_PASS=""
-+		fi
-+		kallsyms_step $step
-+		step="$(expr $step + 1)"
-+	done
- fi
- 
- vmlinux_link vmlinux "${kallsymso}" ${btf_vmlinux_bin_o}
--- 
-2.17.1
-
+> ---
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> index 83da24aced45..11e16fbe484d 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> @@ -1089,8 +1089,10 @@ static ssize_t dp_trigger_hotplug(struct file *f, const char __user *buf,
+>   	if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
+>   						(long *)param, buf,
+>   						max_param_num,
+> -						&param_nums))
+> +						&param_nums)) {
+> +		kfree(wr_buf);
+>   		return -EINVAL;
+> +	}
+>   
+>   	if (param_nums <= 0) {
+>   		DRM_DEBUG_DRIVER("user data not be read\n");
+> 
