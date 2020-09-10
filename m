@@ -2,79 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7930B2643D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1202643FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgIJKXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:23:52 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:36801 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725887AbgIJKXp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 06:23:45 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id GJjykZHBFPTBMGJjzkQoiT; Thu, 10 Sep 2020 12:23:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1599733424; bh=CbVywzRhTwESwTLncavT0QOmGghx5xoDHScuLakxdAg=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=fjv+fthr0z+fWLqk/saFqMJwPludDCUjwvWTedb3L16Vu7PX/MPccgt/B1gRDrYAc
-         7sHQpHtccd2GVqK7zMn+/BqzcFfxn9UJXYMPuVRN4yvdduRagU4JAsoBniY1R53EpJ
-         rp1vi4KyH2+aCuyR231CfVuCQBmS0Z82CcMQH1+moG6PNCov8NIy8UYFa+m8vBDKEn
-         TWJCqaKDoRFnCtgCXlvHb3mrJENaS/f2ta8gUb7iTwyqKFFS5gJatsxCBHlgyfSrb9
-         BvJE7dElT+3ymi5Li6x50pzYUyb8CNPu86lO6pfpyMlTfqr1fuMTa2UwQnWr+poCBk
-         mvS+xMaDkuTPw==
-Subject: Re: [PATCH 05/28] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-References: <20200820044347.GA4533@lst.de> <20200820052004.GA5305@lst.de>
- <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com>
- <20200820165407.GD12693@lst.de>
- <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
- <20200901110617.GA13232@lst.de>
- <CAAFQd5CmPVSxmZJVn7HnNUn8srZbAbnfzpNMYw3KcDzn7xD2cg@mail.gmail.com>
- <CAAFQd5BDh05DNPShr54opY2GyY-FcH7g8=V2t4xBwz0OwRu9xQ@mail.gmail.com>
- <20200910094921.GB97481@google.com>
- <f92991e1-e0d7-69ca-9541-1546bb139dd3@xs4all.nl>
- <20200910101431.GC97481@google.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <257cbc46-84a0-e7bc-10c8-d08d3e395d1a@xs4all.nl>
-Date:   Thu, 10 Sep 2020 12:23:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730964AbgIJK0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730108AbgIJKYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 06:24:13 -0400
+Received: from mail.kernel.org (ip5f5ad5ac.dynamic.kabel-deutschland.de [95.90.213.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85BB721D79;
+        Thu, 10 Sep 2020 10:24:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599733450;
+        bh=tRtzpV/EaF+F+QPhRVFzfaGCqPgsZhD/m9MP9pqx2tU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GfvHfC3hvpMyqbY1P+AWvVdzenAOXwch1FJsK65zZvz43xH6l07AsEgOEyTaX39yN
+         Qk9MY75s7B3FTZcnds+w3c0SAjZ8vqhHeNCnqaN8Bi9XhNkAH8zGRyCXkQvMYJ5rCj
+         3+tsRBiYcE3xjGP/4CvZHV3XNymiNb+F0khkE3q8=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kGJkO-00EINc-7a; Thu, 10 Sep 2020 12:24:08 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 00/14] get rid of the remaining kernel-doc warnings when building the docs
+Date:   Thu, 10 Sep 2020 12:23:53 +0200
+Message-Id: <cover.1599732764.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200910101431.GC97481@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfM7Ra6p3Jyqxv7W+xDLc98yw+tw+AKF0Qg3MBVGA02lxjo8bqeX7Y1NPjnYUaGU9upiJzdO826cgl4PvvnMIUKVtLQiDd866YY7q9MgVBDf8+sKXAo1s
- z+2eEOq+MyS7yuIyi0/qyS80/opBYJ0a2uI1dLzO64eoJz6esZGvy6gu211Iorh9ZfKD5PAEhy0tThW6KqrbFkqWVaBCdvLZP6x7ucTXHxWdtOCYzUwkwKDf
- eGn01eSzcuexKRT7nn3qPlx0B+KA2sOH/byVi0F0gksIF7vymgMEQcmJL1uMwawAJzXXkfxCrmUXLwVNyTxPw0t8JmgX2irAh/Kxw5gKhOFPIF5ScNWknWuQ
- Rl5buj+2dHw8XSpz8cThaDz6qsEhVjlpjhUITPWdIEhsnIGbJsSozMTVCxgubXKQPtOAO2hOSHQkTB+U9FHXe8RfzkjEwLlOz20I9kjcrXmpHelWbOXI0aNA
- zl4Na7QiXUMn+zEF
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/09/2020 12:14, Sergey Senozhatsky wrote:
-> On (20/09/10 11:57), Hans Verkuil wrote:
->>
->> Perhaps, but this patch is meant to revert *all* changes relating to
->> V4L2_FLAG_MEMORY_NON_CONSISTENT. We don't want to have unused fields
->> in the public API.
-> 
-> OK, would you prefer a squashed patch for all the kernel rollbacks and
-> cleanups or a patch series?
+As described on its subject, this series finally get rid of all kernel-doc warnings.
 
-My preference is a single patch.
+With this series applied (plus my last series fixing other warnings), building
+the docs is now clean[1] against next-20200909:
+
+    $ make cleandocs >/dev/null 2>/dev/null && make htmldocs
+    Warning: Documentation/bpf/ringbuf.rst references a file that doesn't exist: Documentation/litmus_tests/bpf-rb/_
+    rm -f   /devel/v4l/docs/Documentation/output/audio.h.rst /devel/v4l/docs/Documentation/output/ca.h.rst /devel/v4l/docs/Documentation/output/dmx.h.rst /devel/v4l/docs/Documentation/output/frontend.h.rst /devel/v4l/docs/Documentation/output/net.h.rst /devel/v4l/docs/Documentation/output/video.h.rst /devel/v4l/docs/Documentation/output/videodev2.h.rst /devel/v4l/docs/Documentation/output/media.h.rst /devel/v4l/docs/Documentation/output/cec.h.rst /devel/v4l/docs/Documentation/output/lirc.h.rst 2>/dev/null
+    Warning: Documentation/bpf/ringbuf.rst references a file that doesn't exist: Documentation/litmus_tests/bpf-rb/_
+      SPHINX  htmldocs --> file:///devel/v4l/docs/Documentation/output
+      PARSE   include/uapi/linux/dvb/audio.h
+      PARSE   include/uapi/linux/dvb/ca.h
+      PARSE   include/uapi/linux/dvb/dmx.h
+      PARSE   include/uapi/linux/dvb/frontend.h
+      PARSE   include/uapi/linux/dvb/net.h
+      PARSE   include/uapi/linux/dvb/video.h
+      PARSE   include/uapi/linux/videodev2.h
+      PARSE   include/uapi/linux/media.h
+      PARSE   include/uapi/linux/cec.h
+      PARSE   include/uapi/linux/lirc.h
+    Running Sphinx v2.4.4
+    enabling CJK for LaTeX builder
+    building [mo]: targets for 0 po files that are out of date
+    building [html]: targets for 2672 source files that are out of date
+    updating environment: [new config] 2672 added, 0 changed, 0 removed
+    reading sources... [100%] x86/kernel-stacks .. xtensa/mmu                                                                                                                                     
+    waiting for workers...
+    /devel/v4l/docs/Documentation/bpf/ringbuf.rst:197: WARNING: Unknown target name: "bench_ringbuf.c".
+    looking for now-outdated files... none found
+    pickling environment... done
+    checking consistency... done
+    preparing documents... done
+    writing output... [100%] w1/w1-netlink .. xtensa/mmu                                                                                                                                          
+    waiting for workers...
+    generating indices...  genindexdone
+    writing additional pages...  searchdone
+    copying images... [100%] userspace-api/media/v4l/constraints.svg                                                                                                                              
+    copying static files... ... done
+    copying extra files... done
+    dumping search index in English (code: en)... done
+    dumping object inventory... done
+    build succeeded, 1 warning.
+    
+    The HTML pages are in Documentation/output.
+
+
+At least part of those patches won't apply against docs-next, as they depend
+on stuff at linux-next. So, it is preferred if they can be applied via each
+sub-maintainer's tree.
+
+I'll rebase those during the next merge window. This way, if some
+patches ended being missed, they can be applied by the end of the
+merge window.
+
+Hopefully, we can make Kernel 5.10 free of documentation warnings.
+
+[1] with the exception of two latmus warnings that seems to require a patch
+      that it was not merged yet.
 
 Regards,
+Mauro
 
-	Hans
+Mauro Carvalho Chehab (14):
+  locking/refcount: document the new "oldp" pointer value
+  usb: docs: document altmode register/unregister functions
+  XArray: docs: add missing kernel-doc parameters for xas_split_alloc()
+  blk-mq: docs: add kernel-doc description for a new struct member
+  iio: docs: add description for a new function member
+  nl80211: docs: add a description for s1g_cap parameter
+  IB/srpt: docs: add a description for cq_size member
+  rcu/tree: docs: document bkvcache new members at struct kfree_rcu_cpu
+  Input: sparse-keymap: add a description for @sw
+  drm: amdgpu: kernel-doc: update some adev parameters
+  drm/amd/display: kernel-doc: document force_timing_sync
+  drm: kernel-doc: document drm_dp_set_subconnector_property() params
+  drm: kernel-doc: drm_dp_helper.h: fix a typo
+  gpu: docs: amdgpu.rst: get rid of wrong kernel-doc markups
+
+ Documentation/driver-api/usb/typec_bus.rst       |  8 +++++++-
+ Documentation/gpu/amdgpu.rst                     |  7 -------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c       |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c      |  6 +++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c     |  5 ++---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h    |  2 ++
+ drivers/gpu/drm/drm_dp_helper.c                  |  7 ++++++-
+ drivers/iio/industrialio-core.c                  |  2 ++
+ drivers/infiniband/ulp/srpt/ib_srpt.h            |  1 +
+ include/drm/drm_dp_helper.h                      |  2 +-
+ include/linux/blk-mq.h                           |  2 ++
+ include/linux/input/sparse-keymap.h              |  1 +
+ include/linux/refcount.h                         |  7 +++++++
+ include/linux/usb/typec_altmode.h                | 16 ++++++++++++++++
+ include/net/cfg80211.h                           |  1 +
+ kernel/rcu/tree.c                                | 14 ++++++--------
+ lib/xarray.c                                     | 11 +++++++++--
+ 17 files changed, 67 insertions(+), 27 deletions(-)
+
+-- 
+2.26.2
+
+
