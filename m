@@ -2,142 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986A126539E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF6C265393
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727962AbgIJViI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:38:08 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:53121 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726989AbgIJNdY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 09:33:24 -0400
-Received: by mail-wm1-f66.google.com with SMTP id q9so67007wmj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 06:32:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1FQw6dLAP93Aj1WWJXzAvIyFEW1p2iZC9e/7pbv+/is=;
-        b=nTKD6kCDoSi1BkzBIlss2M6gpLk0JqB2pqaesieXks4kfKsk/v7P9JcmpIDi3Vlkx8
-         geuDSiuO4sSpnZ4VkZVn+lgAP3PFrvGOGSDTvjV0h5zFj7AAOuClCwZZNkXDxRkN1V9Z
-         PxOOQtvOtFBq7vt5iDVFOhvk1a9Dtmo2AJ5PfJ1DeoV+fUfZ6PaHvd6nZr7xsomH9+lM
-         1pfVf11yvj1hsO2FXb4OFtCxACbgl3ysgVCt0diyFD4Btkwm+rjwNtFrEW2Giq+07ZKI
-         AR4aJsjmWsdj+6rZ+8UmjMjBjsE3BbkcZ/4zlIsivqyy/zxMmFVcScoUnU9c2fRu67Pw
-         2yUg==
-X-Gm-Message-State: AOAM5339pu/b8M5cgd4pHf8g9BuEk3SRaqEqsYp0u/Ljc4+z3Eu2RytV
-        re4OS4BoyAunnQo0W9mfU6KlSly8v7aIh5nOmJc=
-X-Google-Smtp-Source: ABdhPJy4fvlfg/yr4zT44X06qzG2hdASTCcFsQBtHEDWsMTfAG7CYLT7VEpmf/JkIeNoSQ8iYPQz08ZY99EX0E8q79A=
-X-Received: by 2002:a1c:6341:: with SMTP id x62mr35045wmb.70.1599744774950;
- Thu, 10 Sep 2020 06:32:54 -0700 (PDT)
+        id S1726848AbgIJVhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:37:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:36190 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728442AbgIJNeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 09:34:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D844106F;
+        Thu, 10 Sep 2020 06:34:21 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69B3C3F66E;
+        Thu, 10 Sep 2020 06:34:19 -0700 (PDT)
+Subject: Re: [PATCH 11/12] dma-mapping: move dma_common_{mmap,get_sgtable} out
+ of mapping.c
+To:     Christoph Hellwig <hch@lst.de>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        iommu@lists.linux-foundation.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, Joerg Roedel <joro@8bytes.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org
+References: <20200908164758.3177341-1-hch@lst.de>
+ <20200908164758.3177341-12-hch@lst.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <88bae26e-d5f4-7a00-a88a-b69194d519a4@arm.com>
+Date:   Thu, 10 Sep 2020 14:34:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200908044228.61197-1-namhyung@kernel.org> <20200910091542.GD1627030@krava>
- <20200910111020.GA4018363@kernel.org>
-In-Reply-To: <20200910111020.GA4018363@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 10 Sep 2020 22:32:44 +0900
-Message-ID: <CAM9d7cjvid5zoAKnUtHMqwgMTA7FLAbh9fqamCZg5E-_pvD7qQ@mail.gmail.com>
-Subject: Re: [PATCHSET 0/4] perf stat: Add --multiply-cgroup option
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200908164758.3177341-12-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+On 2020-09-08 17:47, Christoph Hellwig wrote:
+> Add a new file that contains helpera for misc DMA ops, which is only
 
-On Thu, Sep 10, 2020 at 8:10 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Sep 10, 2020 at 11:15:42AM +0200, Jiri Olsa escreveu:
-> > On Tue, Sep 08, 2020 at 01:42:24PM +0900, Namhyung Kim wrote:
-> > > When we profile cgroup events with perf stat, it's very annoying to
-> > > specify events and cgroups on the command line as it requires the
-> > > mapping between events and cgroups.  (Note that perf record can use
-> > > cgroup sampling but it's not usable for perf stat).
->
-> > > I guess most cases we just want to use a same set of events (N) for
-> > > all cgroups (M), but we need to specify NxM events and NxM cgroups.
-> > > This is not good especially when profiling large number of cgroups:
-> > > say M=200.
->
-> > > So I added --multiply-cgroup option to make it easy for that case.  It
-> > > will create NxM events from N events and M cgroups.  One more upside
-> > > is that it can handle metrics too.
->
-> > agreed that it's PITA to use -G option ;-)
->
-> yeah, its great that someone is looking at cgroups improvements, thanks
-> Namyung, its great to have you working on this!
+The Latin plural of the singular "helperum", I guess? :P
 
-Thanks! :)
+> built when CONFIG_DMA_OPS is set.
 
->
-> More below.
->
-> > > For example, the following example measures IPC metric for 3 cgroups
->
-> > >   $ cat perf-multi-cgrp.sh
-> > >   #!/bin/sh
->
-> > >   METRIC=${1:-IPC}
-> > >   CGROUP_DIR=/sys/fs/cgroup/perf_event
->
-> > >   sudo mkdir $CGROUP_DIR/A $CGROUP_DIR/B $CGROUP_DIR/C
->
-> > >   # add backgroupd workload for each cgroup
-> > >   echo $$ | sudo tee $CGROUP_DIR/A/cgroup.procs > /dev/null
-> > >   yes > /dev/null &
-> > >   echo $$ | sudo tee $CGROUP_DIR/B/cgroup.procs > /dev/null
-> > >   yes > /dev/null &
-> > >   echo $$ | sudo tee $CGROUP_DIR/C/cgroup.procs > /dev/null
-> > >   yes > /dev/null &
->
-> > >   # run 'perf stat' in the root cgroup
-> > >   echo $$ | sudo tee $CGROUP_DIR/cgroup.procs > /dev/null
-> > >   perf stat -a -M $METRIC --multiply-cgroup -G A,B,C sleep 1
-> >
-> > would it be easier to have new option for this? like:
-> >
-> >   perf stat -a -M $METRIC --for-cgroup A,B,C
-> >   perf stat -a -M $METRIC --for-each-cgroup A,B,C
-> >   perf stat -a -M $METRIC --attach-cgroup A,B,C
-> >   perf stat -a -M $METRIC --attach-to-cgroup A,B,C
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-Looks good.  I like the --for-each-cgroup.
-Then we should make it and -G mutually exclusive IMHO.
-
-> >
-> > I'm still not sure how the --multiply-cgroup deals with empty
-> > cgroup A,,C but looks like we don't need this behaviour now?
-
-Yep, it can handle such case and bind the events to the root cgroup.
-
->
-> Yeah, I also didn't like the --multiply-cgroup thing, perhaps we can use
-> a per-event term? or per group, for example:
->
->   perf stat -a -M $METRIC/cgroups=A,B,C/
->   perf stat -a -e '{cycles,instructions,cache-misses}/cgroups=A,B,C/'
->
-> Allowing wildcards or regexps would help with some use cases.
->
-> We already have several terms that allows us to control per event knobs,
-> this would be one more.
-
-At some point, we can support this kind of flexibility, but it'd make the code
-complex when multiple events or metrics have different cgroup membership.
-So I'd like to do the simple case (all events are expanded to same cgroups)
-first..
-
-Thanks
-Namhyung
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   kernel/dma/Makefile      |  1 +
+>   kernel/dma/mapping.c     | 47 +-----------------------------------
+>   kernel/dma/ops_helpers.c | 51 ++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 53 insertions(+), 46 deletions(-)
+>   create mode 100644 kernel/dma/ops_helpers.c
+> 
+> diff --git a/kernel/dma/Makefile b/kernel/dma/Makefile
+> index 32c7c1942bbd6c..dc755ab68aabf9 100644
+> --- a/kernel/dma/Makefile
+> +++ b/kernel/dma/Makefile
+> @@ -1,6 +1,7 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   
+>   obj-$(CONFIG_HAS_DMA)			+= mapping.o direct.o
+> +obj-$(CONFIG_DMA_OPS)			+= ops_helpers.o
+>   obj-$(CONFIG_DMA_OPS)			+= dummy.o
+>   obj-$(CONFIG_DMA_CMA)			+= contiguous.o
+>   obj-$(CONFIG_DMA_DECLARE_COHERENT)	+= coherent.o
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index 0d129421e75fc8..848c95c27d79ff 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -8,7 +8,7 @@
+>   #include <linux/memblock.h> /* for max_pfn */
+>   #include <linux/acpi.h>
+>   #include <linux/dma-direct.h>
+> -#include <linux/dma-noncoherent.h>
+> +#include <linux/dma-mapping.h>
+>   #include <linux/export.h>
+>   #include <linux/gfp.h>
+>   #include <linux/of_device.h>
+> @@ -295,22 +295,6 @@ void dma_sync_sg_for_device(struct device *dev, struct scatterlist *sg,
+>   }
+>   EXPORT_SYMBOL(dma_sync_sg_for_device);
+>   
+> -/*
+> - * Create scatter-list for the already allocated DMA buffer.
+> - */
+> -int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
+> -		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> -		 unsigned long attrs)
+> -{
+> -	struct page *page = virt_to_page(cpu_addr);
+> -	int ret;
+> -
+> -	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
+> -	if (!ret)
+> -		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
+> -	return ret;
+> -}
+> -
+>   /*
+>    * The whole dma_get_sgtable() idea is fundamentally unsafe - it seems
+>    * that the intention is to allow exporting memory allocated via the
+> @@ -358,35 +342,6 @@ pgprot_t dma_pgprot(struct device *dev, pgprot_t prot, unsigned long attrs)
+>   }
+>   #endif /* CONFIG_MMU */
+>   
+> -/*
+> - * Create userspace mapping for the DMA-coherent memory.
+> - */
+> -int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
+> -		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> -		unsigned long attrs)
+> -{
+> -#ifdef CONFIG_MMU
+> -	unsigned long user_count = vma_pages(vma);
+> -	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+> -	unsigned long off = vma->vm_pgoff;
+> -	int ret = -ENXIO;
+> -
+> -	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
+> -
+> -	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
+> -		return ret;
+> -
+> -	if (off >= count || user_count > count - off)
+> -		return -ENXIO;
+> -
+> -	return remap_pfn_range(vma, vma->vm_start,
+> -			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
+> -			user_count << PAGE_SHIFT, vma->vm_page_prot);
+> -#else
+> -	return -ENXIO;
+> -#endif /* CONFIG_MMU */
+> -}
+> -
+>   /**
+>    * dma_can_mmap - check if a given device supports dma_mmap_*
+>    * @dev: device to check
+> diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
+> new file mode 100644
+> index 00000000000000..e443c69be4299f
+> --- /dev/null
+> +++ b/kernel/dma/ops_helpers.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Helpers for DMA ops implementations.  These generally rely on the fact that
+> + * the allocated memory contains normal pages in the direct kernel mapping.
+> + */
+> +#include <linux/dma-noncoherent.h>
+> +
+> +/*
+> + * Create scatter-list for the already allocated DMA buffer.
+> + */
+> +int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
+> +		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> +		 unsigned long attrs)
+> +{
+> +	struct page *page = virt_to_page(cpu_addr);
+> +	int ret;
+> +
+> +	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
+> +	if (!ret)
+> +		sg_set_page(sgt->sgl, page, PAGE_ALIGN(size), 0);
+> +	return ret;
+> +}
+> +
+> +/*
+> + * Create userspace mapping for the DMA-coherent memory.
+> + */
+> +int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
+> +		void *cpu_addr, dma_addr_t dma_addr, size_t size,
+> +		unsigned long attrs)
+> +{
+> +#ifdef CONFIG_MMU
+> +	unsigned long user_count = vma_pages(vma);
+> +	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
+> +	unsigned long off = vma->vm_pgoff;
+> +	int ret = -ENXIO;
+> +
+> +	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
+> +
+> +	if (dma_mmap_from_dev_coherent(dev, vma, cpu_addr, size, &ret))
+> +		return ret;
+> +
+> +	if (off >= count || user_count > count - off)
+> +		return -ENXIO;
+> +
+> +	return remap_pfn_range(vma, vma->vm_start,
+> +			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
+> +			user_count << PAGE_SHIFT, vma->vm_page_prot);
+> +#else
+> +	return -ENXIO;
+> +#endif /* CONFIG_MMU */
+> +}
+> 
