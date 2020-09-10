@@ -2,238 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259A826621C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CDB26626F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgIKP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:28:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56104 "EHLO mail.kernel.org"
+        id S1726196AbgIKPqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:46:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:22606 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgIKPZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:25:01 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCB282076C;
-        Fri, 11 Sep 2020 15:24:58 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 16:24:56 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, will@kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4] arm64/cpuinfo: Define HWCAP name arrays per their
- actual bit definitions
-Message-ID: <20200911152455.GG12835@gaia>
-References: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
+        id S1726530AbgIKPo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:44:29 -0400
+IronPort-SDR: en5OP5hLpm5gZe+nakhlzsdCPWidqPeqcRSUNXqovSXIiUiIrVRO4Oon39PmCVjVcEqD6H8Lhp
+ Rj/31RpzsbpQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146483413"
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="146483413"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 06:28:29 -0700
+IronPort-SDR: WEUbiZZI3ak86hu9e5/kTXYW/2GEu/sbCQDWTGYexAARUGDEcvKGAHAzBJ1IanVuwJ6q1IFwGq
+ Q79oOGiuvs0w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="408157988"
+Received: from aubrey-work.sh.intel.com ([10.239.53.113])
+  by fmsmga001.fm.intel.com with ESMTP; 11 Sep 2020 06:28:26 -0700
+From:   Aubrey Li <aubrey.li@intel.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        valentin.schneider@arm.com
+Cc:     tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
+        Aubrey Li <aubrey.li@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Subject: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask in sched domain
+Date:   Thu, 10 Sep 2020 13:42:03 +0800
+Message-Id: <20200910054203.525420-2-aubrey.li@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200910054203.525420-1-aubrey.li@intel.com>
+References: <20200910054203.525420-1-aubrey.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:18:55AM +0530, Anshuman Khandual wrote:
-> HWCAP name arrays (hwcap_str, compat_hwcap_str, compat_hwcap2_str) that are
-> scanned for /proc/cpuinfo are detached from their bit definitions making it
-> vulnerable and difficult to correlate. It is also bit problematic because
-> during /proc/cpuinfo dump these arrays get traversed sequentially assuming
-> they reflect and match actual HWCAP bit sequence, to test various features
-> for a given CPU. This redefines name arrays per their HWCAP bit definitions
-> . It also warns after detecting any feature which is not expected on arm64.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Dave Martin <Dave.Martin@arm.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on 5.9-rc4
-> 
-> Mark, since the patch has changed I have dropped your Acked-by: tag. Are you
-> happy to give a new one ?
-> 
-> Changes in V4:
-> 
-> - Unified all three HWCAP array traversal per Will
-> 
-> Changes in V3: (https://patchwork.kernel.org/patch/11718113/)
-> 
-> - Moved name arrays to (arch/arm64/kernel/cpuinfo.c) to prevent a build warning
-> - Replaced string values with NULL for all compat features not possible on arm64
-> - Changed compat_hwcap_str[] iteration on size as some NULL values are expected
-> - Warn once after detecting any feature on arm64 that is not expected
-> 
-> Changes in V2: (https://patchwork.kernel.org/patch/11533755/)
-> 
-> - Defined COMPAT_KERNEL_HWCAP[2] and updated the name arrays per Mark
-> - Updated the commit message as required
-> 
-> Changes in V1: (https://patchwork.kernel.org/patch/11532945/)
-> 
->  arch/arm64/include/asm/hwcap.h |   9 ++
->  arch/arm64/kernel/cpuinfo.c    | 176 +++++++++++++++++----------------
->  2 files changed, 101 insertions(+), 84 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/hwcap.h b/arch/arm64/include/asm/hwcap.h
-> index 22f73fe09030..6493a4c63a2f 100644
-> --- a/arch/arm64/include/asm/hwcap.h
-> +++ b/arch/arm64/include/asm/hwcap.h
-> @@ -8,18 +8,27 @@
->  #include <uapi/asm/hwcap.h>
->  #include <asm/cpufeature.h>
->  
-> +#define COMPAT_HWCAP_SWP	(1 << 0)
->  #define COMPAT_HWCAP_HALF	(1 << 1)
->  #define COMPAT_HWCAP_THUMB	(1 << 2)
-> +#define COMPAT_HWCAP_26BIT	(1 << 3)
->  #define COMPAT_HWCAP_FAST_MULT	(1 << 4)
-> +#define COMPAT_HWCAP_FPA	(1 << 5)
->  #define COMPAT_HWCAP_VFP	(1 << 6)
->  #define COMPAT_HWCAP_EDSP	(1 << 7)
-> +#define COMPAT_HWCAP_JAVA	(1 << 8)
-> +#define COMPAT_HWCAP_IWMMXT	(1 << 9)
-> +#define COMPAT_HWCAP_CRUNCH	(1 << 10)
-> +#define COMPAT_HWCAP_THUMBEE	(1 << 11)
->  #define COMPAT_HWCAP_NEON	(1 << 12)
->  #define COMPAT_HWCAP_VFPv3	(1 << 13)
-> +#define COMPAT_HWCAP_VFPV3D16	(1 << 14)
->  #define COMPAT_HWCAP_TLS	(1 << 15)
->  #define COMPAT_HWCAP_VFPv4	(1 << 16)
->  #define COMPAT_HWCAP_IDIVA	(1 << 17)
->  #define COMPAT_HWCAP_IDIVT	(1 << 18)
->  #define COMPAT_HWCAP_IDIV	(COMPAT_HWCAP_IDIVA|COMPAT_HWCAP_IDIVT)
-> +#define COMPAT_HWCAP_VFPD32	(1 << 19)
->  #define COMPAT_HWCAP_LPAE	(1 << 20)
->  #define COMPAT_HWCAP_EVTSTRM	(1 << 21)
->  
-> diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
-> index d0076c2159e6..04640f5f9f0f 100644
-> --- a/arch/arm64/kernel/cpuinfo.c
-> +++ b/arch/arm64/kernel/cpuinfo.c
-> @@ -43,94 +43,93 @@ static const char *icache_policy_str[] = {
->  unsigned long __icache_flags;
->  
->  static const char *const hwcap_str[] = {
-> -	"fp",
-> -	"asimd",
-> -	"evtstrm",
-> -	"aes",
-> -	"pmull",
-> -	"sha1",
-> -	"sha2",
-> -	"crc32",
-> -	"atomics",
-> -	"fphp",
-> -	"asimdhp",
-> -	"cpuid",
-> -	"asimdrdm",
-> -	"jscvt",
-> -	"fcma",
-> -	"lrcpc",
-> -	"dcpop",
-> -	"sha3",
-> -	"sm3",
-> -	"sm4",
-> -	"asimddp",
-> -	"sha512",
-> -	"sve",
-> -	"asimdfhm",
-> -	"dit",
-> -	"uscat",
-> -	"ilrcpc",
-> -	"flagm",
-> -	"ssbs",
-> -	"sb",
-> -	"paca",
-> -	"pacg",
-> -	"dcpodp",
-> -	"sve2",
-> -	"sveaes",
-> -	"svepmull",
-> -	"svebitperm",
-> -	"svesha3",
-> -	"svesm4",
-> -	"flagm2",
-> -	"frint",
-> -	"svei8mm",
-> -	"svef32mm",
-> -	"svef64mm",
-> -	"svebf16",
-> -	"i8mm",
-> -	"bf16",
-> -	"dgh",
-> -	"rng",
-> -	"bti",
-> +	[KERNEL_HWCAP_FP]		= "fp",
-> +	[KERNEL_HWCAP_ASIMD]		= "asimd",
-> +	[KERNEL_HWCAP_EVTSTRM]		= "evtstrm",
-> +	[KERNEL_HWCAP_AES]		= "aes",
-> +	[KERNEL_HWCAP_PMULL]		= "pmull",
-> +	[KERNEL_HWCAP_SHA1]		= "sha1",
-> +	[KERNEL_HWCAP_SHA2]		= "sha2",
-> +	[KERNEL_HWCAP_CRC32]		= "crc32",
-> +	[KERNEL_HWCAP_ATOMICS]		= "atomics",
-> +	[KERNEL_HWCAP_FPHP]		= "fphp",
-> +	[KERNEL_HWCAP_ASIMDHP]		= "asimdhp",
-> +	[KERNEL_HWCAP_CPUID]		= "cpuid",
-> +	[KERNEL_HWCAP_ASIMDRDM]		= "asimdrdm",
-> +	[KERNEL_HWCAP_JSCVT]		= "jscvt",
-> +	[KERNEL_HWCAP_FCMA]		= "fcma",
-> +	[KERNEL_HWCAP_LRCPC]		= "lrcpc",
-> +	[KERNEL_HWCAP_DCPOP]		= "dcpop",
-> +	[KERNEL_HWCAP_SHA3]		= "sha3",
-> +	[KERNEL_HWCAP_SM3]		= "sm3",
-> +	[KERNEL_HWCAP_SM4]		= "sm4",
-> +	[KERNEL_HWCAP_ASIMDDP]		= "asimddp",
-> +	[KERNEL_HWCAP_SHA512]		= "sha512",
-> +	[KERNEL_HWCAP_SVE]		= "sve",
-> +	[KERNEL_HWCAP_ASIMDFHM]		= "asimdfhm",
-> +	[KERNEL_HWCAP_DIT]		= "dit",
-> +	[KERNEL_HWCAP_USCAT]		= "uscat",
-> +	[KERNEL_HWCAP_ILRCPC]		= "ilrcpc",
-> +	[KERNEL_HWCAP_FLAGM]		= "flagm",
-> +	[KERNEL_HWCAP_SSBS]		= "ssbs",
-> +	[KERNEL_HWCAP_SB]		= "sb",
-> +	[KERNEL_HWCAP_PACA]		= "paca",
-> +	[KERNEL_HWCAP_PACG]		= "pacg",
-> +	[KERNEL_HWCAP_DCPODP]		= "dcpodp",
-> +	[KERNEL_HWCAP_SVE2]		= "sve2",
-> +	[KERNEL_HWCAP_SVEAES]		= "sveaes",
-> +	[KERNEL_HWCAP_SVEPMULL]		= "svepmull",
-> +	[KERNEL_HWCAP_SVEBITPERM]	= "svebitperm",
-> +	[KERNEL_HWCAP_SVESHA3]		= "svesha3",
-> +	[KERNEL_HWCAP_SVESM4]		= "svesm4",
-> +	[KERNEL_HWCAP_FLAGM2]		= "flagm2",
-> +	[KERNEL_HWCAP_FRINT]		= "frint",
-> +	[KERNEL_HWCAP_SVEI8MM]		= "svei8mm",
-> +	[KERNEL_HWCAP_SVEF32MM]		= "svef32mm",
-> +	[KERNEL_HWCAP_SVEF64MM]		= "svef64mm",
-> +	[KERNEL_HWCAP_SVEBF16]		= "svebf16",
-> +	[KERNEL_HWCAP_I8MM]		= "i8mm",
-> +	[KERNEL_HWCAP_BF16]		= "bf16",
-> +	[KERNEL_HWCAP_DGH]		= "dgh",
-> +	[KERNEL_HWCAP_RNG]		= "rng",
-> +	[KERNEL_HWCAP_BTI]		= "bti",
->  	/* reserved for "mte" */
-> -	NULL
->  };
+Added idle cpumask to track idle cpus in sched domain. When a CPU
+enters idle, its corresponding bit in the idle cpumask will be set,
+and when the CPU exits idle, its bit will be cleared.
 
-With this initialisation, we no longer need the "reserved for mte"
-string.
+When a task wakes up to select an idle cpu, scanning idle cpumask
+has low cost than scanning all the cpus in last level cache domain,
+especially when the system is heavily loaded.
 
-Otherwise, feel free to add:
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+---
+ include/linux/sched/topology.h | 13 +++++++++++++
+ kernel/sched/fair.c            |  4 +++-
+ kernel/sched/topology.c        |  2 +-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index fb11091129b3..43a641d26154 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -65,8 +65,21 @@ struct sched_domain_shared {
+ 	atomic_t	ref;
+ 	atomic_t	nr_busy_cpus;
+ 	int		has_idle_cores;
++	/*
++	 * Span of all idle CPUs in this domain.
++	 *
++	 * NOTE: this field is variable length. (Allocated dynamically
++	 * by attaching extra space to the end of the structure,
++	 * depending on how many CPUs the kernel has booted up with)
++	 */
++	unsigned long	idle_cpus_span[];
+ };
+ 
++static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
++{
++	return to_cpumask(sds->idle_cpus_span);
++}
++
+ struct sched_domain {
+ 	/* These fields must be setup */
+ 	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6b3b59cc51d6..3b6f8a3589be 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6136,7 +6136,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 
+ 	time = cpu_clock(this);
+ 
+-	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
++	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+ 
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+ 		if (!--nr)
+@@ -10182,6 +10182,7 @@ static void set_cpu_sd_state_busy(int cpu)
+ 	sd->nohz_idle = 0;
+ 
+ 	atomic_inc(&sd->shared->nr_busy_cpus);
++	cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
+ unlock:
+ 	rcu_read_unlock();
+ }
+@@ -10212,6 +10213,7 @@ static void set_cpu_sd_state_idle(int cpu)
+ 	sd->nohz_idle = 1;
+ 
+ 	atomic_dec(&sd->shared->nr_busy_cpus);
++	cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+ unlock:
+ 	rcu_read_unlock();
+ }
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index 9079d865a935..92d0aeef86bf 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1769,7 +1769,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+ 
+ 			*per_cpu_ptr(sdd->sd, j) = sd;
+ 
+-			sds = kzalloc_node(sizeof(struct sched_domain_shared),
++			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+ 					GFP_KERNEL, cpu_to_node(j));
+ 			if (!sds)
+ 				return -ENOMEM;
+-- 
+2.25.1
+
