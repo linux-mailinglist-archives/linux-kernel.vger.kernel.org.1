@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA782650D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E86265129
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 22:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgIJUbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 16:31:34 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:47158 "EHLO
+        id S1725791AbgIJUqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 16:46:36 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:47162 "EHLO
         lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgIJU2b (ORCPT
+        with ESMTP id S1726731AbgIJU2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 10 Sep 2020 16:28:31 -0400
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AKSIfA116336;
-        Thu, 10 Sep 2020 15:28:18 -0500
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08AKSKuC116343;
+        Thu, 10 Sep 2020 15:28:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599769698;
-        bh=9zdhcOMR7Ccf+ysTWrNasl7P6ckqRz+nS1O8WjwH018=;
+        s=ti-com-17Q1; t=1599769700;
+        bh=Zxj6hx5gut77UxwO3zQp4eiDftnAuhdhN797m8w7ynk=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Qd/dh3mV7bp0Ujbt6Y0WuAqsCmlXVwJM3xZTwxpUYTK5Mb1S1h/htrvW1EpWkPiBx
-         C9hswVhDje1+R4yWRCGfNEKzSM85v+RTB0QV19A/VF5lDkqq1UPV7GyUL6k1/Qbf/r
-         S+/b5IrxOtuWJdu2fDO+UkPmHurcBCjnPlMoixGY=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AKSIFm052030;
-        Thu, 10 Sep 2020 15:28:18 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+        b=M7b266WGy0wNn0fszZjLJbtIAOLgnWiMoZqxTAUT4qV3ceBHyq2SsXsi6jXms2qd8
+         trcA8HGPMMc4okPwnxLGAmMs4pHFltaqeYhD384aF/FkhM53e0g/qyXCj/SfZQQRYM
+         8/6xGSyETAr1P6XOKOUE1L4sZF8s9c5qYa5/L88s=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AKSKXX052061;
+        Thu, 10 Sep 2020 15:28:20 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 10
- Sep 2020 15:28:18 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 15:28:19 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 10 Sep 2020 15:28:17 -0500
+ Frontend Transport; Thu, 10 Sep 2020 15:28:19 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AKSHFU065839;
-        Thu, 10 Sep 2020 15:28:17 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08AKSI00040826;
+        Thu, 10 Sep 2020 15:28:19 -0500
 From:   Grygorii Strashko <grygorii.strashko@ti.com>
 To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -44,9 +44,9 @@ To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
 CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
         <linux-omap@vger.kernel.org>,
         Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net-next v3 1/9] net: ethernet: ti: ale: add cpsw_ale_get_num_entries api
-Date:   Thu, 10 Sep 2020 23:27:59 +0300
-Message-ID: <20200910202807.17473-2-grygorii.strashko@ti.com>
+Subject: [PATCH net-next v3 2/9] net: ethernet: ti: ale: add static configuration
+Date:   Thu, 10 Sep 2020 23:28:00 +0300
+Message-ID: <20200910202807.17473-3-grygorii.strashko@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200910202807.17473-1-grygorii.strashko@ti.com>
 References: <20200910202807.17473-1-grygorii.strashko@ti.com>
@@ -58,99 +58,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cpsw_ale_get_num_entries() API to return number of ALE table entries
-and update existing drivers to use it.
+As existing, as newly introduced CPSW ALE versions have differences in
+supported features and ALE table formats. Especially it's actual for the
+recent AM65x/J721E/J7200 SoC and feature AM64x, which supports features
+like: auto-aging, classifiers, Link aggregation, additional hw filtering,
+etc.
+
+Existing ALE configuration interface is not practical in terms of adding
+new features and requires consumers to program a lot static parameters. Any
+attempt to add new options will case endless adding and maintaining
+different combination of flags and options.
+
+Hence CPSW ALE configuration is static and fixed for SoC (or set of SoC) It
+is reasonable to add support for static ALE configurations inside ALE
+module. This patch adds static ALE configuration table for different ALE
+versions and provides option for consumers to select required ALE
+configuration by providing ALE const char *dev_id identifier.
+
+This feature is not enabled by default until existing CPSW drivers will be
+modified by follow up patches.
 
 Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 ---
- drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 10 ++++++----
- drivers/net/ethernet/ti/cpsw_ale.c          |  5 +++++
- drivers/net/ethernet/ti/cpsw_ale.h          |  1 +
- drivers/net/ethernet/ti/cpsw_ethtool.c      |  3 ++-
- 4 files changed, 14 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/ti/cpsw_ale.c | 82 ++++++++++++++++++++++++++++++
+ drivers/net/ethernet/ti/cpsw_ale.h |  1 +
+ 2 files changed, 83 insertions(+)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-index 496dafb25128..6e4d4f9e32e0 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-@@ -572,13 +572,14 @@ static int am65_cpsw_nway_reset(struct net_device *ndev)
- static int am65_cpsw_get_regs_len(struct net_device *ndev)
- {
- 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
--	u32 i, regdump_len = 0;
-+	u32 ale_entries, i, regdump_len = 0;
- 
-+	ale_entries = cpsw_ale_get_num_entries(common->ale);
- 	for (i = 0; i < ARRAY_SIZE(am65_cpsw_regdump); i++) {
- 		if (am65_cpsw_regdump[i].hdr.module_id ==
- 		    AM65_CPSW_REGDUMP_MOD_CPSW_ALE_TBL) {
- 			regdump_len += sizeof(struct am65_cpsw_regdump_hdr);
--			regdump_len += common->ale->params.ale_entries *
-+			regdump_len += ale_entries *
- 				       ALE_ENTRY_WORDS * sizeof(u32);
- 			continue;
- 		}
-@@ -592,10 +593,11 @@ static void am65_cpsw_get_regs(struct net_device *ndev,
- 			       struct ethtool_regs *regs, void *p)
- {
- 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
--	u32 i, j, pos, *reg = p;
-+	u32 ale_entries, i, j, pos, *reg = p;
- 
- 	/* update CPSW IP version */
- 	regs->version = AM65_CPSW_REGDUMP_VER;
-+	ale_entries = cpsw_ale_get_num_entries(common->ale);
- 
- 	pos = 0;
- 	for (i = 0; i < ARRAY_SIZE(am65_cpsw_regdump); i++) {
-@@ -603,7 +605,7 @@ static void am65_cpsw_get_regs(struct net_device *ndev,
- 
- 		if (am65_cpsw_regdump[i].hdr.module_id ==
- 		    AM65_CPSW_REGDUMP_MOD_CPSW_ALE_TBL) {
--			u32 ale_tbl_len = common->ale->params.ale_entries *
-+			u32 ale_tbl_len = ale_entries *
- 					  ALE_ENTRY_WORDS * sizeof(u32) +
- 					  sizeof(struct am65_cpsw_regdump_hdr);
- 			reg[pos++] = ale_tbl_len;
 diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
-index 9ad872bfae3a..a94aef3f54a5 100644
+index a94aef3f54a5..e70c9697ef47 100644
 --- a/drivers/net/ethernet/ti/cpsw_ale.c
 +++ b/drivers/net/ethernet/ti/cpsw_ale.c
-@@ -1079,3 +1079,8 @@ void cpsw_ale_dump(struct cpsw_ale *ale, u32 *data)
- 		data += ALE_ENTRY_WORDS;
- 	}
- }
+@@ -46,6 +46,29 @@
+ 
+ #define AM65_CPSW_ALE_THREAD_DEF_REG 0x134
+ 
++enum {
++	CPSW_ALE_F_STATUS_REG = BIT(0), /* Status register present */
++	CPSW_ALE_F_HW_AUTOAGING = BIT(1), /* HW auto aging */
 +
-+u32 cpsw_ale_get_num_entries(struct cpsw_ale *ale)
++	CPSW_ALE_F_COUNT
++};
++
++/**
++ * struct ale_dev_id - The ALE version/SoC specific configuration
++ * @dev_id: ALE version/SoC id
++ * @features: features supported by ALE
++ * @tbl_entries: number of ALE entries
++ * @major_ver_mask: mask of ALE Major Version Value in ALE_IDVER reg.
++ * @nu_switch_ale: NU Switch ALE
++ */
++struct cpsw_ale_dev_id {
++	const char *dev_id;
++	u32 features;
++	u32 tbl_entries;
++	u32 major_ver_mask;
++	bool nu_switch_ale;
++};
++
+ #define ALE_TABLE_WRITE		BIT(31)
+ 
+ #define ALE_TYPE_FREE			0
+@@ -979,11 +1002,70 @@ void cpsw_ale_stop(struct cpsw_ale *ale)
+ 	cpsw_ale_control_set(ale, 0, ALE_ENABLE, 0);
+ }
+ 
++static const struct cpsw_ale_dev_id cpsw_ale_id_match[] = {
++	{
++		/* am3/4/5, dra7. dm814x, 66ak2hk-gbe */
++		.dev_id = "cpsw",
++		.tbl_entries = 1024,
++		.major_ver_mask = 0xff,
++	},
++	{
++		/* 66ak2h_xgbe */
++		.dev_id = "66ak2h-xgbe",
++		.tbl_entries = 2048,
++		.major_ver_mask = 0xff,
++	},
++	{
++		.dev_id = "66ak2el",
++		.features = CPSW_ALE_F_STATUS_REG,
++		.major_ver_mask = 0x7,
++		.nu_switch_ale = true,
++	},
++	{
++		.dev_id = "66ak2g",
++		.features = CPSW_ALE_F_STATUS_REG,
++		.tbl_entries = 64,
++		.major_ver_mask = 0x7,
++		.nu_switch_ale = true,
++	},
++	{
++		.dev_id = "am65x-cpsw2g",
++		.features = CPSW_ALE_F_STATUS_REG | CPSW_ALE_F_HW_AUTOAGING,
++		.tbl_entries = 64,
++		.major_ver_mask = 0x7,
++		.nu_switch_ale = true,
++	},
++	{ },
++};
++
++static const struct
++cpsw_ale_dev_id *cpsw_ale_match_id(const struct cpsw_ale_dev_id *id,
++				   const char *dev_id)
 +{
-+	return ale ? ale->params.ale_entries : 0;
++	if (!dev_id)
++		return NULL;
++
++	while (id->dev_id) {
++		if (strcmp(dev_id, id->dev_id) == 0)
++			return id;
++		id++;
++	}
++	return NULL;
 +}
++
+ struct cpsw_ale *cpsw_ale_create(struct cpsw_ale_params *params)
+ {
++	const struct cpsw_ale_dev_id *ale_dev_id;
+ 	struct cpsw_ale *ale;
+ 	u32 rev, ale_entries;
+ 
++	ale_dev_id = cpsw_ale_match_id(cpsw_ale_id_match, params->dev_id);
++	if (ale_dev_id) {
++		params->ale_entries = ale_dev_id->tbl_entries;
++		params->major_ver_mask = ale_dev_id->major_ver_mask;
++		params->nu_switch_ale = ale_dev_id->nu_switch_ale;
++	}
++
+ 	ale = devm_kzalloc(params->dev, sizeof(*ale), GFP_KERNEL);
+ 	if (!ale)
+ 		return ERR_PTR(-ENOMEM);
 diff --git a/drivers/net/ethernet/ti/cpsw_ale.h b/drivers/net/ethernet/ti/cpsw_ale.h
-index 6a3cb6898728..735692f066bf 100644
+index 735692f066bf..53ad4246617e 100644
 --- a/drivers/net/ethernet/ti/cpsw_ale.h
 +++ b/drivers/net/ethernet/ti/cpsw_ale.h
-@@ -119,6 +119,7 @@ int cpsw_ale_control_get(struct cpsw_ale *ale, int port, int control);
- int cpsw_ale_control_set(struct cpsw_ale *ale, int port,
- 			 int control, int value);
- void cpsw_ale_dump(struct cpsw_ale *ale, u32 *data);
-+u32 cpsw_ale_get_num_entries(struct cpsw_ale *ale);
+@@ -24,6 +24,7 @@ struct cpsw_ale_params {
+ 	 * pass it from caller.
+ 	 */
+ 	u32			major_ver_mask;
++	const char		*dev_id;
+ };
  
- static inline int cpsw_ale_get_vlan_p0_untag(struct cpsw_ale *ale, u16 vid)
- {
-diff --git a/drivers/net/ethernet/ti/cpsw_ethtool.c b/drivers/net/ethernet/ti/cpsw_ethtool.c
-index fa54efe3be63..4d02c5135611 100644
---- a/drivers/net/ethernet/ti/cpsw_ethtool.c
-+++ b/drivers/net/ethernet/ti/cpsw_ethtool.c
-@@ -339,7 +339,8 @@ int cpsw_get_regs_len(struct net_device *ndev)
- {
- 	struct cpsw_common *cpsw = ndev_to_cpsw(ndev);
- 
--	return cpsw->data.ale_entries * ALE_ENTRY_WORDS * sizeof(u32);
-+	return cpsw_ale_get_num_entries(cpsw->ale) *
-+	       ALE_ENTRY_WORDS * sizeof(u32);
- }
- 
- void cpsw_get_regs(struct net_device *ndev, struct ethtool_regs *regs, void *p)
+ struct cpsw_ale {
 -- 
 2.17.1
 
