@@ -2,208 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20476264C88
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C553264CA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgIJSON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbgIJR6d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:58:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC1BC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:58:32 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x23so1041508wmi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ScFF7njHyD7jDn62ILaf2pwzv53IErIyozW137RkZM0=;
-        b=fwMUXdQRPBwBaQOLV3PtXnhu/+LsFl4cER3JSuvH3OI/P8Xil2ZGHhMR3qFFDKCUPs
-         r1FGTIcodXpgKgRgWEj+y5DR9MJDGuExix7iHQdwpKBmWGazagcnNMs5u43NKaMjhnlT
-         yyryOz+eky4nr/3SmuNVyHBEkVBxKt0ER8QfdJlytIw3hQ6t4tNHBT0ALjAJ5h5ahlaR
-         MgHGN8YlvNfvhexi7WVHaty1aqDYFRwfiD1995UfhjbAaRkQRstgYFBgAC76e9vc5IDG
-         moJ+tuMJCZ8BLzGL+GAnpQbGXRsIwQhbvGt+gpam1egv2ql8mQZKLkhBO4jiJwGNlspG
-         A/sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ScFF7njHyD7jDn62ILaf2pwzv53IErIyozW137RkZM0=;
-        b=PxYxTCulypkmBKA3gNRemks4xI2rrKC0XVyCAdCbAWDDEC1TH2RBV48Z2w4llTL+fJ
-         MtOoziYgwsUpbhdlSWayM82V4LozPNh04uN4gNYgxQPfY3RwFl7mEarwJYfHBOS+x9nl
-         4PqrfItvqZhdOLnrXXGXNZINjOafX9EN5c1IibabvkuHvhs02xGYQguwuU9VxuLiRemK
-         lUTv2v+Y3kx25HA5Rq7tY1KI9aZBYVt2b8BUW+z4m8KoZrU/fpMWeJwz9rC8Qblkhs5J
-         GJM31qbGY6aQdijm4kfFM/qdZ5TDOsBpRUPlrYy9U0bfR/9z5HIIrRW9fEScoyuFblCc
-         hyGA==
-X-Gm-Message-State: AOAM531vYOB03Wu+qpVuk9tdHeWO8ayKcUamnkAO+Cz2CUq5J44zfF9a
-        vw0mSAjK1sUHgs25566ZIP5wRgLF4n7nddrIPX5fTg==
-X-Google-Smtp-Source: ABdhPJxbwDIjheT+o4oKTyGMAComWN78ZyxllrySrcHb7r4wjwdFMy3lplV2zL9ugp6yz8B9vQ4JaPEY2bM8GFMUBVk=
-X-Received: by 2002:a1c:81c6:: with SMTP id c189mr1202580wmd.124.1599760710591;
- Thu, 10 Sep 2020 10:58:30 -0700 (PDT)
+        id S1726228AbgIJSR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:17:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbgIJR6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 13:58:16 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F10221D90;
+        Thu, 10 Sep 2020 17:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599760694;
+        bh=VCBPSyUtjbNcoRf4J44PyQ6FG6rWoS6ak/Ug1NqVxJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b4lIIdryGSOiOdjFXgrchUn31gNVrIUZ/yD6jd5tZYZxKKdXPMbRaxqQcQuHqkvW9
+         RQplGLXdxIiCf8x0yEQpvNQHQ47aLF0+0z1EmFBucEEvTsmxv+8kRGPg6GxC59L7tP
+         e1Q1GfbaaJ8BHe2P7GAdqakJCFPOEFmu3tiSCNoA=
+Date:   Thu, 10 Sep 2020 19:58:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org
+Subject: Re: [PATCH v2 2/3] remoteproc: Add coredump configuration to sysfs
+Message-ID: <20200910175821.GA3076593@kroah.com>
+References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
+ <1598557731-1566-3-git-send-email-rishabhb@codeaurora.org>
 MIME-Version: 1.0
-References: <20200910032632.511566-1-irogers@google.com> <20200910032632.511566-3-irogers@google.com>
- <CAM9d7cjCV8qb2M9CW+NV2KpCwBTBAMWyE36yAL5SMFQ4wfxJfQ@mail.gmail.com>
-In-Reply-To: <CAM9d7cjCV8qb2M9CW+NV2KpCwBTBAMWyE36yAL5SMFQ4wfxJfQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 10 Sep 2020 10:58:18 -0700
-Message-ID: <CAP-5=fUCt0s-SV+7MSccvG3rWOhFVu83VVxKE5CwF7QCfJXpYw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] perf metricgroup: Fix uncore metric expressions
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598557731-1566-3-git-send-email-rishabhb@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 10:51 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> On Thu, Sep 10, 2020 at 12:26 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > A metric like DRAM_BW_Use has on SkylakeX events uncore_imc/cas_count_read/
-> > and uncore_imc/case_count_write/. These events open 6 events per socket
-> > with pmu names of uncore_imc_[0-5]. The current metric setup code in
-> > find_evsel_group assumes one ID will map to 1 event to be recorded in
-> > metric_events. For events with multiple matches, the first event is
-> > recorded in metric_events (avoiding matching >1 event with the same
-> > name) and the evlist_used updated so that duplicate events aren't
-> > removed when the evlist has unused events removed.
-> >
-> > Before this change:
-> > $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >              41.14 MiB  uncore_imc/cas_count_read/
-> >      1,002,614,251 ns   duration_time
-> >
-> >        1.002614251 seconds time elapsed
-> >
-> > After this change:
-> > $ /tmp/perf/perf stat -M DRAM_BW_Use -a -- sleep 1
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >             157.47 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
-> >             126.97 MiB  uncore_imc/cas_count_write/
-> >      1,003,019,728 ns   duration_time
-> >
-> > v2. avoids iterating over the whole evlist as suggested by
-> >     namhyung@kernel.org. It also fixes the metric_leader computation
-> >     that was broken in the same commits.
-> >
-> > Erroneous duplication introduced in:
-> > commit 2440689d62e9 ("perf metricgroup: Remove duped metric group events").
-> >
-> > Fixes: ded80bda8bc9 ("perf expr: Migrate expr ids table to a hashmap").
-> > Reported-by: Jin Yao <yao.jin@linux.intel.com>
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/metricgroup.c | 45 ++++++++++++++++++++++++++++++++---
-> >  1 file changed, 42 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> > index 662f4e8777d5..79080de9217d 100644
-> > --- a/tools/perf/util/metricgroup.c
-> > +++ b/tools/perf/util/metricgroup.c
-> > @@ -206,6 +206,18 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
-> >                                 sizeof(struct evsel *) * idnum);
-> >                         current_leader = ev->leader;
-> >                 }
-> > +               /*
-> > +                * Check for duplicate events with the same name. For example,
-> > +                * uncore_imc/cas_count_read/ will turn into 6 events per socket
-> > +                * on skylakex. Only the first such event is placed in
-> > +                * metric_events.
-> > +                */
-> > +               for (i = 0; i < matched_events; i++) {
-> > +                       if (!strcmp(metric_events[i]->name, ev->name))
-> > +                               break;
-> > +               }
-> > +               if (i != matched_events)
-> > +                       continue;
->
-> We have the same logic in the below.  Maybe it'd better to factor out..
+On Thu, Aug 27, 2020 at 12:48:50PM -0700, Rishabh Bhatnagar wrote:
+> Expose coredump configuration in sysfs under a feature
+> flag. This is useful for systems where access to
+> debugfs might be limited.
+> 
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> ---
+>  Documentation/ABI/testing/sysfs-class-remoteproc | 24 +++++++++
+>  drivers/remoteproc/remoteproc_debugfs.c          |  4 ++
+>  drivers/remoteproc/remoteproc_sysfs.c            | 68 ++++++++++++++++++++++++
+>  3 files changed, 96 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-remoteproc b/Documentation/ABI/testing/sysfs-class-remoteproc
+> index 36094fb..f6c44fa 100644
+> --- a/Documentation/ABI/testing/sysfs-class-remoteproc
+> +++ b/Documentation/ABI/testing/sysfs-class-remoteproc
+> @@ -58,3 +58,27 @@ Description:	Remote processor name
+>  		Reports the name of the remote processor. This can be used by
+>  		userspace in exactly identifying a remote processor and ease
+>  		up the usage in modifying the 'firmware' or 'state' files.
+> +
+> +What:		/sys/class/remoteproc/.../coredump
+> +Date:		July 2020
+> +Contact:	Bjorn Andersson <bjorn.andersson@linaro.org>, Ohad Ben-Cohen <ohad@wizery.com>
+> +Description:	Remote processor coredump configuration
+> +
+> +		Reports the coredump configuration of the remote processor,
+> +		which will be one of:
+> +
+> +		"default"
+> +		"inline"
+> +		"disabled"
+> +
+> +		"default" means when the remote processor's coredump is
+> +		collected it will be copied to a separate buffer and that
+> +		buffer is exposed to userspace.
+> +
+> +		"inline" means when the remote processor's coredump is
+> +		collected userspace will directly read from the remote
+> +		processor's device memory. Extra buffer will not be used to
+> +		copy the dump. Also recovery process will not proceed until
+> +		all data is read by usersapce.
+> +
+> +		"disabled" means no dump will be collected.
+> diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
+> index 2e3b3e2..48dfd0a 100644
+> --- a/drivers/remoteproc/remoteproc_debugfs.c
+> +++ b/drivers/remoteproc/remoteproc_debugfs.c
+> @@ -27,6 +27,7 @@
+>  /* remoteproc debugfs parent dir */
+>  static struct dentry *rproc_dbg;
+>  
+> +#if (!IS_ENABLED(CONFIG_RPROC_SYSFS_CONFIGURATION_SUPPORT))
+>  /*
+>   * A coredump-configuration-to-string lookup table, for exposing a
+>   * human readable configuration via debugfs. Always keep in sync with
+> @@ -114,6 +115,7 @@ static const struct file_operations rproc_coredump_fops = {
+>  	.open = simple_open,
+>  	.llseek = generic_file_llseek,
+>  };
+> +#endif
+>  
+>  /*
+>   * Some remote processors may support dumping trace logs into a shared
+> @@ -425,8 +427,10 @@ void rproc_create_debug_dir(struct rproc *rproc)
+>  			    rproc, &rproc_rsc_table_fops);
+>  	debugfs_create_file("carveout_memories", 0400, rproc->dbg_dir,
+>  			    rproc, &rproc_carveouts_fops);
+> +#if (!IS_ENABLED(CONFIG_RPROC_SYSFS_CONFIGURATION_SUPPORT))
+>  	debugfs_create_file("coredump", 0600, rproc->dbg_dir,
+>  			    rproc, &rproc_coredump_fops);
+> +#endif
 
-You're right, actually with this loop the below is redundant.
+Why does sysfs support for this have anything to do if you have a
+debugfs file present or not?  They should both work at the same time if
+needed, right?
 
->
-> >                 if (hashmap__find(&pctx->ids, ev->name, (void **)&val_ptr)) {
-> >                         if (has_constraint) {
-> >                                 /*
-> > @@ -245,9 +257,36 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
-> >         metric_events[idnum] = NULL;
-> >
-> >         for (i = 0; i < idnum; i++) {
-> > -               ev = metric_events[i];
-> > -               ev->metric_leader = ev;
-> > -               set_bit(ev->idx, evlist_used);
-> > +               /* Don't free used events. */
-> > +               set_bit(metric_events[i]->idx, evlist_used);
-> > +               /*
-> > +                * The metric leader points to the identically named event in
-> > +                * metric_events.
-> > +                */
-> > +               metric_events[i]->metric_leader = metric_events[i];
-> > +               /*
-> > +                * Mark two events with identical names in the same group (or
-> > +                * globally) as being in use as uncore events may be duplicated
-> > +                * for each pmu. Set the metric leader to be the event that
-> > +                * appears in metric_events.
-> > +                */
->
-> I thought this again, and it's not guaranteed that the metric leader is
-> a group leader so below won't work IMHO.  Instead we should iterate
-> evlist always, but started from the metric leader with the
-> evlist__for_each_entry_continue.
+Same for patch 3/3 in this series...
 
-Thanks for pointing out evlist__for_each_entry_continue! For the
-constraint case it avoids iterating a bunch of list elements. For the
-sibling group case we do know that all the metric's events are
-siblings with the exception of duration time that is pulled out
-specially and not at risk of being aliased.
+thanks,
 
-Thanks,
-Ian
-
-> Thanks
-> Namhyung
->
->
-> > +               if (!has_constraint) {
-> > +                       for_each_group_evsel(ev, metric_events[i]->leader) {
-> > +                               if (ev != metric_events[i] &&
-> > +                                   !strcmp(metric_events[i]->name, ev->name)) {
-> > +                                       set_bit(ev->idx, evlist_used);
-> > +                                       ev->metric_leader = metric_events[i];
-> > +                               }
-> > +                       }
-> > +               } else {
-> > +                       evlist__for_each_entry(perf_evlist, ev) {
-> > +                               if (ev != metric_events[i] &&
-> > +                                   !strcmp(metric_events[i]->name, ev->name)) {
-> > +                                       set_bit(ev->idx, evlist_used);
-> > +                                       ev->metric_leader = metric_events[i];
-> > +                               }
-> > +                       }
-> > +               }
-> >         }
-> >
-> >         return metric_events[0];
-> > --
-> > 2.28.0.526.ge36021eeef-goog
-> >
+greg k-h
