@@ -2,77 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60137265381
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBB32653D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgIJVgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:36:46 -0400
-Received: from smtprelay0243.hostedemail.com ([216.40.44.243]:44278 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727997AbgIJVgI (ORCPT
+        id S1727954AbgIJVlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:41:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33616 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728409AbgIJVku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 17:36:08 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 06D4E100E7B42;
-        Thu, 10 Sep 2020 21:36:04 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2110:2196:2199:2393:2553:2559:2562:2691:2828:2902:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3873:4321:4385:5007:6119:7903:8531:9040:10004:10400:10450:10455:11232:11658:11914:12296:12297:12740:12760:12895:13069:13071:13311:13357:13439:14096:14097:14180:14181:14659:14721:19904:19999:21060:21080:21433:21451:21627:21939:30012:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: chain07_230dacc270e9
-X-Filterd-Recvd-Size: 2027
-Received: from XPS-9350 (unknown [172.58.19.160])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 10 Sep 2020 21:36:02 +0000 (UTC)
-Message-ID: <617a44ab25f4ac346f1dbb4174d5fb4f358a8610.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Warn on self-assignments
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Denis Efremov <efremov@linux.com>, julia.lawall@inria.fr
-Date:   Thu, 10 Sep 2020 14:35:59 -0700
-In-Reply-To: <202009101250.FBB416D@keescook>
-References: <20200811210127.11889-1-efremov@linux.com>
-         <20200901094812.428896-1-efremov@linux.com>
-         <afc2cffdd315d3e4394af149278df9e8af7f49f4.camel@perches.com>
-         <202009101250.FBB416D@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 10 Sep 2020 17:40:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599774048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZGRVnEaekhAhEIL8CGWeb7ErYvV0SGt63fSdiNWSRlQ=;
+        b=St7IS+apzVErPzusqkmrYsb9P4TIrcDhHR4dG6I+lgOsjEzOZGYzh/tvWES1Xe34cO6PQ3
+        DKYSMyFd0TllVMCY/TdHaaDnyI/b+7O0+u5rLMPFcBtJ0T7KDjDO/VCCs/AmIwrTY2Spce
+        1adw+bMVdy/hyrIFsDSMVpHYYdat58Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-1xTI1pPWM7Oqcr1Ld6N7rg-1; Thu, 10 Sep 2020 17:40:42 -0400
+X-MC-Unique: 1xTI1pPWM7Oqcr1Ld6N7rg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D1001074640;
+        Thu, 10 Sep 2020 21:40:40 +0000 (UTC)
+Received: from ovpn-112-6.ams2.redhat.com (ovpn-112-6.ams2.redhat.com [10.36.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BC7E37E8EB;
+        Thu, 10 Sep 2020 21:40:36 +0000 (UTC)
+Message-ID: <0f3b24664813091d535da32d0a645f406f3e30a2.camel@redhat.com>
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Kehuan Feng <kehuan.feng@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Jike Song <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        David Miller <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+Date:   Thu, 10 Sep 2020 23:40:35 +0200
+In-Reply-To: <5f5a959fbe236_c295820892@john-XPS-13-9370.notmuch>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
+         <20200623134259.8197-1-mzhivich@akamai.com>
+         <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
+         <CAM_iQpX1+dHB0kJF8gRfuDeAb9TsA9mB9H_Og8n8Hr19+EMLJA@mail.gmail.com>
+         <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
+         <7fd86d97-6785-0b5f-1e95-92bc1da9df35@netrounds.com>
+         <500b4843cb7c425ea5449fe199095edd5f7feb0c.camel@redhat.com>
+         <25ca46e4-a8c1-1c88-d6a9-603289ff44c3@akamai.com>
+         <CANE52Ki8rZGDPLZkxY--RPeEG+0=wFeyCD6KKkeG1WREUwramw@mail.gmail.com>
+         <20200822032800.16296-1-hdanton@sina.com>
+         <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com>
+         <20200825032312.11776-1-hdanton@sina.com>
+         <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
+         <20200825162329.11292-1-hdanton@sina.com>
+         <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
+         <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com>
+         <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
+         <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com>
+         <20200827125747.5816-1-hdanton@sina.com>
+         <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com>
+         <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
+         <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com>
+         <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
+         <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch>
+         <CAM_iQpVqdVc5_LkhO4Qie7Ff+XXRTcpiptZsEVNh=o9E0GkcRQ@mail.gmail.com>
+         <5f5a959fbe236_c295820892@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-10 at 12:51 -0700, Kees Cook wrote:
-> On Sat, Sep 05, 2020 at 10:58:29AM -0700, Joe Perches wrote:
-> > The uninitialized_var() macro was removed recently via
-> > commit 63a0895d960a ("compiler: Remove uninitialized_var() macro")
-> > as it's not a particularly useful warning and its use can
-> > "paper over real bugs".
+On Thu, 2020-09-10 at 14:07 -0700, John Fastabend wrote:
+> Cong Wang wrote:
+> > On Thu, Sep 3, 2020 at 10:08 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> > > Maybe this would unlock us,
+> > > 
+> > > diff --git a/net/core/dev.c b/net/core/dev.c
+> > > index 7df6c9617321..9b09429103f1 100644
+> > > --- a/net/core/dev.c
+> > > +++ b/net/core/dev.c
+> > > @@ -3749,7 +3749,7 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+> > > 
+> > >         if (q->flags & TCQ_F_NOLOCK) {
+> > >                 rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+> > > -               qdisc_run(q);
+> > > +               __qdisc_run(q);
+> > > 
+> > >                 if (unlikely(to_free))
+> > >                         kfree_skb_list(to_free);
+> > > 
+> > > 
+> > > Per other thread we also need the state deactivated check added
+> > > back.
 > > 
-> > Add a checkpatch test to warn on self-assignments as a means
-> > to avoid compiler warnings and as a back-door mechanism to
-> > reproduce the old uninitialized_var macro behavior.
+> > I guess no, because pfifo_dequeue() seems to require q->seqlock,
+> > according to comments in qdisc_run(), so we can not just get rid of
+> > qdisc_run_begin()/qdisc_run_end() here.
 > > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
+> > Thanks.
 > 
-> I like it! :)
+> Seems we would have to revert this as well then,
 > 
-> Can you add a section to code style and include a link in the checkpatch
-> warning to it? (Feel free to just reuse the text removed from
-> deprecated.rst)
+>  commit 021a17ed796b62383f7623f4fea73787abddad77
+>  Author: Paolo Abeni <pabeni@redhat.com>
+>  Date:   Tue May 15 16:24:37 2018 +0200
+> 
+>     pfifo_fast: drop unneeded additional lock on dequeue
+>     
+>     After the previous patch, for NOLOCK qdiscs, q->seqlock is
+>     always held when the dequeue() is invoked, we can drop
+>     any additional locking to protect such operation.
+> 
+> Then I think it should be safe. Back when I was working on the ptr
+> ring implementation I opted not to do a case without the spinlock
+> because the performance benefit was minimal in the benchmarks I
+> was looking at.
 
-Hi Kees.
+The main point behind all that changes was try to close the gap vs the
+locked implementation in the uncontended scenario. In our benchmark,
+after commit eb82a994479245a79647d302f9b4eb8e7c9d7ca6, was more near to
+10%.
 
-I believe coding style is already a bit bloated
-and more rules and content really won't add much
-for new developers.
+Anyway I agree reverting back to the bitlock should be safe.
 
-You're welcome to try to add whatever you want
-to it though.
+Cheers,
 
-cheers, Joe
+Paolo 
+
 
