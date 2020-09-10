@@ -2,161 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0856264C7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC51264C9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 20:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbgIJSNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 14:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIJSNe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 14:13:34 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F9AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:13:21 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id y11so5587825qtn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 11:13:21 -0700 (PDT)
+        id S1726434AbgIJSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 14:16:38 -0400
+Received: from mail-bn8nam12on2086.outbound.protection.outlook.com ([40.107.237.86]:23745
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726287AbgIJSO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 14:14:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N6oBzjH+ltOGFYRajrtU1Tmlk+jVEm/P6si+t0v7qj9T3wYCtcDjISMpmnFOcne4/UsWtVsDqXE83ViOLp7jSUHY2y18K5Vv7+hurcypnZ6S57eJMtapRLqto3JOzsZ1E3BXMUGEIyJOs6fitbbPngQFWZFTwvFPVTsnndnjqCtlfUuYixkczs8kClT7nqnt66/jK6hJWSyPIXyZZo9VNEkAkT9z0ZaF4Kbfe1vCBX3WQTLHOa7EsHHlW7mDNeLd5d7DG0S+z/V0fT2moxIL7RLyt4ERnKC6zTCuSN/fuBpEZTcj1uwsNBeFLbfbnSSXAS3KGWEIW2OxULeBMWDyYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MHjB2unu+9Et4mo9cnxLh3GBS2bINldpk93zFl43Gzk=;
+ b=gKa/Amvm7RvLB0dhff7ewfzXOXyVbTcVOdZ5RrRkwyLliG1byH6vERq62RS4P160fj3eMaLxFpP7FZA7lOFdhv/vEgBFFVkN90zCwcBRbT4z/8xPqjFOPzFVtPV/pYdx5FMeieXhNoWn711ZUWzrSu+TLGf1/hzsbCabfjF7vRg482c35SEWkvGkXxOsVs1JocFo01OSdMKYCY4dVLeqgHE9Dj4e+GN1lSHd/+BeGq0VfL0+FW9yQ+Ca47J8YKHhqgDknQmaV/IcyRec/B7bAd+oaSudBkLNh7jFP0s9IqR+t6ITDRrfWFsEkImKcK1PeucZOSU5v1zO0QSdVXSMzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
+ is 149.199.60.83) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=xilinx.com;
+ dmarc=none action=none header.from=xilinx.com; dkim=none (message not
+ signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vsgOBuvd+PmHZlIl6zNL7J0E+9iuQlAQQf0cZFL5gMI=;
-        b=QjySHJ/1iTMrz5prM8y+VncJt3fFZa9ZyFpYw/Th/jKpZaffgf1LyWVdNJm/j/vjyA
-         nLjh8OzRb1c9mhAkanY5btD+efOqZZ+Udi6ZslYCr7YtJIfes2snd5UrIRKpUyv8hkdr
-         36M2e6eOhe91VaA9oyoKzmgg9xjBknxyQhh5BZGAXX5wie19agL2HJs44WBmda9L90te
-         rB4sfQyqX1cSC/80uyvJQCn48IBDTjUyr7fuRqyi1tok7cmTDWGXQTd1b0rwTzF0s+WH
-         TbjL9aVyKRcQ18FE4ZG1EMR1arXpN/YNqyXD5nLN+6IKf2BR7oX+4/YatX70bdzY6jl7
-         k0sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vsgOBuvd+PmHZlIl6zNL7J0E+9iuQlAQQf0cZFL5gMI=;
-        b=qi9WmDXxZZWuUFS7W5qWsfv6XLk/dlIh1KZeJeqVqV/9VJjqfqJWStCQh1jxu32t7v
-         JDmxLnMibdarQqWf9vaJI81Iahn5R9vr1mnfwXeXMKyGSHTIQTwl8KwzBsFNk82MDc7j
-         7BcdE4aTxL5tz7jYbmc6qkAH91qCChB6+4r5HAOrPprC7UCSOcHfk7/AiIC7UUEPaY7y
-         CggLIIx//PS9Bxr67YGZSdlRbUmjfwVNmmcT+uI2JUXfHjD9TOKkTx/HBMg9mraiCe/X
-         kIoguRt074+QFX4vXAIU51fhkVMzn7F+vg7iQ0VJg+c5pzX215We3rm8rX1Up2pCz2py
-         yWJw==
-X-Gm-Message-State: AOAM5320dQDjwoMIQXVHl+HaF90QivIYvsX/tki2bZJnVEZEQL/RCCKY
-        yTpKSW02Jl3l5RiXN/egHbOgWQ==
-X-Google-Smtp-Source: ABdhPJz+K3felhpgzzPG4kmFLTMR9ObyhixIit5uSjGLCBi1hY0YGP7pJ4KyC/qC7hkyspfqqr9PsQ==
-X-Received: by 2002:ac8:7108:: with SMTP id z8mr9521321qto.55.1599761600525;
-        Thu, 10 Sep 2020 11:13:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id c43sm8103713qtk.24.2020.09.10.11.13.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Sep 2020 11:13:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kGR4R-004OkZ-38; Thu, 10 Sep 2020 15:13:19 -0300
-Date:   Thu, 10 Sep 2020 15:13:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200910181319.GO87483@ziepe.ca>
-References: <20200907180058.64880-1-gerald.schaefer@linux.ibm.com>
- <20200907180058.64880-2-gerald.schaefer@linux.ibm.com>
- <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad>
- <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad>
- <20200909180324.GI87483@ziepe.ca>
- <20200910093925.GB29166@oc3871087118.ibm.com>
- <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MHjB2unu+9Et4mo9cnxLh3GBS2bINldpk93zFl43Gzk=;
+ b=IVEuEPA7u40Gyu9wJ0tOyAgecrHHOlosMKJxUAUBCruBoPK+BoHpOg5ZJGxLsAb0ppjpnJihIHgU8V2Fxl/asSHVHoFz8tI5CLRs9ThXy3NvMm5VKlkhHVP+FoIkSGhyogjSjxbAhgCWAxGsFi3PATmr8F9QNbLqkgWis8xFFLc=
+Received: from BL0PR02CA0023.namprd02.prod.outlook.com (2603:10b6:207:3c::36)
+ by DM6PR02MB7003.namprd02.prod.outlook.com (2603:10b6:5:255::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Thu, 10 Sep
+ 2020 18:14:26 +0000
+Received: from BL2NAM02FT010.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:207:3c:cafe::ea) by BL0PR02CA0023.outlook.office365.com
+ (2603:10b6:207:3c::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend
+ Transport; Thu, 10 Sep 2020 18:14:26 +0000
+X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
+ 149.199.60.83) smtp.mailfrom=xilinx.com; ffwll.ch; dkim=none (message not
+ signed) header.d=none;ffwll.ch; dmarc=none action=none
+ header.from=xilinx.com;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of xilinx.com: DNS Timeout)
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ BL2NAM02FT010.mail.protection.outlook.com (10.152.77.53) with Microsoft SMTP
+ Server id 15.20.3370.16 via Frontend Transport; Thu, 10 Sep 2020 18:14:25
+ +0000
+Received: from [149.199.38.66] (port=37327 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <hyun.kwon@xilinx.com>)
+        id 1kGR5D-0003IK-S1; Thu, 10 Sep 2020 11:14:07 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <hyun.kwon@xilinx.com>)
+        id 1kGR5V-0002dy-Bn; Thu, 10 Sep 2020 11:14:25 -0700
+Received: from [172.19.75.82] (helo=xsjsycl40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <hyun.kwon@xilinx.com>)
+        id 1kGR5O-0002cu-98; Thu, 10 Sep 2020 11:14:18 -0700
+Received: by xsjsycl40.xilinx.com (Postfix, from userid 13638)
+        id 4003F352C02; Thu, 10 Sep 2020 11:14:18 -0700 (PDT)
+Date:   Thu, 10 Sep 2020 11:14:18 -0700
+From:   Hyun Kwon <hyun.kwon@xilinx.com>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Michal Simek <michals@xilinx.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] drm: xlnx: remove defined but not used
+ 'scaling_factors_666'
+Message-ID: <20200910181418.GA3187626@xilinx.com>
+References: <20200910140630.1191782-1-yanaijie@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
+In-Reply-To: <20200910140630.1191782-1-yanaijie@huawei.com>
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f78f61b6-73a3-402f-b8ee-08d855b559d9
+X-MS-TrafficTypeDiagnostic: DM6PR02MB7003:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB7003EEBD33BA17B8D8BF7B06D6270@DM6PR02MB7003.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yQwHXJqIyAnEQ9dQ2qu+IwQKxbYxX7EbC04QDo8smL6uCD+5e00xAVMwFPmG8Iw5XpRQotE3Ji5Aa/ofwKbpowlq8lGB3ZG2gMuWDc82YiBoy+jDYMnlP9rWsIo2gMCFKNIwYXHLp8g2ltY3kh37uXtirtwc994Iuizuk4j2kG50jd0p70zb8fCpwRHCq1hJjL1Uux80AdG/JUkkzqs0wey6dgQYi212Pma3xYVS7d1qEn/EGXP19t3QtptHYO23mz8G2yAR7I2wa4W14piTQtvYFp3GA3+sT2+sdQvI6oeSvcfBlJzhnV4q3+pDexb48kioi2HYQJL6QVIwK/hC7bphGEyA+ltbCOPwhrj1oEmpk+jdaaBYyorYovYMvs6JyeHTQtEPxvUs87enXc7Mpw==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:ErrorRetry;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(46966005)(44832011)(81166007)(316002)(83380400001)(82740400003)(336012)(54906003)(33656002)(70206006)(2906002)(6266002)(426003)(2616005)(356005)(1076003)(26005)(8676002)(5660300002)(82310400003)(8936002)(186003)(42186006)(6916009)(478600001)(70586007)(36756003)(47076004)(63350400001)(4326008);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2020 18:14:25.7702
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f78f61b6-73a3-402f-b8ee-08d855b559d9
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT010.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB7003
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:35:38AM -0700, Linus Torvalds wrote:
-> On Thu, Sep 10, 2020 at 2:40 AM Alexander Gordeev
-> <agordeev@linux.ibm.com> wrote:
-> >
-> > It is only gup_fast case that exposes the issue. It hits because
-> > pointers to stack copies are passed to gup_pXd_range iterators, not
-> > pointers to real page tables itself.
-> 
-> Can we possibly change fast-gup to not do the stack copies?
->
-> I'd actually rather do something like that, than the "addr_end" thing.
+Hi Jason,
 
-> As you say, none of the other page table walking code does what the
-> GUP code does, and I don't think it's required.
+On Thu, Sep 10, 2020 at 07:06:30AM -0700, Jason Yan wrote:
+> This addresses the following gcc warning with "make W=3D1":
+>=20
+> drivers/gpu/drm/xlnx/zynqmp_disp.c:245:18: warning:
+> =E2=80=98scaling_factors_666=E2=80=99 defined but not used [-Wunused-co=
+nst-variable=3D]
+>   245 | static const u32 scaling_factors_666[] =3D {
+>       |                  ^~~~~~~~~~~~~~~~~~~
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-As I understand it, the requirement is because fast-gup walks without
-the page table spinlock, or mmap_sem held so it must READ_ONCE the
-*pXX.
+Reviewed-by: Hyun Kwon <hyun.kwon@xilinx.com>
 
-It then checks that it is a valid page table pointer, then calls
-pXX_offset().
+Thanks!
 
-The arch implementation of pXX_offset() derefs again the passed pXX
-pointer. So it defeats the READ_ONCE and the 2nd load could observe
-something that is no longer a page table pointer and crash.
+-hyun
 
-Passing it the address of the stack value is a way to force
-pXX_offset() to use the READ_ONCE result which has already been tested
-to be a page table pointer.
-
-Other page walking code that holds the mmap_sem tends to use
-pmd_trans_unstable() which solves this problem by injecting a
-barrier. The load hidden in pte_offset() after a pmd_trans_unstable()
-can't be re-ordered and will only see a page table entry under the
-mmap_sem.
-
-However, I think that logic would have been much clearer following the
-GUP model of READ_ONCE vs extra reads and a hidden barrier. At least
-it took me a long time to work it out :(
-
-I also think there are real bugs here where places are reading *pXX
-multiple times without locking the page table. One was found recently
-in the wild in the huge tlb code IIRC.
-
-The mm/pagewalk.c has these missing READ_ONCE bugs too.
-
-So.. To change away from the stack option I think we'd have to pass
-the READ_ONCE value to pXX_offset() as an extra argument instead of it
-derefing the pointer internally.
-
-Jason
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/=
+zynqmp_disp.c
+> index a455cfc1bee5..98bd48f13fd1 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -242,12 +242,6 @@ static const u32 scaling_factors_565[] =3D {
+>  	ZYNQMP_DISP_AV_BUF_5BIT_SF,
+>  };
+> =20
+> -static const u32 scaling_factors_666[] =3D {
+> -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
+> -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
+> -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
+> -};
+> -
+>  static const u32 scaling_factors_888[] =3D {
+>  	ZYNQMP_DISP_AV_BUF_8BIT_SF,
+>  	ZYNQMP_DISP_AV_BUF_8BIT_SF,
+> --=20
+> 2.25.4
+>=20
