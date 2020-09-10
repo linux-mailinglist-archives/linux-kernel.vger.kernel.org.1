@@ -2,172 +2,472 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E77526526D
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DB2265272
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 23:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgIJVSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 17:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        id S1728140AbgIJVSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 17:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbgIJVPv (ORCPT
+        with ESMTP id S1728150AbgIJVSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 17:15:51 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0668BC061756;
-        Thu, 10 Sep 2020 14:15:46 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id h9so1790253ooo.10;
-        Thu, 10 Sep 2020 14:15:45 -0700 (PDT)
+        Thu, 10 Sep 2020 17:18:00 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEA2C061573;
+        Thu, 10 Sep 2020 14:17:59 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id a12so7791288eds.13;
+        Thu, 10 Sep 2020 14:17:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BFCtXTuROc0+YYGPop04Dk+iiUlezsA+0NbzQBhD+BA=;
-        b=GuD3TGmStXtihH8Sxv8w7dkoBPihevY3v9BGFDKVMp+7HFRNCzM+ojYulbfbw3lzVh
-         Egul2zPj6VBeJQM7kBVVJLNlvhNYje/3IJuRSi/52MWfq2fpQzVo+ZPuxt+0hXyqYijd
-         esXtFKqyodblu9iwD++CZEeeoB5JjwehGQcG2+QYC5rBEC9vr/PiLDNyumU235l6CrNi
-         WgKJBTLvbfe4Fk4BElHk5G5wuI69rh9cNBS0gIykgUQxuHoruMFKh/CeMaFuNmYqSykS
-         LTyVKYWz+lO7ZKlQpGz/z3ESKtcQeqOrQg5nRmddC8yXipIxVptwy1yojTMpwVlb+vXJ
-         D8WA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SOacLxUwz2E1pG22XZZvHYu6NSqzm8KnGRzyal6TyFE=;
+        b=RGLgxAk6TapmHhDz1h0nohTC80gz/Ixp+pV6AuoSKvo8ziBPiex/gd2VvBYc8DQE5e
+         cLGE1zTV5shzCrgMkZxdrLL4OujjPWx94gDKC5ZhVj0nBnwiHN0kEkvnQX75jTdYJItP
+         sUrslr0NneeKucwFEyuIiCaYELzNfjz9//TbJm8HfUiaf2DhX6oZc2esb7ubL9g/b9b7
+         G+kyawDnLxH2QtJJ8z7RjQxOjMsJ0eCf3IxhFBOfQua/esbb3gMMpiCfo1+13uEfYhs3
+         Qqjz/gL6XsO0JHdhMVV26QwiK4P+0bCu/nH7mJVbcj+GwSZRmFbC/57BKdob6EPCDLX3
+         bpFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BFCtXTuROc0+YYGPop04Dk+iiUlezsA+0NbzQBhD+BA=;
-        b=fFAivLO7/bPX7vIn12F1fZaH9IPXrpv1Ggnf41gUeVjw4kPGPXAKxi5sv3gUzmn87l
-         DLB+OFxTsDhb5TfSfXu8EDIooYu05Zg5Vm5gSx6iHpsRcHA8njJooFzz3vyHuG8EW5Tg
-         gqtYU4QH2xTg+7kkQPKtM72NDDQ8mwpM/j2PMnhqvPVP2f8V1JoQ6NMc9NGYzcjrt9pM
-         jym5wU9R3wsDXttkDzlqDmmfgJfMkg2tekmOnPYS4siEbNOYffnDvEMP7Daa4+C76Pui
-         wIKVCLVDKfCeMUmys/pfBPJq585w23ndnjXvFIacUAUnHKqy6YvfFwOKqLDA0w8wmdP6
-         NAjw==
-X-Gm-Message-State: AOAM531Z8Z11dXH1g3EkfefAA5Osi8jKPnvcrGKkY4ebCsiWzG0huNSJ
-        eg4XeNNVpnE7MuSEt8kA7VHoNzf1PneHY+ewbe0=
-X-Google-Smtp-Source: ABdhPJyc58SU56Yz39kDkKsbOrktPwfoFXhHf6/Jso5xD3Rgi5BFy5TRwq1e66DV0J4w4LySieyUCaiWxbu/130vgiA=
-X-Received: by 2002:a4a:d509:: with SMTP id m9mr6013838oos.77.1599772545342;
- Thu, 10 Sep 2020 14:15:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SOacLxUwz2E1pG22XZZvHYu6NSqzm8KnGRzyal6TyFE=;
+        b=P8A3Yu4Q0zHWRUO039q2d0FxK2ZT0cI1t1UjtNdOzEkBz5LiLsVaHB3D+datVUcBmh
+         eAV4An66skkVkcUeARlRNDskj9R51zXUwDo3Uf8TlSZfOfwHtoKswxuR+EJi/5zVq+Lq
+         jd8Qm9DRKa+QSEfJ3QO3r6lf+GLLihus+/ooTtWWrejQXPpcyTiG65MmjIqE6YrBaprU
+         LzgP3MjrAaeep6SLZITFyZfN677cGn2t9MbVsHedkPAsmkwYQJSnhgj79spp+7/B/4hz
+         KCpcXZbsFw9DxDekx1Epx8wvG/lnEmi3SCmFq8fgbxHyGd/V6xpK0o/j8GHryAe/+x76
+         uWRQ==
+X-Gm-Message-State: AOAM531I9TEQvuLvlvPAzbljquagPwbjxVdxKtvMe3msdKYX0GIJVmZN
+        zEsKz8ovzl/t+ReN8VILtJc=
+X-Google-Smtp-Source: ABdhPJxnHou/Y2x1hwqPEHpicnHljPL8SEkqLANzgD93WOOoD06v2W74HokrISm1G80W2wtx7ZIB1g==
+X-Received: by 2002:a05:6402:1386:: with SMTP id b6mr11410256edv.296.1599772677694;
+        Thu, 10 Sep 2020 14:17:57 -0700 (PDT)
+Received: from xws.fritz.box (pd9e5a079.dip0.t-ipconnect.de. [217.229.160.121])
+        by smtp.gmail.com with ESMTPSA id c5sm104429edt.24.2020.09.10.14.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 14:17:56 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: [PATCH v2] platform/x86: Add Driver to set up lid GPEs on MS Surface device
+Date:   Thu, 10 Sep 2020 23:15:20 +0200
+Message-Id: <20200910211520.1490626-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200910161126.30948-1-oded.gabbay@gmail.com> <20200910130112.1f6bd9e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf13SbXqjyu6JHKSTf-EqUxcBZUe4iAfggLhKXOi6DhXYcg@mail.gmail.com>
- <20200910132835.1bf7b638@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAFCwf127fssgiDEwYvv3rFW7iFFfKKZDE=oxDUbFBcwpz3yQkQ@mail.gmail.com> <a13199ce-0c73-920d-857d-3223144f41f0@gmail.com>
-In-Reply-To: <a13199ce-0c73-920d-857d-3223144f41f0@gmail.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Fri, 11 Sep 2020 00:15:17 +0300
-Message-ID: <CAFCwf13ak5NPc2BTWoA2cwHB5AUJjq5i1jOucbsJnwyyQCfQ4w@mail.gmail.com>
-Subject: Re: [PATCH 00/15] Adding GAUDI NIC code to habanalabs driver
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:05 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
->
->
-> On 9/10/2020 1:32 PM, Oded Gabbay wrote:
-> > On Thu, Sep 10, 2020 at 11:28 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >>
-> >> On Thu, 10 Sep 2020 23:16:22 +0300 Oded Gabbay wrote:
-> >>> On Thu, Sep 10, 2020 at 11:01 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >>>> On Thu, 10 Sep 2020 19:11:11 +0300 Oded Gabbay wrote:
-> >>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic.c
-> >>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_dcbnl.c
-> >>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_debugfs.c
-> >>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_nic_ethtool.c
-> >>>>>   create mode 100644 drivers/misc/habanalabs/gaudi/gaudi_phy.c
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_masks.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qm1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qpc0_masks.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qpc0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_qpc1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxb_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxe0_masks.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxe0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_rxe1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_stat_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_tmr_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txe0_masks.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txe0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txe1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txs0_masks.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txs0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic0_txs1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic1_qm1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic2_qm1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic3_qm1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm0_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/nic4_qm1_regs.h
-> >>>>>   create mode 100644 drivers/misc/habanalabs/include/hw_ip/nic/nic_general.h
-> >>>>
-> >>>> The relevant code needs to live under drivers/net/(ethernet/).
-> >>>> For one thing our automation won't trigger for drivers in random
-> >>>> (/misc) part of the tree.
-> >>>
-> >>> Can you please elaborate on how to do this with a single driver that
-> >>> is already in misc ?
-> >>> As I mentioned in the cover letter, we are not developing a
-> >>> stand-alone NIC. We have a deep-learning accelerator with a NIC
-> >>> interface.
-> >>> Therefore, we don't have a separate PCI physical function for the NIC
-> >>> and I can't have a second driver registering to it.
-> >>
-> >> Is it not possible to move the files and still build them into a single
-> >> module?
-> > hmm...
-> > I actually didn't try that as I thought it will be very strange and
-> > I'm not familiar with other drivers that build as a single ko but have
-> > files spread out in different subsystems.
-> > I don't feel it is a better option than what we did here.
-> >
-> > Will I need to split pull requests to different subsystem maintainers
-> > ? For the same driver ?
-> > Sounds to me this is not going to fly.
->
-> Not necessarily, you can post your patches to all relevant lists and
-> seek maintainer review/acked-by tags from the relevant maintainers. This
-> is not unheard of with mlx5 for instance.
-Yeah, I see what you are saying, the problem is that sometimes,
-because everything is tightly integrated in our SOC, the patches
-contain code from common code (common to ALL our ASICs, even those who
-don't have NIC at all), GAUDI specific code which is not NIC related
-and the NIC code itself.
-But I guess that as a last resort if this is a *must* I can do that.
-Though I would like to hear Greg's opinion on this as he is my current
-maintainer.
+Conventionally, wake-up events for a specific device, in our case the
+lid device, are managed via the ACPI _PRW field. While this does not
+seem strictly necessary based on ACPI spec, the kernel disables GPE
+wakeups to avoid non-wakeup interrupts preventing suspend by default and
+only enables GPEs associated via the _PRW field with a wake-up capable
+device. This behavior has been introduced in commit f941d3e41da7 ("ACPI:
+EC / PM: Disable non-wakeup GPEs for suspend-to-idle") and is described
+in more detail in its commit message.
 
-Personally I do want to send relevant patches to netdev because I want
-to get your expert reviews on them, but still keep the code in a
-single location.
+Unfortunately, on MS Surface devices, there is no _PRW field present on
+the lid device, thus no GPE is associated with it, and therefore the GPE
+responsible for sending the status-change notification to the lid gets
+disabled during suspend, making it impossible to wake the device via the
+lid.
 
->
-> Have you considered using notifiers to get your NIC driver registered
-> while the NIC code lives in a different module?
-Yes, and I prefered to keep it simple. I didn't want to start sending
-notifications to the NIC driver every time, for example, I needed to
-reset the SOC because a compute engine got stuck. Or vice-versa - when
-some error happened in the NIC to start sending notifications to the
-common driver.
+This patch introduces a pseudo-device and respective driver which, based
+on some DMI matching, marks the corresponding GPE of the lid device for
+wake and enables it during suspend. The behavior of this driver models
+the behavior of the ACPI/PM core for normal wakeup GPEs, properly
+declared via the _PRW field.
 
-In addition, from my AMD days, we had a very tough time managing two
-drivers that "talk" to each other and manage the same H/W. I'm talking
-about amdgpu for graphics and amdkfd for compute (which I was the
-maintainer). AMD is working in the past years to unite those two
-drivers to get out of that mess. That's why I didn't want to go down
-that road.
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
 
-Thanks,
-Oded
+Changes in v2:
+ - Use software nodes and device properties instead of platform data.
+ - Simplify module alias.
+ - Add comment regarding origin of GPE numbers.
+ - Fix style issues.
 
-> --
-> Florian
+---
+ MAINTAINERS                        |   6 +
+ drivers/platform/x86/Kconfig       |  10 +
+ drivers/platform/x86/Makefile      |   1 +
+ drivers/platform/x86/surface_gpe.c | 303 +++++++++++++++++++++++++++++
+ 4 files changed, 320 insertions(+)
+ create mode 100644 drivers/platform/x86/surface_gpe.c
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b5cfab015bd61..a9f8400096e16 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11549,6 +11549,12 @@ F:	drivers/scsi/smartpqi/smartpqi*.[ch]
+ F:	include/linux/cciss*.h
+ F:	include/uapi/linux/cciss*.h
+ 
++MICROSOFT SURFACE GPE LID SUPPORT DRIVER
++M:	Maximilian Luz <luzmaximilian@gmail.com>
++L:	platform-driver-x86@vger.kernel.org
++S:	Maintained
++F:	drivers/platform/x86/surface_gpe.c
++
+ MICROSOFT SURFACE PRO 3 BUTTON DRIVER
+ M:	Chen Yu <yu.c.chen@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 40219bba68011..cd29ab65f8b15 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -894,6 +894,16 @@ config SURFACE_3_POWER_OPREGION
+ 	  This driver provides support for ACPI operation
+ 	  region of the Surface 3 battery platform driver.
+ 
++config SURFACE_GPE
++	tristate "Surface GPE/Lid Support Driver"
++	depends on ACPI
++	depends on DMI
++	help
++	  This driver marks the GPEs related to the ACPI lid device found on
++	  Microsoft Surface devices as wakeup sources and prepares them
++	  accordingly. It is required on those devices to allow wake-ups from
++	  suspend by opening the lid.
++
+ config SURFACE_PRO3_BUTTON
+ 	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
+ 	depends on ACPI && INPUT
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index 5f823f7eff452..58c2a6f52e394 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -85,6 +85,7 @@ obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
+ obj-$(CONFIG_SURFACE3_WMI)		+= surface3-wmi.o
+ obj-$(CONFIG_SURFACE_3_BUTTON)		+= surface3_button.o
+ obj-$(CONFIG_SURFACE_3_POWER_OPREGION)	+= surface3_power.o
++obj-$(CONFIG_SURFACE_GPE)		+= surface_gpe.o
+ obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
+ 
+ # MSI
+diff --git a/drivers/platform/x86/surface_gpe.c b/drivers/platform/x86/surface_gpe.c
+new file mode 100644
+index 0000000000000..10e563f253b9e
+--- /dev/null
++++ b/drivers/platform/x86/surface_gpe.c
+@@ -0,0 +1,303 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Surface GPE/Lid driver to enable wakeup from suspend via the lid by
++ * properly configuring the respective GPEs.
++ */
++
++#include <linux/acpi.h>
++#include <linux/dmi.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++/*
++ * Note: The GPE numbers for the lid devices found below have been obtained
++ *       from ACPI/the DSDT table, specifically from the GPE handler for the
++ *       lid.
++ */
++
++static const struct property_entry lid_device_props_l17[] = {
++	PROPERTY_ENTRY_U32("gpe", 0x17),
++	{},
++};
++
++static const struct property_entry lid_device_props_l4D[] = {
++	PROPERTY_ENTRY_U32("gpe", 0x4D),
++	{},
++};
++
++static const struct property_entry lid_device_props_l4F[] = {
++	PROPERTY_ENTRY_U32("gpe", 0x4F),
++	{},
++};
++
++static const struct property_entry lid_device_props_l57[] = {
++	PROPERTY_ENTRY_U32("gpe", 0x57),
++	{},
++};
++
++/*
++ * Note: When changing this, don't forget to check that the MODULE_ALIAS below
++ *       still fits.
++ */
++static const struct dmi_system_id dmi_lid_device_table[] = {
++	{
++		.ident = "Surface Pro 4",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
++		},
++		.driver_data = (void *)lid_device_props_l17,
++	},
++	{
++		.ident = "Surface Pro 5",
++		.matches = {
++			/*
++			 * We match for SKU here due to generic product name
++			 * "Surface Pro".
++			 */
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
++		},
++		.driver_data = (void *)lid_device_props_l4F,
++	},
++	{
++		.ident = "Surface Pro 5 (LTE)",
++		.matches = {
++			/*
++			 * We match for SKU here due to generic product name
++			 * "Surface Pro"
++			 */
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
++		},
++		.driver_data = (void *)lid_device_props_l4F,
++	},
++	{
++		.ident = "Surface Pro 6",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
++		},
++		.driver_data = (void *)lid_device_props_l4F,
++	},
++	{
++		.ident = "Surface Pro 7",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 7"),
++		},
++		.driver_data = (void *)lid_device_props_l4D,
++	},
++	{
++		.ident = "Surface Book 1",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
++		},
++		.driver_data = (void *)lid_device_props_l17,
++	},
++	{
++		.ident = "Surface Book 2",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
++		},
++		.driver_data = (void *)lid_device_props_l17,
++	},
++	{
++		.ident = "Surface Book 3",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 3"),
++		},
++		.driver_data = (void *)lid_device_props_l4D,
++	},
++	{
++		.ident = "Surface Laptop 1",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
++		},
++		.driver_data = (void *)lid_device_props_l57,
++	},
++	{
++		.ident = "Surface Laptop 2",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
++		},
++		.driver_data = (void *)lid_device_props_l57,
++	},
++	{
++		.ident = "Surface Laptop 3 (Intel 13\")",
++		.matches = {
++			/*
++			 * We match for SKU here due to different vairants: The
++			 * AMD (15") version does not rely on GPEs.
++			 */
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Laptop_3_1867:1868"),
++		},
++		.driver_data = (void *)lid_device_props_l4D,
++	},
++	{ }
++};
++
++struct surface_lid_device {
++	u32 gpe_number;
++};
++
++static int surface_lid_enable_wakeup(struct device *dev, bool enable)
++{
++	const struct surface_lid_device *lid = dev_get_drvdata(dev);
++	int action = enable ? ACPI_GPE_ENABLE : ACPI_GPE_DISABLE;
++	acpi_status status;
++
++	status = acpi_set_gpe_wake_mask(NULL, lid->gpe_number, action);
++	if (status) {
++		dev_err(dev, "failed to set GPE wake mask: %d\n", status);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int surface_gpe_suspend(struct device *dev)
++{
++	return surface_lid_enable_wakeup(dev, true);
++}
++
++static int surface_gpe_resume(struct device *dev)
++{
++	return surface_lid_enable_wakeup(dev, false);
++}
++
++static SIMPLE_DEV_PM_OPS(surface_gpe_pm, surface_gpe_suspend, surface_gpe_resume);
++
++static int surface_gpe_probe(struct platform_device *pdev)
++{
++	struct surface_lid_device *lid;
++	u32 gpe_number;
++	int status;
++
++	status = device_property_read_u32(&pdev->dev, "gpe", &gpe_number);
++	if (status)
++		return -ENODEV;
++
++	status = acpi_mark_gpe_for_wake(NULL, gpe_number);
++	if (status) {
++		dev_err(&pdev->dev, "failed to mark GPE for wake: %d\n", status);
++		return -EINVAL;
++	}
++
++	status = acpi_enable_gpe(NULL, gpe_number);
++	if (status) {
++		dev_err(&pdev->dev, "failed to enable GPE: %d\n", status);
++		return -EINVAL;
++	}
++
++	lid = devm_kzalloc(&pdev->dev, sizeof(struct surface_lid_device),
++			   GFP_KERNEL);
++	if (!lid)
++		return -ENOMEM;
++
++	lid->gpe_number = gpe_number;
++	platform_set_drvdata(pdev, lid);
++
++	status = surface_lid_enable_wakeup(&pdev->dev, false);
++	if (status) {
++		acpi_disable_gpe(NULL, gpe_number);
++		platform_set_drvdata(pdev, NULL);
++		return status;
++	}
++
++	return 0;
++}
++
++static int surface_gpe_remove(struct platform_device *pdev)
++{
++	struct surface_lid_device *lid = dev_get_drvdata(&pdev->dev);
++
++	/* restore default behavior without this module */
++	surface_lid_enable_wakeup(&pdev->dev, false);
++	acpi_disable_gpe(NULL, lid->gpe_number);
++
++	platform_set_drvdata(pdev, NULL);
++	return 0;
++}
++
++static struct platform_driver surface_gpe_driver = {
++	.probe = surface_gpe_probe,
++	.remove = surface_gpe_remove,
++	.driver = {
++		.name = "surface_gpe",
++		.pm = &surface_gpe_pm,
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
++	},
++};
++
++static struct platform_device *surface_gpe_device;
++
++static int __init surface_gpe_init(void)
++{
++	const struct dmi_system_id *match;
++	const struct property_entry *props;
++	struct platform_device *pdev;
++	struct fwnode_handle *fwnode;
++	int status;
++
++	match = dmi_first_match(dmi_lid_device_table);
++	if (!match) {
++		pr_info(KBUILD_MODNAME": no device detected, exiting\n");
++		return 0;
++	}
++
++	props = match->driver_data;
++
++	status = platform_driver_register(&surface_gpe_driver);
++	if (status)
++		return status;
++
++	pdev = platform_device_alloc("surface_gpe", PLATFORM_DEVID_NONE);
++	if (!pdev) {
++		platform_driver_unregister(&surface_gpe_driver);
++		return -ENOMEM;
++	}
++
++	fwnode = fwnode_create_software_node(props, NULL);
++	if (IS_ERR(fwnode)) {
++		platform_device_put(pdev);
++		platform_driver_unregister(&surface_gpe_driver);
++		return PTR_ERR(fwnode);
++	}
++
++	pdev->dev.fwnode = fwnode;
++
++	status = platform_device_add(pdev);
++	if (status) {
++		platform_device_put(pdev);
++		platform_driver_unregister(&surface_gpe_driver);
++		return status;
++	}
++
++	surface_gpe_device = pdev;
++	return 0;
++}
++module_init(surface_gpe_init);
++
++static void __exit surface_gpe_exit(void)
++{
++	if (!surface_gpe_device)
++		return;
++
++	fwnode_remove_software_node(surface_gpe_device->dev.fwnode);
++	platform_device_unregister(surface_gpe_device);
++	platform_driver_unregister(&surface_gpe_driver);
++}
++module_exit(surface_gpe_exit);
++
++MODULE_AUTHOR("Maximilian Luz <luzmaximilian@gmail.com>");
++MODULE_DESCRIPTION("Surface GPE/Lid Driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("dmi:*:svnMicrosoftCorporation:pnSurface*:*");
+-- 
+2.28.0
+
