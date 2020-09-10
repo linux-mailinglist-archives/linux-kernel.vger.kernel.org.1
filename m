@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ADA26431A
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4590C264324
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 12:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730834AbgIJKAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 06:00:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36604 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730817AbgIJJ7p (ORCPT
+        id S1730614AbgIJKBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 06:01:24 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21775 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730257AbgIJKBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 05:59:45 -0400
+        Thu, 10 Sep 2020 06:01:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599731985;
+        s=mimecast20190719; t=1599732074;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=HsRNqO1jNDthQ2jBVeyD19nc312WnF2mZEFoahg3RLo=;
-        b=C+q+IN+KgmRM/M3Wno/mhP4ckfy0Xfo7X0YNd7XHaaiK/ITA7npbaltq0snWkhl3YClG2Y
-        LzNW8CkKGcQqX2CVW2qe8nsrMfCES4KlHFnp087dwuYfovx394mhM5gOUNGpi8ZpZ0bh6x
-        eWvQSSbXQD2avhXZHxh4+1a+JOESbwU=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SAWVsQ1VutHeIxcMMMfasmStNBpMRCAzjajMGXTXbd0=;
+        b=eHtit0kB4Q4gqxCFnvs2sI/d1zB45cvF+vS4fBVctNtQB7dyum3wgsgdHAVCkPqmajfyTV
+        rK7w4uQVbZNby42gkseiqeFWLxHhIJQAaxPmg/ytNX3fzdBnNrGmLcV5j2FqP0Ql76DS7E
+        DrRVbJBNULeZhT/RYaFKC4XS6Hxgjf8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-Qdh9D_A_MaC2_Fiv7Cem4w-1; Thu, 10 Sep 2020 05:59:43 -0400
-X-MC-Unique: Qdh9D_A_MaC2_Fiv7Cem4w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-295-2ul8F2GxPr6_nDXiBcdcfQ-1; Thu, 10 Sep 2020 06:01:11 -0400
+X-MC-Unique: 2ul8F2GxPr6_nDXiBcdcfQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AD828018A1;
-        Thu, 10 Sep 2020 09:59:42 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-123.bne.redhat.com [10.64.54.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 647E77E173;
-        Thu, 10 Sep 2020 09:59:40 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v2 1/3] arm64/mm: Remove CONT_RANGE_OFFSET
-Date:   Thu, 10 Sep 2020 19:59:34 +1000
-Message-Id: <20200910095936.20307-1-gshan@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35E8C801FDF;
+        Thu, 10 Sep 2020 10:01:08 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32A011002D5E;
+        Thu, 10 Sep 2020 10:01:04 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 12:01:01 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Peter Maydell <peter.maydell@linaro.org>
+Cc:     Peter Maydell <Peter.Maydell@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        QEMU Developers <qemu-devel@nongnu.org>,
+        lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Subject: Re: [PATCH v2 2/2] arm64: kvm: Introduce MTE VCPU feature
+Message-ID: <20200910100101.4c47ww4xniza7owi@kamzik.brq.redhat.com>
+References: <20200904160018.29481-1-steven.price@arm.com>
+ <20200904160018.29481-3-steven.price@arm.com>
+ <20200909154804.mide6szbzgdy7jju@kamzik.brq.redhat.com>
+ <CAFEAcA_1YnBg3HVmtrSMP8u7GqHY8mtDAJwVcZuNUhwA+q9q=w@mail.gmail.com>
+ <20200910063854.vwhtn3lc5tei72fh@kamzik.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910063854.vwhtn3lc5tei72fh@kamzik.brq.redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro was introduced by commit <ecf35a237a85> ("arm64: PTE/PMD
-contiguous bit definition") at the beginning. It's only used by
-commit <348a65cdcbbf> ("arm64: Mark kernel page ranges contiguous"),
-which was reverted later by commit <667c27597ca8>. This makes the
-macro unused.
+On Thu, Sep 10, 2020 at 08:38:54AM +0200, Andrew Jones wrote:
+> On Wed, Sep 09, 2020 at 04:53:02PM +0100, Peter Maydell wrote:
+> > On Wed, 9 Sep 2020 at 16:48, Andrew Jones <drjones@redhat.com> wrote:
+> > > We either need a KVM cap or a new CPU feature probing interface to avoid
+> > > making userspace try features one at a time. It's too bad that VCPU_INIT
+> > > doesn't clear all offending features from the feature set when returning
+> > > EINVAL, because then userspace could create a scratch VCPU with everything
+> > > it supports in order to see what KVM also supports in one go.
+> > 
+> > You could add one if you wanted -- add a new feature bit
+> > TELL_ME_WHAT_YOU_HAVE. If the kernel sees that then on filure
+> > it clears out feature bits it doesn't support and also clears
+> > TELL_ME_WHAT_YOU_HAVE. If QEMU sees EINVAL and TELL_ME_WHAT_YOU_HAVE
+> > is still set, then it knows it's dealing with an old kernel
+> > and has to do one-at-a-time probing. If it sees EINVAL but not
+> > TELL_ME_WHAT_YOU_HAVE then it knows it has a new kernel and
+> > has just got all the info.
+> >
+> 
+> That's a great proposal. I'll try to find time to send the patches.
+>
 
-This removes the unused macro (CONT_RANGE_OFFSET).
+We also have KVM_ARM_PREFERRED_TARGET, which is documented as
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/arm64/include/asm/pgtable-hwdef.h | 2 --
- 1 file changed, 2 deletions(-)
+"""
+...
+The ioctl returns struct kvm_vcpu_init instance containing information
+about preferred CPU target type and recommended features for it.  The
+kvm_vcpu_init->features bitmap returned will have feature bits set if
+the preferred target recommends setting these features, but this is
+not mandatory.
+...
+"""
 
-diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
-index d400a4d9aee2..8a399e666837 100644
---- a/arch/arm64/include/asm/pgtable-hwdef.h
-+++ b/arch/arm64/include/asm/pgtable-hwdef.h
-@@ -98,8 +98,6 @@
- #define CONT_PMDS		(1 << (CONT_PMD_SHIFT - PMD_SHIFT))
- #define CONT_PMD_SIZE		(CONT_PMDS * PMD_SIZE)
- #define CONT_PMD_MASK		(~(CONT_PMD_SIZE - 1))
--/* the numerical offset of the PTE within a range of CONT_PTES */
--#define CONT_RANGE_OFFSET(addr) (((addr)>>PAGE_SHIFT)&(CONT_PTES-1))
- 
- /*
-  * Hardware page table definitions.
--- 
-2.23.0
+But, it says "recommended" features, not "all supported" features,
+and the current implementation of KVM_ARM_PREFERRED_TARGET only
+zeros out features. So, I think we should just leave
+KVM_ARM_PREFERRED_TARGET as is and stick to the plan of extending
+VCPU_INIT.
+
+Thanks,
+drew
 
