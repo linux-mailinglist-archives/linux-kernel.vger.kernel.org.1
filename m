@@ -2,142 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D3F264BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F44A264BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 10 Sep 2020 19:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgIJRnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 13:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbgIJRl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 13:41:29 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAACC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:41:17 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id t76so6705937oif.7
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 10:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ATdJdtrrGQs40AB3pAJaPiKELI+qIaGQiGwD413skg=;
-        b=s1IboDV+5v/GRORnn7PeYV0l5Wu9lL1nSqTQFlmFaPKFJLXtecqcf/fF8tE8/TBzFO
-         wwko5dfbZDLn4eQwiMdwMtaeAwbxcyMcNSrcmwcMOn3OhK75W+2R0JMdzJurCcZrbJkP
-         Aj26foauya/lB6hvQxoJ9UV6SIiv7Wx7xQdQab6tQZiOH9gLwtyGWJ0sfxvcTvHLfm+n
-         tsSey7Dl8WMXWipZQv8iolcq6jQBRRRGCvoNk4C55Q5vbgBS3P+t47LwGafvHf+8cbD9
-         tEYY2rXnyqBrxsujG5V89lCiwKjUHnQBSjuWeBKEtLaiZF0sc5GaRbmgOg3XZZyh/Aq0
-         b5bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ATdJdtrrGQs40AB3pAJaPiKELI+qIaGQiGwD413skg=;
-        b=X96dTxySnmCGdKnwLWAdZD7V/WaCfazVZWksTW1dBzdJdduInDhpQy9WA3BNtmca/h
-         G2M7pf8/wgIQF94fv4jS19WyS1kTxjpZpGe9Ldu9KvETGI0moE1H7TdMetSB/gf7SZEb
-         fW2o18ZVUn71JJCe2Iw+ych5jfLjJd2Hmz/liZvlTRxj7rBnfH98ANFHMh3+oOKOYlP3
-         IYvhej7rm7/F3gA6z9hfuMd65N7dOuxozyeJ33E8KkYl3UzhI646z/VeWrGbqMyf3aJM
-         2ZMupIk0Zf+c41OEJJVmo7KNzjNzxXltZzdgZBrfaIbRpquncaNW33o2eH/6yZoxMD7v
-         i4VQ==
-X-Gm-Message-State: AOAM531sntyTSsZY5R2xIPUd9JDu4u2UlX8twwGEnqcGOonaL0H6JvHZ
-        qhDc/WxHdXhB+WWFSbwnlORekUDiK/Yqst7XUl3ImQ==
-X-Google-Smtp-Source: ABdhPJzLL0bwB+luoUJV/L6Tg/d9FthCbcG3Z5v/fHjAGvSmsEKDMAUcDV0H7RwYClSVyOq990hNd20DUyp67bzsrQw=
-X-Received: by 2002:aca:5158:: with SMTP id f85mr709168oib.121.1599759676956;
- Thu, 10 Sep 2020 10:41:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-2-elver@google.com>
- <CACT4Y+bfp2ch2KbSMkUd3142aA4p2CiMOmdXrr0-muu6bQ5xXg@mail.gmail.com>
- <CAG_fn=W4es7jaTotDORt2SwspE4A804mdwAY1j4gcaSEKtRjiw@mail.gmail.com> <CACT4Y+awrz-j8y5Qc8OS9qkov4doMnw1V=obwp3MB_LTvaUFXw@mail.gmail.com>
-In-Reply-To: <CACT4Y+awrz-j8y5Qc8OS9qkov4doMnw1V=obwp3MB_LTvaUFXw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 10 Sep 2020 19:41:05 +0200
-Message-ID: <CANpmjNOTJsZeH_sMx=3XNZuvCih+A9m3uTeSGcmpNH9YbiF2sQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 01/10] mm: add Kernel Electric-Fence infrastructure
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
+        id S1727837AbgIJRrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 13:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725935AbgIJRmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 13:42:31 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D6E22067C;
+        Thu, 10 Sep 2020 17:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599759750;
+        bh=mKaGdeBMiz5ZqOc/kvJB3cAWhRV08AagdLUfAwMQwvE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=AW8i7t3U2dVnW4Df2r86rtLf/Qkxa7XQ6kawV4X5oliq183NfO2vEwxuvvHJpT0c1
+         a9cKCGRdxgwShK8L8BGhMPGvgx6uFgwDz/CIr/KXk07DKXBidYWP+6GZtAWa3ERS4d
+         WXev5UprB9IrJp/ij3W4FONb/ByhGV9MJpLOVQV8=
+Message-ID: <8842543f4c929f7004cf356224230516a7fe2fb7.camel@kernel.org>
+Subject: Re: [PATCH] fsync.2: ERRORS: add EIO and ENOSPC
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>, Jan Kara <jack@suse.cz>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     milan.opensource@gmail.com, lkml <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Date:   Thu, 10 Sep 2020 13:42:28 -0400
+In-Reply-To: <87k0x2k0wn.fsf@notabene.neil.brown.name>
+References: <1598685186-27499-1-git-send-email-milan.opensource@gmail.com>
+         <CAKgNAkiTjtdaQxbCYS67+SdqSPaGzJnfLEEMFgcoXjHLDxgemw@mail.gmail.com>
+         <20200908112742.GA2956@quack2.suse.cz>
+         <e4f5ccb298170357ba16ae2870fde6a90ca2aa81.camel@kernel.org>
+         <87k0x2k0wn.fsf@notabene.neil.brown.name>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 at 19:11, Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Sep 10, 2020 at 6:19 PM Alexander Potapenko <glider@google.com> wrote:
-> >
-> > On Thu, Sep 10, 2020 at 5:43 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> >
-> > > > +       /* Calculate address for this allocation. */
-> > > > +       if (right)
-> > > > +               meta->addr += PAGE_SIZE - size;
-> > > > +       meta->addr = ALIGN_DOWN(meta->addr, cache->align);
-> > >
-> > > I would move this ALIGN_DOWN under the (right) if.
-> > > Do I understand it correctly that it will work, but we expect it to do
-> > > nothing for !right? If cache align is >PAGE_SIZE, nothing good will
-> > > happen anyway, right?
-> > > The previous 2 lines look like part of the same calculation -- "figure
-> > > out the addr for the right case".
-> >
-> > Yes, makes sense.
-> >
-> > > > +
-> > > > +       schedule_delayed_work(&kfence_timer, 0);
-> > > > +       WRITE_ONCE(kfence_enabled, true);
-> > >
-> > > Can toggle_allocation_gate run before we set kfence_enabled? If yes,
-> > > it can break. If not, it's still somewhat confusing.
-> >
-> > Correct, it should go after we enable KFENCE. We'll fix that in v2.
-> >
-> > > > +void __kfence_free(void *addr)
-> > > > +{
-> > > > +       struct kfence_metadata *meta = addr_to_metadata((unsigned long)addr);
-> > > > +
-> > > > +       if (unlikely(meta->cache->flags & SLAB_TYPESAFE_BY_RCU))
-> > >
-> > > This may deserve a comment as to why we apply rcu on object level
-> > > whereas SLAB_TYPESAFE_BY_RCU means slab level only.
-> >
-> > Sorry, what do you mean by "slab level"?
-> > SLAB_TYPESAFE_BY_RCU means we have to wait for possible RCU accesses
-> > in flight before freeing objects from that slab - that's basically
-> > what we are doing here below:
->
-> Exactly! You see it is confusing :)
-> SLAB_TYPESAFE_BY_RCU does not mean that. rcu-freeing only applies to
-> whole pages, that's what I mean by "slab level" (whole slabs are freed
-> by rcu).
+On Thu, 2020-09-10 at 09:04 +1000, NeilBrown wrote:
+> On Tue, Sep 08 2020, Jeff Layton wrote:
+> 
+> > On Tue, 2020-09-08 at 13:27 +0200, Jan Kara wrote:
+> > > Added Jeff to CC since he has written the code...
+> > > 
+> > > On Mon 07-09-20 09:11:06, Michael Kerrisk (man-pages) wrote:
+> > > > [Widening the CC to include Andrew and linux-fsdevel@]
+> > > > [Milan: thanks for the patch, but it's unclear to me from your commit
+> > > > message how/if you verified the details.]
+> > > > 
+> > > > Andrew, maybe you (or someone else) can comment, since long ago your
+> > > > 
+> > > >     commit f79e2abb9bd452d97295f34376dedbec9686b986
+> > > >     Author: Andrew Morton <akpm@osdl.org>
+> > > >     Date:   Fri Mar 31 02:30:42 2006 -0800
+> > > > 
+> > > > included a comment that is referred to in  stackoverflow discussion
+> > > > about this topic (that SO discussion is in turn referred to by
+> > > > https://bugzilla.kernel.org/show_bug.cgi?id=194757).
+> > > > 
+> > > > The essence as I understand it, is this:
+> > > > (1) fsync() (and similar) may fail EIO or ENOSPC, at which point data
+> > > > has not been synced.
+> > > > (2) In this case, the EIO/ENOSPC setting is cleared so that...
+> > > > (3) A subsequent fsync() might return success, but...
+> > > > (4) That doesn't mean that the data in (1) landed on the disk.
+> > > 
+> > > Correct.
+> > > 
+> > > > The proposed manual page patch below wants to document this, but I'd
+> > > > be happy to have an FS-knowledgeable person comment before I apply.
+> > > 
+> > > Just a small comment below:
+> > > 
+> > > > On Sat, 29 Aug 2020 at 09:13, <milan.opensource@gmail.com> wrote:
+> > > > > From: Milan Shah <milan.opensource@gmail.com>
+> > > > > 
+> > > > > This Fix addresses Bug 194757.
+> > > > > Ref: https://bugzilla.kernel.org/show_bug.cgi?id=194757
+> > > > > ---
+> > > > >  man2/fsync.2 | 13 +++++++++++++
+> > > > >  1 file changed, 13 insertions(+)
+> > > > > 
+> > > > > diff --git a/man2/fsync.2 b/man2/fsync.2
+> > > > > index 96401cd..f38b3e4 100644
+> > > > > --- a/man2/fsync.2
+> > > > > +++ b/man2/fsync.2
+> > > > > @@ -186,6 +186,19 @@ In these cases disk caches need to be disabled using
+> > > > >  or
+> > > > >  .BR sdparm (8)
+> > > > >  to guarantee safe operation.
+> > > > > +
+> > > > > +When
+> > > > > +.BR fsync ()
+> > > > > +or
+> > > > > +.BR fdatasync ()
+> > > > > +returns
+> > > > > +.B EIO
+> > > > > +or
+> > > > > +.B ENOSPC
+> > > > > +any error flags on pages in the file mapping are cleared, so subsequent synchronisation attempts
+> > > > > +will return without error. It is
+> > > > > +.I not
+> > > > > +safe to retry synchronisation and assume that a non-error return means prior writes are now on disk.
+> > > > >  .SH SEE ALSO
+> > > > >  .BR sync (1),
+> > > > >  .BR bdflush (2),
+> > > 
+> > > So the error state isn't really stored "on pages in the file mapping".
+> > > Current implementation (since 4.14) is that error state is stored in struct
+> > > file (I think this tends to be called "file description" in manpages) and
+> > > so EIO / ENOSPC is reported once for each file description of the file that
+> > > was open before the error happened. Not sure if we want to be so precise in
+> > > the manpages or if it just confuses people. Anyway your takeway that no
+> > > error on subsequent fsync() does not mean data was written is correct.
+> > > 
+> > > 
+> > 
+> > Thinking about it more, I think we ought to spell this out explicitly as
+> > we can in the manpage. This is a point of confusion for a lot of people
+> > and not understanding this can lead to data integrity bugs. Maybe
+> > something like this in the NOTES section?
+> > 
+> > '''
+> > When fsync returns an error, the file is considered to be "clean". A
+> > subsequent call to fsync will not result in a reattempt to write out the
+> > data, unless that data has been rewritten. Applications that want to
+> > reattempt writing to the file after a transient error must re-write
+> > their data.
+> > '''
+> > 
+> > To be clear:
+> > 
+> > In practice, you'd only have to write enough to redirty each page in
+> > most cases.
+> 
+> Nonononono.  In practice you have to repeat the entire write because you
+> cannot know if the cached page is from before the write failure, or has
+> since been flushed and reloaded.
+> 
 
-In the case here, we have to defer freeing the object, because unlike
-real SLAB_TYPESAFE_BY_RCU slabs, our page here may get recycled for
-other-typed objects. We can update the comment to be clearer.
+Oh, good point! There's no way for userland to know that, so you really
+do have to rewrite the whole thing.
+
+> > Also, it is hard to claim that the above behavior is universally true. A
+> > filesystem could opt to keep the pages dirty for some errors, but the
+> > vast majority just toss out the data whenever there is a writeback
+> > problem.
+> 
+> ...and any filesystem that doesn't behave that way is wasting effort,
+> because nothing else can be assumed.
+> 
+
+Yeah. I only made the point to be pedantic. There's no benefit to
+documenting that, I think...
+
+> Regarding your "NOTES" addition, I don't feel comfortable with the
+> "clean" language.  I would prefer something like:
+> 
+>  When fsync() reports a failure (EIO, ENOSPC, EDQUOT) it must be assumed
+>  that any write requests initiated since the previous successful fsync
+>  was initiated may have failed, and that any cached data may have been
+>  lost.  A future fsync() will not attempt to write out the same data
+>  again.  If recovery is possible and desired, the application must
+>  repeat all the writes that may have failed.
+> 
+>  If the regions of a file that were written to prior to a failed fsync()
+>  are read, the content reported may not reflect the stored content, and
+>  subsequent reads may revert to the stored content at any time.
+> 
+
+Much nicer.
+
+Should we make a distinction between usage and functional classes of
+errors in this? The "usage" errors will probably not result in the pages
+being tossed out, but the functional ones almost certainly will...
+
+-- 
+Jeff Layton <jlayton@kernel.org>
+
