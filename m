@@ -2,117 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A83266561
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD223266573
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgIKRAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:00:51 -0400
-Received: from mga18.intel.com ([134.134.136.126]:29787 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgIKRAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:00:33 -0400
-IronPort-SDR: xeIfXwOKJ55+S2qfKX6U1GBoK5yYcz1Rf1t0alMD7Mi4IQvWp0uhfsVeg85XOYlvtpv1WRgtW4
- Jpj3FzMyiw2w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="146534444"
-X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
-   d="scan'208";a="146534444"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 10:00:32 -0700
-IronPort-SDR: fv+8VPKXryTTqgxLsKuvHI/MEWiTXWPSgzWL0s+XUpDB1I05IjHj1/n5XnRhn/5TiuAjVdvYN2
- t/tYy52AIQlg==
-X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
-   d="scan'208";a="450048714"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 10:00:32 -0700
-Date:   Fri, 11 Sep 2020 10:00:31 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        linux-kernel@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>
-Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-Message-ID: <20200911170031.GD4344@sjchrist-ice>
-References: <20200807141232.402895-1-vkuznets@redhat.com>
- <20200825212526.GC8235@xz-x1>
- <87eenlwoaa.fsf@vitty.brq.redhat.com>
- <20200901200021.GB3053@xz-x1>
- <877dtcpn9z.fsf@vitty.brq.redhat.com>
- <20200904061210.GA22435@sjchrist-ice>
- <20200904072905.vbkiq3h762fyzds6@sirius.home.kraxel.org>
- <20200904160008.GA2206@sjchrist-ice>
- <874koanfsc.fsf@vitty.brq.redhat.com>
- <20200907072829-mutt-send-email-mst@kernel.org>
+        id S1726235AbgIKRDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbgIKRBm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:01:42 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5D4C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:01:42 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id e7so8382300qtj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:01:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hQC5h4tmhJe0o6/7GihSPzVFpGRqbcoLdlsbFYRWvJE=;
+        b=ETjF5S+F6vyqp8xD14BBvlkWN5J7Mj7/bzBIomrefzra9O0UN4PLiDy/6jiIWkc3UV
+         IZnBe1TTqBxLJhRT8jUduG/qvencO3jGWqpNvpfHOAMRk04CrifkwkbcWhRYZp6HUHq1
+         0lGbYdNO9hfYQts6HpAWSNRV1UapBFS96xOOJV8XmunIDBQYDnUDyTsf7McyIT+NR8Wq
+         H6mjJo6cZD89+EkgBoubbpiLrOCMKvqoEB8q2IsRAkumaei7M6avUNmXai9uU43701/P
+         LK6MgJBKCnG+H2p1muMmUiAejSwiQSq/66nLA7p8i+IjI8YQ6pVDBo7P+TRfo921lN/L
+         bkjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hQC5h4tmhJe0o6/7GihSPzVFpGRqbcoLdlsbFYRWvJE=;
+        b=Lpgie9UOtqRKWxfjC4se3wuDE92MPC5Vh7kQ9sXIsSM6S+Na2JIElnPMOmDG50M/up
+         fGdlzbYvAz5f4gCOxp+GjXtc0PaHLtvU8vXZjJINP8wv6w04xlEYy5wK5Y+F2DK9rQox
+         StFR5tiPoywapKEnOFqRA1W267mgtRkIJxKYJr9ASXQZbJoCPID9aPtqdvf7yTD2gui1
+         KxtBIAI753cLV3WPpwBky+NPfUGfm/u6mXfwz5IFhXpsqokxXwu8Prq3bzMXviLmxddZ
+         IpDgM0VMM12epv+r+SWh13aOGXTM7x5dqopy2jhV12BhTC9IIkBZNfAhxl5Daw82GwZH
+         RLsw==
+X-Gm-Message-State: AOAM531PSGXeU61y1KY1qESn9WUm/1f3FnUY+LO/lanBV4oJh7sPxGif
+        52dBIEDMBWXKJ3eDZUoXXExL2A==
+X-Google-Smtp-Source: ABdhPJyCFCumfnLKani2CUL3oiVZh0W4ll9EBQ13YKmcxlm9eCZAWXiL7vqQ0sINhFhnX0HMCgsfPw==
+X-Received: by 2002:ac8:5341:: with SMTP id d1mr2849701qto.176.1599843701359;
+        Fri, 11 Sep 2020 10:01:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id u15sm3456866qtj.3.2020.09.11.10.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 10:01:40 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kGmQd-0050vl-Nk; Fri, 11 Sep 2020 14:01:39 -0300
+Date:   Fri, 11 Sep 2020 14:01:39 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in ucma_close (2)
+Message-ID: <20200911170139.GU87483@ziepe.ca>
+References: <0000000000008e7c8f05aef61d8d@google.com>
+ <20200911041640.20652-1-hdanton@sina.com>
+ <20200911152017.18644-1-hdanton@sina.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200907072829-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200911152017.18644-1-hdanton@sina.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 07:32:23AM -0400, Michael S. Tsirkin wrote:
-> On Mon, Sep 07, 2020 at 10:37:39AM +0200, Vitaly Kuznetsov wrote:
-> > Sean Christopherson <sean.j.christopherson@intel.com> writes:
-> > 
-> > > On Fri, Sep 04, 2020 at 09:29:05AM +0200, Gerd Hoffmann wrote:
-> > >>   Hi,
-> > >> 
-> > >> > Unless I'm mistaken, microvm doesn't even support PCI, does it?
-> > >> 
-> > >> Correct, no pci support right now.
-> > >> 
-> > >> We could probably wire up ecam (arm/virt style) for pcie support, once
-> > >> the acpi support for mictovm finally landed (we need acpi for that
-> > >> because otherwise the kernel wouldn't find the pcie bus).
-> > >> 
-> > >> Question is whenever there is a good reason to do so.  Why would someone
-> > >> prefer microvm with pcie support over q35?
-> > >> 
-> > >> > If all of the above is true, this can be handled by adding "pci=lastbus=0"
-> > >> > as a guest kernel param to override its scanning of buses.  And couldn't
-> > >> > that be done by QEMU's microvm_fix_kernel_cmdline() to make it transparent
-> > >> > to the end user?
-> > >> 
-> > >> microvm_fix_kernel_cmdline() is a hack, not a solution.
-> > >> 
-> > >> Beside that I doubt this has much of an effect on microvm because
-> > >> it doesn't support pcie in the first place.
-> > >
-> > > I am so confused.  Vitaly, can you clarify exactly what QEMU VM type this
-> > > series is intended to help?  If this is for microvm, then why is the guest
-> > > doing PCI scanning in the first place?  If it's for q35, why is the
-> > > justification for microvm-like workloads?
-> > 
-> > I'm not exactly sure about the plans for particular machine types, the
-> > intention was to use this for pcie in QEMU in general so whatever
-> > machine type uses pcie will benefit. 
-> > 
-> > Now, it seems that we have a more sophisticated landscape. The
-> > optimization will only make sense to speed up boot so all 'traditional'
-> > VM types with 'traditional' firmware are out of
-> > question. 'Container-like' VMs seem to avoid PCI for now, I'm not sure
-> > if it's because they're in early stages of their development, because
-> > they can get away without PCI or, actually, because of slowness at boot
-> > (which we're trying to tackle with this feature). I'd definitely like to
-> > hear more what people think about this.
+On Fri, Sep 11, 2020 at 11:20:17PM +0800, Hillf Danton wrote:
 > 
-> I suspect microvms will need pci eventually. I would much rather KVM
-> had an exit-less discovery mechanism in place by then because
-> learning from history if it doesn't they will do some kind of
-> hack on the kernel command line, and everyone will be stuck
-> supporting that for years ...
+> On Fri, 11 Sep 2020 08:57:50 -0300 Jason Gunthorpe wrote:
+> > On Fri, Sep 11, 2020 at 12:16:40PM +0800, Hillf Danton wrote:
+> > > Detect race destroying ctx in order to avoid UAF.
+> > > 
+> > > +++ b/drivers/infiniband/core/ucma.c
+> > > @@ -625,6 +625,10 @@ static ssize_t ucma_destroy_id(struct uc
+> > >  		return PTR_ERR(ctx);
+> > >  
+> > >  	mutex_lock(&ctx->file->mut);
+> > > +	if (ctx->destroying == 1) {
+> > > +		mutex_unlock(&ctx->file->mut);
+> > > +		return -ENXIO;
+> > > +	}
+> > >  	ctx->destroying = 1;
+> > >  	mutex_unlock(&ctx->file->mut);
+> > >  
+> > > @@ -1826,6 +1830,8 @@ static int ucma_close(struct inode *inod
+> > >  
+> > >  	mutex_lock(&file->mut);
+> > >  	list_for_each_entry_safe(ctx, tmp, &file->ctx_list, list) {
+> > > +		if (ctx->destroying == 1)
+> > > +			continue;
+> > >  		ctx->destroying = 1;
+> > >  		mutex_unlock(&file->mut);
+> > >  
+> > 
+> > ucma_destroy_id() is called from write() and ucma_close is release(),
+> > so there is no way these can race?
+> 
+> Sound good but what's reported is uaf in the close path, which is
+> impossible without another thread releasing the ctx a step ahead
+> the closer.
+> Can we call it a race if that's true?
 
-Is it not an option for the VMM to "accurately" enumerate the number of buses?
-E.g. if the VMM has devices on only bus 0, then enumerate that there is one
-bus so that the guest doesn't try and probe devices that can't possibly exist.
-Or is that completely non-sensical and/or violate PCIe spec?
+Migrate is the cause, very tricky:
+
+		CPU0                      CPU1
+	ucma_destroy_id()
+				  ucma_migrate_id()
+				       ucma_get_ctx()
+	xa_lock()
+	 _ucma_find_context()
+	 xa_erase()
+				       xa_lock()
+					ctx->file = new_file
+					list_move()
+				       xa_unlock()
+				      ucma_put_ctx
+				   ucma_close()
+				      _destroy_id()
+
+	_destroy_id()
+	  wait_for_completion()
+	  // boom
+
+
+ie the destrory_id() on the initial FD captures the ctx right before
+migrate moves it, then the new FD closes calling destroy while the
+other destroy is still running.
+
+Sigh, I will rewrite migrate too..
+
+Jason
