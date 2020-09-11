@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07077266049
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9257F266021
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgIKN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 09:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52784 "EHLO mail.kernel.org"
+        id S1726184AbgIKNXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 09:23:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726197AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726208AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 09:05:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC66922241;
-        Fri, 11 Sep 2020 12:57:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9ACC22207;
+        Fri, 11 Sep 2020 12:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829077;
-        bh=Ymhy7pBqFq4zHj0gNByHoRyYK6cTCXC4fO4ECNKEVLM=;
+        s=default; t=1599829087;
+        bh=TKhMz8I3NA+IKOUpI8KHc0vLIXx46qIjjcsG1hMXFak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q+9xeVbTGHfOPH2hin7pVjmb7ZlSTuCXT/HuM0IfUT6w2o4hMrNbDC7d0LFnhVcyw
-         Xo0+gr/4mryUA9THb4q6MYuDT1qhDgiJ/vAWwoW9VHHkN/zLzXYtngSkYYIT4yr272
-         VELuXsyVORa6IzBNIhUFLhMO5VTGp2GWKL4Gbby4=
+        b=MxH/QAHH6K9vFfE7bk5/jouTbd0tZOlSgrF/HI96CAY1X3o/TKKGqFf8eV4Lj/qXE
+         I+JohjraE/gmVd56VvoTjXS4Mqv1f0YZgijZufnhnRlnoyWk6wNehf0R1QULR6Fhmm
+         W/sRIZ2H+nBOpU/mH6IKLyTY4slW1YZ8oPuTCoW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Tim Froidcoeur <tim.froidcoeur@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 57/71] net: initialize fastreuse on inet_inherit_port
-Date:   Fri, 11 Sep 2020 14:46:41 +0200
-Message-Id: <20200911122507.757667428@linuxfoundation.org>
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 60/71] mm/hugetlb: fix a race between hugetlb sysctl handlers
+Date:   Fri, 11 Sep 2020 14:46:44 +0200
+Message-Id: <20200911122507.908241700@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -45,61 +46,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+From: Muchun Song <songmuchun@bytedance.com>
 
-commit d76f3351cea2d927fdf70dd7c06898235035e84e upstream.
+commit 17743798d81238ab13050e8e2833699b54e15467 upstream.
 
-In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
-SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
-behaviour or in the incorrect reuse of a bind.
+There is a race between the assignment of `table->data` and write value
+to the pointer of `table->data` in the __do_proc_doulongvec_minmax() on
+the other thread.
 
-the kernel keeps track for each bind_bucket if all sockets in the
-bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
-These flags allow skipping the costly bind_conflict check when possible
-(meaning when all sockets have the proper SO_REUSE option).
+  CPU0:                                 CPU1:
+                                        proc_sys_write
+  hugetlb_sysctl_handler                  proc_sys_call_handler
+  hugetlb_sysctl_handler_common             hugetlb_sysctl_handler
+    table->data = &tmp;                       hugetlb_sysctl_handler_common
+                                                table->data = &tmp;
+      proc_doulongvec_minmax
+        do_proc_doulongvec_minmax           sysctl_head_finish
+          __do_proc_doulongvec_minmax         unuse_table
+            i = table->data;
+            *i = val;  // corrupt CPU1's stack
 
-For every socket added to a bind_bucket, these flags need to be updated.
-As soon as a socket that does not support reuse is added, the flag is
-set to false and will never go back to true, unless the bind_bucket is
-deleted.
+Fix this by duplicating the `table`, and only update the duplicate of
+it.  And introduce a helper of proc_hugetlb_doulongvec_minmax() to
+simplify the code.
 
-Note that there is no mechanism to re-evaluate these flags when a socket
-is removed (this might make sense when removing a socket that would not
-allow reuse; this leaves room for a future patch).
+The following oops was seen:
 
-For this optimization to work, it is mandatory that these flags are
-properly initialized and updated.
+    BUG: kernel NULL pointer dereference, address: 0000000000000000
+    #PF: supervisor instruction fetch in kernel mode
+    #PF: error_code(0x0010) - not-present page
+    Code: Bad RIP value.
+    ...
+    Call Trace:
+     ? set_max_huge_pages+0x3da/0x4f0
+     ? alloc_pool_huge_page+0x150/0x150
+     ? proc_doulongvec_minmax+0x46/0x60
+     ? hugetlb_sysctl_handler_common+0x1c7/0x200
+     ? nr_hugepages_store+0x20/0x20
+     ? copy_fd_bitmaps+0x170/0x170
+     ? hugetlb_sysctl_handler+0x1e/0x20
+     ? proc_sys_call_handler+0x2f1/0x300
+     ? unregister_sysctl_table+0xb0/0xb0
+     ? __fd_install+0x78/0x100
+     ? proc_sys_write+0x14/0x20
+     ? __vfs_write+0x4d/0x90
+     ? vfs_write+0xef/0x240
+     ? ksys_write+0xc0/0x160
+     ? __ia32_sys_read+0x50/0x50
+     ? __close_fd+0x129/0x150
+     ? __x64_sys_write+0x43/0x50
+     ? do_syscall_64+0x6c/0x200
+     ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-When a child socket is created from a listen socket in
-__inet_inherit_port, the TPROXY case could create a new bind bucket
-without properly initializing these flags, thus preventing the
-optimization to work. Alternatively, a socket not allowing reuse could
-be added to an existing bind bucket without updating the flags, causing
-bind_conflict to never be called as it should.
-
-Call inet_csk_update_fastreuse when __inet_inherit_port decides to create
-a new bind_bucket or use a different bind_bucket than the one of the
-listen socket.
-
-Fixes: 093d282321da ("tproxy: fix hash locking issue when using port redirection in __inet_inherit_port()")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+Fixes: e5ff215941d5 ("hugetlb: multiple hstates for multiple page sizes")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Link: http://lkml.kernel.org/r/20200828031146.43035-1-songmuchun@bytedance.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/inet_hashtables.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -163,6 +163,7 @@ int __inet_inherit_port(const struct soc
- 				return -ENOMEM;
- 			}
- 		}
-+		inet_csk_update_fastreuse(tb, child);
- 	}
- 	inet_bind_hash(child, tb, port);
- 	spin_unlock(&head->lock);
+---
+ mm/hugetlb.c |   26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
+
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2921,6 +2921,22 @@ static unsigned int cpuset_mems_nr(unsig
+ }
+ 
+ #ifdef CONFIG_SYSCTL
++static int proc_hugetlb_doulongvec_minmax(struct ctl_table *table, int write,
++					  void *buffer, size_t *length,
++					  loff_t *ppos, unsigned long *out)
++{
++	struct ctl_table dup_table;
++
++	/*
++	 * In order to avoid races with __do_proc_doulongvec_minmax(), we
++	 * can duplicate the @table and alter the duplicate of it.
++	 */
++	dup_table = *table;
++	dup_table.data = out;
++
++	return proc_doulongvec_minmax(&dup_table, write, buffer, length, ppos);
++}
++
+ static int hugetlb_sysctl_handler_common(bool obey_mempolicy,
+ 			 struct ctl_table *table, int write,
+ 			 void __user *buffer, size_t *length, loff_t *ppos)
+@@ -2932,9 +2948,8 @@ static int hugetlb_sysctl_handler_common
+ 	if (!hugepages_supported())
+ 		return -EOPNOTSUPP;
+ 
+-	table->data = &tmp;
+-	table->maxlen = sizeof(unsigned long);
+-	ret = proc_doulongvec_minmax(table, write, buffer, length, ppos);
++	ret = proc_hugetlb_doulongvec_minmax(table, write, buffer, length, ppos,
++					     &tmp);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -2978,9 +2993,8 @@ int hugetlb_overcommit_handler(struct ct
+ 	if (write && hstate_is_gigantic(h))
+ 		return -EINVAL;
+ 
+-	table->data = &tmp;
+-	table->maxlen = sizeof(unsigned long);
+-	ret = proc_doulongvec_minmax(table, write, buffer, length, ppos);
++	ret = proc_hugetlb_doulongvec_minmax(table, write, buffer, length, ppos,
++					     &tmp);
+ 	if (ret)
+ 		goto out;
+ 
 
 
