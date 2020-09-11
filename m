@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705042664D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D0726642D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726464AbgIKQqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
+        id S1726642AbgIKQcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgIKPIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:08:04 -0400
+        id S1726453AbgIKPTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E462223FB;
-        Fri, 11 Sep 2020 12:59:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A6C0223FD;
+        Fri, 11 Sep 2020 12:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829145;
-        bh=+GANnE8x2AjIJ0n2g8xz0D6nOtdB9ZiU2pb8fbn4/8o=;
+        s=default; t=1599829147;
+        bh=m9tXc2nE7B4HdiF9Mv8gCgkhJ7eDPB67iMoOyQxPMuk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JtrIUVBq2ENAJHFb9J2EwbhirDMcATTn/K49jwUsjF/BchIPFnTPrwHWF0FEUvyCx
-         yFv9Y23uFs0LQeJVtqQhAAkv4UMuwc7s8jRtB7bdsay5AwsLDdDthxuRlhY7h+tl5k
-         RAN0tQKITBNE2jxRPXCl94/AtPoxKxPnqvhuOpGo=
+        b=DLJXxoo1piSDFfg60UCIm0QIm9HQMd8EFwho2MmH8ThN3MzphB0TTWgWietHftFy+
+         EHzzxYKLeB/7DVAvjRM/2uxrJLXFJ6X4TyWGXBcJPDuKFtB0bE4My5EzcjRMwc0Xcx
+         bX8mAwtiP0m6ThA6Q+GGxuusCR5MTnz+/moSa1KA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 02/12] block: ensure bdi->io_pages is always initialized
-Date:   Fri, 11 Sep 2020 14:46:56 +0200
-Message-Id: <20200911122458.540739890@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Ajay Kaher <akaher@vmware.com>
+Subject: [PATCH 4.14 03/12] vfio/type1: Support faulting PFNMAP vmas
+Date:   Fri, 11 Sep 2020 14:46:57 +0200
+Message-Id: <20200911122458.588557479@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
 References: <20200911122458.413137406@linuxfoundation.org>
@@ -45,41 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Alex Williamson <alex.williamson@redhat.com>
 
-[ Upstream commit de1b0ee490eafdf65fac9eef9925391a8369f2dc ]
+commit 41311242221e3482b20bfed10fa4d9db98d87016 upstream.
 
-If a driver leaves the limit settings as the defaults, then we don't
-initialize bdi->io_pages. This means that file systems may need to
-work around bdi->io_pages == 0, which is somewhat messy.
+With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+the range being faulted into the vma.  Add support to manually provide
+that, in the same way as done on KVM with hva_to_pfn_remapped().
 
-Initialize the default value just like we do for ->ra_pages.
-
-Cc: stable@vger.kernel.org
-Fixes: 9491ae4aade6 ("mm: don't cap request size based on read-ahead setting")
-Reported-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+[Ajay: Regenerated the patch for v4.14]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 4e04c79aa2c27..2407c898ba7d8 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -852,6 +852,8 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id)
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -336,6 +336,32 @@ static int put_pfn(unsigned long pfn, in
+ 	return 0;
+ }
  
- 	q->backing_dev_info->ra_pages =
- 			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
-+	q->backing_dev_info->io_pages =
-+			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
- 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
- 	q->backing_dev_info->name = "block";
- 	q->node = node_id;
--- 
-2.25.1
-
++static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
++			    unsigned long vaddr, unsigned long *pfn,
++			    bool write_fault)
++{
++	int ret;
++
++	ret = follow_pfn(vma, vaddr, pfn);
++	if (ret) {
++		bool unlocked = false;
++
++		ret = fixup_user_fault(NULL, mm, vaddr,
++				       FAULT_FLAG_REMOTE |
++				       (write_fault ?  FAULT_FLAG_WRITE : 0),
++				       &unlocked);
++		if (unlocked)
++			return -EAGAIN;
++
++		if (ret)
++			return ret;
++
++		ret = follow_pfn(vma, vaddr, pfn);
++	}
++
++	return ret;
++}
++
+ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+ 			 int prot, unsigned long *pfn)
+ {
+@@ -375,12 +401,16 @@ static int vaddr_get_pfn(struct mm_struc
+ 
+ 	down_read(&mm->mmap_sem);
+ 
++retry:
+ 	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		if (!follow_pfn(vma, vaddr, pfn) &&
+-		    is_invalid_reserved_pfn(*pfn))
+-			ret = 0;
++		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
++		if (ret == -EAGAIN)
++			goto retry;
++
++		if (!ret && !is_invalid_reserved_pfn(*pfn))
++			ret = -EFAULT;
+ 	}
+ 
+ 	up_read(&mm->mmap_sem);
 
 
