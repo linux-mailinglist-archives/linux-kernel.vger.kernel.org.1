@@ -2,142 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CA22663C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8EC2663D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgIKQYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S1726479AbgIKQZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgIKQXs (ORCPT
+        with ESMTP id S1726260AbgIKQZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:23:48 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BBEC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:23:48 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w5so12046551wrp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:23:48 -0700 (PDT)
+        Fri, 11 Sep 2020 12:25:35 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934ABC061756;
+        Fri, 11 Sep 2020 09:25:35 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a9so1966957pjg.1;
+        Fri, 11 Sep 2020 09:25:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6SlwUZsnL/qW5jVfhFO7QbUYBoAMLGlcOKF3wt4NfUM=;
-        b=HwlnYVl3wQKzd3A+zX2xtFIOpottAY358rN9GCQQA73v1qRJMPnmTv6QZ9eGylewQ3
-         XVx24cJBjtXE0Gv3UgSpqZ5f3Y3ZOqMNGWjK/aJEnSzwKX+WbDsHeRm15P3EZyTsC9Ni
-         boSUYoPFQ7BNnek2wyVuPNkh1q0toYU17HrwtLbcu8eVI9A+tNQpUBaq6QJ63zqxuUCG
-         AT7STseU6xdcDiaMIeCeoDNYldQYscshX/wKz4N7Fi4eBkPoJcjqFvK0y28FjOMUyCJX
-         gSc/d/WlixwdbBh5sRk99nNJIaNeOo5tcDDi4Omoj/lDp0jr7ToBDhLSyIxpzUHA+ApB
-         kvFQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EwU8Y8jyLbqhzR3bhbXCQ0ACvEAzu6m47XXNJBX9Eu0=;
+        b=SfUAQosCbK7F+CBl7zdFfyy7Qjkzlzjvypp3h40Ri2q0NEVl/DGWoYvfZdf7dNwYZ0
+         6B6xVOlk0gV3XYyrHba0XfY7kjOOkUoAEIMopB+FQn8ygUDiQoev3Y9k/nJXlDFz9QRj
+         uUimSWYErzEK5C2/KjfjzPBo8zduEKwxDoSiNOYOlpHE/+mCU+CLzFh365uJFlh35ygd
+         Gg9F1m55l8xUGHghbggvs/Ns7iKx0lvdHfcXz/3woZSlvyd+1/BxfLeMV29IeiKqCTFO
+         SQcfnjeIZhGJSIj/fK6dBl4QeB/0+pkf3cfF7kh0OxsfMn4g5FtTJJnrQWSAY1i64dtI
+         Wqag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6SlwUZsnL/qW5jVfhFO7QbUYBoAMLGlcOKF3wt4NfUM=;
-        b=CkLc226T1iV0+jPkPAXBpMwR3io8zLTk5no8uGJcrv7dmYWZ06tQo1aQO+Q0X4zGqH
-         wRqeW585YIPy2CLCt9I+1b3fIaBjzMww2xAB+oQqVRGcYRyhCaQ48wEDqiWcdyJkVY/O
-         0jTSydFrZ7LpuWN/ztCRMtmlNAqEuJA14dKv2ySF1aesOfG/9JmgE9O2ozWWUy0u20Ja
-         eBclhGaG/NMTeGwqmqsogRk+3qm87awWdTi+NUCK0PTc7qwTp/FpUIDOJQJprJ4+rYZ4
-         DlHkZrXxEM0GgKpgfyjFcAbJxT/aKO/sZlBt3tH+aA89Aq9+eokRWcDqp+TTGWtEQZxl
-         A0dQ==
-X-Gm-Message-State: AOAM530GblEB+VgkHOrqowMBRO6eRH4ZywtM5hzTz11IOYhoopko6d4l
-        0mQp6u0lZuuZ6Uz62qM3TQEyrw==
-X-Google-Smtp-Source: ABdhPJwFRemssOYrgqwfSGOoTOfqpzQHvvekBhWw2qod9FQm6HNeQ/SIJDdMcQy4aOgiUgwSj62IIg==
-X-Received: by 2002:adf:e9c7:: with SMTP id l7mr2761061wrn.93.1599841427191;
-        Fri, 11 Sep 2020 09:23:47 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
-        by smtp.gmail.com with ESMTPSA id s124sm5347757wme.29.2020.09.11.09.23.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 09:23:46 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:23:45 +0100
-From:   Alessio Balsini <balsini@android.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Alessio Balsini <balsini@android.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Nikhilesh Reddy <reddyn@codeaurora.org>,
-        Akilesh Kailash <akailash@google.com>,
-        David Anderson <dvander@google.com>,
-        Eric Yan <eric.yan@oneplus.com>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6] fuse: Add support for passthrough read/write
-Message-ID: <20200911162345.GA71562@google.com>
-References: <20200812161452.3086303-1-balsini@android.com>
- <CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com>
- <20200813132809.GA3414542@google.com>
- <CAG48ez0jkU7iwdLYPA0=4PdH0SL8wpEPrYvpSztKG3JEhkeHag@mail.gmail.com>
- <20200818135313.GA3074431@google.com>
- <877dtvb2db.fsf@vostro.rath.org>
- <CAOQ4uxhRzkpg2_JA2MCXe6Hjc1XaA=s3L_4Q298dW3OxxE2nFg@mail.gmail.com>
- <CAJfpegs2LHv4xfb5KPzSRPSAVg3eZEvZKk46SjgwGcgq==qNzw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EwU8Y8jyLbqhzR3bhbXCQ0ACvEAzu6m47XXNJBX9Eu0=;
+        b=VfYwvcig0S0ONJ4T1BtoxDYI7IzerqSR6FN/atugm7K0m8P9G6d6f9cB9a4H8aZWNi
+         tO2cDzlBh94QH+irwssvgrkYkDsAyV3GcGfjszYoZVuwv/HNV1pPGGsxYUs+Zy2FppFo
+         7jjrgsFVnX6kWOCom1/mjAssZ+An25FtDaoUxwXGKB2mRAgwuoD5mMViwAeZZPItZvNg
+         EDlYZriiHDP4DmX1gBrduT3PM8srwVy5YQm9Nuc3G3JMMQBUoy2WSfAXBqSZLiFMkw5R
+         l28RXsh+ANv/Qafr5fkPSfRB91LjOG+g0XKRsw0/a3tqZImYXLpdF5xIjTpH6SQQCdhR
+         EvCw==
+X-Gm-Message-State: AOAM533fs+4jdhXB/Sv7cUuhD60k2JulM4Tjnstb5l+aJwd36xhPe2Pf
+        v/ENtwEADiiBC3j8jRugdqGepeWAtoY=
+X-Google-Smtp-Source: ABdhPJwu1Tz3IzRQa+geTq4CMgMqps0FWRGe/wBTmbiN0XYcI0riziAr3xJ7SwNNK4/ShfIMqy2F1w==
+X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr2828500pjb.93.1599841534976;
+        Fri, 11 Sep 2020 09:25:34 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id c4sm645829pjq.7.2020.09.11.09.25.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 09:25:34 -0700 (PDT)
+Subject: Re: [PATCH net-next v5 3/6] dt-bindings: net: dsa: add new MT7531
+ binding to support MT7531
+To:     Landen Chao <landen.chao@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        frank-w@public-files.de, opensource@vdorst.com, dqfext@gmail.com
+References: <cover.1599829696.git.landen.chao@mediatek.com>
+ <b5d44dc310a45dc139639d968350f5888dc7e1ac.1599829696.git.landen.chao@mediatek.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <0b414c02-8860-cb0d-2131-de4e04cbf49c@gmail.com>
+Date:   Fri, 11 Sep 2020 09:25:31 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegs2LHv4xfb5KPzSRPSAVg3eZEvZKk46SjgwGcgq==qNzw@mail.gmail.com>
+In-Reply-To: <b5d44dc310a45dc139639d968350f5888dc7e1ac.1599829696.git.landen.chao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks all for the comments.
-
-I have a patchset ready that hopefully wraps together the extendability
-suggested by Nikolaus, that I agree is a good idea.
-The way I tried to make it more flexible is first of all transitioning to a
-ioctl(), as suggested by both Jann and Miklos, and by using a data
-structure with flexible array member.
-
-Thanks Amir for the fuse2 pointer. I didn't notice that project before, but
-I really enjoyed going through its code.
-I'm curious if it's intended to deprecate the current fuse implementation
-or is what the current fuse will converge to. I noticed that some good
-ideas that were in fuse2 have been also added to fuse, so I tried to take
-fuse2 as a reference for my passthrough ioctl().
-
-Miklos, can you please give us a glimpse of what's the future of fuse2?
-
-Thanks a lot again for the feedback, I'll send the new patch in a few
-minutes.
-
-Cheers,
-Alessio
 
 
-On Mon, Aug 24, 2020 at 02:48:01PM +0200, Miklos Szeredi wrote:
-> On Wed, Aug 19, 2020 at 11:25 AM Amir Goldstein <amir73il@gmail.com> wrote:
+On 9/11/2020 6:48 AM, Landen Chao wrote:
+> Add devicetree binding to support the compatible mt7531 switch as used
+> in the MediaTek MT7531 switch.
 > 
-> > > What I have in mind is things like not coupling the setup of the
-> > > passthrough fds to open(), but having a separate notification message for
-> > > this (like what we use for invalidation of cache), and adding not just
-> > > an "fd" field but also "offset" and "length" fields (which would
-> > > currently be required to be both zero to get the "full file" semantics).
-> > >
-> >
-> > You mean like this?
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/commit/?h=fuse2
-> 
-> Look specifically at fuse_file_map_iter():
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/tree/fs/fuse2/file.c?h=fuse2#n582
-> 
-> and fudev_map_ioctl():
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git/tree/fs/fuse2/fudev.c?h=fuse2#n601
-> 
-> This avoids the security issue Jann mentioned as well as allowing
-> arbitrary mapping of file ranges.  E.g. it could also  be used by a
-> block based filesystem to map I/O directly into the block device.
-> 
-> What the implementation lacks is any kind of caching.  Since your
-> usecase involves just one map extent per file, special casing that
-> would be trivial.  We can revisit general caching later.
-> 
-> Thanks,
-> Miklos
+> Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+> Signed-off-by: Landen Chao <landen.chao@mediatek.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
