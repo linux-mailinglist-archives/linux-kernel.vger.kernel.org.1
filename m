@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE97426688D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E85266898
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725841AbgIKTJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:09:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27334 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725730AbgIKTJA (ORCPT
+        id S1725847AbgIKTOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725783AbgIKTOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:09:00 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BJ3pA0135511;
-        Fri, 11 Sep 2020 15:08:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=8jEx563BrMVT+19G9TowoPShp91w2ilK5GNGgfLV120=;
- b=QZ04DitK+0lZdNOLKV7awEI4LN3LSkNHCLnMu1At/8aJqbh82+7KQwGr3goFbEapCZca
- tN298/p7BZLMsgtQujXDRl12rDi+vm92R7W2xQ5ih9REpUZOrtvqOec2harRSIVVOljT
- 2M1uElWyUMJ4LYLb0qnjefUgY5qSoAV3rnuWykZ0RfZVUL1xNTuynY8Bb08jScsU5dQJ
- DmFe1h1gDSWxkxb26un54JdUdlYyBZ3N+kcXyAwlUQjIzBMkKN6TVZ4ccYkQHQXS778i
- yQ7GccvQYe2lDveKz5Rw856URwV3pphWePhnmPwPNSJKpuaZ7x632JCHpWmf3enDUxFB 5g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33gf2j04cm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 15:08:47 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BJ5Bu2144825;
-        Fri, 11 Sep 2020 15:08:47 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33gf2j04as-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 15:08:46 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BJ7FlU011806;
-        Fri, 11 Sep 2020 19:08:44 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 33c2a8c97b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 19:08:43 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BJ8feS59638190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 19:08:41 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B28995204E;
-        Fri, 11 Sep 2020 19:08:41 +0000 (GMT)
-Received: from sig-9-65-251-51.ibm.com (unknown [9.65.251.51])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E9AF25204F;
-        Fri, 11 Sep 2020 19:08:38 +0000 (GMT)
-Message-ID: <06ea64fec71ebd18f0c5ed6b0d9b5a7d8f1d4775.camel@linux.ibm.com>
-Subject: Re: [PATCH V2 2/3] integrity: Move import of MokListRT certs to a
- separate routine
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        James Morris <jmorris@namei.org>, serge@hallyn.com,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Jones <pjones@redhat.com>,
-        David Howells <dhowells@redhat.com>, prarit@redhat.com
-Date:   Fri, 11 Sep 2020 15:08:38 -0400
-In-Reply-To: <CAMj1kXEz8y+X6KjqWWFD=38dDowqXDBvnPbgeh30+o83KpmKrg@mail.gmail.com>
-References: <20200905013107.10457-1-lszubowi@redhat.com>
-         <20200905013107.10457-3-lszubowi@redhat.com>
-         <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
-         <f0a079b1-5f02-8618-fdfe-aea2278113c9@redhat.com>
-         <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
-         <394190b9-59bd-5cb3-317e-736852f190f4@redhat.com>
-         <CAMj1kXEz8y+X6KjqWWFD=38dDowqXDBvnPbgeh30+o83KpmKrg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_10:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=859 adultscore=0 malwarescore=0
- suspectscore=3 lowpriorityscore=0 spamscore=0 clxscore=1015
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009110152
+        Fri, 11 Sep 2020 15:14:47 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F43BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:14:47 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o8so15161737ejb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lUTLfTAHN/JEc/vY2NZSlPv25B0eM9+I2UvpN7fipvE=;
+        b=Clxn1QsgKc2lKUePPSN2NAL/bI5bjfBFRul7KsPI2uaRRhC0MOrKjvIFIZdRmVowg5
+         Sj/tT1SzRVgDZ+3t3dHFGme2ZZ2AzNzf/iHPNpa3Fuz0WH5hvvP/wmiJL+the/L7uCVO
+         8PyXw3Q3ZjkkDqlxpbtvaLMr+QGOuNdWTmuIw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lUTLfTAHN/JEc/vY2NZSlPv25B0eM9+I2UvpN7fipvE=;
+        b=XK3/DsbOQ0e77ajJ4ws7o0O8IL5kx+phSfoV8JIOUw9WqSmbr9OjSCbvkVPgGFqLW1
+         zp4ZtCZRoTDIMTNXkRpjjp0p8LjM+rAmf46g3bOMnNd749JMsmUELOrZeB6sWHaubac6
+         6D5Z1lY+BLnx1TfFhbQcBlvw/tNTC6sCoVIe+C/VfvHQRRM5zInS73swmF5J34QNMwDR
+         jJaHGg/FtDI/X49QIttBktz61zpEkDvUlVD9acd+QtJ18aSdPXpddXg9X3jiOJdU9KdO
+         PaCE1ehDNfPXce4WQLJ7CcaAxFRhbBnK43o6WlL7Urmar7Nai7qcpFry+PH2lFBNEZk9
+         m75A==
+X-Gm-Message-State: AOAM530hA3W6jL9pcZNmUAqiZGAZ8sq5D3Q2SLib7iKfPoL1OLgUhtud
+        igRhXTw5y75i4ssLeVsJLsD/UTgMgxa9AA==
+X-Google-Smtp-Source: ABdhPJwCX5zMi80QrbparanrNRkOlkgcGayrXj+sGbqbvy5/UUAMkZP909UBH6pvMarKtHtKbEgVIg==
+X-Received: by 2002:a17:906:660f:: with SMTP id b15mr3622559ejp.333.1599851685538;
+        Fri, 11 Sep 2020 12:14:45 -0700 (PDT)
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
+        by smtp.gmail.com with ESMTPSA id g10sm2092755ejp.34.2020.09.11.12.14.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 12:14:45 -0700 (PDT)
+Received: by mail-ed1-f53.google.com with SMTP id w1so11227387edr.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:14:45 -0700 (PDT)
+X-Received: by 2002:ac2:4ec7:: with SMTP id p7mr651524lfr.352.1599851382451;
+ Fri, 11 Sep 2020 12:09:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200911070939.GB1362448@hirez.programming.kicks-ass.net> <patch.git-2c4880212370.your-ad-here.call-01599849957-ext-4686@work.hours>
+In-Reply-To: <patch.git-2c4880212370.your-ad-here.call-01599849957-ext-4686@work.hours>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 11 Sep 2020 12:09:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg0cqRnqT=pBFx+wk3mQVzuCxQ3ea_nYOTyaCG4Ohkk_Q@mail.gmail.com>
+Message-ID: <CAHk-=wg0cqRnqT=pBFx+wk3mQVzuCxQ3ea_nYOTyaCG4Ohkk_Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/gup: fix gup_fast with dynamic page table folding
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        linux-x86 <x86@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-power <linuxppc-dev@lists.ozlabs.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-11 at 21:16 +0300, Ard Biesheuvel wrote:
-> I think we can just merge the patches as they are, with Mimi's R-b carried over.
+On Fri, Sep 11, 2020 at 12:04 PM Vasily Gorbik <gor@linux.ibm.com> wrote:
+>
+> Currently to make sure that every page table entry is read just once
+> gup_fast walks perform READ_ONCE and pass pXd value down to the next
+> gup_pXd_range function by value e.g.:
+[ ... ]
 
-Other than the comments beginning on the "/*" line as opposed to the
-subsequent line, the updated 2/2 and 3/3 patches look fine.
+Ack, this looks sane to me.
 
-thanks,
+I was going to ask how horrible it would be to convert all the other
+users, but a quick grep convinced me that yeah, it's only GUP that is
+this special, and we don't want to make this interface be the real one
+for everything else too..
 
-Mimi
-
+                Linus
