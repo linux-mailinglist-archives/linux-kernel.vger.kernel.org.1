@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B42665AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885662665AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbgIKRJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:09:50 -0400
-Received: from mail-41104.protonmail.ch ([185.70.41.104]:58561 "EHLO
+        id S1725780AbgIKRJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:09:49 -0400
+Received: from mail-41104.protonmail.ch ([185.70.41.104]:17966 "EHLO
         mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726207AbgIKO7c (ORCPT
+        with ESMTP id S1726201AbgIKO7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 10:59:32 -0400
+        Fri, 11 Sep 2020 10:59:33 -0400
 Received: from mail-03.mail-europe.com (mail-03.mail-europe.com [91.134.188.129])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 1BEBB20164A9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:36:53 +0000 (UTC)
+        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 909EC20164AB
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:36:55 +0000 (UTC)
 Authentication-Results: mail-41104.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="m3qIqcqa"
-Date:   Fri, 11 Sep 2020 13:34:39 +0000
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="D4PMDWzm"
+Date:   Fri, 11 Sep 2020 13:34:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1599831289;
-        bh=wBAL3KNSf46hGOkih/JyGKEDyIFMOn3a0k5iOcpB9C4=;
+        s=protonmail; t=1599831292;
+        bh=Erd4pfmpeqmMIgYEE3LftzT/NokPV6QOR5uNAgHN+WY=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=m3qIqcqa098sS8XekOZEjH/qHXHIa+KZI06RzjozVpiIfy7SDv7RH3PvBA4vAr/MI
-         J5riN4LyHXJh4ywJJb/MXdJlDozUOO1LbVht3ZHFxPk+v5X1O2uaW1WUU786saXthY
-         9pzT0A122+1q4jvcXMSn8IGPc8LvUV6qQU+uHHZU=
+        b=D4PMDWzmSF156oKIEQobNbHeX2XG37f7Bci1Jqhsf1jAQtzj7MMl8PcihcJ6bYpLK
+         HfbP6nXmqK1Xb7dcrhkr3nPeunNoiuA8hVoqIroYca4Ysbq8Li+2DbLnQCKuUPZnCi
+         rO/S8to1OC53yyU/jsEmggVsVOUjrS0y4lPvNz+c=
 To:     Jonathan Corbet <corbet@lwn.net>
 From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
         <nfraprado@protonmail.com>
@@ -35,8 +35,8 @@ Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
 Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
           <nfraprado@protonmail.com>
-Subject: [PATCH 2/3] docs: Add automatic cross-reference for documentation pages
-Message-ID: <20200911133339.327721-3-nfraprado@protonmail.com>
+Subject: [PATCH 3/3] docs: Document cross-referencing between documentation pages
+Message-ID: <20200911133339.327721-4-nfraprado@protonmail.com>
 In-Reply-To: <20200911133339.327721-1-nfraprado@protonmail.com>
 References: <20200911133339.327721-1-nfraprado@protonmail.com>
 MIME-Version: 1.0
@@ -52,91 +52,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cross-referencing to other documentation pages is possible using the
-:doc:`doc-file` directive from Sphinx.
+The syntax to cross-reference between documentation pages wasn't
+documented anywhere.
 
-Add automatic markup for references to other documentation pages in the
-format Documentation/subfolder/doc-file.rst (the extension being
-optional).
-This requires that the path be passed all the way from the Documentation
-folder, which can be longer than passing a relative path through the
-:doc: directive, but avoids the markup, making the text cleaner when
-read in plain text.
+Document the cross-referencing using the new automarkup for
+Documentation/... and also Sphinx's doc directive for using relative
+paths.
 
 Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
 ---
- Documentation/sphinx/automarkup.py | 39 +++++++++++++++++++++++++++++-
- 1 file changed, 38 insertions(+), 1 deletion(-)
+ Documentation/doc-guide/sphinx.rst | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/auto=
-markup.py
-index 6c8e8475eddb..a1b0f554cd82 100644
---- a/Documentation/sphinx/automarkup.py
-+++ b/Documentation/sphinx/automarkup.py
-@@ -24,6 +24,11 @@ from itertools import chain
- #
- RE_function =3D re.compile(r'(([\w_][\w\d_]+)\(\))')
- RE_type =3D re.compile(r'(struct|union|enum|typedef)\s+([\w_][\w\d_]+)')
-+#
-+# Detects a reference to a documentation page of the form Documentation/..=
-. with
-+# an optional extension
-+#
-+RE_doc =3D re.compile(r'Documentation(/[\w\-_/]+)(\.\w+)*')
+diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/s=
+phinx.rst
+index f71ddd592aaa..896478baf570 100644
+--- a/Documentation/doc-guide/sphinx.rst
++++ b/Documentation/doc-guide/sphinx.rst
+@@ -337,6 +337,23 @@ Rendered as:
 =20
- #
- # Many places in the docs refer to common system calls.  It is
-@@ -44,7 +49,8 @@ def markup_refs(docname, app, node):
-     # Associate each regex with the function that will markup its matches
-     #
-     markup_func =3D {RE_type: markup_c_ref,
--                   RE_function: markup_c_ref}
-+                   RE_function: markup_c_ref,
-+                   RE_doc: markup_doc_ref}
-     match_iterators =3D [regex.finditer(t) for regex in markup_func]
-     #
-     # Sort all references by the starting position in text
-@@ -108,6 +114,37 @@ def markup_c_ref(docname, app, match):
-     else:
-         return target_text
+         - column 3
 =20
-+#
-+# Try to replace a documentation reference of the form Documentation/... w=
-ith a
-+# cross reference to that page
-+#
-+def markup_doc_ref(docname, app, match):
-+    stddom =3D app.env.domains['std']
-+    #
-+    # Go through the dance of getting an xref out of the std domain
-+    #
-+    target =3D match.group(1)
-+    xref =3D None
-+    pxref =3D addnodes.pending_xref('', refdomain =3D 'std', reftype =3D '=
-doc',
-+                                  reftarget =3D target, modname =3D None,
-+                                  classname =3D None, refexplicit =3D Fals=
-e)
-+    #
-+    # XXX The Latex builder will throw NoUri exceptions here,
-+    # work around that by ignoring them.
-+    #
-+    try:
-+        xref =3D stddom.resolve_xref(app.env, docname, app.builder, 'doc',
-+                                   target, pxref, None)
-+    except NoUri:
-+        xref =3D None
-+    #
-+    # Return the xref if we got it; otherwise just return the plain text.
-+    #
-+    if xref:
-+        return xref
-+    else:
-+        return nodes.Text(match.group(0))
++Cross-referencing
++-----------------
 +
- def auto_markup(app, doctree, name):
-     #
-     # This loop could eventually be improved on.  Someday maybe we
++Cross-referencing from one documentation page to another can be done by pa=
+ssing
++the path to the file starting from the Documentation folder.
++For example, to cross-reference to this page (the .rst extension is option=
+al)::
++
++    See Documentation/doc-guide/sphinx.rst.
++
++If you want to use a relative path, you need to use Sphinx's ``doc`` direc=
+tive.
++For example, referencing this page from the same directory would be done a=
+s::
++
++    See :doc:`sphinx`.
++
++For information on cross-referencing to kernel-doc functions or types, see
++Documentation/doc-guide/kernel-doc.rst.
++
+ .. _sphinx_kfigure:
+=20
+ Figures & Images
 --=20
 2.28.0
 
