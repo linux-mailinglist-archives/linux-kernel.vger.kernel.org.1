@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBFD267634
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBA1267639
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgIKWy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:54:27 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:33842 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgIKWy0 (ORCPT
+        id S1725924AbgIKWzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgIKWzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:54:26 -0400
-Received: by mail-io1-f66.google.com with SMTP id m17so12790403ioo.1;
-        Fri, 11 Sep 2020 15:54:25 -0700 (PDT)
+        Fri, 11 Sep 2020 18:55:00 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56373C061573;
+        Fri, 11 Sep 2020 15:54:58 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id v123so11488176qkd.9;
+        Fri, 11 Sep 2020 15:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NWMxrIUTpLgjVNXNaQ7pp9gIhnKeSDmE1V55I6cdtAM=;
+        b=crLyzdC/9dwAbWZ3Ic5ykP4m2BId6gf3W293bIfkO1ebX7A5arPZnrIb7qZdw87imQ
+         HbW0a1+VNmRG1RMU9wevX+5e1rL0bJK3AEhriOw3lp+lp6ApzB7vy0uL6ijUDKv8++cC
+         jP4O3IC1TiJVdK4gIcRCRT/ACnOI+psFUf8/HZ2l8PIWCJEdZ1IutRwZ62sIZnhEwhWw
+         sOtT6YxHVN4KLPGnkFJcTc0ezr9wz+GFcjndS1dp72Wju31OFBJSthlDhkl0z7YLsavJ
+         qj2ALdnmGz4ggh1Bxdwme/6PHjPwDiGJ2b6ABSKAoe2/M5rvTsfOA5Z514Dv1GKenEDU
+         ozQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KxnqkmKiYoSfOjAffZQgyIAy3RnUUApP9jkI4PU0/FM=;
-        b=E3pK0hbU48bZs/Gct7Sx5GSFhYS9IHFd1SiqUkIVPZoVLTQgFUMXaVGJwGpy9095Tg
-         Q6jbwojbwA3Jq5bU9zFaPP6me7qyiLH2JSHZEZ2vhM2S5M1JKI+U0qmaPAy2yCFbxGeS
-         YVnkj29cpn7oc7tdmVsKcw3JAEJRdIncwstFyV/nhtjZ6OQS/VDSHD8OHmFqwZatM/B3
-         KeBwrktY/RWAAoB81QHguykLoghVScGNA/JkFqmKpt6eLHaUUJLwEx8/PbzDMgpvEDCT
-         87cMcbQISf+khgVelU9cBbxrOOXSWc4jAEuTm6JJlLbQ5wLLs4iPao5goYk+rHhxbVgl
-         E4sA==
-X-Gm-Message-State: AOAM530mjqa4EtzqU2kV/ohQiCaxS11EdjYfjsPIxHSwf3CjoSI+QtZP
-        JAM83dC+/6ZuBwcQefGdVQ==
-X-Google-Smtp-Source: ABdhPJwzPglWJP5g0p51fisEVnFMq+0CMFmjXiePE+XO6bR10rYBH6FPkjGVcjVJTNZpHuTolzcbCg==
-X-Received: by 2002:a5e:9613:: with SMTP id a19mr3512976ioq.116.1599864865045;
-        Fri, 11 Sep 2020 15:54:25 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id u17sm2048201ilb.44.2020.09.11.15.54.23
+        bh=NWMxrIUTpLgjVNXNaQ7pp9gIhnKeSDmE1V55I6cdtAM=;
+        b=j4JYAuqfAL28ZAka3jHzPGz3oz0ytszNSJiJ7UvOWR88bVtzJgFUxguGiewoZhwAQm
+         vXHCNUCURSKcurQDm4vRQxh6oFv+3ALzd1F9+QWw/nJtzJJOcEqiXVvBuhMqOPmemOsr
+         tM2aLuJj5J/RHYG5XmAjrTg3nj0PBRooUtY5PbZkaooXuBWsxZDcDBrWJosZpUDxUNJg
+         nWRs3P4P0SJQ3NQJzkz388sQSUpLS5r500b6vVAu9S37Ta1dzldAV/JyI6K6pxDBffo+
+         BLgFhMHbtksX9UMg5ikhzwkf+TKAh28rGEx27nIG3WHRZfOdhZRCNwNARK+aRIdjoJnJ
+         jKnw==
+X-Gm-Message-State: AOAM5324XpbwAA+4hk1NlPI5SztA+MV3RjtDYF7rvpgmrBhbeMlf/6Ib
+        PrfliH4w+H1s6+4L3sI3qtI=
+X-Google-Smtp-Source: ABdhPJwzg6HPiHcP9mMdu0JIsPsjeyUmQIHyjp01tLStVmTK7xeyl9LYMu/1ZB72u0hesaAniiU9QQ==
+X-Received: by 2002:a37:ef05:: with SMTP id j5mr3570706qkk.456.1599864896536;
+        Fri, 11 Sep 2020 15:54:56 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id w6sm4257339qti.63.2020.09.11.15.54.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 15:54:24 -0700 (PDT)
-Received: (nullmailer pid 2971774 invoked by uid 1000);
-        Fri, 11 Sep 2020 22:54:23 -0000
-Date:   Fri, 11 Sep 2020 16:54:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bogdan Togorean <bogdan.togorean@analog.com>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        linux-kernel@vger.kernel.org, Shawn Tu <shawnx.tu@intel.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        YueHaibing <yuehaibing@huawei.com>, linux-media@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Subject: Re: [PATCH 2/2] media: dt-bindings: media: i2c: Add bindings for
- ADDI9036
-Message-ID: <20200911225423.GA2970927@bogus>
-References: <20200910162426.55306-1-bogdan.togorean@analog.com>
- <20200910162426.55306-2-bogdan.togorean@analog.com>
+        Fri, 11 Sep 2020 15:54:55 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 18:54:39 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Syed Nayyar Waris <syednwaris@gmail.com>,
+        akpm@linux-foundation.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-arch@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v9 0/4] Introduce the for_each_set_clump macro
+Message-ID: <20200911225417.GA5286@shinobu>
+References: <cover.1593243079.git.syednwaris@gmail.com>
+ <CACRpkdYyCNEUSOtCJMTm7t1z15oK7nH3KcTe5LreJAzZ0KtQuw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
 Content-Disposition: inline
-In-Reply-To: <20200910162426.55306-2-bogdan.togorean@analog.com>
+In-Reply-To: <CACRpkdYyCNEUSOtCJMTm7t1z15oK7nH3KcTe5LreJAzZ0KtQuw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 19:24:07 +0300, Bogdan Togorean wrote:
-> Add YAML device tree bindings for Analog Devices Inc. ADDI9036 CCD TOF
-> front-end.
-> 
-> Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-> ---
->  .../bindings/media/i2c/adi,addi9036.yaml      | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
-> 
 
+--f2QGlHpHGjS2mn6Y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My bot found errors running 'make dt_binding_check' on your patch:
+On Thu, Jul 16, 2020 at 02:49:35PM +0200, Linus Walleij wrote:
+> Hi Syed,
+>=20
+> sorry for taking so long. I was on vacation and a bit snowed
+> under by work.
+>=20
+> On Sat, Jun 27, 2020 at 10:10 AM Syed Nayyar Waris <syednwaris@gmail.com>=
+ wrote:
+>=20
+> > Since this patchset primarily affects GPIO drivers, would you like
+> > to pick it up through your GPIO tree?
+>=20
+> I have applied the patches to an immutable branch and pushed
+> to kernelorg for testing (autobuilders will play with it I hope).
+>=20
+> If all works fine I will merge this into my devel branch for v5.9.
+>=20
+> It would be desirable if Andrew gave his explicit ACK on it too.
+>=20
+> Yours,
+> Linus Walleij
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/i2c/adi,addi9036.example.dt.yaml: addi9036_tof@64: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/i2c/adi,addi9036.yaml
+Hi Linus,
 
+What's the name of the branch with these patches on kernelorg; I'm
+having trouble finding it?
 
-See https://patchwork.ozlabs.org/patch/1361583
+Btw, I'm CCing Andrew as well here because I notice him missing from the
+CC list earlier for this patchset.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
+Thanks,
 
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+William Breathitt Gray
 
-Please check and re-submit.
+--f2QGlHpHGjS2mn6Y
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl9cAC8ACgkQhvpINdm7
+VJJypRAAxs2Ws4cBWHSC+xWIB7YolKoiCZO9NMeBRMncPL8n3mt80XKtlm9XWG1i
+8wYgMDcK5GiKsYy/hGtzLJA5OYoEvOGP3no0nTdYQylGdHlZxFGg2eUTijdnTsDH
+NJ1+RDdr7rp6i/ZSmTBYQ/59dQxvxHwsxx41snBD1EUqhx9RL+z2iWDmwJnMZn95
+yyqbxxAsEGWQmkLA8ATa1kT4iOAY07xA1aggKjxCmOAWtRIopStLbaLgFhzhiwxz
+CLEirmVbm5rBt5ZJ8L/48VZL2kqSzuAs2yClCTgLv6rXVNFxhERXUNcjARWxVghx
+EYp3E1+62z7XX8mevdDV/JNzZBRQvoWexAVgIeogK94wyoNlB1+tGvpTmwBRxSOD
+++hBdEnnPu7y2O9KghN32xDYtB0JyY4UTm0z9o/hZcmVJetJEYbIPXkGVdhYrvWd
+H3eQ2ON9tbTaPI2rQU3c9hnCm/lTPDBDRVSN8X6rb3PdSzhZHEp4R1aTm9QiZrdU
+jn5NNi+69aR2rDkTZMogvXE1bnaI3jFag8XtBb5x8HIVtPg0r8SHGlw/f2P6Ea3C
+SkAW5npBZv8HigRfGHPhOk8JHwJ4/PcX66gi/+tHeTlmrwRqTBViR6/qjv1MYXYR
+2Rcvoza6pKv45K/74PheOwz1W8mRrAlZ0t3ZbGBqE2zSOlMw6vk=
+=I8Cv
+-----END PGP SIGNATURE-----
+
+--f2QGlHpHGjS2mn6Y--
