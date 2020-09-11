@@ -2,162 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D2B266313
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2382662C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgIKQKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:10:09 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38279 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725901AbgIKPne (ORCPT
+        id S1726576AbgIKQAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:00:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58846 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726486AbgIKP7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:43:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599838982;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FVvWuDRuisEBX+0Zn/CcIYXbEBhRKURBa9x/u41gEYU=;
-        b=ANVU5iHKhyf3cJuvcaCaOCVlfTaBdcKdyELyCVVoQWQflWM6dWcCBoxQXLn93TetaaU3F2
-        oO7tcuLP5+wBCXq3PR5Xs4E5wtSdu8qkVXwDpTacrqOQ6Jt8y3n5Ypf56oquwk8a8mi9+e
-        CyF6NBmoIPK12UiEdVm1AmCoAqpda0w=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-OVWZSL8MNhykrqy_RnShCg-1; Fri, 11 Sep 2020 11:43:01 -0400
-X-MC-Unique: OVWZSL8MNhykrqy_RnShCg-1
-Received: by mail-wr1-f72.google.com with SMTP id l17so3609590wrw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:43:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FVvWuDRuisEBX+0Zn/CcIYXbEBhRKURBa9x/u41gEYU=;
-        b=eijB1b4JHHMQ76NuHityWBTrl8Y6BgvKFks1byUy5i9XKUFR5f1jPw9kV5tJdGZB8k
-         7Sxu5De1NbmuybXxETQ72vyowOgFDb9rr4MtIbbSYe0z8JNVrfFsmC8xKggSaXtmqimu
-         QeMCQbw42UvxwRSHXLFSvztuaOBS+iSA9zV+/OksJiwuO9eEmkRh7bTPKkFlLJ5akYvB
-         n5ZL7jFtsQM75Li1bx9SyekMsurWA/UQ5t7kf17hMdAOXIX5vPpbC9d4eecK53Jq3TVW
-         ao+6imch7YPTlYRQCttR1qnQEvT/fN42q7BwxO1MlcjTTWMhIOPlFAw/X4eUzofqnrrJ
-         H83Q==
-X-Gm-Message-State: AOAM530WWisGPLOgp/gAXbl5CXnxYHauMcl3tahpj8Y0sUJz4XO63xAJ
-        oykCoDL4z0EaWgeZPoZPUZxdQsuCBNRxZTY+YG5rxWNzQBKkxRJ6H889ZAMoURyJ7U7QkC1bFpQ
-        8vSj/wm6Z35v4XAp/Z8jPn2OW
-X-Received: by 2002:a05:6000:124d:: with SMTP id j13mr2866220wrx.182.1599838979663;
-        Fri, 11 Sep 2020 08:42:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwH4jkVUD6E8IpA1UAChk652kXQGIgRngAJxmNyGQnsNw/F6wpulBuvJswNO1yaVHdkevNdqg==
-X-Received: by 2002:a05:6000:124d:: with SMTP id j13mr2866196wrx.182.1599838979395;
-        Fri, 11 Sep 2020 08:42:59 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5568:7f99:4893:a5b6? ([2001:b07:6468:f312:5568:7f99:4893:a5b6])
-        by smtp.gmail.com with ESMTPSA id v9sm5288411wru.37.2020.09.11.08.42.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 08:42:58 -0700 (PDT)
-Subject: Re: [PATCH] KVM: Check the allocation of pv cpu mask
-To:     Haiwei Li <lihaiwei.kernel@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Cc:     "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>, tglx@linutronix.de,
-        joro@8bytes.org, jmattson@google.com,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        vkuznets@redhat.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <d59f05df-e6d3-3d31-a036-cc25a2b2f33f@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0617b9ae-8ddb-dcb7-a345-9d629916d20d@redhat.com>
-Date:   Fri, 11 Sep 2020 17:42:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <d59f05df-e6d3-3d31-a036-cc25a2b2f33f@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 11 Sep 2020 11:59:32 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BFg9QW081422;
+        Fri, 11 Sep 2020 11:59:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=uZDTO2GkQg+Od5pn1R1dGCVVyOGSxX9njGLsk+QgEdQ=;
+ b=e5pnrFZuvYtzcUS40VWKTHD1wbawkwx6oagAwtmOyehwmUvsneTpPXp5ZnAXvx6D+cPm
+ 6cdx1Qe/OSkVof5RiEhwg8rqwCT4Qv0YQa/cwjF4qs8cbCqy2ylh7Vp5RllPjpn9Pi2F
+ l5hcs+OnrQ8PIPHBfx08gNUrsQvFpiMBJqx33CbgGXhUHvJDwMnUy2yPFviYKxhqbd3E
+ L8324neHoulfAiGj1v5O9aB626UDOVHBQmy0yDXUo7NulJsfut+qz6fuOvLw9Ml1Q6Cr
+ rFEk6X9DuUGw2vOfYymjt7NjX+Suzk5nWaMoyri+3fl/uWbJqTG8eUEbg5KE+1Zk58ya +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33gc3p0cmq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 11:59:16 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BFhmgX086123;
+        Fri, 11 Sep 2020 11:59:16 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33gc3p0cm2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 11:59:15 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BFuno5016580;
+        Fri, 11 Sep 2020 15:59:14 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 33dxdr4jjt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 15:59:14 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BFxBu17667972
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 15:59:11 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 915C94C05E;
+        Fri, 11 Sep 2020 15:59:11 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E33074C046;
+        Fri, 11 Sep 2020 15:59:08 +0000 (GMT)
+Received: from sig-9-65-251-51.ibm.com (unknown [9.65.251.51])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Sep 2020 15:59:08 +0000 (GMT)
+Message-ID: <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
+Subject: Re: [PATCH V2 2/3] integrity: Move import of MokListRT certs to a
+ separate routine
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lenny Szubowicz <lszubowi@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
+        Kees Cook <keescook@chromium.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+Date:   Fri, 11 Sep 2020 11:59:07 -0400
+In-Reply-To: <f0a079b1-5f02-8618-fdfe-aea2278113c9@redhat.com>
+References: <20200905013107.10457-1-lszubowi@redhat.com>
+         <20200905013107.10457-3-lszubowi@redhat.com>
+         <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
+         <f0a079b1-5f02-8618-fdfe-aea2278113c9@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-11_05:2020-09-10,2020-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=3 adultscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009110125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/20 13:41, Haiwei Li wrote:
-> From: Haiwei Li <lihaiwei@tencent.com>
+On Fri, 2020-09-11 at 11:54 -0400, Lenny Szubowicz wrote:
+> On 9/11/20 11:02 AM, Ard Biesheuvel wrote:
+> > On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
+> >>
+> >> Move the loading of certs from the UEFI MokListRT into a separate
+> >> routine to facilitate additional MokList functionality.
+> >>
+> >> There is no visible functional change as a result of this patch.
+> >> Although the UEFI dbx certs are now loaded before the MokList certs,
+> >> they are loaded onto different key rings. So the order of the keys
+> >> on their respective key rings is the same.
+> >>
+> >> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+> > 
+> > Why did you drop Mimi's reviewed-by from this patch?
 > 
-> check the allocation of per-cpu __pv_cpu_mask. Initialize ops only when
-> successful.
+> It was not intentional. I was just not aware that I needed to propagate
+> Mimi Zohar's reviewed-by from V1 of the patch to V2.
 > 
-> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
-> ---
->  arch/x86/kernel/kvm.c | 23 +++++++++++++++++++----
->  1 file changed, 19 insertions(+), 4 deletions(-)
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 > 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 08320b0b2b27..a64b894eaac0 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -555,7 +555,6 @@ static void kvm_send_ipi_mask_allbutself(const
-> struct cpumask *mask, int vector)
->  static void kvm_setup_pv_ipi(void)
->  {
->      apic->send_IPI_mask = kvm_send_ipi_mask;
-> -    apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
->      pr_info("setup PV IPIs\n");
->  }
-> 
-> @@ -654,7 +653,6 @@ static void __init kvm_guest_init(void)
->      }
-> 
->      if (pv_tlb_flush_supported()) {
-> -        pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
->          pv_ops.mmu.tlb_remove_table = tlb_remove_table;
->          pr_info("KVM setup pv remote TLB flush\n");
->      }
-> @@ -767,6 +765,14 @@ static __init int activate_jump_labels(void)
->  }
->  arch_initcall(activate_jump_labels);
-> 
-> +static void kvm_free_pv_cpu_mask(void)
-> +{
-> +    unsigned int cpu;
-> +
-> +    for_each_possible_cpu(cpu)
-> +        free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
-> +}
-> +
->  static __init int kvm_alloc_cpumask(void)
->  {
->      int cpu;
-> @@ -785,11 +791,20 @@ static __init int kvm_alloc_cpumask(void)
-> 
->      if (alloc)
->          for_each_possible_cpu(cpu) {
-> -            zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
-> -                GFP_KERNEL, cpu_to_node(cpu));
-> +            if (!zalloc_cpumask_var_node(
-> +                per_cpu_ptr(&__pv_cpu_mask, cpu),
-> +                GFP_KERNEL, cpu_to_node(cpu))) {
-> +                goto zalloc_cpumask_fail;
-> +            }
->          }
-> 
-> +    apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
-> +    pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
->      return 0;
-> +
-> +zalloc_cpumask_fail:
-> +    kvm_free_pv_cpu_mask();
-> +    return -ENOMEM;
->  }
->  arch_initcall(kvm_alloc_cpumask);
-> 
-> -- 
-> 2.18.4
-> 
+> V2 includes changes in that patch to incorporate suggestions from
+> Andy Shevchenko. My assumption was that the maintainer would
+> gather up the reviewed-by and add any signed-off-by as appropriate,
+> but it sounds like my assumption was incorrect. In retrospect, I
+> could see that having the maintainer dig through prior versions
+> of a patch set for prior reviewed-by tags could be burdensome.
 
-Queued, thanks.
+As much as possible moving code should be done without making changes,
+simpler for code review.   Then as a separate patch you make changes.  
+That way you could also have retained my Reviewed-by.
 
-I am currently on leave so I am going through the patches and queuing
-them, but I will only push kvm/next and kvm/queue next week.  kvm/master
-patches will be sent to Linus for the next -rc though.
+Mimi
 
-Paolo
+> 
+> Advice on the expected handling of this would be appreciated.
+
 
