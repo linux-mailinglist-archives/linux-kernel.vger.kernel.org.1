@@ -2,309 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542DF265BAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E7A265BA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgIKIeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:34:19 -0400
-Received: from mail-eopbgr40087.outbound.protection.outlook.com ([40.107.4.87]:3332
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725550AbgIKIeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:34:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gYnLoqlwx9M8/qOsbz2kdKZcjSEtCcGMvmL4jecqEx5IIC5TEjCXXH7H0FLdbHEtOLmPm7n4KL2RLpoHQ3VtbTucVdCTI1u8EuLdKHeA9rqNv5fcB2hSTtB+uIB6VEprM1nw4hzXXfonpQyOcWjK5tgGkRaL3kVUvn9RTOfMHFj+uA+EI6sddM1LZqpgkuwZIbfM9RcWkJ//df9ewa1Dl0LGafygSK/FmXYyhNg83l/394+DG25PJ2QP8a3504qvAev+vIFMqudSimaTUeupULtW9NznZcM+8kkr2WeRTJvJZWnS6ED371nRz/XAt1flYaQvS7rVkYb5xSoIwfyB0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6WpMFKzIf8eypW4THpWFWPvSQRwdR37wuN20gmUCai8=;
- b=EVwIN2haUTeWOygiZ8MbrN4qXnP83t7yGbdYkcJeoR4wcsAD+ys4U8AA5UJR40ogoPGlBQVBvJnawXaF/8RJUeV1Q5iUaYT8i6c5IBKooYPwHXi8VM3Fij74GMnm2xI6g4y+8oap1vLO2Z4KYMRGYkdZQ1rF7ouiLaqKtwaZlSZ9vXcFga0hHqic67rIekZ7T/eq/oDmjMatwxD/D+Kux9X22xTdsxcf/ewcn1AG9Z4jUExxcdXtAA0aNzWloefkbFr3Sx68IPJPYCmRo/JmWcDwJZYXYefszFhGIee+fa6J8OIYLnHmE0abPdQ/cTSv90k57XlA25k2jMzmdjgaUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6WpMFKzIf8eypW4THpWFWPvSQRwdR37wuN20gmUCai8=;
- b=maNLhgJfERYlfsYbcbM/DmPaTb+jdZZagaOMDHkzlzCh7W2Yo0tD9vFECOsPV9/3O79wKUsQWesabwdu448EzSEQUw6EHUnmLl83d8tXuaAV+zbAEAzHZyYWh8k3B2yANr/SyjYaFK9gBK4No/+O0if6l3IiyesyesR985EbCko=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
- (2603:10a6:803:11::14) by VI1PR04MB5950.eurprd04.prod.outlook.com
- (2603:10a6:803:cd::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
- 2020 08:34:07 +0000
-Received: from VI1PR0402MB3342.eurprd04.prod.outlook.com
- ([fe80::c1a:39dd:a2d5:3d2f]) by VI1PR0402MB3342.eurprd04.prod.outlook.com
- ([fe80::c1a:39dd:a2d5:3d2f%7]) with mapi id 15.20.3370.017; Fri, 11 Sep 2020
- 08:34:07 +0000
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: ak4458: Add DSD support for ak4458 and ak4497
-Date:   Fri, 11 Sep 2020 16:30:48 +0800
-Message-Id: <20200911083048.29055-1-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.27.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0046.apcprd02.prod.outlook.com
- (2603:1096:3:18::34) To VI1PR0402MB3342.eurprd04.prod.outlook.com
- (2603:10a6:803:11::14)
+        id S1725809AbgIKIbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgIKIbO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 04:31:14 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B712DC061573;
+        Fri, 11 Sep 2020 01:31:14 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id gf14so1344111pjb.5;
+        Fri, 11 Sep 2020 01:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LbQB3S5x6xx4Jb0zTm7XcQVbWl22yVn5g91syEiS2MQ=;
+        b=syVOVe01zamEEPtzfkERcVBgF2XqcoIOensW1NDs3k5WbB5AycPUJOdgKYPtS37I/i
+         6bk/tCHeeZ1/6Wj97w+BE6rWK6kWU8L9mBUWBdYVr5EQ9zD3ZBqcFaLQZ0RxEzoeUxSf
+         wScWUqf9iiNM/QFLCFFBRe2dg/OtTosjHYCqI4pHSLTgsP41s7FucscOwYt+8gbNFrr9
+         4Ebp0E8JYXJ7vR5wqWtPSIA/sxoKgtdiQnhbJcoxxzjUejFk//H1ajDpmz+u/t2SvSZ6
+         Rs19fFRDDk0HvmrJZwGkVjImUg/9+HSiUGKrFUOGgkZCSnQt02/jcZzjj64k4YwjKmia
+         SwNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LbQB3S5x6xx4Jb0zTm7XcQVbWl22yVn5g91syEiS2MQ=;
+        b=glF+9fUiEKAn1cN4w4jUACANwh/gWBBDP4mheLHVV9KMIsXVCdCtsforZUBZzEHjWS
+         9OLhBQDh7Ub0sFG8Get0uV5dE/etj13htgboH9G7Lv/gGXsXfYyaM2Kqryxzq4qLIiHW
+         99yyWZ1/l+jTFiIGLeeQkRFzDsGd8ZTNgWDWDnEY6/bL1EXMAFuVlkm9QCeo89mpmmIA
+         EkizsvzHLUjq/DcHQH6Bk9lksC84bzXNVCNuqBelxPdLVRoi4x8mP3wUJYuMa+FCWPfx
+         bLegasXO+IglrW7JAYYiWSvrLMcpfxgSPpCzbf2kttvknbB8L/JfCCrlgHgia2piMLhM
+         xkyg==
+X-Gm-Message-State: AOAM530hxytLFCxoQE8P9bzrsBFuyN8SJFQVaBZMyF4dwCwu5nXfagTp
+        9ZMMhVTirv+aVCjDwvqHs1FPkN8EVTMmXQ==
+X-Google-Smtp-Source: ABdhPJzf5Vdy7OT8jta7JYuEdU/QgbIjnz8gLz87+YOYvLHhXECrx3I5CToJgiX7oZFsXO0xmgUP9g==
+X-Received: by 2002:a17:90a:a081:: with SMTP id r1mr1249361pjp.159.1599813073748;
+        Fri, 11 Sep 2020 01:31:13 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id x9sm1527084pfj.96.2020.09.11.01.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 01:31:13 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv3] selftests/run_kselftest.sh: make each test individually selectable
+Date:   Fri, 11 Sep 2020 16:30:53 +0800
+Message-Id: <20200911083053.2816576-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200316072626.24037-1-liuhangbin@gmail.com>
+References: <20200316072626.24037-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from audiosh1.ap.freescale.net (119.31.174.66) by SG2PR02CA0046.apcprd02.prod.outlook.com (2603:1096:3:18::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 08:34:05 +0000
-X-Mailer: git-send-email 2.27.0
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 243da6a2-b96a-4371-1411-08d8562d72ea
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5950:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5950A4FAEB4E9423BF9A19FFE3240@VI1PR04MB5950.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:576;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Jb/4ZXQKzc/r286KQTIVLF0wi5zGtx2C+1PaQjBp5N6qoWgyW4TCgTZs+9ius036ZNE1Cb+GYvr7j25M7Q2qPBv7dnD5qlrOJOc2W90Mz8ATtinw8kbpkOotSOltWuijBRqL9wshR3sQdZK6CaF6y6kQqJwBeGoMp9WGUx6ajzeDoha1UFXo6SH4lHYgjKjBNiIqEIS9JgkSuN3KgrAhWQtehVoNSE3RGlFmg8IxDBvJxTwener1Z3OquCSZngWvuJ5oXkZBeLkmwoT+/6BiWxktQOLLnEgXE3BbGQW19UCp2FdZbHLy3Pe5kNkdg55B
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3342.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(8936002)(6506007)(6666004)(316002)(1076003)(26005)(478600001)(66946007)(66556008)(66476007)(36756003)(5660300002)(8676002)(52116002)(956004)(6512007)(44832011)(86362001)(2616005)(83380400001)(16526019)(186003)(6486002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: aAf2Gtb9F51qRDe4iM86L8/B+jya4rS6OynEgVekwHDCHlNnzx6phE1m0r0VWRAsgnJ1r+BlZpuRghJEhOTyrmEYmcqZ1v9uILlx53ArKKBfv+25KCMHLQFwQL0Rw0eZXPC6hgJf+CGDqZaGQAhuuflE/DvsQiyBazVL/o4j+tznHPtXJXmkPt60YD+BhBXfnsyDGcKS1gJ6IzqX7KdSFqaX0aKnI+dkOewoIog6UIjXMyWWTst1VhGfsPcjZtoPRQcKDBqTt64606DQOE/5wHonfi1xAmqXwUkrRqTcfKB/AUN67NYcngXvcmY0LWygkDP7Z5jp5y3M4VCJ+Z/1VgQcJZm5vnpK080Yl0e6FE0lxS/LSqljkwL/LlXgNuRBp9aiskpPz1fpvtQMl/8KxD9tzDZCdWHBkKGCrbUih5iMgTiOGmiL+S9jyKnmrRL3X2FIg35rE5gB9nRd1365FgOP8QLfl8NMIYKyV6ZXggEbW+4G7HSS3A7U80kFQXgtLpEyPWkIPuTE7Eq+GqSw0Xp/I5mzn368FKBOK9noY+IDtoHz2Sbq1+ZO4QEbhY7uLVeet2/9kn8+F/8Ii2U9Vjg1yZ+rVZ3CICVWhe2HZi68HtyArGOFTPpzuDIi7FF2g+z6lF27ka/5T90u/pL/+A==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 243da6a2-b96a-4371-1411-08d8562d72ea
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3342.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 08:34:07.8842
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uDdBFqjufS5QQi9bxEhFBBUlz9toFhKAQKbsMPYEY2WcistqFaHuMHGXbeV1bBe+1Ewi8KPS9K+kR4atQlFMCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5950
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ak4458 can't support DSD512 format, but ak4497 can, so add
-a new variable (dsd512) in ak4458_drvdata to distinguish these
-two platforms.
+Currently, after generating run_kselftest.sh, there is no way to choose
+which test we could run. All the tests are listed together and we have
+to run all every time. This patch enhanced the run_kselftest.sh to make
+the tests individually selectable. e.g.
 
-Add a new kcontrol for ak4497 codec for ak4497 has a specific
-pin selection.
+  $ ./run_kselftest.sh -t "bpf size timers"
 
-In hw_params(), calculate bit clock according to different DSD
-format and configure DSD registers.
+Before the patch:
+================
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+$ cat run_kselftest.sh
+\#!/bin/sh
+BASE_DIR=$(realpath $(dirname $0))
+cd $BASE_DIR
+. ./kselftest/runner.sh
+ROOT=$PWD
+if [ "$1" = "--summary" ]; then
+  logfile=$BASE_DIR/output.log
+  cat /dev/null > $logfile
+fi
+[ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
+cd android
+run_many        \
+        "run.sh"
+cd $ROOT
+...<snip>...
+[ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
+cd zram
+run_many        \
+        "zram.sh"
+cd $ROOT
+
+After the patch:
+===============
+
+$ cat run_kselftest.sh
+\#!/bin/sh
+BASE_DIR=$(realpath $(dirname $0))
+. ./kselftest/runner.sh
+TESTS="android ...<snip>... filesystems/binderfs ...<snip>... zram"
+
+run_android()
+{
+        [ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
+        cd android
+        run_many        \
+                "run.sh"
+        cd $ROOT
+}
+
+...<snip>...
+
+run_filesystems_binderfs()
+{
+        [ -w /dev/kmsg ] && echo "kselftest: Running tests in filesystems/binderfs" >> /dev/kmsg
+        cd filesystems/binderfs
+        run_many        \
+                "binderfs_test"
+        cd $ROOT
+}
+
+...<snip>...
+
+run_zram()
+{
+        [ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
+        cd zram
+        run_many        \
+                "zram.sh"
+        cd $ROOT
+}
+
+usage()
+{
+        cat <<EOF
+usage: ${0##*/} OPTS
+        -s | --summary          Only print summary info and put detailed log in output.log
+        -t | --tests            Test name you want to run specifically
+        -h | --help             Show this usage info
+EOF
+}
+
+while true; do
+        case "$1" in
+        -s | --summary ) logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;
+        -t | --tests ) TESTS=$2; shift 2 ;;
+        -h | --help ) usage; exit 0;;
+        "" ) break;;
+        * ) usage; exit 1;;
+        esac
+done
+
+cd $BASE_DIR
+ROOT=$PWD
+for folder in $TESTS; do
+        folder=$(echo $folder | tr -s '/-' '_')
+        run_$folder
+done
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+
 ---
-changes in v2
-- add more commit description.
+v3:
+1) rebase the patch to latest code
+2) move `tr -s "/-" "_"` to the for loop at the end so user could use test
+   folder name directly. Before the update, user need to run
+   ./run_kselftest.sh -t 'networking_forwarding'. Now they can just run
+   ./run_kselftest.sh -t 'networking/forwarding' directly.
 
- sound/soc/codecs/ak4458.c | 82 +++++++++++++++++++++++++++++++++++----
- sound/soc/codecs/ak4458.h |  5 ++-
- 2 files changed, 79 insertions(+), 8 deletions(-)
+v2: update document and commit description.
+---
+ Documentation/dev-tools/kselftest.rst |  4 +++
+ tools/testing/selftests/Makefile      | 49 +++++++++++++++++++++------
+ tools/testing/selftests/lib.mk        |  2 +-
+ 3 files changed, 44 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 763e6839428f..2ef8b591eb79 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -31,11 +31,13 @@ static const char *ak4458_supply_names[AK4458_NUM_SUPPLIES] = {
- struct ak4458_drvdata {
- 	struct snd_soc_dai_driver *dai_drv;
- 	const struct snd_soc_component_driver *comp_drv;
-+	bool  dsd512;	/* DSD512 is supported or not */
- };
+diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+index 469d115a95f1..94da633dd5f8 100644
+--- a/Documentation/dev-tools/kselftest.rst
++++ b/Documentation/dev-tools/kselftest.rst
+@@ -151,6 +151,10 @@ note some tests will require root privileges::
+    $ cd kselftest
+    $ ./run_kselftest.sh
  
- /* AK4458 Codec Private Data */
- struct ak4458_priv {
- 	struct regulator_bulk_data supplies[AK4458_NUM_SUPPLIES];
-+	const struct ak4458_drvdata *drvdata;
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct gpio_desc *reset_gpiod;
-@@ -136,6 +138,10 @@ static const char * const ak4458_ats_select_texts[] = {
- /* DIF2 bit Audio Interface Format Setting(BICK fs) */
- static const char * const ak4458_dif_select_texts[] = {"32fs,48fs", "64fs",};
- 
-+/* DSD input pin select */
-+static const char * const ak4497_dsd_input_pin_select[] = {
-+	"16_17_19pin", "3_4_5pin"};
++Or you can run some specific test cases in the installed Kselftests by::
 +
- static const struct soc_enum ak4458_dac1_dem_enum =
- 	SOC_ENUM_SINGLE(AK4458_01_CONTROL2, 1,
- 			ARRAY_SIZE(ak4458_dem_select_texts),
-@@ -175,6 +181,10 @@ static const struct soc_enum ak4458_dif_enum =
- 	SOC_ENUM_SINGLE(AK4458_00_CONTROL1, 3,
- 			ARRAY_SIZE(ak4458_dif_select_texts),
- 			ak4458_dif_select_texts);
-+static const struct soc_enum ak4497_dsdp_enum =
-+	SOC_ENUM_SINGLE(AK4458_09_DSD2, 2,
-+			ARRAY_SIZE(ak4497_dsd_input_pin_select),
-+			ak4497_dsd_input_pin_select);
- 
- static int get_digfil(struct snd_kcontrol *kcontrol,
- 		      struct snd_ctl_elem_value *ucontrol)
-@@ -282,6 +292,7 @@ static const struct snd_kcontrol_new ak4497_snd_controls[] = {
- 	SOC_ENUM("AK4497 Sound Mode", ak4458_sm_enum),
- 	SOC_ENUM("AK4497 Attenuation transition Time Setting",
- 		 ak4458_ats_enum),
-+	SOC_ENUM("AK4497 DSD Data Input Pin", ak4497_dsdp_enum),
- };
- 
- /* ak4497 dapm widgets */
-@@ -325,12 +336,54 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
- 	int pcm_width = max(params_physical_width(params), ak4458->slot_width);
--	int nfs1;
--	u8 format;
-+	u8 format, dsdsel0, dsdsel1;
-+	int nfs1, dsd_bclk;
- 
- 	nfs1 = params_rate(params);
- 	ak4458->fs = nfs1;
- 
-+	/* calculate bit clock */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_DSD_U8:
-+	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U16_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_BE:
-+		dsd_bclk = nfs1 * params_physical_width(params);
-+		switch (dsd_bclk) {
-+		case 2822400:
-+			dsdsel0 = 0;
-+			dsdsel1 = 0;
-+			break;
-+		case 5644800:
-+			dsdsel0 = 1;
-+			dsdsel1 = 0;
-+			break;
-+		case 11289600:
-+			dsdsel0 = 0;
-+			dsdsel1 = 1;
-+			break;
-+		case 22579200:
-+			if (ak4458->drvdata->dsd512) {
-+				dsdsel0 = 1;
-+				dsdsel1 = 1;
-+			} else {
-+				dev_err(dai->dev, "DSD512 not supported.\n");
-+				return -EINVAL;
-+			}
-+			break;
-+		default:
-+			dev_err(dai->dev, "Unsupported dsd bclk.\n");
-+			return -EINVAL;
-+		}
++   $ ./run_kselftest.sh -t "bpf size timers"
 +
-+		snd_soc_component_update_bits(component, AK4458_06_DSD1,
-+					      AK4458_DSDSEL_MASK, dsdsel0);
-+		snd_soc_component_update_bits(component, AK4458_09_DSD2,
-+					      AK4458_DSDSEL_MASK, dsdsel1);
-+		break;
-+	}
+ Packaging selftests
+ ===================
+ 
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 15c1c1359c50..6b11d5e33019 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -225,13 +225,9 @@ ifdef INSTALL_PATH
+ 	@# Ask all targets to emit their test scripts
+ 	echo "#!/bin/sh" > $(ALL_SCRIPT)
+ 	echo "BASE_DIR=\$$(realpath \$$(dirname \$$0))" >> $(ALL_SCRIPT)
+-	echo "cd \$$BASE_DIR" >> $(ALL_SCRIPT)
+ 	echo ". ./kselftest/runner.sh" >> $(ALL_SCRIPT)
+-	echo "ROOT=\$$PWD" >> $(ALL_SCRIPT)
+-	echo "if [ \"\$$1\" = \"--summary\" ]; then" >> $(ALL_SCRIPT)
+-	echo "  logfile=\$$BASE_DIR/output.log" >> $(ALL_SCRIPT)
+-	echo "  cat /dev/null > \$$logfile" >> $(ALL_SCRIPT)
+-	echo "fi" >> $(ALL_SCRIPT)
++	echo "TESTS=\"$(TARGETS)\"" >> $(ALL_SCRIPT)
++	echo "" >> $(ALL_SCRIPT);
+ 
+ 	@# While building run_kselftest.sh skip also non-existent TARGET dirs:
+ 	@# they could be the result of a build failure and should NOT be
+@@ -239,15 +235,48 @@ ifdef INSTALL_PATH
+ 	for TARGET in $(TARGETS); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+ 		[ ! -d $(INSTALL_PATH)/$$TARGET ] && echo "Skipping non-existent dir: $$TARGET" && continue; \
+-		echo "[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
+-		echo "cd $$TARGET" >> $(ALL_SCRIPT); \
+-		echo -n "run_many" >> $(ALL_SCRIPT); \
++		echo "run_$$TARGET()" | tr -s "/-" "_" >> $(ALL_SCRIPT); \
++		echo "{" >> $(ALL_SCRIPT); \
++		echo -e "\t[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
++		echo -e "\tcd $$TARGET" >> $(ALL_SCRIPT); \
++		echo -en "\trun_many" >> $(ALL_SCRIPT); \
+ 		echo -n "Emit Tests for $$TARGET\n"; \
+ 		$(MAKE) -s --no-print-directory OUTPUT=$$BUILD_TARGET -C $$TARGET emit_tests >> $(ALL_SCRIPT); \
+ 		echo "" >> $(ALL_SCRIPT);	    \
+-		echo "cd \$$ROOT" >> $(ALL_SCRIPT); \
++		echo -e "\tcd \$$ROOT" >> $(ALL_SCRIPT); \
++		echo "}" >> $(ALL_SCRIPT); \
++		echo "" >> $(ALL_SCRIPT); \
+ 	done;
+ 
++	echo "usage()" >> $(ALL_SCRIPT);
++	echo "{" >> $(ALL_SCRIPT);
++	echo -e "\tcat <<EOF" >> $(ALL_SCRIPT);
++	echo "usage: \$${0##*/} OPTS" >> $(ALL_SCRIPT);
++	echo -e "\t-s | --summary\t\tOnly print summary info and put detailed log in output.log" >> $(ALL_SCRIPT);
++	echo -e "\t-t | --tests\t\tTest name you want to run specifically" >> $(ALL_SCRIPT);
++	echo -e "\t-h | --help\t\tShow this usage info" >> $(ALL_SCRIPT);
++	echo "EOF" >> $(ALL_SCRIPT);
++	echo "}" >> $(ALL_SCRIPT);
++	echo "" >> $(ALL_SCRIPT);
 +
- 	/* Master Clock Frequency Auto Setting Mode Enable */
- 	snd_soc_component_update_bits(component, AK4458_00_CONTROL1, 0x80, 0x80);
- 
-@@ -355,6 +408,9 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 		case SND_SOC_DAIFMT_DSP_B:
- 			format = AK4458_DIF_32BIT_MSB;
- 			break;
-+		case SND_SOC_DAIFMT_PDM:
-+			format = AK4458_DIF_32BIT_MSB;
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
-@@ -393,6 +449,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	case SND_SOC_DAIFMT_LEFT_J:
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 	case SND_SOC_DAIFMT_DSP_B:
-+	case SND_SOC_DAIFMT_PDM:
- 		ak4458->fmt = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 		break;
- 	default:
-@@ -401,6 +458,12 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
-+	/* DSD mode */
-+	snd_soc_component_update_bits(component, AK4458_02_CONTROL3,
-+				      AK4458_DP_MASK,
-+				      ak4458->fmt == SND_SOC_DAIFMT_PDM ?
-+				      AK4458_DP_MASK : 0);
++	echo "while true; do" >> $(ALL_SCRIPT);
++	echo -e "\tcase \"\$$1\" in" >> $(ALL_SCRIPT);
++	echo -e "\t-s | --summary ) logfile=\$$BASE_DIR/output.log; cat /dev/null > \$$logfile; shift ;;" >> $(ALL_SCRIPT);
++	echo -e "\t-t | --tests ) TESTS=\$$2; shift 2 ;;" >> $(ALL_SCRIPT);
++	echo -e "\t-h | --help ) usage; exit 0;;" >> $(ALL_SCRIPT);
++	echo -e "\t\"\" ) break;;" >> $(ALL_SCRIPT);
++	echo -e "\t* ) usage; exit 1;;" >> $(ALL_SCRIPT);
++	echo -e "\tesac" >> $(ALL_SCRIPT);
++	echo "done" >> $(ALL_SCRIPT);
++	echo "" >> $(ALL_SCRIPT);
 +
- 	ak4458_rstn_control(component, 0);
- 	ak4458_rstn_control(component, 1);
- 
-@@ -472,7 +535,10 @@ static int ak4458_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 
- #define AK4458_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
--			 SNDRV_PCM_FMTBIT_S32_LE)
-+			 SNDRV_PCM_FMTBIT_S32_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U8 |\
-+			 SNDRV_PCM_FMTBIT_DSD_U16_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U32_LE)
- 
- static const unsigned int ak4458_rates[] = {
- 	8000, 11025,  16000, 22050,
-@@ -668,11 +734,13 @@ static const struct regmap_config ak4458_regmap = {
- static const struct ak4458_drvdata ak4458_drvdata = {
- 	.dai_drv = &ak4458_dai,
- 	.comp_drv = &soc_codec_dev_ak4458,
-+	.dsd512 = false,
- };
- 
- static const struct ak4458_drvdata ak4497_drvdata = {
- 	.dai_drv = &ak4497_dai,
- 	.comp_drv = &soc_codec_dev_ak4497,
-+	.dsd512 = true,
- };
- 
- static const struct dev_pm_ops ak4458_pm = {
-@@ -684,7 +752,6 @@ static const struct dev_pm_ops ak4458_pm = {
- static int ak4458_i2c_probe(struct i2c_client *i2c)
- {
- 	struct ak4458_priv *ak4458;
--	const struct ak4458_drvdata *drvdata;
- 	int ret, i;
- 
- 	ak4458 = devm_kzalloc(&i2c->dev, sizeof(*ak4458), GFP_KERNEL);
-@@ -698,7 +765,7 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 	i2c_set_clientdata(i2c, ak4458);
- 	ak4458->dev = &i2c->dev;
- 
--	drvdata = of_device_get_match_data(&i2c->dev);
-+	ak4458->drvdata = of_device_get_match_data(&i2c->dev);
- 
- 	ak4458->reset_gpiod = devm_gpiod_get_optional(ak4458->dev, "reset",
- 						      GPIOD_OUT_LOW);
-@@ -720,8 +787,9 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 		return ret;
- 	}
- 
--	ret = devm_snd_soc_register_component(ak4458->dev, drvdata->comp_drv,
--					      drvdata->dai_drv, 1);
-+	ret = devm_snd_soc_register_component(ak4458->dev,
-+					      ak4458->drvdata->comp_drv,
-+					      ak4458->drvdata->dai_drv, 1);
- 	if (ret < 0) {
- 		dev_err(ak4458->dev, "Failed to register CODEC: %d\n", ret);
- 		return ret;
-diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-index f906215f7e4e..9548c5d78621 100644
---- a/sound/soc/codecs/ak4458.h
-+++ b/sound/soc/codecs/ak4458.h
-@@ -83,4 +83,7 @@
- #define AK4458_ATS_SHIFT	6
- #define AK4458_ATS_MASK		GENMASK(7, 6)
- 
--#endif /* _AK4458_H */
-+#define AK4458_DSDSEL_MASK		(0x1 << 0)
-+#define AK4458_DP_MASK			(0x1 << 7)
++	echo "cd \$$BASE_DIR" >> $(ALL_SCRIPT)
++	echo "ROOT=\$$PWD" >> $(ALL_SCRIPT)
 +
-+#endif
++	echo "for folder in \$$TESTS; do" >> $(ALL_SCRIPT); \
++	echo -e "\tfolder=\$$(echo \$$folder | tr -s '/-' '_')" >> $(ALL_SCRIPT); \
++	echo -e "\trun_\$$folder" >> $(ALL_SCRIPT); \
++	echo "done" >> $(ALL_SCRIPT); \
+ 	chmod u+x $(ALL_SCRIPT)
+ else
+ 	$(error Error: set INSTALL_PATH to use install)
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index 51124b962d56..3c4c94a5d184 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -108,7 +108,7 @@ emit_tests:
+ 	for TEST in $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS); do \
+ 		BASENAME_TEST=`basename $$TEST`;	\
+ 		echo "	\\";				\
+-		echo -n "	\"$$BASENAME_TEST\"";	\
++		echo -ne "\t\t\"$$BASENAME_TEST\"";	\
+ 	done;						\
+ 
+ # define if isn't already. It is undefined in make O= case.
 -- 
-2.27.0
+2.25.4
 
