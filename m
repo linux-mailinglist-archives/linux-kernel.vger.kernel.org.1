@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638322660FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3931E2660E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbgIKOMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:12:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32774 "EHLO mail.kernel.org"
+        id S1725855AbgIKODA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:03:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbgIKNVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:21:31 -0400
+        id S1726277AbgIKN3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:29:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CCC92244C;
-        Fri, 11 Sep 2020 12:59:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31B0A223E4;
+        Fri, 11 Sep 2020 12:58:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829165;
-        bh=VhHZzxYJ8nkNA9SGFQ+ilawWcnvt8a/KgqfCYjaOi7o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aHgsZ+4rOP2B7N6zHS3k2OtVWXaHvvBxrg2H8/Xko6nVXH7qvXObS+7Mj+htdCulZ
-         9g7T0JQHIJcPKUbyo826+qyzOsoSb900puOAmuyT8vBs1L90u2wv1NPSMr0kiUK5Ft
-         S5Bv4zD/9rRkLuyoBNTiSfqn/M/K99fp7zbOSWXI=
+        s=default; t=1599829137;
+        bh=8+aKGES8phPY0yHlwA43c9QPgG1sGj0rjTH2xEYGUaA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=i9/4L3maF+HyS/5x1tFwwvucGeq5sxl5Piq8OjbXvQZanfroCstyz4TW+FybVl6LK
+         Og64YkAyDOxx51gKlIzwwvSwoe7xiUZ2O8ytF+tVoWIFDT9Wgwgo4r4J3U00K+pCWk
+         JyzLdGlmFLLcmW4cQ0407L3hlOeph2Bxvu0yNgvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 4.14 00/12] 4.14.198-rc1 review
-Date:   Fri, 11 Sep 2020 14:46:54 +0200
-Message-Id: <20200911122458.413137406@linuxfoundation.org>
+        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 10/12] sctp: not disable bh in the whole sctp_get_port_local()
+Date:   Fri, 11 Sep 2020 14:47:04 +0200
+Message-Id: <20200911122458.915150962@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
+In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
+References: <20200911122458.413137406@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.198-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.198-rc1
-X-KernelTest-Deadline: 2020-09-13T12:24+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.198 release.
-There are 12 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Xin Long <lucien.xin@gmail.com>
 
-Responses should be made by Sun, 13 Sep 2020 12:24:42 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 3106ecb43a05dc3e009779764b9da245a5d082de ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.198-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+With disabling bh in the whole sctp_get_port_local(), when
+snum == 0 and too many ports have been used, the do-while
+loop will take the cpu for a long time and cause cpu stuck:
 
-thanks,
+  [ ] watchdog: BUG: soft lockup - CPU#11 stuck for 22s!
+  [ ] RIP: 0010:native_queued_spin_lock_slowpath+0x4de/0x940
+  [ ] Call Trace:
+  [ ]  _raw_spin_lock+0xc1/0xd0
+  [ ]  sctp_get_port_local+0x527/0x650 [sctp]
+  [ ]  sctp_do_bind+0x208/0x5e0 [sctp]
+  [ ]  sctp_autobind+0x165/0x1e0 [sctp]
+  [ ]  sctp_connect_new_asoc+0x355/0x480 [sctp]
+  [ ]  __sctp_connect+0x360/0xb10 [sctp]
 
-greg k-h
+There's no need to disable bh in the whole function of
+sctp_get_port_local. So fix this cpu stuck by removing
+local_bh_disable() called at the beginning, and using
+spin_lock_bh() instead.
 
--------------
-Pseudo-Shortlog of commits:
+The same thing was actually done for inet_csk_get_port() in
+Commit ea8add2b1903 ("tcp/dccp: better use of ephemeral
+ports in bind()").
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.198-rc1
+Thanks to Marcelo for pointing the buggy code out.
 
-Jakub Kicinski <kuba@kernel.org>
-    net: disable netpoll on fresh napis
+v1->v2:
+  - use cond_resched() to yield cpu to other tasks if needed,
+    as Eric noticed.
 
-Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-    tipc: fix shutdown() of connectionless socket
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Ying Xu <yinxu@redhat.com>
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/sctp/socket.c |   16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-Xin Long <lucien.xin@gmail.com>
-    sctp: not disable bh in the whole sctp_get_port_local()
-
-Kamil Lorenc <kamil@re-ws.pl>
-    net: usb: dm9601: Add USB ID of Keenetic Plus DSL
-
-Paul Moore <paul@paul-moore.com>
-    netlabel: fix problems with mapping removal
-
-Jakub Kicinski <kuba@kernel.org>
-    bnxt: don't enable NAPI until rings are ready
-
-Alex Williamson <alex.williamson@redhat.com>
-    vfio/pci: Fix SR-IOV VF handling with MMIO blocking
-
-Alex Williamson <alex.williamson@redhat.com>
-    vfio-pci: Invalidate mmaps and block MMIO access on disabled memory
-
-Alex Williamson <alex.williamson@redhat.com>
-    vfio-pci: Fault mmaps to enable vma tracking
-
-Alex Williamson <alex.williamson@redhat.com>
-    vfio/type1: Support faulting PFNMAP vmas
-
-Jens Axboe <axboe@kernel.dk>
-    block: ensure bdi->io_pages is always initialized
-
-Takashi Sakamoto <o-takashi@sakamocchi.jp>
-    ALSA; firewire-tascam: exclude Tascam FE-8 from detection
-
-
--------------
-
-Diffstat:
-
- Makefile                                  |   4 +-
- block/blk-core.c                          |   2 +
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |   9 +-
- drivers/net/usb/dm9601.c                  |   4 +
- drivers/vfio/pci/vfio_pci.c               | 352 +++++++++++++++++++++++++++---
- drivers/vfio/pci/vfio_pci_config.c        |  51 ++++-
- drivers/vfio/pci/vfio_pci_intrs.c         |  14 ++
- drivers/vfio/pci/vfio_pci_private.h       |  16 ++
- drivers/vfio/pci/vfio_pci_rdwr.c          |  29 ++-
- drivers/vfio/vfio_iommu_type1.c           |  36 ++-
- net/core/dev.c                            |   3 +-
- net/core/netpoll.c                        |   2 +-
- net/netlabel/netlabel_domainhash.c        |  59 ++---
- net/sctp/socket.c                         |  16 +-
- net/tipc/socket.c                         |   9 +-
- sound/firewire/tascam/tascam.c            |  30 ++-
- 16 files changed, 539 insertions(+), 97 deletions(-)
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -7086,8 +7086,6 @@ static long sctp_get_port_local(struct s
+ 
+ 	pr_debug("%s: begins, snum:%d\n", __func__, snum);
+ 
+-	local_bh_disable();
+-
+ 	if (snum == 0) {
+ 		/* Search for an available port. */
+ 		int low, high, remaining, index;
+@@ -7106,20 +7104,21 @@ static long sctp_get_port_local(struct s
+ 				continue;
+ 			index = sctp_phashfn(sock_net(sk), rover);
+ 			head = &sctp_port_hashtable[index];
+-			spin_lock(&head->lock);
++			spin_lock_bh(&head->lock);
+ 			sctp_for_each_hentry(pp, &head->chain)
+ 				if ((pp->port == rover) &&
+ 				    net_eq(sock_net(sk), pp->net))
+ 					goto next;
+ 			break;
+ 		next:
+-			spin_unlock(&head->lock);
++			spin_unlock_bh(&head->lock);
++			cond_resched();
+ 		} while (--remaining > 0);
+ 
+ 		/* Exhausted local port range during search? */
+ 		ret = 1;
+ 		if (remaining <= 0)
+-			goto fail;
++			return ret;
+ 
+ 		/* OK, here is the one we will use.  HEAD (the port
+ 		 * hash table list entry) is non-NULL and we hold it's
+@@ -7134,7 +7133,7 @@ static long sctp_get_port_local(struct s
+ 		 * port iterator, pp being NULL.
+ 		 */
+ 		head = &sctp_port_hashtable[sctp_phashfn(sock_net(sk), snum)];
+-		spin_lock(&head->lock);
++		spin_lock_bh(&head->lock);
+ 		sctp_for_each_hentry(pp, &head->chain) {
+ 			if ((pp->port == snum) && net_eq(pp->net, sock_net(sk)))
+ 				goto pp_found;
+@@ -7218,10 +7217,7 @@ success:
+ 	ret = 0;
+ 
+ fail_unlock:
+-	spin_unlock(&head->lock);
+-
+-fail:
+-	local_bh_enable();
++	spin_unlock_bh(&head->lock);
+ 	return ret;
+ }
+ 
 
 
