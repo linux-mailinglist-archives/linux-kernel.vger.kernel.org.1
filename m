@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCDD26666C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5B7266677
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgIKR1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:27:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48072 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726164AbgIKR1W (ORCPT
+        id S1726230AbgIKR2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:28:42 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:40180 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgIKR2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:27:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599845239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=germb81mdbPxJ2sh80nFaxpLsRawudu0Nob2MSBfAQQ=;
-        b=bJvW3JU1/o5OIk0o5+tM/BqN0UiNYFPadscXvvzLUBvdqnaHLbcaDaNnsWNUHePsOrbLwt
-        Uob49ASg+znX/UX9KdcWZkcW84uA0Fh2oQIHoMUDJdtQX6bzbGgM776WfhwBZEv3lbC7n9
-        hfrcuPWcBRh6rqq1p/c1LLM5UxldAq0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-c1b5MOjpNR-tQcuZrg0bSg-1; Fri, 11 Sep 2020 13:27:16 -0400
-X-MC-Unique: c1b5MOjpNR-tQcuZrg0bSg-1
-Received: by mail-wm1-f69.google.com with SMTP id c72so1620796wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:27:15 -0700 (PDT)
+        Fri, 11 Sep 2020 13:28:20 -0400
+Received: by mail-il1-f200.google.com with SMTP id g188so7650344ilh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:28:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=germb81mdbPxJ2sh80nFaxpLsRawudu0Nob2MSBfAQQ=;
-        b=McxqMk+lU9TS/30qTUY/Vbh9tfJBKAf1zUL4Slvy84dOiYsbD5bLgiRJ9A4FUjvlkw
-         N+THWZ50NgoouECH+sQUpKgvgSvQCYO3S9eTj4fB4JMkcxeZdw9l7nxzCoRHA8d+5X9o
-         pIRXWMSSLPB6PLKbIHjvF+Gy/6Q/dGwWj6fzgYuQoS20cxfeHxXXUVITmfFl3n0zu/Vw
-         VZoR9+LBhIbymV0umomRUgM6w7TSI1nqlK6qyt4o/scDvt2z0DFaIh238XlIrYyLfz19
-         Sxe46vWJ5STmoWC5TvaSEJPDZToLJ7ioojnJ4ZPzhF+S7oUYMY9KDPm1rdPaSdH+xSIl
-         d2GA==
-X-Gm-Message-State: AOAM531G4qoSTXUoaq34P2E2k2bgdLC/zNc715p861DbXL9ZVkKGhMc9
-        0YtqmWv4NxrriHsOf4pi+D6ihwnDOXrSPNFOiA2ioASmpaXkGHt1V0l8z09jBB75JwPM2GNcmsa
-        X4blwMTAHeZfvDL6ebhBIw7+/
-X-Received: by 2002:adf:ed05:: with SMTP id a5mr3055393wro.364.1599845234711;
-        Fri, 11 Sep 2020 10:27:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+714Ss/NtU7n/+81wJkJaafGSQ6jwDl3NWbZRIsM4cOwwvUkTxSTzyff5S0Xi1bh4AodWHA==
-X-Received: by 2002:adf:ed05:: with SMTP id a5mr3055372wro.364.1599845234466;
-        Fri, 11 Sep 2020 10:27:14 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id e18sm6500243wra.36.2020.09.11.10.27.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:27:13 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: always allow writing '0' to MSR_KVM_ASYNC_PF_EN
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20200911093147.484565-1-vkuznets@redhat.com>
- <20200911160455.GB4344@sjchrist-ice>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c3f4d7d4-59b1-088d-cc85-ccd55d9e2e79@redhat.com>
-Date:   Fri, 11 Sep 2020 19:27:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=1HRQZSHIuQzsMOzww47L1ehzI1lYUqlvWhyszfusKO4=;
+        b=dCSInBkIDVh1DHWJDIev7mQ5YbwzjdjcAx/F17yfVvrLUXKl7PmO8mKGEGeKJ5t4TA
+         O+N4hxEbs7v1Tlim5H1+iiChqXvoAtooeD1e1SmC8JefTncnTzy9AReLQz0LUUUfqH9R
+         eof6l4NGNdCqvGTMhf2hWRzoCHPP19YeC1MXQ1OFs0rLRaMDUIj2sPje3WgFUFiVLThO
+         cOD4r+NFWsA6maBDTcCeyjyz+8FPy4O2No7quxCLRAat/9c2mYrJuje9YZggYVy1JR34
+         0U+s9IdqsB6KUqvr0VQfc3gXw0DzZ+58y64UDLzBwT2o2msj9t6UwU0vxoQpKzbt7ZCA
+         Q0BQ==
+X-Gm-Message-State: AOAM532WQatPF7qB5qVYPghXF8V2AEJjYSYwB204Ck4CekHQjzEmQWRN
+        Vmz65j9GXm8itezBqbFjq0kSMm2WtmDBGmJkrgHimohAisVm
+X-Google-Smtp-Source: ABdhPJwFt7MsDZF43S5VTnXpwzh3wkDps7Hpvkv1eRonV9F5mIY00Fkm3g9NAlar1dbK6206AH8K2qOfBwOPALhpLZubrw6emAJT
 MIME-Version: 1.0
-In-Reply-To: <20200911160455.GB4344@sjchrist-ice>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:a498:: with SMTP id d24mr2942583jam.137.1599845298770;
+ Fri, 11 Sep 2020 10:28:18 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 10:28:18 -0700
+In-Reply-To: <0000000000002b721a05aec0f937@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ba9afd05af0d0229@google.com>
+Subject: Re: KASAN: use-after-free Write in io_wq_worker_running
+From:   syzbot <syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/20 18:04, Sean Christopherson wrote:
+syzbot has found a reproducer for the following issue on:
 
-> This doesn't actually verify that @data == 0.  kvm_pv_async_pf_enabled()
-> returns true iff KVM_ASYNC_PF_ENABLED and KVM_ASYNC_PF_DELIVERY_AS_INT are
-> set, e.g. this would allow setting one and not the other.  This also allows
-> userspace to set vcpu->arch.apf.msr_en_val to an unsupported value, i.e.
-> @data has already been propagated to the vcpu and isn't unwound.
-> 
-> Why not just pivot on @data when lapic_in_kernel() is false?  vcpu->arch.apic
-> is immutable so there's no need to update apf.msr_en_val in either direction.
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 539ea1cd6020..36969d5ec291 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2735,7 +2735,7 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
->                 return 1;
-> 
->         if (!lapic_in_kernel(vcpu))
-> -               return 1;
-> +               return data ? 1 : 0;
-> 
->         vcpu->arch.apf.msr_en_val = data;
-> 
-> 
->> +		return 1;
->> +
->>  	if (kvm_gfn_to_hva_cache_init(vcpu->kvm, &vcpu->arch.apf.data, gpa,
->>  					sizeof(u64)))
->>  		return 1;
->> -- 
->> 2.25.4
->>
-> 
+HEAD commit:    581cb3a2 Merge tag 'f2fs-for-5.9-rc5' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10cc47a5900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=45fa0a195b941764e0f0
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e933f9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1554acdd900000
 
-Committed this instead, though.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com
 
-Paolo
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+BUG: KASAN: use-after-free in io_wqe_inc_running fs/io-wq.c:301 [inline]
+BUG: KASAN: use-after-free in io_wq_worker_running+0xde/0x110 fs/io-wq.c:613
+Write of size 4 at addr ffff8882183db08c by task io_wqe_worker-0/7771
+
+CPU: 0 PID: 7771 Comm: io_wqe_worker-0 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ instrument_atomic_write include/linux/instrumented.h:71 [inline]
+ atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+ io_wqe_inc_running fs/io-wq.c:301 [inline]
+ io_wq_worker_running+0xde/0x110 fs/io-wq.c:613
+ schedule_timeout+0x148/0x250 kernel/time/timer.c:1879
+ io_wqe_worker+0x517/0x10e0 fs/io-wq.c:580
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Allocated by task 7768:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ kmem_cache_alloc_node_trace+0x17b/0x3f0 mm/slab.c:3594
+ kmalloc_node include/linux/slab.h:572 [inline]
+ kzalloc_node include/linux/slab.h:677 [inline]
+ io_wq_create+0x57b/0xa10 fs/io-wq.c:1064
+ io_init_wq_offload fs/io_uring.c:7432 [inline]
+ io_sq_offload_start fs/io_uring.c:7504 [inline]
+ io_uring_create fs/io_uring.c:8625 [inline]
+ io_uring_setup+0x1836/0x28e0 fs/io_uring.c:8694
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 21:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x10e/0x2b0 mm/slab.c:3756
+ __io_wq_destroy fs/io-wq.c:1138 [inline]
+ io_wq_destroy+0x2af/0x460 fs/io-wq.c:1146
+ io_finish_async fs/io_uring.c:6836 [inline]
+ io_ring_ctx_free fs/io_uring.c:7870 [inline]
+ io_ring_exit_work+0x1e4/0x6d0 fs/io_uring.c:7954
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+The buggy address belongs to the object at ffff8882183db000
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 140 bytes inside of
+ 1024-byte region [ffff8882183db000, ffff8882183db400)
+The buggy address belongs to the page:
+page:000000009bada22b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2183db
+flags: 0x57ffe0000000200(slab)
+raw: 057ffe0000000200 ffffea0008604c48 ffffea00086a8648 ffff8880aa040700
+raw: 0000000000000000 ffff8882183db000 0000000100000002 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8882183daf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8882183db000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8882183db080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff8882183db100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8882183db180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
