@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22782669D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D595E2669DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgIKU6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:58:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:15765 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgIKU6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:58:33 -0400
-IronPort-SDR: S/fqd9NH4TaiOAKDsq0dtE8HldZ+1kPgN1bHzI9K8dKI343qxRH+vX0cRduazwFz3TRNqolcUT
- cfXiNHLcDcAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="243677296"
-X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
-   d="scan'208";a="243677296"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 13:58:30 -0700
-IronPort-SDR: B+U5UeEA5moc0L/AmK2qGpitGammhTvg/fppesgwGa/dPC6GWMJWXUxKQvgoCfDMH4sTR5WQGv
- T3sVOqXWNLJQ==
-X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
-   d="scan'208";a="329910348"
-Received: from shikherb-mobl.amr.corp.intel.com (HELO [10.212.38.188]) ([10.212.38.188])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 13:58:30 -0700
-Subject: Re: [PATCH 2/4 v3] x86: AMD: Add hardware-enforced cache coherency as
- a CPUID feature
-To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, joro@8bytes.org,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, hpa@zytor.com
-References: <20200911192601.9591-1-krish.sadhukhan@oracle.com>
- <20200911192601.9591-3-krish.sadhukhan@oracle.com>
- <c5cbc91e-f576-5cc7-a40c-c11abaea4ad2@intel.com>
- <472e71a4-e50e-1d39-3088-cc103c79ddb3@oracle.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <103bdf75-aa91-1c91-7727-e853b55a603c@intel.com>
-Date:   Fri, 11 Sep 2020 13:58:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725880AbgIKVHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 17:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725815AbgIKVHY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 17:07:24 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B25C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:07:23 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id n14so8276299pff.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jgFgQZn5QUo1XXE/gnomBtbR6UbPde/+9+WpoRrQOPw=;
+        b=Q4u5rcfPt7QTOe1vp5gVHput9CRbaDUMGiQLJKMd3JvvKLhJd/6okyvWJ+Y87FeDgD
+         61cHLgCITFeG4q7KdUqlzC1VCy7kPPEKuphbwB9zz+WvBD2BRCLVH8yCVxTXvYxC7f2J
+         +Koa3GNxLfZaGRyAzkTafgMeDasWx9LGxrE4c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jgFgQZn5QUo1XXE/gnomBtbR6UbPde/+9+WpoRrQOPw=;
+        b=Nav1WtGKxsNcR+/KyRkG6SYsu2qa817UlUnsLReIrxXf+95bvNl0gj8tdorn8t1Fcj
+         T6uWPscX9hqHERSQ2SJiQvAj5dOPNHna28LbUG5uU+x2EUVfxxCHfxvg7rNBeKz7WLu9
+         XTL0EIrvk3iidSUJzbrrTL00nMb4xPPKKvlJL5keGblawWJ8REkDDfu65nWqlL/stlOy
+         QrIibIqy8jJTq5q6Noc1Y4Z3z+sRK+dPYNCm0c5m9xaimBphMABXp66bJNZA2JYI7T5w
+         2LXC+b333A5Oao8+6IqKbMU1s5FeQjTw5o2ey9w3ilvkTl0Y5f1+rmMWCiGRQXCfdIM2
+         9+6Q==
+X-Gm-Message-State: AOAM533zAZwykgD8i95Uy2XGLMHONR4NByBkuRbEWkqbrpNpavqv4U3T
+        QcT+p64GWPMAEygxaqc+cL2Onbh0+zi/5w==
+X-Google-Smtp-Source: ABdhPJxRjwcNmLDTUlVLFGgGCsT6fXlVuUlJYNls9NwgRdY9arpE0quJZbmaUT8ai2G7WqhKVwnAHw==
+X-Received: by 2002:a62:e90b:0:b029:13e:b622:3241 with SMTP id j11-20020a62e90b0000b029013eb6223241mr3834613pfh.12.1599858442536;
+        Fri, 11 Sep 2020 14:07:22 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id c128sm3308764pfb.126.2020.09.11.14.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 14:07:22 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH v2 0/3] Bluetooth: Emit events for suspend/resume
+Date:   Fri, 11 Sep 2020 14:07:10 -0700
+Message-Id: <20200911210713.4066465-1-abhishekpandit@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-In-Reply-To: <472e71a4-e50e-1d39-3088-cc103c79ddb3@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 1:10 PM, Krish Sadhukhan wrote:
-...
->>> +#define X86_FEATURE_HW_CACHE_COHERENCY (11*32+ 7) /* AMD
->>> hardware-enforced cache coherency */
->> That's an awfully generic name.  We generally have "hardware-enforced
->> cache coherency" already everywhere. :)
->>
->> This probably needs to say something about encryption, or even SEV
->> specifically.
-> 
-> How about X86_FEATURE_ENC_CACHE_COHERENCY ?
 
-I think X86_FEATURE_SME_COHERENT would be the most appropriate name.
-That bit, as defined, looks totally specific to SME.
+Hi Marcel,
+
+This series adds the suspend/resume events suggested in
+https://patchwork.kernel.org/patch/11771001/.
+
+I have tested it with some userspace changes that monitors the
+controller resumed event to trigger audio device reconnection and
+verified that the events are correctly emitted.
+
+Patch for btmon changes: https://patchwork.kernel.org/patch/11743863/
+
+Please take a look.
+Abhishek
+
+Changes in v2:
+- Added suspend/resume events to list of mgmt events
+
+Abhishek Pandit-Subedi (3):
+  Bluetooth: Add mgmt suspend and resume events
+  Bluetooth: Add suspend reason for device disconnect
+  Bluetooth: Emit controller suspend and resume events
+
+ include/net/bluetooth/hci_core.h |  6 +++
+ include/net/bluetooth/mgmt.h     | 16 +++++++
+ net/bluetooth/hci_core.c         | 26 +++++++++++-
+ net/bluetooth/hci_event.c        | 73 ++++++++++++++++++++++++++++++++
+ net/bluetooth/mgmt.c             | 30 +++++++++++++
+ 5 files changed, 150 insertions(+), 1 deletion(-)
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
