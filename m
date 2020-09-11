@@ -2,58 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E55C2663DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83EF2663DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgIKQ0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:26:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726473AbgIKPWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:22:38 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9045207FB;
-        Fri, 11 Sep 2020 15:22:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599837758;
-        bh=KF+SM6aIBn3OyO0eNQnwwx03nzA7TACIYZpv2J3yp9U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hL7tU/I7nOYzJMA3X+i0rXaLApWXobE3+fvOXtf3FWFs6x5uOh1ldSI2Nn3622sqO
-         qbeRDbQxp0x5TTrJlufODjVjBx/z3ROjAU5LyPyg6emXJms11cAxZNOHgrm1520xiM
-         vZEIm5Pmnpkw3KeaX9FCl3fKGAEmxbXcm4TLbx+s=
-Date:   Fri, 11 Sep 2020 08:22:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        David Miller <davem@davemloft.net>, andrew@lunn.ch,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] net: mvpp2: Initialize link in
- mvpp2_isr_handle_{xlg,gmac_internal}
-Message-ID: <20200911082236.7dfb7937@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200911111158.GF1551@shell.armlinux.org.uk>
-References: <20200910174826.511423-1-natechancellor@gmail.com>
-        <20200910.152811.210183159970625640.davem@davemloft.net>
-        <20200911003142.GA2469103@ubuntu-n2-xlarge-x86>
-        <20200911111158.GF1551@shell.armlinux.org.uk>
+        id S1726568AbgIKQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:26:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36686 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726405AbgIKPYF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:24:05 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BFDJlh138373;
+        Fri, 11 Sep 2020 11:23:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=IU/fKZKtEvfvRqnzr4y0McdxJCnTZkrOh7Gin8XqWlU=;
+ b=WPC6+zJTaiPIgIkWddZOIIpPI/m+V3iwTn8whVN2764BdbiZOI2Y0vFsOhk/rmVY4Hxp
+ 6QVRWMmVhcT59QBr/fTRaFdggXsUsBvmI1GwU7yv85YOz7+JB7/FTnOD0tF/f96GwHwf
+ 59BxMkYvRyo2/5TLnXFhyHzY3B1AUUkypUVYD6B+u/G2x4k8VuhhSQDqf7DbMhTCkjik
+ 7tCvh9oLjeju916t0WHfaDg4six8toC++6X1XcHybDQRfxZ35GgUb3dleaNbwBVddWOr
+ Pk6kolI3YntgyZbsf4a3CkasG5Zx9Y4J5y5HHSB+LSb90gQxpu2z86frjDhza7TIQcwn tQ== 
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33gbp9r78d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 11:23:48 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BFD828025320;
+        Fri, 11 Sep 2020 15:23:46 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 33c2a846bu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 15:23:46 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BFNiG337814770
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 15:23:44 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17CDD4C044;
+        Fri, 11 Sep 2020 15:23:44 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ABA384C050;
+        Fri, 11 Sep 2020 15:23:43 +0000 (GMT)
+Received: from [9.145.176.58] (unknown [9.145.176.58])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Sep 2020 15:23:43 +0000 (GMT)
+Subject: Re: [PATCH -rc v1] gcov: Disable gcov build with GCC 10
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "'Linus Torvalds'" <torvalds@linux-foundation.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200904155808.4997-1-leon@kernel.org>
+ <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
+ <CAHk-=wg6R-yQwZBBWB8EqQ1QWJGQe5njuGwax-HJtTUGsc5LxQ@mail.gmail.com>
+ <a9d5b868b1eb4d8bb45364e9b917ca8f@AcuMS.aculab.com>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <0d45fd85-d109-b57f-d918-33d5991e2b09@linux.ibm.com>
+Date:   Fri, 11 Sep 2020 17:23:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <a9d5b868b1eb4d8bb45364e9b917ca8f@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-11_05:2020-09-10,2020-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 suspectscore=1 mlxlogscore=917
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009110124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 12:11:58 +0100 Russell King - ARM Linux admin wrote:
-> On Thu, Sep 10, 2020 at 05:31:42PM -0700, Nathan Chancellor wrote:
-> > Ah great, that is indeed cleaner, thank you for letting me know!  
-> 
-> Hmm, I'm not sure why gcc didn't find that. Strangely, the 0-day bot
-> seems to have only picked up on it with clang, not gcc.
+On 10.09.2020 23:49, David Laight wrote:
+> I was wondering what happens if files compiled with different
+> versions of gcc get linked together?
 
-May be similar to: https://lkml.org/lkml/2019/2/25/1092
+This is not supported by GCC. At runtime libgcov will reject all data
+from object files compiled with a different GCC version.
 
-Recent GCC is so bad at catching uninitialized vars I was considering
-build testing with GCC8 :/
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
