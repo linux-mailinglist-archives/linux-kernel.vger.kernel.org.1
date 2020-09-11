@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7A226648B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB81266473
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgIKQlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbgIKPKu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:10:50 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562DDC061757;
-        Fri, 11 Sep 2020 08:10:40 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z19so6198575lfr.4;
-        Fri, 11 Sep 2020 08:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Kv9oMQQFyLAZk1SItD7ecip/eYagD8o/JxuoFQE0OoQ=;
-        b=YwFZrLxEEvRdg2NhApHcQg4xFnmm2xoIOA2btQCY2882iW09CG5O6Qztv5mU8dm9hm
-         vFOUulAFD/55SkmKDyZQlX1idzqhY211NPAROG6hpUGi7XAX4+Yjiu1Vml1XtpmpRPaG
-         KdOyHOKgW5ODx/YdV5HI8M2B1LySYpmiAD0fco7EyayBjIwfFA1nAs4arDLNZVgUAfUo
-         RtMipJ5GGEjynewXmSEnjhs05a4cUXfa8iPhgn/c/vrxGMeqOkebh4IJ4yh3m4v78Ys8
-         SYg9lI4gzAtWffjOxivLYyRSKJSSL8qziJca8GTXJz7Kzz0WA5d1yvpOxm3/Rfo2Hgix
-         hJIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Kv9oMQQFyLAZk1SItD7ecip/eYagD8o/JxuoFQE0OoQ=;
-        b=KoFAKkhaEI9ySDXaZP7ktw/hM4Dj+L32lnDamCzajAvhGVoFMfanN+3z9K9kfye0J/
-         /owGONs7MW2+3osAct2x4xccel9SpRZWs/2+UOpWjpywC5zGV2VXRHQNRQVRvbmedk/x
-         SlTTj+kfeHWYEoi0sXOmQN3CQbkft+XMRJ14l4P8ObQ1fQ+yBAmm8AGqDl8jqxbCk9CV
-         wF5nqbo0UNzIvm0MsGKXksYaoAmUhNF/+ecC2LJiY9feh+cZmO2+wePZATQW82RgrAxg
-         9pXWfj6kgycfkIySsm++QZTSUx1avCNL+rC9g51jWlsMrBZ/vj9NSPTigx2+G8lz2RuX
-         OMSg==
-X-Gm-Message-State: AOAM533lSoDqoeIngFzW/mRFe13JCyZ0/rnkq2RVDr30/D1rm0HlXD3z
-        YNwQ16/i8PpC0NsgAraIEyE=
-X-Google-Smtp-Source: ABdhPJzccNXoF0TS9Rv7GinnsHNZqtZT9JD1LRXkodmJIUt3mQ92dWXjPb+iQwBcJBhilh9HIiggqw==
-X-Received: by 2002:a19:ad46:: with SMTP id s6mr457284lfd.576.1599837038689;
-        Fri, 11 Sep 2020 08:10:38 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id a3sm557263ljk.6.2020.09.11.08.10.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 08:10:38 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] Input: atmel_mxt_ts - implement I2C retries
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew_Gabbasov@mentor.com, erosca@de.adit-jv.com
-References: <20200908151617.12199-1-jiada_wang@mentor.com>
- <6041c677-592b-388e-2eb6-3287a3d92e4b@gmail.com>
- <ec77e42c-ea72-bbae-e1b8-1e11cca17f87@gmail.com>
-Message-ID: <0cd9055e-3ad5-f573-be39-3f999d9d461c@gmail.com>
-Date:   Fri, 11 Sep 2020 18:10:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726241AbgIKQin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:38:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726413AbgIKPMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:12:16 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D876D20575;
+        Fri, 11 Sep 2020 15:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599837128;
+        bh=boBKEfpq+ALTe5FlCo88gBogFYwgRaTO/3chRAqYMZM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E+d9RmiaARzLVRWn9/QD0JaJRV71JJdXd1OpvSR4iePv2I/KwBepMDnoG1iCtzgwV
+         Y0yJR8fr4UTATv1hzAFVYr/CeKK3IE4XkEctzkJyg9CGHGSr64G0lh8RSmSuZucdWX
+         1yOskH/rR4AOn9JAfX2HlImIan/LDbXjsFyexiHM=
+Date:   Fri, 11 Sep 2020 17:12:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>, Karen Noel <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+Subject: Re: [PATCH v8 17/18] nitro_enclaves: Add overview documentation
+Message-ID: <20200911151213.GB3821769@kroah.com>
+References: <20200904173718.64857-1-andraprs@amazon.com>
+ <20200904173718.64857-18-andraprs@amazon.com>
+ <20200907090126.GD1101646@kroah.com>
+ <44a8a921-1fb4-87ab-b8f2-c168c615dbbd@amazon.com>
+ <20200907140803.GA3719869@kroah.com>
+ <b8a1e66c-7674-7354-599e-159efd260ba9@amazon.com>
+ <310abd0d-60e7-a52c-fcae-cf98ac474e32@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <ec77e42c-ea72-bbae-e1b8-1e11cca17f87@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <310abd0d-60e7-a52c-fcae-cf98ac474e32@amazon.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.09.2020 18:05, Dmitry Osipenko Ð¿Ð¸ÑˆÐµÑ‚:
-> 11.09.2020 17:50, Dmitry Osipenko Ð¿Ð¸ÑˆÐµÑ‚:
-> ...
->>> @@ -626,6 +627,7 @@ static int __mxt_read_reg(struct i2c_client *client,
->>>  	struct i2c_msg xfer[2];
->>>  	u8 buf[2];
->>>  	int ret;
->>> +	bool retry = false;
+On Fri, Sep 11, 2020 at 05:56:10PM +0300, Paraschiv, Andra-Irina wrote:
 > 
-> Andy suggested to write this hunk like this:
 > 
-> 	struct i2c_msg xfer[2];
-> 	bool retry = false;
-> 	u8 buf[2];
-> 	int ret;
+> On 07/09/2020 18:13, Paraschiv, Andra-Irina wrote:
+> > 
+> > 
+> > On 07/09/2020 17:08, Greg KH wrote:
+> > > On Mon, Sep 07, 2020 at 04:43:11PM +0300, Paraschiv, Andra-Irina wrote:
+> > > > 
+> > > > On 07/09/2020 12:01, Greg KH wrote:
+> > > > > On Fri, Sep 04, 2020 at 08:37:17PM +0300, Andra Paraschiv wrote:
+> > > > > > Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
+> > > > > > Reviewed-by: Alexander Graf <graf@amazon.com>
+> > > > > > ---
+> > > > > > Changelog
+> > > > > > 
+> > > > > > v7 -> v8
+> > > > > > 
+> > > > > > * Add info about the primary / parent VM CID value.
+> > > > > > * Update reference link for huge pages.
+> > > > > > * Add reference link for the x86 boot protocol.
+> > > > > > * Add license mention and update doc title / chapter formatting.
+> > > > > > 
+> > > > > > v6 -> v7
+> > > > > > 
+> > > > > > * No changes.
+> > > > > > 
+> > > > > > v5 -> v6
+> > > > > > 
+> > > > > > * No changes.
+> > > > > > 
+> > > > > > v4 -> v5
+> > > > > > 
+> > > > > > * No changes.
+> > > > > > 
+> > > > > > v3 -> v4
+> > > > > > 
+> > > > > > * Update doc type from .txt to .rst.
+> > > > > > * Update documentation based on the changes from v4.
+> > > > > > 
+> > > > > > v2 -> v3
+> > > > > > 
+> > > > > > * No changes.
+> > > > > > 
+> > > > > > v1 -> v2
+> > > > > > 
+> > > > > > * New in v2.
+> > > > > > ---
+> > > > > >    Documentation/nitro_enclaves/ne_overview.rst | 95
+> > > > > > ++++++++++++++++++++
+> > > > > >    1 file changed, 95 insertions(+)
+> > > > > >    create mode 100644 Documentation/nitro_enclaves/ne_overview.rst
+> > > > > A whole new subdir, for a single driver, and not tied into the kernel
+> > > > > documentation build process at all?  Not good :(
+> > > > > 
+> > > > Would the "virt" directory be a better option for this doc file?
+> > > Yes.
+> > 
+> > Alright, I'll update the doc file location, the index file and the
+> > MAINTAINERS entry to reflect the new doc file location.
+> > 
 > 
-> This is not a mandatory request at all, but it will make this particular
-> piece of code to look a bit nicer.
+> I sent out a new revision that includes the updates based on your feedback.
+> Thanks for review.
 > 
-> There is also an opportunity to improve formatting of all variables by
-> sorting them by-length across the whole driver, this will improve
-> readability of the code. But of course it should be a separate patch.
-> Please note that I'm *not* saying that you should create this separate
-> patch!
-> 
+> To be aware of this beforehand, what would be the further necessary steps
+> (e.g. linux-next branch, additional review and / or sanity checks) to
+> consider for targeting the next merge window?
 
-I'd also recommend to rename the "retry" variable to "retried", which
-will be a more logical name (more proper English).
+If all looks good, I can just suck it into my char-misc branch to get it
+into 5.10-rc1.  I'll look at the series next week, thanks.
+
+thanks,
+
+greg k-h
