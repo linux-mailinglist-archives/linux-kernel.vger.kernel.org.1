@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9436126642A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD4B266439
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgIKQcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:32:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53914 "EHLO mail.kernel.org"
+        id S1726421AbgIKQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:33:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgIKPTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:19:09 -0400
+        id S1726417AbgIKPRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:17:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE62422210;
-        Fri, 11 Sep 2020 12:59:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2167F204EC;
+        Fri, 11 Sep 2020 13:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829196;
-        bh=eVcYg1cJOefDsu6kms7fDMPDr5i2bdkGkA+Hpm7nYuo=;
+        s=default; t=1599829204;
+        bh=Ri8JwN8tCQ9NDHK7NDYR8XYP5a7ACkHHRW9pL0zYCzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M7v+1825Fz4yuLgDuq4UUEfq3IcawKemnxKy4/mFBbFcn/NYMMBp1WHtz9S+2TtOH
-         pqZYXC3rYitnzWDY6lt3h02Oghx2H7Ohd5vxijo+cMLrmcgJabp2fK2A3N5kjwbCYd
-         pLrDhHciXVbLieCND2X5c6Uq9E+oUhvUGq6rTJuc=
+        b=v6g9yVYe/bqhu18tb83ZTUTQh7ThQoRLosjt1/PnfDcfCYSJiAdMsowRdRXqocDV1
+         cpH+N/rcNm9uT7VUv0cIAaNPiewTPWKxR2BzYMT4OBChJNUSQd8dZw/gcYy2JMSdZL
+         CgLukEQVTbamk1VPyqrDD1/ifoL1t2U2Y8+Ut238=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 05/16] RDMA/cma: Remove unneeded locking for req paths
-Date:   Fri, 11 Sep 2020 14:47:22 +0200
-Message-Id: <20200911122459.843026940@linuxfoundation.org>
+        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
+        Stephen Suryaputra <ssuryaextr@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.8 08/16] ipv6: Fix sysctl max for fib_multipath_hash_policy
+Date:   Fri, 11 Sep 2020 14:47:25 +0200
+Message-Id: <20200911122459.984827826@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122459.585735377@linuxfoundation.org>
 References: <20200911122459.585735377@linuxfoundation.org>
@@ -44,123 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Ido Schimmel <idosch@nvidia.com>
 
-[ Upstream commit cc9c037343898eb7a775e6b81d092ee21eeff218 ]
+[ Upstream commit 05d4487197b2b71d5363623c28924fd58c71c0b6 ]
 
-The REQ flows are concerned that once the handler is called on the new
-cm_id the ULP can choose to trigger a rdma_destroy_id() concurrently at
-any time.
+Cited commit added the possible value of '2', but it cannot be set. Fix
+it by adjusting the maximum value to '2'. This is consistent with the
+corresponding IPv4 sysctl.
 
-However, this is not true, while the ULP can call rdma_destroy_id(), it
-immediately blocks on the handler_mutex which prevents anything harmful
-from running concurrently.
+Before:
 
-Remove the confusing extra locking and refcounts and make the
-handler_mutex protecting state during destroy more clear.
+# sysctl -w net.ipv6.fib_multipath_hash_policy=2
+sysctl: setting key "net.ipv6.fib_multipath_hash_policy": Invalid argument
+net.ipv6.fib_multipath_hash_policy = 2
+# sysctl net.ipv6.fib_multipath_hash_policy
+net.ipv6.fib_multipath_hash_policy = 0
 
-Link: https://lore.kernel.org/r/20200723070707.1771101-4-leon@kernel.org
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+After:
+
+# sysctl -w net.ipv6.fib_multipath_hash_policy=2
+net.ipv6.fib_multipath_hash_policy = 2
+# sysctl net.ipv6.fib_multipath_hash_policy
+net.ipv6.fib_multipath_hash_policy = 2
+
+Fixes: d8f74f0975d8 ("ipv6: Support multipath hashing on inner IP pkts")
+Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Stephen Suryaputra <ssuryaextr@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/core/cma.c | 31 ++++++-------------------------
- 1 file changed, 6 insertions(+), 25 deletions(-)
+ net/ipv6/sysctl_net_ipv6.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 04151c301e851..11f43204fee77 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1831,21 +1831,21 @@ static void cma_leave_mc_groups(struct rdma_id_private *id_priv)
+--- a/net/ipv6/sysctl_net_ipv6.c
++++ b/net/ipv6/sysctl_net_ipv6.c
+@@ -21,6 +21,7 @@
+ #include <net/calipso.h>
+ #endif
  
- void rdma_destroy_id(struct rdma_cm_id *id)
- {
--	struct rdma_id_private *id_priv;
-+	struct rdma_id_private *id_priv =
-+		container_of(id, struct rdma_id_private, id);
- 	enum rdma_cm_state state;
- 
--	id_priv = container_of(id, struct rdma_id_private, id);
--	trace_cm_id_destroy(id_priv);
--	state = cma_exch(id_priv, RDMA_CM_DESTROYING);
--	cma_cancel_operation(id_priv, state);
--
- 	/*
- 	 * Wait for any active callback to finish.  New callbacks will find
- 	 * the id_priv state set to destroying and abort.
- 	 */
- 	mutex_lock(&id_priv->handler_mutex);
-+	trace_cm_id_destroy(id_priv);
-+	state = cma_exch(id_priv, RDMA_CM_DESTROYING);
- 	mutex_unlock(&id_priv->handler_mutex);
- 
-+	cma_cancel_operation(id_priv, state);
-+
- 	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
-@@ -2205,19 +2205,9 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	cm_id->context = conn_id;
- 	cm_id->cm_handler = cma_ib_handler;
- 
--	/*
--	 * Protect against the user destroying conn_id from another thread
--	 * until we're done accessing it.
--	 */
--	cma_id_get(conn_id);
- 	ret = cma_cm_event_handler(conn_id, &event);
- 	if (ret)
- 		goto err3;
--	/*
--	 * Acquire mutex to prevent user executing rdma_destroy_id()
--	 * while we're accessing the cm_id.
--	 */
--	mutex_lock(&lock);
- 	if (cma_comp(conn_id, RDMA_CM_CONNECT) &&
- 	    (conn_id->id.qp_type != IB_QPT_UD)) {
- 		trace_cm_send_mra(cm_id->context);
-@@ -2226,13 +2216,11 @@ static int cma_ib_req_handler(struct ib_cm_id *cm_id,
- 	mutex_unlock(&lock);
- 	mutex_unlock(&conn_id->handler_mutex);
- 	mutex_unlock(&listen_id->handler_mutex);
--	cma_id_put(conn_id);
- 	if (net_dev)
- 		dev_put(net_dev);
- 	return 0;
- 
- err3:
--	cma_id_put(conn_id);
- 	/* Destroy the CM ID by returning a non-zero value. */
- 	conn_id->cm_id.ib = NULL;
- err2:
-@@ -2409,11 +2397,6 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 	memcpy(cma_src_addr(conn_id), laddr, rdma_addr_size(laddr));
- 	memcpy(cma_dst_addr(conn_id), raddr, rdma_addr_size(raddr));
- 
--	/*
--	 * Protect against the user destroying conn_id from another thread
--	 * until we're done accessing it.
--	 */
--	cma_id_get(conn_id);
- 	ret = cma_cm_event_handler(conn_id, &event);
- 	if (ret) {
- 		/* User wants to destroy the CM ID */
-@@ -2421,13 +2404,11 @@ static int iw_conn_req_handler(struct iw_cm_id *cm_id,
- 		cma_exch(conn_id, RDMA_CM_DESTROYING);
- 		mutex_unlock(&conn_id->handler_mutex);
- 		mutex_unlock(&listen_id->handler_mutex);
--		cma_id_put(conn_id);
- 		rdma_destroy_id(&conn_id->id);
- 		return ret;
- 	}
- 
- 	mutex_unlock(&conn_id->handler_mutex);
--	cma_id_put(conn_id);
- 
- out:
- 	mutex_unlock(&listen_id->handler_mutex);
--- 
-2.25.1
-
++static int two = 2;
+ static int flowlabel_reflect_max = 0x7;
+ static int auto_flowlabels_min;
+ static int auto_flowlabels_max = IP6_AUTO_FLOW_LABEL_MAX;
+@@ -150,7 +151,7 @@ static struct ctl_table ipv6_table_templ
+ 		.mode		= 0644,
+ 		.proc_handler   = proc_rt6_multipath_hash_policy,
+ 		.extra1		= SYSCTL_ZERO,
+-		.extra2		= SYSCTL_ONE,
++		.extra2		= &two,
+ 	},
+ 	{
+ 		.procname	= "seg6_flowlabel",
 
 
