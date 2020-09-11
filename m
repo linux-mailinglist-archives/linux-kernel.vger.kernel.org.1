@@ -2,128 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CF4266126
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38254266117
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgIKO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:26:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726160AbgIKNMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:12:00 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CBDE22470;
-        Fri, 11 Sep 2020 13:00:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829248;
-        bh=C5nKer2Jum4n4Im1aEba68v56hO50CYpNw/1Tc/C6lw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m2kXUuCfuJvRtUklfbZvq6AptnfdSBEEiU6GUXQ6GsAZyB0HEjNH8W7rhWXgNpmYU
-         kPnfQWcLcGe/OFJOX9B4aihkP3Us1i14tRKaca1gmbSbI63DpBy5aOqppDjy4T+0LP
-         sjdSyjd0ko/sGPqvm0dkThIVcig+/osBnQ+l59u4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 6/8] tipc: fix shutdown() of connectionless socket
-Date:   Fri, 11 Sep 2020 14:54:53 +0200
-Message-Id: <20200911125422.009520336@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911125421.695645838@linuxfoundation.org>
-References: <20200911125421.695645838@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1725896AbgIKOUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726243AbgIKNSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:18:15 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABE7C061795
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:07:15 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l17so9834988edq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:07:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TgQoed0GxIerQ44x+71MWXYhJbzdbOqc1n5qsFlaJSg=;
+        b=EarytBvwoQep7qd57VxmLST9JhvldbG08X3Nhqjheaj8MGEJpUXQbQdXO9VsM17+03
+         b1qLL2NsHvu9J9xBXIZvZarcrQoDu0q+HllUQxkpUyTsxMId3oXHB1Tn07+fRJ1jFTf8
+         +5jh35x6TyiSpnx7oUljGT0afOX2lXuVBSl4XpEijxq/NGNs1cimpkYYG6C3EEeqHK2G
+         y6OQEZE4nTNaqwyc45DYEJUC/gCELLHgmGL9F+MQmMIvSuaK/TtZRT6Z5yGjJyxMUBTu
+         2w+2PLGV+qbr3yjE73O+TjHkWTlvHPSQrDWJ0TiBY9Z+RJc/v+2HUd2d/hD2asyZCEaS
+         6mpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TgQoed0GxIerQ44x+71MWXYhJbzdbOqc1n5qsFlaJSg=;
+        b=Uo6LnrQp48uw2RuWr2VXWzEfbv1mWhP6NtF+PQC9M/DYCov3f5ilXA1vOO/bK+cRr5
+         ACuxdSUvgmSqxz+YQBh4wThL8NG1oZDQa75I4msCX9j4DuIVXvXc3Uwx3VPiWMtrONzk
+         zK7ayY7iA7d0xuzZelC9s4V/xLooBbBLiaIrBTg/Syl9NaYsWc1biU2+JBc/sRSdz+OJ
+         bpQpJOIV3mZvN9dSlBtwpOqJlzAOt/17N8TCcKM2i8Qjh5YZQdp1e8rKBVGAFfHisK26
+         htZvJLH6C7uI+fSEzDIz/5SAcOXa6M3GPCnqNgfsOpjQZgKnkV7ziZfeUM7lMMN0EirG
+         1+UQ==
+X-Gm-Message-State: AOAM533Uy/L4mPnFOxb/DtLvLhABdYIaJWSiNsFJQVM9hez7MZ/9g+06
+        xJokyMT9kI42aNPxrnXNcozKJUBmExub76kLtdKVlw==
+X-Google-Smtp-Source: ABdhPJy+rDUfCaOK6p6Va0hZoFOBHdUKP5x0jZI7yOtovb7mUCA9QlmaUYaRaxfvgu4qMN52cQ6UDcW0sSJC9puhE3Q=
+X-Received: by 2002:a50:f687:: with SMTP id d7mr1944285edn.353.1599829633051;
+ Fri, 11 Sep 2020 06:07:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200904154547.3836-1-brgl@bgdev.pl> <20200904154547.3836-24-brgl@bgdev.pl>
+ <26ea1683-da8f-30e7-f004-3616e96d56b3@infradead.org> <20200907095932.GU1891694@smile.fi.intel.com>
+ <CAMpxmJXvhYOVkZY7LLf=v+o8E2xKTh1RYhLrdVsS9nN1XZ5QJQ@mail.gmail.com>
+ <20200907115310.GA1891694@smile.fi.intel.com> <CAMpxmJUfNkko4Rrb4N5CF_rdwRAWGhVr9DSOHfhYyTxYSH7dsQ@mail.gmail.com>
+ <20200907122238.GA1849893@kroah.com> <CAMRc=MexhEbnxCN3aN57k4V-mO-vQL=+8z9QFEzOCPkmn16-XQ@mail.gmail.com>
+ <20200911125625.GF3758477@kroah.com>
+In-Reply-To: <20200911125625.GF3758477@kroah.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 11 Sep 2020 15:07:02 +0200
+Message-ID: <CAMpxmJUd-ALoBi4aC1nsJ7JmEsANe_gZfBegCiZtP6BwPpC52g@mail.gmail.com>
+Subject: Re: [PATCH 23/23] Documentation: gpio: add documentation for gpio-mockup
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+On Fri, Sep 11, 2020 at 3:01 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Sep 08, 2020 at 07:03:30PM +0200, Bartosz Golaszewski wrote:
+> > On Mon, Sep 7, 2020 at 2:22 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, Sep 07, 2020 at 02:06:15PM +0200, Bartosz Golaszewski wrote:
+> > > > On Mon, Sep 7, 2020 at 1:53 PM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > >
+> > > > > On Mon, Sep 07, 2020 at 12:26:34PM +0200, Bartosz Golaszewski wrote:
+> > > > > > On Mon, Sep 7, 2020 at 11:59 AM Andy Shevchenko
+> > > > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Sep 04, 2020 at 08:15:59PM -0700, Randy Dunlap wrote:
+> > > > > > > > On 9/4/20 8:45 AM, Bartosz Golaszewski wrote:
+> > > > > > >
+> > > > > > > ...
+> > > > > > >
+> > > > > > > > > +GPIO Testing Driver
+> > > > > > > > > +===================
+> > > > > > > > > +
+> > > > > > > > > +The GPIO Testing Driver (gpio-mockup) provides a way to create simulated GPIO
+> > > > > > > > > +chips for testing purposes. There are two ways of configuring the chips exposed
+> > > > > > > > > +by the module. The lines can be accessed using the standard GPIO character
+> > > > > > > > > +device interface as well as manipulated using the dedicated debugfs directory
+> > > > > > > > > +structure.
+> > > > > > > >
+> > > > > > > > Could configfs be used for this instead of debugfs?
+> > > > > > > > debugfs is ad hoc.
+> > > > > > >
+> > > > > > > Actually sounds like a good idea.
+> > > > > > >
+> > > > > >
+> > > > > > Well, then we can go on and write an entirely new mockup driver
+> > > > > > (ditching module params and dropping any backwards compatibility)
+> > > > > > because we're already using debugfs for line values.
+> > > > > >
+> > > > > > How would we pass the device properties to configfs created GPIO chips
+> > > > > > anyway? Devices seem to only be created using mkdir. Am I missing
+> > > > > > something?
+> > > > >
+> > > > > Same way how USB composite works, no?
+> > > > >
+> > > >
+> > > > OK, so create a new chip directory in configfs, configure it using
+> > > > some defined configfs attributes and then finally instantiate it from
+> > > > sysfs?
+> > > >
+> > > > Makes sense and is probably the right way to go. Now the question is:
+> > > > is it fine to just entirely remove the previous gpio-mockup? Should we
+> > > > keep some backwards compatibility? Should we introduce an entirely new
+> > > > module and have a transition period before removing previous
+> > > > gpio-mockup?
+> > > >
+> > > > Also: this is a testing module so to me debugfs is just fine. Is
+> > > > configfs considered stable ABI like sysfs?
+> > >
+> > > Yes it is.  Or at least until you fix all existing users so that if you
+> > > do change it, no one notices it happening :)
+> > >
+> >
+> > Got it. One more question: the current debugfs interface we're using
+> > in gpio-mockup exists to allow to read current values of GPIO lines in
+> > output mode (check how the user drives dummy lines) and to set their
+> > simulated pull-up/pull-down resistors (what values the user reads in
+> > input mode).
+> >
+> > This works like this: in /sys/kernel/debug/gpio-mockup every dummy
+> > chip creates its own directory (e.g.
+> > /sys/kernel/debug/gpio-mockup/gpiochip0) and inside this directory
+> > there's an attribute per line named after the line's offset (e.g.
+> > /sys/kernel/debug/gpio-mockup/gpiochip0/4). Writing 0 or 1 to this
+> > attribute sets the pull resistor. Reading from it yields the current
+> > value (0 or 1 as well).
+> >
+> > This is pretty non-standard so I proposed to put it in debugfs. If we
+> > were to use configfs - is this where something like this should go? Or
+> > rather sysfs? Is it even suitable/acceptable for sysfs?
+>
+> That sounds like it would work in sysfs just fine as-is, why don't you
+> all want to use that?  configfs is good for "set a bunch of attributes
+> to different values and then do a 'create/go/work'" type action.
+>
 
-[ Upstream commit 2a63866c8b51a3f72cea388dfac259d0e14c4ba6 ]
+I've started looking into it. I need to first implement committable
+items for configfs because mockup GPIO chips need to be configured
+before they're instantiated. It'll be configfs to configure and
+instantiate each chip and a set of sysfs attributes to manipulate
+existing chips.
 
-syzbot is reporting hung task at nbd_ioctl() [1], for there are two
-problems regarding TIPC's connectionless socket's shutdown() operation.
-
-----------
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <linux/nbd.h>
-#include <unistd.h>
-
-int main(int argc, char *argv[])
-{
-        const int fd = open("/dev/nbd0", 3);
-        alarm(5);
-        ioctl(fd, NBD_SET_SOCK, socket(PF_TIPC, SOCK_DGRAM, 0));
-        ioctl(fd, NBD_DO_IT, 0); /* To be interrupted by SIGALRM. */
-        return 0;
-}
-----------
-
-One problem is that wait_for_completion() from flush_workqueue() from
-nbd_start_device_ioctl() from nbd_ioctl() cannot be completed when
-nbd_start_device_ioctl() received a signal at wait_event_interruptible(),
-for tipc_shutdown() from kernel_sock_shutdown(SHUT_RDWR) from
-nbd_mark_nsock_dead() from sock_shutdown() from nbd_start_device_ioctl()
-is failing to wake up a WQ thread sleeping at wait_woken() from
-tipc_wait_for_rcvmsg() from sock_recvmsg() from sock_xmit() from
-nbd_read_stat() from recv_work() scheduled by nbd_start_device() from
-nbd_start_device_ioctl(). Fix this problem by always invoking
-sk->sk_state_change() (like inet_shutdown() does) when tipc_shutdown() is
-called.
-
-The other problem is that tipc_wait_for_rcvmsg() cannot return when
-tipc_shutdown() is called, for tipc_shutdown() sets sk->sk_shutdown to
-SEND_SHUTDOWN (despite "how" is SHUT_RDWR) while tipc_wait_for_rcvmsg()
-needs sk->sk_shutdown set to RCV_SHUTDOWN or SHUTDOWN_MASK. Fix this
-problem by setting sk->sk_shutdown to SHUTDOWN_MASK (like inet_shutdown()
-does) when the socket is connectionless.
-
-[1] https://syzkaller.appspot.com/bug?id=3fe51d307c1f0a845485cf1798aa059d12bf18b2
-
-Reported-by: syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/tipc/socket.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2565,18 +2565,21 @@ static int tipc_shutdown(struct socket *
- 	lock_sock(sk);
- 
- 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
--	sk->sk_shutdown = SEND_SHUTDOWN;
-+	if (tipc_sk_type_connectionless(sk))
-+		sk->sk_shutdown = SHUTDOWN_MASK;
-+	else
-+		sk->sk_shutdown = SEND_SHUTDOWN;
- 
- 	if (sk->sk_state == TIPC_DISCONNECTING) {
- 		/* Discard any unreceived messages */
- 		__skb_queue_purge(&sk->sk_receive_queue);
- 
--		/* Wake up anyone sleeping in poll */
--		sk->sk_state_change(sk);
- 		res = 0;
- 	} else {
- 		res = -ENOTCONN;
- 	}
-+	/* Wake up anyone sleeping in poll. */
-+	sk->sk_state_change(sk);
- 
- 	release_sock(sk);
- 	return res;
-
-
+Bartosz
