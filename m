@@ -2,111 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647CF266856
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28E9266872
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgIKSj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 14:39:29 -0400
-Received: from a27-56.smtp-out.us-west-2.amazonses.com ([54.240.27.56]:56160
-        "EHLO a27-56.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725730AbgIKSjQ (ORCPT
+        id S1725864AbgIKS6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 14:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725853AbgIKS6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 14:39:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599849555;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=Sv2xGbuKe4nXUJuewGpIJiCbWHq+eGMdmjxqVnN6RH4=;
-        b=Pylixs/4vMx0XVVWj8d2tpxixLGmlIf2Hysk/9MtbTuv8rJChntSzQo66GO6glZ5
-        CDw/hPqZY+IyttTz5AcHGTnJq13JbljlNK2p8kdlLXuZRUyCrg9gwSLgQGjdCAUDNQl
-        1tBq4BA+/L7JVe/K1jWsfdva/YGaCGGhz7pWdhg4=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599849555;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=Sv2xGbuKe4nXUJuewGpIJiCbWHq+eGMdmjxqVnN6RH4=;
-        b=PD4VCx0Ry4AZ6YoIgupLs+RURhEnE4joXzu1JdZ19mK0KQ0UdLmEMFIWMVcOe4G/
-        3hqtq3GoRk2iJEgzQh/3spY7WLetqyPN2MZwNGDgPdwXZRRjfxNbmYQafvpk0XvCeqt
-        Mu9V/kxz/GkKpFcKe+3B98GVLdN+z4qVauhbFerg=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        Fri, 11 Sep 2020 14:58:34 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F037FC0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:58:33 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 34so7263363pgo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:58:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZXmHidgwtnTnxCDrTuOclLLnDmLj/yLMTWxKoHjkjfQ=;
+        b=ZrOejeHoXLixXlu6m7vIPESK+fObNaFjZbYZb6BuPccGC8RhiVx86JFf69d/MMrQh3
+         c5GLEicnmJy6bM1/V0UBllGrc6/ouavLYqSLeTsNsbiwto675zmuU7WPI4+tQ1SjuaIh
+         xmSrh1si1mjT6qM2CdlptrXbP8DIJUI+A8S8M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZXmHidgwtnTnxCDrTuOclLLnDmLj/yLMTWxKoHjkjfQ=;
+        b=APHrtwIxoR9y2Onpr6f4JZh5H8hYDoZM9rcT2LJJ7uBr2ybINkHu+MMsb2uHhgyc/A
+         +DR/GcOMK3AKqw5L6Pm5j1o1VDZ/cbjxspzXR1C84eFCSCJyAEm41eNbmBiTI4jChPKC
+         7QbU5ZZxVCsyZM094I+f854BJd7VPBeH1iPUiq6MRk8St3Py5IfiaKX0dox/nH47C3PC
+         e6vebYkIdCrj2Cgj93QaJvkHbo6SpdLbh0nm+SUxmiqeTOJhBQB9WLl1yduzfVJml+MN
+         EI3fglPXJqE2YFCq7e+zWab/6KWJtHXmuSzEglcuw5JOCzWoLSMb/hse3NvAT+MoeftQ
+         Pz8w==
+X-Gm-Message-State: AOAM531Cb6jFJ1kkH91lwfUpmZzVVtaj4vVkwseqSYw+RUFN98e21cI9
+        kCLiekTdv5mwhe+wbQYVxJlQBA==
+X-Google-Smtp-Source: ABdhPJx1HHzPM4LUXPoNomXjYpginIkBVFSvmj1qsqnJ/hNQ+buyCEi68fmII7HiPctkjBg2DoUsgw==
+X-Received: by 2002:a63:fd51:: with SMTP id m17mr2779530pgj.210.1599850713261;
+        Fri, 11 Sep 2020 11:58:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 124sm2920285pfd.132.2020.09.11.11.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 11:58:31 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 11:58:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kyle Huey <me@kylehuey.com>
+Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to
+ change the syscall number at entry via orig_ax
+Message-ID: <202009111156.660A7C2978@keescook>
+References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
+ <87blj6ifo8.fsf@nanos.tec.linutronix.de>
+ <87a6xzrr89.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Sep 2020 18:39:15 +0000
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pratikp@codeaurora.org,
-        pdaly@codeaurora.org, sudraja@codeaurora.org,
-        iamjoonsoo.kim@lge.com, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: cma_alloc(), add sleep-and-retry for temporary page pinning
-In-Reply-To: <20200821150143.8a8645b3fabc11016311b78d@linux-foundation.org>
-References: <896f92e8c37936e7cb2914e79273e9e8@codeaurora.org>
- <20200821150143.8a8645b3fabc11016311b78d@linux-foundation.org>
-Message-ID: <010101747e76e663-8b0bd953-38fa-4348-957c-d890ce1a00b9-000000@us-west-2.amazonses.com>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.11-54.240.27.56
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6xzrr89.fsf@mpe.ellerman.id.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-21 15:01, Andrew Morton wrote:
-> On Tue, 11 Aug 2020 15:20:47 -0700 cgoldswo@codeaurora.org wrote:
+On Wed, Sep 09, 2020 at 11:53:42PM +1000, Michael Ellerman wrote:
+> Hi Thomas,
 > 
->> One
->> thing to stress is that there are other instances of CMA page pinning,
->> that
->> this patch isn't attempting to address.
+> Sorry if this was discussed already somewhere, but I didn't see anything ...
 > 
-> Oh.  How severe are these?
-
-Hey Andrew,
-
-   - get_user_pages() will pin pages (I think that's a 100% guarantee but 
-I'd need to double check that). There isn't a workaround for this as far 
-as I know.
-   - One issue we've encountered is when the pages for buffer heads are 
-stuck on an LRU list (see the call to buffer_busy() in drop_buffers() 
-https://elixir.bootlin.com/linux/v5.8.8/source/fs/buffer.c#L3225). We 
-deal with this by allowing the buffers to be dropped, if the reason 
-buffer_busy() returns true is because the page is on an LRU list.
-
-> Well.  Why not wait infinitely?  Because there are other sources of CMA
-> page pinning, I guess.
+> Thomas Gleixner <tglx@linutronix.de> writes:
+> > On Wed, Aug 19 2020 at 10:14, Kyle Huey wrote:
+> >> tl;dr: after 27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14 ptracer
+> >> modifications to orig_ax in a syscall entry trace stop are not honored
+> >> and this breaks our code.
+> ...
+> > diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> > index 9852e0d62d95..fcae019158ca 100644
+> > --- a/kernel/entry/common.c
+> > +++ b/kernel/entry/common.c
+> > @@ -65,7 +65,8 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
 > 
-> Could we take a sleeping lock on the exit_mmap() path and on the
-> migration path?  So that the migration path automatically waits for
-> the exact amount of time?
+> Adding context:
+> 
+> 	/* Do seccomp after ptrace, to catch any tracer changes. */
+> 	if (ti_work & _TIF_SECCOMP) {
+> 		ret = __secure_computing(NULL);
+> 		if (ret == -1L)
+> 			return ret;
+> 	}
+> 
+> 	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+> 		trace_sys_enter(regs, syscall);
+> 
+> >  	syscall_enter_audit(regs, syscall);
+> >  
+> > -	return ret ? : syscall;
+> > +	/* The above might have changed the syscall number */
+> > +	return ret ? : syscall_get_nr(current, regs);
+> >  }
+> >  
+> >  noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
+> 
+> I noticed if the syscall number is changed by seccomp/ptrace, the
+> original syscall number is still passed to trace_sys_enter() and audit.
+> 
+> The old code used regs->orig_ax, so any change to the syscall number
+> would be seen by the tracepoint and audit.
 
-Retrying indefinitely whilst alloc_contig_range() returns -EBUSY is 
-actually a viable approach.  From the perspective of how long it takes 
-to perform a CMA allocation, it is preferable compared to the lock-based 
-method, in terms of how long it would take to do a CMA allocation.  With 
-our current method, we attempt allocations across an entire CMA region 
-before sleeping and retrying. With the lock-based method, we'd be 
-sleeping on a per-page basis - this could lead to a situation where we 
-spend a great deal of time waiting for a particular page A to be freed, 
-that lies in the subset of the CMA region we're allocating form.  We 
-could have instead given up on allocating that subset of the CMA region 
-(because page A is pinned), and have moved on to a different subset of 
-the CMA region, and have successfully allocated that subset, whilst page 
-A is still pinned.
+Ah! That's no good.
 
-I have a patch ready that does this indefinite-retrying, that will be 
-sent in reply to this e-mail.
+> I can observe the difference between v5.8 and mainline, using the
+> raw_syscall trace event and running the seccomp_bpf selftest which turns
+> a getpid (39) into a getppid (110).
+> 
+> With v5.8 we see getppid on entry and exit:
+> 
+>      seccomp_bpf-1307  [000] .... 22974.874393: sys_enter: NR 110 (7ffff22c46e0, 40a350, 4, fffffffffffff7ab, 7fa6ee0d4010, 0)
+>      seccomp_bpf-1307  [000] .N.. 22974.874401: sys_exit: NR 110 = 1304
+> 
+> Whereas on mainline we see an enter for getpid and an exit for getppid:
+> 
+>      seccomp_bpf-1030  [000] ....    21.806766: sys_enter: NR 39 (7ffe2f6d1ad0, 40a350, 7ffe2f6d1ad0, 0, 0, 407299)
+>      seccomp_bpf-1030  [000] ....    21.806767: sys_exit: NR 110 = 1027
+> 
+> 
+> I don't know audit that well, but I think it saves the syscall number on
+> entry eg. in __audit_syscall_entry(). So it will record the wrong
+> syscall happening in this case I think.
+> 
+> Seems like we should reload the syscall number before calling
+> trace_sys_enter() & audit ?
 
-Regards,
+Agreed. I wonder what the best way to build a regression test for this
+is... hmmm.
 
-Chris.
-
---
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum,
-a Linux Foundation Collaborative Project
+-- 
+Kees Cook
