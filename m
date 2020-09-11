@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6274266152
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D056266147
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgIKOhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:37:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56014 "EHLO mail.kernel.org"
+        id S1725779AbgIKOev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:34:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726146AbgIKNMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726216AbgIKNMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 09:12:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA7BD22460;
-        Fri, 11 Sep 2020 13:00:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14B8222472;
+        Fri, 11 Sep 2020 13:00:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829238;
-        bh=WlNBCEI9KTfKCFK7pdkqnVaUt/mbl+s3RN+6DE4iLdg=;
+        s=default; t=1599829251;
+        bh=IdkLrxN9felV/k85cV/tWxYZltvg/docZKXEUelkiME=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g5sr7gU0aGC8V/8M9yjmTEtD+0jQnC2RO6kVk3SNlSErxT/g/J/zODx+NnvdN/Hsp
-         GcYQmrhoVosdYrnTTPeYkwWj+3F0O6RORtgoZPe4kboXOBzO+HLs+ygWmT6S36bfHp
-         QEgRhf6bhvwDDb3D26fDTkFZSnwQ639OXtZzW8gQ=
+        b=gr2ggh4sEFCTOMmPEFEEU318vCX99Dp+c1FU9ndLMvnbqNTXjbLjPBa3VO6+dnHa0
+         SSrbRT9P8OI/m7xWUjefR1p/DDiyxVrTSSLAcFdfiSgfJVTanwaNwmrJ6r/wM9Zg7z
+         ihGdNlcYYEH5G7u0PyUbbaJyMwksG+jY6jWufHis=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 2/8] block: ensure bdi->io_pages is always initialized
-Date:   Fri, 11 Sep 2020 14:54:49 +0200
-Message-Id: <20200911125421.818030368@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Sherwood <rsher@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 7/8] net: disable netpoll on fresh napis
+Date:   Fri, 11 Sep 2020 14:54:54 +0200
+Message-Id: <20200911125422.055844958@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911125421.695645838@linuxfoundation.org>
 References: <20200911125421.695645838@linuxfoundation.org>
@@ -45,41 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit de1b0ee490eafdf65fac9eef9925391a8369f2dc ]
+[ Upstream commit 96e97bc07e90f175a8980a22827faf702ca4cb30 ]
 
-If a driver leaves the limit settings as the defaults, then we don't
-initialize bdi->io_pages. This means that file systems may need to
-work around bdi->io_pages == 0, which is somewhat messy.
+napi_disable() makes sure to set the NAPI_STATE_NPSVC bit to prevent
+netpoll from accessing rings before init is complete. However, the
+same is not done for fresh napi instances in netif_napi_add(),
+even though we expect NAPI instances to be added as disabled.
 
-Initialize the default value just like we do for ->ra_pages.
+This causes crashes during driver reconfiguration (enabling XDP,
+changing the channel count) - if there is any printk() after
+netif_napi_add() but before napi_enable().
 
-Cc: stable@vger.kernel.org
-Fixes: 9491ae4aade6 ("mm: don't cap request size based on read-ahead setting")
-Reported-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+To ensure memory ordering is correct we need to use RCU accessors.
+
+Reported-by: Rob Sherwood <rsher@fb.com>
+Fixes: 2d8bff12699a ("netpoll: Close race condition between poll_one_napi and napi_disable")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/dev.c     |    3 ++-
+ net/core/netpoll.c |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index ea33d6abdcfc9..ce3710404544c 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1036,6 +1036,8 @@ struct request_queue *blk_alloc_queue_node(gfp_t gfp_mask, int node_id,
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -6196,12 +6196,13 @@ void netif_napi_add(struct net_device *d
+ 		pr_err_once("netif_napi_add() called with weight %d on device %s\n",
+ 			    weight, dev->name);
+ 	napi->weight = weight;
+-	list_add(&napi->dev_list, &dev->napi_list);
+ 	napi->dev = dev;
+ #ifdef CONFIG_NETPOLL
+ 	napi->poll_owner = -1;
+ #endif
+ 	set_bit(NAPI_STATE_SCHED, &napi->state);
++	set_bit(NAPI_STATE_NPSVC, &napi->state);
++	list_add_rcu(&napi->dev_list, &dev->napi_list);
+ 	napi_hash_add(napi);
+ }
+ EXPORT_SYMBOL(netif_napi_add);
+--- a/net/core/netpoll.c
++++ b/net/core/netpoll.c
+@@ -161,7 +161,7 @@ static void poll_napi(struct net_device
+ 	struct napi_struct *napi;
+ 	int cpu = smp_processor_id();
  
- 	q->backing_dev_info->ra_pages =
- 			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
-+	q->backing_dev_info->io_pages =
-+			(VM_MAX_READAHEAD * 1024) / PAGE_SIZE;
- 	q->backing_dev_info->capabilities = BDI_CAP_CGROUP_WRITEBACK;
- 	q->backing_dev_info->name = "block";
- 	q->node = node_id;
--- 
-2.25.1
-
+-	list_for_each_entry(napi, &dev->napi_list, dev_list) {
++	list_for_each_entry_rcu(napi, &dev->napi_list, dev_list) {
+ 		if (cmpxchg(&napi->poll_owner, -1, cpu) == -1) {
+ 			poll_one_napi(napi);
+ 			smp_store_release(&napi->poll_owner, -1);
 
 
