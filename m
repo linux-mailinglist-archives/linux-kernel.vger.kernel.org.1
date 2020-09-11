@@ -2,172 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9D72669DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0FB2669BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725876AbgIKVBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 17:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgIKVBw (ORCPT
+        id S1725847AbgIKUtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:49:19 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22838 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725803AbgIKUtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 17:01:52 -0400
-X-Greylist: delayed 968 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Sep 2020 14:01:52 PDT
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D80C061573;
-        Fri, 11 Sep 2020 14:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
-        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
-        bh=zEKQQeCho5wDyUtVNsTj1BSV4gF4ofzlmZRqY/qdBXs=; b=B+mE1wAk/yQA5RXAATYCANIBDt
-        rhXyppgNEexBbMMDAyuOD0bgL7f+Uxb7eSLPY+v2MpOoUqWPY7DUUqzgedQaq7CPqIxOvmzRwYzZi
-        zYz4tdKHsjsvJ3be+UzWDkJDTL/DeDN2MproBZtTFlLucKan+SgCSASNf7WkgNTDX3k5Jo34+eeIu
-        19bM+2TbtqcwkvEiDFxjwCaM7Fjz7b1OKKCBlcrCaHnp5Me0R8CVWmGCayNEt3QWJ3XTG+X9Xh5kF
-        LDMdy+X2t1oXF3jiVeNfPOTRxMabY8IKmnjZaEqFOUMrkjrAt7Hg69xR2zqJeOKRB+MPfZNAgl+2g
-        eudrdfKg==;
-Received: from [2a01:e35:2fdd:a4e1:fe91:fc89:bc43:b814] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1kGpuz-0002ni-Jh; Fri, 11 Sep 2020 22:45:13 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.94)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1kGpuy-00C5q9-Mu; Fri, 11 Sep 2020 22:45:12 +0200
-Date:   Fri, 11 Sep 2020 22:45:12 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     guoren@kernel.org
-Cc:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, tycho@tycho.ws,
-        nickhu@andestech.com, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org
-Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
-Message-ID: <20200911204512.GA2705@aurel32.net>
-Mail-Followup-To: guoren@kernel.org, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, anup@brainfault.org,
-        greentime.hu@sifive.com, zong.li@sifive.com, aou@eecs.berkeley.edu,
-        tglx@linutronix.de, tycho@tycho.ws, nickhu@andestech.com,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org
-References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
- <1593266228-61125-2-git-send-email-guoren@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593266228-61125-2-git-send-email-guoren@kernel.org>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+        Fri, 11 Sep 2020 16:49:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599857351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fPujA0Ryp4LyB06UqeSBwSR2AMMizIQ9L2dC6UhUTSU=;
+        b=DxsQs+vrsh6N48NSsLIzNV/crBN+12ZbSE5PYcxLHb47GRJCWFlV5D/ivkSUWralTJhUcD
+        P1ZNbBV+SnMGnlnFl7Nvx1S0qRSTY2gkfl5cW0g7zYQeH1I8TUp+mGLGqL3xtqjx2iv6S1
+        SwZgWdcSJ/yjTFZtjRvqHboxUge/C+I=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-76UNC8PpNgmj0Ss0wfeGfw-1; Fri, 11 Sep 2020 16:49:09 -0400
+X-MC-Unique: 76UNC8PpNgmj0Ss0wfeGfw-1
+Received: by mail-ed1-f70.google.com with SMTP id n4so5529300edo.20
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:49:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=fPujA0Ryp4LyB06UqeSBwSR2AMMizIQ9L2dC6UhUTSU=;
+        b=ANwh7zUH7eALnr7Q+gurSd+y4KGw8DkO6/iMQnntBYDgPuMC72TB6IXoqbOLRVHuVF
+         vnk3Y/38JgHQeme2AD9sg9FpNVE3WooYVFNoTd689izFqmzyKF9DZhyul6Cf4lizV/ia
+         gdXuW0qKEv+a5oOTba83nUQiIWXnopVUt1tYrlmpdpijB1LnBrU7NMvPCOmffMq89alD
+         8jDsOm+34gpZUeoQywfgIUnKT9ZNSGbLZOAcj4tUF92vSdpMNH21z9As7c3s0Z6LGAjb
+         Lq0HcufBrNcNx709WfHBuh2S9aRkY6UacBf0kL7yg5rTXDe1E2sQY2J+adSr4OmgwoaE
+         1j1A==
+X-Gm-Message-State: AOAM533t3u3VDAOqOhBOvB8VzBELeLV8wbCqX0DY9dcNOiqYpVH4pmJD
+        T6qNLTFh6tL6Lnc/PTtscMTVkGma6LFtz9bbwvro+zUdpxNwjWtVYseMeqXsdJGsv5IuCftJa+M
+        3S2xQQHyfiIAZMwKWYrHdmZw1
+X-Received: by 2002:aa7:de91:: with SMTP id j17mr4457858edv.85.1599857348683;
+        Fri, 11 Sep 2020 13:49:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzE+jQqynUXOKtrNfjmqrI4QDMcdgn1AqBUZfu/2O5MLQVff4P6n5KhdEGMOOZwYcbrX5uJdQ==
+X-Received: by 2002:aa7:de91:: with SMTP id j17mr4457832edv.85.1599857348528;
+        Fri, 11 Sep 2020 13:49:08 -0700 (PDT)
+Received: from [192.168.3.122] (p5b0c6263.dip0.t-ipconnect.de. [91.12.98.99])
+        by smtp.gmail.com with ESMTPSA id g20sm2586507edh.62.2020.09.11.13.49.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 13:49:07 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device ?
+Date:   Fri, 11 Sep 2020 22:49:06 +0200
+Message-Id: <00BF194F-9B67-4F7B-AA6F-902E2BCB2F7B@redhat.com>
+References: <64ad68af6abe4d6b9a346e777e2bd864@intel.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Jan_H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <64ad68af6abe4d6b9a346e777e2bd864@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+X-Mailer: iPhone Mail (17G68)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2020-06-27 13:57, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> When enable LOCKDEP, static_obj() will cause error. Because some
-> __initdata static variables is before _stext:
-> 
-> static int static_obj(const void *obj)
-> {
->         unsigned long start = (unsigned long) &_stext,
->                       end   = (unsigned long) &_end,
->                       addr  = (unsigned long) obj;
-> 
->         /*
->          * static variable?
->          */
->         if ((addr >= start) && (addr < end))
->                 return 1;
-> 
-> [    0.067192] INFO: trying to register non-static key.
-> [    0.067325] the code is fine but needs lockdep annotation.
-> [    0.067449] turning off the locking correctness validator.
-> [    0.067718] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-rc7-dirty #44
-> [    0.067945] Call Trace:
-> [    0.068369] [<ffffffe00020323c>] walk_stackframe+0x0/0xa4
-> [    0.068506] [<ffffffe000203422>] show_stack+0x2a/0x34
-> [    0.068631] [<ffffffe000521e4e>] dump_stack+0x94/0xca
-> [    0.068757] [<ffffffe000255a4e>] register_lock_class+0x5b8/0x5bc
-> [    0.068969] [<ffffffe000255abe>] __lock_acquire+0x6c/0x1d5c
-> [    0.069101] [<ffffffe0002550fe>] lock_acquire+0xae/0x312
-> [    0.069228] [<ffffffe000989a8e>] _raw_spin_lock_irqsave+0x40/0x5a
-> [    0.069357] [<ffffffe000247c64>] complete+0x1e/0x50
-> [    0.069479] [<ffffffe000984c38>] rest_init+0x1b0/0x28a
-> [    0.069660] [<ffffffe0000016a2>] 0xffffffe0000016a2
-> [    0.069779] [<ffffffe000001b84>] 0xffffffe000001b84
-> [    0.069953] [<ffffffe000001092>] 0xffffffe000001092
-> 
-> static __initdata DECLARE_COMPLETION(kthreadd_done);
-> 
-> noinline void __ref rest_init(void)
-> {
-> 	...
-> 	complete(&kthreadd_done);
-> 
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> ---
->  arch/riscv/kernel/vmlinux.lds.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index e6f8016..f3586e3 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -22,6 +22,7 @@ SECTIONS
->  	/* Beginning of code and text segment */
->  	. = LOAD_OFFSET;
->  	_start = .;
-> +	_stext = .;
->  	HEAD_TEXT_SECTION
->  	. = ALIGN(PAGE_SIZE);
->  
-> @@ -54,7 +55,6 @@ SECTIONS
->  	. = ALIGN(SECTION_ALIGN);
->  	.text : {
->  		_text = .;
-> -		_stext = .;
->  		TEXT_TEXT
->  		SCHED_TEXT
->  		CPUIDLE_TEXT
 
 
-This patch has been backported to kernel 5.8.4. This causes the kernel
-to crash when trying to execute the init process:
+> Am 11.09.2020 um 22:09 schrieb Luck, Tony <tony.luck@intel.com>:
+>=20
+> =EF=BB=BF
+>>=20
+>> How would it behave after hotplugging a single DIMM  - I assume a single p=
+age will only be mapped to that DIMM (otherwise a lot of stuff would habe to=
+ be moved around. Would the mapping change after a reboot - especially can a=
+ DIMM that could get hotunplugged before suddenly no longer be hotunplugged i=
+ndividually?
+>=20
+>=20
+> We don't currently have any platforms that would allow hot adding at the D=
+IMM level.
+> The Brickland generation of E7 Xeon servers (Ivybridge, Haswell, Broadwell=
+) allowed
+> for hot plugging a riser card that contained up to 12 DIMMs.
+>=20
+> If you did add memory it would have to appear at the top of the system phy=
+sical
+> address space. No interleave (unless you added more than one DIMM in a sin=
+gle
+> operation).  After a reboot the system would likely shuffle things around t=
+o and
+> interleave.
+>=20
 
-[    3.484586] AppArmor: AppArmor sha1 policy hashing enabled
-[    4.749835] Freeing unused kernel memory: 492K
-[    4.752017] Run /init as init process
-[    4.753571] usercopy: Kernel memory overwrite attempt detected to kernel text (offset 507879, size 11)!
-[    4.754838] ------------[ cut here ]------------
-[    4.755651] kernel BUG at mm/usercopy.c:99!
-[    4.756445] Kernel BUG [#1]
-[    4.756815] Modules linked in:
-[    4.757542] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.8.0-1-riscv64 #1 Debian 5.8.7-1
-[    4.758372] epc: ffffffe0003b5120 ra : ffffffe0003b5120 sp : ffffffe07f783ca0
-[    4.758960]  gp : ffffffe000cc7230 tp : ffffffe07f77cec0 t0 : ffffffe000cdafc0
-[    4.759772]  t1 : 0000000000000064 t2 : 0000000000000000 s0 : ffffffe07f783cf0
-[    4.760534]  s1 : ffffffe00095d780 a0 : 000000000000005b a1 : 0000000000000020
-[    4.761309]  a2 : 0000000000000005 a3 : 0000000000000000 a4 : ffffffe000c1f340
-[    4.761848]  a5 : ffffffe000c1f340 a6 : 0000000000000000 a7 : 0000000000000087
-[    4.762684]  s2 : ffffffe000941848 s3 : 000000000007bfe7 s4 : 000000000000000b
-[    4.763500]  s5 : 0000000000000000 s6 : ffffffe00091cc00 s7 : fffffffffffff000
-[    4.764376]  s8 : 0000003ffffff000 s9 : ffffffe0769f3200 s10: 000000000000000b
-[    4.765208]  s11: ffffffe07d548c40 t3 : 0000000000000000 t4 : 000000000001dcd0
-[    4.766059]  t5 : ffffffe000cc8510 t6 : ffffffe000cd64aa
-[    4.766712] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
-[    4.768308] ---[ end trace 1f8e733e834d4c3e ]---
-[    4.769129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[    4.770070] SMP: stopping secondary CPUs
-[    4.771110] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+Thanks a lot - so I=E2=80=98m really spoiled by hot(un)plug capabilities in v=
+irtualized environments :D
 
-Note that this is with CONFIG_HARDENED_USERCOPY=y
+> -Tony
 
-Aurelien
-
--- 
-Aurelien Jarno                          GPG: 4096R/1DDD8C9B
-aurelien@aurel32.net                 http://www.aurel32.net
