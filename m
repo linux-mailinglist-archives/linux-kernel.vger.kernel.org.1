@@ -2,141 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE64265B3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E87265B48
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgIKIOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:14:17 -0400
-Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:43456
-        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725535AbgIKIN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:13:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599812038;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References;
-        bh=vt3MofETqalwqLZLDx4uPciFAkq5YtO458gX9NcGSGM=;
-        b=JNkensoRoBEAHRExRYkpHx2tWlaTyuELEOqZiJ68Gh83prw+WCudLHg22WAG8ncH
-        HlSt0vUong+tCJrMqRzemS95RnmuMHHyA+4PyAYtZzOVpUiAsRB/GuZXxtDN28F9UW7
-        MqGfkndo0X9wjx2vz0oIB+ZkWAPnAFSMD0UOf5Cg=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599812038;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:Feedback-ID;
-        bh=vt3MofETqalwqLZLDx4uPciFAkq5YtO458gX9NcGSGM=;
-        b=HKJ0xUhXYgRj/gqy8D3VNvX9cJV+4axGQ1ZzK/ALob9li4gnPTQYx5gyoIF6CMjJ
-        AdS8nH9oo7u5PpNy9yXbM1m12ap24lx/8Z7UtfoDI4QJHKFJmXMLtpE69gjo5FTJWzU
-        gJQe+daKfrTkzTExp2nUvNVWLqpg/mPKCt/bsw0M=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 84E49C433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-From:   Hemant Kumar <hemantk@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        Hemant Kumar <hemantk@codeaurora.org>
-Subject: [PATCH v1] bus: mhi: core: Add const qualifier to MHI config information
-Date:   Fri, 11 Sep 2020 08:13:58 +0000
-Message-ID: <010101747c3a6fdd-33efa632-e20c-476d-9e39-01cb1f2d1cea-000000@us-west-2.amazonses.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599812017-32680-1-git-send-email-hemantk@codeaurora.org>
-References: <1599812017-32680-1-git-send-email-hemantk@codeaurora.org>
-X-SES-Outgoing: 2020.09.11-54.240.27.11
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+        id S1725747AbgIKIPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:15:49 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2807 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725554AbgIKIPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 04:15:45 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 318BCCFEBCCD1D074D5B;
+        Fri, 11 Sep 2020 09:15:43 +0100 (IST)
+Received: from localhost (10.52.125.200) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 11 Sep
+ 2020 09:15:42 +0100
+Date:   Fri, 11 Sep 2020 09:14:07 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Nishant Malpani <nish.malpani25@gmail.com>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <andy.shevchenko@gmail.com>
+Subject: Re: [RESEND PATCH v3 0/3] iio: gyro: adxrs290: Add triggered buffer
+ & debugfs support
+Message-ID: <20200911091407.000057e7@Huawei.com>
+In-Reply-To: <20200910180450.29696-1-nish.malpani25@gmail.com>
+References: <20200910180450.29696-1-nish.malpani25@gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.200]
+X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MHI channel, event and controller config data needs to be
-treated read only information. Add const qualifier to make
-sure config information passed by MHI controller is not
-modified by MHI core driver.
+On Thu, 10 Sep 2020 23:34:47 +0530
+Nishant Malpani <nish.malpani25@gmail.com> wrote:
 
-Suggested-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
----
- drivers/bus/mhi/core/init.c | 12 ++++++------
- include/linux/mhi.h         |  6 +++---
- 2 files changed, 9 insertions(+), 9 deletions(-)
+> Introduce DATA_RDY trigger for triggered buffer setup; this enables continuous
+> data capture. Additionally, add support for direct register access using the debugfs 
+> iio interface. 
+> 
+> The device-tree bindings documentation illustrates an example of using a GPIO irq
+> line to trigger a data capture.
+> 
+> Nishant Malpani (3):
+>   iio: gyro: adxrs290: Add triggered buffer support
+>   dt-bindings: iio: gyro: adxrs290: Add interrupts support
+>   iio: gyro: adxrs290: Add debugfs register access support
+> 
+>  .../bindings/iio/gyroscope/adi,adxrs290.yaml  |   6 +
+>  drivers/iio/gyro/Kconfig                      |   2 +
+>  drivers/iio/gyro/adxrs290.c                   | 237 ++++++++++++++++--
+>  3 files changed, 231 insertions(+), 14 deletions(-)
+> 
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index f69a2f3..d232938 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -562,10 +562,10 @@ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
- }
- 
- static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
--			struct mhi_controller_config *config)
-+			const struct mhi_controller_config *config)
- {
- 	struct mhi_event *mhi_event;
--	struct mhi_event_config *event_cfg;
-+	const struct mhi_event_config *event_cfg;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	int i, num;
- 
-@@ -648,9 +648,9 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
- }
- 
- static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
--			struct mhi_controller_config *config)
-+			const struct mhi_controller_config *config)
- {
--	struct mhi_channel_config *ch_cfg;
-+	const struct mhi_channel_config *ch_cfg;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	int i;
- 	u32 chan;
-@@ -766,7 +766,7 @@ static int parse_ch_cfg(struct mhi_controller *mhi_cntrl,
- }
- 
- static int parse_config(struct mhi_controller *mhi_cntrl,
--			struct mhi_controller_config *config)
-+			const struct mhi_controller_config *config)
- {
- 	int ret;
- 
-@@ -803,7 +803,7 @@ static int parse_config(struct mhi_controller *mhi_cntrl,
- }
- 
- int mhi_register_controller(struct mhi_controller *mhi_cntrl,
--			    struct mhi_controller_config *config)
-+			    const struct mhi_controller_config *config)
- {
- 	struct mhi_event *mhi_event;
- 	struct mhi_chan *mhi_chan;
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index 6b987e8..b2c0214 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -280,9 +280,9 @@ struct mhi_controller_config {
- 	u32 timeout_ms;
- 	u32 buf_len;
- 	u32 num_channels;
--	struct mhi_channel_config *ch_cfg;
-+	const struct mhi_channel_config *ch_cfg;
- 	u32 num_events;
--	struct mhi_event_config *event_cfg;
-+	const struct mhi_event_config *event_cfg;
- 	bool use_bounce_buf;
- 	bool m2_no_db;
- };
-@@ -545,7 +545,7 @@ struct mhi_driver {
-  * @config: Configuration to use for the controller
-  */
- int mhi_register_controller(struct mhi_controller *mhi_cntrl,
--			    struct mhi_controller_config *config);
-+			const struct mhi_controller_config *config);
- 
- /**
-  * mhi_unregister_controller - Unregister MHI controller
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Odd. The original patch one eventually made it (I'd checked it hadn't
+gotten to me or to lore.kernel.org yesterday :(
+
+Ah well, one of those quirks of life and resend does no harm.
+
+Will catch up with this tomorrow probably.
+
+Jonathan
 
