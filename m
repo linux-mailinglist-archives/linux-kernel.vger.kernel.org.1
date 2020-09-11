@@ -2,112 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67D82659F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E6C2659FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725871AbgIKHFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
+        id S1725879AbgIKHFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgIKHFE (ORCPT
+        with ESMTP id S1725869AbgIKHFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:05:04 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18B0C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:03 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a15so11427899ljk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:03 -0700 (PDT)
+        Fri, 11 Sep 2020 03:05:08 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DCEC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:06 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id b13so4715293qvl.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ccFFbA9B/80814O047PWW9IYr+YcSRpx5Jz4CVkD9V0=;
-        b=FNRrNT1viu436RH4fQuWLx7CxRGHkp9KJGRLQAfP58OGhvAUHAqPH70pcezhd4bbJn
-         pt/z0CTcG1EOVjs03KytRaGjTljrUdlRSZReupBDG0eNoCAHEnMVZRQqayw9Luu9UbH+
-         KtqKGi4SxcfZIJ/++LwOclntQXmdDZjw8iVrI=
+        bh=8qYTA7a/mDb0x7v76SumPW6fQ7bLMrnrWY5ltUv9JNU=;
+        b=l6I1g9C1SvoJBjGEU0JNeOK0OUWWHuh+ALTBHG8Q61JGEqU4KeeE5IlLbk4bq+biRP
+         GLthBBCFLV74aP/hQaHI2M0uCtoZz+JpOo4lFoxKTjE1iW7bCuJswGKKAlv+zaA9qnkp
+         TlS1NPVdFNmHAqjPSNR659dB1WOgl7sIIp5R9vb7NnibPcG7TDweMFV/AUK/qXe6Nlww
+         O3k9zPK1DfyWXuhengm0F807rZ57VgNbELKS6QRJ5VAQEYFRAIBEj+paw0bj8u/keVzB
+         +KusOeic/b8Aqz8saD0zP8EvoIS5TolTvFwZtAgF/VFApLsHX/JUnGw3O8psBt3RKhyr
+         ibtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ccFFbA9B/80814O047PWW9IYr+YcSRpx5Jz4CVkD9V0=;
-        b=lBf2CZd2IjWSV1mG+VNh0z3jIaCt3h9mTl8A7m1EWaMNDaeqjRybLxTslM7nBs1l14
-         9Ycuerx4f6RGS6GxZluQMDLaPXR/SxoId0DvqkFXq33euq++2eac07DRH1EeFJkyUv9l
-         LWl1+yvlepzpe2YtdXFdoe6vmHEygdKgs0ehg5nAqdWpDUA503eRpdGLhS25qlZ4de2a
-         KVwhtha27j2E4LEQ+8OeqenJCJ4wBfX62jyPEQTOhgwJ1rFGTJr6s0fpbth/c2NhI8rQ
-         FG2VPPtA04SuEJ9yhN3jaT3H+IbwRHwa8sALs7wcys+V+zjfWOngKgPTgXUQEYY2XW9n
-         OF8w==
-X-Gm-Message-State: AOAM533VJNEVWPFXhdkQHKjGe8+KymYweK6eFU1SkaoqujONgq4GRDrl
-        dQzeaM6sONot41HyxTvbXy4uum84spcOPAmum6sa6Q==
-X-Google-Smtp-Source: ABdhPJwv6DXrKoR0IN5OWRKjTqCiKrPiykNlvWutGaeY/OwjMRAOdZqKocPqRHR2iYhu2W6z5TehyPBdDRmIQ2lvr24=
-X-Received: by 2002:a2e:6c03:: with SMTP id h3mr245615ljc.212.1599807901466;
- Fri, 11 Sep 2020 00:05:01 -0700 (PDT)
+        bh=8qYTA7a/mDb0x7v76SumPW6fQ7bLMrnrWY5ltUv9JNU=;
+        b=BBLq4hNaTSJCwbEPefYNA/7kFs1hKjX6prex0TGkClfufn3e1ZSyVxAmHOMIVtaqvI
+         13PBBW6UEBpGc0Am0WWsHpdGSx2fCqsNge+UfNomqfdDvR9V7+tk7pbc0im0Cu800cVF
+         cC/8DrNpNnLk69gAjbFqi8CHFl6iht5xqS/nIUVDT3KnaIyw286KYpNcbJ8QrDNMUXkl
+         oVe2a1gRwoSZ6H8osNWNzzSgHBN+qOZiXe7l3NBalu2Y+wW5fLPhGgK9CWMEmH60mPsV
+         zMRnEPyhGd6HiRsHq5mx6INe9Ni+YbMhUaXXt3cVZmguo2I2na/RJsb7qgjrs/Y+oK9M
+         Yc7g==
+X-Gm-Message-State: AOAM5321qX9cJjRyIuoiCB7xMXg1rySOYENBO6xieoAX1NWvvZ0cN5iQ
+        yo/ESiwLGrqe0u2RHrGNZqP+g/dgxRumxq5e/Cueow==
+X-Google-Smtp-Source: ABdhPJwPLAUEsAzaSMCLt+v28C4/YXeXs4UpRMTYz0l4idhp0Mt0npwu+vanlcme90OTrVPya2wrVj/k/dc78p5FmYU=
+X-Received: by 2002:a0c:c24a:: with SMTP id w10mr609462qvh.99.1599807905731;
+ Fri, 11 Sep 2020 00:05:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200730120054.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid>
-In-Reply-To: <20200730120054.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 11 Sep 2020 15:04:50 +0800
-Message-ID: <CANMq1KDqDgdKcDWa0A15XLhS6ny3btejx5CKs07eLC8j-3Li=g@mail.gmail.com>
-Subject: Re: [PATCH] soc: mediatek: Check if power domains can be powered on
- at boot time
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Daniel Kurtz <djkurtz@chromium.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-7-elver@google.com>
+In-Reply-To: <20200907134055.2878499-7-elver@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 11 Sep 2020 09:04:54 +0200
+Message-ID: <CACT4Y+b=Ph-fD_K5F_TNMp_dTNjD7GXGT=OXogrKc_HwH+HHwQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 06/10] kfence, kasan: make KFENCE compatible with KASAN
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthias, gentle ping on the patch below >>>
-
-Thanks!
-
-On Thu, Jul 30, 2020 at 12:01 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
 >
-> In the error case, where a power domain cannot be powered on
-> successfully at boot time (in mtk_register_power_domains),
-> pm_genpd_init would still be called with is_off=false, and the
-> system would later try to disable the power domain again, triggering
-> warnings as disabled clocks are disabled again (and other potential
-> issues).
+> From: Alexander Potapenko <glider@google.com>
 >
-> Fixes: c84e358718a66f7 ("soc: Mediatek: Add SCPSYS power domain driver")
-> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> We make KFENCE compatible with KASAN for testing KFENCE itself. In
+> particular, KASAN helps to catch any potential corruptions to KFENCE
+> state, or other corruptions that may be a result of freepointer
+> corruptions in the main allocators.
 >
+> To indicate that the combination of the two is generally discouraged,
+> CONFIG_EXPERT=y should be set. It also gives us the nice property that
+> KFENCE will be build-tested by allyesconfig builds.
+>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
 > ---
+>  lib/Kconfig.kfence | 2 +-
+>  mm/kasan/common.c  | 7 +++++++
+>  2 files changed, 8 insertions(+), 1 deletion(-)
 >
->  drivers/soc/mediatek/mtk-scpsys.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> diff --git a/lib/Kconfig.kfence b/lib/Kconfig.kfence
+> index 7ac91162edb0..b080e49e15d4 100644
+> --- a/lib/Kconfig.kfence
+> +++ b/lib/Kconfig.kfence
+> @@ -10,7 +10,7 @@ config HAVE_ARCH_KFENCE_STATIC_POOL
 >
-> diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
-> index f669d3754627dad..0055a52a49733d5 100644
-> --- a/drivers/soc/mediatek/mtk-scpsys.c
-> +++ b/drivers/soc/mediatek/mtk-scpsys.c
-> @@ -524,6 +524,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
->         for (i = 0; i < num; i++) {
->                 struct scp_domain *scpd = &scp->domains[i];
->                 struct generic_pm_domain *genpd = &scpd->genpd;
-> +               bool on;
+>  menuconfig KFENCE
+>         bool "KFENCE: low-overhead sampling-based memory safety error detector"
+> -       depends on HAVE_ARCH_KFENCE && !KASAN && (SLAB || SLUB)
+> +       depends on HAVE_ARCH_KFENCE && (!KASAN || EXPERT) && (SLAB || SLUB)
+>         depends on JUMP_LABEL # To ensure performance, require jump labels
+>         select STACKTRACE
+>         help
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 950fd372a07e..f5c49f0fdeff 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/init.h>
+>  #include <linux/kasan.h>
+>  #include <linux/kernel.h>
+> +#include <linux/kfence.h>
+>  #include <linux/kmemleak.h>
+>  #include <linux/linkage.h>
+>  #include <linux/memblock.h>
+> @@ -396,6 +397,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+>         tagged_object = object;
+>         object = reset_tag(object);
 >
->                 /*
->                  * Initially turn on all domains to make the domains usable
-> @@ -531,9 +532,9 @@ static void mtk_register_power_domains(struct platform_device *pdev,
->                  * software.  The unused domains will be switched off during
->                  * late_init time.
->                  */
-> -               genpd->power_on(genpd);
-> +               on = genpd->power_on(genpd) >= 0;
+> +       if (is_kfence_address(object))
+> +               return false;
+
+Is this needed?
+At least in the slab patch I see that we do :
+
+if (kfence_free(objp)) {
+  kmemleak_free_recursive(objp, cachep->flags);
+  return;
+}
+
+before:
+
+/* Put the object into the quarantine, don't touch it for now. */ /*
+Put the object into the quarantine, don't touch it for now. */
+if (kasan_slab_free(cachep, objp, _RET_IP_)) if
+(kasan_slab_free(cachep, objp, _RET_IP_))
+  return; return;
+
+
+If it's not supposed to be triggered, it can make sense to replace
+with BUG/WARN.
+
+
+>         if (unlikely(nearest_obj(cache, virt_to_head_page(object), object) !=
+>             object)) {
+>                 kasan_report_invalid_free(tagged_object, ip);
+> @@ -444,6 +448,9 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>         if (unlikely(object == NULL))
+>                 return NULL;
 >
-> -               pm_genpd_init(genpd, NULL, false);
-> +               pm_genpd_init(genpd, NULL, !on);
->         }
->
->         /*
+> +       if (is_kfence_address(object))
+> +               return (void *)object;
+> +
+>         redzone_start = round_up((unsigned long)(object + size),
+>                                 KASAN_SHADOW_SCALE_SIZE);
+>         redzone_end = round_up((unsigned long)object + cache->object_size,
 > --
-> 2.28.0.rc0.142.g3c755180ce-goog
+> 2.28.0.526.ge36021eeef-goog
 >
