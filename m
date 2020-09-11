@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8F52667D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FC02667D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgIKRyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        id S1725873AbgIKRxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgIKRwu (ORCPT
+        with ESMTP id S1725936AbgIKRwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:52:50 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8EFC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:52:49 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id fa1so2075506pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:52:49 -0700 (PDT)
+        Fri, 11 Sep 2020 13:52:53 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96733C06179A
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:52:52 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id o16so2073189pjr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:52:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=GOJMmanhimKJHnX5NCLsUq8gClRDmBD+x8uKrsXjN2M=;
-        b=IwFCvKrg0IFL+P8dlwBrXQo3yNj6zmmpMNGH2+6jXE3QvPyQsTxMkgImNEKJ/EhwjY
-         SZTrGDYkzISlZYzMW9UXu+7b6a/f0crvISrvFxA3iBTY3oHktxmasCDid8dDexjzEFZ0
-         PmdZJrgfgg+QMzdHJqUTOk0I5L6few8JEfdbA=
+        bh=Ai7Ip0PPW/sBpgZbP3FANjSbx0Fw9tEgiZdGZUzpqEQ=;
+        b=M4UCKmTyHJ0IdhXddx3Z81Q16wJ0az9vUMKdlOrjSOhkWHmdHH/3LuHLVVIjKs2dbG
+         +xUlC4fEA1V0DelcMKPHMk11q10FZ5MsDN2gEpEmyQCd0jxW9EUlmwE8/Fs84XHBl2AT
+         M8UWn384B+pIpz7sbRJy78IMKTYRIe1/BBIlA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=GOJMmanhimKJHnX5NCLsUq8gClRDmBD+x8uKrsXjN2M=;
-        b=pYDJf9mB+ZoJCjTy4FBYGYE5JcpcEMULrTy/B6/Vgyob1TX/6JLclKQ6Kqdz+e+GzQ
-         FI1t6dmhgRd/tCoNfxcSsa0QEpsJf4D8jQKIBTCrA4Zy3Fl3yz/xWAPfhaBKl9W0A0cy
-         bwF39WR639bTaf9mjBIJ9YmoXysG+zgxYmAGL10vsoZ7YwJatE6DLYWU8fveSuzjFuTE
-         H+oQ3xNvIBX5xIZtBrkM3gKm8Ag19cx2sUNzUIVKwveecOou+KlzoNCayp6DNmaPmF3X
-         OZ/IVvpKYvK4ppDCsSKpT03BJ/s4txFDVXUzgGyKW4gdrLc4bDmNWX6MWiUaF1MsaV3i
-         c2Yw==
-X-Gm-Message-State: AOAM532Tm0dzl/q3VqDuvbeK/uKUyC4gEvzpr9n/TYkM1ktaUB/0waEI
-        aJo3ZRe9VuspjeQMyw4R1H8w/Q==
-X-Google-Smtp-Source: ABdhPJw82htO8oAYh3wSIgprOT3thB1qmlLbiL4cY1f57KelJ1mrrGWwEaLBdbzIqxE5KO0UDjsiBQ==
-X-Received: by 2002:a17:90b:1741:: with SMTP id jf1mr3148924pjb.164.1599846768668;
-        Fri, 11 Sep 2020 10:52:48 -0700 (PDT)
+        bh=Ai7Ip0PPW/sBpgZbP3FANjSbx0Fw9tEgiZdGZUzpqEQ=;
+        b=m7gW+QnYjjPfOm8JpOnljxY0C4Ugm7tzBq9bLVYCBk+h7JtnbMRkURJiNjnepcRwOK
+         j88bc4ApN3yLQ+WWPImGaVs5O33spMx9avvhQHBdA3uZTwwqMqzbeddH8oR3yumNo2JB
+         OP7mjnOMSs8j17MLUJB8RevJ4STtMiwolswg4Th1iuO4pH2r9/6ZTyhF/TBvKbXrroRr
+         RU1JD8tOBlVbsLjukuueKVpTzxST4NY2TGD+NHHRaQkd+yIOzY0R1ZOciZ6ml6RhRx+o
+         a55JhaUEitAWYA/pbiA5ddyuYJ9fh+YlQNAOIMKk7MyVZmwgaO1LVHllladuxbS6iGcw
+         i0eQ==
+X-Gm-Message-State: AOAM5325cONKd7/W2mtNPgwuPHQyeW81r57FqfjiVIunIAiKI7f6dpFc
+        u9w5k1dbn0SnuWqdO5uTLfv8LQ==
+X-Google-Smtp-Source: ABdhPJyNpi0B8FqBQteBt9Mxyg/UKGJLdhKZ1qEJChAppRodLS7WIa6ypXxkSuQXjycHODtKZqvXJw==
+X-Received: by 2002:a17:90a:a591:: with SMTP id b17mr1063630pjq.159.1599846771761;
+        Fri, 11 Sep 2020 10:52:51 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id d77sm2871963pfd.121.2020.09.11.10.52.45
+        by smtp.gmail.com with ESMTPSA id d77sm2871963pfd.121.2020.09.11.10.52.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 10:52:47 -0700 (PDT)
+        Fri, 11 Sep 2020 10:52:51 -0700 (PDT)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     linux-pci@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
@@ -55,113 +55,271 @@ Cc:     Jim Quinlan <jquinlan@broadcom.com>,
         Rob Herring <robh@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
         BCM2711/BCM2835 ARM ARCHITECTURE),
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
         BCM2711/BCM2835 ARM ARCHITECTURE),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v12 04/10] PCI: brcmstb: Add suspend and resume pm_ops
-Date:   Fri, 11 Sep 2020 13:52:24 -0400
-Message-Id: <20200911175232.19016-5-james.quinlan@broadcom.com>
+Subject: [PATCH v12 05/10] PCI: brcmstb: Add bcm7278 PERST# support
+Date:   Fri, 11 Sep 2020 13:52:25 -0400
+Message-Id: <20200911175232.19016-6-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200911175232.19016-1-james.quinlan@broadcom.com>
 References: <20200911175232.19016-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000005f083e05af0d5ae3"
+        boundary="000000000000907ac905af0d5a4c"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000005f083e05af0d5ae3
+--000000000000907ac905af0d5a4c
 
 From: Jim Quinlan <jquinlan@broadcom.com>
 
-Broadcom Set-top (BrcmSTB) boards typically support S2, S3, and S5 suspend
-and resume.  Now the PCIe driver may do so as well.
+The PERST# bit was moved to a different register in 7278-type STB chips.
+In addition, the polarity of the bit was also changed; for other chips
+writing a 1 specified assert; for 7278-type chips, writing a 0 specifies
+assert.  Of course, PERST# is a PCIe asserted-low signal.
+
+While we are here, also change the bridge_sw_init_set() functions so like
+the perst_set() functions they are chip specific and we no longer rely on
+data wrt chip specific field mask and shift values.
 
 Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
 Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/pci/controller/pcie-brcmstb.c | 47 +++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/pci/controller/pcie-brcmstb.c | 97 +++++++++++++++++++--------
+ 1 file changed, 69 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index c2b3d2946a36..7f5e7848df47 100644
+index 7f5e7848df47..947cf3115eb0 100644
 --- a/drivers/pci/controller/pcie-brcmstb.c
 +++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -978,6 +978,47 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
- 	brcm_pcie_bridge_sw_init_set(pcie, 1);
+@@ -83,6 +83,7 @@
+ 
+ #define PCIE_MISC_PCIE_CTRL				0x4064
+ #define  PCIE_MISC_PCIE_CTRL_PCIE_L23_REQUEST_MASK	0x1
++#define PCIE_MISC_PCIE_CTRL_PCIE_PERSTB_MASK		0x4
+ 
+ #define PCIE_MISC_PCIE_STATUS				0x4068
+ #define  PCIE_MISC_PCIE_STATUS_PCIE_PORT_MASK		0x80
+@@ -125,6 +126,11 @@
+ #define  PCIE_RGR1_SW_INIT_1_PERST_MASK			0x1
+ #define  PCIE_RGR1_SW_INIT_1_PERST_SHIFT		0x0
+ 
++#define RGR1_SW_INIT_1_INIT_GENERIC_MASK		0x2
++#define RGR1_SW_INIT_1_INIT_GENERIC_SHIFT		0x1
++#define RGR1_SW_INIT_1_INIT_7278_MASK			0x1
++#define RGR1_SW_INIT_1_INIT_7278_SHIFT			0x0
++
+ /* PCIe parameters */
+ #define BRCM_NUM_PCIE_OUT_WINS		0x4
+ #define BRCM_INT_PCI_MSI_NR		32
+@@ -157,6 +163,23 @@
+ #define DATA_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_DATA])
+ #define PCIE_RGR1_SW_INIT_1(pcie)	(pcie->reg_offsets[RGR1_SW_INIT_1])
+ 
++/* Rescal registers */
++#define PCIE_DVT_PMU_PCIE_PHY_CTRL				0xc700
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_NFLDS			0x3
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_MASK		0x4
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_DIG_RESET_SHIFT	0x2
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_MASK		0x2
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_RESET_SHIFT		0x1
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_MASK		0x1
++#define  PCIE_DVT_PMU_PCIE_PHY_CTRL_DAST_PWRDN_SHIFT		0x0
++
++/* Forward declarations */
++struct brcm_pcie;
++static inline void brcm_pcie_bridge_sw_init_set_7278(struct brcm_pcie *pcie, u32 val);
++static inline void brcm_pcie_bridge_sw_init_set_generic(struct brcm_pcie *pcie, u32 val);
++static inline void brcm_pcie_perst_set_7278(struct brcm_pcie *pcie, u32 val);
++static inline void brcm_pcie_perst_set_generic(struct brcm_pcie *pcie, u32 val);
++
+ enum {
+ 	RGR1_SW_INIT_1,
+ 	EXT_CFG_INDEX,
+@@ -175,19 +198,10 @@ enum pcie_type {
+ };
+ 
+ struct pcie_cfg_data {
+-	const int *reg_field_info;
+ 	const int *offsets;
+ 	const enum pcie_type type;
+-};
+-
+-static const int pcie_reg_field_info[] = {
+-	[RGR1_SW_INIT_1_INIT_MASK] = 0x2,
+-	[RGR1_SW_INIT_1_INIT_SHIFT] = 0x1,
+-};
+-
+-static const int pcie_reg_field_info_bcm7278[] = {
+-	[RGR1_SW_INIT_1_INIT_MASK] = 0x1,
+-	[RGR1_SW_INIT_1_INIT_SHIFT] = 0x0,
++	void (*perst_set)(struct brcm_pcie *pcie, u32 val);
++	void (*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
+ };
+ 
+ static const int pcie_offsets[] = {
+@@ -197,9 +211,10 @@ static const int pcie_offsets[] = {
+ };
+ 
+ static const struct pcie_cfg_data generic_cfg = {
+-	.reg_field_info	= pcie_reg_field_info,
+ 	.offsets	= pcie_offsets,
+ 	.type		= GENERIC,
++	.perst_set	= brcm_pcie_perst_set_generic,
++	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_generic,
+ };
+ 
+ static const int pcie_offset_bcm7278[] = {
+@@ -209,15 +224,17 @@ static const int pcie_offset_bcm7278[] = {
+ };
+ 
+ static const struct pcie_cfg_data bcm7278_cfg = {
+-	.reg_field_info = pcie_reg_field_info_bcm7278,
+ 	.offsets	= pcie_offset_bcm7278,
+ 	.type		= BCM7278,
++	.perst_set	= brcm_pcie_perst_set_7278,
++	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_7278,
+ };
+ 
+ static const struct pcie_cfg_data bcm2711_cfg = {
+-	.reg_field_info	= pcie_reg_field_info,
+ 	.offsets	= pcie_offsets,
+ 	.type		= BCM2711,
++	.perst_set	= brcm_pcie_perst_set_generic,
++	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_generic,
+ };
+ 
+ struct brcm_msi {
+@@ -244,8 +261,13 @@ struct brcm_pcie {
+ 	u64			msi_target_addr;
+ 	struct brcm_msi		*msi;
+ 	const int		*reg_offsets;
+-	const int		*reg_field_info;
+ 	enum pcie_type		type;
++	struct reset_control	*rescal;
++	int			num_memc;
++	u64			memc_size[PCIE_BRCM_MAX_MEMC];
++	u32			hw_rev;
++	void			(*perst_set)(struct brcm_pcie *pcie, u32 val);
++	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
+ };
+ 
+ /*
+@@ -670,17 +692,37 @@ static struct pci_ops brcm_pcie_ops = {
+ 	.write = pci_generic_config_write,
+ };
+ 
+-static inline void brcm_pcie_bridge_sw_init_set(struct brcm_pcie *pcie, u32 val)
++static inline void brcm_pcie_bridge_sw_init_set_generic(struct brcm_pcie *pcie, u32 val)
+ {
+-	u32 tmp, mask =  pcie->reg_field_info[RGR1_SW_INIT_1_INIT_MASK];
+-	u32 shift = pcie->reg_field_info[RGR1_SW_INIT_1_INIT_SHIFT];
++	u32 tmp, mask =  RGR1_SW_INIT_1_INIT_GENERIC_MASK;
++	u32 shift = RGR1_SW_INIT_1_INIT_GENERIC_SHIFT;
+ 
+ 	tmp = readl(pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
+ 	tmp = (tmp & ~mask) | ((val << shift) & mask);
+ 	writel(tmp, pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
  }
  
-+static int brcm_pcie_suspend(struct device *dev)
+-static inline void brcm_pcie_perst_set(struct brcm_pcie *pcie, u32 val)
++static inline void brcm_pcie_bridge_sw_init_set_7278(struct brcm_pcie *pcie, u32 val)
 +{
-+	struct brcm_pcie *pcie = dev_get_drvdata(dev);
++	u32 tmp, mask =  RGR1_SW_INIT_1_INIT_7278_MASK;
++	u32 shift = RGR1_SW_INIT_1_INIT_7278_SHIFT;
 +
-+	brcm_pcie_turn_off(pcie);
-+	clk_disable_unprepare(pcie->clk);
-+
-+	return 0;
++	tmp = readl(pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
++	tmp = (tmp & ~mask) | ((val << shift) & mask);
++	writel(tmp, pcie->base + PCIE_RGR1_SW_INIT_1(pcie));
 +}
 +
-+static int brcm_pcie_resume(struct device *dev)
++static inline void brcm_pcie_perst_set_7278(struct brcm_pcie *pcie, u32 val)
 +{
-+	struct brcm_pcie *pcie = dev_get_drvdata(dev);
-+	void __iomem *base;
 +	u32 tmp;
-+	int ret;
 +
-+	base = pcie->base;
-+	clk_prepare_enable(pcie->clk);
-+
-+	/* Take bridge out of reset so we can access the SERDES reg */
-+	brcm_pcie_bridge_sw_init_set(pcie, 0);
-+
-+	/* SERDES_IDDQ = 0 */
-+	tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
-+	u32p_replace_bits(&tmp, 0, PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK);
-+	writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
-+
-+	/* wait for serdes to be stable */
-+	udelay(100);
-+
-+	ret = brcm_pcie_setup(pcie);
-+	if (ret)
-+		return ret;
-+
-+	if (pcie->msi)
-+		brcm_msi_set_regs(pcie->msi);
-+
-+	return 0;
++	/* Perst bit has moved and assert value is 0 */
++	tmp = readl(pcie->base + PCIE_MISC_PCIE_CTRL);
++	u32p_replace_bits(&tmp, !val, PCIE_MISC_PCIE_CTRL_PCIE_PERSTB_MASK);
++	writel(tmp, pcie->base +  PCIE_MISC_PCIE_CTRL);
 +}
 +
- static void __brcm_pcie_remove(struct brcm_pcie *pcie)
++static inline void brcm_pcie_perst_set_generic(struct brcm_pcie *pcie, u32 val)
  {
- 	brcm_msi_remove(pcie);
-@@ -1087,12 +1128,18 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+ 	u32 tmp;
  
- MODULE_DEVICE_TABLE(of, brcm_pcie_match);
+@@ -770,13 +812,11 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+ 	u32 tmp, aspm_support;
  
-+static const struct dev_pm_ops brcm_pcie_pm_ops = {
-+	.suspend = brcm_pcie_suspend,
-+	.resume = brcm_pcie_resume,
-+};
-+
- static struct platform_driver brcm_pcie_driver = {
- 	.probe = brcm_pcie_probe,
- 	.remove = brcm_pcie_remove,
- 	.driver = {
- 		.name = "brcm-pcie",
- 		.of_match_table = brcm_pcie_match,
-+		.pm = &brcm_pcie_pm_ops,
- 	},
- };
- module_platform_driver(brcm_pcie_driver);
+ 	/* Reset the bridge */
+-	brcm_pcie_bridge_sw_init_set(pcie, 1);
+-	brcm_pcie_perst_set(pcie, 1);
+-
++	pcie->bridge_sw_init_set(pcie, 1);
+ 	usleep_range(100, 200);
+ 
+ 	/* Take the bridge out of reset */
+-	brcm_pcie_bridge_sw_init_set(pcie, 0);
++	pcie->bridge_sw_init_set(pcie, 0);
+ 
+ 	tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+ 	tmp &= ~PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK;
+@@ -842,7 +882,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+ 		brcm_pcie_set_gen(pcie, pcie->gen);
+ 
+ 	/* Unassert the fundamental reset */
+-	brcm_pcie_perst_set(pcie, 0);
++	pcie->perst_set(pcie, 0);
+ 
+ 	/*
+ 	 * Give the RC/EP time to wake up, before trying to configure RC.
+@@ -962,7 +1002,7 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+ 	if (brcm_pcie_link_up(pcie))
+ 		brcm_pcie_enter_l23(pcie);
+ 	/* Assert fundamental reset */
+-	brcm_pcie_perst_set(pcie, 1);
++	pcie->perst_set(pcie, 1);
+ 
+ 	/* Deassert request for L23 in case it was asserted */
+ 	tmp = readl(base + PCIE_MISC_PCIE_CTRL);
+@@ -975,7 +1015,7 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+ 	writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+ 
+ 	/* Shutdown PCIe bridge */
+-	brcm_pcie_bridge_sw_init_set(pcie, 1);
++	pcie->bridge_sw_init_set(pcie, 1);
+ }
+ 
+ static int brcm_pcie_suspend(struct device *dev)
+@@ -999,7 +1039,7 @@ static int brcm_pcie_resume(struct device *dev)
+ 	clk_prepare_enable(pcie->clk);
+ 
+ 	/* Take bridge out of reset so we can access the SERDES reg */
+-	brcm_pcie_bridge_sw_init_set(pcie, 0);
++	pcie->bridge_sw_init_set(pcie, 0);
+ 
+ 	/* SERDES_IDDQ = 0 */
+ 	tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
+@@ -1080,8 +1120,9 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+ 	pcie->dev = &pdev->dev;
+ 	pcie->np = np;
+ 	pcie->reg_offsets = data->offsets;
+-	pcie->reg_field_info = data->reg_field_info;
+ 	pcie->type = data->type;
++	pcie->perst_set = data->perst_set;
++	pcie->bridge_sw_init_set = data->bridge_sw_init_set;
+ 
+ 	pcie->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(pcie->base))
 -- 
 2.17.1
 
 
---0000000000005f083e05af0d5ae3
+--000000000000907ac905af0d5a4c
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -231,14 +389,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIO1R/6v/1w7/
-qhPKvrp26j/PtTpdeXxSNJJUHIbTEKscMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMDkxMTE3NTI0OVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILdzqAUZCwDe
+2/AqZPTSbVGEB69WnwTPqdq3W6FS9kJkMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMDkxMTE3NTI1MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQB/mIQfnqS2DRyPOYE2jgK/J6nEjFc3
-g6WXNstkjzZ2/79gM0R33ErnXCkiGadTE8dfermOp5jqKihjISCRWFCpDTS7eWS4uj+wdFXP/dvd
-VcQ/Z0IZYGIGrpv3zlU2+w9idRt7uI6YkmP/F0hEK+aJ0/DyxtyJIAU7cjelKewbPhBEKWER4tDI
-msOMXcskI0ir4uxlqQO3rVSDt3vyh+mEyRRDZe8XZvYxJJBHeyV8G0FqAgwDEcTwt2lz9rRLW+Od
-tJh9a/CJajKzxwHtZP1Cavkyvscb7h8riD/D5d6USx0X6J2VOImT2Pb2FC8XmtpnnvnzOnrjfYEB
-rotkECgw
---0000000000005f083e05af0d5ae3--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAU51G0vQNlqHTELBUjyO+EmywbIfMi
+U3hYpX+sdYG93GCgQ4sdFNYwXSxEpLi43PBAIXVLG2oyQuIfPqxFz/XJinaEf5DsHEPP+nRrvzfi
+XZPBpZg4SmsiifuSjPUgWcka7DN5DVRvBR/Op8dq7EwjhOpqIq4ridmrkrJb4C/3wFHf1AR1Z6eB
+3BF6q5XQJocXlRG92uJEKJla4TxjE0OriaEk3sKbTG+LgKmvJqCE0hAed5xh+40Az/wn0E7BsBsP
+ndBeyPFqcth6Ola63vR3jw5xjNYuLQ3YdW+/JJkDUdWIIN0rqRgaOD/2ZDxOGjMnO567TD22E3+f
+oqbderkw
+--000000000000907ac905af0d5a4c--
