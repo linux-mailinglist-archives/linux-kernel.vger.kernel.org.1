@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E92A265BCA
+	by mail.lfdr.de (Postfix) with ESMTP id 51596265BCB
 	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgIKIlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
+        id S1725765AbgIKIll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgIKIli (ORCPT
+        with ESMTP id S1725468AbgIKIli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 04:41:38 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1D5C061756
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F41C061573
         for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:41:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=uh/FDwBvoTfhNjzgw+qMjrH+7RRHQIoPj2TATzyds1Y=; b=KPodnVicljbRnUdWQrvrM3zHTG
-        Ikz7Q/Ii4JWbMjestAPoRdiQ8sQDAsqreE+ZBISeOk4ENI8u5tokN36Bf9EjkVEOFj0IAlZehHI9P
-        5HIsgHmTBFi6i/wnDS6QnKzB/JOTXd3pmWtl2s5X+1G8cOATDtVKjEDCld7ejdtJgxscqs3kx3dta
-        79SVcBn8Xqv1Cl9wct51N7JAuCDZxpc3ObJ0N9s11JbFeyZrpLxkfmlkacZY5DaELwo1QO3XeMFg8
-        tZED7L/B9rkqHaxBDPdkXc4O0nZofQ7rnN8eZL0uE/ricdISrBpNLT1DNFzGi6UMc6NwWHuNgeNj2
-        t4bojgkA==;
+        bh=pjxf7cU3wZPZFhxr/36czSE4rB6OEvHpSGCVSMdCVd0=; b=jsKnTUalTqx3OSEdpMtmOenxgq
+        ZoeZFtdAqmMn1lnwoeEEJwvDuRm3zlxOinpR+98uK+WYdXOcWjur5HUt2yw/pCzFhV3V8o5YrV2jb
+        dcIX3GhvEnIJKxghP4dYztjpSULpOh/ntu4+bNHd/BsTLKFYoIcviEblWMd6t7CFADLIMcqUQLVjI
+        eHKiBqx9f8sz5CwDnBAZH5tGKjF0IeJ3LmV5YzS5QIGNgeDCmTSaE1rQdT5Ky1Qbyc+2RPa+hCnx+
+        EhIx1VHZBgGMi401bnIDYqtC3MNrfwXLq8u9ZspBrZw/KNRkKSoA39sjUBb9Z6CKKlm6eFgjd+F3w
+        R3+zCEug==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGecX-0007bd-8i; Fri, 11 Sep 2020 08:41:25 +0000
+        id 1kGecX-0007bQ-8h; Fri, 11 Sep 2020 08:41:25 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4F6C43050F0;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BBD6D3012DC;
         Fri, 11 Sep 2020 10:41:21 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 8AF0B2123A1E3; Fri, 11 Sep 2020 10:41:21 +0200 (CEST)
-Message-ID: <20200911082536.470013100@infradead.org>
+        id 8D2922143B29A; Fri, 11 Sep 2020 10:41:21 +0200 (CEST)
+Message-ID: <20200911082536.528661716@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 11 Sep 2020 10:17:46 +0200
+Date:   Fri, 11 Sep 2020 10:17:47 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, vincent.guittot@linaro.org, tglx@linutronix.de
 Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
         rostedt@goodmis.org, bristot@redhat.com, swood@redhat.com,
         valentin.schneider@arm.com, peterz@infradead.org
-Subject: [PATCH 1/2] sched: Fix balance_callback()
+Subject: [PATCH 2/2] sched/hotplug: Ensure only per-cpu kthreads run during hotplug
 References: <20200911081745.214686199@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,225 +52,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intent of balance_callback() has always been to delay executing
-balancing operations until the end of the current rq->lock section.
-This is because balance operations must often drop rq->lock, and that
-isn't safe in general.
+In preparation for migrate_disable(), make sure only per-cpu kthreads
+are allowed to run on !active CPUs.
 
-However, as noted by Scott, there were a few holes in that scheme;
-balance_callback() was called after rq->lock was dropped, which means
-another CPU can interleave and touch the callback list.
+This is ran (as one of the very first steps) from the cpu-hotplug
+task which is a per-cpu kthread and completion of the hotplug
+operation only requires such tasks.
 
-Rework code to call the balance callbacks before dropping rq->lock
-where possible, and otherwise splice the balance list onto a local
-stack.
+This contraint enables the migrate_disable() implementation to wait
+for completion of all migrate_disable regions on this CPU at hotplug
+time without fear of any new ones starting.
 
-This guarantees that the balance list must be empty when we take
-rq->lock. IOW, we'll only ever run our own balance callbacks.
+This replaces the unlikely(rq->balance_callbacks) test at the tail of
+context_switch with an unlikely(rq->balance_work), the fast path is
+not affected.
 
-Reported-by: Scott Wood <swood@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c  |  119 ++++++++++++++++++++++++++++++++-------------------
- kernel/sched/sched.h |    2 
- 2 files changed, 77 insertions(+), 44 deletions(-)
+ kernel/sched/core.c  |  103 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ kernel/sched/sched.h |    5 ++
+ 2 files changed, 106 insertions(+), 2 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3489,6 +3489,69 @@ static inline void finish_task(struct ta
+@@ -3513,8 +3513,10 @@ static inline struct callback_head *spli
+ 	struct callback_head *head = rq->balance_callback;
+ 
+ 	lockdep_assert_held(&rq->lock);
+-	if (head)
++	if (head) {
+ 		rq->balance_callback = NULL;
++		rq->balance_flags &= ~BALANCE_WORK;
++	}
+ 
+ 	return head;
+ }
+@@ -3569,6 +3571,8 @@ prepare_lock_switch(struct rq *rq, struc
  #endif
  }
  
-+#ifdef CONFIG_SMP
++static bool balance_push(struct rq *rq);
 +
-+static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
+ static inline void finish_lock_switch(struct rq *rq)
+ {
+ 	/*
+@@ -3577,7 +3581,16 @@ static inline void finish_lock_switch(st
+ 	 * prev into current:
+ 	 */
+ 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
+-	__balance_callbacks(rq);
++	if (unlikely(rq->balance_flags)) {
++		/*
++		 * Run the balance_callbacks, except on hotplug
++		 * when we need to push the current task away.
++		 */
++		if (!IS_ENABLED(CONFIG_HOTPLUG_CPU) ||
++		    !(rq->balance_flags & BALANCE_PUSH) ||
++		    !balance_push(rq))
++			__balance_callbacks(rq);
++	}
+ 	raw_spin_unlock_irq(&rq->lock);
+ }
+ 
+@@ -6836,6 +6849,87 @@ static void migrate_tasks(struct rq *dea
+ 
+ 	rq->stop = stop;
+ }
++
++static int __balance_push_stop(void *arg)
 +{
-+	void (*func)(struct rq *rq);
-+	struct callback_head *next;
++	struct task_struct *p = arg;
++	struct rq *rq = this_rq();
++	struct rq_flags rf;
++	int cpu;
++
++	raw_spin_lock_irq(&p->pi_lock);
++	rq_lock(rq, &rf);
++
++	if (task_rq(p) == rq && task_on_rq_queued(p)) {
++		cpu = select_fallback_rq(rq->cpu, p);
++		rq = __migrate_task(rq, &rf, p, cpu);
++	}
++
++	rq_unlock(rq, &rf);
++	raw_spin_unlock_irq(&p->pi_lock);
++
++	put_task_struct(p);
++
++	return 0;
++}
++
++static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
++
++/*
++ * Ensure we only run per-cpu kthreads once the CPU goes !active.
++ */
++static bool balance_push(struct rq *rq)
++{
++	struct task_struct *push_task = rq->curr;
 +
 +	lockdep_assert_held(&rq->lock);
++	SCHED_WARN_ON(rq->cpu != smp_processor_id());
 +
-+	while (head) {
-+		func = (void (*)(struct rq *))head->func;
-+		next = head->next;
-+		head->next = NULL;
-+		head = next;
++	/*
++	 * Both the cpu-hotplug and stop task are in this class and are
++	 * required to complete the hotplug process.
++	 */
++	if (is_per_cpu_kthread(push_task))
++		return false;
 +
-+		func(rq);
-+	}
++	get_task_struct(push_task);
++	/*
++	 * Temporarily drop rq->lock such that we can wake-up the stop task.
++	 * Both preemption and IRQs are still disabled.
++	 */
++	raw_spin_unlock(&rq->lock);
++	stop_one_cpu_nowait(rq->cpu, __balance_push_stop, push_task,
++			    this_cpu_ptr(&push_work));
++	/*
++	 * At this point need_resched() is true and we'll take the loop in
++	 * schedule(). The next pick is obviously going to be the stop task
++	 * which is_per_cpu_kthread() and will push this task away.
++	 */
++	raw_spin_lock(&rq->lock);
++
++	return true;
 +}
 +
-+static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
++static void balance_push_set(int cpu, bool on)
 +{
-+	struct callback_head *head = rq->balance_callback;
++	struct rq *rq = cpu_rq(cpu);
++	struct rq_flags rf;
 +
-+	lockdep_assert_held(&rq->lock);
-+	if (head)
-+		rq->balance_callback = NULL;
-+
-+	return head;
-+}
-+
-+static void __balance_callbacks(struct rq *rq)
-+{
-+	do_balance_callbacks(rq, splice_balance_callbacks(rq));
-+}
-+
-+static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
-+{
-+	unsigned long flags;
-+
-+	if (unlikely(head)) {
-+		raw_spin_lock_irqsave(&rq->lock, flags);
-+		do_balance_callbacks(rq, head);
-+		raw_spin_unlock_irqrestore(&rq->lock, flags);
-+	}
++	rq_lock_irqsave(rq, &rf);
++	if (on)
++		rq->balance_flags |= BALANCE_PUSH;
++	else
++		rq->balance_flags &= ~BALANCE_PUSH;
++	rq_unlock_irqrestore(rq, &rf);
 +}
 +
 +#else
 +
-+static inline void __balance_callbacks(struct rq *rq)
++static inline bool balance_push(struct rq *rq)
 +{
++	return false;
 +}
 +
-+static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
-+{
-+	return NULL;
-+}
-+
-+static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
-+{
-+}
-+
-+#endif
-+
- static inline void
- prepare_lock_switch(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
- {
-@@ -3514,6 +3577,7 @@ static inline void finish_lock_switch(st
- 	 * prev into current:
- 	 */
- 	spin_acquire(&rq->lock.dep_map, 0, 0, _THIS_IP_);
-+	__balance_callbacks(rq);
- 	raw_spin_unlock_irq(&rq->lock);
- }
+ #endif /* CONFIG_HOTPLUG_CPU */
  
-@@ -3655,43 +3719,6 @@ static struct rq *finish_task_switch(str
- 	return rq;
- }
- 
--#ifdef CONFIG_SMP
--
--/* rq->lock is NOT held, but preemption is disabled */
--static void __balance_callback(struct rq *rq)
--{
--	struct callback_head *head, *next;
--	void (*func)(struct rq *rq);
--	unsigned long flags;
--
--	raw_spin_lock_irqsave(&rq->lock, flags);
--	head = rq->balance_callback;
--	rq->balance_callback = NULL;
--	while (head) {
--		func = (void (*)(struct rq *))head->func;
--		next = head->next;
--		head->next = NULL;
--		head = next;
--
--		func(rq);
--	}
--	raw_spin_unlock_irqrestore(&rq->lock, flags);
--}
--
--static inline void balance_callback(struct rq *rq)
--{
--	if (unlikely(rq->balance_callback))
--		__balance_callback(rq);
--}
--
--#else
--
--static inline void balance_callback(struct rq *rq)
--{
--}
--
--#endif
--
- /**
-  * schedule_tail - first thing a freshly forked thread must call.
-  * @prev: the thread we just switched away from.
-@@ -3711,7 +3738,6 @@ asmlinkage __visible void schedule_tail(
- 	 */
- 
- 	rq = finish_task_switch(prev);
--	balance_callback(rq);
- 	preempt_enable();
- 
- 	if (current->set_child_tid)
-@@ -4527,10 +4553,11 @@ static void __sched notrace __schedule(b
- 		rq = context_switch(rq, prev, next, &rf);
- 	} else {
- 		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
--		rq_unlock_irq(rq, &rf);
--	}
- 
--	balance_callback(rq);
-+		rq_unpin_lock(rq, &rf);
-+		__balance_callbacks(rq);
-+		raw_spin_unlock_irq(&rq->lock);
-+	}
- }
- 
- void __noreturn do_task_dead(void)
-@@ -4941,9 +4968,11 @@ void rt_mutex_setprio(struct task_struct
- out_unlock:
- 	/* Avoid rq from going away on us: */
- 	preempt_disable();
--	__task_rq_unlock(rq, &rf);
- 
--	balance_callback(rq);
-+	rq_unpin_lock(rq, &rf);
-+	__balance_callbacks(rq);
-+	raw_spin_unlock(&rq->lock);
-+
- 	preempt_enable();
- }
- #else
-@@ -5217,6 +5246,7 @@ static int __sched_setscheduler(struct t
- 	int retval, oldprio, oldpolicy = -1, queued, running;
- 	int new_effective_prio, policy = attr->sched_policy;
- 	const struct sched_class *prev_class;
-+	struct callback_head *head;
+ void set_rq_online(struct rq *rq)
+@@ -6921,6 +7015,8 @@ int sched_cpu_activate(unsigned int cpu)
+ 	struct rq *rq = cpu_rq(cpu);
  	struct rq_flags rf;
- 	int reset_on_fork;
- 	int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
-@@ -5455,6 +5485,7 @@ static int __sched_setscheduler(struct t
  
- 	/* Avoid rq from going away on us: */
- 	preempt_disable();
-+	head = splice_balance_callbacks(rq);
- 	task_rq_unlock(rq, p, &rf);
++	balance_push_set(cpu, false);
++
+ #ifdef CONFIG_SCHED_SMT
+ 	/*
+ 	 * When going up, increment the number of cores with SMT present.
+@@ -6968,6 +7064,8 @@ int sched_cpu_deactivate(unsigned int cp
+ 	 */
+ 	synchronize_rcu();
  
- 	if (pi) {
-@@ -5463,7 +5494,7 @@ static int __sched_setscheduler(struct t
++	balance_push_set(cpu, true);
++
+ #ifdef CONFIG_SCHED_SMT
+ 	/*
+ 	 * When going down, decrement the number of cores with SMT present.
+@@ -6981,6 +7079,7 @@ int sched_cpu_deactivate(unsigned int cp
+ 
+ 	ret = cpuset_cpu_inactive(cpu);
+ 	if (ret) {
++		balance_push_set(cpu, false);
+ 		set_cpu_active(cpu, true);
+ 		return ret;
  	}
- 
- 	/* Run balance callbacks after we've adjusted the PI chain: */
--	balance_callback(rq);
-+	balance_callbacks(rq, head);
- 	preempt_enable();
- 
- 	return 0;
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1220,6 +1220,8 @@ static inline void rq_pin_lock(struct rq
- #ifdef CONFIG_SCHED_DEBUG
- 	rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
- 	rf->clock_update_flags = 0;
+@@ -973,6 +973,7 @@ struct rq {
+ 	unsigned long		cpu_capacity_orig;
+ 
+ 	struct callback_head	*balance_callback;
++	unsigned char		balance_flags;
+ 
+ 	unsigned char		nohz_idle_balance;
+ 	unsigned char		idle_balance;
+@@ -1384,6 +1385,9 @@ init_numa_balancing(unsigned long clone_
+ 
+ #ifdef CONFIG_SMP
+ 
++#define BALANCE_WORK	0x01
++#define BALANCE_PUSH	0x02
 +
-+	SCHED_WARN_ON(rq->balance_callback);
- #endif
+ static inline void
+ queue_balance_callback(struct rq *rq,
+ 		       struct callback_head *head,
+@@ -1397,6 +1401,7 @@ queue_balance_callback(struct rq *rq,
+ 	head->func = (void (*)(struct callback_head *))func;
+ 	head->next = rq->balance_callback;
+ 	rq->balance_callback = head;
++	rq->balance_flags |= BALANCE_WORK;
  }
  
+ #define rcu_dereference_check_sched_domain(p) \
 
 
