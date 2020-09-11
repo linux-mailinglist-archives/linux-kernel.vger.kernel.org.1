@@ -2,147 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34532669D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22782669D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725915AbgIKU4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgIKU4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:56:15 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB4AC061573;
-        Fri, 11 Sep 2020 13:56:14 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id ay8so11476786edb.8;
-        Fri, 11 Sep 2020 13:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EN1aXepR2pAjS7TkWhKDjvai8AQzIN3Al8VaNg0aZds=;
-        b=FDN5aR1mZNsEYGXCC1BPMBu0sm0hScQh2NjkB1fe3oZh5VizOrUpX/nnaUi4GgW5va
-         L+LDwSSw9Qw/DpnuvmcdBJi6SbQwk3quhgcGiQqSBUIyeCSl7RHdwo49O18KQTsMjIop
-         qDAcEgE7JoYcKXoh8woTdO8sumbjYbkyObegcVrcj3VouezYf+YgwmhTIhSEqit2Ou4Y
-         koNwrjHNpGH0dnpObyb9djReB7CKAn7StrNDCyV3qt2Gn/6kEAJMKdMGlYW2+sSQhQy0
-         qpX5oREBRaYK1lSFTy9AafMj8EdNSntKJ0pm4znDC7YvDZKVW5LnuiDKLfxOhAp38OBJ
-         xAog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EN1aXepR2pAjS7TkWhKDjvai8AQzIN3Al8VaNg0aZds=;
-        b=slxw/Dr3tYqVODZsvURBCJgqsx2gvItxY4eIjZt/ctZwTi6inArKPLhVbo3jqVl1UF
-         0olq57AhKuJdKMcWlJIR5jrRo7LH+QmHuH4WZY12MlQmFuPb8W3T9Cfy3nVBZ5HIl8ZI
-         Y0biCkVhJWg3/K3OJ/4Btfg1qk7AHLneziU+YPhuSxr4l1JBGSGz+Fug7mu49bR0jH/d
-         qf1mJ0qdOrw3vShBol9NND17C7QED7ZyFKGo5sdRdn/W+uVs1vJ2rETIMVK6J/y+pmHV
-         R7yeckwknH8aWLdguWSLIxBJvvCtXbm8jPFSi2lzkdqqtudvVbEjZZFyyUW/BRal4uf9
-         TS8g==
-X-Gm-Message-State: AOAM5332JDAk6J/FDOai1XchPTQFL5MTPpRbDtmgYHehYUcnWO/zc0JN
-        hD4ol9xb9DXdyQWVXigRxB8=
-X-Google-Smtp-Source: ABdhPJwKOgIOcTcY6QqbJuRaVpQD5wA5CYwL5XmcohJ38wSTiq2WLVPUbKFzW9xX6/uwSYLc+ep2Pw==
-X-Received: by 2002:a50:8c24:: with SMTP id p33mr4421467edp.330.1599857773391;
-        Fri, 11 Sep 2020 13:56:13 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:e953:3254:5e71:3177? ([2a01:110f:b59:fd00:e953:3254:5e71:3177])
-        by smtp.gmail.com with ESMTPSA id i17sm2151979ejy.79.2020.09.11.13.56.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 13:56:12 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Gene Chen <gene.chen.richtek@gmail.com>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
- <559a568e-3a2e-33c6-43aa-547a18f8e26b@gmail.com> <20200911070503.GA9818@amd>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <d2721bb7-6f0e-19af-41b9-0f3ae95cf4f9@gmail.com>
-Date:   Fri, 11 Sep 2020 22:56:10 +0200
+        id S1725860AbgIKU6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:58:36 -0400
+Received: from mga05.intel.com ([192.55.52.43]:15765 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725815AbgIKU6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 16:58:33 -0400
+IronPort-SDR: S/fqd9NH4TaiOAKDsq0dtE8HldZ+1kPgN1bHzI9K8dKI343qxRH+vX0cRduazwFz3TRNqolcUT
+ cfXiNHLcDcAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="243677296"
+X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
+   d="scan'208";a="243677296"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 13:58:30 -0700
+IronPort-SDR: B+U5UeEA5moc0L/AmK2qGpitGammhTvg/fppesgwGa/dPC6GWMJWXUxKQvgoCfDMH4sTR5WQGv
+ T3sVOqXWNLJQ==
+X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
+   d="scan'208";a="329910348"
+Received: from shikherb-mobl.amr.corp.intel.com (HELO [10.212.38.188]) ([10.212.38.188])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 13:58:30 -0700
+Subject: Re: [PATCH 2/4 v3] x86: AMD: Add hardware-enforced cache coherency as
+ a CPUID feature
+To:     Krish Sadhukhan <krish.sadhukhan@oracle.com>, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, joro@8bytes.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, hpa@zytor.com
+References: <20200911192601.9591-1-krish.sadhukhan@oracle.com>
+ <20200911192601.9591-3-krish.sadhukhan@oracle.com>
+ <c5cbc91e-f576-5cc7-a40c-c11abaea4ad2@intel.com>
+ <472e71a4-e50e-1d39-3088-cc103c79ddb3@oracle.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <103bdf75-aa91-1c91-7727-e853b55a603c@intel.com>
+Date:   Fri, 11 Sep 2020 13:58:29 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200911070503.GA9818@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <472e71a4-e50e-1d39-3088-cc103c79ddb3@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-
-On 9/11/20 9:05 AM, Pavel Machek wrote:
-> Hi!
-> 
->>> +{
->>> +	struct mt6360_led *led = container_of(lcdev, struct mt6360_led, flash.led_cdev);
->>> +	struct mt6360_priv *priv = led->priv;
->>> +	u32 enable_mask = MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
->>> +	u32 val = (level) ? MT6360_FLCSEN_MASK(led->led_no) : 0;
->>> +	u32 prev = priv->fled_torch_used, curr;
->>> +	int ret;
->>> +
->>> +	dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
->>> +	if (priv->fled_strobe_used) {
->>> +		dev_warn(lcdev->dev, "Please disable strobe first [%d]\n", priv->fled_strobe_used);
+On 9/11/20 1:10 PM, Krish Sadhukhan wrote:
+...
+>>> +#define X86_FEATURE_HW_CACHE_COHERENCY (11*32+ 7) /* AMD
+>>> hardware-enforced cache coherency */
+>> That's an awfully generic name.  We generally have "hardware-enforced
+>> cache coherency" already everywhere. :)
 >>
->> Doesn't hardware handle that? IOW, what happens when you have enabled
->> both torch and flash? If flash just overrides torch mode, than you
->> should not prevent enabling torch in this case.
+>> This probably needs to say something about encryption, or even SEV
+>> specifically.
 > 
-> Yep, this is strange/confusing... and was reason why I asked for not
-> supporting strobe from sysfs.
+> How about X86_FEATURE_ENC_CACHE_COHERENCY ?
 
-What you say now is even more confusing when we look at your ack
-under this patch:
-
-commit 7aea8389a77abf9fde254aca2434a605c7704f58
-Author: Jacek Anaszewski <j.anaszewski@samsung.com>
-Date:   Fri Jan 9 07:22:51 2015 -0800
-
-     leds: Add LED Flash class extension to the LED subsystem
-
-     Some LED devices support two operation modes - torch and flash.
-     This patch provides support for flash LED devices in the LED subsystem
-     by introducing new sysfs attributes and kernel internal interface.
-     The attributes being introduced are: flash_brightness, flash_strobe,
-     flash_timeout, max_flash_timeout, max_flash_brightness, flash_fault,
-     flash_sync_strobe and available_sync_leds. All the flash related
-     features are placed in a separate module.
-
-     The modifications aim to be compatible with V4L2 framework requirements
-     related to the flash devices management. The design assumes that V4L2
-     sub-device can take of the LED class device control and communicate
-     with it through the kernel internal interface. When V4L2 Flash 
-sub-device
-     file is opened, the LED class device sysfs interface is made
-     unavailable.
-
-     Signed-off-by: Jacek Anaszewski <j.anaszewski@samsung.com>
-     Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
-     Cc: Richard Purdie <rpurdie@rpsys.net>
-     Acked-by: Pavel Machek <pavel@ucw.cz>
-     Signed-off-by: Bryan Wu <cooloney@gmail.com>
-
-
-> Could I get you to remove code you are not commenting at when
-> reviewing?
-> 
->>> +MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
->>> +MODULE_DESCRIPTION("MT6360 Led Driver");
-> 
-> Led -> LED.
-> 
-> 									Pavel
-> 
-
--- 
-Best regards,
-Jacek Anaszewski
+I think X86_FEATURE_SME_COHERENT would be the most appropriate name.
+That bit, as defined, looks totally specific to SME.
