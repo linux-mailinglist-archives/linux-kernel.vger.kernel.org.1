@@ -2,116 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C20265B4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8474265B44
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725840AbgIKIQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:16:10 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35504 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725554AbgIKIQG (ORCPT
+        id S1725803AbgIKIP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbgIKIPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:16:06 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08B87lQR003143;
-        Fri, 11 Sep 2020 10:15:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=tIOlnbAKWQu2aJOslivWEU73AEic3d7q5RRGup+Q4RA=;
- b=ebqbjyKTK35dpUhKhRfw0A4aX24JhezA4xX5kLmgnbb9yjSTiIIbRh3tMV5lA3ouWqJA
- ftqQKc7gJ0rXVsu/Yr42sBlp+yxWsXNPJmABNeynOaDv1JGi/HUrrlTxgslPEaJmRAm4
- v98tTM2OR66tlbAb++E+Q2/sm3a74CNZcZBPnLLQv0OXeRjg5xCfF+zSxuHlOcdCzQ31
- chPAnA+7RnfdniITyrdiAcse5LNypec/Ykxsoiv7tsU+N62zyorNrU32DskQH/wbcZFA
- FppEieofoPPzpMhQPjwYL3V3PZcI0oT+zNbVhXtXItrF0mj3xQoVxop1C0yVTsxKNyH7 MQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33c1jfg8ue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 10:15:11 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7B1DA10002A;
-        Fri, 11 Sep 2020 10:15:10 +0200 (CEST)
-Received: from Webmail-eu.st.com (gpxdag6node5.st.com [10.75.127.81])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1F58A21E254;
-        Fri, 11 Sep 2020 10:15:10 +0200 (CEST)
-Received: from localhost (10.75.127.46) by GPXDAG6NODE5.st.com (10.75.127.81)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Sep 2020 10:15:09
- +0200
-From:   Olivier Moysan <olivier.moysan@st.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <alexandre.torgue@st.com>,
-        <olivier.moysan@st.com>, <arnaud.pouliquen@st.com>
-CC:     <alsa-devel@alsa-project.org>,
+        Fri, 11 Sep 2020 04:15:24 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18724C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:15:23 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so10586848wrm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=k8Bj3ASTIpypJ8ggKoM+aQRjaad0dEkxTPVx2fp8uGs=;
+        b=fRQh/tOglgsku2462Zr61073wgcr+e/eaLU/50pvajTvuPIvdnYICnzSUm7FvMvi4p
+         MmKv0YhMk8XAy/F9mhJHBDTrgGsTzpvfgEmvRYXCtUF9xzPga5JBhaDao8umntOK+AQh
+         I7vagGkCjLylhdYtE/dkSzoXa/xVyy+ik0G6E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=k8Bj3ASTIpypJ8ggKoM+aQRjaad0dEkxTPVx2fp8uGs=;
+        b=hsKs49bjqEFSsHxOb4TFuZAQsOxunwYQmZX7U5ucQQpNIFzylHjghBoRj43tI91wO/
+         YnIMXNIQCqZaUXe4J1g0cRtLhhPJVIp1MhQrPApFmzk1KetNPUFyYc3kdBAy2o/+OQ9G
+         x7IQ/V4jywXAK3iLwsmZN4Ga7j3/BjHf6G/RMLZAwIIjMhlNuSLkIuY/OxO7nHkcr6So
+         Sj8Ne8fO61/IX+4Y3y/2/ymKEWMwwQ6wdLXhqE6GTc45g3M8iLjIZb8QW1lKpgZ4Zlws
+         +F/RvKLg1Az30XFkZvawkZThOdGkZzD02W2zebP9UuJ1G9vbRiNIoFXpA9rQJsp6/vXQ
+         69Ag==
+X-Gm-Message-State: AOAM532bjnu2gk0vVYbhhJltXgxuM3GlbFX4801SEXNxRwNqZexnXJor
+        QC8J4P+2s6IfTL1f2VI7xKokbw==
+X-Google-Smtp-Source: ABdhPJxU1ll9iAceBTayzDGewibbztq9+abcfDZ6D804bpFjvBJi1qAFfNus3ZOJ7xUMAgiq6aX1LA==
+X-Received: by 2002:adf:f5c7:: with SMTP id k7mr866124wrp.246.1599812122122;
+        Fri, 11 Sep 2020 01:15:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id k8sm2777115wma.16.2020.09.11.01.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 01:15:21 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 10:15:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Hyun Kwon <hyun.kwon@xilinx.com>
+Cc:     Jason Yan <yanaijie@huawei.com>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        Michal Simek <michals@xilinx.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: stm32: sai: add pm_runtime support
-Date:   Fri, 11 Sep 2020 10:15:07 +0200
-Message-ID: <20200911081507.7276-1-olivier.moysan@st.com>
-X-Mailer: git-send-email 2.17.1
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] drm: xlnx: remove defined but not used
+ 'scaling_factors_666'
+Message-ID: <20200911081519.GM438822@phenom.ffwll.local>
+Mail-Followup-To: Hyun Kwon <hyun.kwon@xilinx.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        "laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        Michal Simek <michals@xilinx.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20200910140630.1191782-1-yanaijie@huawei.com>
+ <20200910181418.GA3187626@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To GPXDAG6NODE5.st.com
- (10.75.127.81)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_02:2020-09-10,2020-09-11 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910181418.GA3187626@xilinx.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support of pm_runtime on STM32 SAI driver to allow
-SAI power state monitoring.
-pm_runtime_put_autosuspend() is called from ASoC framework
-on pcm device close.
-The pmdown_time delay is available in runtime context, and may be set
-in SAI driver to take into account shutdown delay on playback.
-However, this shutdown delay is already handled in the DAPMs
-of the audio codec linked to SAI CPU DAI.
-So, the choice is made, not to support this delay on CPU DAI side.
+On Thu, Sep 10, 2020 at 11:14:18AM -0700, Hyun Kwon wrote:
+> Hi Jason,
+> 
+> On Thu, Sep 10, 2020 at 07:06:30AM -0700, Jason Yan wrote:
+> > This addresses the following gcc warning with "make W=1":
+> > 
+> > drivers/gpu/drm/xlnx/zynqmp_disp.c:245:18: warning:
+> > ‘scaling_factors_666’ defined but not used [-Wunused-const-variable=]
+> >   245 | static const u32 scaling_factors_666[] = {
+> >       |                  ^~~~~~~~~~~~~~~~~~~
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> 
+> Reviewed-by: Hyun Kwon <hyun.kwon@xilinx.com>
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/stm/stm32_sai_sub.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+I think you're the maintainer, so please also push patches to
+drm-misc-next. Otherwise they'll just get lost, or at least it's very
+confusing when a maintainer reviews a patch but there's no indication what
+will happen with the patch.
+-Daniel
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 3fb9513cedb2..3aa1cf262402 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
- #include <sound/asoundef.h>
-@@ -1559,10 +1560,14 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_component(&pdev->dev, &stm32_component,
- 					 &sai->cpu_dai_drv, 1);
--	if (ret)
-+	if (ret) {
- 		snd_dmaengine_pcm_unregister(&pdev->dev);
-+		return ret;
-+	}
- 
--	return ret;
-+	pm_runtime_enable(&pdev->dev);
-+
-+	return 0;
- }
- 
- static int stm32_sai_sub_remove(struct platform_device *pdev)
-@@ -1572,6 +1577,7 @@ static int stm32_sai_sub_remove(struct platform_device *pdev)
- 	clk_unprepare(sai->pdata->pclk);
- 	snd_dmaengine_pcm_unregister(&pdev->dev);
- 	snd_soc_unregister_component(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
- 
- 	return 0;
- }
+> 
+> Thanks!
+> 
+> -hyun
+> 
+> > ---
+> >  drivers/gpu/drm/xlnx/zynqmp_disp.c | 6 ------
+> >  1 file changed, 6 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> > index a455cfc1bee5..98bd48f13fd1 100644
+> > --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> > +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> > @@ -242,12 +242,6 @@ static const u32 scaling_factors_565[] = {
+> >  	ZYNQMP_DISP_AV_BUF_5BIT_SF,
+> >  };
+> >  
+> > -static const u32 scaling_factors_666[] = {
+> > -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
+> > -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
+> > -	ZYNQMP_DISP_AV_BUF_6BIT_SF,
+> > -};
+> > -
+> >  static const u32 scaling_factors_888[] = {
+> >  	ZYNQMP_DISP_AV_BUF_8BIT_SF,
+> >  	ZYNQMP_DISP_AV_BUF_8BIT_SF,
+> > -- 
+> > 2.25.4
+> > 
+
 -- 
-2.17.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
