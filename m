@@ -2,58 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7DE266267
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2656526628F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgIKPpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726206AbgIKPi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:38:27 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78C8A2073E;
-        Fri, 11 Sep 2020 15:38:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599838706;
-        bh=1TJNDk0xAOMjFGiWY1ZuK/p0447AYGrttVbGr6hFLps=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aMPq+EsPCqlwrEfENy02pSgs7cfmRMdwr//SfLBwWggO37sXei//myacnHRM70l38
-         jOyCJGCTlbx8zre1H1varU1wNLs8e/LTu607QUBU5oNqsrM//QpBgsTLRV0+5rbqSt
-         3fDMfRTPqS3hvQB8FqQtAi/DaUbrxVRSZrNA3ov4=
-Date:   Fri, 11 Sep 2020 08:38:25 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Luo Jiaxing <luojiaxing@huawei.com>, <mcoquelin.stm32@gmail.com>
-Cc:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
-        <joabreu@synopsys.com>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>
-Subject: Re: [PATCH net-next] net: stmmac: set get_rx_header_len() as void
- for it didn't have any error code to return
-Message-ID: <20200911083825.55eb2f49@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1599796558-45818-1-git-send-email-luojiaxing@huawei.com>
-References: <1599796558-45818-1-git-send-email-luojiaxing@huawei.com>
+        id S1726577AbgIKPxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:53:24 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:42353 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbgIKPnh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:43:37 -0400
+Received: from methusalix.internal.home.lespocky.de ([109.250.103.56]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1My3Ef-1kRwV22uGl-00zVsj; Fri, 11 Sep 2020 17:40:59 +0200
+Received: from lemmy.internal.home.lespocky.de ([192.168.243.176] helo=lemmy.home.lespocky.de)
+        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <alex@home.lespocky.de>)
+        id 1kGlAW-00012l-Dq; Fri, 11 Sep 2020 17:40:57 +0200
+Received: (nullmailer pid 28446 invoked by uid 2001);
+        Fri, 11 Sep 2020 15:40:55 -0000
+From:   Alexander Dahl <post@lespocky.de>
+To:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Alexander Dahl <ada@thorsis.com>,
+        Alexander Dahl <post@lespocky.de>
+Subject: [PATCH v4 0/3] leds: pwm: Make automatic labels work
+Date:   Fri, 11 Sep 2020 17:40:01 +0200
+Message-Id: <20200911154004.28354-1-post@lespocky.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scan-Signature: 770cd104049592bdf1705ca88dc38dfa
+X-Spam-Score: -2.9 (--)
+X-Provags-ID: V03:K1:e4FvXaQWDj87KwD0kEbtAGIU3u5VS+b8RpwJ8Fxy+7ih3wJ005A
+ dC03taXs1FPmBoQuk4ab6GKiSV4FkUwZWKiod2sLL/htRdqmxD3y5vdUgfkknuYJLaSDD1B
+ kI6GShk76+2S4ls/wX1LLXWySYA2UdZL1m+00mhsvQhWfN0CpQCRSxQYQn9Kkuix26Jvtna
+ NqNUEGcsCyjK6txldsrUw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lQ7HEH7Aius=:Isg2qlduxH4oFRIzMuqf/y
+ PTLMUjZyz1N4tki5cd+GSBmBii2zrZGs2Tpt2uMjVq9ACNPoyXdo0UxEjzqkf+HyzjHlDwHJK
+ quORKXN4pT2SZ+bHf1/uhXxWZCvqayhtqO2LJEOaKK7NQ4GTDNRLayLpSUqrNww8A88NF0XrH
+ Wm1qwrM/kQd05rIG+Sp9XszcgNSmIPf48IALqG2WdTzjnRlW9Wzg8HDAaDKd+3dhbJmpkihTY
+ JkcYbG4k2M69tkgeu39J+dsAiq1s3I0tD7JxRvxzens+3AwrW0dDvnup57jS95iE4l+FrDKvo
+ 8myWL6V9G8fYSDhf6MwIj4iCMUf4iUL45LxMSddEytWjRmdtmmIgNu8BhCB8HVuP+udQI1ENO
+ ve+rKjWJkUUfNLrAtrqxOe66f0l6c4MwJmApHZLHjMW39FtgzUJ0zcrgZW8keAkXVGTo5SQHO
+ zMWUnO0l6nGOrytQl7yTvd5YS9pOKjEqxQEp9g41ZzwhEcz0mL2oNEFARVvg5+39vsWudCTcU
+ C7ekLQI1uJA+TcrkSzq78/Zm5giMBAiISj/xaF6IkkS6a1L5vTVvucOkH8Eo/JUnfOTiksmaz
+ T7kC5TlnpTc45PhdeApC2l5Sg9AxBQJQvj37atvBkjCIIeUshXg2C+xoL+L4EgeZLOldTND0k
+ OGFGWFSZt+zjzl4sUzZfQzrxh3ux+0moP1DyEmtLPdfI2RAkDr+trS9slk1S/e7Y/wKQaqrmn
+ v8ERLp5phHbAOQgjyOQ6t24P0fKz7GYidjKxtOnujli+lj3L0i04MxyK7PX0pSZlcVt28YM5v
+ k3Jh3r9t82UQg9s37WuB1iP3b0c7C7JIVX+tr5Bp2VRL4YDMH5DyFQqI2n9LZ5QBuMbNZWI
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 11:55:58 +0800 Luo Jiaxing wrote:
-> We found the following warning when using W=3D1 to build kernel:
->=20
-> drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3634:6: warning: variab=
-le =E2=80=98ret=E2=80=99 set but not used [-Wunused-but-set-variable]
-> int ret, coe =3D priv->hw->rx_csum;
->=20
-> When digging stmmac_get_rx_header_len(), dwmac4_get_rx_header_len() and
-> dwxgmac2_get_rx_header_len() return 0 only, without any error code to
-> report. Therefore, it's better to define get_rx_header_len() as void.
->=20
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Hei hei,
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+for leds-gpio you can use the properties 'function' and 'color' in the
+devicetree node and omit 'label', the label is constructed
+automatically.  This is a common feature supposed to be working for all
+LED drivers.  However it did not yet work for the 'leds-pwm' driver.
+
+This series changes led-core a bit to add a non-ugly fix for the
+leds-pwm driver and takes the opportunity to update the leds-pwm
+dt-bindings accordingly.
+
+v4 was tested on a at91 sama5d2 based platform with LEDs connected to
+GPIO and PWM.
+
+Greets
+Alex
+
+v4:
+- added led-class patch handling fwnode passing differently (patch 1/3)
+- adapted leds-pwm patch to new led-class (patch 2/3)
+- contacted original author of leds-pwm dt binding on license issue
+  (patch 3/3)
+
+v3:
+- series rebased on v5.9-rc4
+- changed license of .yaml file to recommended one (patch 2/2)
+- added Acked-by to both patches
+
+v2:
+- series rebased on v5.9-rc3
+- added the dt-bindings update patch (2/2)
+
+v1:
+- based on v5.9-rc2
+- backport on v5.4.59 tested and working
+
+Alexander Dahl (3):
+  leds: Require valid fwnode pointer for composing name
+  leds: pwm: Allow automatic labels for DT based devices
+  dt-bindings: leds: Convert pwm to yaml
+
+ .../devicetree/bindings/leds/leds-pwm.txt     | 50 -----------
+ .../devicetree/bindings/leds/leds-pwm.yaml    | 85 +++++++++++++++++++
+ drivers/leds/led-class.c                      |  2 +-
+ drivers/leds/leds-pwm.c                       |  3 +-
+ 4 files changed, 88 insertions(+), 52 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-pwm.yaml
+
+-- 
+2.20.1
+
