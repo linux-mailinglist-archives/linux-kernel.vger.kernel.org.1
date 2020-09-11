@@ -2,108 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80469266228
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259A826621C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgIKPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:30:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30212 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726462AbgIKPYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:24:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599837860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iJ/U/CoQkEukOmnim/wnnLlXQJbF+mCf7O0yvaasEUI=;
-        b=Ka9IYn1OYm7kntVMXBDiVtFCrTVISjmh6q5rAuzGkdB9jLsFDCtLfTywlmdb0csDvfCQjN
-        KBkefUQzqq7nIr6J/WWVoHuV4yQVdK6S9nYfazAKeE/8/GXC+44LD2id7prczQxl1uADMC
-        nQGLMc5QBvPNM9Rd5vN8+B4X1ANhHzc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-GWhH9Sb-Pf2rVZMqBlDXxA-1; Fri, 11 Sep 2020 11:24:17 -0400
-X-MC-Unique: GWhH9Sb-Pf2rVZMqBlDXxA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1725904AbgIKP2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:28:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725851AbgIKPZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:25:01 -0400
+Received: from gaia (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA8E9107B270;
-        Fri, 11 Sep 2020 15:24:14 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 44A057ED65;
-        Fri, 11 Sep 2020 15:24:11 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id EFACE41853FD; Fri, 11 Sep 2020 12:23:44 -0300 (-03)
-Date:   Fri, 11 Sep 2020 12:23:44 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, frederic@kernel.org,
-        sassmann@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com
-Subject: Re: [RFC][Patch v1 2/3] i40e: limit msix vectors based on
- housekeeping CPUs
-Message-ID: <20200911152344.GA21157@fuller.cnet>
-References: <20200909150818.313699-1-nitesh@redhat.com>
- <20200909150818.313699-3-nitesh@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id BCB282076C;
+        Fri, 11 Sep 2020 15:24:58 +0000 (UTC)
+Date:   Fri, 11 Sep 2020 16:24:56 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, will@kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4] arm64/cpuinfo: Define HWCAP name arrays per their
+ actual bit definitions
+Message-ID: <20200911152455.GG12835@gaia>
+References: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909150818.313699-3-nitesh@redhat.com>
+In-Reply-To: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:08:17AM -0400, Nitesh Narayan Lal wrote:
-> In a realtime environment, it is essential to isolate unwanted IRQs from
-> isolated CPUs to prevent latency overheads. Creating MSIX vectors only
-> based on the online CPUs could lead to a potential issue on an RT setup
-> that has several isolated CPUs but a very few housekeeping CPUs. This is
-> because in these kinds of setups an attempt to move the IRQs to the
-> limited housekeeping CPUs from isolated CPUs might fail due to the per
-> CPU vector limit. This could eventually result in latency spikes because
-> of the IRQ threads that we fail to move from isolated CPUs.
+On Wed, Sep 09, 2020 at 11:18:55AM +0530, Anshuman Khandual wrote:
+> HWCAP name arrays (hwcap_str, compat_hwcap_str, compat_hwcap2_str) that are
+> scanned for /proc/cpuinfo are detached from their bit definitions making it
+> vulnerable and difficult to correlate. It is also bit problematic because
+> during /proc/cpuinfo dump these arrays get traversed sequentially assuming
+> they reflect and match actual HWCAP bit sequence, to test various features
+> for a given CPU. This redefines name arrays per their HWCAP bit definitions
+> . It also warns after detecting any feature which is not expected on arm64.
 > 
-> This patch prevents i40e to add vectors only based on available
-> housekeeping CPUs by using num_housekeeping_cpus().
-> 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Dave Martin <Dave.Martin@arm.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> This applies on 5.9-rc4
 > 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> index 2e433fdbf2c3..3b4cd4b3de85 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> @@ -5,6 +5,7 @@
->  #include <linux/of_net.h>
->  #include <linux/pci.h>
->  #include <linux/bpf.h>
-> +#include <linux/sched/isolation.h>
->  #include <generated/utsrelease.h>
+> Mark, since the patch has changed I have dropped your Acked-by: tag. Are you
+> happy to give a new one ?
+> 
+> Changes in V4:
+> 
+> - Unified all three HWCAP array traversal per Will
+> 
+> Changes in V3: (https://patchwork.kernel.org/patch/11718113/)
+> 
+> - Moved name arrays to (arch/arm64/kernel/cpuinfo.c) to prevent a build warning
+> - Replaced string values with NULL for all compat features not possible on arm64
+> - Changed compat_hwcap_str[] iteration on size as some NULL values are expected
+> - Warn once after detecting any feature on arm64 that is not expected
+> 
+> Changes in V2: (https://patchwork.kernel.org/patch/11533755/)
+> 
+> - Defined COMPAT_KERNEL_HWCAP[2] and updated the name arrays per Mark
+> - Updated the commit message as required
+> 
+> Changes in V1: (https://patchwork.kernel.org/patch/11532945/)
+> 
+>  arch/arm64/include/asm/hwcap.h |   9 ++
+>  arch/arm64/kernel/cpuinfo.c    | 176 +++++++++++++++++----------------
+>  2 files changed, 101 insertions(+), 84 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/hwcap.h b/arch/arm64/include/asm/hwcap.h
+> index 22f73fe09030..6493a4c63a2f 100644
+> --- a/arch/arm64/include/asm/hwcap.h
+> +++ b/arch/arm64/include/asm/hwcap.h
+> @@ -8,18 +8,27 @@
+>  #include <uapi/asm/hwcap.h>
+>  #include <asm/cpufeature.h>
 >  
->  /* Local includes */
-> @@ -11002,7 +11003,7 @@ static int i40e_init_msix(struct i40e_pf *pf)
->  	 * will use any remaining vectors to reach as close as we can to the
->  	 * number of online CPUs.
->  	 */
-> -	cpus = num_online_cpus();
-> +	cpus = num_housekeeping_cpus();
->  	pf->num_lan_msix = min_t(int, cpus, vectors_left / 2);
->  	vectors_left -= pf->num_lan_msix;
+> +#define COMPAT_HWCAP_SWP	(1 << 0)
+>  #define COMPAT_HWCAP_HALF	(1 << 1)
+>  #define COMPAT_HWCAP_THUMB	(1 << 2)
+> +#define COMPAT_HWCAP_26BIT	(1 << 3)
+>  #define COMPAT_HWCAP_FAST_MULT	(1 << 4)
+> +#define COMPAT_HWCAP_FPA	(1 << 5)
+>  #define COMPAT_HWCAP_VFP	(1 << 6)
+>  #define COMPAT_HWCAP_EDSP	(1 << 7)
+> +#define COMPAT_HWCAP_JAVA	(1 << 8)
+> +#define COMPAT_HWCAP_IWMMXT	(1 << 9)
+> +#define COMPAT_HWCAP_CRUNCH	(1 << 10)
+> +#define COMPAT_HWCAP_THUMBEE	(1 << 11)
+>  #define COMPAT_HWCAP_NEON	(1 << 12)
+>  #define COMPAT_HWCAP_VFPv3	(1 << 13)
+> +#define COMPAT_HWCAP_VFPV3D16	(1 << 14)
+>  #define COMPAT_HWCAP_TLS	(1 << 15)
+>  #define COMPAT_HWCAP_VFPv4	(1 << 16)
+>  #define COMPAT_HWCAP_IDIVA	(1 << 17)
+>  #define COMPAT_HWCAP_IDIVT	(1 << 18)
+>  #define COMPAT_HWCAP_IDIV	(COMPAT_HWCAP_IDIVA|COMPAT_HWCAP_IDIVT)
+> +#define COMPAT_HWCAP_VFPD32	(1 << 19)
+>  #define COMPAT_HWCAP_LPAE	(1 << 20)
+>  #define COMPAT_HWCAP_EVTSTRM	(1 << 21)
 >  
-> -- 
-> 2.27.0
+> diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+> index d0076c2159e6..04640f5f9f0f 100644
+> --- a/arch/arm64/kernel/cpuinfo.c
+> +++ b/arch/arm64/kernel/cpuinfo.c
+> @@ -43,94 +43,93 @@ static const char *icache_policy_str[] = {
+>  unsigned long __icache_flags;
+>  
+>  static const char *const hwcap_str[] = {
+> -	"fp",
+> -	"asimd",
+> -	"evtstrm",
+> -	"aes",
+> -	"pmull",
+> -	"sha1",
+> -	"sha2",
+> -	"crc32",
+> -	"atomics",
+> -	"fphp",
+> -	"asimdhp",
+> -	"cpuid",
+> -	"asimdrdm",
+> -	"jscvt",
+> -	"fcma",
+> -	"lrcpc",
+> -	"dcpop",
+> -	"sha3",
+> -	"sm3",
+> -	"sm4",
+> -	"asimddp",
+> -	"sha512",
+> -	"sve",
+> -	"asimdfhm",
+> -	"dit",
+> -	"uscat",
+> -	"ilrcpc",
+> -	"flagm",
+> -	"ssbs",
+> -	"sb",
+> -	"paca",
+> -	"pacg",
+> -	"dcpodp",
+> -	"sve2",
+> -	"sveaes",
+> -	"svepmull",
+> -	"svebitperm",
+> -	"svesha3",
+> -	"svesm4",
+> -	"flagm2",
+> -	"frint",
+> -	"svei8mm",
+> -	"svef32mm",
+> -	"svef64mm",
+> -	"svebf16",
+> -	"i8mm",
+> -	"bf16",
+> -	"dgh",
+> -	"rng",
+> -	"bti",
+> +	[KERNEL_HWCAP_FP]		= "fp",
+> +	[KERNEL_HWCAP_ASIMD]		= "asimd",
+> +	[KERNEL_HWCAP_EVTSTRM]		= "evtstrm",
+> +	[KERNEL_HWCAP_AES]		= "aes",
+> +	[KERNEL_HWCAP_PMULL]		= "pmull",
+> +	[KERNEL_HWCAP_SHA1]		= "sha1",
+> +	[KERNEL_HWCAP_SHA2]		= "sha2",
+> +	[KERNEL_HWCAP_CRC32]		= "crc32",
+> +	[KERNEL_HWCAP_ATOMICS]		= "atomics",
+> +	[KERNEL_HWCAP_FPHP]		= "fphp",
+> +	[KERNEL_HWCAP_ASIMDHP]		= "asimdhp",
+> +	[KERNEL_HWCAP_CPUID]		= "cpuid",
+> +	[KERNEL_HWCAP_ASIMDRDM]		= "asimdrdm",
+> +	[KERNEL_HWCAP_JSCVT]		= "jscvt",
+> +	[KERNEL_HWCAP_FCMA]		= "fcma",
+> +	[KERNEL_HWCAP_LRCPC]		= "lrcpc",
+> +	[KERNEL_HWCAP_DCPOP]		= "dcpop",
+> +	[KERNEL_HWCAP_SHA3]		= "sha3",
+> +	[KERNEL_HWCAP_SM3]		= "sm3",
+> +	[KERNEL_HWCAP_SM4]		= "sm4",
+> +	[KERNEL_HWCAP_ASIMDDP]		= "asimddp",
+> +	[KERNEL_HWCAP_SHA512]		= "sha512",
+> +	[KERNEL_HWCAP_SVE]		= "sve",
+> +	[KERNEL_HWCAP_ASIMDFHM]		= "asimdfhm",
+> +	[KERNEL_HWCAP_DIT]		= "dit",
+> +	[KERNEL_HWCAP_USCAT]		= "uscat",
+> +	[KERNEL_HWCAP_ILRCPC]		= "ilrcpc",
+> +	[KERNEL_HWCAP_FLAGM]		= "flagm",
+> +	[KERNEL_HWCAP_SSBS]		= "ssbs",
+> +	[KERNEL_HWCAP_SB]		= "sb",
+> +	[KERNEL_HWCAP_PACA]		= "paca",
+> +	[KERNEL_HWCAP_PACG]		= "pacg",
+> +	[KERNEL_HWCAP_DCPODP]		= "dcpodp",
+> +	[KERNEL_HWCAP_SVE2]		= "sve2",
+> +	[KERNEL_HWCAP_SVEAES]		= "sveaes",
+> +	[KERNEL_HWCAP_SVEPMULL]		= "svepmull",
+> +	[KERNEL_HWCAP_SVEBITPERM]	= "svebitperm",
+> +	[KERNEL_HWCAP_SVESHA3]		= "svesha3",
+> +	[KERNEL_HWCAP_SVESM4]		= "svesm4",
+> +	[KERNEL_HWCAP_FLAGM2]		= "flagm2",
+> +	[KERNEL_HWCAP_FRINT]		= "frint",
+> +	[KERNEL_HWCAP_SVEI8MM]		= "svei8mm",
+> +	[KERNEL_HWCAP_SVEF32MM]		= "svef32mm",
+> +	[KERNEL_HWCAP_SVEF64MM]		= "svef64mm",
+> +	[KERNEL_HWCAP_SVEBF16]		= "svebf16",
+> +	[KERNEL_HWCAP_I8MM]		= "i8mm",
+> +	[KERNEL_HWCAP_BF16]		= "bf16",
+> +	[KERNEL_HWCAP_DGH]		= "dgh",
+> +	[KERNEL_HWCAP_RNG]		= "rng",
+> +	[KERNEL_HWCAP_BTI]		= "bti",
+>  	/* reserved for "mte" */
+> -	NULL
+>  };
 
-For patches 1 and 2:
+With this initialisation, we no longer need the "reserved for mte"
+string.
 
-Reviewed-by: Marcelo Tosatti <mtosatti@redhat.com>
+Otherwise, feel free to add:
 
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
