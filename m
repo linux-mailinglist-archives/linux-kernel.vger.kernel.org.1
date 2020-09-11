@@ -2,105 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BABD265EDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F3F265EF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725815AbgIKLg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 07:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgIKLgJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:36:09 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C66C061795
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 04:36:08 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j2so11143584wrx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 04:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ROqzDYH2GWYM03ZSU07Jdgz37KQwQ40XxoRk8JD+TfA=;
-        b=U16qJ5NMAwDC6g/alubwUiD2DCT0aJtaJaowLTNkDEK02oXkyuE17uyB71I8XjKcUn
-         Oj1V+twOY/oc+NXpqGTg+KEvB+Hhj4rCDQ7+RKHidMWQ8jU1Jrtd2m6v6DPAO/2GMy8D
-         nHL4jQTVt4Chj3q8/u3mVfb17Mo34LmngzIeSzFU1FCTE/sBInI237nHWgS5WTaxzTsF
-         oQpVfGt82Ket8KLic/wKsOhzOd7TfsPWDLT1QlWZv9fqjErjYu91LiOVxBBeyFCk/ZY1
-         gzrUpRrLZuyge0BsxkP0GNLGPTGvxpABLc4ezQrfMLDd6iSG/r7D65+ZRuDv6gLX/Kvd
-         4s4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ROqzDYH2GWYM03ZSU07Jdgz37KQwQ40XxoRk8JD+TfA=;
-        b=PlUwxP0r4uFJznfedDjPrJ4qy9sYfwxvoZUXlcNVd4SKEDQ2sy+B0HQs2/ZHO8XnfP
-         McKnHlEdAsiifBye6OpT0wIcqLRlWVsRfLyHSs/GkzCFTS3S0V53sjOsKth3WEcj6g2c
-         rn9ROxNF5qWZyeaPzVpODW7dbiTGIyMIRancLuxptXvvuonseaVKVvRHHUjsMgmBKzZg
-         gfXMF/e6qyZHXWytGp1I4zKzcnI5E7hqlR7RHnywsJkcxkHBS/1iORn3QnGrdFd2XEhB
-         lk7m8YWDGwIExUMdxDBLy7y7P68hRJLSNdcJ/UxWt4k0W+4xE7V3dt6TS2rCwUZPpEny
-         ve+Q==
-X-Gm-Message-State: AOAM531irAirFx7JxKmXIf2hJ5mLl1BmyljMEHZmUlgQovL1mc87Niib
-        eavGnAJzsjc9dYczTVMkjSY=
-X-Google-Smtp-Source: ABdhPJyOGi2dx1dxviGDvQdJEqt/EeYPVvT2aETHZSh69NTkv1l/vSh40bPwIrPOobBK5Bzc6uZWXg==
-X-Received: by 2002:adf:e843:: with SMTP id d3mr1610921wrn.290.1599824167385;
-        Fri, 11 Sep 2020 04:36:07 -0700 (PDT)
-Received: from ubuntu-laptop ([2a01:598:b906:6939:8868:1825:7dd4:faeb])
-        by smtp.googlemail.com with ESMTPSA id m185sm3899728wmf.5.2020.09.11.04.36.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 11 Sep 2020 04:36:06 -0700 (PDT)
-Message-ID: <a6c74afbead6741f6851ced377c7eccbb4a81196.camel@gmail.com>
-Subject: Re: [PATCH RFC] mm: Let readahead submit larger batches of pages in
- case of ra->ra_pages == 0
-From:   Bean Huo <huobean@gmail.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, beanhuo@micron.com,
-        Richard Weinberger <richard@nod.at>
-Date:   Fri, 11 Sep 2020 13:36:00 +0200
-In-Reply-To: <20200911094709.GB14158@infradead.org>
-References: <20200904144807.31810-1-huobean@gmail.com>
-         <20200904110938.d9a2cb53a58e67a15c960f47@linux-foundation.org>
-         <ef82be594709a8f954f4933968bd96888e589df3.camel@gmail.com>
-         <20200911094709.GB14158@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1725774AbgIKLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 07:44:30 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11820 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725808AbgIKLnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:43:31 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id BFDE4D7AD17869E56064;
+        Fri, 11 Sep 2020 19:43:24 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
+ 19:43:21 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <jack@suse.com>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ext2: Fix some kernel-doc warnings in balloc.c
+Date:   Fri, 11 Sep 2020 19:40:36 +0800
+Message-ID: <20200911114036.60616-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-11 at 10:47 +0100, Christoph Hellwig wrote:
-> > > Doesn't this defeat the purpose of having ->ra_pages==0?
-> > 
-> > 
-> > Hi Andrew
-> > Sorry, I am still not quite understanding your above three
-> > questions. 
-> > 
-> > Based on my shallow understanding, ra_pages is associated with
-> > read_ahead_kb. Seems ra_pages controls the maximum read-ahead
-> > window
-> > size, but it doesn't work when the requested size exceeds
-> > ra_pages. 
-> > 
-> > If I set the read_ahead_kb to 0, also, as Christoph mentioned, MTD
-> > forcibly sets ra_pages to 0.  I think the intention is that only
-> > wants
-> > to disable read-ahead, however, doesn't want
-> > generic_file_buffered_read() to split the request and read data
-> > with
-> > 4KB chunk size separately.
-> 
-> They way I understood Richard this is intentional.
+Fixes the following W=1 kernel build warning(s):
 
-Hi Christoph
-Thanks. understood now, MTD expects this result. Even so, I think this
-patch doesn't impact MTD because the flash-based FS only achieved the
-readpage. Inside __do_page_cache_readahead will use mapping->a_ops-
->readpage to read data.
+fs/ext2/balloc.c:203: warning: Excess function parameter 'rb_root' description in '__rsv_window_dump'
+fs/ext2/balloc.c:294: warning: Excess function parameter 'rb_root' description in 'search_reserve_window'
+fs/ext2/balloc.c:878: warning: Excess function parameter 'rsv' description in 'alloc_new_reservation'
 
-Thanks,
-Bean
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ fs/ext2/balloc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index fa9c951d3471..1f3f4326bf3c 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -189,7 +189,7 @@ static void group_adjust_blocks(struct super_block *sb, int group_no,
+ 
+ /**
+  * __rsv_window_dump() -- Dump the filesystem block allocation reservation map
+- * @rb_root:		root of per-filesystem reservation rb tree
++ * @root:		root of per-filesystem reservation rb tree
+  * @verbose:		verbose mode
+  * @fn:			function which wishes to dump the reservation map
+  *
+@@ -282,7 +282,7 @@ goal_in_my_reservation(struct ext2_reserve_window *rsv, ext2_grpblk_t grp_goal,
+ 
+ /**
+  * search_reserve_window()
+- * @rb_root:		root of reservation tree
++ * @root:		root of reservation tree
+  * @goal:		target allocation block
+  *
+  * Find the reserved window which includes the goal, or the previous one
+@@ -859,7 +859,7 @@ static int find_next_reservable_window(
+  *
+  *	failed: we failed to find a reservation window in this group
+  *
+- *	@rsv: the reservation
++ *	@my_rsv: the reservation
+  *
+  *	@grp_goal: The goal (group-relative).  It is where the search for a
+  *		free reservable space should start from.
+-- 
+2.17.1
 
