@@ -2,256 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3053E266770
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5109D2667AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgIKRnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
+        id S1726002AbgIKRrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725790AbgIKRmz (ORCPT
+        with ESMTP id S1725884AbgIKRrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:42:55 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A13C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:42:55 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id l126so7921009pfd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:42:55 -0700 (PDT)
+        Fri, 11 Sep 2020 13:47:16 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51BFC0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id c196so8074766pfc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FdWGaxXRUitH6K3FRqOi/nwR0BmCC6UFg5CIc1k6uhM=;
-        b=diBEe2iSkZ3bLkSY0YmMboYhINNcw0nTH5UBHo/Xtw8YDpxOVXaVhE88DjDlg5Z7YV
-         D4hDOSe9/bJX64MJKxJvedW6MqV2VptIlS4P0k1aIcrq4XzXxx+76ObN12VM+oYvDP2k
-         hXUDXbBUPklMVDeFMQu6Wh0lcxeMV83pfDvuRBUdhSWtBT2C5GYzZayQvrwe3COcXyTj
-         kWAaANHmuV+U6On0ec1S95/2w7icVixqSHQfPG1sqmz6tH6ru9VSRE1DP9yAxRMurdDm
-         HyPZa7/GuVdaJ5WLHCy1CyWjzxWg5qrZ2ttcFU5pQyAllybUB8b1DcQWxFy3QpWcvKo8
-         /LuQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CgMtX/bQdS+iljLhW5Xz3FoT/kLLfD7hEC/fOvVMJlE=;
+        b=lF42bRcPysLjAz+4XpAo+NifmoYEPSBJzRIvemjHfGghsYHgR1QoV/gvIesYoL6itg
+         fP82ZaiRVqJwao1iq3lLyvojkrdgQL4zeKJ0zjStTVlrHIvIY1mXMYowjT05Z+o2GJhC
+         uSVPB7TOLIEkNXActRv3e8S3wyfIiHvKTLTuI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FdWGaxXRUitH6K3FRqOi/nwR0BmCC6UFg5CIc1k6uhM=;
-        b=sDJUkp9+2dKaPfkAGcvbTG4TCcH1XP36xyXsDDE381lvybzUWoik3A/zldlL9PAhpM
-         uKpDEs5kL9yOn3k0IEx5s3krqh9m0EDc13jZ3WF3QVoZw8ABH+pl5zodfcOpaXQdjs53
-         1lciNpq2pPBuW/SgZ2Tu1NWFHXC81RasiKb9C6XHJ2I7oMcn2jrcqxt9+MH2RENzrwbt
-         bVpmWka+CO5480OMAAlPGP4/VE3zkoZ2P6hp/0UNugZyivbnrdWiiwXdgMsPGx5x78/p
-         lxZ+p3bg7o8qeAP/wfR52fth2wOh/AmbtTK0UlRG7MzM6bIrp3Yy8C0FNyI5tw5UjG/Q
-         hi6Q==
-X-Gm-Message-State: AOAM530GcgfYwyDaHAW4XwPmbvYdP4cl4Z/ppye4XcL8uVxNsBa+bKS2
-        rxknrUG2Ee9vqOGb41sERoGDQA==
-X-Google-Smtp-Source: ABdhPJwGCZMyn01NZcgFHHntzva+eWiW2tTIZd7Wec0SipaLhS8Dt1WPk13cccs9y/NCJHQ0Pk8pSA==
-X-Received: by 2002:aa7:911a:0:b029:13e:d13d:a13d with SMTP id 26-20020aa7911a0000b029013ed13da13dmr3121730pfh.37.1599846174703;
-        Fri, 11 Sep 2020 10:42:54 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id c128sm3061304pfb.126.2020.09.11.10.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 10:42:54 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 11:42:51 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tingwei Zhang <tingweiz@codeaurora.org>
-Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 21/24] coresight: cti: allow cti to be built as a
- module
-Message-ID: <20200911174251.GB613136@xps15>
-References: <20200821034445.967-1-tingwei@codeaurora.org>
- <20200821034445.967-22-tingwei@codeaurora.org>
- <20200910230303.GE590446@xps15>
- <010101747b1340f9-b0542779-88d7-4193-b53b-5b5bfab5d6a3-000000@us-west-2.amazonses.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CgMtX/bQdS+iljLhW5Xz3FoT/kLLfD7hEC/fOvVMJlE=;
+        b=h/FC+Ldz+J3R3FfrAJe1DzinRpwFeMpwb3DrzW/kWptcUXKHxF6MVi6o1Ikg4vVhWt
+         DfRq2WvA5y8Cu/jGJEOd8ctvsgUzWc8fqFzkiFJntPse2Qnb+nKhAG16CV6o7xcZUcXx
+         1xAlk95V5/bE3Kcb7p2IbawnSbjZllNRH+Wv4+H5lGFjTd1n50oIghgOjAm9KBmpXZgU
+         y/v7Z8ohXlpWczRWCTt4HK4jta+2PGxd9pWK6zto1wp2jmD7MY5VHutLp+pEG/BF2gb5
+         j62Yw3TcAcqvhQLFLHzAITzbjMuSnjz46uVFuX3Na7lZ6zSD7xYFNkNlALgtl03XHhhV
+         okbA==
+X-Gm-Message-State: AOAM532yEUKbMX/mV/ZZMHRjGFZILFWhst+yZwgokEdOiGXw/12t4nrU
+        DZ9vvCj9FSiA6I/yO37Y8pxcb380vfMYsCEM
+X-Google-Smtp-Source: ABdhPJxNtBdyzMkYndGvJzc/+tnBt6ycOD7P1IyvK0XKGbemUwW2lU1PpHqixxbAgdo+QItKKfXxZA==
+X-Received: by 2002:a17:902:8f88:b029:d0:cc03:3ba with SMTP id z8-20020a1709028f88b02900d0cc0303bamr3297714plo.40.1599846434800;
+        Fri, 11 Sep 2020 10:47:14 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
+        by smtp.gmail.com with ESMTPSA id v13sm2349434pjr.12.2020.09.11.10.47.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 10:47:13 -0700 (PDT)
+From:   Cheng-Yi Chiang <cychiang@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Srinivasa Rao <srivasam@codeaurora.org>, dianders@chromium.org,
+        dgreid@chromium.org, tzungbi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v10 0/3] Add documentation and machine driver for SC7180 sound card
+Date:   Sat, 12 Sep 2020 01:47:02 +0800
+Message-Id: <20200911174705.759011-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <010101747b1340f9-b0542779-88d7-4193-b53b-5b5bfab5d6a3-000000@us-west-2.amazonses.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 02:51:33AM +0000, Tingwei Zhang wrote:
-> On Fri, Sep 11, 2020 at 07:03:03AM +0800, Mathieu Poirier wrote:
-> > On Fri, Aug 21, 2020 at 11:44:42AM +0800, Tingwei Zhang wrote:
-> > > Allow to build coresight-cti as a module, for ease of development.
-> > > 
-> > > - Kconfig becomes a tristate, to allow =m
-> > > - append -core to source file name to allow module to
-> > >   be called coresight-cti by the Makefile
-> > > - add an cti_remove function, for module unload
-> > > - move cti_remove_conn_xrefs to cti_remove
-> > > - add a MODULE_DEVICE_TABLE for autoloading on boot
-> > > 
-> > > Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> > > Tested-by: Mike Leach <mike.leach@linaro.org>
-> > > Reviewed-by Mike Leach <mike.leach@linaro.org>
-> > > ---
-> > >  drivers/hwtracing/coresight/Kconfig           |  5 ++++-
-> > >  drivers/hwtracing/coresight/Makefile          |  4 ++--
-> > >  .../{coresight-cti.c => coresight-cti-core.c} | 20 ++++++++++++++++++-
-> > >  .../hwtracing/coresight/coresight-platform.c  |  1 +
-> > >  drivers/hwtracing/coresight/coresight.c       |  1 +
-> > >  5 files changed, 27 insertions(+), 4 deletions(-)
-> > >  rename drivers/hwtracing/coresight/{coresight-cti.c =>
-> > coresight-cti-core.c} (98%)
-> > > 
-> > > diff --git a/drivers/hwtracing/coresight/Kconfig
-> > b/drivers/hwtracing/coresight/Kconfig
-> > > index f31778dd0b5d..b04aae2ceecc 100644
-> > > --- a/drivers/hwtracing/coresight/Kconfig
-> > > +++ b/drivers/hwtracing/coresight/Kconfig
-> > > @@ -136,7 +136,7 @@ config CORESIGHT_CPU_DEBUG
-> > >  	  module will be called coresight-cpu-debug.
-> > >  
-> > >  config CORESIGHT_CTI
-> > > -	bool "CoreSight Cross Trigger Interface (CTI) driver"
-> > > +	tristate "CoreSight Cross Trigger Interface (CTI) driver"
-> > >  	depends on ARM || ARM64
-> > >  	help
-> > >  	  This driver provides support for CoreSight CTI and CTM
-> > components.
-> > > @@ -147,6 +147,9 @@ config CORESIGHT_CTI
-> > >  	  halt compared to disabling sources and sinks normally in driver
-> > >  	  software.
-> > >  
-> > > +	  To compile this driver as a module, choose M here: the
-> > > +	  module will be called coresight-cti.
-> > > +
-> > >  config CORESIGHT_CTI_INTEGRATION_REGS
-> > >  	bool "Access CTI CoreSight Integration Registers"
-> > >  	depends on CORESIGHT_CTI
-> > > diff --git a/drivers/hwtracing/coresight/Makefile
-> > b/drivers/hwtracing/coresight/Makefile
-> > > index f2a568b969c4..0359d5a1588f 100644
-> > > --- a/drivers/hwtracing/coresight/Makefile
-> > > +++ b/drivers/hwtracing/coresight/Makefile
-> > > @@ -19,6 +19,6 @@ coresight-etm4x-y := coresight-etm4x-core.o
-> > coresight-etm4x-sysfs.o
-> > >  obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
-> > >  obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
-> > >  obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
-> > > -obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o \
-> > > -				coresight-cti-platform.o \
-> > > +obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
-> > > +coresight-cti-y := coresight-cti-core.o	coresight-cti-platform.o \
-> > >  				coresight-cti-sysfs.o
-> > > diff --git a/drivers/hwtracing/coresight/coresight-cti.c
-> > b/drivers/hwtracing/coresight/coresight-cti-core.c
-> > > similarity index 98%
-> > > rename from drivers/hwtracing/coresight/coresight-cti.c
-> > > rename to drivers/hwtracing/coresight/coresight-cti-core.c
-> > > index ec286d617b73..d6d5419ec21c 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-cti.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> > > @@ -838,7 +838,6 @@ static void cti_device_release(struct device *dev)
-> > >  	struct cti_drvdata *ect_item, *ect_tmp;
-> > >  
-> > >  	mutex_lock(&ect_mutex);
-> > > -	cti_remove_conn_xrefs(drvdata);
-> > >  	cti_pm_release(drvdata);
-> > >  
-> > >  	/* remove from the list */
-> > > @@ -853,6 +852,18 @@ static void cti_device_release(struct device *dev)
-> > >  	if (drvdata->csdev_release)
-> > >  		drvdata->csdev_release(dev);
-> > >  }
-> > > +static int __exit cti_remove(struct amba_device *adev)
-> > > +{
-> > > +	struct cti_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-> > > +
-> > > +	mutex_lock(&ect_mutex);
-> > > +	cti_remove_conn_xrefs(drvdata);
-> > > +	mutex_unlock(&ect_mutex);
-> > > +
-> > > +	coresight_unregister(drvdata->csdev);
-> > > +
-> > > +	return 0;
-> > 
-> > Once again my recommendations from V8 were not followed.
-> >
-> 
-> Sorry for missing your comment. I'll add reason for above change
-> in commit message in V11.
->
+Note:
+- The machine driver patch is made by the collaboration of
+  Cheng-Yi Chiang <cychiang@chromium.org>
+  Rohit kumar <rohitkr@codeaurora.org>
+  Ajit Pandey <ajitp@codeaurora.org>
+  But Ajit has left codeaurora.
+- This patch series needs HDMI DAI name SC7180_LPASS_DP defined in sc7180-lpass.h.
+  It will be posted in the newer patchset of https://patchwork.kernel.org/patch/11745565/
 
-I have a couple more things to check on this set - please hold off on V11.  I
-will let you know when I'm done.
- 
-> Thanks,
-> Tingwei
->  
-> > > +}
-> > >  
-> > >  static int cti_probe(struct amba_device *adev, const struct amba_id
-> > *id)
-> > >  {
-> > > @@ -973,6 +984,8 @@ static const struct amba_id cti_ids[] = {
-> > >  	{ 0, 0},
-> > >  };
-> > >  
-> > > +MODULE_DEVICE_TABLE(amba, cti_ids);
-> > > +
-> > >  static struct amba_driver cti_driver = {
-> > >  	.drv = {
-> > >  		.name	= "coresight-cti",
-> > > @@ -980,6 +993,7 @@ static struct amba_driver cti_driver = {
-> > >  		.suppress_bind_attrs = true,
-> > >  	},
-> > >  	.probe		= cti_probe,
-> > > +	.remove		= cti_remove,
-> > >  	.id_table	= cti_ids,
-> > >  };
-> > >  
-> > > @@ -1002,3 +1016,7 @@ static void __exit cti_exit(void)
-> > >  
-> > >  module_init(cti_init);
-> > >  module_exit(cti_exit);
-> > > +
-> > > +MODULE_AUTHOR("Mike Leach <mike.leach@linaro.org>");
-> > > +MODULE_DESCRIPTION("Arm CoreSight CTI Driver");
-> > > +MODULE_LICENSE("GPL v2");
-> > > diff --git a/drivers/hwtracing/coresight/coresight-platform.c
-> > b/drivers/hwtracing/coresight/coresight-platform.c
-> > > index 227e234a2470..3629b7885aca 100644
-> > > --- a/drivers/hwtracing/coresight/coresight-platform.c
-> > > +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> > > @@ -75,6 +75,7 @@ coresight_find_csdev_by_fwnode(struct fwnode_handle
-> > *r_fwnode)
-> > >  	}
-> > >  	return csdev;
-> > >  }
-> > > +EXPORT_SYMBOL_GPL(coresight_find_csdev_by_fwnode);
-> > >  
-> > >  #ifdef CONFIG_OF
-> > >  static inline bool of_coresight_legacy_ep_is_input(struct device_node
-> > *ep)
-> > > diff --git a/drivers/hwtracing/coresight/coresight.c
-> > b/drivers/hwtracing/coresight/coresight.c
-> > > index 6c9f6930b8b8..668963b4b7d4 100644
-> > > --- a/drivers/hwtracing/coresight/coresight.c
-> > > +++ b/drivers/hwtracing/coresight/coresight.c
-> > > @@ -288,6 +288,7 @@ void coresight_set_assoc_ectdev_mutex(struct
-> > coresight_device *csdev,
-> > >  	csdev->ect_dev = ect_csdev;
-> > >  	mutex_unlock(&coresight_mutex);
-> > >  }
-> > > +EXPORT_SYMBOL_GPL(coresight_set_assoc_ectdev_mutex);
-> > >  
-> > >  static int coresight_enable_sink(struct coresight_device *csdev,
-> > >  				 u32 mode, void *data)
-> > > -- 
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> > Forum,
-> > > a Linux Foundation Collaborative Project
-> > > 
+Changes from v1 to v2:
+- Ducumentation: Addressed all suggestions from Doug.
+- Machine driver:
+  - Fix comment style for license.
+  - Sort includes.
+  - Remove sc7180_snd_hw_params.
+  - Remove sc7180_dai_init and use aux device instead for headset jack registration.
+  - Statically define format for Primary MI2S.
+  - Atomic is not a concern because there is mutex in card to make sure
+    startup and shutdown happen sequentially.
+  - Fix missing return -EINVAL in startup.
+  - Use static sound card.
+  - Use devm_kzalloc to avoid kfree.
+
+Changes from v2 to v3:
+- Ducumentation: Addressed suggestions from Srini.
+- Machine driver:
+  - Reuse qcom_snd_parse_of to parse properties.
+  - Remove playback-only and capture-only.
+  - Misc fixes to address comments.
+
+Changes from v3 to v4:
+- Ducumentation: Addressed suggestions from Rob.
+ - Remove definition of dai.
+ - Use 'sound-dai: true' for sound-dai schema.
+ - Add reg property to pass 'make dt_binding_check' check although reg is not used in the driver.
+- Machine driver:
+ - Add Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+
+Changes from v4 to v5:
+- Documentation: Addressed suggestions from Rob.
+ - Add definition for "#address-cells" and "#size-cells".
+ - Add additionalProperties: false
+ - Add required properties.
+
+Changes from v5 to v6:
+- Documentation: Addressed suggestions from Rob.
+ - Drop contains in compatible strings.
+ - Only allow dai-link@[0-9]
+ - Remove reg ref since it has a type definition already.
+
+Changes from v6 to v7
+- Documentation:
+  - Add headset-jack and hdmi-jack to specify the codec
+    responsible for jack detection.
+- HDMI codec driver:
+  - Use component set_jack ops instead of exporting hdmi_codec_set_jack_detect.
+- Machine driver:
+  - Removed aux device following Stephan's suggestion.
+  - Use headset-jack and hdmi-jack to specify the codec
+    responsible for jack detection.
+  - Add support for HDMI(actually DP) playback.
+
+Changes from v7 to v8
+- Documentation:
+  - Remove headset-jack and hdmi-jack.
+- Machine driver:
+  - Let machine driver decide whether there is a jack on the DAI.
+
+Changes from v8 to v9
+- hdmi-codec driver:
+  - Fixed the naming.
+- Machine driver:
+  - Fixed unused fields.
+  - Moved snd_soc_card_set_drvdata
+  - Keep the naming of HDMI as dai name until v5 of lpass-hdmi patches.
+
+Changes from v9 to v10
+- Documentation:
+  - Let compatible string be more specific for board configuration to allow
+    for future changes.
+- Machine driver:
+  - Fixed unused include and macro.
+  - Add temporary macro SC7180_LPASS_DP for future change in sc7180-lpass.h.
+  - Let sound card be dynamically allocated.
+  - Change compatible string accordingly.
+
+Ajit Pandey (1):
+  ASoC: qcom: sc7180: Add machine driver for sound card registration
+
+Cheng-Yi Chiang (2):
+  ASoC: hdmi-codec: Use set_jack ops to set jack
+  ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+
+ .../bindings/sound/qcom,sc7180.yaml           | 130 +++++++++
+ include/sound/hdmi-codec.h                    |   3 -
+ sound/soc/codecs/hdmi-codec.c                 |  12 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c     |   5 +-
+ .../mediatek/mt8183/mt8183-da7219-max98357.c  |   5 +-
+ .../mt8183/mt8183-mt6358-ts3a227-max98357.c   |   5 +-
+ sound/soc/qcom/Kconfig                        |  12 +
+ sound/soc/qcom/Makefile                       |   2 +
+ sound/soc/qcom/sc7180.c                       | 266 ++++++++++++++++++
+ sound/soc/rockchip/rockchip_max98090.c        |   3 +-
+ 10 files changed, 421 insertions(+), 22 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+ create mode 100644 sound/soc/qcom/sc7180.c
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
