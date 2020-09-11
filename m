@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CBC266586
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31843266584
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgIKRGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45494 "EHLO mail.kernel.org"
+        id S1726015AbgIKRFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:05:09 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:10397 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726256AbgIKPCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:02:35 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96F3E2244C;
-        Fri, 11 Sep 2020 15:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599836481;
-        bh=HtLkUWXhl5XAX6D7GAvZ5uZ8WYlaoexr13YPMrhinX8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m2hilndopgpM3i5Zr85FVrHoQiXHTDnClGX8KRviAY9HEr77R/8UGRPTAjCfWD7NW
-         cMGT0YRkENBOhhs6s66uohG28ICbHaNthrJfjGTlIbVMtDzesDvy0svVkVT30QhP8n
-         4K3pTPXwBJ8w8GP6r2X9LYf2sYI902a8P9r/9cXc=
-Received: by mail-ot1-f53.google.com with SMTP id g96so8553340otb.12;
-        Fri, 11 Sep 2020 08:01:21 -0700 (PDT)
-X-Gm-Message-State: AOAM531UFkJjKx4XGGsA8Fggh2QAbrsh4UX3VfpK1VsPR7FmPY1WP1HR
-        prZXUkXrbaLuANgMS91XxScF7K7+iZm55C/PXck=
-X-Google-Smtp-Source: ABdhPJxBvUOnWvNWSxd3QQ6q9HAFDX1c50DdJzWPSuvJpfyOY08Sgy4lcuMwSkGA/qIXDW6vtgunB8B+AY4P1aKEKoo=
-X-Received: by 2002:a9d:69c9:: with SMTP id v9mr1381498oto.90.1599836480811;
- Fri, 11 Sep 2020 08:01:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200904072905.25332-1-clin@suse.com> <20200904072905.25332-2-clin@suse.com>
-In-Reply-To: <20200904072905.25332-2-clin@suse.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 11 Sep 2020 18:01:09 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXEXvmO5mrTcKpqYUASBAQB-1=xLa0vg7KwmvOHMjaQ34w@mail.gmail.com>
-Message-ID: <CAMj1kXEXvmO5mrTcKpqYUASBAQB-1=xLa0vg7KwmvOHMjaQ34w@mail.gmail.com>
-Subject: Re: [PATCH 1/6] efistub: pass uefi secureboot flag via fdt params
-To:     Chester Lin <clin@suse.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1725955AbgIKPCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:02:36 -0400
+IronPort-SDR: xAo6en6rEUfu6F1AMIgNOA39SC5hKt1QbgHPE1wbvLbovX07L8xr9rkv0QLAngULZRJVcl7gn3
+ joeuHL6LpSPU3RBcFPUDBkEH4Rr5dstqYIPcgRQnKDj7k7AyrciYEQaX6dBMtr+O8mfPjnSJRt
+ LzoN5bQ9wAnofYQEpjlt2AWrx0Qh7ZeIGZ8HwNms964WmhMKd+6BsfPqf6OChsM1buaU4nXvLv
+ kB9HGpGP5qjB0xpQZ8kgARiD9iIAKw891T45xINMSjLwOl7p8ZdSw8lZIS5vCzZU/RgoKDFaQm
+ bg0=
+X-IronPort-AV: E=Sophos;i="5.76,415,1592863200"; 
+   d="scan'208";a="13831338"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 11 Sep 2020 17:01:49 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Fri, 11 Sep 2020 17:01:49 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Fri, 11 Sep 2020 17:01:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1599836509; x=1631372509;
+  h=from:to:cc:subject:date:message-id;
+  bh=rGnbFBeV98YZ6Jj0PFhBZ+Pm9hlOkM3MIOQgmK98Tx8=;
+  b=S7RNZ5vCOf6ybbKaiTe+UBeKM+64f2hKOTGlGlFHHgAWyfZ8HOT4atbi
+   ERMhgSm6Ou7mHsWrfDkkgVfjRa5zL6b/2J5VCUs2U4jAvyn75RDjJOSxo
+   K/Zwew2ZPZia4+dcHLC4Jj879HETcevXYMbhPF5Ltqmf6PL9wdvhxcCAR
+   s/2LJcuHDo38k+6CL6P6VL3hPZgKngRVKo99529URnupq2bl30ueGJZNi
+   /rljbQhQhuByBulmejlAMyWpslzRcOaoCgMKDBVKZ9QYRGoxlVCPb0pRw
+   bmFTEhc4FysZBLs37JQZt/yOs5C7cBm7WqRuh3i12lm2+4N0vqNhlfT+U
+   Q==;
+IronPort-SDR: Z2Qh7HYOE9HEncPGGLxSJmyY6VUNxlaZXWQOlMXLamvJHIJcJB1oWm8TZ2YLNFdwtyyc/j7/qs
+ Vl58Or6OOHMRuFISr9rrnI2uxVmWjd8glrNfbg4uuYAzV+OpZTLVnrToEAmrWCNycyfHSjdese
+ RmACkYqLTsefdqB+zW6dDpYivyg+zUfiHB5wXKydOkiU6TWrEImH7ajRd8G8koOJ9Vn5UAY1Cs
+ 3+17mAQHA45LU51cO882Ft9BnY7OESr749kX42eBAHfRFR31UzeTMhfJJdBGLmU2NMZHGIT7vQ
+ Tq4=
+X-IronPort-AV: E=Sophos;i="5.76,415,1592863200"; 
+   d="scan'208";a="13831337"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 11 Sep 2020 17:01:49 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.134])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id D138D280070;
+        Fri, 11 Sep 2020 17:01:48 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH] i2c: mxs: use MXS_DMA_CTRL_WAIT4END instead of DMA_CTRL_ACK
+Date:   Fri, 11 Sep 2020 17:01:39 +0200
+Message-Id: <20200911150139.13690-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 at 10:29, Chester Lin <clin@suse.com> wrote:
->
-> Add a new UEFI parameter: "linux,uefi-secure-boot" in fdt boot params
-> as other architectures have done in their own boot data. For example,
-> the boot_params->secure_boot in x86.
->
-> Signed-off-by: Chester Lin <clin@suse.com>
+The driver-specific usage of the DMA_CTRL_ACK flag was replaced with a
+custom flag in commit ceeeb99cd821 ("dmaengine: mxs: rename custom flag"),
+but i2c-mxs was not updated to use the new flag, completely breaking I2C
+transactions using DMA.
 
-Why do we need this flag? Can't the OS simply check the variable directly?
+Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+---
 
-> ---
->  drivers/firmware/efi/libstub/fdt.c | 39 +++++++++++++++++++++++++++++-
->  1 file changed, 38 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/firmware/efi/libstub/fdt.c b/drivers/firmware/efi/libstub/fdt.c
-> index 11ecf3c4640e..c9a341e4715f 100644
-> --- a/drivers/firmware/efi/libstub/fdt.c
-> +++ b/drivers/firmware/efi/libstub/fdt.c
-> @@ -136,6 +136,10 @@ static efi_status_t update_fdt(void *orig_fdt, unsigned long orig_fdt_size,
->         if (status)
->                 goto fdt_set_fail;
->
-> +       status = fdt_setprop_var(fdt, node, "linux,uefi-secure-boot", fdt_val32);
-> +       if (status)
-> +               goto fdt_set_fail;
-> +
->         if (IS_ENABLED(CONFIG_RANDOMIZE_BASE)) {
->                 efi_status_t efi_status;
->
-> @@ -199,6 +203,24 @@ static efi_status_t update_fdt_memmap(void *fdt, struct efi_boot_memmap *map)
->         return EFI_SUCCESS;
->  }
->
-> +static efi_status_t update_fdt_secboot(void *fdt, u32 secboot)
-> +{
-> +       int node = fdt_path_offset(fdt, "/chosen");
-> +       u32 fdt_val32;
-> +       int err;
-> +
-> +       if (node < 0)
-> +               return EFI_LOAD_ERROR;
-> +
-> +       fdt_val32 = cpu_to_fdt32(secboot);
-> +
-> +       err = fdt_setprop_inplace_var(fdt, node, "linux,uefi-secure-boot", fdt_val32);
-> +       if (err)
-> +               return EFI_LOAD_ERROR;
-> +
-> +       return EFI_SUCCESS;
-> +}
-> +
->  struct exit_boot_struct {
->         efi_memory_desc_t       *runtime_map;
->         int                     *runtime_entry_count;
-> @@ -208,6 +230,9 @@ struct exit_boot_struct {
->  static efi_status_t exit_boot_func(struct efi_boot_memmap *map,
->                                    void *priv)
->  {
-> +       efi_status_t status;
-> +       enum efi_secureboot_mode secboot_status;
-> +       u32 secboot_var = 0;
->         struct exit_boot_struct *p = priv;
->         /*
->          * Update the memory map with virtual addresses. The function will also
-> @@ -217,7 +242,19 @@ static efi_status_t exit_boot_func(struct efi_boot_memmap *map,
->         efi_get_virtmap(*map->map, *map->map_size, *map->desc_size,
->                         p->runtime_map, p->runtime_entry_count);
->
-> -       return update_fdt_memmap(p->new_fdt_addr, map);
-> +       status = update_fdt_memmap(p->new_fdt_addr, map);
-> +
-> +       if (status != EFI_SUCCESS)
-> +               return status;
-> +
-> +       secboot_status = efi_get_secureboot();
-> +
-> +       if (secboot_status == efi_secureboot_mode_enabled)
-> +               secboot_var = 1;
-> +
-> +       status = update_fdt_secboot(p->new_fdt_addr, secboot_var);
-> +
-> +       return status;
->  }
->
->  #ifndef MAX_FDT_SIZE
-> --
-> 2.26.1
->
+I'm a bit out of my depth here - I have no idea what these flags are
+supposed to do. Looking at ceeeb99cd821, this is what I came up with,
+and it fixes I2C communication with multiple devices (an EEPROM and a
+PCF85063TP RTC) on one of our i.MX28 boards.
+
+I run-tested this on a 5.4.y kernel; given how little is happening in
+these drivers nowadays, I assume that the fix is still valid on newer
+kernels...
+
+
+ drivers/i2c/busses/i2c-mxs.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-mxs.c b/drivers/i2c/busses/i2c-mxs.c
+index 9587347447f0..c4b08a924461 100644
+--- a/drivers/i2c/busses/i2c-mxs.c
++++ b/drivers/i2c/busses/i2c-mxs.c
+@@ -25,6 +25,7 @@
+ #include <linux/of_device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/dmaengine.h>
++#include <linux/dma/mxs-dma.h>
+ 
+ #define DRIVER_NAME "mxs-i2c"
+ 
+@@ -200,7 +201,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
+ 		dma_map_sg(i2c->dev, &i2c->sg_io[0], 1, DMA_TO_DEVICE);
+ 		desc = dmaengine_prep_slave_sg(i2c->dmach, &i2c->sg_io[0], 1,
+ 					DMA_MEM_TO_DEV,
+-					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++					DMA_PREP_INTERRUPT |
++					MXS_DMA_CTRL_WAIT4END);
+ 		if (!desc) {
+ 			dev_err(i2c->dev,
+ 				"Failed to get DMA data write descriptor.\n");
+@@ -228,7 +230,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
+ 		dma_map_sg(i2c->dev, &i2c->sg_io[1], 1, DMA_FROM_DEVICE);
+ 		desc = dmaengine_prep_slave_sg(i2c->dmach, &i2c->sg_io[1], 1,
+ 					DMA_DEV_TO_MEM,
+-					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++					DMA_PREP_INTERRUPT |
++					MXS_DMA_CTRL_WAIT4END);
+ 		if (!desc) {
+ 			dev_err(i2c->dev,
+ 				"Failed to get DMA data write descriptor.\n");
+@@ -260,7 +263,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
+ 		dma_map_sg(i2c->dev, i2c->sg_io, 2, DMA_TO_DEVICE);
+ 		desc = dmaengine_prep_slave_sg(i2c->dmach, i2c->sg_io, 2,
+ 					DMA_MEM_TO_DEV,
+-					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
++					DMA_PREP_INTERRUPT |
++					MXS_DMA_CTRL_WAIT4END);
+ 		if (!desc) {
+ 			dev_err(i2c->dev,
+ 				"Failed to get DMA data write descriptor.\n");
+-- 
+2.17.1
+
