@@ -2,181 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A75D2664B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B9E2664EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbgIKQo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbgIKPIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:08:22 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217D4C0612F3;
-        Fri, 11 Sep 2020 07:50:31 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id c2so12634400ljj.12;
-        Fri, 11 Sep 2020 07:50:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=keOmaMSC1f/6krcZUSHtu67VeNUhv2XTpQaabLC7Uxs=;
-        b=HcIv65g3o85yTMO5d3Qd2bJTGTIMibPKbLp5vphXPbT4Z7r0lWk1X0Uz+UoXX84Ojc
-         b/XSw2GCGUC49nK5TjR5jvIX/Ow0ZISBu/xcF51fJva9kl3M9raYXOVw4bQnqwI9wG1n
-         2JCZ5smTAliiSx49/jqQb/JAWawe4McWQTTCE5JW+zM0gdCIQnwwg/hn561LyS7fVCpB
-         NzsrvmP3f+uJZF7tqYGzFPI6VrC6T32EreOMJDA9jDLmapUACXuhIz5VMS4nFfoOUVWD
-         IHD1RZqyBn30jzBhpKkj2ijgp3UWakWvJDuMLSmw+a1B/ORRwIcO/mjmvhZii5zKrhAY
-         vVqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=keOmaMSC1f/6krcZUSHtu67VeNUhv2XTpQaabLC7Uxs=;
-        b=L2+H0KUH23US/mbmo7NIkqaIKe6h5rUqzXSXVSQy8A7yqnqSQAqPANIHvBcBFUCcT9
-         CgFrRMWLRy5YRlIllA8O5J282My9OPcsk8EAXPqYmGsgCFzeO5DBCIluQOUvbAC8lEVT
-         TSJo5PZP+4fp6Huu/R/Lz7dAvL7a6wiFh/sz7siR/FOIiHD333LH+tXuscxT9ROuC/bY
-         tNkJqQe1DVsv4xfz7dkay+CScwWTn+/1xw6ltaOrPjV9nNETe0Hbi2cQ5+rZ+gWjKkpx
-         fhF+obsBR2o++xa67Ozt4J/Kg1rbrLFxcFDA+cZOftLQk3Lv/ofAWEn+OnTxmedHpvHz
-         Dt9Q==
-X-Gm-Message-State: AOAM531lvRC8I5uLDoY76s26aX7OuHqq3ZSWvd2wsIKC4o+APp1e/Iqv
-        k8ExT2rlTcxPF/jRL7I3mso=
-X-Google-Smtp-Source: ABdhPJz96jWQ7avP9u0tV5ffhgxC3hXOAhFpEQMWJnI4tOBpx9/gReMaiGE6y+nOqEHgQUuQctGwoQ==
-X-Received: by 2002:a2e:98c8:: with SMTP id s8mr974424ljj.268.1599835829537;
-        Fri, 11 Sep 2020 07:50:29 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id 18sm465533lfg.29.2020.09.11.07.50.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 07:50:28 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew_Gabbasov@mentor.com, erosca@de.adit-jv.com
-References: <20200908151617.12199-1-jiada_wang@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6041c677-592b-388e-2eb6-3287a3d92e4b@gmail.com>
-Date:   Fri, 11 Sep 2020 17:50:28 +0300
+        id S1726034AbgIKQsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:48:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:11836 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726365AbgIKPHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:07:49 -0400
+IronPort-SDR: bKHopU7epsl1YDVPUUxC7cjPNg0tZAofEr/+Ckvk0PqZKiUYVB0T8+zk2xHDAQYuod2LWItiRr
+ +D3p3BclEo1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="156169574"
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="156169574"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 08:07:25 -0700
+IronPort-SDR: 4KNDny10BFkK+iQr+jUnPuRNxmW38V+91ARLv0S5o0x27rJZE6uaJy/wazA7H7JwpmBuamyGOO
+ UV+MIBei0Lcg==
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="481354710"
+Received: from basudipt-mobl1.gar.corp.intel.com (HELO [10.212.223.238]) ([10.212.223.238])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 08:07:24 -0700
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        gregkh@linuxfoundation.org,
+        Bard liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
+ <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
+ <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+ <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+ <20200910062223.GQ77521@vkoul-mobl>
+ <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
+ <20200911070649.GU77521@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
+Date:   Fri, 11 Sep 2020 09:50:54 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200908151617.12199-1-jiada_wang@mentor.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200911070649.GU77521@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.09.2020 18:16, Jiada Wang пишет:
-> From: Nick Dyer <nick.dyer@itdev.co.uk>
+Hi Vinod,
+
+>>>>>>>> + *	25		0 (Reserved)
+>>>>>>>> + *	24:22		Function Number [2:0]
+>>>>>>>> + *	21		Entity[6]
+>>>>>>>> + *	20:19		Control Selector[5:4]
+>>>>>>>> + *	18		0 (Reserved)
+>>>>>>>> + *	17:15		Control Number[5:3]
+>>>>>>>> + *	14		Next
+>>>>>>>> + *	13		MBQ
+>>>>>>>> + *	12:7		Entity[5:0]
+>>>>>>>> + *	6:3		Control Selector[3:0]
+>>>>>>>> + *	2:0		Control Number[2:0]
+
+[...]
+
+>>>>
+>>>> #define SDCA_CONTROL_DEST_MASK1 GENMASK(20, 19)
+>>>> #define SDCA_CONTROL_ORIG_MASK1 GENMASK(5, 4)
+>>>> #define SDCA_CONTROL_DEST_MASK2 GENMASK(6, 3)
+>>>> #define SDCA_CONTROL_ORIG_MASK2 GENMASK(3, 0)
 > 
-> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
-> when they are in a sleep state. It must be retried after a delay for the
-> chip to wake up.
+> I think I missed ORIG and DEST stuff, what does this mean here?
+
+If you missed this, it means my explanations are not good enough and I 
+need to make it clearer in the commit log/documentation. Point taken, 
+I'll improve this for the next version.
+
+> Relooking at the bit definition, for example 'Control Number' is defined
+> in both 17:15 as well as 2:0, why is that. Is it split?
 > 
-> Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
-> Acked-by: Yufeng Shen <miletus@chromium.org>
+> How does one program a control number into this?
 
-> (cherry picked from ndyer/linux/for-upstream commit 63fd7a2cd03c3a572a5db39c52f4856819e1835d)
+A Control Number is represented on 6 bits.
 
-Hello, Jiada!
+See the documentation above.
 
-In the comment to v2 Andy Shevchenko suggested that it should be better
-to remove the "cherry picked from ..." info from the commit message
-because that commit can't be found in the kernel.org git repo, and thus,
-it's not a very useful information.
+	17:15		Control Selector[5:3]
+	2:0		Control Selector[2:0]
 
-Also, please note that the original ACK from Yufeng Shen probably isn't
-valid anymore since you modified the patch. Hence it should be better to
-remove it.
+The 3 MSBs for into bits 17:15 of the address, and the 3 LSBs into bits 
+2:0 of the address. The second part is simpler for Control Number but 
+for entities and control selectors the LSB positions don't match.
 
+Yes it's convoluted but it was well-intended: in most cases, there is a 
+limited number of entities, control selectors, channel numbers, and 
+putting the LSBs together in the 16-LSB of the address helps avoid 
+reprogramming paging registers: all the addresses for a given function 
+typically map into the same page.
 
-You may also add my r-b and t-b tags to the commit message that I gave
-to the v2.
+That said, I am not sure the optimization is that great in the end, 
+because we end-up having to play with bits for each address. Fewer 
+changes of the paging registers but tons of operations in the core.
 
-> [gdavis: Forward port and fix conflicts.]
-> Signed-off-by: George G. Davis <george_davis@mentor.com>
-> [jiada: return exact errno when i2c_transfer & i2c_master_send fails,
-> 	add "_MS" suffix MXT_WAKEUP_TIME]
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> ---
->  drivers/input/touchscreen/atmel_mxt_ts.c | 45 ++++++++++++++++--------
->  1 file changed, 30 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-> index a2189739e30f..145780f78122 100644
-> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
-> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-> @@ -196,6 +196,7 @@ enum t100_type {
->  #define MXT_CRC_TIMEOUT		1000	/* msec */
->  #define MXT_FW_RESET_TIME	3000	/* msec */
->  #define MXT_FW_CHG_TIMEOUT	300	/* msec */
+I wasn't around when this mapping was defined, and it is what is is now. 
+There's hardware built based on this formula so we have to make it work.
 
-> +#define MXT_WAKEUP_TIME_MS	25	/* msec */
+Does this clarify the usage?
 
-I think Andy Shevchenko meant here that the "/* msec */" comment won't
-be needed and should be removed if _MS postfix is added to the name.
+If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am 
+all ears. At the end of the day, the mapping is pre-defined and we don't 
+have any degree of freedom. What I do want is that this macro/inline 
+function is shared by all codec drivers so that we don't have different 
+interpretations of how the address is constructed.
 
-But I think you should keep this hunk as it was in v2 and then there
-could be a new separate patch which renames all those timeouts at once.
-This will keep code consistent in regards to the chosen naming convention.
+Thanks,
+-Pierre
 
->  /* Command to unlock bootloader */
->  #define MXT_UNLOCK_CMD_MSB	0xaa
-> @@ -626,6 +627,7 @@ static int __mxt_read_reg(struct i2c_client *client,
->  	struct i2c_msg xfer[2];
->  	u8 buf[2];
->  	int ret;
-> +	bool retry = false;
->  
->  	buf[0] = reg & 0xff;
->  	buf[1] = (reg >> 8) & 0xff;
-> @@ -642,17 +644,22 @@ static int __mxt_read_reg(struct i2c_client *client,
->  	xfer[1].len = len;
->  	xfer[1].buf = val;
->  
-> -	ret = i2c_transfer(client->adapter, xfer, 2);
-> -	if (ret == 2) {
-> -		ret = 0;
-> -	} else {
-> -		if (ret >= 0)
-> -			ret = -EIO;
-> -		dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
-> -			__func__, ret);
-> +retry_read:
-> +	ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
-> +	if (ret != ARRAY_SIZE(xfer)) {
-> +		if (!retry) {
-> +			dev_dbg(&client->dev, "%s: i2c retry\n", __func__);
-> +			msleep(MXT_WAKEUP_TIME_MS);
-> +			retry = true;
-> +			goto retry_read;
-> +		} else {
-> +			dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
-> +				__func__, ret);
-> +			return ret < 0 ? ret : -EIO;
-> +		}
-
-Andy also suggested that it could be a cleaner to write such code like this:
-
-if (ret != ARRAY_SIZE(xfer)) {
-	if (!retry) {
-		...
-		goto retry_read;
-	}
-
-	dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
-		__func__, ret);
-
-	return ret < 0 ? ret : -EIO;
-}
-
->  	}
->  
-> -	return ret;
-> +	return 0;
->  }
-...
