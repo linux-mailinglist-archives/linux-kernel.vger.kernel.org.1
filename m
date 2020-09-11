@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211AF2661A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DA8266191
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgIKO5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52786 "EHLO mail.kernel.org"
+        id S1725898AbgIKOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:54:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbgIKNCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:02:20 -0400
+        id S1726180AbgIKNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:02:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC2B622276;
-        Fri, 11 Sep 2020 12:56:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 945EB22287;
+        Fri, 11 Sep 2020 12:56:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829012;
-        bh=T6IXcbTZtskK1L7YVm0OiBCn2pW7sfMMpBbYy0pK7wk=;
+        s=default; t=1599829020;
+        bh=Rd1MFRgUDEkTx/wiIJII+ZUZaJaafXMLUlnBw2t2XPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VEo5NBZOL6crJ4Y/k4Nq8MwUqwGLDETBBaj/KhfxtAdUEhiGVTsoE8rHjNDtif5aL
-         4c9aRyKN8+YD4sUZNCqmiAHgzWMrWw8hic1kkWnfKY9KbENJO484bO+SvTLdRs3iy+
-         iepwO6yNGPm0I2Qc0WoLXehcqjaLFlCNIBoG0OfU=
+        b=nPlkZFJBxSIkWT1/wUQY/Q3mLERZlWRoHCEf5kCnpNJU0HTnfTquv4n8SjWWqJoVE
+         unyC2DihD0X4iOr4beCrrD6amkjmBL2DNeQYqrt9Mw76WtcIeWKb5PESzwTqOkB51j
+         zkkAte+K7TvXkxwKnBGgKnBZgll9YYNfnhU6mdB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 04/71] hwmon: (applesmc) check status earlier.
-Date:   Fri, 11 Sep 2020 14:45:48 +0200
-Message-Id: <20200911122505.158628111@linuxfoundation.org>
+Subject: [PATCH 4.9 07/71] s390: dont trace preemption in percpu macros
+Date:   Fri, 11 Sep 2020 14:45:51 +0200
+Message-Id: <20200911122505.306213989@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -45,121 +44,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Sven Schnelle <svens@linux.ibm.com>
 
-[ Upstream commit cecf7560f00a8419396a2ed0f6e5d245ccb4feac ]
+[ Upstream commit 1196f12a2c960951d02262af25af0bb1775ebcc2 ]
 
-clang static analysis reports this representative problem
+Since commit a21ee6055c30 ("lockdep: Change hardirq{s_enabled,_context}
+to per-cpu variables") the lockdep code itself uses percpu variables. This
+leads to recursions because the percpu macros are calling preempt_enable()
+which might call trace_preempt_on().
 
-applesmc.c:758:10: warning: 1st function call argument is an
-  uninitialized value
-        left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-buffer is filled by the earlier call
-
-	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, ...
-
-This problem is reported because a goto skips the status check.
-Other similar problems use data from applesmc_read_key before checking
-the status.  So move the checks to before the use.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Henrik Rydberg <rydberg@bitmath.org>
-Link: https://lore.kernel.org/r/20200820131932.10590-1-trix@redhat.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+Reviewed-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/applesmc.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ arch/s390/include/asm/percpu.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-index 0af7fd311979d..587fc5c686b3c 100644
---- a/drivers/hwmon/applesmc.c
-+++ b/drivers/hwmon/applesmc.c
-@@ -758,15 +758,18 @@ static ssize_t applesmc_light_show(struct device *dev,
- 	}
+diff --git a/arch/s390/include/asm/percpu.h b/arch/s390/include/asm/percpu.h
+index 90240dfef76a1..5889c1ed84c46 100644
+--- a/arch/s390/include/asm/percpu.h
++++ b/arch/s390/include/asm/percpu.h
+@@ -28,7 +28,7 @@
+ 	typedef typeof(pcp) pcp_op_T__;					\
+ 	pcp_op_T__ old__, new__, prev__;				\
+ 	pcp_op_T__ *ptr__;						\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	ptr__ = raw_cpu_ptr(&(pcp));					\
+ 	prev__ = *ptr__;						\
+ 	do {								\
+@@ -36,7 +36,7 @@
+ 		new__ = old__ op (val);					\
+ 		prev__ = cmpxchg(ptr__, old__, new__);			\
+ 	} while (prev__ != old__);					\
+-	preempt_enable();						\
++	preempt_enable_notrace();					\
+ 	new__;								\
+ })
  
- 	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, buffer, data_length);
-+	if (ret)
-+		goto out;
- 	/* newer macbooks report a single 10-bit bigendian value */
- 	if (data_length == 10) {
- 		left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
- 		goto out;
- 	}
- 	left = buffer[2];
-+
-+	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
- 	if (ret)
- 		goto out;
--	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
- 	right = buffer[2];
- 
- out:
-@@ -814,12 +817,11 @@ static ssize_t applesmc_show_fan_speed(struct device *dev,
- 	sprintf(newkey, fan_speed_fmt[to_option(attr)], to_index(attr));
- 
- 	ret = applesmc_read_key(newkey, buffer, 2);
--	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
-+
-+	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
+@@ -67,7 +67,7 @@
+ 	typedef typeof(pcp) pcp_op_T__; 				\
+ 	pcp_op_T__ val__ = (val);					\
+ 	pcp_op_T__ old__, *ptr__;					\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	ptr__ = raw_cpu_ptr(&(pcp)); 				\
+ 	if (__builtin_constant_p(val__) &&				\
+ 	    ((szcast)val__ > -129) && ((szcast)val__ < 128)) {		\
+@@ -83,7 +83,7 @@
+ 			: [val__] "d" (val__)				\
+ 			: "cc");					\
+ 	}								\
+-	preempt_enable();						\
++	preempt_enable_notrace();					\
  }
  
- static ssize_t applesmc_store_fan_speed(struct device *dev,
-@@ -854,12 +856,11 @@ static ssize_t applesmc_show_fan_manual(struct device *dev,
- 	u8 buffer[2];
+ #define this_cpu_add_4(pcp, val) arch_this_cpu_add(pcp, val, "laa", "asi", int)
+@@ -94,14 +94,14 @@
+ 	typedef typeof(pcp) pcp_op_T__; 				\
+ 	pcp_op_T__ val__ = (val);					\
+ 	pcp_op_T__ old__, *ptr__;					\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	ptr__ = raw_cpu_ptr(&(pcp));	 				\
+ 	asm volatile(							\
+ 		op "    %[old__],%[val__],%[ptr__]\n"			\
+ 		: [old__] "=d" (old__), [ptr__] "+Q" (*ptr__)		\
+ 		: [val__] "d" (val__)					\
+ 		: "cc");						\
+-	preempt_enable();						\
++	preempt_enable_notrace();						\
+ 	old__ + val__;							\
+ })
  
- 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
--	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
-+
-+	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
+@@ -113,14 +113,14 @@
+ 	typedef typeof(pcp) pcp_op_T__; 				\
+ 	pcp_op_T__ val__ = (val);					\
+ 	pcp_op_T__ old__, *ptr__;					\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	ptr__ = raw_cpu_ptr(&(pcp));	 				\
+ 	asm volatile(							\
+ 		op "    %[old__],%[val__],%[ptr__]\n"			\
+ 		: [old__] "=d" (old__), [ptr__] "+Q" (*ptr__)		\
+ 		: [val__] "d" (val__)					\
+ 		: "cc");						\
+-	preempt_enable();						\
++	preempt_enable_notrace();					\
  }
  
- static ssize_t applesmc_store_fan_manual(struct device *dev,
-@@ -875,10 +876,11 @@ static ssize_t applesmc_store_fan_manual(struct device *dev,
- 		return -EINVAL;
+ #define this_cpu_and_4(pcp, val)	arch_this_cpu_to_op(pcp, val, "lan")
+@@ -135,10 +135,10 @@
+ 	typedef typeof(pcp) pcp_op_T__;					\
+ 	pcp_op_T__ ret__;						\
+ 	pcp_op_T__ *ptr__;						\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	ptr__ = raw_cpu_ptr(&(pcp));					\
+ 	ret__ = cmpxchg(ptr__, oval, nval);				\
+-	preempt_enable();						\
++	preempt_enable_notrace();					\
+ 	ret__;								\
+ })
  
- 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
--	val = (buffer[0] << 8 | buffer[1]);
- 	if (ret)
- 		goto out;
+@@ -151,10 +151,10 @@
+ ({									\
+ 	typeof(pcp) *ptr__;						\
+ 	typeof(pcp) ret__;						\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	ptr__ = raw_cpu_ptr(&(pcp));					\
+ 	ret__ = xchg(ptr__, nval);					\
+-	preempt_enable();						\
++	preempt_enable_notrace();					\
+ 	ret__;								\
+ })
  
-+	val = (buffer[0] << 8 | buffer[1]);
-+
- 	if (input)
- 		val = val | (0x01 << to_index(attr));
- 	else
-@@ -954,13 +956,12 @@ static ssize_t applesmc_key_count_show(struct device *dev,
- 	u32 count;
+@@ -170,11 +170,11 @@
+ 	typeof(pcp1) *p1__;						\
+ 	typeof(pcp2) *p2__;						\
+ 	int ret__;							\
+-	preempt_disable();						\
++	preempt_disable_notrace();					\
+ 	p1__ = raw_cpu_ptr(&(pcp1));					\
+ 	p2__ = raw_cpu_ptr(&(pcp2));					\
+ 	ret__ = __cmpxchg_double(p1__, p2__, o1__, o2__, n1__, n2__);	\
+-	preempt_enable();						\
++	preempt_enable_notrace();					\
+ 	ret__;								\
+ })
  
- 	ret = applesmc_read_key(KEY_COUNT_KEY, buffer, 4);
--	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
--						((u32)buffer[2]<<8) + buffer[3];
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
-+
-+	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
-+						((u32)buffer[2]<<8) + buffer[3];
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
- }
- 
- static ssize_t applesmc_key_at_index_read_show(struct device *dev,
 -- 
 2.25.1
 
