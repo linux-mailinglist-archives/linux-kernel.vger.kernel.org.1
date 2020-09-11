@@ -2,132 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7252665E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6481E2665F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgIKRRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:17:08 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:24436 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726230AbgIKRQi (ORCPT
+        id S1726282AbgIKRS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:18:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54190 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725860AbgIKRSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:16:38 -0400
+        Fri, 11 Sep 2020 13:18:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599844594;
+        s=mimecast20190719; t=1599844720;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZIYsyXJ8ywDIaj8FeKR2rSXn6BX0Y2iuA9bZ+7HRd1I=;
-        b=fs5YqmN5ZMyeAVZd6znUoX7klJp+jOj48Mp6J3qFIT9pLE6wLlPvzDJ9g7x7zHrWEa6exH
-        aGBp2THAd1gdA5zoblyAoayHY9z4tazBGRSZI2SQIH8drAZSIrjMCCD0W51/nKrdl1tNhi
-        uZiFkWeVbR3e8N7EEOr5g8i1DmN7j2k=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-Vqdc0bFCPJeAjhSAvQrX6Q-1; Fri, 11 Sep 2020 13:16:30 -0400
-X-MC-Unique: Vqdc0bFCPJeAjhSAvQrX6Q-1
-Received: by mail-wr1-f69.google.com with SMTP id y3so3707728wrl.21
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:16:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZIYsyXJ8ywDIaj8FeKR2rSXn6BX0Y2iuA9bZ+7HRd1I=;
-        b=kNjHaxerAVqgWvxD0IBT+JalUV7jC6cn84NT+qKNJHD1wGAOHcVtHm256bJvie3xby
-         43UH7TeXvQa/n3G6UxEL5lLK4KLnrdJotEQS45aaARSqjSmSHijKEn+pyQcH+WIEloQ3
-         qhd7ZywIbxSUT32QpbDs5toz3WcLWuYPRgNx7raImybMrSbvYe9V0UssOTVBZFKvF8gb
-         +gSwIulBUwfmteZk6l7gn+ORknJ+qZDh/aaRbcnOWylWDE+sRKHTM5tTMY7XsWGVpHZA
-         jUB58haiakSx2HHNJjuS12irKGa75ma0N84ntnz9F6waX1gqzCdZ5Q4t7YVJ4Uidb4ur
-         lbrQ==
-X-Gm-Message-State: AOAM531SVK8AAwFPuxFhEnJcoDWscjtgOpvoyEGuprUkSgnHqkxkUnKK
-        YL3e4rsJnI08DAMn71FUKur1AXfbsmoRNRt5ATIfCfjguMFQ0PGTzzAFAz3mgdDZOJqWDj/GSkg
-        Yg6SPrc0teUFjnDIclTOzzcK5
-X-Received: by 2002:adf:f382:: with SMTP id m2mr2876489wro.327.1599844589610;
-        Fri, 11 Sep 2020 10:16:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLDVAzC6EF7s8wacyh/9QgVLvue/fSpLMye6yCXQhCyCcxkQfGHVkuy/JjDoAtwvRAvvpmuw==
-X-Received: by 2002:adf:f382:: with SMTP id m2mr2876470wro.327.1599844589410;
-        Fri, 11 Sep 2020 10:16:29 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id v6sm5562089wrt.90.2020.09.11.10.16.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:16:28 -0700 (PDT)
-Subject: Re: [PATCH V2] kvm x86/mmu: use KVM_REQ_MMU_SYNC to sync when needed
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <87y2ltx6gl.fsf@vitty.brq.redhat.com>
- <20200902135421.31158-1-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <35d079d4-6cb8-b2d0-a4d4-7be92b30a1ea@redhat.com>
-Date:   Fri, 11 Sep 2020 19:16:27 +0200
+        bh=kUZ4F9VBNeDOexQ4ImvdIONeNb+COlnwiJ6I4shsy2Q=;
+        b=IFwVBRpSLNsw1yFnwXiZ5nioYsnwtWbC7Nivlu04xk8c2+QI3Lg/1MY7QJiPNrd5+Y7S2c
+        UKCaBLGqfEEcjrB4+KiuobvCHt05aj/+iekB8hwMeKQ4erCBsLtYfDzfanW3KYCraxI0Eo
+        IC3rvRnhwNfi3rN9RzFJSfhtA4Ux+Lo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-Yrhrg5z2Nv6BretARpwOBA-1; Fri, 11 Sep 2020 13:18:38 -0400
+X-MC-Unique: Yrhrg5z2Nv6BretARpwOBA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67899393B6;
+        Fri, 11 Sep 2020 17:18:36 +0000 (UTC)
+Received: from [10.10.110.42] (unknown [10.10.110.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 477E45C1BD;
+        Fri, 11 Sep 2020 17:18:33 +0000 (UTC)
+Subject: Re: [PATCH V2 2/3] integrity: Move import of MokListRT certs to a
+ separate routine
+To:     Mimi Zohar <zohar@linux.ibm.com>, Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
+        Kees Cook <keescook@chromium.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+References: <20200905013107.10457-1-lszubowi@redhat.com>
+ <20200905013107.10457-3-lszubowi@redhat.com>
+ <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
+ <f0a079b1-5f02-8618-fdfe-aea2278113c9@redhat.com>
+ <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
+From:   Lenny Szubowicz <lszubowi@redhat.com>
+Message-ID: <394190b9-59bd-5cb3-317e-736852f190f4@redhat.com>
+Date:   Fri, 11 Sep 2020 13:18:32 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200902135421.31158-1-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/09/20 15:54, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+On 9/11/20 11:59 AM, Mimi Zohar wrote:
+> On Fri, 2020-09-11 at 11:54 -0400, Lenny Szubowicz wrote:
+>> On 9/11/20 11:02 AM, Ard Biesheuvel wrote:
+>>> On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
+>>>>
+>>>> Move the loading of certs from the UEFI MokListRT into a separate
+>>>> routine to facilitate additional MokList functionality.
+>>>>
+>>>> There is no visible functional change as a result of this patch.
+>>>> Although the UEFI dbx certs are now loaded before the MokList certs,
+>>>> they are loaded onto different key rings. So the order of the keys
+>>>> on their respective key rings is the same.
+>>>>
+>>>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+>>>
+>>> Why did you drop Mimi's reviewed-by from this patch?
+>>
+>> It was not intentional. I was just not aware that I needed to propagate
+>> Mimi Zohar's reviewed-by from V1 of the patch to V2.
+>>
+>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+>>
+>> V2 includes changes in that patch to incorporate suggestions from
+>> Andy Shevchenko. My assumption was that the maintainer would
+>> gather up the reviewed-by and add any signed-off-by as appropriate,
+>> but it sounds like my assumption was incorrect. In retrospect, I
+>> could see that having the maintainer dig through prior versions
+>> of a patch set for prior reviewed-by tags could be burdensome.
 > 
-> When kvm_mmu_get_page() gets a page with unsynced children, the spt
-> pagetable is unsynchronized with the guest pagetable. But the
-> guest might not issue a "flush" operation on it when the pagetable
-> entry is changed from zero or other cases. The hypervisor has the 
-> responsibility to synchronize the pagetables.
+> As much as possible moving code should be done without making changes,
+> simpler for code review.   Then as a separate patch you make changes.
+> That way you could also have retained my Reviewed-by.
 > 
-> The linux kernel behaves as above for many years, But
-> 8c8560b83390("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes)
-> inadvertently included a line of code to change it without giving any
-> reason in the changelog. It is clear that the commit's intention was to
-> change KVM_REQ_TLB_FLUSH -> KVM_REQ_TLB_FLUSH_CURRENT, so we don't
-> unneedlesly flush other contexts but one of the hunks changed
-> nearby KVM_REQ_MMU_SYNC instead.
-> 
-> The this patch changes it back.
-> 
-> Link: https://lore.kernel.org/lkml/20200320212833.3507-26-sean.j.christopherson@intel.com/
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
-> Changed from v1:
-> 	update patch description
-> 
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 4e03841f053d..9a93de921f2b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2468,7 +2468,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
->  		}
->  
->  		if (sp->unsync_children)
-> -			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-> +			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
->  
->  		__clear_sp_write_flooding_count(sp);
->  
-> 
+> Mimi
 
-Queued, thanks.
+If you or Ard think I should, I can do a V3 with:
 
-Paolo
+   Patch V3 01: Unchanged from V2
+   Patch V3 02: Goes back to V1 of patch 02 that Mimi reviewed
+   Patch V3 03: New. Has Andy's cleanup suggestions separated from patch 02
+   Patch V3 04: This would most probably just be the V2 of patch 03 with no changes
+
+                  -Lenny.
+
+> 
+>>
+>> Advice on the expected handling of this would be appreciated.
+> 
+> 
 
