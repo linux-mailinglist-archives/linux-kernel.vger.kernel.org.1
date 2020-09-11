@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB41F265E01
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 12:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F8C265E39
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 12:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgIKKf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 06:35:27 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36928 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725768AbgIKKfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 06:35:24 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kGgOb-0004WL-Pk; Fri, 11 Sep 2020 10:35:09 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ipv6: remove redundant assignment to variable err
-Date:   Fri, 11 Sep 2020 11:35:09 +0100
-Message-Id: <20200911103509.22907-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S1725851AbgIKKhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 06:37:25 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11817 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725980AbgIKKg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 06:36:59 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 273E96F4DAA04124E783;
+        Fri, 11 Sep 2020 18:36:55 +0800 (CST)
+Received: from [127.0.0.1] (10.174.178.19) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
+ 18:36:48 +0800
+Subject: Re: [PATCH v7 05/12] mm: HUGE_VMAP arch support cleanup
+To:     Nicholas Piggin <npiggin@gmail.com>, <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>
+References: <20200825145753.529284-1-npiggin@gmail.com>
+ <20200825145753.529284-6-npiggin@gmail.com>
+From:   Tang Yizhou <tangyizhou@huawei.com>
+Message-ID: <534a0d5e-3a6f-c8e5-38f9-7e24662acb31@huawei.com>
+Date:   Fri, 11 Sep 2020 18:36:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
+In-Reply-To: <20200825145753.529284-6-npiggin@gmail.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.19]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 2020/8/25 22:57, Nicholas Piggin wrote:
+> -int __init arch_ioremap_pud_supported(void)
+> +bool arch_vmap_pud_supported(pgprot_t prot);
+>  {
+>  	/*
+>  	 * Only 4k granule supports level 1 block mappings.
+> @@ -1319,9 +1319,9 @@ int __init arch_ioremap_pud_supported(void)
+>  	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+>  }
 
-The variable err is being initialized with a value that is never read and
-it is being updated later with a new value. The initialization is redundant
-and can be removed.  Also re-order variable declarations in reverse
-Christmas tree ordering.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/ipv6/route.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 5e7e25e2523a..e8ee20720fe0 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -5284,9 +5284,10 @@ static int ip6_route_multipath_del(struct fib6_config *cfg,
- {
- 	struct fib6_config r_cfg;
- 	struct rtnexthop *rtnh;
-+	int last_err = 0;
- 	int remaining;
- 	int attrlen;
--	int err = 1, last_err = 0;
-+	int err;
- 
- 	remaining = cfg->fc_mp_len;
- 	rtnh = (struct rtnexthop *)cfg->fc_mp;
--- 
-2.27.0
+There is a compilation error because of the redundant semicolon at arch_vmap_pud_supported().
 
