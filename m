@@ -2,417 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622D8265A31
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1BF265A37
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725771AbgIKHO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
+        id S1725796AbgIKHOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgIKHOY (ORCPT
+        with ESMTP id S1725783AbgIKHOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:14:24 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA533C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:14:23 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id o16so8959494qkj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:14:23 -0700 (PDT)
+        Fri, 11 Sep 2020 03:14:42 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C71EC061573;
+        Fri, 11 Sep 2020 00:14:42 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id t20so7076159qtr.8;
+        Fri, 11 Sep 2020 00:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Iq7jn4E6GwevsaQr+w+3QyCKnTOOBmHy/jKNim9F3x0=;
-        b=cGD6EZ5G/BSu+LFVArof6jyhsoOPHs28C8B3hBvz9n5xzIhF08DGUzlgwKrbOVBEvk
-         Oux0WdbENZwk8WtfafDBmz5dpXKE7SPsA/Bsk9LhWKW8JHPghGOBevUXAh2wAJUySnTm
-         agIshavKUVlCJM8HXMY5lzhT9IJ312w9MAVOBlaac3p2rtoa5fglrBsjCXlVcKXMdYEw
-         qnglm/kgWqh0xmEVhhCsAkZwju/Dij18+s+jnxymVCQYd5n6iPaIsRSrP0K/yR2GHNXd
-         cGTzfe3lHjFN3kvKu9Fl6yhsLT10vmQs9UXpkkVWvXxbyZs2lDyrti5Eg+u7FOvHn6KZ
-         k02Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WIC+w8cci/CjHq4Rlp9g5LGl+w5+e9ru3XkhCS9HFuc=;
+        b=TyOwSiafxbsI2YHXi9yv1z2Iv9zTCW2mQrrVv67q0USjGc0/aIA5yaVO6yFHRcGbtg
+         S/mCZQ1rCoIIEIoHf6E/e6gp/3q7NDHHhvmXdmtn+lJaG7N/A5aisZALfZMR/hlaWkik
+         Lk6bTOTF0+qwmYrUTeT8lxTQkpS6fiDp8CT7cah5XyLqWPu8I63F4U5a30lF8JHf5ZuV
+         sEvl/KCU28qNtkR4QFnTPP1aOFQSlhXjGdsbHy/HZgydkIy0pAT1+yhSTRgd3YBSRgGu
+         3V7DF3OYCxpnTEfZwW0BGTFlMiLbRKZJZug0Pn88RJRWX4eFjoVueGXn2bOdSpjttnM+
+         EBeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Iq7jn4E6GwevsaQr+w+3QyCKnTOOBmHy/jKNim9F3x0=;
-        b=IkMwcPdKDCGutr0ISzZKbgENxR0TBFwd9AznW099j/xq/fLnHNJu1vEdNDN0rbchqb
-         dInBHPtDX4f9NUsWCMoEY4Z2sUhg1F+TmVXprCbXzHV+CZy7iiS0VigAHAhjnOXXPlBX
-         sVukun42nGpC6k4qyfZE9dMzLXX3rw/5HyyRtWIkiwIH/CbX1OLnUsSLGQB6R9x5Yp4l
-         Nn/gOfmP2p3tS9eU1ZlRUHOp4k/eBsLA6MUj0dJL7Vy7o+tt9l+Jw5k5h1FaFgAbUsf8
-         ldxEwj2RSpCe3JyfekxZz5q39bIbL5UvOOykGH6zqWSqzkkEIuxcyK6zjUT8Yq4kwy5X
-         dIoQ==
-X-Gm-Message-State: AOAM5339RC1QC+hTynXJRSzX36MWdhSnBaQQqHiFWUIwdSX9/Hzbnvl0
-        /Ek7FJu3CDnVcIjfP7/NHEi7DNNjq7o2hHd1WODtZw==
-X-Google-Smtp-Source: ABdhPJyQCCzXr9lK08u9HMczjai8KCmayWw/1hTBXvi9Gzzhqg3pDpRMyl4dgSS9RUvREmRUc8DbmcZh1l1stipdk4c=
-X-Received: by 2002:a37:5684:: with SMTP id k126mr355198qkb.43.1599808462092;
- Fri, 11 Sep 2020 00:14:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WIC+w8cci/CjHq4Rlp9g5LGl+w5+e9ru3XkhCS9HFuc=;
+        b=ejRfa7FMq4mpqWGuNSWZNTudCo6Dn53+VVmaQ7mwDrJJNrrdtmFchBetgZTVtbDk9o
+         Vya/eehorGn+zPh/LdS6PREm82M40U5bU6v3OSmYX1e0ti9aI/TSx+gM2GZK4EvfCdzb
+         IwddBOfyfmlQ8jpKuDFk9EpNheOFbfxyXkPP84fXOD96x4ZJL2lP5aDVkd9AV/Ug2xoy
+         EKtZAGupSOUVpuXX7F362WS470yfKQWxRWsb6hVhdNKZfaFvxTnbAVl4uULTQopbJcBn
+         YCIft5f1z8SxlW+b3sqGT1cUuH/88UYb17wsksYvSbfRuvLJoBXv4GVNXtzmL8+F198B
+         Qn1w==
+X-Gm-Message-State: AOAM530zY0ad/hnsUY6inHDY7sA5vAGtwgsXUEdz/zG7lsboqhVmUxAo
+        0GwUJLYL/YMAoBVri/uwNeM=
+X-Google-Smtp-Source: ABdhPJzldrodFvp6XswLy0oZ4aLaQXxfe+q4ZM5piA/s39ouMgvrlkl9hJI+ZoTIBaBL2IlulsOfBA==
+X-Received: by 2002:ac8:178d:: with SMTP id o13mr656506qtj.103.1599808481565;
+        Fri, 11 Sep 2020 00:14:41 -0700 (PDT)
+Received: from seraph.myfiosgateway.com (pool-173-75-208-99.phlapa.fios.verizon.net. [173.75.208.99])
+        by smtp.gmail.com with ESMTPSA id l19sm1572318qtu.16.2020.09.11.00.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 00:14:41 -0700 (PDT)
+From:   Brooke Basile <brookebasile@gmail.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath9k-devel@qca.qualcomm.com,
+        syzkaller-bugs@googlegroups.com,
+        Brooke Basile <brookebasile@gmail.com>,
+        syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com
+Subject: [PATCH] wireless: ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()
+Date:   Fri, 11 Sep 2020 03:14:27 -0400
+Message-Id: <20200911071427.32354-1-brookebasile@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-10-elver@google.com>
-In-Reply-To: <20200907134055.2878499-10-elver@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 11 Sep 2020 09:14:10 +0200
-Message-ID: <CACT4Y+b-RPYpqErLVPh+qtiuv_LhCyxLE_DJqbM0jegFd_nOKQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 09/10] kfence, Documentation: add KFENCE documentation
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
->
-> Add KFENCE documentation in dev-tools/kfence.rst, and add to index.
->
-> Co-developed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  Documentation/dev-tools/index.rst  |   1 +
->  Documentation/dev-tools/kfence.rst | 285 +++++++++++++++++++++++++++++
->  2 files changed, 286 insertions(+)
->  create mode 100644 Documentation/dev-tools/kfence.rst
->
-> diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
-> index f7809c7b1ba9..1b1cf4f5c9d9 100644
-> --- a/Documentation/dev-tools/index.rst
-> +++ b/Documentation/dev-tools/index.rst
-> @@ -22,6 +22,7 @@ whole; patches welcome!
->     ubsan
->     kmemleak
->     kcsan
-> +   kfence
->     gdb-kernel-debugging
->     kgdb
->     kselftest
-> diff --git a/Documentation/dev-tools/kfence.rst b/Documentation/dev-tools/kfence.rst
-> new file mode 100644
-> index 000000000000..254f4f089104
-> --- /dev/null
-> +++ b/Documentation/dev-tools/kfence.rst
-> @@ -0,0 +1,285 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Kernel Electric-Fence (KFENCE)
-> +==============================
-> +
-> +Kernel Electric-Fence (KFENCE) is a low-overhead sampling-based memory safety
-> +error detector. KFENCE detects heap out-of-bounds access, use-after-free, and
-> +invalid-free errors.
-> +
-> +KFENCE is designed to be enabled in production kernels, and has near zero
-> +performance overhead. Compared to KASAN, KFENCE trades performance for
-> +precision. The main motivation behind KFENCE's design, is that with enough
-> +total uptime KFENCE will detect bugs in code paths not typically exercised by
-> +non-production test workloads. One way to quickly achieve a large enough total
-> +uptime is when the tool is deployed across a large fleet of machines.
-> +
-> +Usage
-> +-----
-> +
-> +To enable KFENCE, configure the kernel with::
-> +
-> +    CONFIG_KFENCE=y
-> +
-> +KFENCE provides several other configuration options to customize behaviour (see
-> +the respective help text in ``lib/Kconfig.kfence`` for more info).
-> +
-> +Tuning performance
-> +~~~~~~~~~~~~~~~~~~
-> +
-> +The most important parameter is KFENCE's sample interval, which can be set via
-> +the kernel boot parameter ``kfence.sample_interval`` in milliseconds. The
-> +sample interval determines the frequency with which heap allocations will be
-> +guarded by KFENCE. The default is configurable via the Kconfig option
-> +``CONFIG_KFENCE_SAMPLE_INTERVAL``. Setting ``kfence.sample_interval=0``
-> +disables KFENCE.
-> +
-> +With the Kconfig option ``CONFIG_KFENCE_NUM_OBJECTS`` (default 255), the number
-> +of available guarded objects can be controlled. Each object requires 2 pages,
-> +one for the object itself and the other one used as a guard page; object pages
-> +are interleaved with guard pages, and every object page is therefore surrounded
-> +by two guard pages.
-> +
-> +The total memory dedicated to the KFENCE memory pool can be computed as::
-> +
-> +    ( #objects + 1 ) * 2 * PAGE_SIZE
-> +
-> +Using the default config, and assuming a page size of 4 KiB, results in
-> +dedicating 2 MiB to the KFENCE memory pool.
-> +
-> +Error reports
-> +~~~~~~~~~~~~~
-> +
-> +A typical out-of-bounds access looks like this::
-> +
-> +    ==================================================================
-> +    BUG: KFENCE: out-of-bounds in test_out_of_bounds_read+0xa3/0x22b
-> +
-> +    Out-of-bounds access at 0xffffffffb672efff (left of kfence-#17):
-> +     test_out_of_bounds_read+0xa3/0x22b
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    kfence-#17 [0xffffffffb672f000-0xffffffffb672f01f, size=32, cache=kmalloc-32] allocated in:
-> +     __kfence_alloc+0x42d/0x4c0
-> +     __kmalloc+0x133/0x200
-> +     test_alloc+0xf3/0x25b
-> +     test_out_of_bounds_read+0x98/0x22b
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    CPU: 4 PID: 107 Comm: kunit_try_catch Not tainted 5.8.0-rc6+ #7
-> +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> +    ==================================================================
-> +
-> +The header of the report provides a short summary of the function involved in
-> +the access. It is followed by more detailed information about the access and
-> +its origin.
-> +
-> +Use-after-free accesses are reported as::
-> +
-> +    ==================================================================
-> +    BUG: KFENCE: use-after-free in test_use_after_free_read+0xb3/0x143
-> +
-> +    Use-after-free access at 0xffffffffb673dfe0:
-> +     test_use_after_free_read+0xb3/0x143
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    kfence-#24 [0xffffffffb673dfe0-0xffffffffb673dfff, size=32, cache=kmalloc-32] allocated in:
-> +     __kfence_alloc+0x277/0x4c0
-> +     __kmalloc+0x133/0x200
-> +     test_alloc+0xf3/0x25b
-> +     test_use_after_free_read+0x76/0x143
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
+Calls to usb_kill_anchored_urbs() after usb_kill_urb() on multiprocessor
+systems create a race condition in which usb_kill_anchored_urbs() deallocates
+the URB before the completer callback is called in usb_kill_urb(), resulting
+in a use-after-free.
+To fix this, add proper lock protection to usb_kill_urb() calls that can
+possibly run concurrently with usb_kill_anchored_urbs().
 
-Empty line between stacks for consistency and readability.
+Reported-by: syzbot+89bd486af9427a9fc605@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=cabffad18eb74197f84871802fd2c5117b61febf
+Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+---
+ drivers/net/wireless/ath/ath9k/hif_usb.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-> +    freed in:
-> +     kfence_guarded_free+0x158/0x380
-> +     __kfence_free+0x38/0xc0
-> +     test_use_after_free_read+0xa8/0x143
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    CPU: 4 PID: 109 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> +    ==================================================================
-> +
-> +KFENCE also reports on invalid frees, such as double-frees::
-> +
-> +    ==================================================================
-> +    BUG: KFENCE: invalid free in test_double_free+0xdc/0x171
-> +
-> +    Invalid free of 0xffffffffb6741000:
-> +     test_double_free+0xdc/0x171
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    kfence-#26 [0xffffffffb6741000-0xffffffffb674101f, size=32, cache=kmalloc-32] allocated in:
-> +     __kfence_alloc+0x42d/0x4c0
-> +     __kmalloc+0x133/0x200
-> +     test_alloc+0xf3/0x25b
-> +     test_double_free+0x76/0x171
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +    freed in:
-> +     kfence_guarded_free+0x158/0x380
-> +     __kfence_free+0x38/0xc0
-> +     test_double_free+0xa8/0x171
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    CPU: 4 PID: 111 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> +    ==================================================================
-> +
-> +KFENCE also uses pattern-based redzones on the other side of an object's guard
-> +page, to detect out-of-bounds writes on the unprotected side of the object.
-> +These are reported on frees::
-> +
-> +    ==================================================================
-> +    BUG: KFENCE: memory corruption in test_kmalloc_aligned_oob_write+0xef/0x184
-> +
-> +    Detected corrupted memory at 0xffffffffb6797ff9 [ 0xac . . . . . . ]:
-> +     test_kmalloc_aligned_oob_write+0xef/0x184
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    kfence-#69 [0xffffffffb6797fb0-0xffffffffb6797ff8, size=73, cache=kmalloc-96] allocated in:
-> +     __kfence_alloc+0x277/0x4c0
-> +     __kmalloc+0x133/0x200
-> +     test_alloc+0xf3/0x25b
-> +     test_kmalloc_aligned_oob_write+0x57/0x184
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    CPU: 4 PID: 120 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> +    ==================================================================
-> +
-> +For such errors, the address where the corruption as well as the corrupt bytes
-> +are shown.
-> +
-> +And finally, KFENCE may also report on invalid accesses to any protected page
-> +where it was not possible to determine an associated object, e.g. if adjacent
-> +object pages had not yet been allocated::
-> +
-> +    ==================================================================
-> +    BUG: KFENCE: invalid access in test_invalid_access+0x26/0xe0
-> +
-> +    Invalid access at 0xffffffffb670b00a:
-> +     test_invalid_access+0x26/0xe0
-> +     kunit_try_run_case+0x51/0x85
-> +     kunit_generic_run_threadfn_adapter+0x16/0x30
-> +     kthread+0x137/0x160
-> +     ret_from_fork+0x22/0x30
-> +
-> +    CPU: 4 PID: 124 Comm: kunit_try_catch Tainted: G        W         5.8.0-rc6+ #7
-> +    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> +    ==================================================================
-> +
-> +DebugFS interface
-> +~~~~~~~~~~~~~~~~~
-> +
-> +Some debugging information is exposed via debugfs:
-> +
-> +* The file ``/sys/kernel/debug/kfence/stats`` provides runtime statistics.
-> +
-> +* The file ``/sys/kernel/debug/kfence/objects`` provides a list of objects
-> +  allocated via KFENCE, including those already freed but protected.
-> +
-> +Implementation Details
-> +----------------------
-> +
-> +Guarded allocations are set up based on the sample interval. After expiration
-> +of the sample interval, a guarded allocation from the KFENCE object pool is
-> +returned to the main allocator (SLAB or SLUB). At this point, the timer is
-> +reset, and the next allocation is set up after the expiration of the interval.
-> +To "gate" a KFENCE allocation through the main allocator's fast-path without
-> +overhead, KFENCE relies on static branches via the static keys infrastructure.
-> +The static branch is toggled to redirect the allocation to KFENCE.
-> +
-> +KFENCE objects each reside on a dedicated page, at either the left or right
+diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
+index 3f563e02d17d..2ed98aaed6fb 100644
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -449,10 +449,19 @@ static void hif_usb_stop(void *hif_handle)
+ 	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
 
-Do we mention anywhere explicitly that KFENCE currently only supports
-allocations <=page_size?
-May be worth mentioning. It kinda follows from implementation but
-quite implicitly. One may also be confused assuming KFENCE handles
-larger allocations, but then not being able to figure out.
+ 	/* The pending URBs have to be canceled. */
++	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+ 				 &hif_dev->tx.tx_pending, list) {
++		usb_get_urb(tx_buf->urb);
++		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 		usb_kill_urb(tx_buf->urb);
++		list_del(&tx_buf->list);
++		usb_free_urb(tx_buf->urb);
++		kfree(tx_buf->buf);
++		kfree(tx_buf);
++		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	}
++	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
 
-> +page boundaries selected at random. The pages to the left and right of the
-> +object page are "guard pages", whose attributes are changed to a protected
-> +state, and cause page faults on any attempted access. Such page faults are then
-> +intercepted by KFENCE, which handles the fault gracefully by reporting an
-> +out-of-bounds access. The side opposite of an object's guard page is used as a
-> +pattern-based redzone, to detect out-of-bounds writes on the unprotected sed of
-> +the object on frees (for special alignment and size combinations, both sides of
-> +the object are redzoned).
-> +
-> +KFENCE also uses pattern-based redzones on the other side of an object's guard
-> +page, to detect out-of-bounds writes on the unprotected side of the object;
-> +these are reported on frees.
-> +
-> +The following figure illustrates the page layout::
-> +
-> +    ---+-----------+-----------+-----------+-----------+-----------+---
-> +       | xxxxxxxxx | O :       | xxxxxxxxx |       : O | xxxxxxxxx |
-> +       | xxxxxxxxx | B :       | xxxxxxxxx |       : B | xxxxxxxxx |
-> +       | x GUARD x | J : RED-  | x GUARD x | RED-  : J | x GUARD x |
-> +       | xxxxxxxxx | E :  ZONE | xxxxxxxxx |  ZONE : E | xxxxxxxxx |
-> +       | xxxxxxxxx | C :       | xxxxxxxxx |       : C | xxxxxxxxx |
-> +       | xxxxxxxxx | T :       | xxxxxxxxx |       : T | xxxxxxxxx |
-> +    ---+-----------+-----------+-----------+-----------+-----------+---
-> +
-> +Upon deallocation of a KFENCE object, the object's page is again protected and
-> +the object is marked as freed. Any further access to the object causes a fault
-> +and KFENCE reports a use-after-free access. Freed objects are inserted at the
-> +tail of KFENCE's freelist, so that the least recently freed objects are reused
-> +first, and the chances of detecting use-after-frees of recently freed objects
-> +is increased.
-> +
-> +Interface
-> +---------
-> +
-> +The following describes the functions which are used by allocators as well page
-> +handling code to set up and deal with KFENCE allocations.
-> +
-> +.. kernel-doc:: include/linux/kfence.h
-> +   :functions: is_kfence_address
-> +               kfence_shutdown_cache
-> +               kfence_alloc kfence_free
-> +               kfence_ksize kfence_object_start
-> +               kfence_handle_page_fault
-> +
-> +Related Tools
-> +-------------
-> +
-> +In userspace, a similar approach is taken by `GWP-ASan
-> +<http://llvm.org/docs/GwpAsan.html>`_. GWP-ASan also relies on guard pages and
-> +a sampling strategy to detect memory unsafety bugs at scale. KFENCE's design is
-> +directly influenced by GWP-ASan, and can be seen as its kernel sibling. Another
-> +similar but non-sampling approach, that also inspired the name "KFENCE", can be
-> +found in the userspace `Electric Fence Malloc Debugger
-> +<https://linux.die.net/man/3/efence>`_.
-> +
-> +In the kernel, several tools exist to debug memory access errors, and in
-> +particular KASAN can detect all bug classes that KFENCE can detect. While KASAN
-> +is more precise, relying on compiler instrumentation, this comes at a
-> +performance cost. We want to highlight that KASAN and KFENCE are complementary,
-> +with different target environments. For instance, KASAN is the better
-> +debugging-aid, where a simple reproducer exists: due to the lower chance to
-> +detect the error, it would require more effort using KFENCE to debug.
-> +Deployments at scale, however, would benefit from using KFENCE to discover bugs
-> +due to code paths not exercised by test cases or fuzzers.
-> --
-> 2.28.0.526.ge36021eeef-goog
->
+ 	usb_kill_anchored_urbs(&hif_dev->mgmt_submitted);
+ }
+@@ -762,27 +771,37 @@ static void ath9k_hif_usb_dealloc_tx_urbs(struct hif_device_usb *hif_dev)
+ 	struct tx_buf *tx_buf = NULL, *tx_buf_tmp = NULL;
+ 	unsigned long flags;
+
++	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+ 				 &hif_dev->tx.tx_buf, list) {
++		usb_get_urb(tx_buf->urb);
++		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
++		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	}
++	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+
+ 	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	hif_dev->tx.flags |= HIF_USB_TX_FLUSH;
+ 	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+
++	spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	list_for_each_entry_safe(tx_buf, tx_buf_tmp,
+ 				 &hif_dev->tx.tx_pending, list) {
++		usb_get_urb(tx_buf->urb);
++		spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+ 		usb_kill_urb(tx_buf->urb);
+ 		list_del(&tx_buf->list);
+ 		usb_free_urb(tx_buf->urb);
+ 		kfree(tx_buf->buf);
+ 		kfree(tx_buf);
++		spin_lock_irqsave(&hif_dev->tx.tx_lock, flags);
+ 	}
++	spin_unlock_irqrestore(&hif_dev->tx.tx_lock, flags);
+
+ 	usb_kill_anchored_urbs(&hif_dev->mgmt_submitted);
+ }
+--
+2.28.0
+
