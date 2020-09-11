@@ -2,95 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000C2662D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E932662F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726228AbgIKQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgIKQBF (ORCPT
+        id S1726588AbgIKQIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:08:06 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25952 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726546AbgIKQFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:01:05 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53D3C061756;
-        Fri, 11 Sep 2020 09:01:04 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id 16so10340170qkf.4;
-        Fri, 11 Sep 2020 09:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m+iVerlUNqAW5DSLfymFd18Aa+jNaCXhphLLXfU0VIA=;
-        b=Sutpl+MPw6nB+6Wp5lUzwnRnbow90HU9aTTdtIg3LjT1unaleGubj6DLgjH29qJZ0T
-         jMBnugheaGK51H8DSv0rwGMarn7OlqHDc7tXNfLqpKrm7lua3eEOKqIQ4qUWKse+CpMJ
-         wIVx40eC9zpg9bBQBVNJ0Xre4Jvs8cNrkMzgh/6D6HQR4JEj5+tPIRQgbLtbuB5qF4Oi
-         e5atLQkthHa/nAfnDCorJKsNkqIsrmVzGOEXDo5ij+9ZE1QIlj8gAPSKjjuvR7M9JUku
-         t6gAApCIN4TgMEZc1j00NRxC2pTiI06jJF1ATbeDQGPWRlyi03xKmAujKHqcrYIMHpMs
-         7++Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m+iVerlUNqAW5DSLfymFd18Aa+jNaCXhphLLXfU0VIA=;
-        b=DAI0o9EUArYnzD3SPxreVjHcnvJcMa9S6iqtqRPr5ZjMbpSzfhiyJB4ag9FYj732lw
-         J7nteuzh0l4nkZTQ+bPVx/niyfsj6TjRgPhSp34AzxtQmGO1WKUSAWlgTMPb9aeCRYJD
-         TsE9EdQuggExFFJNOcrx8khZQYtky5+iWXWgaW7tiyUKF1JdNtCqv5tze1bcx/bSZ9Ts
-         FSJyiYqUWXmHcvhsLmpkEyoi5A33mvqpcKfgaqZL8jDZAxWweKiah56+F25WHef9Bwu0
-         fLiv12YOZPyX1H0Yuy233rEvPPyzb+ITECIutgLFLfKqB0HrFZObQqfOQVFEzaVx+OUu
-         qU9w==
-X-Gm-Message-State: AOAM530ltPRXTW2w5eQAKoDyBjtrrxjKDJ8R7l2jk1eb8x7oRVHr0+/D
-        fbqtE1GDB2isIPajECERyzw=
-X-Google-Smtp-Source: ABdhPJxtro49hRqMYSXF+EANvHfvT1mDgX5lpY6eqewCbYGFFFco8K3fg4p7mB9jEDuEtQw+QyQlOQ==
-X-Received: by 2002:ae9:f503:: with SMTP id o3mr1925852qkg.447.1599840063843;
-        Fri, 11 Sep 2020 09:01:03 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id g25sm3061622qto.47.2020.09.11.09.01.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 09:01:03 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 09:01:01 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        David Miller <davem@davemloft.net>, andrew@lunn.ch,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] net: mvpp2: Initialize link in
- mvpp2_isr_handle_{xlg,gmac_internal}
-Message-ID: <20200911160101.GA4061896@ubuntu-n2-xlarge-x86>
-References: <20200910174826.511423-1-natechancellor@gmail.com>
- <20200910.152811.210183159970625640.davem@davemloft.net>
- <20200911003142.GA2469103@ubuntu-n2-xlarge-x86>
- <20200911111158.GF1551@shell.armlinux.org.uk>
- <20200911082236.7dfb7937@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911082236.7dfb7937@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Fri, 11 Sep 2020 12:05:24 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BG3rwa141691;
+        Fri, 11 Sep 2020 12:05:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=YJcSNsfJmDfN2POnRfQ8iV1tWua9L62iukE8JEYPFwM=;
+ b=JiTOlVd9zXNwEJsSPw2KmFeHYudqDBBgeAx9zpaTeT2w9G9+Ap9x8GYuUjJPcqpIF0Op
+ hxCl5JxpzC5pnSbWBTcrngV2LIMzZqO6kILYC7yZ/buQkCXf6+IYAnerrE/ulau9AiV/
+ aUTUztHAy/1iZ9SzfC+nCkSIYdklIuIOcWZIOrUjmaqI4HQOWqG53U6FUpDGVUofJVGc
+ DbvKEUhc3CqqWvtXg+B8AK46Iz8+QK86EjyzU+1uhV6JvwU2IuotdlSyV5NAOumMcDP6
+ VTxe27KdfkbH4oVFB64RCBxTFHnNwHZnvC3+agEpjvrESaI3Ec2gNJJHiTBhffuQW2K7 Bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33gc3p0h0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 12:05:17 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BG5GA4149160;
+        Fri, 11 Sep 2020 12:05:16 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33gc3p0ehj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 12:05:16 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BFwUJw015347;
+        Fri, 11 Sep 2020 16:01:17 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04fra.de.ibm.com with ESMTP id 33f91w924c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 16:01:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BG1FGH35914100
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 16:01:15 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 251DA4204C;
+        Fri, 11 Sep 2020 16:01:15 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81DA442042;
+        Fri, 11 Sep 2020 16:01:12 +0000 (GMT)
+Received: from sig-9-65-251-51.ibm.com (unknown [9.65.251.51])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Sep 2020 16:01:12 +0000 (GMT)
+Message-ID: <434085a28e9291dd799c1adbf08f003b7e5eb53d.camel@linux.ibm.com>
+Subject: Re: [PATCH V2 0/3] integrity: Load certs from EFI MOK config table
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
+        Kees Cook <keescook@chromium.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+Date:   Fri, 11 Sep 2020 12:01:11 -0400
+In-Reply-To: <CAMj1kXHOcGiwOT_sNTQRA=G7GCQSKLk2HSNoS2vEQYPzQpn0nw@mail.gmail.com>
+References: <20200905013107.10457-1-lszubowi@redhat.com>
+         <CAMj1kXHOcGiwOT_sNTQRA=G7GCQSKLk2HSNoS2vEQYPzQpn0nw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-11_08:2020-09-10,2020-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009110127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 08:22:36AM -0700, Jakub Kicinski wrote:
-> On Fri, 11 Sep 2020 12:11:58 +0100 Russell King - ARM Linux admin wrote:
-> > On Thu, Sep 10, 2020 at 05:31:42PM -0700, Nathan Chancellor wrote:
-> > > Ah great, that is indeed cleaner, thank you for letting me know!  
-> > 
-> > Hmm, I'm not sure why gcc didn't find that. Strangely, the 0-day bot
-> > seems to have only picked up on it with clang, not gcc.
+On Fri, 2020-09-11 at 18:17 +0300, Ard Biesheuvel wrote:
+> On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
+> >
+> > Because of system-specific EFI firmware limitations, EFI volatile
+> > variables may not be capable of holding the required contents of
+> > the Machine Owner Key (MOK) certificate store when the certificate
+> > list grows above some size. Therefore, an EFI boot loader may pass
+> > the MOK certs via a EFI configuration table created specifically for
+> > this purpose to avoid this firmware limitation.
+> >
+> > An EFI configuration table is a simpler and more robust mechanism
+> > compared to EFI variables and is well suited for one-way passage
+> > of static information from a pre-OS environment to the kernel.
+> >
+> > Entries in the MOK variable configuration table are named key/value
+> > pairs. Therefore the shim boot loader can create a MokListRT named
+> > entry in the MOK configuration table that contains exactly the same
+> > data as the MokListRT UEFI variable does or would otherwise contain.
+> > As such, the kernel can load certs from the data in the MokListRT
+> > configuration table entry data in the same way that it loads certs
+> > from the data returned by the EFI GetVariable() runtime call for the
+> > MokListRT variable.
+> >
+> > This patch set does not remove the support for loading certs from the
+> > EFI MOK variables into the platform key ring. However, if both the EFI
+> > MOK configuration table and corresponding EFI MOK variables are present,
+> > the MOK table is used as the source of MOK certs.
+> >
+> > The contents of the individual named MOK config table entries are
+> > made available to user space as individual sysfs binary files,
+> > which are read-only to root, under:
+> >
+> >         /sys/firmware/efi/mok-variables/
+> >
+> > This enables an updated mokutil to provide support for:
+> >
+> >         mokutil --list-enrolled
+> >
+> > such that it can provide accurate information regardless of whether
+> > the MOK configuration table or MOK EFI variables were the source
+> > for certs. Note that all modifications of MOK related state are still
+> > initiated by mokutil via EFI variables.
+> >
+> > V2: Incorporate feedback from V1
+> >   Patch 01: efi: Support for MOK variable config table
+> >   - Minor update to change log; no code changes
+> >   Patch 02: integrity: Move import of MokListRT certs to a separate routine
+> >   - Clean up code flow in code moved to load_moklist_certs()
+> >   - Remove some unnecessary initialization of variables
+> >   Patch 03: integrity: Load certs from the EFI MOK config table
+> >   - Update required due to changes in patch 02.
+> >   - Remove unnecessary init of mokvar_entry in load_moklist_certs()
+> >
+> > V1:
+> >   https://lore.kernel.org/lkml/20200826034455.28707-1-lszubowi@redhat.com/
+> >
+> > Lenny Szubowicz (3):
+> >   efi: Support for MOK variable config table
+> >   integrity: Move import of MokListRT certs to a separate routine
+> >   integrity: Load certs from the EFI MOK config table
+> >
+> >  arch/x86/kernel/setup.c                       |   1 +
+> >  arch/x86/platform/efi/efi.c                   |   3 +
+> >  drivers/firmware/efi/Makefile                 |   1 +
+> >  drivers/firmware/efi/arm-init.c               |   1 +
+> >  drivers/firmware/efi/efi.c                    |   6 +
+> >  drivers/firmware/efi/mokvar-table.c           | 360 ++++++++++++++++++
+> >  include/linux/efi.h                           |  34 ++
+> >  security/integrity/platform_certs/load_uefi.c |  85 ++++-
+> >  8 files changed, 472 insertions(+), 19 deletions(-)
+> >  create mode 100644 drivers/firmware/efi/mokvar-table.c
+> >
 > 
-> May be similar to: https://lkml.org/lkml/2019/2/25/1092
+> Thanks. I have tentatively queued these up in efi/next.
 > 
-> Recent GCC is so bad at catching uninitialized vars I was considering
-> build testing with GCC8 :/
+> Mimi, please let me know if you have any thoughts on 3/3, and whether
+> your R-b on 2/3 [v1] implies that you are ok with the series going
+> through the EFI tree.
 
-It is even simpler than that, the warning was straight up disabled in
-commit 78a5255ffb6a ("Stop the ad-hoc games with -Wno-maybe-initialized").
+Yes, Ard, that was the intent.  I haven't reviewed the most recent
+version.
 
-clang's -Wuninitialized and -Wsometimes-uninitialized are generally more
-accurate but can have some false positives because the semantic analysis
-phase happens before inlining and dead code elimination.
+Mimi
 
-Cheers,
-Nathan
