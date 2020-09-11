@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F3F265EF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4EC265EEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgIKLoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 07:44:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11820 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725808AbgIKLnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:43:31 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BFDE4D7AD17869E56064;
-        Fri, 11 Sep 2020 19:43:24 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
- 19:43:21 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <jack@suse.com>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] ext2: Fix some kernel-doc warnings in balloc.c
-Date:   Fri, 11 Sep 2020 19:40:36 +0800
-Message-ID: <20200911114036.60616-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725838AbgIKLmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 07:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725779AbgIKLlt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:41:49 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B418C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 04:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uGxhjmqGos/FmWn6COOVwZ2sqJ6ts5j539p0PpxlONM=; b=RNqqoHerAdj/UNFERk7iyQDLbJ
+        wqCD50BZ13LuMybml6khgghWKGQKM4yQf9pr3CjzJ9pIk8dkNldiHC8Qtgth+8XhwOi9VNzlmspYg
+        engVZ59087aaH7FavIOn3V/BRKidOH5YlV1idhs2cv5sexGOsmvCV6QWpNo1VejZRvclFXyIyIWIC
+        0jORXE8HEGjJ/XB+SmMAuXhVGCrcXM1MxVVs8f1ENbUts+pzE0aZVJPiP8dy88K2AuqsGjMfVEipV
+        JqzP7nMhAk5hi3AIubwhjKm5tG3uz7sHm+xvBJrXrGfRW7B5ZCZYErq1g7t4jMffFhji4RJhMUhTv
+        GGjJyNmA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGhQu-0005gA-Gj; Fri, 11 Sep 2020 11:41:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B93D73003D8;
+        Fri, 11 Sep 2020 13:41:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 737382B08276B; Fri, 11 Sep 2020 13:41:32 +0200 (CEST)
+Date:   Fri, 11 Sep 2020 13:41:32 +0200
+From:   peterz@infradead.org
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     rostedt@goodmis.org, mingo@redhat.com, mhiramat@kernel.org,
+        mbenes@suse.cz, linux-kernel@vger.kernel.org,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH] ftrace: Fix missing synchronize_rcu() removing
+ trampoline from kallsyms
+Message-ID: <20200911114132.GH1362448@hirez.programming.kicks-ass.net>
+References: <20200901091617.31837-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901091617.31837-1-adrian.hunter@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, Sep 01, 2020 at 12:16:17PM +0300, Adrian Hunter wrote:
+> Add synchronize_rcu() after list_del_rcu() in
+> ftrace_remove_trampoline_from_kallsyms() to protect readers of
+> ftrace_ops_trampoline_list (in ftrace_get_trampoline_kallsym)
+> which is used when kallsyms is read.
+> 
+> Fixes: fc0ea795f53c8d ("ftrace: Add symbols for ftrace trampolines")
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>  kernel/trace/ftrace.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 275441254bb5..4e64367c9774 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -2782,6 +2782,7 @@ static void ftrace_remove_trampoline_from_kallsyms(struct ftrace_ops *ops)
+>  {
+>  	lockdep_assert_held(&ftrace_lock);
+>  	list_del_rcu(&ops->list);
+> +	synchronize_rcu();
+>  }
 
-fs/ext2/balloc.c:203: warning: Excess function parameter 'rb_root' description in '__rsv_window_dump'
-fs/ext2/balloc.c:294: warning: Excess function parameter 'rb_root' description in 'search_reserve_window'
-fs/ext2/balloc.c:878: warning: Excess function parameter 'rsv' description in 'alloc_new_reservation'
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- fs/ext2/balloc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hurmph, we've just done a ton of that:
 
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index fa9c951d3471..1f3f4326bf3c 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -189,7 +189,7 @@ static void group_adjust_blocks(struct super_block *sb, int group_no,
- 
- /**
-  * __rsv_window_dump() -- Dump the filesystem block allocation reservation map
-- * @rb_root:		root of per-filesystem reservation rb tree
-+ * @root:		root of per-filesystem reservation rb tree
-  * @verbose:		verbose mode
-  * @fn:			function which wishes to dump the reservation map
-  *
-@@ -282,7 +282,7 @@ goal_in_my_reservation(struct ext2_reserve_window *rsv, ext2_grpblk_t grp_goal,
- 
- /**
-  * search_reserve_window()
-- * @rb_root:		root of reservation tree
-+ * @root:		root of reservation tree
-  * @goal:		target allocation block
-  *
-  * Find the reserved window which includes the goal, or the previous one
-@@ -859,7 +859,7 @@ static int find_next_reservable_window(
-  *
-  *	failed: we failed to find a reservation window in this group
-  *
-- *	@rsv: the reservation
-+ *	@my_rsv: the reservation
-  *
-  *	@grp_goal: The goal (group-relative).  It is where the search for a
-  *		free reservable space should start from.
--- 
-2.17.1
 
+	ftrace_shutdown()
+	  synchronize_rcu_tasks_rude()
+	  ftrace_trampoline_free()
+	    ftrace_remove_trampoline_from_kallsyms()
+
+
+So would it not be better to move that call before the existing
+synchronize_rcu_tasks stuff rather than adding another synchronize_rcu()
+call?
