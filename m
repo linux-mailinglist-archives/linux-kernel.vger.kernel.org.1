@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAA4265EE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0B0265ED4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgIKLho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 07:37:44 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57504 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgIKLgJ (ORCPT
+        id S1725779AbgIKLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 07:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgIKLdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:36:09 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BBYxpe013596;
-        Fri, 11 Sep 2020 11:35:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=2gHYQ5Uu4tR0zOg2iVBicKGodqK+c3+W+TJFJxyYkmc=;
- b=TA36mDE5AHAkP4wkzpqVhpG/SgfaqGB/o4z0cD2XOIvCm3934KCw0uYCjFsBMRDpEix4
- /vMkBF9C7w0KCPHPgY3nh9Ad1WdA7HrJcgxMHMtd52TAAivHWAJwimN63R6lRrYNjzBd
- 2Tpt4TooMcOoLm1Amx/etTJ+CtarCv7U7V2umcMKA3Bb98tV9h5n0i/pu2fe4hXQh3MV
- SMk40vz9YRGKKOEy16erAdn99cLGAkwj7/pNgnwql5Q3m1SU4btiJIvbrjerqZHD/kK3
- i/GIQv0VEPFyHi1wuW6xwQcXgF7CBazVPHTZhjw2qPEobLIUHmq5OPAedC9iPsiI3K7f Ew== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33c2mmdnv4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Sep 2020 11:35:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BBVCuP091987;
-        Fri, 11 Sep 2020 11:33:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 33cmkcppbg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 11:33:35 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08BBXWQJ013050;
-        Fri, 11 Sep 2020 11:33:32 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Sep 2020 04:33:32 -0700
-Date:   Fri, 11 Sep 2020 14:33:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Ben Dooks <ben@fluff.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vincent Sanders <vince@arm.linux.org.uk>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] mfd: sm501: Fix leaks in probe()
-Message-ID: <20200911113326.GB367487@mwanda>
+        Fri, 11 Sep 2020 07:33:55 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A92C061795;
+        Fri, 11 Sep 2020 04:33:31 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id z19so5496415lfr.4;
+        Fri, 11 Sep 2020 04:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/QE4i4/aazEggX3dg7wr3FT355FkQudm+5WO62dn5fc=;
+        b=ZdBz9q2UwkyiJEi8yLgyEcycOqWOQh+/+A9aVi86GSiibZAQFCBlj/zusrsnNfd1/M
+         kXIxwa7mj0oqdG94vSLwToFrvwADr/MCjfq9iIzPsmIiAvkWAGVhdoacywEQadRQXiOb
+         opqgQNTOTQ1fzKRNhcsOih1rksULZy3Uyk2df/nXamhviLMFUNEHWM4ZHCTGJHc2pyri
+         rRUyZSAHxqEJ0AJ0clqXWmOs6jeY7E7UmV3idy1nrlJ2MMuWcB8USaz+fD97zJoxETSx
+         AJMj1tbywhivTv9xRrUCUjKGz8kPfhZZfxqH+YuholrFYr+m73g1ta1H90NoOL/JKQPV
+         t+RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/QE4i4/aazEggX3dg7wr3FT355FkQudm+5WO62dn5fc=;
+        b=a8mR+vpB5P7+qY5fVVWURKNQUyYhmwv7d5wYexMhpoMsaxkV4XLZw2JXXK7NyKoExs
+         W3v/2PZxlFUdn+6xxgDSlWYhv/fGBqZiJgVVDhcTvpDe7TxOqKyTqH1EL1V3Tav5zqs4
+         eIGjPbRWUnVWO5M9QDiT1zploG2wzZiqVq6O5DZ1BxS+vWVHOnmMJS8N9EgrpV3AJp2i
+         fQK/hwkABMwYe6LK7H3K59j0enkZENaeupCLv2usA8SyRQQhqrNDWLHf53VcyJDE1fj8
+         Z9a0BPNG9JSDRLyL046scw/gpUZEtRVzZ4S1BIs8y+rQKis7BSI7mGiCXHZx6rI6ZAfL
+         mHJw==
+X-Gm-Message-State: AOAM5325qUwxMhmRaIgy1FLilZMAmDOsf2OQf6332YPtTudDud2MGO5v
+        zY4D5Si3SFynq4+p+klD6V0=
+X-Google-Smtp-Source: ABdhPJymzuhfD89a6kmG9I634PfKHVSojkHULfjgBdUyziy+UxX2lJToqR/e6LdP8duHsigYt6lD9w==
+X-Received: by 2002:a05:6512:32b1:: with SMTP id q17mr178582lfe.329.1599824009497;
+        Fri, 11 Sep 2020 04:33:29 -0700 (PDT)
+Received: from wasted.omprussia.ru ([2a00:1fa0:4890:6188:b7d9:478f:6876:19ba])
+        by smtp.gmail.com with ESMTPSA id 189sm483756ljj.54.2020.09.11.04.33.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 04:33:29 -0700 (PDT)
+Subject: Re: [PATCH] media: Kconfig: Update help description VIDEO_RENESAS_FCP
+ config
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20200911101046.20200-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Message-ID: <85d326e2-a73b-fa51-a507-eced71346786@gmail.com>
+Date:   Fri, 11 Sep 2020 14:33:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9740 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009110094
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9740 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
- malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110095
+In-Reply-To: <20200911101046.20200-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code should clean up if sm501_init_dev() fails.
+Hello!
 
-Fixes: b6d6454fdb66 ("[PATCH] mfd: SM501 core driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/mfd/sm501.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+On 9/11/20 1:10 PM, Lad Prabhakar wrote:
 
-diff --git a/drivers/mfd/sm501.c b/drivers/mfd/sm501.c
-index ccd62b963952..6d2f4a0a901d 100644
---- a/drivers/mfd/sm501.c
-+++ b/drivers/mfd/sm501.c
-@@ -1415,8 +1415,14 @@ static int sm501_plat_probe(struct platform_device *dev)
- 		goto err_claim;
- 	}
- 
--	return sm501_init_dev(sm);
-+	ret = sm501_init_dev(sm);
-+	if (ret)
-+		goto err_unmap;
-+
-+	return 0;
- 
-+ err_unmap:
-+	iounmap(sm->regs);
-  err_claim:
- 	release_mem_region(sm->io_res->start, 0x100);
-  err_res:
--- 
-2.28.0
+> rcar-fcp driver is also used on Renesas RZ/G2 SoC's, update the same
 
+    What same, the driver?
+
+> to reflect help description for VIDEO_RENESAS_FCP config.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> ---
+>  drivers/media/platform/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index bbf32086b607..a5716e9f463a 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -426,8 +426,8 @@ config VIDEO_RENESAS_FCP
+>  	help
+>  	  This is a driver for the Renesas Frame Compression Processor (FCP).
+>  	  The FCP is a companion module of video processing modules in the
+> -	  Renesas R-Car Gen3 SoCs. It handles memory access for the codec,
+> -	  VSP and FDP modules.
+> +	  Renesas R-Car Gen3 and RZ/G2 SoCs. It handles memory access for
+> +	  the codec, VSP and FDP modules.
+>  
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called rcar-fcp.
+
+MBR, Sergei
