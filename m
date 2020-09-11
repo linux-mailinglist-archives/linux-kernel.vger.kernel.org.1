@@ -2,81 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B3926697E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE1D26697F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgIKUYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:24:31 -0400
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185]:38688
-        "EHLO a27-185.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725793AbgIKUYa (ORCPT
+        id S1725846AbgIKUYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:24:40 -0400
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:56012
+        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725793AbgIKUYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:24:30 -0400
+        Fri, 11 Sep 2020 16:24:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599855869;
-        h=From:To:Cc:Subject:Date:Message-Id;
-        bh=eS0AE1YOcLsI/VsKdn1KA+dbGmtsMgubVKpWHGlt0u8=;
-        b=QG15KpDW4bBEJup7HegdfBCHEasvpOk4gAT5ELGxh9+/KQUAj2yLRSMoVJkOYMRa
-        Y64PiIDcuADqP6WaJheDzCocXUaEkQ9x85HIwx1LMTJSRfbz7W5ZbyuaCdRYq5Gf4qd
-        PeZdWfwEbLbcBdnVvugzi/vh4l7fqyseFXk5uq9M=
+        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599855878;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References;
+        bh=3WsGh4k1/vDYdpwChY4cQkQgPgI0Dix7ehSHrqOmbLg=;
+        b=mNRqNqEeaxj1bLh2I0eVSZeI9cSlgT0RWh8fNXA24JdH6/oKLAIoW6ZZ7FOofngx
+        Nhv4isD3ntTJiytvV0XBVnpPpLoRdTZA4G9J49+VkE0M/Ti/eLpSUliQL4Du4RlkMiE
+        2Mx52SEdAqfRgMe66eQ1Dh2bs+XzWDqu2pWWerAc=
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599855869;
-        h=From:To:Cc:Subject:Date:Message-Id:Feedback-ID;
-        bh=eS0AE1YOcLsI/VsKdn1KA+dbGmtsMgubVKpWHGlt0u8=;
-        b=m7mq4EaaBRgyQXRP5hFGk3GsAA8TCNq5+c1YSqiNz7LkzC2HuZ6SFpUQ0gB0LMzt
-        Tkj2JWQft9mU7tFcSeIBseuqrGDm81004CL3+87ctkGDdmGJ4Mn8cJJZEEOQRPYYYOD
-        KZ2QKv3kL/2i/CPRLeGSIdzoryhVSzPjy/L4ZM/E=
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599855878;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:Feedback-ID;
+        bh=3WsGh4k1/vDYdpwChY4cQkQgPgI0Dix7ehSHrqOmbLg=;
+        b=NWxp6GUvKZGcG9VCjtqKk+KLoG/Q9fmIiTEiLJpDAISJo73f2o7iOX9dq845UKA9
+        vGbeRhLhQmWzDRSWRPTjamfUoopb/xuFJQQMiegZNEE9dTadFVq13ek+I1uer0kDddn
+        q7iAM6VrL575pi5qe0kEjFZDfxVXo4kmFCtAYAA8=
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 617B8C433CA
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 280ADC433F0
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
 From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Subject: [PATCH v2] cma_alloc(), indefinitely retry allocations for -EBUSY failures
-Date:   Fri, 11 Sep 2020 20:24:29 +0000
-Message-ID: <010101747ed73d01-5362ce76-6676-49fa-abad-0405e8102b04-000000@us-west-2.amazonses.com>
+Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>
+Subject: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
+Date:   Fri, 11 Sep 2020 20:24:38 +0000
+Message-ID: <010101747ed75f8a-7d029864-7c7a-40e3-b1f5-38f7c1c0fb23-000000@us-west-2.amazonses.com>
 X-Mailer: git-send-email 2.7.4
-X-SES-Outgoing: 2020.09.11-54.240.27.185
+In-Reply-To: <1599855850-11337-1-git-send-email-cgoldswo@codeaurora.org>
+References: <1599855850-11337-1-git-send-email-cgoldswo@codeaurora.org>
+X-SES-Outgoing: 2020.09.11-54.240.27.188
 Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On mobile devices, failure to allocate from a CMA area constitutes a
-functional failure.  Sometimes during CMA allocations, we have observed
-that pages in a CMA area allocated through alloc_pages(), that we're trying
-to migrate away to make room for a CMA allocation, are temporarily pinned.
-This temporary pinning can occur when a process that owns the pinned page
-is being forked (the example is explained further in the commit text), or it is
-exiting.  This patch addresses this issue by indefinitely retrying allocations
-that fail due to a return of -EBUSY.
+CMA allocations will fail if 'pinned' pages are in a CMA area, since we
+cannot migrate pinned pages. The _refcount of a struct page being greater
+than _mapcount for that page can cause pinning for anonymous pages.  This
+is because try_to_unmap(), which (1) is called in the CMA allocation path,
+and (2) decrements both _refcount and _mapcount for a page, will stop
+unmapping a page from VMAs once the _mapcount for a page reaches 0.  This
+implies that after try_to_unmap() has finished successfully for a page
+where _recount > _mapcount, that _refcount will be greater than 0.  Later
+in the CMA allocation path in migrate_page_move_mapping(), we will have one
+more reference count than intended for anonymous pages, meaning the
+allocation will fail for that page.
 
-** This change log was re-sent due to threading issues **
+One example of where _refcount can be greater than _mapcount for a page we
+would not expect to be pinned is inside of copy_one_pte(), which is called
+during a fork. For ptes for which pte_present(pte) == true, copy_one_pte()
+will increment the _refcount field followed by the  _mapcount field of a
+page. If the process doing copy_one_pte() is context switched out after
+incrementing _refcount but before incrementing _mapcount, then the page
+will be temporarily pinned.
 
-Change log: 
+So, inside of cma_alloc(), instead of giving up when alloc_contig_range()
+returns -EBUSY after having scanned a whole CMA-region bitmap, perform
+retries indefinitely, with sleeps, to give the system an opportunity to
+unpin any pinned pages.
 
-v1: We were performing retries of the allocation a fixed number of times.
-Andrew Morton disliked this, as it didn't guarantee that the allocation would
-succeed.
-
-https://lkml.org/lkml/2020/8/5/1096
-https://lkml.org/lkml/2020/8/21/1490
-
-v2: To address this concern, we switched to retrying indefinitely, as opposed to
-doing to retrying  the allocation a limited number of times.
-
-Chris Goldsworthy (1):
-  mm: cma: indefinitely retry allocations in cma_alloc
-
+Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Co-developed-by: Vinayak Menon <vinmenon@codeaurora.org>
+Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+---
  mm/cma.c | 25 +++++++++++++++++++++++--
  1 file changed, 23 insertions(+), 2 deletions(-)
 
+diff --git a/mm/cma.c b/mm/cma.c
+index 7f415d7..90bb505 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -32,6 +32,7 @@
+ #include <linux/highmem.h>
+ #include <linux/io.h>
+ #include <linux/kmemleak.h>
++#include <linux/delay.h>
+ #include <trace/events/cma.h>
+ 
+ #include "cma.h"
+@@ -442,8 +443,28 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 				bitmap_maxno, start, bitmap_count, mask,
+ 				offset);
+ 		if (bitmap_no >= bitmap_maxno) {
+-			mutex_unlock(&cma->lock);
+-			break;
++			if (ret == -EBUSY) {
++				mutex_unlock(&cma->lock);
++
++				/*
++				 * Page may be momentarily pinned by some other
++				 * process which has been scheduled out, e.g.
++				 * in exit path, during unmap call, or process
++				 * fork and so cannot be freed there. Sleep
++				 * for 100ms and retry the allocation.
++				 */
++				start = 0;
++				ret = -ENOMEM;
++				msleep(100);
++				continue;
++			} else {
++				/*
++				 * ret == -ENOMEM - all bits in cma->bitmap are
++				 * set, so we break accordingly.
++				 */
++				mutex_unlock(&cma->lock);
++				break;
++			}
+ 		}
+ 		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+ 		/*
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
