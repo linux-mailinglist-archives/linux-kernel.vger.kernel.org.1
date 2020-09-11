@@ -2,90 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560722657B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9622657C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgIKDyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 23:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgIKDyE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 23:54:04 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF45C061573;
-        Thu, 10 Sep 2020 20:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=mPRK05+zdcpW1+sXiJxAOVSCutB8SyY4koqqnEa0WlM=; b=cV7Hkzf3mgL5QuWTwXAgVV+jFj
-        g19ruVvdNHFI7PeRt0vEUQRxo7M9T14yEbHfc79lkx89EkGWek3d9M22co2HHPoiet68dZ5z0IXI7
-        hv14ZM2L2HqutrSTcPtui4bwET4s0QGp+vOUuEfWagxEiNniL09vUH0PwCEJY8NdGhRplRz+F+EbB
-        ghLf2sJT7blMcvzc8cdje3+WLbeynkgb2+b/ojTGs2T1+Pf2b2WIbZKO6oITrTi4ls+FnragxcQrS
-        MsSfxVa+/xma+niz4T5PmokcHFjEf2W1WwXhu4CQkf4ncvsl3NtKEBwDr6IY2qoeTxo70iC+JI0je
-        EUxFyTWQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGa8B-0000Ok-1m; Fri, 11 Sep 2020 03:53:47 +0000
-Subject: Re: [PATCH v2] i2c: virtio: add a virtio i2c frontend driver
-To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     mst@redhat.com, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
-        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
-        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
-References: <c4bd4fd56df36864ed34d3572f00b2b838fd833a.1599795029.git.jie.deng@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f235538d-63d6-2c16-4d9e-d913f15cdcf7@infradead.org>
-Date:   Thu, 10 Sep 2020 20:53:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1725468AbgIKD6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 23:58:33 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11811 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725283AbgIKD6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 23:58:25 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 98578750294870E6A356;
+        Fri, 11 Sep 2020 11:58:23 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
+ 11:58:17 +0800
+From:   Luo Jiaxing <luojiaxing@huawei.com>
+To:     <peppe.cavallaro@st.com>, <alexandre.torgue@st.com>,
+        <joabreu@synopsys.com>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <mcoquelin.stm32@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+Subject: [PATCH net-next] net: stmmac: set get_rx_header_len() as void for it didn't have any error code to return
+Date:   Fri, 11 Sep 2020 11:55:58 +0800
+Message-ID: <1599796558-45818-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <c4bd4fd56df36864ed34d3572f00b2b838fd833a.1599795029.git.jie.deng@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 8:48 PM, Jie Deng wrote:
-> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-> index 293e7a0..70c8e30 100644
-> --- a/drivers/i2c/busses/Kconfig
-> +++ b/drivers/i2c/busses/Kconfig
-> @@ -21,6 +21,17 @@ config I2C_ALI1535
->  	  This driver can also be built as a module.  If so, the module
->  	  will be called i2c-ali1535.
->  
-> +config I2C_VIRTIO
-> +	tristate "Virtio I2C Adapter"
-> +	depends on VIRTIO
-> +	help
-> +	  If you say yes to this option, support will be included for the virtio
-> +	  i2c adapter driver. The hardware can be emulated by any device model
+We found the following warning when using W=1 to build kernel:
 
-	  I2C
-preferably
+drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3634:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+int ret, coe = priv->hw->rx_csum;
 
+When digging stmmac_get_rx_header_len(), dwmac4_get_rx_header_len() and
+dwxgmac2_get_rx_header_len() return 0 only, without any error code to
+report. Therefore, it's better to define get_rx_header_len() as void.
 
-> +	  software according to the virtio protocol.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called i2c-virtio.
-> +
->  config I2C_ALI1563
->  	tristate "ALI 1563"
->  	depends on PCI
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c   | 3 +--
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c | 3 +--
+ drivers/net/ethernet/stmicro/stmmac/hwif.h           | 4 ++--
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c    | 4 ++--
+ 4 files changed, 6 insertions(+), 8 deletions(-)
 
-
-thanks.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c
+index eff8206..c6540b0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_descs.c
+@@ -494,10 +494,9 @@ static void dwmac4_set_vlan(struct dma_desc *p, u32 type)
+ 	p->des2 |= cpu_to_le32(type & TDES2_VLAN_TAG_MASK);
+ }
+ 
+-static int dwmac4_get_rx_header_len(struct dma_desc *p, unsigned int *len)
++static void dwmac4_get_rx_header_len(struct dma_desc *p, unsigned int *len)
+ {
+ 	*len = le32_to_cpu(p->des2) & RDES2_HL;
+-	return 0;
+ }
+ 
+ static void dwmac4_set_sec_addr(struct dma_desc *p, dma_addr_t addr)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c
+index c3d654c..0aaf19a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_descs.c
+@@ -286,11 +286,10 @@ static int dwxgmac2_get_rx_hash(struct dma_desc *p, u32 *hash,
+ 	return -EINVAL;
+ }
+ 
+-static int dwxgmac2_get_rx_header_len(struct dma_desc *p, unsigned int *len)
++static void dwxgmac2_get_rx_header_len(struct dma_desc *p, unsigned int *len)
+ {
+ 	if (le32_to_cpu(p->des3) & XGMAC_RDES3_L34T)
+ 		*len = le32_to_cpu(p->des2) & XGMAC_RDES2_HL;
+-	return 0;
+ }
+ 
+ static void dwxgmac2_set_sec_addr(struct dma_desc *p, dma_addr_t addr)
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+index ffe2d63..e2dca9b 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
+@@ -90,7 +90,7 @@ struct stmmac_desc_ops {
+ 	/* RSS */
+ 	int (*get_rx_hash)(struct dma_desc *p, u32 *hash,
+ 			   enum pkt_hash_types *type);
+-	int (*get_rx_header_len)(struct dma_desc *p, unsigned int *len);
++	void (*get_rx_header_len)(struct dma_desc *p, unsigned int *len);
+ 	void (*set_sec_addr)(struct dma_desc *p, dma_addr_t addr);
+ 	void (*set_sarc)(struct dma_desc *p, u32 sarc_type);
+ 	void (*set_vlan_tag)(struct dma_desc *p, u16 tag, u16 inner_tag,
+@@ -150,7 +150,7 @@ struct stmmac_desc_ops {
+ #define stmmac_get_rx_hash(__priv, __args...) \
+ 	stmmac_do_callback(__priv, desc, get_rx_hash, __args)
+ #define stmmac_get_rx_header_len(__priv, __args...) \
+-	stmmac_do_callback(__priv, desc, get_rx_header_len, __args)
++	stmmac_do_void_callback(__priv, desc, get_rx_header_len, __args)
+ #define stmmac_set_desc_sec_addr(__priv, __args...) \
+ 	stmmac_do_void_callback(__priv, desc, set_sec_addr, __args)
+ #define stmmac_set_desc_sarc(__priv, __args...) \
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 89b2b34..7e95412 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3631,15 +3631,15 @@ static unsigned int stmmac_rx_buf1_len(struct stmmac_priv *priv,
+ 				       struct dma_desc *p,
+ 				       int status, unsigned int len)
+ {
+-	int ret, coe = priv->hw->rx_csum;
+ 	unsigned int plen = 0, hlen = 0;
++	int coe = priv->hw->rx_csum;
+ 
+ 	/* Not first descriptor, buffer is always zero */
+ 	if (priv->sph && len)
+ 		return 0;
+ 
+ 	/* First descriptor, get split header length */
+-	ret = stmmac_get_rx_header_len(priv, p, &hlen);
++	stmmac_get_rx_header_len(priv, p, &hlen);
+ 	if (priv->sph && hlen) {
+ 		priv->xstats.rx_split_hdr_pkt_n++;
+ 		return hlen;
 -- 
-~Randy
+2.7.4
 
