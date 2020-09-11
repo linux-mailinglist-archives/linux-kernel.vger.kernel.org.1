@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8971266055
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F8F266079
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgIKNed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 09:34:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52786 "EHLO mail.kernel.org"
+        id S1725821AbgIKNlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 09:41:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726206AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726207AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 09:05:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AFB0221E3;
-        Fri, 11 Sep 2020 12:58:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A8E22220A;
+        Fri, 11 Sep 2020 12:58:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829082;
-        bh=9uwE+ITSYJUhaz4LYB9tyUx6FK+SJeFumGR2VZPPQSc=;
+        s=default; t=1599829089;
+        bh=I3+A75ElY6zXRlrjt7qiOG+vSPUPB1pOOllwGDllo30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eKqb5AemMh1gTh+r5FfZEXIvSDR5D+KWXOo3yUrCyTvQpXDjcpObP4qC9NqQZwzZX
-         m9qqIFiKmrW+lgdqb1wVr79jtfbT7GNlFMxCrdSMS/x6lh2JDYC8tsxEuQN/inw0pN
-         4ZeJN0tkP5AY72Wnuma2CK0xdhbFNidNxhR5f/wI=
+        b=0CEYumY/DZkOpRYY5Ud7CHXUhZ871yNwV6mJYbPRg1YG8cVrk5wolcl7aGWyrCuCM
+         VEzyywSpPgCZH5ju9ixQMp+EldpLlW8wzmjSRoWLhh9bkrIZJ1BIvay0kZgYFu7gt6
+         jEOOQTnuagfAcKUpZqCNbf563FcJJvQQjHEWeZmg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mrinal Pandey <mrinalmni@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 59/71] checkpatch: fix the usage of capture group ( ... )
-Date:   Fri, 11 Sep 2020 14:46:43 +0200
-Message-Id: <20200911122507.856174623@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+d451401ffd00a60677ee@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 61/71] cfg80211: regulatory: reject invalid hints
+Date:   Fri, 11 Sep 2020 14:46:45 +0200
+Message-Id: <20200911122507.957032784@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -46,58 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mrinal Pandey <mrinalmni@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 13e45417cedbfc44b1926124b1846f5ee8c6ba4a upstream.
+commit 47caf685a6854593348f216e0b489b71c10cbe03 upstream.
 
-The usage of "capture group (...)" in the immediate condition after `&&`
-results in `$1` being uninitialized.  This issues a warning "Use of
-uninitialized value $1 in regexp compilation at ./scripts/checkpatch.pl
-line 2638".
+Reject invalid hints early in order to not cause a kernel
+WARN later if they're restored to or similar.
 
-I noticed this bug while running checkpatch on the set of commits from
-v5.7 to v5.8-rc1 of the kernel on the commits with a diff content in
-their commit message.
-
-This bug was introduced in the script by commit e518e9a59ec3
-("checkpatch: emit an error when there's a diff in a changelog").  It
-has been in the script since then.
-
-The author intended to store the match made by capture group in variable
-`$1`.  This should have contained the name of the file as `[\w/]+`
-matched.  However, this couldn't be accomplished due to usage of capture
-group and `$1` in the same regular expression.
-
-Fix this by placing the capture group in the condition before `&&`.
-Thus, `$1` can be initialized to the text that capture group matches
-thereby setting it to the desired and required value.
-
-Fixes: e518e9a59ec3 ("checkpatch: emit an error when there's a diff in a changelog")
-Signed-off-by: Mrinal Pandey <mrinalmni@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Joe Perches <joe@perches.com>
-Link: https://lkml.kernel.org/r/20200714032352.f476hanaj2dlmiot@mrinalpandey
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: syzbot+d451401ffd00a60677ee@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=d451401ffd00a60677ee
+Link: https://lore.kernel.org/r/20200819084648.13956-1-johannes@sipsolutions.net
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- scripts/checkpatch.pl |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/wireless/reg.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2375,8 +2375,8 @@ sub process {
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -2321,6 +2321,9 @@ int regulatory_hint_user(const char *alp
+ 	if (WARN_ON(!alpha2))
+ 		return -EINVAL;
  
- # Check if the commit log has what seems like a diff which can confuse patch
- 		if ($in_commit_log && !$commit_log_has_diff &&
--		    (($line =~ m@^\s+diff\b.*a/[\w/]+@ &&
--		      $line =~ m@^\s+diff\b.*a/([\w/]+)\s+b/$1\b@) ||
-+		    (($line =~ m@^\s+diff\b.*a/([\w/]+)@ &&
-+		      $line =~ m@^\s+diff\b.*a/[\w/]+\s+b/$1\b@) ||
- 		     $line =~ m@^\s*(?:\-\-\-\s+a/|\+\+\+\s+b/)@ ||
- 		     $line =~ m/^\s*\@\@ \-\d+,\d+ \+\d+,\d+ \@\@/)) {
- 			ERROR("DIFF_IN_COMMIT_MSG",
++	if (!is_world_regdom(alpha2) && !is_an_alpha2(alpha2))
++		return -EINVAL;
++
+ 	request = kzalloc(sizeof(struct regulatory_request), GFP_KERNEL);
+ 	if (!request)
+ 		return -ENOMEM;
 
 
