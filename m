@@ -2,129 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B426A265A63
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04637265A67
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgIKHUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:20:09 -0400
-Received: from mail-am6eur05on2052.outbound.protection.outlook.com ([40.107.22.52]:13089
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725536AbgIKHUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:20:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VpxBi0jnvSYCOpbXFGMQRnXOW45RTJt0uqDWoe1gxJV1aIU0vIxnU/c1HwEJsr2gu+URRofuZuwDlZAGqA+5RKOdi4Zu4obuGtpE7F7Uk3/goJegcmqKUGk2kI2jHLLkakv5qbzXBjzCAJTS1q1loJztvBbnnghbuXo45TDELfchbC0EgECI1Rdh9OGhCOQJ603p6EZnPy4xI4j5KKVAQq9PEmFLl9j997O9ktnRGsrrEsfnz0qdl5TB4tap3NpqNfvCh0BWJCjd27jcDWqo5r5GTIk2sc1sAj3SYOaoPIQQ7autTs6LG9dnTH+N96NbYdFPd3uq3u+BBAD7id20Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Q9Yd33ubrluRg4IqkEhzePSZcz9XkbXk4kVMZdUEBI=;
- b=VGO3+pS4plg58Rl49qE9/MhxFYfSHLd3fz/azXEvgYWUTPn/vzeCc8+y421+oQSGuaf8hGJzi6eI5rvzN8nk4jWAvfqr4g2PrS65oyFzaZuxwy1CfjLAA602zeNc1FUSL4vv3ctdLl29GC7zzv1dqtGrPkyHzvmryKiBc+RgimqhsxDHx6kUDHrZo5iI2YjKxpEaopF4RkRbZrRH2ZRTT5uu9qJD+wDu/371VmZwYBzGjHph5qdUTl2ZT0eAImGY4Txsz5tDGgj/bhDJJCV3zOc5GEhu0+nIAB6sRlw6vmHusaezBZi2UuhoxYsQNQhklpzs6u6R10yE+0DNXdMarw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Q9Yd33ubrluRg4IqkEhzePSZcz9XkbXk4kVMZdUEBI=;
- b=pMk2LmU4hPrw19DdD1cCAEWIcXKcN3wTEd5uT83ChY4Fsc/NsYWeXHYzaccJV8iB+moiCp1jv5NLj4a0jl2qdSwxfy6jyJ+aCpR3ASpS1VuBkprA1qaZUMTjbe3fxmowbpkuoeCKRrnpXFBn9YDUHIhLyt3NSCgYWC4vqWtOPqc=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM7PR04MB6773.eurprd04.prod.outlook.com (2603:10a6:20b:dc::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
- 2020 07:19:59 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::99b5:145d:16cc:78ca]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::99b5:145d:16cc:78ca%3]) with mapi id 15.20.3370.016; Fri, 11 Sep 2020
- 07:19:59 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Peng Fan <peng.fan@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH 1/4] dt-bindings: fsl: add i.MX7ULP PMC binding doc
-Thread-Topic: [PATCH 1/4] dt-bindings: fsl: add i.MX7ULP PMC binding doc
-Thread-Index: AQHWh+zi0lUqzLc3V0GYGgj5TwZkHqljAcZg
-Date:   Fri, 11 Sep 2020 07:19:59 +0000
-Message-ID: <AM6PR04MB49661958310D649508AB698B80240@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <1599795053-5091-1-git-send-email-peng.fan@nxp.com>
- <1599795053-5091-2-git-send-email-peng.fan@nxp.com>
-In-Reply-To: <1599795053-5091-2-git-send-email-peng.fan@nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 20f95103-15d2-483d-4d78-08d856231805
-x-ms-traffictypediagnostic: AM7PR04MB6773:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM7PR04MB67736F4F4BF68091D17AA42980240@AM7PR04MB6773.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:483;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jDDjMqhJ51LoOAiaGHGI3xW3T0IHZu9+DTy8ysjO5V4UDrCbdYuxugejagsZXRmudOKvHtiJkT++3L6FOnXYM7nIDnl0HE3Yibb7htQur6hXJOjUjaxu0Uqmu+XG4RwVVuqCIwpKW423SWBZk7s43SF/5d4zZKMnwYLSfQ2E6W9Ciocl59EaeUfzCr55yYp3CNc2yf52Kv3EseEPwdsRSaHc92pAfq4IbasBtt2KYNHzgKzg/7a73fSCFwVviV7myPDahC3d1u3gtW1bt1hBfJJoea8dc9/YMD3nZVs58/wlVUeBnCcYpg+A5RE3UIttKld2dCQ4McEKKjXA9ezBZAFLidOcbTskL6gJ0doo6OrdhuqUVmclT+9vGbCISmoh+0/GndosSKMUp+npQJyAEQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(186003)(966005)(66446008)(86362001)(26005)(6506007)(5660300002)(66556008)(66476007)(66946007)(52536014)(316002)(8936002)(76116006)(71200400001)(64756008)(4326008)(54906003)(2906002)(8676002)(9686003)(55016002)(7696005)(44832011)(33656002)(478600001)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: cVpFHnaGEemt19t4W6+bPcsG7zryhtcVqc6TyDe6Q1Sjx6Y2KwE5LGwAS6h1dgqsmQf34jxBlH3+bXPcuOpr1vRFII/PVSalLDJCD3OBBwSbsO7GMmx3KzbM+5gMuaBKerBdCPUnYvXETNq9EQ9A7lTH0Uqqa8MAl7US5aXkItkZuZ7GBp7Yq8Uie5iD/e1r3xFmmI38dJcwvppREpUy18Zsl/hfxftWPJOMfYqvlsYbDPLt8rf99/yG3BhPAI/NAVIv+yPFCMNjwVCE/BCAFX6WCQH0i697adKY5b2htIGfqBOp3uWp2Awx+w3zIRdxXjp+I/qcdmm+mmDzCceu1JvoK9i6b+cwrFNeATPFC2bqWvRZ8dMP095uNuamanbWavsTm6SXK8T62tzCE5VppT2iKVJH2GTPSz3JbOQjU4c1ER8usDBYOJhDzDZbewdLpgaxbS+6X0iWi9BTJ+xOsvWAkZeITtLVBBoAbbR8G8ZL56qWWiY8uBx8/+pivv8Yv2k20d/o187jsMrg2qVtoU5scD+PCaS9np63Hk3LO1+XghqyucLUeoehcL/Z8HeQbA5fuERvlv1NQ3aso7soxWdCqwWF6OkgK9KItvwycIZe/e5w2lNki665TR8H/BKlWl0pzraHPlH4yIlyZvpZ/A==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725867AbgIKHUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgIKHU3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 03:20:29 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D357C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:20:28 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so12423329eja.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:20:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=YFeXjg7bqtTOYH49LIXUF1fo0jTBbkbgWiE0BAtXQYM=;
+        b=olkRWEm+WkS5GkVvHd2wfMIUqeYzYCZEhMDvsVxvkL+iSN6OtLdTXjcP1+Zeu+VopI
+         nyiKZEt75J3tgl2EDVHz4ypb72b4LB/r0PiEqr06K7QuWFHx6hwbIodp2uU4B6wHAhyn
+         VcdXlw3SDgWyJ+ukCqgQblphQ2UXgoa5yDt7E1mLOzqapI8Ha+VWmjqOqW800PkXdY1s
+         FT0UKWiorqK1mlKQQL2utMCAQozPPfU5ud0gdNC8OcmvwuND7/IEkGuRbDLGEOMWH5yq
+         1xl8hhCnmBrTTKZ9guGPoZ67hmZcXpXjFJFYptCgiCTkoEdB2kj48bv6S4apuMp6d+U8
+         FxBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=YFeXjg7bqtTOYH49LIXUF1fo0jTBbkbgWiE0BAtXQYM=;
+        b=V/u/Lq8yLwFz26rv+/50kYEUTbd4tG5dJcqyGeCeuhUWdDCOo8Pw7SWNaJgz1ci8s4
+         z6ElvHh580jcew4ryviXHfB5nQtDVhdDw8rGezXkbu9lJHwDEnpiBSXq2x9An2lzrLM3
+         vhRLaD4hhhT4oAp1YJfvEqmXnZAj2+zu8Q5BRJXx/TZuY/E/+A9K5E5lzlvUrj91HLff
+         x6r28rEgI8uG4TKgFpm9VfWNOMLKAWu/6sASpgdlFTed71MsHapP2aLePl0mHaEhRV/2
+         491ti5GCuC5XEatCjWG/mEB7n3Ke1nL5R5/N6WUqz/GWJOd3/BMrreelOpXCAolq/CNp
+         T3hQ==
+X-Gm-Message-State: AOAM532ZvmeyLntp5Iwyou5lLzXtJHAsZY+TF7sjI8ishGQuyKuABqyf
+        Dc27DPDz6NmCWhbHEt3np/wXKe4VK4Gu5v2kTsA=
+X-Google-Smtp-Source: ABdhPJw5ZsirWV0c7OfUpQwJtF/NnjigCb9xkes2Un4J5HwOVhwQLdiF2NkaO5xLFDOkwqy7/91kNkfVF/LyQOXoKYI=
+X-Received: by 2002:a17:906:fb8c:: with SMTP id lr12mr799162ejb.9.1599808827116;
+ Fri, 11 Sep 2020 00:20:27 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20f95103-15d2-483d-4d78-08d856231805
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2020 07:19:59.8620
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QRyas+zFXfcU22RYADl8NYqCnYJwWcb2Zl9lt4kPQ1McSRlCHU9xmTjLkKgzOI7+Sf7GqHiZbsUGcnu1Ns6Puw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6773
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 11 Sep 2020 17:20:15 +1000
+Message-ID: <CAPM=9txiwAocSprg6zCMF7ajJm-aY7wX=NY47+ZhVdKLfVZi+A@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.9-rc5
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4NCj4gU2VudDogRnJpZGF5LCBTZXB0
-ZW1iZXIgMTEsIDIwMjAgMTE6MzEgQU0NCj4gDQo+IEFkZCBpLk1YN1VMUCBQb3dlciBNYW5hZ2Vt
-ZW50IENvbnRyb2xsZXIgYmluZGluZyBkb2MNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFBlbmcgRmFu
-IDxwZW5nLmZhbkBueHAuY29tPg0KPiAtLS0NCj4gIC4uLi9iaW5kaW5ncy9hcm0vZnJlZXNjYWxl
-L2lteDd1bHAtcG1jLnlhbWwgICB8IDMzICsrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBj
-aGFuZ2VkLCAzMyBpbnNlcnRpb25zKCspDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQNCj4gRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9mcmVlc2NhbGUvaW14N3VscC1wbWMueWFt
-bA0KDQpJIHdvbmRlciBpZiB3ZSBjYW4gbWVyZ2UgaXQgaW50byB0aGUgZXhpc3QgaW14N3VscCBw
-bSBiaW5kaW5nIGRvYy4NCkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vZnJl
-ZXNjYWxlL2ZzbCxpbXg3dWxwLXBtLnlhbWwNCg0KPiANCj4gZGlmZiAtLWdpdA0KPiBhL0RvY3Vt
-ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vZnJlZXNjYWxlL2lteDd1bHAtcG1jLnlh
-bWwNCj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2ZyZWVzY2FsZS9p
-bXg3dWxwLXBtYy55YW1sDQo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAw
-MDAwMC4uMzNhMzFkODdkZDYyDQo+IC0tLSAvZGV2L251bGwNCj4gKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9mcmVlc2NhbGUvaW14N3VscC1wbWMueWFtbA0KPiBA
-QCAtMCwwICsxLDMzIEBADQo+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wDQo+
-ICslWUFNTCAxLjINCj4gKy0tLQ0KPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1h
-cy9hcm0vZnJlZXNjYWxlL2lteDd1bHAtcG1jLnlhbWwjDQo+ICskc2NoZW1hOiBodHRwOi8vZGV2
-aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCMNCj4gKw0KPiArdGl0bGU6IGkuTVg3
-VUxQIFBvd2VyIE1hbmFnZW1lbnQgQ29udHJvbGxlcihQTUMpIERldmljZSBUcmVlIEJpbmRpbmdz
-DQo+ICsNCj4gK21haW50YWluZXJzOg0KPiArICAtIFBlbmcgRmFuIDxwZW5nLmZhbkBueHAuY29t
-Pg0KPiArDQo+ICtwcm9wZXJ0aWVzOg0KPiArICBjb21wYXRpYmxlOg0KPiArICAgIGl0ZW1zOg0K
-PiArICAgICAgLSBlbnVtOg0KPiArICAgICAgICAgIC0gZnNsLGlteDd1bHAtcG1jLW00DQo+ICsg
-ICAgICAgICAgLSBmc2wsaW14N3VscC1wbWMtYTcNCg0KQ2FuIHdlIGNoYW5nZSB0byB0aGUgZXhp
-c3QgbmFtaW5nIHBhdHRlcm4gd2hpY2ggYWxzbyBhbGlnbiB3aXRoIEhXIHJlZmVyZW5jZSBtYW51
-YWw/DQplLmcuDQpmc2wsaW14N3VscC1wbWMwDQpmc2wsaW14N3VscC1wbWMxDQoNCkFsaWduZWQg
-d2l0aDoNCmZzbCxpbXg3dWxwLXNtYzENCmZzbCxpbXg3dWxwLXBjYzINCmZzbCxpbXg3dWxwLXNj
-ZzENCg0KUmVnYXJkcw0KQWlzaGVuZw0KDQo+ICsNCj4gKyAgcmVnOg0KPiArICAgIG1heEl0ZW1z
-OiAxDQo+ICsNCj4gK3JlcXVpcmVkOg0KPiArICAtIGNvbXBhdGlibGUNCj4gKyAgLSByZWcNCj4g
-Kw0KPiArYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+ICsNCj4gK2V4YW1wbGVzOg0KPiAr
-ICAtIHwNCj4gKyAgICBwbWMwOiBwbWMtbTRANDEwYTEwMDAgew0KPiArICAgICAgICBjb21wYXRp
-YmxlID0gImZzbCxpbXg3dWxwLXBtYy1tNCI7DQo+ICsgICAgICAgIHJlZyA9IDwweDQxMGExMDAw
-IDB4MTAwMD47DQo+ICsgICAgfTsNCj4gLS0NCj4gMi4yOC4wDQoNCg==
+Hi Linus,
+
+Regular fixes, not much a major amount. One thing though is Laurent
+fixed some Kconfig issues, and I'm carrying the rapidio kconfig change
+so the drm one for xlnx driver works. He hadn't got a response from
+rapidio maintainers.
+
+Otherwise, virtio, sun4i, tve200, ingenic have some fixes, one audio
+fix for i915 and a core docs fix.
+
+DAve.
+
+
+drm-fixes-2020-09-11:
+drm fixes for 5.9-rc5
+
+rapidio/xlnx kconfig fix.
+
+core:
+- Documentation fix.
+
+i915:
+- audio regression fix
+
+virtio:
+- Fix double free in virtio.
+- Fix virtio unblank.
+- Remove output->enabled from virtio, as it should use crtc_state.
+
+sun4i:
+- Add missing put_device in sun4i, and other fixes.
+- Handle sun4i alpha on lowest plane correctly.
+
+tv200:
+- Fix tve200 enable/disable.
+
+ingenic
+- Small ingenic fixes.
+The following changes since commit 20561da3a2e1e0e827ef5510cb0f74bcfd377e41:
+
+  Revert "drm/i915/gem: Delete unused code" (2020-09-08 15:45:27 +1000)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-09-11
+
+for you to fetch changes up to 7f7a47952c0f981f9c9a6409c8cf8d025d55af64:
+
+  Merge tag 'drm-misc-fixes-2020-09-09' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-09-11
+09:49:23 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.9-rc5
+
+rapidio/xlnx kconfig fix.
+
+core:
+- Documentation fix.
+
+i915:
+- audio regression fix
+
+virtio:
+- Fix double free in virtio.
+- Fix virtio unblank.
+- Remove output->enabled from virtio, as it should use crtc_state.
+
+sun4i:
+- Add missing put_device in sun4i, and other fixes.
+- Handle sun4i alpha on lowest plane correctly.
+
+tv200:
+- Fix tve200 enable/disable.
+
+ingenic
+- Small ingenic fixes.
+
+----------------------------------------------------------------
+Dave Airlie (3):
+      Merge tag 'drm-xlnx-dpsub-fixes-20200905' of
+git://linuxtv.org/pinchartl/media into drm-fixes
+      Merge tag 'drm-intel-fixes-2020-09-10' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'drm-misc-fixes-2020-09-09' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+
+Gerd Hoffmann (2):
+      drm/virtio: fix unblank
+      drm/virtio: drop virtio_gpu_output->enabled
+
+Gurchetan Singh (1):
+      drm/virtio: Revert "drm/virtio: Call the right shmem helpers"
+
+Jernej Skrabec (1):
+      drm/sun4i: Fix DE2 YVU handling
+
+Kai Vehmanen (1):
+      drm/i915: fix regression leading to display audio probe failure on GLK
+
+Krzysztof Kozlowski (2):
+      dma-buf: Fix kerneldoc of dma_buf_set_name()
+      dma-buf: fence-chain: Document missing dma_fence_chain_init()
+parameter in kerneldoc
+
+Laurent Pinchart (2):
+      rapidio: Replace 'select' DMAENGINES 'with depends on'
+      drm: xlnx: dpsub: Fix DMADEVICES Kconfig dependency
+
+Linus Walleij (1):
+      drm/tve200: Stabilize enable/disable
+
+Maxime Ripard (2):
+      drm/sun4i: backend: Support alpha property on lowest plane
+      drm/sun4i: backend: Disable alpha on the lowest plane on the A20
+
+Ondrej Jirman (1):
+      drm/sun4i: Fix dsi dcs long write function
+
+Paul Cercueil (2):
+      drm/ingenic: Fix leak of device_node pointer
+      drm/ingenic: Fix driver not probing when IPU port is missing
+
+Randy Dunlap (1):
+      Documentation: fix dma-buf.rst underline length warning
+
+Yu Kuai (1):
+      drm/sun4i: add missing put_device() call in sun8i_r40_tcon_tv_set_mux()
+
+ Documentation/driver-api/dma-buf.rst         |  2 +-
+ drivers/dma-buf/dma-buf.c                    |  6 +++---
+ drivers/dma-buf/dma-fence-chain.c            |  1 +
+ drivers/gpu/drm/i915/display/intel_display.c | 10 ++++------
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c    | 20 ++++++++++++--------
+ drivers/gpu/drm/sun4i/sun4i_backend.c        |  4 +---
+ drivers/gpu/drm/sun4i/sun4i_tcon.c           |  8 ++++++--
+ drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c       |  4 ++--
+ drivers/gpu/drm/sun4i/sun8i_vi_layer.c       |  2 +-
+ drivers/gpu/drm/tve200/tve200_display.c      | 22 +++++++++++++++++++++-
+ drivers/gpu/drm/virtio/virtgpu_display.c     | 15 +++++++++++----
+ drivers/gpu/drm/virtio/virtgpu_drv.h         |  2 +-
+ drivers/gpu/drm/virtio/virtgpu_object.c      |  8 +++++++-
+ drivers/gpu/drm/virtio/virtgpu_plane.c       |  6 ++++--
+ drivers/gpu/drm/xlnx/Kconfig                 |  1 +
+ drivers/rapidio/Kconfig                      |  2 +-
+ 16 files changed, 77 insertions(+), 36 deletions(-)
