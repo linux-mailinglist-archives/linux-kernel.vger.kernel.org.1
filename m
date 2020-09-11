@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5A7265DBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 12:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E01265DC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 12:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgIKKYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 06:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
+        id S1725907AbgIKKZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 06:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgIKKXm (ORCPT
+        with ESMTP id S1725832AbgIKKZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 06:23:42 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1280BC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:23:40 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gr14so13133328ejb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:23:40 -0700 (PDT)
+        Fri, 11 Sep 2020 06:25:50 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21B8C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:25:49 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id gf14so1480197pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:25:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=tNRvmiWJDOMDh3dqwVbpsBb44/nhs1as4bap35suZ50=;
-        b=a4GUOCPQE6EUAr3RBrvmEvINIdf/s2dKgexnw2WEUKz6UoTBXba9hrGX5txb6p97ZZ
-         O47EGnLjYpnpIeepOht/l8RV/vgAUt4CzzVZqydRRWrPQnsA/+CGr4XT5WNzNJvye0Q0
-         NnfYNWc9NYvR60YMax7FF8G1hvBO6XNiWzYYewaR5hzz9CDmbN+u62vug9r9dNT7id3q
-         9WQQSm8jzR9RsJczGuMhMa37EcJaZ2uXxMP96rrRwWDpFeGRUkf0EcWPmX/nqLnh3HmF
-         hD5MifSYmoEg066q17JfapCgkRzy42jPsc7YKUM/0V8JFTrnXnJD/ctRBAmlhrvKjSmq
-         hAqg==
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=e46DHbzTBFXI2qUO06Xr5hYaBwt3naS56LAsBV+A8t0=;
+        b=S5AaYjkuSLMxqDh1NKhipUCvP8LgUI4CrWq0Gy+35B9PP8LBCI/Pf2buHxS6pb8Wbt
+         yYzgLIwcAA1qjq+oAhM6N2dy39Q70v5y0XGOPpwGVSn9Ihb0wWEQ1LccJDresNLt1Y1l
+         MRykiJAhxTBrXPmgcaVL+jKTiqA9B+uniRY8Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=tNRvmiWJDOMDh3dqwVbpsBb44/nhs1as4bap35suZ50=;
-        b=tI95C1sXbkN2VdxQ7Da07RSCKHGct80Q/8cQTu9APDH7HLmmFruuZGmBxpRk2OUaaW
-         Ly6RcTVDiN80VhwEzqcqQegxLyYd97hc4xZVBWhE+N9PEGnGOTWccAJ1xGU+p5+524Mg
-         pzqPWcE9wpqC6pHubrO3rGeQZq7oEGJoQMqAK/vEt42am017hGxBMtut7rNpUoHKYudr
-         4BRn8MGv4BSNnUjZ6Z4Li5m92G6TONT1WeO3EUmx2y2A5qtIMIEhvMkbmNDLabdwsuVx
-         KOZyREmPWlyY4WW1GrVKUREgtm/ZH3wM7WAVO03AT36noiHg/SE1Qz3l62wsKtJQXCtf
-         3uYw==
-X-Gm-Message-State: AOAM530bmAShxAboSb5tmfsRV+9UcUwqOPRUso7jGoACsrTRzkZ20TFP
-        utib9wxpPjFqngY55da4hgc=
-X-Google-Smtp-Source: ABdhPJzpbt2MYr6njG/K1pwqamHMNOmIfGVnyqAq+AayO2SojyxuQ0L+Q+qRrz/FhfSO8kISHpHGCQ==
-X-Received: by 2002:a17:906:4754:: with SMTP id j20mr1399927ejs.293.1599819818775;
-        Fri, 11 Sep 2020 03:23:38 -0700 (PDT)
-Received: from felia ([2001:16b8:2dfa:1900:b0c3:335:87f7:d616])
-        by smtp.gmail.com with ESMTPSA id d7sm1248315ejk.99.2020.09.11.03.23.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=e46DHbzTBFXI2qUO06Xr5hYaBwt3naS56LAsBV+A8t0=;
+        b=S40GNVwBmjpItk/MIEPcvAGlLvGrMfiEl6Rcf73gmOdnHJFDHJkPuKxJyKnGakjQQe
+         AWAEUtOCc3b/bF2T+WS9QW8mnlL6limf0pYuzbMftKulIiRBGHB4oFbko8o18Uq98PpV
+         D5RgY3LuhAYTJNDcfYfoVDrR9MRct5/cE4x6i37tTZLBgKI/3ML80+xyhG9bEiJtnrRY
+         0oL3JT8ZpXZR48O98BwQGac37LdH+t1axDlO6cEEbOdf8nbeczvaC103+sQNBlfvBv41
+         xRQy3eiRowegsWZqf+FaxtCnb+p2Up1GfukZHp3y243tfbSLsvLTdXsjuE2IOy3CBeww
+         mwZg==
+X-Gm-Message-State: AOAM531DAsCj7/GKCIej2Q4XZeSSG5B4uUOkKN0h5+XxT0RqEwIB41WO
+        wcs/Q8EFFMgzyig5iqesgVtOfw==
+X-Google-Smtp-Source: ABdhPJxPDMHj7bY9B1+rquyIhx1L1LA2oRdhPi5GLC9/YQnGbN3wlM27C1EJ7k/EZkniTjjK6iCpNA==
+X-Received: by 2002:a17:90a:ad8b:: with SMTP id s11mr1642230pjq.40.1599819948441;
+        Fri, 11 Sep 2020 03:25:48 -0700 (PDT)
+Received: from mannams-OptiPlex-7010.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id i17sm1929584pfa.2.2020.09.11.03.25.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 03:23:38 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Fri, 11 Sep 2020 12:23:36 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Joe Perches <joe@perches.com>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>
-Subject: Re: MAINTAINERS: Marking internal distribution lists
-In-Reply-To: <7e513eea8ecf7ff1379d7a87245915469784121c.camel@perches.com>
-Message-ID: <alpine.DEB.2.21.2009111219340.16254@felia>
-References: <alpine.DEB.2.21.2009110811520.9220@felia> <7e513eea8ecf7ff1379d7a87245915469784121c.camel@perches.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Fri, 11 Sep 2020 03:25:47 -0700 (PDT)
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, poza@codeaurora.org
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Subject: [PATCH v2] iommu/dma: Fix IOVA reserve dma ranges
+Date:   Fri, 11 Sep 2020 15:55:34 +0530
+Message-Id: <20200911102534.25218-1-srinath.mannam@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix IOVA reserve failure in the case when address of first memory region
+listed in dma-ranges is equal to 0x0.
 
+Fixes: aadad097cd46f ("iommu/dma: Reserve IOVA for PCIe inaccessible DMA address")
+Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+---
+Changes from v1:
+   Removed unnecessary changes based on Robin's review comments.
 
-On Fri, 11 Sep 2020, Joe Perches wrote:
+ drivers/iommu/dma-iommu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Fri, 2020-09-11 at 08:37 +0200, Lukas Bulwahn wrote:
-> > Hi Joe,
-> > 
-> > in my continued effort to clean up MAINTAINERS, I came across various 
-> > email "lists" that are actually just some kind of internal distribution
-> > lists, but we cannot subscribe to them (no archives available) and they 
-> > are not affiliated to a specific person.
-> > 
-> > Some examples are:
-> > 
-> >   - bcm-kernel-feedback-list.broadcom.com
-> >   - brcm80211-dev-list.cypress.com
-> >   - brcm80211-dev-list.pdl.broadcom.com
-> >   - coreteam.netfilter.org
-> >   - esc.storagedev.microsemi.com
-> >   - linux-imx.nxp.com
-> >   - megaraidlinux.pdl.broadcom.com
-> >   - MPT-FusionLinux.pdl.broadcom.com
-> >   - ocfs2-devel.oss.oracle.com
-> >   - oss-drivers.netronome.com
-> >   - patches.opensource.cirrus.com
-> >   - qat-linux.intel.com
-> >   - rds-devel.oss.oracle.com
-> >   - sparmaintainer.unisys.com
-> >   - wil6210.qti.qualcomm.com
-> >   - x86.kernel.org
-> 
-> At one time, those sorts of email addresses were called "exploders"
-> 
-> Perhaps mark them as such?
-> Maybe like:
-> 
-> L:	megaraidlinux.pdl@broadcom.com (exploder for non-subscribers)
-> 
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 5141d49a046b..682068a9aae7 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -217,7 +217,7 @@ static int iova_reserve_pci_windows(struct pci_dev *dev,
+ 			lo = iova_pfn(iovad, start);
+ 			hi = iova_pfn(iovad, end);
+ 			reserve_iova(iovad, lo, hi);
+-		} else {
++		} else if (end < start) {
+ 			/* dma_ranges list should be sorted */
+ 			dev_err(&dev->dev, "Failed to reserve IOVA\n");
+ 			return -EINVAL;
+-- 
+2.17.1
 
-It is a bit long, but sounds good to me.
-
-If that is still the terminology to settle for, I will send out patches to 
-update the description and data in MAINTAINERS.
-
-Lukas
