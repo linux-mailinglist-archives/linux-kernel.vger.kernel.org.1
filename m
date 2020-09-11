@@ -2,187 +2,424 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB392665D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505FB2665DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgIKROn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:14:43 -0400
-Received: from mail-dm6nam10on2078.outbound.protection.outlook.com ([40.107.93.78]:39056
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726322AbgIKRNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:13:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SKjRuL3vGPQNc7NWPkmHHFyklpciUKAZxZS4/GY+353SwYlPcA1BFSr484CiweF2O3i9QKEsQuKRvYxA+yfZ0nKaR5fVAmRAtmCjgCD+BP5kYKJq+2Hj5SW+ThR7JBm3Kb1NvzE1tu/pvfyAkR715+QkttiENbuCsKBjIwAc7VERkWSQLVbzZTPec//NxxbsMomihnPNDJ/YIlTRsy07SPgrmRkkxflA3kGHXBp2jraAvzGTW1pcdb3MSJKzHmZS+8CKHN8UbFyneNltOD9VcXqWzyQVBvcazy7bRRY6lSVi1kFNFGEq9k/R+830rGNKuZjnkRGMie5ROJGgy5DxxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x/cQd8bJaKOn1nyLKAELAKwzTq7dbsOLCReVTV9IKNM=;
- b=L4JWcPF9vtkoGHYSfMRlzsvhVB6JYZ27rQGW6T5hygjrsnVFw8zcmW7zfUp3WXC973mxTjVndZaNIYRPZTjctThhIBktZX5goHoIZTwZOGG9usNeV3ptazvuLAGFTD5TzPrllI8N4yAvPxXglcUjMuHdgvckJ5QTq5IEaWn0n/kjVWXxBWZB6h9J+hQjvT4k54Zs9YlPIx3NFACc7dLlFbaLfeUV61m8sBh86tVmkrea4gsFr8cWrkVCKFM0BrISnE4C+c/UZG6EFKX+KAL3E8+XpKVwx0SOZOXVyTPB4IJwGHDCkmN3iCovxm1kvFHYPIgnjvr1XWfJIHSc14FseQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726175AbgIKRQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgIKRP3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:15:29 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC41C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:15:28 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id a17so12211768wrn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x/cQd8bJaKOn1nyLKAELAKwzTq7dbsOLCReVTV9IKNM=;
- b=IxhnJcFMFHRHKQc+klhY0K+hbaAIMZ14QT6l0ULtLxPbkrjfHCZPJkoAaq+cjcqd3usKfg3aWCE6PTxD+aQ/ZIsS76XbvK4cqk8zKr8Yw6Yl8/+bNQu82QbnM1HYpEvynb6KMZZdIjbId5LIZ+7E9FqOLleXCjJdy8HTx71MlPo=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB3560.namprd12.prod.outlook.com (2603:10b6:a03:ae::10)
- by BYAPR12MB3143.namprd12.prod.outlook.com (2603:10b6:a03:a8::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
- 2020 17:13:34 +0000
-Received: from BYAPR12MB3560.namprd12.prod.outlook.com
- ([fe80::754e:8f27:157a:9101]) by BYAPR12MB3560.namprd12.prod.outlook.com
- ([fe80::754e:8f27:157a:9101%6]) with mapi id 15.20.3326.030; Fri, 11 Sep 2020
- 17:13:34 +0000
-Subject: Re: [PATCH v2 1/4] drm/amd/display: Rework registers tracepoint
-To:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, hersenxs.wu@amd.com
-References: <20200911145927.401322-1-Rodrigo.Siqueira@amd.com>
- <20200911145927.401322-2-Rodrigo.Siqueira@amd.com>
-From:   "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
-Message-ID: <c1eacedd-056d-d6a8-0407-2dea63f47bd9@amd.com>
-Date:   Fri, 11 Sep 2020 13:13:30 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20200911145927.401322-2-Rodrigo.Siqueira@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YT1PR01CA0128.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::7) To BYAPR12MB3560.namprd12.prod.outlook.com
- (2603:10b6:a03:ae::10)
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IytQlyBm2J+C+0xQONWM1nAS/rbsPardD0SVB1HzZVE=;
+        b=oAO+O+j6fCroBlWBpo9zT37KQA5EIqYtYqrdKq+o+Mp3A2uP3ZHCBksWAGt2yTKEs2
+         ZrV0F+4rRjQ7XZn9OtgxWD/aQyczoV4iyMzXKXyFJC2fj1L7/3ChWtOOt9lMkUmxodAw
+         jxPdCgj9yZ5oDuRDBbFVWDNeLuhnkjK5q9+ac=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IytQlyBm2J+C+0xQONWM1nAS/rbsPardD0SVB1HzZVE=;
+        b=f2BC8wprtq1yrxhjbJwpvXIHWf7GRpOAxfk88cwv2yr8JIHhAo1PZJNFTkI1vhE/Jd
+         k9FBRzfoo9hbz0JlayZToEHoianfkdInc/UBarTOX7nqd1H1LmX/JwG7HYskOijNOuRP
+         q5INL/5EexPIjb4qwU0Fti1j7wOZsJMEg7sZIbsMnJXI4mbO2znfle7WmOI8WphG4Z5n
+         tHvpsfinTe2dYnKfDYOySpG5RV6ReCYRZXIRpkStfPz+PGjJ8ySVBPGAEQoRwG7rsFKn
+         prLD8u4s/RdB4OGURPHwDf3d1OSPCvu8rp6MpP15J2ByyZxm3Jt9MZhtdO6/KwkhGsIK
+         Afsw==
+X-Gm-Message-State: AOAM5300mmDJTmtIbHdHKqvwvEhVk6cJNg7X92I9wvWv1LNgFRB/HctM
+        8gxbObNRL6es63ehJDQ8MvyuDfulUgk4iHtOkwogaA==
+X-Google-Smtp-Source: ABdhPJxkL6ugQfLKjDoTaw8dYhcw8lds7rJ4YM1MA1f1c9zmEH9NT/CrVR+DG4P59XzhF5mw2fmzfpCEmZQtR4iUBKE=
+X-Received: by 2002:a5d:61d2:: with SMTP id q18mr2984957wrv.404.1599844527125;
+ Fri, 11 Sep 2020 10:15:27 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.148.234] (165.204.55.211) by YT1PR01CA0128.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 17:13:32 +0000
-X-Originating-IP: [165.204.55.211]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7106d2f5-7bd5-42ce-f6df-08d85676039d
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3143:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB3143D846FCAD5C9D89655F24EC240@BYAPR12MB3143.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UmI0HGNPiEB4Zb0Dxd6vtIJK5QSW4Lwknmu1hLp9/NBTN828yplHBS6LtNHDF9+uqqjGc8YO9S86w9sr1ISB4UUZ1lhD6E7DiFtupidnZUdgjj6l3tX6/X/8ba2qcKZhSeKOEynHjiHA2Hfh9m8jcFWYkpvsxZ18t+xYArbPZdbuFeOcs/rXmdwzHQtBPN2+/MaaDxMSP/Qp8+k2D3S98TetfObWjvoqEv0TUTa0UTeu0hRBq0pCpR0EpgjEgKs7G/TEgcV5/f5mKj88pg8EZrGoIedFr7WEwooeVd1XkQGsv8k3qgBZ5GO5eYCU7ARgvle8e+18lS+3Dp0iP27anhXV25zW9hgMrl/8wy/Z51ZsWMYHsfUWLsV3ZrCn8xDU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(376002)(366004)(396003)(52116002)(2906002)(66556008)(66476007)(36756003)(31686004)(26005)(53546011)(86362001)(31696002)(4326008)(5660300002)(186003)(8676002)(16526019)(54906003)(16576012)(8936002)(2616005)(66946007)(316002)(956004)(478600001)(6486002)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: K+CjuJSx8YGH4JVl7LvESfRbd4hARWpz7Tjb0ovUraOTcD6mZACfsBJaNSNsXNYBOmO9nc0PHzc9xI3EdNccB22VeDWJdApgGKh4sE0RJfJKFxEDLu74XKcTXAwtYzCXKWfiOcFijbt3Iv1wNZqnaH11PZVtkgS3SM5Qud6iD+ZtNLW56No1bCt/I6VmTgH3eh39WC6lK+L85IFIhS97zTdcrAR4kFGYKTQzQTln5RtaYn43jBjLv73NVVUeNbNvlfC0qjzr70nyd+h34erkts4SBU4RT8aMVuwtR7GUAcSPwkOZp/lx8HoY6jgozedJcV6RrrxqtOoLuVs1Z2yNGZnHoh6tsvAgKJ/dGebv3Zb9b6/I93MOxUJAq5XuUWbpUf32rEhjt049t0EkPGeXxVwD0eUhrhIcYvomCZJZx1VQyUSK2rkLbZKMgRn+gstlPvHrcdg8HtOPaFhl1gOk1emegwEl6ld3FmWxxYnjGMO9ftH3jbpJ8pqBMDKi5EPxmrgY++nP1Im0BXHhiaa45PtlxASABVFnkA26xaxgVAj+PwOwVSi6tCC8PIi6DsUpx/nflXyhtF7zn4eDuBUO0DfUZh5EVSdsNpbU2kRVykMcxxgooobMKKD7ye+EZ83h5tHxIwUo+lpXBMriwu3W8Q==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7106d2f5-7bd5-42ce-f6df-08d85676039d
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3560.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 17:13:34.2417
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n/TTOKUcD0SUFI9TS7nNM8i7ipnh1BBC6O1Z4o8vPAbhdim7AM6iMulMefujo1PHTYBy3Am+9vtQEBe7W42rAQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3143
+References: <20200911102259.3667381-1-cychiang@chromium.org>
+ <20200911102259.3667381-4-cychiang@chromium.org> <4d25337d-3d23-9fca-9617-da54a4fdba97@linaro.org>
+In-Reply-To: <4d25337d-3d23-9fca-9617-da54a4fdba97@linaro.org>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Sat, 12 Sep 2020 01:14:55 +0800
+Message-ID: <CAFv8NwJe+Qi7roHRCnQf16YwC-wzPiwPugg=W-wvRrk0MV_v5A@mail.gmail.com>
+Subject: Re: [PATCH v9 3/3] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Doug Anderson <dianders@chromium.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>, linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-11 10:59 a.m., Rodrigo Siqueira wrote:
-> amdgpu_dc_rreg and amdgpu_dc_wreg are very similar, for this reason,
-> this commits abstract these two events by using DECLARE_EVENT_CLASS and
-> create an instance of it for each one of these events.
-> 
-> Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+On Fri, Sep 11, 2020 at 7:05 PM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+>
+>
+> On 11/09/2020 11:22, Cheng-Yi Chiang wrote:
+> > From: Ajit Pandey <ajitp@codeaurora.org>
+> >
+> > Add new driver to register sound card on sc7180 trogdor board and
+> > do the required configuration for lpass cpu dai and external codecs
+> > connected over MI2S interfaces.
+> >
+> > Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > ---
+> >   sound/soc/qcom/Kconfig  |  12 ++
+> >   sound/soc/qcom/Makefile |   2 +
+> >   sound/soc/qcom/sc7180.c | 267 ++++++++++++++++++++++++++++++++++++++++
+> >   3 files changed, 281 insertions(+)
+> >   create mode 100644 sound/soc/qcom/sc7180.c
+> >
+> ...
+> >
+> >   obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+> >   obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+> >   obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+> >   obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
+> > +obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
+> >   obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
+> >
+> >   #DSP lib
+> > diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+> > new file mode 100644
+> > index 000000000000..40bc4fc98842
+> > --- /dev/null
+> > +++ b/sound/soc/qcom/sc7180.c
+> > @@ -0,0 +1,267 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +//
+> > +// Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> > +//
+> > +// sc7180.c -- ALSA SoC Machine driver for SC7180
+> > +
+> > +#include <dt-bindings/sound/sc7180-lpass.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/platform_device.h>
+> > +#include <sound/core.h>
+> > +#include <sound/jack.h>
+> > +#include <sound/pcm.h>
+> > +#include <sound/pcm_params.h>
+> Do you need this header?
+>
+Hi Srinivas, thanks for taking a closer look!
+I will remove it in v10.
+>
+> > +#include <sound/soc.h>
+> > +#include <uapi/linux/input-event-codes.h>
+> > +
+> > +#include "../codecs/rt5682.h"
+> > +#include "common.h"
+> > +#include "lpass.h"
+> > +
+> > +#define DEFAULT_SAMPLE_RATE_48K              48000
+>
+> Looks like ^ is Not used!
+>
+I will remove it in v10.
 
-This looks reasonable to me. Does this still show up as 
-amdpgu_dc_rrreg/amdgpu_dc_wreg in the captured trace log?
+>
+> Overall the driver looks much cleaner now!
+>
+> Also to make progress on this patch, may be you add define for HDMI with
+> a comment!
 
-As long as we can still tell this apart you can consider this patch:
 
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+After discussion with Srinivasa Rao, we plan to use a new name that is
+more specific to lpass-sc7180 DP dai:
 
-Regards,
-Nicholas Kazlauskas
+// This will be defined in include/dt-bindings/sound/sc7180-lpass.h
+#define SC7180_LPASS_DP 2
+Do you think it is okay ?
+Thanks!
 
-> ---
->   .../amd/display/amdgpu_dm/amdgpu_dm_trace.h   | 55 ++++++++-----------
->   1 file changed, 24 insertions(+), 31 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-> index d898981684d5..dd34e11b1079 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-> @@ -31,40 +31,33 @@
->   
->   #include <linux/tracepoint.h>
->   
-> -TRACE_EVENT(amdgpu_dc_rreg,
-> -	TP_PROTO(unsigned long *read_count, uint32_t reg, uint32_t value),
-> -	TP_ARGS(read_count, reg, value),
-> -	TP_STRUCT__entry(
-> -			__field(uint32_t, reg)
-> -			__field(uint32_t, value)
-> -		),
-> -	TP_fast_assign(
-> -			__entry->reg = reg;
-> -			__entry->value = value;
-> -			*read_count = *read_count + 1;
-> -		),
-> -	TP_printk("reg=0x%08lx, value=0x%08lx",
-> -			(unsigned long)__entry->reg,
-> -			(unsigned long)__entry->value)
-> -);
-> +DECLARE_EVENT_CLASS(amdgpu_dc_reg_template,
-> +		    TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-> +		    TP_ARGS(count, reg, value),
->   
-> -TRACE_EVENT(amdgpu_dc_wreg,
-> -	TP_PROTO(unsigned long *write_count, uint32_t reg, uint32_t value),
-> -	TP_ARGS(write_count, reg, value),
-> -	TP_STRUCT__entry(
-> -			__field(uint32_t, reg)
-> -			__field(uint32_t, value)
-> -		),
-> -	TP_fast_assign(
-> -			__entry->reg = reg;
-> -			__entry->value = value;
-> -			*write_count = *write_count + 1;
-> -		),
-> -	TP_printk("reg=0x%08lx, value=0x%08lx",
-> -			(unsigned long)__entry->reg,
-> -			(unsigned long)__entry->value)
-> +		    TP_STRUCT__entry(
-> +				     __field(uint32_t, reg)
-> +				     __field(uint32_t, value)
-> +		    ),
-> +
-> +		    TP_fast_assign(
-> +				   __entry->reg = reg;
-> +				   __entry->value = value;
-> +				   *count = *count + 1;
-> +		    ),
-> +
-> +		    TP_printk("reg=0x%08lx, value=0x%08lx",
-> +			      (unsigned long)__entry->reg,
-> +			      (unsigned long)__entry->value)
->   );
->   
-> +DEFINE_EVENT(amdgpu_dc_reg_template, amdgpu_dc_rreg,
-> +	     TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-> +	     TP_ARGS(count, reg, value));
-> +
-> +DEFINE_EVENT(amdgpu_dc_reg_template, amdgpu_dc_wreg,
-> +	     TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-> +	     TP_ARGS(count, reg, value));
->   
->   TRACE_EVENT(amdgpu_dc_performance,
->   	TP_PROTO(unsigned long read_count, unsigned long write_count,
-> 
-
+>
+> Once unused remove, pl feel free to add !
+>
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>
+>
+> --srini
+>
+>
+> > +#define DEFAULT_MCLK_RATE            19200000
+> > +#define RT5682_PLL1_FREQ (48000 * 512)
+> > +
+> > +struct sc7180_snd_data {
+> > +     u32 pri_mi2s_clk_count;
+> > +     struct snd_soc_jack hs_jack;
+> > +     struct snd_soc_jack hdmi_jack;
+> > +};
+> > +
+> > +static void sc7180_jack_free(struct snd_jack *jack)
+> > +{
+> > +     struct snd_soc_component *component = jack->private_data;
+> > +
+> > +     snd_soc_component_set_jack(component, NULL, NULL);
+> > +}
+> > +
+> > +static int sc7180_headset_init(struct snd_soc_pcm_runtime *rtd)
+> > +{
+> > +     struct snd_soc_card *card = rtd->card;
+> > +     struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
+> > +     struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+> > +     struct snd_soc_component *component = codec_dai->component;
+> > +     struct snd_jack *jack;
+> > +     int rval;
+> > +
+> > +     rval = snd_soc_card_jack_new(
+> > +                     card, "Headset Jack",
+> > +                     SND_JACK_HEADSET |
+> > +                     SND_JACK_HEADPHONE |
+> > +                     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> > +                     SND_JACK_BTN_2 | SND_JACK_BTN_3,
+> > +                     &pdata->hs_jack, NULL, 0);
+> > +
+> > +     if (rval < 0) {
+> > +             dev_err(card->dev, "Unable to add Headset Jack\n");
+> > +             return rval;
+> > +     }
+> > +
+> > +     jack = pdata->hs_jack.jack;
+> > +
+> > +     snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+> > +     snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
+> > +     snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
+> > +     snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
+> > +
+> > +     jack->private_data = component;
+> > +     jack->private_free = sc7180_jack_free;
+> > +
+> > +     return snd_soc_component_set_jack(component, &pdata->hs_jack, NULL);
+> > +}
+> > +
+> > +static int sc7180_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+> > +{
+> > +     struct snd_soc_card *card = rtd->card;
+> > +     struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
+> > +     struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+> > +     struct snd_soc_component *component = codec_dai->component;
+> > +     struct snd_jack *jack;
+> > +     int rval;
+> > +
+> > +     rval = snd_soc_card_jack_new(
+> > +                     card, "HDMI Jack",
+> > +                     SND_JACK_LINEOUT,
+> > +                     &pdata->hdmi_jack, NULL, 0);
+> > +
+> > +     if (rval < 0) {
+> > +             dev_err(card->dev, "Unable to add HDMI Jack\n");
+> > +             return rval;
+> > +     }
+> > +
+> > +     jack = pdata->hdmi_jack.jack;
+> > +     jack->private_data = component;
+> > +     jack->private_free = sc7180_jack_free;
+> > +
+> > +     return snd_soc_component_set_jack(component, &pdata->hdmi_jack, NULL);
+> > +}
+> > +
+> > +static int sc7180_init(struct snd_soc_pcm_runtime *rtd)
+> > +{
+> > +     struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> > +
+> > +     switch (cpu_dai->id) {
+> > +     case MI2S_PRIMARY:
+> > +             return sc7180_headset_init(rtd);
+> > +     case MI2S_SECONDARY:
+> > +             return 0;
+> > +     case HDMI:
+> > +             return sc7180_hdmi_init(rtd);
+> > +     default:
+> > +             dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
+> > +                     cpu_dai->id);
+> > +             return -EINVAL;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static int sc7180_snd_startup(struct snd_pcm_substream *substream)
+> > +{
+> > +     struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > +     struct snd_soc_card *card = rtd->card;
+> > +     struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
+> > +     struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> > +     struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+> > +     int ret;
+> > +
+> > +     switch (cpu_dai->id) {
+> > +     case MI2S_PRIMARY:
+> > +             if (++data->pri_mi2s_clk_count == 1) {
+> > +                     snd_soc_dai_set_sysclk(cpu_dai,
+> > +                                            LPASS_MCLK0,
+> > +                                            DEFAULT_MCLK_RATE,
+> > +                                            SNDRV_PCM_STREAM_PLAYBACK);
+> > +             }
+> > +
+> > +             snd_soc_dai_set_fmt(codec_dai,
+> > +                                 SND_SOC_DAIFMT_CBS_CFS |
+> > +                                 SND_SOC_DAIFMT_NB_NF |
+> > +                                 SND_SOC_DAIFMT_I2S);
+> > +
+> > +             /* Configure PLL1 for codec */
+> > +             ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
+> > +                                       DEFAULT_MCLK_RATE, RT5682_PLL1_FREQ);
+> > +             if (ret) {
+> > +                     dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+> > +                     return ret;
+> > +             }
+> > +
+> > +             /* Configure sysclk for codec */
+> > +             ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
+> > +                                          RT5682_PLL1_FREQ,
+> > +                                          SND_SOC_CLOCK_IN);
+> > +             if (ret)
+> > +                     dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n",
+> > +                             ret);
+> > +
+> > +             break;
+> > +     case MI2S_SECONDARY:
+> > +             break;
+> > +     case HDMI:
+> > +             break;
+> > +     default:
+> > +             dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
+> > +                     cpu_dai->id);
+> > +             return -EINVAL;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static void sc7180_snd_shutdown(struct snd_pcm_substream *substream)
+> > +{
+> > +     struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > +     struct snd_soc_card *card = rtd->card;
+> > +     struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
+> > +     struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> > +
+> > +     switch (cpu_dai->id) {
+> > +     case MI2S_PRIMARY:
+> > +             if (--data->pri_mi2s_clk_count == 0) {
+> > +                     snd_soc_dai_set_sysclk(cpu_dai,
+> > +                                            LPASS_MCLK0,
+> > +                                            0,
+> > +                                            SNDRV_PCM_STREAM_PLAYBACK);
+> > +             }
+> > +             break;
+> > +     case MI2S_SECONDARY:
+> > +             break;
+> > +     case HDMI:
+> > +             break;
+> > +     default:
+> > +             dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
+> > +                     cpu_dai->id);
+> > +             break;
+> > +     }
+> > +}
+> > +
+> > +static const struct snd_soc_ops sc7180_ops = {
+> > +     .startup = sc7180_snd_startup,
+> > +     .shutdown = sc7180_snd_shutdown,
+> > +};
+> > +
+> > +static const struct snd_soc_dapm_widget sc7180_snd_widgets[] = {
+> > +     SND_SOC_DAPM_HP("Headphone Jack", NULL),
+> > +     SND_SOC_DAPM_MIC("Headset Mic", NULL),
+> > +};
+> > +
+> > +static struct snd_soc_card sc7180_card = {
+> > +     .owner = THIS_MODULE,
+> > +     .dapm_widgets = sc7180_snd_widgets,
+> > +     .num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets),
+> > +};
+> > +
+> > +static void sc7180_add_ops(struct snd_soc_card *card)
+> > +{
+> > +     struct snd_soc_dai_link *link;
+> > +     int i;
+> > +
+> > +     for_each_card_prelinks(card, i, link) {
+> > +             link->ops = &sc7180_ops;
+> > +             link->init = sc7180_init;
+> > +     }
+> > +}
+> > +
+> > +static int sc7180_snd_platform_probe(struct platform_device *pdev)
+> > +{
+> > +     struct snd_soc_card *card = &sc7180_card;
+> > +     struct sc7180_snd_data *data;
+> > +     struct device *dev = &pdev->dev;
+> > +     int ret;
+> > +
+> > +     /* Allocate the private data */
+> > +     data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> > +     if (!data)
+> > +             return -ENOMEM;
+> > +
+> > +     card->dev = dev;
+> > +     snd_soc_card_set_drvdata(card, data);
+> > +
+> > +     ret = qcom_snd_parse_of(card);
+> > +     if (ret) {
+> > +             dev_err(dev, "Error parsing OF data\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     sc7180_add_ops(card);
+> > +
+> > +     return devm_snd_soc_register_card(dev, card);
+> > +}
+> > +
+> > +static const struct of_device_id sc7180_snd_device_id[]  = {
+> > +     { .compatible = "qcom,sc7180-sndcard" },
+> > +     {},
+> > +};
+> > +MODULE_DEVICE_TABLE(of, sc7180_snd_device_id);
+> > +
+> > +static struct platform_driver sc7180_snd_driver = {
+> > +     .probe = sc7180_snd_platform_probe,
+> > +     .driver = {
+> > +             .name = "msm-snd-sc7180",
+> > +             .of_match_table = sc7180_snd_device_id,
+> > +     },
+> > +};
+> > +module_platform_driver(sc7180_snd_driver);
+> > +
+> > +MODULE_DESCRIPTION("sc7180 ASoC Machine Driver");
+> > +MODULE_LICENSE("GPL v2");
+> >
