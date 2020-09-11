@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A797E265AA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B332265AB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725770AbgIKHlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725535AbgIKHlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:41:39 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4185B214F1;
-        Fri, 11 Sep 2020 07:41:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599810098;
-        bh=iclbaUke67strvxO69V8rHGud4aAV6dPmHjYGaZ7l04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DhF/aIM7T7UXsLu2H1gAIFBM53tA7pVnAARdLT7TteMOVJki98F4H9HJ7h1sJY957
-         ia/7mY1obIjUPVw/7Dbn7TUqS41qAK2Yk+VXZMr7YqP4685dqKC9P4UBE+PQEMFXms
-         IZQ4CZANe2UxJqBCrvmoumV+yY8LIevwOBJqGi6o=
-Date:   Fri, 11 Sep 2020 09:41:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "yekai(A)" <yekai13@huawei.com>
-Cc:     Zhangfei Gao <zhangfei.gao@linaro.org>,
-        linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH] uacce: fix some coding styles
-Message-ID: <20200911074144.GA3322797@kroah.com>
-References: <1596089583-32687-1-git-send-email-yekai13@huawei.com>
- <a90d4a96-b377-8b24-45a0-c45e5a10dce7@linaro.org>
- <8ebc8b44-eecc-a86f-ce25-ff7513d6aeea@huawei.com>
+        id S1725790AbgIKHpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:45:40 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:60023 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725770AbgIKHpc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 03:45:32 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 6DA1DBC0;
+        Fri, 11 Sep 2020 03:45:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 11 Sep 2020 03:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=SE+c5Ec9tZ0o7WH4oDqfgPX1fR
+        ZYUDQNxW5WDSo9INY=; b=jmffmps7wsSVCCG8FL+UdZ9lEAtqfDVctpedmD+9Ap
+        xkbk9ZdA5tuBxIoHRnB6NmX3trLOEk3CR5KGsbvPLRqHLvRipGcTcSMxIuRCdoKG
+        hULFWZr8nyVN178yE20z2fWzxU20nGdCLQ8peAVZ8hZrvnWXeFzLz3fuxpPialz3
+        ttlHf6ogbr9ZU6yCjnaH0BHQgw2iFTL719+lTPrA5wf9OOnUy1RVEMEigzg4BJmc
+        fcKm58kkP30+NsH1vrvoHT94lAhEMaVrvIDFrFh34TdukYm66jGRA5iF1o/RDzlC
+        g/pYO4FGo3xgU8KnIz235x0oec9v548j6rSnrSfdT/vg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=SE+c5Ec9tZ0o7WH4o
+        DqfgPX1fRZYUDQNxW5WDSo9INY=; b=UiNFEODbff4YEHfYKixcS7vIcDNtGEArp
+        M198mrzrKtceR7vl/vK0/BjS/9Sva9mmlKWCdVttqvgLlNxJf5ru3ryHNyXxmnYV
+        1S8Hp9w8RIDfk3UVycUhoWfUsvcOpXiu9wkh44reHmrm2Dpsz4LXA4tr3RUoP5uj
+        Cy9MtjzASgGogcUoz+ZEKHTMM2jC/mE1FM40Jns0Loy7GT9SS+1lnLcBQXTLJLOO
+        e7D5+skNUfLqAOeK4OMZFyzWxQsFmvaUIQT6aDRIp8UsrDanrayr5lhQqhaeQy12
+        uFfyqgfcTp02gXO82LLnzedrl674uua5cr/WsEEmSdY6MbDj/XeoA==
+X-ME-Sender: <xms:GCtbX__OrXUKKiRSF-DRk30q2IUQj2d45A_OsYg59tmKrDKUuA6OdQ>
+    <xme:GCtbX7tYBIDaH6kxug4FZdpvwScwcQE8WlbMWbWRIR8E7YVh0flxO3M6eFbEYEmQb
+    mSK5RerOImPHDZ6RA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehkedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeetnhgurhgvficulfgvfhhfvghrhicuoegrnhgurhgvfiesrghj
+    rdhiugdrrghuqeenucggtffrrghtthgvrhhnpeeiteehudevlefhvddvjeeluefhleetve
+    ehfffgiedtfeegkeejfeeivefgheehgfenucffohhmrghinhepkhgvrhhnvghlrdhorhhg
+    necukfhppedugedrvddruddtledrkeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:GCtbX9AhVlcMvLyuRXIAR8qY933DluGxDzLcTjwqHCXDhEO1O5JOLw>
+    <xmx:GCtbX7exsGLjATbuPwVi6weoKKWmFbLY-Mbpy-2uFqqugaEacLeUHg>
+    <xmx:GCtbX0PZ3Yd_rS6_AnnCnKce8PfUgnZNtQNCK5nqr6gJ6rlGfGDp-g>
+    <xmx:GitbXxrod3ANFoj_2jH4Mty0nKjwTig8OFaAIDULCLNAmgSUzYPVJw>
+Received: from mistburn.lan (ppp14-2-109-85.adl-apt-pir-bras32.tpg.internode.on.net [14.2.109.85])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 34ED83064682;
+        Fri, 11 Sep 2020 03:45:25 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-mmc@vger.kernel.org
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org, joel@jms.id.au,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] mmc: sdhci-of-aspeed: Expose phase delay tuning
+Date:   Fri, 11 Sep 2020 17:14:49 +0930
+Message-Id: <20200911074452.3148259-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ebc8b44-eecc-a86f-ce25-ff7513d6aeea@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 03:37:25PM +0800, yekai(A) wrote:
-> Hi Hartman
-> 
-> Could you help to take this patch?
-> Thanks.
-> On 2020/7/31 11:09, Zhangfei Gao wrote:
-> > 
-> > 
-> > On 2020/7/30 下午2:13, Kai Ye wrote:
-> > > 1. delete some redundant code.
-> > > 2. modify the module author information.
-> > > 
-> > > Signed-off-by: Kai Ye <yekai13@huawei.com>
-> > Thanks Kai
-> > 
-> > Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> > 
-> > Thanks
-> > 
-> > 
-> 
-> 
+Hello,
 
-I see no patch here to take, sorry :(
+This series exposes some devicetree properties for tuning phase delay in the
+Aspeed SD/eMMC controllers. The relevant register was introduced on the AST2600
+and is present for both the SD/MMC controller and the dedicated eMMC
+controller.
+
+v2 addresses comments from Joel.
+
+v1 can be found here:
+
+https://lore.kernel.org/linux-arm-kernel/20200910105440.3087723-1-andrew@aj.id.au/T/
+
+Please review!
+
+Cheers,
+
+Andrew
+
+Andrew Jeffery (3):
+  dt: bindings: mmc: Add phase control properties for the Aspeed SDHCI
+  mmc: sdhci-of-aspeed: Expose data sample phase delay tuning
+  ARM: dts: tacoma: Add data sample phase delay for eMMC
+
+ .../devicetree/bindings/mmc/aspeed,sdhci.yaml |   8 ++
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts   |   2 +
+ drivers/mmc/host/sdhci-of-aspeed.c            | 126 +++++++++++++++++-
+ 3 files changed, 131 insertions(+), 5 deletions(-)
+
+-- 
+2.25.1
+
