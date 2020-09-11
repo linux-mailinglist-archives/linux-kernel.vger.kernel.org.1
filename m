@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4322666B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAC22667F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgIKRbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:31:41 -0400
-Received: from mga12.intel.com ([192.55.52.136]:23278 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725867AbgIKMzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:55:50 -0400
-IronPort-SDR: kjrLjr50rIKr/KiFU5yN0dKvFHDxxYU7dL1SwRgEE+GffwDDSnUY6/TRJnFaaGg7J7LUyICvux
- W4YtHSdufZQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="138263396"
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="138263396"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:55:49 -0700
-IronPort-SDR: Dqeh+Uve2W/lkceNpuBbi5M4LkBUiEYaR7alYHHNt1/7XRrwTZlahVgTxTzzL2GlJiosKwvzx3
- CC7GL1IuYBKQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="329771680"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2020 05:55:47 -0700
-Subject: Re: [PATCH] ftrace: Fix missing synchronize_rcu() removing trampoline
- from kallsyms
-To:     peterz@infradead.org
-Cc:     rostedt@goodmis.org, mingo@redhat.com, mhiramat@kernel.org,
-        mbenes@suse.cz, linux-kernel@vger.kernel.org,
-        Paul McKenney <paulmck@kernel.org>
-References: <20200901091617.31837-1-adrian.hunter@intel.com>
- <20200911114132.GH1362448@hirez.programming.kicks-ass.net>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <ba8eaca9-c207-f1b1-9cf7-e2765533645c@intel.com>
-Date:   Fri, 11 Sep 2020 15:55:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725841AbgIKR56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:57:58 -0400
+Received: from a27-56.smtp-out.us-west-2.amazonses.com ([54.240.27.56]:34940
+        "EHLO a27-56.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725710AbgIKR54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:57:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599834500;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+        bh=hwi/OQiGwyQ//NyTOaTL55rONVhtBqdkXJjR5Q1eVS4=;
+        b=MV+yzgB3Xb1UOxSWPTPVDJ9ESvMM7NOsg+raGTlUuRP2FxEegZejpebvOb6tUW4d
+        S9mAB5zciXKd+LAeuzQ7++ez9Uzsqv9KAPdt0oGcLi7bhv1r1GHfqAJ57I7xjTk7JH9
+        IBmvmDZHmv5DFnS4Y/yeVONK3osB/6d7H59DTQyw=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599834500;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
+        bh=hwi/OQiGwyQ//NyTOaTL55rONVhtBqdkXJjR5Q1eVS4=;
+        b=hhNU+bMKfhuXGAAlL5TemdE0e3IVzflcJG4WZbW/8Oi1OPmfrCipM8HVFac3pJCc
+        xhO93VCLMW43/4f2bOBDoBDrS9IipNaUbOw8KjYrEQITNCs0JPhi/zIZoSJWfJLZ+ij
+        W8w7ur2w1NbPuYVySL3ar1FyRAY4RIPB3ik4I5sA=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34028C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv4 6/6] iommu: arm-smmu-impl: Remove unwanted extra blank lines
+Date:   Fri, 11 Sep 2020 14:28:20 +0000
+Message-ID: <010101747d912de4-ee003b04-f4dd-489c-a7b3-6df2376a140f-000000@us-west-2.amazonses.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200911114132.GH1362448@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SES-Outgoing: 2020.09.11-54.240.27.56
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/20 2:41 pm, peterz@infradead.org wrote:
-> On Tue, Sep 01, 2020 at 12:16:17PM +0300, Adrian Hunter wrote:
->> Add synchronize_rcu() after list_del_rcu() in
->> ftrace_remove_trampoline_from_kallsyms() to protect readers of
->> ftrace_ops_trampoline_list (in ftrace_get_trampoline_kallsym)
->> which is used when kallsyms is read.
->>
->> Fixes: fc0ea795f53c8d ("ftrace: Add symbols for ftrace trampolines")
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>  kernel/trace/ftrace.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
->> index 275441254bb5..4e64367c9774 100644
->> --- a/kernel/trace/ftrace.c
->> +++ b/kernel/trace/ftrace.c
->> @@ -2782,6 +2782,7 @@ static void ftrace_remove_trampoline_from_kallsyms(struct ftrace_ops *ops)
->>  {
->>  	lockdep_assert_held(&ftrace_lock);
->>  	list_del_rcu(&ops->list);
->> +	synchronize_rcu();
->>  }
-> 
-> 
-> Hurmph, we've just done a ton of that:
-> 
-> 
-> 	ftrace_shutdown()
-> 	  synchronize_rcu_tasks_rude()
-> 	  ftrace_trampoline_free()
-> 	    ftrace_remove_trampoline_from_kallsyms()
-> 
-> 
-> So would it not be better to move that call before the existing
-> synchronize_rcu_tasks stuff rather than adding another synchronize_rcu()
-> call?
+There are few places in arm-smmu-impl where there are
+extra blank lines, remove them and while at it fix the
+checkpatch warning for space required before the open
+parenthesis.
 
-Doesn't that mean removing the symbol while the trampoline is potentially
-still in use?
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Could follow up the fix with a patch to allocate list nodes instead, and use
-call_rcu() to free it, so another synchronize_rcu() is not needed.
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+index ce78295cfa78..f5b5218cbe5b 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+@@ -19,7 +19,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+ 
+ static int arm_smmu_gr0_ns(int offset)
+ {
+-	switch(offset) {
++	switch (offset) {
+ 	case ARM_SMMU_GR0_sCR0:
+ 	case ARM_SMMU_GR0_sACR:
+ 	case ARM_SMMU_GR0_sGFSR:
+@@ -54,7 +54,6 @@ static const struct arm_smmu_impl calxeda_impl = {
+ 	.write_reg = arm_smmu_write_ns,
+ };
+ 
+-
+ struct cavium_smmu {
+ 	struct arm_smmu_device smmu;
+ 	u32 id_base;
+@@ -110,7 +109,6 @@ static struct arm_smmu_device *cavium_smmu_impl_init(struct arm_smmu_device *smm
+ 	return &cs->smmu;
+ }
+ 
+-
+ #define ARM_MMU500_ACTLR_CPRE		(1 << 1)
+ 
+ #define ARM_MMU500_ACR_CACHE_LOCK	(1 << 26)
+@@ -197,7 +195,6 @@ static const struct arm_smmu_impl mrvl_mmu500_impl = {
+ 	.reset = arm_mmu500_reset,
+ };
+ 
+-
+ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+ {
+ 	const struct device_node *np = smmu->dev->of_node;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
