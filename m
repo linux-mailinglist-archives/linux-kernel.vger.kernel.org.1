@@ -2,56 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D506D2656C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 03:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9529A2656BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 03:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725797AbgIKB6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 21:58:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11807 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725298AbgIKB6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 21:58:09 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id F2BD08D9AA58D4C9B10A;
-        Fri, 11 Sep 2020 09:42:25 +0800 (CST)
-Received: from [10.174.179.81] (10.174.179.81) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Sep 2020 09:42:24 +0800
-Subject: Re: [PATCH net-next 0/3] Fix some kernel-doc warnings for
- e1000/e1000e
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200910150429.31912-1-wanghai38@huawei.com>
- <20200910123800.74865996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200910123819.3ce47422@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <53e857ff-f5c7-a2c9-b0ec-67c2d4ad29c3@huawei.com>
-Date:   Fri, 11 Sep 2020 09:42:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1725730AbgIKBnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 21:43:46 -0400
+Received: from mga18.intel.com ([134.134.136.126]:57258 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725294AbgIKBno (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 21:43:44 -0400
+IronPort-SDR: XSzgBZW5V9IIRierAjySOeltqqwLasXV/YBfNvEaXOTKM15kY7dJa8gvMTF1vz4Sk3A47o2i3n
+ dyZqCMr533aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146394393"
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="146394393"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 18:43:43 -0700
+IronPort-SDR: 1UAOJnmT7mr9WY71DgEaFg4LW3kenJm2CsS+cSCJdJdSe687HbrrsMW7yfR8O0O801liiLvrE0
+ 4+8JpgfyE+oQ==
+X-IronPort-AV: E=Sophos;i="5.76,413,1592895600"; 
+   d="scan'208";a="481129842"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2020 18:43:40 -0700
+Subject: Re: [PATCH v5 0/7] perf: Stream comparison
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20200907041606.14500-1-yao.jin@linux.intel.com>
+ <20200910092237.GE1627030@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <ac5f770a-75f7-b4a7-bffe-6ff5bbad48c5@linux.intel.com>
+Date:   Fri, 11 Sep 2020 09:43:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200910123819.3ce47422@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.81]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200910092237.GE1627030@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jiri,
 
-ÔÚ 2020/9/11 3:38, Jakub Kicinski Ð´µÀ:
-> On Thu, 10 Sep 2020 12:38:00 -0700 Jakub Kicinski wrote:
->> On Thu, 10 Sep 2020 23:04:26 +0800 Wang Hai wrote:
->>> Wang Hai (3):
->>>    e1000e: Fix some kernel-doc warnings in ich8lan.c
->>>    e1000e: Fix some kernel-doc warnings in netdev.c
->>>    e1000: Fix a bunch of kerneldoc parameter issues in e1000_hw.c
->> You should put some text here but I can confirm this set removes 17
->> warnings.
-> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-> .
-Thans for your review, I'll add some description next time
+On 9/10/2020 5:22 PM, Jiri Olsa wrote:
+> On Mon, Sep 07, 2020 at 12:15:59PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>>                        main div.c:39
+>>
+>> [ Hot streams in new perf data only ]
+>>
+>> hot chain 1:
+>>                                                       cycles: 4, hits: 4.54%
+>>                                                   --------------------------
+>>                                                                main div.c:42
+>>                                                        compute_flag div.c:28
+>>
+>> hot chain 2:
+>>                                                       cycles: 5, hits: 3.51%
+>>                                                   --------------------------
+>>                                                                main div.c:39
+>>                                                                main div.c:44
+>>                                                                main div.c:42
+>>                                                        compute_flag div.c:28
+>>
+>>   v5:
+>>   ---
+>>   1. Remove enum stream_type
+>>   2. Rebase to perf/core
+> 
+> hi,
+> which commit did you base on? I can't apply on current perf/core
+> 
+> thanks,
+> jirka
+> 
+
+Let me rebase the patchset again.
+
+Thanks
+Jin Yao
