@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDBD266829
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBD326682F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725867AbgIKSRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 14:17:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbgIKSRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 14:17:03 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E21121D79;
-        Fri, 11 Sep 2020 18:17:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599848222;
-        bh=u8/mPrVURYhPqdDyFTV/A2D8Sgo7S+0VEGhgujlLGjg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Yw2QzwBKV1KqPoZf8Ei2GtXzn4V9U7IT3oemiHPGZmKrN1okBSsbOFZpjTqbRRRSn
-         UWyGKJBWppRXdbU9wNH6JjNEA0KAqvoJzTkqr9Dy5/iCTqBcyhVdrTAd7JRkszq3Mm
-         8QubACqXP4q9KuQr2vlYn3+OrT40fdCkTSYUBKJM=
-Received: by mail-ot1-f53.google.com with SMTP id 60so9117216otw.3;
-        Fri, 11 Sep 2020 11:17:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530OWSk5puoZ5i9EwuvnYaVwUBDQk+EAlXGkwiI91mtFK6pqQDom
-        O+VkNoDy2xp8SvmRM3kwvOIOMndlsjbrqV6CcjI=
-X-Google-Smtp-Source: ABdhPJwtLMTM9vEIWrzMubKwSTEJ8uvh7kjUufPCPqKEc5oc2KztzVNpmf1BlFnttv+vj/fKFZDRvMMYjoTBPJFwYa4=
-X-Received: by 2002:a9d:6250:: with SMTP id i16mr2081474otk.77.1599848221567;
- Fri, 11 Sep 2020 11:17:01 -0700 (PDT)
+        id S1725893AbgIKSTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 14:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgIKSTl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 14:19:41 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F97C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:19:41 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id v54so8598032qtj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NUMNzPsZluP4A9WQF3+FT2V5kMfREvpaBzqUi2M9exA=;
+        b=f0d5uzHehvTubKW5AXkQ2iZH08u25QqbA/58BP45d70peWpRrVpLscvQY1zhzKAmUw
+         45ZKs3r42JDdoIQn0cvdIlCOMhaayxsFCQveuu3nLZstLXVH2b4lAaKGNSIQQeQpwJA4
+         pYi1Axr/BkTlSVQ4CoS1y8RMKLS2H0ZPxppK2IRRDvWzp9TbacaI938kTyO6qRHuEeNW
+         OFYXPFlHZkY9iTCZPN+tDq1W09Cr2s7mc3MpxCcJn/TV0kwGOJYjymH2w4FQWWxKkUIb
+         kpXpZgjmRVS7yStq3JIQo9BjcDbSgSGNJTo2J7c5eaQYshJkfiWeifqR19eWxdItlQPe
+         xUUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NUMNzPsZluP4A9WQF3+FT2V5kMfREvpaBzqUi2M9exA=;
+        b=f/gwVx/g8HRb8GHkyrBBshCRD3fadcFiVOtWaLN/hZC5KCy1YnMI/+IPDIvyr1cm8f
+         y2W9WvUdLu3x7AHm8vPTDoMqMEnnzzfidLfMWFQUiqA9F1oqh667Z2GaO+xbj2drninh
+         pJE4hjmkKckMhmc245RWuvlWRrhlflTkrzWeycDKKFuPKKU2xL0y6Ts7/e04GKuZ07eZ
+         b8COr2nRhwuVwihsIMw3bZ+9SIKkpXTdqT0pf+7mnmwWKIM2meMAc5pn/9bGZGaUB2tV
+         2nNQVo+azvrB0o6yTkChMltD30o7S4h6fsUKYfEGtLcurelRu0VqCWXmage/3xbsdgwC
+         BCIg==
+X-Gm-Message-State: AOAM531OzYmYcG4VCyiA8HHG9T9w7bkdesizwCEMmTjKXf8XG2TEh9wp
+        dmOUIgQ8g5EWEeTwBR2pEMurMw==
+X-Google-Smtp-Source: ABdhPJxS51I8TpA7FH4QtwdoDh+RDwMsZ9DP69EVU43/gBXCUgmLXBu9VYXTwQB46rX9P7hTHh9pig==
+X-Received: by 2002:aed:2d62:: with SMTP id h89mr3154762qtd.193.1599848380859;
+        Fri, 11 Sep 2020 11:19:40 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y73sm3716420qkb.23.2020.09.11.11.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 11:19:40 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kGne7-0057v5-GC; Fri, 11 Sep 2020 15:19:39 -0300
+Date:   Fri, 11 Sep 2020 15:19:39 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     syzbot <syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com>
+Cc:     dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in ucma_close (2)
+Message-ID: <20200911181939.GA1221970@ziepe.ca>
+References: <0000000000008e7c8f05aef61d8d@google.com>
 MIME-Version: 1.0
-References: <20200905013107.10457-1-lszubowi@redhat.com> <20200905013107.10457-3-lszubowi@redhat.com>
- <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
- <f0a079b1-5f02-8618-fdfe-aea2278113c9@redhat.com> <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
- <394190b9-59bd-5cb3-317e-736852f190f4@redhat.com>
-In-Reply-To: <394190b9-59bd-5cb3-317e-736852f190f4@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 11 Sep 2020 21:16:50 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXEz8y+X6KjqWWFD=38dDowqXDBvnPbgeh30+o83KpmKrg@mail.gmail.com>
-Message-ID: <CAMj1kXEz8y+X6KjqWWFD=38dDowqXDBvnPbgeh30+o83KpmKrg@mail.gmail.com>
-Subject: Re: [PATCH V2 2/3] integrity: Move import of MokListRT certs to a
- separate routine
-To:     Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        James Morris <jmorris@namei.org>, serge@hallyn.com,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Jones <pjones@redhat.com>,
-        David Howells <dhowells@redhat.com>, prarit@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000008e7c8f05aef61d8d@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 at 20:18, Lenny Szubowicz <lszubowi@redhat.com> wrote:
->
-> On 9/11/20 11:59 AM, Mimi Zohar wrote:
-> > On Fri, 2020-09-11 at 11:54 -0400, Lenny Szubowicz wrote:
-> >> On 9/11/20 11:02 AM, Ard Biesheuvel wrote:
-> >>> On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
-> >>>>
-> >>>> Move the loading of certs from the UEFI MokListRT into a separate
-> >>>> routine to facilitate additional MokList functionality.
-> >>>>
-> >>>> There is no visible functional change as a result of this patch.
-> >>>> Although the UEFI dbx certs are now loaded before the MokList certs,
-> >>>> they are loaded onto different key rings. So the order of the keys
-> >>>> on their respective key rings is the same.
-> >>>>
-> >>>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
-> >>>
-> >>> Why did you drop Mimi's reviewed-by from this patch?
-> >>
-> >> It was not intentional. I was just not aware that I needed to propagate
-> >> Mimi Zohar's reviewed-by from V1 of the patch to V2.
-> >>
-> >> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> >>
-> >> V2 includes changes in that patch to incorporate suggestions from
-> >> Andy Shevchenko. My assumption was that the maintainer would
-> >> gather up the reviewed-by and add any signed-off-by as appropriate,
-> >> but it sounds like my assumption was incorrect. In retrospect, I
-> >> could see that having the maintainer dig through prior versions
-> >> of a patch set for prior reviewed-by tags could be burdensome.
-> >
-> > As much as possible moving code should be done without making changes,
-> > simpler for code review.   Then as a separate patch you make changes.
-> > That way you could also have retained my Reviewed-by.
-> >
-> > Mimi
->
-> If you or Ard think I should, I can do a V3 with:
->
->    Patch V3 01: Unchanged from V2
->    Patch V3 02: Goes back to V1 of patch 02 that Mimi reviewed
->    Patch V3 03: New. Has Andy's cleanup suggestions separated from patch 02
->    Patch V3 04: This would most probably just be the V2 of patch 03 with no changes
->
+On Thu, Sep 10, 2020 at 07:09:24AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    34d4ddd3 Merge tag 'linux-kselftest-5.9-rc5' of git://git...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1002ea2d900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cc6fc752b3819e082d0c
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1600e053900000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com
 
-I think we can just merge the patches as they are, with Mimi's R-b carried over.
+#syz test: https://github.com/jgunthorpe/linux ucma_migrate_fix
+
+Jason
