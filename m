@@ -2,155 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAF0266689
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F9626668C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgIKR3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:29:37 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:40246 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726497AbgIKR3U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:29:20 -0400
-Received: from [192.168.86.21] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B1A9020D4DAB;
-        Fri, 11 Sep 2020 10:29:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B1A9020D4DAB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1599845359;
-        bh=fPxkLQkgfh+pBwXajBMd60l+4u25hHiWkLzbR/BNlS8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Al2w9lqs0T6TxVObHd+viHQLPtSVZj7Wlw3qXNVxxbXaUah/sZRTuqPiCSJBu5Xfq
-         T9rrIh51sBD4uF6If+9DHeZs2FxIE8YOtz+EMl6QW7zp8Gg8zqjDdeQdRfRClQeAbe
-         yOX/cr42EuUGmXXk5Qh1jCjJ6FANC2C5NrXApdPg=
-Subject: Re: [PATCH v3 4/6] IMA: add policy to measure critical data from
- kernel components
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
- <20200828015704.6629-5-tusharsu@linux.microsoft.com>
- <652406e1a08d855a5d9a3e3815835653a12df411.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <0dc88680-eb1c-4343-ad8e-18b0df8d5142@linux.microsoft.com>
-Date:   Fri, 11 Sep 2020 10:29:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726316AbgIKR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:29:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:40348 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbgIKR3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:29:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F213E106F;
+        Fri, 11 Sep 2020 10:29:32 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E66493F68F;
+        Fri, 11 Sep 2020 10:29:27 -0700 (PDT)
+Subject: Re: [PATCH v3 8/8] iommu/arm-smmu-qcom: Setup identity domain for
+ boot mappings
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+ <20200904155513.282067-9-bjorn.andersson@linaro.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <34b1f9ea-fb16-faac-c288-627b51066968@arm.com>
+Date:   Fri, 11 Sep 2020 18:29:23 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <652406e1a08d855a5d9a3e3815835653a12df411.camel@linux.ibm.com>
+In-Reply-To: <20200904155513.282067-9-bjorn.andersson@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-08-31 11:15 a.m., Mimi Zohar wrote:
-> On Thu, 2020-08-27 at 18:57 -0700, Tushar Sugandhi wrote:
->> There would be several candidate kernel components suitable for IMA
->> measurement. Not all of them would have support for IMA measurement.
->> Also, system administrators may not want to measure data for all of
->> them, even when they support IMA measurement. An IMA policy specific
->> to various kernel components is needed to measure their respective
->> critical data.
+On 2020-09-04 16:55, Bjorn Andersson wrote:
+> With many Qualcomm platforms not having functional S2CR BYPASS a
+> temporary IOMMU domain, without translation, needs to be allocated in
+> order to allow these memory transactions.
 > 
-> The base policy rules are wide, but may be constrained by specifying
-> different options.  For example the builtin policy rules cannot be
-> written in terms LSM labels, which would constrain them.  A policy rule
-> may measure all keyrings or may constrain which keyrings need to be
-> measured.  Measuring critical data is not any different.
+> Unfortunately the boot loader uses the first few context banks, so
+> rather than overwriting a active bank the last context bank is used and
+> streams are diverted here during initialization.
 > 
-> Please rewrite the above paragraph accordingly.
+> This also performs the readback of SMR registers for the Qualcomm
+> platform, to trigger the mechanism.
 > 
-Ok. Will do.
->>
->> Add a new IMA policy "critical_kernel_data_sources" to support measuring
->> various critical kernel components. This policy would enable the
->> system administrators to limit the measurement to the components,
->> if the components support IMA measurement.
+> This is based on prior work by Thierry Reding and Laurentiu Tudor.
 > 
-> "critical_kernel_data_sources" is really wordy.   Find a better, self
-> defining term for describing the type of data, one that isn't so wordy,
-> and reflect it in the code.
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 > 
-Will do. I will go with "critical_data". You also have suggested it in
-the comment below.
+> Changes since v2:
+> - Combined from pieces spread between the Qualcomm impl and generic code in v2.
+> - Moved to use the newly introduced inherit_mapping op.
+> 
+>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 33 ++++++++++++++++++++++
+>   1 file changed, 33 insertions(+)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 70a1eaa52e14..a54302190932 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -12,6 +12,7 @@
+>   struct qcom_smmu {
+>   	struct arm_smmu_device smmu;
+>   	bool bypass_broken;
+> +	struct iommu_domain *identity;
+>   };
+>   
+>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+> @@ -228,6 +229,37 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
+>   	return 0;
+>   }
+>   
+> +static int qcom_smmu_inherit_mappings(struct arm_smmu_device *smmu)
+> +{
+> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +	int cbndx;
+> +	u32 smr;
+> +	int i;
+> +
+> +	qsmmu->identity = arm_smmu_alloc_identity_domain(smmu);
+> +	if (IS_ERR(qsmmu->identity))
+> +		return PTR_ERR(qsmmu->identity);
+> +
+> +	cbndx = to_smmu_domain(qsmmu->identity)->cfg.cbndx;
 
-"critical_data_sources" also seems right, but that's more wordy than
-"critical_data".
+I don't really get the point of going through the dance of allocating a 
+whole iommu_domain() just to get a context. If you don't want to simply 
+statically reserve a context at probe time, then just allocate from 
+smmu->context_map here (where AFAICS "here" should be in cfg_probe 
+anyway). This is entirely driver-internal, so there shouldn't be any 
+need for IOMMU-API-level stuff to be involved.
 
-Some more options we considered, but they don’t sound right.
-Please let us know what do you think.
-1. "critical_data_sources="
-2. "critical_kernel_components=" -or- "crit_krnl_comps="
-3. "critical_data_providers="
-4. "critical_kernel_data_providers=" -or- "crit_krnl_dt_provs="
-5. "critical_kernel_data_sources=" -or- "crit_krnl_dt_srcs="
-6. "security_critical_data="
-7. "protectable_data="
-8. "protected_data="
-9. "vital_protected_data="
+Robin.
 
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
->> ---
->>   Documentation/ABI/testing/ima_policy |  3 +++
->>   security/integrity/ima/ima_policy.c  | 29 +++++++++++++++++++++++++++-
->>   2 files changed, 31 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
->> index cd572912c593..7ccdc1964e29 100644
->> --- a/Documentation/ABI/testing/ima_policy
->> +++ b/Documentation/ABI/testing/ima_policy
->> @@ -48,6 +48,9 @@ Description:
->>   			template:= name of a defined IMA template type
->>   			(eg, ima-ng). Only valid when action is "measure".
->>   			pcr:= decimal value
->> +			critical_kernel_data_sources:= list of kernel
->> +			components (eg, selinux|apparmor|dm-crypt) that
->> +			contain data critical to the security of the kernel.
+> +
+> +	for (i = 0; i < smmu->num_mapping_groups; i++) {
+> +		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
+> +
+> +		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
+> +			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
+> +			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
+> +			smmu->smrs[i].valid = true;
+> +
+> +			smmu->s2crs[i].type = S2CR_TYPE_TRANS;
+> +			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
+> +			smmu->s2crs[i].cbndx = cbndx;
+> +			smmu->s2crs[i].count++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static int qcom_smmu_def_domain_type(struct device *dev)
+>   {
+>   	const struct of_device_id *match =
+> @@ -270,6 +302,7 @@ static const struct arm_smmu_impl qcom_smmu_impl = {
+>   	.cfg_probe = qcom_smmu_cfg_probe,
+>   	.def_domain_type = qcom_smmu_def_domain_type,
+>   	.reset = qcom_smmu500_reset,
+> +	.inherit_mappings = qcom_smmu_inherit_mappings,
+>   };
+>   
+>   static const struct arm_smmu_impl qcom_adreno_smmu_impl = {
 > 
-> This original policy definition, for the most part, is in Backus–Naur
-> format.   The keyring names is an exception, because it is not limited
-> to pre-defined kernel objects.  The critical data hook is measuring
-> things in kernel memory.  As new calls to measure critical data are
-> added, new identifiers would be added here.
-> 
-> For example, if SELinux is the first example of measuring critical
-> data, then the SELinux critical data patch would include
-> "critical_data:= [selinux]".  Each subsequent critical data being
-> measured would extend this list.  At the same time, the list of known
-> "critical data" defined in patch 6/6 would be updated.
-> 
-> Normally a new feature and the first usage of that feature are included
-> in the same patch set.  Separating them like this makes it difficult to
-> write, review and upstream.
-> 
-> Mimi
-> 
-I agree. But the unique issue we are facing here is there are two
-"first users" of this new "base series".
-
-One, SeLinux work (driven by Lakshmi); and two, device-mapper/dm-crypt 
-work (driven by me).
-
-Both of them need to be reviewed by different maintainers, may go 
-through several iterations before getting accepted.
-
-That’s why we wanted to keep this "base series" independent of the 
-"first users"; and called the "base series" as a dependency in the 
-dm-crypt[1] / SeLinux[2] series.
-
-We would appreciate your guidance on how we can better author these
-three series - 1.this base series 2. dm-crypt series and 3. SeLinux
-series.
-
-[1]dm-crypt Series: https://patchwork.kernel.org/patch/11743715/
-[2]SeLinux Series: https://patchwork.kernel.org/patch/11762287/
