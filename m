@@ -2,119 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B48B266365
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B206B2662DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgIKPb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:31:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11193 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgIKP13 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:27:29 -0400
-IronPort-SDR: nzThaXujr+ALgCRhaSW7VKSfyQ96qsG48/iJVKP0U/fwtHYabvnephDxfUdYBfWrCf6qeJmT5R
- QPbp7UEdrRzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146447683"
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="146447683"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 06:49:08 -0700
-IronPort-SDR: YGXxGEATdN65IN69VmiikoyK2YTR30+O68yZe+59DwGOF1ft0rbD8qiEt2xPK07XTQzomCDuQC
- bjRCn57WG/Vg==
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="378568692"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 06:49:04 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id A94202079D; Fri, 11 Sep 2020 16:49:02 +0300 (EEST)
-Date:   Fri, 11 Sep 2020 16:49:02 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Togorean, Bogdan" <Bogdan.Togorean@analog.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Cozma, Andrei" <Andrei.Cozma@analog.com>
-Subject: Re: [PATCH 1/2] media: i2c: Add driver for the Analog Devices
- ADDI9036 ToF front-end
-Message-ID: <20200911134902.GH26842@paasikivi.fi.intel.com>
-References: <20200910162426.55306-1-bogdan.togorean@analog.com>
- <20200910220138.GJ3940@pendragon.ideasonboard.com>
- <DM6PR03MB5274FF37BB02D98691BB43289B240@DM6PR03MB5274.namprd03.prod.outlook.com>
+        id S1726501AbgIKQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgIKQCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:02:40 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F13C0617A1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:50:09 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so11598194wrm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nT31LQihlGES3XBi9qi6rIDEsIrCyiWiwAwPBPR3FeQ=;
+        b=O1V65bei9i+sAdwH/CWpyxW5mBTdKr/oOaga84JeTelaHyfsHbulHu4x1iUSu5PWK2
+         8vksMccmoRfyYbwYegP9AdphFhNWTKXe/Ud/fs/LobE1sR2XCFz6woi0kFSObnj+ranY
+         1wXHE+6dl1Fc1xwZL1jdEIi/Nrv0m0EMOzEjR5J5dUfpZ+GDrNLH3roHYiQ2qaeIkz4h
+         YHwE7jLB9eARe7ME9vznJ23vwzMX1LnXAjaf0ePo7iZJrrLyYRpVqO81k86HxyML9B1U
+         BAm15l6t4fCQpoD3pjNoTwGpgD4ukZBf9e7i60l8R59qsGUS1t0gpwtFDUshlqvBx/aR
+         hrJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nT31LQihlGES3XBi9qi6rIDEsIrCyiWiwAwPBPR3FeQ=;
+        b=Yf80AOZerkUs0ziNQygelvDAHdpNqQVVRtfqCE2hAbcbYBs56rP7+8cILVXDL1lNEa
+         EzKloJH8+wjhwwblAFR71mTOvSw1Xkyt9H1KI20WTu7+H2Jvm8Fb60syaefUkLMUecEN
+         lhBtkklyAkj7GydN45brs9wD++W8D3VgVbDPmN45+OkPeNFgTdm2PiSXCyFdZZPEAjUZ
+         SxU/FjXhvVmOEVMNZhDzexhE0VuJdDTJpU+UtC+KGLjaAC1z2eiUoZ+RvpvZqADUe3J5
+         0n3mEoZxFo2cESzZBBnj6Yo/akU06lGTnCmqMJ/mqJ1dCnRLT7k+ka77KtePIYb7c2Cx
+         ze2g==
+X-Gm-Message-State: AOAM530pAtxnP+VuGQbScDTcKTHcPWmxxoB290eFBIISdF71+KsOpa4s
+        7nc5tbnKpj4haoq5GMMicayW3bLxc1G7gkH2
+X-Google-Smtp-Source: ABdhPJzgUZhv9R/6x7e+9tAD5bHrnj1uOz2SsmxNk4a9JkcFXFmrLU8LQvEveulMScnLKVKsnh4ywA==
+X-Received: by 2002:adf:94c1:: with SMTP id 59mr2348866wrr.29.1599832207377;
+        Fri, 11 Sep 2020 06:50:07 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id w14sm4865331wrk.95.2020.09.11.06.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 06:50:06 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Denis Efremov <efremov@linux.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Corbet <corbet@lwn.net>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts: kzfree.cocci: Deprecate use of kzfree
+Date:   Fri, 11 Sep 2020 14:49:42 +0100
+Message-Id: <20200911134956.60910-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR03MB5274FF37BB02D98691BB43289B240@DM6PR03MB5274.namprd03.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bogdan,
+kzfree() is effectively deprecated as of commit 453431a54934 ("mm,
+treewide: rename kzfree() to kfree_sensitive()"). It is currently just a
+legacy alias for kfree_sensitive(), which achieves the same thing.
 
-On Fri, Sep 11, 2020 at 01:32:39PM +0000, Togorean, Bogdan wrote:
-> Hi Laurent,
-> 
-> > Hi Bogdan,
-> > 
-> > Thank you for the patch.
-> 
-> Thank you for review!
-> 
-> > 
-> > On Thu, Sep 10, 2020 at 07:24:06PM +0300, Bogdan Togorean wrote:
-> > > The ADDI9036 is a complete, 45 MHz, front-end solution for charge
-> > > coupled device (CCD) time of flight (TOF) imaging applications.
-> > >
-> > > It has 2-lane MIPI CSI-2 RAW12 data output and i2c control interface.
-> > >
-> > > The programming of calibration and firmware is performed by userspace
-> > > SDK through CID_USER class IOCTLs.
-> > 
-> > I'm afraid that's not acceptable. The firmware should be loaded using
-> > the Linux kernel firmware API. As for calibration, is it static data ?
-> > How is it generated ?
-> 
-> Calibration data is static data, generated at production and stored on and EEPROM
-> memory on camera board. The camera board consists mainly of ADDI9036 processor
-> + CCD image sensor + EEPROM.
-> 
-> The firmware is a set of (address, data) tuples that are written via I2C.
-> We want this driver to be a generic one and support all implementations
-> of ADDI9036 ToF processor. Now the problem is that some implementations 
-> store firmware + calibration on external EEPROM and some store just calibration 
-> data on EEPROM and firmware is loaded from a file stored in SDK. With the help 
-> of the 2 custom controls we move the camera model detection, firmware
-> and calibration fetching from driver to user space SDK.
+Update kzfree.cocci accordingly:
+1) Replace instances of kzfree with kfree_sensitive
+2) Merge different rules for memset/memset_explicit as kzfree and
+   kfree_sensitive are now equivalent
+3) Rename script to kfree_sensitive.cocci
 
-Can you figure out by reading EEPROM which one of these is the case?
-Alternatively you could add a custom DT property IMO.
+In addition:
+4) Move the script to the free/ subfolder, where it would seem to fit
+   better
 
-The calibration data could be loaded using request_firmware(), too. I'd use
-a specific directory for just this purpose.
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ .../kfree_sensitive.cocci}                    | 38 +++++--------------
+ 1 file changed, 10 insertions(+), 28 deletions(-)
+ rename scripts/coccinelle/{api/kzfree.cocci => free/kfree_sensitive.cocci} (59%)
 
-> 
-> Also an important point is that the ToF processor has 3 operating modes 
-> (near, medium and far). At each mode change a new set of firmware + 
-> calibration data is loaded into ADDI9036 chip. If we move the firmware loading
-> in driver we would still need a custom enumeration control to select the working mode.
-
-I don't see there being an issue having such a control.
-
+diff --git a/scripts/coccinelle/api/kzfree.cocci b/scripts/coccinelle/free/kfree_sensitive.cocci
+similarity index 59%
+rename from scripts/coccinelle/api/kzfree.cocci
+rename to scripts/coccinelle/free/kfree_sensitive.cocci
+index 33625bd7cec9..a87f93f2ed5c 100644
+--- a/scripts/coccinelle/api/kzfree.cocci
++++ b/scripts/coccinelle/free/kfree_sensitive.cocci
+@@ -1,13 +1,13 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ ///
+-/// Use kzfree, kvfree_sensitive rather than memset or
+-/// memzero_explicit followed by kfree
++/// Use k{,v}free_sensitive rather than memset or memzero_explicit followed by
++/// k{,v}free
+ ///
+ // Confidence: High
+ // Copyright: (C) 2020 Denis Efremov ISPRAS
+ // Options: --no-includes --include-headers
+ //
+-// Keywords: kzfree, kvfree_sensitive
++// Keywords: kfree_sensitive, kvfree_sensitive
+ //
+ 
+ virtual context
+@@ -18,7 +18,7 @@ virtual report
+ @initialize:python@
+ @@
+ # kmalloc_oob_in_memset uses memset to explicitly trigger out-of-bounds access
+-filter = frozenset(['kmalloc_oob_in_memset', 'kzfree', 'kvfree_sensitive'])
++filter = frozenset(['kmalloc_oob_in_memset', 'kfree_sensitive', 'kvfree_sensitive'])
+ 
+ def relevant(p):
+     return not (filter & {el.current_element for el in p})
+@@ -53,34 +53,16 @@ position m != cond.ok;
+ type T;
+ @@
+ 
++(
+ - memzero_explicit@m((T)E, size);
+-  ... when != E
+-      when strict
+-// TODO: uncomment when kfree_sensitive will be merged.
+-// Only this case is commented out because developers
+-// may not like patches like this since kzfree uses memset
+-// internally (not memzero_explicit).
+-//(
+-//- kfree(E)@p;
+-//+ kfree_sensitive(E);
+-//|
+-- \(vfree\|kvfree\)(E)@p;
+-+ kvfree_sensitive(E, size);
+-//)
+-
+-@rp_memset depends on patch@
+-expression E, size;
+-position p : script:python() { relevant(p) };
+-position m != cond.ok;
+-type T;
+-@@
+-
++|
+ - memset@m((T)E, 0, size);
++)
+   ... when != E
+       when strict
+ (
+ - kfree(E)@p;
+-+ kzfree(E);
+++ kfree_sensitive(E);
+ |
+ - \(vfree\|kvfree\)(E)@p;
+ + kvfree_sensitive(E, size);
+@@ -91,11 +73,11 @@ p << r.p;
+ @@
+ 
+ coccilib.report.print_report(p[0],
+-  "WARNING: opportunity for kzfree/kvfree_sensitive")
++  "WARNING: opportunity for k{,v}free_sensitive")
+ 
+ @script:python depends on org@
+ p << r.p;
+ @@
+ 
+ coccilib.org.print_todo(p[0],
+-  "WARNING: opportunity for kzfree/kvfree_sensitive")
++  "WARNING: opportunity for k{,v}free_sensitive")
 -- 
-Kind regards,
+2.28.0
 
-Sakari Ailus
