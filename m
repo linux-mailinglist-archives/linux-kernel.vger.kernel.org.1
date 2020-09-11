@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E475E266327
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A1C266310
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgIKQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:11:37 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:43928 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgIKPiJ (ORCPT
+        id S1726501AbgIKQKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:10:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:43667 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbgIKPnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:38:09 -0400
-Received: by mail-ed1-f67.google.com with SMTP id n13so10372849edo.10;
-        Fri, 11 Sep 2020 08:38:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7DjrxY7Lk4EK6rFC1XPIpw7t8L5lPZ8egTPE4yUmjhU=;
-        b=dHWKLfnxULNo7qbHjI0Vl5pTzWxwvGJsfDn7EbYsZNGdSIgM4lqFZHs9MioN1nLjCu
-         nWcpoOnXY+0+81J8eMH87a1HvJB1KGzBgmuCEbjIENtmzuc1gwhT6YNvbKagw1fK1379
-         BKFLN030erqeQ7p6rQjvDlJxQcyvewqTR/y9PsuQefu/pHny9q/dFzMazpi7LmGVyIJD
-         n+0gdnG+BWHrC8wL9sJ/h2iOXQZL2eAMBc9Xb4rjeAxAvtitZ/P7k2LKheBuWsTt0I1z
-         3XzZ4E3qJanGhwE2AYLSwLk+vTQqhmuoWX12NechABRCniX+MwRNiYMYjkWeurUcHJa3
-         HuLg==
-X-Gm-Message-State: AOAM53393D9UAbOokkbY0gPJycakIxLjbrRtopIBz8a4ol6nE53YFSYu
-        ED+rYHBuGJ53Na7Otb7L+3z5jTtMvnbaPQ==
-X-Google-Smtp-Source: ABdhPJx1oFowCxvi4gz9N5G5FJwtdy3gLuMaWdJJuUaR6LNVTy9hGMGrP1GbxlAQ+8eJwfAJUzN1Yw==
-X-Received: by 2002:a05:6402:8:: with SMTP id d8mr2549402edu.15.1599838685470;
-        Fri, 11 Sep 2020 08:38:05 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.174])
-        by smtp.googlemail.com with ESMTPSA id bm2sm1951756edb.30.2020.09.11.08.38.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 11 Sep 2020 08:38:04 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:38:02 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] MAINTAINERS: Remove JZ4780 DMA driver entry
-Message-ID: <20200911153802.GA18279@kozik-lap>
-References: <20200817184131.907-1-krzk@kernel.org>
+        Fri, 11 Sep 2020 11:43:37 -0400
+Received: from methusalix.internal.home.lespocky.de ([109.250.103.56]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1M8yU2-1kCtYW2lIE-0069sH; Fri, 11 Sep 2020 17:41:02 +0200
+Received: from lemmy.internal.home.lespocky.de ([192.168.243.176] helo=lemmy.home.lespocky.de)
+        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <alex@home.lespocky.de>)
+        id 1kGlAa-000135-BL; Fri, 11 Sep 2020 17:41:01 +0200
+Received: (nullmailer pid 28463 invoked by uid 2001);
+        Fri, 11 Sep 2020 15:41:00 -0000
+From:   Alexander Dahl <post@lespocky.de>
+To:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Alexander Dahl <ada@thorsis.com>,
+        Alexander Dahl <post@lespocky.de>
+Subject: [PATCH v4 1/3] leds: Require valid fwnode pointer for composing name
+Date:   Fri, 11 Sep 2020 17:40:02 +0200
+Message-Id: <20200911154004.28354-2-post@lespocky.de>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200911154004.28354-1-post@lespocky.de>
+References: <20200911154004.28354-1-post@lespocky.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200817184131.907-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Scan-Signature: 2c58665afdcdd1fd53023359626f008f
+X-Spam-Score: -2.9 (--)
+X-Provags-ID: V03:K1:LYC8iw1IV1lNMsuBweYlQBm4S8YlGnqKIC8zMdEBw3RCUlYAB2c
+ PrN32EnGnTiai7GDG1bbSZQx9SvV8xFXJcNRgVGW233JNEtp8Wc9IMKUGnHe3nASQID774P
+ qCGms4EK7yU2auAuGu9y7cw4k48vHJvBRzzrJGLN3N3dgNCy+96pljzsgrHm6N08hwD18Y7
+ fr8z07kKHzujpkFkoBebA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qcQEAlD1CsA=:7jt+4zYANct2HOHggDoDdS
+ UHChqMVXTsDyNmMc+EhWY4Y/1qUoczXaluerEu8wAs4T6q6N6ko3TGBVXzmeYBXawt/0XRzVy
+ de06iRx/SXZeyqoQQbRYW59qpC/MKvN1kDZRAoJ9ARsAUmL+933UfG1WLXwu7BSj9gR3NqUlf
+ owON7u3PEbZ32xYlxhGpIBzgggqu47KTzoU386bb1aFeKkQgzRvv+gAVqAp/ITOXlCVOz2HY7
+ EaUQ3rlxb8hrIFx48WhLKXYmoRhE1ZJ6e2zEc2CMRY2KLTglpyKuI1nXurnJz+UgafoYXdXFA
+ XXq/Hn/0/uU/sZ5orN1BJEeqOroDGEyY3TPvv+SnuVncfyO0Vii/bmXseRMsJyQULHAK2iTgc
+ dbNY6XEI3XyYouiyrYGnQoqXxkC1XsZh2fgpbi5Amd3jfB+IvKqir+5B2YgkS81EVBMSXnpMa
+ DXsPP0CrpMQrlDwwHMo0C2isk5Fu0+L3Ei42oLI4SAPrtkpV4Edjk0rZ7kap70pvTf4la1Q8j
+ o6c9Cd9vWI4kjqZY0yQNGqgswyGjIDPamGgkHogY25c/lOJASYFq9S8Yvf33ndy28zDJI0rrz
+ xTg8pr70b0DmhgMUFtdKpGnzcxPCI+SZkqcvcUj+C0BzcZaK8Sl0o+ttPH/QKgBuyATbdcVLt
+ SABghWiEdTwSX6qiQ5DlUdcRMfsYLfgb2Usx9wboZ5WcrZvTyn/I/w3bUFfwDCHcgJzqZJ8dX
+ 4WHlXpN4ZD/3R5BfKd+ArX+toxs6bsFftUm4FQKBt13G6MPh1ULcguVYyFV17gxSbW4uRkNTQ
+ PeM7cTrH3Cvg03mqr7ABCT6a0LXdTx3HcMmMoKTsFpzIVpxBwoG4amh80WrAkeQ5AFt2bcl
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 08:41:30PM +0200, Krzysztof Kozlowski wrote:
-> The entry for MIPS Ingenic JZ4780 DMA driver is not up to date anymore.
-> Zubair Lutfullah Kakakhel's email bounces and no maintenance is
-> provided.
-> 
-> Suggested-by: Paul Cercueil <paul@crapouillou.net>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. New patch
-> ---
->  MAINTAINERS | 5 -----
->  1 file changed, 5 deletions(-)
-> 
+The function 'led_compose_name()' is called in
+'led_classdev_register_ext(()' only and in its implementation it always
+parses the fwnode passed with the init_data struct.  If there's no
+fwnode, EINVAL is returned and 'led_classdev_register_ext()' returns
+early.
 
-Hi all,
+If this is detected early the same fallback mechanism can be used , as
+if init_data itself is NULL.  This will allow drivers to pass fully
+populated 'init_data' or sparse initialized 'init_data' with a NULL
+fwnode in a more elegant way with only one function call.
 
-Any comments on these two patches?
+Fixes: bb4e9af0348d ("leds: core: Add support for composing LED class device names")
+Suggested-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Alexander Dahl <post@lespocky.de>
+---
 
-Best regards,
-Krzysztof
+Notes:
+    v4:
+      * added this patch to series (Suggested-by: Pavel Machek)
+
+ drivers/leds/led-class.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
+index cc3929f858b6..3da50c7ecfe7 100644
+--- a/drivers/leds/led-class.c
++++ b/drivers/leds/led-class.c
+@@ -346,7 +346,7 @@ int led_classdev_register_ext(struct device *parent,
+ 	const char *proposed_name = composed_name;
+ 	int ret;
+ 
+-	if (init_data) {
++	if (init_data && init_data->fwnode) {
+ 		if (init_data->devname_mandatory && !init_data->devicename) {
+ 			dev_err(parent, "Mandatory device name is missing");
+ 			return -EINVAL;
+-- 
+2.20.1
 
