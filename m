@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3931E2660E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BE7266106
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgIKODA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34926 "EHLO mail.kernel.org"
+        id S1726187AbgIKOOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726277AbgIKN3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:29:24 -0400
+        id S1726108AbgIKNVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:21:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31B0A223E4;
-        Fri, 11 Sep 2020 12:58:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 139CA223EA;
+        Fri, 11 Sep 2020 12:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829137;
-        bh=8+aKGES8phPY0yHlwA43c9QPgG1sGj0rjTH2xEYGUaA=;
+        s=default; t=1599829142;
+        bh=UAs3Q/Zz9F5+9bZ42uUtir1voEsU5TfKbTq5cMt4HEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i9/4L3maF+HyS/5x1tFwwvucGeq5sxl5Piq8OjbXvQZanfroCstyz4TW+FybVl6LK
-         Og64YkAyDOxx51gKlIzwwvSwoe7xiUZ2O8ytF+tVoWIFDT9Wgwgo4r4J3U00K+pCWk
-         JyzLdGlmFLLcmW4cQ0407L3hlOeph2Bxvu0yNgvA=
+        b=tZz12LH5l7veTMDSJjDe3roefZRkQpr+qBcPF+3wWb4Ao4pZRsFdm3WS9oW7nypoW
+         wiJpJU2wE/68XTJivVsTOz+jDtLMEGsdp6/x44JdgGquTKpLqncZu2Fh3WSTBas3bK
+         1TnE8+Fu0fAtoVKl/e1SeKXK7dqMvAjJlsxUrKyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        stable@vger.kernel.org, Rob Sherwood <rsher@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 10/12] sctp: not disable bh in the whole sctp_get_port_local()
-Date:   Fri, 11 Sep 2020 14:47:04 +0200
-Message-Id: <20200911122458.915150962@linuxfoundation.org>
+Subject: [PATCH 4.14 12/12] net: disable netpoll on fresh napis
+Date:   Fri, 11 Sep 2020 14:47:06 +0200
+Message-Id: <20200911122459.015758062@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
 References: <20200911122458.413137406@linuxfoundation.org>
@@ -45,105 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 3106ecb43a05dc3e009779764b9da245a5d082de ]
+[ Upstream commit 96e97bc07e90f175a8980a22827faf702ca4cb30 ]
 
-With disabling bh in the whole sctp_get_port_local(), when
-snum == 0 and too many ports have been used, the do-while
-loop will take the cpu for a long time and cause cpu stuck:
+napi_disable() makes sure to set the NAPI_STATE_NPSVC bit to prevent
+netpoll from accessing rings before init is complete. However, the
+same is not done for fresh napi instances in netif_napi_add(),
+even though we expect NAPI instances to be added as disabled.
 
-  [ ] watchdog: BUG: soft lockup - CPU#11 stuck for 22s!
-  [ ] RIP: 0010:native_queued_spin_lock_slowpath+0x4de/0x940
-  [ ] Call Trace:
-  [ ]  _raw_spin_lock+0xc1/0xd0
-  [ ]  sctp_get_port_local+0x527/0x650 [sctp]
-  [ ]  sctp_do_bind+0x208/0x5e0 [sctp]
-  [ ]  sctp_autobind+0x165/0x1e0 [sctp]
-  [ ]  sctp_connect_new_asoc+0x355/0x480 [sctp]
-  [ ]  __sctp_connect+0x360/0xb10 [sctp]
+This causes crashes during driver reconfiguration (enabling XDP,
+changing the channel count) - if there is any printk() after
+netif_napi_add() but before napi_enable().
 
-There's no need to disable bh in the whole function of
-sctp_get_port_local. So fix this cpu stuck by removing
-local_bh_disable() called at the beginning, and using
-spin_lock_bh() instead.
+To ensure memory ordering is correct we need to use RCU accessors.
 
-The same thing was actually done for inet_csk_get_port() in
-Commit ea8add2b1903 ("tcp/dccp: better use of ephemeral
-ports in bind()").
-
-Thanks to Marcelo for pointing the buggy code out.
-
-v1->v2:
-  - use cond_resched() to yield cpu to other tasks if needed,
-    as Eric noticed.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Ying Xu <yinxu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Reported-by: Rob Sherwood <rsher@fb.com>
+Fixes: 2d8bff12699a ("netpoll: Close race condition between poll_one_napi and napi_disable")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/socket.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ net/core/dev.c     |    3 ++-
+ net/core/netpoll.c |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -7086,8 +7086,6 @@ static long sctp_get_port_local(struct s
- 
- 	pr_debug("%s: begins, snum:%d\n", __func__, snum);
- 
--	local_bh_disable();
--
- 	if (snum == 0) {
- 		/* Search for an available port. */
- 		int low, high, remaining, index;
-@@ -7106,20 +7104,21 @@ static long sctp_get_port_local(struct s
- 				continue;
- 			index = sctp_phashfn(sock_net(sk), rover);
- 			head = &sctp_port_hashtable[index];
--			spin_lock(&head->lock);
-+			spin_lock_bh(&head->lock);
- 			sctp_for_each_hentry(pp, &head->chain)
- 				if ((pp->port == rover) &&
- 				    net_eq(sock_net(sk), pp->net))
- 					goto next;
- 			break;
- 		next:
--			spin_unlock(&head->lock);
-+			spin_unlock_bh(&head->lock);
-+			cond_resched();
- 		} while (--remaining > 0);
- 
- 		/* Exhausted local port range during search? */
- 		ret = 1;
- 		if (remaining <= 0)
--			goto fail;
-+			return ret;
- 
- 		/* OK, here is the one we will use.  HEAD (the port
- 		 * hash table list entry) is non-NULL and we hold it's
-@@ -7134,7 +7133,7 @@ static long sctp_get_port_local(struct s
- 		 * port iterator, pp being NULL.
- 		 */
- 		head = &sctp_port_hashtable[sctp_phashfn(sock_net(sk), snum)];
--		spin_lock(&head->lock);
-+		spin_lock_bh(&head->lock);
- 		sctp_for_each_hentry(pp, &head->chain) {
- 			if ((pp->port == snum) && net_eq(pp->net, sock_net(sk)))
- 				goto pp_found;
-@@ -7218,10 +7217,7 @@ success:
- 	ret = 0;
- 
- fail_unlock:
--	spin_unlock(&head->lock);
--
--fail:
--	local_bh_enable();
-+	spin_unlock_bh(&head->lock);
- 	return ret;
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5532,12 +5532,13 @@ void netif_napi_add(struct net_device *d
+ 		pr_err_once("netif_napi_add() called with weight %d on device %s\n",
+ 			    weight, dev->name);
+ 	napi->weight = weight;
+-	list_add(&napi->dev_list, &dev->napi_list);
+ 	napi->dev = dev;
+ #ifdef CONFIG_NETPOLL
+ 	napi->poll_owner = -1;
+ #endif
+ 	set_bit(NAPI_STATE_SCHED, &napi->state);
++	set_bit(NAPI_STATE_NPSVC, &napi->state);
++	list_add_rcu(&napi->dev_list, &dev->napi_list);
+ 	napi_hash_add(napi);
  }
+ EXPORT_SYMBOL(netif_napi_add);
+--- a/net/core/netpoll.c
++++ b/net/core/netpoll.c
+@@ -179,7 +179,7 @@ static void poll_napi(struct net_device
+ 	struct napi_struct *napi;
+ 	int cpu = smp_processor_id();
  
+-	list_for_each_entry(napi, &dev->napi_list, dev_list) {
++	list_for_each_entry_rcu(napi, &dev->napi_list, dev_list) {
+ 		if (cmpxchg(&napi->poll_owner, -1, cpu) == -1) {
+ 			poll_one_napi(napi);
+ 			smp_store_release(&napi->poll_owner, -1);
 
 
