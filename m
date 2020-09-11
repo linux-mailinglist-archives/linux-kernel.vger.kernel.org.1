@@ -2,88 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4752656BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 03:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D506D2656C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 03:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbgIKBiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 21:38:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35746 "EHLO huawei.com"
+        id S1725797AbgIKB6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 21:58:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11807 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725280AbgIKBiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 21:38:13 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 66BCEDB7CBFD16C28D5E;
-        Fri, 11 Sep 2020 09:38:11 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
- 09:38:01 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        id S1725298AbgIKB6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 21:58:09 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id F2BD08D9AA58D4C9B10A;
+        Fri, 11 Sep 2020 09:42:25 +0800 (CST)
+Received: from [10.174.179.81] (10.174.179.81) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Sep 2020 09:42:24 +0800
+Subject: Re: [PATCH net-next 0/3] Fix some kernel-doc warnings for
+ e1000/e1000e
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <jeffrey.t.kirsher@intel.com>, <davem@davemloft.net>,
+        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] clk: qcom: gcc-msm8939: remove defined but not used variables
-Date:   Fri, 11 Sep 2020 09:37:22 +0800
-Message-ID: <20200911013722.1459387-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.25.4
+References: <20200910150429.31912-1-wanghai38@huawei.com>
+ <20200910123800.74865996@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200910123819.3ce47422@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <53e857ff-f5c7-a2c9-b0ec-67c2d4ad29c3@huawei.com>
+Date:   Fri, 11 Sep 2020 09:42:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200910123819.3ce47422@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
+X-Originating-IP: [10.174.179.81]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This addresses the following gcc warning with "make W=1":
 
-drivers/clk/qcom/gcc-msm8939.c:610:32: warning:
-â€˜gcc_xo_gpll6_gpll0a_mapâ€™ defined but not used
-[-Wunused-const-variable=]
- static const struct parent_map gcc_xo_gpll6_gpll0a_map[] = {
-                                ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/clk/qcom/gcc-msm8939.c:598:32: warning: â€˜gcc_xo_gpll6_gpll0_mapâ€™
-defined but not used [-Wunused-const-variable=]
- static const struct parent_map gcc_xo_gpll6_gpll0_map[] = {
-                                ^~~~~~~~~~~~~~~~~~~~~~
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/clk/qcom/gcc-msm8939.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/clk/qcom/gcc-msm8939.c b/drivers/clk/qcom/gcc-msm8939.c
-index 778354f82b1e..39ebb443ae3d 100644
---- a/drivers/clk/qcom/gcc-msm8939.c
-+++ b/drivers/clk/qcom/gcc-msm8939.c
-@@ -595,24 +595,12 @@ static const struct clk_parent_data gcc_xo_gpll1_emclk_sleep_parent_data[] = {
- 	{ .fw_name = "sleep_clk", .name = "sleep_clk" },
- };
- 
--static const struct parent_map gcc_xo_gpll6_gpll0_map[] = {
--	{ P_XO, 0 },
--	{ P_GPLL6, 1 },
--	{ P_GPLL0, 2 },
--};
--
- static const struct clk_parent_data gcc_xo_gpll6_gpll0_parent_data[] = {
- 	{ .fw_name = "xo" },
- 	{ .hw = &gpll6_vote.hw },
- 	{ .hw = &gpll0_vote.hw },
- };
- 
--static const struct parent_map gcc_xo_gpll6_gpll0a_map[] = {
--	{ P_XO, 0 },
--	{ P_GPLL6, 1 },
--	{ P_GPLL0_AUX, 2 },
--};
--
- static const struct clk_parent_data gcc_xo_gpll6_gpll0a_parent_data[] = {
- 	{ .fw_name = "xo" },
- 	{ .hw = &gpll6_vote.hw },
--- 
-2.25.4
-
+ÔÚ 2020/9/11 3:38, Jakub Kicinski Ð´µÀ:
+> On Thu, 10 Sep 2020 12:38:00 -0700 Jakub Kicinski wrote:
+>> On Thu, 10 Sep 2020 23:04:26 +0800 Wang Hai wrote:
+>>> Wang Hai (3):
+>>>    e1000e: Fix some kernel-doc warnings in ich8lan.c
+>>>    e1000e: Fix some kernel-doc warnings in netdev.c
+>>>    e1000: Fix a bunch of kerneldoc parameter issues in e1000_hw.c
+>> You should put some text here but I can confirm this set removes 17
+>> warnings.
+> Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+> .
+Thans for your review, I'll add some description next time
