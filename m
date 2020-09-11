@@ -2,177 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28204265BA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9E2265BCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgIKIaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S1725785AbgIKIlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgIKIaP (ORCPT
+        with ESMTP id S1725554AbgIKIlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:30:15 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A652C061573;
-        Fri, 11 Sep 2020 01:30:12 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y2so5032888lfy.10;
-        Fri, 11 Sep 2020 01:30:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v3X+VL4+MsixaR62rPp7HwB6Wzg0tRmPuvJoIJorT2g=;
-        b=c2jghuXtnbNv5767gqGXY+pPhE9HA7vje+0qO1UeB9hLYukfKNNfu5vKtRGTUk70jm
-         77zzBzRNCDISWsgvWp2d3rHq1VqFPJRyOaGnJpFfHkjNI8LoSWbMRhj4CbExcwWHALPD
-         12FPeWX1q6VU3qmyJlHtEaa7S6QYtMANjlfTsPzNvfjTOGcvj4iS/38Tc7U6tMzlP5cr
-         Z+N3C1z1OdMr06KhWSVC+M88jA7GW/99zMVcyfV1iyaaXARfuy4cMpfE77KM/Tgj0ABy
-         zbvoMvYoX/oDiI/JVUnoqWD7mUfDTO/uNP0Fk2eXMp6bXtVPH3OqCdGbCLq794f4GIh7
-         XZdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=v3X+VL4+MsixaR62rPp7HwB6Wzg0tRmPuvJoIJorT2g=;
-        b=cxLULYK0LlrL9bfHyLvtDF1mFGUl+e7C3YL+Y557IZvqnQ3yDxteZE+spPSg/6BNS/
-         UALJq5eqVvr4cT582pDabgV3et0+vwwpcdGec5VjIFKl+Ry7cWhwNlRxC4595cH9Rotz
-         1NhyOx3hCN3CzlNjL7W25Zd+7Sod3dzriQWrggq9ue9VXuAYu6t/4XbM5mKI/Nc2RSzf
-         t3lyVnhK+aE9+3Bq0LAjyUqjur3o0GWfMM+Ro5WbXticWZvhjBlQvS7dIPV4ja51pcyk
-         /1ungX6I592viHh4FDa486T0jgluBDAqSeIiOLlyxJDFeStDA0GazFtk5E0pM23Nh0lM
-         BINA==
-X-Gm-Message-State: AOAM530rl28Y+PnIhOwfZEcx7zRrbDnJQAsDnu0oqEaUCsOTjJhopQvG
-        Jvk8t6ljrrq0emaGzCoOf6k=
-X-Google-Smtp-Source: ABdhPJx9nUeV/83qz7H1mGdfts1xPRTGfCTDFwjiGZJTuXH+zznv/fgZvjUnwsdAo5TlZkuTcP6u0Q==
-X-Received: by 2002:a05:6512:36cd:: with SMTP id e13mr409270lfs.165.1599813010980;
-        Fri, 11 Sep 2020 01:30:10 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:4498:c7cc:1d90:b990:ebe6:7df7? ([2a00:1fa0:4498:c7cc:1d90:b990:ebe6:7df7])
-        by smtp.gmail.com with ESMTPSA id z15sm400438lji.78.2020.09.11.01.30.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 01:30:10 -0700 (PDT)
-Subject: Re: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
-To:     Tang Bin <tangbin@cmss.chinamobile.com>, balbi@kernel.org,
-        gregkh@linuxfoundation.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com
-Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-References: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <d0bd4d4c-0447-6c5f-6dc3-17e5ceae2623@gmail.com>
-Date:   Fri, 11 Sep 2020 11:29:59 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 11 Sep 2020 04:41:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09961C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=pJCvxMblvhsagAFEWK/7Z4eAuEJyUBEGptfkcNVrs2U=; b=Qp88Dfbj2kU63ejJeePstw993c
+        9ULY0XI/ZJiAwFlosbhy5/rxfSQpfVI28U6NRPozvRZw3pScTxBJC/iTG2F2/uAatcaYtH80dBfK8
+        s9hshNYGY/LYe6R2ZBFFSVwEtrpy0aJMhkQPtzwcLyteueKQZA6ZIS+HQqMiYjhxKlKXnui00UGE0
+        r1FeIleAOlBY569AoSyTahIRWC0JR+ZsUPGZEdCPK1Oe3wKHipY0093J/XWrEwqro2CSTTWpQC3Eb
+        54NKCGa2J6HxNediT804ZTxBja3b7TDiklVBEyLP2UYslYOiRB4vbZ5epcMZjxfN1QYLv9hR2MuCR
+        wNo4domQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGecY-0007cM-Dg; Fri, 11 Sep 2020 08:41:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 49C5A303DA0;
+        Fri, 11 Sep 2020 10:41:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 8785A2143B27B; Fri, 11 Sep 2020 10:41:21 +0200 (CEST)
+Message-ID: <20200911081745.214686199@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 11 Sep 2020 10:17:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, vincent.guittot@linaro.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bristot@redhat.com, swood@redhat.com,
+        valentin.schneider@arm.com, peterz@infradead.org
+Subject: [PATCH 0/2] sched: migrate_disable() preparations
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi!
 
-On 10.09.2020 14:56, Tang Bin wrote:
+These two patches are the result of Thomas pestering me with migrate_disable()
+patches for upstream. The first one is a cleanup/fix for the existing
+balance_callback machinery. The second (ab)uses the context_switch() tail
+invocation of balance_callbacks() to push away 'undesirables' during CPU
+hotplug after we've marked the CPU as !active.
 
-> Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
-> simplify code, avoid redundant judgements.
-> 
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->   drivers/usb/phy/phy-tegra-usb.c | 25 ++++++++++---------------
->   1 file changed, 10 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-usb.c
-> index 6153cc35a..3b901429d 100644
-> --- a/drivers/usb/phy/phy-tegra-usb.c
-> +++ b/drivers/usb/phy/phy-tegra-usb.c
-> @@ -1121,10 +1121,9 @@ static int tegra_usb_phy_probe(struct platform_device *pdev)
->   		return PTR_ERR(tegra_phy->vbus);
->   
->   	tegra_phy->pll_u = devm_clk_get(&pdev->dev, "pll_u");
-> -	err = PTR_ERR_OR_ZERO(tegra_phy->pll_u);
-> -	if (err) {
-> +	if (IS_ERR(tegra_phy->pll_u)) {
->   		dev_err(&pdev->dev, "Failed to get pll_u clock: %d\n", err);
+With this in place, Thomas can do his horrible migrate_disable() thing ;-)
 
-    'err' should be changed here too...
-
-> -		return err;
-> +		return PTR_ERR(tegra_phy->pll_u);
->   	}
->   
->   	phy_type = of_usb_get_phy_mode(np);
-> @@ -1135,20 +1134,18 @@ static int tegra_usb_phy_probe(struct platform_device *pdev)
->   			return err;
->   
->   		tegra_phy->pad_clk = devm_clk_get(&pdev->dev, "utmi-pads");
-> -		err = PTR_ERR_OR_ZERO(tegra_phy->pad_clk);
-> -		if (err) {
-> +		if (IS_ERR(tegra_phy->pad_clk)) {
->   			dev_err(&pdev->dev,
->   				"Failed to get UTMIP pad clock: %d\n", err);
-
-    Same here.
-
-> -			return err;
-> +			return PTR_ERR(tegra_phy->pad_clk);
->   		}
->   
->   		reset = devm_reset_control_get_optional_shared(&pdev->dev,
->   							       "utmi-pads");
-> -		err = PTR_ERR_OR_ZERO(reset);
-> -		if (err) {
-> +		if (IS_ERR(reset)) {
->   			dev_err(&pdev->dev,
->   				"Failed to get UTMI-pads reset: %d\n", err);
-
-    And here.
-
-> -			return err;
-> +			return PTR_ERR(reset);
->   		}
->   		tegra_phy->pad_rst = reset;
->   		break;
-> @@ -1157,22 +1154,20 @@ static int tegra_usb_phy_probe(struct platform_device *pdev)
->   		tegra_phy->is_ulpi_phy = true;
->   
->   		tegra_phy->clk = devm_clk_get(&pdev->dev, "ulpi-link");
-> -		err = PTR_ERR_OR_ZERO(tegra_phy->clk);
-> -		if (err) {
-> +		if (IS_ERR(tegra_phy->clk)) {
->   			dev_err(&pdev->dev,
->   				"Failed to get ULPI clock: %d\n", err);
-
-    And here.
-
-> -			return err;
-> +			return PTR_ERR(tegra_phy->clk);
->   		}
->   
->   		gpiod = devm_gpiod_get_from_of_node(&pdev->dev, np,
->   						    "nvidia,phy-reset-gpio",
->   						    0, GPIOD_OUT_HIGH,
->   						    "ulpi_phy_reset_b");
-> -		err = PTR_ERR_OR_ZERO(gpiod);
-> -		if (err) {
-> +		if (IS_ERR(gpiod)) {
->   			dev_err(&pdev->dev,
->   				"Request failed for reset GPIO: %d\n", err);
-
-    And here.
-
-> -			return err;
-> +			return PTR_ERR(gpiod);
->   		}
->   		tegra_phy->reset_gpio = gpiod;
->   
-
-    Overall, this patch is broken and not even worth redoing -- the current 
-code seems good...
-
-MBR, Sergei
