@@ -2,136 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F982669FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BCE266A01
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725882AbgIKVVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 17:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        id S1725856AbgIKVYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 17:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbgIKVVg (ORCPT
+        with ESMTP id S1725816AbgIKVYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 17:21:36 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74181C061573;
-        Fri, 11 Sep 2020 14:21:36 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id j2so820488eds.9;
-        Fri, 11 Sep 2020 14:21:36 -0700 (PDT)
+        Fri, 11 Sep 2020 17:24:40 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85691C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:24:39 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id n13so11531208edo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AdOFtW4+OTIfp7Vou5995FqSxqsP8JuVzsLCHo5nrGw=;
-        b=iwx2YXfAln6p3+zUP1hzFoV8htJuprZmjPd2GMeVHLV95xIUBZ0d5kbG/zN0idAJZR
-         CW420ks8syqWX+2MiN9x1egEJbYq6ia6v6uBT4Mn6BGQZ501QvqklbRxxbPomAkdHG2s
-         VH+TyXl/AifpbFN2iDgXavo7b2SXiy9kbQOo4LdGoT2SYQdx87zlsOnUkH/a2RyziGnq
-         q17UG/ZDvz+FSf5JCOpBjuiSczlBwJz7ESoPAjKHsFu2nvXFV1CDhOSEHk+tgaIamwow
-         hEMXayvrrYu7sm1LSaOfY6zeTQiaYSQ2n0owQeMkDo3DKVSa/naw+QHhfeyBS502+0QX
-         CCSQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rJzQzacUbT/t90dFgLo1ukPLxxD0AZUfFpQIlkH2Pu8=;
+        b=Kfa4UFPP3oHjaVD0CILlTHRNcuChEw8bWJOCJLzaE3/rn/2D5BnLQ1DunguYidZ4Vi
+         YQi9nWj8TXg6lQGU8Tx2TEaHnunFQ+JtW4XSijFxCSC/dDjnyQihZcZFnOhIvgPxh7RP
+         4uWx6WNTqiOuqjmB6prPo1EHOSw0SpSMGRaqeL08cCyEZmcSV3wmVzLIZfQ+dRbkhysh
+         VVZeW84q/4GVlVuk2yMXMtsQRQtEuP5QTYDHcTujTWQpi9lXk+SZ/YlgWicwya8SL6un
+         j2b4UzWJ4afAnP/L8L7UjO8a5jr/S+bPMRWUJrs65+EQMON3cyIykfQ9V1RmFMQFb4Om
+         A3AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AdOFtW4+OTIfp7Vou5995FqSxqsP8JuVzsLCHo5nrGw=;
-        b=EA9lkMLKoFy6y8HFTFjoApDrYTu/805hzooA9ukspGzlfMnCIeATcm9KrNq5YmJTMr
-         IZDF6LF7cZ8tWCpGdNQgXLNv8MjFlWrDO3r7+sHebSB9HoNzUHBFtnkULC+y3QRhe+31
-         nIbHUNqUVCjDpCp/CmY7yf7Ad3IXhMN61s+Jq5kak4M9DhY8Izz4G7HMGItdKATAzjHL
-         luvwmk/6eGBTYo8zaeKOzPHJPrICsE0p4GyRYw14HHeClpIZ1hpkNDMkRe89giGlLGOt
-         XdzASL13yCv2qlrsVBko5b5y67ymqGSmDQejVaSHr8wAaL0cHU77fN5gty6+ZF7Q1I51
-         q1Lg==
-X-Gm-Message-State: AOAM530uhhUK+kZ9NLCiAxkxw+5yg3IxOu3U+DaNcF8btUrNwGyHJdtL
-        cJ1/qSn9ysZXmMkKWyknLOY=
-X-Google-Smtp-Source: ABdhPJwjd7y5MMCMMarDa3tCNp2fu5QkfRwhlPlnzt92v+gipu179RrQr1jgubq+d5d0CcG2FGf/+g==
-X-Received: by 2002:aa7:d296:: with SMTP id w22mr4581288edq.327.1599859295171;
-        Fri, 11 Sep 2020 14:21:35 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:e953:3254:5e71:3177? ([2a01:110f:b59:fd00:e953:3254:5e71:3177])
-        by smtp.gmail.com with ESMTPSA id z18sm2200844ejb.92.2020.09.11.14.21.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 14:21:34 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-To:     Gene Chen <gene.chen.richtek@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     robh+dt@kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
- <559a568e-3a2e-33c6-43aa-547a18f8e26b@gmail.com> <20200911070503.GA9818@amd>
- <CAE+NS34aKmu0tjnCPg3nF_vB0ELKsKwZSOeEXsm5V9aPAqqSbQ@mail.gmail.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <7e67c8f7-7f79-72f8-05bc-022ed0655a3f@gmail.com>
-Date:   Fri, 11 Sep 2020 23:21:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rJzQzacUbT/t90dFgLo1ukPLxxD0AZUfFpQIlkH2Pu8=;
+        b=e36muLdXUtbeKvI+xYsR1FNa7KPyzkMO3uxV4I+JHYwEhlJCmUjk9/QD3jmxI7sjV6
+         Hwn/YHsBF6O52RgeV8Gwte3ie6/VLDIr/UZSzIDtMgMPJOUsp1qqItwEab/c58JK1Aip
+         Jqwu4CZBLf8oici3l8GShmYd41I7gMSNofTYSzgiPd2rxOrkqEOj2EcVAGLWYBCcsVDO
+         +ajDHV+uln+nB1k69zdrrO/3R/9XxLIXAJuGT7H0umhnZI0IxrrL8yKpW2N+94maDRk+
+         6ZYpW9MHrHxe6v+p0XalcAhu0KP2huJd2L4ReYkDy0mdLC5XkgxuJZCnLiL6pY/iK1Kr
+         h18A==
+X-Gm-Message-State: AOAM531cH6Enpgx1SI2dox/Z7hke9vrk4TQqZ9zHyeefuodgEhzr/3GD
+        om5EfCM2kurPVbeHf0Jx9UsyEV3rCUWiMeQRlhH73A==
+X-Google-Smtp-Source: ABdhPJwOzb7RRun7xEaUZg0OezU66oiuDn3uNsy2bi1jbu8j7WAWUL2TDU2cG2bJYo1uIY2LeLjnq0zdWPejnJ6zJbM=
+X-Received: by 2002:a05:6402:7d2:: with SMTP id u18mr4631955edy.69.1599859477898;
+ Fri, 11 Sep 2020 14:24:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAE+NS34aKmu0tjnCPg3nF_vB0ELKsKwZSOeEXsm5V9aPAqqSbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CALCETrWx66qLc-NiwKS_Zu=BP8JDTzfeUO7A2vDd01kXNmiNiA@mail.gmail.com>
+ <20200817062355.2884-1-jiangshanlai@gmail.com> <20200817062355.2884-2-jiangshanlai@gmail.com>
+In-Reply-To: <20200817062355.2884-2-jiangshanlai@gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 11 Sep 2020 23:24:11 +0200
+Message-ID: <CAG48ez23rw8oj7gT6Kyj3epXsDze+Cq30Jj_pV7sa54gxKEOpQ@mail.gmail.com>
+Subject: Re: [PATCH V3 1/3] x86/entry: avoid calling into sync_regs() when
+ entering from userspace
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 1:24 AM, Gene Chen wrote:
-> Pavel Machek <pavel@ucw.cz> 於 2020年9月11日 週五 下午3:05寫道：
->>
->> Hi!
->>
->>>> +{
->>>> +    struct mt6360_led *led = container_of(lcdev, struct mt6360_led, flash.led_cdev);
->>>> +    struct mt6360_priv *priv = led->priv;
->>>> +    u32 enable_mask = MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
->>>> +    u32 val = (level) ? MT6360_FLCSEN_MASK(led->led_no) : 0;
->>>> +    u32 prev = priv->fled_torch_used, curr;
->>>> +    int ret;
->>>> +
->>>> +    dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
->>>> +    if (priv->fled_strobe_used) {
->>>> +            dev_warn(lcdev->dev, "Please disable strobe first [%d]\n", priv->fled_strobe_used);
->>>
->>> Doesn't hardware handle that? IOW, what happens when you have enabled
->>> both torch and flash? If flash just overrides torch mode, than you
->>> should not prevent enabling torch in this case.
->>
->> Yep, this is strange/confusing... and was reason why I asked for not
->> supporting strobe from sysfs.
->>
->> Could I get you to remove code you are not commenting at when
->> reviewing?
->>
-> 
-> MT6360 FLED register define is STROBE_EN/TORCH_EN/CS1/CS2 (current
-> source) 4 bits.
-> The STROBE_EN/TORCH_EN is shared by FLED1 and FLED2.
-> If I want to enable FLED1 torch mode, I set TORCH_EN and CS1
-> If I want to enable FLED2 strobe mode, I set STROBE_EN and CS2
-> For example I set FLED1 torch, then I set FLED2 strobe.
-> When I set FLED2 strobe, I will see the strobe current is FLED2 add
-> FLED1 current which is not I want.
-> So I need disable FLED1 torch first.
-> Considering every circumstances is complicated when share same H/W
-> logic control.
-> And the other problem is torch mode switch to strobe mode needs ramp
-> time because strobe and torch mode can't be co-exist.
+On Mon, Aug 17, 2020 at 8:23 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+> 7f2590a110b8("x86/entry/64: Use a per-CPU trampoline stack for IDT entries")
+> made a change that when any exception happens on userspace, the
+> entry code will save the pt_regs on the sp0 stack, and then copy it
+> to the thread stack via sync_regs() and switch to thread stack
+> afterward.
+>
+> And recent x86/entry work makes interrupt also use idtentry
+> and makes all the interrupt code save the pt_regs on the sp0 stack
+> and then copy it to the thread stack like exception.
+>
+> This is hot path (page fault, ipi), such overhead should be avoided.
+> This patch borrows the way how original interrupt_entry handles it.
+> It switches to the thread stack directly right away when comes
+> from userspace.
+>
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Thank you for the explanation. So we have to keep your guards
-but I would return -EBUSY instead of -EINVAL.
+As far as I can see, on systems affected by Meltdown, this patch fixes
+register state leakage between tasks because any data that is written
+to the per-CPU trampoline stacks must be considered visible to all
+userspace. I think that makes this a fix that should go into stable
+kernels.
 
-This would be also consistent with what
-drivers/media/v4l2-core/v4l2-flash-led-class.c
-does in its v4l2_flash_s_ctrl(), case V4L2_CID_FLASH_STROBE - it returns
--EBUSY if __software_strobe_mode_inactive() returns false.
+Therefore, please add:
 
-The advantage of V4L2 Flash interface is that it has LED_MODE that
-can be set to torch or flash, but in LED subsystem we don't have
-the counterpart.
+Fixes: 7f2590a110b8 ("x86/entry/64: Use a per-CPU trampoline stack for
+IDT entries")
+Cc: stable@vger.kernel.org
 
--- 
-Best regards,
-Jacek Anaszewski
+
+> ---
+>  arch/x86/entry/entry_64.S | 43 +++++++++++++++++++++++++++++++--------
+>  1 file changed, 34 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+> index 70dea9337816..1a7715430da3 100644
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -928,19 +928,42 @@ SYM_CODE_END(paranoid_exit)
+>  SYM_CODE_START_LOCAL(error_entry)
+>         UNWIND_HINT_FUNC
+>         cld
+> -       PUSH_AND_CLEAR_REGS save_ret=1
+> -       ENCODE_FRAME_POINTER 8
+> -       testb   $3, CS+8(%rsp)
+> +       testb   $3, CS-ORIG_RAX+8(%rsp)
+>         jz      .Lerror_kernelspace
+>
+> -       /*
+> -        * We entered from user mode or we're pretending to have entered
+> -        * from user mode due to an IRET fault.
+> -        */
+
+As far as I can tell, this comment is still correct, and it is
+helpful. Why are you removing it?
+
+>         SWAPGS
+>         FENCE_SWAPGS_USER_ENTRY
+> -       /* We have user CR3.  Change to kernel CR3. */
+> -       SWITCH_TO_KERNEL_CR3 scratch_reg=%rax
+> +       /*
+> +        * Switch to the thread stack. The IRET frame and orig_ax are
+> +        * on the stack, as well as the return address. RDI..R12 are
+
+Did you mean RDI..R15?
+
+> +        * not (yet) on the stack and space has not (yet) been
+> +        * allocated for them.
+> +        */
+> +       pushq   %rdx
+> +
+> +       /* Need to switch before accessing the thread stack. */
+> +       SWITCH_TO_KERNEL_CR3 scratch_reg=%rdx
+> +       movq    %rsp, %rdx
+> +       movq    PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+
+Can we avoid spilling %rdx to the meltdown-readable entry stack here?
+We could do something similar to what entry_SYSCALL_64 does, roughly
+like this:
+
+
+/*
+ * While there is an iret frame, it won't be easy to find for a
+ * few instructions, so let's pretend it doesn't exist.
+ */
+UNWIND_HINT_EMPTY
+
+/*
+ * Switch to kernel CR3 and stack. To avoid spilling secret
+ * userspace register state to the trampoline stack, we use
+ * RSP as scratch - we can reconstruct the old RSP afterwards
+ * using TSS_sp0.
+ */
+SWITCH_TO_KERNEL_CR3 scratch_reg=%rsp
+movq    PER_CPU_VAR(cpu_current_top_of_stack), %rsp
+
+pushq %rdx /* scratch, will be replaced with regs->ss later */
+mov PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rdx
+sub $7*8, %rdx /* return address, orig_ax, IRET frame */
+/*
+ * We have return address and orig_ax on the stack on
+ * top of the IRET frame. That means offset=2*8
+ */
+UNWIND_HINT_IRET_REGS base=%rdx offset=-5*8
+
+pushq   -2*8(%rdx)               /* regs->rsp */
+pushq   -3*8(%rdx)               /* regs->eflags */
+pushq   -4*8(%rdx)               /* regs->cs */
+pushq   -5*8(%rdx)               /* regs->ip */
+pushq   -6*8(%rdx)               /* regs->orig_ax */
+pushq   -7*8(%rdx)               /* return address */
+UNWIND_HINT_FUNC
+
+PUSH_AND_CLEAR_REGS rdx=7*8(%rsp), save_ret=1
+
+/* copy regs->ss from trampoline stack */
+movq PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %rax
+mov -1*8(%rax), %rax
+movq %rax, 20*8(%rsp)
+
+ENCODE_FRAME_POINTER 8
+
+ret
+
+
+Does something like that seem like a reasonable idea?
+
+> +        /*
+> +         * We have RDX, return address, and orig_ax on the stack on
+> +         * top of the IRET frame. That means offset=24
+> +         */
+> +       UNWIND_HINT_IRET_REGS base=%rdx offset=24
+> +
+> +       pushq   7*8(%rdx)               /* regs->ss */
+> +       pushq   6*8(%rdx)               /* regs->rsp */
+> +       pushq   5*8(%rdx)               /* regs->eflags */
+> +       pushq   4*8(%rdx)               /* regs->cs */
+> +       pushq   3*8(%rdx)               /* regs->ip */
+> +       pushq   2*8(%rdx)               /* regs->orig_ax */
+> +       pushq   8(%rdx)                 /* return address */
+> +       UNWIND_HINT_FUNC
+> +
+> +       PUSH_AND_CLEAR_REGS rdx=(%rdx), save_ret=1
+> +       ENCODE_FRAME_POINTER 8
+> +       ret
