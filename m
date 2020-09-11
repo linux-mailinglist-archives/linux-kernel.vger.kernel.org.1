@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD4B266439
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2B426641D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgIKQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:33:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        id S1726449AbgIKQbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726417AbgIKPRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:17:38 -0400
+        id S1726420AbgIKPTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2167F204EC;
-        Fri, 11 Sep 2020 13:00:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE3B72076C;
+        Fri, 11 Sep 2020 13:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829204;
-        bh=Ri8JwN8tCQ9NDHK7NDYR8XYP5a7ACkHHRW9pL0zYCzE=;
+        s=default; t=1599829207;
+        bh=H9KAolUqWQVgCsYPLTdOsrxGNRQBT4lkkfDwBjylwu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v6g9yVYe/bqhu18tb83ZTUTQh7ThQoRLosjt1/PnfDcfCYSJiAdMsowRdRXqocDV1
-         cpH+N/rcNm9uT7VUv0cIAaNPiewTPWKxR2BzYMT4OBChJNUSQd8dZw/gcYy2JMSdZL
-         CgLukEQVTbamk1VPyqrDD1/ifoL1t2U2Y8+Ut238=
+        b=2cl0JW8XQArezzj6Q3oTZoYXxTQenJI2FiX5sf51GIbO67NNBjZOYPUc31D4A93ae
+         7JFUhtObHw8aAFBvcFTwQXJ2DIL86konTk8cbha74PQGxENB3PXBfWeV8SoTfbaZYH
+         flOTeunkO+00hr0KsAW6RJPzC3bw+NSxbuKeRzZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Stephen Suryaputra <ssuryaextr@gmail.com>,
+        stable@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 08/16] ipv6: Fix sysctl max for fib_multipath_hash_policy
-Date:   Fri, 11 Sep 2020 14:47:25 +0200
-Message-Id: <20200911122459.984827826@linuxfoundation.org>
+Subject: [PATCH 5.8 09/16] netlabel: fix problems with mapping removal
+Date:   Fri, 11 Sep 2020 14:47:26 +0200
+Message-Id: <20200911122500.036474277@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122459.585735377@linuxfoundation.org>
 References: <20200911122459.585735377@linuxfoundation.org>
@@ -44,56 +45,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Paul Moore <paul@paul-moore.com>
 
-[ Upstream commit 05d4487197b2b71d5363623c28924fd58c71c0b6 ]
+[ Upstream commit d3b990b7f327e2afa98006e7666fb8ada8ed8683 ]
 
-Cited commit added the possible value of '2', but it cannot be set. Fix
-it by adjusting the maximum value to '2'. This is consistent with the
-corresponding IPv4 sysctl.
+This patch fixes two main problems seen when removing NetLabel
+mappings: memory leaks and potentially extra audit noise.
 
-Before:
+The memory leaks are caused by not properly free'ing the mapping's
+address selector struct when free'ing the entire entry as well as
+not properly cleaning up a temporary mapping entry when adding new
+address selectors to an existing entry.  This patch fixes both these
+problems such that kmemleak reports no NetLabel associated leaks
+after running the SELinux test suite.
 
-# sysctl -w net.ipv6.fib_multipath_hash_policy=2
-sysctl: setting key "net.ipv6.fib_multipath_hash_policy": Invalid argument
-net.ipv6.fib_multipath_hash_policy = 2
-# sysctl net.ipv6.fib_multipath_hash_policy
-net.ipv6.fib_multipath_hash_policy = 0
+The potentially extra audit noise was caused by the auditing code in
+netlbl_domhsh_remove_entry() being called regardless of the entry's
+validity.  If another thread had already marked the entry as invalid,
+but not removed/free'd it from the list of mappings, then it was
+possible that an additional mapping removal audit record would be
+generated.  This patch fixes this by returning early from the removal
+function when the entry was previously marked invalid.  This change
+also had the side benefit of improving the code by decreasing the
+indentation level of large chunk of code by one (accounting for most
+of the diffstat).
 
-After:
-
-# sysctl -w net.ipv6.fib_multipath_hash_policy=2
-net.ipv6.fib_multipath_hash_policy = 2
-# sysctl net.ipv6.fib_multipath_hash_policy
-net.ipv6.fib_multipath_hash_policy = 2
-
-Fixes: d8f74f0975d8 ("ipv6: Support multipath hashing on inner IP pkts")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Stephen Suryaputra <ssuryaextr@gmail.com>
+Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
+Reported-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/sysctl_net_ipv6.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/netlabel/netlabel_domainhash.c |   59 ++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 29 deletions(-)
 
---- a/net/ipv6/sysctl_net_ipv6.c
-+++ b/net/ipv6/sysctl_net_ipv6.c
-@@ -21,6 +21,7 @@
- #include <net/calipso.h>
- #endif
+--- a/net/netlabel/netlabel_domainhash.c
++++ b/net/netlabel/netlabel_domainhash.c
+@@ -85,6 +85,7 @@ static void netlbl_domhsh_free_entry(str
+ 			kfree(netlbl_domhsh_addr6_entry(iter6));
+ 		}
+ #endif /* IPv6 */
++		kfree(ptr->def.addrsel);
+ 	}
+ 	kfree(ptr->domain);
+ 	kfree(ptr);
+@@ -537,6 +538,8 @@ int netlbl_domhsh_add(struct netlbl_dom_
+ 				goto add_return;
+ 		}
+ #endif /* IPv6 */
++		/* cleanup the new entry since we've moved everything over */
++		netlbl_domhsh_free_entry(&entry->rcu);
+ 	} else
+ 		ret_val = -EINVAL;
  
-+static int two = 2;
- static int flowlabel_reflect_max = 0x7;
- static int auto_flowlabels_min;
- static int auto_flowlabels_max = IP6_AUTO_FLOW_LABEL_MAX;
-@@ -150,7 +151,7 @@ static struct ctl_table ipv6_table_templ
- 		.mode		= 0644,
- 		.proc_handler   = proc_rt6_multipath_hash_policy,
- 		.extra1		= SYSCTL_ZERO,
--		.extra2		= SYSCTL_ONE,
-+		.extra2		= &two,
- 	},
- 	{
- 		.procname	= "seg6_flowlabel",
+@@ -580,6 +583,12 @@ int netlbl_domhsh_remove_entry(struct ne
+ {
+ 	int ret_val = 0;
+ 	struct audit_buffer *audit_buf;
++	struct netlbl_af4list *iter4;
++	struct netlbl_domaddr4_map *map4;
++#if IS_ENABLED(CONFIG_IPV6)
++	struct netlbl_af6list *iter6;
++	struct netlbl_domaddr6_map *map6;
++#endif /* IPv6 */
+ 
+ 	if (entry == NULL)
+ 		return -ENOENT;
+@@ -597,6 +606,9 @@ int netlbl_domhsh_remove_entry(struct ne
+ 		ret_val = -ENOENT;
+ 	spin_unlock(&netlbl_domhsh_lock);
+ 
++	if (ret_val)
++		return ret_val;
++
+ 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
+ 	if (audit_buf != NULL) {
+ 		audit_log_format(audit_buf,
+@@ -606,40 +618,29 @@ int netlbl_domhsh_remove_entry(struct ne
+ 		audit_log_end(audit_buf);
+ 	}
+ 
+-	if (ret_val == 0) {
+-		struct netlbl_af4list *iter4;
+-		struct netlbl_domaddr4_map *map4;
+-#if IS_ENABLED(CONFIG_IPV6)
+-		struct netlbl_af6list *iter6;
+-		struct netlbl_domaddr6_map *map6;
+-#endif /* IPv6 */
+-
+-		switch (entry->def.type) {
+-		case NETLBL_NLTYPE_ADDRSELECT:
+-			netlbl_af4list_foreach_rcu(iter4,
+-					     &entry->def.addrsel->list4) {
+-				map4 = netlbl_domhsh_addr4_entry(iter4);
+-				cipso_v4_doi_putdef(map4->def.cipso);
+-			}
++	switch (entry->def.type) {
++	case NETLBL_NLTYPE_ADDRSELECT:
++		netlbl_af4list_foreach_rcu(iter4, &entry->def.addrsel->list4) {
++			map4 = netlbl_domhsh_addr4_entry(iter4);
++			cipso_v4_doi_putdef(map4->def.cipso);
++		}
+ #if IS_ENABLED(CONFIG_IPV6)
+-			netlbl_af6list_foreach_rcu(iter6,
+-					     &entry->def.addrsel->list6) {
+-				map6 = netlbl_domhsh_addr6_entry(iter6);
+-				calipso_doi_putdef(map6->def.calipso);
+-			}
++		netlbl_af6list_foreach_rcu(iter6, &entry->def.addrsel->list6) {
++			map6 = netlbl_domhsh_addr6_entry(iter6);
++			calipso_doi_putdef(map6->def.calipso);
++		}
+ #endif /* IPv6 */
+-			break;
+-		case NETLBL_NLTYPE_CIPSOV4:
+-			cipso_v4_doi_putdef(entry->def.cipso);
+-			break;
++		break;
++	case NETLBL_NLTYPE_CIPSOV4:
++		cipso_v4_doi_putdef(entry->def.cipso);
++		break;
+ #if IS_ENABLED(CONFIG_IPV6)
+-		case NETLBL_NLTYPE_CALIPSO:
+-			calipso_doi_putdef(entry->def.calipso);
+-			break;
++	case NETLBL_NLTYPE_CALIPSO:
++		calipso_doi_putdef(entry->def.calipso);
++		break;
+ #endif /* IPv6 */
+-		}
+-		call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
+ 	}
++	call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
+ 
+ 	return ret_val;
+ }
 
 
