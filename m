@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2B426641D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAC1266438
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgIKQbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:31:35 -0400
+        id S1726264AbgIKQdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:33:25 -0400
 Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgIKPTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:19:22 -0400
+        id S1726441AbgIKPRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:17:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE3B72076C;
-        Fri, 11 Sep 2020 13:00:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D536422400;
+        Fri, 11 Sep 2020 12:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829207;
-        bh=H9KAolUqWQVgCsYPLTdOsrxGNRQBT4lkkfDwBjylwu8=;
+        s=default; t=1599829178;
+        bh=VHEHsFs9eWmEuMzGT3hxFB0fbn9NzjjQntg5CD00oP0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2cl0JW8XQArezzj6Q3oTZoYXxTQenJI2FiX5sf51GIbO67NNBjZOYPUc31D4A93ae
-         7JFUhtObHw8aAFBvcFTwQXJ2DIL86konTk8cbha74PQGxENB3PXBfWeV8SoTfbaZYH
-         flOTeunkO+00hr0KsAW6RJPzC3bw+NSxbuKeRzZM=
+        b=npfiVqhq1ZkE3ntBbh3iaj2efd5Xr/Vei83UjZ7zju20yjxfkCWGgHEiki+FV1SFY
+         //+LXeMYZMSQ5u5F1mNUuaOjBSvw9RnF5b+3NfF7GSTE7tjKGi3DEGO+A/t9Za3CU6
+         wO/rugF6923qVtZEjQGVQTRJDmoE3T6cu98PjMOg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
+        syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 09/16] netlabel: fix problems with mapping removal
-Date:   Fri, 11 Sep 2020 14:47:26 +0200
-Message-Id: <20200911122500.036474277@linuxfoundation.org>
+Subject: [PATCH 5.8 13/16] tipc: fix shutdown() of connectionless socket
+Date:   Fri, 11 Sep 2020 14:47:30 +0200
+Message-Id: <20200911122500.236937094@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122459.585735377@linuxfoundation.org>
 References: <20200911122459.585735377@linuxfoundation.org>
@@ -45,140 +45,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-[ Upstream commit d3b990b7f327e2afa98006e7666fb8ada8ed8683 ]
+[ Upstream commit 2a63866c8b51a3f72cea388dfac259d0e14c4ba6 ]
 
-This patch fixes two main problems seen when removing NetLabel
-mappings: memory leaks and potentially extra audit noise.
+syzbot is reporting hung task at nbd_ioctl() [1], for there are two
+problems regarding TIPC's connectionless socket's shutdown() operation.
 
-The memory leaks are caused by not properly free'ing the mapping's
-address selector struct when free'ing the entire entry as well as
-not properly cleaning up a temporary mapping entry when adding new
-address selectors to an existing entry.  This patch fixes both these
-problems such that kmemleak reports no NetLabel associated leaks
-after running the SELinux test suite.
+----------
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <linux/nbd.h>
+#include <unistd.h>
 
-The potentially extra audit noise was caused by the auditing code in
-netlbl_domhsh_remove_entry() being called regardless of the entry's
-validity.  If another thread had already marked the entry as invalid,
-but not removed/free'd it from the list of mappings, then it was
-possible that an additional mapping removal audit record would be
-generated.  This patch fixes this by returning early from the removal
-function when the entry was previously marked invalid.  This change
-also had the side benefit of improving the code by decreasing the
-indentation level of large chunk of code by one (accounting for most
-of the diffstat).
+int main(int argc, char *argv[])
+{
+        const int fd = open("/dev/nbd0", 3);
+        alarm(5);
+        ioctl(fd, NBD_SET_SOCK, socket(PF_TIPC, SOCK_DGRAM, 0));
+        ioctl(fd, NBD_DO_IT, 0); /* To be interrupted by SIGALRM. */
+        return 0;
+}
+----------
 
-Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-Reported-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+One problem is that wait_for_completion() from flush_workqueue() from
+nbd_start_device_ioctl() from nbd_ioctl() cannot be completed when
+nbd_start_device_ioctl() received a signal at wait_event_interruptible(),
+for tipc_shutdown() from kernel_sock_shutdown(SHUT_RDWR) from
+nbd_mark_nsock_dead() from sock_shutdown() from nbd_start_device_ioctl()
+is failing to wake up a WQ thread sleeping at wait_woken() from
+tipc_wait_for_rcvmsg() from sock_recvmsg() from sock_xmit() from
+nbd_read_stat() from recv_work() scheduled by nbd_start_device() from
+nbd_start_device_ioctl(). Fix this problem by always invoking
+sk->sk_state_change() (like inet_shutdown() does) when tipc_shutdown() is
+called.
+
+The other problem is that tipc_wait_for_rcvmsg() cannot return when
+tipc_shutdown() is called, for tipc_shutdown() sets sk->sk_shutdown to
+SEND_SHUTDOWN (despite "how" is SHUT_RDWR) while tipc_wait_for_rcvmsg()
+needs sk->sk_shutdown set to RCV_SHUTDOWN or SHUTDOWN_MASK. Fix this
+problem by setting sk->sk_shutdown to SHUTDOWN_MASK (like inet_shutdown()
+does) when the socket is connectionless.
+
+[1] https://syzkaller.appspot.com/bug?id=3fe51d307c1f0a845485cf1798aa059d12bf18b2
+
+Reported-by: syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/netlabel/netlabel_domainhash.c |   59 ++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
+ net/tipc/socket.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/net/netlabel/netlabel_domainhash.c
-+++ b/net/netlabel/netlabel_domainhash.c
-@@ -85,6 +85,7 @@ static void netlbl_domhsh_free_entry(str
- 			kfree(netlbl_domhsh_addr6_entry(iter6));
- 		}
- #endif /* IPv6 */
-+		kfree(ptr->def.addrsel);
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -2773,18 +2773,21 @@ static int tipc_shutdown(struct socket *
+ 
+ 	trace_tipc_sk_shutdown(sk, NULL, TIPC_DUMP_ALL, " ");
+ 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
+-	sk->sk_shutdown = SEND_SHUTDOWN;
++	if (tipc_sk_type_connectionless(sk))
++		sk->sk_shutdown = SHUTDOWN_MASK;
++	else
++		sk->sk_shutdown = SEND_SHUTDOWN;
+ 
+ 	if (sk->sk_state == TIPC_DISCONNECTING) {
+ 		/* Discard any unreceived messages */
+ 		__skb_queue_purge(&sk->sk_receive_queue);
+ 
+-		/* Wake up anyone sleeping in poll */
+-		sk->sk_state_change(sk);
+ 		res = 0;
+ 	} else {
+ 		res = -ENOTCONN;
  	}
- 	kfree(ptr->domain);
- 	kfree(ptr);
-@@ -537,6 +538,8 @@ int netlbl_domhsh_add(struct netlbl_dom_
- 				goto add_return;
- 		}
- #endif /* IPv6 */
-+		/* cleanup the new entry since we've moved everything over */
-+		netlbl_domhsh_free_entry(&entry->rcu);
- 	} else
- 		ret_val = -EINVAL;
++	/* Wake up anyone sleeping in poll. */
++	sk->sk_state_change(sk);
  
-@@ -580,6 +583,12 @@ int netlbl_domhsh_remove_entry(struct ne
- {
- 	int ret_val = 0;
- 	struct audit_buffer *audit_buf;
-+	struct netlbl_af4list *iter4;
-+	struct netlbl_domaddr4_map *map4;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	struct netlbl_af6list *iter6;
-+	struct netlbl_domaddr6_map *map6;
-+#endif /* IPv6 */
- 
- 	if (entry == NULL)
- 		return -ENOENT;
-@@ -597,6 +606,9 @@ int netlbl_domhsh_remove_entry(struct ne
- 		ret_val = -ENOENT;
- 	spin_unlock(&netlbl_domhsh_lock);
- 
-+	if (ret_val)
-+		return ret_val;
-+
- 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
- 	if (audit_buf != NULL) {
- 		audit_log_format(audit_buf,
-@@ -606,40 +618,29 @@ int netlbl_domhsh_remove_entry(struct ne
- 		audit_log_end(audit_buf);
- 	}
- 
--	if (ret_val == 0) {
--		struct netlbl_af4list *iter4;
--		struct netlbl_domaddr4_map *map4;
--#if IS_ENABLED(CONFIG_IPV6)
--		struct netlbl_af6list *iter6;
--		struct netlbl_domaddr6_map *map6;
--#endif /* IPv6 */
--
--		switch (entry->def.type) {
--		case NETLBL_NLTYPE_ADDRSELECT:
--			netlbl_af4list_foreach_rcu(iter4,
--					     &entry->def.addrsel->list4) {
--				map4 = netlbl_domhsh_addr4_entry(iter4);
--				cipso_v4_doi_putdef(map4->def.cipso);
--			}
-+	switch (entry->def.type) {
-+	case NETLBL_NLTYPE_ADDRSELECT:
-+		netlbl_af4list_foreach_rcu(iter4, &entry->def.addrsel->list4) {
-+			map4 = netlbl_domhsh_addr4_entry(iter4);
-+			cipso_v4_doi_putdef(map4->def.cipso);
-+		}
- #if IS_ENABLED(CONFIG_IPV6)
--			netlbl_af6list_foreach_rcu(iter6,
--					     &entry->def.addrsel->list6) {
--				map6 = netlbl_domhsh_addr6_entry(iter6);
--				calipso_doi_putdef(map6->def.calipso);
--			}
-+		netlbl_af6list_foreach_rcu(iter6, &entry->def.addrsel->list6) {
-+			map6 = netlbl_domhsh_addr6_entry(iter6);
-+			calipso_doi_putdef(map6->def.calipso);
-+		}
- #endif /* IPv6 */
--			break;
--		case NETLBL_NLTYPE_CIPSOV4:
--			cipso_v4_doi_putdef(entry->def.cipso);
--			break;
-+		break;
-+	case NETLBL_NLTYPE_CIPSOV4:
-+		cipso_v4_doi_putdef(entry->def.cipso);
-+		break;
- #if IS_ENABLED(CONFIG_IPV6)
--		case NETLBL_NLTYPE_CALIPSO:
--			calipso_doi_putdef(entry->def.calipso);
--			break;
-+	case NETLBL_NLTYPE_CALIPSO:
-+		calipso_doi_putdef(entry->def.calipso);
-+		break;
- #endif /* IPv6 */
--		}
--		call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
- 	}
-+	call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
- 
- 	return ret_val;
- }
+ 	release_sock(sk);
+ 	return res;
 
 
