@@ -2,65 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF2726610D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE8A266102
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgIKOQm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 10:16:42 -0400
-Received: from [103.10.105.61] ([103.10.105.61]:49122 "EHLO ipb.c.id"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726255AbgIKNS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:18:59 -0400
-Received: from mail.ipb.ac.id (unknown [172.17.5.31])
-        by ipb.c.id (Postfix) with ESMTPS id 6A98A1C85D3;
-        Fri, 11 Sep 2020 19:41:04 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ipb.ac.id (Postfix) with ESMTP id 0713BB425DDD;
-        Fri, 11 Sep 2020 19:41:04 +0700 (WIB)
-Received: from mail.ipb.ac.id ([127.0.0.1])
-        by localhost (mail.ipb.ac.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ikzGYB4kiHRf; Fri, 11 Sep 2020 19:41:03 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.ipb.ac.id (Postfix) with ESMTP id 81C92B425D95;
-        Fri, 11 Sep 2020 19:41:03 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at ipb.ac.id
-Received: from mail.ipb.ac.id ([127.0.0.1])
-        by localhost (mail.ipb.ac.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id c_khojGFfOd4; Fri, 11 Sep 2020 19:41:03 +0700 (WIB)
-Received: from [100.95.174.193] (unknown [106.210.68.85])
-        by mail.ipb.ac.id (Postfix) with ESMTPSA id E9920B425D74;
-        Fri, 11 Sep 2020 19:40:43 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1725784AbgIKNQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 09:16:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725916AbgIKM7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:59:08 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62D612222B;
+        Fri, 11 Sep 2020 12:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599828953;
+        bh=WfBcY1zSWre1JihwGq+YcH6ZzX+EwLdW5Jvhm07z5KU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mYgtA7fpw1pCJkK0uTBSXYOYKFijXQWYOHs+1M6TYNojhoEhDhxA/4F+dDVRR2TDU
+         zPThEu4449FQVSK1n0YMiws3JSlC/dJ3NIJJzgEjSSM6O6eie7MW2Jtg8sATm0Npub
+         bXs3Cha9dIY9mCaj1A22QFPQvQ1SHM9wjKNe0nsY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Subject: [PATCH 4.9 01/71] HID: core: Correctly handle ReportSize being zero
+Date:   Fri, 11 Sep 2020 14:45:45 +0200
+Message-Id: <20200911122505.006765914@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+References: <20200911122504.928931589@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Advertencia 
-To:     Recipients <jakaria@ipb.ac.id>
-From:   Sistemas administrador <jakaria@ipb.ac.id>
-Date:   Fri, 11 Sep 2020 18:10:22 +0530
-Reply-To: mailupgrade@mail2engineer.com
-Message-Id: <20200911124043.E9920B425D74@mail.ipb.ac.id>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATENCIÓN;
+From: Marc Zyngier <maz@kernel.org>
 
-Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
+commit bce1305c0ece3dc549663605e567655dd701752c upstream.
 
-nombre:
-Nombre de usuario:
-contraseña:
-Confirmar contraseña:
-E-mail:
-teléfono:
+It appears that a ReportSize value of zero is legal, even if a bit
+non-sensical. Most of the HID code seems to handle that gracefully,
+except when computing the total size in bytes. When fed as input to
+memset, this leads to some funky outcomes.
 
-Si usted no puede revalidar su buzón, el buzón se deshabilitará!
+Detect the corner case and correctly compute the size.
 
-Disculpa las molestias.
-Código de verificación:666690opp4r56 es: 006524
-Correo Soporte Técnico © 2020
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-¡gracias
-Sistemas administrador
+---
+ drivers/hid/hid-core.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -1407,6 +1407,17 @@ static void hid_output_field(const struc
+ }
+ 
+ /*
++ * Compute the size of a report.
++ */
++static size_t hid_compute_report_size(struct hid_report *report)
++{
++	if (report->size)
++		return ((report->size - 1) >> 3) + 1;
++
++	return 0;
++}
++
++/*
+  * Create a report. 'data' has to be allocated using
+  * hid_alloc_report_buf() so that it has proper size.
+  */
+@@ -1418,7 +1429,7 @@ void hid_output_report(struct hid_report
+ 	if (report->id > 0)
+ 		*data++ = report->id;
+ 
+-	memset(data, 0, ((report->size - 1) >> 3) + 1);
++	memset(data, 0, hid_compute_report_size(report));
+ 	for (n = 0; n < report->maxfield; n++)
+ 		hid_output_field(report->device, report->field[n], data);
+ }
+@@ -1545,7 +1556,7 @@ int hid_report_raw_event(struct hid_devi
+ 		csize--;
+ 	}
+ 
+-	rsize = ((report->size - 1) >> 3) + 1;
++	rsize = hid_compute_report_size(report);
+ 
+ 	if (report_enum->numbered && rsize >= HID_MAX_BUFFER_SIZE)
+ 		rsize = HID_MAX_BUFFER_SIZE - 1;
+
+
