@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E201026677C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985BD266754
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbgIKRny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:43:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43002 "EHLO mail.kernel.org"
+        id S1726419AbgIKRls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:41:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31630 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgIKMfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:35:25 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2838F221F1;
-        Fri, 11 Sep 2020 12:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599827714;
-        bh=yi8RSiV9h0A/J1gT7uMmEVmlVSr6q32X2u1m9UKoE30=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QFNATJIQUxWE1UyDJGyip/IEOHsNU08z4ZV3hXbxIx+v/KbjbjEuJ4Dhr2VIT4X8x
-         ou8VhSBHigKbzKgAeoWBPW6cHm7IBiwd0fPpBkYF5CTAXwklNv3kTj6DzOQjPCUGsJ
-         6ryTD6Dj1FmhvPQhQTh/We7jqE5kjKxVRf1cmjFI=
-Date:   Fri, 11 Sep 2020 13:34:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ashish Kumar <ashish.kumar@nxp.com>
-Cc:     kuldip dwivedi <kuldip.dwivedi@puresoftware.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Arokia Samy <arokia.samy@nxp.com>,
-        Ard Biesheuvel <Ard.Biesheuvel@arm.com>,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Paul Yang <Paul.Yang@arm.com>
-Subject: Re: [EXT] [PATCH v2] spi: spi-nxp-fspi: Add ACPI support
-Message-ID: <20200911123428.GF4895@sirena.org.uk>
-References: <20200911082806.115-1-kuldip.dwivedi@puresoftware.com>
- <HE1PR04MB31962FC006C6EB964AC2DAE895240@HE1PR04MB3196.eurprd04.prod.outlook.com>
+        id S1725849AbgIKMlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:41:24 -0400
+IronPort-SDR: iu26PoetoOB5GueY7pE/Crh9BH4aXeWaf7WdagiZXPnu3Auih+RmNoEDoeiUxcjLzziOIxw5Sb
+ FO0TPk/+G0Vw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="158028257"
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="158028257"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:41:24 -0700
+IronPort-SDR: uTCV9atx4FWbM1OvxA0eRMPcNR4N1DglbTutIbsMGYECW9Eeo1bDtnsbdBpoh81fFcHcC0FgO1
+ JwDG110hxPUQ==
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="378551995"
+Received: from amaksymi-mobl.ger.corp.intel.com (HELO localhost) ([10.252.60.247])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:41:10 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Borislav Petkov <bp@suse.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v37 03/24] x86/mm: x86/sgx: Signal SIGSEGV with PF_SGX
+Date:   Fri, 11 Sep 2020 15:39:58 +0300
+Message-Id: <20200911124019.42178-4-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n+lFg1Zro7sl44OB"
-Content-Disposition: inline
-In-Reply-To: <HE1PR04MB31962FC006C6EB964AC2DAE895240@HE1PR04MB3196.eurprd04.prod.outlook.com>
-X-Cookie: Only God can make random selections.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
---n+lFg1Zro7sl44OB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Include SGX bit to the PF error codes and throw SIGSEGV with PF_SGX when
+a #PF with SGX set happens.
 
-On Fri, Sep 11, 2020 at 12:28:47PM +0000, Ashish Kumar wrote:
-> > Signed-off-by: kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+CPU throws a #PF with the SGX set in the event of Enclave Page Cache Map
+(EPCM) conflict. The EPCM is a CPU-internal table, which describes the
+properties for a enclave page. Enclaves are measured and signed software
+entities, which SGX hosts. [1]
 
-> Please capture version change summary.
->=20
-> Regards
-> Ashish=20
+Although the primary purpose of the EPCM conflict checks  is to prevent
+malicious accesses to an enclave, an illegit access can happen also for
+legit reasons.
 
-It's there:
+All SGX reserved memory, including EPCM is encrypted with a transient key
+that does not survive from the power transition. Throwing a SIGSEGV allows
+user space software to react when this happens (e.g. recreate the enclave,
+which was invalidated).
 
-> >=20
-> > Notes:
-> >     1. Add ACPI match table, NXP members are added to confirm HID for F=
-SPI
-> >     2. Change the DT specific APIs to device property APIs
-> >            so that same API can be used in DT and ACPi mode.
-> >     3. Omit clock configuration part - in ACPI world, the firmware
-> >            is responsible for clock maintenance.
-> >     4. This patch is tested on LX2160A platform
+[1] Intel SDM: 36.5.1 Enclave Page Cache Map (EPCM)
 
---n+lFg1Zro7sl44OB
-Content-Type: application/pgp-signature; name="signature.asc"
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/x86/include/asm/traps.h | 14 ++++++++------
+ arch/x86/mm/fault.c          | 13 +++++++++++++
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index 714b1a30e7b0..4446f95ad997 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -44,12 +44,13 @@ void __noreturn handle_stack_overflow(const char *message,
+ /*
+  * Page fault error code bits:
+  *
+- *   bit 0 ==	 0: no page found	1: protection fault
+- *   bit 1 ==	 0: read access		1: write access
+- *   bit 2 ==	 0: kernel-mode access	1: user-mode access
+- *   bit 3 ==				1: use of reserved bit detected
+- *   bit 4 ==				1: fault was an instruction fetch
+- *   bit 5 ==				1: protection keys block access
++ *   bit 0  ==	 0: no page found	1: protection fault
++ *   bit 1  ==	 0: read access		1: write access
++ *   bit 2  ==	 0: kernel-mode access	1: user-mode access
++ *   bit 3  ==				1: use of reserved bit detected
++ *   bit 4  ==				1: fault was an instruction fetch
++ *   bit 5  ==				1: protection keys block access
++ *   bit 15 ==				1: inside SGX enclave
+  */
+ enum x86_pf_error_code {
+ 	X86_PF_PROT	=		1 << 0,
+@@ -58,5 +59,6 @@ enum x86_pf_error_code {
+ 	X86_PF_RSVD	=		1 << 3,
+ 	X86_PF_INSTR	=		1 << 4,
+ 	X86_PF_PK	=		1 << 5,
++	X86_PF_SGX	=		1 << 15,
+ };
+ #endif /* _ASM_X86_TRAPS_H */
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 35f1498e9832..1a7cc6d3281a 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1054,6 +1054,19 @@ access_error(unsigned long error_code, struct vm_area_struct *vma)
+ 	if (error_code & X86_PF_PK)
+ 		return 1;
+ 
++	/*
++	 * Access is blocked by the Enclave Page Cache Map (EPCM), i.e. the
++	 * access is allowed by the PTE but not the EPCM. This usually happens
++	 * when the EPCM is yanked out from under us, e.g. by hardware after a
++	 * suspend/resume cycle. In any case, software, i.e. the kernel, can't
++	 * fix the source of the fault as the EPCM can't be directly modified by
++	 * software. Handle the fault as an access error in order to signal
++	 * userspace so that userspace can rebuild their enclave(s), even though
++	 * userspace may not have actually violated access permissions.
++	 */
++	if (unlikely(error_code & X86_PF_SGX))
++		return 1;
++
+ 	/*
+ 	 * Make sure to check the VMA so that we do not perform
+ 	 * faults just to hit a X86_PF_PK as soon as we fill in a
+-- 
+2.25.1
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9bbtMACgkQJNaLcl1U
-h9AX9Af9E8b0ZBffT3f/HP/GQeeFiFtQto/59VLFp18dYbCeMGNc0qEMnBcTCFO3
-RvkcdTOx9ikmg2sxczO17Ue5M/K55qStE5s2ikjyhFFeR7Wi1NsOak3MDJAEjpjt
-0P0Ox73nxNnJDO58pg9xi+M4h6ZvlPxk124cyVP8o4kAdl+5WVqTdKBTnNJt4NDA
-9yfP80ceBy6CjZ6qH3l3bSXKzzCmiKhWE1IOBa7utRhu1iAf5do8U0asMZCntoOe
-aet8AAy2sqBv5e0DJLC7DHUAtPx4ZisCPW7VaJ5d1R8BXx6QJb7HSItR0zjP3IqN
-ADj6u+3/Us1cV+MSsV16O3Rlc5kqRg==
-=R6Rq
------END PGP SIGNATURE-----
-
---n+lFg1Zro7sl44OB--
