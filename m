@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E31265B54
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B437C265B5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725781AbgIKISr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:18:47 -0400
-Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:45320
-        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725535AbgIKISo (ORCPT
+        id S1725792AbgIKITu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgIKITr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:18:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599812324;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=HSaJciWnCPvyHhxhEaupZz5L45ElMcl2+afaqaEiPDE=;
-        b=V12WTd61C9BFiCr8/p+ES1RhxqcIg7nulH0mkjctl0BvmPZ8ES/NutydhLYNhaSG
-        julgD3PmmhbZCZLvqunutN2Ij+49iDC55PixHz8qdCceqyzGWH3Inc+Jb8hXNcyx/oB
-        B36M7CjrVqiAMh3c+qeeQyCHm5/QryY7Bam2rYQY=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599812324;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=HSaJciWnCPvyHhxhEaupZz5L45ElMcl2+afaqaEiPDE=;
-        b=bg/3ekZ0cOgrp65Agx4nHaEwe7axK5rUK3z1xgCJRRwHNAIzGReqL0rlj+X0JIRQ
-        jIiVsilArCMqpuhhOxILOHMEykeEdQXqr2msfMWQlRqbn8f1mF1DdnoBo2WOdtliue2
-        MK8wiR9UAzuPSqllVmWI2p8RQlUfjqe3MrHSaYpQ=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        Fri, 11 Sep 2020 04:19:47 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA56C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:19:47 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id p15so4260369qvk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LyN0IjmsHwavnL72AyGhxA2PceM0193RLDzNcCwxkJw=;
+        b=fYQMaZJN1SXjCj1hdOHLPagG/CreN9QGAkYOR+hfQDg6i9OhyTAWOkscNnnVOhTjrL
+         TLqcdwU0JQa6sg0ka1Dt/X8vF86qF6/aaf30dU3YLpbX7C5DT0i1MOgwqUMhAGBXYhHS
+         R8fApsrN7FdU6FVy66n/Bcqabpyc6M4i0as4+mM2L7NP/zr6bQqnGWiBdDa6dg/OTom/
+         Lv/pD/efWe5L54+mSGhYmm8ydWDitlTtTWqCeVLgi2YKqdLHEHBO7XAIvkSJVL/lB47a
+         EjOsG+tyfcVyHW9yLOpPwkU4zAgDYp8UAcrf2U87yTjoLoho9RMXjP5Ow3DZw49nZgP9
+         TptQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LyN0IjmsHwavnL72AyGhxA2PceM0193RLDzNcCwxkJw=;
+        b=XPOGaZXZ45oerHWEzYSWwccj2q6TOJaatBiTjJop9tqtt7JOIAQ0dli4FDJl1ogTrr
+         pWbiuZYdj7TmOm6oiLZB/ADwa6KRgr9sHv4xHkvfyX2wlPgbVLxIrmEEQ0LPbfhnbQZQ
+         6v5EV+AVGe6YRhnsNjVkDHxjQgqnEpmfpXCd8AHW+dRU8NvFJVdgv3chsjW/fLO+Xwbu
+         XvZUQA7uktr34ALUbijhCauaBTOqv5W2rWO6OYiskKjxdZq+BO+rTIShss9AktWk1q7O
+         peNf/jMK/MGS95+XCRupv8gJSXzqMeZdPRQlOjgDhXYyTnw/ye0bhTovHhHeHvPk5NDL
+         jCew==
+X-Gm-Message-State: AOAM533b7O8AXzNoMTTzpXpOHxFketEq12l8qoqGPiOljZBkGcgT8eb1
+        H+Wr5+/41mETwLtS6t71CIvigvxtKDQZdZunt/8=
+X-Google-Smtp-Source: ABdhPJyw1iphmZfPMSSJgI+rjWnh80T1rlqRDKzKA880DDYs84dQJcIkakAuHD7UmnAAzMXhKQsnB6YceJDThmis2qA=
+X-Received: by 2002:a0c:8485:: with SMTP id m5mr875942qva.22.1599812387007;
+ Fri, 11 Sep 2020 01:19:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Sep 2020 08:18:44 +0000
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 1/8] iommu/arm-smmu: Refactor context bank allocation
-In-Reply-To: <20200904155513.282067-2-bjorn.andersson@linaro.org>
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-2-bjorn.andersson@linaro.org>
-Message-ID: <010101747c3eca88-35878e4c-07b1-4fee-94fc-77af55456507-000000@us-west-2.amazonses.com>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.11-54.240.27.11
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+References: <1599747032-20055-1-git-send-email-shengjiu.wang@nxp.com> <20200910142121.GC4898@sirena.org.uk>
+In-Reply-To: <20200910142121.GC4898@sirena.org.uk>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Fri, 11 Sep 2020 16:19:36 +0800
+Message-ID: <CAA+D8AOo7rV0omvZdXNRK15ZdK+H-oU8SVxinZTGPusAzfv-Kw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: ak4458: Add DSD support for ak4458 and ak4497
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04 21:25, Bjorn Andersson wrote:
-> Extract the conditional invocation of the platform defined
-> alloc_context_bank() to a separate function to keep
-> arm_smmu_init_domain_context() cleaner.
-> 
-> Instead pass a reference to the arm_smmu_device as parameter to the
-> call. Also remove the count parameter, as this can be read from the
-> newly passed object.
-> 
-> This allows us to not assign smmu_domain->smmu before attempting to
-> allocate the context bank and as such we don't need to roll back this
-> assignment on failure.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+On Thu, Sep 10, 2020 at 10:23 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Sep 10, 2020 at 10:10:32PM +0800, Shengjiu Wang wrote:
+>
+> > ak4458 can't support DSD512 format, but ak4497 can, so add
+> > a new variable in ak4458_drvdata to distinguish these two
+> > platform.
+>
+> > In hw_params(), calculate bit clock according to different DSD
+> > format and configure DSD register.
+>
+> > +     SOC_ENUM("AK4497 DSD Data Input Pin", ak4497_dsdp_enum),
+>
+> This control name doesn't seem to match up with the description - it's
+> talking about a pin but the description sounds like setting a different
+> format for the data?
 
-Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+I will add more description. Thanks.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+best regards
+wang shengjiu
