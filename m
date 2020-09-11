@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B60E2658E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 07:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EC72658F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 07:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725798AbgIKFiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 01:38:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40626 "EHLO mail.kernel.org"
+        id S1725648AbgIKFup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 01:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgIKFiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 01:38:19 -0400
-Received: from localhost (unknown [122.171.196.109])
+        id S1725446AbgIKFuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 01:50:44 -0400
+Received: from coco.lan (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28D0C21D81;
-        Fri, 11 Sep 2020 05:38:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F4D720735;
+        Fri, 11 Sep 2020 05:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599802699;
-        bh=4YlGeAzSk+VGx7Lv2PxADvGdtfP9LG4jw7wIhUBPn2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=riUjklHYjcpHSKbAt936DqtmLfL2dDXTo9r+oRDFaOCySYol6MGsWbAfxd+OkCIGj
-         tGpQmNFlPWC9oAuPayqkaq7GfDIDM932wcbcZ9VOP1+u1xX5nRG9VXbRQbgte2PJHV
-         yMeCyTWt+1oCzEl1ZYPSuURdGxtcHMqiIjbuq7KU=
-Date:   Fri, 11 Sep 2020 11:08:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soundwire: bus: add enumerated slave to device list
-Message-ID: <20200911053814.GT77521@vkoul-mobl>
-References: <20200909082711.11670-1-srinivas.kandagatla@linaro.org>
- <80081c70-9137-c9f0-9813-8166275ef7af@linux.intel.com>
- <ab107351-dbde-7f6d-c588-11572aed5d2d@linaro.org>
- <4cdcda10-bdc6-211f-d279-e74f57684b79@linux.intel.com>
- <d0c71a83-9dc1-83c3-5cb1-d8fb7dc7f809@linaro.org>
- <ed88432c-e21c-b5fc-3abc-5f574769b722@linux.intel.com>
- <20200910085621.GS77521@vkoul-mobl>
- <f3880470-cdc4-7b84-97a1-303f9a95d3f4@linux.intel.com>
+        s=default; t=1599803443;
+        bh=Enf40G3nXdsYBSg35s1m+9KO6zvmUjLuwr15Qo8gH/s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=unL7RCFy4TD+7swYitNSYZa54qUUl7zKv+FkgmH6UKCf82ab+HbhhtsFcp5OIcLxJ
+         GColgJ3PzzUFBXDFptd9yXXlIdERrA2R1SUZfw+xN1g206NMdeHIWAbolD2zbg9oNe
+         wtRzawShPbz1P2vsrqnhJES9Xp3g+o58yMwSq1Lg=
+Date:   Fri, 11 Sep 2020 07:50:35 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Gross <agross@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Jyri Sarha <jsarha@ti.com>, Lee Jones <lee.jones@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 00/30] docs: fix documentation build parsing errors
+Message-ID: <20200911075035.326f91b3@coco.lan>
+In-Reply-To: <20200910104250.63281185@lwn.net>
+References: <cover.1599660067.git.mchehab+huawei@kernel.org>
+        <20200910104250.63281185@lwn.net>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3880470-cdc4-7b84-97a1-303f9a95d3f4@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-09-20, 09:02, Pierre-Louis Bossart wrote:
+Em Thu, 10 Sep 2020 10:42:50 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
+
+> On Wed,  9 Sep 2020 16:10:31 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> > > > May be we could make the enumerated devices discovery bit more verbose!
-> > > 
-> > > Maybe adding a device number sysfs entry would help, e.g. reporting
-> > > NotAttched or a value in [0,11] would tell you if the device is actually
-> > > present.
+> > Currently, there are several warnings/errors produced when building
+> > the documentation with "make htmldocs".
 > > 
-> > Agreed, I cooked this patch to report verbose device status, let me know
-> > if you are okay with this. I think this would be useful regardless of
-> > current discussion.
+> > This series fixes almost all such errors. It is produced against
+> > linux-next, branch next-20200909.
 > > 
-> > On Db845c I see:
-> > 
-> > root@linaro-alip:/sys/bus/soundwire/devices# cat sdw:0:217:2010:0:1/status
-> > Attached
-> > root@linaro-alip:/sys/bus/soundwire/devices# cat sdw:0:217:2010:0:2/status
-> > Attached
+> > Some of the patches here were already sent individually, but nobody
+> > picked them. So, I'm re-sending the full series.  
 > 
-> looks like we are all aligned on the idea, I have a similar patch to at
-> https://github.com/thesofproject/linux/pull/2426
-> 
-> The difference is that the sysfs status and device_number is added even
-> without a driver probe and when there's no firmware description. sysfs is
-> currently only added after the driver probe, which wouldn't work for the
-> case Srinivas was trying to deal with.
+> I'd sure love to just apply the whole series and clean up a lot of this
+> stuff, but (1) I'm not entirely comfortable taking a few through
+> docs-next, and (2) some of them don't apply even if I catch up to -rc4.
+> So I'm going to pass through them individually and snag as many as I can...
 
-Okay sound fine
+Yeah. As I commented on the other series, as warnings reach upstream
+from different trees, the only sane way to fix them is by using linux-next.
 
-> but the way you dealt the status below is better than the switch case I
-> used, so will merge this into my code.
+I'll keep rebase those. This way, if something ends being lost, we could
+submit upstream by the end of the merge window.
 
-Why merge? That patch can remain independent and you can add
-device_number patch on top and another one for moving sysfs creation
-without a driver probe, these three sound like three different patches
-to me.
+Btw, as Andrii gently submitted a fix for the two remaining litmus doc
+warnings, once everything gets merged, htmldocs should now produce
+zero doc warnings.
 
-> Srinivas' patch needs a fix for ACPI platforms, won't probe otherwise since
-> we don't have an of_node. If that's alright with everyone I can submit a
-> patchset that gathers the 3 contributions.
+I'll keep track on this. Hopefully, we can make 5.10 free of doc warnings,
+and build robots can start warning about newly introduced ones.
 
-Yes one series should be good, but lets keep one change in a patch
-please
-
--- 
-~Vinod
+Thanks,
+Mauro
