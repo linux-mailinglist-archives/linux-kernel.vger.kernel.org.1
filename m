@@ -2,111 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82B8265F38
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7E4265F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725794AbgIKMIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:08:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725865AbgIKMGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:06:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599825964;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tXnXExdfU/LgNFGqrEAIRqusTbjwtKOcyQ9t6Q3DukY=;
-        b=KBHsrKDuZq/W8exCKiF8KsJ7tGIYneZ8Zcj/fudmpLUMNWc5HkIljjcBRXo6dlibAC6N1z
-        vEn1xJJ3b3976URD+XT/LAMe2F+bzJJjLYa7xT7HE/9JXaWJIYe+bYgHUkNfYwuRB6syhZ
-        hcqecGACUidnEWcR4ziIYYkTp7/dVoo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-71-ziCIjw1_NRe2bBKq4cP44Q-1; Fri, 11 Sep 2020 08:06:02 -0400
-X-MC-Unique: ziCIjw1_NRe2bBKq4cP44Q-1
-Received: by mail-ej1-f70.google.com with SMTP id dc22so4437362ejb.21
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:06:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tXnXExdfU/LgNFGqrEAIRqusTbjwtKOcyQ9t6Q3DukY=;
-        b=SnrvmNvXdx1S+/SL1EZCjzzQE4PlKRg6GNR3PA/P7HR7GIuadUHKibNyzJPjbGqbvm
-         Pq9TPd2d7xyy6OmtSUtLi0S8BhIo/fjcnj7uY22Lzwupjb2eA5pEmz4NYThebJeE9PgJ
-         FEJ4M90fRDGfcnh61bJSPdDc5tnsoxJV2exGBiTbd0wI0x8wcxjC4dQRVRLPfQEeWovg
-         zZwmhWqvNhQVsvPsi2mfyj/MKSp7MFtuLO5CCZwTaENEpAWnztxgFYvKcJYRiP69xtg6
-         d8rjLHhh3pVTTGzH7FWeCZTLXNKFy61FyfA/abQlSf7xcLY1JMxeJ/ylBgK1SafJ3pTA
-         Vzgw==
-X-Gm-Message-State: AOAM531F0+IZwSzJItFeiq/fs5gt7CF28/tXYh2+Qj4j+0MsAxbnhOye
-        BLp4h7HbIul5+9mn3M6lQW/TNeUkyVCgjcKImS+S99g7zpT/PsXREMU4tIhy1Qh6nhknPfsy/HC
-        yWt4zDoymoNZIfwXd/avuJ7b/
-X-Received: by 2002:aa7:cf05:: with SMTP id a5mr1618678edy.313.1599825961018;
-        Fri, 11 Sep 2020 05:06:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGeHcc3Seug1HpP+JhTlX1wxV4JWfVvs8nAUaaY4C2YTOgc5vpea65aMg/Gr3DPSBQwzpjEw==
-X-Received: by 2002:aa7:cf05:: with SMTP id a5mr1618654edy.313.1599825960828;
-        Fri, 11 Sep 2020 05:06:00 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id y25sm1474481edv.15.2020.09.11.05.06.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 05:06:00 -0700 (PDT)
-Subject: Re: [PATCH -next] fs: vboxsf: Fix a kernel-doc warning in
- vboxsf_wrappers.c
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200911114339.62308-1-wanghai38@huawei.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <03f07277-d80a-f652-1050-472124db5900@redhat.com>
-Date:   Fri, 11 Sep 2020 14:05:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725813AbgIKMBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:01:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgIKMBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:01:17 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 764A9221E7;
+        Fri, 11 Sep 2020 12:01:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599825677;
+        bh=FLamW02FvThhT+wWFt/TaKcylAxjJRk43AQJ6UlwNXw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T/TIIjpGKf6gz8pTn8bbOz2TMojhAP5ZjEFbkSjqv5kJa6JRPrgU3VjhfPSdlVb3u
+         aggJjGhr1iBtzbm8ngI6YBEcSrJHtdBWcCDLoiv3nUTrzyS89g+wrwSI/WgmUDSyqE
+         kRpwst74Q17x8Hrkx8X4vrYnTSQqwOKmFTEH7tSE=
+Date:   Fri, 11 Sep 2020 07:06:39 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Kees Cook <keescook@chromium.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: deprecated.rst: Update zero-length/one-element
+ arrays section
+Message-ID: <20200911120639.GC4162@embeddedor>
+References: <20200901010949.GA21398@embeddedor>
+ <20200909113823.50014d58@lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <20200911114339.62308-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909113823.50014d58@lwn.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/11/20 1:43 PM, Wang Hai wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Wed, Sep 09, 2020 at 11:38:23AM -0600, Jonathan Corbet wrote:
+> On Mon, 31 Aug 2020 20:09:49 -0500
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 > 
-> fs/vboxsf/vboxsf_wrappers.c:132: warning: Excess function parameter 'param' description in 'vboxsf_create'
+> > Update information in the zero-length and one-element arrays section
+> > and illustrate how to make use of the new flex_array_size() helper,
+> > together with struct_size() and a flexible-array member.
+> > 
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  Documentation/process/deprecated.rst | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> Applied, thanks.
 
-Thank you, looks good to me:
+Thank you, both. :)
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> ---
->   fs/vboxsf/vboxsf_wrappers.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/vboxsf/vboxsf_wrappers.c b/fs/vboxsf/vboxsf_wrappers.c
-> index bfc78a097dae..3b6630e2847d 100644
-> --- a/fs/vboxsf/vboxsf_wrappers.c
-> +++ b/fs/vboxsf/vboxsf_wrappers.c
-> @@ -114,7 +114,7 @@ int vboxsf_unmap_folder(u32 root)
->    * vboxsf_create - Create a new file or folder
->    * @root:         Root of the shared folder in which to create the file
->    * @parsed_path:  The path of the file or folder relative to the shared folder
-> - * @param:        create_parms Parameters for file/folder creation.
-> + * @create_parms: create_parms Parameters for file/folder creation.
->    *
->    * Create a new file or folder or open an existing one in a shared folder.
->    * Note this function always returns 0 / success unless an exceptional condition
-> 
-
+--
+Gustavo
