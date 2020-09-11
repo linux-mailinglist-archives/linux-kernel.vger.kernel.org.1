@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675152668DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6538E266906
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgIKTdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:33:24 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:37778 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgIKTdJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:33:09 -0400
-Received: by mail-il1-f208.google.com with SMTP id z14so7913995ils.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:33:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=0yUAb84Y2NikNa3auoYNYurMSwqxLYd/elyzvfiKkx4=;
-        b=QWztBMsIEQA806b1F12rXg6h85kmGpAX30HvG5jV1H+jzRSenDwltkY0b8iuBH82Tz
-         BLVkACarUPkM1lyD2W8nVbCi33kVn2RG6tRvf6+EFyHFlz81qQxon4wBOZhpwCTXfxPu
-         08UN8wxr/1sXM3OXOplF75vS83aIZSNVoY7YAM3XX4lDC251/Myf3RpqhzrjIdFrWvi0
-         0vkDaeeqhST6n1ZzquhViYyay/obq/keBHUYzFW+/FKEcMI/ecqYlyVxTNJ4Wj5wftkJ
-         7qacfPUgnaomMfgcvO6C44CaU2cBLtPzMccvssYvN6eoqNFo8KnT3BYaQS6REWt5VPJ5
-         TW/A==
-X-Gm-Message-State: AOAM530HPz3dq5kq50GbHz/HQYbSa9rzy7FvJ9HfQKh4gT8Vq8Pvnppa
-        c24MfEAdqTezoALwsoGEIcNgvDUS0QYdouMDviaVP7kc+Sqy
-X-Google-Smtp-Source: ABdhPJyfFyXUGfImL5tjN6eAjrxa1lhqm11mUkFnIN5rwrwxtfv/gkcEKJnHEcdMqRpYoKA2Er1FYi1oI3tYPf76pme46eT6XyY+
+        id S1725836AbgIKTj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:39:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:35496 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbgIKTjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 15:39:14 -0400
+IronPort-SDR: oEYaWAgeu2ATZrtH/fVdq0ocmEjtKnnghewuEG5yU/a6hdB9S6la42dxg2o+gnKYfOmO9YRwcK
+ L5bY2fK6D8jA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="156236548"
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="156236548"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 12:35:26 -0700
+IronPort-SDR: M7/D4TnmvrVYdO12abJTw9PGqbe4NCf6FHJQShTyWGPx3iBQdeT2VMiyV+wugMzVMBfrLcNF3y
+ zlqqVxToic/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="505599370"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga006.fm.intel.com with ESMTP; 11 Sep 2020 12:35:26 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 11 Sep 2020 12:35:26 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 11 Sep 2020 12:35:26 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Fri, 11 Sep 2020 12:35:26 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Hansen, Dave" <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>
+CC:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        =?utf-8?B?SmFuIEjDtnBwbmVy?= <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
+ ?
+Thread-Topic: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
+ ?
+Thread-Index: AQHWiHEhJKJA6edVxE2SxRFnpdxADalj0+dw
+Date:   Fri, 11 Sep 2020 19:35:24 +0000
+Message-ID: <75611c1b4ab44265acff75aa8754d48f@intel.com>
+References: <f14f7f00-0501-bb93-88cc-780ae4fbaad3@intel.com>
+ <3E00A442-7107-48DA-8172-EED95F6E1663@redhat.com>
+ <20200911072035.GC7986@dhcp22.suse.cz>
+ <02cdbf90-b29f-a9ec-c83d-49f2548e3e91@redhat.com>
+ <20200911091252.GD7986@dhcp22.suse.cz>
+ <0f532ff3-972b-bd91-30fe-1c3111d920bf@redhat.com>
+ <3b079fda-4e89-b61b-0aca-a0c4ae834fd8@intel.com>
+In-Reply-To: <3b079fda-4e89-b61b-0aca-a0c4ae834fd8@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a02:9f95:: with SMTP id a21mr3364657jam.50.1599852788689;
- Fri, 11 Sep 2020 12:33:08 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 12:33:08 -0700
-In-Reply-To: <0000000000009a01370582c6772a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029b48f05af0ec14f@google.com>
-Subject: Re: INFO: rcu detected stall in ext4_file_write_iter
-From:   syzbot <syzbot+7d19c5fe6a3f1161abb7@syzkaller.appspotmail.com>
-To:     acme@kernel.org, adilger.kernel@dilger.ca, axboe@kernel.dk,
-        dvyukov@google.com, fweisbec@gmail.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, mingo@kernel.org, mingo@redhat.com,
-        penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
-
-commit 7e24969022cbd61ddc586f14824fc205661bb124
-Author: Ming Lei <ming.lei@redhat.com>
-Date:   Mon Aug 17 10:00:55 2020 +0000
-
-    block: allow for_each_bvec to support zero len bvec
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1120f201900000
-start commit:   92ed3019 Linux 5.8-rc7
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=84f076779e989e69
-dashboard link: https://syzkaller.appspot.com/bug?extid=7d19c5fe6a3f1161abb7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170f7cbc900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a25e38900000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: block: allow for_each_bvec to support zero len bvec
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+PiBJdCdzIGFjdHVhbGx5IHJlYWxseSBoYXJkIHRvIG1hcCBhIERJTU0gdG8gYSBwaHlzaWNhbCBh
+ZGRyZXNzLg0KPiBJbnRlcmxlYXZpbmcgY2FuIG1lYW4gdGhhdCBvbmUgcGFnZSBhY3R1YWxseSBz
+cGFucyBhIGJ1bmNoIG9mIERJTU1zLg0KDQpIZWghIElmIE5VTUEgbW9kZSBpcyB0dXJuZWQgb2Zm
+IHlvdXIgc2luZ2xlIHBhZ2UgbWF5IGhhdmUgY2FjaGUgbGluZXMNCmZyb20gKmV2ZXJ5KiBESU1N
+IGluIHRoZSBzeXN0ZW0uIEV2ZW4gd2l0aCBOVU1BIHR1cm5lZCBvbiB0aGUgcGFnZQ0Kd2lsbCBo
+YXZlIGNhY2hlIGxpbmVzIGZyb20gZXZlcnkgRElNTSBvbiB0aGUgc29ja2V0Lg0KDQotVG9ueQ0K
