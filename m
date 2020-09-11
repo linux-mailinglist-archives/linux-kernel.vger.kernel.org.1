@@ -2,46 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1A82667A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB4C2667AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgIKRq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
+        id S1725939AbgIKRq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:46:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725831AbgIKMQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:16:53 -0400
+        id S1725836AbgIKMQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:16:54 -0400
 Received: from mail.kernel.org (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07D33221F1;
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D41C22209;
         Fri, 11 Sep 2020 12:16:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599826608;
-        bh=nqPEIxhJ0CUB3B7N7XL2HG4yzGnwWiswA1e/1ulRWQI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aON9SDNkMYpO4VaSkPeRCfHgFt+jy/4FC7NeFl0q5OOw27wTixJtpDa/TZfVDV3cO
-         YpNe/ZwK6SPwz/8zKQk2rh37JPHRY/RWsNxcXCRXDBMKS6gdO+CYMNb6vhkQTYm5v5
-         rxiirhv1HrlYTUm30AaYTLEGKXmbKBpTkIIXf4v4=
+        bh=Yw08YHmku4/vzFPd7/maIhyRgwd1kmnlbBptyUii8dE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=t9sLMa0N4/4+g/Fq9Cis4f/EFW0HzoL5tKwVgQMFZFiY0AmKcdNaW6CKgHJSReoGa
+         1W3eP3G8JwhRM06+boxIkRcmRfR+Lxfrp/lTwdyLrwBm5zFUYba24s3nCtrHoUeVIS
+         sODFmQHsfuZrC+QCes8fYFdTJtC6Hilx2myupiWg=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kGhyv-0006W9-RE; Fri, 11 Sep 2020 14:16:45 +0200
+        id 1kGhyv-0006WD-UA; Fri, 11 Sep 2020 14:16:45 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        Yu Chen <chenyu56@huawei.com>,
+        "John Stultz" <john.stultz@linaro.org>,
+        "Manivannan Sadhasivam" <mani@kernel.org>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
         Kishon Vijay Abraham I <kishon@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Yu Chen <chenyu56@huawei.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 RESEND 0/8] Add PHY USB3 drivers for Hikey 970
-Date:   Fri, 11 Sep 2020 14:16:36 +0200
-Message-Id: <cover.1599826421.git.mchehab+huawei@kernel.org>
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 RESEND 2/8] phy: hisilicon: phy-hi3670-usb3: fix some issues at the init code
+Date:   Fri, 11 Sep 2020 14:16:38 +0200
+Message-Id: <1029cb299f9220baf2fd149cafcd5dfa5088228d.1599826421.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1599826421.git.mchehab+huawei@kernel.org>
+References: <cover.1599826421.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -50,42 +48,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series add the PHY layer needed in order to support the USB
-functionality on Hikey 970 boards.
+From: Yu Chen <chenyu56@huawei.com>
 
-v3:
-- split a namespace patch on two (one with code changes and another
-  one with dt-bindings changes);
-- placed just the PHY driver on this series. Another series will add the
-  USB HUB driver and the DTS changes required to enable USB support
-  for this board.
+There are some problems at the initialization part of this phy.
+Solve them.
 
-PS.: I'm re-sending it, as the c/c list was wrong on the first mailbomb,
-due to a bug on my script that were adding e-mails from
-get_maintainer.pl.
+Signed-off-by: Yu Chen <chenyu56@huawei.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/phy/hisilicon/phy-hi3670-usb3.c | 70 +++++++++++--------------
+ 1 file changed, 32 insertions(+), 38 deletions(-)
 
-Mauro Carvalho Chehab (6):
-  phy: hisilicon: phy-hi3670-usb3: use a consistent namespace
-  dts: phy: phy-hi3670-usb3.txt: use a consistent namespace
-  phy: hisilicon: phy-hi3670-usb3: fix coding style
-  phy: hisilicon: phy-hi3670-usb3: change some DT properties
-  dt-bindings: phy: convert phy-kirin970-usb3.txt to yaml
-  MAINTAINERS: add myself as maintainer for Kirin 970 USB PHY
-
-Yu Chen (2):
-  phy: hisilicon: add USB physical layer for Kirin 3670
-  phy: hisilicon: phy-hi3670-usb3: fix some issues at the init code
-
- .../bindings/phy/hisilicon,hi3670-usb3.yaml   |  72 ++
- MAINTAINERS                                   |   9 +-
- drivers/phy/hisilicon/Kconfig                 |  10 +
- drivers/phy/hisilicon/Makefile                |   1 +
- drivers/phy/hisilicon/phy-hi3670-usb3.c       | 671 ++++++++++++++++++
- 5 files changed, 762 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
- create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
-
+diff --git a/drivers/phy/hisilicon/phy-hi3670-usb3.c b/drivers/phy/hisilicon/phy-hi3670-usb3.c
+index 4e04ac97728d..1d4caf7a2aaf 100644
+--- a/drivers/phy/hisilicon/phy-hi3670-usb3.c
++++ b/drivers/phy/hisilicon/phy-hi3670-usb3.c
+@@ -63,6 +63,7 @@
+ #define TCA_INTR_STS			(0x208)
+ #define TCA_GCFG			(0x210)
+ #define TCA_TCPC			(0x214)
++#define TCA_SYSMODE_CFG			(0x218)
+ #define TCA_VBUS_CTRL			(0x240)
+ 
+ #define CTRL0_USB3_VBUSVLD		BIT(7)
+@@ -109,12 +110,16 @@
+ #define CLK_RST_SUSPEND_CLK_EN		BIT(0)
+ 
+ #define GCFG_ROLE_HSTDEV		BIT(4)
++#define GCFG_OP_MODE			(3 << 0)
++#define GCFG_OP_MODE_CTRL_SYNC_MODE	BIT(0)
+ 
+ #define TCPC_VALID			BIT(4)
+ #define TCPC_LOW_POWER_EN		BIT(3)
+ #define TCPC_MUX_CONTROL_MASK		(3 << 0)
+ #define TCPC_MUX_CONTROL_USB31		(1 << 0)
+ 
++#define SYSMODE_CFG_TYPEC_DISABLE	BIT(3)
++
+ #define VBUS_CTRL_POWERPRESENT_OVERRD	(3 << 2)
+ #define VBUS_CTRL_VBUSVALID_OVERRD	(3 << 0)
+ 
+@@ -363,6 +368,11 @@ static int kirin970_config_phy_clock(struct kirin970_priv *priv)
+ 		if (ret)
+ 			goto out;
+ 
++		/* enable usb_tcxo_en */
++		ret = regmap_write(priv->pctrl, PCTRL_PERI_CTRL3,
++				USB_TCXO_EN |
++				(USB_TCXO_EN << PCTRL_PERI_CTRL3_MSK_START));
++
+ 		/* select usbphy clk from abb */
+ 		mask = SC_CLK_USB3PHY_3MUX1_SEL;
+ 		ret = regmap_update_bits(priv->pctrl,
+@@ -437,7 +447,13 @@ static int kirin970_config_tca(struct kirin970_priv *priv)
+ 		goto out;
+ 
+ 	ret = regmap_update_bits(priv->usb31misc, TCA_GCFG,
+-			GCFG_ROLE_HSTDEV, GCFG_ROLE_HSTDEV);
++			GCFG_ROLE_HSTDEV | GCFG_OP_MODE,
++			GCFG_ROLE_HSTDEV | GCFG_OP_MODE_CTRL_SYNC_MODE);
++	if (ret)
++		goto out;
++
++	ret = regmap_update_bits(priv->usb31misc, TCA_SYSMODE_CFG,
++			SYSMODE_CFG_TYPEC_DISABLE, 0);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -461,18 +477,15 @@ static int kirin970_config_tca(struct kirin970_priv *priv)
+ 	return ret;
+ }
+ 
+-static int kirin970_phy_exit(struct phy *phy);
+-
+ static int kirin970_phy_init(struct phy *phy)
+ {
+ 	struct kirin970_priv *priv = phy_get_drvdata(phy);
+ 	u32 val;
+ 	int ret;
+ 
+-	kirin970_phy_exit(phy);
+-	dev_info(priv->dev, "%s in\n", __func__);
+ 	/* assert controller */
+-	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
++	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET |
++		CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
+ 	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, 0);
+ 	if (ret)
+ 		goto out;
+@@ -493,6 +506,14 @@ static int kirin970_phy_init(struct phy *phy)
+ 	if (ret)
+ 		goto out;
+ 
++	/* Deassert phy */
++	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
++	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
++	if (ret)
++		goto out;
++
++	udelay(100);
++
+ 	/* Tell the PHY power is stable */
+ 	val = CFG54_USB3_PHY0_ANA_PWR_EN | CFG54_PHY0_PCS_PWR_STABLE |
+ 		CFG54_PHY0_PMA_PWR_STABLE;
+@@ -512,14 +533,6 @@ static int kirin970_phy_init(struct phy *phy)
+ 	if (ret)
+ 		goto out;
+ 
+-	/* Deassert phy */
+-	val = CFGA0_USB3PHY_RESET | CFGA0_USB2PHY_POR;
+-	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
+-	if (ret)
+-		goto out;
+-
+-	udelay(100);
+-
+ 	/* Deassert controller */
+ 	val = CFGA0_VAUX_RESET | CFGA0_USB31C_RESET;
+ 	ret = regmap_update_bits(priv->usb31misc, USB_MISC_CFGA0, val, val);
+@@ -545,29 +558,6 @@ static int kirin970_phy_init(struct phy *phy)
+ 	if (ret)
+ 		goto out;
+ 
+-	{
+-		ret = regmap_read(priv->peri_crg, 0x4c,
+-				&val);
+-		if (!ret)
+-			dev_info(priv->dev, "peri_crg 0x4c %x\n", val);
+-		ret = regmap_read(priv->peri_crg, 0x404,
+-				&val);
+-		if (!ret)
+-			dev_info(priv->dev, "peri_crg 0x404 %x\n", val);
+-		ret = regmap_read(priv->peri_crg, 0xc,
+-				&val);
+-		if (!ret)
+-			dev_info(priv->dev, "peri_crg 0xc %x\n", val);
+-		ret = regmap_read(priv->peri_crg, 0xac,
+-				&val);
+-		if (!ret)
+-			dev_info(priv->dev, "peri_crg 0xac %x\n", val);
+-		ret = regmap_read(priv->pctrl, 0x10,
+-				&val);
+-		if (!ret)
+-			dev_info(priv->dev, "pctrl 0x10 %x\n", val);
+-	}
+-
+ 	return 0;
+ out:
+ 	dev_err(priv->dev, "failed to init phy ret: %d\n", ret);
+@@ -586,7 +576,11 @@ static int kirin970_phy_exit(struct phy *phy)
+ 	if (ret)
+ 		goto out;
+ 
+-	if (!kirin970_is_abbclk_seleted(priv)) {
++	if (kirin970_is_abbclk_seleted(priv)) {
++		/* disable usb_tcxo_en */
++		ret = regmap_write(priv->pctrl, PCTRL_PERI_CTRL3,
++				USB_TCXO_EN << PCTRL_PERI_CTRL3_MSK_START);
++	} else {
+ 		ret = regmap_write(priv->peri_crg, PERI_CRG_PERDIS6,
+ 				GT_CLK_USB2PHY_REF);
+ 		if (ret)
 -- 
 2.26.2
-
 
