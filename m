@@ -2,125 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5162665DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56982665D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgIKRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:16:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:39914 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgIKRNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:13:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 80D80106F;
+        id S1726354AbgIKRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgIKRNM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:13:12 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966B7C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:13:11 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w7so7866844pfi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9xx/aNqVyo8F+vwS35kGQGZUtQETH2qUMc7jEIvGGiw=;
+        b=GZDyuoKHjUGYRo0q4YPBblihRY7pVBrudliixlJ7RLgVwDc+Kb5t+Undpb8QD8ma1k
+         LxcEc4G4bBSIQ2egiR316Cnaz8Lb6jVplZhJXxXv4s5AQPe7Bhs1z9tnzvyqBP56gnxi
+         fxVvfLI3EnCu4SpB/ycK4W7PuhQE1S57liyYA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9xx/aNqVyo8F+vwS35kGQGZUtQETH2qUMc7jEIvGGiw=;
+        b=MHIq8cxCA1bYEyHjGg5INmD43+BtlhtTPwE5WHDacr8zCFg3+VBoGeIDiG8L9Tu5P/
+         cLmjsKUt5+jQf8wEC8qgrxL4JwbrSFS71AU+KA75dIkhaEkRS9KSgyzn5NAVvJaQ60xt
+         FCm2hoKsrpbOdm6+mTDK12+RA+FvH10+K8+1qVwiJjRQAPi4BXidZv2hVjoWqOrgLh/I
+         atWDMXevPY9WoLO1pkKjPI75UX2J3B6JjBVykxTH1FjyXa4gFJ9+rhEQzZ1Dk42kQA3Y
+         OUevzwkxT2AnstBkIlKgecaleYgCTYYVdYz6SPAD/66/mtY2WsRgxfWgjtQuC2SzOyfX
+         tKAQ==
+X-Gm-Message-State: AOAM5320Ad2PtiWV1fxxZhLyyWEqQp1/I77UUmkpcRSee4hbQtOKuP3t
+        GK0v3Dipd4KJHDuTeBMcjB1DCA==
+X-Google-Smtp-Source: ABdhPJydKYhFb52mw7so7AX3H27Z2tg1yZLck6RxPp1D+3/fVJBJsaDGZl3UZMOdjs43ONG+bWVCPA==
+X-Received: by 2002:a63:4d5:: with SMTP id 204mr2422300pge.0.1599844391141;
+        Fri, 11 Sep 2020 10:13:11 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id h9sm2787452pfc.28.2020.09.11.10.13.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 11 Sep 2020 10:13:10 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8C6733F68F;
-        Fri, 11 Sep 2020 10:13:06 -0700 (PDT)
-Subject: Re: [PATCH v3 6/8] iommu/arm-smmu: Add impl hook for inherit boot
- mappings
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-7-bjorn.andersson@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <0bfcc8f7-d054-616b-834b-319461b1ecb9@arm.com>
-Date:   Fri, 11 Sep 2020 18:13:01 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [RESEND PATCH 0/3] Bluetooth: Emit events for suspend/resume
+Date:   Fri, 11 Sep 2020 10:13:03 -0700
+Message-Id: <20200911171306.3758642-1-abhishekpandit@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-In-Reply-To: <20200904155513.282067-7-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04 16:55, Bjorn Andersson wrote:
-> Add a new operation to allow platform implementations to inherit any
-> stream mappings from the boot loader.
 
-Is there a reason we need an explicit step for this? The aim of the 
-cfg_probe hook is that the SMMU software state should all be set up by 
-then, and you can mess about with it however you like before 
-arm_smmu_reset() actually commits anything to hardware. I would have 
-thought you could permanently steal a context bank, configure it as your 
-bypass hole, read out the previous SME configuration and tweak 
-smmu->smrs and smmu->s2crs appropriately all together "invisibly" at 
-that point. If that can't work, I'm very curious as to what I've overlooked.
+Hi Marcel,
 
-Robin.
+This series adds the suspend/resume events suggested in
+https://patchwork.kernel.org/patch/11771001/.
 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v2:
-> - New patch/interface
-> 
->   drivers/iommu/arm/arm-smmu/arm-smmu.c | 11 ++++++-----
->   drivers/iommu/arm/arm-smmu/arm-smmu.h |  6 ++++++
->   2 files changed, 12 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index eb5c6ca5c138..4c4d302cd747 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -85,11 +85,6 @@ static inline void arm_smmu_rpm_put(struct arm_smmu_device *smmu)
->   		pm_runtime_put_autosuspend(smmu->dev);
->   }
->   
-> -static struct arm_smmu_domain *to_smmu_domain(struct iommu_domain *dom)
-> -{
-> -	return container_of(dom, struct arm_smmu_domain, domain);
-> -}
-> -
->   static struct platform_driver arm_smmu_driver;
->   static struct iommu_ops arm_smmu_ops;
->   
-> @@ -2188,6 +2183,12 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->   	if (err)
->   		return err;
->   
-> +	if (smmu->impl->inherit_mappings) {
-> +		err = smmu->impl->inherit_mappings(smmu);
-> +		if (err)
-> +			return err;
-> +	}
-> +
->   	if (smmu->version == ARM_SMMU_V2) {
->   		if (smmu->num_context_banks > smmu->num_context_irqs) {
->   			dev_err(dev,
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> index 235d9a3a6ab6..f58164976e74 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> @@ -378,6 +378,11 @@ struct arm_smmu_domain {
->   	struct iommu_domain		domain;
->   };
->   
-> +static inline struct arm_smmu_domain *to_smmu_domain(struct iommu_domain *dom)
-> +{
-> +	return container_of(dom, struct arm_smmu_domain, domain);
-> +}
-> +
->   struct arm_smmu_master_cfg {
->   	struct arm_smmu_device		*smmu;
->   	s16				smendx[];
-> @@ -442,6 +447,7 @@ struct arm_smmu_impl {
->   	int (*alloc_context_bank)(struct arm_smmu_domain *smmu_domain,
->   				  struct arm_smmu_device *smmu,
->   				  struct device *dev, int start);
-> +	int (*inherit_mappings)(struct arm_smmu_device *smmu);
->   };
->   
->   #define INVALID_SMENDX			-1
-> 
+I have tested it with some userspace changes that monitors the
+controller resumed event to trigger audio device reconnection and
+verified that the events are correctly emitted.
+
+Patch for btmon changes: https://patchwork.kernel.org/patch/11743863/
+
+Please take a look.
+Abhishek
+
+
+Abhishek Pandit-Subedi (3):
+  Bluetooth: Add mgmt suspend and resume events
+  Bluetooth: Add suspend reason for device disconnect
+  Bluetooth: Emit controller suspend and resume events
+
+ include/net/bluetooth/hci_core.h |  6 +++
+ include/net/bluetooth/mgmt.h     | 16 +++++++
+ net/bluetooth/hci_core.c         | 26 +++++++++++-
+ net/bluetooth/hci_event.c        | 73 ++++++++++++++++++++++++++++++++
+ net/bluetooth/mgmt.c             | 28 ++++++++++++
+ 5 files changed, 148 insertions(+), 1 deletion(-)
+
+-- 
+2.28.0.618.gf4bc123cb7-goog
+
