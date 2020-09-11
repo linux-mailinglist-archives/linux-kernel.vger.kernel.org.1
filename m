@@ -2,132 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2D6265BE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB9C265BD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725792AbgIKIq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:46:58 -0400
-Received: from mga03.intel.com ([134.134.136.65]:14967 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbgIKIq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:46:56 -0400
-IronPort-SDR: qogOanp7CK0wfk8A/OnPv81Wl+4WNauPMihVduL/9PjXvh5U4Zw9uglhsYtifY3rX64SA3H3vb
- IEkWBrTTV+/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="158754969"
-X-IronPort-AV: E=Sophos;i="5.76,414,1592895600"; 
-   d="scan'208";a="158754969"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 01:46:54 -0700
-IronPort-SDR: lMqADFKFwljOgFqx8vduhSixSs5mp1gTiaEgPnEu93lFcOin2U0rTbbUToUXpdDiA4BRWDFuDN
- X56/RAtxqjgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,414,1592895600"; 
-   d="scan'208";a="506161956"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Sep 2020 01:46:51 -0700
-Date:   Fri, 11 Sep 2020 16:42:34 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     mdf@kernel.org, linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
-Subject: Re: [PATCH] memory: dfl-emif: add the DFL EMIF private feature driver
-Message-ID: <20200911084234.GB7802@yilunxu-OptiPlex-7050>
-References: <1599553645-26928-1-git-send-email-yilun.xu@intel.com>
- <1599553645-26928-2-git-send-email-yilun.xu@intel.com>
- <20200908100102.GB24693@pi3>
+        id S1725798AbgIKInM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbgIKInL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 04:43:11 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1E7C061573;
+        Fri, 11 Sep 2020 01:43:10 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k15so10615201wrn.10;
+        Fri, 11 Sep 2020 01:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s+k37vDOAFxkHUtEO8otqVl72Kv7/m+MnZOCdDAFY/o=;
+        b=AzlNb3VSLO+m0/csJGC/zbcrwXZ/Q8yGtxKeLXUrKYH3mAPOCycql8VnT1MHofoZcl
+         ABGWV+Ws+/MLt7JL+zrbMncEYeJkqR1IhtC6Yf84dRBpiR1G9g3YE2qwhL21zGCLS13Q
+         r0IcZ0MzlpxrfV6lqz8Jcbp4RLphzw23zwSxyRO8lWGjwyY5/j1xW4nyE7joXJ8wKn5r
+         8DjrG9fv6N+hN55Mk1FP9UWtWvvTtgPfWFZw8CIB6qyBQhDfg8vhIYd1+PdWnWDIyXR9
+         kg6rd6jH88FfJ1amPyTP0RxvSAmOhRRHYWQzQrKtMcub7/xH0I3ayWjooPDQbbeM1KPv
+         C1XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s+k37vDOAFxkHUtEO8otqVl72Kv7/m+MnZOCdDAFY/o=;
+        b=HiDkJsTcRL0cyYpSfwkDl6TfYzs4xUtS98hh9cn4rrav9wdSd7aAXwX48+rZuzxo7u
+         AVbQ9D0NGMbzevdifVrBOGAH/RmVOnTmqu2T1W9BhyEPNVGXg6S6Emodb75BLFQk14MX
+         CmjF5cFKrOP2TC5vUGlKevVLkNib/9YO5kb5wfkr1zBcqNkWo97mgvPbQNCGZ/0O5G83
+         dOsDOaPOuUZv1+kr2Oe6ca5YjrkoHRKibsP3VbSwSqHV5rFk1VN1/vqXMCMf2ouRH8RB
+         w3ujIPSsVChtdbpUVruA0oQKqFC1+RIxXuOqffG3u85Tz+tGhOPy8ofQcAd4haNa+Ky/
+         NpgA==
+X-Gm-Message-State: AOAM5333tey8+z6J/hcupzKTYa6bTFWvyZmA5GBQUNPbdpcM+tcZy6L3
+        yLsbWnA/3DbZ2srae9LR4eU=
+X-Google-Smtp-Source: ABdhPJyHj/iTMwS1jhMk+VWB9BMRjZplIQFoOmp6Ra5OHrwaFGxVFygbuaFRszGBNJZxurLRRNyk6Q==
+X-Received: by 2002:a5d:6301:: with SMTP id i1mr877075wru.323.1599813789391;
+        Fri, 11 Sep 2020 01:43:09 -0700 (PDT)
+Received: from andrea (userh713.uk.uudial.com. [194.69.103.86])
+        by smtp.gmail.com with ESMTPSA id 92sm3358580wra.19.2020.09.11.01.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 01:43:08 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 10:43:01 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Andres Beltran <lkmlabelt@gmail.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2] hv_netvsc: Add validation for untrusted Hyper-V values
+Message-ID: <20200911084301.GA14414@andrea>
+References: <20200910124748.19217-1-parri.andrea@gmail.com>
+ <BL0PR2101MB0930659825AD89FF5A8DC2C4CA270@BL0PR2101MB0930.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200908100102.GB24693@pi3>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <BL0PR2101MB0930659825AD89FF5A8DC2C4CA270@BL0PR2101MB0930.namprd21.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry I missed one comments, see inline.
-
-On Tue, Sep 08, 2020 at 12:01:02PM +0200, Krzysztof Kozlowski wrote:
-> On Tue, Sep 08, 2020 at 04:27:25PM +0800, Xu Yilun wrote:
-> > This driver is for the EMIF private feature implemented under FPGA
-> > Device Feature List (DFL) framework. It is used to expose memory
-> > interface status information as well as memory clearing control.
-> > 
-> > The purpose of memory clearing block is to zero out all private memory
-> > when FPGA is to be reprogrammed. This gives users a reliable method to
-> > prevent potential data leakage.
-> > 
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > ---
-> >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
-> >  drivers/memory/Kconfig                             |   9 +
-> >  drivers/memory/Makefile                            |   2 +
-> >  drivers/memory/dfl-emif.c                          | 211 +++++++++++++++++++++
-> >  4 files changed, 247 insertions(+)
-> >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> >  create mode 100644 drivers/memory/dfl-emif.c
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > new file mode 100644
-> > index 0000000..33d557e
-> > --- /dev/null
-> > +++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > @@ -0,0 +1,25 @@
-> > +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
-> > +Date:		Sep 2020
-> > +KernelVersion:	5.10
-> > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > +Description:	Read-only. It indicates if the calibration is failed on this
-> > +		memory interface. "1" for calibration failure, "0" for OK.
-> 
-> "if the calibration failed"
-> 
-> > +		Format: %u
+> > @@ -740,12 +755,45 @@ static void netvsc_send_completion(struct
+> > net_device *ndev,
+> >  				   int budget)
+> >  {
+> >  	const struct nvsp_message *nvsp_packet = hv_pkt_data(desc);
+> > +	u32 msglen = hv_pkt_datalen(desc);
 > > +
-> > +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_init_done
-> > +Date:		Sep 2020
-> > +KernelVersion:	5.10
-> > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > +Description:	Read-only. It indicates if the initialization is complete on
-> > +		this memory interface. "1" for initialization complete, "0"
-> > +		for not yet.
-> > +		Format: %u
+> > +	/* Ensure packet is big enough to read header fields */
+> > +	if (msglen < sizeof(struct nvsp_message_header)) {
+> > +		netdev_err(ndev, "nvsp_message length too small: %u\n",
+> > msglen);
+> > +		return;
+> > +	}
+> > 
+> >  	switch (nvsp_packet->hdr.msg_type) {
+> >  	case NVSP_MSG_TYPE_INIT_COMPLETE:
+> > +		if (msglen < sizeof(struct nvsp_message_init_complete)) {
 > 
-> "if the initialization completed"
-> 
-> > +
-> > +What:		/sys/bus/dfl/devices/dfl_dev.X/infX_clear
-> > +Date:		Sep 2020
-> > +KernelVersion:	5.10
-> > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > +Description:	Write-only. Writing "1" to this file will zero out all memory
-> > +		data in this memory interface. Writing other values are
-> > +		invalid.
-> 
-> "Writing of other values is invalid."
-> 
-> > +		Format: %u
-> > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> > index 8072204..fb0858f 100644
-> > --- a/drivers/memory/Kconfig
-> > +++ b/drivers/memory/Kconfig
-> > @@ -215,6 +215,15 @@ config STM32_FMC2_EBI
-> >  	  devices (like SRAM, ethernet adapters, FPGAs, LCD displays, ...) on
-> >  	  SOCs containing the FMC2 External Bus Interface.
-> >  
-> > +config FPGA_DFL_EMIF
-> > +	tristate "DFL EMIF private feature support"
-> > +	depends on FPGA_DFL && HAS_IOMEM
-> 
-> Cannot be compile tested without FPGA_DFL?
+> This and other similar places should include header size:
+> 		if (msglen < sizeof(struct nvsp_message_header) + sizeof(struct nvsp_message_init_complete)) {
 
-We need this FPGA_DFL dependency. The driver will use the
-__dfl_driver_register(), which is defined in drivers/fpga/dfl.c, and
-FPGA_DFL enables the compiling of dfl.c
+Thanks for pointing this out; fixing for v3...
 
-Thanks,
-Yilun
+  Andrea
