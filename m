@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885662665AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F000C266567
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgIKRJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:09:49 -0400
-Received: from mail-41104.protonmail.ch ([185.70.41.104]:17966 "EHLO
-        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbgIKO7d (ORCPT
+        id S1726034AbgIKRBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:01:30 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:29064 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726167AbgIKPES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 10:59:33 -0400
-Received: from mail-03.mail-europe.com (mail-03.mail-europe.com [91.134.188.129])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 909EC20164AB
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:36:55 +0000 (UTC)
-Authentication-Results: mail-41104.protonmail.ch;
-        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="D4PMDWzm"
-Date:   Fri, 11 Sep 2020 13:34:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1599831292;
-        bh=Erd4pfmpeqmMIgYEE3LftzT/NokPV6QOR5uNAgHN+WY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=D4PMDWzmSF156oKIEQobNbHeX2XG37f7Bci1Jqhsf1jAQtzj7MMl8PcihcJ6bYpLK
-         HfbP6nXmqK1Xb7dcrhkr3nPeunNoiuA8hVoqIroYca4Ysbq8Li+2DbLnQCKuUPZnCi
-         rO/S8to1OC53yyU/jsEmggVsVOUjrS0y4lPvNz+c=
-To:     Jonathan Corbet <corbet@lwn.net>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [PATCH 3/3] docs: Document cross-referencing between documentation pages
-Message-ID: <20200911133339.327721-4-nfraprado@protonmail.com>
-In-Reply-To: <20200911133339.327721-1-nfraprado@protonmail.com>
-References: <20200911133339.327721-1-nfraprado@protonmail.com>
+        Fri, 11 Sep 2020 11:04:18 -0400
+X-UUID: 367ed8fe597b4281bbaebc8ef530fe36-20200911
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=MkU2LaCnOssekgPwIVl1I9pETqJ6+L8geigHE05ACLc=;
+        b=N55bqLu/1TsTmbMTWL77Hg/vTkHJllWvm74QB/BzWYjuf4pQmoTnNqyk5wfD0L6vySN8nN5m5MM52XhxrEqwI5wvE6hRHgIzLBI+WJscmof48qxS5ojtl1HK+jsVpjDajCJKNP+PrW+6jPtAv2ULfXdnIbOdPqg9YID50so8R74=;
+X-UUID: 367ed8fe597b4281bbaebc8ef530fe36-20200911
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <landen.chao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 655240207; Fri, 11 Sep 2020 21:49:13 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 11 Sep 2020 21:49:09 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Sep 2020 21:49:09 +0800
+From:   Landen Chao <landen.chao@mediatek.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>
+CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <frank-w@public-files.de>,
+        <opensource@vdorst.com>, <dqfext@gmail.com>,
+        Landen Chao <landen.chao@mediatek.com>
+Subject: [PATCH net-next v5 0/6] net-next: dsa: mt7530: add support for MT7531
+Date:   Fri, 11 Sep 2020 21:48:50 +0800
+Message-ID: <cover.1599829696.git.landen.chao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The syntax to cross-reference between documentation pages wasn't
-documented anywhere.
-
-Document the cross-referencing using the new automarkup for
-Documentation/... and also Sphinx's doc directive for using relative
-paths.
-
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
----
- Documentation/doc-guide/sphinx.rst | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/s=
-phinx.rst
-index f71ddd592aaa..896478baf570 100644
---- a/Documentation/doc-guide/sphinx.rst
-+++ b/Documentation/doc-guide/sphinx.rst
-@@ -337,6 +337,23 @@ Rendered as:
-=20
-         - column 3
-=20
-+Cross-referencing
-+-----------------
-+
-+Cross-referencing from one documentation page to another can be done by pa=
-ssing
-+the path to the file starting from the Documentation folder.
-+For example, to cross-reference to this page (the .rst extension is option=
-al)::
-+
-+    See Documentation/doc-guide/sphinx.rst.
-+
-+If you want to use a relative path, you need to use Sphinx's ``doc`` direc=
-tive.
-+For example, referencing this page from the same directory would be done a=
-s::
-+
-+    See :doc:`sphinx`.
-+
-+For information on cross-referencing to kernel-doc functions or types, see
-+Documentation/doc-guide/kernel-doc.rst.
-+
- .. _sphinx_kfigure:
-=20
- Figures & Images
---=20
-2.28.0
-
+VGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBzdXBwb3J0IGZvciBNVDc1MzEuDQoNCk1UNzUzMSBpcyB0
+aGUgbmV4dCBnZW5lcmF0aW9uIG9mIE1UNzUzMCB3aGljaCBjb3VsZCBiZSBmb3VuZCBvbiBNZWRp
+YXRlaw0Kcm91dGVyIHBsYXRmb3JtcyBzdWNoIGFzIE1UNzYyMiBvciBNVDc2MjkuDQoNCkl0IGlz
+IGFsc28gYSA3LXBvcnRzIHN3aXRjaCB3aXRoIDUgZ2lnYSBlbWJlZGRlZCBwaHlzLCAyIGNwdSBw
+b3J0cywgYW5kDQp0aGUgc2FtZSBNQUMgbG9naWMgb2YgTVQ3NTMwLiBDcHUgcG9ydCA2IG9ubHkg
+c3VwcG9ydHMgU0dNSUkgaW50ZXJmYWNlLg0KQ3B1IHBvcnQgNSBzdXBwb3J0cyBlaXRoZXIgUkdN
+SUkgb3IgU0dNSUkgaW4gZGlmZmVyZW50IEhXIFNLVSwgYnV0IGNhbm5vdA0KYmUgbXV4ZWQgdG8g
+UEhZIG9mIHBvcnQgMC80IGxpa2UgbXQ3NTMwLiBEdWUgdG8gc3VwcG9ydCBmb3IgU0dNSUkNCmlu
+dGVyZmFjZSwgcGxsLCBhbmQgcGFkIHNldHRpbmcgYXJlIGRpZmZlcmVudCBmcm9tIE1UNzUzMC4N
+Cg0KTVQ3NTMxIFNHTUlJIGludGVyZmFjZSBjYW4gYmUgY29uZmlndXJlZCBpbiBmb2xsb3dpbmcg
+bW9kZToNCi0gJ1NHTUlJIEFOIG1vZGUnIHdpdGggaW4tYmFuZCBuZWdvdGlhdGlvbiBjYXBhYmls
+aXR5DQogICAgd2hpY2ggaXMgY29tcGF0aWJsZSB3aXRoIFBIWV9JTlRFUkZBQ0VfTU9ERV9TR01J
+SS4NCi0gJ1NHTUlJIGZvcmNlIG1vZGUnIHdpdGhvdXQgaW4tYmFuZCBuZWdvdGlhdGlvbg0KICAg
+IHdoaWNoIGlzIGNvbXBhdGlibGUgd2l0aCAxMEIvOEIgZW5jb2Rpbmcgb2YNCiAgICBQSFlfSU5U
+RVJGQUNFX01PREVfMTAwMEJBU0VYIHdpdGggZml4ZWQgZnVsbC1kdXBsZXggYW5kIGZpeGVkIHBh
+dXNlLg0KLSAyLjUgdGltZXMgZmFzdGVyIGNsb2NrZWQgJ1NHTUlJIGZvcmNlIG1vZGUnIHdpdGhv
+dXQgaW4tYmFuZCBuZWdvdGlhdGlvbg0KICAgIHdoaWNoIGlzIGNvbXBhdGlibGUgd2l0aCAxMEIv
+OEIgZW5jb2Rpbmcgb2YNCiAgICBQSFlfSU5URVJGQUNFX01PREVfMjUwMEJBU0VYIHdpdGggZml4
+ZWQgZnVsbC1kdXBsZXggYW5kIGZpeGVkIHBhdXNlLg0KDQp2NCAtPiB2NQ0KLSBBZGQgZml4ZWQt
+bGluayBub2RlIHRvIGRzYSBjcHUgcG9ydCBpbiBkdHMgZmlsZSBieSBzdWdnZXN0aW9uIG9mDQog
+IFZsYWRpbWlyIE9sdGVhbi4NCg0KdjMgLT4gdjQNCi0gQWRqdXN0IHRoZSBjb2Rpbmcgc3R5bGUg
+Ynkgc3VnZ2VzdGlvbiBvZiBKYWt1YiBLaWNpbnNraS4NCiAgUmVtb3ZlIHVubmVjZXNzYXJ5IGp1
+bXBpbmcgbGFiZWwsIG1lcmdlIGNvbnRpbnVvdXMgbnVtZXJpYyAnc3dpdGNoDQogIGNhc2VzJyBp
+bnRvIG9uZSBsaW5lLCBhbmQga2VlcCB0aGUgdmFyaWFibGVzIGxvbmdlc3QgdG8gc2hvcnRlc3QN
+CiAgKHJldmVyc2UgeG1hcyB0cmVlKS4NCg0KdjIgLT4gdjMNCi0gS2VlcCB0aGUgc2FtZSBzZXR1
+cCBsb2dpYyBvZiBtdDc1MzAvbXQ3NjIxIGJlY2F1c2UgdGhlc2Ugc2VyaWVzIG9mDQogIHBhdGNo
+ZXMgaXMgZm9yIGFkZGluZyBtdDc1MzEgaGFyZHdhcmUuDQotIERvIG5vdCBhZGp1c3QgcmdtaWkg
+ZGVsYXkgd2hlbiB2ZW5kb3IgcGh5IGRyaXZlciBwcmVzZW50cyBpbiBvcmRlciB0bw0KICBwcmV2
+ZW50IGRvdWJsZSBhZGp1c3RtZW50IGJ5IHN1Z2dlc3Rpb24gb2YgQW5kcmV3IEx1bm4uDQotIFJl
+bW92ZSByZWR1bmRhbnQgJ0V4YW1wbGUgNCcgZnJvbSBkdC1iaW5kaW5ncyBieSBzdWdnZXN0aW9u
+IG9mDQogIFJvYiBIZXJyaW5nLg0KLSBGaXggdHlwby4NCg0KdjEgLT4gdjINCi0gY2hhbmdlIHBo
+eWxpbmtfdmFsaWRhdGUgY2FsbGJhY2sgZnVuY3Rpb24gdG8gc3VwcG9ydCBmdWxsLWR1cGxleA0K
+ICBnaWdhYml0IG9ubHkgdG8gbWF0Y2ggaGFyZHdhcmUgY2FwYWJpbGl0eS4NCi0gYWRkIGRlc2Ny
+aXB0aW9uIG9mIFNHTUlJIGludGVyZmFjZS4NCi0gY29uZmlndXJlIG10NzUzMSBjcHUgcG9ydCBp
+biBmYXN0ZXN0IHNwZWVkIGJ5IGRlZmF1bHQuDQotIHBhcnNlIFNHTUlJIGNvbnRyb2wgd29yZCBm
+b3IgaW4tYmFuZCBuZWdvdGlhdGlvbiBtb2RlLg0KLSBjb25maWd1cmUgUkdNSUkgZGVsYXkgYmFz
+ZWQgb24gcGh5LnJzdC4NCi0gUmVuYW1lIHRoZSBkZWZpbml0aW9uIGluIHRoZSBoZWFkZXIgZmls
+ZSB0byBhdm9pZCBwb3RlbnRpYWwgY29uZmxpY3RzLg0KLSBBZGQgd3JhcHBlciBmdW5jdGlvbiBm
+b3IgbWRpbyByZWFkL3dyaXRlIHRvIHN1cHBvcnQgYm90aCBDMjIgYW5kIEM0NS4NCi0gY29ycmVj
+dCBmaXhlZC1saW5rIHNwZWVkIG9mIDI1MDBiYXNlLXggaW4gZHRzLg0KLSBhZGQgTVQ3NTMxIHBv
+cnQgbWlycm9yIHNldHRpbmcuDQoNCkxhbmRlbiBDaGFvICg2KToNCiAgbmV0OiBkc2E6IG10NzUz
+MDogUmVmaW5lIG1lc3NhZ2UgaW4gS2NvbmZpZw0KICBuZXQ6IGRzYTogbXQ3NTMwOiBFeHRlbmQg
+ZGV2aWNlIGRhdGEgcmVhZHkgZm9yIGFkZGluZyBhIG5ldyBoYXJkd2FyZQ0KICBkdC1iaW5kaW5n
+czogbmV0OiBkc2E6IGFkZCBuZXcgTVQ3NTMxIGJpbmRpbmcgdG8gc3VwcG9ydCBNVDc1MzENCiAg
+bmV0OiBkc2E6IG10NzUzMDogQWRkIHRoZSBzdXBwb3J0IG9mIE1UNzUzMSBzd2l0Y2gNCiAgYXJt
+NjQ6IGR0czogbXQ3NjIyOiBhZGQgbXQ3NTMxIGRzYSB0byBtdDc2MjItcmZiMSBib2FyZA0KICBh
+cm02NDogZHRzOiBtdDc2MjI6IGFkZCBtdDc1MzEgZHNhIHRvIGJhbmFuYXBpLWJwaS1yNjQgYm9h
+cmQNCg0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9kc2EvbXQ3NTMwLnR4dCAgICB8ICAg
+MTMgKy0NCiAuLi4vZHRzL21lZGlhdGVrL210NzYyMi1iYW5hbmFwaS1icGktcjY0LmR0cyAgfCAg
+IDUwICsNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210NzYyMi1yZmIxLmR0cyAgfCAg
+IDYzICstDQogZHJpdmVycy9uZXQvZHNhL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAgNiArLQ0KIGRyaXZlcnMvbmV0L2RzYS9tdDc1MzAuYyAgICAgICAgICAgICAgICAgICAgICB8
+IDExOTIgKysrKysrKysrKysrKysrLS0NCiBkcml2ZXJzL25ldC9kc2EvbXQ3NTMwLmggICAgICAg
+ICAgICAgICAgICAgICAgfCAgMjU5ICsrKy0NCiA2IGZpbGVzIGNoYW5nZWQsIDE0NjcgaW5zZXJ0
+aW9ucygrKSwgMTE2IGRlbGV0aW9ucygtKQ0KDQotLSANCjIuMTcuMQ0K
 
