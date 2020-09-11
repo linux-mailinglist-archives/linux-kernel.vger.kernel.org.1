@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3939F265A79
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FC52659D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725802AbgIKHYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgIKHYq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:24:46 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C89C061573;
-        Fri, 11 Sep 2020 00:24:45 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id u20so8162737ilk.6;
-        Fri, 11 Sep 2020 00:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=yDDPYjQ6DUX6xXLMzgBfV6buP3oYPEgo+EN2kc6eWTY=;
-        b=VCg1Rxdg/5MOXY5w9Loq/ArIKnhcyC7pdwtI0PJCD0vVfIdVBX+RvdOd1Q5EE/A53w
-         HWGWf0JGtxHP61Zr4h8gH4j26j5SNSoxD3vtLuGw3a0z0WxP89DkWfDwDzZcnX1R76Ic
-         jXruVD3rEZ4UXYCNvS2a7SCyOmZW8U+yp5ao+bAfosxKLd2YKefNhRYzjaJSwazSk08G
-         v654syyecqb4nuwrs7j4hZIwCdFoj/l0Ei56xgFfWkIAn4dksivJxtmTJHXaJn+CYlHl
-         YLMUqkbMZRmVZbV0VPKguJqZFYMyTDpGNyYxSUjXRJrxYEL6h6Dj3bXA5NYbLYpMKZqk
-         ClfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=yDDPYjQ6DUX6xXLMzgBfV6buP3oYPEgo+EN2kc6eWTY=;
-        b=RVJNr63JskiF1nzWeNemM12GGz8sZdEXjX/imBTGpV6I2pAjKqzhoXovUfvKTbQoug
-         eD1vxldOAxSy8JPmWl3QvzLtH8XL1zmdr5cTsl4fbsObTsOnWWM2Wm4FnoJi9yK/8Cig
-         d9X3WR9KKTa2i1x1pjw0cMx5zhDfDlbo0QUjiJ/S3Tl9a3NLYIbSVt/pKiCFmYD+tpfG
-         xIE0/KfrS1f6pQ9QromsxXlZH/bqGQTVC2yrfv2EHAvCjkO5t0NE0jmx3hPA+ZuJ7H8e
-         zOV4LLA85fmSLesqqlOn0WPWDeH3rbIVUYd0Yo0samsxygNx5U/unEKFtPeb4NuKtfmF
-         iweg==
-X-Gm-Message-State: AOAM531s2oQbAggfVFLYaSm0UEWKtvRBFNwem3VviHcGnTxmkEmPq7x1
-        CWcLT1QQaQrwOS8UEuUciHI5Qazyr7SuGDFHQY/CAfNT3aM=
-X-Google-Smtp-Source: ABdhPJzhSZZfBvon++gRijFHc6uMrRA3K01c6hT3xUWA9CJkZCyxj2DMSIaOlblADANdWJCoh65AMYrunuU/yZTx3G4=
-X-Received: by 2002:a92:d1d1:: with SMTP id u17mr699311ilg.127.1599809083413;
- Fri, 11 Sep 2020 00:24:43 -0700 (PDT)
+        id S1725681AbgIKHBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:01:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:54384 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725468AbgIKHB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 03:01:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC7EA113E;
+        Fri, 11 Sep 2020 00:01:26 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D55FF3F73C;
+        Fri, 11 Sep 2020 00:01:24 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH v2 2/3] arm64/mm: Unitify CONT_PTE_SHIFT
+To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, shan.gavin@gmail.com
+References: <20200910095936.20307-1-gshan@redhat.com>
+ <20200910095936.20307-2-gshan@redhat.com>
+Message-ID: <f2093b0e-88eb-5afc-2452-8a06db593b14@arm.com>
+Date:   Fri, 11 Sep 2020 12:30:31 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
- <559a568e-3a2e-33c6-43aa-547a18f8e26b@gmail.com> <20200911070503.GA9818@amd>
-In-Reply-To: <20200911070503.GA9818@amd>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Fri, 11 Sep 2020 07:24:31 +0800
-Message-ID: <CAE+NS34aKmu0tjnCPg3nF_vB0ELKsKwZSOeEXsm5V9aPAqqSbQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, robh+dt@kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200910095936.20307-2-gshan@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Machek <pavel@ucw.cz> =E6=96=BC 2020=E5=B9=B49=E6=9C=8811=E6=97=A5 =
-=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=883:05=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Hi!
->
-> > >+{
-> > >+    struct mt6360_led *led =3D container_of(lcdev, struct mt6360_led,=
- flash.led_cdev);
-> > >+    struct mt6360_priv *priv =3D led->priv;
-> > >+    u32 enable_mask =3D MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led-=
->led_no);
-> > >+    u32 val =3D (level) ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-> > >+    u32 prev =3D priv->fled_torch_used, curr;
-> > >+    int ret;
-> > >+
-> > >+    dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
-> > >+    if (priv->fled_strobe_used) {
-> > >+            dev_warn(lcdev->dev, "Please disable strobe first [%d]\n"=
-, priv->fled_strobe_used);
-> >
-> > Doesn't hardware handle that? IOW, what happens when you have enabled
-> > both torch and flash? If flash just overrides torch mode, than you
-> > should not prevent enabling torch in this case.
->
-> Yep, this is strange/confusing... and was reason why I asked for not
-> supporting strobe from sysfs.
->
-> Could I get you to remove code you are not commenting at when
-> reviewing?
->
 
-MT6360 FLED register define is STROBE_EN/TORCH_EN/CS1/CS2 (current
-source) 4 bits.
-The STROBE_EN/TORCH_EN is shared by FLED1 and FLED2.
-If I want to enable FLED1 torch mode, I set TORCH_EN and CS1
-If I want to enable FLED2 strobe mode, I set STROBE_EN and CS2
-For example I set FLED1 torch, then I set FLED2 strobe.
-When I set FLED2 strobe, I will see the strobe current is FLED2 add
-FLED1 current which is not I want.
-So I need disable FLED1 torch first.
-Considering every circumstances is complicated when share same H/W
-logic control.
-And the other problem is torch mode switch to strobe mode needs ramp
-time because strobe and torch mode can't be co-exist.
+On 09/10/2020 03:29 PM, Gavin Shan wrote:
+> CONT_PTE_SHIFT actually depends on CONFIG_ARM64_CONT_SHIFT. It's
+> reasonable to reflect the dependency:
 
-> > >+MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
-> > >+MODULE_DESCRIPTION("MT6360 Led Driver");
->
-> Led -> LED.
->
+Also always better to avoid direct numerical such as 5, 7, 4. A config
+option with a right name (even with constant values), gives them some
+meaning.
 
-ACK
+> 
+>    * This renames CONFIG_ARM64_CONT_SHIFT to CONFIG_ARM64_CONT_PTE_SHIFT,
+>      so that we can introduce CONFIG_ARM64_CONT_PMD_SHIFT later.
 
->                                                                         P=
-avel
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/b=
-log.html
+Agreed.
+
+> 
+>    * CONT_{SHIFT, SIZE, MASK}, defined in page-def.h are removed as they
+>      are not used by anyone.
+
+Makes sense.
+
+> 
+>    * CONT_PTE_SHIFT is determined by CONFIG_ARM64_CONT_PTE_SHIFT.
+> 
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/Kconfig                     | 2 +-
+>  arch/arm64/include/asm/page-def.h      | 5 -----
+>  arch/arm64/include/asm/pgtable-hwdef.h | 4 +---
+>  3 files changed, 2 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d232837cbee..7ec30dd56300 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -211,7 +211,7 @@ config ARM64_PAGE_SHIFT
+>  	default 14 if ARM64_16K_PAGES
+>  	default 12
+>  
+> -config ARM64_CONT_SHIFT
+> +config ARM64_CONT_PTE_SHIFT
+>  	int
+>  	default 5 if ARM64_64K_PAGES
+>  	default 7 if ARM64_16K_PAGES
+> diff --git a/arch/arm64/include/asm/page-def.h b/arch/arm64/include/asm/page-def.h
+> index f99d48ecbeef..2403f7b4cdbf 100644
+> --- a/arch/arm64/include/asm/page-def.h
+> +++ b/arch/arm64/include/asm/page-def.h
+> @@ -11,13 +11,8 @@
+>  #include <linux/const.h>
+>  
+>  /* PAGE_SHIFT determines the page size */
+> -/* CONT_SHIFT determines the number of pages which can be tracked together  */
+
+This does not get added back in <pgtable-hwdef.h>, would you please
+add one comment, for both CONT_PTE_SHIFT and CONT_PMD_SHIFT in their
+respective patches.
+
+>  #define PAGE_SHIFT		CONFIG_ARM64_PAGE_SHIFT
+> -#define CONT_SHIFT		CONFIG_ARM64_CONT_SHIFT
+>  #define PAGE_SIZE		(_AC(1, UL) << PAGE_SHIFT)
+>  #define PAGE_MASK		(~(PAGE_SIZE-1))
+>  
+> -#define CONT_SIZE		(_AC(1, UL) << (CONT_SHIFT + PAGE_SHIFT))
+> -#define CONT_MASK		(~(CONT_SIZE-1))
+> -
+>  #endif /* __ASM_PAGE_DEF_H */
+> diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
+> index 8a399e666837..6c9c67f62551 100644
+> --- a/arch/arm64/include/asm/pgtable-hwdef.h
+> +++ b/arch/arm64/include/asm/pgtable-hwdef.h
+> @@ -81,14 +81,12 @@
+>  /*
+>   * Contiguous page definitions.
+>   */
+> +#define CONT_PTE_SHIFT		(CONFIG_ARM64_CONT_PTE_SHIFT + PAGE_SHIFT)
+>  #ifdef CONFIG_ARM64_64K_PAGES
+> -#define CONT_PTE_SHIFT		(5 + PAGE_SHIFT)
+>  #define CONT_PMD_SHIFT		(5 + PMD_SHIFT)
+>  #elif defined(CONFIG_ARM64_16K_PAGES)
+> -#define CONT_PTE_SHIFT		(7 + PAGE_SHIFT)
+>  #define CONT_PMD_SHIFT		(5 + PMD_SHIFT)
+>  #else
+> -#define CONT_PTE_SHIFT		(4 + PAGE_SHIFT)
+>  #define CONT_PMD_SHIFT		(4 + PMD_SHIFT)
+>  #endif
+>  
+> 
+
+Looks good to me and there are no obvious regressions as well.
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
