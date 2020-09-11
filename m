@@ -2,92 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C83EF2663DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDB62663AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgIKQ0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:26:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36686 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726405AbgIKPYF (ORCPT
+        id S1726602AbgIKQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgIKP2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:24:05 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BFDJlh138373;
-        Fri, 11 Sep 2020 11:23:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IU/fKZKtEvfvRqnzr4y0McdxJCnTZkrOh7Gin8XqWlU=;
- b=WPC6+zJTaiPIgIkWddZOIIpPI/m+V3iwTn8whVN2764BdbiZOI2Y0vFsOhk/rmVY4Hxp
- 6QVRWMmVhcT59QBr/fTRaFdggXsUsBvmI1GwU7yv85YOz7+JB7/FTnOD0tF/f96GwHwf
- 59BxMkYvRyo2/5TLnXFhyHzY3B1AUUkypUVYD6B+u/G2x4k8VuhhSQDqf7DbMhTCkjik
- 7tCvh9oLjeju916t0WHfaDg4six8toC++6X1XcHybDQRfxZ35GgUb3dleaNbwBVddWOr
- Pk6kolI3YntgyZbsf4a3CkasG5Zx9Y4J5y5HHSB+LSb90gQxpu2z86frjDhza7TIQcwn tQ== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33gbp9r78d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 11:23:48 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BFD828025320;
-        Fri, 11 Sep 2020 15:23:46 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 33c2a846bu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 15:23:46 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BFNiG337814770
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 15:23:44 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17CDD4C044;
-        Fri, 11 Sep 2020 15:23:44 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ABA384C050;
-        Fri, 11 Sep 2020 15:23:43 +0000 (GMT)
-Received: from [9.145.176.58] (unknown [9.145.176.58])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Sep 2020 15:23:43 +0000 (GMT)
-Subject: Re: [PATCH -rc v1] gcov: Disable gcov build with GCC 10
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "'Linus Torvalds'" <torvalds@linux-foundation.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200904155808.4997-1-leon@kernel.org>
- <6fac3754-f8db-85f5-bdb1-b4c8e7ccc046@linux.ibm.com>
- <CAHk-=wg6R-yQwZBBWB8EqQ1QWJGQe5njuGwax-HJtTUGsc5LxQ@mail.gmail.com>
- <a9d5b868b1eb4d8bb45364e9b917ca8f@AcuMS.aculab.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <0d45fd85-d109-b57f-d918-33d5991e2b09@linux.ibm.com>
-Date:   Fri, 11 Sep 2020 17:23:44 +0200
+        Fri, 11 Sep 2020 11:28:34 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F7FC061757;
+        Fri, 11 Sep 2020 08:28:34 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l9so5187564wme.3;
+        Fri, 11 Sep 2020 08:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1BB9JHSvWV/knAkuiQWfPijYXPNnyQ+2JuUiQV6W6Co=;
+        b=hwGFgj6rLFGOvu+SssqhWzZFJEv8sPF5dIxYcGW++Eeox4zHxIA8V3jnztSNZcC5HA
+         7GYHV6vMUV78fu6uOr695EyySJpQchFnAzxwdnml9WBnTpujtdkneRN6etPKcRNXlJEy
+         IY91k0GWNzqylGCxSdfvmr6g6IKMAnOiUt+mpMgwx6knE3OxB0VIRbML8d2VrqBeum3e
+         IQQWFFcHusMwprkT0OB8OKCabfFc4ACHelN0ZkzfDMSIuw0NUV5DU3KiFWfRO7HY9oJr
+         Pwynlzf1pRD6b0lvmEmqLfxOZi4epzjRfe0fVAg7OH0CvbTgipYsInBQTPzyhneniZl2
+         LJOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1BB9JHSvWV/knAkuiQWfPijYXPNnyQ+2JuUiQV6W6Co=;
+        b=ANK67CUB2f8n7hHQ2uB0bN17/IfXpFt5b0x9jgG5Itdc+3A0NPFgRTMnmvY+mP4+hQ
+         rxqqEqbgI1GaziZahtdIW1No7yFtFq3kjhmhhgMKrYtcFU6L+Rfrxgco9fJaTK0eQtsY
+         p/iB5m9NttK1yXA/4HyhtTFE1euHlgoldg/BtUCAaADEDVCxDw6HqdRfto5cGnAY65G+
+         HTiWfyWjfYNYR47f5SPOLdnlHxiUWqkIsEfbFlhhWofbu6tW3l1V8MhMH7p5boyToL9x
+         f4W+l4GVmsVslsNEd/YTj5KqQeeDgN4EHkk4xCMuvkAjpsqlVlU+TLiQMdvT6dqwHOn9
+         QPOw==
+X-Gm-Message-State: AOAM530NreBzxunPtqewmu9vzvj44xUDWUzF9Bt/x9PVKiDgqRwPXBtk
+        Ms0ZZLttn3iCBotZj5qFM7ThmvSTPWA=
+X-Google-Smtp-Source: ABdhPJxZ37zKSDi/TZF/gdLnnwwzC878nrj8mTt1e42H+rmVQ8OpYdwtkXBfiwhn8Nl6P7tf8kFrAw==
+X-Received: by 2002:a7b:c14d:: with SMTP id z13mr2743776wmi.107.1599838112235;
+        Fri, 11 Sep 2020 08:28:32 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id d3sm5360958wrr.84.2020.09.11.08.28.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 08:28:31 -0700 (PDT)
+Subject: Re: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer size
+ (instead of hardcoding macro name)
+To:     Stefan Puiu <stefan.puiu@gmail.com>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        lnx-man <linux-man@vger.kernel.org>, linux-kernel@vger.kernel.org
+References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
+ <20200910211344.3562-13-colomar.6.4.3@gmail.com>
+ <CACKs7VD_p=d+nvuFxkWofSE6jCoKAKx5w44_5ciTJ0NX_H1ZFA@mail.gmail.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <7dd2ab72-3ce7-1f50-229a-e663c3df2dcd@gmail.com>
+Date:   Fri, 11 Sep 2020 17:28:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <a9d5b868b1eb4d8bb45364e9b917ca8f@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CACKs7VD_p=d+nvuFxkWofSE6jCoKAKx5w44_5ciTJ0NX_H1ZFA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_05:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0 spamscore=0
- impostorscore=0 mlxscore=0 suspectscore=1 mlxlogscore=917
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.09.2020 23:49, David Laight wrote:
-> I was wondering what happens if files compiled with different
-> versions of gcc get linked together?
+Hi Stefan,
 
-This is not supported by GCC. At runtime libgcov will reject all data
-from object files compiled with a different GCC version.
+On 2020-09-11 16:35, Stefan Puiu wrote:
+ > Hi,
+ >
+ > On Fri, Sep 11, 2020 at 12:15 AM Alejandro Colomar
+ > <colomar.6.4.3@gmail.com> wrote:
+ >>
+ >> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+ >> ---
+ >>   man3/getgrent_r.3 | 2 +-
+ >>   1 file changed, 1 insertion(+), 1 deletion(-)
+ >>
+ >> diff --git a/man3/getgrent_r.3 b/man3/getgrent_r.3
+ >> index 81d81a851..76deec370 100644
+ >> --- a/man3/getgrent_r.3
+ >> +++ b/man3/getgrent_r.3
+ >> @@ -186,7 +186,7 @@ main(void)
+ >>
+ >>       setgrent();
+ >>       while (1) {
+ >> -        i = getgrent_r(&grp, buf, BUFLEN, &grpp);
+ >> +        i = getgrent_r(&grp, buf, sizeof(buf), &grpp);
+ >
+ > I'm worried that less attentive people might copy/paste parts of this
+ > in their code, where maybe buf is just a pointer, and expect it to
+ > work. Maybe leaving BUFLEN here is useful as a reminder that they need
+ > to change something to adapt the code?
+ >
+ > Just my 2 cents,
+ > Stefan.
+ >
+That's a very good point.
 
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+So we have 3 options and I will propose now a 4th one.  Let's see all
+of them and see which one is better for the man pages.
+
+1.-	Use the macro everywhere.
+
+pros:
+- It is still valid when the buffer is a pointer and not an array.
+cons:
+- Hardcodes the initializer.  If the array is later initialized with a
+   different value, it may produce a silent bug, or a compilation break.
+
+2.-	Use sizeof() everywhere, and the macro for the initializer.
+
+pros:
+- It is valid as long as the buffer is an array.
+cons:
+- If the code gets into a function, and the buffer is then a pointer,
+   it will definitively produce a silent bug.
+
+3.-	Use sizeof() everywhere, and a magic number for the initializer.
+
+The same as 2.
+
+4.-	Use ARRAY_BYTES() macro
+
+pros:
+- It is always safe and when code changes, it may break compilation, but
+   never a silent bug.
+cons:
+- Add a few lines of code.  Maybe too much complexity for an example.
+   But I'd say that it is the only safe option, and in real code it
+   should probably be used more, so maybe it's good to show a good practice.
+
+
+Here's my definition for ARRAY_BYTES(), which is makes use of
+must_be_array() similar to the kernel ARRAY_SIZE():
+
+4.1-
+
+#define is_same_type(a, b)					\
+	__builtin_types_compatible_p(__typeof__(a), __typeof__(b))
+#define is_array(a)			(!is_same_type((a), &(a)[0]))
+#define must_be__(e, ...)	(				\
+	0 * (int)sizeof(					\
+		struct {					\
+			_Static_assert((e)  __VA_OPT__(,)  __VA_ARGS__); \
+			char ISO_C_forbids_a_struct_with_no_members__; \
+		}						\
+	)							\
+)
+#define must_be_array__(a)	must_be__(is_array(a), "Not an array!")
+#define ARRAY_BYTES(arr)	(sizeof(arr) + must_be_array__(arr))
+
+
+The macro makes use of quite a few GNU extensions, though, which might
+be too much to ask.
+
+Actually, I was also going to propose this macro for the kernel itself,
+to make it a bit safer.
+
+There's a much simpler version of ARRAY_BYTES(), which requires the
+macro to be defined in a header that is not a system header (to avoid
+silencing warnings), and also requires a recent version of the compiler
+to show a warning:
+
+4.2-
+
+#define ARRAY_SIZE(arr)		(sizeof(arr) / sizeof((arr)[0])
+#define ARRAY_BYTES(arr)	(sizeof((arr)[0]) * ARRAY_SIZE(arr))
+
+
+What do you all think about the 5 different options?  I don't know which
+one is better.
