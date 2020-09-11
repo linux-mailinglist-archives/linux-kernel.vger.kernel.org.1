@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED73266445
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9941266422
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbgIKQeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:34:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52726 "EHLO mail.kernel.org"
+        id S1726589AbgIKQcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:32:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726445AbgIKPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:15:37 -0400
+        id S1726463AbgIKPTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9482C223E0;
-        Fri, 11 Sep 2020 12:58:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81EC6223C8;
+        Fri, 11 Sep 2020 12:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829135;
-        bh=4TZtepcvRkMtB2LjKKBWw+jkZjaqiqtRySt+xi5nguc=;
+        s=default; t=1599829130;
+        bh=28sTi4CQh5jzkQmikquEFW4FGLEVT7HhCFTfebhfdqU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MuXSORVe+t0axW+lTYJutYJdKrJTF4+HSHwCVAYh+Y8D3aDY7WBIIJZC67oZoD3aD
-         cf3znsEILhMcxk8xNFg6Eyl+DJmBl/qX8ygImALdK6FZDMd+Khixb5u0u9VIkCXW/H
-         L0rzvCXvd5LPvV5f/JfpUMzNWovdrrHJTLI9sVVg=
+        b=lKaQZWmC9BueIKxxtvPVK4sdxI0JsATirjQsNHc9VAjdVSUCCyZGrB5R1qKK4WK94
+         jaDVNgAjDZ2E2ZwSRpMfWxJUiBdC80Anr9kLOWTfIy3P1djYmWf9qDvnooIRezJC0e
+         58FVNEUhnQrkxPh3lFMRx3EEcNqLTsre0B/ODI7o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 01/12] ALSA; firewire-tascam: exclude Tascam FE-8 from detection
+        stable@vger.kernel.org, Rob Sherwood <rsher@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 71/71] net: disable netpoll on fresh napis
 Date:   Fri, 11 Sep 2020 14:46:55 +0200
-Message-Id: <20200911122458.490379101@linuxfoundation.org>
+Message-Id: <20200911122508.482650346@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
-References: <20200911122458.413137406@linuxfoundation.org>
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+References: <20200911122504.928931589@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,76 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Jakub Kicinski <kuba@kernel.org>
 
-Tascam FE-8 is known to support communication by asynchronous transaction
-only. The support can be implemented in userspace application and
-snd-firewire-ctl-services project has the support. However, ALSA
-firewire-tascam driver is bound to the model.
+[ Upstream commit 96e97bc07e90f175a8980a22827faf702ca4cb30 ]
 
-This commit changes device entries so that the model is excluded. In a
-commit 53b3ffee7885 ("ALSA: firewire-tascam: change device probing
-processing"), I addressed to the concern that version field in
-configuration differs depending on installed firmware. However, as long
-as I checked, the version number is fixed. It's safe to return version
-number back to modalias.
+napi_disable() makes sure to set the NAPI_STATE_NPSVC bit to prevent
+netpoll from accessing rings before init is complete. However, the
+same is not done for fresh napi instances in netif_napi_add(),
+even though we expect NAPI instances to be added as disabled.
 
-Fixes: 53b3ffee7885 ("ALSA: firewire-tascam: change device probing processing")
-Cc: <stable@vger.kernel.org> # 4.4+
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20200823075537.56255-1-o-takashi@sakamocchi.jp
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+This causes crashes during driver reconfiguration (enabling XDP,
+changing the channel count) - if there is any printk() after
+netif_napi_add() but before napi_enable().
+
+To ensure memory ordering is correct we need to use RCU accessors.
+
+Reported-by: Rob Sherwood <rsher@fb.com>
+Fixes: 2d8bff12699a ("netpoll: Close race condition between poll_one_napi and napi_disable")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/tascam/tascam.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+ net/core/dev.c     |    3 ++-
+ net/core/netpoll.c |    2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index d3fdc463a884e..1e61cdce28952 100644
---- a/sound/firewire/tascam/tascam.c
-+++ b/sound/firewire/tascam/tascam.c
-@@ -225,11 +225,39 @@ static void snd_tscm_remove(struct fw_unit *unit)
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5188,13 +5188,14 @@ void netif_napi_add(struct net_device *d
+ 		pr_err_once("netif_napi_add() called with weight %d on device %s\n",
+ 			    weight, dev->name);
+ 	napi->weight = weight;
+-	list_add(&napi->dev_list, &dev->napi_list);
+ 	napi->dev = dev;
+ #ifdef CONFIG_NETPOLL
+ 	spin_lock_init(&napi->poll_lock);
+ 	napi->poll_owner = -1;
+ #endif
+ 	set_bit(NAPI_STATE_SCHED, &napi->state);
++	set_bit(NAPI_STATE_NPSVC, &napi->state);
++	list_add_rcu(&napi->dev_list, &dev->napi_list);
+ 	napi_hash_add(napi);
  }
+ EXPORT_SYMBOL(netif_napi_add);
+--- a/net/core/netpoll.c
++++ b/net/core/netpoll.c
+@@ -178,7 +178,7 @@ static void poll_napi(struct net_device
+ {
+ 	struct napi_struct *napi;
  
- static const struct ieee1394_device_id snd_tscm_id_table[] = {
-+	// Tascam, FW-1884.
- 	{
- 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
--			       IEEE1394_MATCH_SPECIFIER_ID,
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
- 		.vendor_id = 0x00022e,
- 		.specifier_id = 0x00022e,
-+		.version = 0x800000,
-+	},
-+	// Tascam, FE-8 (.version = 0x800001)
-+	// This kernel module doesn't support FE-8 because the most of features
-+	// can be implemented in userspace without any specific support of this
-+	// module.
-+	//
-+	// .version = 0x800002 is unknown.
-+	//
-+	// Tascam, FW-1082.
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800003,
-+	},
-+	// Tascam, FW-1804.
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_SPECIFIER_ID |
-+			       IEEE1394_MATCH_VERSION,
-+		.vendor_id = 0x00022e,
-+		.specifier_id = 0x00022e,
-+		.version = 0x800004,
- 	},
- 	/* FE-08 requires reverse-engineering because it just has faders. */
- 	{}
--- 
-2.25.1
-
+-	list_for_each_entry(napi, &dev->napi_list, dev_list) {
++	list_for_each_entry_rcu(napi, &dev->napi_list, dev_list) {
+ 		if (napi->poll_owner != smp_processor_id() &&
+ 		    spin_trylock(&napi->poll_lock)) {
+ 			poll_one_napi(napi);
 
 
