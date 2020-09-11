@@ -2,130 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B9E2664EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4502664C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgIKQsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:48:21 -0400
-Received: from mga04.intel.com ([192.55.52.120]:11836 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgIKPHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:07:49 -0400
-IronPort-SDR: bKHopU7epsl1YDVPUUxC7cjPNg0tZAofEr/+Ckvk0PqZKiUYVB0T8+zk2xHDAQYuod2LWItiRr
- +D3p3BclEo1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="156169574"
-X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
-   d="scan'208";a="156169574"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 08:07:25 -0700
-IronPort-SDR: 4KNDny10BFkK+iQr+jUnPuRNxmW38V+91ARLv0S5o0x27rJZE6uaJy/wazA7H7JwpmBuamyGOO
- UV+MIBei0Lcg==
-X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
-   d="scan'208";a="481354710"
-Received: from basudipt-mobl1.gar.corp.intel.com (HELO [10.212.223.238]) ([10.212.223.238])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 08:07:24 -0700
-Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
- controls
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        gregkh@linuxfoundation.org,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
- <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
- <20200904050244.GT2639@vkoul-mobl>
- <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
- <20200909075555.GK77521@vkoul-mobl>
- <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
- <20200910062223.GQ77521@vkoul-mobl>
- <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
- <20200911070649.GU77521@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
-Date:   Fri, 11 Sep 2020 09:50:54 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726415AbgIKQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgIKPIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:08:13 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1458BC0612F6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:55:34 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m5so6136278lfp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RyGETUg9mUKb771YPAmqWLGZaTO7mZ6hKFj3E91siek=;
+        b=DRq2hDtsbMxfpg7W5O+ZLV1lUVDBsWosPPite6Mp7DI9sgN0NZSVPPtwxQe6bBU/f3
+         gLNTTgHzLJMDPfUAcKbMD3OW8k3KoymNgxK8mLl9QWoIw0sZDr1T4Vx4mu7k9k7JdEs5
+         3x/fFhmTkY7qWGxK22snBGLvTN6Z7TlrJxfY+2ncfuGRKZpwYXJ11akrgf7sTNurnp85
+         lmT4gl5NmTNytzmc/6rAngMH+OxJ4BXDeC75yDziaV9eauYodGRNeKbu9vo8/uWsqzeX
+         lfI7glc9MDT5UAMYVjxq+qRPGwA/gilQEYXic/i7Fh+QKmW24oQoJ6FcBWMzloucXDDQ
+         OdSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RyGETUg9mUKb771YPAmqWLGZaTO7mZ6hKFj3E91siek=;
+        b=X+DeqB6BrAOUyBTf4lfTik3IAACWtZy8dcdLjITmIDvTJvSzeYQrna8kM1c34wB+vE
+         NCKlnfVwjlqEdfc1J2gLPZoDgv9Odp93cw175iCI/KoZ/JHXxgW1L+vhaf2y3/s8suXF
+         5/7JIVGED3JwBt6i7Ip/EA73dc9wiTTdiM5tqp+HfbZEYTn0tzVC03GMr7VRLE69wMeF
+         zI0DLvYPzNdjHtcmdYvb/yZAVFDQpA25x9+8xStSO4FZKJqV3QgDHKh+2sNOEWB3f4Mo
+         3WcnHJHjVvhM4oYQFtJlaU3PqbVOW+FDA4CYJSr+4Em4VRj1tddbqfk/0kKtMkallakz
+         TXNA==
+X-Gm-Message-State: AOAM533QaBInp+Gyn0DjpUVK9S9mvgTM5XPoAtrA57q4LdZp3Ja6spnU
+        0tOU82IHW42MwSlJPoBe50i3T/I1JxBK+Y9im86I4g==
+X-Google-Smtp-Source: ABdhPJzIfXWEoPr+pejl9ICIZBfdEPcdhSa0BRgky84fzVsWoAMK+i7zNMib2U+DpXd++dQwMqw6Op9w7E45OQMrsVg=
+X-Received: by 2002:ac2:59da:: with SMTP id x26mr449757lfn.346.1599836132004;
+ Fri, 11 Sep 2020 07:55:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200911070649.GU77521@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200910084258.22293-1-songmuchun@bytedance.com>
+ <CALvZod5JQWGHUAPnj9S0pKFQreLPST441mZnp+h=fue_nnh1yQ@mail.gmail.com> <CAMZfGtUncFZZe2RDb54ALMt1DAVqBxAD1TQrpjei1H5nRbH6jg@mail.gmail.com>
+In-Reply-To: <CAMZfGtUncFZZe2RDb54ALMt1DAVqBxAD1TQrpjei1H5nRbH6jg@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 11 Sep 2020 07:55:20 -0700
+Message-ID: <CALvZod5_1nGJ2-QfSnYm4rCB+qvMEKAuVJrCeCyv_vQs7EoYfw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: Add the missing numa stat
+ of anon and file for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Thu, Sep 10, 2020 at 8:52 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Fri, Sep 11, 2020 at 12:02 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Thu, Sep 10, 2020 at 1:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > In the cgroup v1, we have a numa_stat interface. This is useful for
+> > > providing visibility into the numa locality information within an
+> > > memcg since the pages are allowed to be allocated from any physical
+> > > node. One of the use cases is evaluating application performance by
+> > > combining this information with the application's CPU allocation.
+> > > But the cgroup v2 does not. So this patch adds the missing information.
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> >
+> > I am actually working on exposing this info on v2 as well.
+> >
+> > >  mm/memcontrol.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+> > >  1 file changed, 44 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 75cd1a1e66c8..c779673f29b2 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -1492,10 +1492,34 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+> > >         return false;
+> > >  }
+> > >
+> > > +#ifdef CONFIG_NUMA
+> > > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> > > +                                          unsigned int nid,
+> > > +                                          enum node_stat_item idx)
+> > > +{
+> > > +       long x;
+> > > +       struct mem_cgroup_per_node *pn;
+> > > +       struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> > > +
+> > > +       VM_BUG_ON(nid >= nr_node_ids);
+> > > +
+> > > +       pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> > > +       x = atomic_long_read(&pn->lruvec_stat[idx]);
+> > > +#ifdef CONFIG_SMP
+> > > +       if (x < 0)
+> > > +               x = 0;
+> > > +#endif
+> > > +       return x;
+> > > +}
+> > > +#endif
+> > > +
+> > >  static char *memory_stat_format(struct mem_cgroup *memcg)
+> > >  {
+> > >         struct seq_buf s;
+> > >         int i;
+> > > +#ifdef CONFIG_NUMA
+> > > +       int nid;
+> > > +#endif
+> > >
+> > >         seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
+> > >         if (!s.buffer)
+> > > @@ -1512,12 +1536,30 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+> > >          * Current memory state:
+> > >          */
+> > >
+> >
+> > Let's not break the parsers of memory.stat. I would prefer a separate
+> > interface like v1 i.e. memory.numa_stat.
+>
+> It is also a good idea to expose a new interface like memory.numa_stat.
+>
+> >
+> > > -       seq_buf_printf(&s, "anon %llu\n",
+> > > +       seq_buf_printf(&s, "anon %llu",
+> > >                        (u64)memcg_page_state(memcg, NR_ANON_MAPPED) *
+> > >                        PAGE_SIZE);
+> > > -       seq_buf_printf(&s, "file %llu\n",
+> > > +#ifdef CONFIG_NUMA
+> > > +       for_each_node_state(nid, N_MEMORY)
+> > > +               seq_buf_printf(&s, " N%d=%llu", nid,
+> > > +                              (u64)memcg_node_page_state(memcg, nid,
+> > > +                                                         NR_ANON_MAPPED) *
+> > > +                              PAGE_SIZE);
+> > > +#endif
+> > > +       seq_buf_putc(&s, '\n');
+> > > +
+> > > +       seq_buf_printf(&s, "file %llu",
+> > >                        (u64)memcg_page_state(memcg, NR_FILE_PAGES) *
+> > >                        PAGE_SIZE);
+> > > +#ifdef CONFIG_NUMA
+> > > +       for_each_node_state(nid, N_MEMORY)
+> > > +               seq_buf_printf(&s, " N%d=%llu", nid,
+> > > +                              (u64)memcg_node_page_state(memcg, nid,
+> > > +                                                         NR_FILE_PAGES) *
+> > > +                              PAGE_SIZE);
+> > > +#endif
+> > > +       seq_buf_putc(&s, '\n');
+> > > +
+> >
+> > The v1's numa_stat exposes the LRUs, why NR_ANON_MAPPED and NR_FILE_PAGES?
+>
+> If we want to expose the anon per node, we need to add inactive anon and
+> active anon together. Why not use NR_ANON_MAPPED directly?
+>
 
->>>>>>>> + *	25		0 (Reserved)
->>>>>>>> + *	24:22		Function Number [2:0]
->>>>>>>> + *	21		Entity[6]
->>>>>>>> + *	20:19		Control Selector[5:4]
->>>>>>>> + *	18		0 (Reserved)
->>>>>>>> + *	17:15		Control Number[5:3]
->>>>>>>> + *	14		Next
->>>>>>>> + *	13		MBQ
->>>>>>>> + *	12:7		Entity[5:0]
->>>>>>>> + *	6:3		Control Selector[3:0]
->>>>>>>> + *	2:0		Control Number[2:0]
+Active anon plus inactive anon is not equal to NR_ANON_MAPPED. The
+shmem related memory is on anon LRUs but not accounted in
+NR_ANON_MAPPED.
 
-[...]
+Similarly file LRU can contain MADV_FREE pages which are not accounted
+in NR_FILE_PAGES.
 
->>>>
->>>> #define SDCA_CONTROL_DEST_MASK1 GENMASK(20, 19)
->>>> #define SDCA_CONTROL_ORIG_MASK1 GENMASK(5, 4)
->>>> #define SDCA_CONTROL_DEST_MASK2 GENMASK(6, 3)
->>>> #define SDCA_CONTROL_ORIG_MASK2 GENMASK(3, 0)
-> 
-> I think I missed ORIG and DEST stuff, what does this mean here?
-
-If you missed this, it means my explanations are not good enough and I 
-need to make it clearer in the commit log/documentation. Point taken, 
-I'll improve this for the next version.
-
-> Relooking at the bit definition, for example 'Control Number' is defined
-> in both 17:15 as well as 2:0, why is that. Is it split?
-> 
-> How does one program a control number into this?
-
-A Control Number is represented on 6 bits.
-
-See the documentation above.
-
-	17:15		Control Selector[5:3]
-	2:0		Control Selector[2:0]
-
-The 3 MSBs for into bits 17:15 of the address, and the 3 LSBs into bits 
-2:0 of the address. The second part is simpler for Control Number but 
-for entities and control selectors the LSB positions don't match.
-
-Yes it's convoluted but it was well-intended: in most cases, there is a 
-limited number of entities, control selectors, channel numbers, and 
-putting the LSBs together in the 16-LSB of the address helps avoid 
-reprogramming paging registers: all the addresses for a given function 
-typically map into the same page.
-
-That said, I am not sure the optimization is that great in the end, 
-because we end-up having to play with bits for each address. Fewer 
-changes of the paging registers but tons of operations in the core.
-
-I wasn't around when this mapping was defined, and it is what is is now. 
-There's hardware built based on this formula so we have to make it work.
-
-Does this clarify the usage?
-
-If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am 
-all ears. At the end of the day, the mapping is pre-defined and we don't 
-have any degree of freedom. What I do want is that this macro/inline 
-function is shared by all codec drivers so that we don't have different 
-interpretations of how the address is constructed.
-
-Thanks,
--Pierre
-
+> >
+> > Also I think exposing slab_[un]reclaimable per node would be beneficial as well.
+>
+> Yeah, I agree with you. Maybe kernel_stack and percpu also should
+> be exposed.
+>
+> >
+> > >         seq_buf_printf(&s, "kernel_stack %llu\n",
+> > >                        (u64)memcg_page_state(memcg, NR_KERNEL_STACK_KB) *
+> > >                        1024);
+> > > --
+> > > 2.20.1
+> > >
+>
+>
+>
+> --
+> Yours,
+> Muchun
