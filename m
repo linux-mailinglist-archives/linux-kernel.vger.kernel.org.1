@@ -2,159 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C95265780
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9284F265788
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725764AbgIKDeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 23:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgIKDeL (ORCPT
+        id S1725776AbgIKDhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 23:37:52 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:21927 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725306AbgIKDhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 23:34:11 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBBCC061573;
-        Thu, 10 Sep 2020 20:34:10 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id w1so8532361edr.3;
-        Thu, 10 Sep 2020 20:34:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rdWC82PKEhEwsaXh3LAxl47RN5F/LTuAnkpnqIreE2Q=;
-        b=f7hAImC+A8EN07tWzuoorjAACjNBmgZj9nxMqSY+DSMKQiuC5kczlXpOVkgrBoMLSt
-         EFCR7nxnwQhkOKl8k72xV56bOooIo3JMF0iY4Ddg4LHP1XqouEAEAF+KMEWCU/7k4LsE
-         ERbh2VMLY3LELI+NF8FJ8mJZhyE4tJiJL4hT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rdWC82PKEhEwsaXh3LAxl47RN5F/LTuAnkpnqIreE2Q=;
-        b=iUFE9/v8Coje5M9MEvR17/uSMdjYB5WKBZfdxp25Q7P4zeNUaLV0oa9r+tH/OPlxPB
-         /f4ZRZl1TbuTsp6U0k3rOHEtA/KYb6TNw0YViwLs9N/xu/1YKlHQthF7pMp/KnbdRnj7
-         dlieoly8MV4FEIBH0Eoeo4NtFqLVEg8D3doFBCO/VigGgil133wv8uER6gUkYWBLxxRJ
-         hbJDj0fAXk4qnQSDWkQYFvxS6stvYVNoOZ4ePxzL+S7SbpJt4dlV/rcJ1JTMiHT3Dtpf
-         RL8d9c9t69TOO6rPmoC+qjANUTxVUMO+Jtav9VlQ3wzfpdotIaKsIUtFmIp6HP9wf/WK
-         lMCg==
-X-Gm-Message-State: AOAM533C4NEVkyTpESzpb0WTOBsb0lmbrVNbAuh1jqFw67ZTC4CX4jv5
-        sLzXGjvYloc1e2+H90phpnNbS4FOqp5yOzxbDIA=
-X-Google-Smtp-Source: ABdhPJzirNmav2/bABf0JzFPct9kmYu46AR/LeQQE+jKnkBIwfXqohIwEIaiJFyCSYJ6pnUxr1+sNEUyJ5DTAAnD4rk=
-X-Received: by 2002:aa7:d959:: with SMTP id l25mr12310657eds.383.1599795249576;
- Thu, 10 Sep 2020 20:34:09 -0700 (PDT)
+        Thu, 10 Sep 2020 23:37:43 -0400
+X-UUID: 11c0ecf10e584e54b3cbb8bbe5851728-20200911
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Q3rQNOBjXLnDvyO+i0Tu0z7EKCOBPItUhlWyNSIm0QM=;
+        b=tVnjNEDkftjqmv4NYoZGvasEv0Io5dwKFMTUZNXEvzOgrHpZKxc+zTnk75pFsAPz6HP0J2e2MbB87EjVWnkhozj/AwA08wye2q/ApMXqUikmSjmqSyU+rYc60FgnSW5n8tk4rEt7dJARvDv6LF6i8K3Lsq4qj3N/8EP9K2VUqtY=;
+X-UUID: 11c0ecf10e584e54b3cbb8bbe5851728-20200911
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1969438269; Fri, 11 Sep 2020 11:37:39 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 11 Sep 2020 11:37:36 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 11 Sep 2020 11:37:36 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <robh+dt@kernel.org>, <robh@kernel.org>,
+        <martin.petersen@oracle.com>, <avri.altman@wdc.com>,
+        <alim.akhtar@samsung.com>, <jejb@linux.ibm.com>
+CC:     <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <arvin.wang@mediatek.com>,
+        <HenryC.Chen@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v2 0/2] scsi: ufs-mediatek: Support performance mode for inline encryption engine
+Date:   Fri, 11 Sep 2020 11:37:33 +0800
+Message-ID: <20200911033735.21751-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20200910105440.3087723-1-andrew@aj.id.au> <20200910105440.3087723-3-andrew@aj.id.au>
- <CACPK8Xf-jys=F0Uqg-hYH-eDThmd5yOSNeC7+vLhra3GdOK1Zw@mail.gmail.com> <57d48d7a-7cea-4be7-92bd-8f3b93f84a06@www.fastmail.com>
-In-Reply-To: <57d48d7a-7cea-4be7-92bd-8f3b93f84a06@www.fastmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 11 Sep 2020 03:33:56 +0000
-Message-ID: <CACPK8XemZ2YG+nFBwy7sDoo8==YvnVYxt+1mx8QfBCxotG7K6g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mmc: sdhci-of-aspeed: Expose data sample phase delay tuning
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 at 02:49, Andrew Jeffery <andrew@aj.id.au> wrote:
->
->
->
-> On Fri, 11 Sep 2020, at 11:32, Joel Stanley wrote:
-> > On Thu, 10 Sep 2020 at 10:55, Andrew Jeffery <andrew@aj.id.au> wrote:
-> > >
-> > > Allow sample phase adjustment to deal with layout or tolerance issues.
-> > >
-> > > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> > > ---
-> > >  drivers/mmc/host/sdhci-of-aspeed.c | 137 +++++++++++++++++++++++++++--
-> > >  1 file changed, 132 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-> > > index 4f008ba3280e..641accbfcde4 100644
-> > > --- a/drivers/mmc/host/sdhci-of-aspeed.c
-> > > +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+SGkgTWFydGluLCBSb2IsIEF2cmksDQoNClRoaXMgc2VyaWVzIGFkZHMgaGlnaC1wZXJmb3JtYW5j
+ZSBtb2RlIHN1cHBvcnQgZm9yIE1lZGlhVGVrIFVGUyBpbmxpbmUgZW5jcnlwdGlvbiBlbmdpbmUu
+DQpUaGlzIGZlYXR1cmUgaXMgb25seSByZXF1aXJlZCBpbiBzcGVjaWZpYyBwbGF0Zm9ybXMsIGku
+ZS4sIE1UODE5MiBzZXJpZXMuDQoNClBsZWFzZSBoZWxwIGNvbnNpZGVyIHRoaXMgcGF0Y2ggc2V0
+IGluIGtlcm5lbCB2NS4xMC4NCg0KVGhhbmtzLg0KDQpDaGFuZ2VzIHNpbmNlIHYxOg0KCS0gUmVt
+b3ZlIHVubmVjZXNzYXJ5IHByaW50Zi4NCg0KU3RhbmxleSBDaHUgKDIpOg0KICBzY3NpOiB1ZnMt
+bWVkaWF0ZWs6IFN1cHBvcnQgcGVyZm9ybWFuY2UgbW9kZSBmb3IgaW5saW5lIGVuY3J5cHRpb24N
+CiAgICBlbmdpbmUNCiAgZHQtYmluZGluZ3M6IHVmcy1tZWRpYXRlazogQWRkIG10ODE5Mi11ZnNo
+Y2kgY29tcGF0aWJsZSBzdHJpbmcNCg0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Vmcy91ZnMt
+bWVkaWF0ZWsudHh0ICB8ICAgNCArLQ0KIGRyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMg
+ICAgICAgICAgICAgICB8IDE3NiArKysrKysrKysrKysrKysrKy0NCiBkcml2ZXJzL3Njc2kvdWZz
+L3Vmcy1tZWRpYXRlay5oICAgICAgICAgICAgICAgfCAgMjIgKysrDQogMyBmaWxlcyBjaGFuZ2Vk
+LCAxOTUgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkNCg0KLS0gDQoyLjE4LjANCg==
 
-> > > +static void
-> > > +aspeed_sdc_configure_phase(struct aspeed_sdc *sdc,
-> > > +                          const struct aspeed_sdhci_phase_desc *phase,
-> > > +                          uint8_t value, bool enable)
-> > > +{
-> > > +       u32 reg;
-> > > +
-> > > +       spin_lock(&sdc->lock);
-> >
-> > What is the lock protecting against?
-> >
-> > We call this in the ->probe, so there should be no concurrent access going on.
->
-> Because the register is in the "global" part of the SD/MMC controller address
-> space (it's not part of the SDHCI), and there are multiple slots that may have
-> a driver probed concurrently.
-
-That points to having the property be part of the "global" device tree
-node. This would simplify the code; you wouldn't need the locking
-either.
-
->
-> >
-> >
-> > > +       reg = readl(sdc->regs + ASPEED_SDC_PHASE);
-> > > +       reg &= ~phase->enable_mask;
-> > > +       if (enable) {
-> > > +               reg &= ~phase->value_mask;
-> > > +               reg |= value << __ffs(phase->value_mask);
-> > > +               reg |= phase->enable_value << __ffs(phase->enable_mask);
-> > > +       }
-> > > +       writel(reg, sdc->regs + ASPEED_SDC_PHASE);
-> > > +       spin_unlock(&sdc->lock);
-> > > +}
-> > > +
-> > >  static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
-> > >  {
-> > >         struct sdhci_pltfm_host *pltfm_host;
-> > > @@ -155,8 +195,58 @@ static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
-> > >         return (delta / 0x100) - 1;
-> > >  }
-> > >
-> > > +static int aspeed_sdhci_configure_of(struct platform_device *pdev,
-> > > +                                    struct aspeed_sdhci *sdhci)
-> > > +{
-> > > +       u32 iphase, ophase;
-> > > +       struct device_node *np;
-> > > +       struct device *dev;
-> > > +       int ret;
-> > > +
-> > > +       if (!sdhci->phase)
-> > > +               return 0;
-> > > +
-> > > +       dev = &pdev->dev;
-> > > +       np = dev->of_node;
-> > > +
-> > > +       ret = of_property_read_u32(np, "aspeed,input-phase", &iphase);
-> > > +       if (ret < 0) {
-> > > +               aspeed_sdc_configure_phase(sdhci->parent, &sdhci->phase->in, 0,
-> > > +                                          false);
-> >
-> > Will this clear any value that eg. u-boot writes?
->
-> No, see the 'enable' test in aspeed_sdc_configure_phase()
-
-OK, so this branch will never cause any change in the register? Best
-to drop it then.
-
->
-> >
-> > The register should be left alone if the kernel doesn't have a
-> > configuration of it's own, otherwise we may end up breaking an
-> > otherwise working system.
->
-> Right, I can rework that.
