@@ -2,198 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9772026764C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F894267650
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725894AbgIKXBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 19:01:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:19245 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbgIKXAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 19:00:15 -0400
-IronPort-SDR: UKkKOmgGpwMUJ6WBfHgD93QuWKLpz7l94fKsWOP3h20gNoOfA1LbR3HpcMKQAApC1+RvGvQXI1
- Gf3bV+xc4khg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="223055368"
-X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
-   d="scan'208";a="223055368"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 16:00:08 -0700
-IronPort-SDR: gjV2IAbCK+5QITdKA7WMzvCSEvXaQlPGUyhAEFA6sASH1O/4f91fTEIulHtiP+5a5tzCktpG0d
- lV5zvsXShGGQ==
-X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
-   d="scan'208";a="481500091"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 16:00:07 -0700
-Message-ID: <a1efc4330a3beff10671949eddbba96f8cde96da.camel@intel.com>
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Date:   Fri, 11 Sep 2020 15:59:56 -0700
-In-Reply-To: <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
-References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
-         <20200826164604.GW6642@arm.com> <87ft892vvf.fsf@oldenburg2.str.redhat.com>
-         <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
-         <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
-         <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
-         <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
-         <20200901102758.GY6642@arm.com>
-         <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
-         <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
-         <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
-         <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
-         <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
-         <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
-         <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
-         <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
-         <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
-         <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
-         <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
-         <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        id S1725889AbgIKXDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 19:03:17 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:42045 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725849AbgIKXC7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 19:02:59 -0400
+Received: by mail-il1-f196.google.com with SMTP id t13so10436578ile.9;
+        Fri, 11 Sep 2020 16:02:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DRAR9Vlf/Eil1JIquqfcd9+7QFJ7fXC9J6FLqU5faTg=;
+        b=U1DZONBfqC5wKyNEsyi0+/VOW/r96YVUwJwXsojhcs9brDzJMMmZuq3QLkXBHFVcd2
+         VkG6Up9vn5UiG6xqv5k9kqaHbdYe7R8liQr0TH7L2MnHdcTeu+CN8Gw3YP6UKTdQYwvj
+         TJETsGkgEgxe3sUuPYgjRRuMbYvJ1A93biw1ge4cZVCz8/W3yLGxT1TM77nZVHcaD+DT
+         wp/EcrTXAElcLHowcf9pD5NzVDRqod1sIka7Pdjh3eMZ+8XbxOcbO/sHgAifzU+ppv6d
+         t9FdFlS/YfWtkHstT4lg3M4djWX2KS+5+NTNVsS02kzPhW1j2lWl4tR15lsZggPSuwi4
+         B/lg==
+X-Gm-Message-State: AOAM5333AuXD4gedIrUHzO965Q8XYQcfQas8i35PO066M9wL/uyTeXbX
+        itChWqvOgaJ1SdKmNC9zlw==
+X-Google-Smtp-Source: ABdhPJyiOCSzRWKdX5VB5WxlES/eiFs1eKFXLi556PfER0yColMIC/T3LiuLIivE3sbFCb2pkr64Tw==
+X-Received: by 2002:a92:d0c4:: with SMTP id y4mr3511853ila.298.1599865377542;
+        Fri, 11 Sep 2020 16:02:57 -0700 (PDT)
+Received: from xps15 ([64.188.179.251])
+        by smtp.gmail.com with ESMTPSA id q23sm1864341iob.19.2020.09.11.16.02.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 16:02:56 -0700 (PDT)
+Received: (nullmailer pid 2983166 invoked by uid 1000);
+        Fri, 11 Sep 2020 23:02:55 -0000
+Date:   Fri, 11 Sep 2020 17:02:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        fparent@baylibre.com, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org, weiyi.lu@mediatek.com,
+        Matthias Brugger <mbrugger@suse.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 01/12] dt-bindings: power: Add bindings for the Mediatek
+ SCPSYS power domains controller
+Message-ID: <20200911230255.GA2972120@bogus>
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <20200910172826.3074357-2-enric.balletbo@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910172826.3074357-2-enric.balletbo@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-09 at 16:29 -0700, Dave Hansen wrote:
-> On 9/9/20 4:25 PM, Yu, Yu-cheng wrote:
-> > On 9/9/2020 4:11 PM, Dave Hansen wrote:
-> > > On 9/9/20 4:07 PM, Yu, Yu-cheng wrote:
-> > > > What if a writable mapping is passed to madvise(MADV_SHSTK)?  Should
-> > > > that be rejected?
-> > > 
-> > > It doesn't matter to me.  Even if it's readable, it _stops_ being even
-> > > directly readable after it's a shadow stack, right?  I don't think
-> > > writes are special in any way.  If anything, we *want* it to be writable
-> > > because that indicates that it can be written to, and we will want to
-> > > write to it soon.
-> > > 
-> > But in a PROT_WRITE mapping, all the pte's have _PAGE_BIT_RW set.  To
-> > change them to shadow stack, we need to clear that bit from the pte's.
-> > That will be like mprotect_fixup()/change_protection_range().
+On Thu, Sep 10, 2020 at 07:28:15PM +0200, Enric Balletbo i Serra wrote:
+> The System Control Processor System (SCPSYS) has several power management
+> related tasks in the system. Add the bindings to define the power
+> domains for the SCPSYS power controller.
 > 
-> The page table hardware bits don't matter.  The user-visible protection
-> effects matter.
+> Co-developed-by: Matthias Brugger <mbrugger@suse.com>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+> Dear Rob,
 > 
-> For instance, we have PROT_EXEC, which *CLEARS* a hardware NX PTE bit.
-> The PROT_ permissions are independent of the hardware.
+> I am awasre that this binding is not ready, but I prefered to send because I'm
+> kind of blocked. Compiling this binding triggers the following error:
 > 
-> I don't think the interface should be influenced at *all* by what whacko
-> PTE bit combinations we have to set to get the behavior.
+>     mediatek,power-controller.example.dt.yaml: syscon@10006000: mfg_async@7:
+>     '#address-cells', '#size-cells', 'mfg_2d@8'
+>     do not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> This happens when a definition of a power-domain (parent) contains
+> another power-domain (child), like the example. I am not sure how to
+> specify this in the yaml and deal with this, so any clue is welcome.
 
-Here are the changes if we take the mprotect(PROT_SHSTK) approach.
-Any comments/suggestions?
+You just have to keep nesting schemas all the way down. Define a 
+grandchild node under the child node and then all of its properties.
 
----
- arch/x86/include/uapi/asm/mman.h | 26 +++++++++++++++++++++++++-
- mm/mprotect.c                    | 11 +++++++++++
- 2 files changed, 36 insertions(+), 1 deletion(-)
+> 
+> Thanks,
+>   Enric
+> 
+>  .../power/mediatek,power-controller.yaml      | 171 ++++++++++++++++++
+>  1 file changed, 171 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> new file mode 100644
+> index 000000000000..8be9244ad160
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> @@ -0,0 +1,171 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/power/mediatek,power-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Mediatek Power Domains Controller
+> +
+> +maintainers:
+> +  - Weiyi Lu <weiyi.lu@mediatek.com>
+> +  - Matthias Brugger <mbrugger@suse.com>
+> +
+> +description: |
+> +  Mediatek processors include support for multiple power domains which can be
+> +  powered up/down by software based on different application scenes to save power.
+> +
+> +  IP cores belonging to a power domain should contain a 'power-domains'
+> +  property that is a phandle for SCPSYS node representing the domain.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^syscon@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    items:
+> +      - enum:
+> +        - mediatek,mt8173-power-controller
+> +      - const: syscon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +patternProperties:
+> +  "^.*@[0-9]$":
 
-diff --git a/arch/x86/include/uapi/asm/mman.h b/arch/x86/include/uapi/asm/mman.h
-index d4a8d0424bfb..024f006fcfe8 100644
---- a/arch/x86/include/uapi/asm/mman.h
-+++ b/arch/x86/include/uapi/asm/mman.h
-@@ -4,6 +4,8 @@
- 
- #define MAP_32BIT	0x40		/* only give out 32bit addresses */
- 
-+#define PROT_SHSTK	0x10		/* shadow stack pages */
-+
- #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
- /*
-  * Take the 4 protection key bits out of the vma->vm_flags
-@@ -19,13 +21,35 @@
- 		((vm_flags) & VM_PKEY_BIT2 ? _PAGE_PKEY_BIT2 : 0) |	\
- 		((vm_flags) & VM_PKEY_BIT3 ? _PAGE_PKEY_BIT3 : 0))
- 
--#define arch_calc_vm_prot_bits(prot, key) (		\
-+#define pkey_vm_prot_bits(prot, key) (			\
- 		((key) & 0x1 ? VM_PKEY_BIT0 : 0) |      \
- 		((key) & 0x2 ? VM_PKEY_BIT1 : 0) |      \
- 		((key) & 0x4 ? VM_PKEY_BIT2 : 0) |      \
- 		((key) & 0x8 ? VM_PKEY_BIT3 : 0))
-+#else
-+#define pkey_vm_prot_bits(prot, key)
- #endif
- 
-+#define shstk_vm_prot_bits(prot) ( \
-+		(static_cpu_has(X86_FEATURE_SHSTK) && (prot & PROT_SHSTK)) ? \
-+		VM_SHSTK : 0)
-+
-+#define arch_calc_vm_prot_bits(prot, key) \
-+		(pkey_vm_prot_bits(prot, key) | shstk_vm_prot_bits(prot))
-+
- #include <asm-generic/mman.h>
- 
-+static inline bool arch_validate_prot(unsigned long prot, unsigned long addr)
-+{
-+	unsigned long supported = PROT_READ | PROT_EXEC | PROT_SEM;
-+
-+	if (static_cpu_has(X86_FEATURE_SHSTK) && (prot & PROT_SHSTK))
-+		supported |= PROT_SHSTK;
-+	else
-+		supported |= PROT_WRITE;
-+
-+	return (prot & ~supported) == 0;
-+}
-+#define arch_validate_prot arch_validate_prot
-+
- #endif /* _ASM_X86_MMAN_H */
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index a8edbcb3af99..520bd8caa005 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -571,6 +571,17 @@ static int do_mprotect_pkey(unsigned long start, size_t
-len,
- 				goto out;
- 		}
- 	}
-+
-+	/*
-+	 * Only anonymous mapping is suitable for shadow stack.
-+	 */
-+	if (prot & PROT_SHSTK) {
-+		if (vma->vm_file) {
-+			error = -EINVAL;
-+			goto out;
-+		}
-+	}
-+
- 	if (start > vma->vm_start)
- 		prev = vma;
- 
--- 
+Node names should be generic:
 
+power-domain@
+
+> +    type: object
+> +    description: |
+> +      Represents the power domains within the power controller node as documented
+> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
+> +
+> +    properties:
+> +      reg:
+> +        description: |
+> +          Power domain index. Valid values are defined in:
+> +              "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
+> +        maxItems: 1
+> +
+> +      '#power-domain-cells':
+> +        description:
+> +          Documented by the generic PM Domain bindings in
+> +          Documentation/devicetree/bindings/power/power-domain.yaml.
+
+No need to redefine a common property. This should define valid values 
+for it.
+
+> +
+> +      clocks:
+> +        description: |
+> +          A number of phandles to clocks that need to be enabled during domain
+> +          power-up sequencing.
+
+No need to redefine 'clocks'. You need to define how many, what each one 
+is, and the order.
+
+> +
+> +      clock-names:
+> +        description: |
+> +          List of names of clocks, in order to match the power-up sequencing
+> +          for each power domain we need to group the clocks by name. BASIC
+> +          clocks need to be enabled before enabling the corresponding power
+> +          domain, and should not have a '-' in their name (i.e mm, mfg, venc).
+> +          SUSBYS clocks need to be enabled before releasing the bus protection,
+> +          and should contain a '-' in their name (i.e mm-0, isp-0, cam-0).
+> +
+> +          In order to follow properly the power-up sequencing, the clocks must
+> +          be specified by order, adding first the BASIC clocks followed by the
+> +          SUSBSYS clocks.
+
+You need to define the names.
+
+> +
+> +      mediatek,infracfg:
+> +        $ref: /schemas/types.yaml#definitions/phandle
+> +        description: phandle to the device containing the INFRACFG register range.
+> +
+> +      mediatek,smi:
+> +        $ref: /schemas/types.yaml#definitions/phandle
+> +        description: phandle to the device containing the SMI register range.
+> +
+> +    required:
+> +      - reg
+> +      - '#power-domain-cells'
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/power/mt8173-power.h>
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        scpsys: syscon@10006000 {
+> +            compatible = "mediatek,mt8173-power-controller", "syscon";
+> +            reg = <0 0x10006000 0 0x1000>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            /* power domains of the SoC */
+> +            vdec@MT8173_POWER_DOMAIN_VDEC {
+> +                reg = <MT8173_POWER_DOMAIN_VDEC>;
+> +                clocks = <&topckgen CLK_TOP_MM_SEL>;
+> +                clock-names = "mm";
+> +                #power-domain-cells = <0>;
+> +            };
+> +
+> +            venc@MT8173_POWER_DOMAIN_VENC {
+> +                reg = <MT8173_POWER_DOMAIN_VENC>;
+> +                clocks = <&topckgen CLK_TOP_MM_SEL>,
+> +                         <&topckgen CLK_TOP_VENC_SEL>;
+> +                clock-names = "mm", "venc";
+> +                #power-domain-cells = <0>;
+> +            };
+> +            isp@MT8173_POWER_DOMAIN_ISP {
+> +                reg = <MT8173_POWER_DOMAIN_ISP>;
+> +                clocks = <&topckgen CLK_TOP_MM_SEL>;
+> +                clock-names = "mm";
+> +                #power-domain-cells = <0>;
+> +            };
+> +            mm@MT8173_POWER_DOMAIN_MM {
+> +                reg = <MT8173_POWER_DOMAIN_MM>;
+> +                clocks = <&topckgen CLK_TOP_MM_SEL>;
+> +                clock-names = "mm";
+> +                #power-domain-cells = <0>;
+> +                mediatek,infracfg = <&infracfg>;
+> +            };
+> +            venc_lt@MT8173_POWER_DOMAIN_VENC_LT {
+> +                reg = <MT8173_POWER_DOMAIN_VENC_LT>;
+> +                clocks = <&topckgen CLK_TOP_MM_SEL>,
+> +                         <&topckgen CLK_TOP_VENC_LT_SEL>;
+> +                clock-names = "mm", "venclt";
+> +                #power-domain-cells = <0>;
+> +            };
+> +            audio@MT8173_POWER_DOMAIN_AUDIO {
+> +                reg = <MT8173_POWER_DOMAIN_AUDIO>;
+> +                #power-domain-cells = <0>;
+> +            };
+> +            usb@MT8173_POWER_DOMAIN_USB {
+> +                reg = <MT8173_POWER_DOMAIN_USB>;
+> +                #power-domain-cells = <0>;
+> +            };
+> +            mfg_async@MT8173_POWER_DOMAIN_MFG_ASYNC {
+> +                reg = <MT8173_POWER_DOMAIN_MFG_ASYNC>;
+> +                clocks = <&clk26m>;
+> +                clock-names = "mfg";
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                #power-domain-cells = <1>;
+> +
+> +                mfg_2d@MT8173_POWER_DOMAIN_MFG_2D {
+> +                    reg = <MT8173_POWER_DOMAIN_MFG_2D>;
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    #power-domain-cells = <1>;
+> +
+> +                    mfg@MT8173_POWER_DOMAIN_MFG {
+> +                        reg = <MT8173_POWER_DOMAIN_MFG>;
+> +                        #power-domain-cells = <0>;
+> +                        mediatek,infracfg = <&infracfg>;
+> +                    };
+> +                };
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.28.0
+> 
