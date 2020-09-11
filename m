@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF60E2667DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50DA42667DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgIKRyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        id S1726025AbgIKRyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:54:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbgIKRxE (ORCPT
+        with ESMTP id S1725968AbgIKRxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:53:04 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE03C0617A0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:53:03 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d9so7950585pfd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:53:03 -0700 (PDT)
+        Fri, 11 Sep 2020 13:53:08 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D686C0617A2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:53:06 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id w7so7953422pfi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:53:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3+4ZHw0+VeIe0SQnyvAHxFZq/0t9LvC8BcJL3W/evlY=;
-        b=Uw0A2Xmo3YnXyoWfs5zAYCO+b5CRzqpciV4WkOJyEswyPIefdK9+DXPYRdszC6pK+m
-         HJJ3Vo08ljAaV1r6vVZkXyxpTAzWuTqBP2PnZmyos1Qy7kbAOxvWedjHUnAqOa49W8Lm
-         T2Y/75DsAzOS9QvntX8Z70Y9XCpVGPXsMbTuA=
+        bh=INDLeFc16JIrQhX1gY3+va7HC7+OjHCYuDnmPpZEkdM=;
+        b=Ln3XPM7pxm+97HwaoheOauTg/DUT7LolMyLVGDPdK/chBGiAJXb46Q6J9rX4fIPDRI
+         s2jtixuaVI4Cf3Ywb2q96f0yhene2bRNgDJhzVr/p6yAtJX9tojZeePcB3zc7BV52Gws
+         SvqzLQsUOrkNldRjrdQRIsJ1QiDQy88sJViAY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=3+4ZHw0+VeIe0SQnyvAHxFZq/0t9LvC8BcJL3W/evlY=;
-        b=dR796qE3lPESEfDhT0Sl7QwC3g3crNwBUtPR3D5WwV/DVEKvNuMi4DmhTHA7EVJFB2
-         298B/MnH2dFlupX5ZbVALO5x2xxMRXkCxchH76tl33au+PVFxv0BGnw1ytFt4prLjzjO
-         0rdPgd/SSbndmaTmiGC+o2BXpMol4kDGgs/zS81u8kylAH4KH0s0emJtmFNwMW+nz1Vq
-         Rz69msX3tA07bctUp/XkoPHhTHvzbS5ThNP21GJjevscUe0MRxPIhbRJZaHt7E4T7C//
-         ngauQMqeuHa0cntAPZVYExgwHPShkTRd2Mb/xSp5Djc4A22gCDWFK6RO0gyewcrmIU87
-         +r2g==
-X-Gm-Message-State: AOAM533WnG7x6kQakL/kcaijC4p/ug/YKHcdRnSsbT3RodnrRHlOAz2Q
-        oQir8ghkkKHuMa7RlqOQlHR8BA==
-X-Google-Smtp-Source: ABdhPJwTaTMWvwu/XsaFfdGwPGTIQiTLVpkh8gp3euxKuJ38xmVN895mvvUoTIm2uMInI5q/K+Kvhw==
-X-Received: by 2002:a17:902:8548:b029:d0:cbe1:e70b with SMTP id d8-20020a1709028548b02900d0cbe1e70bmr3327385plo.25.1599846783099;
-        Fri, 11 Sep 2020 10:53:03 -0700 (PDT)
+        bh=INDLeFc16JIrQhX1gY3+va7HC7+OjHCYuDnmPpZEkdM=;
+        b=DC/4ZdJRHEe9hG2JsOeTZ3r7unnF1DRly3jqqf8rR/VCl98DhIMMl9dnw3z8+CAKlw
+         MP8FLEWk5IoDY2UTba4jDBdpg3mx/YPpJwclaTc0c7TggDkAf2tKmjQ2YiGrXC3X13Yu
+         LVpw4Zu0zz3YBeQNhyzCvXu5eDke0SfdrFXG6r7/920ArYpMDK6tPXfKT1DWjd5QDqd8
+         lw6t2l1LNMd0L0hM5qCejYRSL8p5lth5tOrRjpt+H9/bFXRsswznV13QniWuDe8f280D
+         CO5RtiYwTVEK6385kwWPW7YiTeLsBWSNYi2bkONnC2eU6s/ExEH3vJ38QWttsjVgn0xI
+         LJvQ==
+X-Gm-Message-State: AOAM5339O+4HlQ62EnVDmrne247cz89MH+cWddaLRsY/Xh0GpVw2hh6E
+        d+fi30XtoXrdlQ3yc1exyotJVg==
+X-Google-Smtp-Source: ABdhPJzWB3+DrKWxqtT0GBzaHAA154wcCn4PBbX1QPW05Dv9IKwcvT5ilbnmBjyelw2Ul6dsTw4CNg==
+X-Received: by 2002:a17:902:525:b029:d1:920c:c200 with SMTP id 34-20020a1709020525b02900d1920cc200mr3478270plf.25.1599846785874;
+        Fri, 11 Sep 2020 10:53:05 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id d77sm2871963pfd.121.2020.09.11.10.53.00
+        by smtp.gmail.com with ESMTPSA id d77sm2871963pfd.121.2020.09.11.10.53.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 10:53:02 -0700 (PDT)
+        Fri, 11 Sep 2020 10:53:05 -0700 (PDT)
 From:   Jim Quinlan <james.quinlan@broadcom.com>
 To:     linux-pci@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Christoph Hellwig <hch@lst.de>,
         Robin Murphy <robin.murphy@arm.com>,
         bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Jim Quinlan <jquinlan@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Rob Herring <robh@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -60,94 +59,51 @@ Cc:     Jim Quinlan <jquinlan@broadcom.com>,
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
         BCM2711/BCM2835 ARM ARCHITECTURE),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v12 09/10] PCI: brcmstb: Set bus max burst size by chip type
-Date:   Fri, 11 Sep 2020 13:52:29 -0400
-Message-Id: <20200911175232.19016-10-james.quinlan@broadcom.com>
+Subject: [PATCH v12 10/10] PCI: brcmstb: Add bcm7211, bcm7216, bcm7445, bcm7278 to match list
+Date:   Fri, 11 Sep 2020 13:52:30 -0400
+Message-Id: <20200911175232.19016-11-james.quinlan@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200911175232.19016-1-james.quinlan@broadcom.com>
 References: <20200911175232.19016-1-james.quinlan@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000003ab94f05af0d5b8e"
+        boundary="0000000000006563f805af0d5ba4"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003ab94f05af0d5b8e
+--0000000000006563f805af0d5ba4
 
-From: Jim Quinlan <jquinlan@broadcom.com>
+Now that the support is in place with previous commits, we add several
+chips that use the BrcmSTB driver.
 
-The proper value of the parameter SCB_MAX_BURST_SIZE varies per chip.  The
-2711 family requires 128B whereas other devices can employ 512.  The
-assignment is complicated by the fact that the values for this two-bit
-field have different meanings;
-
-  Value   Type_Generic    Type_7278
-
-     00       Reserved         128B
-     01           128B         256B
-     10           256B         512B
-     11           512B     Reserved
-
-Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
 Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- drivers/pci/controller/pcie-brcmstb.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/pci/controller/pcie-brcmstb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 10449384380f..b78e73f92857 100644
+index b78e73f92857..6e7aa82a54a3 100644
 --- a/drivers/pci/controller/pcie-brcmstb.c
 +++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -55,7 +55,7 @@
- #define  PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK		0x1000
- #define  PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK	0x2000
- #define  PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK	0x300000
--#define  PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_128		0x0
-+
- #define  PCIE_MISC_MISC_CTRL_SCB0_SIZE_MASK		0xf8000000
- #define  PCIE_MISC_MISC_CTRL_SCB1_SIZE_MASK		0x07c00000
- #define  PCIE_MISC_MISC_CTRL_SCB2_SIZE_MASK		0x0000001f
-@@ -867,7 +867,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 	int num_out_wins = 0;
- 	u16 nlw, cls, lnksta;
- 	int i, ret, memc;
--	u32 tmp, aspm_support;
-+	u32 tmp, burst, aspm_support;
+@@ -1202,6 +1202,10 @@ static int brcm_pcie_remove(struct platform_device *pdev)
  
- 	/* Reset the bridge */
- 	pcie->bridge_sw_init_set(pcie, 1);
-@@ -882,11 +882,22 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 	/* Wait for SerDes to be stable */
- 	usleep_range(100, 200);
+ static const struct of_device_id brcm_pcie_match[] = {
+ 	{ .compatible = "brcm,bcm2711-pcie", .data = &bcm2711_cfg },
++	{ .compatible = "brcm,bcm7211-pcie", .data = &generic_cfg },
++	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
++	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
++	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
+ 	{},
+ };
  
-+	/*
-+	 * SCB_MAX_BURST_SIZE is a two bit field.  For GENERIC chips it
-+	 * is encoded as 0=128, 1=256, 2=512, 3=Rsvd, for BCM7278 it
-+	 * is encoded as 0=Rsvd, 1=128, 2=256, 3=512.
-+	 */
-+	if (pcie->type == BCM2711)
-+		burst = 0x0; /* 128B */
-+	else if (pcie->type == BCM7278)
-+		burst = 0x3; /* 512 bytes */
-+	else
-+		burst = 0x2; /* 512 bytes */
-+
- 	/* Set SCB_MAX_BURST_SIZE, CFG_READ_UR_MODE, SCB_ACCESS_EN */
- 	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_SCB_ACCESS_EN_MASK);
- 	u32p_replace_bits(&tmp, 1, PCIE_MISC_MISC_CTRL_CFG_READ_UR_MODE_MASK);
--	u32p_replace_bits(&tmp, PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_128,
--			  PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK);
-+	u32p_replace_bits(&tmp, burst, PCIE_MISC_MISC_CTRL_MAX_BURST_SIZE_MASK);
- 	writel(tmp, base + PCIE_MISC_MISC_CTRL);
- 
- 	ret = brcm_pcie_get_rc_bar2_size_and_offset(pcie, &rc_bar2_size,
 -- 
 2.17.1
 
 
---0000000000003ab94f05af0d5b8e
+--0000000000006563f805af0d5ba4
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -217,14 +173,14 @@ V6GuAMmRknrzeTlxPy40UhUcRKk6Nm8mxl3Jh4KB68z7NFVpIx8G5w5I7S5ar1mLGNRjtFZ0RE4O
 lcCwKVGUXRaZMgQGrIhxGVelVgrcBh2vjpndlv733VI2VKE/TvV5MxMGU18RnogYSm66AEFA/Zb+
 5ztz1AtIMYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
 di1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEcz
-AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIeJoch/A4CI
-TqRhDwAsxpqELIyHiT54+DFp8JnDLvo/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIwMDkxMTE3NTMwM1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+AgwTv2xmtR4KOmK4QvMwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPT9i8CnPc7+
+gveDBKgnuts/pbETy/dXNFYBUGEoRHHNMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIwMDkxMTE3NTMwNlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
 YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAJBWIsIOm5Csh3zodsIrzdSWXgEWyr
-Ql6vmxFVKoYj7LnUF9HwrgTx67g+OsCHGQaSDADtNMY4aw9qCPK1SIM7A/fbDibAuJW33JK/jf1Y
-d4mdOsiBSoLlWI+3Gndn1q6A2bXN8a1Gus1u5rl1aZmwsJJo42wqBYZNKBjT8koCG5GTiS+uHMCc
-JDiUxM6D93wafKlme9flg5CVkgz+vXvrn2GOP6e8w+nkxY93vu+gMfYAaivCxnLzeAaUYy8wGGtk
-NfSsxwLpujfu4LnRkQQe0jUimvxq3zngSQ7sRORvAVcFXyKQw9RFORRX1y4Z4ef/vNsh0OwSO6cc
-Mp9tG+wf
---0000000000003ab94f05af0d5b8e--
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCUVFn0+Ouvg+tnPELhXkrDC6FozO6b
+GeedbseuuoGXPwywHWrIAN+dtzZRKmbHYqEunFUP2l8Bf6yQ4GNmD3DXmKIHxcWxyYNRvgSE/qnJ
++PB6A1SzIN58rAGvH2I3YS4L+SlvSoDKx3CyBK9vZmKx4SEn4FeslPKtra6YdOfEkPZs50NbAbCy
+PK48YbIIT8WkGBAnpEMp1fED1C47iP7ofLKW3qc/GyH1P9qvU+cObMflYdOhFowVVdGz62pOLxB5
+rnJaEXZkLpFS8FcdwKctGCNpk/98PBHYD9NmDaUX4sOM5x2N2JpFBK9OV34Fr4h24SEhUBUJj3N7
+YD6e44qu
+--0000000000006563f805af0d5ba4--
