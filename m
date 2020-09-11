@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550A4266506
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F05266470
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbgIKQul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:50:41 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:29064 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726028AbgIKPGU (ORCPT
+        id S1726413AbgIKQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:38:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28926 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726274AbgIKPMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:06:20 -0400
-X-UUID: bbb1654dcc8e45c7b33c94d8506457c8-20200911
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=ZNhP5xaUbRIBnTRA/hqi7qa/bJA8dbfF/8PShVgiuHA=;
-        b=Jci3n3Ita3CS81kMpY4Bn6nSDF8262n1xIKSj9LnYgzw8ghPNAwX7RUGTUKnQ3EeNK5CMnWwJUQtg6TFMSGqva4rQMQMH1yKL8xKl1r2c0RohkV417+LHRnsecag6Oo1MzBqvKvp+WIR2RkLhDfMdt84nEvl5Tqwd8UBc1E6sC0=;
-X-UUID: bbb1654dcc8e45c7b33c94d8506457c8-20200911
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1500105110; Fri, 11 Sep 2020 21:49:20 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 11 Sep 2020 21:49:16 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Sep 2020 21:49:15 +0800
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>
-CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <frank-w@public-files.de>,
-        <opensource@vdorst.com>, <dqfext@gmail.com>,
-        Landen Chao <landen.chao@mediatek.com>
-Subject: [PATCH net-next v5 5/6] arm64: dts: mt7622: add mt7531 dsa to mt7622-rfb1 board
-Date:   Fri, 11 Sep 2020 21:48:55 +0800
-Message-ID: <094327efabf7dd28aa4d53f4fd6fe82b1f5e36c3.1599829696.git.landen.chao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <cover.1599829696.git.landen.chao@mediatek.com>
-References: <cover.1599829696.git.landen.chao@mediatek.com>
+        Fri, 11 Sep 2020 11:12:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599837121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aiWmHLDD0Ad0LUM9I3Re3J2jS/emquPxE/7QtuwNOPg=;
+        b=gxXCtIupESgbz961KIg5tC4lEmLWzKToPJBqqrL5WIchgdrsdUGifvttRW07oWQtkxCInS
+        rLNv/SsI/azVsJHj2mLVsZ+cGXkEW22ym9M2v4+SkyUAF6rFPdvA9mj758sYLqEx90AtZp
+        Jm+d0g8OSvLNiLA0hOM2YRmH5+4zdE8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-4NT_19gWN0K2miAueSjn9w-1; Fri, 11 Sep 2020 09:53:13 -0400
+X-MC-Unique: 4NT_19gWN0K2miAueSjn9w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62D58CD046;
+        Fri, 11 Sep 2020 13:53:12 +0000 (UTC)
+Received: from [10.36.112.212] (ovpn-112-212.ams2.redhat.com [10.36.112.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B1135DA2A;
+        Fri, 11 Sep 2020 13:53:00 +0000 (UTC)
+Subject: Re: MSI/MSIX for VFIO platform
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Vikas Gupta <vikas.gupta@broadcom.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikram Prakash <vikram.prakash@broadcom.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+References: <c94c36305980f80674aa699e27b9895b@mail.gmail.com>
+ <20200910105735.1e060b95@w520.home>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <f9b3c805-cd64-3402-ff73-339c35c4c27a@redhat.com>
+Date:   Fri, 11 Sep 2020 15:52:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200910105735.1e060b95@w520.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIG10NzUzMSBkc2EgdG8gbXQ3NjIyLXJmYjEgYm9hcmQgZm9yIDUgZ2lnYSBFdGhlcm5ldCBw
-b3J0cyBzdXBwb3J0Lg0KbXQ3NjIyIG9ubHkgc3VwcG9ydHMgMSBzZ21paSBpbnRlcmZhY2UsIHNv
-IGVpdGhlciBnbWFjMCBvciBnbWFjMSBjYW4gYmUNCmNvbmZpZ3VyZWQgYXMgc2dtaWkgaW50ZXJm
-YWNlLiBJbiB0aGlzIHBhdGNoLCBjaGFuZ2UgdG8gY29ubmVjdCBtdDc2MjINCmdtYWMwIGFuZCBt
-dDc1MzEgcG9ydDYgdGhyb3VnaCBzZ21paSBpbnRlcmZhY2UuDQoNClNpZ25lZC1vZmYtYnk6IExh
-bmRlbiBDaGFvIDxsYW5kZW4uY2hhb0BtZWRpYXRlay5jb20+DQotLS0NCiBhcmNoL2FybTY0L2Jv
-b3QvZHRzL21lZGlhdGVrL210NzYyMi1yZmIxLmR0cyB8IDYzICsrKysrKysrKysrKysrKysrKy0t
-DQogMSBmaWxlIGNoYW5nZWQsIDU3IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pDQoNCmRp
-ZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210NzYyMi1yZmIxLmR0cyBi
-L2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLXJmYjEuZHRzDQppbmRleCAwYjRk
-ZTYyN2Y5NmUuLjA4YWQwZmZiMjRkZiAxMDA2NDQNCi0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMv
-bWVkaWF0ZWsvbXQ3NjIyLXJmYjEuZHRzDQorKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlh
-dGVrL210NzYyMi1yZmIxLmR0cw0KQEAgLTEwNSwyMCArMTA1LDcxIEBADQogCXBpbmN0cmwtMCA9
-IDwmZXRoX3BpbnM+Ow0KIAlzdGF0dXMgPSAib2theSI7DQogDQotCWdtYWMxOiBtYWNAMSB7DQor
-CWdtYWMwOiBtYWNAMCB7DQogCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLGV0aC1tYWMiOw0KLQkJ
-cmVnID0gPDE+Ow0KLQkJcGh5LWhhbmRsZSA9IDwmcGh5NT47DQorCQlyZWcgPSA8MD47DQorCQlw
-aHktbW9kZSA9ICIyNTAwYmFzZS14IjsNCisNCisJCWZpeGVkLWxpbmsgew0KKwkJCXNwZWVkID0g
-PDI1MDA+Ow0KKwkJCWZ1bGwtZHVwbGV4Ow0KKwkJCXBhdXNlOw0KKwkJfTsNCiAJfTsNCiANCiAJ
-bWRpby1idXMgew0KIAkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQogCQkjc2l6ZS1jZWxscyA9IDww
-PjsNCiANCi0JCXBoeTU6IGV0aGVybmV0LXBoeUA1IHsNCi0JCQlyZWcgPSA8NT47DQotCQkJcGh5
-LW1vZGUgPSAic2dtaWkiOw0KKwkJc3dpdGNoQDAgew0KKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0
-ZWssbXQ3NTMxIjsNCisJCQlyZWcgPSA8MD47DQorCQkJcmVzZXQtZ3Bpb3MgPSA8JnBpbyA1NCAw
-PjsNCisNCisJCQlwb3J0cyB7DQorCQkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0KKwkJCQkjc2l6
-ZS1jZWxscyA9IDwwPjsNCisNCisJCQkJcG9ydEAwIHsNCisJCQkJCXJlZyA9IDwwPjsNCisJCQkJ
-CWxhYmVsID0gImxhbjAiOw0KKwkJCQl9Ow0KKw0KKwkJCQlwb3J0QDEgew0KKwkJCQkJcmVnID0g
-PDE+Ow0KKwkJCQkJbGFiZWwgPSAibGFuMSI7DQorCQkJCX07DQorDQorCQkJCXBvcnRAMiB7DQor
-CQkJCQlyZWcgPSA8Mj47DQorCQkJCQlsYWJlbCA9ICJsYW4yIjsNCisJCQkJfTsNCisNCisJCQkJ
-cG9ydEAzIHsNCisJCQkJCXJlZyA9IDwzPjsNCisJCQkJCWxhYmVsID0gImxhbjMiOw0KKwkJCQl9
-Ow0KKw0KKwkJCQlwb3J0QDQgew0KKwkJCQkJcmVnID0gPDQ+Ow0KKwkJCQkJbGFiZWwgPSAid2Fu
-IjsNCisJCQkJfTsNCisNCisJCQkJcG9ydEA2IHsNCisJCQkJCXJlZyA9IDw2PjsNCisJCQkJCWxh
-YmVsID0gImNwdSI7DQorCQkJCQlldGhlcm5ldCA9IDwmZ21hYzA+Ow0KKwkJCQkJcGh5LW1vZGUg
-PSAiMjUwMGJhc2UteCI7DQorDQorCQkJCQlmaXhlZC1saW5rIHsNCisJCQkJCQlzcGVlZCA9IDwy
-NTAwPjsNCisJCQkJCQlmdWxsLWR1cGxleDsNCisJCQkJCQlwYXVzZTsNCisJCQkJCX07DQorCQkJ
-CX07DQorCQkJfTsNCiAJCX07DQorDQogCX07DQogfTsNCiANCi0tIA0KMi4xNy4xDQo=
+Hi Vikas,
+
+On 9/10/20 6:57 PM, Alex Williamson wrote:
+> On Thu, 10 Sep 2020 16:15:27 +0530
+> Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+> 
+>> Hi Alex/Cornelia,
+>>
+>> We are looking for MSI interrupts for platform devices in user-space
+>> applications via event/poll mechanism using VFIO.
+>>
+>> Since there is no support for MSI/MSIX handling in VFIO-platform in kernel,
+>> it may not possible to get this feature in user-space.
+>>
+>> Is there any other way we can get this feature in user-space OR can you
+>> please suggest if any patch or feature is in progress for same in VFIO
+>> platform?
+>>
+>> Any suggestions would be helpful.
+> 
+> Eric (Cc'd) is the maintainer of vfio-platform.
+> 
+> vfio-platform devices don't have IRQ indexes dedicated to MSI and MSI-X
+> like vfio-pci devices do (technically these are PCI concepts, but I
+> assume we're referring generically to message signaled interrupts), but
+> that's simply due to the lack of standardization in platform devices.
+> Logically these are simply collections of edge triggered interrupts,
+> which the vfio device API supports generically, it's simply a matter
+> that the vfio bus driver exposing a vfio-platform device create an IRQ
+> index exposing these vectors.  Thanks,
+
+I have not worked on MSI support and I am not aware of any work
+happening in this area.
+
+First I would recommend to look at IRQ related uapis exposed by VFIO:
+VFIO_DEVICE_GET_IRQ_INFO
+VFIO_DEVICE_SET_IRQS
+
+and try to understand if they can be implemented for MSIs in a generic
+way in the vfio_platform driver using platform-msi helpers.
+
+For instance VFIO_DEVICE_GET_IRQ_INFO would need to return the number of
+requested vectors. On init I guess we should allocate vectors using
+platform_msi_domain_alloc_irqs/ devm_request_irq and in the handler
+trigger the eventfd provided through VFIO_DEVICE_SET_IRQS.
+
+On userspace where you have to trap the MSI setup to call the above
+functions and setup irqfd injection. This would be device specific as
+opposed to PCI. That's just rough ideas at the moment.
+
+Thanks
+
+Eric
+
+> 
+> Alex
+> 
 
