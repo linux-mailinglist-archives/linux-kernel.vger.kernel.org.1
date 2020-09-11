@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C5626694A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0312F266952
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgIKT7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        id S1725842AbgIKUDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbgIKT7K (ORCPT
+        with ESMTP id S1725796AbgIKUDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:59:10 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC54C061573;
-        Fri, 11 Sep 2020 12:59:09 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id n13so11283959edo.10;
-        Fri, 11 Sep 2020 12:59:09 -0700 (PDT)
+        Fri, 11 Sep 2020 16:03:37 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96F8C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:03:37 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id m15so1376036pls.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B2fvDataPFDcqtRjmyzwIGz+W24egsQT7RsA21OM+aw=;
-        b=HUNvSNOCsAYMaMX6zn28qYgInmlDzu+yDJ7owLavD6xitvNjd6zk8e4l9dv0y3dMK4
-         t5cBve4IXwgxailATJEBiqKerVMOGOvTBwH4Eu0y4D5JGUA12kVENN/Rm0bZbVi4PzBf
-         /sLSP9NqN6Vr673cNVgytfCc5OePhjFxDZ1JQlTcPh/mjMU8fKpdS/2oYkQUdGW3oQQI
-         prbGOOURjVSRMQXivNb/plEk4P5GZ/XXLHTDj/OkZzx5Be8z473wsDRJzopin+MnicXI
-         oxv7Nm8BUBDBU3NYUbnJ6qUSxCjSGai+I1olA1qqRQ5C7jTzIjiJ36/tlGp6irXjbj33
-         XF0w==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=frP8Q+XX3vatIolvDa1CfpmKMR9bYV+BQ0pT6Q4S34s=;
+        b=bi5YLKmLyb3PdnbKs+BioUD4eTOKUvTFmSH93jPwe8WGn/jZKERBN77kVgZD27Y1D1
+         OXmlzXSSgUy+Gu5dAS1LgPWA+r4B/SCN/9UDEhfrsoxyqrCF1WcsvQ+OOMJvNihbG6zq
+         BywqpY7yUGXofRN0q8UJ5B1ZLvTp5rFGos4IBwJyjK/U5RXSamPyYts3Wx1rqrzupWLT
+         n+0dPIeb9ebBU0QcXCSNQYdzM1Kj58yLcfq0xMuwUm5tsBIPtUiW5VhVT9Ri62fpQiIN
+         QpSHxjyLw20ppjDLbYSI4PYz8l5rymJm1S3cdhHyycrD1Wddw0pTDbiVH4bJbBjRHHvK
+         Y48A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B2fvDataPFDcqtRjmyzwIGz+W24egsQT7RsA21OM+aw=;
-        b=r/ED/9HowdS640Svys1CtaCGY3CnJoItLI3kOUTUsjWHIeGG3b1UTiHIsk30egBZWL
-         JyChLqRSaJZIVOgWD66466ZqQTe99JFb7c0TKDq/qOI0XYqMXOtZKw+5KcL+e9Qff8r6
-         9Vd2uorUZHui7sjbRy8yNiQVVlk0MbQpj3QauCUTcajD+4fM4HuqM9U79veBM+SSkLNC
-         v8FCW/stj4VmmfLAUeSsNpf4erAuRRE9206P5sQ6rfRAYUyKKPwQsSVVwYjZsK4JURHk
-         NYbC7dwSUqg8LioOFg6teHZvlOhomYmvz/HgOpGhGjm3cphRFemjt4K7jOBNhy5OHmLU
-         B+fw==
-X-Gm-Message-State: AOAM531TQaQe/BvD+VQK7732iK0SwTgVFDerYJKxyu006w0doXZlVnuA
-        24IWYFtyD/dH6Ngx98pnkEDmCz0I3+hQW69CCgguXTPu
-X-Google-Smtp-Source: ABdhPJwTXXgJ/g+/XHWAyZTrQ3F0tE6i12N0C82M8zOxAL/IjsufylXhuRysYAjE1y/YpRKS8qx2oJQIPMSpawJWxJI=
-X-Received: by 2002:a50:9355:: with SMTP id n21mr4015157eda.237.1599854348113;
- Fri, 11 Sep 2020 12:59:08 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=frP8Q+XX3vatIolvDa1CfpmKMR9bYV+BQ0pT6Q4S34s=;
+        b=VB9nH0YBE14Ha8l4fsTva0/3lnn2Cy9ntDfxMSgx2Fq9HNCF/KCRDytXz6gJ9GU60C
+         m4mR70YU0aReb0hqog0vqQ6jdNtIi7hxf9f527EWEVchE1RRGufi4rUyck/t9xdZzgOj
+         vZm1gJIvMl1giQXZOPu1TVuhmUMad2gk45DAXNwfksoQZfqAXKdyVIX288Q0gvvEQKor
+         AsdAOhcKntoBzJ8BYp+4mC+5nWUwp1i/cYTOlReJjaIkev50Xr/9LjV2HiU4wP6YS3Ox
+         IfG+osNjucUABjPEGTqdhKo655GVFWKyBTxI3gFk5u/dSqV9Ql8A8kXsSsiSGtXuM/5y
+         sqMg==
+X-Gm-Message-State: AOAM532MUYxkzgEJpDiuIZdwzbNNyE22VCzPEteq3GU06cU/elq4arga
+        VciS++vrQBJMRclFZNfjy9lUPw==
+X-Google-Smtp-Source: ABdhPJzP5JEZgAXjbay1DV3k010EzssCEgYlUoidnF/pMQkAiKmIaiX0cBIMnT3lDCJwc9PC5HAi7A==
+X-Received: by 2002:a17:902:465:b029:d0:89f1:9e2a with SMTP id 92-20020a1709020465b02900d089f19e2amr3853867ple.6.1599854615696;
+        Fri, 11 Sep 2020 13:03:35 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id h12sm3083153pfo.68.2020.09.11.13.03.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 13:03:35 -0700 (PDT)
+Subject: Re: INFO: rcu detected stall in ext4_file_write_iter
+To:     syzbot <syzbot+7d19c5fe6a3f1161abb7@syzkaller.appspotmail.com>,
+        acme@kernel.org, adilger.kernel@dilger.ca, dvyukov@google.com,
+        fweisbec@gmail.com, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, mingo@kernel.org, mingo@redhat.com,
+        penguin-kernel@i-love.sakura.ne.jp, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu
+References: <00000000000029b48f05af0ec14f@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <32e8b6b0-fa68-42ac-f216-4bc2534bbfd6@kernel.dk>
+Date:   Fri, 11 Sep 2020 14:03:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200719021654.25922-1-jcmvbkbc@gmail.com> <202009111229.4A853F0@keescook>
-In-Reply-To: <202009111229.4A853F0@keescook>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Fri, 11 Sep 2020 12:58:56 -0700
-Message-ID: <CAMo8Bf+r3YvWewdHzg=Y4mFspYLA3GrJ04rry90deYsWN_gZRA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] xtensa: add seccomp support
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
-        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <00000000000029b48f05af0ec14f@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:38 PM Kees Cook <keescook@chromium.org> wrote:
-> On Sat, Jul 18, 2020 at 07:16:51PM -0700, Max Filippov wrote:
-> > Hello,
-> >
-> > this series adds support for seccomp filter on xtensa and updates
-> > selftests/seccomp.
->
-> Hi!
->
-> Firstly, thanks for adding seccomp support! :) I would, however, ask
-> that you CC maintainers on these kinds of changes for feedback. I was
-> surprised to find the changes in the seccomp selftests today in Linus's
-> tree. I didn't seem to get CCed on this series, even though
-> get_maintainers shows this:
->
-> $ ./scripts/get_maintainer.pl 0001-selftests-seccomp-add-xtensa-support.mbox
-> Kees Cook <keescook@chromium.org> (supporter:SECURE COMPUTING)
-> Andy Lutomirski <luto@amacapital.net> (reviewer:SECURE COMPUTING)
-> Will Drewry <wad@chromium.org> (reviewer:SECURE COMPUTING)
-> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
-> ...
+#syz fix: block: allow for_each_bvec to support zero len bvec
 
-Sorry about that. Looks like I've filtered out too much of the cc: list.
-I'll fix my workflow.
-
-> Regardless, I'm still glad to have more arch support! :) I'll send a
-> follow-up patch to refactor a bit of the selftest.
 
 -- 
-Thanks.
--- Max
+Jens Axboe
+
