@@ -2,124 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4DC265F33
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD96265F3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgIKMFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgIKMEo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:04:44 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCA1C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:04:43 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k18so4534727wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WLNDPPEnv/63zSa4lOCllaWXboquu+chiB81j8h0QmQ=;
-        b=wPkzFbHnj5oK8khkVlZrovmxVc3N0jKG8UJiHvJEArwxYiaYxNjIfoeq5/IHLf5qaP
-         OhICu2AqBmKOfS1SUnRVGx46RHk+IeWXAFmZvX++9kNKF2uoc4kgD4LrEVbU6FLo5TC6
-         DWqmnzOjNiecfE0ip/Uw4mll8WVWQZtl2dOPCdyNQzt48QvHYepxYPTFe80/EFDleGi4
-         zBf8jcACvM5RQcWDX3+2pVffhJbx9OJJBq2XyhpAnR5RadwcHS8u3W5SfqrocxdrYYke
-         wR+/5/IuVvrve2v+oSMwdYC9OiAOa704Ab7OwL8dSuuoQ8JR0ope08y5UfF0K+bRiX0R
-         jQlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WLNDPPEnv/63zSa4lOCllaWXboquu+chiB81j8h0QmQ=;
-        b=OMW0BlwZz9EBzShs0BiofvRCIYAVKOvUEbuTt7tubInPW9C+mKnCLwNoJVJhAt8gzx
-         JvIwb/3jHuYJz0ZLatjm4YB2QNxhE2+K3Xv/3PqJOK/WA9yM2qD2MZvFV0psuaD8DDgf
-         ajzgTBsKHYwz9P4+HVgdTr7HZyVnf0utU9b+LNwb3rncowCDh7wrygSf/jbwDfwxRWuv
-         CU2WkYA9GCv+dp/8iKQqSPvPVx7rxpQt2riik+VhWeof40VVC3WeVZSCNtDMKtfHwCIM
-         qeGW/Kv9e9Sc/attSlfs3PSko6dL/wPNVJ6GVlPA65kCHLV1Xp6ICw2UQhWgdYgRc6Oi
-         g55g==
-X-Gm-Message-State: AOAM531lP4FRKPggyun3dUuzikN+y9tjt1R54zOYzu8Ai5leDgH0FXXO
-        VmkWYRni4mbkxlku4g5s5VX/JA==
-X-Google-Smtp-Source: ABdhPJyPpYjxV2wUTl6HJw2UQBsdoRmSWYJN9cVSkopJDuPUTJ0ZmeC0qXBuP+stDN58Dye7RArQKw==
-X-Received: by 2002:a1c:bb88:: with SMTP id l130mr1925793wmf.143.1599825882052;
-        Fri, 11 Sep 2020 05:04:42 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id o4sm4073407wru.55.2020.09.11.05.04.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Sep 2020 05:04:41 -0700 (PDT)
-Subject: Re: [PATCH] nvmem: switch to simpler IDA interface
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20200908132755.11944-1-brgl@bgdev.pl>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e6dc9989-8fff-afdb-654b-c23e9cf12bc5@linaro.org>
-Date:   Fri, 11 Sep 2020 13:04:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1725780AbgIKMIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:08:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:32768 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725831AbgIKMID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:08:03 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 34660C9AB0915342A1BE;
+        Fri, 11 Sep 2020 20:07:45 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
+ 20:07:40 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <viro@zeniv.linux.org.uk>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] fs_parser: Fix 'name' kernel-doc warning in validate_constant_table()
+Date:   Fri, 11 Sep 2020 20:04:54 +0800
+Message-ID: <20200911120454.70466-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200908132755.11944-1-brgl@bgdev.pl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fixes the following W=1 kernel build warning(s):
 
+fs/fs_parser.c:322: warning: Excess function parameter 'name' description in 'validate_constant_table'
 
-On 08/09/2020 14:27, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> We don't need to specify any ranges when allocating IDs so we can switch
-> to ida_alloc() and ida_free() instead of the ida_simple_ counterparts.
-> 
-> ida_simple_get(ida, 0, 0, gfp) is equivalent to
-> ida_alloc_range(ida, 0, UINT_MAX, gfp) which is equivalent to
-> ida_alloc(ida, gfp). Note: IDR will never actually allocate an ID
-> larger than INT_MAX.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->   drivers/nvmem/core.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+This parameter is not in use. Remove it.
 
-thanks Applied!
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ fs/fs_parser.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---srini
-> 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index 6cd3edb2eaf6..cd332d711dd1 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -321,7 +321,7 @@ static void nvmem_release(struct device *dev)
->   {
->   	struct nvmem_device *nvmem = to_nvmem_device(dev);
->   
-> -	ida_simple_remove(&nvmem_ida, nvmem->id);
-> +	ida_free(&nvmem_ida, nvmem->id);
->   	gpiod_put(nvmem->wp_gpio);
->   	kfree(nvmem);
->   }
-> @@ -596,7 +596,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->   	if (!nvmem)
->   		return ERR_PTR(-ENOMEM);
->   
-> -	rval  = ida_simple_get(&nvmem_ida, 0, 0, GFP_KERNEL);
-> +	rval  = ida_alloc(&nvmem_ida, GFP_KERNEL);
->   	if (rval < 0) {
->   		kfree(nvmem);
->   		return ERR_PTR(rval);
-> @@ -608,7 +608,7 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
->   		nvmem->wp_gpio = gpiod_get_optional(config->dev, "wp",
->   						    GPIOD_OUT_HIGH);
->   	if (IS_ERR(nvmem->wp_gpio)) {
-> -		ida_simple_remove(&nvmem_ida, nvmem->id);
-> +		ida_free(&nvmem_ida, nvmem->id);
->   		rval = PTR_ERR(nvmem->wp_gpio);
->   		kfree(nvmem);
->   		return ERR_PTR(rval);
-> 
+diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+index ab53e42a874..a5bd6ea5a03 100644
+--- a/fs/fs_parser.c
++++ b/fs/fs_parser.c
+@@ -310,7 +310,6 @@ EXPORT_SYMBOL(fs_param_is_path);
+ #ifdef CONFIG_VALIDATE_FS_PARSER
+ /**
+  * validate_constant_table - Validate a constant table
+- * @name: Name to use in reporting
+  * @tbl: The constant table to validate.
+  * @tbl_size: The size of the table.
+  * @low: The lowest permissible value.
+-- 
+2.17.1
+
