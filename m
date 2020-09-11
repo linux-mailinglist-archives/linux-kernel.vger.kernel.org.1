@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A0526648A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56A02664CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgIKQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:41:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgIKPKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:10:51 -0400
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27BB4222D9;
-        Fri, 11 Sep 2020 14:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599835421;
-        bh=FTxGdMGV3rapitRut8OA4Fjo29OIVMgG3dH1ljjIHq4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DyOQR0vKPCwij4NYetqRa7C5Kmex5BfD6ov1ZtH9EuiqxbZXBjHAr6cYDZEf/p8bU
-         XZ/i6PohwH46vqkc8B08yhYU6SPRuFIyKq48Y09IlqH3K2mvEYg0EJ1C28zhlcdSfO
-         cpy+wUI8LSH4fdpr2WaYN6MYzK/oz8QSsg/RSLbY=
-Received: by mail-oo1-f41.google.com with SMTP id h9so2334089ooo.10;
-        Fri, 11 Sep 2020 07:43:41 -0700 (PDT)
-X-Gm-Message-State: AOAM5307qRhyFVI+fYjkipf5PZecpKpz5SZ2b0oPCWXcG3GwStCFp3Il
-        2nyoMkJjXtezX1I1YHuivz6BZdyRVaK1imAW6Q==
-X-Google-Smtp-Source: ABdhPJwrgQnxQEoMlDU3NAfllatuQT+8fpSwzBbuHMB3L4XBVNZlqEu/rI6S5Wu077rTYbX5JpCI+mGf15EFY143Ph4=
-X-Received: by 2002:a4a:9d48:: with SMTP id f8mr1840695ook.50.1599835420448;
- Fri, 11 Sep 2020 07:43:40 -0700 (PDT)
+        id S1726413AbgIKQqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgIKPIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:08:12 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F45C0612EC
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:47:21 -0700 (PDT)
+Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1kGkKU-0006Pn-NW; Fri, 11 Sep 2020 16:47:10 +0200
+Received: from mfe by dude02.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1kGkKP-0006nZ-2p; Fri, 11 Sep 2020 16:47:05 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com,
+        sergei.shtylyov@cogentembedded.com, boris.brezillon@collabora.com,
+        michael@walle.cc, j.neuschaefer@gmx.net
+Cc:     linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] MTD: SST SPI-NOR fixes
+Date:   Fri, 11 Sep 2020 16:47:00 +0200
+Message-Id: <20200911144703.25409-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200826120254.8902-1-matthias.schiffer@ew.tq-group.com>
- <4dd06b79-1402-d7cf-9676-1f9a9526da12@gmail.com> <9eb72c6561333661599411e49072928385629999.camel@ew.tq-group.com>
- <ac64852a-7f2a-6005-f914-268670cd4f95@gmail.com> <CAL_Jsq+1LsTBdVaODVfmB0eme2jMpNL4VgKk-OM7rQWyyF0Jbw@mail.gmail.com>
- <d7dc1017818e935acf9ba838080bcc3c11b30888.camel@ew.tq-group.com> <735c00caa90746d20bfaafa42c4d911c61729228.camel@ew.tq-group.com>
-In-Reply-To: <735c00caa90746d20bfaafa42c4d911c61729228.camel@ew.tq-group.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 11 Sep 2020 08:43:29 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+SuJ5F=SxGfZp0g9V8TPejSxEu8Ya45qfDxhZ0rL8ETg@mail.gmail.com>
-Message-ID: <CAL_Jsq+SuJ5F=SxGfZp0g9V8TPejSxEu8Ya45qfDxhZ0rL8ETg@mail.gmail.com>
-Subject: Re: [PATCH] of: skip disabled CPU nodes
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 9, 2020 at 2:58 AM Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
->
-> On Thu, 2020-08-27 at 09:10 +0200, Matthias Schiffer wrote:
-> > On Wed, 2020-08-26 at 13:26 -0600, Rob Herring wrote:
-> > > On Wed, Aug 26, 2020 at 8:47 AM Frank Rowand <
-> > > frowand.list@gmail.com>
-> > > wrote:
-> > > >
-> > > > Hi Rob,
-> > > >
-> > > > On 2020-08-26 08:54, Matthias Schiffer wrote:
-> [snip]
-> > > > >
-> > > > > Hmm, I see. This difference in behaviour is quite unfortunate,
-> > > > > as
-> > > > > I'm
-> > > > > currently looking for a way to *really* disable a CPU core.
-> > > > >
-> > > > > In arch/arm64/boot/dts/freescale/imx8mn.dtsi (and other
-> > > > > variants
-> > > > > of the
-> > > > > i.MX8M), there are 4 CPU nodes for the full-featured quad-core
-> > > > > version.
-> > > > > The reduced single- and dual-core versions are currently
-> > > > > handled
-> > > > > in
-> > > > > NXP's U-Boot fork by deleting the additional nodes.
-> > > > >
-> > > > > Not doing so causes the kernel to hang for a while when trying
-> > > > > to
-> > > > > online the non-existent cores during boot (at least in linux-
-> > > > > imx
-> > > > > 5.4 -
-> > > > > I have not checked a more recent mainline kernel yet), but the
-> > > > > deletion
-> > > > > is non-trivial to do without leaving dangling phandle
-> > > > > references.
-> > > >
-> > > > Any thoughts on implementing another universal property that
-> > > > means
-> > > > something like "the hardware described by this node does not
-> > > > exist
-> > > > or is so broken that you better not use it".
-> > >
-> > > There's a couple of options:
-> > >
-> > > The DT spec defines 'fail' value for status. We could use that
-> > > instead
-> > > of 'disabled'.
-> > >
-> > > The spec behavior with cpu 'disabled' is only on PPC AFAIK. On
-> > > arm/arm64 (probably riscv now too) we've never followed it where we
-> > > online 'disabled' CPUs. So we could just make the check conditional
-> > > on
-> > > !IS_ENABLED(CONFIG_PPC). This would need some spec update.
-> >
-> > On ARM(64), the "disabled" status on CPUs doesn't have any effect. I
-> > assume this changed with the mentioned commit c961cb3be906 "of: Fix
-> > cpu
-> > node iterator to not ignore disabled cpu nodes", as reverting it
-> > gives
-> > me the desired behaviour of considering the disabled CPUs non-
-> > existent.
-> >
-> > So it seems that we already changed the interpretation in a non-
-> > compatible way once (back in v4.20), and somehow PPC has yet another
-> > different behaviour?
-> >
-> > How do we get out of this mess? Is going back to the v4.19 logic for
-> > non-PPC platforms an acceptable regression fix, or would this be
-> > considered another breaking change?
+Hi,
 
-Yes, this is my 2nd option above. Need to double check MIPS and Sparc though.
+Patch 1-2: write path fixes
+The sst write path is completely broken since v5.7-rc1 and in rare cases
+since the support of the sst_write() function (49aac4aec53c).
 
-> Any new insights on this? I'll gladly provide patches or proposals for
-> a spec update if we can decide where we want to go with this.
+Patch 3: cleanup
 
-I gave 2 options. I'm fine with either one (or both). Using 'fail' is
-the simplest.
+I've tested my patches with a small test app to ensure writes starting
+on an odd address and with dd to test even start addresses. My dut was
+an public available imx6q-sabrelite (rev.D).
+Other testers are welcome :)
 
-Rob
+Regards,
+  Marco
+
+Marco Felsch (3):
+  mtd: spi-nor: sst: fix write support for SST_WRITE marked devices
+  mtd: spi-nor: sst: add missing write_enable
+  mtd: spi-nor: sst: move sst_write_second to local driver
+
+ drivers/mtd/spi-nor/core.c  | 15 +++++++++------
+ drivers/mtd/spi-nor/sst.c   | 15 +++++++++++----
+ include/linux/mtd/spi-nor.h |  2 --
+ 3 files changed, 20 insertions(+), 12 deletions(-)
+
+-- 
+2.20.1
+
