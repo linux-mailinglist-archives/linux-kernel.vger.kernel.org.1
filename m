@@ -2,143 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12682663CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F422662D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgIKQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:25:38 -0400
-Received: from mx01-muc.bfs.de ([193.174.230.67]:6932 "EHLO mx01-muc.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726447AbgIKPYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:24:06 -0400
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-muc.bfs.de (Postfix) with ESMTPS id 8F42420199;
-        Fri, 11 Sep 2020 15:07:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1599829623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6E3rYFAFmZrISpyCxa1f771HtF2yNOuq1RjadVZhysY=;
-        b=rDSYCSe7ZDYYWhX+S+0BxwHBsDov1d5CDxN/hhv82w+5fy/R0WfK9WAXSR2A60w0uMgCwt
-        2kcnccbMF246KRqUhFNl8c3pN75jEOSbygmo96+oDwohB2pqSEs2GNXpYAWsSwK8wJ5I3d
-        GOmKgb5uhmsQXhc70RWgSDFU6qmLGmJIcQIqQxQeZ0P6lk34pTVwqPoa6WylUkHiWYRXNk
-        SwvYtE45epmTBdPQTgKkOQinJUnD0OpyaXIFf+GGkYE7mb22wpdS+yj2LWsKt2hthFiaM4
-        a8XQGCIqZYg++BvfXlxfK1/Eb9G6sC8IJnPgynur5iMlcHhzZ2tUTvPch73B0g==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Fri, 11 Sep
- 2020 15:07:02 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
- 15.01.2044.004; Fri, 11 Sep 2020 15:07:02 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
-CC:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long
- int'
-Thread-Topic: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long
- int'
-Thread-Index: AQHWh7gQECdZaDE3LEKYFjT0sUW8TaljZ7N2
-Date:   Fri, 11 Sep 2020 13:07:02 +0000
-Message-ID: <c15e4262afea4820961bd36e3386b582@bfs.de>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>,<20200910211344.3562-18-colomar.6.4.3@gmail.com>
-In-Reply-To: <20200910211344.3562-18-colomar.6.4.3@gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.40]
-x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25658.007
-x-tm-as-result: No-10--1.508000-5.000000
-x-tmase-matchedrid: v0Uhv4cnyYWe/kF8Pup4HBvgzEPRJaDEWw/S0HB7eoMTiSW9r3PknDyj
-        o+AkzeHqoM9050SCTLIS+pOxtKEjwvXYz2/SDtYzLFqCUQ7xhcyNY/pqxovzxZ9enr+Dhl0GKKi
-        9XIZVdsUEonpJ5L2U1+Mwa0EiWUk5jNea/HVv9rw/ApMPW/xhXkyQ5fRSh265Dfheddyhsqvqs9
-        E0tCHijOfOVcxjDhcwlnP9MMAZcdoLbigRnpKlKZx+7GyJjhAUMZAz0VgWU08+j5WrtZqnge0RO
-        L8uCZYTkvX/T0z5mGJfaa/N/1NR2T5rzQ1n8RpZ30V9wDbJOG3hwGKyRldHxWfvpucVLz+0xutS
-        1t8Wq0GIonbnNHgEwM/qYWYfQTGnSQOPumGIku0fwV6sBPR0lg==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--1.508000-5.000000
-x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25658.007
-x-tm-snts-smtp: 23665965B90E02EF2CE2DBDB51D0574D52A33A8D3B7234A9258B1F5BAE02FE182000:9
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1725992AbgIKQDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbgIKQCk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:02:40 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2B1C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:25:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BnxKp3lBvz9sTN;
+        Fri, 11 Sep 2020 23:23:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1599830639;
+        bh=3GjkYcPqs3ZA/bSxg0wAn4yNJ8JMUPPVp+hwR5eSDBM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=UrUsxTInpnbdHP6suY/Sb4wvknzIPRTNTvgIqQ+zndA/xjcMT7GPGScgVUp5ccamc
+         N039a4XehE0CWxL5HWL0y9c3InE9AY0eEUPdRMcwyxmFKOvj3EH2WyUtnIJYXnDinV
+         gc35uTczu1ha1go43Vy9RYxV4HT0Rpl7iIMZlc2vAz9m0ODBahme3oyu/Ni8htbL56
+         7YfFEqcxrI0t4E0PGeEHjolK2MGvEEmjGF9UDP4yi5BS8l3Ho879N1y64TXrnWmOJe
+         bPTpCfBXsdo9Ar3YyDAgpCe2z72rOad+OkXaTDtmFw4lbFMhvZZDMPdgyySgW2wSEx
+         Jh+j/PQZbwnOA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
+        Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/traps: fix recoverability of machine check handling on book3s/32
+In-Reply-To: <20200911091542.GE29521@kitsune.suse.cz>
+References: <1c804764d38fb084b420b12ca13e8c1b2dea075e.1548166189.git.christophe.leroy@c-s.fr> <20200911091542.GE29521@kitsune.suse.cz>
+Date:   Fri, 11 Sep 2020 23:23:57 +1000
+Message-ID: <87pn6sqweq.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.04
-Authentication-Results: mx01-muc.bfs.de;
-        none
-X-Spamd-Result: default: False [-0.04 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         TO_DN_SOME(0.00)[];
-         DKIM_SIGNED(0.00)[];
-         NEURAL_HAM(-0.00)[-1.036];
-         FREEMAIL_TO(0.00)[gmail.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-0.04)[57.85%]
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Michal Such=C3=A1nek <msuchanek@suse.de> writes:
+> Hello,
+>
+> does this logic apply to "Unrecoverable System Reset" as well?
+
+Which logic do you mean?
+
+We do call die() before checking MSR_RI in system_reset_exception():
+
+  	/*
+  	 * No debugger or crash dump registered, print logs then
+  	 * panic.
+  	 */
+  	die("System Reset", regs, SIGABRT);
+=20=20
+  	mdelay(2*MSEC_PER_SEC); /* Wait a little while for others to print */
+  	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+  	nmi_panic(regs, "System Reset");
+=20=20
+  out:
+  #ifdef CONFIG_PPC_BOOK3S_64
+  	BUG_ON(get_paca()->in_nmi =3D=3D 0);
+  	if (get_paca()->in_nmi > 1)
+  		die("Unrecoverable nested System Reset", regs, SIGABRT);
+  #endif
+  	/* Must die if the interrupt is not recoverable */
+  	if (!(regs->msr & MSR_RI))
+  		die("Unrecoverable System Reset", regs, SIGABRT);
 
 
-sys/sysinfo.h:extern long int get_phys_pages (void)
+So you should see the output from die("System Reset", ...) even if
+MSR[RI] was clear when you took the system reset.
 
-for the real world i would say that long int =3D=3D long but for the same r=
-eason
-i would say what the include says and stay away from discussions.
+cheers
 
-jm2c,
- wh
-________________________________________
-Von: linux-man-owner@vger.kernel.org [linux-man-owner@vger.kernel.org] im A=
-uftrag von Alejandro Colomar [colomar.6.4.3@gmail.com]
-Gesendet: Donnerstag, 10. September 2020 23:13
-An: mtk.manpages@gmail.com
-Cc: linux-man@vger.kernel.org; linux-kernel@vger.kernel.org; Alejandro Colo=
-mar
-Betreff: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long int'
-
-For consistency.
-
-Most man pages use 'long' instead of 'long int'.
-
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
----
- man3/get_phys_pages.3 | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/man3/get_phys_pages.3 b/man3/get_phys_pages.3
-index 4a9177dfd..97ba625b7 100644
---- a/man3/get_phys_pages.3
-+++ b/man3/get_phys_pages.3
-@@ -30,8 +30,8 @@ page counts
- .nf
- .B "#include <sys/sysinfo.h>"
- .PP
--.B long int get_phys_pages(void);
--.B long int get_avphys_pages(void);
-+.B long get_phys_pages(void);
-+.B long get_avphys_pages(void);
- .fi
- .SH DESCRIPTION
- The function
---
-2.28.0
-
+> On Tue, Jan 22, 2019 at 02:11:24PM +0000, Christophe Leroy wrote:
+>> Looks like book3s/32 doesn't set RI on machine check, so
+>> checking RI before calling die() will always be fatal
+>> allthought this is not an issue in most cases.
+>>=20
+>> Fixes: b96672dd840f ("powerpc: Machine check interrupt is a non-maskable=
+ interrupt")
+>> Fixes: daf00ae71dad ("powerpc/traps: restore recoverability of machine_c=
+heck interrupts")
+>> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+>> Cc: stable@vger.kernel.org
+>> ---
+>>  arch/powerpc/kernel/traps.c | 8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>=20
+>> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+>> index 64936b60d521..c740f8bfccc9 100644
+>> --- a/arch/powerpc/kernel/traps.c
+>> +++ b/arch/powerpc/kernel/traps.c
+>> @@ -763,15 +763,15 @@ void machine_check_exception(struct pt_regs *regs)
+>>  	if (check_io_access(regs))
+>>  		goto bail;
+>>=20=20
+>> -	/* Must die if the interrupt is not recoverable */
+>> -	if (!(regs->msr & MSR_RI))
+>> -		nmi_panic(regs, "Unrecoverable Machine check");
+>> -
+>>  	if (!nested)
+>>  		nmi_exit();
+>>=20=20
+>>  	die("Machine check", regs, SIGBUS);
+>>=20=20
+>> +	/* Must die if the interrupt is not recoverable */
+>> +	if (!(regs->msr & MSR_RI))
+>> +		nmi_panic(regs, "Unrecoverable Machine check");
+>> +
+>>  	return;
+>>=20=20
+>>  bail:
+>> --=20
+>> 2.13.3
+>>=20
