@@ -2,140 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5B7266677
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAF0266689
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgIKR2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:28:42 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:40180 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgIKR2U (ORCPT
+        id S1726433AbgIKR3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:29:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:40246 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbgIKR3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:28:20 -0400
-Received: by mail-il1-f200.google.com with SMTP id g188so7650344ilh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:28:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=1HRQZSHIuQzsMOzww47L1ehzI1lYUqlvWhyszfusKO4=;
-        b=dCSInBkIDVh1DHWJDIev7mQ5YbwzjdjcAx/F17yfVvrLUXKl7PmO8mKGEGeKJ5t4TA
-         O+N4hxEbs7v1Tlim5H1+iiChqXvoAtooeD1e1SmC8JefTncnTzy9AReLQz0LUUUfqH9R
-         eof6l4NGNdCqvGTMhf2hWRzoCHPP19YeC1MXQ1OFs0rLRaMDUIj2sPje3WgFUFiVLThO
-         cOD4r+NFWsA6maBDTcCeyjyz+8FPy4O2No7quxCLRAat/9c2mYrJuje9YZggYVy1JR34
-         0U+s9IdqsB6KUqvr0VQfc3gXw0DzZ+58y64UDLzBwT2o2msj9t6UwU0vxoQpKzbt7ZCA
-         Q0BQ==
-X-Gm-Message-State: AOAM532WQatPF7qB5qVYPghXF8V2AEJjYSYwB204Ck4CekHQjzEmQWRN
-        Vmz65j9GXm8itezBqbFjq0kSMm2WtmDBGmJkrgHimohAisVm
-X-Google-Smtp-Source: ABdhPJwFt7MsDZF43S5VTnXpwzh3wkDps7Hpvkv1eRonV9F5mIY00Fkm3g9NAlar1dbK6206AH8K2qOfBwOPALhpLZubrw6emAJT
+        Fri, 11 Sep 2020 13:29:20 -0400
+Received: from [192.168.86.21] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B1A9020D4DAB;
+        Fri, 11 Sep 2020 10:29:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B1A9020D4DAB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1599845359;
+        bh=fPxkLQkgfh+pBwXajBMd60l+4u25hHiWkLzbR/BNlS8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Al2w9lqs0T6TxVObHd+viHQLPtSVZj7Wlw3qXNVxxbXaUah/sZRTuqPiCSJBu5Xfq
+         T9rrIh51sBD4uF6If+9DHeZs2FxIE8YOtz+EMl6QW7zp8Gg8zqjDdeQdRfRClQeAbe
+         yOX/cr42EuUGmXXk5Qh1jCjJ6FANC2C5NrXApdPg=
+Subject: Re: [PATCH v3 4/6] IMA: add policy to measure critical data from
+ kernel components
+To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
+ <20200828015704.6629-5-tusharsu@linux.microsoft.com>
+ <652406e1a08d855a5d9a3e3815835653a12df411.camel@linux.ibm.com>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <0dc88680-eb1c-4343-ad8e-18b0df8d5142@linux.microsoft.com>
+Date:   Fri, 11 Sep 2020 10:29:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:a498:: with SMTP id d24mr2942583jam.137.1599845298770;
- Fri, 11 Sep 2020 10:28:18 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 10:28:18 -0700
-In-Reply-To: <0000000000002b721a05aec0f937@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ba9afd05af0d0229@google.com>
-Subject: Re: KASAN: use-after-free Write in io_wq_worker_running
-From:   syzbot <syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <652406e1a08d855a5d9a3e3815835653a12df411.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    581cb3a2 Merge tag 'f2fs-for-5.9-rc5' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10cc47a5900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=45fa0a195b941764e0f0
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e933f9900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1554acdd900000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com
+On 2020-08-31 11:15 a.m., Mimi Zohar wrote:
+> On Thu, 2020-08-27 at 18:57 -0700, Tushar Sugandhi wrote:
+>> There would be several candidate kernel components suitable for IMA
+>> measurement. Not all of them would have support for IMA measurement.
+>> Also, system administrators may not want to measure data for all of
+>> them, even when they support IMA measurement. An IMA policy specific
+>> to various kernel components is needed to measure their respective
+>> critical data.
+> 
+> The base policy rules are wide, but may be constrained by specifying
+> different options.  For example the builtin policy rules cannot be
+> written in terms LSM labels, which would constrain them.  A policy rule
+> may measure all keyrings or may constrain which keyrings need to be
+> measured.  Measuring critical data is not any different.
+> 
+> Please rewrite the above paragraph accordingly.
+> 
+Ok. Will do.
+>>
+>> Add a new IMA policy "critical_kernel_data_sources" to support measuring
+>> various critical kernel components. This policy would enable the
+>> system administrators to limit the measurement to the components,
+>> if the components support IMA measurement.
+> 
+> "critical_kernel_data_sources" is really wordy.   Find a better, self
+> defining term for describing the type of data, one that isn't so wordy,
+> and reflect it in the code.
+> 
+Will do. I will go with "critical_data". You also have suggested it in
+the comment below.
 
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
-BUG: KASAN: use-after-free in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
-BUG: KASAN: use-after-free in io_wqe_inc_running fs/io-wq.c:301 [inline]
-BUG: KASAN: use-after-free in io_wq_worker_running+0xde/0x110 fs/io-wq.c:613
-Write of size 4 at addr ffff8882183db08c by task io_wqe_worker-0/7771
+"critical_data_sources" also seems right, but that's more wordy than
+"critical_data".
 
-CPU: 0 PID: 7771 Comm: io_wqe_worker-0 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
- instrument_atomic_write include/linux/instrumented.h:71 [inline]
- atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
- io_wqe_inc_running fs/io-wq.c:301 [inline]
- io_wq_worker_running+0xde/0x110 fs/io-wq.c:613
- schedule_timeout+0x148/0x250 kernel/time/timer.c:1879
- io_wqe_worker+0x517/0x10e0 fs/io-wq.c:580
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Some more options we considered, but they don’t sound right.
+Please let us know what do you think.
+1. "critical_data_sources="
+2. "critical_kernel_components=" -or- "crit_krnl_comps="
+3. "critical_data_providers="
+4. "critical_kernel_data_providers=" -or- "crit_krnl_dt_provs="
+5. "critical_kernel_data_sources=" -or- "crit_krnl_dt_srcs="
+6. "security_critical_data="
+7. "protectable_data="
+8. "protected_data="
+9. "vital_protected_data="
 
-Allocated by task 7768:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_node_trace+0x17b/0x3f0 mm/slab.c:3594
- kmalloc_node include/linux/slab.h:572 [inline]
- kzalloc_node include/linux/slab.h:677 [inline]
- io_wq_create+0x57b/0xa10 fs/io-wq.c:1064
- io_init_wq_offload fs/io_uring.c:7432 [inline]
- io_sq_offload_start fs/io_uring.c:7504 [inline]
- io_uring_create fs/io_uring.c:8625 [inline]
- io_uring_setup+0x1836/0x28e0 fs/io_uring.c:8694
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>
+>> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+>> ---
+>>   Documentation/ABI/testing/ima_policy |  3 +++
+>>   security/integrity/ima/ima_policy.c  | 29 +++++++++++++++++++++++++++-
+>>   2 files changed, 31 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+>> index cd572912c593..7ccdc1964e29 100644
+>> --- a/Documentation/ABI/testing/ima_policy
+>> +++ b/Documentation/ABI/testing/ima_policy
+>> @@ -48,6 +48,9 @@ Description:
+>>   			template:= name of a defined IMA template type
+>>   			(eg, ima-ng). Only valid when action is "measure".
+>>   			pcr:= decimal value
+>> +			critical_kernel_data_sources:= list of kernel
+>> +			components (eg, selinux|apparmor|dm-crypt) that
+>> +			contain data critical to the security of the kernel.
+> 
+> This original policy definition, for the most part, is in Backus–Naur
+> format.   The keyring names is an exception, because it is not limited
+> to pre-defined kernel objects.  The critical data hook is measuring
+> things in kernel memory.  As new calls to measure critical data are
+> added, new identifiers would be added here.
+> 
+> For example, if SELinux is the first example of measuring critical
+> data, then the SELinux critical data patch would include
+> "critical_data:= [selinux]".  Each subsequent critical data being
+> measured would extend this list.  At the same time, the list of known
+> "critical data" defined in patch 6/6 would be updated.
+> 
+> Normally a new feature and the first usage of that feature are included
+> in the same patch set.  Separating them like this makes it difficult to
+> write, review and upstream.
+> 
+> Mimi
+> 
+I agree. But the unique issue we are facing here is there are two
+"first users" of this new "base series".
 
-Freed by task 21:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x10e/0x2b0 mm/slab.c:3756
- __io_wq_destroy fs/io-wq.c:1138 [inline]
- io_wq_destroy+0x2af/0x460 fs/io-wq.c:1146
- io_finish_async fs/io_uring.c:6836 [inline]
- io_ring_ctx_free fs/io_uring.c:7870 [inline]
- io_ring_exit_work+0x1e4/0x6d0 fs/io_uring.c:7954
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+One, SeLinux work (driven by Lakshmi); and two, device-mapper/dm-crypt 
+work (driven by me).
 
-The buggy address belongs to the object at ffff8882183db000
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 140 bytes inside of
- 1024-byte region [ffff8882183db000, ffff8882183db400)
-The buggy address belongs to the page:
-page:000000009bada22b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2183db
-flags: 0x57ffe0000000200(slab)
-raw: 057ffe0000000200 ffffea0008604c48 ffffea00086a8648 ffff8880aa040700
-raw: 0000000000000000 ffff8882183db000 0000000100000002 0000000000000000
-page dumped because: kasan: bad access detected
+Both of them need to be reviewed by different maintainers, may go 
+through several iterations before getting accepted.
 
-Memory state around the buggy address:
- ffff8882183daf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8882183db000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8882183db080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                      ^
- ffff8882183db100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8882183db180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+That’s why we wanted to keep this "base series" independent of the 
+"first users"; and called the "base series" as a dependency in the 
+dm-crypt[1] / SeLinux[2] series.
 
+We would appreciate your guidance on how we can better author these
+three series - 1.this base series 2. dm-crypt series and 3. SeLinux
+series.
+
+[1]dm-crypt Series: https://patchwork.kernel.org/patch/11743715/
+[2]SeLinux Series: https://patchwork.kernel.org/patch/11762287/
