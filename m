@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE8A266102
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A898266107
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725784AbgIKNQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 09:16:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
+        id S1726297AbgIKOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:15:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgIKM7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:59:08 -0400
+        id S1726253AbgIKNVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:21:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62D612222B;
-        Fri, 11 Sep 2020 12:55:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28618223BD;
+        Fri, 11 Sep 2020 12:58:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599828953;
-        bh=WfBcY1zSWre1JihwGq+YcH6ZzX+EwLdW5Jvhm07z5KU=;
+        s=default; t=1599829107;
+        bh=p6jDxVLZ941Viwt6z0ZSwHIXamD1uxgdHGWmNH7SGUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYgtA7fpw1pCJkK0uTBSXYOYKFijXQWYOHs+1M6TYNojhoEhDhxA/4F+dDVRR2TDU
-         zPThEu4449FQVSK1n0YMiws3JSlC/dJ3NIJJzgEjSSM6O6eie7MW2Jtg8sATm0Npub
-         bXs3Cha9dIY9mCaj1A22QFPQvQ1SHM9wjKNe0nsY=
+        b=RoIMhLeoefq71CCBX2yrT1gyf0l7LRWs5fRE9fcQz1tma/iUbPGEibfMpkmNnDj3R
+         1W7BfXrAnHYwfUrxyvlygssG16LlY1+GA1Vm+xPBEjmwzhUX9OHe6IzVjh7kvbmXz0
+         ftHkK3QlKr1yCuxTcQZLT5j/aBIJPEwAv+VvxigA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@gmail.com>
-Subject: [PATCH 4.9 01/71] HID: core: Correctly handle ReportSize being zero
-Date:   Fri, 11 Sep 2020 14:45:45 +0200
-Message-Id: <20200911122505.006765914@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 30/71] btrfs: Remove redundant extent_buffer_get in get_old_root
+Date:   Fri, 11 Sep 2020 14:46:14 +0200
+Message-Id: <20200911122506.435222840@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,63 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Nikolay Borisov <nborisov@suse.com>
 
-commit bce1305c0ece3dc549663605e567655dd701752c upstream.
+[ Upstream commit 6c122e2a0c515cfb3f3a9cefb5dad4cb62109c78 ]
 
-It appears that a ReportSize value of zero is legal, even if a bit
-non-sensical. Most of the HID code seems to handle that gracefully,
-except when computing the total size in bytes. When fed as input to
-memset, this leads to some funky outcomes.
+get_old_root used used only by btrfs_search_old_slot to initialise the
+path structure. The old root is always a cloned buffer (either via alloc
+dummy or via btrfs_clone_extent_buffer) and its reference count is 2: 1
+from allocation, 1 from extent_buffer_get call in get_old_root.
 
-Detect the corner case and correctly compute the size.
+This latter explicit ref count acquire operation is in fact unnecessary
+since the semantic is such that the newly allocated buffer is handed
+over to the btrfs_path for lifetime management. Considering this just
+remove the extra extent_buffer_get in get_old_root.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c |   15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ fs/btrfs/ctree.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -1407,6 +1407,17 @@ static void hid_output_field(const struc
- }
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index b5ebb43b1824f..78d4c8c22b4ac 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1430,7 +1430,6 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
  
- /*
-+ * Compute the size of a report.
-+ */
-+static size_t hid_compute_report_size(struct hid_report *report)
-+{
-+	if (report->size)
-+		return ((report->size - 1) >> 3) + 1;
-+
-+	return 0;
-+}
-+
-+/*
-  * Create a report. 'data' has to be allocated using
-  * hid_alloc_report_buf() so that it has proper size.
-  */
-@@ -1418,7 +1429,7 @@ void hid_output_report(struct hid_report
- 	if (report->id > 0)
- 		*data++ = report->id;
- 
--	memset(data, 0, ((report->size - 1) >> 3) + 1);
-+	memset(data, 0, hid_compute_report_size(report));
- 	for (n = 0; n < report->maxfield; n++)
- 		hid_output_field(report->device, report->field[n], data);
- }
-@@ -1545,7 +1556,7 @@ int hid_report_raw_event(struct hid_devi
- 		csize--;
- 	}
- 
--	rsize = ((report->size - 1) >> 3) + 1;
-+	rsize = hid_compute_report_size(report);
- 
- 	if (report_enum->numbered && rsize >= HID_MAX_BUFFER_SIZE)
- 		rsize = HID_MAX_BUFFER_SIZE - 1;
+ 	if (!eb)
+ 		return NULL;
+-	extent_buffer_get(eb);
+ 	btrfs_tree_read_lock(eb);
+ 	if (old_root) {
+ 		btrfs_set_header_bytenr(eb, eb->start);
+-- 
+2.25.1
+
 
 
