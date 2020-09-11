@@ -2,214 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959C6266187
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A70F266172
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726231AbgIKOvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        id S1725848AbgIKOoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgIKNCg (ORCPT
+        with ESMTP id S1726194AbgIKNDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:02:36 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2AACC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:02:35 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e11so4060225wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:02:35 -0700 (PDT)
+        Fri, 11 Sep 2020 09:03:49 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A41DC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:03:48 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id n14so7291970pff.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:03:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XPvTdtmbRMfkD4iZPz3f6M4OzS2nS0OYc/aAuQpERAQ=;
-        b=DmN3G9E5R8pQKcwsR/QOYPBt0YGPigmdnzridG6jujYOUJnrmuUfWqlsNqHvMNfOpN
-         3rROpEaWF03I1p9azSOdOLoqBkWFNYXwQcWWkXtMrxgmrP/v6dTiar2qa6V2usdl/MC2
-         PRd+bF8RuP1DMPnG8ovJ8LIiiux+gGucx2K+2UDA3X+gp4hxZAEsa/eoSXKX2JmB2R7Q
-         T3CTa8kmL6aDJtOObN4DKylrMo+0UKnbZdup2fDXxDHClQQKt861N3dDFPlregRtQKB1
-         l0VkkxU+SXlkYeZQCJ4iMPn8v2yrH7HtO0iGSIyX+xBbx+nPZWlftmnt4Sx4UZDjxB/Q
-         CQfQ==
+        d=puresoftware-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=mDwzTS/fWq/EBduPCWZpBDX2IZJOQNxJ7z0ydAoEk7s=;
+        b=T99Fk+snOAu5QL4u6yr2YBMRL+x5gCyG3pTUjXrT1RcICZx4gk3WX0r6g6axOsSDuZ
+         qqlDs6Mz5hu401p4N0HktfoqnCr1FWssaQ+6qGSKAFb3Vpep/pvpyO4qPX6pNUjmXNgk
+         tebmp0A6HyNhtTqLhoFV7sav+bfew1zzeWHGv+mJixCH6PHd455xYoH/X4UBfgl6Ncly
+         Wie1iYiG4KIPkXdVOIZkcPW9vwn9IqOainm9i4XzG7MZh9vmPdqZmPuRH2myhyhrvJ/g
+         f/g3Uqjur8Em4mM9trxzRj1tXx9tYpH4pUl+fsibKDEIyIy0ODWED/nj22L+uZiGVaYF
+         DKPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=XPvTdtmbRMfkD4iZPz3f6M4OzS2nS0OYc/aAuQpERAQ=;
-        b=JAZdb7vaF/PXua31DZ1q/ZTBlp46TZMPFQzhyA0oBxaNQKjFbacdYGJ3TkMQQsNmbX
-         cpAZYzWGDwZdnEwgZMp70LXa2UVxPa2YFXufMYHWsKlHvm3CSwpyWQhvf35tqUeOFHyh
-         qIhphfMfzmCN/MTdvQyRLBP46kDkCPz+A+9QoV3je73CT1ba9IKrJUo4W0zSwCbUudsJ
-         k9zh0dJfikds3CkVz7WEDUQmHVDaqvHWnNNrlT90JQjnnpT/OKKsi2lFp2yx6iz7lAcz
-         4CnyoQybQt7iW7J0T/T1q1RLVCsm97KEbs0LUgIil98ydyvtuHA+/kSCnzhUQ24EHjdH
-         VjQw==
-X-Gm-Message-State: AOAM5325DM4W0a0pMdl5fzg6pCBrSXld/CS1tLjfxOycrvGFkkvm5YwN
-        S8slzE2d7kaqR/n8mhK0vIhwpQ==
-X-Google-Smtp-Source: ABdhPJyoawmkjTBcyhGQBhaZdB4iRLwZ1Di8GGM++7EJ3K2peppUMQ3WUQoQLFZBOndDUXUVYdGtlg==
-X-Received: by 2002:a7b:c210:: with SMTP id x16mr2057345wmi.76.1599829354408;
-        Fri, 11 Sep 2020 06:02:34 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:28ac:1772:9398:891a? ([2a01:e35:2ec0:82b0:28ac:1772:9398:891a])
-        by smtp.gmail.com with ESMTPSA id t1sm3958177wmi.16.2020.09.11.06.02.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 06:02:33 -0700 (PDT)
-Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: permit configuring the escape
- clock rate
-To:     Philippe CORNU <philippe.cornu@st.com>,
-        "a.hajda@samsung.com" <a.hajda@samsung.com>,
-        "Laurent.pinchart@ideasonboard.com" 
-        <Laurent.pinchart@ideasonboard.com>,
-        "jonas@kwiboo.se" <jonas@kwiboo.se>,
-        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>
-Cc:     "heiko.stuebner@theobroma-systems.com" 
-        <heiko.stuebner@theobroma-systems.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>
-References: <20200904125531.15248-1-narmstrong@baylibre.com>
- <078aae69-936f-cb78-623f-6bdcb1c2630d@st.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <20e589a9-ce81-e53e-72b1-6022f632d591@baylibre.com>
-Date:   Fri, 11 Sep 2020 15:02:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <078aae69-936f-cb78-623f-6bdcb1c2630d@st.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mDwzTS/fWq/EBduPCWZpBDX2IZJOQNxJ7z0ydAoEk7s=;
+        b=AimYR0I/W68Ke//KqqZuB3neYkmoos5JwKf6usrrxVoNiCoS9zw8PCRK5oCO/iUpLH
+         O4ogDu5x+q6cfPjAN6XI8fSA59UJHpPkFYiJJt3sP2yYFw3H67k4jaKJtXsLKVAYKIud
+         cALJQRUec9Mef6fCcN2MMHSkJFUzOqPpC2TCA606rCRZC053pEO9a1aMjpsxyI9fChQN
+         AG/yo8vUkCjmRHW3aC+awC6iQWt4WIkKgl6zgP1uBgaGPm/nXAPkKG/iaesGQcRZvbrB
+         SiZI95d/t0Wg9YtaK9n8shkRQQ1gzAUQFUL+2wmhY+6Tt0ZYTTJJyTgTmo5msSpvq2U2
+         Psiw==
+X-Gm-Message-State: AOAM5326e3/wpQNM+6KaEIaL1JuHByjlrsjee316w6yxsbDeRZ+rpmxC
+        UIAcqzZGOc3wAKQ/XdIUvghiQg==
+X-Google-Smtp-Source: ABdhPJzRwXHxInzgEsQl4caXjQLXqKJzdwNZFyGoa1VsnLuTinToe6hoz2k6bmdzCvXY75XyygTnfQ==
+X-Received: by 2002:a63:d409:: with SMTP id a9mr1562715pgh.312.1599829427448;
+        Fri, 11 Sep 2020 06:03:47 -0700 (PDT)
+Received: from DESKTOP-C4AMQCQ.domain.name ([122.177.137.137])
+        by smtp.gmail.com with ESMTPSA id m21sm2453135pfa.73.2020.09.11.06.03.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 06:03:46 -0700 (PDT)
+From:   kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+To:     Ashish Kumar <ashish.kumar@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Varun Sethi <V.Sethi@nxp.com>, Arokia Samy <arokia.samy@nxp.com>,
+        Ard Biesheuvel <Ard.Biesheuvel@arm.com>,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Paul Yang <Paul.Yang@arm.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+Subject: [PATCH v3] spi: spi-nxp-fspi: Add ACPI support
+Date:   Fri, 11 Sep 2020 18:33:31 +0530
+Message-Id: <20200911130331.6313-1-kuldip.dwivedi@puresoftware.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2020 10:29, Philippe CORNU wrote:
-> 
-> 
-> On 9/4/20 2:55 PM, Neil Armstrong wrote:
->> The Amlogic D-PHY in the Amlogic AXG SoC Family does support a frequency
->> higher than 10MHz for the TX Escape Clock, thus make the target rate
->> configurable.
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
->> ---
->>   drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 25 +++++++++++++++----
->>   include/drm/bridge/dw_mipi_dsi.h              |  1 +
->>   2 files changed, 21 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
->> index d580b2aa4ce9..31fc965c66fd 100644
->> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
->> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
->> @@ -562,15 +562,30 @@ static void dw_mipi_dsi_disable(struct dw_mipi_dsi *dsi)
->>   
->>   static void dw_mipi_dsi_init(struct dw_mipi_dsi *dsi)
->>   {
->> +	const struct dw_mipi_dsi_phy_ops *phy_ops = dsi->plat_data->phy_ops;
->> +	unsigned int esc_rate; /* in MHz */
->> +	u32 esc_clk_division;
->> +	int ret;
->> +
->>   	/*
->>   	 * The maximum permitted escape clock is 20MHz and it is derived from
->> -	 * lanebyteclk, which is running at "lane_mbps / 8".  Thus we want:
->> -	 *
->> -	 *     (lane_mbps >> 3) / esc_clk_division < 20
->> +	 * lanebyteclk, which is running at "lane_mbps / 8".
->> +	 */
->> +	if (phy_ops->get_esc_clk_rate) {
->> +		ret = phy_ops->get_esc_clk_rate(dsi->plat_data->priv_data,
->> +						&esc_rate);
->> +		if (ret)
->> +			DRM_DEBUG_DRIVER("Phy get_esc_clk_rate() failed\n");
->> +	} else
->> +		esc_rate = 20; /* Default to 20MHz */
->> +
->> +	/*
->> +	 * We want :
->> +	 *     (lane_mbps >> 3) / esc_clk_division < X
->>   	 * which is:
->> -	 *     (lane_mbps >> 3) / 20 > esc_clk_division
->> +	 *     (lane_mbps >> 3) / X > esc_clk_division
->>   	 */
->> -	u32 esc_clk_division = (dsi->lane_mbps >> 3) / 20 + 1;
->> +	esc_clk_division = (dsi->lane_mbps >> 3) / esc_rate + 1;
->>   
->>   	dsi_write(dsi, DSI_PWR_UP, RESET);
->>   
->> diff --git a/include/drm/bridge/dw_mipi_dsi.h b/include/drm/bridge/dw_mipi_dsi.h
->> index b0e390b3288e..bda8aa7c2280 100644
->> --- a/include/drm/bridge/dw_mipi_dsi.h
->> +++ b/include/drm/bridge/dw_mipi_dsi.h
->> @@ -36,6 +36,7 @@ struct dw_mipi_dsi_phy_ops {
->>   			     unsigned int *lane_mbps);
->>   	int (*get_timing)(void *priv_data, unsigned int lane_mbps,
->>   			  struct dw_mipi_dsi_dphy_timing *timing);
->> +	int (*get_esc_clk_rate)(void *priv_data, unsigned int *esc_clk_rate);
->>   };
->>   
->>   struct dw_mipi_dsi_host_ops {
->>
-> 
-> Hi Neil,
-> Thank you for the patch
-> 
-> Reviewed-by: Philippe Cornu <philippe.cornu@st.com>
-> 
-> Philippe :-)
-> 
+Currently NXP fspi  driver has support of DT only. Adding ACPI
+support to the driver so that it can be used by UEFI firmware
+booting in ACPI mode. This driver will be probed if any firmware
+will expose HID "NXP0009" in DSDT table.
 
-Thanks !
+Signed-off-by: kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+---
 
-Applying to drm-misc-next
+Notes:
+    1. Add ACPI match table, NXP members are added to confirm HID for FSPI
+    2. Change the DT specific APIs to device property APIs
+       so that same API can be used in DT and ACPi mode.
+    3. Add node specific checks to use indexed based lookup API in case of
+       ACPI.
+    	if (is_acpi_node(f->dev->fwnode))
+    		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+    	else
+    		res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fspi_base");
+    4. Omit clock configuration part - in ACPI world, the firmware
+       is responsible for clock maintenance.
+    5. This patch is tested on LX2160A platform
 
-Neil
+ drivers/spi/spi-nxp-fspi.c | 69 +++++++++++++++++++++++++++-----------
+ 1 file changed, 50 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
+index 1ccda82da206..0d41406c036d 100644
+--- a/drivers/spi/spi-nxp-fspi.c
++++ b/drivers/spi/spi-nxp-fspi.c
+@@ -3,7 +3,8 @@
+ /*
+  * NXP FlexSPI(FSPI) controller driver.
+  *
+- * Copyright 2019 NXP.
++ * Copyright 2019-2020 NXP
++ * Copyright 2020 Puresoftware Ltd.
+  *
+  * FlexSPI is a flexsible SPI host controller which supports two SPI
+  * channels and up to 4 external devices. Each channel supports
+@@ -30,6 +31,7 @@
+  *     Frieder Schrempf <frieder.schrempf@kontron.de>
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/bitops.h>
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+@@ -563,6 +565,9 @@ static int nxp_fspi_clk_prep_enable(struct nxp_fspi *f)
+ {
+ 	int ret;
+ 
++	if (is_acpi_node(f->dev->fwnode))
++		return 0;
++
+ 	ret = clk_prepare_enable(f->clk_en);
+ 	if (ret)
+ 		return ret;
+@@ -576,10 +581,15 @@ static int nxp_fspi_clk_prep_enable(struct nxp_fspi *f)
+ 	return 0;
+ }
+ 
+-static void nxp_fspi_clk_disable_unprep(struct nxp_fspi *f)
++static int nxp_fspi_clk_disable_unprep(struct nxp_fspi *f)
+ {
++	if (is_acpi_node(f->dev->fwnode))
++		return 0;
++
+ 	clk_disable_unprepare(f->clk);
+ 	clk_disable_unprepare(f->clk_en);
++
++	return 0;
+ }
+ 
+ /*
+@@ -1001,7 +1011,7 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 
+ 	f = spi_controller_get_devdata(ctlr);
+ 	f->dev = dev;
+-	f->devtype_data = of_device_get_match_data(dev);
++	f->devtype_data = device_get_match_data(dev);
+ 	if (!f->devtype_data) {
+ 		ret = -ENODEV;
+ 		goto err_put_ctrl;
+@@ -1010,7 +1020,12 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, f);
+ 
+ 	/* find the resources - configuration register address space */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fspi_base");
++	if (is_acpi_node(f->dev->fwnode))
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	else
++		res = platform_get_resource_byname(pdev,
++				IORESOURCE_MEM, "fspi_base");
++
+ 	f->iobase = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(f->iobase)) {
+ 		ret = PTR_ERR(f->iobase);
+@@ -1018,7 +1033,12 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* find the resources - controller memory mapped space */
+-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fspi_mmap");
++	if (is_acpi_node(f->dev->fwnode))
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	else
++		res = platform_get_resource_byname(pdev,
++				IORESOURCE_MEM, "fspi_mmap");
++
+ 	if (!res) {
+ 		ret = -ENODEV;
+ 		goto err_put_ctrl;
+@@ -1029,22 +1049,24 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 	f->memmap_phy_size = resource_size(res);
+ 
+ 	/* find the clocks */
+-	f->clk_en = devm_clk_get(dev, "fspi_en");
+-	if (IS_ERR(f->clk_en)) {
+-		ret = PTR_ERR(f->clk_en);
+-		goto err_put_ctrl;
+-	}
++	if (dev_of_node(&pdev->dev)) {
++		f->clk_en = devm_clk_get(dev, "fspi_en");
++		if (IS_ERR(f->clk_en)) {
++			ret = PTR_ERR(f->clk_en);
++			goto err_put_ctrl;
++		}
+ 
+-	f->clk = devm_clk_get(dev, "fspi");
+-	if (IS_ERR(f->clk)) {
+-		ret = PTR_ERR(f->clk);
+-		goto err_put_ctrl;
+-	}
++		f->clk = devm_clk_get(dev, "fspi");
++		if (IS_ERR(f->clk)) {
++			ret = PTR_ERR(f->clk);
++			goto err_put_ctrl;
++		}
+ 
+-	ret = nxp_fspi_clk_prep_enable(f);
+-	if (ret) {
+-		dev_err(dev, "can not enable the clock\n");
+-		goto err_put_ctrl;
++		ret = nxp_fspi_clk_prep_enable(f);
++		if (ret) {
++			dev_err(dev, "can not enable the clock\n");
++			goto err_put_ctrl;
++		}
+ 	}
+ 
+ 	/* find the irq */
+@@ -1127,6 +1149,14 @@ static const struct of_device_id nxp_fspi_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, nxp_fspi_dt_ids);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id nxp_fspi_acpi_ids[] = {
++	{ "NXP0009", .driver_data = (kernel_ulong_t)&lx2160a_data, },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, nxp_fspi_acpi_ids);
++#endif
++
+ static const struct dev_pm_ops nxp_fspi_pm_ops = {
+ 	.suspend	= nxp_fspi_suspend,
+ 	.resume		= nxp_fspi_resume,
+@@ -1136,6 +1166,7 @@ static struct platform_driver nxp_fspi_driver = {
+ 	.driver = {
+ 		.name	= "nxp-fspi",
+ 		.of_match_table = nxp_fspi_dt_ids,
++		.acpi_match_table = ACPI_PTR(nxp_fspi_acpi_ids),
+ 		.pm =   &nxp_fspi_pm_ops,
+ 	},
+ 	.probe          = nxp_fspi_probe,
+-- 
+2.17.1
+
