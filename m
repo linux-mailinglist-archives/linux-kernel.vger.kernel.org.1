@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F0B26614F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BA6266181
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbgIKNEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 09:04:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49594 "EHLO mail.kernel.org"
+        id S1726261AbgIKOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:49:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgIKM4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:56:33 -0400
+        id S1726161AbgIKNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:03:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16F5422248;
-        Fri, 11 Sep 2020 12:54:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6589222C4;
+        Fri, 11 Sep 2020 12:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599828900;
-        bh=2M3kLTHecVIjdKsP3KHuzpxTamDyJv9Z+X2VsAslpYc=;
+        s=default; t=1599829055;
+        bh=iLOOVfghMdz+HjBlYtn1WLMQivxIiIsjgDaBTdNxMNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z4WKEr6cj603/VIOZdFmipUDUi/AdJngdkLoKfgYFQAaiqmfQzL4nqb79CKKH17BU
-         PATcsICqqcTGUPyUu4xycIziFbwKaKk+h2GGub1OjgcYwx0p5xRcd6FQyKsPES0iie
-         srESN7S6n/NC9EGL5bnLPEh62Uo42KSS+YNClWRM=
+        b=j2Pid8HSUmJ6uKSbwyZ0TIWYLLxEWfpcvTHF1ia7xZk9iqmRG0Spe25/Wz/rgCYR/
+         BIY3k5VP/TNu71sJGazoPvuxT4U40e5wIvhWIrLmSusY6FWFmrPH/eg6vGxR7nDjsF
+         Bm+X8Fg5cOIGPIS4hvNDATGDX+Kg0KrJiEvfS3DA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Himadri Pandya <himadrispandya@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 50/62] net: usb: Fix uninit-was-stored issue in asix_read_phy_addr()
+        stable@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Ajay Kaher <akaher@vmware.com>
+Subject: [PATCH 4.9 49/71] vfio/type1: Support faulting PFNMAP vmas
 Date:   Fri, 11 Sep 2020 14:46:33 +0200
-Message-Id: <20200911122504.887449684@linuxfoundation.org>
+Message-Id: <20200911122507.364735199@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122502.395450276@linuxfoundation.org>
-References: <20200911122502.395450276@linuxfoundation.org>
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+References: <20200911122504.928931589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Himadri Pandya <himadrispandya@gmail.com>
+From: Alex Williamson <alex.williamson@redhat.com>
 
-commit a092b7233f0e000cc6f2c71a49e2ecc6f917a5fc upstream.
+commit 41311242221e3482b20bfed10fa4d9db98d87016 upstream.
 
-The buffer size is 2 Bytes and we expect to receive the same amount of
-data. But sometimes we receive less data and run into uninit-was-stored
-issue upon read. Hence modify the error check on the return value to match
-with the buffer size as a prevention.
+With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+the range being faulted into the vma.  Add support to manually provide
+that, in the same way as done on KVM with hva_to_pfn_remapped().
 
-Reported-and-tested by: syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com
-Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+[Ajay: Regenerated the patch for v4.9]
+Signed-off-by: Ajay Kaher <akaher@vmware.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/usb/asix_common.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
---- a/drivers/net/usb/asix_common.c
-+++ b/drivers/net/usb/asix_common.c
-@@ -251,7 +251,7 @@ int asix_read_phy_addr(struct usbnet *de
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -213,6 +213,32 @@ static int put_pfn(unsigned long pfn, in
+ 	return 0;
+ }
  
- 	netdev_dbg(dev->net, "asix_get_phy_addr()\n");
++static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
++			    unsigned long vaddr, unsigned long *pfn,
++			    bool write_fault)
++{
++	int ret;
++
++	ret = follow_pfn(vma, vaddr, pfn);
++	if (ret) {
++		bool unlocked = false;
++
++		ret = fixup_user_fault(NULL, mm, vaddr,
++				       FAULT_FLAG_REMOTE |
++				       (write_fault ?  FAULT_FLAG_WRITE : 0),
++				       &unlocked);
++		if (unlocked)
++			return -EAGAIN;
++
++		if (ret)
++			return ret;
++
++		ret = follow_pfn(vma, vaddr, pfn);
++	}
++
++	return ret;
++}
++
+ static int vaddr_get_pfn(unsigned long vaddr, int prot, unsigned long *pfn)
+ {
+ 	struct page *page[1];
+@@ -226,12 +252,16 @@ static int vaddr_get_pfn(unsigned long v
  
--	if (ret < 0) {
-+	if (ret < 2) {
- 		netdev_err(dev->net, "Error reading PHYID register: %02x\n", ret);
- 		goto out;
+ 	down_read(&current->mm->mmap_sem);
+ 
++retry:
+ 	vma = find_vma_intersection(current->mm, vaddr, vaddr + 1);
+ 
+ 	if (vma && vma->vm_flags & VM_PFNMAP) {
+-		if (!follow_pfn(vma, vaddr, pfn) &&
+-		    is_invalid_reserved_pfn(*pfn))
+-			ret = 0;
++		ret = follow_fault_pfn(vma, current->mm, vaddr, pfn, prot & IOMMU_WRITE);
++		if (ret == -EAGAIN)
++			goto retry;
++
++		if (!ret && !is_invalid_reserved_pfn(*pfn))
++			ret = -EFAULT;
  	}
+ 
+ 	up_read(&current->mm->mmap_sem);
 
 
