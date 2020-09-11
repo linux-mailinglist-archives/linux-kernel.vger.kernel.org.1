@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BFA02659B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 08:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5932659C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 08:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgIKG5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 02:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgIKG5h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 02:57:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24B2C061573;
-        Thu, 10 Sep 2020 23:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AWt8e+Mw6r/7C0+LOLgGANF7RmbTfkJ8gpEXJHWIld0=; b=G6cv9eisU0LtwkwwXlXiXiLdhR
-        jmkKpqdBGd+Qsm4IhkTCC+p4FisKqwrSIcQ4WzxXmnBQb9HShW57MDI2CdCBOdt87/PmEA5cd9RQd
-        TMmlAZqktVm/kEMuPzfQLN6RswYqw39EhZlX5KU7J25019UQo+TZ9NNqY0OUl7J30W7nlPw98UHFt
-        m7TDXq7b/WBrv4qgahljvhYOrkyhjvVvZrJ/FqWUlZMZ7u/91o+NY6w8beXkrZpfBZJPQbjVLqnig
-        5Mvvi8c7ai5K+fu26Utfic43zLfLMYIRJ+6ZpDxMbfWG6tY1zXJtg1Y0LCplMKVTRNP3F8j+Ngla5
-        e0EL5+6A==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGd01-0000HK-76; Fri, 11 Sep 2020 06:57:33 +0000
-Date:   Fri, 11 Sep 2020 07:57:33 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Rich Felker <dalias@libc.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, linux-api@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfs: add fchmodat2 syscall
-Message-ID: <20200911065733.GA31579@infradead.org>
-References: <20200910142335.GG3265@brightrain.aerifal.cx>
- <20200910162059.GA18228@infradead.org>
- <20200910163949.GJ3265@brightrain.aerifal.cx>
- <20200910164234.GA25140@infradead.org>
- <20200910170256.GK3265@brightrain.aerifal.cx>
+        id S1725795AbgIKG6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 02:58:24 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:58992 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725535AbgIKG6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 02:58:24 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kGd0Y-0007uw-4p; Fri, 11 Sep 2020 16:58:07 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Sep 2020 16:58:06 +1000
+Date:   Fri, 11 Sep 2020 16:58:06 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Atte Tommiska <atte.tommiska@xiphera.com>
+Cc:     Matt Mackall <mpm@selenic.com>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] hwrng: add support for Xiphera XIP8001B
+Message-ID: <20200911065806.GG32150@gondor.apana.org.au>
+References: <20200902102817.32172-1-atte.tommiska@xiphera.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200910170256.GK3265@brightrain.aerifal.cx>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200902102817.32172-1-atte.tommiska@xiphera.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 01:02:56PM -0400, Rich Felker wrote:
-> Would you be happy with a pair of patches where the first blocks chmod
-> of symlinks in chmod_common and the second adds the syscall with
-> flags? I think this is a clearly understandable fix, but it does
-> eliminate the ability to *fix* link access modes that have been set to
-> ridiculous values (note: I don't think it really matters since the
-> modes don't do anything anyway) in the past.
+On Wed, Sep 02, 2020 at 01:28:14PM +0300, Atte Tommiska wrote:
+> This patchset introduces a linux driver for Xiphera's XIP8001B IP.
+> The IP is an FPGA-based TRNG which can be used in various FPGA families.
+> The IP is in use in multiple customer projects and in Xiphera's own products.
+> 
+> changes in v2: 
+>   - fixed the 'make dt_binding_check' errors in the devicetree schema.
+> 
+> changes in v3: 
+>   - added Rob's tags to the first and second patch
+>   - fixed a typo in the subject line of the second patch
+>   - removed a redundant line of code from the driver in the third patch
+> 
+> Atte Tommiska (3):
+>   dt-bindings: vendor-prefixes: Add Xiphera vendor prefix
+>   dt-bindings: rng: add bindings for Xiphera XIP8001B hwrng
+>   hwrng: xiphera-trng: add support for XIP8001B hwrng
+> 
+>  .../bindings/rng/xiphera,xip8001b-trng.yaml   |  33 ++++
+>  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+>  drivers/char/hw_random/Kconfig                |  10 ++
+>  drivers/char/hw_random/Makefile               |   1 +
+>  drivers/char/hw_random/xiphera-trng.c         | 150 ++++++++++++++++++
+>  5 files changed, 196 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rng/xiphera,xip8001b-trng.yaml
+>  create mode 100644 drivers/char/hw_random/xiphera-trng.c
 
-I'd be much happier with that, yes.
+All applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
