@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8451F2667B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1E12667B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgIKRr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S1726094AbgIKRrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgIKRrX (ORCPT
+        with ESMTP id S1726124AbgIKRra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:47:23 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CC9C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:23 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f2so5134920pgd.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:23 -0700 (PDT)
+        Fri, 11 Sep 2020 13:47:30 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409F4C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:30 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id md22so2911194pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kvYixO51YaoIO33ChNYvtKOsnVvLnU5BAv+BZxGwFTk=;
-        b=QuW7izjB3bNLKxwiNi74am+mf+AFZ2eSEvRlG7wIxURlJF6kw/ahS9fYverRCuAi7N
-         LeX2g8wPjJ2if6Im0usPVrrO6hJeCSDYNBAsQ55vKg1k5D6IN7veAbM3HdYOtKovEGLp
-         GsP6Wv5jmqWCupCvkLHeKTNTCwN87JzhUyD5E=
+        bh=KnqrXNdIqeB06mDi8JJrB6E/jpSsANqYANVtbrsc5Qc=;
+        b=YYmERz+Z4VKJ5/6JTRSrKvUJt1JEt/wqSZLN+gjZBI9cSsQfyJeYx6IMrpENGxrOXA
+         pT8Vgd3RY8b4RK3le5vNglE5jWNGCJ1NUkvnmMfCH3yZwok1iedqW2zZC9VqVrRrek/u
+         Qd72Df76z9OBmNSId+fEI3SCiRr8pa7HU9sSg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kvYixO51YaoIO33ChNYvtKOsnVvLnU5BAv+BZxGwFTk=;
-        b=n1W2TpkRv9N+qNUlc3hm4N1F9r376ssL8op0MxI7osdA3zFR1rBTm4nkbwZuTaV3Gy
-         h2CPfUgvD1M7JR2/EOfifngdmzdhphPYhdTm0reQVZpPq0QIQFEui3Ybou+SJg2Fj5Rr
-         Qy6VuJSYPBGr1q9EcHqgHSa1XOrqWhB0kgWz5yriyQF5SEdyRuLb4oISeMxsxjwiA5zr
-         RdOiSyfgaeJouP5m3fEAau7pj8ZkbzRxyrxGnlmvRG3+/ZTr1+0R4+8J4hoUTyx9oped
-         IOUBHgmJMF8FGqE/+YgWmpG7it6XK4Wsu9B1uw9JLDL9TVfFpDM+RM1ueUfNY+huVpNy
-         mhXg==
-X-Gm-Message-State: AOAM533IwjrfMn5cg2wjH53GV4bLuJPP2Lg1Aa6yTOKTeIZB2tIeDi2X
-        3Dh0i4xHpDbHjQveyGqDRkB9FbPXOlyJDevj
-X-Google-Smtp-Source: ABdhPJwW9GHRP88el4tAgfRdd+kOK14xAT9LtNFwR6roH2CRXD5wSVcTl0HK6332I30/mVjPGzSjTg==
-X-Received: by 2002:a17:902:ac83:b029:d1:920c:c022 with SMTP id h3-20020a170902ac83b02900d1920cc022mr3427704plr.38.1599846442166;
-        Fri, 11 Sep 2020 10:47:22 -0700 (PDT)
+        bh=KnqrXNdIqeB06mDi8JJrB6E/jpSsANqYANVtbrsc5Qc=;
+        b=Pmi97HqRgjirHidYV3HlXgkKWaAUHXXvgzLy6OgO08YuAU6DMeAfbp82EkK4I/hMJp
+         AUR2CgRCxj0xrsww/wxLe8P1o+EXQL1Lq86q7wFLveB/SDVHWPLV++w66tk3qz45Eqtf
+         DtcHidPiAJLXs7LKsXDl82A4qV+gP0I7V1QsEqT/BOfgQh+SFQujXWXdzVIyarqm/s7g
+         DuPlPcw4Vhp8tirpgEZvNBTOyvAnUgd6tlResPhtbzKMMRAeO3SY0kXu2KCM5QN5NS//
+         lmTcM3o6ZLpXYMxrflY1+fpZPdCRIorRJYxK/IGaAq3bb2ARMedHy3iqw5B64betiEzJ
+         bAiw==
+X-Gm-Message-State: AOAM5331OGqoqaQw2hF/IdShwDm9hdVktjVqMIb4sBd0MZcdQg4hiyzG
+        D/CNXpRdlJ03uWOUFWm0UeWe1N8+tyhruwW0
+X-Google-Smtp-Source: ABdhPJxUjyQYz29oa36L3bnruBr2AdWsHDOXrQkYj5u3mOQPAq8vClHRs3mqSuUDtpKK0nLmgHesww==
+X-Received: by 2002:a17:90a:5282:: with SMTP id w2mr3269250pjh.77.1599846449330;
+        Fri, 11 Sep 2020 10:47:29 -0700 (PDT)
 Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
-        by smtp.gmail.com with ESMTPSA id q11sm2329465pgj.92.2020.09.11.10.47.17
+        by smtp.gmail.com with ESMTPSA id i17sm2942953pfa.29.2020.09.11.10.47.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:47:21 -0700 (PDT)
+        Fri, 11 Sep 2020 10:47:28 -0700 (PDT)
 From:   Cheng-Yi Chiang <cychiang@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
@@ -67,11 +67,10 @@ Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
         linux-rockchip@lists.infradead.org,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH v10 1/3] ASoC: hdmi-codec: Use set_jack ops to set jack
-Date:   Sat, 12 Sep 2020 01:47:03 +0800
-Message-Id: <20200911174705.759011-2-cychiang@chromium.org>
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH v10 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
+Date:   Sat, 12 Sep 2020 01:47:04 +0800
+Message-Id: <20200911174705.759011-3-cychiang@chromium.org>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 In-Reply-To: <20200911174705.759011-1-cychiang@chromium.org>
 References: <20200911174705.759011-1-cychiang@chromium.org>
@@ -82,161 +81,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use set_jack ops to set jack so machine drivers do not need to include
-hdmi-codec.h explicitly.
+Add devicetree bindings documentation file for sc7180 sound card.
 
 Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
 ---
- include/sound/hdmi-codec.h                           |  3 ---
- sound/soc/codecs/hdmi-codec.c                        | 12 ++++--------
- sound/soc/mediatek/mt8173/mt8173-rt5650.c            |  5 ++---
- sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c   |  5 ++---
- .../mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c |  5 ++---
- sound/soc/rockchip/rockchip_max98090.c               |  3 +--
- 6 files changed, 11 insertions(+), 22 deletions(-)
+ .../bindings/sound/qcom,sc7180.yaml           | 130 ++++++++++++++++++
+ 1 file changed, 130 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 7754631a3102..b55970859a13 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -117,9 +117,6 @@ struct hdmi_codec_pdata {
- struct snd_soc_component;
- struct snd_soc_jack;
- 
--int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
--			       struct snd_soc_jack *jack);
--
- #define HDMI_CODEC_DRV_NAME "hdmi-audio-codec"
- 
- #endif /* __HDMI_CODEC_H__ */
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 8c6f540533ba..403d4c6a49a8 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -698,13 +698,9 @@ static void plugged_cb(struct device *dev, bool plugged)
- 		hdmi_codec_jack_report(hcp, 0);
- }
- 
--/**
-- * hdmi_codec_set_jack_detect - register HDMI plugged callback
-- * @component: the hdmi-codec instance
-- * @jack: ASoC jack to report (dis)connection events on
-- */
--int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
--			       struct snd_soc_jack *jack)
-+static int hdmi_codec_set_jack(struct snd_soc_component *component,
-+			       struct snd_soc_jack *jack,
-+			       void *data)
- {
- 	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
- 	int ret = -EOPNOTSUPP;
-@@ -720,7 +716,6 @@ int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
- 	}
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(hdmi_codec_set_jack_detect);
- 
- static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
- {
-@@ -806,6 +801,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
- 	.non_legacy_dai_naming	= 1,
-+	.set_jack		= hdmi_codec_set_jack,
- };
- 
- static int hdmi_codec_probe(struct platform_device *pdev)
-diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-index 347b095d478d..c28ebf891cb0 100644
---- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
-@@ -11,7 +11,6 @@
- #include <linux/of_gpio.h>
- #include <sound/soc.h>
- #include <sound/jack.h>
--#include <sound/hdmi-codec.h>
- #include "../../codecs/rt5645.h"
- 
- #define MCLK_FOR_CODECS		12288000
-@@ -154,8 +153,8 @@ static int mt8173_rt5650_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
--					  &mt8173_rt5650_hdmi_jack);
-+	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
-+					  &mt8173_rt5650_hdmi_jack, NULL);
- }
- 
- enum {
-diff --git a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-index 06d0a4f80fc1..e53c6200d5a7 100644
---- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
-@@ -10,7 +10,6 @@
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
--#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -369,8 +368,8 @@ static int mt8183_da7219_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
--					  &priv->hdmi_jack);
-+	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
-+					  &priv->hdmi_jack, NULL);
- }
- 
- static struct snd_soc_dai_link mt8183_da7219_dai_links[] = {
-diff --git a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-index 07410d7afaa9..327dfad41e31 100644
---- a/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-+++ b/sound/soc/mediatek/mt8183/mt8183-mt6358-ts3a227-max98357.c
-@@ -9,7 +9,6 @@
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
--#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -350,8 +349,8 @@ mt8183_mt6358_ts3a227_max98357_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	return hdmi_codec_set_jack_detect(asoc_rtd_to_codec(rtd, 0)->component,
--					  &priv->hdmi_jack);
-+	return snd_soc_component_set_jack(asoc_rtd_to_codec(rtd, 0)->component,
-+					  &priv->hdmi_jack, NULL);
- }
- 
- static struct snd_soc_dai_link mt8183_mt6358_ts3a227_dai_links[] = {
-diff --git a/sound/soc/rockchip/rockchip_max98090.c b/sound/soc/rockchip/rockchip_max98090.c
-index 9acfd024aa5d..c8f1a28a92b7 100644
---- a/sound/soc/rockchip/rockchip_max98090.c
-+++ b/sound/soc/rockchip/rockchip_max98090.c
-@@ -12,7 +12,6 @@
- #include <linux/gpio.h>
- #include <linux/of_gpio.h>
- #include <sound/core.h>
--#include <sound/hdmi-codec.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -238,7 +237,7 @@ static int rk_hdmi_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
--	return hdmi_codec_set_jack_detect(component, &rk_hdmi_jack);
-+	return snd_soc_component_set_jack(component, &rk_hdmi_jack, NULL);
- }
- 
- /* max98090 dai_link */
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+new file mode 100644
+index 000000000000..b77311bb5190
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,sc7180.yaml
+@@ -0,0 +1,130 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/qcom,sc7180.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Technologies Inc. SC7180 ASoC sound card driver
++
++maintainers:
++  - Rohit kumar <rohitkr@codeaurora.org>
++  - Cheng-Yi Chiang <cychiang@chromium.org>
++
++description:
++  This binding describes the SC7180 sound card which uses LPASS for audio.
++
++properties:
++  compatible:
++    const: qcom,sc7180-sndcard-rt5682-m98357-1mic
++
++  audio-routing:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description:
++      A list of the connections between audio components. Each entry is a
++      pair of strings, the first being the connection's sink, the second
++      being the connection's source.
++
++  model:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: User specified audio sound card name
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^dai-link(@[0-9])?$":
++    description:
++      Each subnode represents a dai link. Subnodes of each dai links would be
++      cpu/codec dais.
++
++    type: object
++
++    properties:
++      link-name:
++        description: Indicates dai-link name and PCM stream name.
++        $ref: /schemas/types.yaml#/definitions/string
++        maxItems: 1
++
++      reg:
++        description: dai link address.
++
++      cpu:
++        description: Holds subnode which indicates cpu dai.
++        type: object
++        properties:
++          sound-dai: true
++
++      codec:
++        description: Holds subnode which indicates codec dai.
++        type: object
++        properties:
++          sound-dai: true
++
++    required:
++      - link-name
++      - cpu
++      - codec
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - model
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++
++  - |
++    sound {
++        compatible = "qcom,sc7180-sndcard-rt5682-m98357-1mic";
++        model = "sc7180-snd-card";
++
++        audio-routing =
++                    "Headphone Jack", "HPOL",
++                    "Headphone Jack", "HPOR";
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        dai-link@0 {
++            link-name = "MultiMedia0";
++            reg = <0>;
++            cpu {
++                sound-dai = <&lpass_cpu 0>;
++            };
++
++            codec {
++                sound-dai = <&alc5682 0>;
++            };
++        };
++
++        dai-link@1 {
++            link-name = "MultiMedia1";
++            reg = <1>;
++            cpu {
++                sound-dai = <&lpass_cpu 1>;
++            };
++
++            codec {
++                sound-dai = <&max98357a>;
++            };
++        };
++
++        dai-link@2 {
++            link-name = "MultiMedia2";
++            reg = <2>;
++            cpu {
++                sound-dai = <&lpass_hdmi 0>;
++            };
++
++            codec {
++                sound-dai = <&msm_dp>;
++            };
++        };
++    };
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
