@@ -2,52 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C76026698E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B3926697E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725852AbgIKUdj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 16:33:39 -0400
-Received: from ox4u.de ([212.118.221.216]:44892 "EHLO s1.ox4u.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbgIKUdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:33:37 -0400
-X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 16:33:36 EDT
-Received: by s1.ox4u.de (Postfix, from userid 65534)
-        id 30A094976F; Fri, 11 Sep 2020 22:23:39 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on s1.ox4u.de
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.3 required=5.0 tests=FREEMAIL_FORGED_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,HEADER_FROM_DIFFERENT_DOMAINS,HELO_MISC_IP,
-        MISSING_MID,TO_EQ_FM_DIRECT_MX autolearn=disabled version=3.4.1
-Received: from p-smtp-0001 (srv001.prm483.scansation.de [192.145.44.196])
-        (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
-        (No client certificate requested)
-        by s1.ox4u.de (Postfix) with ESMTPSA id 6E64B448D43;
-        Fri, 11 Sep 2020 22:21:13 +0200 (CEST)
-Received: from [94.102.50.175] (<unknown> [192.145.44.1])
-        by p-smtp-0001 (OpenSMTPD) with ESMTP id 681ebb5f;
-        Fri, 11 Sep 2020 20:21:02 +0000 (UTC)
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Can I trust you ?
-To:     Recipients <johndailey101@earthlink.net>
-From:   "SGM John Dailey" <johndailey101@earthlink.net>
-Date:   Fri, 11 Sep 2020 13:21:02 -0700
-Reply-To: sgtjohndailey101@gmail.com
-Message-Id: <20200911202649.30A094976F@s1.ox4u.de>
+        id S1725819AbgIKUYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:24:31 -0400
+Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185]:38688
+        "EHLO a27-185.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725793AbgIKUYa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 16:24:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599855869;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=eS0AE1YOcLsI/VsKdn1KA+dbGmtsMgubVKpWHGlt0u8=;
+        b=QG15KpDW4bBEJup7HegdfBCHEasvpOk4gAT5ELGxh9+/KQUAj2yLRSMoVJkOYMRa
+        Y64PiIDcuADqP6WaJheDzCocXUaEkQ9x85HIwx1LMTJSRfbz7W5ZbyuaCdRYq5Gf4qd
+        PeZdWfwEbLbcBdnVvugzi/vh4l7fqyseFXk5uq9M=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599855869;
+        h=From:To:Cc:Subject:Date:Message-Id:Feedback-ID;
+        bh=eS0AE1YOcLsI/VsKdn1KA+dbGmtsMgubVKpWHGlt0u8=;
+        b=m7mq4EaaBRgyQXRP5hFGk3GsAA8TCNq5+c1YSqiNz7LkzC2HuZ6SFpUQ0gB0LMzt
+        Tkj2JWQft9mU7tFcSeIBseuqrGDm81004CL3+87ctkGDdmGJ4Mn8cJJZEEOQRPYYYOD
+        KZ2QKv3kL/2i/CPRLeGSIdzoryhVSzPjy/L4ZM/E=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 617B8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [PATCH v2] cma_alloc(), indefinitely retry allocations for -EBUSY failures
+Date:   Fri, 11 Sep 2020 20:24:29 +0000
+Message-ID: <010101747ed73d01-5362ce76-6676-49fa-abad-0405e8102b04-000000@us-west-2.amazonses.com>
+X-Mailer: git-send-email 2.7.4
+X-SES-Outgoing: 2020.09.11-54.240.27.185
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My name is Sgt Major John Dailey. I am here in Syria , I
-came upon a project I think we can work together on. I need you
-to help me receive a huge sum and I am offering you 40% of the
-total amount for your help. If interested kindly get back to me
-for more details.
+On mobile devices, failure to allocate from a CMA area constitutes a
+functional failure.  Sometimes during CMA allocations, we have observed
+that pages in a CMA area allocated through alloc_pages(), that we're trying
+to migrate away to make room for a CMA allocation, are temporarily pinned.
+This temporary pinning can occur when a process that owns the pinned page
+is being forked (the example is explained further in the commit text), or it is
+exiting.  This patch addresses this issue by indefinitely retrying allocations
+that fail due to a return of -EBUSY.
 
-Yours In Service,
+** This change log was re-sent due to threading issues **
 
-SGM John Dailey
+Change log: 
+
+v1: We were performing retries of the allocation a fixed number of times.
+Andrew Morton disliked this, as it didn't guarantee that the allocation would
+succeed.
+
+https://lkml.org/lkml/2020/8/5/1096
+https://lkml.org/lkml/2020/8/21/1490
+
+v2: To address this concern, we switched to retrying indefinitely, as opposed to
+doing to retrying  the allocation a limited number of times.
+
+Chris Goldsworthy (1):
+  mm: cma: indefinitely retry allocations in cma_alloc
+
+ mm/cma.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
