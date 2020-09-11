@@ -2,150 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28E9266872
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9ED266890
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgIKS6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 14:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbgIKS6e (ORCPT
+        id S1725849AbgIKTK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:10:26 -0400
+Received: from gateway20.websitewelcome.com ([192.185.46.107]:25851 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725783AbgIKTKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 14:58:34 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F037FC0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:58:33 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 34so7263363pgo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZXmHidgwtnTnxCDrTuOclLLnDmLj/yLMTWxKoHjkjfQ=;
-        b=ZrOejeHoXLixXlu6m7vIPESK+fObNaFjZbYZb6BuPccGC8RhiVx86JFf69d/MMrQh3
-         c5GLEicnmJy6bM1/V0UBllGrc6/ouavLYqSLeTsNsbiwto675zmuU7WPI4+tQ1SjuaIh
-         xmSrh1si1mjT6qM2CdlptrXbP8DIJUI+A8S8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZXmHidgwtnTnxCDrTuOclLLnDmLj/yLMTWxKoHjkjfQ=;
-        b=APHrtwIxoR9y2Onpr6f4JZh5H8hYDoZM9rcT2LJJ7uBr2ybINkHu+MMsb2uHhgyc/A
-         +DR/GcOMK3AKqw5L6Pm5j1o1VDZ/cbjxspzXR1C84eFCSCJyAEm41eNbmBiTI4jChPKC
-         7QbU5ZZxVCsyZM094I+f854BJd7VPBeH1iPUiq6MRk8St3Py5IfiaKX0dox/nH47C3PC
-         e6vebYkIdCrj2Cgj93QaJvkHbo6SpdLbh0nm+SUxmiqeTOJhBQB9WLl1yduzfVJml+MN
-         EI3fglPXJqE2YFCq7e+zWab/6KWJtHXmuSzEglcuw5JOCzWoLSMb/hse3NvAT+MoeftQ
-         Pz8w==
-X-Gm-Message-State: AOAM531Cb6jFJ1kkH91lwfUpmZzVVtaj4vVkwseqSYw+RUFN98e21cI9
-        kCLiekTdv5mwhe+wbQYVxJlQBA==
-X-Google-Smtp-Source: ABdhPJx1HHzPM4LUXPoNomXjYpginIkBVFSvmj1qsqnJ/hNQ+buyCEi68fmII7HiPctkjBg2DoUsgw==
-X-Received: by 2002:a63:fd51:: with SMTP id m17mr2779530pgj.210.1599850713261;
-        Fri, 11 Sep 2020 11:58:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 124sm2920285pfd.132.2020.09.11.11.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 11:58:31 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 11:58:30 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kyle Huey <me@kylehuey.com>
-Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to
- change the syscall number at entry via orig_ax
-Message-ID: <202009111156.660A7C2978@keescook>
-References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
- <87blj6ifo8.fsf@nanos.tec.linutronix.de>
- <87a6xzrr89.fsf@mpe.ellerman.id.au>
+        Fri, 11 Sep 2020 15:10:24 -0400
+X-Greylist: delayed 1454 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 15:10:23 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 0EE3B400CECD0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:21:37 -0500 (CDT)
+Received: from gator3309.hostgator.com ([192.254.250.173])
+        by cmsmtp with SMTP
+        id Go3jkTpCfn9FWGo3kkv7Qc; Fri, 11 Sep 2020 13:46:08 -0500
+X-Authority-Reason: nr=8
+Received: from pool-68-160-221-54.nycmny.fios.verizon.net ([68.160.221.54]:51155 helo=[192.168.1.133])
+        by gator3309.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <trapexit@spawn.link>)
+        id 1kGo3i-0008LX-KI; Fri, 11 Sep 2020 13:46:06 -0500
+Subject: Re: [fuse-devel] [PATCH V8 0/3] fuse: Add support for passthrough
+ read/write
+To:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Anderson <dvander@google.com>,
+        Eric Yan <eric.yan@oneplus.com>, Jann Horn <jannh@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <stefanoduo@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200911163403.79505-1-balsini@android.com>
+From:   Antonio SJ Musumeci <trapexit@spawn.link>
+Message-ID: <21e1b3be-6cc1-c73a-4e3e-963e2dd64f1f@spawn.link>
+Date:   Fri, 11 Sep 2020 14:46:04 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6xzrr89.fsf@mpe.ellerman.id.au>
+In-Reply-To: <20200911163403.79505-1-balsini@android.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator3309.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - spawn.link
+X-BWhitelist: no
+X-Source-IP: 68.160.221.54
+X-Source-L: No
+X-Exim-ID: 1kGo3i-0008LX-KI
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: pool-68-160-221-54.nycmny.fios.verizon.net ([192.168.1.133]) [68.160.221.54]:51155
+X-Source-Auth: trapexit@spawn.link
+X-Email-Count: 18
+X-Source-Cap: YmlsZTtiaWxlO2dhdG9yMzMwOS5ob3N0Z2F0b3IuY29t
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 11:53:42PM +1000, Michael Ellerman wrote:
-> Hi Thomas,
-> 
-> Sorry if this was discussed already somewhere, but I didn't see anything ...
-> 
-> Thomas Gleixner <tglx@linutronix.de> writes:
-> > On Wed, Aug 19 2020 at 10:14, Kyle Huey wrote:
-> >> tl;dr: after 27d6b4d14f5c3ab21c4aef87dd04055a2d7adf14 ptracer
-> >> modifications to orig_ax in a syscall entry trace stop are not honored
-> >> and this breaks our code.
-> ...
-> > diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> > index 9852e0d62d95..fcae019158ca 100644
-> > --- a/kernel/entry/common.c
-> > +++ b/kernel/entry/common.c
-> > @@ -65,7 +65,8 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
-> 
-> Adding context:
-> 
-> 	/* Do seccomp after ptrace, to catch any tracer changes. */
-> 	if (ti_work & _TIF_SECCOMP) {
-> 		ret = __secure_computing(NULL);
-> 		if (ret == -1L)
-> 			return ret;
-> 	}
-> 
-> 	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
-> 		trace_sys_enter(regs, syscall);
-> 
-> >  	syscall_enter_audit(regs, syscall);
-> >  
-> > -	return ret ? : syscall;
-> > +	/* The above might have changed the syscall number */
-> > +	return ret ? : syscall_get_nr(current, regs);
-> >  }
-> >  
-> >  noinstr long syscall_enter_from_user_mode(struct pt_regs *regs, long syscall)
-> 
-> I noticed if the syscall number is changed by seccomp/ptrace, the
-> original syscall number is still passed to trace_sys_enter() and audit.
-> 
-> The old code used regs->orig_ax, so any change to the syscall number
-> would be seen by the tracepoint and audit.
-
-Ah! That's no good.
-
-> I can observe the difference between v5.8 and mainline, using the
-> raw_syscall trace event and running the seccomp_bpf selftest which turns
-> a getpid (39) into a getppid (110).
-> 
-> With v5.8 we see getppid on entry and exit:
-> 
->      seccomp_bpf-1307  [000] .... 22974.874393: sys_enter: NR 110 (7ffff22c46e0, 40a350, 4, fffffffffffff7ab, 7fa6ee0d4010, 0)
->      seccomp_bpf-1307  [000] .N.. 22974.874401: sys_exit: NR 110 = 1304
-> 
-> Whereas on mainline we see an enter for getpid and an exit for getppid:
-> 
->      seccomp_bpf-1030  [000] ....    21.806766: sys_enter: NR 39 (7ffe2f6d1ad0, 40a350, 7ffe2f6d1ad0, 0, 0, 407299)
->      seccomp_bpf-1030  [000] ....    21.806767: sys_exit: NR 110 = 1027
-> 
-> 
-> I don't know audit that well, but I think it saves the syscall number on
-> entry eg. in __audit_syscall_entry(). So it will record the wrong
-> syscall happening in this case I think.
-> 
-> Seems like we should reload the syscall number before calling
-> trace_sys_enter() & audit ?
-
-Agreed. I wonder what the best way to build a regression test for this
-is... hmmm.
-
--- 
-Kees Cook
+On 9/11/2020 12:34 PM, Alessio Balsini via fuse-devel wrote:
+> Add support for file system passthrough read/write of files when enabled in
+> userspace through the option FUSE_PASSTHROUGH.
+Might be more effort than it is worth but any thoughts on userland error 
+handling for passthrough? My use case, optionally, responds to read or 
+write errors in particular ways. It's not an unreasonable tradeoff to 
+disable passthrough if the user wants those features but was wondering 
+if there was any consideration of extending the protocol to pass 
+read/write errors back to the fuse server.
