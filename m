@@ -2,60 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C63D265EFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D42F265EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725855AbgIKLsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 07:48:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59608 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725803AbgIKLrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:47:15 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C9FDFB7BABC0350C4F33;
-        Fri, 11 Sep 2020 19:46:24 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
- 19:46:22 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <hdegoede@redhat.com>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] fs: vboxsf: Fix a kernel-doc warning in vboxsf_wrappers.c
-Date:   Fri, 11 Sep 2020 19:43:39 +0800
-Message-ID: <20200911114339.62308-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725710AbgIKLpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 07:45:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725784AbgIKLoJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:44:09 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465BFC061757;
+        Fri, 11 Sep 2020 04:44:08 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so11164328wrx.7;
+        Fri, 11 Sep 2020 04:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Uxr7xy49Weq7pd1s1vVHMdn6nRX902qFhoxZ9UgjIY=;
+        b=oSXLqLzqLlp5KZmNeVY0rQeg2YQWiyK/CQHbZfAfzhckCkA6R2l/25b8JyRCiarCBW
+         hvshme8hDGfVvh1ji7zNlQRVNH4W1ufpY0crIE/Wf8KFPiJGfhf2uz7guen8da/aU8Xu
+         /To45Nc8IKKsge6WBiZtwMJ/s06FYTtwTk+MfdJ2ZhppqAWiB0xkMLh7E+IguiYy3Fc+
+         aKt71dFkuzb96Q+M0APNpLnEvfF5l17+Wo3ki/en1iVCfFilTry9kM/dsIb3qF3/YDH3
+         eGBSbi+KeT6BZojwDv+UMymFE/ipvNf1plpL3yciN6FbZbjWWw5rrtQYYWm+rXnI5qBZ
+         nCoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Uxr7xy49Weq7pd1s1vVHMdn6nRX902qFhoxZ9UgjIY=;
+        b=XI6yTvkD/GjeGHPrTYh2qS8kwIV3d4ghF2glkXg49isscB4I9SyW67asOjNPJ1Vwde
+         KxokUqGNcdQgpk50W1BxqAAIK+72SoN8bh0+RPr3yOgb6grAtXqv4fQfTxl2s2t5D9+M
+         d3SuASVh+UMS8Ymx1yJlN5XBoe6L/pfQQsBaMe6ZKm77ljfGL3KIezLfoPCNqRsljjYn
+         LcMyC1rHGooNKZudepG1ovuRIR6963loka7D0JcwP7ky+kHIhX9mhBxnd4Bj3YcGcntz
+         N1aZz/gHZ90o5jbfZwVTdpUIo5/LBjTgdVynuiVdufwdcQnNmhsvOtSiMo34WDxpPOPU
+         xalA==
+X-Gm-Message-State: AOAM5337qBCgzBF5/n9ep2PbKuPngsafB4kEk2xvL5UMnew9nq1OZ2Xe
+        H7fqP48vZHC63cmvnRqGBuY=
+X-Google-Smtp-Source: ABdhPJzsWtAPOH+dRmC4weQKtjF8A0Sq7DDAltrpBt83Tf2MFmx73sM9ngU2lceOV2OmN5zPwxhftA==
+X-Received: by 2002:a5d:4d49:: with SMTP id a9mr1779144wru.363.1599824646937;
+        Fri, 11 Sep 2020 04:44:06 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id g143sm3752442wme.0.2020.09.11.04.44.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 04:44:06 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] security: keys: Use kvfree_sensitive in a few places
+Date:   Fri, 11 Sep 2020 12:44:00 +0100
+Message-Id: <20200911114400.82207-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+In big_key.c, there are a few places where memzero_explicit + kvfree is
+used. It is better to use kvfree_sensitive instead, which is more
+readable and also prevents the compiler from eliding the call to
+memzero_explicit. Fix this.
 
-fs/vboxsf/vboxsf_wrappers.c:132: warning: Excess function parameter 'param' description in 'vboxsf_create'
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
- fs/vboxsf/vboxsf_wrappers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/keys/big_key.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/fs/vboxsf/vboxsf_wrappers.c b/fs/vboxsf/vboxsf_wrappers.c
-index bfc78a097dae..3b6630e2847d 100644
---- a/fs/vboxsf/vboxsf_wrappers.c
-+++ b/fs/vboxsf/vboxsf_wrappers.c
-@@ -114,7 +114,7 @@ int vboxsf_unmap_folder(u32 root)
-  * vboxsf_create - Create a new file or folder
-  * @root:         Root of the shared folder in which to create the file
-  * @parsed_path:  The path of the file or folder relative to the shared folder
-- * @param:        create_parms Parameters for file/folder creation.
-+ * @create_parms: create_parms Parameters for file/folder creation.
-  *
-  * Create a new file or folder or open an existing one in a shared folder.
-  * Note this function always returns 0 / success unless an exceptional condition
+diff --git a/security/keys/big_key.c b/security/keys/big_key.c
+index 691347dea3c1..d17e5f09eeb8 100644
+--- a/security/keys/big_key.c
++++ b/security/keys/big_key.c
+@@ -121,8 +121,7 @@ int big_key_preparse(struct key_preparsed_payload *prep)
+ 		*path = file->f_path;
+ 		path_get(path);
+ 		fput(file);
+-		memzero_explicit(buf, enclen);
+-		kvfree(buf);
++		kvfree_sensitive(buf, enclen);
+ 	} else {
+ 		/* Just store the data in a buffer */
+ 		void *data = kmalloc(datalen, GFP_KERNEL);
+@@ -140,8 +139,7 @@ int big_key_preparse(struct key_preparsed_payload *prep)
+ err_enckey:
+ 	kfree_sensitive(enckey);
+ error:
+-	memzero_explicit(buf, enclen);
+-	kvfree(buf);
++	kvfree_sensitive(buf, enclen);
+ 	return ret;
+ }
+ 
+@@ -273,8 +271,7 @@ long big_key_read(const struct key *key, char *buffer, size_t buflen)
+ err_fput:
+ 		fput(file);
+ error:
+-		memzero_explicit(buf, enclen);
+-		kvfree(buf);
++		kvfree_sensitive(buf, enclen);
+ 	} else {
+ 		ret = datalen;
+ 		memcpy(buffer, key->payload.data[big_key_data], datalen);
 -- 
-2.17.1
+2.28.0
 
