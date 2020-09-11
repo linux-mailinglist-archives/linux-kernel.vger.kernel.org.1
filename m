@@ -2,322 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69982665A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE1526658B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgIKRJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:09:15 -0400
-Received: from mga03.intel.com ([134.134.136.65]:43978 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbgIKO7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 10:59:48 -0400
-IronPort-SDR: W+cFOayI2KpEAccCPWM2eebHao2nZKBCfQ/X905ehZS3yAIh4GJQ/nVg47Smbfv7gH8RM2jAfR
- 9zfVi5/a/POA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="158802548"
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="158802548"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 07:51:38 -0700
-IronPort-SDR: mI2TBRK9XJ1cT6Ghs0lu+tniEYM9rQCEpUjr3/MbbkanB8TN1gBN73KT1e2xQ7+lrX4qWBkstk
- bzLGv54aWz6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="300951422"
-Received: from ssp-icl-u-210.jf.intel.com ([10.54.55.52])
-  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2020 07:51:38 -0700
-From:   kan.liang@linux.intel.com
-To:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 4/4] perf, tools: Add documentation for topdown metrics
-Date:   Fri, 11 Sep 2020 07:48:08 -0700
-Message-Id: <20200911144808.27603-5-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200911144808.27603-1-kan.liang@linux.intel.com>
-References: <20200911144808.27603-1-kan.liang@linux.intel.com>
+        id S1725780AbgIKRG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:06:26 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:55680 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgIKPCf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:02:35 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08BEmGPA089963;
+        Fri, 11 Sep 2020 09:48:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599835697;
+        bh=utgFM9WorG4OFofGm9b5aCjLlddXO94Yx+teMloJ8+U=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=XUkS/xO3at4lfOm/piZLuaB2/XlW4AlvLQpvHWo6dLE1BCI84/aX/tunBvIXAwOf2
+         u14gxPDv3NnLqmIjFavvaakscCKeUVkRapJrchoqm1hgmCNItBsjvuL9Cxn2uKu0XG
+         51r8CVPCTieQhopP8X7o52xHVnXkhlGWHKOYEf2Y=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08BEmGLX120810
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Sep 2020 09:48:16 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
+ Sep 2020 09:48:16 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 11 Sep 2020 09:48:16 -0500
+Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08BEmFR2119261;
+        Fri, 11 Sep 2020 09:48:15 -0500
+Subject: Re: [PATCH] memory: omap-gpmc: Fix compile test on SPARC
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200911143251.399-1-krzk@kernel.org>
+From:   Roger Quadros <rogerq@ti.com>
+Message-ID: <bf9aa130-d5e7-d180-5a52-0cb244ffbf4f@ti.com>
+Date:   Fri, 11 Sep 2020 17:48:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200911143251.399-1-krzk@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+Hi Krzysztof,
 
-Add some documentation how to use the topdown metrics in ring 3.
+On 11/09/2020 17:32, Krzysztof Kozlowski wrote:
+> SPARC comes without CONFIG_OF_ADDRESS thus compile testing fails on
+> linking:
+> 
+>    /usr/bin/sparc64-linux-gnu-ld: drivers/memory/omap-gpmc.o: in function `gpmc_probe_generic_child':
+>    omap-gpmc.c:(.text.unlikely+0x14ec): undefined reference to `of_platform_device_create'
+> 
+> Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>   drivers/memory/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> index 8072204bc21a..00e013b14703 100644
+> --- a/drivers/memory/Kconfig
+> +++ b/drivers/memory/Kconfig
+> @@ -104,6 +104,7 @@ config TI_EMIF
+>   
+>   config OMAP_GPMC
+>   	bool "Texas Instruments OMAP SoC GPMC driver" if COMPILE_TEST
+> +	depends on OF_ADDRESS
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/topdown.txt | 256 +++++++++++++++++++++++++++
- 1 file changed, 256 insertions(+)
- create mode 100644 tools/perf/Documentation/topdown.txt
+but of_platform_device_create() is defined in platform.c which gets built
+irrespective of OF_ADDRESS.
 
-diff --git a/tools/perf/Documentation/topdown.txt b/tools/perf/Documentation/topdown.txt
-new file mode 100644
-index 000000000000..3c39bb3dc5fa
---- /dev/null
-+++ b/tools/perf/Documentation/topdown.txt
-@@ -0,0 +1,256 @@
-+Using TopDown metrics in user space
-+-----------------------------------
-+
-+Intel CPUs (since Sandy Bridge and Silvermont) support a TopDown
-+methology to break down CPU pipeline execution into 4 bottlenecks:
-+frontend bound, backend bound, bad speculation, retiring.
-+
-+For more details on Topdown see [1][5]
-+
-+Traditionally this was implemented by events in generic counters
-+and specific formulas to compute the bottlenecks.
-+
-+perf stat --topdown implements this.
-+
-+Full Top Down includes more levels that can break down the
-+bottlenecks further. This is not directly implemented in perf,
-+but available in other tools that can run on top of perf,
-+such as toplev[2] or vtune[3]
-+
-+New Topdown features in Ice Lake
-+===============================
-+
-+With Ice Lake CPUs the TopDown metrics are directly available as
-+fixed counters and do not require generic counters. This allows
-+to collect TopDown always in addition to other events.
-+
-+% perf stat -a --topdown -I1000
-+#           time             retiring      bad speculation       frontend bound        backend bound
-+     1.001281330                23.0%                15.3%                29.6%                32.1%
-+     2.003009005                 5.0%                 6.8%                46.6%                41.6%
-+     3.004646182                 6.7%                 6.7%                46.0%                40.6%
-+     4.006326375                 5.0%                 6.4%                47.6%                41.0%
-+     5.007991804                 5.1%                 6.3%                46.3%                42.3%
-+     6.009626773                 6.2%                 7.1%                47.3%                39.3%
-+     7.011296356                 4.7%                 6.7%                46.2%                42.4%
-+     8.012951831                 4.7%                 6.7%                47.5%                41.1%
-+...
-+
-+This also enables measuring TopDown per thread/process instead
-+of only per core.
-+
-+Using TopDown through RDPMC in applications on Ice Lake
-+======================================================
-+
-+For more fine grained measurements it can be useful to
-+access the new  directly from user space. This is more complicated,
-+but drastically lowers overhead.
-+
-+On Ice Lake, there is a new fixed counter 3: SLOTS, which reports
-+"pipeline SLOTS" (cycles multiplied by core issue width) and a
-+metric register that reports slots ratios for the different bottleneck
-+categories.
-+
-+The metrics counter is CPU model specific and is not available on older
-+CPUs.
-+
-+Example code
-+============
-+
-+Library functions to do the functionality described below
-+is also available in libjevents [4]
-+
-+The application opens a group with fixed counter 3 (SLOTS) and any
-+metric event, and allow user programs to read the performance counters.
-+
-+Fixed counter 3 is mapped to a pseudo event event=0x00, umask=04,
-+so the perf_event_attr structure should be initialized with
-+{ .config = 0x0400, .type = PERF_TYPE_RAW }
-+The metric events are mapped to the pseudo event event=0x00, umask=0x8X.
-+For example, the perf_event_attr structure can be initialized with
-+{ .config = 0x8000, .type = PERF_TYPE_RAW } for Retiring metric event
-+The Fixed counter 3 must be the leader of the group.
-+
-+#include <linux/perf_event.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+
-+/* Provide own perf_event_open stub because glibc doesn't */
-+__attribute__((weak))
-+int perf_event_open(struct perf_event_attr *attr, pid_t pid,
-+		    int cpu, int group_fd, unsigned long flags)
-+{
-+	return syscall(__NR_perf_event_open, attr, pid, cpu, group_fd, flags);
-+}
-+
-+/* Open slots counter file descriptor for current task. */
-+struct perf_event_attr slots = {
-+	.type = PERF_TYPE_RAW,
-+	.size = sizeof(struct perf_event_attr),
-+	.config = 0x400,
-+	.exclude_kernel = 1,
-+};
-+
-+int slots_fd = perf_event_open(&slots, 0, -1, -1, 0);
-+if (slots_fd < 0)
-+	... error ...
-+
-+/*
-+ * Open metrics event file descriptor for current task.
-+ * Set slots event as the leader of the group.
-+ */
-+struct perf_event_attr metrics = {
-+	.type = PERF_TYPE_RAW,
-+	.size = sizeof(struct perf_event_attr),
-+	.config = 0x8000,
-+	.exclude_kernel = 1,
-+};
-+
-+int metrics_fd = perf_event_open(&metrics, 0, -1, slots_fd, 0);
-+if (metrics_fd < 0)
-+	... error ...
-+
-+
-+The RDPMC instruction (or _rdpmc compiler intrinsic) can now be used
-+to read slots and the topdown metrics at different points of the program:
-+
-+#include <stdint.h>
-+#include <x86intrin.h>
-+
-+#define RDPMC_FIXED	(1 << 30)	/* return fixed counters */
-+#define RDPMC_METRIC	(1 << 29)	/* return metric counters */
-+
-+#define FIXED_COUNTER_SLOTS		3
-+#define METRIC_COUNTER_TOPDOWN_L1	0
-+
-+static inline uint64_t read_slots(void)
-+{
-+	return _rdpmc(RDPMC_FIXED | FIXED_COUNTER_SLOTS);
-+}
-+
-+static inline uint64_t read_metrics(void)
-+{
-+	return _rdpmc(RDPMC_METRIC | METRIC_COUNTER_TOPDOWN_L1);
-+}
-+
-+Then the program can be instrumented to read these metrics at different
-+points.
-+
-+It's not a good idea to do this with too short code regions,
-+as the parallelism and overlap in the CPU program execution will
-+cause too much measurement inaccuracy. For example instrumenting
-+individual basic blocks is definitely too fine grained.
-+
-+Decoding metrics values
-+=======================
-+
-+The value reported by read_metrics() contains four 8 bit fields
-+that represent a scaled ratio that represent the Level 1 bottleneck.
-+All four fields add up to 0xff (= 100%)
-+
-+The binary ratios in the metric value can be converted to float ratios:
-+
-+#define GET_METRIC(m, i) (((m) >> (i*8)) & 0xff)
-+
-+#define TOPDOWN_RETIRING(val)	((float)GET_METRIC(val, 0) / 0xff)
-+#define TOPDOWN_BAD_SPEC(val)	((float)GET_METRIC(val, 1) / 0xff)
-+#define TOPDOWN_FE_BOUND(val)	((float)GET_METRIC(val, 2) / 0xff)
-+#define TOPDOWN_BE_BOUND(val)	((float)GET_METRIC(val, 3) / 0xff)
-+
-+and then converted to percent for printing.
-+
-+The ratios in the metric accumulate for the time when the counter
-+is enabled. For measuring programs it is often useful to measure
-+specific sections. For this it is needed to deltas on metrics.
-+
-+This can be done by scaling the metrics with the slots counter
-+read at the same time.
-+
-+Then it's possible to take deltas of these slots counts
-+measured at different points, and determine the metrics
-+for that time period.
-+
-+	slots_a = read_slots();
-+	metric_a = read_metrics();
-+
-+	... larger code region ...
-+
-+	slots_b = read_slots()
-+	metric_b = read_metrics()
-+
-+	# compute scaled metrics for measurement a
-+	retiring_slots_a = GET_METRIC(metric_a, 0) * slots_a
-+	bad_spec_slots_a = GET_METRIC(metric_a, 1) * slots_a
-+	fe_bound_slots_a = GET_METRIC(metric_a, 2) * slots_a
-+	be_bound_slots_a = GET_METRIC(metric_a, 3) * slots_a
-+
-+	# compute delta scaled metrics between b and a
-+	retiring_slots = GET_METRIC(metric_b, 0) * slots_b - retiring_slots_a
-+	bad_spec_slots = GET_METRIC(metric_b, 1) * slots_b - bad_spec_slots_a
-+	fe_bound_slots = GET_METRIC(metric_b, 2) * slots_b - fe_bound_slots_a
-+	be_bound_slots = GET_METRIC(metric_b, 3) * slots_b - be_bound_slots_a
-+
-+Later the individual ratios for the measurement period can be recreated
-+from these counts.
-+
-+	slots_delta = slots_b - slots_a
-+	retiring_ratio = (float)retiring_slots / slots_delta
-+	bad_spec_ratio = (float)bad_spec_slots / slots_delta
-+	fe_bound_ratio = (float)fe_bound_slots / slots_delta
-+	be_bound_ratio = (float)be_bound_slots / slota_delta
-+
-+	printf("Retiring %.2f%% Bad Speculation %.2f%% FE Bound %.2f%% BE Bound %.2f%%\n",
-+		retiring_ratio * 100.,
-+		bad_spec_ratio * 100.,
-+		fe_bound_ratio * 100.,
-+		be_bound_ratio * 100.);
-+
-+Resetting metrics counters
-+==========================
-+
-+Since the individual metrics are only 8bit they lose precision for
-+short regions over time because the number of cycles covered by each
-+fraction bit shrinks. So the counters need to be reset regularly.
-+
-+When using the kernel perf API the kernel resets on every read.
-+So as long as the reading is at reasonable intervals (every few
-+seconds) the precision is good.
-+
-+When using perf stat it is recommended to always use the -I option,
-+with no longer interval than a few seconds
-+
-+	perf stat -I 1000 --topdown ...
-+
-+For user programs using RDPMC directly the counter can
-+be reset explicitly using ioctl:
-+
-+	ioctl(perf_fd, PERF_EVENT_IOC_RESET, 0);
-+
-+This "opens" a new measurement period.
-+
-+A program using RDPMC for TopDown should schedule such a reset
-+regularly, as in every few seconds.
-+
-+Limits on Ice Lake
-+==================
-+
-+Four pseudo TopDown metric events are exposed for the end-users,
-+topdown-retiring, topdown-bad-spec, topdown-fe-bound and topdown-be-bound.
-+They can be used to collect the TopDown value under the following
-+rules:
-+- All the TopDown metric events must be in a group with the SLOTS event.
-+- The SLOTS event must be the leader of the group.
-+- The PERF_FORMAT_GROUP flag must be applied for each TopDown metric
-+  events
-+
-+The SLOTS event and the TopDown metric events can be counting members of
-+a sampling read group. Since the SLOTS event must be the leader of a TopDown
-+group, the second event of the group is the sampling event.
-+For example, perf record -e '{slots, $sampling_event, topdown-retiring}:S'
-+
-+
-+[1] https://software.intel.com/en-us/top-down-microarchitecture-analysis-method-win
-+[2] https://github.com/andikleen/pmu-tools/wiki/toplev-manual
-+[3] https://software.intel.com/en-us/intel-vtune-amplifier-xe
-+[4] https://github.com/andikleen/pmu-tools/tree/master/jevents
-+[5] https://sites.google.com/site/analysismethods/yasin-pubs
+Maybe we need to just depend on CONFIG_OF ?
+
+>   	select GPIOLIB
+>   	help
+>   	  This driver is for the General Purpose Memory Controller (GPMC)
+> 
+
+cheers,
+-roger
 -- 
-2.17.1
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
