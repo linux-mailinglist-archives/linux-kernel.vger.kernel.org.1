@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21749265F7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0B6265F82
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgIKM0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:26:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33506 "EHLO mail.kernel.org"
+        id S1725876AbgIKM1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:27:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgIKMUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:20:55 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1725902AbgIKMXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:23:20 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC44821D40;
-        Fri, 11 Sep 2020 12:20:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E34421D40;
+        Fri, 11 Sep 2020 12:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599826818;
-        bh=p0dMZYlvMuBFRvmCSlPIVCxaoQeDTgEw+OKygz501WY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j6OvDJk9lxBEbRg4B+J1hnhaSFZ0S/2rb1x8+sJ/FOilMRPj58ezUJmV6D19UauvF
-         nkSocYDX6gFzgo3xcje+GaziUM4uhAsw9W56BGftYo/mz0h4wN8n0x9oZUTZ/60Pbx
-         USU/zyrOBaXf379zyB0fBe/zkmRgv1cLGH3MfeeI=
-Date:   Fri, 11 Sep 2020 14:20:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bob Peterson <rpeterso@redhat.com>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Daniel Craig <Daniel.Craig@csiro.au>,
-        Nicolas Courtel <courtel@cena.fr>
-Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction ail
- lists
-Message-ID: <20200911122024.GA3758477@kroah.com>
-References: <20200623195316.864547658@linuxfoundation.org>
- <20200623195323.968867013@linuxfoundation.org>
- <20200910194319.GA131386@eldamar.local>
- <20200911115816.GB3717176@kroah.com>
- <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com>
+        s=default; t=1599826997;
+        bh=TsJlJXLOn6eC1f0QnzLEss3twLn7+LoEFTB+YfdI7SU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EvlW+mhm5KorQ50qVeSIiqTFJHHvbwI8I1g9K+N5cA+m7Id2cuADYU71hK9XyInnm
+         b6eXIb6aUw0519g2Btr6bTyPgKi1WQszD+Kh+1VfuNobCr5SBkuWG284YHFF0ZkcLs
+         UNLrwxv5rrSrr6dixrKGqBrUBXT7TAqcrKdKkoL0=
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator fixes for v5.9-rc4
+Date:   Fri, 11 Sep 2020 13:22:23 +0100
+Message-Id: <20200911122317.2E34421D40@mail.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
-> ----- Original Message -----
-> > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
-> > > Hi,
-> > > 
-> > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
-> > > > From: Bob Peterson <rpeterso@redhat.com>
-> > > > 
-> > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
-> > > > 
-> > > > Before this patch, transactions could be merged into the system
-> > > > transaction by function gfs2_merge_trans(), but the transaction ail
-> > > > lists were never merged. Because the ail flushing mechanism can run
-> > > > separately, bd elements can be attached to the transaction's buffer
-> > > > list during the transaction (trans_add_meta, etc) but quickly moved
-> > > > to its ail lists. Later, in function gfs2_trans_end, the transaction
-> > > > can be freed (by gfs2_trans_end) while it still has bd elements
-> > > > queued to its ail lists, which can cause it to either lose track of
-> > > > the bd elements altogether (memory leak) or worse, reference the bd
-> > > > elements after the parent transaction has been freed.
-> > > > 
-> > > > Although I've not seen any serious consequences, the problem becomes
-> > > > apparent with the previous patch's addition of:
-> > > > 
-> > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
-> > > > 
-> > > > to function gfs2_trans_free().
-> > > > 
-> > > > This patch adds logic into gfs2_merge_trans() to move the merged
-> > > > transaction's ail lists to the sdp transaction. This prevents the
-> > > > use-after-free. To do this properly, we need to hold the ail lock,
-> > > > so we pass sdp into the function instead of the transaction itself.
-> > > > 
-> > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-> > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> (snip)
-> > > 
-> > > In Debian two user confirmed issues on writing on a GFS2 partition
-> > > with this commit applied. The initial Debian report is at
-> > > https://bugs.debian.org/968567 and Daniel Craig reported it into
-> > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
-> > > 
-> > > Writing to a gfs2 filesystem fails and results in a soft lookup of the
-> > > machine for kernels with that commit applied. I cannot reporduce the
-> > > issue myself due not having a respective setup available, but Daniel
-> > > described a minimal serieos of steps to reproduce the issue.
-> > > 
-> > > This might affect as well other stable series where this commit was
-> > > applied, as there was a similar report for someone running 5.4.58 in
-> > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
-> > 
-> > Can you report this to the gfs2 developers?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Hi Greg,
-> 
-> No need. The patch came from the gfs2 developers. I think he just wants
-> it added to a stable release.
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
 
-What commit needs to be added to a stable release?
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
 
-confused,
+are available in the Git repository at:
 
-greg k-h
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.9-rc4
+
+for you to fetch changes up to 59ae97a7a9e1499c2070e29841d1c4be4ae2994a:
+
+  regulator: pwm: Fix machine constraints application (2020-09-02 19:13:29 +0100)
+
+----------------------------------------------------------------
+regulator: Fixes for v5.9
+
+The biggest set of fixes here is those from Michał Mirosław fixing some
+locking issues with coupled regulators that are triggered in cases where
+a coupled regulator is used by a device involved in fs_reclaim like eMMC
+storage.  These are relatively serious for the affected systems, though
+the circumstances where they trigger are very rare.
+
+----------------------------------------------------------------
+Axel Lin (1):
+      regulator: cros-ec-regulator: Add NULL test for devm_kmemdup call
+
+Colin Ian King (1):
+      regulator: fix spelling mistake "Cant" -> "Can't"
+
+Dmitry Osipenko (1):
+      regulator: core: Fix slab-out-of-bounds in regulator_unlock_recursive()
+
+Mark Brown (1):
+      Merge tag 'v5.9-rc2' into regulator-5.9
+
+Michał Mirosław (7):
+      regulator: push allocation in regulator_init_coupling() outside of lock
+      regulator: push allocation in regulator_ena_gpio_request() out of lock
+      regulator: push allocations in create_regulator() outside of lock
+      regulator: push allocation in set_consumer_device_supply() out of lock
+      regulator: plug of_node leak in regulator_register()'s error path
+      regulator: cleanup regulator_ena_gpio_free()
+      regulator: remove superfluous lock in regulator_resolve_coupling()
+
+Vincent Whitchurch (1):
+      regulator: pwm: Fix machine constraints application
+
+ drivers/regulator/core.c              | 179 ++++++++++++++++++----------------
+ drivers/regulator/cros-ec-regulator.c |   3 +
+ drivers/regulator/fixed.c             |   2 +-
+ drivers/regulator/pwm-regulator.c     |   2 +-
+ 4 files changed, 101 insertions(+), 85 deletions(-)
