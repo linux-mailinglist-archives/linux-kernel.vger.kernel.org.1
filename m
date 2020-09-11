@@ -2,139 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F9626668C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA012667AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgIKR3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:29:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:40348 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbgIKR3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:29:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F213E106F;
-        Fri, 11 Sep 2020 10:29:32 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E66493F68F;
-        Fri, 11 Sep 2020 10:29:27 -0700 (PDT)
-Subject: Re: [PATCH v3 8/8] iommu/arm-smmu-qcom: Setup identity domain for
- boot mappings
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-9-bjorn.andersson@linaro.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <34b1f9ea-fb16-faac-c288-627b51066968@arm.com>
-Date:   Fri, 11 Sep 2020 18:29:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726066AbgIKRqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725803AbgIKMQj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:16:39 -0400
+Received: from smtp-8fad.mail.infomaniak.ch (smtp-8fad.mail.infomaniak.ch [IPv6:2001:1600:3:17::8fad])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5738BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:16:36 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Bnvqv0ZqWzlhfqK;
+        Fri, 11 Sep 2020 14:16:27 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Bnvqq5mSFzlh8T4;
+        Fri, 11 Sep 2020 14:16:23 +0200 (CEST)
+Subject: Re: [RFC PATCH v9 0/3] Add introspect_access(2) (was O_MAYEXEC)
+To:     Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200910164612.114215-1-mic@digikod.net>
+ <20200910170424.GU6583@casper.infradead.org>
+ <f6e2358c-8e5e-e688-3e66-2cdd943e360e@digikod.net>
+ <a48145770780d36e90f28f1526805a7292eb74f6.camel@linux.ibm.com>
+ <880bb4ee-89a2-b9b0-747b-0f779ceda995@digikod.net>
+ <20200910184033.GX6583@casper.infradead.org>
+ <20200910200010.GF1236603@ZenIV.linux.org.uk>
+ <20200910200543.GY6583@casper.infradead.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <3dd9b2b3-6304-03df-bfba-13864169453e@digikod.net>
+Date:   Fri, 11 Sep 2020 14:16:23 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20200904155513.282067-9-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200910200543.GY6583@casper.infradead.org>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04 16:55, Bjorn Andersson wrote:
-> With many Qualcomm platforms not having functional S2CR BYPASS a
-> temporary IOMMU domain, without translation, needs to be allocated in
-> order to allow these memory transactions.
-> 
-> Unfortunately the boot loader uses the first few context banks, so
-> rather than overwriting a active bank the last context bank is used and
-> streams are diverted here during initialization.
-> 
-> This also performs the readback of SMR registers for the Qualcomm
-> platform, to trigger the mechanism.
-> 
-> This is based on prior work by Thierry Reding and Laurentiu Tudor.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
-> Changes since v2:
-> - Combined from pieces spread between the Qualcomm impl and generic code in v2.
-> - Moved to use the newly introduced inherit_mapping op.
-> 
->   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 33 ++++++++++++++++++++++
->   1 file changed, 33 insertions(+)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index 70a1eaa52e14..a54302190932 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -12,6 +12,7 @@
->   struct qcom_smmu {
->   	struct arm_smmu_device smmu;
->   	bool bypass_broken;
-> +	struct iommu_domain *identity;
->   };
->   
->   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
-> @@ -228,6 +229,37 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
->   	return 0;
->   }
->   
-> +static int qcom_smmu_inherit_mappings(struct arm_smmu_device *smmu)
-> +{
-> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-> +	int cbndx;
-> +	u32 smr;
-> +	int i;
-> +
-> +	qsmmu->identity = arm_smmu_alloc_identity_domain(smmu);
-> +	if (IS_ERR(qsmmu->identity))
-> +		return PTR_ERR(qsmmu->identity);
-> +
-> +	cbndx = to_smmu_domain(qsmmu->identity)->cfg.cbndx;
 
-I don't really get the point of going through the dance of allocating a 
-whole iommu_domain() just to get a context. If you don't want to simply 
-statically reserve a context at probe time, then just allocate from 
-smmu->context_map here (where AFAICS "here" should be in cfg_probe 
-anyway). This is entirely driver-internal, so there shouldn't be any 
-need for IOMMU-API-level stuff to be involved.
+On 10/09/2020 22:05, Matthew Wilcox wrote:
+> On Thu, Sep 10, 2020 at 09:00:10PM +0100, Al Viro wrote:
+>> On Thu, Sep 10, 2020 at 07:40:33PM +0100, Matthew Wilcox wrote:
+>>> On Thu, Sep 10, 2020 at 08:38:21PM +0200, Mickaël Salaün wrote:
+>>>> There is also the use case of noexec mounts and file permissions. From
+>>>> user space point of view, it doesn't matter which kernel component is in
+>>>> charge of defining the policy. The syscall should then not be tied with
+>>>> a verification/integrity/signature/appraisal vocabulary, but simply an
+>>>> access control one.
+>>>
+>>> permission()?
+>>
+>> int lsm(int fd, const char *how, char *error, int size);
+>>
+>> Seriously, this is "ask LSM to apply special policy to file"; let's
+>> _not_ mess with flags, etc. for that; give it decent bandwidth
+>> and since it's completely opaque for the rest of the kernel,
+>> just a pass a string to be parsed by LSM as it sees fit.
 
-Robin.
+Well, I don't know why you're so angry against LSM, but as noticed by
+Matthew, the main focus of this patch series is not about LSM (no hook,
+no security/* code, only file permission and mount option checks,
+nothing fancy). Moreover, the syscall you're proposing doesn't make
+sense, but I guess it's yet another sarcastic reply. Please, cool down.
+We asked for constructive comments and already followed your previous
+requests (even if we didn't get answers for some questions), but
+seriously, this one is nonsense.
 
-> +
-> +	for (i = 0; i < smmu->num_mapping_groups; i++) {
-> +		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
-> +
-> +		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-> +			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
-> +			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
-> +			smmu->smrs[i].valid = true;
-> +
-> +			smmu->s2crs[i].type = S2CR_TYPE_TRANS;
-> +			smmu->s2crs[i].privcfg = S2CR_PRIVCFG_DEFAULT;
-> +			smmu->s2crs[i].cbndx = cbndx;
-> +			smmu->s2crs[i].count++;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   static int qcom_smmu_def_domain_type(struct device *dev)
->   {
->   	const struct of_device_id *match =
-> @@ -270,6 +302,7 @@ static const struct arm_smmu_impl qcom_smmu_impl = {
->   	.cfg_probe = qcom_smmu_cfg_probe,
->   	.def_domain_type = qcom_smmu_def_domain_type,
->   	.reset = qcom_smmu500_reset,
-> +	.inherit_mappings = qcom_smmu_inherit_mappings,
->   };
->   
->   static const struct arm_smmu_impl qcom_adreno_smmu_impl = {
 > 
+> Hang on, it does have some things which aren't BD^W^WLSM.  It lets
+> the interpreter honour the mount -o noexec option.  I presume it's
+> not easily defeated by
+> 	cat /home/salaun/bin/bad.pl | perl -
+> 
+
+Funny. I know there is a lot of text and links but please read the
+commit messages before further comments.
