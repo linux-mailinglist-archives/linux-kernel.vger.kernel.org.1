@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045FC266979
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C76026698E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbgIKUT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbgIKUTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:19:55 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606C9C061795;
-        Fri, 11 Sep 2020 13:19:55 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 137CD1365DC87;
-        Fri, 11 Sep 2020 13:03:01 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 13:19:43 -0700 (PDT)
-Message-Id: <20200911.131943.1509486357233508252.davem@davemloft.net>
-To:     allen.lkml@gmail.com
-Cc:     m.grzeschik@pengutronix.de, paulus@samba.org, oliver@neukum.org,
-        woojung.huh@microchip.com, petkan@nucleusys.com,
-        keescook@chromium.org, netdev@vger.kernel.org,
-        linux-ppp@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 0/8] drivers: net: convert tasklets to use new
- tasklet_setup()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <CAOMdWSJohOLK023ZM-yTnZiNHdy2TfyyWV3+iuuQiALiYV2NLQ@mail.gmail.com>
-References: <20200817084614.24263-1-allen.cryptic@gmail.com>
-        <CAOMdWSJohOLK023ZM-yTnZiNHdy2TfyyWV3+iuuQiALiYV2NLQ@mail.gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 11 Sep 2020 13:03:01 -0700 (PDT)
+        id S1725852AbgIKUdj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 16:33:39 -0400
+Received: from ox4u.de ([212.118.221.216]:44892 "EHLO s1.ox4u.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbgIKUdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 16:33:37 -0400
+X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 16:33:36 EDT
+Received: by s1.ox4u.de (Postfix, from userid 65534)
+        id 30A094976F; Fri, 11 Sep 2020 22:23:39 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on s1.ox4u.de
+X-Spam-Level: ***
+X-Spam-Status: No, score=3.3 required=5.0 tests=FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,HEADER_FROM_DIFFERENT_DOMAINS,HELO_MISC_IP,
+        MISSING_MID,TO_EQ_FM_DIRECT_MX autolearn=disabled version=3.4.1
+Received: from p-smtp-0001 (srv001.prm483.scansation.de [192.145.44.196])
+        (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+        (No client certificate requested)
+        by s1.ox4u.de (Postfix) with ESMTPSA id 6E64B448D43;
+        Fri, 11 Sep 2020 22:21:13 +0200 (CEST)
+Received: from [94.102.50.175] (<unknown> [192.145.44.1])
+        by p-smtp-0001 (OpenSMTPD) with ESMTP id 681ebb5f;
+        Fri, 11 Sep 2020 20:21:02 +0000 (UTC)
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Can I trust you ?
+To:     Recipients <johndailey101@earthlink.net>
+From:   "SGM John Dailey" <johndailey101@earthlink.net>
+Date:   Fri, 11 Sep 2020 13:21:02 -0700
+Reply-To: sgtjohndailey101@gmail.com
+Message-Id: <20200911202649.30A094976F@s1.ox4u.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Allen <allen.lkml@gmail.com>
-Date: Fri, 11 Sep 2020 11:26:52 +0530
+My name is Sgt Major John Dailey. I am here in Syria , I
+came upon a project I think we can work together on. I need you
+to help me receive a huge sum and I am offering you 40% of the
+total amount for your help. If interested kindly get back to me
+for more details.
 
-> Will you pick these up or should I send these out again when I
-> have fixed the two patches on the other thread.
+Yours In Service,
 
-Always resend.
+SGM John Dailey
