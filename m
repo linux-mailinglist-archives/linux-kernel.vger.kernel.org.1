@@ -2,92 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0633F265BDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A8E265BF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725781AbgIKIqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbgIKIqa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:46:30 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639FAC061573;
-        Fri, 11 Sep 2020 01:46:29 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z1so10653261wrt.3;
-        Fri, 11 Sep 2020 01:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eJ0yT3gfPHpaAjung1PNqKo0Lcs/UYE3s1xPfQ/WBMY=;
-        b=B0mdWQvwCU3TIVMqLrIK4juZPymnz9Wkz8pceQZ5YEBCEEJwlWicaEfk5udMeMWRvw
-         S7r8Nxaaf0C5vCYnWyCLwBIdsagVeptymFC2QCCachwK1FIHGip8xa1zFSv/YPfsnht3
-         9En4Gp3csGFrHP4ucwoC2XZy//grYyC7lfycUZmQqgma6vkMvPEvWEX8qGOHgx1Iwou2
-         /DMHRsquF3EGemHq/r7ESwhV504lAGnxm0ruyLn9Qs/BNpiomaI0CHP8YDDJLhw6w02y
-         MTHPGRevdCFil+AW0vBBewAOTiZhhVwk1wWeoF94xJi7Bqzvn6NOCv8fJbnlxCfwB/aO
-         uS6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eJ0yT3gfPHpaAjung1PNqKo0Lcs/UYE3s1xPfQ/WBMY=;
-        b=foDyAlEOHjjWah6PJI7jYnh8v9YMmzynttHrVm1xru3Af1YX+wWt0vNGnc0vgYNfBj
-         7764WokQOceJ7qOzJVD87XJnV0ST/c7dRctFPYBArC4lDaDHyzdHVujD5RCh67Hv+xoa
-         6qOzCkXLTDiY3jU1Cru26ylCT1NHvikCB12yhCekpl+A1ImXXWiTk8vmtsz+P3+dAGcP
-         11R7psgY3AYpXKSr1b0uc/8kjuoTK7RGGPxzB1qDQ0BkOzm+TJAnDJ0iH4Tm4j04LFDW
-         +Pc7IrXTcRZW/JiNKQUZUrTmnpEQWqhrhvydAnlWA8fCQjHE6q6wZ8rfaDkIyX9kPGWq
-         yruw==
-X-Gm-Message-State: AOAM533thSZNyvdHbciKTAkxs6tFUI4AzBgoEd3ax6nrtjoDDlF2mViq
-        T+3npbZelXatXiq/t+Y51MRfc/Z516E=
-X-Google-Smtp-Source: ABdhPJxbHpJznZI2P6w9ukjTjQI+4WATpoBMFz4rjnF23qsfl4GQLckyNE2ELYFkXhn9qeYK6dLsng==
-X-Received: by 2002:a5d:560d:: with SMTP id l13mr906697wrv.49.1599813987884;
-        Fri, 11 Sep 2020 01:46:27 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id t16sm3201418wrm.57.2020.09.11.01.46.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 01:46:27 -0700 (PDT)
-Subject: Re: [PATCH 23/24] select_tut.2: Use MAX(a, b) from <sys/param.h>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-24-colomar.6.4.3@gmail.com>
- <ede06e4b-7217-1315-6035-9116df9b02c0@gmail.com>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <e10294cf-e7fc-6ef4-55e9-c09ba30d995f@gmail.com>
-Date:   Fri, 11 Sep 2020 10:46:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <ede06e4b-7217-1315-6035-9116df9b02c0@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1725808AbgIKIuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:50:22 -0400
+Received: from mx.socionext.com ([202.248.49.38]:29476 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbgIKIuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 04:50:15 -0400
+Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 11 Sep 2020 17:50:13 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 68CB260060;
+        Fri, 11 Sep 2020 17:50:13 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 11 Sep 2020 17:50:13 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id AE0571A050A;
+        Fri, 11 Sep 2020 17:50:12 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH 0/3] PCI: dwc: Move iATU register mapping to common framework
+Date:   Fri, 11 Sep 2020 17:50:00 +0900
+Message-Id: <1599814203-14441-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+This series is split from the previous patches:
+https://www.spinics.net/lists/linux-pci/msg97608.html
+"[PATCH v6 0/6] PCI: uniphier: Add features for UniPhier PCIe host controller"
 
-On 2020-09-11 09:54, Michael Kerrisk (man-pages) wrote:
-> Hi Alex,
-> 
-> On 9/10/20 11:13 PM, Alejandro Colomar wrote:
->> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
-> 
-> I'm reluctant to apply this, because MAX() is not a standard
-> macro. I suppose it may not be present on some other UNIX
-> systems. You thoughts?
+This moves iATU register mapping in the Keystone driver to common
+framework. And this adds "iatu" property description to the dt-bindings
+for UniPhier PCIe host controller.
 
-I know the BSDs have it; maybe not all of them (I don't know them all), 
-but it is present at least in OpenBSD, libbsd, FreeBSD so I guess it's 
-common enough.
-For other UNIX systems, I have no idea.
-Maybe there's some unicorn UNIX that doesn't have it... impossible to tell.
+This has been confirmed with PCIe version 4.80 controller on UniPhier platform.
+Please test this series on Keystone platform.
 
-Cheers,
+Kunihiko Hayashi (3):
+  dt-bindings: PCI: uniphier: Add iATU register description
+  PCI: dwc: Add common iATU register support
+  PCI: keystone: Remove iATU register mapping
 
-Alex
+ .../devicetree/bindings/pci/uniphier-pcie.txt        |  1 +
+ drivers/pci/controller/dwc/pci-keystone.c            | 20 ++++----------------
+ drivers/pci/controller/dwc/pcie-designware.c         |  8 +++++++-
+ 3 files changed, 12 insertions(+), 17 deletions(-)
+
+-- 
+2.7.4
+
