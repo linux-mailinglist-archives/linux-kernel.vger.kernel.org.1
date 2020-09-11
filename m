@@ -2,190 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B85266628
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4BE26663B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbgIKRWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        id S1726183AbgIKRXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726334AbgIKRVm (ORCPT
+        with ESMTP id S1725895AbgIKRX1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:21:42 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A801C061573;
-        Fri, 11 Sep 2020 10:21:41 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id b79so5491088wmb.4;
-        Fri, 11 Sep 2020 10:21:41 -0700 (PDT)
+        Fri, 11 Sep 2020 13:23:27 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2AEBC0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:23:26 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id x2so9720509ilm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZYLCyBjQyp32UvioZI9dI62las+ZertDitrmjLRi8jA=;
-        b=a/NUs0Hlds3VDFvbye2i83Z9agD+LQlNFO6UQb9r68CTYKMrbYwyiJIl8w35wrXaGy
-         58mo1WSmd3KFDpUFyw1orKMmEbn35VoayJ0lS/HLfK8J0rcga5m+18HYXjcH3eTu+l6v
-         GTszyps9TSlP8cChQLoWw4O3qcHA/1BTvYrnCjWSwCUI5BmDik3FRz9pb6AgOwD+uZuu
-         0/j+7KXKqQ1liHnXV6QIaSf7yGo1LONLH0Hgr8/+bcW4kn4moA/nbtEcdPHeD7fu/7E6
-         ts+F7vAjs+Q+kV6HgUy4OT62XySiYxRhbo1yFR3EsGcLi740Lrm6B/IkbHzDfNRr+gOT
-         AbOA==
+        bh=69/MIdTNBXtljk9O8CO0dWSDv8qzVuAfM6FGYy8egG0=;
+        b=J9DhvQOicouxRDyUSKh47GW2ozyvtioXpkK+4oAqexRfz3hSdCCyUaahRUUhiL9Au6
+         lMZA+ZkJS3NdgJwZuNWv4LhmY+9hg13PksG21pkbCRi8WddjPTMcimJuOtBV5zP3plxj
+         bZpQB8vPhUhgZNH4GrbrmSNCtCE7JpSD6SYeFfNFzntpOrQzc/zBqyz7G9uZnyaFzMvV
+         EElXcs/vmgNFURY1nCt0MHN6pwxmhnSsoiY7UPwPHiLruUJNaREk/tmeAwGpndJoWz8h
+         3y4YLJGkAm9Ux/LVKbVPFfhf5S2p6y9AtqxL5gevLpty5Zbn65SnGgfJVyNaIshY2uoy
+         j99A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ZYLCyBjQyp32UvioZI9dI62las+ZertDitrmjLRi8jA=;
-        b=EuRrgts0OpnM10H6fenjXuhKXK396NBCiUj8kvU3Fzs7dxC6gxU8ZAM0onxvmvkZlo
-         B9km33xBI2njyX58BwFrFE6S6XW+j2HCStGyxmn3IbPLV3ODo4FeXOr0QDwe0AdFNebd
-         aRXTwsItY5JpgkziE5R7jo6OZIcexWDy+kd1AtRgNTAT6eTAVGgdsd/F1nyrsllTu3gK
-         2KU4tljcdDkItYSuqA6379oYzLGnUG+DA+GYPuNobUyMxVZeYLkw3Sv5+vaDWzHMNWJB
-         iiRkLGQDw4U1Vylz5vz3KYVKIP/BlLsegn7vCN92UfyCYCcN+JTsn/s8mMuSLFht+y/w
-         b3mA==
-X-Gm-Message-State: AOAM530w3zXM/W0/pn1rKj50vCF/R6RErn9ieehHt2E5aELkd2LihN4V
-        x4F3qffBgd6161AKUSnSo5g7TlBxF5A=
-X-Google-Smtp-Source: ABdhPJwQbaGezs0jxLxJaRpOyvd3HRTnRUJancJPZMXY0zqXjMEneaHkPqDMZIPVtMaWvFfgsNyK6w==
-X-Received: by 2002:a05:600c:2182:: with SMTP id e2mr3277127wme.102.1599844899832;
-        Fri, 11 Sep 2020 10:21:39 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id g2sm5919503wmg.32.2020.09.11.10.21.38
+        bh=69/MIdTNBXtljk9O8CO0dWSDv8qzVuAfM6FGYy8egG0=;
+        b=LNsD6aHxaaW7WEQcu4yqG5CsdVYbkXQ8rBvV8P5B3RcaJt5z2+Xh4qGuCoDVZrgLKA
+         MNr9HBU/CKLad3hcAKXngsmm3TO5ngFXWdzjsHWAgQ1YlOoSsqNZJfQ2u9gmVnnQBLCr
+         kKMhyclPdprxpYBlX047yG8BCVb8KMfU66hcFnlwEBfRMN0kpcHx5i5ooVNJTkbG/uM4
+         b7/O5zRCwqPO5fABm26OFTkbbTZqUwapJTFKmZDhVfJd3U+cP8iYMoMY2f+i22bVRErb
+         aIJTZfsADykW8m7dRt/lmpR9ekXJ3sZR2CQGBt98S5V33TIlo+X9poNSj37k/3SMyVA/
+         P7pQ==
+X-Gm-Message-State: AOAM531Urwxdc6e8O57WPob8IEQQNRMZZAB+7LHeEcWkanmBT7JLsBL4
+        jCThLr4a1tPoVza+Tk8vElnTRequuXwpW/12
+X-Google-Smtp-Source: ABdhPJw4CnPCdQGZu9QaWio440R39IKmwLQwT77gudoENSxfTHMAEP4M+Vi2ycgo4S87EAmAA/NZtg==
+X-Received: by 2002:a92:3007:: with SMTP id x7mr2682114ile.48.1599845004743;
+        Fri, 11 Sep 2020 10:23:24 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t10sm1518014ilf.34.2020.09.11.10.23.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:21:39 -0700 (PDT)
-Subject: Re: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer size
- (instead of hardcoding macro name)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     Stefan Puiu <stefan.puiu@gmail.com>
-Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
-        lnx-man <linux-man@vger.kernel.org>, linux-kernel@vger.kernel.org
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-13-colomar.6.4.3@gmail.com>
- <CACKs7VD_p=d+nvuFxkWofSE6jCoKAKx5w44_5ciTJ0NX_H1ZFA@mail.gmail.com>
- <7dd2ab72-3ce7-1f50-229a-e663c3df2dcd@gmail.com>
-Message-ID: <f8d22f30-a03d-34c6-1736-0a73a7a6cdc8@gmail.com>
-Date:   Fri, 11 Sep 2020 19:21:38 +0200
+        Fri, 11 Sep 2020 10:23:23 -0700 (PDT)
+Subject: Re: [PATCH V8 3/3] fuse: Handle AIO read and write in passthrough
+To:     Alessio Balsini <balsini@android.com>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Anderson <dvander@google.com>,
+        Eric Yan <eric.yan@oneplus.com>, Jann Horn <jannh@google.com>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <stefanoduo@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200911163403.79505-1-balsini@android.com>
+ <20200911163403.79505-4-balsini@android.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f83b1074-3f20-771f-7b2f-a2fd3ffb4e44@kernel.dk>
+Date:   Fri, 11 Sep 2020 11:23:22 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7dd2ab72-3ce7-1f50-229a-e663c3df2dcd@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200911163403.79505-4-balsini@android.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/11/20 10:34 AM, Alessio Balsini wrote:
+> Extend the passthrough feature by handling asynchronous IO both for read
+> and write operations.
+> When an AIO request is received, targeting a FUSE file with passthrough
+> functionality enabled, a new identical AIO request is created, the file
+> pointer of which is updated with the file pointer of the lower file system,
+> and the completion handler is set with a special AIO passthrough handler.
+> The lower file system AIO request is allocated in dynamic kernel memory
+> and, when it completes, the allocated memory is freed and the completion
+> signal is propagated to the FUSE AIO request by triggering its completion
+> callback as well.
+> 
+> Signed-off-by: Alessio Balsini <balsini@android.com>
+> ---
+>  fs/fuse/passthrough.c | 66 +++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 63 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
+> index 44a78e02f45d..87b57b26fd8a 100644
+> --- a/fs/fuse/passthrough.c
+> +++ b/fs/fuse/passthrough.c
+> @@ -2,10 +2,16 @@
+>  
+>  #include "fuse_i.h"
+>  
+> +#include <linux/aio.h>
 
+What is this include for? It's not using any aio parts at all.
 
-On 2020-09-11 17:28, Alejandro Colomar wrote:
-> Hi Stefan,
-> 
-> On 2020-09-11 16:35, Stefan Puiu wrote:
->  > Hi,
->  >
->  > On Fri, Sep 11, 2020 at 12:15 AM Alejandro Colomar
->  > <colomar.6.4.3@gmail.com> wrote:
->  >>
->  >> Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
->  >> ---
->  >>   man3/getgrent_r.3 | 2 +-
->  >>   1 file changed, 1 insertion(+), 1 deletion(-)
->  >>
->  >> diff --git a/man3/getgrent_r.3 b/man3/getgrent_r.3
->  >> index 81d81a851..76deec370 100644
->  >> --- a/man3/getgrent_r.3
->  >> +++ b/man3/getgrent_r.3
->  >> @@ -186,7 +186,7 @@ main(void)
->  >>
->  >>       setgrent();
->  >>       while (1) {
->  >> -        i = getgrent_r(&grp, buf, BUFLEN, &grpp);
->  >> +        i = getgrent_r(&grp, buf, sizeof(buf), &grpp);
->  >
->  > I'm worried that less attentive people might copy/paste parts of this
->  > in their code, where maybe buf is just a pointer, and expect it to
->  > work. Maybe leaving BUFLEN here is useful as a reminder that they need
->  > to change something to adapt the code?
->  >
->  > Just my 2 cents,
->  > Stefan.
->  >
-> That's a very good point.
-> 
-> So we have 3 options and I will propose now a 4th one.  Let's see all
-> of them and see which one is better for the man pages.
-> 
-> 1.-    Use the macro everywhere.
-> 
-> pros:
-> - It is still valid when the buffer is a pointer and not an array.
-> cons:
-> - Hardcodes the initializer.  If the array is later initialized with a
->    different value, it may produce a silent bug, or a compilation break.
-> 
-> 2.-    Use sizeof() everywhere, and the macro for the initializer.
-> 
-> pros:
-> - It is valid as long as the buffer is an array.
-> cons:
-> - If the code gets into a function, and the buffer is then a pointer,
->    it will definitively produce a silent bug.
-> 
-> 3.-    Use sizeof() everywhere, and a magic number for the initializer.
-> 
-> The same as 2.
-> 
-> 4.-    Use ARRAY_BYTES() macro
-> 
-> pros:
-> - It is always safe and when code changes, it may break compilation, but
->    never a silent bug.
-> cons:
-> - Add a few lines of code.  Maybe too much complexity for an example.
->    But I'd say that it is the only safe option, and in real code it
->    should probably be used more, so maybe it's good to show a good 
-> practice.
-> 
-> 
-> Here's my definition for ARRAY_BYTES(), which is makes use of
-> must_be_array() similar to the kernel ARRAY_SIZE():
-> 
-> 4.1-
-> 
-> #define is_same_type(a, b)                    \
->      __builtin_types_compatible_p(__typeof__(a), __typeof__(b))
-> #define is_array(a)            (!is_same_type((a), &(a)[0]))
-> #define must_be__(e, ...)    (                \
->      0 * (int)sizeof(                    \
->          struct {                    \
->              _Static_assert((e)  __VA_OPT__(,)  __VA_ARGS__); \
->              char ISO_C_forbids_a_struct_with_no_members__; \
->          }                        \
->      )                            \
-> )
-> #define must_be_array__(a)    must_be__(is_array(a), "Not an array!")
-> #define ARRAY_BYTES(arr)    (sizeof(arr) + must_be_array__(arr))
-> 
-> 
-> The macro makes use of quite a few GNU extensions, though, which might
-> be too much to ask.
-> 
-> Actually, I was also going to propose this macro for the kernel itself,
-> to make it a bit safer.
-> 
-> There's a much simpler version of ARRAY_BYTES(), which requires the
-> macro to be defined in a header that is not a system header (to avoid
-> silencing warnings), and also requires a recent version of the compiler
-> to show a warning:
-> 
-> 4.2-
-> 
-> #define ARRAY_SIZE(arr)        (sizeof(arr) / sizeof((arr)[0])
-> #define ARRAY_BYTES(arr)    (sizeof((arr)[0]) * ARRAY_SIZE(arr))
-> 
-> 
-> What do you all think about the 5 different options?  I don't know which
-> one is better.
+-- 
+Jens Axboe
 
-I'd say 4.2 is the best one for the man pages.  Just 2 one-line macro 
-definitions, very good safety, and pretty clear code.
-
-Your thoughts?
