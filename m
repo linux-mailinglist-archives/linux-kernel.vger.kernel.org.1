@@ -2,41 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66CC2663D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021EA2663FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgIKQ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgIKPYF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:24:05 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D4DC061371;
-        Fri, 11 Sep 2020 07:32:56 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGk6W-00EMOm-ND; Fri, 11 Sep 2020 14:32:44 +0000
-Date:   Fri, 11 Sep 2020 15:32:44 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     tony.luck@intel.com, fenghua.yu@intel.com,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Subject: Re: [PATCH] ia64: remove perfmon
-Message-ID: <20200911143244.GA3421308@ZenIV.linux.org.uk>
-References: <20200911094920.1173631-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911094920.1173631-1-hch@lst.de>
+        id S1726511AbgIKQ2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:28:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726459AbgIKPUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:20:30 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 408FB22286;
+        Fri, 11 Sep 2020 14:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599834777;
+        bh=sM+52fCdoYQKtmyuK3xt2Ylu1+kj/bCYKlufyiyrEsY=;
+        h=From:To:Subject:Date:From;
+        b=cz2/eNZTwDLgFeOW9c6u5D3gvSeoqwD+5eUuOIWcgAU+3IOLeXegOuBm4W5Ez2O3m
+         iqEYIPnDZU76RkPXntpbOrjqqQ/E3NKh6hB7wgiBjRMH0Zg6r7Ot65pgqv7ja3nslL
+         m4hmdEakpN1SMapwPMc1zS32DZoh+mntk2zazxEw=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] memory: omap-gpmc: Fix compile test on SPARC
+Date:   Fri, 11 Sep 2020 16:32:51 +0200
+Message-Id: <20200911143251.399-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 11:49:19AM +0200, Christoph Hellwig wrote:
-> perfmon has been marked broken and thus been disabled for all builds
-> for more than two years.  Remove it entirely.
+SPARC comes without CONFIG_OF_ADDRESS thus compile testing fails on
+linking:
 
-Enthusiastically-ACKed-by: Al Viro <viro@zeniv.linux.org.uk>
+  /usr/bin/sparc64-linux-gnu-ld: drivers/memory/omap-gpmc.o: in function `gpmc_probe_generic_child':
+  omap-gpmc.c:(.text.unlikely+0x14ec): undefined reference to `of_platform_device_create'
+
+Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/memory/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index 8072204bc21a..00e013b14703 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -104,6 +104,7 @@ config TI_EMIF
+ 
+ config OMAP_GPMC
+ 	bool "Texas Instruments OMAP SoC GPMC driver" if COMPILE_TEST
++	depends on OF_ADDRESS
+ 	select GPIOLIB
+ 	help
+ 	  This driver is for the General Purpose Memory Controller (GPMC)
+-- 
+2.17.1
+
