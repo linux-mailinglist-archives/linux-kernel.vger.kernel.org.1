@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD958265F8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3987B265FA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725886AbgIKM3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:29:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgIKMXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:23:34 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E7A622206;
-        Fri, 11 Sep 2020 12:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599827013;
-        bh=QaMhDuXaj06ZsADrwpgFJAjUIv92PDxxGzNdrTC+ceE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IxRVyVa7HNzPv2MYezbU9T6sYSz1wK7xQXVMP8SljQAI3/NSsNggk7fsgvY9hNvC9
-         xWw64dQmMWU8VWuQauOl63oBaM1TrYBRUZCwrnPLWWqtK7PNBFQ/NoQIBOUf9yTcHB
-         9VoU5yn2DSBlP0jSHXisaGCiUgnHcCZnqitejp4k=
-Date:   Fri, 11 Sep 2020 14:23:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsi@lists.ozlabs.org, Andrew Jeffery <andrew@aj.id.au>,
-        Eddie James <eajames@linux.ibm.com>
-Subject: Re: [GIT PULL] FSI changes for 5.10
-Message-ID: <20200911122307.GC3758477@kroah.com>
-References: <CACPK8XdDHEcbdH2HXeFpL9U+SYmydSMw5jkti_0x+EjQy7RDHg@mail.gmail.com>
+        id S1725878AbgIKMkQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 08:40:16 -0400
+Received: from [103.10.105.61] ([103.10.105.61]:39994 "EHLO ipb.c.id"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725908AbgIKMav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:30:51 -0400
+Received: from mail.ipb.ac.id (unknown [172.17.5.31])
+        by ipb.c.id (Postfix) with ESMTPS id 6C5591C82A7;
+        Fri, 11 Sep 2020 18:58:04 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.ipb.ac.id (Postfix) with ESMTP id 1AD37B425D95;
+        Fri, 11 Sep 2020 18:58:04 +0700 (WIB)
+Received: from mail.ipb.ac.id ([127.0.0.1])
+        by localhost (mail.ipb.ac.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 9LQUQtUlh3wZ; Fri, 11 Sep 2020 18:58:03 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.ipb.ac.id (Postfix) with ESMTP id A9873B4201A4;
+        Fri, 11 Sep 2020 18:58:03 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at ipb.ac.id
+Received: from mail.ipb.ac.id ([127.0.0.1])
+        by localhost (mail.ipb.ac.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id eIBoQQBAsyXD; Fri, 11 Sep 2020 18:58:03 +0700 (WIB)
+Received: from [100.95.174.193] (unknown [106.210.68.85])
+        by mail.ipb.ac.id (Postfix) with ESMTPSA id 42382B425D74;
+        Fri, 11 Sep 2020 18:57:43 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACPK8XdDHEcbdH2HXeFpL9U+SYmydSMw5jkti_0x+EjQy7RDHg@mail.gmail.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Advertencia 
+To:     Recipients <jakaria@ipb.ac.id>
+From:   Sistemas administrador <jakaria@ipb.ac.id>
+Date:   Fri, 11 Sep 2020 17:27:23 +0530
+Reply-To: mailupgrade@mail2engineer.com
+Message-Id: <20200911115744.42382B425D74@mail.ipb.ac.id>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 05:14:05AM +0000, Joel Stanley wrote:
-> Hi Greg,
-> 
-> Here are some FSI changes for the 5.10 merge window.
-> 
-> The following changes since commit 4a851d714eadeabd65c7e321a2e7830f77d945c4:
-> 
->   fsi: aspeed: Support CFAM reset GPIO (2020-09-10 12:26:43 +0930)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/joel/fsi.git tags/fsi-for-5.10
+ATENCIÓN;
 
-Pulled and pushed out, thanks!
+Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
 
-greg k-h
+nombre:
+Nombre de usuario:
+contraseña:
+Confirmar contraseña:
+E-mail:
+teléfono:
+
+Si usted no puede revalidar su buzón, el buzón se deshabilitará!
+
+Disculpa las molestias.
+Código de verificación:666690opp4r56 es: 006524
+Correo Soporte Técnico © 2020
+
+¡gracias
+Sistemas administrador
