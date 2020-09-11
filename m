@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169C826636A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE63F26636E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgIKQPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726502AbgIKPb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726510AbgIKQPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:15:46 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:44838 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbgIKPb7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 11:31:59 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A442B221EB;
-        Fri, 11 Sep 2020 15:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599838317;
-        bh=pnr+KrdHtt/fH3wF75oJarZDsiMbxqG9tfzitZPzg8w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=InakMd/Cg43FCBJCQfqfmzrJM5frJWjVHYplr4j2J9EmgQ1ATT4usy1uDp2E2uh6v
-         BF1Y2778HCu4JJdHNCAk0LRdlyIo8hAI8bHioZ15YupxJ8gdIh+jkwXXsLwkgJAWPh
-         tIKn6ZUZiRFKs3ALZhkuLHook1AQ0Pk1LR/XL6d4=
-From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH V4] arm64/cpuinfo: Define HWCAP name arrays per their actual bit definitions
-Date:   Fri, 11 Sep 2020 16:31:49 +0100
-Message-Id: <159983818680.1465915.16143462979896283824.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
-References: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
+Received: by mail-ej1-f67.google.com with SMTP id r7so14320810ejs.11;
+        Fri, 11 Sep 2020 08:31:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7GFfCvow/YG2PC4PNBavqBdXR1kQF0CV+iI3Qu1eqX0=;
+        b=I89XRvtihi1LZe6mAXmx21WHa2vE2/ZO8otgupGS2QXH8DTyKUcw+Q0kgwpwIueA4W
+         pcWOiA80F+BpYg6Op52gn+b5EzFmret5z06CGKVQkZ+czlXSgMfId698fpaX/DyqB5kK
+         w/Jk/Dlte5Nz/Q5rURzkkYHvcCxxoGfHC8L0HwgFXwRD8iKmucehEwWXFhXu7/+4XCcG
+         wqe9A3FMJtKbGjVptyltt46FFgxIl9IV5lymh077QVuMMklXwRF4BwqndvylH4lIcBzY
+         X2axWpnpYhweehyHT/5s104A/MHm2wKQE81jX1hrM16xWhxaXrF3hgwYLMre8k0cgmpk
+         hKAw==
+X-Gm-Message-State: AOAM531GX/W+DQYVRSyVwN6rbfiRluVgFVdBnqBh55Dd3qjAlknF73v3
+        TxsVOmr0qC/VRSdHL+iPeB4=
+X-Google-Smtp-Source: ABdhPJzDn5Wly6uwRoIOHH+dj9CVJvOVyEn3ZbrNf8ZH0nahm2X7W9H9Osv6jT+VeStW/xhQuu62Gg==
+X-Received: by 2002:a17:906:1787:: with SMTP id t7mr2699547eje.173.1599838317355;
+        Fri, 11 Sep 2020 08:31:57 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.174])
+        by smtp.googlemail.com with ESMTPSA id y9sm1890741edo.37.2020.09.11.08.31.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 11 Sep 2020 08:31:56 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:31:53 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] Input: ep93xx_keypad - Fix handling of
+ platform_get_irq() error
+Message-ID: <20200911153153.GA18022@kozik-lap>
+References: <20200828145744.3636-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200828145744.3636-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Sep 2020 11:18:55 +0530, Anshuman Khandual wrote:
-> HWCAP name arrays (hwcap_str, compat_hwcap_str, compat_hwcap2_str) that are
-> scanned for /proc/cpuinfo are detached from their bit definitions making it
-> vulnerable and difficult to correlate. It is also bit problematic because
-> during /proc/cpuinfo dump these arrays get traversed sequentially assuming
-> they reflect and match actual HWCAP bit sequence, to test various features
-> for a given CPU. This redefines name arrays per their HWCAP bit definitions
-> . It also warns after detecting any feature which is not expected on arm64.
+On Fri, Aug 28, 2020 at 04:57:41PM +0200, Krzysztof Kozlowski wrote:
+> platform_get_irq() returns -ERRNO on error.  In such case comparison
+> to 0 would pass the check.
+> 
+> Fixes: 60214f058f44 ("Input: ep93xx_keypad - update driver to new core support")
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
+> 
+> Changes since v1:
+> 1. None
+> ---
+>  drivers/input/keyboard/ep93xx_keypad.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied to arm64 (for-next/cpuinfo), thanks!
+Hi Dmitry,
 
-[1/1] arm64/cpuinfo: Define HWCAP name arrays per their actual bit definitions
-      https://git.kernel.org/arm64/c/4e56de82d4ec
+Any comments on the series?
 
-Cheers,
--- 
-Will
+Best regards,
+Krzysztof
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
