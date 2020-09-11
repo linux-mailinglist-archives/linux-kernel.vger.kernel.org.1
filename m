@@ -2,413 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CBB2667B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF042667BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725842AbgIKRrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726128AbgIKRri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:47:38 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A699C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:38 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so2035379pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7q25vMwuIjZ+2baduAa2qebmO9FE3yMGFy8INg+Txq0=;
-        b=WrMQ7VpLjitxUrKwdyRGTowpGJ6IJve5OJxuM4Y7i32ImtTIRGLTlo3t+VVFdDX938
-         7kYy/CrJAkNpIaZwIwtGvGtuOLbRh+h7DUR6ZJFddQIkok5fN+o6NBm7fEh6CBTNVt1C
-         K/Ps3IeGXmAziKe7WMOUf9sQRvGyfKh47/uQk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7q25vMwuIjZ+2baduAa2qebmO9FE3yMGFy8INg+Txq0=;
-        b=OtL0uSsd7/0Z2ZUe2wgJHzdBjEzOkLmDSlgGth85C+oxBykVbzQR/V8i2ITbdluUyz
-         DxvACk3ogT6oG6xzISVU0c4KW06+a1kQ8Y9c4kzqJacK+IseP6m5Al9rn3T/sI3ZCwdf
-         Rl6Ssc1gcy8NYFihBnmsS64yqiV90Ofr0Wg3yJSTvPErXJ3waard0VjjBPgxmlxdcK2B
-         /DBPQg3pz5tyGi7MfL6ELdZsmq+oSkBZ96o7Qi1VfzeF08dw2lfUuDoAQCsSmkqvXAJj
-         ajNPVF7tz8KI1pr5Dpbw4CtJpxOfIAxV8sTyxTsxG9thRT7VKeI3f6tgOoMltzYsMjye
-         aPtA==
-X-Gm-Message-State: AOAM533DI4ZOViRbkYIH89DxBCA0iP5Z02/ccyecsUfP4vnO2bHBShfC
-        ivrQp35iou15m16LgBAJTkMhbzf8tIrJUHot
-X-Google-Smtp-Source: ABdhPJyzxZiCHETE6J8vCYfS+QE7CmLMJ8aSaeKFgx2kqtfGTDCYdWhZXlFjqVZvrKo7z09b3hTljQ==
-X-Received: by 2002:a17:90a:aa94:: with SMTP id l20mr3082689pjq.95.1599846457709;
-        Fri, 11 Sep 2020 10:47:37 -0700 (PDT)
-Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
-        by smtp.gmail.com with ESMTPSA id u138sm2866003pfc.218.2020.09.11.10.47.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:47:37 -0700 (PDT)
-From:   Cheng-Yi Chiang <cychiang@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>, dianders@chromium.org,
-        dgreid@chromium.org, tzungbi@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Ajit Pandey <ajitp@codeaurora.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>
-Subject: [PATCH v10 3/3] ASoC: qcom: sc7180: Add machine driver for sound card registration
-Date:   Sat, 12 Sep 2020 01:47:05 +0800
-Message-Id: <20200911174705.759011-4-cychiang@chromium.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200911174705.759011-1-cychiang@chromium.org>
-References: <20200911174705.759011-1-cychiang@chromium.org>
+        id S1725905AbgIKRui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:50:38 -0400
+Received: from mout.gmx.net ([212.227.17.21]:35399 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725794AbgIKRu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:50:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1599846582;
+        bh=9A8KbB8JAsMszk5e8nKi2X4m4uBUOMdvLJVTs/9a5M0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=D0E7FCBpwplg3djfX9eZpQ8jMx2EgJadPN7JIVCxXspHLZ/LmZFs1BGhw5e2scCg2
+         p8vYCsVtju9xTEBJ1G7w9aFb1uvTfOfiZ4eIiIxMjmQNSHKLzQ1hCPNbm8UY2htjp4
+         3y8pGHCa6Tg3hfbOR/za9PBKOKtsZuPc/n1EEn3k=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.150.14] ([217.61.150.14]) by web-mail.gmx.net
+ (3c-app-gmx-bs18.server.lan [172.19.170.70]) (via HTTP); Fri, 11 Sep 2020
+ 19:49:42 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <trinity-cc01b89b-ddcc-488a-84eb-3c96376c2be6-1599846582837@3c-app-gmx-bs18>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Landen Chao <landen.chao@mediatek.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        opensource@vdorst.com, dqfext@gmail.com,
+        Landen Chao <landen.chao@mediatek.com>
+Subject: Aw: [PATCH net-next v5 6/6] arm64: dts: mt7622: add mt7531 dsa to
+ bananapi-bpi-r64 board
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 11 Sep 2020 19:49:42 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <9ad3baefb672805153c737f6259966d1c9b98c2b.1599829696.git.landen.chao@mediatek.com>
+References: <cover.1599829696.git.landen.chao@mediatek.com>
+ <9ad3baefb672805153c737f6259966d1c9b98c2b.1599829696.git.landen.chao@mediatek.com>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:BZ5FW3bde8rsAWlm88krnef1H4ZN4Kuf+O7Ne2Cm4MZCc4sc5ttQ+z8IF1opvo/9lcj/r
+ 9I6xdSujcRKZeLkBtfmSAk7aUzR3218XQlCGOBux68+Z694KQ36aad/LlwK/qylSsjFP+D/rGGol
+ VrmbHcyqn6HdAPrckkS5g3sQPKoTAQOIsTgBjWQb3gDipCpSSRDyGGVCZnMpaB3sC5TDU5Ku+idy
+ CCwoiWfcWe+cxrzdyb0JYzOrxrHW/zXqWxQ5CkZWwMjDPEUmqzNV3qD3vHDWeOJmX7g1x5DwiUhE
+ o8=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NVdLXOaaAJE=:Q3I5oVV0MKWr7w/B/Hm9FX
+ Xa2yjHH+k1CRjLuf9bvOevSCj5x4BZTpsWbJL00MT/ufFi8U2FQaxqJPLYbxLX6tbXZ1jDaV6
+ 1+RLv3BUazXnMDJ0ktrgT7ftmWGU4FA1kni16MXltLwUXQ60AFKLPwUohAvdecCN9BenNVFbd
+ ft5+4RF+maNQcqrRttnbVRXQjRCTa66mthKgbggRpDbS8B96FQAbwWL1/ZQaZPwWs3h+scTAn
+ Nl3bZQQKqVs288iH82tnN6NRmu5e37glrZpSykjROu/SWvI2cpIMSzfmQh+05V6ioqb+k18FD
+ yEWUFxRanextYUnhLp3OoP0L9jdJ8+iGoTzo4GhRQM6iWXSfU4ZCQnM0RqFEeTcRNODhwuM7D
+ 0Mn+qJmcmNvUdsnIuWsJJ7NgjDUJPwklKz6va6yBhOsj9sHm20DTI2D3Xi0QghD1Ak1l05kmW
+ 2ZuzJ20r+OWICmcgf1F26bZm4G2wFtJGG6P/Z0dp/4bfnctdIbxK66eJ8DW037Eod3aVZGkmn
+ Vi5wk6SGN54oJ7lttCGeyCKpjKr3hSQMeMr3KD800OoH+9JG8wc25nlhrYJinPBS2leH5jPI0
+ VSgfl664hHIVyxTX0MvrX5fkclwmaKY+i+Z8zaF05hG9XOPEYRDQjAOMQUDL77zrZsCF7WYn+
+ 9AJKxTMNAqNIOXWpUzqruVd11I7I4KwjmhGYHenUnm1zLHrwtIzi+R2s+DGSEQn2Kxc4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajit Pandey <ajitp@codeaurora.org>
+Tested full series on Bananapi-r2 and r64, results as in v3
 
-Add new driver to register sound card on sc7180 trogdor board and
-do the required configuration for lpass cpu dai and external codecs
-connected over MI2S interfaces.
+Tested-By: Frank Wunderlich <frank-w@public-files.de>
 
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
----
- sound/soc/qcom/Kconfig  |  12 ++
- sound/soc/qcom/Makefile |   2 +
- sound/soc/qcom/sc7180.c | 266 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 280 insertions(+)
- create mode 100644 sound/soc/qcom/sc7180.c
-
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index a607ace8b089..0459185ee243 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -116,4 +116,16 @@ config SND_SOC_SDM845
- 	  SDM845 SoC-based systems.
- 	  Say Y if you want to use audio device on this SoCs.
- 
-+config SND_SOC_SC7180
-+	tristate "SoC Machine driver for SC7180 boards"
-+	depends on I2C
-+	select SND_SOC_QCOM_COMMON
-+	select SND_SOC_LPASS_SC7180
-+	select SND_SOC_MAX98357A
-+	select SND_SOC_RT5682_I2C
-+	help
-+	  To add support for audio on Qualcomm Technologies Inc.
-+	  SC7180 SoC-based systems.
-+	  Say Y if you want to use audio device on this SoCs.
-+
- endif #SND_SOC_QCOM
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 7972c9479ab0..0cdcbf367ef1 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -17,12 +17,14 @@ snd-soc-storm-objs := storm.o
- snd-soc-apq8016-sbc-objs := apq8016_sbc.o
- snd-soc-apq8096-objs := apq8096.o
- snd-soc-sdm845-objs := sdm845.o
-+snd-soc-sc7180-objs := sc7180.o
- snd-soc-qcom-common-objs := common.o
- 
- obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
- obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
- obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
- obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
-+obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
- obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
- 
- #DSP lib
-diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
-new file mode 100644
-index 000000000000..a82512b8b754
---- /dev/null
-+++ b/sound/soc/qcom/sc7180.c
-@@ -0,0 +1,266 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright (c) 2020, The Linux Foundation. All rights reserved.
-+//
-+// sc7180.c -- ALSA SoC Machine driver for SC7180
-+
-+#include <dt-bindings/sound/sc7180-lpass.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <uapi/linux/input-event-codes.h>
-+
-+#include "../codecs/rt5682.h"
-+#include "common.h"
-+#include "lpass.h"
-+
-+#define DEFAULT_MCLK_RATE		19200000
-+#define RT5682_PLL1_FREQ (48000 * 512)
-+
-+// This will be defined in include/dt-bindings/sound/sc7180-lpass.h
-+#define SC7180_LPASS_DP 2
-+
-+struct sc7180_snd_data {
-+	struct snd_soc_card card;
-+	u32 pri_mi2s_clk_count;
-+	struct snd_soc_jack hs_jack;
-+	struct snd_soc_jack hdmi_jack;
-+};
-+
-+static void sc7180_jack_free(struct snd_jack *jack)
-+{
-+	struct snd_soc_component *component = jack->private_data;
-+
-+	snd_soc_component_set_jack(component, NULL, NULL);
-+}
-+
-+static int sc7180_headset_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct snd_jack *jack;
-+	int rval;
-+
-+	rval = snd_soc_card_jack_new(
-+			card, "Headset Jack",
-+			SND_JACK_HEADSET |
-+			SND_JACK_HEADPHONE |
-+			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+			SND_JACK_BTN_2 | SND_JACK_BTN_3,
-+			&pdata->hs_jack, NULL, 0);
-+
-+	if (rval < 0) {
-+		dev_err(card->dev, "Unable to add Headset Jack\n");
-+		return rval;
-+	}
-+
-+	jack = pdata->hs_jack.jack;
-+
-+	snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+	snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+	snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+
-+	jack->private_data = component;
-+	jack->private_free = sc7180_jack_free;
-+
-+	return snd_soc_component_set_jack(component, &pdata->hs_jack, NULL);
-+}
-+
-+static int sc7180_hdmi_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct sc7180_snd_data *pdata = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct snd_jack *jack;
-+	int rval;
-+
-+	rval = snd_soc_card_jack_new(
-+			card, "HDMI Jack",
-+			SND_JACK_LINEOUT,
-+			&pdata->hdmi_jack, NULL, 0);
-+
-+	if (rval < 0) {
-+		dev_err(card->dev, "Unable to add HDMI Jack\n");
-+		return rval;
-+	}
-+
-+	jack = pdata->hdmi_jack.jack;
-+	jack->private_data = component;
-+	jack->private_free = sc7180_jack_free;
-+
-+	return snd_soc_component_set_jack(component, &pdata->hdmi_jack, NULL);
-+}
-+
-+static int sc7180_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	switch (cpu_dai->id) {
-+	case MI2S_PRIMARY:
-+		return sc7180_headset_init(rtd);
-+	case MI2S_SECONDARY:
-+		return 0;
-+	case SC7180_LPASS_DP:
-+		return sc7180_hdmi_init(rtd);
-+	default:
-+		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-+			cpu_dai->id);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static int sc7180_snd_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	int ret;
-+
-+	switch (cpu_dai->id) {
-+	case MI2S_PRIMARY:
-+		if (++data->pri_mi2s_clk_count == 1) {
-+			snd_soc_dai_set_sysclk(cpu_dai,
-+					       LPASS_MCLK0,
-+					       DEFAULT_MCLK_RATE,
-+					       SNDRV_PCM_STREAM_PLAYBACK);
-+		}
-+
-+		snd_soc_dai_set_fmt(codec_dai,
-+				    SND_SOC_DAIFMT_CBS_CFS |
-+				    SND_SOC_DAIFMT_NB_NF |
-+				    SND_SOC_DAIFMT_I2S);
-+
-+		/* Configure PLL1 for codec */
-+		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
-+					  DEFAULT_MCLK_RATE, RT5682_PLL1_FREQ);
-+		if (ret) {
-+			dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
-+			return ret;
-+		}
-+
-+		/* Configure sysclk for codec */
-+		ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
-+					     RT5682_PLL1_FREQ,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret)
-+			dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n",
-+				ret);
-+
-+		break;
-+	case MI2S_SECONDARY:
-+		break;
-+	case SC7180_LPASS_DP:
-+		break;
-+	default:
-+		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-+			cpu_dai->id);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+static void sc7180_snd_shutdown(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_card *card = rtd->card;
-+	struct sc7180_snd_data *data = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	switch (cpu_dai->id) {
-+	case MI2S_PRIMARY:
-+		if (--data->pri_mi2s_clk_count == 0) {
-+			snd_soc_dai_set_sysclk(cpu_dai,
-+					       LPASS_MCLK0,
-+					       0,
-+					       SNDRV_PCM_STREAM_PLAYBACK);
-+		}
-+		break;
-+	case MI2S_SECONDARY:
-+		break;
-+	case SC7180_LPASS_DP:
-+		break;
-+	default:
-+		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
-+			cpu_dai->id);
-+		break;
-+	}
-+}
-+
-+static const struct snd_soc_ops sc7180_ops = {
-+	.startup = sc7180_snd_startup,
-+	.shutdown = sc7180_snd_shutdown,
-+};
-+
-+static const struct snd_soc_dapm_widget sc7180_snd_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+};
-+
-+static void sc7180_add_ops(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *link;
-+	int i;
-+
-+	for_each_card_prelinks(card, i, link) {
-+		link->ops = &sc7180_ops;
-+		link->init = sc7180_init;
-+	}
-+}
-+
-+static int sc7180_snd_platform_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card;
-+	struct sc7180_snd_data *data;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	/* Allocate the private data */
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	card = &data->card;
-+	snd_soc_card_set_drvdata(card, data);
-+
-+	card->owner = THIS_MODULE,
-+	card->dev = dev;
-+	card->dapm_widgets = sc7180_snd_widgets;
-+	card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
-+
-+	ret = qcom_snd_parse_of(card);
-+	if (ret)
-+		return ret;
-+
-+	sc7180_add_ops(card);
-+
-+	return devm_snd_soc_register_card(dev, card);
-+}
-+
-+static const struct of_device_id sc7180_snd_device_id[]  = {
-+	{ .compatible = "qcom,sc7180-sndcard-rt5682-m98357-1mic" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, sc7180_snd_device_id);
-+
-+static struct platform_driver sc7180_snd_driver = {
-+	.probe = sc7180_snd_platform_probe,
-+	.driver = {
-+		.name = "msm-snd-sc7180",
-+		.of_match_table = sc7180_snd_device_id,
-+	},
-+};
-+module_platform_driver(sc7180_snd_driver);
-+
-+MODULE_DESCRIPTION("sc7180 ASoC Machine Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+regards Frank
