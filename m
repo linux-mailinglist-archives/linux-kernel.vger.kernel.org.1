@@ -2,165 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B70B266A20
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52050266A21
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgIKVgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 17:36:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1044 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725835AbgIKVgT (ORCPT
+        id S1725884AbgIKVhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 17:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgIKVhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 17:36:19 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BLR7Qv031713;
-        Fri, 11 Sep 2020 14:36:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=aLqTTjQ5NWV2mSbfvmY/twTYytoZQtJttAAsTr17gCg=;
- b=PfV95E/2tjPKQlPFL6jUj8E2jp2u/4oksOa4BtzfE9zZFX5GIxAy8EPBw3ulgwUTk/Xl
- 4wsYMO1Kj9YdvsH61z7MCfmAm2jzJfPWJEojbJub7svsyRJEJBIU84EruPxRZ8ym+EQR
- ItcXmu+60Ex0NkyyuaQj6wqPlH/Aaha9aC4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 33fqeeyu84-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 11 Sep 2020 14:36:10 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 11 Sep 2020 14:36:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eH89m/efh9XURRTRMTZT+Tcv1LtDeE9jwhNc23fdkzeRSKTTwEj1L2oJbtzRpS0wG5sknxJPlY/j7nA7eSJwyiOKiaNORzKHJyRFRclvYZmVvRB/WPk37K/w881R8Fr51scvAd/s8X/sCnmdbbIeuRIy5pa/uwDFe4/XnS3O+LArL1kR8/kz1jTIbt4VsTdn+DeHGajLt+Hrx5rnM9moFfiMXCa+fWFq7Jn2Vu9X5wPMmKNOs9jXwLqNdGYCEwId5eRH1tobpLpap00Lz7tCbJkqUfB1jbttTLkORjTPcurBfN9KQAFi1zbCDEt/gkWK8N3qwntM7v3wlnIdLPJ0Xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLqTTjQ5NWV2mSbfvmY/twTYytoZQtJttAAsTr17gCg=;
- b=L4rGXZDMXf7j5Xuk8WGO2ICK9b46Vn+pM840zX21RUi1nuukTty3gCxDZgEgk29mDEJ6vQe9mpRyDfvPjLyqHGycpHwqtkZxF97fH3SwzLy5bpVJOiv/RmMEcBf/cEwKyHbMKkmd1dzMKtzHIaCEKB3HYaDtGambbcrw2t+aRHJNFlF9cZdVWqB2kLEDflYWqXUi7PpnhfB3VGQ50kmjKY3JVQfACn/6mvOYZKamGmQYZ9OSdtPuyVW/zjFBUy/JALoQwoQa5CmyNKqjQhacTQh27vbjZD9127sOCMvZ63GBT8S/jfWY9pHOWYKDSgiSJFZ/GfTnaTFNUTqVjScB5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aLqTTjQ5NWV2mSbfvmY/twTYytoZQtJttAAsTr17gCg=;
- b=GFZfGZdHESoZDrBJQGMNvrRB6QIExE1EeKWwH2Q5OrH9IhJZvnSGyk2T+zPSXoa9gw+Jqp3FNnctMt0YvZSJsRDz2YydcTpPoJPwdMJrI8iX1Yck9htdUSN+mqqprjWlzNH4xudB4VyJjM3fOncuzcBMunYpNGRd9bgNfIN84TE=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3652.namprd15.prod.outlook.com (2603:10b6:a03:1f9::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
- 2020 21:36:06 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3370.017; Fri, 11 Sep 2020
- 21:36:06 +0000
-Date:   Fri, 11 Sep 2020 14:36:02 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH rfc 0/5] mm: allow mapping accounted kernel pages to
- userspace
-Message-ID: <20200911213602.GC1163084@carbon.dhcp.thefacebook.com>
-References: <20200910202659.1378404-1-guro@fb.com>
- <CALvZod4-kiW6ZsL0EUuomrxxJqhYzmbsY7phqBs2WcT_A6Q-Lg@mail.gmail.com>
- <CALvZod6BWYo7fy4f23e7CnkoAxrjwx8QNFPXZ43pHnzcKBWgRw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6BWYo7fy4f23e7CnkoAxrjwx8QNFPXZ43pHnzcKBWgRw@mail.gmail.com>
-X-ClientProxiedBy: MWHPR12CA0052.namprd12.prod.outlook.com
- (2603:10b6:300:103::14) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Fri, 11 Sep 2020 17:37:31 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48200C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:37:30 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d19so1486073pld.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Au8E1kKt1UHq4JG19/8B0I53kV6K5bU9t6w3fjcopN8=;
+        b=dL0RnwHZEp/J1fRReBaj/jhXk9A8XjA2kfmdlZ3bM6aNYJifGdNd1xXY8jFGKH2XkR
+         m3S78IQqiEl7oqjjI1kQxESCSfB3unaoMi/fMS7YpPfncUnHV9aHeUw/gEzTudWwvpUO
+         Ex5Dn4FOlJmeEiQn0uPFKWjuu6pR2TnTiKvcNzQSccQt69yvFc3DrskX/wMcGywpN0V7
+         IATBL7Pg1lQUesl+HWp3SPJP7BWezub93k4FNy65WJDN8sJEj60oBq7xIzSpU4/pD2kJ
+         DoOO2Wy3H+StEpGDuCSXeX4p5TcE0f4ee017eWFgW4kEULxYav0TCz15iq17CH9PMjHJ
+         hbyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Au8E1kKt1UHq4JG19/8B0I53kV6K5bU9t6w3fjcopN8=;
+        b=opSxtaACuHpRNAjrjhe+8gaohKGCOxUoLHsnQNI8mcdkK61RwnglSuLf35AMV1WZ12
+         HecovgivCbsrB6XL0eZG3JpB2MTxl0byzu2lv2WhRaD1jdBdqJ9mwxeoymrMaY+9K5Ic
+         IdjB2KcdtX9s+wgSz03rFHVepIjYpuRVK3T0zrwL19yesXL300utD/8gNnxLOC05vaYL
+         MNk4Aglu9TPlkqejPW7xYqqk5ZSCaYAzdORkRR3mse2WylycE4uGdX+2HQP6L588Wil4
+         lIpgqHjl7/AHENVEVxYhKdBGIvcZv5PGlyosQ1nkoMD1vt6eCBcj/A9iM1HbreBdMV+z
+         ikmQ==
+X-Gm-Message-State: AOAM530NNKRiPMYgVM06lhDjNBkGjJ5Ci73jzEzPk8WMtLdY9tEsb3eH
+        qoAba1THpcSSXGNfFs6i8+k=
+X-Google-Smtp-Source: ABdhPJxeKK5hQIo+Q0nTGusVVxEsD98neDC/J4v+kxouyjhsv4l8D7zsOKtactfhuYddysevSgPuzw==
+X-Received: by 2002:a17:902:7608:b029:d0:cbe1:e70e with SMTP id k8-20020a1709027608b02900d0cbe1e70emr4207225pll.28.1599860250109;
+        Fri, 11 Sep 2020 14:37:30 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id l79sm3152945pfd.210.2020.09.11.14.37.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 14:37:29 -0700 (PDT)
+Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
+To:     Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Vinayak Menon <vinmenon@codeaurora.org>
+References: <1599857630-23714-1-git-send-email-cgoldswo@codeaurora.org>
+ <010101747ef2b8fc-a5e44a5a-dcf4-4828-a1d4-a099df63f2df-000000@us-west-2.amazonses.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <410a4e0c-f924-4564-ae1e-cc9f6292c88e@gmail.com>
+Date:   Fri, 11 Sep 2020 14:37:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:c003) by MWHPR12CA0052.namprd12.prod.outlook.com (2603:10b6:300:103::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 21:36:05 +0000
-X-Originating-IP: [2620:10d:c090:400::5:c003]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6fc45b8f-ae0a-496f-3b4a-08d8569ab0af
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3652:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB365271DDFC6C754622A2CCF1BE240@BY5PR15MB3652.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lgbccoXXXs0pacY13+9XUy4f/8oQ60YdOAnB40bvE/VK9VqSrthJjoqEJZVj9qoI/sYRcdtP8kW97oxiuLagL33tXuP+HnH0hxSgmQZc1sAi7aPZ6yBWehqt/dS+yrZc+lF826r7IFJ9vOP3bB2qWYtuAfaThCbRTjzasFv7U7TR27QJERbQjGs+nlLN47e39Sbc04kpCtxR6JSe+1aWMvoDT5g7vJISvdWxDIGFClcUoAEwTadG6BIAMuvwGUDdTjZ9xKtQ6Psjf/+IWqDpu3KZIsu6yPhFSa2RAEEJWHDPLs3/1Q/3kbjMlTl/kBi2OBG9Ogc80jd4qROoznDeP8dMvaYHjsnTS9R2UZk9mMmJ2iZ4cf5LAyi1qvmkHjAhJ4iC4XqOLsV+TnDIN6TD6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39860400002)(376002)(366004)(396003)(4326008)(5660300002)(53546011)(6916009)(6666004)(33656002)(966005)(66476007)(66946007)(1076003)(66556008)(6506007)(15650500001)(86362001)(186003)(16526019)(83380400001)(478600001)(52116002)(9686003)(7696005)(54906003)(8676002)(8936002)(2906002)(55016002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: CAk/r/0LCCSh0Hh7Uznr8OvaZohgoJmFSPM5ozQxO9ku2kggAdy1jocIZxXIdJPcc8lj7klCRHUKFvltXfKoWFp8ovmKxpKInM6kHgMlsEIlBm7Uj31BejhzfRhvDgRRp5JaStEmhjvZ8TxOqXAVVJpcwYm+Sq1JbpSF5QFPl7LSXSycwYbuTeiRk7dglb4cdHDvrkzvdsibzh0Nb+fKL8ZwP1PLjUWC6boDgd+IXng/7BjSq2vy+iI9sos7n4N/F1nWlFWNNWTGTqjV5PTwoXS943R9xs8POrH4ui//PhfZ5YjkiYV5CIcbqsp5YVS8J1Tydf+piqtqZLCCNp1v4HbS8NqY6kLUgoWh9LqvXJcY5/MnCJa1+Hi2OQ3AnhYm4EymPPZkNck6fdWmGXlnLMAW5A+4sBCYAFTPbo4EZgsQjLpExddDUjskOgsuSgxheE2oAX0rae44/8hE9FXmC8H438h+dzbkXPdxU/0JTqlYV40Vdhnn4o5EdRzN+1w5/by8F1dEsZ8VEE/VrIJ+Fp/sXqU30CGBcTF0zsSjc/XItxJ+PbjqdDyKb6g9Lxjd2jTaOvs2gVnK9R0cg0wcStV+ctKby6uBxvO/4eUwpV1BEvGgHxPAkAXOQEPl2SCqA2FPoe7V1Nvp9RWMJcQCbIvLpQ12UUj3JzE9pmZGtp4=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6fc45b8f-ae0a-496f-3b4a-08d8569ab0af
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 21:36:06.4160
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1Xt6PG8AygG2lEZi3zOHqw/A32x3SblwBsxRwyAHwG2r9odoH/iBWYYRNnZJyO0A
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3652
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_12:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- suspectscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
- malwarescore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009110175
-X-FB-Internal: deliver
+In-Reply-To: <010101747ef2b8fc-a5e44a5a-dcf4-4828-a1d4-a099df63f2df-000000@us-west-2.amazonses.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 10:34:57AM -0700, Shakeel Butt wrote:
-> On Fri, Sep 11, 2020 at 10:34 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Thu, Sep 10, 2020 at 1:27 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > Currently a non-slab kernel page which has been charged to a memory
-> > > cgroup can't be mapped to userspace. The underlying reason is simple:
-> > > PageKmemcg flag is defined as a page type (like buddy, offline, etc),
-> > > so it takes a bit from a page->mapped counter. Pages with a type set
-> > > can't be mapped to userspace.
-> > >
-> > > But in general the kmemcg flag has nothing to do with mapping to
-> > > userspace. It only means that the page has been accounted by the page
-> > > allocator, so it has to be properly uncharged on release.
-> > >
-> > > Some bpf maps are mapping the vmalloc-based memory to userspace, and
-> > > their memory can't be accounted because of this implementation detail.
-> > >
-> > > This patchset removes this limitation by moving the PageKmemcg flag
-> > > into one of the free bits of the page->mem_cgroup pointer. Also it
-> > > formalizes all accesses to the page->mem_cgroup and page->obj_cgroups
-> > > using new helpers, adds several checks and removes a couple of obsolete
-> > > functions. As the result the code became more robust with fewer
-> > > open-coded bits tricks.
-> > >
-> > > The first patch in the series is a bugfix, which I already sent separately.
-> > > Including it in rfc to make the whole series compile.
-> > >
-> > >
-> >
-> > This would be a really beneficial feature. I tried to fix the similar
-> > issue for kvm_vcpu_mmap [1] but using the actual page flag bit but
-> > your solution would be non controversial.
-> >
-> > I think this might also help the accounting of TCP zerocopy receive
-> > mmapped memory. The memory is charged in skbs but once it is mmapped,
-> > the skbs get uncharged and we can have a very large amount of
-> > uncharged memory.
-> >
-> > I will take a look at the series.
+
+
+On 9/11/2020 1:54 PM, Chris Goldsworthy wrote:
+> CMA allocations will fail if 'pinned' pages are in a CMA area, since we
+> cannot migrate pinned pages. The _refcount of a struct page being greater
+> than _mapcount for that page can cause pinning for anonymous pages.  This
+> is because try_to_unmap(), which (1) is called in the CMA allocation path,
+> and (2) decrements both _refcount and _mapcount for a page, will stop
+> unmapping a page from VMAs once the _mapcount for a page reaches 0.  This
+> implies that after try_to_unmap() has finished successfully for a page
+> where _recount > _mapcount, that _refcount will be greater than 0.  Later
+> in the CMA allocation path in migrate_page_move_mapping(), we will have one
+> more reference count than intended for anonymous pages, meaning the
+> allocation will fail for that page.
 > 
-> [1] https://lore.kernel.org/kvm/20190329012836.47013-1-shakeelb@google.com/
+> One example of where _refcount can be greater than _mapcount for a page we
+> would not expect to be pinned is inside of copy_one_pte(), which is called
+> during a fork. For ptes for which pte_present(pte) == true, copy_one_pte()
+> will increment the _refcount field followed by the  _mapcount field of a
+> page. If the process doing copy_one_pte() is context switched out after
+> incrementing _refcount but before incrementing _mapcount, then the page
+> will be temporarily pinned.
+> 
+> So, inside of cma_alloc(), instead of giving up when alloc_contig_range()
+> returns -EBUSY after having scanned a whole CMA-region bitmap, perform
+> retries indefinitely, with sleeps, to give the system an opportunity to
+> unpin any pinned pages.
 
-Cool, thank you for the link!
+I am by no means an authoritative CMA person but this behavior does not 
+seem acceptable, there is no doubt the existing one is sub-optimal under 
+specific circumstances, but an indefinite retry, as well as a 100ms 
+sleep appear to be arbitrary at best. How about you introduce a 
+parameter that allows the tuning of the number of retries and/or delay 
+between retries?
 
-It's very nice that this feature is useful behind the bpf case.
+> 
+> Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Co-developed-by: Vinayak Menon <vinmenon@codeaurora.org>
+> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+> ---
+>   mm/cma.c | 25 +++++++++++++++++++++++--
+>   1 file changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 7f415d7..90bb505 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -32,6 +32,7 @@
+>   #include <linux/highmem.h>
+>   #include <linux/io.h>
+>   #include <linux/kmemleak.h>
+> +#include <linux/delay.h>
+>   #include <trace/events/cma.h>
+>   
+>   #include "cma.h"
+> @@ -442,8 +443,28 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   				bitmap_maxno, start, bitmap_count, mask,
+>   				offset);
+>   		if (bitmap_no >= bitmap_maxno) {
+> -			mutex_unlock(&cma->lock);
+> -			break;
+> +			if (ret == -EBUSY) {
+> +				mutex_unlock(&cma->lock);
+> +
+> +				/*
+> +				 * Page may be momentarily pinned by some other
+> +				 * process which has been scheduled out, e.g.
+> +				 * in exit path, during unmap call, or process
+> +				 * fork and so cannot be freed there. Sleep
+> +				 * for 100ms and retry the allocation.
+> +				 */
+> +				start = 0;
+> +				ret = -ENOMEM;
+> +				msleep(100);
+> +				continue;
+> +			} else {
+> +				/*
+> +				 * ret == -ENOMEM - all bits in cma->bitmap are
+> +				 * set, so we break accordingly.
+> +				 */
+> +				mutex_unlock(&cma->lock);
+> +				break;
+> +			}
+>   		}
+>   		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+>   		/*
+> 
 
-Thanks!
+-- 
+Florian
