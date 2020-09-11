@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BC42665BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C9C2665B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbgIKRMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgIKRLA (ORCPT
+        id S1726223AbgIKRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:11:48 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25678 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726349AbgIKRLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:11:00 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F61C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:11:00 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id b6so11801750iof.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PjaHcTfFjzbLCw68IPxqcyo+o8vTrqFIU4LrLdQ6i4E=;
-        b=dtr8rc1TFTdhuQX1JX6cpdjp7g5dPXot326EizN5cMg4FGGWCBF3SujtkOjH2g9AU8
-         VYooSex5NOHLaQmydJQvGP2ciPTbamrxy8e63sgmRcld3qe9CBysCiE7nkIJAWTrWWzD
-         5cPZyRl9Z1CgPdcCfFgCs0umR5vPyTmNsQ7ARuMaYYHRDmzXZ+nTUkdmdtXeWtLd5x6F
-         HZeOjxlKX3IAgX2SHg4n37ycDB7odU4BCn88ZKZVTPuVXZ6SEHZ4H2WFRV979A/Iqjwg
-         f8eUotxsYrCJSPi9GeB9lCE1tcTM+Wow6b+ZMYQyvCDgYzOgnphaaEjqYJOXrGsWBVEa
-         ZVMw==
+        Fri, 11 Sep 2020 13:11:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599844266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCrmqBxuZus33kxx8YL4Vlut+6tBeCTGNVK1vsj5srM=;
+        b=ZEl9D8cLvt4UbfE0zb3b9i5gn7om9G+2QL6Q/hMzopB5Oi9BMi11JJLabpclkO3h5TA+wE
+        qa2zi+MzgaEy0dMXnol/wYu5PojTnxOcg2CnTWLRD05PwapFXj2c53Et7M/NoLK74Wwwl8
+        o0m/cSnarZCYFUsalBRA1klUxjQh+Fg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-HZ9rHBgaPl6AQYXZw5bQoA-1; Fri, 11 Sep 2020 13:11:05 -0400
+X-MC-Unique: HZ9rHBgaPl6AQYXZw5bQoA-1
+Received: by mail-wm1-f72.google.com with SMTP id m125so1168173wmm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:11:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PjaHcTfFjzbLCw68IPxqcyo+o8vTrqFIU4LrLdQ6i4E=;
-        b=g2UUNmCH78jsYZAFdBLfwIDmCiiJ5yfolknCQsiKh0YYWkVuUE1o9VUEVRgnpBTHvz
-         VhR4rXQmUwVQi83Co2fY3O3ziH6x8i7YxAG08ADXHYogtcMe/hslK5DD1w8fhxzgEWsw
-         afvTmiCLajtpjwsZAPm0f9RDS/PVeUBBp9B6Oj/TGZM6UboiXBUY0mZv4UQNISEgs139
-         BlDre1ZukVaKoDVYKGcsS426PrAlMxVFSZuVmxzV7Tpw9ZFRTaYJC7alBEvdHmxQEiN4
-         UT+6XsvMevCIgJfLbW8tmtH6nT8EznRgYq00U77rESnsv3/gpQjoCfKyEsuhymQerclE
-         NJHA==
-X-Gm-Message-State: AOAM532iY29jNYNTBRumzYf2QIYBTX6ybQKzSVxTn6RwdKWwItDsuGUZ
-        gLt+yWHm08XxHT3pR5vaoDTVQQ==
-X-Google-Smtp-Source: ABdhPJya9L0YSSJEFVGJqL4QEUVLucOzZ18qlV1aPXjITgOpcqQR+btExvD6D25jNhpGgt8ZHCc9mw==
-X-Received: by 2002:a02:8805:: with SMTP id r5mr2931118jai.52.1599844260029;
-        Fri, 11 Sep 2020 10:11:00 -0700 (PDT)
-Received: from [192.168.1.10] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l14sm1509002ili.84.2020.09.11.10.10.58
+        bh=HCrmqBxuZus33kxx8YL4Vlut+6tBeCTGNVK1vsj5srM=;
+        b=obpW3dFez0fS6/Zuar0B/3dmnIxKK7zM0q8wq/sDudop8S0dBS65zFNWJvVYx9iMO0
+         ssEa24jYW8mKmNHMaOSuB66VeMx20O4TGHU/C1sck3SYfDL72+f0CcHEnu+DBU1jwop/
+         rOGPk27ZdpasjJJ/xjXnWgfF1z4f+aCa2pzBkB0rh247hgrS0BvTx55cM1YZy9kCuokZ
+         pbdjp/8n36q2baQAftHbnAFPkNQ/vw4tMT4B1tFMBSy06x1GlFZdjtfVWBizntXrCvZ2
+         8c/WTPdXap4/QvnlaT9RdSut7Ix2JqaupEph3iIhuyruJGunoIlyKfys5jTxkFWYC/+2
+         llCA==
+X-Gm-Message-State: AOAM530E/6YwcInNOWt8naIKt1r/1NlCHkCy613/Ni3+QYXSM0coxDqH
+        lIFX7SgzUa2QSUYYoBN1nbBJumWJGPw1p0+J9RzMcveUK4IWxbWe+h8dpV9Si6TOnIqGJyBI89y
+        eeaf/iX6o2XRn/4pXAtI9i0R3
+X-Received: by 2002:a1c:bb88:: with SMTP id l130mr3190587wmf.143.1599844263637;
+        Fri, 11 Sep 2020 10:11:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvUUX2l3Kv2FNmVs54pq+VBq7jW8bPIJ3amyhahMsZdt1JqrCR3uD7SW9gyccRbS7G7MRVaA==
+X-Received: by 2002:a1c:bb88:: with SMTP id l130mr3190558wmf.143.1599844263262;
+        Fri, 11 Sep 2020 10:11:03 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id n14sm5443386wmi.33.2020.09.11.10.11.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:10:59 -0700 (PDT)
-Subject: Re: [PATCH block/for-next] blk-iocost: fix divide-by-zero in
- transfer_surpluses()
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org
-References: <20200911170746.GG4295@mtj.thefacebook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ff46ca79-433e-3279-a8eb-35156639be7b@kernel.dk>
-Date:   Fri, 11 Sep 2020 11:10:58 -0600
+        Fri, 11 Sep 2020 10:11:02 -0700 (PDT)
+Subject: Re: [PATCH 0/5] Fix nested VMX controls MSRs
+To:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200828085622.8365-1-chenyi.qiang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <49f9a692-4218-33cf-2d29-0283cac2f1ac@redhat.com>
+Date:   Fri, 11 Sep 2020 19:11:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200911170746.GG4295@mtj.thefacebook.com>
+In-Reply-To: <20200828085622.8365-1-chenyi.qiang@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,14 +77,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 11:07 AM, Tejun Heo wrote:
-> Conceptually, root_iocg->hweight_donating must be less than WEIGHT_ONE but
-> all hweight calculations round up and thus it may end up >= WEIGHT_ONE
-> triggering divide-by-zero and other issues. Bound the value to avoid
-> surprises.
+On 28/08/20 10:56, Chenyi Qiang wrote:
+> The first three patches fix a issue for the nested VMX controls MSRs. The
+> issue happens when I use QEMU to run nested VM. The VM_{ENTRY,
+> EXIT}_LOAD_IA32_PERF_GLOBAL_CTRL and VM_{ENTRY_LOAD, EXIT_CLEAR}_BNDCFGS
+> in L1 MSR_IA32_VMX_TRUE_{ENTRY, EXIT}_CTLS MSR are always cleared
+> regardless of whether it supports in L1. This is because QEMU gets the
+> nested VMX MSRs from vmcs_config.nested_vmx_msrs which doesn't expose
+> these two fields. Then, when QEMU initializes the features MSRs after
+> SET_CPUID, it will override the nested VMX MSR values which has been
+> updated according to guest CPUID during SET_CPUID. This patch series
+> just expose the missing fields in nested VMX {ENTRY, EXIT} controls
+> MSR and adds the support to update nested VMX MSRs after set_vmx_msrs.
+> 
+> The last two patches are a minor fix and cleanup.
+> 
+> Chenyi Qiang (5):
+>   KVM: nVMX: Fix VMX controls MSRs setup when nested VMX enabled
+>   KVM: nVMX: Verify the VMX controls MSRs with the global capability
+>     when setting VMX MSRs
+>   KVM: nVMX: Update VMX controls MSR according to guest CPUID after
+>     setting VMX MSRs
+>   KVM: nVMX: Fix the update value of nested load IA32_PERF_GLOBAL_CTRL
+>     control
+>   KVM: nVMX: Simplify the initialization of nested_vmx_msrs
+> 
+>  arch/x86/kvm/vmx/nested.c | 79 +++++++++++++++++++++++++++------------
+>  arch/x86/kvm/vmx/vmx.c    |  9 +++--
+>  2 files changed, 62 insertions(+), 26 deletions(-)
+> 
 
-Applied, thanks.
+Queued patch 1/4/5, thanks.
 
--- 
-Jens Axboe
+Paolo
 
