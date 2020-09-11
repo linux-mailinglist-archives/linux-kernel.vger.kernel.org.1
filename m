@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A5E266589
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B61266599
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgIKRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:06:29 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18158 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgIKRGE (ORCPT
+        id S1726258AbgIKRIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgIKRHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:06:04 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5badf10001>; Fri, 11 Sep 2020 10:03:45 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 11 Sep 2020 10:06:02 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 11 Sep 2020 10:06:02 -0700
-Received: from [10.40.102.132] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 11 Sep
- 2020 17:05:58 +0000
-Subject: Re: [PATCH] vfio: Fix typo of the device_state
-To:     Zenghui Yu <yuzenghui@huawei.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <wanghaibin.wang@huawei.com>
-References: <20200910122508.705-1-yuzenghui@huawei.com>
-X-Nvconfidentiality: public
-From:   Kirti Wankhede <kwankhede@nvidia.com>
-Message-ID: <b9767f0f-9e4e-fef7-5d1c-7410f1046d03@nvidia.com>
-Date:   Fri, 11 Sep 2020 22:35:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 11 Sep 2020 13:07:50 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B68C061573;
+        Fri, 11 Sep 2020 10:07:50 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id v54so8405536qtj.7;
+        Fri, 11 Sep 2020 10:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3AjEi6jGt52sCYG9BLpiLcsHH3zd+gAC/phsC2ntthU=;
+        b=JKlox8HeF84wzkIcQoSdZMzb6i1aJWdpyWSIxiL7LCaduzfZgAyPT1sZm6in5FXwM3
+         xltvN80oIihI4QVyN4BbUoIIm0zDriphHq19mOuPSJI2g9qrmVGZohyEsdMJtLtpHtOc
+         RSRwl3VLVhpG7HoevUhSI6BwOe7mhYw2INhERcVs0y6HDwmUpEit9JJTs0yhFDeBDmlF
+         AYScKSGInP3Nvlm+FOEy3T3KAoJxRLHBqxaW7bRPuFTAqdhRuEPPNoMA4lwalUsKsF3n
+         yjnY9S3VXYUfS7NFcbWHPkwLZwjrwOFPADAqJGiY/GC8LCvsxv3Jo55+ke2Yeya9RnFv
+         PDaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=3AjEi6jGt52sCYG9BLpiLcsHH3zd+gAC/phsC2ntthU=;
+        b=X6Xdt4gIuYjgL+Wjy4r18j55jEFsecpgDCwvruL2h+57J09usKcTr3M5T4hONFxlfB
+         xKIIwF3KH8WmHrsNwjakyCG+kMag4AuQE9/ICM4FHK6L7lY5FdJMcBWRVBrkV5ibtkAk
+         s+wOlZok8WreFOpnoh6CzOY7WCicowEKlmUNEjGNw53dxvoCQ19cQkySk4qB5pgI2tO6
+         QHMR6XBZvBP7dunY4h61eEEwlwoLZG0GQTLB+CIUYmVbIOzlXRrg2SMuEKu2eCrKdPng
+         TftIO1PHu7cFnl8MrdcdFcG1bXFBElLPgjMjpLZ7BRUFrhVhpv9WA88G0C1qElPEiib4
+         FmEw==
+X-Gm-Message-State: AOAM532xXnfIwFZE+VIXBB+6XBrzXaU+sQ0VCFutWXE2b2CL36TeQvHA
+        3lZfoy0QoRzjb7226Prf/W0=
+X-Google-Smtp-Source: ABdhPJw2XZ2JqhZOii91QI8Nz3t1nZXxSA3uEbROHyHtIu5JeI40jcWkws3m3ppPnakf3xviN8iqng==
+X-Received: by 2002:aed:2f01:: with SMTP id l1mr2843206qtd.349.1599844069183;
+        Fri, 11 Sep 2020 10:07:49 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:95ac])
+        by smtp.gmail.com with ESMTPSA id h65sm3197291qtd.58.2020.09.11.10.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 10:07:47 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 13:07:46 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org
+Subject: [PATCH block/for-next] blk-iocost: fix divide-by-zero in
+ transfer_surpluses()
+Message-ID: <20200911170746.GG4295@mtj.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200910122508.705-1-yuzenghui@huawei.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599843825; bh=oAdnjCgE6+iYbbPbrmUM/+4Dh3xpWufH9eNFtbxYdtk=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=iWwTYCoa6SupNAGECYzBpnTpMiOnQuJZIJhj90bZdB0EIWwy47+WUZc2XBsWWgUm6
-         mkSWRtC78bnVfWGkSwqPUfNeQqc+OSd7Ce6bLUgshO686Qmrk8faSifJxd5BE5ebzH
-         VOK8a8RjFvx0WsfH/J4fcJQ720OzZ90lgqmF0B7i9K+etHMiiyox75/uv1ZdcAlBWV
-         IYSh12exnFQeUqiBUBOuxFishSY2t6uAqUUHjcXjnsHBdxhfEfYOoCjEXOEdgaDsjj
-         XQ3D7k5AK6NjqXLcX2c+kwIh520Y9kBYVYhVid+n/h5wcn5P4k4l2Qfp3GhtcFxPII
-         27dVWdBiGZieg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ops. Thanks for fixing it.
+Conceptually, root_iocg->hweight_donating must be less than WEIGHT_ONE but
+all hweight calculations round up and thus it may end up >= WEIGHT_ONE
+triggering divide-by-zero and other issues. Bound the value to avoid
+surprises.
 
-Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Fixes: e08d02aa5fc9 ("blk-iocost: implement Andy's method for donation weight updates")
+---
+ block/blk-iocost.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-On 9/10/2020 5:55 PM, Zenghui Yu wrote:
-> A typo fix ("_RUNNNG" => "_RUNNING") in comment block of the uapi header.
-> 
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
->   include/uapi/linux/vfio.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 920470502329..d4bd39e124bf 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -462,7 +462,7 @@ struct vfio_region_gfx_edid {
->    * 5. Resumed
->    *                  |--------->|
->    *
-> - * 0. Default state of VFIO device is _RUNNNG when the user application starts.
-> + * 0. Default state of VFIO device is _RUNNING when the user application starts.
->    * 1. During normal shutdown of the user application, the user application may
->    *    optionally change the VFIO device state from _RUNNING to _STOP. This
->    *    transition is optional. The vendor driver must support this transition but
-> 
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index fc897bb142bcd..978753335370a 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1881,15 +1881,21 @@ static void transfer_surpluses(struct list_head *surpluses, struct ioc_now *now)
+ 
+ 	/*
+ 	 * Calculate the global donation rate (gamma) - the rate to adjust
+-	 * non-donating budgets by. No need to use 64bit multiplication here as
+-	 * the first operand is guaranteed to be smaller than WEIGHT_ONE
+-	 * (1<<16).
++	 * non-donating budgets by.
++	 *
++	 * No need to use 64bit multiplication here as the first operand is
++	 * guaranteed to be smaller than WEIGHT_ONE (1<<16).
++	 *
++	 * We know that there are beneficiary nodes and the sum of the donating
++	 * hweights can't be whole; however, due to the round-ups during hweight
++	 * calculations, root_iocg->hweight_donating might still end up equal to
++	 * or greater than whole. Limit the range when calculating the divider.
+ 	 *
+ 	 * gamma = (1 - t_r') / (1 - t_r)
+ 	 */
+ 	gamma = DIV_ROUND_UP(
+ 		(WEIGHT_ONE - root_iocg->hweight_after_donation) * WEIGHT_ONE,
+-		WEIGHT_ONE - root_iocg->hweight_donating);
++		WEIGHT_ONE - min_t(root_iocg->hweight_donating, WEIGHT_ONE - 1));
+ 
+ 	/*
+ 	 * Calculate adjusted hwi, child_adjusted_sum and inuse for the inner
