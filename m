@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA0E266468
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9EB266462
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgIKQiA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 12:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
+        id S1725847AbgIKQhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726427AbgIKPM6 (ORCPT
+        with ESMTP id S1726429AbgIKPM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 11:12:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F033C061350
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:26:44 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kGk0a-0003r9-8y; Fri, 11 Sep 2020 16:26:36 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kGk0Y-0003Gl-Ik; Fri, 11 Sep 2020 16:26:34 +0200
-Message-ID: <dae4ab91ec20e72963f2658efca4874a35dd739e.camel@pengutronix.de>
-Subject: Re: [v4,3/4] reset-controller: ti: introduce a new reset handler
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Crystal Guo <crystal.guo@mediatek.com>, Suman Anna <s-anna@ti.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
-        <seiya.wang@mediatek.com>,
-        Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?= 
-        <stanley.chu@mediatek.com>,
-        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
-        <Yingjoe.Chen@mediatek.com>,
-        Fan Chen =?UTF-8?Q?=28=E9=99=B3=E5=87=A1=29?= 
-        <fan.chen@mediatek.com>,
-        Yong Liang =?UTF-8?Q?=28=E6=A2=81=E5=8B=87=29?= 
-        <Yong.Liang@mediatek.com>
-Date:   Fri, 11 Sep 2020 16:26:34 +0200
-In-Reply-To: <1599804422.14806.27.camel@mhfsdcap03>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
-         <20200817030324.5690-4-crystal.guo@mediatek.com>
-         <3a5decee-5f31-e27d-a120-1f835241a87c@ti.com>
-         <1599620279.14806.18.camel@mhfsdcap03>
-         <096362e9-dee8-4e7a-2518-47328068c2fd@ti.com>
-         <1599792140.14806.22.camel@mhfsdcap03>
-         <9d72aaef-49fe-ebb6-215d-05ad3ab27af4@ti.com>
-         <1599804422.14806.27.camel@mhfsdcap03>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4351C061358;
+        Fri, 11 Sep 2020 07:27:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Mqkz/TWdkaK1QSCbkP0AJS8OkxokSpm+JnM6y2Dzk1U=; b=iuePkO9Gkom/odDxD1jBzDR2t6
+        xtNgBI1jkys2M3Dufsm1WU4nOmnsz8hVTMzk9DfnLsHRW/TrlMWYbM3tu8WyJ+Th7lkrxGguMhiWx
+        hOpme4zgCM/XcytmhnbjAlZtiPoXaUXYVgtvuCgQjucNNi9YLQk4ieFPB9A+CotJ5Pdc=;
+Received: from p200300ccff0ce9001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:e900:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kGk1B-0001LS-Kb; Fri, 11 Sep 2020 16:27:32 +0200
+Date:   Fri, 11 Sep 2020 16:27:12 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     khilman@kernel.org, linux@armlinux.org.uk,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
+Subject: Re: [PATCH] omap3: enable off mode automatically
+Message-ID: <20200911162712.740d96ec@aktux>
+In-Reply-To: <20200911103337.GH7101@atomide.com>
+References: <20200911064924.26281-1-andreas@kemnade.info>
+        <20200911103337.GH7101@atomide.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Crystal,
+On Fri, 11 Sep 2020 13:33:37 +0300
+Tony Lindgren <tony@atomide.com> wrote:
 
-On Fri, 2020-09-11 at 14:07 +0800, Crystal Guo wrote:
-[...]
-> Should I add the SoC-specific data as follows?
-> This may also modify the ti original code, is it OK?
+> * Andreas Kemnade <andreas@kemnade.info> [200911 09:50]:
+> > --- a/arch/arm/mach-omap2/pm.h
+> > +++ b/arch/arm/mach-omap2/pm.h
+> > @@ -49,11 +49,7 @@ static inline int omap4_opp_init(void)
+> >  extern int omap3_pm_get_suspend_state(struct powerdomain *pwrdm);
+> >  extern int omap3_pm_set_suspend_state(struct powerdomain *pwrdm, int state);
+> >  
+> > -#ifdef CONFIG_PM_DEBUG
+> >  extern u32 enable_off_mode;
+> > -#else
+> > -#define enable_off_mode 0
+> > -#endif  
 > 
-> +       data->reset_data = of_device_get_match_data(&pdev->dev);
-> +
-> +       list = of_get_property(np, data->reset_data->reset_bits, &size);
+> Hmm isn't the above still needed for the other SoCs? Or is omap3 the only
+> user?
 > 
-> +static const struct common_reset_data ti_reset_data = {
-> +       .reset_op_available = false,
-> +       .reset_bits = "ti, reset-bits",
-                            ^
-That space doesn't belong there.
+well, the linker moans about undefined symbols if
+CONFIG_ARCH_OMAP3 is not enabled.
+I will send a v2.
 
-> +};
-> +
-> +static const struct common_reset_data mediatek_reset_data = {
-> +       .reset_op_available = true,
-> +       .reset_bits = "mediatek, reset-bits",
-> +};
-
-I understand Robs comments as meaning "ti,reset-bits" should have been
-called "reset-bits" in the first place, and you shouldn't repeat adding
-the vendor prefix, as that is implied by the compatible. So this should
-probably be just "reset-bits".
-
-Otherwise this looks like it should work.
-
-regards
-Philipp
+Regards,
+Andreas
