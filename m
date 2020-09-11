@@ -2,68 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B233265FB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09659265FBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgIKMky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgIKMcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:32:10 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596B7C061573;
-        Fri, 11 Sep 2020 05:32:10 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id a19so4236131ilq.10;
-        Fri, 11 Sep 2020 05:32:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ugTNUn8mm2Ku6DfVm6vxHRWJ3JTBU9LWayGqG53mxMw=;
-        b=MpdvMpPqMKWBctHOkuDpfxbTZK3NqQSwG0yCiF+ibrvu2DHy4mZCcuQx8xzubGiltk
-         fXkGxi9AehKRLwp0zIARnb4WngxM54WeeCagnuDxR29D12RJa1RwACdiwe9q5YMfIJYN
-         ZcUEatOXvTiO9nfXsyZEkNS2co1OVbLzgigfJdoFzuimQ1Fn9s8sKghAhXBZQAx/OENo
-         ziWEcXeoXQ1OdBgW99Ypps/x+fb6rEHBfc6A6iBRcPKTcTtOrep0VtJ0hv/Kg6weibPT
-         Wds0+wkvGyF/NhDJYTE+ScXFZX1lSo4xa05qmXHg/0sC/uX7kHss/xGwC1pxVFNmeCA2
-         QpGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ugTNUn8mm2Ku6DfVm6vxHRWJ3JTBU9LWayGqG53mxMw=;
-        b=aFNay7b0dKNebITLYAjLRyKY1KHJAYMPj18w7DsM965BPgUq2AWhZ1Z6L3mV+CYzrs
-         LWRtE4crh7Pa1vHDMrjrFeK7z1QER0Y67lwofE3CZ9a4RYR80XdMZCteSH54zu5bv5MB
-         Clht3l/DZjiSvZV3gy8e6qWRP5hrFkVBjWNThtr20W45usBLQ1d3iOCgJgOcfdUoUXn9
-         KuqlPiVwbrPv4bQPua4Avu0IWZUgHvAWq0bkSZfZFVzoyNacBI2zt7G1oFM1BqX8+glg
-         aQcUNcj9pgJBsKR9LcQ2izWQrOtgHl+gvUince3S5/DwN8BBN3ba/iGDLNf6CZUySFfZ
-         4qxg==
-X-Gm-Message-State: AOAM5327iensW63wa45mvShIVMVl8MoFC8xNe8oPCdt8HisMLBfP9c7T
-        ryZCRi3ptXt86fx2aNeKofZVeXvhMAQ=
-X-Google-Smtp-Source: ABdhPJxl2ZwcqutABattNSET4QKwUd7/IzX1WiTFxtg4ligGakYCwNb+FcHWlik94jksPpHtKPkWvw==
-X-Received: by 2002:a92:9646:: with SMTP id g67mr1536585ilh.116.1599827529114;
-        Fri, 11 Sep 2020 05:32:09 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan (mn-10k-dhcp7-1791.dsl.hickorytech.net. [68.232.239.6])
-        by smtp.gmail.com with ESMTPSA id m18sm1144277iln.80.2020.09.11.05.32.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 05:32:08 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-pm@vger.kernel.org, linux-omap@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>, Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] thermal: ti-soc-thermal: Enable addition power management
-Date:   Fri, 11 Sep 2020 07:31:56 -0500
-Message-Id: <20200911123157.759379-1-aford173@gmail.com>
+        id S1725886AbgIKMo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:44:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31613 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725980AbgIKMlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:41:06 -0400
+IronPort-SDR: E2TbmWcLWQdfGikXA3SQioxj+3XcZ2bCRGfU7xKgnSLShtLOeR6S1sh/niKatLDtXe+L22yhou
+ Jxmn9HB7WEdA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="158028221"
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="158028221"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:41:06 -0700
+IronPort-SDR: B+Pvpj96YANG9x2bvI31hpAPN90AUGvMAjtp2vBVMWZbyTkjiceX+p8qJFQW7SunPD6h15//Af
+ E1/sPKZTpqcw==
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="378551949"
+Received: from amaksymi-mobl.ger.corp.intel.com (HELO localhost) ([10.252.60.247])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:40:56 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch Control hardware bits
+Date:   Fri, 11 Sep 2020 15:39:57 +0300
+Message-Id: <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,148 +55,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bandgap sensor can be idled when the processor is too, but it
-isn't currently being done, so the power consumption of OMAP3
-boards can elevated if the bangap sensor is enabled.
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-This patch attempts to use some additional power management
-to idle the clock to the bandgap when not needed.
+Add X86_FEATURE_SGX_LC, which informs whether or not the CPU supports SGX
+Launch Control.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Tested-by: Andreas Kemnade <andreas@kemnade.info> # GTA04
+Add MSR_IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}, which when combined contain a
+SHA256 hash of a 3072-bit RSA public key. SGX backed software packages, so
+called enclaves, are always signed. All enclaves signed with the public key
+are unconditionally allowed to initialize. [1]
+
+Add FEAT_CTL_SGX_LC_ENABLED, which informs whether the aformentioned MSRs
+are writable or not. If the bit is off, the public key MSRs are read-only
+for the OS.
+
+If the MSRs are read-only, the platform must provide a launch enclave (LE).
+LE can create cryptographic tokens for other enclaves that they can pass
+together with their signature to the ENCLS(EINIT) opcode, which is used
+to initialize enclaves.
+
+Linux is unlikely to support the locked configuration because it takes away
+the control of the launch decisions from the kernel.
+
+[1] Intel SDM: 38.1.4 Intel SGX Launch Control Configuration
+
+Reviewed-by: Borislav Petkov <bp@alien8.de>
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
-V3:  bandgap_omap_cpu_notifier is only defined when CONFIG_PM_SLEEP
-     is enabled, so make all references to it also depend on
-     CONFIG_PM_SLEEP as well
+ arch/x86/include/asm/cpufeatures.h | 1 +
+ arch/x86/include/asm/msr-index.h   | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-V2: Fix issue where variable stating the suspend mode isn't being
-    properly set and cleared.
-
-diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-index ab19ceff6e2a..5e596168ba73 100644
---- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-@@ -25,10 +25,20 @@
- #include <linux/of_platform.h>
- #include <linux/of_irq.h>
- #include <linux/io.h>
-+#include <linux/cpu_pm.h>
-+#include <linux/device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/pm.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 159b635159c0..398e4f19c3d7 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -354,6 +354,7 @@
+ #define X86_FEATURE_CLDEMOTE		(16*32+25) /* CLDEMOTE instruction */
+ #define X86_FEATURE_MOVDIRI		(16*32+27) /* MOVDIRI instruction */
+ #define X86_FEATURE_MOVDIR64B		(16*32+28) /* MOVDIR64B instruction */
++#define X86_FEATURE_SGX_LC		(16*32+30) /* Software Guard Extensions Launch Control */
  
- #include "ti-bandgap.h"
+ /* AMD-defined CPU features, CPUID level 0x80000007 (EBX), word 17 */
+ #define X86_FEATURE_OVERFLOW_RECOV	(17*32+ 0) /* MCA overflow recovery support */
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index c0b04f020162..e574b4bb5aad 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -602,6 +602,7 @@
+ #define FEAT_CTL_LOCKED				BIT(0)
+ #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
+ #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
++#define FEAT_CTL_SGX_LC_ENABLED			BIT(17)
+ #define FEAT_CTL_SGX_ENABLED			BIT(18)
+ #define FEAT_CTL_LMCE_ENABLED			BIT(20)
  
- static int ti_bandgap_force_single_read(struct ti_bandgap *bgp, int id);
-+#ifdef CONFIG_PM_SLEEP
-+static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
-+				  unsigned long cmd, void *v);
-+#endif
+@@ -622,6 +623,12 @@
+ #define MSR_IA32_UCODE_WRITE		0x00000079
+ #define MSR_IA32_UCODE_REV		0x0000008b
  
- /***   Helper functions to access registers and their bitfields   ***/
- 
-@@ -1008,6 +1018,11 @@ int ti_bandgap_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+#ifdef CONFIG_PM_SLEEP
-+	bgp->nb.notifier_call = bandgap_omap_cpu_notifier;
-+	cpu_pm_register_notifier(&bgp->nb);
-+#endif
++/* Intel SGX Launch Enclave Public Key Hash MSRs */
++#define MSR_IA32_SGXLEPUBKEYHASH0	0x0000008C
++#define MSR_IA32_SGXLEPUBKEYHASH1	0x0000008D
++#define MSR_IA32_SGXLEPUBKEYHASH2	0x0000008E
++#define MSR_IA32_SGXLEPUBKEYHASH3	0x0000008F
 +
- 	return 0;
+ #define MSR_IA32_SMM_MONITOR_CTL	0x0000009b
+ #define MSR_IA32_SMBASE			0x0000009e
  
- remove_last_cooling:
-@@ -1041,7 +1056,9 @@ int ti_bandgap_remove(struct platform_device *pdev)
- 	struct ti_bandgap *bgp = platform_get_drvdata(pdev);
- 	int i;
- 
--	/* First thing is to remove sensor interfaces */
-+	cpu_pm_unregister_notifier(&bgp->nb);
-+
-+	/* Remove sensor interfaces */
- 	for (i = 0; i < bgp->conf->sensor_count; i++) {
- 		if (bgp->conf->sensors[i].unregister_cooling)
- 			bgp->conf->sensors[i].unregister_cooling(bgp, i);
-@@ -1150,9 +1167,43 @@ static int ti_bandgap_suspend(struct device *dev)
- 	if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
- 		clk_disable_unprepare(bgp->fclock);
- 
-+	bgp->is_suspended = true;
-+
- 	return err;
- }
- 
-+static int bandgap_omap_cpu_notifier(struct notifier_block *nb,
-+				  unsigned long cmd, void *v)
-+{
-+	struct ti_bandgap *bgp;
-+
-+	bgp = container_of(nb, struct ti_bandgap, nb);
-+
-+	spin_lock(&bgp->lock);
-+	switch (cmd) {
-+	case CPU_CLUSTER_PM_ENTER:
-+		if (bgp->is_suspended)
-+			break;
-+		ti_bandgap_save_ctxt(bgp);
-+		ti_bandgap_power(bgp, false);
-+		if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
-+			clk_disable(bgp->fclock);
-+		break;
-+	case CPU_CLUSTER_PM_ENTER_FAILED:
-+	case CPU_CLUSTER_PM_EXIT:
-+		if (bgp->is_suspended)
-+			break;
-+		if (TI_BANDGAP_HAS(bgp, CLK_CTRL))
-+			clk_enable(bgp->fclock);
-+		ti_bandgap_power(bgp, true);
-+		ti_bandgap_restore_ctxt(bgp);
-+		break;
-+	}
-+	spin_unlock(&bgp->lock);
-+
-+	return NOTIFY_OK;
-+}
-+
- static int ti_bandgap_resume(struct device *dev)
- {
- 	struct ti_bandgap *bgp = dev_get_drvdata(dev);
-@@ -1161,6 +1212,7 @@ static int ti_bandgap_resume(struct device *dev)
- 		clk_prepare_enable(bgp->fclock);
- 
- 	ti_bandgap_power(bgp, true);
-+	bgp->is_suspended = false;
- 
- 	return ti_bandgap_restore_ctxt(bgp);
- }
-diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.h b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
-index fce4657e9486..ed0ea4b17b25 100644
---- a/drivers/thermal/ti-soc-thermal/ti-bandgap.h
-+++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.h
-@@ -12,6 +12,10 @@
- #include <linux/spinlock.h>
- #include <linux/types.h>
- #include <linux/err.h>
-+#include <linux/cpu_pm.h>
-+#include <linux/device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/pm.h>
- 
- struct gpio_desc;
- 
-@@ -203,6 +207,8 @@ struct ti_bandgap {
- 	int				irq;
- 	struct gpio_desc		*tshut_gpiod;
- 	u32				clk_rate;
-+	struct notifier_block		nb;
-+	unsigned int is_suspended:1;
- };
- 
- /**
 -- 
 2.25.1
 
