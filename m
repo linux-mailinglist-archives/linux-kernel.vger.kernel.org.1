@@ -2,118 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6481E2665F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D335226661A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgIKRS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:18:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54190 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725860AbgIKRSm (ORCPT
+        id S1726203AbgIKRVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgIKRUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:18:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599844720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kUZ4F9VBNeDOexQ4ImvdIONeNb+COlnwiJ6I4shsy2Q=;
-        b=IFwVBRpSLNsw1yFnwXiZ5nioYsnwtWbC7Nivlu04xk8c2+QI3Lg/1MY7QJiPNrd5+Y7S2c
-        UKCaBLGqfEEcjrB4+KiuobvCHt05aj/+iekB8hwMeKQ4erCBsLtYfDzfanW3KYCraxI0Eo
-        IC3rvRnhwNfi3rN9RzFJSfhtA4Ux+Lo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-Yrhrg5z2Nv6BretARpwOBA-1; Fri, 11 Sep 2020 13:18:38 -0400
-X-MC-Unique: Yrhrg5z2Nv6BretARpwOBA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67899393B6;
-        Fri, 11 Sep 2020 17:18:36 +0000 (UTC)
-Received: from [10.10.110.42] (unknown [10.10.110.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 477E45C1BD;
-        Fri, 11 Sep 2020 17:18:33 +0000 (UTC)
-Subject: Re: [PATCH V2 2/3] integrity: Move import of MokListRT certs to a
- separate routine
-To:     Mimi Zohar <zohar@linux.ibm.com>, Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        James Morris <jmorris@namei.org>, serge@hallyn.com,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Jones <pjones@redhat.com>,
-        David Howells <dhowells@redhat.com>, prarit@redhat.com
-References: <20200905013107.10457-1-lszubowi@redhat.com>
- <20200905013107.10457-3-lszubowi@redhat.com>
- <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
- <f0a079b1-5f02-8618-fdfe-aea2278113c9@redhat.com>
- <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
-From:   Lenny Szubowicz <lszubowi@redhat.com>
-Message-ID: <394190b9-59bd-5cb3-317e-736852f190f4@redhat.com>
-Date:   Fri, 11 Sep 2020 13:18:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 11 Sep 2020 13:20:52 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B67FC0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:20:52 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k18so5480493wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y0IusjOAMzlu0LEffu8/teWA22xcDWq2yUsAVTXhPgg=;
+        b=nrtqiqrzQFIINClpSv3fM9Bge5ZuVLwMEJ0o5IkBjDr289chYtyE1GrCw6/3gVtVK6
+         Djn9lLs7l/lwQgTkizVLyTBOOj3jttfWOp+DY8X9hJs5bZRs74/APQ1g18cg1iGNND0E
+         z9pHWqbslF6YHfnP8lWH30Hr7rGkduixM3k3g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y0IusjOAMzlu0LEffu8/teWA22xcDWq2yUsAVTXhPgg=;
+        b=ok6Hr49OhDKVlljRnrMAOXT5fupPyCU+EybJy5AqUFBzbxb3GWL2TdZXfXR/3QMrbE
+         fs+zddBYw5ALbvW0taO7Se1unBp+h81XFjD72QBLQ3w802cbCTJzJlVLGJa12+xTYzxi
+         ZaBGiDEaFuoNo14ZiiEjNSljLMKMO0C70DMs/hM76UiVbFVuh6XvrmAWXb5JE+8kmS/j
+         KsH/KlMWUQKpag2YKU3KqTFviMYwKm1jxqV2Damju8ra+FL6LbUB3zBssHrWbKzJXMBG
+         +OsPVALLS0FOsNnvc7pf5zc/uDbnueDPuPOHf8wTSJAMcr9N7+PkLVfx7SU2EoHeT+Xc
+         jp/Q==
+X-Gm-Message-State: AOAM533U93tU/8Vo5Ir9IRLG6Zizchm2PXGRQuj6MAHosE8Jw1DaqDgF
+        xIDjW/HWBHbXl0x8dAPhhPyKActM/iRj4CUJAaS1Nw==
+X-Google-Smtp-Source: ABdhPJwdBoOxRZoIzMjovIzxIonxRQ3iSgblHos1YDPe0j4W4/ySaBtzWvU7O7+Nsx5h1p5/wZOlP1cZ1kBU4K/v1Ns=
+X-Received: by 2002:a1c:1f42:: with SMTP id f63mr3104803wmf.1.1599844848452;
+ Fri, 11 Sep 2020 10:20:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cb8b4ebaa35d79eba65b011d042d20a991adf540.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200911102259.3667381-1-cychiang@chromium.org>
+ <20200911102259.3667381-4-cychiang@chromium.org> <20200911150044.GA2352@gerhold.net>
+In-Reply-To: <20200911150044.GA2352@gerhold.net>
+From:   Cheng-yi Chiang <cychiang@chromium.org>
+Date:   Sat, 12 Sep 2020 01:20:17 +0800
+Message-ID: <CAFv8Nw+qeezhQLu9OsXrBuvRUBCB0BSnb6yt+FAF6Ov+E2tPPA@mail.gmail.com>
+Subject: Re: [PATCH v9 3/3] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Taniya Das <tdas@codeaurora.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Andy Gross <agross@kernel.org>,
+        Dylan Reid <dgreid@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Tzung-Bi Shih <tzungbi@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Srinivasa Rao <srivasam@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 11:59 AM, Mimi Zohar wrote:
-> On Fri, 2020-09-11 at 11:54 -0400, Lenny Szubowicz wrote:
->> On 9/11/20 11:02 AM, Ard Biesheuvel wrote:
->>> On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
->>>>
->>>> Move the loading of certs from the UEFI MokListRT into a separate
->>>> routine to facilitate additional MokList functionality.
->>>>
->>>> There is no visible functional change as a result of this patch.
->>>> Although the UEFI dbx certs are now loaded before the MokList certs,
->>>> they are loaded onto different key rings. So the order of the keys
->>>> on their respective key rings is the same.
->>>>
->>>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
->>>
->>> Why did you drop Mimi's reviewed-by from this patch?
->>
->> It was not intentional. I was just not aware that I needed to propagate
->> Mimi Zohar's reviewed-by from V1 of the patch to V2.
->>
->> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
->>
->> V2 includes changes in that patch to incorporate suggestions from
->> Andy Shevchenko. My assumption was that the maintainer would
->> gather up the reviewed-by and add any signed-off-by as appropriate,
->> but it sounds like my assumption was incorrect. In retrospect, I
->> could see that having the maintainer dig through prior versions
->> of a patch set for prior reviewed-by tags could be burdensome.
-> 
-> As much as possible moving code should be done without making changes,
-> simpler for code review.   Then as a separate patch you make changes.
-> That way you could also have retained my Reviewed-by.
-> 
-> Mimi
+On Fri, Sep 11, 2020 at 11:01 PM Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> Hi,
+>
+> Thanks for removing the weird use of auxilliary devices :)
+>
+Hi Stephan,
+Thanks for the suggestion!
 
-If you or Ard think I should, I can do a V3 with:
+> On Fri, Sep 11, 2020 at 06:22:59PM +0800, Cheng-Yi Chiang wrote:
+> > From: Ajit Pandey <ajitp@codeaurora.org>
+> >
+> > Add new driver to register sound card on sc7180 trogdor board and
+> > do the required configuration for lpass cpu dai and external codecs
+> > connected over MI2S interfaces.
+> >
+> > Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> > Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+> > ---
+> >  sound/soc/qcom/Kconfig  |  12 ++
+> >  sound/soc/qcom/Makefile |   2 +
+> >  sound/soc/qcom/sc7180.c | 267 ++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 281 insertions(+)
+> >  create mode 100644 sound/soc/qcom/sc7180.c
+> >
+> > diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+> > index a607ace8b089..0459185ee243 100644
+> > --- a/sound/soc/qcom/Kconfig
+> > +++ b/sound/soc/qcom/Kconfig
+> > @@ -116,4 +116,16 @@ config SND_SOC_SDM845
+> >         SDM845 SoC-based systems.
+> >         Say Y if you want to use audio device on this SoCs.
+> >
+> > +config SND_SOC_SC7180
+> > +     tristate "SoC Machine driver for SC7180 boards"
+> > +     depends on I2C
+> > +     select SND_SOC_QCOM_COMMON
+> > +     select SND_SOC_LPASS_SC7180
+> > +     select SND_SOC_MAX98357A
+> > +     select SND_SOC_RT5682_I2C
+> > +     help
+> > +       To add support for audio on Qualcomm Technologies Inc.
+> > +       SC7180 SoC-based systems.
+> > +       Say Y if you want to use audio device on this SoCs.
+> > +
+> >  endif #SND_SOC_QCOM
+> > diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+> > index 7972c9479ab0..0cdcbf367ef1 100644
+> > --- a/sound/soc/qcom/Makefile
+> > +++ b/sound/soc/qcom/Makefile
+> > @@ -17,12 +17,14 @@ snd-soc-storm-objs := storm.o
+> >  snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+> >  snd-soc-apq8096-objs := apq8096.o
+> >  snd-soc-sdm845-objs := sdm845.o
+> > +snd-soc-sc7180-objs := sc7180.o
+> >  snd-soc-qcom-common-objs := common.o
+> >
+> >  obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+> >  obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+> >  obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+> >  obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
+> > +obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
+> >  obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
+> >
+> >  #DSP lib
+> > diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+> > new file mode 100644
+> > index 000000000000..40bc4fc98842
+> > --- /dev/null
+> > +++ b/sound/soc/qcom/sc7180.c
+> > @@ -0,0 +1,267 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +//
+> > +// Copyright (c) 2020, The Linux Foundation. All rights reserved.
+> > +//
+> > +// sc7180.c -- ALSA SoC Machine driver for SC7180
+> > +
+> > +#include <dt-bindings/sound/sc7180-lpass.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/platform_device.h>
+> > +#include <sound/core.h>
+> > +#include <sound/jack.h>
+> > +#include <sound/pcm.h>
+> > +#include <sound/pcm_params.h>
+> > +#include <sound/soc.h>
+> > +#include <uapi/linux/input-event-codes.h>
+> > +
+> > +#include "../codecs/rt5682.h"
+> > +#include "common.h"
+> > +#include "lpass.h"
+> > +
+> > +#define DEFAULT_SAMPLE_RATE_48K              48000
+> > +#define DEFAULT_MCLK_RATE            19200000
+> > +#define RT5682_PLL1_FREQ (48000 * 512)
+> > +
+> > +struct sc7180_snd_data {
+> > +     u32 pri_mi2s_clk_count;
+> > +     struct snd_soc_jack hs_jack;
+> > +     struct snd_soc_jack hdmi_jack;
+> > +};
+>
+> [...]
+>
+> > +
+> > +static const struct snd_soc_ops sc7180_ops = {
+> > +     .startup = sc7180_snd_startup,
+> > +     .shutdown = sc7180_snd_shutdown,
+> > +};
+> > +
+> > +static const struct snd_soc_dapm_widget sc7180_snd_widgets[] = {
+> > +     SND_SOC_DAPM_HP("Headphone Jack", NULL),
+> > +     SND_SOC_DAPM_MIC("Headset Mic", NULL),
+> > +};
+> > +
+> > +static struct snd_soc_card sc7180_card = {
+> > +     .owner = THIS_MODULE,
+> > +     .dapm_widgets = sc7180_snd_widgets,
+> > +     .num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets),
+> > +};
+>
+> Given that you modify this struct and already allocate some memory
+> dynamically (sc7810_snd_data), it might be a bit cleaner to avoid
+> modifying global memory and instead allocate snd_soc_card dynamically as
+> well. Could just add it to sc7180_snd_data for example (see e.g. apq8016_sbc)
+>
+Good idea. I will modify it in v10.
 
-   Patch V3 01: Unchanged from V2
-   Patch V3 02: Goes back to V1 of patch 02 that Mimi reviewed
-   Patch V3 03: New. Has Andy's cleanup suggestions separated from patch 02
-   Patch V3 04: This would most probably just be the V2 of patch 03 with no changes
+> > +
+> > +static void sc7180_add_ops(struct snd_soc_card *card)
+> > +{
+> > +     struct snd_soc_dai_link *link;
+> > +     int i;
+> > +
+> > +     for_each_card_prelinks(card, i, link) {
+> > +             link->ops = &sc7180_ops;
+> > +             link->init = sc7180_init;
+> > +     }
+> > +}
+> > +
+> > +static int sc7180_snd_platform_probe(struct platform_device *pdev)
+> > +{
+> > +     struct snd_soc_card *card = &sc7180_card;
+> > +     struct sc7180_snd_data *data;
+> > +     struct device *dev = &pdev->dev;
+> > +     int ret;
+> > +
+> > +     /* Allocate the private data */
+> > +     data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> > +     if (!data)
+> > +             return -ENOMEM;
+> > +
+> > +     card->dev = dev;
+> > +     snd_soc_card_set_drvdata(card, data);
+> > +
+> > +     ret = qcom_snd_parse_of(card);
+> > +     if (ret) {
+> > +             dev_err(dev, "Error parsing OF data\n");
+>
+> This will just add noise in case of probe deferral. qcom_snd_parse_of()
+> already logs a message for most errors so you can just remove this one.
+>
 
-                  -Lenny.
+I will remove it in v10.
 
-> 
->>
->> Advice on the expected handling of this would be appreciated.
-> 
-> 
+> > +             return ret;
+> > +     }
+> > +
+> > +     sc7180_add_ops(card);
+> > +
+> > +     return devm_snd_soc_register_card(dev, card);
+> > +}
+> > +
+> > +static const struct of_device_id sc7180_snd_device_id[]  = {
+> > +     { .compatible = "qcom,sc7180-sndcard" },
+>
+> Will all SC7180 use the configuration in this driver? (With RT5682,
+> HDMI, the jack configuration etc). Otherwise a more specific compatible
+> string might be better, so other device-specific ones can be added later.
+>
 
+I thought we can do that in the next patch when we want to introduce
+different board variations.
+But maybe doing it earlier is better.
+
+There will be three variations on trogdor:
+rt5682 (1mic), max98357, dp
+rt5682 (2mic), max98357, dp
+adau7002, max98357, dp
+
+I would like to name them
+
+qcom,sc7180-sndcard-rt5682-m98357-1mic
+qcom,sc7180-sndcard-rt5682-m98357-2mic
+qcom,sc7180-sndcard-ad7002-m98357
+
+What do you think ?
+
+Thanks for the review and suggestions!
+
+> Thanks!
+> Stephan
