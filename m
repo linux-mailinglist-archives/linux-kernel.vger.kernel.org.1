@@ -2,124 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFECA2663B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0A02663B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726643AbgIKQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S1726661AbgIKQWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgIKQWD (ORCPT
+        with ESMTP id S1726561AbgIKQWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:22:03 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C48C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:22:03 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u21so12923464ljl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:22:02 -0700 (PDT)
+        Fri, 11 Sep 2020 12:22:33 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B54EC0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:22:32 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id r7so14520605ejs.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:22:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6uCs8sK724xgrjgAwvIZNy/g6OhzqOwMIcpbgNs4M6k=;
-        b=HwKeCNBRiGDa4BUCzy8CR2l/UJd4vXSUu0N4tOlCrZdJM49ooJ9gEOmR+/JWAtXIgX
-         28/Fed29zYW9pTrsc6mchvrgm12+1PUbaBeP/CRvjSCX1nakdfcfUrcqcP/94TKAuNz0
-         7NF90iZQblfqWgrFqKDY/XRkWCzr21gci103JWnHGS1BNVZ246yj+iP/8LhuddJGkVWK
-         caR0dq8xhLKVqvnXCHYtQ+ECDtGQHEYuhum6p7QTM9s0flV70Fdyu8Zd/FXFjqk8IgDf
-         q73wawMp/zzcEjJnL86qrlYZtkW8VZD4rKNJc8PRGO5uuqY7cik3T8jmbu2r+dxJdwts
-         ttkQ==
+        bh=evNZKysAyJVDJFT66khLohp3xUs13A1xSWcEfi9b540=;
+        b=Ae4tquukEefgUlPmUmJU0RsPNNyjRmp/EcJwNrsDA4qCmFhdDh9bYbZ7o/pXQ7tnT4
+         svI/zhr2xDJ83F4ISMrwM3VLNLJGxaT9vhQrAE/9eDcRATsuHPM5THKfI9WzUCyJGKWC
+         hNGME51ilNarXtOPN2bD5Ve9/meaJCLFgBJF/TZwW2ufT/quianqVNX4Gbk47G+RpJZc
+         pZwL8/KHBuHRDv8Qujoba+Ef9Jb/LVnmsjpKi8BwAcGrQvalpwjdeyzmyN2udZtQ4Pb3
+         i3lHMW7qaKFoCp+cM8dKpFBDGLFeYk5c46WtvzAtz9fa9GiR1M4cfxsbexzvnHOL33yW
+         4i+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6uCs8sK724xgrjgAwvIZNy/g6OhzqOwMIcpbgNs4M6k=;
-        b=PvQhmUwaBuAGP1Nf/Ofy2QrkN/zbf1tI78nJYWJT/2ANyYY6WuI6WpzzTa6HZz1TWo
-         0D3bQcr1t9ce4DH/nf9+l7M9ggoeV0tUQ10822zOrzYuojSlpEuu9Tu/bQ0V4u1vTson
-         lSaTvWM2GP6ggIvot1LUci8Nabxc3MfkjadEDmxX55+F/0QZR1GXB5S+m82WEgcn9UYl
-         kdAwFG3BgCrg8YRyAUecNp06KboYsnw6+qXYsuTHpYLPmr+TxGUKrwqmxGdEcWzxtN5U
-         W6LDRJVTIWWKF5L63gf/f8Vgcv82AlGepUyqYUXM4j0JQFhy6mrV5nCDRVVDap2FxDUU
-         ZmJg==
-X-Gm-Message-State: AOAM532VLuYnmnCRSoxVScUg308IsCdOnCjkUFZCXzBkE4vBltgyXp58
-        IOa6uYmmPXqaug3sbHfVj4yRDTrCY5v6i5ZbcwuwbA==
-X-Google-Smtp-Source: ABdhPJwtHiPRand28SIuaJYBfKMlytcg/m9BTz0IY4B1SVSLiAwLsVzfY9fjFEFxACXaxPfCIT4kr8D+Ra+DI4y2jgo=
-X-Received: by 2002:a2e:a202:: with SMTP id h2mr1185600ljm.282.1599841321134;
- Fri, 11 Sep 2020 09:22:01 -0700 (PDT)
+        bh=evNZKysAyJVDJFT66khLohp3xUs13A1xSWcEfi9b540=;
+        b=cJG1ZnT1IbCkPutB3AG9uKszbEXGC96RwJa3/A3WUcW+hSHzTZthFbFfDbain7GW1h
+         rYcJ0d7tWMvxSoBI+us/D8fNJNHGxfg0cD4FEllNhk+kGmDkv6kxJqBUwEO2i3Llmxtg
+         25N4vblnIxKSAmLt01XHQ2NtANouT5X+aGtDAvnYSN3Gl5rz4rTVJMiCnbrWLJDtzwg2
+         Q/BibLvwywxKiEUtX46JV7QEPbFKm2pDWshfdsFm4qn+WDPe4DaDWOYjJQVRo+DF1d2r
+         lece2g7qLiPOoTGZQY9UNCxyfsZoG+aIx265j11C/8BeiICjmSZXl2ofRtLYwxEa2FIG
+         N36g==
+X-Gm-Message-State: AOAM533fhYaj4Vtg7/dNFQm+kAMoYhaRGiEOqqbuXaM7QV7ECaMq5LTD
+        ZIYQ+DZO8B1O6tDoERXUjH6fxEVtt7MVMUUagR7smg==
+X-Google-Smtp-Source: ABdhPJyqHiecqUtumffmsrD9npH6L2n5M/zdIGPahrdtL0+0os1gIs7YjYfDjXWuBz5n1Y8EJ2sQXjRZ/jbRS55PAlw=
+X-Received: by 2002:a17:906:a0c2:: with SMTP id bh2mr2837607ejb.493.1599841351050;
+ Fri, 11 Sep 2020 09:22:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910022435.2773735-1-guro@fb.com> <20200910224309.GB1307870@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200910224309.GB1307870@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 11 Sep 2020 09:21:49 -0700
-Message-ID: <CALvZod6VZLZ+ABqHK=Vv_S3m=OarSJf0ttGeAOKhw+1zGj65gQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg/slab: fix racy access to page->mem_cgroup in mem_cgroup_from_obj()
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, stable@vger.kernel.org
+References: <20200910134802.3160311-1-lenaptr@google.com> <CAG48ez3x51kkDt19ONXbi8Se+2swMgwfmaj7AFbBqmss=D38Ug@mail.gmail.com>
+ <CABvBcwY2FLJxc80Leibv=zZ-e_YbjkE+ZBH2LNoFy8HAeD8m6Q@mail.gmail.com>
+In-Reply-To: <CABvBcwY2FLJxc80Leibv=zZ-e_YbjkE+ZBH2LNoFy8HAeD8m6Q@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 11 Sep 2020 18:22:04 +0200
+Message-ID: <CAG48ez1cEC1q1o4_--aVjuGmC-G9i9PUQQ2Pumr3aSrox_MZ+A@mail.gmail.com>
+Subject: Re: [PATCH] sched.h: drop in_ubsan field when UBSAN is in trap mode
+To:     Elena Petrova <lenaptr@google.com>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 3:43 PM Roman Gushchin <guro@fb.com> wrote:
+On Fri, Sep 11, 2020 at 5:15 PM Elena Petrova <lenaptr@google.com> wrote:
+> On Thu, 10 Sep 2020 at 20:35, Jann Horn <jannh@google.com> wrote:
+> > On Thu, Sep 10, 2020 at 3:48 PM Elena Petrova <lenaptr@google.com> wrote:
+> > > in_ubsan field of task_struct is only used in lib/ubsan.c, which in its
+> > > turn is used only `ifneq ($(CONFIG_UBSAN_TRAP),y)`.
+> > >
+> > > Removing unnecessary field from a task_struct will help preserve the
+> > > ABI between vanilla and CONFIG_UBSAN_TRAP'ed kernels. In particular,
+> > > this will help enabling bounds sanitizer transparently for Android's
+> > > GKI.
+> >
+> > The diff looks reasonable to me, but I'm curious about the
+> > justification in the commit message:
+> >
+> > Is the intent here that you want to be able to build a module without
+> > CONFIG_UBSAN and load it into a kernel that is built with
+> > CONFIG_UBSAN? Or the inverse?
 >
-> Forgot to cc stable@, an updated version is below.
->
-> Thanks!
->
-> --
->
-> From fe61af45ae570b143ca783ba4d013a0a2b923a15 Mon Sep 17 00:00:00 2001
-> From: Roman Gushchin <guro@fb.com>
-> Date: Wed, 9 Sep 2020 12:19:37 -0700
-> Subject: [PATCH] mm: memcg/slab: fix racy access to page->mem_cgroup in
->  mem_cgroup_from_obj()
->
-> mem_cgroup_from_obj() checks the lowest bit of the page->mem_cgroup
-> pointer to determine if the page has an attached obj_cgroup vector
-> instead of a regular memcg pointer. If it's not set, it simple returns
-> the page->mem_cgroup value as a struct mem_cgroup pointer.
->
-> The commit 10befea91b61 ("mm: memcg/slab: use a single set of
-> kmem_caches for all allocations") changed the moment when this bit
-> is set: if previously it was set on the allocation of the slab page,
-> now it can be set well after, when the first accounted object is
-> allocated on this page.
->
-> It opened a race: if page->mem_cgroup is set concurrently after the
-> first page_has_obj_cgroups(page) check, a pointer to the obj_cgroups
-> array can be returned as a memory cgroup pointer.
->
-> A simple check for page->mem_cgroup pointer for NULL before the
-> page_has_obj_cgroups() check fixes the race. Indeed, if the pointer
-> is not NULL, it's either a simple mem_cgroup pointer or a pointer
-> to obj_cgroup vector. The pointer can be asynchronously changed
-> from NULL to (obj_cgroup_vec | 0x1UL), but can't be changed
-> from a valid memcg pointer to objcg vector or back.
->
-> If the object passed to mem_cgroup_from_obj() is a slab object
-> and page->mem_cgroup is NULL, it means that the object is not
-> accounted, so the function must return NULL.
->
-> I've discovered the race looking at the code, so far I haven't seen it
-> in the wild.
->
-> Fixes: 10befea91b61 ("mm: memcg/slab: use a single set of kmem_caches for all allocations")
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: stable@vger.kernel.org
-> ---
+> The former. But more precisely, with GKI Google gives a promise, that
+> when certain GKI is released, i.e. at 4.19, its ABI will never ever
+> change (or, perhaps only change with <next letter> Android release),
 
-Is the caller list_lru_from_kmem() the concern or is this more about
-making mem_cgroup_from_obj() more future proof?
+Really? How does that work when a kernel update needs to add elements
+to existing structs that are part of that "ABI"? Especially when those
+structs have something at the end that's variable-length (like
+task_struct) or they're embedded in something else?
 
-Also have you taken a look at [1]? I am still trying to figure out how
-that is possible.
+Maybe you should've done something like BPF's CORE if you really want
+to do something like that, teaching the compiler to generate
+relocations for struct offsets...
 
-[1] https://lore.kernel.org/lkml/20200901075321.GL4299@shao2-debian/
+> so vendor modules could have an independent development lifecycle. And
+> this patch, when backported, will help enable boundsan on kernels
+> where ABI has already been frozen.
+>
+> > Does this mean that in the future, gating new exported functions, or
+> > new struct fields, on CONFIG_UBSAN (independent of whether
+> > CONFIG_UBSAN_TRAP is set) will break Android?
+>
+> I don't understand what you mean here, sorry.
+
+Let's assume that at a later point, someone wants to track for each
+process how many UBSAN errors that process has seen so far. And maybe
+at that point, we have error recovery support in trap mode. So that
+person sends a patch that, among other things, adds something like
+this to task_struct:
+
+    #ifdef CONFIG_UBSAN
+    unsigned int ubsan_errors_seen;
+    #endif
+
+If that patch lands, ABI compatibility between UBSAN=y&&UBSAN_TRAP=y
+and UBSAN=n will break again.
+
+
+I believe that it should normally be possible to add stuff like
+
+    #ifdef CONFIG_<something>
+    <some field declaration>
+    #endif
+
+to an existing kernel struct without breaking anything (outside UAPI
+headers and such). Your patch assumes that that won't happen for
+CONFIG_UBSAN.
+
+> > If you really want to do this, and using alternatives to patch out the
+> > ubsan instructions is not an option, I wonder whether it would be more
+> > reasonable to at least add a configuration where CONFIG_UBSAN is
+> > enabled but the compiler flag is not actually set. Then you could
+> > unconditionally build that android kernel and its modules with that
+> > config option, and wouldn't have to worry about structure size issues,
+> > dependencies on undefined symbols and so on.
+>
+> Such setup might be confusing for developers.
+
+Yeah, but I think that that's still cleaner than assuming that some
+normal kernel flag won't change struct layouts...
+
+Anyway, the diff itself looks reasonable to me (although I dislike the
+commit message), but don't be surprised if this "ABI" is broken again
+in the future.
+
+> We were considering
+> something similar: to keep the in_ubsan field regardless of the
+> CONFIG_UBSAN option. But since non-trap mode is unlikely to be used on
+> production devices due to size and performance overheads, I think it's
+> better to just get rid of an unused field, rather than balloon
+> task_struct.
+>
+> Cheers,
+> *lenaptr
