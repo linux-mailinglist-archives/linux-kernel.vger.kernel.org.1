@@ -2,144 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE852266281
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8D6266293
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgIKPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:50:35 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:39003 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgIKPtF (ORCPT
+        id S1726506AbgIKPyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbgIKPxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:49:05 -0400
-Received: by mail-io1-f69.google.com with SMTP id y16so7129864ioy.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:49:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=UyAw9auyKQ12heKGY0NjVfj47svD8TkOKeEailtA6+E=;
-        b=lpFspHJ+xZ+nPDKb6Uo7VYt1mNeF2flVbE5AP3uQBu9tw2m53uQWix2iui2roDzdpL
-         TLZpkZTXRfYteoDa0ZQjnh14RHmql93rEYIvNzC82/kawneAJ5mFWpeTFxEvwbrlMk71
-         vD7biUZqa5rCcHk4hHxHYBO9urAGQSHSosABU3zqXQyszGehuAFEUxVo9XmLn8l+jcKW
-         kOXRWqzR6VpllgUyao1+qbdMIvcsLQpqAvJsoyk7LrWZqFXqdZpwA6E6E+RSMG5rJDRi
-         +RAs2coPv9vFryXL4s1c51xHEuH8p0L0+Q7FemDyuLV3vzVmq36MmfaH7YeJl5vy8w6l
-         arvg==
-X-Gm-Message-State: AOAM533invsSdyiJLV1Rhj5f5Dgk9pW85h/4cnVNQTCW/jV2kxx9Wi/z
-        PEKpwbhkKXfi9ErTsald+z9CD82QULqyCfi5JWf/gCxa23/v
-X-Google-Smtp-Source: ABdhPJy+wrpMhNm4Pa2qxe83TrNBwES/gNGCnbDyikyXgkJjUvF/3r8mta49o3F8rIZ1vSCsiqfwzrtrb6/XL6ag/p8YCaOjPmyC
+        Fri, 11 Sep 2020 11:53:01 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF39C061757;
+        Fri, 11 Sep 2020 08:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=yNNKD3aSjbTN0xK7a0jESH4osJEkyi0r7WDad6R8Z4M=; b=VcDcVXayb9NLhgWUiavKsddA66
+        wkKREXL7VNw0LFva8kUzh47lmse2StS7H4y3bO9nh4GX5EvGdK2pNAQTHVXfyxE6lxGumhCd7PNJc
+        l/G8NzyUVTnNAvdWVGhtEa5v6n5dXLLlAkmrDI9FBUoKwa1LG1kg9wCROYJa11pT54EcSCQIuoEAb
+        CNju4Z6fhkTwqptCr4JQPn2LSmXN80dtUFCYiXD6Xlo5DjgmbCfruH8jtUCNC09/NvaOZfzWAouEo
+        vDkb0r2um69/xCxAPyja6a4qm0RKuwDNf3sq8J7z1iFcclj5tkl/BrX7bDorWn22Stggs6ifKNGMu
+        R3uis3Nw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGlM1-0001Bq-ST; Fri, 11 Sep 2020 15:52:50 +0000
+Subject: Re: linux-next: Tree for Sep 10 (drivers/media/pci/ttpci/dvb-ttpci)
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>
+References: <20200910174252.0698c743@canb.auug.org.au>
+ <97f03d35-acd3-1c65-0c93-4ca4cabf6613@infradead.org>
+ <20200911093156.15282b69@coco.lan>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1bf30e26-cd8d-a2dd-aaf3-97c2dbc1875a@infradead.org>
+Date:   Fri, 11 Sep 2020 08:52:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7a41:: with SMTP id k1mr2247429iop.187.1599839344326;
- Fri, 11 Sep 2020 08:49:04 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 08:49:04 -0700
-In-Reply-To: <20200911120222.GT87483@ziepe.ca>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d1020c05af0b9fdc@google.com>
-Subject: Re: KASAN: use-after-free Read in ucma_close (2)
-From:   syzbot <syzbot+cc6fc752b3819e082d0c@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200911093156.15282b69@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 9/11/20 12:31 AM, Mauro Carvalho Chehab wrote:
+> Hi Randy,
+> 
+> Em Thu, 10 Sep 2020 09:02:35 -0700
+> Randy Dunlap <rdunlap@infradead.org> escreveu:
+> 
+>> On 9/10/20 12:42 AM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20200909:
+>>>   
+>>
+>>
+>> on i386:
+>>
+>> ERROR: modpost: "__floatunsidf" [drivers/media/pci/ttpci/dvb-ttpci.ko] undefined!
+>> ERROR: modpost: "__ltdf2" [drivers/media/pci/ttpci/dvb-ttpci.ko] undefined!
+>>
+>>
+>> Full randconfig file is attached.
+> 
+> I was unable to reproduce it here with the .config file you sent.
+> 
+> I suspect that the only difference is the compiler version. Here, I'm
+> using:
+> 
+> 	gcc (Ubuntu 9.2.1-9ubuntu2) 9.2.1 20191008
+> 
+> While you're using:
+> 
+> 	gcc (SUSE Linux) 7.5.0
+> 
+> Yet, the only patch that could possibly have affected it is
+> this changeset 13c129066845 ("media: av7110_v4l: avoid a typecast").
+> 
+> It sounds to me that gcc 7.5.0 only does the right math at compile
+> time if there is a typecast. Could you please check if the enclosed
+> patch fixes it?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: use-after-free Read in __destroy_id
+Hi Mauro,
+Yes, this fixes the build for me.  Thanks.
 
-==================================================================
-BUG: KASAN: use-after-free in __destroy_id+0x9f5/0xc60 drivers/infiniband/core/ucma.c:620
-Read of size 4 at addr ffff88808e210128 by task syz-executor.2/11716
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-CPU: 1 PID: 11716 Comm: syz-executor.2 Not tainted 5.9.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- __destroy_id+0x9f5/0xc60 drivers/infiniband/core/ucma.c:620
- ucma_destroy_id+0x172/0x240 drivers/infiniband/core/ucma.c:654
- ucma_write+0x288/0x350 drivers/infiniband/core/ucma.c:1784
- vfs_write+0x2b0/0x730 fs/read_write.c:576
- ksys_write+0x1ee/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45d5b9
-Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ff28d19dc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000038340 RCX: 000000000045d5b9
-RDX: 0000000000000018 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffcebc2643f R14: 00007ff28d19e9c0 R15: 000000000118cf4c
-
-Allocated by task 11716:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmem_cache_alloc_trace+0x16e/0x2c0 mm/slab.c:3550
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:666 [inline]
- ucma_alloc_ctx+0x41/0x330 drivers/infiniband/core/ucma.c:211
- ucma_create_id+0x10f/0x410 drivers/infiniband/core/ucma.c:497
- ucma_write+0x288/0x350 drivers/infiniband/core/ucma.c:1784
- vfs_write+0x2b0/0x730 fs/read_write.c:576
- ksys_write+0x1ee/0x250 fs/read_write.c:631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 11715:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3756
- ucma_free_ctx drivers/infiniband/core/ucma.c:599 [inline]
- __destroy_id+0x8a2/0xc60 drivers/infiniband/core/ucma.c:628
- ucma_close+0xe1/0x190 drivers/infiniband/core/ucma.c:1849
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:139 [inline]
- exit_to_user_mode_prepare+0x195/0x1c0 kernel/entry/common.c:166
- syscall_exit_to_user_mode+0x59/0x2b0 kernel/entry/common.c:241
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff88808e210000
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 296 bytes inside of
- 512-byte region [ffff88808e210000, ffff88808e210200)
-The buggy address belongs to the page:
-page:000000007a3e4a58 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88808e210c00 pfn:0x8e210
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea0002404fc8 ffffea00028aa008 ffff8880aa040600
-raw: ffff88808e210c00 ffff88808e210000 0000000100000003 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88808e210000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88808e210080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88808e210100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                  ^
- ffff88808e210180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88808e210200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+> Thanks,
+> Mauro
+> 
+> [PATCH] media: av7110: don't do float point math
+> 
+> It sounds that earlier versions of GCC have troubles when
+> doing const math at compile time, if no typecast is used:
+> 
+> on i386:
+> 	ERROR: modpost: "__floatunsidf" [drivers/media/pci/ttpci/dvb-ttpci.ko] undefined!
+> 	ERROR: modpost: "__ltdf2" [drivers/media/pci/ttpci/dvb-ttpci.ko] undefined!
+> 
+> The warning was generated on gcc (SUSE Linux) 7.5.0.
+> Gcc 9.2 compiles it fine.
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> 
+> diff --git a/drivers/media/pci/ttpci/av7110_v4l.c b/drivers/media/pci/ttpci/av7110_v4l.c
+> index 6d9c908be713..c89f536f699c 100644
+> --- a/drivers/media/pci/ttpci/av7110_v4l.c
+> +++ b/drivers/media/pci/ttpci/av7110_v4l.c
+> @@ -160,9 +160,9 @@ static int ves1820_set_tv_freq(struct saa7146_dev *dev, u32 freq)
+>  	buf[1] = div & 0xff;
+>  	buf[2] = 0x8e;
+>  
+> -	if (freq < 16U * 168.25)
+> +	if (freq < 16U * 16825 / 100)
+>  		config = 0xa0;
+> -	else if (freq < 16U * 447.25)
+> +	else if (freq < 16U * 44725 / 100)
+>  		config = 0x90;
+>  	else
+>  		config = 0x30;
+> 
 
 
-Tested on:
-
-commit:         308571de RDMA/ucma: Do not use file->mut to lock destroying
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=112f7cdd900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3d400a47d1416652
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc6fc752b3819e082d0c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
+-- 
+~Randy
