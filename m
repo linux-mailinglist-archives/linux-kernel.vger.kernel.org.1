@@ -2,172 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A898265796
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF30D26579D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgIKDii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 23:38:38 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:33212 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgIKDiC (ORCPT
+        id S1725844AbgIKDi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 23:38:58 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:49712 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725648AbgIKDiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 23:38:02 -0400
-Received: by mail-wm1-f68.google.com with SMTP id e11so3163972wme.0
-        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 20:38:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ubpubHMmpIK4k+lKnVJwMufxG2srCcv3kA9sPBkOZNQ=;
-        b=DfTxxLZS13eXx6aNlJiQZd68PoqODMbA/uKDPgKlawzFSqM/b8LWj9Cgh4rVVYiazn
-         HQXVlFnamqZ0JG9g4CuvPF+fNSi/htavkPdwJIIUWyGiyu1enS2d4QpFByJ80wtvQdkb
-         aw2B86hOab9IDNJ55GQw7iFp8hXl4mV1Oh+pyx/nVoPLWeJDJmGqcV5VShXSrrHLg4MN
-         p5tmDiU/ordYEoigJs1JokD+RMcW0DVPJzdABzJo0jCPb3pvn8upRzHfXFxzAL48jWMQ
-         flvv7UugbKrGHH/oyWJhyQ9tEUs/wPT3iPUOkk4kZe4eZu5jtdzaUywWJPk0ygb2lN8+
-         HwBQ==
-X-Gm-Message-State: AOAM531gVTWV8k1OUZamxgsigBVIw+AghiFiBk74LYz8B1kvwk5yOvWt
-        G7bgKDrvx9wEj/+qU3HmOvIHJilnBJgTSvSVqbI=
-X-Google-Smtp-Source: ABdhPJx4fBS16ussmvLUlYyfdsg1yC2CywxxdPPdPG27b9awQkH8C+NFSa9OZGZzyRNvuQ4MaA76bTC36+zs2JVUoiM=
-X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr55243wmt.92.1599795479622;
- Thu, 10 Sep 2020 20:37:59 -0700 (PDT)
+        Thu, 10 Sep 2020 23:38:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0U8YuYvo_1599795527;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U8YuYvo_1599795527)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 11 Sep 2020 11:38:49 +0800
+Subject: Re: [PATCH v18 06/32] mm/thp: narrow lru locking
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Andrea Arcangeli <aarcange@redhat.com>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1598273705-69124-7-git-send-email-alex.shi@linux.alibaba.com>
+ <20200910134923.GR6583@casper.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <514f6afa-dbf7-11c5-5431-1d558d2c20c9@linux.alibaba.com>
+Date:   Fri, 11 Sep 2020 11:37:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200910134501.11352-1-kan.liang@linux.intel.com> <20200910134501.11352-4-kan.liang@linux.intel.com>
-In-Reply-To: <20200910134501.11352-4-kan.liang@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 11 Sep 2020 12:37:48 +0900
-Message-ID: <CAM9d7ci1p1Ej-9=RuJLHJWQ76GR6gjHS2Y=rsQQ0LhNW5YKUBg@mail.gmail.com>
-Subject: Re: [PATCH V2 3/4] perf stat: Support new per thread TopDown metrics
-To:     Kan Liang <kan.liang@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200910134923.GR6583@casper.infradead.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Thu, Sep 10, 2020 at 10:48 PM <kan.liang@linux.intel.com> wrote:
->
-> From: Andi Kleen <ak@linux.intel.com>
->
-> Icelake has support for reporting per thread TopDown metrics.
-> These are reported differently than the previous TopDown support,
-> each metric is standalone, but scaled to pipeline "slots".
-> We don't need to do anything special for HyperThreading anymore.
-> Teach perf stat --topdown to handle these new metrics and
-> print them in the same way as the previous TopDown metrics.
-> The restrictions of only being able to report information per core is
-> gone.
->
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> ---
->  tools/perf/Documentation/perf-stat.txt |  7 +-
->  tools/perf/builtin-stat.c              | 30 ++++++++-
->  tools/perf/util/stat-shadow.c          | 89 ++++++++++++++++++++++++++
->  tools/perf/util/stat.c                 |  4 ++
->  tools/perf/util/stat.h                 |  8 +++
->  5 files changed, 134 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-> index c9bfefc051fb..e803dbdc88a8 100644
-> --- a/tools/perf/Documentation/perf-stat.txt
-> +++ b/tools/perf/Documentation/perf-stat.txt
-> @@ -357,6 +357,11 @@ if the workload is actually bound by the CPU and not by something else.
->  For best results it is usually a good idea to use it with interval
->  mode like -I 1000, as the bottleneck of workloads can change often.
->
-> +This enables --metric-only, unless overridden with --no-metric-only.
-> +
-> +The following restrictions only apply to older Intel CPUs and Atom,
-> +on newer CPUs (IceLake and later) TopDown can be collected for any thread:
-> +
->  The top down metrics are collected per core instead of per
->  CPU thread. Per core mode is automatically enabled
->  and -a (global monitoring) is needed, requiring root rights or
-> @@ -368,8 +373,6 @@ echo 0 > /proc/sys/kernel/nmi_watchdog
->  for best results. Otherwise the bottlenecks may be inconsistent
->  on workload with changing phases.
->
-> -This enables --metric-only, unless overridden with --no-metric-only.
-> -
->  To interpret the results it is usually needed to know on which
->  CPUs the workload runs on. If needed the CPUs can be forced using
->  taskset.
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index 5583e22ca808..6290da5bd142 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -128,6 +128,15 @@ static const char * topdown_attrs[] = {
->         NULL,
->  };
->
-> +static const char *topdown_metric_attrs[] = {
-> +       "slots",
-> +       "topdown-retiring",
-> +       "topdown-bad-spec",
-> +       "topdown-fe-bound",
-> +       "topdown-be-bound",
-> +       NULL,
-> +};
-> +
->  static const char *smi_cost_attrs = {
->         "{"
->         "msr/aperf/,"
-> @@ -1691,6 +1700,24 @@ static int add_default_attributes(void)
->                 char *str = NULL;
->                 bool warn = false;
->
-> +               if (!force_metric_only)
-> +                       stat_config.metric_only = true;
-> +
-> +               if (topdown_filter_events(topdown_metric_attrs, &str, 1) < 0) {
-> +                       pr_err("Out of memory\n");
-> +                       return -1;
-> +               }
-> +               if (topdown_metric_attrs[0] && str) {
-> +                       if (!stat_config.interval && !stat_config.metric_only) {
-> +                               fprintf(stat_config.output,
-> +                                       "Topdown accuracy may decrease when measuring long periods.\n"
-> +                                       "Please print the result regularly, e.g. -I1000\n");
-> +                       }
-> +                       goto setup_metrics;
-> +               }
-> +
-> +               str = NULL;
 
-zfree(&str) ?
+ÔÚ 2020/9/10 ÏÂÎç9:49, Matthew Wilcox Ð´µÀ:
+> On Mon, Aug 24, 2020 at 08:54:39PM +0800, Alex Shi wrote:
+>> lru_lock and page cache xa_lock have no reason with current sequence,
+>> put them together isn't necessary. let's narrow the lru locking, but
+>> left the local_irq_disable to block interrupt re-entry and statistic update.
+> 
+> What stats are you talking about here?
+
+Hi Matthew,
+
+Thanks for comments!
+
+like __dec_node_page_state(head, NR_SHMEM_THPS); will have preemptive warning...
+
+> 
+>> +++ b/mm/huge_memory.c
+>> @@ -2397,7 +2397,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>>  }
+>>  
+>>  static void __split_huge_page(struct page *page, struct list_head *list,
+>> -		pgoff_t end, unsigned long flags)
+>> +			      pgoff_t end)
+> 
+> Please don't change this whitespace.  It's really annoying having to
+> adjust the whitespace when renaming a function.  Just two tabs indentation
+> to give a clear separation of arguments from code is fine.
+> 
+> 
+> How about this patch instead?  It occurred to me we already have
+> perfectly good infrastructure to track whether or not interrupts are
+> already disabled, and so we should use that instead of ensuring that
+> interrupts are disabled, or tracking that ourselves.
+
+So your proposal looks like;
+1, xa_lock_irq(&mapping->i_pages); (optional)
+2, spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+3, spin_lock_irqsave(&pgdat->lru_lock, flags);
+
+Is there meaningful for the 2nd and 3rd flags?
+
+IIRC, I had a similar proposal as your, the flags used in xa_lock_irqsave(),
+but objected by Hugh.
 
 Thanks
-Namhyung
+Alex
 
-
+> 
+> But I may have missed something else that's relying on having
+> interrupts disabled.  Please check carefully.
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 2ccff8472cd4..74cae6c032f9 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2376,17 +2376,16 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  }
+>  
+>  static void __split_huge_page(struct page *page, struct list_head *list,
+> -		pgoff_t end, unsigned long flags)
+> +		pgoff_t end)
+>  {
+>  	struct page *head = compound_head(page);
+>  	pg_data_t *pgdat = page_pgdat(head);
+>  	struct lruvec *lruvec;
+>  	struct address_space *swap_cache = NULL;
+>  	unsigned long offset = 0;
+> +	unsigned long flags;
+>  	int i;
+>  
+> -	lruvec = mem_cgroup_page_lruvec(head, pgdat);
+> -
+>  	/* complete memcg works before add pages to LRU */
+>  	mem_cgroup_split_huge_fixup(head);
+>  
+> @@ -2395,9 +2394,13 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  
+>  		offset = swp_offset(entry);
+>  		swap_cache = swap_address_space(entry);
+> -		xa_lock(&swap_cache->i_pages);
+> +		xa_lock_irq(&swap_cache->i_pages);
+>  	}
+>  
+> +	/* prevent PageLRU to go away from under us, and freeze lru stats */
+> +	spin_lock_irqsave(&pgdat->lru_lock, flags);
+> +	lruvec = mem_cgroup_page_lruvec(head, pgdat);
 > +
->                 if (stat_config.aggr_mode != AGGR_GLOBAL &&
->                     stat_config.aggr_mode != AGGR_CORE) {
->                         pr_err("top down event configuration requires --per-core mode\n");
-> @@ -1702,8 +1729,6 @@ static int add_default_attributes(void)
->                         return -1;
->                 }
->
-> -               if (!force_metric_only)
-> -                       stat_config.metric_only = true;
->                 if (topdown_filter_events(topdown_attrs, &str,
->                                 arch_topdown_check_group(&warn)) < 0) {
->                         pr_err("Out of memory\n");
-> @@ -1712,6 +1737,7 @@ static int add_default_attributes(void)
->                 if (topdown_attrs[0] && str) {
->                         if (warn)
->                                 arch_topdown_group_warn();
-> +setup_metrics:
->                         err = parse_events(evsel_list, str, &errinfo);
->                         if (err) {
->                                 fprintf(stderr,
+>  	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
+>  		__split_huge_page_tail(head, i, lruvec, list);
+>  		/* Some pages can be beyond i_size: drop them from page cache */
+> @@ -2417,6 +2420,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  	}
+>  
+>  	ClearPageCompound(head);
+> +	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+>  
+>  	split_page_owner(head, HPAGE_PMD_ORDER);
+>  
+> @@ -2425,18 +2429,16 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  		/* Additional pin to swap cache */
+>  		if (PageSwapCache(head)) {
+>  			page_ref_add(head, 2);
+> -			xa_unlock(&swap_cache->i_pages);
+> +			xa_unlock_irq(&swap_cache->i_pages);
+>  		} else {
+>  			page_ref_inc(head);
+>  		}
+>  	} else {
+>  		/* Additional pin to page cache */
+>  		page_ref_add(head, 2);
+> -		xa_unlock(&head->mapping->i_pages);
+> +		xa_unlock_irq(&head->mapping->i_pages);
+>  	}
+>  
+> -	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> -
+>  	remap_page(head);
+>  
+>  	for (i = 0; i < HPAGE_PMD_NR; i++) {
+> @@ -2574,7 +2576,6 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
+>  int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  {
+>  	struct page *head = compound_head(page);
+> -	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
+>  	struct deferred_split *ds_queue = get_deferred_split_queue(head);
+>  	struct anon_vma *anon_vma = NULL;
+>  	struct address_space *mapping = NULL;
+> @@ -2640,9 +2641,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  	unmap_page(head);
+>  	VM_BUG_ON_PAGE(compound_mapcount(head), head);
+>  
+> -	/* prevent PageLRU to go away from under us, and freeze lru stats */
+> -	spin_lock_irqsave(&pgdata->lru_lock, flags);
+> -
+>  	if (mapping) {
+>  		XA_STATE(xas, &mapping->i_pages, page_index(head));
+>  
+> @@ -2650,13 +2648,13 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  		 * Check if the head page is present in page cache.
+>  		 * We assume all tail are present too, if head is there.
+>  		 */
+> -		xa_lock(&mapping->i_pages);
+> +		xa_lock_irq(&mapping->i_pages);
+>  		if (xas_load(&xas) != head)
+>  			goto fail;
+>  	}
+>  
+>  	/* Prevent deferred_split_scan() touching ->_refcount */
+> -	spin_lock(&ds_queue->split_queue_lock);
+> +	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>  	count = page_count(head);
+>  	mapcount = total_mapcount(head);
+>  	if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
+> @@ -2664,7 +2662,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  			ds_queue->split_queue_len--;
+>  			list_del(page_deferred_list(head));
+>  		}
+> -		spin_unlock(&ds_queue->split_queue_lock);
+> +		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>  		if (mapping) {
+>  			if (PageSwapBacked(head))
+>  				__dec_node_page_state(head, NR_SHMEM_THPS);
+> @@ -2672,7 +2670,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  				__dec_node_page_state(head, NR_FILE_THPS);
+>  		}
+>  
+> -		__split_huge_page(page, list, end, flags);
+> +		__split_huge_page(page, list, end);
+>  		if (PageSwapCache(head)) {
+>  			swp_entry_t entry = { .val = page_private(head) };
+>  
+> @@ -2688,10 +2686,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  			dump_page(page, "total_mapcount(head) > 0");
+>  			BUG();
+>  		}
+> -		spin_unlock(&ds_queue->split_queue_lock);
+> +		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>  fail:		if (mapping)
+> -			xa_unlock(&mapping->i_pages);
+> -		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
+> +			xa_unlock_irq(&mapping->i_pages);
+>  		remap_page(head);
+>  		ret = -EBUSY;
+>  	}
+> 
