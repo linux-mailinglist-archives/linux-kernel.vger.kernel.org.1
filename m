@@ -2,197 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4502664C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BF6266504
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgIKQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgIKPIN (ORCPT
+        id S1725851AbgIKQuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:50:21 -0400
+Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:35214
+        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726350AbgIKPG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:08:13 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1458BC0612F6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:55:34 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id m5so6136278lfp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RyGETUg9mUKb771YPAmqWLGZaTO7mZ6hKFj3E91siek=;
-        b=DRq2hDtsbMxfpg7W5O+ZLV1lUVDBsWosPPite6Mp7DI9sgN0NZSVPPtwxQe6bBU/f3
-         gLNTTgHzLJMDPfUAcKbMD3OW8k3KoymNgxK8mLl9QWoIw0sZDr1T4Vx4mu7k9k7JdEs5
-         3x/fFhmTkY7qWGxK22snBGLvTN6Z7TlrJxfY+2ncfuGRKZpwYXJ11akrgf7sTNurnp85
-         lmT4gl5NmTNytzmc/6rAngMH+OxJ4BXDeC75yDziaV9eauYodGRNeKbu9vo8/uWsqzeX
-         lfI7glc9MDT5UAMYVjxq+qRPGwA/gilQEYXic/i7Fh+QKmW24oQoJ6FcBWMzloucXDDQ
-         OdSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RyGETUg9mUKb771YPAmqWLGZaTO7mZ6hKFj3E91siek=;
-        b=X+DeqB6BrAOUyBTf4lfTik3IAACWtZy8dcdLjITmIDvTJvSzeYQrna8kM1c34wB+vE
-         NCKlnfVwjlqEdfc1J2gLPZoDgv9Odp93cw175iCI/KoZ/JHXxgW1L+vhaf2y3/s8suXF
-         5/7JIVGED3JwBt6i7Ip/EA73dc9wiTTdiM5tqp+HfbZEYTn0tzVC03GMr7VRLE69wMeF
-         zI0DLvYPzNdjHtcmdYvb/yZAVFDQpA25x9+8xStSO4FZKJqV3QgDHKh+2sNOEWB3f4Mo
-         3WcnHJHjVvhM4oYQFtJlaU3PqbVOW+FDA4CYJSr+4Em4VRj1tddbqfk/0kKtMkallakz
-         TXNA==
-X-Gm-Message-State: AOAM533QaBInp+Gyn0DjpUVK9S9mvgTM5XPoAtrA57q4LdZp3Ja6spnU
-        0tOU82IHW42MwSlJPoBe50i3T/I1JxBK+Y9im86I4g==
-X-Google-Smtp-Source: ABdhPJzIfXWEoPr+pejl9ICIZBfdEPcdhSa0BRgky84fzVsWoAMK+i7zNMib2U+DpXd++dQwMqw6Op9w7E45OQMrsVg=
-X-Received: by 2002:ac2:59da:: with SMTP id x26mr449757lfn.346.1599836132004;
- Fri, 11 Sep 2020 07:55:32 -0700 (PDT)
+        Fri, 11 Sep 2020 11:06:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599836133;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type;
+        bh=TcyM3JEZsPTMsOROT6ucshxdgW+PMxcnkDNjHjMIG1E=;
+        b=ZnHrCo0Ixrj+w04jVDgQsHPbgOkrLnr7WF6diIQ2ze/pprCXUfr5SzI39Dpkldn3
+        OnYS8RhNYPNK//orkNNjbQCtvCqcB25CB8mEAJpftyNKPvRqjURdyWBsrbIlgVsi+SC
+        dCN+unBWhgtaxk/L5k8VGiyDWemZW3z/iORpaimM=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599836133;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Feedback-ID;
+        bh=TcyM3JEZsPTMsOROT6ucshxdgW+PMxcnkDNjHjMIG1E=;
+        b=cxxT3h13Oe2baWHtZIH0HlDWSR1r1J9U7UF5QSEyJFgbCrvuQUjDJmfYqv4Es2oE
+        /FTdTNcsKPbcbxP4BhotqFgsV8o6sqyzQ9gFCNBBkbAnop0gQ9CAuZxioxAlvXI6Mih
+        lSTxin1Y2CAGMwLA6o5xh5ILVWKFbC/l0fCqgFEI=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D595BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Anilkumar Kolli <akolli@codeaurora.org>,
+        Bhagavathi Perumal S <bperumal@codeaurora.org>,
+        Ganesh Sesetti <gseset@codeaurora.org>,
+        Govindaraj Saminathan <gsamin@codeaurora.org>,
+        John Crispin <john@phrozen.org>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Karthikeyan Periyasamy <periyasa@codeaurora.org>,
+        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
+        ath11k@lists.infradead.org
+Subject: Re: drivers/net/wireless/ath/ath11k/ahb.c:919:15: warning: cast to smaller integer type 'enum ath11k_hw_rev' from 'const void
+References: <202009110445.WqWCY2F0%lkp@intel.com>
+Date:   Fri, 11 Sep 2020 14:55:33 +0000
+In-Reply-To: <202009110445.WqWCY2F0%lkp@intel.com> (kernel test robot's
+        message of "Fri, 11 Sep 2020 04:52:50 +0800")
+Message-ID: <010101747daa1692-fd5e413c-b3ab-41b1-8d57-cc9ad7e0a429-000000@us-west-2.amazonses.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20200910084258.22293-1-songmuchun@bytedance.com>
- <CALvZod5JQWGHUAPnj9S0pKFQreLPST441mZnp+h=fue_nnh1yQ@mail.gmail.com> <CAMZfGtUncFZZe2RDb54ALMt1DAVqBxAD1TQrpjei1H5nRbH6jg@mail.gmail.com>
-In-Reply-To: <CAMZfGtUncFZZe2RDb54ALMt1DAVqBxAD1TQrpjei1H5nRbH6jg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 11 Sep 2020 07:55:20 -0700
-Message-ID: <CALvZod5_1nGJ2-QfSnYm4rCB+qvMEKAuVJrCeCyv_vQs7EoYfw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Add the missing numa stat
- of anon and file for cgroup v2
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-SES-Outgoing: 2020.09.11-54.240.27.11
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 8:52 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> On Fri, Sep 11, 2020 at 12:02 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Thu, Sep 10, 2020 at 1:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > In the cgroup v1, we have a numa_stat interface. This is useful for
-> > > providing visibility into the numa locality information within an
-> > > memcg since the pages are allowed to be allocated from any physical
-> > > node. One of the use cases is evaluating application performance by
-> > > combining this information with the application's CPU allocation.
-> > > But the cgroup v2 does not. So this patch adds the missing information.
-> > >
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > ---
-> >
-> > I am actually working on exposing this info on v2 as well.
-> >
-> > >  mm/memcontrol.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
-> > >  1 file changed, 44 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 75cd1a1e66c8..c779673f29b2 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -1492,10 +1492,34 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
-> > >         return false;
-> > >  }
-> > >
-> > > +#ifdef CONFIG_NUMA
-> > > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
-> > > +                                          unsigned int nid,
-> > > +                                          enum node_stat_item idx)
-> > > +{
-> > > +       long x;
-> > > +       struct mem_cgroup_per_node *pn;
-> > > +       struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
-> > > +
-> > > +       VM_BUG_ON(nid >= nr_node_ids);
-> > > +
-> > > +       pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> > > +       x = atomic_long_read(&pn->lruvec_stat[idx]);
-> > > +#ifdef CONFIG_SMP
-> > > +       if (x < 0)
-> > > +               x = 0;
-> > > +#endif
-> > > +       return x;
-> > > +}
-> > > +#endif
-> > > +
-> > >  static char *memory_stat_format(struct mem_cgroup *memcg)
-> > >  {
-> > >         struct seq_buf s;
-> > >         int i;
-> > > +#ifdef CONFIG_NUMA
-> > > +       int nid;
-> > > +#endif
-> > >
-> > >         seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
-> > >         if (!s.buffer)
-> > > @@ -1512,12 +1536,30 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
-> > >          * Current memory state:
-> > >          */
-> > >
-> >
-> > Let's not break the parsers of memory.stat. I would prefer a separate
-> > interface like v1 i.e. memory.numa_stat.
->
-> It is also a good idea to expose a new interface like memory.numa_stat.
->
-> >
-> > > -       seq_buf_printf(&s, "anon %llu\n",
-> > > +       seq_buf_printf(&s, "anon %llu",
-> > >                        (u64)memcg_page_state(memcg, NR_ANON_MAPPED) *
-> > >                        PAGE_SIZE);
-> > > -       seq_buf_printf(&s, "file %llu\n",
-> > > +#ifdef CONFIG_NUMA
-> > > +       for_each_node_state(nid, N_MEMORY)
-> > > +               seq_buf_printf(&s, " N%d=%llu", nid,
-> > > +                              (u64)memcg_node_page_state(memcg, nid,
-> > > +                                                         NR_ANON_MAPPED) *
-> > > +                              PAGE_SIZE);
-> > > +#endif
-> > > +       seq_buf_putc(&s, '\n');
-> > > +
-> > > +       seq_buf_printf(&s, "file %llu",
-> > >                        (u64)memcg_page_state(memcg, NR_FILE_PAGES) *
-> > >                        PAGE_SIZE);
-> > > +#ifdef CONFIG_NUMA
-> > > +       for_each_node_state(nid, N_MEMORY)
-> > > +               seq_buf_printf(&s, " N%d=%llu", nid,
-> > > +                              (u64)memcg_node_page_state(memcg, nid,
-> > > +                                                         NR_FILE_PAGES) *
-> > > +                              PAGE_SIZE);
-> > > +#endif
-> > > +       seq_buf_putc(&s, '\n');
-> > > +
-> >
-> > The v1's numa_stat exposes the LRUs, why NR_ANON_MAPPED and NR_FILE_PAGES?
->
-> If we want to expose the anon per node, we need to add inactive anon and
-> active anon together. Why not use NR_ANON_MAPPED directly?
->
++ ath11k
 
-Active anon plus inactive anon is not equal to NR_ANON_MAPPED. The
-shmem related memory is on anon LRUs but not accounted in
-NR_ANON_MAPPED.
+Hi,
 
-Similarly file LRU can contain MADV_FREE pages which are not accounted
-in NR_FILE_PAGES.
+can someone look at the ath11k warnings below and send fixes, please?
+Some of them might be already fixed, like the one about enum
+scan_priority.
 
-> >
-> > Also I think exposing slab_[un]reclaimable per node would be beneficial as well.
+Kalle
+
+kernel test robot <lkp@intel.com> writes:
+
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   7fe10096c1508c7f033d34d0741809f8eecc1ed4
+> commit: d5c65159f2895379e11ca13f62feabe93278985d ath11k: driver for
+> Qualcomm IEEE 802.11ax devices
+> date:   10 months ago
+> config: x86_64-randconfig-a015-20200910 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project
+> 0a5dc7effb191eff740e0e7ae7bd8e1f6bdb3ad9)
+> reproduce (this is a W=1 build):
+>         wget
+> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
+> -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         git checkout d5c65159f2895379e11ca13f62feabe93278985d
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
 >
-> Yeah, I agree with you. Maybe kernel_stack and percpu also should
-> be exposed.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 >
-> >
-> > >         seq_buf_printf(&s, "kernel_stack %llu\n",
-> > >                        (u64)memcg_page_state(memcg, NR_KERNEL_STACK_KB) *
-> > >                        1024);
-> > > --
-> > > 2.20.1
-> > >
+> All warnings (new ones prefixed by >>):
 >
->
->
+>>> drivers/net/wireless/ath/ath11k/ahb.c:919:15: warning: cast to
+>>> smaller integer type 'enum ath11k_hw_rev' from 'const void *'
+>>> [-Wvoid-pointer-to-enum-cast]
+>            ab->hw_rev = (enum ath11k_hw_rev)of_id->data;
+>                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    1 warning generated.
 > --
-> Yours,
-> Muchun
+>>> drivers/net/wireless/ath/ath11k/wmi.c:142:8: warning: format
+>>> specifies type 'unsigned char' but the argument has type 'u16' (aka
+>>> 'unsigned short') [-Wformat]
+>                                       tlv_tag, ptr - begin, len, tlv_len);
+>                                       ^~~~~~~
+>    drivers/net/wireless/ath/ath11k/wmi.c:142:35: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
+>                                       tlv_tag, ptr - begin, len, tlv_len);
+>                                                                  ^~~~~~~
+>    drivers/net/wireless/ath/ath11k/wmi.c:150:8: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
+>                                       tlv_tag, ptr - begin, tlv_len,
+>                                       ^~~~~~~
+>    drivers/net/wireless/ath/ath11k/wmi.c:150:30: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
+>                                       tlv_tag, ptr - begin, tlv_len,
+>                                                             ^~~~~~~
+>    drivers/net/wireless/ath/ath11k/wmi.c:1812:23: warning: implicit conversion from enumeration type 'enum wmi_scan_priority' to different enumeration type 'enum scan_priority' [-Wenum-conversion]
+>            arg->scan_priority = WMI_SCAN_PRIORITY_LOW;
+>                               ~ ^~~~~~~~~~~~~~~~~~~~~
+>    5 warnings generated.
+> --
+>>> drivers/net/wireless/ath/ath11k/mac.c:3970:6: warning: format
+>>> specifies type 'unsigned short' but the argument has type 'u32'
+>>> (aka 'unsigned int') [-Wformat]
+>                       ctx->def.chan->center_freq, ctx->def.width, ctx);
+>                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
+>                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
+>                                               ~~~    ^~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/mac.c:3994:6: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
+>                       ctx->def.chan->center_freq, ctx->def.width, ctx);
+>                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
+>                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
+>                                               ~~~    ^~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/mac.c:4241:7: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
+>                               vifs[i].old_ctx->def.chan->center_freq,
+>                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
+>                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
+>                                               ~~~    ^~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/mac.c:4242:7: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
+>                               vifs[i].new_ctx->def.chan->center_freq,
+>                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
+>                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
+>                                               ~~~    ^~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/mac.c:4337:6: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
+>                       ctx->def.chan->center_freq, ctx->def.width, ctx, changed);
+>                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
+>                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
+>                                               ~~~    ^~~~~~~~~~~
+>>> drivers/net/wireless/ath/ath11k/mac.c:4640:22: warning: format
+>>> specifies type 'unsigned char' but the argument has type 'u32' (aka
+>>> 'unsigned int') [-Wformat]
+>                       arvif->vdev_id, rate, nss, sgi);
+>                                       ^~~~
+>    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
+>                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
+>                                               ~~~    ^~~~~~~~~~~
+>    6 warnings generated.
+> --
+>>> drivers/net/wireless/ath/ath11k/dp_rx.c:977:8: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
+>                                       tlv_tag, ptr - begin, len, tlv_len);
+>                                       ^~~~~~~
+>    drivers/net/wireless/ath/ath11k/dp_rx.c:977:35: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
+>                                       tlv_tag, ptr - begin, len, tlv_len);
+>                                                                  ^~~~~~~
+>    2 warnings generated.
+>
+> # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d5c65159f2895379e11ca13f62feabe93278985d
+> git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> git fetch --no-tags linus master
+> git checkout d5c65159f2895379e11ca13f62feabe93278985d
+> vim +919 drivers/net/wireless/ath/ath11k/ahb.c
+>
+>    879	
+>    880	static int ath11k_ahb_probe(struct platform_device *pdev)
+>    881	{
+>    882		struct ath11k_base *ab;
+>    883		const struct of_device_id *of_id;
+>    884		struct resource *mem_res;
+>    885		void __iomem *mem;
+>    886		int ret;
+>    887	
+>    888		of_id = of_match_device(ath11k_ahb_of_match, &pdev->dev);
+>    889		if (!of_id) {
+>    890			dev_err(&pdev->dev, "failed to find matching device tree id\n");
+>    891			return -EINVAL;
+>    892		}
+>    893	
+>    894		mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>    895		if (!mem_res) {
+>    896			dev_err(&pdev->dev, "failed to get IO memory resource\n");
+>    897			return -ENXIO;
+>    898		}
+>    899	
+>    900		mem = devm_ioremap_resource(&pdev->dev, mem_res);
+>    901		if (IS_ERR(mem)) {
+>    902			dev_err(&pdev->dev, "ioremap error\n");
+>    903			return PTR_ERR(mem);
+>    904		}
+>    905	
+>    906		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+>    907		if (ret) {
+>    908			dev_err(&pdev->dev, "failed to set 32-bit consistent dma\n");
+>    909			return ret;
+>    910		}
+>    911	
+>    912		ab = ath11k_core_alloc(&pdev->dev);
+>    913		if (!ab) {
+>    914			dev_err(&pdev->dev, "failed to allocate ath11k base\n");
+>    915			return -ENOMEM;
+>    916		}
+>    917	
+>    918		ab->pdev = pdev;
+>  > 919		ab->hw_rev = (enum ath11k_hw_rev)of_id->data;
+>    920		ab->mem = mem;
+>    921		ab->mem_len = resource_size(mem_res);
+>    922		platform_set_drvdata(pdev, ab);
+>    923	
+>    924		ret = ath11k_hal_srng_init(ab);
+>    925		if (ret)
+>    926			goto err_core_free;
+>    927	
+>    928		ret = ath11k_ce_alloc_pipes(ab);
+>    929		if (ret) {
+>    930			ath11k_err(ab, "failed to allocate ce pipes: %d\n", ret);
+>    931			goto err_hal_srng_deinit;
+>    932		}
+>    933	
+>    934		ath11k_ahb_init_qmi_ce_config(ab);
+>    935	
+>    936		ret = ath11k_ahb_config_irq(ab);
+>    937		if (ret) {
+>    938			ath11k_err(ab, "failed to configure irq: %d\n", ret);
+>    939			goto err_ce_free;
+>    940		}
+>    941	
+>    942		ret = ath11k_core_init(ab);
+>    943		if (ret) {
+>    944			ath11k_err(ab, "failed to init core: %d\n", ret);
+>    945			goto err_ce_free;
+>    946		}
+>    947	
+>    948		return 0;
+>    949	
+>    950	err_ce_free:
+>    951		ath11k_ce_free_pipes(ab);
+>    952	
+>    953	err_hal_srng_deinit:
+>    954		ath11k_hal_srng_deinit(ab);
+>    955	
+>    956	err_core_free:
+>    957		ath11k_core_free(ab);
+>    958		platform_set_drvdata(pdev, NULL);
+>    959	
+>    960		return ret;
+>    961	}
+>    962	
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
