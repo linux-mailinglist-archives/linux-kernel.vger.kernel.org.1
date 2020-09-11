@@ -2,92 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5097265F78
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F077265F6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgIKMXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:23:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60298 "EHLO mail.kernel.org"
+        id S1725828AbgIKMWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:22:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:33094 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbgIKMSb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:18:31 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76A58221ED;
-        Fri, 11 Sep 2020 12:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599826708;
-        bh=tbpqiKUFCx55a6qzlTkXyTciBSsbqLNoZ1CcPY+E41E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jTtmqprXCqqNQVeE0T1VHxPtb+EcI/BvDfoVA2bwgYapRcI1DLUwgqmFxVvRPUBHz
-         st5vHphCZV2fzydkKS8gyHYKSWIjqXnG0nyv7YUDdhjDhl7fP/ALQReiPbkhm1qb8h
-         TpTHarrR1E35NXChiZ6dvFvMNhOtO9DwLtjxLvKU=
-Date:   Fri, 11 Sep 2020 13:17:41 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuldip Dwivedi <kuldip.dwivedi@puresoftware.com>
-Cc:     Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Arokia Samy <arokia.samy@nxp.com>,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Paul Yang <Paul.Yang@arm.com>
-Subject: Re: [PATCH v2] spi: spi-nxp-fspi: Add ACPI support
-Message-ID: <20200911121741.GE4895@sirena.org.uk>
-References: <20200911082806.115-1-kuldip.dwivedi@puresoftware.com>
- <20200911110018.GD4895@sirena.org.uk>
- <9a6ce5d0-2f39-eb55-c3a9-cae2a8093fbc@arm.com>
- <01f42ace75808be76c78a4a67b78ec06@mail.gmail.com>
+        id S1725884AbgIKMRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:17:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99F7A113E;
+        Fri, 11 Sep 2020 05:17:48 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A6333F68F;
+        Fri, 11 Sep 2020 05:17:47 -0700 (PDT)
+References: <20200911081745.214686199@infradead.org> <20200911082536.528661716@infradead.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bristot@redhat.com, swood@redhat.com,
+        Vincent Donnefort <Vincent.Donnefort@arm.com>
+Subject: Re: [PATCH 2/2] sched/hotplug: Ensure only per-cpu kthreads run during hotplug
+In-reply-to: <20200911082536.528661716@infradead.org>
+Date:   Fri, 11 Sep 2020 13:17:45 +0100
+Message-ID: <jhjr1r85wye.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YToU2i3Vx8H2dn7O"
-Content-Disposition: inline
-In-Reply-To: <01f42ace75808be76c78a4a67b78ec06@mail.gmail.com>
-X-Cookie: Only God can make random selections.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---YToU2i3Vx8H2dn7O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+(+Cc VincentD, who's been looking at some of this)
 
-On Fri, Sep 11, 2020 at 05:32:24PM +0530, Kuldip Dwivedi wrote:
+On 11/09/20 09:17, Peter Zijlstra wrote:
+> In preparation for migrate_disable(), make sure only per-cpu kthreads
+> are allowed to run on !active CPUs.
+>
+> This is ran (as one of the very first steps) from the cpu-hotplug
+> task which is a per-cpu kthread and completion of the hotplug
+> operation only requires such tasks.
+>
+> This contraint enables the migrate_disable() implementation to wait
 
-> Here I can think two possible approaches
-> 1. Changes in DT to use indexed based lookup
+s/contraint/constraint/
 
-This is not going to be OK, it will break existing users relying on the
-naming and makes the DTs less usable.
+> for completion of all migrate_disable regions on this CPU at hotplug
+> time without fear of any new ones starting.
+>
+> This replaces the unlikely(rq->balance_callbacks) test at the tail of
+> context_switch with an unlikely(rq->balance_work), the fast path is
+> not affected.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/sched/core.c  |  103 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+>  kernel/sched/sched.h |    5 ++
+>  2 files changed, 106 insertions(+), 2 deletions(-)
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6836,6 +6849,87 @@ static void migrate_tasks(struct rq *dea
+>
+>       rq->stop = stop;
+>  }
+> +
+> +static int __balance_push_stop(void *arg)
 
-> 2. We Can check for ACPI fw node to distinguish between DT and ACPI like
-> below..
-> if (is_acpi_node(f->dev->fwnode))
-> 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> else
-> 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> "fspi_base");
+__balance_push_cpu_stop()? _cpu_stop() seems to be the usual suffix.
 
-Yes, this should be good.
+> +{
+> +	struct task_struct *p = arg;
+> +	struct rq *rq = this_rq();
+> +	struct rq_flags rf;
+> +	int cpu;
+> +
+> +	raw_spin_lock_irq(&p->pi_lock);
+> +	rq_lock(rq, &rf);
+> +
+> +	if (task_rq(p) == rq && task_on_rq_queued(p)) {
+> +		cpu = select_fallback_rq(rq->cpu, p);
+> +		rq = __migrate_task(rq, &rf, p, cpu);
+> +	}
+> +
+> +	rq_unlock(rq, &rf);
+> +	raw_spin_unlock_irq(&p->pi_lock);
+> +
+> +	put_task_struct(p);
+> +
+> +	return 0;
+> +}
+> +
+> +static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
+> +
+> +/*
+> + * Ensure we only run per-cpu kthreads once the CPU goes !active.
+> + */
+> +static bool balance_push(struct rq *rq)
+> +{
+> +	struct task_struct *push_task = rq->curr;
+> +
+> +	lockdep_assert_held(&rq->lock);
+> +	SCHED_WARN_ON(rq->cpu != smp_processor_id());
+> +
+> +	/*
+> +	 * Both the cpu-hotplug and stop task are in this class and are
+> +	 * required to complete the hotplug process.
 
---YToU2i3Vx8H2dn7O
-Content-Type: application/pgp-signature; name="signature.asc"
+Nit: s/class/case/? I can't not read "class" as "sched_class", and
+those two are *not* in the same sched_class, and confusion ensues.
 
------BEGIN PGP SIGNATURE-----
+> +	 */
+> +	if (is_per_cpu_kthread(push_task))
+> +		return false;
+> +
+> +	get_task_struct(push_task);
+> +	/*
+> +	 * Temporarily drop rq->lock such that we can wake-up the stop task.
+> +	 * Both preemption and IRQs are still disabled.
+> +	 */
+> +	raw_spin_unlock(&rq->lock);
+> +	stop_one_cpu_nowait(rq->cpu, __balance_push_stop, push_task,
+> +			    this_cpu_ptr(&push_work));
+> +	/*
+> +	 * At this point need_resched() is true and we'll take the loop in
+> +	 * schedule(). The next pick is obviously going to be the stop task
+> +	 * which is_per_cpu_kthread() and will push this task away.
+> +	 */
+> +	raw_spin_lock(&rq->lock);
+> +
+> +	return true;
+> +}
+> +
+> @@ -6968,6 +7064,8 @@ int sched_cpu_deactivate(unsigned int cp
+>        */
+>       synchronize_rcu();
+>
+> +	balance_push_set(cpu, true);
+> +
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9bauQACgkQJNaLcl1U
-h9BCRgf/aL1RCrVtTo2njbYaoY5i0SRm99fj3cZHlaj3+XVyYLSWPwQbIIp+OqxC
-7qgamDvL3xPUFzoCcoGMsrSO6I521jApV4Nr0Px8obDAPelh+1DMiVwoV5ZcjlFf
-kdAe13mqJhO9KZrIjv/xKAWuhs84RyoTrrElxMD75M1tC/vrTINpcxx/98fhaPd/
-/7QKLCssrtwOiQeRjuEwTLSYHcKDogJkIc6wQqL7UvsjSUVbOS5M9RyHqoTs+Mo1
-drpX/v5NiKd4kfBgm5h7nFwrQqvlr9XLRyucJZnPUjNXaBZzi6Vpk4bHna9t67gv
-b1HIZ8gxxAlT4im0VtW19gCzrDek3A==
-=76Fx
------END PGP SIGNATURE-----
+IIUC this is going to make every subsequent finish_lock_switch()
+migrate the switched-to task if it isn't a pcpu kthread. So this is going
+to lead to a dance of
 
---YToU2i3Vx8H2dn7O--
+switch_to(<task0>) -> switch_to(<stopper>) -> switch_to(<task1>) -> switch_to(<stopper>) ...
+
+Wouldn't it be better to batch all those in a migrate_tasks() sibling that
+skips pcpu kthreads?
+
+>  #ifdef CONFIG_SCHED_SMT
+>       /*
+>        * When going down, decrement the number of cores with SMT present.
