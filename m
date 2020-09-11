@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C9E26634D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BC1266352
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgIKQNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        id S1726545AbgIKQOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbgIKPfx (ORCPT
+        with ESMTP id S1726536AbgIKPfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:35:53 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE69C06179E
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:35:36 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id cy2so5418368qvb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:35:36 -0700 (PDT)
+        Fri, 11 Sep 2020 11:35:46 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C1DC061798
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:35:35 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id w12so10264282qki.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cznD9PtbdCnTuIZHnsXFM10RQkLCsdUaXijp1Kw5QfM=;
-        b=P9QknNE1aAuC4kFJNTMIPm4V9anpO9ur7O97Qs7oKMmkt40+bLIuzPQjN0Zl5vOGz+
-         X+6xr2KY/T8e2o/ozewC6LMosMmgvAuv08GCSijoV73LImGOoAvXeIQTJuBskZYol3Sr
-         ujgrWNveABiqQP5jWWXxi3/KJFBN86AGXyIKnDIt3kcZ4aVraHsPZDDxKwQNGVslZMZv
-         zBDqqSyQon4hZHF5vDipGydaBniv8+LY7sn/W/kyR6Q5/gWt879m8bbXiTJ5gjw90vp0
-         kuHaTx15m4uYUYu/a3VJhuVAapjZTJ9ld3u3TanELyNr7jBamha4IEY88w425OCV/klN
-         HG7A==
+        bh=Eg1t9In0g5b7CTs/tQIaFcuTzs3vfJs/vuWLC07Pzgc=;
+        b=op4An1PnPRWomDDvrh+nKoYRRdPk4XUQj8HNFNnW+U8+QekwP9q6xgikrq/BQ//LEo
+         xSp2bB6ZSxHQjVzhlPB9qQv/Tl4TNas9t8N0d69UAmYJF/nXeP4NXAJFzpasbEHlvP3U
+         K1jH2pSP3EYY8Xe8IHCXrtIFjDpNPm8CwWXZnKTLqQATrLkFF96/ZFG3BdOe0iL6YoJB
+         XI6kgslrLRJUBTbAKvHu7bXN3MpL40BXlD8fDhv8hIycGToaIbDJjUvtNwHPSxbkOe8+
+         dglYYwtMUaWR7X/ceGAzjEJCv730b5do490qSqzomuAeBWjPFnLOAD/7WYJHPmWhAe1J
+         PEwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cznD9PtbdCnTuIZHnsXFM10RQkLCsdUaXijp1Kw5QfM=;
-        b=WFikhIiMzR0ZztLhG4+EQUqTzdHrcvY35n8LrmIwyZa8bwXRDYxGXbQ+HD8bc6HBNF
-         9AMvgV5MBxFlCNHj45FfpG/1oIlbc2smolz3WTah5rh/6Edg+V1htMC0VzC7EK2XoK1p
-         Ykz59iQ9V/+rAuljOd43nAXpgx8W6VStrEE34n2x/SftvzzXKrZxqJ/xWf7rnmuX6NGe
-         1YWNUDFfJdwVVrHuh02PJJ0Pc/p8MuCiDaPCt4IHg1b+PeCu2kj0L5AzQEYzzSjg69M1
-         W7+8GZcqFOONhuVg9bApQxh+r2Zr+671rTb248Cj4TvvtQ7oLX87KKghk01F8abbCKTj
-         Re3Q==
-X-Gm-Message-State: AOAM530NoZLTIZOmr3g8sB22mO9Od8PnuPaXQ5pIf2gwo7uL6IHu4Zx1
-        pevTXla9jaJLQOswWgjuLIJdVQ==
-X-Google-Smtp-Source: ABdhPJxTYCLs2sh7OCgELR9nztjiEkUmHMHQI/9SBfkIRMDRwjvcrCIR6EZfChEKTL46j879jOzCLA==
-X-Received: by 2002:a0c:f1c5:: with SMTP id u5mr2488860qvl.10.1599838533324;
-        Fri, 11 Sep 2020 08:35:33 -0700 (PDT)
+        bh=Eg1t9In0g5b7CTs/tQIaFcuTzs3vfJs/vuWLC07Pzgc=;
+        b=EPbBFHbP3/PU3X9Zkka+ogRVsh4LoS/weaw+eGh1e7S2moW/p7pVYcYQqiwF99lOzt
+         gRUoLo5zfQUsqS5EPCSEdps5HxTM7evO9Lg6bnhNz1yKQryPtE6jDIJTTP6+CGCyeVis
+         RRoCyxp8AKHlU7+DJpjWKVok0fuAh7djwGWEvi23MOVuVP3PrcA8wYuCAR2sUEbYI2Jb
+         hpdMWn14nbaiTeeMkS81+RctZ9LxlbOC5CEB0SfHk3nhJLBSE6e4jCmVkH+7nx8mTCCF
+         XA+OGat8Ik48+9dvcAEJcowsYyiVu6m8GS0vrofWNc+vOuAwMg6qXHQIDRSv9V4HRxao
+         Cm7Q==
+X-Gm-Message-State: AOAM532Z+5Qayop4dyUKJzEohEPJQi9Z4BtVsq4fgaKp9ipyIZCFcaHl
+        ya0A8YyyzE60IQgKNnDs8VTFMA==
+X-Google-Smtp-Source: ABdhPJyRhekVuX88QAgVrUgs4m14RZILH7ZS5TVfcQSTsYzmRTExFXuX3W4AVFA27DUrko7aR730FA==
+X-Received: by 2002:a37:654b:: with SMTP id z72mr1926935qkb.365.1599838534552;
+        Fri, 11 Sep 2020 08:35:34 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id v16sm3001744qkg.37.2020.09.11.08.35.32
+        by smtp.gmail.com with ESMTPSA id v16sm3001744qkg.37.2020.09.11.08.35.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 08:35:32 -0700 (PDT)
+        Fri, 11 Sep 2020 08:35:34 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
         devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
         DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 1/7] dt-bindings: clock: sdm845-dispcc: same name for dp_phy clocks as sc7180
-Date:   Fri, 11 Sep 2020 11:34:01 -0400
-Message-Id: <20200911153412.21672-2-jonathan@marek.ca>
+Subject: [PATCH v3 2/7] arm64: dts: qcom: sdm845-dispcc: same name for dp_phy clocks as sc7180
+Date:   Fri, 11 Sep 2020 11:34:02 -0400
+Message-Id: <20200911153412.21672-3-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200911153412.21672-1-jonathan@marek.ca>
 References: <20200911153412.21672-1-jonathan@marek.ca>
@@ -79,35 +76,24 @@ ignored), so changing this shouldn't be a problem.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- .../devicetree/bindings/clock/qcom,sdm845-dispcc.yaml     | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.yaml
-index 4a3be733d042..ead44705333b 100644
---- a/Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.yaml
-+++ b/Documentation/devicetree/bindings/clock/qcom,sdm845-dispcc.yaml
-@@ -43,8 +43,8 @@ properties:
-       - const: dsi0_phy_pll_out_dsiclk
-       - const: dsi1_phy_pll_out_byteclk
-       - const: dsi1_phy_pll_out_dsiclk
--      - const: dp_link_clk_divsel_ten
--      - const: dp_vco_divided_clk_src_mux
-+      - const: dp_phy_pll_link_clk
-+      - const: dp_phy_pll_vco_div_clk
- 
-   '#clock-cells':
-     const: 1
-@@ -92,8 +92,8 @@ examples:
-                     "dsi0_phy_pll_out_dsiclk",
-                     "dsi1_phy_pll_out_byteclk",
-                     "dsi1_phy_pll_out_dsiclk",
--                    "dp_link_clk_divsel_ten",
--                    "dp_vco_divided_clk_src_mux";
-+                    "dp_phy_pll_link_clk",
-+                    "dp_phy_pll_vco_div_clk";
-       #clock-cells = <1>;
-       #reset-cells = <1>;
-       #power-domain-cells = <1>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 2884577dcb77..8184d6204b33 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -4139,8 +4139,8 @@ dispcc: clock-controller@af00000 {
+ 				      "dsi0_phy_pll_out_dsiclk",
+ 				      "dsi1_phy_pll_out_byteclk",
+ 				      "dsi1_phy_pll_out_dsiclk",
+-				      "dp_link_clk_divsel_ten",
+-				      "dp_vco_divided_clk_src_mux";
++				      "dp_phy_pll_link_clk",
++				      "dp_phy_pll_vco_div_clk";
+ 			#clock-cells = <1>;
+ 			#reset-cells = <1>;
+ 			#power-domain-cells = <1>;
 -- 
 2.26.1
 
