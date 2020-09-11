@@ -2,57 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D84F266466
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBB6266446
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgIKQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:37:53 -0400
-Received: from aluxe.matcuer.unam.mx ([132.248.41.2]:33689 "EHLO
-        aluxe.matcuer.unam.mx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726431AbgIKQhu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:37:50 -0400
-X-Greylist: delayed 17251 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 12:37:49 EDT
-Received: from localhost (ip6-localhost [127.0.0.1])
-        by aluxe.matcuer.unam.mx (Postfix) with ESMTP id BCBE010C3E45;
-        Fri, 11 Sep 2020 05:48:40 -0500 (CDT)
-X-Virus-Scanned: Debian amavisd-new at matcuer.unam.mx
-Received: from aluxe.matcuer.unam.mx ([127.0.0.1])
-        by localhost (aluxe.matcuer.unam.mx [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BixWoBr8_2Yr; Fri, 11 Sep 2020 05:48:38 -0500 (CDT)
-Received: from correo.matcuer.unam.mx (ip6-localhost [127.0.0.1])
-        by aluxe.matcuer.unam.mx (Postfix) with ESMTP id A851710C2606;
-        Fri, 11 Sep 2020 04:14:36 -0500 (CDT)
-Received: from 105.112.102.124
-        (SquirrelMail authenticated user otto)
-        by correo.matcuer.unam.mx with HTTP;
-        Fri, 11 Sep 2020 04:14:36 -0500
-Message-ID: <13e9a85f013a0d637155834c4107de93.squirrel@correo.matcuer.unam.mx>
-Date:   Fri, 11 Sep 2020 04:14:36 -0500
-Subject: 
-From:   "Mikhail Fridman" <otto@matcuer.unam.mx>
-Reply-To: mikhai.fridman261@gmail.com
-User-Agent: SquirrelMail/1.4.23 [SVN]
+        id S1726184AbgIKQe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726446AbgIKPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:15:37 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 196AE22246;
+        Fri, 11 Sep 2020 12:58:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599829132;
+        bh=JoQXBX4d16xcTyZAQCuJdMeWdYPKguExKHrFWB6Z2zo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XzTJR4v0rUY/uxTtXFKb3UHM7xrHYI9eOL8r0U+MZjrT1xdet3EquAqzi8d4mE9wX
+         kaKohkEBYKaXI0+dXwgPzDoiqTigZGdA59gqgSRcyUJIWdjUSkTfXT/4D+JE28ZBKQ
+         MC8Tj8DK0gH1vv//+zkBXmoc3ObnY/+7hUOuwhLY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Himadri Pandya <himadrispandya@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 62/71] net: usb: Fix uninit-was-stored issue in asix_read_phy_addr()
+Date:   Fri, 11 Sep 2020 14:46:46 +0200
+Message-Id: <20200911122508.003816840@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+References: <20200911122504.928931589@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Priority: 3 (Normal)
-Importance: Normal
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I, Mikhail Fridman have selected you specifically as one of my
-beneficiaries for my Charitable Donation of $5 Million Dollars,
+From: Himadri Pandya <himadrispandya@gmail.com>
 
-Check the link below for confirmation:
+commit a092b7233f0e000cc6f2c71a49e2ecc6f917a5fc upstream.
 
-https://www.rt.com/business/343781-mikhail-fridman-will-charity/
+The buffer size is 2 Bytes and we expect to receive the same amount of
+data. But sometimes we receive less data and run into uninit-was-stored
+issue upon read. Hence modify the error check on the return value to match
+with the buffer size as a prevention.
 
-I await your earliest response for further directives.
+Reported-and-tested by: syzbot+a7e220df5a81d1ab400e@syzkaller.appspotmail.com
+Signed-off-by: Himadri Pandya <himadrispandya@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Best Regards,
-Mikhail Fridman.
+---
+ drivers/net/usb/asix_common.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/net/usb/asix_common.c
++++ b/drivers/net/usb/asix_common.c
+@@ -277,7 +277,7 @@ int asix_read_phy_addr(struct usbnet *de
+ 
+ 	netdev_dbg(dev->net, "asix_get_phy_addr()\n");
+ 
+-	if (ret < 0) {
++	if (ret < 2) {
+ 		netdev_err(dev->net, "Error reading PHYID register: %02x\n", ret);
+ 		goto out;
+ 	}
+
 
