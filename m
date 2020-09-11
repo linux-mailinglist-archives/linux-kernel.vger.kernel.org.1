@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23142661F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C895126621A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgIKPRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:17:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgIKPPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:15:24 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA980C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:15:23 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id a19so4723220ilq.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:15:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ufdcEHy1PC/ezqsDkWS+TD6mTdL2tp2wTQ8CZ+/qEf4=;
-        b=Bc90pNkLgX/h4MhEiVG6O4ps43IfI/m7/Zc7dCGFHr18Vx68b8DyKVqeGXSvVPfImY
-         p3UbApPC5gPzgFbeD/tTJddfuQtyP2DuUCzY9ldYyi1uN1s3/JPjNz4ncAVRVhWbGs8w
-         PMOiLoSSFz84Cck5e/jpWOOp9rKhln9p6EbkwJ6kydDU5QFXDF12jgUuv2sea45R0aiO
-         JFrV+VIva6QeigZwcNREL7G5Xb92/fxuQ0uJ3ni5LofpK+I72th9YigCYAnqcdpV9nVp
-         9OCa1A7lmyHBBI3ai9XaOMNzh8HDgDFBCi5aIvVos8p7VtWo8DL1t/FpR4KSx17aAv8Z
-         ZU9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ufdcEHy1PC/ezqsDkWS+TD6mTdL2tp2wTQ8CZ+/qEf4=;
-        b=ui0ISI9hOJ0TYBrAphiSmRA4oOAW+TlQGXV1oQK0sE6Ck1x4wEUU+Vrz+ibcXYBlYg
-         NUBY3HayGK8fvDJTQoXp8YHz33RVTKfLoLBiqhw49VKdg20FDkMqyJxvlTS5to/Gw9br
-         SxkClOhBcLZ5+ri5SXfYvAUi/eFOKZiiwDGJtOBIzqBVjyBL3q9Xq+g4bxMhmG633VTI
-         z+Aw016UNFLyuN2N3ACgN6VdOBxeL13sCxchLKPXHT1uTJTVfeN/U7DT6S1LiPj2UWEl
-         ax+OypRFMiUd2OkH2+tYv8naLFFwbLYZNQb3H9FeGCHkMjQR4QIVi2/ACscbqFmrIsL1
-         3dLQ==
-X-Gm-Message-State: AOAM533GQvJt0prJvMuLaFELFt0zhIOGll1Q+ShpXwwVFNunt7faIKPX
-        /K1bQcQQQn0YH5OV89XsSnKVNuZ1GSPMCHRl4Qz5Qw==
-X-Google-Smtp-Source: ABdhPJyvZhR8i/gmsNhZsOdEJ+iRUX+LvrerRs093pQQn9n7rb6cL2TL4s+8cWYimF1Ux+s7FkMTaMK3o/zc9ap7hNg=
-X-Received: by 2002:a05:6e02:1141:: with SMTP id o1mr2099807ill.275.1599837320632;
- Fri, 11 Sep 2020 08:15:20 -0700 (PDT)
+        id S1725815AbgIKP1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:27:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726306AbgIKPUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:20:23 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BFE9207FB;
+        Fri, 11 Sep 2020 15:17:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599837420;
+        bh=UgW+C5QZjycibLoS/tcqKqhyMmI/U+lFQKYBS2XVPfA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=kLZgioYIEs3XGoa0lj43AdrxF1oOXBVHEQwIQcQdQQ6uniLSEZOA///PyQk1yAr7F
+         R1a1Js+N7TSzeRMpZ4rTDZblWrr0SpM4Hgoi3EmVaLPwOWEqfMpu+aU6EGEmw+os7h
+         F4UtW2iKcmB2ti/DMFP5NMxyftQvYRhY/4gEzkh8=
+Date:   Fri, 11 Sep 2020 10:16:59 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Srinath Mannam <srinath.mannam@broadcom.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, poza@codeaurora.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iommu/dma: Fix IOVA reserve dma ranges
+Message-ID: <20200911151659.GA868760@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200910134802.3160311-1-lenaptr@google.com> <CAG48ez3x51kkDt19ONXbi8Se+2swMgwfmaj7AFbBqmss=D38Ug@mail.gmail.com>
-In-Reply-To: <CAG48ez3x51kkDt19ONXbi8Se+2swMgwfmaj7AFbBqmss=D38Ug@mail.gmail.com>
-From:   Elena Petrova <lenaptr@google.com>
-Date:   Fri, 11 Sep 2020 16:15:09 +0100
-Message-ID: <CABvBcwY2FLJxc80Leibv=zZ-e_YbjkE+ZBH2LNoFy8HAeD8m6Q@mail.gmail.com>
-Subject: Re: [PATCH] sched.h: drop in_ubsan field when UBSAN is in trap mode
-To:     Jann Horn <jannh@google.com>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911102534.25218-1-srinath.mannam@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jann,
+On Fri, Sep 11, 2020 at 03:55:34PM +0530, Srinath Mannam wrote:
+> Fix IOVA reserve failure in the case when address of first memory region
+> listed in dma-ranges is equal to 0x0.
+> 
+> Fixes: aadad097cd46f ("iommu/dma: Reserve IOVA for PCIe inaccessible DMA address")
+> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+> ---
+> Changes from v1:
+>    Removed unnecessary changes based on Robin's review comments.
+> 
+>  drivers/iommu/dma-iommu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 5141d49a046b..682068a9aae7 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -217,7 +217,7 @@ static int iova_reserve_pci_windows(struct pci_dev *dev,
+>  			lo = iova_pfn(iovad, start);
+>  			hi = iova_pfn(iovad, end);
+>  			reserve_iova(iovad, lo, hi);
+> -		} else {
+> +		} else if (end < start) {
+>  			/* dma_ranges list should be sorted */
+>  			dev_err(&dev->dev, "Failed to reserve IOVA\n");
 
-On Thu, 10 Sep 2020 at 20:35, Jann Horn <jannh@google.com> wrote:
->
-> On Thu, Sep 10, 2020 at 3:48 PM Elena Petrova <lenaptr@google.com> wrote:
-> > in_ubsan field of task_struct is only used in lib/ubsan.c, which in its
-> > turn is used only `ifneq ($(CONFIG_UBSAN_TRAP),y)`.
-> >
-> > Removing unnecessary field from a task_struct will help preserve the
-> > ABI between vanilla and CONFIG_UBSAN_TRAP'ed kernels. In particular,
-> > this will help enabling bounds sanitizer transparently for Android's
-> > GKI.
->
-> The diff looks reasonable to me, but I'm curious about the
-> justification in the commit message:
->
-> Is the intent here that you want to be able to build a module without
-> CONFIG_UBSAN and load it into a kernel that is built with
-> CONFIG_UBSAN? Or the inverse?
+You didn't actually change the error message, but the message would be
+way more useful if it included the IOVA address range, e.g., the
+format used in pci_register_host_bridge():
 
-The former. But more precisely, with GKI Google gives a promise, that
-when certain GKI is released, i.e. at 4.19, its ABI will never ever
-change (or, perhaps only change with <next letter> Android release),
-so vendor modules could have an independent development lifecycle. And
-this patch, when backported, will help enable boundsan on kernels
-where ABI has already been frozen.
+  bus address [%#010llx-%#010llx]
 
-> Does this mean that in the future, gating new exported functions, or
-> new struct fields, on CONFIG_UBSAN (independent of whether
-> CONFIG_UBSAN_TRAP is set) will break Android?
+Incidentally, the pr_err() in copy_reserved_iova() looks bogus; it
+prints iova->pfn_low twice, when it should probably print the base and
+size or (my preference) something like the above:
 
-I don't understand what you mean here, sorry.
+        pr_err("Reserve iova range %lx@%lx failed\n",
+               iova->pfn_lo, iova->pfn_lo);
 
-> If you really want to do this, and using alternatives to patch out the
-> ubsan instructions is not an option, I wonder whether it would be more
-> reasonable to at least add a configuration where CONFIG_UBSAN is
-> enabled but the compiler flag is not actually set. Then you could
-> unconditionally build that android kernel and its modules with that
-> config option, and wouldn't have to worry about structure size issues,
-> dependencies on undefined symbols and so on.
-
-Such setup might be confusing for developers. We were considering
-something similar: to keep the in_ubsan field regardless of the
-CONFIG_UBSAN option. But since non-trap mode is unlikely to be used on
-production devices due to size and performance overheads, I think it's
-better to just get rid of an unused field, rather than balloon
-task_struct.
-
-Cheers,
-*lenaptr
+>  			return -EINVAL;
+> -- 
+> 2.17.1
+> 
