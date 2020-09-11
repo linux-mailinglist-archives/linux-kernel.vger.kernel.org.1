@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3905C2667A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB8326679A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726136AbgIKRqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:46:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725841AbgIKMQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:16:53 -0400
-Received: from mail.kernel.org (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
+        id S1725866AbgIKMby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbgIKM0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:26:21 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D907C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:26:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RIzmpouUc5UeVrI53gHBLBgWs6d0kms5g/Csx94jrAU=; b=asVPCIe/GVkLtu8stF/zsMyTuy
+        UUtODUTOOInRcz/7JNPhcwvVL8wnO7IsVnrUVVdZMHcoXrdyK/oWIY8EcXi4AORQ3EZRJI1KNzXbj
+        qo29cGIcs/VhG+P+KnL79yUXV4StG3n89s9HrMksjdIxjeymAOGEgj/UJjrhpbSevNduXM66MjCwR
+        CphTJmTi3e5d4hiTEBlSSyq1u3J/+JLq48DTc/XkjM+XTXb78OQS9+aToPvkOXkrqPUDLwT3kYpHm
+        xZ4feK/NJG6M8UmgO+Ng/ghDW3llSp8JvN4LnVSxwiY1TMKiAqjNUXW34gy+xp+W185/dp6cAaEPm
+        Y1bOcyGg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGi7i-0001Tl-1U; Fri, 11 Sep 2020 12:25:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 216D12220A;
-        Fri, 11 Sep 2020 12:16:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599826608;
-        bh=H5judmKvtDvTpmGDeQekonxfCALycmTHh4WX0CpT/iM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gdn3a+hASv8KaiPBjTbvh8Dj5GcFljZ65IRegQpAVuR9tAXe059ZqLkXkotPSE0KY
-         irhWtyAOqP2sRchku0TEvBfgZlRAUUw2Y+k2sJOHba3aBHwv8HZJRYcwHUafJAy5b2
-         HLcYvg4T5rK3EG7XSfaKcVG2lPnqjA0MJu1FoYok=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kGhyw-0006WP-3G; Fri, 11 Sep 2020 14:16:46 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "John Stultz" <john.stultz@linaro.org>,
-        "Manivannan Sadhasivam" <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 RESEND 8/8] MAINTAINERS: add myself as maintainer for Kirin 970 USB PHY
-Date:   Fri, 11 Sep 2020 14:16:44 +0200
-Message-Id: <d8f3adff7e90a0251bd3302a94a5ac85dd13f3c8.1599826421.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1599826421.git.mchehab+huawei@kernel.org>
-References: <cover.1599826421.git.mchehab+huawei@kernel.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 118953059DD;
+        Fri, 11 Sep 2020 14:25:47 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D73512B082747; Fri, 11 Sep 2020 14:25:47 +0200 (CEST)
+Date:   Fri, 11 Sep 2020 14:25:47 +0200
+From:   peterz@infradead.org
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bristot@redhat.com, swood@redhat.com
+Subject: Re: [PATCH 1/2] sched: Fix balance_callback()
+Message-ID: <20200911122547.GI1362448@hirez.programming.kicks-ass.net>
+References: <20200911081745.214686199@infradead.org>
+ <20200911082536.470013100@infradead.org>
+ <jhjsgbo5wzl.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjsgbo5wzl.mognet@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that this driver was added upsream, it needs a maintainer.
+On Fri, Sep 11, 2020 at 01:17:02PM +0100, Valentin Schneider wrote:
+> On 11/09/20 09:17, Peter Zijlstra wrote:
+> > The intent of balance_callback() has always been to delay executing
+> > balancing operations until the end of the current rq->lock section.
+> > This is because balance operations must often drop rq->lock, and that
+> > isn't safe in general.
+> >
+> > However, as noted by Scott, there were a few holes in that scheme;
+> > balance_callback() was called after rq->lock was dropped, which means
+> > another CPU can interleave and touch the callback list.
+> >
+> 
+> So that can be say __schedule() tail racing with some setprio; what's the
+> worst that can (currently) happen here? Something like say two consecutive
+> enqueuing of push_rt_tasks() to the callback list?
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- MAINTAINERS | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Yeah, but that isn't in fact the case I worry most about.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2f497c7d659c..267ba0b7a52e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17711,7 +17711,7 @@ L:	linux-usb@vger.kernel.org
- S:	Maintained
- F:	drivers/usb/roles/intel-xhci-usb-role-switch.c
- 
--USB IP DRIVER FOR HISILICON KIRIN
-+USB IP DRIVER FOR HISILICON KIRIN 960
- M:	Yu Chen <chenyu56@huawei.com>
- M:	Binghui Wang <wangbinghui@hisilicon.com>
- L:	linux-usb@vger.kernel.org
-@@ -17719,6 +17719,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/phy/phy-hi3660-usb3.txt
- F:	drivers/phy/hisilicon/phy-hi3660-usb3.c
- 
-+USB IP DRIVER FOR HISILICON KIRIN 970
-+M:	Mauro Carvalho Chehab <mchehab@kernel.org>
-+L:	linux-usb@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/phy/hisilicon,kirin970-usb3.yaml
-+F:	drivers/phy/hisilicon/phy-kirin970-usb3.c
-+
- USB ISP116X DRIVER
- M:	Olav Kongas <ok@artecdesign.ee>
- L:	linux-usb@vger.kernel.org
--- 
-2.26.2
+What can happen (and what I've spotted once before) is that someone
+attempts to enqueue a balance_callback from a rq->lock region that
+doesn't handle the calls.
 
+Currently that 'works', that is, it will get ran _eventually_. But
+ideally we'd want that to not work and issue a WARN. We want the
+callbacks to be timely.
+
+So basically all of these machinations we in order to add the WARN :-)
