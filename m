@@ -2,219 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545F826761E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8860267621
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgIKWqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:46:05 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:36234 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgIKWp5 (ORCPT
+        id S1725952AbgIKWqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbgIKWqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:45:57 -0400
-Received: by mail-il1-f194.google.com with SMTP id p13so10443328ils.3;
-        Fri, 11 Sep 2020 15:45:56 -0700 (PDT)
+        Fri, 11 Sep 2020 18:46:36 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7F4C061573;
+        Fri, 11 Sep 2020 15:46:34 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id e23so15732982eja.3;
+        Fri, 11 Sep 2020 15:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gbxJusHa2ym32357/sjUgbn9JJl0P0vMCQtSAk0Gnio=;
+        b=cdlNGLvBwkeurTCdGiNOGiHltEFZihUT6VgLFi9uXhsR6x9Dx8u4ttJKSgLb2BBC+Q
+         5p+pkiHfB82ZkiMR8avAXWOgdJvZvRhBfn4gikdy+e1puDpb7O3r+RRJhB6vqWmSXuyC
+         r8H4NYwV73wTAul/X39Np79cwLxVsrMBzzdyibs619qPaQhPMkTFBP62auibLJVg58MI
+         ckyBqEjfVvmG0n3DFk04Eow2Rw6SaV4+D8w9vWs17UnGg8L/Lemlk34477gCrcXt0TJZ
+         0gI44XFiZ/LmFir93GyWnOJLDit6gnDQERmI9mBCr9J713FfmwiNaL7DoJx3MLOMwrDj
+         +AeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fs8hJLKKuPyihlvosCyrS95zzNN/iMkcZrv6osKY3zA=;
-        b=Pwtlu4HvJVHgI1wuOEzCTOu66ZCETiDrb/miksjCS6ZMpTG+Ey4SPN5WQRVTKuerSl
-         5HznVMTLeJwjXZ6QFF6bB1exq/8SNiYvI0ClN/9ipfJeVKv8uWAiUfksUaSHqZAqWyjz
-         OBhiqzQWsGMfEVCbDs0Rd6hLwqRNdrCMzGfr2DV2V8pxekxTGQ812S7sKOIqk7pkdJUZ
-         vswtDFq6WiuXy+SXOPKlzKf/r+rpi0tF+S4LSwiS3PeFky7VygFFM6/sjEn3qObsj/jl
-         jsmMthrNuwuWx5zDtwNSMHflXiZdQKOQe5VyAlxQrwojrGD3hNvE5J1XR5ZDyw2tN6F2
-         hiQA==
-X-Gm-Message-State: AOAM530JWULlOr6Mfv8JdoP98th82usF9Z99O3Vb4tpbQrfaUzlrlwbQ
-        yDF/ZFNuN3yxbFflnaoZIA==
-X-Google-Smtp-Source: ABdhPJyTOxbDQQhiOFwx0WSd2Hhwm1KX9bxfrHOz+sl9GPyks/Kgrf2FM2rVgq9ty7FDRvCpnpaIHg==
-X-Received: by 2002:a92:8548:: with SMTP id f69mr3610656ilh.46.1599864356073;
-        Fri, 11 Sep 2020 15:45:56 -0700 (PDT)
-Received: from xps15 ([64.188.179.251])
-        by smtp.gmail.com with ESMTPSA id q191sm1796222iod.30.2020.09.11.15.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 15:45:55 -0700 (PDT)
-Received: (nullmailer pid 2959952 invoked by uid 1000);
-        Fri, 11 Sep 2020 22:45:54 -0000
-Date:   Fri, 11 Sep 2020 16:45:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        davem@davemloft.net, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>
-Subject: Re: [v2,1/3] dt-bindings: PCI: mediatek: Add YAML schema
-Message-ID: <20200911224554.GB2905744@bogus>
-References: <20200910034536.30860-1-jianjun.wang@mediatek.com>
- <20200910034536.30860-2-jianjun.wang@mediatek.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gbxJusHa2ym32357/sjUgbn9JJl0P0vMCQtSAk0Gnio=;
+        b=g7MethISIz7QSdPVUXMd+J0mKFLInxvCetl6IfpW7JQT83wODZ49pw6JP51Kbc4x9N
+         ysuflQdqnS011k1WPF9kmZXBHmYmR9Rf3qPx0GPjvDIi7RzdoEQEOHyN7LSr5dXw0DrT
+         dGRs9N1XhqrgxYCHEd+jZXohpNJFTvc4aW5eD/oNSmLaeBRHT9Dax/abHNb1uEttxbK6
+         LVkCD6LqjtQb8FdGZHyk2yQef73xRu2czXEFc6cj3P9AE6zWVdRSG7+BPfNr0BaSNADF
+         rPtzKmr5c/1ShukZ4en0qiQDoXc6OsQDv8eAiEQFMFRsYXcxk5hMc9o4hRwDsEXEoRPz
+         gU2Q==
+X-Gm-Message-State: AOAM532JcBCKBkrwU/2ZATNz1WSBTW8i7W/NZTGXkwZ+4ku8qIgQVYSl
+        M+EOiRn+OZfvuxZcOBg9c0vXE93GPRU=
+X-Google-Smtp-Source: ABdhPJzudBeaRIE3una4rTedZgekcU1R4Zmo6A6qfrjJ/Y6UEosPhy2ToP+s2KKrHujZyEkpOieQ5w==
+X-Received: by 2002:a17:906:1d08:: with SMTP id n8mr4244935ejh.236.1599864392562;
+        Fri, 11 Sep 2020 15:46:32 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a3c2.dip0.t-ipconnect.de. [217.229.163.194])
+        by smtp.gmail.com with ESMTPSA id nm7sm2238957ejb.70.2020.09.11.15.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 15:46:31 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: Add Driver to set up lid GPEs on MS Surface
+ device
+To:     mgross@linux.intel.com
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Gayatri Kammela <gayatri.kammela@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200908171934.1661509-1-luzmaximilian@gmail.com>
+ <20200911221053.GF103884@mtg-dev.jf.intel.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <e6125bee-d42e-f485-295a-8b9ad6777d4a@gmail.com>
+Date:   Sat, 12 Sep 2020 00:46:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910034536.30860-2-jianjun.wang@mediatek.com>
+In-Reply-To: <20200911221053.GF103884@mtg-dev.jf.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 11:45:34AM +0800, Jianjun Wang wrote:
-> Add YAML schemas documentation for Gen3 PCIe controller on
-> MediaTek SoCs.
-> 
-> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  .../bindings/pci/mediatek-pcie-gen3.yaml      | 130 ++++++++++++++++++
->  1 file changed, 130 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> new file mode 100644
-> index 000000000000..a2dfc0d15d2e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
-> @@ -0,0 +1,130 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pci/mediatek-pcie-gen3.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Gen3 PCIe controller on MediaTek SoCs
-> +
-> +maintainers:
-> +  - Jianjun Wang <jianjun.wang@mediatek.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - const: mediatek,gen3-pcie
+On 9/12/20 12:10 AM, mark gross wrote:
+> Surface devices are tablets with detachable keyboards.  they don't really
+> have a "lid" as the tablet is the "lid".
 
-Generic compatibles like this should only be a fallback string, not on 
-its own.
+The Surface Laptop series doesn't have a detachable keyboard, yet still
+requires this. Arguably, the Surface Books are also more laptop than
+tablet (at least that's the way I use mine...). Finally, on the actual
+tablets (Surface Pro series) the lid switch detects when the keyboard
+cover is opened (or at least that's what I have been told, I don't
+own/have access to a Pro series device).
 
-> +      - const: mediatek,mt8192-pcie
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  bus-range:
-> +    description: Range of bus numbers associated with this controller.
+Regardless of that, this patch is intended to provide the same behavior
+as found on Windows, for all devices included in this patch, which is:
+When you open the lid, or in case of the Pro series fold away the
+keyboard cover, the device wakes from suspend/s2idle. Without this
+patch, that doesn't work.
 
-Drop this. Standard property.
+> I'm just questioning if the creator of the device designed it the way they did
+> maybe we should think twice about doing this.
 
-> +
-> +  ranges:
-> +    minItems: 1
-> +    maxItems: 8
-> +
-> +  resets:
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  reset-names:
-> +    anyOf:
-> +      - const: mac-rst
-> +      - const: phy-rst
-> +
-> +  clocks:
-> +    maxItems: 5
-> +
-> +  assigned-clocks:
-> +    maxItems: 1
-> +
-> +  assigned-clock-parents:
-> +    maxItems: 1
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  '#interrupt-cells':
-> +    const: 1
-> +
-> +  interrupt-controller:
-> +    description: Interrupt controller node for handling legacy PCI interrupts.
-> +    type: object
-> +    properties:
-> +      '#address-cells':
-> +        const: 0
-> +      '#interrupt-cells':
-> +        const: 1
-> +      interrupt-controller: true
-> +
-> +    required:
-> +      - '#address-cells'
-> +      - '#interrupt-cells'
-> +      - interrupt-controller
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - ranges
-> +  - clocks
-> +  - '#interrupt-cells'
-> +  - interrupt-controller
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    bus {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        pcie: pcie@11230000 {
-> +            compatible = "mediatek,mt8192-pcie";
-> +            device_type = "pci";
-> +            #address-cells = <3>;
-> +            #size-cells = <2>;
-> +            reg = <0x00 0x11230000 0x00 0x4000>;
-> +            reg-names = "pcie-mac";
-> +            interrupts = <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH 0>;
-> +            bus-range = <0x00 0xff>;
-> +            ranges = <0x82000000 0x00 0x12000000 0x00 0x12000000 0x00 0x1000000>;
-> +            clocks = <&infracfg 40>,
-> +                     <&infracfg 43>,
-> +                     <&infracfg 97>,
-> +                     <&infracfg 99>,
-> +                     <&infracfg 111>;
-> +            assigned-clocks = <&topckgen 50>;
-> +            assigned-clock-parents = <&topckgen 91>;
-> +
-> +            phys = <&pciephy>;
-> +            phy-names = "pcie-phy";
-> +            resets = <&infracfg_rst 0>;
-> +            reset-names = "phy-rst";
-> +
-> +            #interrupt-cells = <1>;
-> +            interrupt-map-mask = <0 0 0 0x7>;
-> +            interrupt-map = <0 0 0 1 &pcie_intc 0>,
-> +                            <0 0 0 2 &pcie_intc 1>,
-> +                            <0 0 0 3 &pcie_intc 2>,
-> +                            <0 0 0 4 &pcie_intc 3>;
-> +            pcie_intc: interrupt-controller {
-> +                      #address-cells = <0>;
-> +                      #interrupt-cells = <1>;
-> +                      interrupt-controller;
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.25.1
+As far as I can tell, the intended behavior is to wake the device when
+the lid is opened, which on the Laptops and Books is a more conventional
+lid and on the Pros constitutes opening the cover.
+
+I'm open for any alternative though.
+
+Also please note that I've already sent a v2 of this patch with Andy's
+comments addressed: https://lore.kernel.org/patchwork/patch/1303997/
+
+--
+Regards,
+Max
