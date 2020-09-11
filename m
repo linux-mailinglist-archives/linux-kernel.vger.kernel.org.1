@@ -2,257 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4B3266497
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95262664B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIKQmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:42:37 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:40794 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725891AbgIKQl5 (ORCPT
+        id S1726488AbgIKQor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:44:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43858 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726147AbgIKQoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:41:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599842515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dCCYRHJfCs9q7+pn8+1DMUQvWPREwMeHDgZW4MhyNFI=;
-        b=EVwdx05b8f3j9tTM/UWO02hRin92bvcu5esIpLZcatz3WgSMs2zT+qz2B4mPNwooMVC51t
-        veBntQg7n20pjne2sncsWQs5EUe4VHlRC1QoJmIeK88rm8HdsQxUBx2jBmbieYOhlGMhCD
-        cxbaoaDO/P7aHGxy3eAIdOA97sm3xMQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-ioDUguKaNDO_8rEqEDUcWA-1; Fri, 11 Sep 2020 12:41:51 -0400
-X-MC-Unique: ioDUguKaNDO_8rEqEDUcWA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AB601084CA4;
-        Fri, 11 Sep 2020 16:41:48 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68F247B7D2;
-        Fri, 11 Sep 2020 16:41:28 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 08BGfRwA030406;
-        Fri, 11 Sep 2020 12:41:27 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 08BGfQ8M030402;
-        Fri, 11 Sep 2020 12:41:26 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Fri, 11 Sep 2020 12:41:26 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-        Jann Horn <jannh@google.com>, Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Eric Sandeen <sandeen@redhat.com>
-Subject: Re: [PATCH 2/2] xfs: don't update mtime on COW faults
-In-Reply-To: <20200910060626.GA7964@magnolia>
-Message-ID: <alpine.LRH.2.02.2009111232210.29958@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009041200570.27312@file01.intranet.prod.int.rdu2.redhat.com> <alpine.LRH.2.02.2009050805250.12419@file01.intranet.prod.int.rdu2.redhat.com>
- <alpine.LRH.2.02.2009050812060.12419@file01.intranet.prod.int.rdu2.redhat.com> <20200905153652.GA7955@magnolia> <alpine.LRH.2.02.2009051229180.542@file01.intranet.prod.int.rdu2.redhat.com> <20200910060626.GA7964@magnolia>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Fri, 11 Sep 2020 12:44:13 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BGUknW022796;
+        Fri, 11 Sep 2020 12:44:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=nGeabmXdwEAjiTkbWCms3XrTmRW/raRtDCwHiINZh3s=;
+ b=kivZljOTf4PdQD+hGHlfhh+ugPo3Zz7dascow4h4FpiOvUhf9Mb0mqWUx5kdP4MnlAGs
+ MTHQNPSEsmXlTgekGfTNWJCtxm8g2fhismWKFolx55d2e+v0nZXySvX/I++Ds0zA9dyg
+ LU7JsxO1D0F/mUcPii7vxgPCKRJ6inW6/pte7seTbfDho7JKOhFQ9c5z+EyyINVfF68G
+ EAobckVyMaFAXfcLZlA+pqg6/Zk6JM11QGWx3tG5ULKOqasLerZgwnw8GQej+kWzvZMB
+ y8w3HRDM7KUkVnIA9cSNGmM8VC9T12ZKoCxMggpcDCZr9e3XTCJpFScnujpT+Fu/FfAN zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33g99by7bn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 12:44:10 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BGVTpI025006;
+        Fri, 11 Sep 2020 12:44:10 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33g99by7bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 12:44:10 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BGfbn1028239;
+        Fri, 11 Sep 2020 16:44:10 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04wdc.us.ibm.com with ESMTP id 33c2a9h6w9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 16:44:10 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BGi96D52166992
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 16:44:09 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88B71B2068;
+        Fri, 11 Sep 2020 16:44:09 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 838DCB2064;
+        Fri, 11 Sep 2020 16:44:07 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.91.207])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 11 Sep 2020 16:44:07 +0000 (GMT)
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     pmorel@linux.ibm.com, schnelle@linux.ibm.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] vfio iommu: Add dma limit capability
+Date:   Fri, 11 Sep 2020 12:44:02 -0400
+Message-Id: <1599842643-2553-1-git-send-email-mjrosato@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-11_08:2020-09-10,2020-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ malwarescore=0 priorityscore=1501 adultscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 mlxlogscore=698 spamscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009110131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container") added
+a limit to the number of concurrent DMA requests for a vfio container.
+However, lazy unmapping in s390 can in fact cause quite a large number of
+outstanding DMA requests to build up prior to being purged, potentially 
+the entire guest DMA space.  This results in unexpected 'VFIO_MAP_DMA
+failed: No space left on device' conditions seen in QEMU.
 
+This patch proposes to provide the DMA limit via the VFIO_IOMMU_GET_INFO
+ioctl as a new capability.  A subsequent patchset to QEMU would collect
+this information and use it in s390 PCI support to tap the guest on the
+shoulder before overrunning the vfio limit.
 
-On Wed, 9 Sep 2020, Darrick J. Wong wrote:
+Matthew Rosato (1):
+  vfio iommu: Add dma limit capability
 
-> On Sat, Sep 05, 2020 at 01:02:33PM -0400, Mikulas Patocka wrote:
-> > > > 
-> > 
-> > I've written this program that tests it - you can integrate it into your 
-> > testsuite.
-> 
-> I don't get it.  You're a filesystem maintainer too, which means you're
-> a regular contributor.  Do you:
-> 
-> (a) not use fstests?  If you don't, I really hope you use something else
-> to QA hpfs.
+ drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
+ include/uapi/linux/vfio.h       | 16 ++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-I don't use xfstests on HPFS. I was testing it just by using it. Now I use 
-it just a little, but I don't modify it much.
-
-> (b) really think that it's my problem to integrate and submit your
-> regression tests for you?
-> 
-> and (c) what do you want me to do with a piece of code that has no 
-> signoff tag, no copyright, and no license?  This is your patch, and 
-> therefore your responsibility to develop enough of an appropriate 
-> regression test in a proper form that the rest of us can easily 
-> determine we have the rights to contribute to it.
-
-
-If you want a full patch (I copied the script from test 313), I send it 
-here.
-
-Mikulas
-
-
-From: Mikulas Patocka <mpatocka@redhat.com>
-Subject: [PATCH] check ctime and mtime vs mmap
-
-Check ctime and mtime are not updated on COW faults
-and that they are updated on shared faults
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-
----
- src/Makefile          |    3 +-
- src/mmap-timestamp.c  |   53 ++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/generic/609     |   40 +++++++++++++++++++++++++++++++++++++
- tests/generic/609.out |    2 +
- tests/generic/group   |    1 
- 5 files changed, 98 insertions(+), 1 deletion(-)
-
-Index: xfstests-dev/src/Makefile
-===================================================================
---- xfstests-dev.orig/src/Makefile	2020-09-06 12:38:40.000000000 +0200
-+++ xfstests-dev/src/Makefile	2020-09-11 17:39:04.000000000 +0200
-@@ -17,7 +17,8 @@ TARGETS = dirstress fill fill2 getpagesi
- 	t_mmap_cow_race t_mmap_fallocate fsync-err t_mmap_write_ro \
- 	t_ext4_dax_journal_corruption t_ext4_dax_inline_corruption \
- 	t_ofd_locks t_mmap_collision mmap-write-concurrent \
--	t_get_file_time t_create_short_dirs t_create_long_dirs
-+	t_get_file_time t_create_short_dirs t_create_long_dirs \
-+	mmap-timestamp
- 
- LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
- 	preallo_rw_pattern_writer ftrunc trunc fs_perms testx looptest \
-Index: xfstests-dev/src/mmap-timestamp.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xfstests-dev/src/mmap-timestamp.c	2020-09-11 18:21:40.000000000 +0200
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2020 Red Hat, Inc. All Rights reserved.
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include <sys/stat.h>
-+
-+#define FILE_NAME	argv[1]
-+
-+static struct stat st1, st2;
-+
-+int main(int argc, char *argv[])
-+{
-+	int h, r;
-+	char *map;
-+	unlink(FILE_NAME);
-+	h = creat(FILE_NAME, 0600);
-+	if (h == -1) perror("creat"), exit(1);
-+	r = write(h, "x", 1);
-+	if (r != 1) perror("write"), exit(1);
-+	if (close(h)) perror("close"), exit(1);
-+	h = open(FILE_NAME, O_RDWR);
-+	if (h == -1) perror("open"), exit(1);
-+
-+	map = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_PRIVATE, h, 0);
-+	if (map == MAP_FAILED) perror("mmap"), exit(1);
-+	if (fstat(h, &st1)) perror("fstat"), exit(1);
-+	sleep(2);
-+	*map = 'y';
-+	if (fstat(h, &st2)) perror("fstat"), exit(1);
-+	if (st1.st_mtime != st2.st_mtime) fprintf(stderr, "BUG: COW fault changed mtime!\n"), exit(1);
-+	if (st1.st_ctime != st2.st_ctime) fprintf(stderr, "BUG: COW fault changed ctime!\n"), exit(1);
-+	if (munmap(map, 4096)) perror("munmap"), exit(1);
-+
-+	map = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, h, 0);
-+	if (map == MAP_FAILED) perror("mmap"), exit(1);
-+	if (fstat(h, &st1)) perror("fstat"), exit(1);
-+	sleep(2);
-+	*map = 'z';
-+	if (msync(map, 4096, MS_SYNC)) perror("msync"), exit(1);
-+	if (fstat(h, &st2)) perror("fstat"), exit(1);
-+	if (st1.st_mtime == st2.st_mtime) fprintf(stderr, "BUG: Shared fault did not change mtime!\n"), exit(1);
-+	if (st1.st_ctime == st2.st_ctime) fprintf(stderr, "BUG: Shared fault did not change ctime!\n"), exit(1);
-+	if (munmap(map, 4096)) perror("munmap"), exit(1);
-+
-+	if (close(h)) perror("close"), exit(1);
-+	if (unlink(FILE_NAME)) perror("unlink"), exit(1);
-+	return 0;
-+}
-Index: xfstests-dev/tests/generic/609
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xfstests-dev/tests/generic/609	2020-09-11 18:30:30.000000000 +0200
-@@ -0,0 +1,40 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2020 Red Hat, Inc. All Rights Reserved.
-+#
-+# FS QA Test No. 609
-+#
-+# Check ctime and mtime are not updated on COW faults
-+# and that they are updated on shared faults
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+    cd /
-+    rm -f $testfile
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_test
-+
-+testfile=$TEST_DIR/testfile.$seq
-+
-+echo "Silence is golden"
-+
-+$here/src/mmap-timestamp $testfile 2>&1
-+
-+status=0
-+exit
-Index: xfstests-dev/tests/generic/609.out
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ xfstests-dev/tests/generic/609.out	2020-09-11 18:24:24.000000000 +0200
-@@ -0,0 +1,2 @@
-+QA output created by 609
-+Silence is golden
-Index: xfstests-dev/tests/generic/group
-===================================================================
---- xfstests-dev.orig/tests/generic/group	2020-09-06 12:38:40.000000000 +0200
-+++ xfstests-dev/tests/generic/group	2020-09-11 18:25:09.000000000 +0200
-@@ -611,3 +611,4 @@
- 606 auto attr quick dax
- 607 auto attr quick dax
- 608 auto attr quick dax
-+609 auto quick
+-- 
+1.8.3.1
 
