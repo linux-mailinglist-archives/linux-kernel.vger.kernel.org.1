@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0E326632F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBDE266328
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgIKQLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgIKPhH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:37:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E765CC061757;
-        Fri, 11 Sep 2020 08:35:52 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n25so12802519ljj.4;
-        Fri, 11 Sep 2020 08:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dLeT7KFOofVNutwmXWg7C/fdmcebGqCSDn3/nZjCzkw=;
-        b=UcQ8GDd4FuKg1Z0S0GlIEt/Fvd6pdZfR/1e51QRBNnjS5POIP8uCnADrGHDr6oXXOu
-         x0S4O08By+9kkDoMVoD6Hj9/+TP2OFRGvKa6Pok3Oy3gGnm2RnY9uwsP4YwsDnqEGnRI
-         iiL5bsIs5CvoFJy0F4LxuiDOV9kVIqz2drn8fZU+x3fGaaZI+BADFvFR2J/xIHeBoI/I
-         CwiEfKwP/1tAc29ZEuSZOzB5NotqrIqukilt+EUeufFqX6Zhi+nSH/JL5328Vr4Q3JB7
-         tfXQk7QW5FH4goaEyw6x3G41AAR0J40G+Vv32/d1Atp5TwhWEJuUGkvu5GXFSWuV4vW2
-         9yOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dLeT7KFOofVNutwmXWg7C/fdmcebGqCSDn3/nZjCzkw=;
-        b=O6beAa/+OYxyhG+5J2Uor2bZ+9B6BcD5fWtWkBl6VcRZTAPpAwGUS79B7vCPgqw5Zv
-         GVPV8gDFcjW0UG+1Axd4z+0pq5w0ut8cYAcmYnf1RPVUwxecNyQmPuZSz/7gVAlJO4kA
-         aj7TxWHZivomYwrgGgjB9F4RqB7Mgh7Ajv2TEX+YRbtRQ15HdZ8pjuKMEYRycGikvdV9
-         CFDxZrD/mCp02cC/paCHgzBSWYTLzI2Ra6+C9cVtpqZgGFLU/ywZudW/Ngfwqjqr8/Sh
-         LVBMPxfjj6ovukENz4LZ8/Y6hkkDpBdfUwu99MareEKJyCjf+KbK+rU7mD1yJefDZhzo
-         rLnw==
-X-Gm-Message-State: AOAM532VURuG67bZPwMKMLLUuv1kGYF2bTp+VfSGD84qvLh96LJ2cTs+
-        7hYKoHAGGgOMQmhtjF1IjpeD2WvqGe8vntu8Udj/gcHl
-X-Google-Smtp-Source: ABdhPJwA4PboQ0BWGAdgY+oc/x6Vy1FsrhRIO6lD6QLIjA/ser05ZMlrveM8271V4Rnw3ZnCpg03naMgfx/rvuTI94I=
-X-Received: by 2002:a2e:b4ca:: with SMTP id r10mr727487ljm.452.1599838551377;
- Fri, 11 Sep 2020 08:35:51 -0700 (PDT)
+        id S1726656AbgIKQLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:11:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45148 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726083AbgIKPhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:37:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4B0D9ACAF;
+        Fri, 11 Sep 2020 15:37:39 +0000 (UTC)
+Subject: Re: [LTP] [PATCH] syscalls/ptrace10: Add new regression test
+To:     Cyril Hrubis <chrubis@suse.cz>
+Cc:     ltp@lists.linux.it,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200904180030.14838-1-chrubis@suse.cz>
+ <6d9b6e46-8337-9614-8fd7-b6ada8fcbe13@suse.cz>
+ <20200911153659.GA7234@yuki.lan>
+From:   Martin Doucha <mdoucha@suse.cz>
+Autocrypt: addr=mdoucha@suse.cz; keydata=
+ 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
+Message-ID: <eeeae258-d19b-eaaa-850e-6c6260b2447d@suse.cz>
+Date:   Fri, 11 Sep 2020 17:37:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200911150139.13690-1-matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <20200911150139.13690-1-matthias.schiffer@ew.tq-group.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Fri, 11 Sep 2020 12:35:40 -0300
-Message-ID: <CAOMZO5C4h2weBX-cJRRcJbkPO9_wxHzn7fbNXXFYtnN5w+iCwg@mail.gmail.com>
-Subject: Re: [PATCH] i2c: mxs: use MXS_DMA_CTRL_WAIT4END instead of DMA_CTRL_ACK
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200911153659.GA7234@yuki.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+On 11. 09. 20 17:36, Cyril Hrubis wrote:
+> I would like to avoid triggering the "your system may be vunerable"
+> messages on fixed kernel, hence the separate test.
 
-On Fri, Sep 11, 2020 at 12:01 PM Matthias Schiffer
-<matthias.schiffer@ew.tq-group.com> wrote:
->
-> The driver-specific usage of the DMA_CTRL_ACK flag was replaced with a
-> custom flag in commit ceeeb99cd821 ("dmaengine: mxs: rename custom flag"),
-> but i2c-mxs was not updated to use the new flag, completely breaking I2C
-> transactions using DMA.
->
-> Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
-> Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Good point, go ahead with a separate test then.
 
-Thanks for the fix:
-
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+-- 
+Martin Doucha   mdoucha@suse.cz
+QA Engineer for Software Maintenance
+SUSE LINUX, s.r.o.
+CORSO IIa
+Krizikova 148/34
+186 00 Prague 8
+Czech Republic
