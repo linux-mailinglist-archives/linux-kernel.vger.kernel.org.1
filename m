@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47362666FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4322666B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgIKRgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:36:19 -0400
-Received: from lists.nic.cz ([217.31.204.67]:38016 "EHLO mail.nic.cz"
+        id S1726556AbgIKRbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:31:41 -0400
+Received: from mga12.intel.com ([192.55.52.136]:23278 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbgIKMxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:53:33 -0400
-Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
-        by mail.nic.cz (Postfix) with ESMTPSA id A6E96140868;
-        Fri, 11 Sep 2020 14:53:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
-        t=1599828795; bh=httgpWCNHkS6Y7iHmeNNUnrdcyZV1boIageh9o40vZ4=;
-        h=Date:From:To;
-        b=UC0k2g4qfycx8IkCGvz+bWxdO3Uu5A3QSu8OayTPy5cUNaOI0zJhCv++kOhhGtj+O
-         4BJAjIjfhhxnOn0IA+OXklkEyilSSOUkXzWx2ZRP/ZmHbwMPC6OekH5meoZeeBRzZW
-         k7KZmOV2mTvAX+MI1JYuqmTg51pd3YUoxOpLKWMA=
-Date:   Fri, 11 Sep 2020 14:53:15 +0200
-From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Pavel Machek <pavel@ucw.cz>,
-        netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>,
-        =?UTF-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next + leds v2 6/7] net: phy: marvell: add support
- for LEDs controlled by Marvell PHYs
-Message-ID: <20200911145315.0492ec5c@dellmb.labs.office.nic.cz>
-In-Reply-To: <20200910214454.GE1551@shell.armlinux.org.uk>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
-        <20200909162552.11032-7-marek.behun@nic.cz>
-        <20200910122341.GC7907@duo.ucw.cz>
-        <20200910131541.GD3316362@lunn.ch>
-        <20200910182434.GA22845@duo.ucw.cz>
-        <20200910183154.GF3354160@lunn.ch>
-        <20200910183435.GC1551@shell.armlinux.org.uk>
-        <20200910223112.26b57dd6@nic.cz>
-        <20200910214454.GE1551@shell.armlinux.org.uk>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725867AbgIKMzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:55:50 -0400
+IronPort-SDR: kjrLjr50rIKr/KiFU5yN0dKvFHDxxYU7dL1SwRgEE+GffwDDSnUY6/TRJnFaaGg7J7LUyICvux
+ W4YtHSdufZQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="138263396"
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="138263396"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:55:49 -0700
+IronPort-SDR: Dqeh+Uve2W/lkceNpuBbi5M4LkBUiEYaR7alYHHNt1/7XRrwTZlahVgTxTzzL2GlJiosKwvzx3
+ CC7GL1IuYBKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="329771680"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2020 05:55:47 -0700
+Subject: Re: [PATCH] ftrace: Fix missing synchronize_rcu() removing trampoline
+ from kallsyms
+To:     peterz@infradead.org
+Cc:     rostedt@goodmis.org, mingo@redhat.com, mhiramat@kernel.org,
+        mbenes@suse.cz, linux-kernel@vger.kernel.org,
+        Paul McKenney <paulmck@kernel.org>
+References: <20200901091617.31837-1-adrian.hunter@intel.com>
+ <20200911114132.GH1362448@hirez.programming.kicks-ass.net>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <ba8eaca9-c207-f1b1-9cf7-e2765533645c@intel.com>
+Date:   Fri, 11 Sep 2020 15:55:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200911114132.GH1362448@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020 22:44:54 +0100
-Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
-
-> On Thu, Sep 10, 2020 at 10:31:12PM +0200, Marek Behun wrote:
-> > On Thu, 10 Sep 2020 19:34:35 +0100
-> > Russell King - ARM Linux admin <linux@armlinux.org.uk> wrote:
-> >   
-> > > On Thu, Sep 10, 2020 at 08:31:54PM +0200, Andrew Lunn wrote:  
-> > > > Generally the driver will default to the hardware reset blink
-> > > > pattern. There are a few PHY drivers which change this at
-> > > > probe, but not many. The silicon defaults are pretty good.    
-> > > 
-> > > The "right" blink pattern can be a matter of how the hardware is
-> > > wired.  For example, if you have bi-colour LEDs and the PHY
-> > > supports special bi-colour mixing modes.
-> > >   
-> > 
-> > Have you seen such, Russell? This could be achieved via the
-> > multicolor LED framework, but I don't have a device which uses such
-> > LEDs, so I did not write support for this in the Marvell PHY driver.
-> > 
-> > (I guess I could test it though, since on my device LED0 and LED1
-> > are used, and this to can be put into bi-colour LED mode.)  
+On 11/09/20 2:41 pm, peterz@infradead.org wrote:
+> On Tue, Sep 01, 2020 at 12:16:17PM +0300, Adrian Hunter wrote:
+>> Add synchronize_rcu() after list_del_rcu() in
+>> ftrace_remove_trampoline_from_kallsyms() to protect readers of
+>> ftrace_ops_trampoline_list (in ftrace_get_trampoline_kallsym)
+>> which is used when kallsyms is read.
+>>
+>> Fixes: fc0ea795f53c8d ("ftrace: Add symbols for ftrace trampolines")
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>> ---
+>>  kernel/trace/ftrace.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+>> index 275441254bb5..4e64367c9774 100644
+>> --- a/kernel/trace/ftrace.c
+>> +++ b/kernel/trace/ftrace.c
+>> @@ -2782,6 +2782,7 @@ static void ftrace_remove_trampoline_from_kallsyms(struct ftrace_ops *ops)
+>>  {
+>>  	lockdep_assert_held(&ftrace_lock);
+>>  	list_del_rcu(&ops->list);
+>> +	synchronize_rcu();
+>>  }
 > 
-> I haven't, much to my dismay. The Macchiatobin would have been ideal -
-> the 10G RJ45s have bi-colour on one side and green on the other. It
-> would have been useful if they were wired to support the PHYs bi-
-> colour mode.
 > 
+> Hurmph, we've just done a ton of that:
+> 
+> 
+> 	ftrace_shutdown()
+> 	  synchronize_rcu_tasks_rude()
+> 	  ftrace_trampoline_free()
+> 	    ftrace_remove_trampoline_from_kallsyms()
+> 
+> 
+> So would it not be better to move that call before the existing
+> synchronize_rcu_tasks stuff rather than adding another synchronize_rcu()
+> call?
 
-I have access to a Macchiatobin here at work. I am willing to add
-support for bicolor LEDs, but only after we solve and merge this first
-proposal.
+Doesn't that mean removing the symbol while the trampoline is potentially
+still in use?
 
-Marek
+Could follow up the fix with a patch to allocate list nodes instead, and use
+call_rcu() to free it, so another synchronize_rcu() is not needed.
+
