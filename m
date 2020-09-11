@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA4E26672A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9330026673A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgIKRin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgIKMpx (ORCPT
+        id S1725957AbgIKRkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:40:20 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35725 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbgIKMpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:45:53 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C8DC061573;
-        Fri, 11 Sep 2020 05:44:15 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id m12so8243877otr.0;
-        Fri, 11 Sep 2020 05:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=nj6ebQ1LelO8tJiVip6k1rVrHkVeMlZ4zIMMoXNlsek=;
-        b=kox2nOM5Vx8QiGrZU9+tMK1b8MvwNRGG8itgc1QVjK3pwmHR6je1TvzdIPsyiREIWM
-         ikGCzLVhGlYgMVlLcj517cXSxozvRGeRTJO97ZpJDIaHzZfaMAabzq0Gd2ONDPJOdrWD
-         i0kDIwMmU5Mliy8zicz80Rs8NW7c2u+SrgCAVXTCFcRWnub1E/IuEziwZlJ5haexf//W
-         g3gZ3UHHSmlHOfjPx0mMxEIP2dvqkPnLSWCiN/ooqi8XUpP6wPAKwNOjeL/4UvTr9X9/
-         9+bPlg4b9kz9DUZCSK/owoUFNsFKF/kWqVe9FBPcCxNA4iYzOYFg0+438BZ1o7ATcmV4
-         BcTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=nj6ebQ1LelO8tJiVip6k1rVrHkVeMlZ4zIMMoXNlsek=;
-        b=efe6rBAtsz9viULN7AvexnUDAD4I39M6dSVfKsSrfrXniCRyf91R+e7YuYWk9enQwT
-         PSjvVfq83+sDiF8xwHmYTIvhKpRB8DJ2pjLG337ghbj9uZyTrD9l/w2VesunDyf6MLJ0
-         x379B3PmgoT0AdUSnMPZCkKPdJKqyWF4JtmOvEasUkWtXRNYlFKPbnjk8IlokzBW5tMg
-         WxjleTS/pComPtriynKxejntoRJwGGg2FENmn1m3NM5131bCgUSQ9sO2mYuzInG881kY
-         YMwGFuzCmqmkyN+ZhMJrKVg7baj0RAP6xH3Q9kfCnF/U5L2rWjhDdCq0sESdMQbLoOeW
-         atNQ==
-X-Gm-Message-State: AOAM532tekXXyVyP9Ohe30l+0znAvnEZucS3NnsOFV0W3zx+phCDfdWZ
-        pjOLYv99rhq6X/yr8yGXFJgXEMh+HzpAgKeC/J0=
-X-Google-Smtp-Source: ABdhPJy9smo79lDaJbFYlXf+SK4TUVokeX1B7e4jY2L84PaTnKK4hDfODNKlWttxoZ4ywTuul1Ow3+rp5TkOZp6H4kU=
-X-Received: by 2002:a9d:a2b:: with SMTP id 40mr1134118otg.308.1599828254741;
- Fri, 11 Sep 2020 05:44:14 -0700 (PDT)
+        Fri, 11 Sep 2020 08:45:32 -0400
+X-Originating-IP: 90.65.88.165
+Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A36C960007;
+        Fri, 11 Sep 2020 12:44:12 +0000 (UTC)
+Date:   Fri, 11 Sep 2020 14:44:12 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 7/8] rtc: rx8010: fix indentation in probe()
+Message-ID: <20200911124412.GE230586@piout.net>
+References: <20200904152116.2157-1-brgl@bgdev.pl>
+ <20200904152116.2157-8-brgl@bgdev.pl>
+ <20200904154144.GL230586@piout.net>
+ <CAMpxmJWwNfLvpuB_1ba037UzVX9UEz7SzDEJuft0jv3txGRJQg@mail.gmail.com>
+ <20200911122837.GC230586@piout.net>
+ <CAMRc=MfzGgNR_vOqgDvQGCTQMiVbbiV_OKCOg61z-8B-mEuFyQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
- <159827190508.306468.12755090833140558156.stgit@warthog.procyon.org.uk>
- <CAKgNAkho1WSOsxvCYQOs7vDxpfyeJ9JGdTL-Y0UEZtO3jVfmKw@mail.gmail.com>
- <667616.1599063270@warthog.procyon.org.uk> <CAKgNAkhjDB9bvQ0h5b13fkbhuP9tYrkBQe7w1cbeOH8gM--D0g@mail.gmail.com>
-In-Reply-To: <CAKgNAkhjDB9bvQ0h5b13fkbhuP9tYrkBQe7w1cbeOH8gM--D0g@mail.gmail.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Fri, 11 Sep 2020 14:44:03 +0200
-Message-ID: <CAKgNAkh9h3aA1hiYownT2O=xg5JmZwmJUCvQ1Z4f85MTq-26Fw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] Add manpage for fsopen(2) and fsmount(2)
-To:     David Howells <dhowells@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=MfzGgNR_vOqgDvQGCTQMiVbbiV_OKCOg61z-8B-mEuFyQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-
-A ping for these five patches please!
-
-Cheers,
-
-Michael
-
-On Wed, 2 Sep 2020 at 22:14, Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> On Wed, 2 Sep 2020 at 18:14, David Howells <dhowells@redhat.com> wrote:
+On 11/09/2020 14:33:46+0200, Bartosz Golaszewski wrote:
+> I'm seeing this pattern elsewhere in the kernel too and I just
+> recently fixed this for MDIO. I think it's just a matter of people
+> copy-pasting a bad implementation.
+> 
+> > was an actual reason this was done this way and it was the ordering of
+> > the rtc_nvmem_register/rtc_nvmem_unregister with rtc_device_unregister.
+> > I'm not sure this is still necessary though.
 > >
-> > Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
-> >
-> > > The term "filesystem configuration context" is introduced, but never
-> > > really explained. I think it would be very helpful to have a sentence
-> > > or three that explains this concept at the start of the page.
-> >
-> > Does that need a .7 manpage?
->
-> I was hoping a sentence or a paragraph in this page might suffice. Do
-> you think more is required?
->
-> Cheers,
->
-> Michael
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+> 
+> To me - each of these should have their own 'unregister' function and
+> appropriate devres helpers *OR* RTC-related nvmem structures could be
+> set up and assigned to struct rtc_device after
+> devm_rtc_allocate_device() and picked up by the registration function
+> (and also undone by rtc_unregister_device()).
+> 
+> I'll try to allocate some time to look into this but it's not like
+> it's urgent or anything - it's just a potential improvement.
+> 
 
-
+Well, this could simply be done by adding a devres_add in
+__rtc_register_device. I'm planning to remove rtc_nvmem_unregister after
+the next LTS which will make that even easier.
 
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
