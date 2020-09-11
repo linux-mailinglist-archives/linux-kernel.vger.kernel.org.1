@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6732266418
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A9E266414
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgIKQay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:30:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60670 "EHLO mail.kernel.org"
+        id S1726522AbgIKQan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726629AbgIKQ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726633AbgIKQ1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 12:27:42 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.174])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5263722204;
-        Fri, 11 Sep 2020 16:27:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63715221ED;
+        Fri, 11 Sep 2020 16:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599841656;
-        bh=G1H4KBZK6Z5xZfrreS53bo+fWNiN/FdHp8IsoAi5Cf8=;
+        s=default; t=1599841658;
+        bh=PdARNYmSWwEuVmkx5vGlCCUPcCAIbjbSdbiCxqmb/yg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kqjsMpCrIJCJsqErxjAkkQElm0E6h4bYI0AH7V/EZkEJqHnqyx4u2uAenLC0xQ66L
-         TIg4mYICvefovMXVR2X3iycArkuYbYAewzFaz9vBPUbP+AFixi758c62yvgZ0aWK/n
-         3XnvHzGX4v9gRA7S2NI8aC22PaTSkXqFVbuMa9I4=
+        b=IRChD94VHG0MWSmsAO44Iy3TLiflAlrva4/J9DYhz2qGiK1IjJGqt5QDhORnuntRX
+         AaLlPzpmPQkmusDhJfF+gPR6eZsl2M0amJuYeDuwQA4ImpVr9phP3AgaWwzNHHQfcx
+         b1neAFM1fXjQwu43/saHl1KPkuNAAoy01vvMhDww=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Sebastian Reichel <sre@kernel.org>,
         Jonathan Bakker <xc-racer2@live.ca>, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/7] power: supply: bq2515x: fix kerneldoc
-Date:   Fri, 11 Sep 2020 18:27:24 +0200
-Message-Id: <20200911162729.3022-2-krzk@kernel.org>
+Subject: [PATCH 3/7] power: supply: bq25890: skip 'struct acpi_device_id' when !CONFIG_ACPI
+Date:   Fri, 11 Sep 2020 18:27:25 +0200
+Message-Id: <20200911162729.3022-3-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200911162729.3022-1-krzk@kernel.org>
 References: <20200911162729.3022-1-krzk@kernel.org>
@@ -39,29 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kerneldoc W=1 warning:
+Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI, the
+struct acpi_device_id becomes unused:
 
-  drivers/power/supply/bq2515x_charger.c:189: warning:
-    Function parameter or member 'init_data' not described in 'bq2515x_device'
+  drivers/power/supply/bq25890_charger.c:1076:36: warning:
+    'bq25890_acpi_match' defined but not used [-Wunused-const-variable=]
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/power/supply/bq2515x_charger.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/bq25890_charger.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/power/supply/bq2515x_charger.c b/drivers/power/supply/bq2515x_charger.c
-index 9dcb61ea4cf2..374b112f712a 100644
---- a/drivers/power/supply/bq2515x_charger.c
-+++ b/drivers/power/supply/bq2515x_charger.c
-@@ -168,7 +168,7 @@ enum bq2515x_id {
-  * @device_id: value of device_id
-  * @mains_online: boolean value indicating power supply online
-  *
-- * @bq2515x_init_data init_data: charger initialization data structure
-+ * @init_data: charger initialization data structure
-  */
- struct bq2515x_device {
- 	struct power_supply *mains;
+diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+index 77150667e36b..74b129ddc298 100644
+--- a/drivers/power/supply/bq25890_charger.c
++++ b/drivers/power/supply/bq25890_charger.c
+@@ -1073,11 +1073,13 @@ static const struct of_device_id bq25890_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, bq25890_of_match);
+ 
++#ifdef CONFIG_ACPI
+ static const struct acpi_device_id bq25890_acpi_match[] = {
+ 	{"BQ258900", 0},
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(acpi, bq25890_acpi_match);
++#endif
+ 
+ static struct i2c_driver bq25890_driver = {
+ 	.driver = {
 -- 
 2.17.1
 
