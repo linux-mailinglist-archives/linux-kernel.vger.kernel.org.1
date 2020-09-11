@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98B6266389
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ED826639A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgIKQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:19:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58834 "EHLO mail.kernel.org"
+        id S1726589AbgIKQVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:21:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgIKPaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726518AbgIKPaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 11:30:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AED3A221F1;
-        Fri, 11 Sep 2020 14:00:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D6E321D7E;
+        Fri, 11 Sep 2020 14:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599832855;
-        bh=AIEysMnma8oXpbG6AIqoQmLe/zMLbrm7nTct9i4ClRg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mT0i8FPot4WelBgGvxutd73msYMtd3Ktgf77cdHibTuwVKVRDn4VFno9l1PmzIJWU
-         hvhb2J+YtYWKGnRfzZ9vQgrChNk0kvCxvToMGUWto/AbdbT6JJyGqDHKnx6LOTBq1R
-         cis00TqGiSz5x0Vg9tppQY/5IftmumCe8eKQTYa8=
-Date:   Fri, 11 Sep 2020 16:01:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: don't panic when links can't be created in sysfs
-Message-ID: <20200911140100.GA3812164@kroah.com>
-References: <20200911134831.53258-1-ldufour@linux.ibm.com>
- <20200911134831.53258-4-ldufour@linux.ibm.com>
+        s=default; t=1599833002;
+        bh=FVUBrBUew4OrNTC+wXrBugVz5+Ee1tqB5139mrISZUs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZP4GPYsL0ABFoO/JQ1fpmbTARh9KmtMzHIuPGGVVrz7JTuRAdD95eeTqVsQ1OqEoA
+         wr70uCma1J+ZPVrGIxnMulGcN82OdAB+Gck3toLSpKZIoZFTJgJRbtVLsHRjCzGlVk
+         1bGvfXw76IYgyJzOsEqq656cqaM9N+d0eT1Xfko4=
+Received: by mail-oo1-f41.google.com with SMTP id g26so2298414ooa.9;
+        Fri, 11 Sep 2020 07:03:22 -0700 (PDT)
+X-Gm-Message-State: AOAM5327qMydCgKVIL1kap2fymFutjb1K49lJrZodsK76SjkFDe0fKMT
+        Knd4h7/jjVerV/rqWL6zEGRxFsGxWG4QutTAmA==
+X-Google-Smtp-Source: ABdhPJxTuUQpAZ7VBRAgyuwv+5Jv+wLNqLOBvyESpzDLE3KgVTieiFkjstfCsDTOYHpY06twVE/mYAqaxnPss6ZklvY=
+X-Received: by 2002:a4a:9d48:: with SMTP id f8mr1722615ook.50.1599833001875;
+ Fri, 11 Sep 2020 07:03:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911134831.53258-4-ldufour@linux.ibm.com>
+References: <20200827091441.12972-1-qiang.zhao@nxp.com> <20200909202456.GA3019412@bogus>
+ <VE1PR04MB676899EEA79D59061FE91BF691270@VE1PR04MB6768.eurprd04.prod.outlook.com>
+In-Reply-To: <VE1PR04MB676899EEA79D59061FE91BF691270@VE1PR04MB6768.eurprd04.prod.outlook.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 11 Sep 2020 08:03:10 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJx=7npNYNe4MybNvdNRxBj_XjvEOJsSm+gNGEkvbh2VA@mail.gmail.com>
+Message-ID: <CAL_JsqJx=7npNYNe4MybNvdNRxBj_XjvEOJsSm+gNGEkvbh2VA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: rtc-2127: Add bindings for nxp,rtc-2127.txt
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 03:48:31PM +0200, Laurent Dufour wrote:
-> At boot time, or when doing memory hot-add operations, if the links in
-> sysfs can't be created, the system is still able to run, so just report the
-> error in the kernel log.
-> 
-> Since the number of memory blocks managed could be high, the messages are
-> rate limited.
-> 
-> As a consequence, link_mem_sections() has no status to report anymore.
-> 
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> ---
->  drivers/base/node.c  | 25 +++++++++++++++++--------
->  include/linux/node.h | 17 ++++++++---------
->  mm/memory_hotplug.c  |  5 ++---
->  3 files changed, 27 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 862516c5a5ae..749a1c8ea992 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -811,12 +811,21 @@ static int register_mem_sect_under_node(struct memory_block *mem_blk,
->  		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
->  					&mem_blk->dev.kobj,
->  					kobject_name(&mem_blk->dev.kobj));
-> -		if (ret)
-> -			return ret;
-> +		if (ret && ret != -EEXIST)
-> +			pr_err_ratelimited(
-> +				"can't create %s to %s link in sysfs (%d)\n",
-> +				kobject_name(&node_devices[nid]->dev.kobj),
-> +				kobject_name(&mem_blk->dev.kobj), ret);
+On Wed, Sep 9, 2020 at 9:16 PM Qiang Zhao <qiang.zhao@nxp.com> wrote:
+>
+> On Thu, Sep 10, 2020 at 04:25AM, Rob Herring <robh@kernel.org> wrote:
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: 2020=E5=B9=B49=E6=9C=8810=E6=97=A5 4:25
+> > To: Qiang Zhao <qiang.zhao@nxp.com>
+> > Cc: a.zummo@towertech.it; alexandre.belloni@bootlin.com;
+> > linux-rtc@vger.kernel.org; devicetree@vger.kernel.org;
+> > linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH 1/3] dt-bindings: rtc-2127: Add bindings for
+> > nxp,rtc-2127.txt
+> >
+> > On Thu, Aug 27, 2020 at 05:14:39PM +0800, Qiang Zhao wrote:
+> > > From: Zhao Qiang <qiang.zhao@nxp.com>
+> > >
+> > > Add bindings for nxp,rtc-2127
+> > >
+> > > Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/rtc/nxp,rtc-2127.txt | 18
+> > ++++++++++++++++++
+> > >  1 file changed, 18 insertions(+)
+> > >  create mode 100644
+> > Documentation/devicetree/bindings/rtc/nxp,rtc-2127.txt
+> >
+> > Bindings should be in DT schema format now.
+>
+> Is there any doc description for DT schema format or example
+> So that I can take as a reference. Thank you!
 
-dev_err_ratelimited()?
+Documentation/devicetree/writing-schema.rst and about 1000 examples in
+the kernel tree.
 
-Same elsewhere in this patch.
-
-thanks,
-
-greg k-h
+Rob
