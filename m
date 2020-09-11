@@ -2,153 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08AA266718
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D304266717
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgIKRhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:37:34 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50215 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725964AbgIKMtT (ORCPT
+        id S1726371AbgIKRha convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 13:37:30 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:40010 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725995AbgIKMte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:49:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599828558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vDIsWH1xqD67Gmco0QgZOe8QgfyuuJPWftyBiVMV+go=;
-        b=N08nDPjJxGEfsk+7sXw1Ofmyhr6ozjnyxz3RN7HPXCZmI94JxseDKfL+8nk6jFofabQK5k
-        aGDTu2dPnYP6yJViLOJgrjd0fPr0RSw13MVAZ4AjAz3LRbtxLSq6jxl3Q0gDRRmubLaMZP
-        65F5W+Jfb8udqMUgkmhDyHCZ4i0RkjM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-4nAHGMVdN5OuEFwH4P4QhA-1; Fri, 11 Sep 2020 08:49:16 -0400
-X-MC-Unique: 4nAHGMVdN5OuEFwH4P4QhA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E966681F000;
-        Fri, 11 Sep 2020 12:49:14 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D7EAB5C1BD;
-        Fri, 11 Sep 2020 12:49:14 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id C770B180B655;
-        Fri, 11 Sep 2020 12:49:14 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 08:49:14 -0400 (EDT)
-From:   Bob Peterson <rpeterso@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Daniel Craig <Daniel.Craig@csiro.au>,
-        Nicolas Courtel <courtel@cena.fr>
-Message-ID: <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20200911122024.GA3758477@kroah.com>
-References: <20200623195316.864547658@linuxfoundation.org> <20200623195323.968867013@linuxfoundation.org> <20200910194319.GA131386@eldamar.local> <20200911115816.GB3717176@kroah.com> <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com> <20200911122024.GA3758477@kroah.com>
-Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction
- ail lists
+        Fri, 11 Sep 2020 08:49:34 -0400
+Received: from [78.134.51.148] (port=34610 helo=[192.168.77.62])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kGiUZ-000Ei9-J2; Fri, 11 Sep 2020 14:49:27 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
+ powered off
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+Message-ID: <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net>
+Date:   Fri, 11 Sep 2020 14:49:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.3.112.23, 10.4.195.27]
-Thread-Topic: gfs2: fix use-after-free on transaction ail lists
-Thread-Index: DCiqUq9HQ4QOwAvvCyrviVZWuBtO2w==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Original Message -----
-> On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
-> > ----- Original Message -----
-> > > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
-> > > > Hi,
-> > > > 
-> > > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
-> > > > > From: Bob Peterson <rpeterso@redhat.com>
-> > > > > 
-> > > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
-> > > > > 
-> > > > > Before this patch, transactions could be merged into the system
-> > > > > transaction by function gfs2_merge_trans(), but the transaction ail
-> > > > > lists were never merged. Because the ail flushing mechanism can run
-> > > > > separately, bd elements can be attached to the transaction's buffer
-> > > > > list during the transaction (trans_add_meta, etc) but quickly moved
-> > > > > to its ail lists. Later, in function gfs2_trans_end, the transaction
-> > > > > can be freed (by gfs2_trans_end) while it still has bd elements
-> > > > > queued to its ail lists, which can cause it to either lose track of
-> > > > > the bd elements altogether (memory leak) or worse, reference the bd
-> > > > > elements after the parent transaction has been freed.
-> > > > > 
-> > > > > Although I've not seen any serious consequences, the problem becomes
-> > > > > apparent with the previous patch's addition of:
-> > > > > 
-> > > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
-> > > > > 
-> > > > > to function gfs2_trans_free().
-> > > > > 
-> > > > > This patch adds logic into gfs2_merge_trans() to move the merged
-> > > > > transaction's ail lists to the sdp transaction. This prevents the
-> > > > > use-after-free. To do this properly, we need to hold the ail lock,
-> > > > > so we pass sdp into the function instead of the transaction itself.
-> > > > > 
-> > > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-> > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > (snip)
-> > > > 
-> > > > In Debian two user confirmed issues on writing on a GFS2 partition
-> > > > with this commit applied. The initial Debian report is at
-> > > > https://bugs.debian.org/968567 and Daniel Craig reported it into
-> > > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
-> > > > 
-> > > > Writing to a gfs2 filesystem fails and results in a soft lookup of the
-> > > > machine for kernels with that commit applied. I cannot reporduce the
-> > > > issue myself due not having a respective setup available, but Daniel
-> > > > described a minimal serieos of steps to reproduce the issue.
-> > > > 
-> > > > This might affect as well other stable series where this commit was
-> > > > applied, as there was a similar report for someone running 5.4.58 in
-> > > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
-> > > 
-> > > Can you report this to the gfs2 developers?
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Hi Greg,
-> > 
-> > No need. The patch came from the gfs2 developers. I think he just wants
-> > it added to a stable release.
+Hi Sakari,
+
+On 03/09/20 10:15, Sakari Ailus wrote:
 > 
-> What commit needs to be added to a stable release?
+> Hi all,
 > 
-> confused,
+> These patches enable calling (and finishing) a driver's probe function
+> without powering on the respective device on busses where the practice is
+> to power on the device for probe. While it generally is a driver's job to
+> check the that the device is there, there are cases where it might be
+> undesirable. (In this case it stems from a combination of hardware design
+> and user expectations; see below.) The downside with this change is that
+> if there is something wrong with the device, it will only be found at the
+> time the device is used. In this case (the camera sensors + EEPROM in a
+> sensor) I don't see any tangible harm from that though.
 > 
-> greg k-h
+> An indication both from the driver and the firmware is required to allow
+> the device's power state to remain off during probe (see the first patch).
+> 
+> 
+> The use case is such that there is a privacy LED next to an integrated
+> user-facing laptop camera, and this LED is there to signal the user that
+> the camera is recording a video or capturing images. That LED also happens
+> to be wired to one of the power supplies of the camera, so whenever you
+> power on the camera, the LED will be lit, whether images are captured from
+> the camera --- or not. There's no way to implement this differently
+> without additional software control (allowing of which is itself a
+> hardware design decision) on most CSI-2-connected camera sensors as they
+> simply have no pin to signal the camera streaming state.
+> 
+> This is also what happens during driver probe: the camera will be powered
+> on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+> already powered on when the driver's own probe function is called. To the
+> user this visible during the boot process as a blink of the privacy LED,
+> suggesting that the camera is recording without the user having used an
+> application to do that. From the end user's point of view the behaviour is
+> not expected and for someone unfamiliar with internal workings of a
+> computer surely seems quite suspicious --- even if images are not being
+> actually captured.
+> 
+> I've tested these on linux-next master. They also apply to Wolfram's
+> i2c/for-next branch, there's a patch that affects the I²C core changes
+> here (see below). The patches apart from that apply to Bartosz's
+> at24/for-next as well as Mauro's linux-media master branch.
 
-Sorry Greg,
+Apologies for having joined this discussion this late.
 
-It's pretty early here and the caffeine hadn't quite hit my system.
-The problem is most likely that 4.19.132 is missing this upstream patch:
+This patchset seems a good base to cover a different use case, where I
+also cannot access the physical device at probe time.
 
-cbcc89b630447ec7836aa2b9242d9bb1725f5a61
+I'm going to try these patches, but in my case there are a few
+differences that need a better understanding.
 
-I'm not sure how or why 83d060ca8d90fa1e3feac227f995c013100862d3 got
-put into stable without a stable CC but cbcc89b6304 is definitely
-required.
+First, I'm using device tree, not ACPI. In addition to adding OF support
+similar to the work you've done for ACPI, I think instead of
+acpi_dev_state_low_power() we should have a function that works for both
+ACPI and DT.
 
-I'd like to suggest Salvatore try cherry-picking this patch to see if
-it fixes the problem, and if so, perhaps Greg can add it to stable.
+Second, even though all the chips I'm interested in are connected via
+I2C, some of them (IIO sensors) can alternatively be connected via SPI
+and it would make perfectly sense to use SPI instead of I2C. The "i2c-"
+prefix added in v8 on the ACPI property looks like a limitation in that
+respect. The same reasoning applies to the implementation in the I2C
+core, but implementation could be generalized later.
 
-Regards,
+I'd love to know your opinion on the above points.
 
-Bob Peterson
-GFS2 File Systems
+-- 
+Luca
 
