@@ -2,281 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8FD267677
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71FA26767B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgIKXQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 19:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgIKXQH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 19:16:07 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9C8C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 16:16:07 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id o20so8399674pfp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 16:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zJRunWZTz5mT2mX6pknfWLOXDlKwI3diMMXxkFcYofQ=;
-        b=HZ89aGDm9VVQd5dkS9mj4yohPfMr+KO6evJg76I9VceCPQrD3OR6CNGFt0Cn524ZAb
-         kRBFr8fdeHcT3EayNmF2c1ywStN88PmjJmUvx9ZkHHn1/Zv/2xVJwlKHBZF/VLXevuIF
-         5FPHq0h5nY4ybFnMHDoQTUjcOCbN5EiGb1oOf2dahZ7citdegCnJ1w2ig3tKx3s4FRMk
-         tz+Mj/USUQ0k/EmID1W3lkeODsJQU1H5x6bb/yDMQx/zFp2p1wW0wa6NU9cLKhStsIo6
-         L7ZpMlCO7Hjwf1lsGxDQl0Ezim2iulbGJNJO5MMRzZpwvAlsxAF7K8VKFlDlxu/tJGWe
-         QSWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zJRunWZTz5mT2mX6pknfWLOXDlKwI3diMMXxkFcYofQ=;
-        b=NKCKCStI8JXM9NG62LsLLJgkBqdy83HXa3qud1jVTPP8VqNPdeTu9U3fNmBl3Fuv9X
-         LtvIEo8LUfzsjAVOm81vLKUCahgem0wM07lfAn1sIlyQuKF7G1woqtPRktHV0esmfFyJ
-         HdXdmty0yJXpyJe0qGUqPH5U1Y606XnXo9Motrs1ce3Bqr4dVfOP/9DYPY0rh/FX5uwN
-         601NsNXMWO2zJe8dS6lRCif6Cn4JyVeAfHU7SACPtwoTT/tDPpIOMZT18pBsRr17a1zx
-         FFzeLUJ/c6u3Zs4FLfEoxGybTypUVkQ+nMXcYhVq3BSJ/6glFrDad9Q9nNpb8WKz+CH0
-         VCjA==
-X-Gm-Message-State: AOAM532nXKXjfGD54lU3puiRleBXH/Amhx68XF4+P3/c3M91rM+LhS5o
-        1DMpR4Qim+22qpavFw53RiRjqA==
-X-Google-Smtp-Source: ABdhPJw/eSEQcc0h4iHQQ5YgmO2y2XkwCrCTMwknxKhR5oLn/4DxYLpIAH8xcig3bYfQyg4k4KspXg==
-X-Received: by 2002:aa7:800c:: with SMTP id j12mr3997297pfi.130.1599866166465;
-        Fri, 11 Sep 2020 16:16:06 -0700 (PDT)
-Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
-        by smtp.gmail.com with ESMTPSA id f4sm3022078pfj.147.2020.09.11.16.16.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Sep 2020 16:16:05 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, sathyanarayanan.kuppuswamy@linux.intel.com,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/10] PCI/RCEC: Add pcie_walk_rcec() to walk
- associated RCiEPs
-Date:   Fri, 11 Sep 2020 16:16:03 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <44BE3112-64C2-4A64-B9A6-6DD466DC594D@intel.com>
-In-Reply-To: <20200905022308.GA379055@bjorn-Precision-5520>
-References: <20200905022308.GA379055@bjorn-Precision-5520>
+        id S1725910AbgIKXSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 19:18:21 -0400
+Received: from mga03.intel.com ([134.134.136.65]:21440 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725871AbgIKXQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 19:16:42 -0400
+IronPort-SDR: mbmj6P8M4iZ6m8zvdLwuAuMMgNLgk8o/xdg3Oh2TGUQF3dnNCaOWq3WzR+6GTRk52N5kBYDXKb
+ MGckNZhOZtqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="158906377"
+X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
+   d="scan'208";a="158906377"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 16:16:40 -0700
+IronPort-SDR: pemPjNftCRhiQAcLvWelSaAVY/HSVBPRiHJBEw6b4wkTHwmAdyjZinT/3l1YT0CbVpJYVVoIUU
+ 0KC1unBvij9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
+   d="scan'208";a="329951001"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2020 16:16:37 -0700
+Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
+ in sched domain
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+To:     Qais Yousef <qais.yousef@arm.com>, Aubrey Li <aubrey.li@intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        valentin.schneider@arm.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org
+References: <20200910054203.525420-1-aubrey.li@intel.com>
+ <20200910054203.525420-2-aubrey.li@intel.com>
+ <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
+ <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
+Message-ID: <8a853369-c8f0-b9e8-f4cb-481d73abefaf@linux.intel.com>
+Date:   Sat, 12 Sep 2020 07:16:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4 Sep 2020, at 19:23, Bjorn Helgaas wrote:
-
-> On Fri, Sep 04, 2020 at 10:18:30PM +0000, Kelley, Sean V wrote:
->> Hi Bjorn,
+On 2020/9/12 7:04, Li, Aubrey wrote:
+> On 2020/9/12 0:28, Qais Yousef wrote:
+>> On 09/10/20 13:42, Aubrey Li wrote:
+>>> Added idle cpumask to track idle cpus in sched domain. When a CPU
+>>> enters idle, its corresponding bit in the idle cpumask will be set,
+>>> and when the CPU exits idle, its bit will be cleared.
+>>>
+>>> When a task wakes up to select an idle cpu, scanning idle cpumask
+>>> has low cost than scanning all the cpus in last level cache domain,
+>>> especially when the system is heavily loaded.
+>>>
+>>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>>> ---
+>>>  include/linux/sched/topology.h | 13 +++++++++++++
+>>>  kernel/sched/fair.c            |  4 +++-
+>>>  kernel/sched/topology.c        |  2 +-
+>>>  3 files changed, 17 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+>>> index fb11091129b3..43a641d26154 100644
+>>> --- a/include/linux/sched/topology.h
+>>> +++ b/include/linux/sched/topology.h
+>>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>>  	atomic_t	ref;
+>>>  	atomic_t	nr_busy_cpus;
+>>>  	int		has_idle_cores;
+>>> +	/*
+>>> +	 * Span of all idle CPUs in this domain.
+>>> +	 *
+>>> +	 * NOTE: this field is variable length. (Allocated dynamically
+>>> +	 * by attaching extra space to the end of the structure,
+>>> +	 * depending on how many CPUs the kernel has booted up with)
+>>> +	 */
+>>> +	unsigned long	idle_cpus_span[];
 >>
->> Quick question below...
+>> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
+> 
+> I can use the existing free code. Do we have a problem of this?
+> 
 >>
->> On Wed, 2020-09-02 at 14:55 -0700, Sean V Kelley wrote:
->>> Hi Bjorn,
->>>
->>> On Wed, 2020-09-02 at 14:00 -0500, Bjorn Helgaas wrote:
->>>> On Wed, Aug 12, 2020 at 09:46:53AM -0700, Sean V Kelley wrote:
->>>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>>>
->>>>> When an RCEC device signals error(s) to a CPU core, the CPU core
->>>>> needs to walk all the RCiEPs associated with that RCEC to check
->>>>> errors. So add the function pcie_walk_rcec() to walk all RCiEPs
->>>>> associated with the RCEC device.
->>>>>
->>>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
->>>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
->>>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->>>>> ---
->>>>>  drivers/pci/pci.h       |  4 +++
->>>>>  drivers/pci/pcie/rcec.c | 76
->>>>> +++++++++++++++++++++++++++++++++++++++++
->>>>>  2 files changed, 80 insertions(+)
->>>>>
->>>>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
->>>>> index bd25e6047b54..8bd7528d6977 100644
->>>>> --- a/drivers/pci/pci.h
->>>>> +++ b/drivers/pci/pci.h
->>>>> @@ -473,9 +473,13 @@ static inline void pci_dpc_init(struct
->>>>> pci_dev
->>>>> *pdev) {}
->>>>>  #ifdef CONFIG_PCIEPORTBUS
->>>>>  void pci_rcec_init(struct pci_dev *dev);
->>>>>  void pci_rcec_exit(struct pci_dev *dev);
->>>>> +void pcie_walk_rcec(struct pci_dev *rcec, int (*cb)(struct
->>>>> pci_dev
->>>>> *, void *),
->>>>> +		    void *userdata);
->>>>>  #else
->>>>>  static inline void pci_rcec_init(struct pci_dev *dev) {}
->>>>>  static inline void pci_rcec_exit(struct pci_dev *dev) {}
->>>>> +static inline void pcie_walk_rcec(struct pci_dev *rcec, int
->>>>> (*cb)(struct pci_dev *, void *),
->>>>> +				  void *userdata) {}
->>>>>  #endif
->>>>>
->>>>>  #ifdef CONFIG_PCI_ATS
->>>>> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
->>>>> index 519ae086ff41..405f92fcdf7f 100644
->>>>> --- a/drivers/pci/pcie/rcec.c
->>>>> +++ b/drivers/pci/pcie/rcec.c
->>>>> @@ -17,6 +17,82 @@
->>>>>
->>>>>  #include "../pci.h"
->>>>>
->>>>> +static int pcie_walk_rciep_devfn(struct pci_bus *bus, int
->>>>> (*cb)(struct pci_dev *, void *),
->>>>> +				 void *userdata, const unsigned long
->>>>> bitmap)
->>>>> +{
->>>>> +	unsigned int devn, fn;
->>>>> +	struct pci_dev *dev;
->>>>> +	int retval;
->>>>> +
->>>>> +	for_each_set_bit(devn, &bitmap, 32) {
->>>>> +		for (fn = 0; fn < 8; fn++) {
->>>>> +			dev = pci_get_slot(bus, PCI_DEVFN(devn, fn));
->>>>
->>>> Wow, this is a lot of churning to call pci_get_slot() 256 times per
->>>> bus for the "associated bus numbers" case where we pass a bitmap of
->>>> 0xffffffff.  They didn't really make it easy for software when they
->>>> added the next/last bus number thing.
->>>>
->>>> Just thinking out loud here.  What if we could set dev->rcec during
->>>> enumeration, and then use that to build pcie_walk_rcec()?
->>>
->>> I think follow what you are doing.
->>>
->>> As we enumerate an RCEC, use the time to discover RCiEPs and
->>> associate
->>> each RCiEP's dev->rcec. Although BIOS already set the bitmap for 
->>> this
->>> specific RCEC, it's more efficient to simply discover the devices
->>> through the bus walk and verify each one found against the bitmap.
->>>
->>> Further, while we can be certain that an RCiEP found with a matching
->>> device no. in a bitmap for an associated RCEC is correct, we cannot
->>> be
->>> certain that any RCiEP found on another bus range is correct unless
->>> we
->>> verify the bus is within that next/last bus range.
->>>
->>> Finally, that's where find_rcec() callback for rcec_assoc_rciep()
->>> does
->>> double duty by also checking on the "on-a-separate-bus" case 
->>> captured
->>> potentially by find_rcec() during an RCiEP's bus walk.
->>>
->>>
->>>>   bool rcec_assoc_rciep(rcec, rciep)
->>>>   {
->>>>     if (rcec->bus == rciep->bus)
->>>>       return (rcec->bitmap contains rciep->devfn);
->>>>
->>>>     return (rcec->next/last contains rciep->bus);
->>>>   }
->>>>
->>>>   link_rcec(dev, data)
->>>>   {
->>>>     struct pci_dev *rcec = data;
->>>>
->>>>     if ((dev is RCiEP) && rcec_assoc_rciep(rcec, dev))
->>>>       dev->rcec = rcec;
->>>>   }
->>>>
->>>>   find_rcec(dev, data)
->>>>   {
->>>>     struct pci_dev *rciep = data;
->>>>
->>>>     if ((dev is RCEC) && rcec_assoc_rciep(dev, rciep))
->>>>       rciep->rcec = dev;
->>>>   }
->>>>
->>>>   pci_setup_device
->>>>     ...
+>> The patch looks useful. Did it help you with any particular workload? It'd be
+>> good to expand on that in the commit message.
 >>
->> I just noticed your use of pci_setup_device(). Are you suggesting
->> moving the call to pci_rcec_init() out of pci_init_capabilities() and
->> move it into pci_setup_device()?  If so, would pci_rcec_exit() still
->> remain in pci_release_capabilities()?
->>
->> I'm just wondering if it could just remain in 
->> pci_init_capabilities().
->
-> Yeah, I didn't mean in pci_setup_device() specifically, just somewhere
-> in the callchain of pci_setup_device().  But you're right, it probably
-> would make more sense in pci_init_capabilities(), so I *should* have
-> said pci_scan_single_device() to be a little less specific.
->
-> Bjorn
+> Odd, that included in patch v1 0/1, did you receive it?
 
-I’ve done some experimenting with this approach, and I think there may 
-be a problem of just walking the busses during enumeration 
-pci_init_capabilities(). One problem is where one has an RCEC on a root 
-bus: 6a(00.4) and an RCiEP on another root bus: 6b(00.0).  They will 
-never find each other in this approach through a normal pci_bus_walk() 
-call using their respective root_bus.
+I found it at here:
 
->  +-[0000:6b]-+-00.0
->  |           +-00.1
->  |           +-00.2
->  |           \-00.3
->  +-[0000:6a]-+-00.0
->  |           +-00.1
->  |           +-00.2
->  |           \-00.4
+https://lkml.org/lkml/2020/9/11/645
 
-While having a lot of slot calls per bus is unfortunate, unless I’m 
-mistaken you would have to walk every peer root_bus with your RCiEP in 
-this example until you hit on the right RCEC, unless of course you have 
-a bitmap associated RCEC on dev->bus.
+> 
+> Thanks,
+> -Aubrey
+> 
 
-Conversely, if you are enumerating the above RCEC at 6a(00.4) and you 
-attempt to link_rcec() through calls to pci_walk_bus(), the walk will 
-still be limited to 6a and below; never encountering 6b(00.0).  So you 
-would then need an additional walk for each of the associated bus 
-ranges, excluding the same bus as the RCEC.
-
-pci_init_capabilities()
-…
-pci_init_rcec() // Cached
-
-if (RCEC)
-  Walk the dev->bus for bitmap associated RCiEP
-  Walk all associated bus ranges for RCiEP
-
-else if (RCiEP)
-  Walk the dev->bus for bitmap associated RCEC
-  Walk all peer root_bus for RCEC, confirm if own dev->bus falls within 
-discovered RCEC associated ranges
-
-The other problem here is temporal. I’m wondering if we may be trying 
-to find associated devices at the pci_init_capabilities() stage prior to 
-them being fully enumerated, i.e., RCEC has not been cached but we are 
-searching with a future associated RCiEP.  So one could encounter a race 
-condition where one is checking on an RCiEP whose associated RCEC has 
-not been enumerated yet.
-
-So let’s say one throws out RCiEP entirely and just relies upon RCEC 
-to find the associations because one knows that an encountered RCEC (in 
-pci_init_capabilities()) has already been cached. In that case you end 
-up with the original implementation being done with this patch series…
-
-if (RCEC)
-  Walk the dev->bus for bitmap associated RCiEP
-  Walk all associated bus ranges for RCiEP
-
-Perhaps I’ve muddled some things here but it doesn’t look like the 
-twain will meet unless I cover multiple peer root_bus and even then you 
-may have an issue because the devices don’t yet fully exist from the 
-perspective of the OS.
-
-Thanks,
-
-Sean
