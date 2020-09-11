@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E52826617F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7305D266195
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 16:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgIKOsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 10:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53946 "EHLO mail.kernel.org"
+        id S1726186AbgIKOzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 10:55:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726200AbgIKNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:03:45 -0400
+        id S1726171AbgIKNCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:02:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A8E0222C3;
-        Fri, 11 Sep 2020 12:57:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A24C6222B9;
+        Fri, 11 Sep 2020 12:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829057;
-        bh=ty1rpdf5mIVix/EDaUxIt/F+ojO7VRViFR9tegXU4h8=;
+        s=default; t=1599829038;
+        bh=be8mms4bynzjUv3v7/LKZ5ue6Mbiq6Mt8ONefCp1C8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KsmlCk58K/SgOpcWxDfXpnaP10OQ1R0EbeHttraYIOYekU6nRA+w5yBNC6tDD+Iyv
-         gsFNenOEQw89677wWrrTf6n5MJylNfjIJgnqubNeU3dk88UvqHre9Q6TnSB12FMMX0
-         ymj4aBEVdnReYru5QQXzts1uM2gSrbFztZnlHShc=
+        b=S06Wbh7Qr/ORPF9iPxdWv1+/zjYvVRGozfUmz0NVBkM99T4LcHvBHnwQ0NYLgMz1k
+         59zVD45HZ3e4PCALvb532dADNeiQK8qmxMuyDG4aXD0BsL2739EPXHRFygH2S89jZO
+         5t/mY6/jqSOJCDuM6oQrcx51CgMr7rA6gPymhJ+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 32/71] btrfs: set the lockdep class for log tree extent buffers
-Date:   Fri, 11 Sep 2020 14:46:16 +0200
-Message-Id: <20200911122506.532785298@linuxfoundation.org>
+        stable@vger.kernel.org, Simon Wood <simon@mungewell.org>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 42/71] ALSA: firewire-digi00x: exclude Avid Adrenaline from detection
+Date:   Fri, 11 Sep 2020 14:46:26 +0200
+Message-Id: <20200911122507.025583675@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -45,59 +44,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit d3beaa253fd6fa40b8b18a216398e6e5376a9d21 ]
+commit acd46a6b6de88569654567810acad2b0a0a25cea upstream.
 
-These are special extent buffers that get rewound in order to lookup
-the state of the tree at a specific point in time.  As such they do not
-go through the normal initialization paths that set their lockdep class,
-so handle them appropriately when they are created and before they are
-locked.
+Avid Adrenaline is reported that ALSA firewire-digi00x driver is bound to.
+However, as long as he investigated, the design of this model is hardly
+similar to the one of Digi 00x family. It's better to exclude the model
+from modalias of ALSA firewire-digi00x driver.
 
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This commit changes device entries so that the model is excluded.
+
+$ python3 crpp < ~/git/am-config-rom/misc/avid-adrenaline.img
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  04203a9c  bus_info_length 4, crc_length 32, crc 15004
+404  31333934  bus_name "1394"
+408  e064a002  irmc 1, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 10 (2048)
+40c  00a07e01  company_id 00a07e     |
+410  00085257  device_id 0100085257  | EUI-64 00a07e0100085257
+
+               root directory
+               -----------------------------------------------------------------
+414  0005d08c  directory_length 5, crc 53388
+418  0300a07e  vendor
+41c  8100000c  --> descriptor leaf at 44c
+420  0c008380  node capabilities
+424  8d000002  --> eui-64 leaf at 42c
+428  d1000004  --> unit directory at 438
+
+               eui-64 leaf at 42c
+               -----------------------------------------------------------------
+42c  0002410f  leaf_length 2, crc 16655
+430  00a07e01  company_id 00a07e     |
+434  00085257  device_id 0100085257  | EUI-64 00a07e0100085257
+
+               unit directory at 438
+               -----------------------------------------------------------------
+438  0004d6c9  directory_length 4, crc 54985
+43c  1200a02d  specifier id: 1394 TA
+440  13014001  version: Vender Unique and AV/C
+444  17000001  model
+448  81000009  --> descriptor leaf at 46c
+
+               descriptor leaf at 44c
+               -----------------------------------------------------------------
+44c  00077205  leaf_length 7, crc 29189
+450  00000000  textual descriptor
+454  00000000  minimal ASCII
+458  41766964  "Avid"
+45c  20546563  " Tec"
+460  686e6f6c  "hnol"
+464  6f677900  "ogy"
+468  00000000
+
+               descriptor leaf at 46c
+               -----------------------------------------------------------------
+46c  000599a5  leaf_length 5, crc 39333
+470  00000000  textual descriptor
+474  00000000  minimal ASCII
+478  41647265  "Adre"
+47c  6e616c69  "nali"
+480  6e650000  "ne"
+
+Reported-by: Simon Wood <simon@mungewell.org>
+Fixes: 9edf723fd858 ("ALSA: firewire-digi00x: add skeleton for Digi 002/003 family")
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20200823075545.56305-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/btrfs/ctree.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/firewire/digi00x/digi00x.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 406ae49baa076..65689cbc362db 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -1360,6 +1360,8 @@ tree_mod_log_rewind(struct btrfs_fs_info *fs_info, struct btrfs_path *path,
- 	btrfs_tree_read_unlock_blocking(eb);
- 	free_extent_buffer(eb);
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -15,6 +15,7 @@ MODULE_LICENSE("GPL v2");
+ #define VENDOR_DIGIDESIGN	0x00a07e
+ #define MODEL_CONSOLE		0x000001
+ #define MODEL_RACK		0x000002
++#define SPEC_VERSION		0x000001
  
-+	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb_rewin),
-+				       eb_rewin, btrfs_header_level(eb_rewin));
- 	btrfs_tree_read_lock(eb_rewin);
- 	__tree_mod_log_rewind(fs_info, eb_rewin, time_seq, tm);
- 	WARN_ON(btrfs_header_nritems(eb_rewin) >
-@@ -1429,7 +1431,6 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
- 
- 	if (!eb)
- 		return NULL;
--	btrfs_tree_read_lock(eb);
- 	if (old_root) {
- 		btrfs_set_header_bytenr(eb, eb->start);
- 		btrfs_set_header_backref_rev(eb, BTRFS_MIXED_BACKREF_REV);
-@@ -1437,6 +1438,9 @@ get_old_root(struct btrfs_root *root, u64 time_seq)
- 		btrfs_set_header_level(eb, old_root->level);
- 		btrfs_set_header_generation(eb, old_generation);
- 	}
-+	btrfs_set_buffer_lockdep_class(btrfs_header_owner(eb), eb,
-+				       btrfs_header_level(eb));
-+	btrfs_tree_read_lock(eb);
- 	if (tm)
- 		__tree_mod_log_rewind(root->fs_info, eb, time_seq, tm);
- 	else
--- 
-2.25.1
-
+ static int name_card(struct snd_dg00x *dg00x)
+ {
+@@ -185,14 +186,18 @@ static const struct ieee1394_device_id s
+ 	/* Both of 002/003 use the same ID. */
+ 	{
+ 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++			       IEEE1394_MATCH_VERSION |
+ 			       IEEE1394_MATCH_MODEL_ID,
+ 		.vendor_id = VENDOR_DIGIDESIGN,
++		.version = SPEC_VERSION,
+ 		.model_id = MODEL_CONSOLE,
+ 	},
+ 	{
+ 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++			       IEEE1394_MATCH_VERSION |
+ 			       IEEE1394_MATCH_MODEL_ID,
+ 		.vendor_id = VENDOR_DIGIDESIGN,
++		.version = SPEC_VERSION,
+ 		.model_id = MODEL_RACK,
+ 	},
+ 	{}
 
 
