@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAC1266438
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3BE26642E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgIKQdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:33:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53396 "EHLO mail.kernel.org"
+        id S1726651AbgIKQcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:32:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726441AbgIKPRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:17:39 -0400
+        id S1726466AbgIKPTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D536422400;
-        Fri, 11 Sep 2020 12:59:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86BCA2245C;
+        Fri, 11 Sep 2020 12:59:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829178;
-        bh=VHEHsFs9eWmEuMzGT3hxFB0fbn9NzjjQntg5CD00oP0=;
+        s=default; t=1599829186;
+        bh=ts5oWeF545x8yVXPV1jgSxK8OLtD4OAu6ZSBpIqSpDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npfiVqhq1ZkE3ntBbh3iaj2efd5Xr/Vei83UjZ7zju20yjxfkCWGgHEiki+FV1SFY
-         //+LXeMYZMSQ5u5F1mNUuaOjBSvw9RnF5b+3NfF7GSTE7tjKGi3DEGO+A/t9Za3CU6
-         wO/rugF6923qVtZEjQGVQTRJDmoE3T6cu98PjMOg=
+        b=0hqBdXfa+hp1FV2RfxAXDI2fM9nu6Jwurpu5pla8WdBpnaW5Dj17cAJBeQBMGUb67
+         BBWAnpUIFXwTHVEwGkfm5CcVUM41mHXRcfbRcwhDG0LJULZWsOSdzxHOGGFft0PKgi
+         0fjQ+x4PkVAbcQ4hx4hlpRpBy1q6VXDQrTiIgDiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 13/16] tipc: fix shutdown() of connectionless socket
-Date:   Fri, 11 Sep 2020 14:47:30 +0200
-Message-Id: <20200911122500.236937094@linuxfoundation.org>
+Subject: [PATCH 5.8 16/16] mptcp: free acked data before waiting for more memory
+Date:   Fri, 11 Sep 2020 14:47:33 +0200
+Message-Id: <20200911122500.382563283@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122459.585735377@linuxfoundation.org>
 References: <20200911122459.585735377@linuxfoundation.org>
@@ -45,85 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 2a63866c8b51a3f72cea388dfac259d0e14c4ba6 ]
+[ Upstream commit 1cec170d458b1d18f6f1654ca84c0804a701c5ef ]
 
-syzbot is reporting hung task at nbd_ioctl() [1], for there are two
-problems regarding TIPC's connectionless socket's shutdown() operation.
+After subflow lock is dropped, more wmem might have been made available.
 
-----------
-#include <fcntl.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <linux/nbd.h>
-#include <unistd.h>
+This fixes a deadlock in mptcp_connect.sh 'mmap' mode: wmem is exhausted.
+But as the mptcp socket holds on to already-acked data (for retransmit)
+no wakeup will occur.
 
-int main(int argc, char *argv[])
-{
-        const int fd = open("/dev/nbd0", 3);
-        alarm(5);
-        ioctl(fd, NBD_SET_SOCK, socket(PF_TIPC, SOCK_DGRAM, 0));
-        ioctl(fd, NBD_DO_IT, 0); /* To be interrupted by SIGALRM. */
-        return 0;
-}
-----------
+Using 'goto restart' calls mptcp_clean_una(sk) which will free pages
+that have been acked completely in the mean time.
 
-One problem is that wait_for_completion() from flush_workqueue() from
-nbd_start_device_ioctl() from nbd_ioctl() cannot be completed when
-nbd_start_device_ioctl() received a signal at wait_event_interruptible(),
-for tipc_shutdown() from kernel_sock_shutdown(SHUT_RDWR) from
-nbd_mark_nsock_dead() from sock_shutdown() from nbd_start_device_ioctl()
-is failing to wake up a WQ thread sleeping at wait_woken() from
-tipc_wait_for_rcvmsg() from sock_recvmsg() from sock_xmit() from
-nbd_read_stat() from recv_work() scheduled by nbd_start_device() from
-nbd_start_device_ioctl(). Fix this problem by always invoking
-sk->sk_state_change() (like inet_shutdown() does) when tipc_shutdown() is
-called.
-
-The other problem is that tipc_wait_for_rcvmsg() cannot return when
-tipc_shutdown() is called, for tipc_shutdown() sets sk->sk_shutdown to
-SEND_SHUTDOWN (despite "how" is SHUT_RDWR) while tipc_wait_for_rcvmsg()
-needs sk->sk_shutdown set to RCV_SHUTDOWN or SHUTDOWN_MASK. Fix this
-problem by setting sk->sk_shutdown to SHUTDOWN_MASK (like inet_shutdown()
-does) when the socket is connectionless.
-
-[1] https://syzkaller.appspot.com/bug?id=3fe51d307c1f0a845485cf1798aa059d12bf18b2
-
-Reported-by: syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: fb529e62d3f3 ("mptcp: break and restart in case mptcp sndbuf is full")
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ net/mptcp/protocol.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2773,18 +2773,21 @@ static int tipc_shutdown(struct socket *
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -772,7 +772,6 @@ fallback:
+ restart:
+ 	mptcp_clean_una(sk);
  
- 	trace_tipc_sk_shutdown(sk, NULL, TIPC_DUMP_ALL, " ");
- 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
--	sk->sk_shutdown = SEND_SHUTDOWN;
-+	if (tipc_sk_type_connectionless(sk))
-+		sk->sk_shutdown = SHUTDOWN_MASK;
-+	else
-+		sk->sk_shutdown = SEND_SHUTDOWN;
- 
- 	if (sk->sk_state == TIPC_DISCONNECTING) {
- 		/* Discard any unreceived messages */
- 		__skb_queue_purge(&sk->sk_receive_queue);
- 
--		/* Wake up anyone sleeping in poll */
--		sk->sk_state_change(sk);
- 		res = 0;
- 	} else {
- 		res = -ENOTCONN;
+-wait_for_sndbuf:
+ 	__mptcp_flush_join_list(msk);
+ 	ssk = mptcp_subflow_get_send(msk);
+ 	while (!sk_stream_memory_free(sk) ||
+@@ -873,7 +872,7 @@ wait_for_sndbuf:
+ 				 */
+ 				mptcp_set_timeout(sk, ssk);
+ 				release_sock(ssk);
+-				goto wait_for_sndbuf;
++				goto restart;
+ 			}
+ 		}
  	}
-+	/* Wake up anyone sleeping in poll. */
-+	sk->sk_state_change(sk);
- 
- 	release_sock(sk);
- 	return res;
 
 
