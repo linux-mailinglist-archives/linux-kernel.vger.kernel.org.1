@@ -2,166 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A3D2666A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08AA266718
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgIKRas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726079AbgIKM4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:56:35 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726335AbgIKRhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:37:34 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50215 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725964AbgIKMtT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:49:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599828558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vDIsWH1xqD67Gmco0QgZOe8QgfyuuJPWftyBiVMV+go=;
+        b=N08nDPjJxGEfsk+7sXw1Ofmyhr6ozjnyxz3RN7HPXCZmI94JxseDKfL+8nk6jFofabQK5k
+        aGDTu2dPnYP6yJViLOJgrjd0fPr0RSw13MVAZ4AjAz3LRbtxLSq6jxl3Q0gDRRmubLaMZP
+        65F5W+Jfb8udqMUgkmhDyHCZ4i0RkjM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-4nAHGMVdN5OuEFwH4P4QhA-1; Fri, 11 Sep 2020 08:49:16 -0400
+X-MC-Unique: 4nAHGMVdN5OuEFwH4P4QhA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A59AD22249;
-        Fri, 11 Sep 2020 12:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599828903;
-        bh=4UwAwY108elDYdJj/b91viIve21RQvKuhMtyBTpMSJQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b33U/8oerozCOzf4BTHR+00vk0jUkIMIicfsfLo5lz9KECX9gGG7uYZiuZ1BMaEDj
-         oyrckYiS8g48O4CUX1QFEYIej594V0JtWZxYAXDrnrNgdQ+hRIBz81zv7Mk+LfG+Zb
-         VjDlHs/WZOPIfSlzFmGq9tTHU2647BqKNLDaBC2I=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 51/62] ALSA: firewire-digi00x: add support for console models of Digi00x series
-Date:   Fri, 11 Sep 2020 14:46:34 +0200
-Message-Id: <20200911122504.936717931@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122502.395450276@linuxfoundation.org>
-References: <20200911122502.395450276@linuxfoundation.org>
-User-Agent: quilt/0.66
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E966681F000;
+        Fri, 11 Sep 2020 12:49:14 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D7EAB5C1BD;
+        Fri, 11 Sep 2020 12:49:14 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id C770B180B655;
+        Fri, 11 Sep 2020 12:49:14 +0000 (UTC)
+Date:   Fri, 11 Sep 2020 08:49:14 -0400 (EDT)
+From:   Bob Peterson <rpeterso@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Daniel Craig <Daniel.Craig@csiro.au>,
+        Nicolas Courtel <courtel@cena.fr>
+Message-ID: <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20200911122024.GA3758477@kroah.com>
+References: <20200623195316.864547658@linuxfoundation.org> <20200623195323.968867013@linuxfoundation.org> <20200910194319.GA131386@eldamar.local> <20200911115816.GB3717176@kroah.com> <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com> <20200911122024.GA3758477@kroah.com>
+Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction
+ ail lists
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.3.112.23, 10.4.195.27]
+Thread-Topic: gfs2: fix use-after-free on transaction ail lists
+Thread-Index: DCiqUq9HQ4QOwAvvCyrviVZWuBtO2w==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+----- Original Message -----
+> On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
+> > ----- Original Message -----
+> > > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
+> > > > Hi,
+> > > > 
+> > > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
+> > > > > From: Bob Peterson <rpeterso@redhat.com>
+> > > > > 
+> > > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
+> > > > > 
+> > > > > Before this patch, transactions could be merged into the system
+> > > > > transaction by function gfs2_merge_trans(), but the transaction ail
+> > > > > lists were never merged. Because the ail flushing mechanism can run
+> > > > > separately, bd elements can be attached to the transaction's buffer
+> > > > > list during the transaction (trans_add_meta, etc) but quickly moved
+> > > > > to its ail lists. Later, in function gfs2_trans_end, the transaction
+> > > > > can be freed (by gfs2_trans_end) while it still has bd elements
+> > > > > queued to its ail lists, which can cause it to either lose track of
+> > > > > the bd elements altogether (memory leak) or worse, reference the bd
+> > > > > elements after the parent transaction has been freed.
+> > > > > 
+> > > > > Although I've not seen any serious consequences, the problem becomes
+> > > > > apparent with the previous patch's addition of:
+> > > > > 
+> > > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
+> > > > > 
+> > > > > to function gfs2_trans_free().
+> > > > > 
+> > > > > This patch adds logic into gfs2_merge_trans() to move the merged
+> > > > > transaction's ail lists to the sdp transaction. This prevents the
+> > > > > use-after-free. To do this properly, we need to hold the ail lock,
+> > > > > so we pass sdp into the function instead of the transaction itself.
+> > > > > 
+> > > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+> > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > (snip)
+> > > > 
+> > > > In Debian two user confirmed issues on writing on a GFS2 partition
+> > > > with this commit applied. The initial Debian report is at
+> > > > https://bugs.debian.org/968567 and Daniel Craig reported it into
+> > > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
+> > > > 
+> > > > Writing to a gfs2 filesystem fails and results in a soft lookup of the
+> > > > machine for kernels with that commit applied. I cannot reporduce the
+> > > > issue myself due not having a respective setup available, but Daniel
+> > > > described a minimal serieos of steps to reproduce the issue.
+> > > > 
+> > > > This might affect as well other stable series where this commit was
+> > > > applied, as there was a similar report for someone running 5.4.58 in
+> > > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
+> > > 
+> > > Can you report this to the gfs2 developers?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > Hi Greg,
+> > 
+> > No need. The patch came from the gfs2 developers. I think he just wants
+> > it added to a stable release.
+> 
+> What commit needs to be added to a stable release?
+> 
+> confused,
+> 
+> greg k-h
 
-[ Upstream commit 13e005f9f933a35b5e55c9d36f151efe2a8383ec ]
+Sorry Greg,
 
-Digi00x series includes two types of unit; rack and console. As long as
-reading information on config rom of Digi 002 console, 'MODEL_ID' field
-has a different value from the one on Digi 002 rack.
+It's pretty early here and the caffeine hadn't quite hit my system.
+The problem is most likely that 4.19.132 is missing this upstream patch:
 
-We've already got a test report from users with Digi 003 rack. We can
-assume that console type and rack type has different value in the field.
+cbcc89b630447ec7836aa2b9242d9bb1725f5a61
 
-This commit adds a device entry for console type. For following commits,
-this commit also adds a member to 'struct snd_digi00x' to identify console
-type.
+I'm not sure how or why 83d060ca8d90fa1e3feac227f995c013100862d3 got
+put into stable without a stable CC but cbcc89b6304 is definitely
+required.
 
-$ cd linux-firewire-utils/src
-$ python2 ./crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  0404f9d0  bus_info_length 4, crc_length 4, crc 63952
-404  31333934  bus_name "1394"
-408  60647002  irmc 0, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 7 (256)
-40c  00a07e00  company_id 00a07e     |
-410  00a30000  device_id 0000a30000  | EUI-64 00a07e0000a30000
+I'd like to suggest Salvatore try cherry-picking this patch to see if
+it fixes the problem, and if so, perhaps Greg can add it to stable.
 
-               root directory
-               -----------------------------------------------------------------
-414  00058a39  directory_length 5, crc 35385
-418  0c0043a0  node capabilities
-41c  04000001  hardware version
-420  0300a07e  vendor
-424  81000007  --> descriptor leaf at 440
-428  d1000001  --> unit directory at 42c
+Regards,
 
-               unit directory at 42c
-               -----------------------------------------------------------------
-42c  00046674  directory_length 4, crc 26228
-430  120000a3  specifier id
-434  13000001  version
-438  17000001  model
-43c  81000007  --> descriptor leaf at 458
-
-               descriptor leaf at 440
-               -----------------------------------------------------------------
-440  00055913  leaf_length 5, crc 22803
-444  000050f2  descriptor_type 00, specifier_ID 50f2
-448  80000000
-44c  44696769
-450  64657369
-454  676e0000
-
-               descriptor leaf at 458
-               -----------------------------------------------------------------
-458  0004a6fd  leaf_length 4, crc 42749
-45c  00000000  textual descriptor
-460  00000000  minimal ASCII
-464  44696769  "Digi"
-468  20303032  " 002"
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/firewire/digi00x/digi00x.c | 13 +++++++++++--
- sound/firewire/digi00x/digi00x.h |  1 +
- 2 files changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 1f33b7a1fca4c..6973a7ff1c503 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -13,7 +13,8 @@ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
- MODULE_LICENSE("GPL v2");
- 
- #define VENDOR_DIGIDESIGN	0x00a07e
--#define MODEL_DIGI00X		0x000002
-+#define MODEL_CONSOLE		0x000001
-+#define MODEL_RACK		0x000002
- 
- static int name_card(struct snd_dg00x *dg00x)
- {
-@@ -75,6 +76,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	spin_lock_init(&dg00x->lock);
- 	init_waitqueue_head(&dg00x->hwdep_wait);
- 
-+	dg00x->is_console = entry->model_id == MODEL_CONSOLE;
-+
- 	err = name_card(dg00x);
- 	if (err < 0)
- 		goto error;
-@@ -138,7 +141,13 @@ static const struct ieee1394_device_id snd_dg00x_id_table[] = {
- 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
- 			       IEEE1394_MATCH_MODEL_ID,
- 		.vendor_id = VENDOR_DIGIDESIGN,
--		.model_id = MODEL_DIGI00X,
-+		.model_id = MODEL_CONSOLE,
-+	},
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id = VENDOR_DIGIDESIGN,
-+		.model_id = MODEL_RACK,
- 	},
- 	{}
- };
-diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 907e739936777..d641a0cf077a3 100644
---- a/sound/firewire/digi00x/digi00x.h
-+++ b/sound/firewire/digi00x/digi00x.h
-@@ -57,6 +57,7 @@ struct snd_dg00x {
- 	/* For asynchronous MIDI controls. */
- 	struct snd_rawmidi_substream *in_control;
- 	struct snd_fw_async_midi_port out_control;
-+	bool is_console;
- };
- 
- #define DG00X_ADDR_BASE		0xffffe0000000ull
--- 
-2.25.1
-
-
+Bob Peterson
+GFS2 File Systems
 
