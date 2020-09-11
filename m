@@ -2,175 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E932662F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20542662DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726588AbgIKQIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:08:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25952 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726546AbgIKQFY (ORCPT
+        id S1726584AbgIKQEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:04:36 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20819 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726170AbgIKQCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:05:24 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BG3rwa141691;
-        Fri, 11 Sep 2020 12:05:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=YJcSNsfJmDfN2POnRfQ8iV1tWua9L62iukE8JEYPFwM=;
- b=JiTOlVd9zXNwEJsSPw2KmFeHYudqDBBgeAx9zpaTeT2w9G9+Ap9x8GYuUjJPcqpIF0Op
- hxCl5JxpzC5pnSbWBTcrngV2LIMzZqO6kILYC7yZ/buQkCXf6+IYAnerrE/ulau9AiV/
- aUTUztHAy/1iZ9SzfC+nCkSIYdklIuIOcWZIOrUjmaqI4HQOWqG53U6FUpDGVUofJVGc
- DbvKEUhc3CqqWvtXg+B8AK46Iz8+QK86EjyzU+1uhV6JvwU2IuotdlSyV5NAOumMcDP6
- VTxe27KdfkbH4oVFB64RCBxTFHnNwHZnvC3+agEpjvrESaI3Ec2gNJJHiTBhffuQW2K7 Bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33gc3p0h0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 12:05:17 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BG5GA4149160;
-        Fri, 11 Sep 2020 12:05:16 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33gc3p0ehj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 12:05:16 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BFwUJw015347;
-        Fri, 11 Sep 2020 16:01:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 33f91w924c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 16:01:17 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BG1FGH35914100
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 16:01:15 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 251DA4204C;
-        Fri, 11 Sep 2020 16:01:15 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 81DA442042;
-        Fri, 11 Sep 2020 16:01:12 +0000 (GMT)
-Received: from sig-9-65-251-51.ibm.com (unknown [9.65.251.51])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Sep 2020 16:01:12 +0000 (GMT)
-Message-ID: <434085a28e9291dd799c1adbf08f003b7e5eb53d.camel@linux.ibm.com>
-Subject: Re: [PATCH V2 0/3] integrity: Load certs from EFI MOK config table
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>,
-        Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        James Morris <jmorris@namei.org>, serge@hallyn.com,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Jones <pjones@redhat.com>,
-        David Howells <dhowells@redhat.com>, prarit@redhat.com
-Date:   Fri, 11 Sep 2020 12:01:11 -0400
-In-Reply-To: <CAMj1kXHOcGiwOT_sNTQRA=G7GCQSKLk2HSNoS2vEQYPzQpn0nw@mail.gmail.com>
-References: <20200905013107.10457-1-lszubowi@redhat.com>
-         <CAMj1kXHOcGiwOT_sNTQRA=G7GCQSKLk2HSNoS2vEQYPzQpn0nw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        Fri, 11 Sep 2020 12:02:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599840149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UzNqZBAGXS7F5Dy3gzRVUTnuTyaskfH6gaEmCpanmiQ=;
+        b=Jxkz3ZnPHY2UltA5/0IG6sFLpGKl0UYLzXxJgFKEzwHnBqQvoQLGy7enNRFQoHupoxbA0J
+        2qoyQTepefWaYmqjOT6kdasjKyOq6zeifEg5ZoDMwmfSdR7HA2n9vWWRjjl7CYThELzahi
+        fzVUuWtq/rTrV2+1MHCrRNYIKj6dcvo=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-rixSgNOXOwmXf9JTWND1tg-1; Fri, 11 Sep 2020 12:02:25 -0400
+X-MC-Unique: rixSgNOXOwmXf9JTWND1tg-1
+Received: by mail-wm1-f71.google.com with SMTP id k12so2018664wmj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:02:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UzNqZBAGXS7F5Dy3gzRVUTnuTyaskfH6gaEmCpanmiQ=;
+        b=S4otxuLgNJ1GRi9Zi8a0jtPtNbWbJF+byTvTe71cB7RPi8neD0WMNDU48V0LgsurEu
+         3B5EwnSraQ1inSLXuyigbIN17ulDfTUw9Y+7PUbOWyZXtAmYrSrPA6ge4gNrcxSKlhNA
+         ICa7d2UIkqf0NuHYGApYIbvcm0SaOBVlNcz08YbjxpdA2Hp0KxFZiZTP62uBPgA7XhJx
+         0NgfEeqpEzypTTpsRZleDQCYSYlWdAAhtk99ll9BXwp8EMOZ54n9o7KgEIR9eHWU9M85
+         K3ByUa/LhvcPcO0CYp5cyiJYSV3HSa/MMqtI52CnRN+Bl7jRr9RWyGOpsuOKttco/KJY
+         cnkA==
+X-Gm-Message-State: AOAM530ewwSLuqhl2SZwPzWxM1BCTB9jnwozMi3ZrfZk3TuKibEzG5Yn
+        kzOXU2oCf8AgignaKlPE9RCoOkSOEoxPF79kjTUoHlUT8FFDfLcmEHwXiAXY3Bk6o3YLESxj9Ja
+        mviflUFHvvqQP2OZnDyZBKe6E
+X-Received: by 2002:adf:f70d:: with SMTP id r13mr2807365wrp.317.1599840143600;
+        Fri, 11 Sep 2020 09:02:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzlZ/52RedjxDE7fk9zVT8weEe/dNfRBYU1gf7UxBbf9Eg9Ud+Y+MHJJZv6HKemXzFN9Gm3jw==
+X-Received: by 2002:adf:f70d:: with SMTP id r13mr2807329wrp.317.1599840143390;
+        Fri, 11 Sep 2020 09:02:23 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id l10sm4868973wru.59.2020.09.11.09.02.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 09:02:22 -0700 (PDT)
+Subject: Re: [RESEND PATCH v2] KVM: fix memory leak in
+ kvm_io_bus_unregister_dev()
+To:     Rustam Kovhaev <rkovhaev@gmail.com>, vkuznets@redhat.com,
+        gustavoars@kernel.org, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        stable@vger.kernel.org
+References: <20200907185535.233114-1-rkovhaev@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <979a4030-6934-41bd-ee55-a3e301f04cc6@redhat.com>
+Date:   Fri, 11 Sep 2020 18:02:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200907185535.233114-1-rkovhaev@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_08:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- suspectscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-11 at 18:17 +0300, Ard Biesheuvel wrote:
-> On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
-> >
-> > Because of system-specific EFI firmware limitations, EFI volatile
-> > variables may not be capable of holding the required contents of
-> > the Machine Owner Key (MOK) certificate store when the certificate
-> > list grows above some size. Therefore, an EFI boot loader may pass
-> > the MOK certs via a EFI configuration table created specifically for
-> > this purpose to avoid this firmware limitation.
-> >
-> > An EFI configuration table is a simpler and more robust mechanism
-> > compared to EFI variables and is well suited for one-way passage
-> > of static information from a pre-OS environment to the kernel.
-> >
-> > Entries in the MOK variable configuration table are named key/value
-> > pairs. Therefore the shim boot loader can create a MokListRT named
-> > entry in the MOK configuration table that contains exactly the same
-> > data as the MokListRT UEFI variable does or would otherwise contain.
-> > As such, the kernel can load certs from the data in the MokListRT
-> > configuration table entry data in the same way that it loads certs
-> > from the data returned by the EFI GetVariable() runtime call for the
-> > MokListRT variable.
-> >
-> > This patch set does not remove the support for loading certs from the
-> > EFI MOK variables into the platform key ring. However, if both the EFI
-> > MOK configuration table and corresponding EFI MOK variables are present,
-> > the MOK table is used as the source of MOK certs.
-> >
-> > The contents of the individual named MOK config table entries are
-> > made available to user space as individual sysfs binary files,
-> > which are read-only to root, under:
-> >
-> >         /sys/firmware/efi/mok-variables/
-> >
-> > This enables an updated mokutil to provide support for:
-> >
-> >         mokutil --list-enrolled
-> >
-> > such that it can provide accurate information regardless of whether
-> > the MOK configuration table or MOK EFI variables were the source
-> > for certs. Note that all modifications of MOK related state are still
-> > initiated by mokutil via EFI variables.
-> >
-> > V2: Incorporate feedback from V1
-> >   Patch 01: efi: Support for MOK variable config table
-> >   - Minor update to change log; no code changes
-> >   Patch 02: integrity: Move import of MokListRT certs to a separate routine
-> >   - Clean up code flow in code moved to load_moklist_certs()
-> >   - Remove some unnecessary initialization of variables
-> >   Patch 03: integrity: Load certs from the EFI MOK config table
-> >   - Update required due to changes in patch 02.
-> >   - Remove unnecessary init of mokvar_entry in load_moklist_certs()
-> >
-> > V1:
-> >   https://lore.kernel.org/lkml/20200826034455.28707-1-lszubowi@redhat.com/
-> >
-> > Lenny Szubowicz (3):
-> >   efi: Support for MOK variable config table
-> >   integrity: Move import of MokListRT certs to a separate routine
-> >   integrity: Load certs from the EFI MOK config table
-> >
-> >  arch/x86/kernel/setup.c                       |   1 +
-> >  arch/x86/platform/efi/efi.c                   |   3 +
-> >  drivers/firmware/efi/Makefile                 |   1 +
-> >  drivers/firmware/efi/arm-init.c               |   1 +
-> >  drivers/firmware/efi/efi.c                    |   6 +
-> >  drivers/firmware/efi/mokvar-table.c           | 360 ++++++++++++++++++
-> >  include/linux/efi.h                           |  34 ++
-> >  security/integrity/platform_certs/load_uefi.c |  85 ++++-
-> >  8 files changed, 472 insertions(+), 19 deletions(-)
-> >  create mode 100644 drivers/firmware/efi/mokvar-table.c
-> >
+On 07/09/20 20:55, Rustam Kovhaev wrote:
+> when kmalloc() fails in kvm_io_bus_unregister_dev(), before removing
+> the bus, we should iterate over all other devices linked to it and call
+> kvm_iodevice_destructor() for them
 > 
-> Thanks. I have tentatively queued these up in efi/next.
+> Fixes: 90db10434b16 ("KVM: kvm_io_bus_unregister_dev() should never fail")
+> Cc: stable@vger.kernel.org
+> Reported-and-tested-by: syzbot+f196caa45793d6374707@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?extid=f196caa45793d6374707
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+> v2:
+> - remove redundant whitespace
+> - remove goto statement and use if/else
+> - add Fixes tag
+> ---
+>  virt/kvm/kvm_main.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
 > 
-> Mimi, please let me know if you have any thoughts on 3/3, and whether
-> your R-b on 2/3 [v1] implies that you are ok with the series going
-> through the EFI tree.
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 67cd0b88a6b6..cf88233b819a 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4332,7 +4332,7 @@ int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus bus_idx, gpa_t addr,
+>  void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
+>  			       struct kvm_io_device *dev)
+>  {
+> -	int i;
+> +	int i, j;
+>  	struct kvm_io_bus *new_bus, *bus;
+>  
+>  	bus = kvm_get_bus(kvm, bus_idx);
+> @@ -4349,17 +4349,20 @@ void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
+>  
+>  	new_bus = kmalloc(struct_size(bus, range, bus->dev_count - 1),
+>  			  GFP_KERNEL_ACCOUNT);
+> -	if (!new_bus)  {
+> +	if (new_bus) {
+> +		memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
+> +		new_bus->dev_count--;
+> +		memcpy(new_bus->range + i, bus->range + i + 1,
+> +		       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
+> +	} else {
+>  		pr_err("kvm: failed to shrink bus, removing it completely\n");
+> -		goto broken;
+> +		for (j = 0; j < bus->dev_count; j++) {
+> +			if (j == i)
+> +				continue;
+> +			kvm_iodevice_destructor(bus->range[j].dev);
+> +		}
+>  	}
+>  
+> -	memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
+> -	new_bus->dev_count--;
+> -	memcpy(new_bus->range + i, bus->range + i + 1,
+> -	       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
+> -
+> -broken:
+>  	rcu_assign_pointer(kvm->buses[bus_idx], new_bus);
+>  	synchronize_srcu_expedited(&kvm->srcu);
+>  	kfree(bus);
+> 
 
-Yes, Ard, that was the intent.  I haven't reviewed the most recent
-version.
+Queued, thanks.
 
-Mimi
+I am currently on leave so I am going through the patches and queuing
+them, but I will only push kvm/next and kvm/queue next week.  kvm/master
+patches will be sent to Linus for the next -rc though.
+
+Paolo
 
