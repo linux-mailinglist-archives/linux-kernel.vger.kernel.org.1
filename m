@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22266265F63
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4C3265F6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgIKMRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:17:51 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:40509 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgIKMQp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:16:45 -0400
-Received: by mail-oi1-f194.google.com with SMTP id t76so9215746oif.7;
-        Fri, 11 Sep 2020 05:16:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xBfOLxbTh4kTcMU0r+KJNNeHONrOwn+AtKnHRK+5TXU=;
-        b=IwwZ9mW6Cg8dMSfG6X/YyXcgLl7O0heJkrmFSl9C+xWrLeS0aienU/aXSCDdpJpjW0
-         veBTIMMvjrkbZFUI9mg0ywFNHaD3LpUFOlGSVlhV1mIGGG/bWmg46qUmYzHM0vNDKZYU
-         moYXkzR0R/YRye678xqGTsg1KN//L6fQA8iU/oEZdkYnJ7TgAgcBaGZPJO5h6QlrmflL
-         b0ksbW8nb4AAiOoD+ijAB9HOv5i/Gt94X0ZZqdcnhqUESEBbo1OS7LsiRJSnkxOeZdyJ
-         GsQt+1D+9zzFgvHRvNv9LAFcP3td4oKPpdbB0VeW2onvUaWX47d0E9/IcAYF/AAB2JqM
-         EqGw==
-X-Gm-Message-State: AOAM533a2HdOP61SN1NBLlsfbihdAsGxMF1xr5+WfEENvHqs2H0//VfK
-        ooPQL0TwhOg/1L855oVo9xZOjf3baHwU625QuT8=
-X-Google-Smtp-Source: ABdhPJyCIAiCP8bbq24FgT0dntTldnj2QIOFwDjxpv+NiUuYcZ7IoSH6KvhpsQgj7qzed9PFFnbzWoMXH4Nd1Uy3JcE=
-X-Received: by 2002:aca:3e8b:: with SMTP id l133mr1136907oia.110.1599826604003;
- Fri, 11 Sep 2020 05:16:44 -0700 (PDT)
+        id S1725895AbgIKMUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725817AbgIKMQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:16:50 -0400
+Received: from mail.kernel.org (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13FDE22207;
+        Fri, 11 Sep 2020 12:16:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599826608;
+        bh=hRvZkeA5envDy3jhEryZBWbNL0TKkQVW9LyxnaBNgqQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yOnLxkIZSbj3z0FDLvaw1/7hm2GKZUM7rCnmALOdyRnjVrL/N8HlwqMpL0EDu6f+W
+         xVkJ97yZymr3BSzlaUfa1tf0afl+9nTsGNOShQEi1fYFeO/YzdbjmCst9+2RlVvpIc
+         H9A7tRUt7H6adXKWj/jeBNkXN0VwIzDIDE+WB1BU=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kGhyv-0006WH-W5; Fri, 11 Sep 2020 14:16:46 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "John Stultz" <john.stultz@linaro.org>,
+        "Manivannan Sadhasivam" <mani@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 RESEND 4/8] dts: phy: phy-hi3670-usb3.txt: use a consistent namespace
+Date:   Fri, 11 Sep 2020 14:16:40 +0200
+Message-Id: <f7832a577fc4b7d2f8459c1023f9782e43a9efb2.1599826421.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1599826421.git.mchehab+huawei@kernel.org>
+References: <cover.1599826421.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <cover.1599031227.git.viresh.kumar@linaro.org> <973bd0536c4957d03f36447398498cfacb2393d9.1599031227.git.viresh.kumar@linaro.org>
- <20200911101132.GC165568@hirez.programming.kicks-ass.net> <20200911113532.zq2bou4swixb2ymk@vireshk-i7>
-In-Reply-To: <20200911113532.zq2bou4swixb2ymk@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Sep 2020 14:16:33 +0200
-Message-ID: <CAJZ5v0jt2ZyXB=2QAB0snC2XQ1N2TUjZGZjJ9vCDdAQHQ+3DpA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 1:36 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 11-09-20, 12:11, peterz@infradead.org wrote:
-> > On Wed, Sep 02, 2020 at 12:54:41PM +0530, Viresh Kumar wrote:
-> > > +   atomic_t reset_pending;
-> >
-> > > +   atomic_set(&stats->reset_pending, 0);
-> > > +   if (atomic_read(&stats->reset_pending))
-> > > +   bool pending = atomic_read(&stats->reset_pending);
-> > > +   atomic_set(&stats->reset_pending, 1);
-> > > +   bool pending = atomic_read(&stats->reset_pending);
-> > > +   if (atomic_read(&stats->reset_pending))
-> >
-> > What do you think atomic_t is doing for you?
->
-> I was trying to avoid races while two writes are going in parallel,
-> but obviously as this isn't a RMW operation, it won't result in
-> anything for me.
->
-> Maybe what I should be doing is just READ_ONCE()/WRITE_ONCE()? So the
-> other side doesn't see any intermediate value that was never meant to
-> be set/read ?
+While this driver is not used yet, use a more consistent namespace,
+similar to the PHY layer for Kirin 960 (hi3660).
 
-If the value in question is a pointer or an int (or equivalent),
-READ_ONCE()/WRITE_ONCE() should be sufficient, and should be used at
-least as a matter of annotation of the sensitive code IMO.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-IIRC, atomic_set() and atomic_read() are pretty much the same as
-WRITE_ONCE() and READ_ONCE(), respectively, anyway.
+diff --git a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+index 4cb02612ff23..2fb27cb8beaf 100644
+--- a/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
++++ b/Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
+@@ -2,7 +2,7 @@ Hisilicon Kirin970 usb PHY
+ -----------------------
+ 
+ Required properties:
+-- compatible: should be "hisilicon,kirin970-usb-phy"
++- compatible: should be "hisilicon,hi3670-usb-phy"
+ - #phy-cells: must be 0
+ - hisilicon,pericrg-syscon: phandle of syscon used to control phy.
+ - hisilicon,pctrl-syscon: phandle of syscon used to control phy.
+@@ -14,7 +14,7 @@ Refer to phy/phy-bindings.txt for the generic PHY binding properties
+ 
+ Example:
+ 	usb_phy: usbphy {
+-		compatible = "hisilicon,kirin970-usb-phy";
++		compatible = "hisilicon,hi3670-usb-phy";
+ 		#phy-cells = <0>;
+ 		hisilicon,pericrg-syscon = <&crg_ctrl>;
+ 		hisilicon,pctrl-syscon = <&pctrl>;
+-- 
+2.26.2
 
-Cheers!
