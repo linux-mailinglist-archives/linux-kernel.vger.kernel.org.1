@@ -2,274 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CB7266569
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B373B2665FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgIKRBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:01:37 -0400
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185]:54548
-        "EHLO a27-185.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726287AbgIKPER (ORCPT
+        id S1726327AbgIKRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:19:34 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:28123 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgIKO6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:04:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599836133;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type;
-        bh=TcyM3JEZsPTMsOROT6ucshxdgW+PMxcnkDNjHjMIG1E=;
-        b=ZnHrCo0Ixrj+w04jVDgQsHPbgOkrLnr7WF6diIQ2ze/pprCXUfr5SzI39Dpkldn3
-        OnYS8RhNYPNK//orkNNjbQCtvCqcB25CB8mEAJpftyNKPvRqjURdyWBsrbIlgVsi+SC
-        dCN+unBWhgtaxk/L5k8VGiyDWemZW3z/iORpaimM=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599836133;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:MIME-Version:Content-Type:Feedback-ID;
-        bh=TcyM3JEZsPTMsOROT6ucshxdgW+PMxcnkDNjHjMIG1E=;
-        b=cxxT3h13Oe2baWHtZIH0HlDWSR1r1J9U7UF5QSEyJFgbCrvuQUjDJmfYqv4Es2oE
-        /FTdTNcsKPbcbxP4BhotqFgsV8o6sqyzQ9gFCNBBkbAnop0gQ9CAuZxioxAlvXI6Mih
-        lSTxin1Y2CAGMwLA6o5xh5ILVWKFbC/l0fCqgFEI=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D595BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Anilkumar Kolli <akolli@codeaurora.org>,
-        Bhagavathi Perumal S <bperumal@codeaurora.org>,
-        Ganesh Sesetti <gseset@codeaurora.org>,
-        Govindaraj Saminathan <gsamin@codeaurora.org>,
-        John Crispin <john@phrozen.org>,
-        Julia Lawall <julia.lawall@lip6.fr>,
-        Karthikeyan Periyasamy <periyasa@codeaurora.org>,
-        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
-        ath11k@lists.infradead.org
-Subject: Re: drivers/net/wireless/ath/ath11k/ahb.c:919:15: warning: cast to smaller integer type 'enum ath11k_hw_rev' from 'const void
-References: <202009110445.WqWCY2F0%lkp@intel.com>
-Date:   Fri, 11 Sep 2020 14:55:33 +0000
-In-Reply-To: <202009110445.WqWCY2F0%lkp@intel.com> (kernel test robot's
-        message of "Fri, 11 Sep 2020 04:52:50 +0800")
-Message-ID: <010101747daa1692-fd5e413c-b3ab-41b1-8d57-cc9ad7e0a429-000000@us-west-2.amazonses.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Fri, 11 Sep 2020 10:58:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1599836302; x=1631372302;
+  h=subject:from:to:cc:references:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Zo2DwoqnHvBuH56xIWns6eaxEfl/ZPGVsEI+Qq68jw0=;
+  b=Flkd2/CG+0SfTbwDHRRTUWIArXHtEQ5q6UDymdJhml3rrP3zpgQpFJ1q
+   zamRdDIenlUBOjX6cTDJ1J0gDSKkKSc3RTMBexZpWbgjZ7NYQh6JoSHKW
+   6TCih1Zis1jm2MrgJT2QoA3b5bEYvTIxsz8tf2+RJhT+5EgoW3G+pcsgy
+   k=;
+X-IronPort-AV: E=Sophos;i="5.76,415,1592870400"; 
+   d="scan'208";a="75441519"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 11 Sep 2020 14:56:34 +0000
+Received: from EX13D16EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 1CD94282592;
+        Fri, 11 Sep 2020 14:56:30 +0000 (UTC)
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.244) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 11 Sep 2020 14:56:22 +0000
+Subject: Re: [PATCH v8 17/18] nitro_enclaves: Add overview documentation
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Frank van der Linden" <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        "Karen Noel" <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Stefan Hajnoczi" <stefanha@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        "Uwe Dannowski" <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        kvm <kvm@vger.kernel.org>,
+        ne-devel-upstream <ne-devel-upstream@amazon.com>
+References: <20200904173718.64857-1-andraprs@amazon.com>
+ <20200904173718.64857-18-andraprs@amazon.com>
+ <20200907090126.GD1101646@kroah.com>
+ <44a8a921-1fb4-87ab-b8f2-c168c615dbbd@amazon.com>
+ <20200907140803.GA3719869@kroah.com>
+ <b8a1e66c-7674-7354-599e-159efd260ba9@amazon.com>
+Message-ID: <310abd0d-60e7-a52c-fcae-cf98ac474e32@amazon.com>
+Date:   Fri, 11 Sep 2020 17:56:10 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SES-Outgoing: 2020.09.11-54.240.27.185
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+In-Reply-To: <b8a1e66c-7674-7354-599e-159efd260ba9@amazon.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.244]
+X-ClientProxiedBy: EX13D42UWA001.ant.amazon.com (10.43.160.153) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ ath11k
+CgpPbiAwNy8wOS8yMDIwIDE4OjEzLCBQYXJhc2NoaXYsIEFuZHJhLUlyaW5hIHdyb3RlOgo+Cj4K
+PiBPbiAwNy8wOS8yMDIwIDE3OjA4LCBHcmVnIEtIIHdyb3RlOgo+PiBPbiBNb24sIFNlcCAwNywg
+MjAyMCBhdCAwNDo0MzoxMVBNICswMzAwLCBQYXJhc2NoaXYsIEFuZHJhLUlyaW5hIHdyb3RlOgo+
+Pj4KPj4+IE9uIDA3LzA5LzIwMjAgMTI6MDEsIEdyZWcgS0ggd3JvdGU6Cj4+Pj4gT24gRnJpLCBT
+ZXAgMDQsIDIwMjAgYXQgMDg6Mzc6MTdQTSArMDMwMCwgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+
+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBBbmRyYSBQYXJhc2NoaXYgPGFuZHJhcHJzQGFtYXpvbi5jb20+
+Cj4+Pj4+IFJldmlld2VkLWJ5OiBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPgo+Pj4+
+PiAtLS0KPj4+Pj4gQ2hhbmdlbG9nCj4+Pj4+Cj4+Pj4+IHY3IC0+IHY4Cj4+Pj4+Cj4+Pj4+ICog
+QWRkIGluZm8gYWJvdXQgdGhlIHByaW1hcnkgLyBwYXJlbnQgVk0gQ0lEIHZhbHVlLgo+Pj4+PiAq
+IFVwZGF0ZSByZWZlcmVuY2UgbGluayBmb3IgaHVnZSBwYWdlcy4KPj4+Pj4gKiBBZGQgcmVmZXJl
+bmNlIGxpbmsgZm9yIHRoZSB4ODYgYm9vdCBwcm90b2NvbC4KPj4+Pj4gKiBBZGQgbGljZW5zZSBt
+ZW50aW9uIGFuZCB1cGRhdGUgZG9jIHRpdGxlIC8gY2hhcHRlciBmb3JtYXR0aW5nLgo+Pj4+Pgo+
+Pj4+PiB2NiAtPiB2Nwo+Pj4+Pgo+Pj4+PiAqIE5vIGNoYW5nZXMuCj4+Pj4+Cj4+Pj4+IHY1IC0+
+IHY2Cj4+Pj4+Cj4+Pj4+ICogTm8gY2hhbmdlcy4KPj4+Pj4KPj4+Pj4gdjQgLT4gdjUKPj4+Pj4K
+Pj4+Pj4gKiBObyBjaGFuZ2VzLgo+Pj4+Pgo+Pj4+PiB2MyAtPiB2NAo+Pj4+Pgo+Pj4+PiAqIFVw
+ZGF0ZSBkb2MgdHlwZSBmcm9tIC50eHQgdG8gLnJzdC4KPj4+Pj4gKiBVcGRhdGUgZG9jdW1lbnRh
+dGlvbiBiYXNlZCBvbiB0aGUgY2hhbmdlcyBmcm9tIHY0Lgo+Pj4+Pgo+Pj4+PiB2MiAtPiB2Mwo+
+Pj4+Pgo+Pj4+PiAqIE5vIGNoYW5nZXMuCj4+Pj4+Cj4+Pj4+IHYxIC0+IHYyCj4+Pj4+Cj4+Pj4+
+ICogTmV3IGluIHYyLgo+Pj4+PiAtLS0KPj4+Pj4gwqDCoCBEb2N1bWVudGF0aW9uL25pdHJvX2Vu
+Y2xhdmVzL25lX292ZXJ2aWV3LnJzdCB8IDk1IAo+Pj4+PiArKysrKysrKysrKysrKysrKysrKwo+
+Pj4+PiDCoMKgIDEgZmlsZSBjaGFuZ2VkLCA5NSBpbnNlcnRpb25zKCspCj4+Pj4+IMKgwqAgY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vbml0cm9fZW5jbGF2ZXMvbmVfb3ZlcnZpZXcu
+cnN0Cj4+Pj4gQSB3aG9sZSBuZXcgc3ViZGlyLCBmb3IgYSBzaW5nbGUgZHJpdmVyLCBhbmQgbm90
+IHRpZWQgaW50byB0aGUga2VybmVsCj4+Pj4gZG9jdW1lbnRhdGlvbiBidWlsZCBwcm9jZXNzIGF0
+IGFsbD/CoCBOb3QgZ29vZCA6KAo+Pj4+Cj4+PiBXb3VsZCB0aGUgInZpcnQiIGRpcmVjdG9yeSBi
+ZSBhIGJldHRlciBvcHRpb24gZm9yIHRoaXMgZG9jIGZpbGU/Cj4+IFllcy4KPgo+IEFscmlnaHQs
+IEknbGwgdXBkYXRlIHRoZSBkb2MgZmlsZSBsb2NhdGlvbiwgdGhlIGluZGV4IGZpbGUgYW5kIHRo
+ZSAKPiBNQUlOVEFJTkVSUyBlbnRyeSB0byByZWZsZWN0IHRoZSBuZXcgZG9jIGZpbGUgbG9jYXRp
+b24uCj4KCkkgc2VudCBvdXQgYSBuZXcgcmV2aXNpb24gdGhhdCBpbmNsdWRlcyB0aGUgdXBkYXRl
+cyBiYXNlZCBvbiB5b3VyIApmZWVkYmFjay4gVGhhbmtzIGZvciByZXZpZXcuCgpUbyBiZSBhd2Fy
+ZSBvZiB0aGlzIGJlZm9yZWhhbmQsIHdoYXQgd291bGQgYmUgdGhlIGZ1cnRoZXIgbmVjZXNzYXJ5
+IApzdGVwcyAoZS5nLiBsaW51eC1uZXh0IGJyYW5jaCwgYWRkaXRpb25hbCByZXZpZXcgYW5kIC8g
+b3Igc2FuaXR5IGNoZWNrcykgCnRvIGNvbnNpZGVyIGZvciB0YXJnZXRpbmcgdGhlIG5leHQgbWVy
+Z2Ugd2luZG93PwoKVGhhbmtzLApBbmRyYQoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIChS
+b21hbmlhKSBTLlIuTC4gcmVnaXN0ZXJlZCBvZmZpY2U6IDI3QSBTZi4gTGF6YXIgU3RyZWV0LCBV
+QkM1LCBmbG9vciAyLCBJYXNpLCBJYXNpIENvdW50eSwgNzAwMDQ1LCBSb21hbmlhLiBSZWdpc3Rl
+cmVkIGluIFJvbWFuaWEuIFJlZ2lzdHJhdGlvbiBudW1iZXIgSjIyLzI2MjEvMjAwNS4K
 
-Hi,
-
-can someone look at the ath11k warnings below and send fixes, please?
-Some of them might be already fixed, like the one about enum
-scan_priority.
-
-Kalle
-
-kernel test robot <lkp@intel.com> writes:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   7fe10096c1508c7f033d34d0741809f8eecc1ed4
-> commit: d5c65159f2895379e11ca13f62feabe93278985d ath11k: driver for
-> Qualcomm IEEE 802.11ax devices
-> date:   10 months ago
-> config: x86_64-randconfig-a015-20200910 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project
-> 0a5dc7effb191eff740e0e7ae7bd8e1f6bdb3ad9)
-> reproduce (this is a W=1 build):
->         wget
-> https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross
-> -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         git checkout d5c65159f2895379e11ca13f62feabe93278985d
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
->>> drivers/net/wireless/ath/ath11k/ahb.c:919:15: warning: cast to
->>> smaller integer type 'enum ath11k_hw_rev' from 'const void *'
->>> [-Wvoid-pointer-to-enum-cast]
->            ab->hw_rev = (enum ath11k_hw_rev)of_id->data;
->                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    1 warning generated.
-> --
->>> drivers/net/wireless/ath/ath11k/wmi.c:142:8: warning: format
->>> specifies type 'unsigned char' but the argument has type 'u16' (aka
->>> 'unsigned short') [-Wformat]
->                                       tlv_tag, ptr - begin, len, tlv_len);
->                                       ^~~~~~~
->    drivers/net/wireless/ath/ath11k/wmi.c:142:35: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
->                                       tlv_tag, ptr - begin, len, tlv_len);
->                                                                  ^~~~~~~
->    drivers/net/wireless/ath/ath11k/wmi.c:150:8: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
->                                       tlv_tag, ptr - begin, tlv_len,
->                                       ^~~~~~~
->    drivers/net/wireless/ath/ath11k/wmi.c:150:30: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
->                                       tlv_tag, ptr - begin, tlv_len,
->                                                             ^~~~~~~
->    drivers/net/wireless/ath/ath11k/wmi.c:1812:23: warning: implicit conversion from enumeration type 'enum wmi_scan_priority' to different enumeration type 'enum scan_priority' [-Wenum-conversion]
->            arg->scan_priority = WMI_SCAN_PRIORITY_LOW;
->                               ~ ^~~~~~~~~~~~~~~~~~~~~
->    5 warnings generated.
-> --
->>> drivers/net/wireless/ath/ath11k/mac.c:3970:6: warning: format
->>> specifies type 'unsigned short' but the argument has type 'u32'
->>> (aka 'unsigned int') [-Wformat]
->                       ctx->def.chan->center_freq, ctx->def.width, ctx);
->                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
->                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
->                                               ~~~    ^~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/mac.c:3994:6: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
->                       ctx->def.chan->center_freq, ctx->def.width, ctx);
->                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
->                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
->                                               ~~~    ^~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/mac.c:4241:7: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
->                               vifs[i].old_ctx->def.chan->center_freq,
->                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
->                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
->                                               ~~~    ^~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/mac.c:4242:7: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
->                               vifs[i].new_ctx->def.chan->center_freq,
->                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
->                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
->                                               ~~~    ^~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/mac.c:4337:6: warning: format specifies type 'unsigned short' but the argument has type 'u32' (aka 'unsigned int') [-Wformat]
->                       ctx->def.chan->center_freq, ctx->def.width, ctx, changed);
->                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
->                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
->                                               ~~~    ^~~~~~~~~~~
->>> drivers/net/wireless/ath/ath11k/mac.c:4640:22: warning: format
->>> specifies type 'unsigned char' but the argument has type 'u32' (aka
->>> 'unsigned int') [-Wformat]
->                       arvif->vdev_id, rate, nss, sgi);
->                                       ^~~~
->    drivers/net/wireless/ath/ath11k/debug.h:275:37: note: expanded from macro 'ath11k_dbg'
->                    __ath11k_dbg(ar, dbg_mask, fmt, ##__VA_ARGS__); \
->                                               ~~~    ^~~~~~~~~~~
->    6 warnings generated.
-> --
->>> drivers/net/wireless/ath/ath11k/dp_rx.c:977:8: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
->                                       tlv_tag, ptr - begin, len, tlv_len);
->                                       ^~~~~~~
->    drivers/net/wireless/ath/ath11k/dp_rx.c:977:35: warning: format specifies type 'unsigned char' but the argument has type 'u16' (aka 'unsigned short') [-Wformat]
->                                       tlv_tag, ptr - begin, len, tlv_len);
->                                                                  ^~~~~~~
->    2 warnings generated.
->
-> # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d5c65159f2895379e11ca13f62feabe93278985d
-> git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> git fetch --no-tags linus master
-> git checkout d5c65159f2895379e11ca13f62feabe93278985d
-> vim +919 drivers/net/wireless/ath/ath11k/ahb.c
->
->    879	
->    880	static int ath11k_ahb_probe(struct platform_device *pdev)
->    881	{
->    882		struct ath11k_base *ab;
->    883		const struct of_device_id *of_id;
->    884		struct resource *mem_res;
->    885		void __iomem *mem;
->    886		int ret;
->    887	
->    888		of_id = of_match_device(ath11k_ahb_of_match, &pdev->dev);
->    889		if (!of_id) {
->    890			dev_err(&pdev->dev, "failed to find matching device tree id\n");
->    891			return -EINVAL;
->    892		}
->    893	
->    894		mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->    895		if (!mem_res) {
->    896			dev_err(&pdev->dev, "failed to get IO memory resource\n");
->    897			return -ENXIO;
->    898		}
->    899	
->    900		mem = devm_ioremap_resource(&pdev->dev, mem_res);
->    901		if (IS_ERR(mem)) {
->    902			dev_err(&pdev->dev, "ioremap error\n");
->    903			return PTR_ERR(mem);
->    904		}
->    905	
->    906		ret = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
->    907		if (ret) {
->    908			dev_err(&pdev->dev, "failed to set 32-bit consistent dma\n");
->    909			return ret;
->    910		}
->    911	
->    912		ab = ath11k_core_alloc(&pdev->dev);
->    913		if (!ab) {
->    914			dev_err(&pdev->dev, "failed to allocate ath11k base\n");
->    915			return -ENOMEM;
->    916		}
->    917	
->    918		ab->pdev = pdev;
->  > 919		ab->hw_rev = (enum ath11k_hw_rev)of_id->data;
->    920		ab->mem = mem;
->    921		ab->mem_len = resource_size(mem_res);
->    922		platform_set_drvdata(pdev, ab);
->    923	
->    924		ret = ath11k_hal_srng_init(ab);
->    925		if (ret)
->    926			goto err_core_free;
->    927	
->    928		ret = ath11k_ce_alloc_pipes(ab);
->    929		if (ret) {
->    930			ath11k_err(ab, "failed to allocate ce pipes: %d\n", ret);
->    931			goto err_hal_srng_deinit;
->    932		}
->    933	
->    934		ath11k_ahb_init_qmi_ce_config(ab);
->    935	
->    936		ret = ath11k_ahb_config_irq(ab);
->    937		if (ret) {
->    938			ath11k_err(ab, "failed to configure irq: %d\n", ret);
->    939			goto err_ce_free;
->    940		}
->    941	
->    942		ret = ath11k_core_init(ab);
->    943		if (ret) {
->    944			ath11k_err(ab, "failed to init core: %d\n", ret);
->    945			goto err_ce_free;
->    946		}
->    947	
->    948		return 0;
->    949	
->    950	err_ce_free:
->    951		ath11k_ce_free_pipes(ab);
->    952	
->    953	err_hal_srng_deinit:
->    954		ath11k_hal_srng_deinit(ab);
->    955	
->    956	err_core_free:
->    957		ath11k_core_free(ab);
->    958		platform_set_drvdata(pdev, NULL);
->    959	
->    960		return ret;
->    961	}
->    962	
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
