@@ -2,93 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96612266963
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D25266969
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgIKUJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:09:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:61558 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgIKUJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:09:51 -0400
-IronPort-SDR: UCjortz85d+shLAY+rl1Gupgve6/LzX+S38zmdsvruYCygtEKWZOcW7+wCLWdSdxts8tY1Uc7i
- YioolS7nJmAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="138358894"
-X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
-   d="scan'208";a="138358894"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 13:09:49 -0700
-IronPort-SDR: hzgsC3LsNJG81nYDLIe/oRi+JknExWcXmp28RBIQmFXFq+D5A6Nrf1e2PGT7MGqbaOvEqyPQhm
- mdwPPK+NtZFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
-   d="scan'208";a="450097544"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga004.jf.intel.com with ESMTP; 11 Sep 2020 13:09:48 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 11 Sep 2020 13:09:48 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 11 Sep 2020 13:09:47 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Fri, 11 Sep 2020 13:09:47 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        =?utf-8?B?SmFuIEjDtnBwbmVy?= <hoeppner@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
- ?
-Thread-Topic: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
- ?
-Thread-Index: AQHWiHEhJKJA6edVxE2SxRFnpdxADalj0+dwgAB73gD//4yZsA==
-Date:   Fri, 11 Sep 2020 20:09:47 +0000
-Message-ID: <64ad68af6abe4d6b9a346e777e2bd864@intel.com>
-References: <75611c1b4ab44265acff75aa8754d48f@intel.com>
- <F078F2C8-989D-4A5A-BCB8-F7E215A795A4@redhat.com>
-In-Reply-To: <F078F2C8-989D-4A5A-BCB8-F7E215A795A4@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725861AbgIKUM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:12:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48492 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbgIKUMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 16:12:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BKA8Ld014539;
+        Fri, 11 Sep 2020 20:10:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Gxyet+Q4AGUZq8o7VWU9MriC7pNGHg2L68F1Zf76gqc=;
+ b=qNIbM5cINIQeSa9o3Lay0Z8TYaqQVuk87M6h5iR8sQ1iLrB/zzJmAsZVkjGsovSl+0TJ
+ vGx9ToCoVu3xNo8c5WaSjMURwpdxp+IqpWNy6kiFOzfySIcgc4iszbc6l5geZ/DMSJzV
+ HJJtnWtyvbL2exAONO5AIVslkI8oqPftSTPm1BqLwvNulQCJKjVthT0JySVnR8T5JHkX
+ WQyxZJaunA0ViJkYR9My/loqFC/5KpHVXr4zyAUD1NaKF28j3/YZna5Ezfs9cAM9cjvW
+ nY6jBIwligoWkmmUR7bgEvXNaDEGWbUJX/SsVPH2JXnhUAXvhyiAqK9UvE6J4w+QZAlA wg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33c3ang6q4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Sep 2020 20:10:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BK5EkN135057;
+        Fri, 11 Sep 2020 20:10:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33cmkdx6ej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 20:10:44 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08BKAesO001237;
+        Fri, 11 Sep 2020 20:10:40 GMT
+Received: from localhost.localdomain (/10.159.240.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Sep 2020 13:10:40 -0700
+Subject: Re: [PATCH 2/4 v3] x86: AMD: Add hardware-enforced cache coherency as
+ a CPUID feature
+To:     Dave Hansen <dave.hansen@intel.com>, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, joro@8bytes.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, hpa@zytor.com
+References: <20200911192601.9591-1-krish.sadhukhan@oracle.com>
+ <20200911192601.9591-3-krish.sadhukhan@oracle.com>
+ <c5cbc91e-f576-5cc7-a40c-c11abaea4ad2@intel.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <472e71a4-e50e-1d39-3088-cc103c79ddb3@oracle.com>
+Date:   Fri, 11 Sep 2020 13:10:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <c5cbc91e-f576-5cc7-a40c-c11abaea4ad2@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009110162
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ clxscore=1011 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009110163
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBIb3cgd291bGQgaXQgYmVoYXZlIGFmdGVyIGhvdHBsdWdnaW5nIGEgc2luZ2xlIERJTU0gIC0g
-SSBhc3N1bWUgYSBzaW5nbGUgcGFnZSB3aWxsIG9ubHkgYmUgbWFwcGVkIHRvIHRoYXQgRElNTSAo
-b3RoZXJ3aXNlIGEgbG90IG9mIHN0dWZmIHdvdWxkIGhhYmUgdG8gYmUgbW92ZWQgYXJvdW5kLiBX
-b3VsZCB0aGUgbWFwcGluZyBjaGFuZ2UgYWZ0ZXIgYSByZWJvb3QgLSBlc3BlY2lhbGx5IGNhbiBh
-IERJTU0gdGhhdCBjb3VsZCBnZXQgaG90dW5wbHVnZ2VkIGJlZm9yZSBzdWRkZW5seSBubyBsb25n
-ZXIgYmUgaG90dW5wbHVnZ2VkIGluZGl2aWR1YWxseT8NCg0KDQpXZSBkb24ndCBjdXJyZW50bHkg
-aGF2ZSBhbnkgcGxhdGZvcm1zIHRoYXQgd291bGQgYWxsb3cgaG90IGFkZGluZyBhdCB0aGUgRElN
-TSBsZXZlbC4NClRoZSBCcmlja2xhbmQgZ2VuZXJhdGlvbiBvZiBFNyBYZW9uIHNlcnZlcnMgKEl2
-eWJyaWRnZSwgSGFzd2VsbCwgQnJvYWR3ZWxsKSBhbGxvd2VkDQpmb3IgaG90IHBsdWdnaW5nIGEg
-cmlzZXIgY2FyZCB0aGF0IGNvbnRhaW5lZCB1cCB0byAxMiBESU1Ncy4NCg0KSWYgeW91IGRpZCBh
-ZGQgbWVtb3J5IGl0IHdvdWxkIGhhdmUgdG8gYXBwZWFyIGF0IHRoZSB0b3Agb2YgdGhlIHN5c3Rl
-bSBwaHlzaWNhbA0KYWRkcmVzcyBzcGFjZS4gTm8gaW50ZXJsZWF2ZSAodW5sZXNzIHlvdSBhZGRl
-ZCBtb3JlIHRoYW4gb25lIERJTU0gaW4gYSBzaW5nbGUNCm9wZXJhdGlvbikuICBBZnRlciBhIHJl
-Ym9vdCB0aGUgc3lzdGVtIHdvdWxkIGxpa2VseSBzaHVmZmxlIHRoaW5ncyBhcm91bmQgdG8gYW5k
-DQppbnRlcmxlYXZlLg0KDQotVG9ueQ0K
+
+On 9/11/20 12:36 PM, Dave Hansen wrote:
+> On 9/11/20 12:25 PM, Krish Sadhukhan wrote:
+>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+>> index 81335e6fe47d..0e5b27ee5931 100644
+>> --- a/arch/x86/include/asm/cpufeatures.h
+>> +++ b/arch/x86/include/asm/cpufeatures.h
+>> @@ -293,6 +293,7 @@
+>>   #define X86_FEATURE_FENCE_SWAPGS_USER	(11*32+ 4) /* "" LFENCE in user entry SWAPGS path */
+>>   #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
+>>   #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
+>> +#define X86_FEATURE_HW_CACHE_COHERENCY (11*32+ 7) /* AMD hardware-enforced cache coherency */
+> That's an awfully generic name.  We generally have "hardware-enforced
+> cache coherency" already everywhere. :)
+>
+> This probably needs to say something about encryption, or even SEV
+> specifically.
+
+
+How about X86_FEATURE_ENC_CACHE_COHERENCY ?
+
+> I also don't see this bit in the "AMD64 Architecture
+> Programmer’s Manual".  Did I look in the wrong spot somehow?
+Section 7.10.6 in APM mentions this.
