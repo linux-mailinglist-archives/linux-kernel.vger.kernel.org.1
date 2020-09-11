@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3BA26623E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F262026625F
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbgIKPfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:35:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgIKPaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:30:30 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1726554AbgIKPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgIKPhk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:37:40 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F653C061344
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:06:40 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ce0009d4bcf8b2b506f0d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:e000:9d4b:cf8b:2b50:6f0d])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61FEC21D47;
-        Fri, 11 Sep 2020 14:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599832945;
-        bh=ugt57UudOowWxtW+wZwTzUmbFy/FfUpWgsziWteq/yQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iyMk4uzpjZpEepjpkfSV+Fi7J2/MfhDLNcdKUrA/C32d5IjiQL4/4bGPB0/+2NVUl
-         bBJg0nHnRrt6D6mXYZgu3cQ77PmKM8/BjP/7Kqlm5qjyIKRXDuEzUSUO8NebUNVoLA
-         SazSpnykjUAV4ZS+ytntTdBOjbPleH2bVha2mTyM=
-Date:   Fri, 11 Sep 2020 15:02:19 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        paulmck@kernel.org, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org, corbet@lwn.net,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH] docs/memory-barriers.txt: Fix a typo in CPU MEMORY
- BARRIERS section
-Message-ID: <20200911140218.GB19961@willie-the-truck>
-References: <20200909065340.118264-1-foxhlchen@gmail.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C1D741EC051F;
+        Fri, 11 Sep 2020 16:06:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1599833197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Wfz55+m1k7uU6dMkp1Uyfs6Fe6eW5s5tKFF8uVGuBJk=;
+        b=WFsYjRHtvSxBrJI9fwxStIdsRYui54MZZeUTPJpnptfw+bKcmD9pqUUHbPv+dHF3tug9wj
+        Ek502qWvumnkgAMBll2WLBnJcXNUwmQtWVT5L+FXFb07FuBH4szhJ13iD9Osh6R031Qa/n
+        Z7FljGAYYqZWsxMhH0jaOznsnpl4jPM=
+Date:   Fri, 11 Sep 2020 16:06:33 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
+ f5ed777586e08e09c4b6f1e87161a145ee1431cf
+Message-ID: <20200911140633.GB8472@zn.tnic>
+References: <5f5b3f27.qfbP2yqzLurGC9yI%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200909065340.118264-1-foxhlchen@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5f5b3f27.qfbP2yqzLurGC9yI%lkp@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 02:53:40PM +0800, Fox Chen wrote:
-> Commit 39323c6 smp_mb__{before,after}_atomic(): update Documentation
-> has a typo in CPU MEORY BARRIERS section:
-> "RMW functions that do not imply are memory barrier are ..." should be
-> "RMW functions that do not imply a memory barrier are ...".
+On Fri, Sep 11, 2020 at 05:11:03PM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/seves
+> branch HEAD: f5ed777586e08e09c4b6f1e87161a145ee1431cf  x86/sev-es: Check required CPU features for SEV-ES
 > 
-> This patch fixes this typo.
+> Warning in current branch:
 > 
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/memory-barriers.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> arch/x86/kernel/sev-es.o: warning: objtool: safe_stack_exc_vmm_communication()+0x209: unreachable instruction
 > 
-> diff --git a/Documentation/memory-barriers.txt b/Documentation/memory-barriers.txt
-> index 96186332e5f4..20b8a7b30320 100644
-> --- a/Documentation/memory-barriers.txt
-> +++ b/Documentation/memory-barriers.txt
-> @@ -1870,7 +1870,7 @@ There are some more advanced barrier functions:
->  
->       These are for use with atomic RMW functions that do not imply memory
->       barriers, but where the code needs a memory barrier. Examples for atomic
-> -     RMW functions that do not imply are memory barrier are e.g. add,
-> +     RMW functions that do not imply a memory barrier are e.g. add,
->       subtract, (failed) conditional operations, _relaxed functions,
->       but not atomic_read or atomic_set. A common example where a memory
->       barrier may be required is when atomic ops are used for reference
+> Warning ids grouped by kconfigs:
+> 
+> clang_recent_errors
+> `-- x86_64-randconfig-a004-20200911
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The document remains unreadable, but this is still worth fixing!
+Where do I get that randconfig from?
 
-Acked-by: Will Deacon <will@kernel.org>
+-- 
+Regards/Gruss,
+    Boris.
 
-Will
+https://people.kernel.org/tglx/notes-about-netiquette
