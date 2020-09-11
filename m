@@ -2,103 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68C2266321
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD8C26634E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIKQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        id S1726541AbgIKQNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgIKQKy (ORCPT
+        with ESMTP id S1726560AbgIKQNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:10:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2DAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:10:53 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so5298255wmb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DbxEUQps6vESScXmyaIzM2lV4nvnmCDf4+bKC4mI+8E=;
-        b=QhEUrtgWKj+fZDMyKLwE/BKdNRzvaTQpARmk62ty0kGcVZPcAPywlm22mc9BY1YG2B
-         naOPmTBAF/1xl/fT0oV4GdOE67fzk7jmY3lvaE51nNC69qu9CLGLN8DA8nnA+9ifurXo
-         geXkXHDs/iwILRS0Lzr1OIGz/k1sFbuM45shEKHEjPHiKkhzKj0a53sglfQ+fKH1kjpv
-         4AHTDdt/P4cydao/Lj/hy09u8HvDO982rfjxJfMS54mW6LG4WyGuwx618Hx/kR61E+z1
-         ba7Mbo+1qhX1OOYxxWYCefHJwf71oQXGwvjanwXQajdTADvqIc4Q8XCkOpxDlJcgDxUZ
-         JvyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DbxEUQps6vESScXmyaIzM2lV4nvnmCDf4+bKC4mI+8E=;
-        b=cvBWuFJzFkHB85tDJWb51Rl03gpXQ3DMKIOvbQw7dBUi+NbROhuslHJICFkj8zV5wL
-         MKvx1brWi+hJ7NnovL7pT4dYyUodEBB7SdZyKpPm1lZOnIDDl1NxKrKr+zHA2RaMUiiC
-         Sw0n8n3yGXFJViYA+VLruu2wuqhI97BgCBbFHIhrmH712vND+6MZ9qj7mkFbUZhw/r7X
-         biLFv+JHyz8AcZIFHSJ7u5vT+Jy/REO9pVlG3TXw+TvJA10zf2mDplSqI0a3es25GU0R
-         tN/bT3rj+rD/XkTEk4FYNZZTvtzE1Elk4V6UZoHGMJgE7C0WRkIjRLcXKC5rfUbvlx5m
-         5LJQ==
-X-Gm-Message-State: AOAM533Qjwh06lzHmdIgKdqn8SjQQGjG6Cg2alh2g6QHlrEdt0jy/ze4
-        h24ykkcJZf1obBvOxu1R4yzDMFk0q6M6DY4tHGTR2w==
-X-Google-Smtp-Source: ABdhPJwpsy55MicdcbSdsk7lZoPbb7vZsk90rfIo7W28Aj3HC04QgM46znERfjCsfJQ+KWY8OwY9zlQuMuRiAaiBGyc=
-X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr2898135wmh.152.1599840652329;
- Fri, 11 Sep 2020 09:10:52 -0700 (PDT)
+        Fri, 11 Sep 2020 12:13:40 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50981C061573;
+        Fri, 11 Sep 2020 09:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=mieaiSS+0BhtRy+uP0NJAzxIjFSZGneK1DCisX/Obgo=; b=V4Nb7efrp4tZ78hd7CxB4LTZtN
+        ZA1wbO1uxaQZmTjZuaY4lfGJCUGq8E6fiAsLMfsKEA2W9Dyf9clJ/9FXwJLzAt5uUff0PZgrf4n2s
+        w6Lor6ueydCj6SaT+tdNtGo5jUUSjzr88djKbyGHMn7HYwZN5WrzeahAqliHvXghraM8=;
+Received: from p200300ccff0ce9001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0c:e900:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kGlg1-00023Y-Pa; Fri, 11 Sep 2020 18:13:30 +0200
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1kGlg1-0006dL-3I; Fri, 11 Sep 2020 18:13:29 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     khilman@kernel.org, tony@atomide.com, linux@armlinux.org.uk,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v2] omap3: enable off mode automatically
+Date:   Fri, 11 Sep 2020 18:12:09 +0200
+Message-Id: <20200911161209.25149-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20200904155513.282067-1-bjorn.andersson@linaro.org>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Fri, 11 Sep 2020 21:40:16 +0530
-Message-ID: <CAMi1Hd2CFjQLoXTSuo9wUWWO-hNvuvZr_PffS1NfgP-6agWDOA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] iommu/arm-smmu: Support maintaining bootloader mappings
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu <iommu@lists.linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 at 21:25, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
->
-> Based on previous attempts and discussions this is the latest attempt at
-> inheriting stream mappings set up by the bootloader, for e.g. boot splash or
-> efifb.
->
-> Per Will's request this builds on the work by Jordan and Rob for the Adreno
-> SMMU support. It applies cleanly ontop of v16 of their series, which can be
-> found at
-> https://lore.kernel.org/linux-arm-msm/20200901164707.2645413-1-robdclark@gmail.com/
->
+Enabling off mode was only reachable deeply hidden
+in the debugfs. As powersaving is an important feature,
+move the option out of its shady place.
+The debugfs file can still be used to override the default.
 
-Boot tested the series on Xiaomi Poco F1 phone (sdm845)
+Use the presence of a device compatible to ti,twl4030-idle or
+ti,twl4030-idle-osc-off as an indicator that the board is wired correctly
+for off mode.
 
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+An earlier version of this patch was here:
+https://patchwork.kernel.org/patch/10794121/
 
-> Bjorn Andersson (8):
->   iommu/arm-smmu: Refactor context bank allocation
->   iommu/arm-smmu: Delay modifying domain during init
->   iommu/arm-smmu: Consult context bank allocator for identify domains
->   iommu/arm-smmu-qcom: Emulate bypass by using context banks
->   iommu/arm-smmu-qcom: Consistently initialize stream mappings
->   iommu/arm-smmu: Add impl hook for inherit boot mappings
->   iommu/arm-smmu: Provide helper for allocating identity domain
->   iommu/arm-smmu-qcom: Setup identity domain for boot mappings
->
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 111 ++++++++++++++++++-
->  drivers/iommu/arm/arm-smmu/arm-smmu.c      | 122 ++++++++++++++-------
->  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  14 ++-
->  3 files changed, 205 insertions(+), 42 deletions(-)
->
-> --
-> 2.28.0
->
+A config option was used instead of the suggested devicetree check.
+
+Changes in v2:
+- fix compile without CONFIG_ARCH_OMAP3
+  The variable enable_off_mode is now always a real one and not
+  a preprocessor constant to avoid trouble with unusual configurations.
+
+ arch/arm/mach-omap2/pm-debug.c |  2 --
+ arch/arm/mach-omap2/pm.c       |  2 ++
+ arch/arm/mach-omap2/pm.h       |  4 ----
+ arch/arm/mach-omap2/pm34xx.c   | 25 ++++++++++++++++++++++++-
+ 4 files changed, 26 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/pm-debug.c b/arch/arm/mach-omap2/pm-debug.c
+index fceb1e525d26..919d35d5b325 100644
+--- a/arch/arm/mach-omap2/pm-debug.c
++++ b/arch/arm/mach-omap2/pm-debug.c
+@@ -34,8 +34,6 @@
+ #include "prm2xxx_3xxx.h"
+ #include "pm.h"
+ 
+-u32 enable_off_mode;
+-
+ #ifdef CONFIG_DEBUG_FS
+ #include <linux/debugfs.h>
+ #include <linux/seq_file.h>
+diff --git a/arch/arm/mach-omap2/pm.c b/arch/arm/mach-omap2/pm.c
+index 01ec1ba4878b..da829a90fe8c 100644
+--- a/arch/arm/mach-omap2/pm.c
++++ b/arch/arm/mach-omap2/pm.c
+@@ -28,6 +28,8 @@
+ #include "clockdomain.h"
+ #include "pm.h"
+ 
++u32 enable_off_mode;
++
+ #ifdef CONFIG_SUSPEND
+ /*
+  * omap_pm_suspend: points to a function that does the SoC-specific
+diff --git a/arch/arm/mach-omap2/pm.h b/arch/arm/mach-omap2/pm.h
+index 2a883a0c1fcd..80e84ae66aee 100644
+--- a/arch/arm/mach-omap2/pm.h
++++ b/arch/arm/mach-omap2/pm.h
+@@ -49,11 +49,7 @@ static inline int omap4_opp_init(void)
+ extern int omap3_pm_get_suspend_state(struct powerdomain *pwrdm);
+ extern int omap3_pm_set_suspend_state(struct powerdomain *pwrdm, int state);
+ 
+-#ifdef CONFIG_PM_DEBUG
+ extern u32 enable_off_mode;
+-#else
+-#define enable_off_mode 0
+-#endif
+ 
+ #if defined(CONFIG_PM_DEBUG) && defined(CONFIG_DEBUG_FS)
+ extern void pm_dbg_update_time(struct powerdomain *pwrdm, int prev);
+diff --git a/arch/arm/mach-omap2/pm34xx.c b/arch/arm/mach-omap2/pm34xx.c
+index f5dfddf492e2..925b8efbf46c 100644
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -25,6 +25,7 @@
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
+ #include <linux/omap-gpmc.h>
+ 
+ #include <trace/events/power.h>
+@@ -410,7 +411,12 @@ static int __init pwrdms_setup(struct powerdomain *pwrdm, void *unused)
+ 	if (!pwrst)
+ 		return -ENOMEM;
+ 	pwrst->pwrdm = pwrdm;
+-	pwrst->next_state = PWRDM_POWER_RET;
++
++	if (enable_off_mode)
++		pwrst->next_state = PWRDM_POWER_OFF;
++	else
++		pwrst->next_state = PWRDM_POWER_RET;
++
+ 	list_add(&pwrst->node, &pwrst_list);
+ 
+ 	if (pwrdm_has_hdwr_sar(pwrdm))
+@@ -444,6 +450,21 @@ static void __init pm_errata_configure(void)
+ 	}
+ }
+ 
++static void __init omap3_pm_check_pmic(void)
++{
++	struct device_node *np;
++
++	np = of_find_compatible_node(NULL, NULL, "ti,twl4030-power-idle");
++	if (!np)
++		np = of_find_compatible_node(NULL, NULL, "ti,twl4030-power-idle-osc-off");
++
++	if (np) {
++		of_node_put(np);
++		enable_off_mode = 1;
++	} else
++		enable_off_mode = 0;
++}
++
+ int __init omap3_pm_init(void)
+ {
+ 	struct power_state *pwrst, *tmp;
+@@ -477,6 +498,8 @@ int __init omap3_pm_init(void)
+ 		goto err2;
+ 	}
+ 
++	omap3_pm_check_pmic();
++
+ 	ret = pwrdm_for_each(pwrdms_setup, NULL);
+ 	if (ret) {
+ 		pr_err("Failed to setup powerdomains\n");
+-- 
+2.20.1
+
