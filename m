@@ -2,57 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6B72659C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 08:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1EE2659C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 08:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbgIKG6k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 02:58:40 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:40536 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgIKG6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 02:58:39 -0400
-Received: from marcel-macbook.fritz.box (p4ff9f430.dip0.t-ipconnect.de [79.249.244.48])
-        by mail.holtmann.org (Postfix) with ESMTPSA id EF163CED1A;
-        Fri, 11 Sep 2020 09:05:32 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH -next] Bluetooth: btmtksdio: use NULL instead of zero
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200905121549.32936-1-yuehaibing@huawei.com>
-Date:   Fri, 11 Sep 2020 08:58:37 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <6B0D45D0-7390-4DCF-B85B-8DD0C6EAC8A2@holtmann.org>
-References: <20200905121549.32936-1-yuehaibing@huawei.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1725811AbgIKG7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 02:59:04 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:59010 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgIKG7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 02:59:02 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kGd1D-0007x1-0E; Fri, 11 Sep 2020 16:58:48 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Sep 2020 16:58:46 +1000
+Date:   Fri, 11 Sep 2020 16:58:46 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Xu Wang <vulab@iscas.ac.cn>
+Cc:     krzk@kernel.org, vz@mleia.com, k.konieczny@samsung.com,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: s5p-sss: remove redundant null check
+Message-ID: <20200911065846.GH32150@gondor.apana.org.au>
+References: <20200903083738.85345-1-vulab@iscas.ac.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903083738.85345-1-vulab@iscas.ac.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
-
-> Fix sparse warnings:
+On Thu, Sep 03, 2020 at 08:37:38AM +0000, Xu Wang wrote:
+> Because clk_disable_unprepare already checked NULL clock
+> parameter, so the additional checks are unnecessary, just remove them.
 > 
-> drivers/bluetooth/btmtksdio.c:499:57: warning: Using plain integer as NULL pointer
-> drivers/bluetooth/btmtksdio.c:533:57: warning: Using plain integer as NULL pointer
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 > ---
-> drivers/bluetooth/btmtksdio.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/crypto/s5p-sss.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 
-patch has been applied to bluetooth-next tree.
-
-Regards
-
-Marcel
-
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
