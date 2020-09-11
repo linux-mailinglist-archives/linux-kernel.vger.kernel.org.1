@@ -2,119 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A6426661E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C65266613
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725875AbgIKRVn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 13:21:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51147 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726029AbgIKNA3 (ORCPT
+        id S1726222AbgIKRVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgIKNBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:00:29 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-XoifVDoTPOmy5KbhGZ_S1g-1; Fri, 11 Sep 2020 09:00:10 -0400
-X-MC-Unique: XoifVDoTPOmy5KbhGZ_S1g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73B9B107B272;
-        Fri, 11 Sep 2020 13:00:08 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13EDE75136;
-        Fri, 11 Sep 2020 13:00:05 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Wang Nan <wangnan0@huawei.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>
-Subject: [PATCH] perf test: Fix signal test inline assembly
-Date:   Fri, 11 Sep 2020 15:00:05 +0200
-Message-Id: <20200911130005.1842138-1-jolsa@kernel.org>
+        Fri, 11 Sep 2020 09:01:20 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72493C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:01:07 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id m12so8285983otr.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ge/FjJXhyj8+NsSSsvCMLGtUiAk37fA1+cTelebZ4Go=;
+        b=T96RFKKMbfGXmGKQW/wQkQusFFYQX5igqwU6L75Yeso5+r11VBgv0lztFH9rNbHlY3
+         5B0LrTTcrBZveyQWzWcwQCKeRcyEas+n8CGz3zVLjk3BHBmngz6iniRoFzLHyeCEKgD0
+         SfihZ41/sKpTvQWRFJLJgc9OiULTEBppsdBLOZxSHyOPU/g9QcvvDXQh4dY//h83F68D
+         ESzkFo2LP1uYXPiZlMAQQce8uhNDJFIRPkcEU8JQ+J90kOfx32MrFwTnj/mS1FW0RD1e
+         qGrx8cYDqjBlz9uoLUveNlE+9hLQk8moh/ndBUm2Yp5Ev3Kn7jiVpo/Fnwdz/WXss1W+
+         TXHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ge/FjJXhyj8+NsSSsvCMLGtUiAk37fA1+cTelebZ4Go=;
+        b=cv42zbCxaG9O9Z6Z2p0e8F8bYIfNGNK8PFuRaPp3teXovlobOhJ8CfT56ASdfCTf7g
+         9QnktlDVaOeWMIGrHJu+fZtp2m+Pi+SDbCQmR0uAw2Kukk8KNh8Z8ek8ReeJ+PNXkti8
+         SHxSizvv0jrexjqL6PoSKK2Dh/1aJX6b7z9qOcnF7L0p37U/XHbtvmkp6ADHiZTIHztP
+         keaXvHwhFhI5WbhKcD2NZNK+jB+c6egHOg03GechnUF/P2J2bfXCMC7wsxFZQJGQxI2S
+         VkIMtrlSGptamLyfhneUwDtdtWOie6F7fv/bGA1U3oz3hHS+f06WsucMyrAGephpMpfn
+         R4Qg==
+X-Gm-Message-State: AOAM530SN6yMMNK6nfHDmZgSyXuLHtqgF6BfFf2yhZ2IV9Ncda9nDp9i
+        28eHgtrDqDpQf8R2j5KfumbUljUsICwh8WFpQmuQ6w==
+X-Google-Smtp-Source: ABdhPJyvnEkxpzeJQj2l5oqacEmEr9jCCxehUw6cPnNOvxF93kxRylc4qW/tdBx2vsUZCsc/aeHXDTxenucOjpbTbWU=
+X-Received: by 2002:a9d:758b:: with SMTP id s11mr1038835otk.251.1599829266141;
+ Fri, 11 Sep 2020 06:01:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0.0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-7-elver@google.com>
+ <CACT4Y+b=Ph-fD_K5F_TNMp_dTNjD7GXGT=OXogrKc_HwH+HHwQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+b=Ph-fD_K5F_TNMp_dTNjD7GXGT=OXogrKc_HwH+HHwQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 11 Sep 2020 15:00:54 +0200
+Message-ID: <CANpmjNMHHWjdLiWi+vhffcWq=UNFVGV7so6AggezcvnoOFHvKA@mail.gmail.com>
+Subject: Re: [PATCH RFC 06/10] kfence, kasan: make KFENCE compatible with KASAN
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling with DEBUG=1 on Fedora 32 I'm getting crash for
-'perf test signal':
+On Fri, 11 Sep 2020 at 09:05, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
+> >
+> > From: Alexander Potapenko <glider@google.com>
+> >
+> > We make KFENCE compatible with KASAN for testing KFENCE itself. In
+> > particular, KASAN helps to catch any potential corruptions to KFENCE
+> > state, or other corruptions that may be a result of freepointer
+> > corruptions in the main allocators.
+> >
+> > To indicate that the combination of the two is generally discouraged,
+> > CONFIG_EXPERT=y should be set. It also gives us the nice property that
+> > KFENCE will be build-tested by allyesconfig builds.
+> >
+> > Co-developed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+> > ---
+> >  lib/Kconfig.kfence | 2 +-
+> >  mm/kasan/common.c  | 7 +++++++
+> >  2 files changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/lib/Kconfig.kfence b/lib/Kconfig.kfence
+> > index 7ac91162edb0..b080e49e15d4 100644
+> > --- a/lib/Kconfig.kfence
+> > +++ b/lib/Kconfig.kfence
+> > @@ -10,7 +10,7 @@ config HAVE_ARCH_KFENCE_STATIC_POOL
+> >
+> >  menuconfig KFENCE
+> >         bool "KFENCE: low-overhead sampling-based memory safety error detector"
+> > -       depends on HAVE_ARCH_KFENCE && !KASAN && (SLAB || SLUB)
+> > +       depends on HAVE_ARCH_KFENCE && (!KASAN || EXPERT) && (SLAB || SLUB)
+> >         depends on JUMP_LABEL # To ensure performance, require jump labels
+> >         select STACKTRACE
+> >         help
+> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> > index 950fd372a07e..f5c49f0fdeff 100644
+> > --- a/mm/kasan/common.c
+> > +++ b/mm/kasan/common.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/init.h>
+> >  #include <linux/kasan.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/kfence.h>
+> >  #include <linux/kmemleak.h>
+> >  #include <linux/linkage.h>
+> >  #include <linux/memblock.h>
+> > @@ -396,6 +397,9 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
+> >         tagged_object = object;
+> >         object = reset_tag(object);
+> >
+> > +       if (is_kfence_address(object))
+> > +               return false;
+>
+> Is this needed?
+> At least in the slab patch I see that we do :
+>
+> if (kfence_free(objp)) {
+>   kmemleak_free_recursive(objp, cachep->flags);
+>   return;
+> }
+>
+> before:
+>
+> /* Put the object into the quarantine, don't touch it for now. */ /*
+> Put the object into the quarantine, don't touch it for now. */
+> if (kasan_slab_free(cachep, objp, _RET_IP_)) if
+> (kasan_slab_free(cachep, objp, _RET_IP_))
+>   return; return;
+>
+>
+> If it's not supposed to be triggered, it can make sense to replace
+> with BUG/WARN.
 
-  Program received signal SIGSEGV, Segmentation fault.
-  0x0000000000c68548 in __test_function ()
-  (gdb) bt
-  #0  0x0000000000c68548 in __test_function ()
-  #1  0x00000000004d62e9 in test_function () at tests/bp_signal.c:61
-  #2  0x00000000004d689a in test__bp_signal (test=0xa8e280 <generic_ ...
-  #3  0x00000000004b7d49 in run_test (test=0xa8e280 <generic_tests+1 ...
-  #4  0x00000000004b7e7f in test_and_print (t=0xa8e280 <generic_test ...
-  #5  0x00000000004b8927 in __cmd_test (argc=1, argv=0x7fffffffdce0, ...
-  ...
+It is required for SLUB. For SLAB, it seems it might not be necessary.
+Making the check in kasan/common.c conditional on the allocator seems
+ugly, so I propose we keep it there.
 
-It's caused by __test_function being in .bss section:
-
-  $ readelf -a ./perf | less
-    [Nr] Name              Type             Address           Offset
-         Size              EntSize          Flags  Link  Info  Align
-    ...
-    [28] .bss              NOBITS           0000000000c356a0  008346a0
-         00000000000511f8  0000000000000000  WA       0     0     32
-
-  $ nm perf | grep __test_function
-  0000000000c68548 B __test_function
-
-I guess most of the time we're just lucky the inline asm ended up
-in .text section, so making it specific explicit with push and pop
-section cluases.
-
-  $ readelf -a ./perf | less
-    [Nr] Name              Type             Address           Offset
-         Size              EntSize          Flags  Link  Info  Align
-    ...
-    [13] .text             PROGBITS         0000000000431240  00031240
-         0000000000306faa  0000000000000000  AX       0     0     16
-
-  $ nm perf | grep __test_function
-  00000000004d62c8 T __test_function
-
-Cc: Wang Nan <wangnan0@huawei.com>
-Fixes: 8fd34e1cce18 ("perf test: Improve bp_signal")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/tests/bp_signal.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
-index da8ec1e8e064..cc9fbcedb364 100644
---- a/tools/perf/tests/bp_signal.c
-+++ b/tools/perf/tests/bp_signal.c
-@@ -45,10 +45,13 @@ volatile long the_var;
- #if defined (__x86_64__)
- extern void __test_function(volatile long *ptr);
- asm (
-+	".pushsection .text;"
- 	".globl __test_function\n"
-+	".type __test_function, @function;"
- 	"__test_function:\n"
- 	"incq (%rdi)\n"
--	"ret\n");
-+	"ret\n"
-+	".popsection\n");
- #else
- static void __test_function(volatile long *ptr)
- {
--- 
-2.26.2
-
+Thanks,
+-- Marco
