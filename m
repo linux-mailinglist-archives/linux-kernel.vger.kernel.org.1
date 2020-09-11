@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B211526591E
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 08:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471F6265924
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 08:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725781AbgIKGJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 02:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34532 "EHLO mail.kernel.org"
+        id S1725798AbgIKGJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 02:09:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725446AbgIKGJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 02:09:03 -0400
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725768AbgIKGJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 02:09:29 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58366221ED;
-        Fri, 11 Sep 2020 06:09:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 766E121D7E;
+        Fri, 11 Sep 2020 06:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599804542;
-        bh=XzzaqRgzegv5mShrfRiMAX/0bKqxPmMJr5VwppGGwEw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ihhcwtVWk6dTGE+h9Hne7tOOv/piw6eF0oxfxjMAzyMEi76bRAHq4wh9HTqPQlReu
-         FO4DNAMAN0P2AnALwa4Gh1oqnSXIPSd/9RwcY1PYk2Gwow+aZNT2gqUI10i7aXbuvY
-         5OWPFFLx+B4R2b1vfMPvfrbmYQJTsJGjSjDapPtk=
-Received: by mail-ej1-f43.google.com with SMTP id q13so12175433ejo.9;
-        Thu, 10 Sep 2020 23:09:02 -0700 (PDT)
-X-Gm-Message-State: AOAM533tXv5vpufzr3Fb557g3H4okNSow+XDuBOPW1CRs1jonFxUt5Fv
-        fghRSZiOZaMpq364yqSPIxD5jrsQ5phzLLlvwAI=
-X-Google-Smtp-Source: ABdhPJwZG4xklZq441Eewbql9ntW9zPs1xfQjq9o+LVzvNLUp2kxK3mUNknnSYBDmPX56LMLO75nMFLMG4xyFDPtcm4=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr505360ejx.215.1599804540886;
- Thu, 10 Sep 2020 23:09:00 -0700 (PDT)
+        s=default; t=1599804569;
+        bh=i4EvJQ4Hd4XUMCwTQL0NZfkrCdHx7ugse8XeINccp6U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dfi+I0kMUG1tla9siuFgxikCDgMn+UD1N3AnfGGyzlFtj38Z1iUNuP4s85al6DOKV
+         aQx9yQ4lpuzx12l1wn2CjqpCuyspjqn1oKprCxxFnxGRvFDRlYTQ7K97MZQ39P6b65
+         siLwfoBGTDyORuQxpw93n2jSqCHoCi4DdHvcozPA=
+Date:   Fri, 11 Sep 2020 08:09:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hector Martin <hector@marcansoft.com>
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Lars Melin <larsm17@gmail.com>,
+        Oliver Neukum <oneukum@suse.de>, linux-usb@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russ Dill <Russ.Dill@gmail.com>
+Subject: Re: [PATCH v2] usb: serial: Repair FTDI FT232R bricked eeprom
+Message-ID: <20200911060925.GA553486@kroah.com>
+References: <20200909193419.2006744-1-james.hilliard1@gmail.com>
+ <1599706954.10822.3.camel@suse.de>
+ <a1161f77-5b37-39ea-eb91-7b0b59278960@gmail.com>
+ <20200910080850.GD24441@localhost>
+ <CADvTj4rDdj8KtLhGZEZP+XZcF4DTE4oW9sNf=zNWaRPzkny93A@mail.gmail.com>
+ <20200910085541.GA1099591@kroah.com>
+ <CADvTj4pYR9H1X1_f4DYTkb5ViXAdx9sO5yBgHgM5vFaDMs_miQ@mail.gmail.com>
+ <26a723e4-e166-6377-875a-f737a15dc6b1@marcansoft.com>
+ <CADvTj4o9GL5p6eZq+0Q_Pw_ZKuYHvAtav79==CJDdnTj7q+bBg@mail.gmail.com>
+ <0bcb0208-04bc-40c8-7b42-56b4dcf93f21@marcansoft.com>
 MIME-Version: 1.0
-References: <20200910161219.6237-1-krzk@kernel.org> <20200910.152235.1512682061673845419.davem@davemloft.net>
-In-Reply-To: <20200910.152235.1512682061673845419.davem@davemloft.net>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 11 Sep 2020 08:08:49 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPcFfxY2EU7-_gPQyhp9m_dVed6qxgpZzD4kazEkjDeXOw@mail.gmail.com>
-Message-ID: <CAJKOXPcFfxY2EU7-_gPQyhp9m_dVed6qxgpZzD4kazEkjDeXOw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] nfc: s3fwrn5: Few cleanups
-To:     David Miller <davem@davemloft.net>
-Cc:     kuba@kernel.org, robh+dt@kernel.org, k.opasiak@samsung.com,
-        kgene@kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0bcb0208-04bc-40c8-7b42-56b4dcf93f21@marcansoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 at 00:22, David Miller <davem@davemloft.net> wrote:
->
-> From: Krzysztof Kozlowski <krzk@kernel.org>
-> Date: Thu, 10 Sep 2020 18:12:11 +0200
->
-> > Changes since v2:
-> > 1. Fix dtschema ID after rename (patch 1/8).
-> > 2. Apply patch 9/9 (defconfig change).
-> >
-> > Changes since v1:
-> > 1. Rename dtschema file and add additionalProperties:false, as Rob
-> >    suggested,
-> > 2. Add Marek's tested-by,
-> > 3. New patches: #4, #5, #6, #7 and #9.
->
-> Seires applied to net-next, thanks.
+On Fri, Sep 11, 2020 at 04:54:08AM +0900, Hector Martin wrote:
+> On 11/09/2020 03.51, James Hilliard wrote:
+> > I haven't tested this yet but my assumption was that either a kernel driver
+> > or libusb can issue usb control messages, but both can not be bound to
+> > a device at the same time. I figured this wouldn't have come up when you
+> > tested your python script since the script likely predated adding the brick PID
+> > to the ftdi_sio Linux kernel driver.
+> 
+> Binding to interfaces is exclusive, but global device control messages are
+> not issued to an interface. I think it should work even if the kernel driver
+> is bound (this is how lsusb works too, since it issues control requests even
+> to devices bound to drivers). Even if it is necessary to unbind it, though,
+> libusb already provides a single function to do that
+> (libusb_detach_kernel_driver).
 
-Thanks. The DTS should go separate - via samsung-soc/arm-soc tree.
-However if it is too late, then no problem.
+You really should unbind the device from the driver when doing stuff
+like this, so the kernel doesn't get confused.
 
-Best regards,
-Krzysztof
+thanks,
+
+greg k-h
