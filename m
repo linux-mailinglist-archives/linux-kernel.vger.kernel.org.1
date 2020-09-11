@@ -2,126 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FAB266284
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9159B266231
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgIKPva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:51:30 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43242 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbgIKPvM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:51:12 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08BEiH8S080691;
-        Fri, 11 Sep 2020 09:44:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599835457;
-        bh=VeiJJJ5bDbdPOe8X83iD+SDZUH01GPEKBkwwWMTRjgc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=UJE/6zWtsV+dKAnUUe1kgx4juYG0EdbHLsIxlqQHR/qXPSPaff8coqPtO9DENjKvM
-         KXBa1Phfd6Bxzs7qBKxWzdfy+oP+0y6GsXXNC9F6nlBk7gsAOEndpke4lriNBhn9v6
-         AraTG/qSLZARBudKKUIAalacflPPOiQ7+mqZ5TgM=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08BEiH7P001244
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Sep 2020 09:44:17 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
- Sep 2020 09:44:16 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 11 Sep 2020 09:44:16 -0500
-Received: from [10.250.66.146] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08BEiEGY111883;
-        Fri, 11 Sep 2020 09:44:15 -0500
-Subject: Re: [v4,3/4] reset-controller: ti: introduce a new reset handler
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Crystal Guo <crystal.guo@mediatek.com>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?U2VpeWEgV2FuZyAo546L6L+65ZCbKQ==?= 
-        <seiya.wang@mediatek.com>,
-        =?UTF-8?B?U3RhbmxleSBDaHUgKOacseWOn+mZnik=?= 
-        <stanley.chu@mediatek.com>,
-        =?UTF-8?B?WWluZ2pvZSBDaGVuICjpmbPoi7HmtLIp?= 
-        <Yingjoe.Chen@mediatek.com>,
-        =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
-        =?UTF-8?B?WW9uZyBMaWFuZyAo5qKB5YuHKQ==?= <Yong.Liang@mediatek.com>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
- <20200817030324.5690-4-crystal.guo@mediatek.com>
- <3a5decee-5f31-e27d-a120-1f835241a87c@ti.com>
- <1599620279.14806.18.camel@mhfsdcap03>
- <096362e9-dee8-4e7a-2518-47328068c2fd@ti.com>
- <1599792140.14806.22.camel@mhfsdcap03>
- <9d72aaef-49fe-ebb6-215d-05ad3ab27af4@ti.com>
- <1599804422.14806.27.camel@mhfsdcap03>
- <dae4ab91ec20e72963f2658efca4874a35dd739e.camel@pengutronix.de>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <407863ba-e336-11fc-297d-f1be1f58adaa@ti.com>
-Date:   Fri, 11 Sep 2020 09:44:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726514AbgIKPd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:33:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726491AbgIKP2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:28:10 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7135B20770;
+        Fri, 11 Sep 2020 15:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599838070;
+        bh=ppKz9/xMA3knCPoLo9BVKXtZb35GS+zrwtH21mrYvGY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JdgqVYkebQFsn49OmtvAcPswaNTVMYCRs7Kdc+4NJFytfbtEBY5GkV3PrnW5d+2bD
+         KXS0K/gr0wwbKnfBDhRpvSztofOMT4b8XLdVUzkJVa5Sfy5BDF/xoAd2QptpjLr/Cr
+         boHJ7qXmWoMs+9ITvshtTo1Eoyde8sucrARH/uSk=
+Date:   Fri, 11 Sep 2020 08:27:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luo bin <luobin9@huawei.com>
+Cc:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+Subject: Re: [PATCH net v1] hinic: fix rewaking txq after netif_tx_disable
+Message-ID: <20200911082748.377cd9f2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200910140440.20361-1-luobin9@huawei.com>
+References: <20200910140440.20361-1-luobin9@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <dae4ab91ec20e72963f2658efca4874a35dd739e.camel@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 9:26 AM, Philipp Zabel wrote:
-> Hi Crystal,
+On Thu, 10 Sep 2020 22:04:40 +0800 Luo bin wrote:
+> When calling hinic_close in hinic_set_channels, all queues are
+> stopped after netif_tx_disable, but some queue may be rewaken in
+> free_tx_poll by mistake while drv is handling tx irq. If one queue
+> is rewaken core may call hinic_xmit_frame to send pkt after
+> netif_tx_disable within a short time which may results in accessing
+> memory that has been already freed in hinic_close. So we call
+> napi_disable before netif_tx_disable in hinic_close to fix this bug.
 > 
-> On Fri, 2020-09-11 at 14:07 +0800, Crystal Guo wrote:
-> [...]
->> Should I add the SoC-specific data as follows?
->> This may also modify the ti original code, is it OK?
->>
->> +       data->reset_data = of_device_get_match_data(&pdev->dev);
->> +
->> +       list = of_get_property(np, data->reset_data->reset_bits, &size);
->>
->> +static const struct common_reset_data ti_reset_data = {
->> +       .reset_op_available = false,
->> +       .reset_bits = "ti, reset-bits",
->                             ^
-> That space doesn't belong there.
-> 
->> +};
->> +
->> +static const struct common_reset_data mediatek_reset_data = {
->> +       .reset_op_available = true,
->> +       .reset_bits = "mediatek, reset-bits",
->> +};
-> 
-> I understand Robs comments as meaning "ti,reset-bits" should have been
-> called "reset-bits" in the first place, and you shouldn't repeat adding
-> the vendor prefix, as that is implied by the compatible. So this should
-> probably be just "reset-bits".
+> Fixes: 2eed5a8b614b ("hinic: add set_channels ethtool_ops support")
+> Signed-off-by: Luo bin <luobin9@huawei.com>
 
-Hmm, not sure about that. I think Rob wants the reset data itself to be added in
-the driver as is being done on some other SoCs (eg: like in reset-qcom-pdc.c).
-
-regards
-Suman
-
-> 
-> Otherwise this looks like it should work.
-> 
-> regards
-> Philipp
-> 
-
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
