@@ -2,187 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89CB2CFB12
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906392CFB19
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Dec 2020 12:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727726AbgLEKzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 5 Dec 2020 05:55:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728781AbgLEKxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 5 Dec 2020 05:53:38 -0500
-From:   Dinh Nguyen <dinguyen@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     daniel.lezcano@linaro.org
-Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, Jisheng.Zhang@synaptics.com, arnd@arndb.de
-Subject: [PATCHv3] clocksource: dw_apb_timer_of: add error handling if no clock available
-Date:   Sat,  5 Dec 2020 04:52:23 -0600
-Message-Id: <20201205105223.208604-1-dinguyen@kernel.org>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729518AbgLELHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 5 Dec 2020 06:07:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729484AbgLELFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 5 Dec 2020 06:05:04 -0500
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C524C061A55
+        for <linux-kernel@vger.kernel.org>; Sat,  5 Dec 2020 03:04:18 -0800 (PST)
+Received: by mail-ed1-x541.google.com with SMTP id b73so8518350edf.13
+        for <linux-kernel@vger.kernel.org>; Sat, 05 Dec 2020 03:04:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:message-id:subject:to:cc:in-reply-to:references:date
+         :mime-version:content-transfer-encoding;
+        bh=ptB7VjFOHXGa3Nl2TvXAUSYtLzguBp9ctPeePIRKIvM=;
+        b=mjYNJ6wrOZ/8oP6erkxFQT5rWHE0geqzUr2wuhi57zBWlSf0GkHslQultnxdYadYPi
+         qEZejANd1krMu6PmWcdBj9SN0R/2u1eP9ypxXDbvnBbSRTGcFQvpvp7UfdUdx6wIo/37
+         EpjPqgZbSmkqle5HyZo6fvSUTTJXhBhR5n6K29Yye2N2pRYukUGwDZTLytTd5SvRQEPA
+         OQbVq4MAX3YoX5NtV+la9YiDKlU2Ca9LdCmjKRxgHnmpUpi/lXHqjGXS55ayZVXsxusd
+         xWVfhTi+9Y8tY71fbJFG2iPnLVRRR8k5V+ZvaSsH3DnS4M5vsGXoCb8wqIjnQk8Rp9JK
+         2O2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:subject:to:cc:in-reply-to
+         :references:date:mime-version:content-transfer-encoding;
+        bh=ptB7VjFOHXGa3Nl2TvXAUSYtLzguBp9ctPeePIRKIvM=;
+        b=JQOuuy2imDgIfmdQHOaFKKKfQ35YVz5M512vonI4CqCWjBkNLsUi44Z5v6f25dRRXy
+         4ay8R+oO1jDHCoKCWC2dfFbJCCikRBKBS0qA2Cl4GgfDejr0QP8KU85DYWzPHrvBV90N
+         BRz6dayzCDShztuVK9/SevcsZwxtVh9qRxE8/858vIl+RFtPxjLRojnJ8VMnwTL1WuRN
+         IkgWI/o3HEooWJHCqJdI4h+aRMYIDkeyC5x6V/Gu5I8r673sFD1tln+5RJko7qwYEnup
+         f96voWvvwgzRu29eFVKYH5yVGCdv7XvywpXkng/lFdyDAUmLswbJ40ULe3/ilzVRIuGq
+         Kmxw==
+X-Gm-Message-State: AOAM531iko2WjlcgbfrCrZyn03eiRs/vcaRTD45V+5faBeUnc9IbyT/W
+        X2cXefbEaNC1CiyZMKDV5Gc=
+X-Google-Smtp-Source: ABdhPJww6rtnhyZ6J5HO0cyBw7T7LcSslvTFiC1k1kUHZvqssKFJtXIpiRv9/asus/Ky1CQsJO+QtA==
+X-Received: by 2002:a50:ff0c:: with SMTP id a12mr11701689edu.79.1607166257309;
+        Sat, 05 Dec 2020 03:04:17 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id n1sm4963181ejb.2.2020.12.05.03.04.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 05 Dec 2020 03:04:16 -0800 (PST)
+From:   Bean Huo <beanhuo.cn@gmail.com>
+X-Google-Original-From: Bean Huo <huobean@gmail.com>
+Message-ID: <bf1ca326b432444e7d97cac7210e07d2a4ea7fcf.camel@gmail.com>
+Subject: Re: [PATCH RFC] mm: Let readahead submit larger batches of pages
+ in case of ra->ra_pages == 0
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, beanhuo@micron.com,
+        Richard Weinberger <richard@nod.at>
+In-Reply-To: <20200911094709.GB14158@infradead.org>
+References: <20200904144807.31810-1-huobean@gmail.com>
+         <20200904110938.d9a2cb53a58e67a15c960f47@linux-foundation.org>
+         <ef82be594709a8f954f4933968bd96888e589df3.camel@gmail.com>
+         <20200911094709.GB14158@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 11 Sep 2020 13:35:23 +0200
+Mime-Version: 1.0
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit ("b0fc70ce1f02 arm64: berlin: Select DW_APB_TIMER_OF") added the
-support for the dw_apb_timer into the arm64 defconfig. However, for some
-platforms like the Intel Stratix10 and Agilex, the clock manager doesn't
-get loaded until after the timer driver get loaded. Thus, the driver hits
-the panic "No clock nor clock-frequency property for" because it cannot
-properly get the clock.
+On Fri, 2020-09-11 at 10:47 +0100, Christoph Hellwig wrote:
+> > Hi Andrew
+> > Sorry, I am still not quite understanding your above three
+> > questions. 
+> > 
+> > Based on my shallow understanding, ra_pages is associated with
+> > read_ahead_kb. Seems ra_pages controls the maximum read-ahead
+> > window
+> > size, but it doesn't work when the requested size exceeds
+> > ra_pages. 
+> > 
+> > If I set the read_ahead_kb to 0, also, as Christoph mentioned, MTD
+> > forcibly sets ra_pages to 0.  I think the intention is that only
+> > wants
+> > to disable read-ahead, however, doesn't want
+> > generic_file_buffered_read() to split the request and read data
+> > with
+> > 4KB chunk size separately.
+> 
+> They way I understood Richard this is intentional.
 
-This patch adds the error handling needed for the timer driver so that
-the kernel can continue booting instead of just hitting the panic.
+Hi Christoph
+Thanks. understood now, MTD expects this result. Even so, I think this
+patch doesn't impact MTD because the flash-based FS only achieved the
+readpage. Inside __do_page_cache_readahead will use mapping->a_ops-
+>readpage to read data.
 
-Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
----
-v3: check for IS_ERR(timer_clk) in timer_get_base_and_rate
-v2: address comments from Daniel Lezcano
-    update commit message
----
- drivers/clocksource/dw_apb_timer_of.c | 57 ++++++++++++++++++---------
- 1 file changed, 39 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/clocksource/dw_apb_timer_of.c b/drivers/clocksource/dw_apb_timer_of.c
-index ab3ddebe8344..42e7e43b8fcd 100644
---- a/drivers/clocksource/dw_apb_timer_of.c
-+++ b/drivers/clocksource/dw_apb_timer_of.c
-@@ -14,12 +14,13 @@
- #include <linux/reset.h>
- #include <linux/sched_clock.h>
- 
--static void __init timer_get_base_and_rate(struct device_node *np,
-+static int __init timer_get_base_and_rate(struct device_node *np,
- 				    void __iomem **base, u32 *rate)
- {
- 	struct clk *timer_clk;
- 	struct clk *pclk;
- 	struct reset_control *rstc;
-+	int ret;
- 
- 	*base = of_iomap(np, 0);
- 
-@@ -46,55 +47,67 @@ static void __init timer_get_base_and_rate(struct device_node *np,
- 			pr_warn("pclk for %pOFn is present, but could not be activated\n",
- 				np);
- 
-+	if (!of_property_read_u32(np, "clock-freq", rate) &&
-+	    !of_property_read_u32(np, "clock-frequency", rate))
-+		return 0;
-+
- 	timer_clk = of_clk_get_by_name(np, "timer");
- 	if (IS_ERR(timer_clk))
--		goto try_clock_freq;
-+		return PTR_ERR(timer_clk);
- 
--	if (!clk_prepare_enable(timer_clk)) {
--		*rate = clk_get_rate(timer_clk);
--		return;
--	}
-+	ret = clk_prepare_enable(timer_clk);
-+	if (ret)
-+		return ret;
-+
-+	*rate = clk_get_rate(timer_clk);
-+	if (!(*rate))
-+		return -EINVAL;
- 
--try_clock_freq:
--	if (of_property_read_u32(np, "clock-freq", rate) &&
--	    of_property_read_u32(np, "clock-frequency", rate))
--		panic("No clock nor clock-frequency property for %pOFn", np);
-+	return 0;
- }
- 
--static void __init add_clockevent(struct device_node *event_timer)
-+static int __init add_clockevent(struct device_node *event_timer)
- {
- 	void __iomem *iobase;
- 	struct dw_apb_clock_event_device *ced;
- 	u32 irq, rate;
-+	int ret = 0;
- 
- 	irq = irq_of_parse_and_map(event_timer, 0);
- 	if (irq == 0)
- 		panic("No IRQ for clock event timer");
- 
--	timer_get_base_and_rate(event_timer, &iobase, &rate);
-+	ret = timer_get_base_and_rate(event_timer, &iobase, &rate);
-+	if (ret)
-+		return ret;
- 
- 	ced = dw_apb_clockevent_init(-1, event_timer->name, 300, iobase, irq,
- 				     rate);
- 	if (!ced)
--		panic("Unable to initialise clockevent device");
-+		return -EINVAL;
- 
- 	dw_apb_clockevent_register(ced);
-+
-+	return 0;
- }
- 
- static void __iomem *sched_io_base;
- static u32 sched_rate;
- 
--static void __init add_clocksource(struct device_node *source_timer)
-+static int __init add_clocksource(struct device_node *source_timer)
- {
- 	void __iomem *iobase;
- 	struct dw_apb_clocksource *cs;
- 	u32 rate;
-+	int ret;
- 
--	timer_get_base_and_rate(source_timer, &iobase, &rate);
-+	ret = timer_get_base_and_rate(source_timer, &iobase, &rate);
-+	if (ret)
-+		return ret;
- 
- 	cs = dw_apb_clocksource_init(300, source_timer->name, iobase, rate);
- 	if (!cs)
--		panic("Unable to initialise clocksource device");
-+		return -EINVAL;
- 
- 	dw_apb_clocksource_start(cs);
- 	dw_apb_clocksource_register(cs);
-@@ -106,6 +119,8 @@ static void __init add_clocksource(struct device_node *source_timer)
- 	 */
- 	sched_io_base = iobase + 0x04;
- 	sched_rate = rate;
-+
-+	return 0;
- }
- 
- static u64 notrace read_sched_clock(void)
-@@ -146,10 +161,14 @@ static struct delay_timer dw_apb_delay_timer = {
- static int num_called;
- static int __init dw_apb_timer_init(struct device_node *timer)
- {
-+	int ret = 0;
-+
- 	switch (num_called) {
- 	case 1:
- 		pr_debug("%s: found clocksource timer\n", __func__);
--		add_clocksource(timer);
-+		ret = add_clocksource(timer);
-+		if (ret)
-+			return ret;
- 		init_sched_clock();
- #ifdef CONFIG_ARM
- 		dw_apb_delay_timer.freq = sched_rate;
-@@ -158,7 +177,9 @@ static int __init dw_apb_timer_init(struct device_node *timer)
- 		break;
- 	default:
- 		pr_debug("%s: found clockevent timer\n", __func__);
--		add_clockevent(timer);
-+		ret = add_clockevent(timer);
-+		if (ret)
-+			return ret;
- 		break;
- 	}
- 
--- 
-2.25.1
+Thanks,
+Bean
 
