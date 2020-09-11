@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D40D2663CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877202663AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgIKQZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33872 "EHLO
+        id S1726626AbgIKQWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgIKP2F (ORCPT
+        with ESMTP id S1726496AbgIKP2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:28:05 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9268AC061795
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:22 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 7so6644374pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:22 -0700 (PDT)
+        Fri, 11 Sep 2020 11:28:15 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77ADC061796
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:29 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z19so7338029pfn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kqVh90gZA+Jv+sQxaZ1mzbNqmtA+iD77lIe6xdCdvDA=;
-        b=ICb2A4Q92/WBWM7cefZ5ElnS+BfqFA5z0dbBB4/9D+x61pUUrWW1TIJyG5l2OJJ2J5
-         /b+lGtutItcjO/D7XmeVO8ZnVREF7WXLuAt2jwJvuvVcSsqEGPxbZ5u5LOpc00sQAHWj
-         gfOC3DyGCrPI5E0Cm6J32sd1Nu8oGV5TOkQacP/WGNAa764VytHt7lu0brBvUxrFOvSa
-         Pw5Mcyi2x9MbzUTws4bDmbU3LsDZxbaiPV+biUykE5780veIyiTyoc63274v3ZgtVsDG
-         TyHyLH9q/0ALmh03yg/t0t0x4rf1uBE9MoH47bCmbU+IFZ52Te0Vqol1v32V9eODx1yV
-         Smkw==
+        bh=Borfb2c/AuKaxrPEvHGpc2ZkIkK0QqkS7G7OkbQVw6o=;
+        b=jGOWZRFHUPusoZoYx87HUc0UdvWsBxz/6APZqblOC9XbCFv0ytJIfpKbUiqGR+qoBp
+         OecjXlHzj+qtca8/4IwvdC6BImis+apETeuCYAtSsst/IzfSeJ9zBlJJOWLAZ8Q3b6pm
+         yKHIP/rm3cGeLhNBMovZS3Ac8tjlfx5ca9yGhAwO+l3zo/53AazZkVt70xeUCA9FCju/
+         EGMp/NOXqs0btZS4XhRbtqqwXskqCdE6JBpojPgaA7D1Dyl9f8kzzekwPx3+YC8LIm61
+         J7tsBhGdMbL0TwkfjHVGE+2z6hAPvDArpTr24zfjOcqFOHryVEhD9n16KKxaEvvfXSfS
+         0BOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=kqVh90gZA+Jv+sQxaZ1mzbNqmtA+iD77lIe6xdCdvDA=;
-        b=HczHI8bmRuorwIiqpe2G2BJYuAr3KPWqyc51h2h3w/rgitovJJ93v9dAAwn4bouc70
-         bE9Hd6gmR2uwPHrcl3QFG9+dhbgWFVpWMft+sX9QX5X6i3aD96tzbhipk59mulPpv0g8
-         T5YZiDtJxntDyMRJINSwS0VfkLjefC2hplGWU/F15UOqahRXcQkBPZGUeGxWmTBMqo48
-         ZzEqj6NK0eJSI5gk6V0RWBT1rAZiBENtNT+sdjbnsYmhBRVmQw/JcRKl3r2215dwuWdX
-         J4pG+AkEJ7mJHC3RwqDV15uoe77g4HGLq2wJL//o5Rj12vpHYVQpO2gfo+j7m4GJqiif
-         gT6w==
-X-Gm-Message-State: AOAM530DlND8t5EymfCIcju25g2/VY+EznXc5GmY/jWFO8iY4xxpG2/z
-        KT+uD/ZfqupE0YEnK7z0SkXKLg==
-X-Google-Smtp-Source: ABdhPJydCZ/jXrds01g38SygDtPX4ovyhhGVLoresFGxG+Fvj8jeLjcgon9C79eWnN9h7K1cLegzTg==
-X-Received: by 2002:a17:902:760b:b029:d1:9be4:856b with SMTP id k11-20020a170902760bb02900d19be4856bmr2313328pll.1.1599830962073;
-        Fri, 11 Sep 2020 06:29:22 -0700 (PDT)
+        bh=Borfb2c/AuKaxrPEvHGpc2ZkIkK0QqkS7G7OkbQVw6o=;
+        b=LBrFSCR6wE9+srAWXp5+kL4vITu/ADiJfg8KEq6mIi9LC3KF4Ufmdj75WnVbw0JKeC
+         HO8dl3b49SsFYTSLa6pjZDJ84qmYoI4Uir5DA6tJnlC+YKWBq654lg7CkZJ6311Dmska
+         xPz1bo8jbypSuClZEUS2L20jVXYxlhzbYQ5/gS9H9xBAmB97WTUZqKJXgbHFGjpYsjTU
+         bpDCcRxIXbjXR8uwDfL/SR4/4/bZUWPr9vwYrnldRTPGAM5b/u9ynJhelXFujJ9pgQF1
+         rDcL5J0CkRY+OTMQao4t2BWFCu85DaOqaNT+WHFCeBK24qGebP9GYDF8O2GJUZyNaKkp
+         DVlQ==
+X-Gm-Message-State: AOAM533VHPtqS7TS87KKxM0euIlQ+NcfY4Q9HflsAbXz2TieHK3yu9af
+        VNtfXeAa7sz0nvbQD6oSWgk0oQ==
+X-Google-Smtp-Source: ABdhPJxr9ACTHLE1mqe3DgZIxSLIMmNQF1fyLmvRkWYTYL0CQRvGUt3F8c0z0XSGcO/b1SJoc8A1AA==
+X-Received: by 2002:a62:5244:: with SMTP id g65mr2133117pfb.132.1599830968549;
+        Fri, 11 Sep 2020 06:29:28 -0700 (PDT)
 Received: from localhost.localdomain ([117.210.209.48])
-        by smtp.gmail.com with ESMTPSA id e10sm557988pgb.45.2020.09.11.06.29.15
+        by smtp.gmail.com with ESMTPSA id e10sm557988pgb.45.2020.09.11.06.29.22
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Sep 2020 06:29:21 -0700 (PDT)
+        Fri, 11 Sep 2020 06:29:27 -0700 (PDT)
 From:   Sumit Garg <sumit.garg@linaro.org>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
@@ -55,9 +55,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
         daniel.thompson@linaro.org, jason.wessel@windriver.com,
         kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
         Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v4 2/5] irqchip/gic-v3: Enable support for SGIs to act as NMIs
-Date:   Fri, 11 Sep 2020 18:58:41 +0530
-Message-Id: <1599830924-13990-3-git-send-email-sumit.garg@linaro.org>
+Subject: [PATCH v4 3/5] arm64: smp: Allocate and setup IPI as NMI
+Date:   Fri, 11 Sep 2020 18:58:42 +0530
+Message-Id: <1599830924-13990-4-git-send-email-sumit.garg@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1599830924-13990-1-git-send-email-sumit.garg@linaro.org>
 References: <1599830924-13990-1-git-send-email-sumit.garg@linaro.org>
@@ -66,63 +66,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to handle SGIs as regular NMIs. As SGIs or IPIs defaults to a
-special flow handler: handle_percpu_devid_fasteoi_ipi(), so skip NMI
-handler update in case of SGIs.
-
-Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
-as IRQs/NMIs happen as part of this routine.
+Allocate an unused IPI that can be turned as NMI using ipi_nmi framework.
+Also, invoke corresponding NMI setup/teardown APIs.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- drivers/irqchip/irq-gic-v3.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/smp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 7170645..dfd8e03 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -476,6 +476,11 @@ static int gic_irq_nmi_setup(struct irq_data *d)
- 	if (WARN_ON(gic_irq(d) >= 8192))
- 		return -EINVAL;
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index b6bde26..3f3b1ff 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -43,6 +43,7 @@
+ #include <asm/daifflags.h>
+ #include <asm/kvm_mmu.h>
+ #include <asm/mmu_context.h>
++#include <asm/nmi.h>
+ #include <asm/numa.h>
+ #include <asm/processor.h>
+ #include <asm/smp_plat.h>
+@@ -962,6 +963,8 @@ static void ipi_setup(int cpu)
  
-+	if (get_intid_range(d) == SGI_RANGE) {
-+		gic_irq_set_prio(d, GICD_INT_NMI_PRI);
-+		return 0;
-+	}
+ 	for (i = 0; i < nr_ipi; i++)
+ 		enable_percpu_irq(ipi_irq_base + i, 0);
 +
- 	/* desc lock should already be held */
- 	if (gic_irq_in_rdist(d)) {
- 		u32 idx = gic_get_ppi_index(d);
-@@ -513,6 +518,11 @@ static void gic_irq_nmi_teardown(struct irq_data *d)
- 	if (WARN_ON(gic_irq(d) >= 8192))
- 		return;
++	ipi_nmi_setup(cpu);
+ }
  
-+	if (get_intid_range(d) == SGI_RANGE) {
-+		gic_irq_set_prio(d, GICD_INT_DEF_PRI);
-+		return;
-+	}
+ static void ipi_teardown(int cpu)
+@@ -973,6 +976,8 @@ static void ipi_teardown(int cpu)
+ 
+ 	for (i = 0; i < nr_ipi; i++)
+ 		disable_percpu_irq(ipi_irq_base + i);
 +
- 	/* desc lock should already be held */
- 	if (gic_irq_in_rdist(d)) {
- 		u32 idx = gic_get_ppi_index(d);
-@@ -1666,6 +1676,7 @@ static int __init gic_init_bases(void __iomem *dist_base,
++	ipi_nmi_teardown(cpu);
+ }
  
- 	gic_dist_init();
- 	gic_cpu_init();
-+	gic_enable_nmi_support();
- 	gic_smp_init();
- 	gic_cpu_pm_init();
- 
-@@ -1677,8 +1688,6 @@ static int __init gic_init_bases(void __iomem *dist_base,
- 			gicv2m_init(handle, gic_data.domain);
+ void __init set_smp_ipi_range(int ipi_base, int n)
+@@ -993,6 +998,9 @@ void __init set_smp_ipi_range(int ipi_base, int n)
+ 		irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
  	}
  
--	gic_enable_nmi_support();
--
- 	return 0;
++	if (n > nr_ipi)
++		set_smp_ipi_nmi(ipi_base + nr_ipi);
++
+ 	ipi_irq_base = ipi_base;
  
- out_free:
+ 	/* Setup the boot CPU immediately */
 -- 
 2.7.4
 
