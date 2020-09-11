@@ -2,135 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31843266584
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A83266561
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgIKRFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:05:09 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:10397 "EHLO mx1.tq-group.com"
+        id S1726224AbgIKRAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:00:51 -0400
+Received: from mga18.intel.com ([134.134.136.126]:29787 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725955AbgIKPCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:02:36 -0400
-IronPort-SDR: xAo6en6rEUfu6F1AMIgNOA39SC5hKt1QbgHPE1wbvLbovX07L8xr9rkv0QLAngULZRJVcl7gn3
- joeuHL6LpSPU3RBcFPUDBkEH4Rr5dstqYIPcgRQnKDj7k7AyrciYEQaX6dBMtr+O8mfPjnSJRt
- LzoN5bQ9wAnofYQEpjlt2AWrx0Qh7ZeIGZ8HwNms964WmhMKd+6BsfPqf6OChsM1buaU4nXvLv
- kB9HGpGP5qjB0xpQZ8kgARiD9iIAKw891T45xINMSjLwOl7p8ZdSw8lZIS5vCzZU/RgoKDFaQm
- bg0=
-X-IronPort-AV: E=Sophos;i="5.76,415,1592863200"; 
-   d="scan'208";a="13831338"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 11 Sep 2020 17:01:49 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 11 Sep 2020 17:01:49 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 11 Sep 2020 17:01:49 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1599836509; x=1631372509;
-  h=from:to:cc:subject:date:message-id;
-  bh=rGnbFBeV98YZ6Jj0PFhBZ+Pm9hlOkM3MIOQgmK98Tx8=;
-  b=S7RNZ5vCOf6ybbKaiTe+UBeKM+64f2hKOTGlGlFHHgAWyfZ8HOT4atbi
-   ERMhgSm6Ou7mHsWrfDkkgVfjRa5zL6b/2J5VCUs2U4jAvyn75RDjJOSxo
-   K/Zwew2ZPZia4+dcHLC4Jj879HETcevXYMbhPF5Ltqmf6PL9wdvhxcCAR
-   s/2LJcuHDo38k+6CL6P6VL3hPZgKngRVKo99529URnupq2bl30ueGJZNi
-   /rljbQhQhuByBulmejlAMyWpslzRcOaoCgMKDBVKZ9QYRGoxlVCPb0pRw
-   bmFTEhc4FysZBLs37JQZt/yOs5C7cBm7WqRuh3i12lm2+4N0vqNhlfT+U
-   Q==;
-IronPort-SDR: Z2Qh7HYOE9HEncPGGLxSJmyY6VUNxlaZXWQOlMXLamvJHIJcJB1oWm8TZ2YLNFdwtyyc/j7/qs
- Vl58Or6OOHMRuFISr9rrnI2uxVmWjd8glrNfbg4uuYAzV+OpZTLVnrToEAmrWCNycyfHSjdese
- RmACkYqLTsefdqB+zW6dDpYivyg+zUfiHB5wXKydOkiU6TWrEImH7ajRd8G8koOJ9Vn5UAY1Cs
- 3+17mAQHA45LU51cO882Ft9BnY7OESr749kX42eBAHfRFR31UzeTMhfJJdBGLmU2NMZHGIT7vQ
- Tq4=
-X-IronPort-AV: E=Sophos;i="5.76,415,1592863200"; 
-   d="scan'208";a="13831337"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 11 Sep 2020 17:01:49 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.134])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id D138D280070;
-        Fri, 11 Sep 2020 17:01:48 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH] i2c: mxs: use MXS_DMA_CTRL_WAIT4END instead of DMA_CTRL_ACK
-Date:   Fri, 11 Sep 2020 17:01:39 +0200
-Message-Id: <20200911150139.13690-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725912AbgIKRAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 13:00:33 -0400
+IronPort-SDR: xeIfXwOKJ55+S2qfKX6U1GBoK5yYcz1Rf1t0alMD7Mi4IQvWp0uhfsVeg85XOYlvtpv1WRgtW4
+ Jpj3FzMyiw2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="146534444"
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="146534444"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 10:00:32 -0700
+IronPort-SDR: fv+8VPKXryTTqgxLsKuvHI/MEWiTXWPSgzWL0s+XUpDB1I05IjHj1/n5XnRhn/5TiuAjVdvYN2
+ t/tYy52AIQlg==
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="450048714"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 10:00:32 -0700
+Date:   Fri, 11 Sep 2020 10:00:31 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        linux-kernel@vger.kernel.org, Gerd Hoffmann <kraxel@redhat.com>
+Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+Message-ID: <20200911170031.GD4344@sjchrist-ice>
+References: <20200807141232.402895-1-vkuznets@redhat.com>
+ <20200825212526.GC8235@xz-x1>
+ <87eenlwoaa.fsf@vitty.brq.redhat.com>
+ <20200901200021.GB3053@xz-x1>
+ <877dtcpn9z.fsf@vitty.brq.redhat.com>
+ <20200904061210.GA22435@sjchrist-ice>
+ <20200904072905.vbkiq3h762fyzds6@sirius.home.kraxel.org>
+ <20200904160008.GA2206@sjchrist-ice>
+ <874koanfsc.fsf@vitty.brq.redhat.com>
+ <20200907072829-mutt-send-email-mst@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907072829-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver-specific usage of the DMA_CTRL_ACK flag was replaced with a
-custom flag in commit ceeeb99cd821 ("dmaengine: mxs: rename custom flag"),
-but i2c-mxs was not updated to use the new flag, completely breaking I2C
-transactions using DMA.
+On Mon, Sep 07, 2020 at 07:32:23AM -0400, Michael S. Tsirkin wrote:
+> On Mon, Sep 07, 2020 at 10:37:39AM +0200, Vitaly Kuznetsov wrote:
+> > Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> > 
+> > > On Fri, Sep 04, 2020 at 09:29:05AM +0200, Gerd Hoffmann wrote:
+> > >>   Hi,
+> > >> 
+> > >> > Unless I'm mistaken, microvm doesn't even support PCI, does it?
+> > >> 
+> > >> Correct, no pci support right now.
+> > >> 
+> > >> We could probably wire up ecam (arm/virt style) for pcie support, once
+> > >> the acpi support for mictovm finally landed (we need acpi for that
+> > >> because otherwise the kernel wouldn't find the pcie bus).
+> > >> 
+> > >> Question is whenever there is a good reason to do so.  Why would someone
+> > >> prefer microvm with pcie support over q35?
+> > >> 
+> > >> > If all of the above is true, this can be handled by adding "pci=lastbus=0"
+> > >> > as a guest kernel param to override its scanning of buses.  And couldn't
+> > >> > that be done by QEMU's microvm_fix_kernel_cmdline() to make it transparent
+> > >> > to the end user?
+> > >> 
+> > >> microvm_fix_kernel_cmdline() is a hack, not a solution.
+> > >> 
+> > >> Beside that I doubt this has much of an effect on microvm because
+> > >> it doesn't support pcie in the first place.
+> > >
+> > > I am so confused.  Vitaly, can you clarify exactly what QEMU VM type this
+> > > series is intended to help?  If this is for microvm, then why is the guest
+> > > doing PCI scanning in the first place?  If it's for q35, why is the
+> > > justification for microvm-like workloads?
+> > 
+> > I'm not exactly sure about the plans for particular machine types, the
+> > intention was to use this for pcie in QEMU in general so whatever
+> > machine type uses pcie will benefit. 
+> > 
+> > Now, it seems that we have a more sophisticated landscape. The
+> > optimization will only make sense to speed up boot so all 'traditional'
+> > VM types with 'traditional' firmware are out of
+> > question. 'Container-like' VMs seem to avoid PCI for now, I'm not sure
+> > if it's because they're in early stages of their development, because
+> > they can get away without PCI or, actually, because of slowness at boot
+> > (which we're trying to tackle with this feature). I'd definitely like to
+> > hear more what people think about this.
+> 
+> I suspect microvms will need pci eventually. I would much rather KVM
+> had an exit-less discovery mechanism in place by then because
+> learning from history if it doesn't they will do some kind of
+> hack on the kernel command line, and everyone will be stuck
+> supporting that for years ...
 
-Fixes: ceeeb99cd821 ("dmaengine: mxs: rename custom flag")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
-
-I'm a bit out of my depth here - I have no idea what these flags are
-supposed to do. Looking at ceeeb99cd821, this is what I came up with,
-and it fixes I2C communication with multiple devices (an EEPROM and a
-PCF85063TP RTC) on one of our i.MX28 boards.
-
-I run-tested this on a 5.4.y kernel; given how little is happening in
-these drivers nowadays, I assume that the fix is still valid on newer
-kernels...
-
-
- drivers/i2c/busses/i2c-mxs.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-mxs.c b/drivers/i2c/busses/i2c-mxs.c
-index 9587347447f0..c4b08a924461 100644
---- a/drivers/i2c/busses/i2c-mxs.c
-+++ b/drivers/i2c/busses/i2c-mxs.c
-@@ -25,6 +25,7 @@
- #include <linux/of_device.h>
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
-+#include <linux/dma/mxs-dma.h>
- 
- #define DRIVER_NAME "mxs-i2c"
- 
-@@ -200,7 +201,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
- 		dma_map_sg(i2c->dev, &i2c->sg_io[0], 1, DMA_TO_DEVICE);
- 		desc = dmaengine_prep_slave_sg(i2c->dmach, &i2c->sg_io[0], 1,
- 					DMA_MEM_TO_DEV,
--					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+					DMA_PREP_INTERRUPT |
-+					MXS_DMA_CTRL_WAIT4END);
- 		if (!desc) {
- 			dev_err(i2c->dev,
- 				"Failed to get DMA data write descriptor.\n");
-@@ -228,7 +230,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
- 		dma_map_sg(i2c->dev, &i2c->sg_io[1], 1, DMA_FROM_DEVICE);
- 		desc = dmaengine_prep_slave_sg(i2c->dmach, &i2c->sg_io[1], 1,
- 					DMA_DEV_TO_MEM,
--					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+					DMA_PREP_INTERRUPT |
-+					MXS_DMA_CTRL_WAIT4END);
- 		if (!desc) {
- 			dev_err(i2c->dev,
- 				"Failed to get DMA data write descriptor.\n");
-@@ -260,7 +263,8 @@ static int mxs_i2c_dma_setup_xfer(struct i2c_adapter *adap,
- 		dma_map_sg(i2c->dev, i2c->sg_io, 2, DMA_TO_DEVICE);
- 		desc = dmaengine_prep_slave_sg(i2c->dmach, i2c->sg_io, 2,
- 					DMA_MEM_TO_DEV,
--					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-+					DMA_PREP_INTERRUPT |
-+					MXS_DMA_CTRL_WAIT4END);
- 		if (!desc) {
- 			dev_err(i2c->dev,
- 				"Failed to get DMA data write descriptor.\n");
--- 
-2.17.1
-
+Is it not an option for the VMM to "accurately" enumerate the number of buses?
+E.g. if the VMM has devices on only bus 0, then enumerate that there is one
+bus so that the guest doesn't try and probe devices that can't possibly exist.
+Or is that completely non-sensical and/or violate PCIe spec?
