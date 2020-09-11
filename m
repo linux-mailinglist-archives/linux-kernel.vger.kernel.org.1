@@ -2,160 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45726266A59
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D39266A58
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgIKVwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 17:52:37 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:35625 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgIKVvq (ORCPT
+        id S1725967AbgIKVwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 17:52:30 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38840 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725937AbgIKVvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 17:51:46 -0400
-Received: by mail-io1-f65.google.com with SMTP id r9so12666319ioa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:51:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SPPit0voQ5iZSd9YAtw226cZcfg7JS5J3IK/RTi0Ep0=;
-        b=DVRG88UgpEIw/PGAuv7lzIQhnzSnDlE4iXzxFm94KR6pyMl7V6tP8N5e5YNDEclZSA
-         zHA/eTasz/EMS4wqY7AGoi/MPQuzzJb/8hz9+cqCRYlpmuuW4ogDLkTarySbLsEItv7T
-         EMPf/6eeU1jr0jOdi40NH4+nANq8wiXZM79WNN6PiIkygxWvJWl7FiLB7omAjGXnJEhF
-         4erlCU/kbTBOkaroVH9UWc4ERcR3mTLXAIcEzp6VHEO19QHYd/1NcgT07QTxlXy3A0i5
-         ndEqTstBNbroyaHzZohtG9A2We4nhQqYHF7h3hFWCD98RdqaNf5xznaz64TtGAg9zqac
-         O3ew==
-X-Gm-Message-State: AOAM5303xlsDfRB1BQrOlUs3wKpDby3VvVEx0XxN+LhLcNIxGIGRS80O
-        F8L94ClErdiKPmzSs58RWg==
-X-Google-Smtp-Source: ABdhPJwXsUOdBoxG1hqbkTvcWRCS/9/3qi9AIdeT/TMf/FXFFXd3jcCl4evlYyv+FoXvTFxkkQtSpQ==
-X-Received: by 2002:a6b:b48c:: with SMTP id d134mr3385351iof.115.1599861094893;
-        Fri, 11 Sep 2020 14:51:34 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.251])
-        by smtp.googlemail.com with ESMTPSA id a20sm1927966ilq.57.2020.09.11.14.51.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 14:51:34 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
-Subject: [PATCH v3 10/10] Documentation: arm64: Document PMU counters access from userspace
-Date:   Fri, 11 Sep 2020 15:51:18 -0600
-Message-Id: <20200911215118.2887710-11-robh@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200911215118.2887710-1-robh@kernel.org>
-References: <20200911215118.2887710-1-robh@kernel.org>
+        Fri, 11 Sep 2020 17:51:55 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 08BLhr9V021238;
+        Fri, 11 Sep 2020 14:51:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=+cHyWJM/k6ZvAGNU1rhyNtRlMgYYyGXeA8nsE+XExs4=;
+ b=qtUJMGD4ittKGAab9GoWTFdNnO57VoeRfbKBG9J/dfGWEIq+l6ajhCF0mvTeZVR1H3Bz
+ 0VPrcPukSnYMqDT72At1wGUu3rNEeA5+yJZEDOOxCwdzx5YKP9b8/fV0cW3qCkd+xRcJ
+ ii+vGVNWFJzyhWAHbVcOJoOALJq/Om0/kvM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 33exvj71ux-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 11 Sep 2020 14:51:41 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 11 Sep 2020 14:51:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WWqSedXmmw11IxZjESkRUM3ObYGEo6Dv4CUPMB5BmMIGissNQHW7MmDNVyRKx5ZvLRRjcs52FWRFeOd77xrP41CtKooNKQQ8lc9tRWI8eymy4n7ifYNCos4zjjPcPVhMUWKs0+56rC1AiwR6Eop2iVQCPtXi9vEB3/vPvDH4QyNAC52xVBZYwFGtqCYO4RxrdDaEj9BLTfc053sgR6cbJYQ1DM97Zb18s40YGLpyd8ZJFF5XX92U8LDxNsXQzmXQeEjWmFTe6njErzTl+glPuMy/we68GYIy8y8fx3jw7ZHot3rFoZSYLY+Vz1Nxpyj0X9DF1Rpg0mj7OlWFncfTIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+cHyWJM/k6ZvAGNU1rhyNtRlMgYYyGXeA8nsE+XExs4=;
+ b=njwRdy6uxiFnBEyV+jFd5ChpD0e/luZUoZDIrIr1mDKc0GUXW8Oe5QJkbTqW7b4Bd5V3PQJw9z/X5wfvMZlmrb8H2xmlbcUJrPM960TN5abtJf/SlVk7BUtqarZFSD+aOr0vhyxsqR9NDKaGFz1DUgPtMmH1dRu5e8P9Ejp/DBRHgZffW8+EUbYOG/c6SyoVsMVlyXNM4qrBwlyqxJLjJmtvGHoakzQG0WCB7xikWGsj/6o2c+pi2zqwKCjmdKXlL8DauADcg4txawG9ESaUH6Hj0a8CHVR5L9xwbHyIn0EdcgkK+rab0wzRM9O1jKOyErDwpp9/PKiDDOSSZHWPBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+cHyWJM/k6ZvAGNU1rhyNtRlMgYYyGXeA8nsE+XExs4=;
+ b=BWoNeM4+d2BGt9cA7hcV4/vwCApbH/DGxZNR49OFQ8wt/TQVhRooBfLGXc04BaJD6RfyyvEmGsNlvZ3JpcrGMH9LVVNO1FOLhfP0UFMLCOBuDSqdsqWydzyp5SavrlPWDFcyxHSzr4XKdL9WkAR0Cx8AM2sJv3qHxiNnLc6Fens=
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2215.namprd15.prod.outlook.com (2603:10b6:a02:89::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Fri, 11 Sep
+ 2020 21:51:38 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::354d:5296:6a28:f55e%6]) with mapi id 15.20.3370.017; Fri, 11 Sep 2020
+ 21:51:38 +0000
+Date:   Fri, 11 Sep 2020 14:51:33 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: Add the missing numa stat
+ of anon and file for cgroup v2
+Message-ID: <20200911215133.GD1163084@carbon.dhcp.thefacebook.com>
+References: <20200910084258.22293-1-songmuchun@bytedance.com>
+ <CALvZod5JQWGHUAPnj9S0pKFQreLPST441mZnp+h=fue_nnh1yQ@mail.gmail.com>
+ <CAMZfGtUncFZZe2RDb54ALMt1DAVqBxAD1TQrpjei1H5nRbH6jg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtUncFZZe2RDb54ALMt1DAVqBxAD1TQrpjei1H5nRbH6jg@mail.gmail.com>
+X-ClientProxiedBy: MWHPR10CA0005.namprd10.prod.outlook.com (2603:10b6:301::15)
+ To BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:c003) by MWHPR10CA0005.namprd10.prod.outlook.com (2603:10b6:301::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 21:51:37 +0000
+X-Originating-IP: [2620:10d:c090:400::5:c003]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 83d57eeb-8400-4727-a99b-08d8569cdc21
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2215:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2215CD1AD112606EF8F50FBEBE240@BYAPR15MB2215.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1079;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9w2tY8xpUYo7G/ZoEVIXajS4Yi+vJwLpDIOHvmSPFnkKDlonnRu0qe9J/ZF+2/lW0rGTga1NG/P2j+CALeW6FivB7NrnFcCdW9bxaCZ4vJQnhsOZjcxaiYkZpwCl5U1SsyqkQ9nwlRePlxBwYOAFkYqNCEfAdjslMFbOj7C4aip0FsYihzwN8qPBcaDxjZ+3asrSx20mXlnkBldJizoCyI74YUvcYYBSKW2WvaZuN6+qOBVh3t7YrvBAGxRniNoJ/+vZB3neJs6JyKytUZAVKR2+t/y9j5Z3xgDKqjVNnPIpS6tmLVF1RQm3xIi/EuwXJSxSLE70pnQ5emu+qCht2g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(376002)(366004)(8936002)(6666004)(53546011)(8676002)(6506007)(4326008)(186003)(6916009)(55016002)(66476007)(54906003)(86362001)(33656002)(16526019)(66556008)(66946007)(9686003)(478600001)(2906002)(52116002)(83380400001)(7696005)(1076003)(5660300002)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: L3mJxHH87JyRvHKpibNC78RDt4ETir12hBhiJbw/0q+JgwrN7LAlanklxV4WaypEK8CyRdRMFBYRuXb6/mICOaf7G2uULPD4BpMiljcJJKrPidoBl6Qs6UVCUUywZSJpRvYgkDXo9OjU8dgntQDg9wo8nEdcM4OSS0L1XtMIOiS6OgeRx4IPqoziC0pSxvnDi8r2SqHe1+O/xN/P1sNFODA50dWIWYUhywLCgzzusHOYfsbIEIgfrByCYXcVAP6OiLHzI17W36Z8s98uM8ESUGx2BeScFzpT0gnJxoibtu091kLbxLyU0JOqogxly6QSgzcKk6mWIjByGAHX7FOxxgadUarMkFPPqzGJZw2ZOD7h/sopYabaJI9AXnIfHeh8d1iC8BbQEjYaEZDaFPP3m6Jt+sqx3sy1iLm0T4UTVKbsvlPLyn/rSanNEcqxjXdbkl45vF8CxR7UjHh00UsSZIUoG2070r0S6BMgWCD/fd7//z304c+ZIsjUcmWWU58WEI5UJAtHZNODvKzgmdR3Kx2o8VuTvnPUZd5V0BHJNV0ViOCMdAiybWW+G6Pg8Fy1ji2Wk2raGedc4U4VTa5IncqwfRBkxsmL4EaMs0LpvQvtHOqGuoGj9rTOUEKJ7ac5bCR+qjDpPzaH3QJ9MQ9KIQaDRvD/Jc9xF16BoFwLxpA=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83d57eeb-8400-4727-a99b-08d8569cdc21
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 21:51:38.3704
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gTVkD+goG6xbjoGq/Tq+rNpokia05ZLLUb9WVcWv5ngOgPmMWi+pPVVbSlnjskUh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2215
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-11_12:2020-09-10,2020-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=1 clxscore=1011
+ adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009110176
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raphael Gault <raphael.gault@arm.com>
+On Fri, Sep 11, 2020 at 11:51:42AM +0800, Muchun Song wrote:
+> On Fri, Sep 11, 2020 at 12:02 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Thu, Sep 10, 2020 at 1:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > In the cgroup v1, we have a numa_stat interface. This is useful for
+> > > providing visibility into the numa locality information within an
+> > > memcg since the pages are allowed to be allocated from any physical
+> > > node. One of the use cases is evaluating application performance by
+> > > combining this information with the application's CPU allocation.
+> > > But the cgroup v2 does not. So this patch adds the missing information.
+> > >
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > ---
+> >
+> > I am actually working on exposing this info on v2 as well.
+> >
+> > >  mm/memcontrol.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+> > >  1 file changed, 44 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 75cd1a1e66c8..c779673f29b2 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -1492,10 +1492,34 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+> > >         return false;
+> > >  }
+> > >
+> > > +#ifdef CONFIG_NUMA
+> > > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> > > +                                          unsigned int nid,
+> > > +                                          enum node_stat_item idx)
+> > > +{
+> > > +       long x;
+> > > +       struct mem_cgroup_per_node *pn;
+> > > +       struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> > > +
+> > > +       VM_BUG_ON(nid >= nr_node_ids);
+> > > +
+> > > +       pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> > > +       x = atomic_long_read(&pn->lruvec_stat[idx]);
+> > > +#ifdef CONFIG_SMP
+> > > +       if (x < 0)
+> > > +               x = 0;
+> > > +#endif
+> > > +       return x;
+> > > +}
+> > > +#endif
+> > > +
+> > >  static char *memory_stat_format(struct mem_cgroup *memcg)
+> > >  {
+> > >         struct seq_buf s;
+> > >         int i;
+> > > +#ifdef CONFIG_NUMA
+> > > +       int nid;
+> > > +#endif
+> > >
+> > >         seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
+> > >         if (!s.buffer)
+> > > @@ -1512,12 +1536,30 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+> > >          * Current memory state:
+> > >          */
+> > >
+> >
+> > Let's not break the parsers of memory.stat. I would prefer a separate
+> > interface like v1 i.e. memory.numa_stat.
+> 
+> It is also a good idea to expose a new interface like memory.numa_stat.
+> 
+> >
+> > > -       seq_buf_printf(&s, "anon %llu\n",
+> > > +       seq_buf_printf(&s, "anon %llu",
+> > >                        (u64)memcg_page_state(memcg, NR_ANON_MAPPED) *
+> > >                        PAGE_SIZE);
+> > > -       seq_buf_printf(&s, "file %llu\n",
+> > > +#ifdef CONFIG_NUMA
+> > > +       for_each_node_state(nid, N_MEMORY)
+> > > +               seq_buf_printf(&s, " N%d=%llu", nid,
+> > > +                              (u64)memcg_node_page_state(memcg, nid,
+> > > +                                                         NR_ANON_MAPPED) *
+> > > +                              PAGE_SIZE);
+> > > +#endif
+> > > +       seq_buf_putc(&s, '\n');
+> > > +
+> > > +       seq_buf_printf(&s, "file %llu",
+> > >                        (u64)memcg_page_state(memcg, NR_FILE_PAGES) *
+> > >                        PAGE_SIZE);
+> > > +#ifdef CONFIG_NUMA
+> > > +       for_each_node_state(nid, N_MEMORY)
+> > > +               seq_buf_printf(&s, " N%d=%llu", nid,
+> > > +                              (u64)memcg_node_page_state(memcg, nid,
+> > > +                                                         NR_FILE_PAGES) *
+> > > +                              PAGE_SIZE);
+> > > +#endif
+> > > +       seq_buf_putc(&s, '\n');
+> > > +
+> >
+> > The v1's numa_stat exposes the LRUs, why NR_ANON_MAPPED and NR_FILE_PAGES?
+> 
+> If we want to expose the anon per node, we need to add inactive anon and
+> active anon together. Why not use NR_ANON_MAPPED directly?
+> 
+> >
+> > Also I think exposing slab_[un]reclaimable per node would be beneficial as well.
+> 
+> Yeah, I agree with you. Maybe kernel_stack and percpu also should
+> be exposed.
 
-Add a documentation file to describe the access to the pmu hardware
-counters from userspace
+Percpu allocations are usually spread over multiple pages and numa nodes,
+so there are no per-node pepcpu counters.
 
-Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
-  - Update links to test examples
+Thanks!
 
-Changes from Raphael's v4:
-  - Convert to rSt
-  - Update chained event status
-  - Add section for heterogeneous systems
----
- Documentation/arm64/index.rst                 |  1 +
- .../arm64/perf_counter_user_access.rst        | 56 +++++++++++++++++++
- 2 files changed, 57 insertions(+)
- create mode 100644 Documentation/arm64/perf_counter_user_access.rst
-
-diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
-index d9665d83c53a..c712a08e7627 100644
---- a/Documentation/arm64/index.rst
-+++ b/Documentation/arm64/index.rst
-@@ -15,6 +15,7 @@ ARM64 Architecture
-     legacy_instructions
-     memory
-     perf
-+    perf_counter_user_access
-     pointer-authentication
-     silicon-errata
-     sve
-diff --git a/Documentation/arm64/perf_counter_user_access.rst b/Documentation/arm64/perf_counter_user_access.rst
-new file mode 100644
-index 000000000000..e49e141f10cc
---- /dev/null
-+++ b/Documentation/arm64/perf_counter_user_access.rst
-@@ -0,0 +1,56 @@
-+=============================================
-+Access to PMU hardware counter from userspace
-+=============================================
-+
-+Overview
-+--------
-+The perf userspace tool relies on the PMU to monitor events. It offers an
-+abstraction layer over the hardware counters since the underlying
-+implementation is cpu-dependent.
-+Arm64 allows userspace tools to have access to the registers storing the
-+hardware counters' values directly.
-+
-+This targets specifically self-monitoring tasks in order to reduce the overhead
-+by directly accessing the registers without having to go through the kernel.
-+
-+How-to
-+------
-+The focus is set on the armv8 pmuv3 which makes sure that the access to the pmu
-+registers is enabled and that the userspace has access to the relevant
-+information in order to use them.
-+
-+In order to have access to the hardware counter it is necessary to open the event
-+using the perf tool interface: the sys_perf_event_open syscall returns a fd which
-+can subsequently be used with the mmap syscall in order to retrieve a page of
-+memory containing information about the event.
-+The PMU driver uses this page to expose to the user the hardware counter's
-+index and other necessary data. Using this index enables the user to access the
-+PMU registers using the `mrs` instruction.
-+
-+The userspace access is supported in libperf using the perf_evsel__mmap()
-+and perf_evsel__read() functions. See `tools/lib/perf/tests/test-evsel.c`_ for
-+an example.
-+
-+About heterogeneous systems
-+---------------------------
-+On heterogeneous systems such as big.LITTLE, userspace PMU counter access can
-+only be enabled when the tasks are pinned to a homogeneous subset of cores and
-+the corresponding PMU instance is opened by specifying the 'type' attribute.
-+The use of generic event types is not supported in this case.
-+
-+Have a look at `tools/perf/arch/arm64/tests/user-events.c`_ for an example. It
-+can be run using the perf tool to check that the access to the registers works
-+correctly from userspace:
-+
-+.. code-block:: sh
-+
-+  perf test -v user
-+
-+About chained events
-+--------------------
-+Chained events are not supported in userspace. If a 64-bit counter is requested,
-+userspace access will only be enabled if the underlying counter is 64-bit.
-+
-+.. Links
-+.. _tools/perf/arch/arm64/tests/user-events.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
--- 
-2.25.1
-
+> 
+> >
+> > >         seq_buf_printf(&s, "kernel_stack %llu\n",
+> > >                        (u64)memcg_page_state(memcg, NR_KERNEL_STACK_KB) *
+> > >                        1024);
+> > > --
+> > > 2.20.1
+> > >
+> 
+> 
+> 
+> -- 
+> Yours,
+> Muchun
