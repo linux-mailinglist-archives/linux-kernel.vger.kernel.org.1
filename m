@@ -2,64 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE7E26577B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C95265780
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725710AbgIKDdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 23:33:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11809 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725300AbgIKDdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 23:33:15 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9CAF2E9ADB58E230A09D;
-        Fri, 11 Sep 2020 11:33:12 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 11 Sep 2020 11:33:04 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <pgaj@cadence.com>, <bbrezillon@kernel.org>,
-        <boris.brezillon@collabora.com>
-CC:     <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <jingxiangfeng@huawei.com>
-Subject: [PATCH] i3c: master: Fix error return in cdns_i3c_master_probe()
-Date:   Fri, 11 Sep 2020 11:33:50 +0800
-Message-ID: <20200911033350.23904-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725764AbgIKDeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 23:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgIKDeL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 23:34:11 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBBCC061573;
+        Thu, 10 Sep 2020 20:34:10 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id w1so8532361edr.3;
+        Thu, 10 Sep 2020 20:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rdWC82PKEhEwsaXh3LAxl47RN5F/LTuAnkpnqIreE2Q=;
+        b=f7hAImC+A8EN07tWzuoorjAACjNBmgZj9nxMqSY+DSMKQiuC5kczlXpOVkgrBoMLSt
+         EFCR7nxnwQhkOKl8k72xV56bOooIo3JMF0iY4Ddg4LHP1XqouEAEAF+KMEWCU/7k4LsE
+         ERbh2VMLY3LELI+NF8FJ8mJZhyE4tJiJL4hT8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rdWC82PKEhEwsaXh3LAxl47RN5F/LTuAnkpnqIreE2Q=;
+        b=iUFE9/v8Coje5M9MEvR17/uSMdjYB5WKBZfdxp25Q7P4zeNUaLV0oa9r+tH/OPlxPB
+         /f4ZRZl1TbuTsp6U0k3rOHEtA/KYb6TNw0YViwLs9N/xu/1YKlHQthF7pMp/KnbdRnj7
+         dlieoly8MV4FEIBH0Eoeo4NtFqLVEg8D3doFBCO/VigGgil133wv8uER6gUkYWBLxxRJ
+         hbJDj0fAXk4qnQSDWkQYFvxS6stvYVNoOZ4ePxzL+S7SbpJt4dlV/rcJ1JTMiHT3Dtpf
+         RL8d9c9t69TOO6rPmoC+qjANUTxVUMO+Jtav9VlQ3wzfpdotIaKsIUtFmIp6HP9wf/WK
+         lMCg==
+X-Gm-Message-State: AOAM533C4NEVkyTpESzpb0WTOBsb0lmbrVNbAuh1jqFw67ZTC4CX4jv5
+        sLzXGjvYloc1e2+H90phpnNbS4FOqp5yOzxbDIA=
+X-Google-Smtp-Source: ABdhPJzirNmav2/bABf0JzFPct9kmYu46AR/LeQQE+jKnkBIwfXqohIwEIaiJFyCSYJ6pnUxr1+sNEUyJ5DTAAnD4rk=
+X-Received: by 2002:aa7:d959:: with SMTP id l25mr12310657eds.383.1599795249576;
+ Thu, 10 Sep 2020 20:34:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <20200910105440.3087723-1-andrew@aj.id.au> <20200910105440.3087723-3-andrew@aj.id.au>
+ <CACPK8Xf-jys=F0Uqg-hYH-eDThmd5yOSNeC7+vLhra3GdOK1Zw@mail.gmail.com> <57d48d7a-7cea-4be7-92bd-8f3b93f84a06@www.fastmail.com>
+In-Reply-To: <57d48d7a-7cea-4be7-92bd-8f3b93f84a06@www.fastmail.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 11 Sep 2020 03:33:56 +0000
+Message-ID: <CACPK8XemZ2YG+nFBwy7sDoo8==YvnVYxt+1mx8QfBCxotG7K6g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mmc: sdhci-of-aspeed: Expose data sample phase delay tuning
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return negative error code -ENOMEM from the error handling
-case instead of 0.
+On Fri, 11 Sep 2020 at 02:49, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+>
+>
+> On Fri, 11 Sep 2020, at 11:32, Joel Stanley wrote:
+> > On Thu, 10 Sep 2020 at 10:55, Andrew Jeffery <andrew@aj.id.au> wrote:
+> > >
+> > > Allow sample phase adjustment to deal with layout or tolerance issues.
+> > >
+> > > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > > ---
+> > >  drivers/mmc/host/sdhci-of-aspeed.c | 137 +++++++++++++++++++++++++++--
+> > >  1 file changed, 132 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+> > > index 4f008ba3280e..641accbfcde4 100644
+> > > --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> > > +++ b/drivers/mmc/host/sdhci-of-aspeed.c
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- drivers/i3c/master/i3c-master-cdns.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> > > +static void
+> > > +aspeed_sdc_configure_phase(struct aspeed_sdc *sdc,
+> > > +                          const struct aspeed_sdhci_phase_desc *phase,
+> > > +                          uint8_t value, bool enable)
+> > > +{
+> > > +       u32 reg;
+> > > +
+> > > +       spin_lock(&sdc->lock);
+> >
+> > What is the lock protecting against?
+> >
+> > We call this in the ->probe, so there should be no concurrent access going on.
+>
+> Because the register is in the "global" part of the SD/MMC controller address
+> space (it's not part of the SDHCI), and there are multiple slots that may have
+> a driver probed concurrently.
 
-diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
-index 3fee8bd7fe20..3f2226928fe0 100644
---- a/drivers/i3c/master/i3c-master-cdns.c
-+++ b/drivers/i3c/master/i3c-master-cdns.c
-@@ -1635,8 +1635,10 @@ static int cdns_i3c_master_probe(struct platform_device *pdev)
- 	master->ibi.slots = devm_kcalloc(&pdev->dev, master->ibi.num_slots,
- 					 sizeof(*master->ibi.slots),
- 					 GFP_KERNEL);
--	if (!master->ibi.slots)
-+	if (!master->ibi.slots) {
-+		ret = -ENOMEM;
- 		goto err_disable_sysclk;
-+	}
- 
- 	writel(IBIR_THR(1), master->regs + CMD_IBI_THR_CTRL);
- 	writel(MST_INT_IBIR_THR, master->regs + MST_IER);
--- 
-2.17.1
+That points to having the property be part of the "global" device tree
+node. This would simplify the code; you wouldn't need the locking
+either.
 
+>
+> >
+> >
+> > > +       reg = readl(sdc->regs + ASPEED_SDC_PHASE);
+> > > +       reg &= ~phase->enable_mask;
+> > > +       if (enable) {
+> > > +               reg &= ~phase->value_mask;
+> > > +               reg |= value << __ffs(phase->value_mask);
+> > > +               reg |= phase->enable_value << __ffs(phase->enable_mask);
+> > > +       }
+> > > +       writel(reg, sdc->regs + ASPEED_SDC_PHASE);
+> > > +       spin_unlock(&sdc->lock);
+> > > +}
+> > > +
+> > >  static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
+> > >  {
+> > >         struct sdhci_pltfm_host *pltfm_host;
+> > > @@ -155,8 +195,58 @@ static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
+> > >         return (delta / 0x100) - 1;
+> > >  }
+> > >
+> > > +static int aspeed_sdhci_configure_of(struct platform_device *pdev,
+> > > +                                    struct aspeed_sdhci *sdhci)
+> > > +{
+> > > +       u32 iphase, ophase;
+> > > +       struct device_node *np;
+> > > +       struct device *dev;
+> > > +       int ret;
+> > > +
+> > > +       if (!sdhci->phase)
+> > > +               return 0;
+> > > +
+> > > +       dev = &pdev->dev;
+> > > +       np = dev->of_node;
+> > > +
+> > > +       ret = of_property_read_u32(np, "aspeed,input-phase", &iphase);
+> > > +       if (ret < 0) {
+> > > +               aspeed_sdc_configure_phase(sdhci->parent, &sdhci->phase->in, 0,
+> > > +                                          false);
+> >
+> > Will this clear any value that eg. u-boot writes?
+>
+> No, see the 'enable' test in aspeed_sdc_configure_phase()
+
+OK, so this branch will never cause any change in the register? Best
+to drop it then.
+
+>
+> >
+> > The register should be left alone if the kernel doesn't have a
+> > configuration of it's own, otherwise we may end up breaking an
+> > otherwise working system.
+>
+> Right, I can rework that.
