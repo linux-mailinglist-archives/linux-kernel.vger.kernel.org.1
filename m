@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E6E266543
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A0526648A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgIKQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:57:29 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:33146 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgIKQ4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:56:22 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BEcvnK173439;
-        Fri, 11 Sep 2020 14:42:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=fH2VWtYI2GLBtZfBxWlfRQb2fBKiGWhmGFozJ1Mo+qk=;
- b=oJcQNXZ4VbshYtUu4OuRRAwJvqdI3lP364vqlkVnWfYwzR2vFRBwj7A9i+cGR8at4uk2
- HuETbYyeGa6lu4r5NPzwKmJGsbfov8lKRMs5YTCsii1z0Heh0dmMs9SfwXnDVG/z52JX
- /LwaZcYiOjFSL3WDVGmTysgjKd63U6hy7DuwI1VBIGxfbODwyftgaMJlT48oMKxpjGjF
- L1lCYdb9I4OjnafP1Ob3EtGc383KCmq9hwzMN3Ao+P+te0UVsoDJawouO34FyuMSMssm
- +2j+5soHrRKu40I57kRcIv2F2zxXQnE9iL0yiwzXIzSSTMHn6mxgl7NOmPgFIUTnlO1S cg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33c2mmejuq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Sep 2020 14:42:56 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BEZaXK173252;
-        Fri, 11 Sep 2020 14:42:56 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33cmexa6tt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 14:42:56 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08BEgsu4019337;
-        Fri, 11 Sep 2020 14:42:55 GMT
-Received: from [10.74.86.16] (/10.74.86.16)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Sep 2020 07:42:53 -0700
-Subject: Re: [PATCH 2/2] xen/gntdev.c: Convert get_user_pages*() to
- pin_user_pages*()
-To:     Souptick Joarder <jrdr.linux@gmail.com>, jgross@suse.com,
-        sstabellini@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>
-References: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
- <1599375114-32360-2-git-send-email-jrdr.linux@gmail.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <8a608871-af25-fee6-24ea-24d78010cd6c@oracle.com>
-Date:   Fri, 11 Sep 2020 10:42:51 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        id S1726264AbgIKQlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:41:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726403AbgIKPKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:10:51 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 27BB4222D9;
+        Fri, 11 Sep 2020 14:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599835421;
+        bh=FTxGdMGV3rapitRut8OA4Fjo29OIVMgG3dH1ljjIHq4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DyOQR0vKPCwij4NYetqRa7C5Kmex5BfD6ov1ZtH9EuiqxbZXBjHAr6cYDZEf/p8bU
+         XZ/i6PohwH46vqkc8B08yhYU6SPRuFIyKq48Y09IlqH3K2mvEYg0EJ1C28zhlcdSfO
+         cpy+wUI8LSH4fdpr2WaYN6MYzK/oz8QSsg/RSLbY=
+Received: by mail-oo1-f41.google.com with SMTP id h9so2334089ooo.10;
+        Fri, 11 Sep 2020 07:43:41 -0700 (PDT)
+X-Gm-Message-State: AOAM5307qRhyFVI+fYjkipf5PZecpKpz5SZ2b0oPCWXcG3GwStCFp3Il
+        2nyoMkJjXtezX1I1YHuivz6BZdyRVaK1imAW6Q==
+X-Google-Smtp-Source: ABdhPJwrgQnxQEoMlDU3NAfllatuQT+8fpSwzBbuHMB3L4XBVNZlqEu/rI6S5Wu077rTYbX5JpCI+mGf15EFY143Ph4=
+X-Received: by 2002:a4a:9d48:: with SMTP id f8mr1840695ook.50.1599835420448;
+ Fri, 11 Sep 2020 07:43:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1599375114-32360-2-git-send-email-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9740 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 adultscore=0
- bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009110120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9740 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
- phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110120
+References: <20200826120254.8902-1-matthias.schiffer@ew.tq-group.com>
+ <4dd06b79-1402-d7cf-9676-1f9a9526da12@gmail.com> <9eb72c6561333661599411e49072928385629999.camel@ew.tq-group.com>
+ <ac64852a-7f2a-6005-f914-268670cd4f95@gmail.com> <CAL_Jsq+1LsTBdVaODVfmB0eme2jMpNL4VgKk-OM7rQWyyF0Jbw@mail.gmail.com>
+ <d7dc1017818e935acf9ba838080bcc3c11b30888.camel@ew.tq-group.com> <735c00caa90746d20bfaafa42c4d911c61729228.camel@ew.tq-group.com>
+In-Reply-To: <735c00caa90746d20bfaafa42c4d911c61729228.camel@ew.tq-group.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 11 Sep 2020 08:43:29 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+SuJ5F=SxGfZp0g9V8TPejSxEu8Ya45qfDxhZ0rL8ETg@mail.gmail.com>
+Message-ID: <CAL_Jsq+SuJ5F=SxGfZp0g9V8TPejSxEu8Ya45qfDxhZ0rL8ETg@mail.gmail.com>
+Subject: Re: [PATCH] of: skip disabled CPU nodes
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/6/20 2:51 AM, Souptick Joarder wrote:
-> In 2019, we introduced pin_user_pages*() and now we are converting
-> get_user_pages*() to the new API as appropriate. [1] & [2] could
-> be referred for more information. This is case 5 as per document [1].
+On Wed, Sep 9, 2020 at 2:58 AM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
 >
-> [1] Documentation/core-api/pin_user_pages.rst
->
-> [2] "Explicit pinning of user-space pages":
->         https://lwn.net/Articles/807108/
->
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: David Vrabel <david.vrabel@citrix.com>
+> On Thu, 2020-08-27 at 09:10 +0200, Matthias Schiffer wrote:
+> > On Wed, 2020-08-26 at 13:26 -0600, Rob Herring wrote:
+> > > On Wed, Aug 26, 2020 at 8:47 AM Frank Rowand <
+> > > frowand.list@gmail.com>
+> > > wrote:
+> > > >
+> > > > Hi Rob,
+> > > >
+> > > > On 2020-08-26 08:54, Matthias Schiffer wrote:
+> [snip]
+> > > > >
+> > > > > Hmm, I see. This difference in behaviour is quite unfortunate,
+> > > > > as
+> > > > > I'm
+> > > > > currently looking for a way to *really* disable a CPU core.
+> > > > >
+> > > > > In arch/arm64/boot/dts/freescale/imx8mn.dtsi (and other
+> > > > > variants
+> > > > > of the
+> > > > > i.MX8M), there are 4 CPU nodes for the full-featured quad-core
+> > > > > version.
+> > > > > The reduced single- and dual-core versions are currently
+> > > > > handled
+> > > > > in
+> > > > > NXP's U-Boot fork by deleting the additional nodes.
+> > > > >
+> > > > > Not doing so causes the kernel to hang for a while when trying
+> > > > > to
+> > > > > online the non-existent cores during boot (at least in linux-
+> > > > > imx
+> > > > > 5.4 -
+> > > > > I have not checked a more recent mainline kernel yet), but the
+> > > > > deletion
+> > > > > is non-trivial to do without leaving dangling phandle
+> > > > > references.
+> > > >
+> > > > Any thoughts on implementing another universal property that
+> > > > means
+> > > > something like "the hardware described by this node does not
+> > > > exist
+> > > > or is so broken that you better not use it".
+> > >
+> > > There's a couple of options:
+> > >
+> > > The DT spec defines 'fail' value for status. We could use that
+> > > instead
+> > > of 'disabled'.
+> > >
+> > > The spec behavior with cpu 'disabled' is only on PPC AFAIK. On
+> > > arm/arm64 (probably riscv now too) we've never followed it where we
+> > > online 'disabled' CPUs. So we could just make the check conditional
+> > > on
+> > > !IS_ENABLED(CONFIG_PPC). This would need some spec update.
+> >
+> > On ARM(64), the "disabled" status on CPUs doesn't have any effect. I
+> > assume this changed with the mentioned commit c961cb3be906 "of: Fix
+> > cpu
+> > node iterator to not ignore disabled cpu nodes", as reverting it
+> > gives
+> > me the desired behaviour of considering the disabled CPUs non-
+> > existent.
+> >
+> > So it seems that we already changed the interpretation in a non-
+> > compatible way once (back in v4.20), and somehow PPC has yet another
+> > different behaviour?
+> >
+> > How do we get out of this mess? Is going back to the v4.19 logic for
+> > non-PPC platforms an acceptable regression fix, or would this be
+> > considered another breaking change?
 
+Yes, this is my 2nd option above. Need to double check MIPS and Sparc though.
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Any new insights on this? I'll gladly provide patches or proposals for
+> a spec update if we can decide where we want to go with this.
 
+I gave 2 options. I'm fine with either one (or both). Using 'fail' is
+the simplest.
 
+Rob
