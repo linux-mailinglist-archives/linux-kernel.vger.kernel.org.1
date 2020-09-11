@@ -2,66 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C57265FCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C652265FEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgIKMtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:49:42 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:57652 "EHLO vps0.lunn.ch"
+        id S1726118AbgIKM6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:58:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbgIKMnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:43:19 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kGiOI-00EE62-Lc; Fri, 11 Sep 2020 14:42:58 +0200
-Date:   Fri, 11 Sep 2020 14:42:58 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Pavel Machek <pavel@ucw.cz>, netdev@vger.kernel.org,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next + leds v2 6/7] net: phy: marvell: add support
- for LEDs controlled by Marvell PHYs
-Message-ID: <20200911124258.GB3390477@lunn.ch>
-References: <20200909162552.11032-1-marek.behun@nic.cz>
- <20200909162552.11032-7-marek.behun@nic.cz>
- <20200910122341.GC7907@duo.ucw.cz>
- <20200910131541.GD3316362@lunn.ch>
- <20200910161522.3cf3ad63@dellmb.labs.office.nic.cz>
- <20200910150040.GB3354160@lunn.ch>
- <3d4dd05f2597c66fb429580095eed91c2b3be76a.camel@ew.tq-group.com>
+        id S1726047AbgIKMye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:54:34 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1141E2075E;
+        Fri, 11 Sep 2020 12:53:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599828831;
+        bh=oGr46qlLv8X6ikVTrbl44cD9Uet5OSlJxQACmUVeejw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=F9i4AChHmpor9FFYhbdtZsrYXOTIRQM7rKzrdZbohrEN/NRdO+uXHXff0FPRMvHb0
+         YZo033JTkMj7jZ6IyCCSqGUeDL0xBzEdkPOVq8MRYz4wy6r3C3pvsIvWw6JonWcpnr
+         FBENyfqAdg8fcKGtGIASBvmur4Y9y3Sc5cvQwEzw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH 4.4 04/62] mm, page_alloc: remove unnecessary variable from free_pcppages_bulk
+Date:   Fri, 11 Sep 2020 14:45:47 +0200
+Message-Id: <20200911122502.615839890@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200911122502.395450276@linuxfoundation.org>
+References: <20200911122502.395450276@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d4dd05f2597c66fb429580095eed91c2b3be76a.camel@ew.tq-group.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> - Do all PHYs support manual setting of the LED level, or are the PHYs
-> that can only work with HW triggers?
+From: Mel Gorman <mgorman@techsingularity.net>
 
-There are PHYs with do not have simple on/off.
+commit e5b31ac2ca2cd0cf6bf2fcbb708ed01466c89aaa upstream.
 
-> - Is setting PHY registers always efficiently possible, or should SW
-> triggers be avoided in certain cases? I'm thinking about setups like
-> mdio-gpio. I guess this can only become an issue for triggers that
-> blink.
+The original count is never reused so it can be removed.
 
-There are uses cases where not using software frequently writing
-registers would be good. PTP time stamping is one, where the extra
-jitter can reduce the accuracy of the clock.
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[dwagner: update context]
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I also think activity blinking in software is unlikely to be
-accepted. Nothing extra is allowed in the hot path, when you can be
-dealing with a million or more packets per second.
+---
+ mm/page_alloc.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-So i would say limit software fallback to link and speed, and don't
-assume that is even possible depending on the hardware.
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -835,7 +835,6 @@ static void free_pcppages_bulk(struct zo
+ {
+ 	int migratetype = 0;
+ 	int batch_free = 0;
+-	int to_free = count;
+ 	unsigned long nr_scanned;
+ 
+ 	spin_lock(&zone->lock);
+@@ -848,7 +847,7 @@ static void free_pcppages_bulk(struct zo
+ 	 * below while (list_empty(list)) loop.
+ 	 */
+ 	count = min(pcp->count, count);
+-	while (to_free) {
++	while (count) {
+ 		struct page *page;
+ 		struct list_head *list;
+ 
+@@ -868,7 +867,7 @@ static void free_pcppages_bulk(struct zo
+ 
+ 		/* This is the only non-empty list. Free them all. */
+ 		if (batch_free == MIGRATE_PCPTYPES)
+-			batch_free = to_free;
++			batch_free = count;
+ 
+ 		do {
+ 			int mt;	/* migratetype of the to-be-freed page */
+@@ -886,7 +885,7 @@ static void free_pcppages_bulk(struct zo
+ 
+ 			__free_one_page(page, page_to_pfn(page), zone, 0, mt);
+ 			trace_mm_page_pcpu_drain(page, 0, mt);
+-		} while (--to_free && --batch_free && !list_empty(list));
++		} while (--count && --batch_free && !list_empty(list));
+ 	}
+ 	spin_unlock(&zone->lock);
+ }
 
-	Andrew
+
