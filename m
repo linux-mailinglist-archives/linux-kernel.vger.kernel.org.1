@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5956266944
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C5626694A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbgIKT4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:56:47 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:37305 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725778AbgIKT4m (ORCPT
+        id S1725849AbgIKT7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbgIKT7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:56:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599854201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HiRrxuwpYWnQMo5FTx+dqZUh/zO6pDjeXZnxQ5ttgXM=;
-        b=hSEYd+1AX1WQ+YoMstjzmjnPZisJz2UzQ//XsHPW/ZmPbjydd8m8avEWEdhM2CKaageOTj
-        Pl4ADpE9uvKWmlAuiPJuPsmYC97i7Nl++LOAsJ+k0IAxJMrDxzYz7RQgf9E9fOod2MANc/
-        dzZfP7AYIdQ1WY1mUF3Qg/Npbr3bJNk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-VYn1xAtQMoy0x1kf04ic2w-1; Fri, 11 Sep 2020 15:56:39 -0400
-X-MC-Unique: VYn1xAtQMoy0x1kf04ic2w-1
-Received: by mail-ed1-f72.google.com with SMTP id x14so5338987edv.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:56:39 -0700 (PDT)
+        Fri, 11 Sep 2020 15:59:10 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC54C061573;
+        Fri, 11 Sep 2020 12:59:09 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id n13so11283959edo.10;
+        Fri, 11 Sep 2020 12:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B2fvDataPFDcqtRjmyzwIGz+W24egsQT7RsA21OM+aw=;
+        b=HUNvSNOCsAYMaMX6zn28qYgInmlDzu+yDJ7owLavD6xitvNjd6zk8e4l9dv0y3dMK4
+         t5cBve4IXwgxailATJEBiqKerVMOGOvTBwH4Eu0y4D5JGUA12kVENN/Rm0bZbVi4PzBf
+         /sLSP9NqN6Vr673cNVgytfCc5OePhjFxDZ1JQlTcPh/mjMU8fKpdS/2oYkQUdGW3oQQI
+         prbGOOURjVSRMQXivNb/plEk4P5GZ/XXLHTDj/OkZzx5Be8z473wsDRJzopin+MnicXI
+         oxv7Nm8BUBDBU3NYUbnJ6qUSxCjSGai+I1olA1qqRQ5C7jTzIjiJ36/tlGp6irXjbj33
+         XF0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=HiRrxuwpYWnQMo5FTx+dqZUh/zO6pDjeXZnxQ5ttgXM=;
-        b=kr6cSigUp8ebzaOcqmCeVq43nRGqsLHYk5V8wJfG2TvJegFThPaegXmuwqkV2TWIdl
-         IEWSBYyojNeB9TaSDSxfO3z7wy6g1CD6lnqzZyge2LkWfU6OkuE/4/1Dj9+MKo19RFXe
-         N2OOxDVnZGStV8U4VHUfAuQGcLJlNShCOC1j3975xlkpu27MGXpr+nyFIMrEgEVMRfKd
-         iKDBiQtsyBQA1Wo7KbTLCqtkvpkg96lQr0UBbHLmXr+8kX/Vx4nRSYBru6KO1mXbECax
-         FVF096MlYrIby70Q25PfWq0d/pE/ZDXWqGCxctXWy9YoGIZpGSFSsuG1IDvCr3zLTM2P
-         bekA==
-X-Gm-Message-State: AOAM531Cm2PJuw4VBzklW/+IyA39U8w32r0WHyu6otLZWufrxU64mtHr
-        aNXHbtXBIiEx9OXnUwFUvHGv2zFHjmwlLqPF9wtqYt7EUjEPoERtIJgUwgcLzlEfoHrd34JDbYH
-        4X1EFtGAKF5iLzijBaSWB9ZlV
-X-Received: by 2002:a17:907:264c:: with SMTP id ar12mr3728414ejc.80.1599854198607;
-        Fri, 11 Sep 2020 12:56:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyI2PQqNt1dvpjMD5lrK1YjwwLI/bFW1FAJaJVtd+QNRGaoPSJVEC6/DS0aphwnU+mNXyXTeQ==
-X-Received: by 2002:a17:907:264c:: with SMTP id ar12mr3728402ejc.80.1599854198424;
-        Fri, 11 Sep 2020 12:56:38 -0700 (PDT)
-Received: from [192.168.3.122] (p5b0c6263.dip0.t-ipconnect.de. [91.12.98.99])
-        by smtp.gmail.com with ESMTPSA id e4sm2486542edk.38.2020.09.11.12.56.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 12:56:37 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Hildenbrand <david@redhat.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device ?
-Date:   Fri, 11 Sep 2020 21:56:36 +0200
-Message-Id: <F078F2C8-989D-4A5A-BCB8-F7E215A795A4@redhat.com>
-References: <75611c1b4ab44265acff75aa8754d48f@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        =?utf-8?Q?Jan_H=C3=B6ppner?= <hoeppner@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <75611c1b4ab44265acff75aa8754d48f@intel.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-X-Mailer: iPhone Mail (17G68)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B2fvDataPFDcqtRjmyzwIGz+W24egsQT7RsA21OM+aw=;
+        b=r/ED/9HowdS640Svys1CtaCGY3CnJoItLI3kOUTUsjWHIeGG3b1UTiHIsk30egBZWL
+         JyChLqRSaJZIVOgWD66466ZqQTe99JFb7c0TKDq/qOI0XYqMXOtZKw+5KcL+e9Qff8r6
+         9Vd2uorUZHui7sjbRy8yNiQVVlk0MbQpj3QauCUTcajD+4fM4HuqM9U79veBM+SSkLNC
+         v8FCW/stj4VmmfLAUeSsNpf4erAuRRE9206P5sQ6rfRAYUyKKPwQsSVVwYjZsK4JURHk
+         NYbC7dwSUqg8LioOFg6teHZvlOhomYmvz/HgOpGhGjm3cphRFemjt4K7jOBNhy5OHmLU
+         B+fw==
+X-Gm-Message-State: AOAM531TQaQe/BvD+VQK7732iK0SwTgVFDerYJKxyu006w0doXZlVnuA
+        24IWYFtyD/dH6Ngx98pnkEDmCz0I3+hQW69CCgguXTPu
+X-Google-Smtp-Source: ABdhPJwTXXgJ/g+/XHWAyZTrQ3F0tE6i12N0C82M8zOxAL/IjsufylXhuRysYAjE1y/YpRKS8qx2oJQIPMSpawJWxJI=
+X-Received: by 2002:a50:9355:: with SMTP id n21mr4015157eda.237.1599854348113;
+ Fri, 11 Sep 2020 12:59:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200719021654.25922-1-jcmvbkbc@gmail.com> <202009111229.4A853F0@keescook>
+In-Reply-To: <202009111229.4A853F0@keescook>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Fri, 11 Sep 2020 12:58:56 -0700
+Message-ID: <CAMo8Bf+r3YvWewdHzg=Y4mFspYLA3GrJ04rry90deYsWN_gZRA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] xtensa: add seccomp support
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 11, 2020 at 12:38 PM Kees Cook <keescook@chromium.org> wrote:
+> On Sat, Jul 18, 2020 at 07:16:51PM -0700, Max Filippov wrote:
+> > Hello,
+> >
+> > this series adds support for seccomp filter on xtensa and updates
+> > selftests/seccomp.
+>
+> Hi!
+>
+> Firstly, thanks for adding seccomp support! :) I would, however, ask
+> that you CC maintainers on these kinds of changes for feedback. I was
+> surprised to find the changes in the seccomp selftests today in Linus's
+> tree. I didn't seem to get CCed on this series, even though
+> get_maintainers shows this:
+>
+> $ ./scripts/get_maintainer.pl 0001-selftests-seccomp-add-xtensa-support.mbox
+> Kees Cook <keescook@chromium.org> (supporter:SECURE COMPUTING)
+> Andy Lutomirski <luto@amacapital.net> (reviewer:SECURE COMPUTING)
+> Will Drewry <wad@chromium.org> (reviewer:SECURE COMPUTING)
+> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
+> ...
 
+Sorry about that. Looks like I've filtered out too much of the cc: list.
+I'll fix my workflow.
 
-> Am 11.09.2020 um 21:36 schrieb Luck, Tony <tony.luck@intel.com>:
->=20
-> =EF=BB=BF
->>=20
->> It's actually really hard to map a DIMM to a physical address.
->> Interleaving can mean that one page actually spans a bunch of DIMMs.
->=20
-> Heh! If NUMA mode is turned off your single page may have cache lines
-> from *every* DIMM in the system. Even with NUMA turned on the page
-> will have cache lines from every DIMM on the socket.
->=20
+> Regardless, I'm still glad to have more arch support! :) I'll send a
+> follow-up patch to refactor a bit of the selftest.
 
-Thanks Dave and Tony, that=E2=80=98s valuable information!
-
-How would it behave after hotplugging a single DIMM  - I assume a single pag=
-e will only be mapped to that DIMM (otherwise a lot of stuff would habe to b=
-e moved around. Would the mapping change after a reboot - especially can a D=
-IMM that could get hotunplugged before suddenly no longer be hotunplugged in=
-dividually?
-
-> -Tony
-
+-- 
+Thanks.
+-- Max
