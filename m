@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31262664D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2CB26642C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgIKQql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49230 "EHLO mail.kernel.org"
+        id S1726490AbgIKQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbgIKPIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:08:04 -0400
+        id S1726467AbgIKPTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A4F022447;
-        Fri, 11 Sep 2020 12:59:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF82322450;
+        Fri, 11 Sep 2020 12:59:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829160;
-        bh=QLxLHnsqBMRfkyabux2IZ0Ir8juf+/6Ln1bN5JXHj00=;
+        s=default; t=1599829168;
+        bh=K6y/vHVqiosI8pfx5NYVW44msU10AvAKxSSUxgqbr2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fjk/v3QzVJF+G3z8jALmIbaaQ27UD/LRSnuvSe4K9bepTCnS0lBvTmwzi2t42+MEd
-         OVwDbBu+fqhhMbEzQ+IqUGJImf5q+yZasWEWaEZeWMIQ5a8q2znmp90Rd98RTUPIn5
-         Dd9p2pGQ44NJm7L1H1rP8KPA9bTKh5fD6lzM6GeI=
+        b=RwvKjBdU6ymL2C81W+9TKUaVqsNyvX4iMZmx7eSwG6C/6hsT+NuMTnXxiw4jIoqph
+         95P2KAXBBVcOtRf2UJdMZtv97qvN8dRe8WWTFyL4Z9k85YkhT2gof6LISr1ax0Zzfx
+         J2/3GSoB6/BcCM+FQUoqeoSAOptm4a05n2qyOfkk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 08/12] netlabel: fix problems with mapping removal
-Date:   Fri, 11 Sep 2020 14:47:02 +0200
-Message-Id: <20200911122458.825825948@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 01/16] io_uring: fix cancel of deferred reqs with ->files
+Date:   Fri, 11 Sep 2020 14:47:18 +0200
+Message-Id: <20200911122459.664920183@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
-References: <20200911122458.413137406@linuxfoundation.org>
+In-Reply-To: <20200911122459.585735377@linuxfoundation.org>
+References: <20200911122459.585735377@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,140 +45,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit d3b990b7f327e2afa98006e7666fb8ada8ed8683 ]
+[ Upstream commit b7ddce3cbf010edbfac6c6d8cc708560a7bcd7a4 ]
 
-This patch fixes two main problems seen when removing NetLabel
-mappings: memory leaks and potentially extra audit noise.
+While trying to cancel requests with ->files, it also should look for
+requests in ->defer_list, otherwise it might end up hanging a thread.
 
-The memory leaks are caused by not properly free'ing the mapping's
-address selector struct when free'ing the entire entry as well as
-not properly cleaning up a temporary mapping entry when adding new
-address selectors to an existing entry.  This patch fixes both these
-problems such that kmemleak reports no NetLabel associated leaks
-after running the SELinux test suite.
+Cancel all requests in ->defer_list up to the last request there with
+matching ->files, that's needed to follow drain ordering semantics.
 
-The potentially extra audit noise was caused by the auditing code in
-netlbl_domhsh_remove_entry() being called regardless of the entry's
-validity.  If another thread had already marked the entry as invalid,
-but not removed/free'd it from the list of mappings, then it was
-possible that an additional mapping removal audit record would be
-generated.  This patch fixes this by returning early from the removal
-function when the entry was previously marked invalid.  This change
-also had the side benefit of improving the code by decreasing the
-indentation level of large chunk of code by one (accounting for most
-of the diffstat).
-
-Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-Reported-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netlabel/netlabel_domainhash.c |   59 ++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
+ fs/io_uring.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
---- a/net/netlabel/netlabel_domainhash.c
-+++ b/net/netlabel/netlabel_domainhash.c
-@@ -99,6 +99,7 @@ static void netlbl_domhsh_free_entry(str
- 			kfree(netlbl_domhsh_addr6_entry(iter6));
- 		}
- #endif /* IPv6 */
-+		kfree(ptr->def.addrsel);
- 	}
- 	kfree(ptr->domain);
- 	kfree(ptr);
-@@ -550,6 +551,8 @@ int netlbl_domhsh_add(struct netlbl_dom_
- 				goto add_return;
- 		}
- #endif /* IPv6 */
-+		/* cleanup the new entry since we've moved everything over */
-+		netlbl_domhsh_free_entry(&entry->rcu);
- 	} else
- 		ret_val = -EINVAL;
- 
-@@ -593,6 +596,12 @@ int netlbl_domhsh_remove_entry(struct ne
- {
- 	int ret_val = 0;
- 	struct audit_buffer *audit_buf;
-+	struct netlbl_af4list *iter4;
-+	struct netlbl_domaddr4_map *map4;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	struct netlbl_af6list *iter6;
-+	struct netlbl_domaddr6_map *map6;
-+#endif /* IPv6 */
- 
- 	if (entry == NULL)
- 		return -ENOENT;
-@@ -610,6 +619,9 @@ int netlbl_domhsh_remove_entry(struct ne
- 		ret_val = -ENOENT;
- 	spin_unlock(&netlbl_domhsh_lock);
- 
-+	if (ret_val)
-+		return ret_val;
-+
- 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
- 	if (audit_buf != NULL) {
- 		audit_log_format(audit_buf,
-@@ -619,40 +631,29 @@ int netlbl_domhsh_remove_entry(struct ne
- 		audit_log_end(audit_buf);
- 	}
- 
--	if (ret_val == 0) {
--		struct netlbl_af4list *iter4;
--		struct netlbl_domaddr4_map *map4;
--#if IS_ENABLED(CONFIG_IPV6)
--		struct netlbl_af6list *iter6;
--		struct netlbl_domaddr6_map *map6;
--#endif /* IPv6 */
--
--		switch (entry->def.type) {
--		case NETLBL_NLTYPE_ADDRSELECT:
--			netlbl_af4list_foreach_rcu(iter4,
--					     &entry->def.addrsel->list4) {
--				map4 = netlbl_domhsh_addr4_entry(iter4);
--				cipso_v4_doi_putdef(map4->def.cipso);
--			}
-+	switch (entry->def.type) {
-+	case NETLBL_NLTYPE_ADDRSELECT:
-+		netlbl_af4list_foreach_rcu(iter4, &entry->def.addrsel->list4) {
-+			map4 = netlbl_domhsh_addr4_entry(iter4);
-+			cipso_v4_doi_putdef(map4->def.cipso);
-+		}
- #if IS_ENABLED(CONFIG_IPV6)
--			netlbl_af6list_foreach_rcu(iter6,
--					     &entry->def.addrsel->list6) {
--				map6 = netlbl_domhsh_addr6_entry(iter6);
--				calipso_doi_putdef(map6->def.calipso);
--			}
-+		netlbl_af6list_foreach_rcu(iter6, &entry->def.addrsel->list6) {
-+			map6 = netlbl_domhsh_addr6_entry(iter6);
-+			calipso_doi_putdef(map6->def.calipso);
-+		}
- #endif /* IPv6 */
--			break;
--		case NETLBL_NLTYPE_CIPSOV4:
--			cipso_v4_doi_putdef(entry->def.cipso);
--			break;
-+		break;
-+	case NETLBL_NLTYPE_CIPSOV4:
-+		cipso_v4_doi_putdef(entry->def.cipso);
-+		break;
- #if IS_ENABLED(CONFIG_IPV6)
--		case NETLBL_NLTYPE_CALIPSO:
--			calipso_doi_putdef(entry->def.calipso);
--			break;
-+	case NETLBL_NLTYPE_CALIPSO:
-+		calipso_doi_putdef(entry->def.calipso);
-+		break;
- #endif /* IPv6 */
--		}
--		call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
- 	}
-+	call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
- 
- 	return ret_val;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 38f3ec15ba3b1..5f627194d0920 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -7675,12 +7675,38 @@ static void io_attempt_cancel(struct io_ring_ctx *ctx, struct io_kiocb *req)
+ 	io_timeout_remove_link(ctx, req);
  }
+ 
++static void io_cancel_defer_files(struct io_ring_ctx *ctx,
++				  struct files_struct *files)
++{
++	struct io_kiocb *req = NULL;
++	LIST_HEAD(list);
++
++	spin_lock_irq(&ctx->completion_lock);
++	list_for_each_entry_reverse(req, &ctx->defer_list, list) {
++		if ((req->flags & REQ_F_WORK_INITIALIZED)
++			&& req->work.files == files) {
++			list_cut_position(&list, &ctx->defer_list, &req->list);
++			break;
++		}
++	}
++	spin_unlock_irq(&ctx->completion_lock);
++
++	while (!list_empty(&list)) {
++		req = list_first_entry(&list, struct io_kiocb, list);
++		list_del_init(&req->list);
++		req_set_fail_links(req);
++		io_cqring_add_event(req, -ECANCELED);
++		io_double_put_req(req);
++	}
++}
++
+ static void io_uring_cancel_files(struct io_ring_ctx *ctx,
+ 				  struct files_struct *files)
+ {
+ 	if (list_empty_careful(&ctx->inflight_list))
+ 		return;
+ 
++	io_cancel_defer_files(ctx, files);
+ 	/* cancel all at once, should be faster than doing it one by one*/
+ 	io_wq_cancel_cb(ctx->io_wq, io_wq_files_match, files, true);
+ 
+-- 
+2.25.1
+
 
 
