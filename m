@@ -2,176 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8275F266444
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E7C266550
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgIKQeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:34:11 -0400
-Received: from mail-dm6nam12on2072.outbound.protection.outlook.com ([40.107.243.72]:5506
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726087AbgIKPQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:16:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K5AkThR47vQDMsP7+lHlTfRDiFQGgsQ2AoC5G6y/VUN/AJsFWlKqH489UNvECk3zGLaR2hfwisFrP5xx93ByARR6rPx5FrXOUaeKI4Emy26gkGDMaTiIkR5cy1xTx66Wv1lTuOIjKCcFsCHW2PiRrxxYgXXkQoi1ZKFMw1pv9w+y9U6pq0z7UTS+YIZBIisPSE0+U6Bl0GHIMItAutRJZY1SdyDIDTwUiNWlV+4y9PSAC30fO+hwLmw51j1QVtMZkf5jqhQpDPDynLU7q5PG0pUfleU8Fxgpekc2ic4hHxTOBMGI4uqRMHcacFToIFHuO+f7o/p7I+Qihz9/9qxGcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LsGkSND//QMcm6QNMK9AopcnDe5fv9Dj0RZojN/pOUQ=;
- b=hCxzhNsCfjH9SvuXKQ958yIWBsLZB+1XbmPQ1k6norNICqD+kGkkimkWkxRQYhLM1yOS590ODJzkgxrmmZv9nJgBym1Nf/zW0pETAYtsj3sIbs61c+wjL4ekAdzDcjG3RTymjBE0x/b0rH+U0fhFbRIPJCX0MhqHb8HfK+YHOzNhFCCm6WQpL55sriywxFYznoP1JutmlbrzGwWIZ8YNuwxf4ZsgehSj8buLGICFWjiFNexiKX4agfr0K+JE/zPVjW70BMfU6u5CUXlIqGK+QCxfU1rhWCVX2Xs8psh8cydKaJw+xXRJeQPh7vGOwqyzui5B+hK+04LaHtBUTuK0jw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LsGkSND//QMcm6QNMK9AopcnDe5fv9Dj0RZojN/pOUQ=;
- b=1S1/frMi7cewx0TBssehdFMlinqIyBCP6MPpRUuDe13Zo6s+US5YC5TWjFw52+G1y1a4RgX3ZLf92FuAPK3WqhOpBhvtjcKQtsts+dGlELUkuGhCPnyO/rmjKLsfNaO5Ss0IdHhImq7ZAUFNOdup8muLObxjWCi4FfjP9h1H0uI=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from DM6PR12MB4124.namprd12.prod.outlook.com (2603:10b6:5:221::20)
- by DM6PR12MB3082.namprd12.prod.outlook.com (2603:10b6:5:11b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Fri, 11 Sep
- 2020 14:59:59 +0000
-Received: from DM6PR12MB4124.namprd12.prod.outlook.com
- ([fe80::25a1:ace4:4ca8:167e]) by DM6PR12MB4124.namprd12.prod.outlook.com
- ([fe80::25a1:ace4:4ca8:167e%8]) with mapi id 15.20.3370.017; Fri, 11 Sep 2020
- 14:59:59 +0000
-From:   Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        hersenxs.wu@amd.com
-Subject: [PATCH v2 1/4] drm/amd/display: Rework registers tracepoint
-Date:   Fri, 11 Sep 2020 10:59:24 -0400
-Message-Id: <20200911145927.401322-2-Rodrigo.Siqueira@amd.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911145927.401322-1-Rodrigo.Siqueira@amd.com>
-References: <20200911145927.401322-1-Rodrigo.Siqueira@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: YTOPR0101CA0060.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:14::37) To DM6PR12MB4124.namprd12.prod.outlook.com
- (2603:10b6:5:221::20)
+        id S1726184AbgIKQ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:58:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgIKPE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:04:27 -0400
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CFB7223BD;
+        Fri, 11 Sep 2020 15:02:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599836562;
+        bh=6nL6VORoOL0XE1BB6SwMAH9ldlMzieej9aulUv5ApCU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VxvX7lXdShMpWUUnXfTtcj9IvJa72g4/FGW8OseJYt0DbFmq4GGZDgTBQJkfrmLPz
+         GGAV0wbezdq+tR210aKWkXdicHLdFVA9brSAM/CbsGHjjCLuY2UI/VMiGkt98AiLPd
+         OftjZDFmAWc1SWtzHwa6NUWqubaF54my5DB2yVBU=
+Received: by mail-ot1-f41.google.com with SMTP id o8so892311otl.4;
+        Fri, 11 Sep 2020 08:02:42 -0700 (PDT)
+X-Gm-Message-State: AOAM531a0dHCcTj/pIDE6fBFPaXvv36nL+7qNSEqp+JUKNLORspKaI8s
+        0peRTFsYMa4nAaDXHDQmU+djZtMlxTYPCtwKGcs=
+X-Google-Smtp-Source: ABdhPJw07czxiY1a68IYlOpS8V9p84gFMT12gE8YbqAz3XuZxMaBeP7+1oa02tUZjq4T/SCm2P4T+6GhCfFPI6RBSNU=
+X-Received: by 2002:a9d:6193:: with SMTP id g19mr1430262otk.108.1599836561839;
+ Fri, 11 Sep 2020 08:02:41 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from atma2.hitronhub.home (2607:fea8:56e0:6d60::e9a1) by YTOPR0101CA0060.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:14::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 14:59:58 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [2607:fea8:56e0:6d60::e9a1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2a1aa29e-35b5-4dc2-78f2-08d856635a28
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3082:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3082A7D6BA6C142D73E334DB98240@DM6PR12MB3082.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AnTW7oXkB+ewr0F4S6WDs2uiYtT45Y0iDOsN9ty627i908u3GWBrH9v8cRjPauiqf89aBBm37YJ8C4UQr7YLNwMTSrHdcu0a+45NHAms2FaYNZckhtBWKoFU5N7CI6BqMYjcXovp9c4wEGRWZuKqMqSsmHuhffbrut85oFauPB2LWnq2/DfYEn2SoTjturglFlDCR3UjrcsYhEqQ+sy51V5bBhlTOTjo0PlMR0kkbYVTtFLucf3CJpoHrRkdHrLG8o9lJpVJNF0UTLqk/IMf2UWkVChYZR2aojz8TxCh5HhX1pRnzphA6UjWLPqkI0daIiVuhSUYFGLdddVe8wuJ6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4124.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(376002)(396003)(66476007)(86362001)(1076003)(52116002)(83380400001)(2906002)(6506007)(8676002)(316002)(66556008)(5660300002)(186003)(6666004)(478600001)(8936002)(4326008)(6486002)(36756003)(66946007)(6512007)(16526019)(54906003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: NH3rJmQwu5YUJsNPKEvwcd6O03OxiGZRSSmkaFvrlCg1j9plpsCoQE/KeuxsK2icGu4lZAJpGB6nxUQE/dM3Z6+A4+wW/MTcMtj/kYYPkgUyzhaZ8loPufiSSZExncMnOzDUCdc5CyEMxTNvu01L8LcKRWz7aJwqgubg5qTI0/T65Wv47YaoaHU06CT0d5nFD0ftHdwX+wXEohm6YVdIle3OTM38rFT9rTx+gI2uH1Xl/qLe/XXbt0clptjhVEi6iF5e6qJKwpqc9OlsiCcpGp5xu4blLA+u55PZWVBzuZf6VLWr+fbv/SEBdOL2HGCs6id9mCwV/8OurD6ScJgx3fN5sIN6ykA8dKHwphKUPuwDNVx+DzZ2OWSgBk4rBFy69J0PqvC0RHAdA2jUc9HzmRquN/i8KLWNCvAArqIpqOV6NdDJYBRZf48a2R08Xo7Z6tHl7W5BpOFXmm2sR++BwObBv6AQAzbXQO2mGm/dFQOn0T1NrDIZPhlAL9yVFiZxmnZ+NaLHsPGlvpzMjuG93+kfVbTv4lIxCt9frgGXeBqD+oAyf9pW+43f/ESIZz8QIk3XFpeFvvgb7QN/SvQMjjxedqVnGzn6+SCKOxLuP9R4bp8GPmD6wnfu0sD6SJCOXJkr9bRQxpm44AT+O4GKtmmx9rdt4Dmi3mferYHt38XeLxB900Knt2ZIkr9qwY+F
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a1aa29e-35b5-4dc2-78f2-08d856635a28
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4124.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 14:59:58.8871
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s4MsoXuaDfPY55iXvYXWKBeUnUUYnFlubEt/m39snECW6yyCt92jc5uU2q+A4eAQFEcIDx0oizMNlJRypmvIJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3082
+References: <20200905013107.10457-1-lszubowi@redhat.com> <20200905013107.10457-3-lszubowi@redhat.com>
+In-Reply-To: <20200905013107.10457-3-lszubowi@redhat.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 11 Sep 2020 18:02:27 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
+Message-ID: <CAMj1kXEdkdeE8VSZqEzhd__Kb7_ZmG2af6iBpbY3=nsj1-phYw@mail.gmail.com>
+Subject: Re: [PATCH V2 2/3] integrity: Move import of MokListRT certs to a
+ separate routine
+To:     Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
+        Kees Cook <keescook@chromium.org>, zohar@linux.ibm.com,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-amdgpu_dc_rreg and amdgpu_dc_wreg are very similar, for this reason,
-this commits abstract these two events by using DECLARE_EVENT_CLASS and
-create an instance of it for each one of these events.
+On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
+>
+> Move the loading of certs from the UEFI MokListRT into a separate
+> routine to facilitate additional MokList functionality.
+>
+> There is no visible functional change as a result of this patch.
+> Although the UEFI dbx certs are now loaded before the MokList certs,
+> they are loaded onto different key rings. So the order of the keys
+> on their respective key rings is the same.
+>
+> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
 
-Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
----
- .../amd/display/amdgpu_dm/amdgpu_dm_trace.h   | 55 ++++++++-----------
- 1 file changed, 24 insertions(+), 31 deletions(-)
+Why did you drop Mimi's reviewed-by from this patch?
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-index d898981684d5..dd34e11b1079 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_trace.h
-@@ -31,40 +31,33 @@
- 
- #include <linux/tracepoint.h>
- 
--TRACE_EVENT(amdgpu_dc_rreg,
--	TP_PROTO(unsigned long *read_count, uint32_t reg, uint32_t value),
--	TP_ARGS(read_count, reg, value),
--	TP_STRUCT__entry(
--			__field(uint32_t, reg)
--			__field(uint32_t, value)
--		),
--	TP_fast_assign(
--			__entry->reg = reg;
--			__entry->value = value;
--			*read_count = *read_count + 1;
--		),
--	TP_printk("reg=0x%08lx, value=0x%08lx",
--			(unsigned long)__entry->reg,
--			(unsigned long)__entry->value)
--);
-+DECLARE_EVENT_CLASS(amdgpu_dc_reg_template,
-+		    TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-+		    TP_ARGS(count, reg, value),
- 
--TRACE_EVENT(amdgpu_dc_wreg,
--	TP_PROTO(unsigned long *write_count, uint32_t reg, uint32_t value),
--	TP_ARGS(write_count, reg, value),
--	TP_STRUCT__entry(
--			__field(uint32_t, reg)
--			__field(uint32_t, value)
--		),
--	TP_fast_assign(
--			__entry->reg = reg;
--			__entry->value = value;
--			*write_count = *write_count + 1;
--		),
--	TP_printk("reg=0x%08lx, value=0x%08lx",
--			(unsigned long)__entry->reg,
--			(unsigned long)__entry->value)
-+		    TP_STRUCT__entry(
-+				     __field(uint32_t, reg)
-+				     __field(uint32_t, value)
-+		    ),
-+
-+		    TP_fast_assign(
-+				   __entry->reg = reg;
-+				   __entry->value = value;
-+				   *count = *count + 1;
-+		    ),
-+
-+		    TP_printk("reg=0x%08lx, value=0x%08lx",
-+			      (unsigned long)__entry->reg,
-+			      (unsigned long)__entry->value)
- );
- 
-+DEFINE_EVENT(amdgpu_dc_reg_template, amdgpu_dc_rreg,
-+	     TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-+	     TP_ARGS(count, reg, value));
-+
-+DEFINE_EVENT(amdgpu_dc_reg_template, amdgpu_dc_wreg,
-+	     TP_PROTO(unsigned long *count, uint32_t reg, uint32_t value),
-+	     TP_ARGS(count, reg, value));
- 
- TRACE_EVENT(amdgpu_dc_performance,
- 	TP_PROTO(unsigned long read_count, unsigned long write_count,
--- 
-2.28.0
-
+> ---
+>  security/integrity/platform_certs/load_uefi.c | 63 +++++++++++++------
+>  1 file changed, 44 insertions(+), 19 deletions(-)
+>
+> diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
+> index 253fb9a7fc98..c1c622b4dc78 100644
+> --- a/security/integrity/platform_certs/load_uefi.c
+> +++ b/security/integrity/platform_certs/load_uefi.c
+> @@ -66,6 +66,43 @@ static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid,
+>  }
+>
+>  /*
+> + * load_moklist_certs() - Load MokList certs
+> + *
+> + * Load the certs contained in the UEFI MokListRT database into the
+> + * platform trusted keyring.
+> + *
+> + * Return:     Status
+> + */
+> +static int __init load_moklist_certs(void)
+> +{
+> +       efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
+> +       void *mok;
+> +       unsigned long moksize;
+> +       efi_status_t status;
+> +       int rc;
+> +
+> +       /* Get MokListRT. It might not exist, so it isn't an error
+> +        * if we can't get it.
+> +        */
+> +       mok = get_cert_list(L"MokListRT", &mok_var, &moksize, &status);
+> +       if (mok) {
+> +               rc = parse_efi_signature_list("UEFI:MokListRT",
+> +                                             mok, moksize, get_handler_for_db);
+> +               kfree(mok);
+> +               if (rc)
+> +                       pr_err("Couldn't parse MokListRT signatures: %d\n", rc);
+> +               return rc;
+> +       }
+> +       if (status == EFI_NOT_FOUND)
+> +               pr_debug("MokListRT variable wasn't found\n");
+> +       else
+> +               pr_info("Couldn't get UEFI MokListRT\n");
+> +       return 0;
+> +}
+> +
+> +/*
+> + * load_uefi_certs() - Load certs from UEFI sources
+> + *
+>   * Load the certs contained in the UEFI databases into the platform trusted
+>   * keyring and the UEFI blacklisted X.509 cert SHA256 hashes into the blacklist
+>   * keyring.
+> @@ -73,17 +110,16 @@ static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid,
+>  static int __init load_uefi_certs(void)
+>  {
+>         efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
+> -       efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
+> -       void *db = NULL, *dbx = NULL, *mok = NULL;
+> -       unsigned long dbsize = 0, dbxsize = 0, moksize = 0;
+> +       void *db = NULL, *dbx = NULL;
+> +       unsigned long dbsize = 0, dbxsize = 0;
+>         efi_status_t status;
+>         int rc = 0;
+>
+>         if (!efi_rt_services_supported(EFI_RT_SUPPORTED_GET_VARIABLE))
+>                 return false;
+>
+> -       /* Get db, MokListRT, and dbx.  They might not exist, so it isn't
+> -        * an error if we can't get them.
+> +       /* Get db and dbx.  They might not exist, so it isn't an error
+> +        * if we can't get them.
+>          */
+>         if (!uefi_check_ignore_db()) {
+>                 db = get_cert_list(L"db", &secure_var, &dbsize, &status);
+> @@ -102,20 +138,6 @@ static int __init load_uefi_certs(void)
+>                 }
+>         }
+>
+> -       mok = get_cert_list(L"MokListRT", &mok_var, &moksize, &status);
+> -       if (!mok) {
+> -               if (status == EFI_NOT_FOUND)
+> -                       pr_debug("MokListRT variable wasn't found\n");
+> -               else
+> -                       pr_info("Couldn't get UEFI MokListRT\n");
+> -       } else {
+> -               rc = parse_efi_signature_list("UEFI:MokListRT",
+> -                                             mok, moksize, get_handler_for_db);
+> -               if (rc)
+> -                       pr_err("Couldn't parse MokListRT signatures: %d\n", rc);
+> -               kfree(mok);
+> -       }
+> -
+>         dbx = get_cert_list(L"dbx", &secure_var, &dbxsize, &status);
+>         if (!dbx) {
+>                 if (status == EFI_NOT_FOUND)
+> @@ -131,6 +153,9 @@ static int __init load_uefi_certs(void)
+>                 kfree(dbx);
+>         }
+>
+> +       /* Load the MokListRT certs */
+> +       rc = load_moklist_certs();
+> +
+>         return rc;
+>  }
+>  late_initcall(load_uefi_certs);
+> --
+> 2.27.0
+>
