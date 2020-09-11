@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764DA2659FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A65E265A03
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgIKHFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        id S1725785AbgIKHGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgIKHFn (ORCPT
+        with ESMTP id S1725811AbgIKHFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:05:43 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C09BC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:37 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z25so9930287iol.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:37 -0700 (PDT)
+        Fri, 11 Sep 2020 03:05:54 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F97C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:53 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t16so8075623ilf.13
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=otF8H1RNd/1xFgPWM+UYeAZ5JGJnziYMUvZT/Xjw4hM=;
-        b=qe4hkqMBNjrfKmSzuLVus6EU9eYDBsofp7qqtq8YlvMw/Wjw74o8vcRMGH9JvNfccZ
-         RjXMT1koZlUphilobl4V1XvQAi+X2mDvt2q7b+muUVlyHxx94WmHNIl09v2Yoyt8sNa3
-         WtWX6BM+X+zYBPZxkjFLsJipzKs6YD59tk5p8MMlvBc1MwGDuo0cC0/IuJwWpfHxvDfA
-         Q3mU2POB/NRiZYsQ+sUnXy5Sz1krQd3Y+QZD0qaP3WLaSYzlQTFEr+WaCByAXoZTKuNq
-         TNWTF2B+eRYvSopuAXve89apo0iWr2xpAlRQbuHzugZa9WocdsJLJQ2+A+dxQz4eW4ph
-         jctA==
+        bh=XjqzgjQOFRpWcDyxvZxk4QJoi3x7zBwCHCwHFZiUpHE=;
+        b=Zj9C1l8KtRpl+As+fC2SodYHV3leGr8IKnqUrXtbIKaxuPg+jO46cUnNc8nVxX18SW
+         mbEW+8P41/MJvM/E4u41uFzqENs/81i6qVqtPc1CTfNlU3EKI4I1TUEtnco1j69bnEZB
+         wLRzlq0oAuyYLrpP3Z5qmaGoU/ISEgtJhEqpeGcisx9o3OBg19btgYSqmZJKzsuqIBqd
+         Is69lQN28aGTCuDIiW2Zryc/kx6uTbqlcXQ9Homq6iIxjNcfkNX3gKaIihnTzR7UstAN
+         2VmsxeVA/wm3GsAiYpgtNStNHtBtN5TvK8oY9/xl1uIVCpI92OXTTqJMUgchu/8p+4nA
+         i2xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=otF8H1RNd/1xFgPWM+UYeAZ5JGJnziYMUvZT/Xjw4hM=;
-        b=nR8UkRLg2Nzrj6XuFYyQMpH917tBm7QWnDgLjk30f9ravVx7or3apHY7A5ooyrX80D
-         470AasNZfYwqLw0Of/PzzMK/ycC9HypUPxpSqRdT/21kWQiZjewmXCAvk/HItZvPIxfP
-         G80SCxgwLkDWJcnmElfTtzUQFO1i0x7NBQLkljceuPXPSvcTitRWebYr3fgGznw+RfC2
-         zUojlUXQxiVL8mPJ+cQ5jVJFq1iXuFEZITV5fV//YvXAVQ6jzqy/G/+EVAnB3C6lXnnE
-         3uQVJze4OCCiicZ2WDRm1mdXMwPYFpBtOGTNcQXWYW+0982BhYRTGFFeLUBC3t8VynI6
-         bIqA==
-X-Gm-Message-State: AOAM530ETkVZtEfiR9hLCFnmI4F/1GpitChbsWGaOiiLqnAb7gJ3ijbp
-        PIZ2dDSC5r4BNVftVE/8wuyh+MObvCS9UlXAzbF/K7EYnv8=
-X-Google-Smtp-Source: ABdhPJwodniZiAtfvQUmjWFccNMw2WLlrmOeP9LT9dEB93y9plKXNJu5aLa8hLG3YBW74NGPxP1i41/CNLxqL0iHbp0=
-X-Received: by 2002:a5e:9b04:: with SMTP id j4mr731216iok.59.1599807936340;
- Fri, 11 Sep 2020 00:05:36 -0700 (PDT)
+        bh=XjqzgjQOFRpWcDyxvZxk4QJoi3x7zBwCHCwHFZiUpHE=;
+        b=YwCo6z1KDQlXVFUIs19iG6Nk/RY2HxkkIcYGm5dNjuUZxJ0rJojh84NRhJ35nHRjI3
+         N+tDIuipcOa2FtmHzGtmmb5zNI0ZZyOw971yITn6VunzPb5CfC4J/Lwd9U++20Wd7rFx
+         lVNM2QbHZMofMxLS5PULuwz0VpAXI4VM23EDq6XoB5VZ49NayZ9KQmMPu46rAubkSK0z
+         RIqtApIX03vC+fdsL/lk5zvROP4PeDZPA/6kxIC7lHMW/aWxw3iBpAGwOMjoJSFIayYy
+         dWI1yHrU7OK8XpP5N9F0mwacjt8zm7PFFGqbyqONbiErKQRMfhtQWm9tO4jRLCuVpo9M
+         PRHQ==
+X-Gm-Message-State: AOAM53302YkJUHKOCq3Nt0PGy51KPjhIO/lvX/0yccFNDKyfYQWnVYyO
+        UW13oUsYxDJEM5+KZKKd5q6iLIPIaNwFPIlJnd9BOWCQKxzl+Q==
+X-Google-Smtp-Source: ABdhPJxx9W+H95xTgv9e14gbLyf1rs3mr+kr5EwsJPRKWUGmYYoAK21qecVtMoUC7yBc5BRWpykI7hnP1cxl9BbtPK4=
+X-Received: by 2002:a92:217:: with SMTP id 23mr715365ilc.118.1599807952488;
+ Fri, 11 Sep 2020 00:05:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910052347.1790735-1-cychiang@chromium.org> <20200910052347.1790735-2-cychiang@chromium.org>
-In-Reply-To: <20200910052347.1790735-2-cychiang@chromium.org>
+References: <20200910052347.1790735-1-cychiang@chromium.org> <20200910052347.1790735-4-cychiang@chromium.org>
+In-Reply-To: <20200910052347.1790735-4-cychiang@chromium.org>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 11 Sep 2020 15:05:25 +0800
-Message-ID: <CA+Px+wUh_PDZCg15bx7=teUeS=0fr22fnCKq5u2WUoTOXdTrbg@mail.gmail.com>
-Subject: Re: [PATCH v8 1/3] ASoC: hdmi-codec: Use set_jack ops to set jack
+Date:   Fri, 11 Sep 2020 15:05:41 +0800
+Message-ID: <CA+Px+wVGaSfJxNGXX9LEw10k11vG=m9_bLpONA5w4-0O7XF0mQ@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] ASoC: qcom: sc7180: Add machine driver for sound
+ card registration
 To:     Cheng-Yi Chiang <cychiang@chromium.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Mark Brown <broonie@kernel.org>,
@@ -74,7 +75,8 @@ Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         ALSA development <alsa-devel@alsa-project.org>,
         linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
+        linux-rockchip@lists.infradead.org,
+        Ajit Pandey <ajitp@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -82,36 +84,47 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Sep 10, 2020 at 1:24 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
-> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-> index 8c6f540533ba..d1de5bcd5daa 100644
-> --- a/sound/soc/codecs/hdmi-codec.c
-> +++ b/sound/soc/codecs/hdmi-codec.c
-> @@ -698,13 +698,9 @@ static void plugged_cb(struct device *dev, bool plugged)
->                 hdmi_codec_jack_report(hcp, 0);
->  }
->
-> -/**
-> - * hdmi_codec_set_jack_detect - register HDMI plugged callback
-> - * @component: the hdmi-codec instance
-> - * @jack: ASoC jack to report (dis)connection events on
-> - */
-> -int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
-> -                              struct snd_soc_jack *jack)
-> +static int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
-> +                                     struct snd_soc_jack *jack,
-> +                                     void *data)
-To be neat, name it "hdmi_codec_set_jack".
+> +struct sc7180_snd_data {
+> +       u32 pri_mi2s_clk_count;
+> +       struct snd_soc_jack hs_jack;
+> +       struct device_node *hs_jack_of_node;
+> +       struct snd_soc_jack hdmi_jack;
+> +       struct device_node *hdmi_jack_of_node;
+> +};
+hs_jack_of_node and hdmi_jack_of_node are not using.  Remove them.
 
->  static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
->  {
-> @@ -806,6 +801,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
->         .use_pmdown_time        = 1,
->         .endianness             = 1,
->         .non_legacy_dai_naming  = 1,
-> +       .set_jack               = hdmi_codec_set_jack_detect,
-"hdmi_codec_set_jack" looks better to me.
+> +static int sc7180_init(struct snd_soc_pcm_runtime *rtd)
+> +{
+> +       struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+> +
+> +       switch (cpu_dai->id) {
+> +       case MI2S_PRIMARY:
+> +               return sc7180_headset_init(rtd);
+> +       case MI2S_SECONDARY:
+> +               return 0;
+> +       case HDMI:
+I guess this enumeration has not merged yet?  It doesn't sound like a
+specific-enough naming.
 
-If you would send a newer version, consider changing the name.
-
-With that:
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+> +static int sc7180_snd_platform_probe(struct platform_device *pdev)
+> +{
+> +       struct snd_soc_card *card = &sc7180_card;
+> +       struct sc7180_snd_data *data;
+> +       struct device *dev = &pdev->dev;
+> +       int ret;
+> +
+> +       /* Allocate the private data */
+> +       data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+> +       if (!data)
+> +               return -ENOMEM;
+> +
+> +       card->dev = dev;
+> +
+> +       ret = qcom_snd_parse_of(card);
+> +       if (ret) {
+> +               dev_err(dev, "Error parsing OF data\n");
+> +               return ret;
+> +       }
+> +
+> +       snd_soc_card_set_drvdata(card, data);
+To be neat, move this line immediately before or after "card->dev = dev;".
