@@ -2,135 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378B62663F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793C42663CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgIKQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:28:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726454AbgIKPUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:20:24 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5DDC21D81;
-        Fri, 11 Sep 2020 15:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599837460;
-        bh=gupGZfyCWjzyTybhAS/ra1qQ28eHy8myobsIyy93VJA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m0oQPP2XCKYz+rwQfM4O1rdYT4yltshP7twQJqK62UXdUmP7mAN8yidHGu/qxh5wR
-         Yij4F3nIw3qQ22KKyVgxcdpg6bGWact2evoQ35oegTLBfPZJEJ5LnXeQ+DJE8vaGkX
-         teW2jpUmwLifBSRr7/LlebUSQIbQk94yNv2wTGMo=
-Received: by mail-ot1-f49.google.com with SMTP id a2so8597256otr.11;
-        Fri, 11 Sep 2020 08:17:39 -0700 (PDT)
-X-Gm-Message-State: AOAM5329fU0dMKxiltpkEdCwL44njWjCTLPvn4OUDQFPDYfmzv+Hu79G
-        SSBCht3DMXWMVF2GUDd9hzsCJNa9gsNtbPeJj+U=
-X-Google-Smtp-Source: ABdhPJzOyF/HBAXFTBoyNO5I33yKfSijH56wjqNzdZ68h+mmUbhU+Ox68k7PwAF8A8PvXqxLJLUtyECmO01vhMnpYb4=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr1472882otk.108.1599837459251;
- Fri, 11 Sep 2020 08:17:39 -0700 (PDT)
+        id S1726464AbgIKP0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:26:47 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55304 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgIKPUU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:20:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BFF3Zc061529;
+        Fri, 11 Sep 2020 15:19:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=/MeEy7v1R447j4T1klPQoqAF2B+oLO9ldzBbaI8x8Es=;
+ b=fjp11hQgk0M2ieGImtTlL3liHO/dyA25V5DntaVVhLX6Ilu+T/TV1XPoOJjeyYixOdXH
+ zTu3b7QveAgDRj+O1ApqsEwqbXRl/lzWg7UZjAG6BWw4KrKZiZe0s1mRw0SMpwW/2LfK
+ 7YUZ5RbrKNusDmRcqbVYffyvdjomq6LGK4rSI1g0g1J8rhlMt28xUhkmSX9FazUWm2G2
+ KyuibgxuaFLMs7xnoMXncD3eDGWm9zUul8GDnF48Ys6F2/7Cr3rvA60y7UAHvg4x611m
+ A4nS3Z4JPOYu1YNBX3PDlGFv2TnzNlgfcG5BSV+f+eoo0qxkMfUYHDPryr29pkH/p7Bu Ng== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33c2mmesjv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Sep 2020 15:19:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BFFHDE118910;
+        Fri, 11 Sep 2020 15:19:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 33cmkd8cfk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 15:19:31 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08BFJK2q027490;
+        Fri, 11 Sep 2020 15:19:20 GMT
+Received: from [10.74.86.16] (/10.74.86.16)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Sep 2020 08:19:20 -0700
+Subject: Re: [PATCH v3 00/11] Fix PM hibernation in Xen guests
+To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        jgross@suse.com, linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        kamatam@amazon.com, sstabellini@kernel.org, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
+        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
+        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dwmw@amazon.co.uk, benh@kernel.crashing.org
+References: <cover.1598042152.git.anchalag@amazon.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <03baf888-5c10-429b-3206-b75d4af1e09e@oracle.com>
+Date:   Fri, 11 Sep 2020 11:19:13 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-References: <20200905013107.10457-1-lszubowi@redhat.com>
-In-Reply-To: <20200905013107.10457-1-lszubowi@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 11 Sep 2020 18:17:28 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHOcGiwOT_sNTQRA=G7GCQSKLk2HSNoS2vEQYPzQpn0nw@mail.gmail.com>
-Message-ID: <CAMj1kXHOcGiwOT_sNTQRA=G7GCQSKLk2HSNoS2vEQYPzQpn0nw@mail.gmail.com>
-Subject: Re: [PATCH V2 0/3] integrity: Load certs from EFI MOK config table
-To:     Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
-        James Morris <jmorris@namei.org>, serge@hallyn.com,
-        Kees Cook <keescook@chromium.org>, zohar@linux.ibm.com,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Jones <pjones@redhat.com>,
-        David Howells <dhowells@redhat.com>, prarit@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1598042152.git.anchalag@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009110126
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009110125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 5 Sep 2020 at 04:31, Lenny Szubowicz <lszubowi@redhat.com> wrote:
->
-> Because of system-specific EFI firmware limitations, EFI volatile
-> variables may not be capable of holding the required contents of
-> the Machine Owner Key (MOK) certificate store when the certificate
-> list grows above some size. Therefore, an EFI boot loader may pass
-> the MOK certs via a EFI configuration table created specifically for
-> this purpose to avoid this firmware limitation.
->
-> An EFI configuration table is a simpler and more robust mechanism
-> compared to EFI variables and is well suited for one-way passage
-> of static information from a pre-OS environment to the kernel.
->
-> Entries in the MOK variable configuration table are named key/value
-> pairs. Therefore the shim boot loader can create a MokListRT named
-> entry in the MOK configuration table that contains exactly the same
-> data as the MokListRT UEFI variable does or would otherwise contain.
-> As such, the kernel can load certs from the data in the MokListRT
-> configuration table entry data in the same way that it loads certs
-> from the data returned by the EFI GetVariable() runtime call for the
-> MokListRT variable.
->
-> This patch set does not remove the support for loading certs from the
-> EFI MOK variables into the platform key ring. However, if both the EFI
-> MOK configuration table and corresponding EFI MOK variables are present,
-> the MOK table is used as the source of MOK certs.
->
-> The contents of the individual named MOK config table entries are
-> made available to user space as individual sysfs binary files,
-> which are read-only to root, under:
->
->         /sys/firmware/efi/mok-variables/
->
-> This enables an updated mokutil to provide support for:
->
->         mokutil --list-enrolled
->
-> such that it can provide accurate information regardless of whether
-> the MOK configuration table or MOK EFI variables were the source
-> for certs. Note that all modifications of MOK related state are still
-> initiated by mokutil via EFI variables.
->
-> V2: Incorporate feedback from V1
->   Patch 01: efi: Support for MOK variable config table
->   - Minor update to change log; no code changes
->   Patch 02: integrity: Move import of MokListRT certs to a separate routine
->   - Clean up code flow in code moved to load_moklist_certs()
->   - Remove some unnecessary initialization of variables
->   Patch 03: integrity: Load certs from the EFI MOK config table
->   - Update required due to changes in patch 02.
->   - Remove unnecessary init of mokvar_entry in load_moklist_certs()
->
-> V1:
->   https://lore.kernel.org/lkml/20200826034455.28707-1-lszubowi@redhat.com/
->
-> Lenny Szubowicz (3):
->   efi: Support for MOK variable config table
->   integrity: Move import of MokListRT certs to a separate routine
->   integrity: Load certs from the EFI MOK config table
->
->  arch/x86/kernel/setup.c                       |   1 +
->  arch/x86/platform/efi/efi.c                   |   3 +
->  drivers/firmware/efi/Makefile                 |   1 +
->  drivers/firmware/efi/arm-init.c               |   1 +
->  drivers/firmware/efi/efi.c                    |   6 +
->  drivers/firmware/efi/mokvar-table.c           | 360 ++++++++++++++++++
->  include/linux/efi.h                           |  34 ++
->  security/integrity/platform_certs/load_uefi.c |  85 ++++-
->  8 files changed, 472 insertions(+), 19 deletions(-)
->  create mode 100644 drivers/firmware/efi/mokvar-table.c
->
 
-Thanks. I have tentatively queued these up in efi/next.
+On 8/21/20 6:22 PM, Anchal Agarwal wrote:
+>
+> Known issues:
+> 1.KASLR causes intermittent hibernation failures. VM fails to resumes and
+> has to be restarted. I will investigate this issue separately and shouldn't
+> be a blocker for this patch series.
 
-Mimi, please let me know if you have any thoughts on 3/3, and whether
-your R-b on 2/3 [v1] implies that you are ok with the series going
-through the EFI tree.
 
--- 
-Ard.
+Is there any change in status for this? This has been noted since January.
+
+
+-boris
+
+
+> 2. During hibernation, I observed sometimes that freezing of tasks fails due
+> to busy XFS workqueuei[xfs-cil/xfs-sync]. This is also intermittent may be 1
+> out of 200 runs and hibernation is aborted in this case. Re-trying hibernation
+> may work. Also, this is a known issue with hibernation and some
+> filesystems like XFS has been discussed by the community for years with not an
+> effectve resolution at this point.
+>
