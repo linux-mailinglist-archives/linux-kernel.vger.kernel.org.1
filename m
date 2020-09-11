@@ -2,98 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AEC266459
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE9D266416
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgIKQgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:36:45 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33179 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726147AbgIKPOz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:14:55 -0400
-Received: by mail-ot1-f68.google.com with SMTP id m12so8656458otr.0;
-        Fri, 11 Sep 2020 08:14:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=aMmfzDJqgpNrWgPb0hQzPYfkLxYcxMPt+xFm1HcIqzI=;
-        b=dah/j5ypaVWUUKW8BBup8/IUwP/WtapQLGl3m4w/x0nNeaHXTVi95RIobHmnMHTDq9
-         3Nblq7mFJvR7irD1gCdtdy8Rjelu71PsKGSegHGn3v4+1D4NE4hG0Rc1e3MO8UIBPwtW
-         mVhW3KgdbIQ1VJ8a4vqRcGttKU6Kn6CiR8vQ0Uz1WPPYudVmMRfPKo+iVdo+dUX31TQ8
-         cTWXf5T8RXjY8glKHTDkarL/vxyxOJe5stEhCVlLw/UE5t7kWXDb4Wf4rq9lKpruKKAR
-         7RubIF7v3HeIcjVAMN8KMqaS1ZyfM4+5+KIg6e3I03s9/JgotTN3pGJyvzcuX45tdHxH
-         9WDw==
-X-Gm-Message-State: AOAM532gjCD6mj3xa8hX8xEmEn/g37Gd/FC3DWmqoyItIomxii59mHfE
-        CRFSpaz3ZF5LrUxliWdXohRtk0AJUGvLPbEMRVFsJ51jYOg=
-X-Google-Smtp-Source: ABdhPJxx3QVjtIlHHmaRr+FIyCSanSv+NHluSyI7EbqSdQdh1eTL6q1Ds6lIG1SyGm3w/AYvLlR/UPmAAwOAlzy3MVc=
-X-Received: by 2002:a9d:6010:: with SMTP id h16mr1499403otj.262.1599837244523;
- Fri, 11 Sep 2020 08:14:04 -0700 (PDT)
+        id S1726605AbgIKQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726442AbgIKPTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:23 -0400
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34DF2221EB
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599837403;
+        bh=jAzQ1ZvicvLKfXMKWysDxGUXCfTXkX9dtV5xPOVfOhU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CQtk/oQM1rzTZL8kLuUYk/XCNu0mS8PAfuHWWxCKRceO53Kli45u6DHzXb31RhSQH
+         kuCSKVA2LHksRCzGeEILIxMa2Z4pj9WXJvwwXpg2/G7yZZJatr85CkNeAXuVTiIQ4S
+         uRydD9zXvMeI1qcw1jExLfrOZUmMQsjFpNlEsOj0=
+Received: by mail-ed1-f44.google.com with SMTP id l63so10326284edl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:16:43 -0700 (PDT)
+X-Gm-Message-State: AOAM533iR5grlgjFG6Ne8DX6GUszMgRSCM+g/rd4GJwcD9/2ldYOfPp2
+        Ezj3B4oUSRmzUG7lMQOwomRhUQcVsLmOxjDL+7s=
+X-Google-Smtp-Source: ABdhPJyX43jMLWrEQ8jpmSIRLi9MtRq5ZEmAZXXoN1vP85D9RLdKAg5Q9Q5VCjSkTJ+FjDanWCgt/efU99te4OAth18=
+X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr2497177edb.143.1599837401638;
+ Fri, 11 Sep 2020 08:16:41 -0700 (PDT)
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 11 Sep 2020 17:13:53 +0200
-Message-ID: <CAJZ5v0jYBQ792GmDYMYOzxbmJC7HYzZFfQ4JR8LxDR=0goQ1_Q@mail.gmail.com>
-Subject: [GIT PULL] Power management updates for v5.9-rc5
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1599553645-26928-1-git-send-email-yilun.xu@intel.com>
+ <1599553645-26928-2-git-send-email-yilun.xu@intel.com> <20200908100102.GB24693@pi3>
+ <20200911084234.GB7802@yilunxu-OptiPlex-7050> <CAJKOXPfjd99PLH1FBc2NSmc1Z=5PGrxezqPucdvvbDtyjm8jOA@mail.gmail.com>
+ <20200911144356.GA11294@yilunxu-OptiPlex-7050>
+In-Reply-To: <20200911144356.GA11294@yilunxu-OptiPlex-7050>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 11 Sep 2020 17:16:29 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfqFvpNti46Uh1SJYCaezgyNeOb8dF8dAp4uFL0r0j7fA@mail.gmail.com>
+Message-ID: <CAJKOXPfqFvpNti46Uh1SJYCaezgyNeOb8dF8dAp4uFL0r0j7fA@mail.gmail.com>
+Subject: Re: [PATCH] memory: dfl-emif: add the DFL EMIF private feature driver
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     mdf@kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        trix@redhat.com, matthew.gerlach@linux.intel.com,
+        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 11 Sep 2020 at 16:48, Xu Yilun <yilun.xu@intel.com> wrote:
+>
+> On Fri, Sep 11, 2020 at 11:03:50AM +0200, Krzysztof Kozlowski wrote:
+> > On Fri, 11 Sep 2020 at 10:46, Xu Yilun <yilun.xu@intel.com> wrote:
+> > >
+> > > Sorry I missed one comments, see inline.
+> > >
+> > > On Tue, Sep 08, 2020 at 12:01:02PM +0200, Krzysztof Kozlowski wrote:
+> > > > On Tue, Sep 08, 2020 at 04:27:25PM +0800, Xu Yilun wrote:
+> > > > > This driver is for the EMIF private feature implemented under FPGA
+> > > > > Device Feature List (DFL) framework. It is used to expose memory
+> > > > > interface status information as well as memory clearing control.
+> > > > >
+> > > > > The purpose of memory clearing block is to zero out all private memory
+> > > > > when FPGA is to be reprogrammed. This gives users a reliable method to
+> > > > > prevent potential data leakage.
+> > > > >
+> > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > > > ---
+> > > > >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
+> > > > >  drivers/memory/Kconfig                             |   9 +
+> > > > >  drivers/memory/Makefile                            |   2 +
+> > > > >  drivers/memory/dfl-emif.c                          | 211 +++++++++++++++++++++
+> > > > >  4 files changed, 247 insertions(+)
+> > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> > > > >  create mode 100644 drivers/memory/dfl-emif.c
+> > > > >
+> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> > > > > new file mode 100644
+> > > > > index 0000000..33d557e
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+> > > > > @@ -0,0 +1,25 @@
+> > > > > +What:              /sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
+> > > > > +Date:              Sep 2020
+> > > > > +KernelVersion:     5.10
+> > > > > +Contact:   Xu Yilun <yilun.xu@intel.com>
+> > > > > +Description:       Read-only. It indicates if the calibration is failed on this
+> > > > > +           memory interface. "1" for calibration failure, "0" for OK.
+> > > >
+> > > > "if the calibration failed"
+> > > >
+> > > > > +           Format: %u
+> > > > > +
+> > > > > +What:              /sys/bus/dfl/devices/dfl_dev.X/infX_init_done
+> > > > > +Date:              Sep 2020
+> > > > > +KernelVersion:     5.10
+> > > > > +Contact:   Xu Yilun <yilun.xu@intel.com>
+> > > > > +Description:       Read-only. It indicates if the initialization is complete on
+> > > > > +           this memory interface. "1" for initialization complete, "0"
+> > > > > +           for not yet.
+> > > > > +           Format: %u
+> > > >
+> > > > "if the initialization completed"
+> > > >
+> > > > > +
+> > > > > +What:              /sys/bus/dfl/devices/dfl_dev.X/infX_clear
+> > > > > +Date:              Sep 2020
+> > > > > +KernelVersion:     5.10
+> > > > > +Contact:   Xu Yilun <yilun.xu@intel.com>
+> > > > > +Description:       Write-only. Writing "1" to this file will zero out all memory
+> > > > > +           data in this memory interface. Writing other values are
+> > > > > +           invalid.
+> > > >
+> > > > "Writing of other values is invalid."
+> > > >
+> > > > > +           Format: %u
+> > > > > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+> > > > > index 8072204..fb0858f 100644
+> > > > > --- a/drivers/memory/Kconfig
+> > > > > +++ b/drivers/memory/Kconfig
+> > > > > @@ -215,6 +215,15 @@ config STM32_FMC2_EBI
+> > > > >       devices (like SRAM, ethernet adapters, FPGAs, LCD displays, ...) on
+> > > > >       SOCs containing the FMC2 External Bus Interface.
+> > > > >
+> > > > > +config FPGA_DFL_EMIF
+> > > > > +   tristate "DFL EMIF private feature support"
+> > > > > +   depends on FPGA_DFL && HAS_IOMEM
+> > > >
+> > > > Cannot be compile tested without FPGA_DFL?
+> > >
+> > > We need this FPGA_DFL dependency. The driver will use the
+> > > __dfl_driver_register(), which is defined in drivers/fpga/dfl.c, and
+> > > FPGA_DFL enables the compiling of dfl.c
+> >
+> > Yeah but the DFL headers provide empty stubs for such case, don't
+> > they? If they don't, probably they should.
+>
+> The DFL headers don't provide the empty stubs, why they should? A DFL
+> driver should not be selected when the DFL framework & DFL bus is not
+> enabled in system.
 
-Please pull from the tag
+Good point, this is not a consumer API. Then the config entry looks fine.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.9-rc5
-
-with top-most commit d64e6906d188f0ba6a4f82b3f42e0bd0598183fa
-
- Merge branch 'powercap'
-
-on top of commit f4d51dffc6c01a9e94650d95ce0104964f8ae822
-
- Linux 5.9-rc4
-
-to receive power management updates for 5.9-rc5.
-
-These fix three pieces of documentation and add new CPU IDs to the
-Intel RAPL power capping driver.
-
-Specifics:
-
- - Add CPU IDs of the TigerLake Desktop, RocketLake and AlderLake
-   chips to the Intel RAPL power capping driver (Zhang Rui).
-
- - Add the missing energy model performance domain item to the
-   struct device kerneldoc comment (Randy Dunlap).
-
- - Fix the struct powercap_control_type kerneldoc comment to match
-   the actual definition of that structure and add missing item to
-   the struct powercap_zone_ops kerneldoc comment (Amit Kucheria).
-
-Thanks!
-
-
----------------
-
-Amit Kucheria (1):
-      powercap: make documentation reflect code
-
-Randy Dunlap (1):
-      PM: <linux/device.h>: fix @em_pd kernel-doc warning
-
-Zhang Rui (3):
-      powercap/intel_rapl: add support for TigerLake Desktop
-      powercap/intel_rapl: add support for RocketLake
-      powercap/intel_rapl: add support for AlderLake
-
----------------
-
- drivers/powercap/intel_rapl_common.c |  3 +++
- include/linux/device.h               |  1 +
- include/linux/powercap.h             | 11 +++++------
- 3 files changed, 9 insertions(+), 6 deletions(-)
+Best regards,
+Krzysztof
