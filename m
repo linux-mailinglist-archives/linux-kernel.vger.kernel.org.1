@@ -2,89 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B319F266716
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA4E26672A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgIKRhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:37:21 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61324 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgIKMtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:49:49 -0400
-IronPort-SDR: tgR0NGukIyKGzT0FrJa12W1lS8UYwu080TDkV25CBLG4bei4CMmlDA4SX63JhK84RCgUk4Yild
- JRTUuuIhpjKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146436831"
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="146436831"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:46:47 -0700
-IronPort-SDR: OBgbpL035dx0YbXAMbNXG7j4BqCEbk32rBxlVQNr7o2Sk0xTsWP6tC77fqduhZ+hpQVUN4pWh4
- w4OREzIz8HNQ==
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="344625420"
-Received: from amaksymi-mobl.ger.corp.intel.com (HELO localhost) ([10.252.60.247])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 05:46:39 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        yaozhangx@google.com
-Subject: [PATCH v37 24/24] x86/sgx: Update MAINTAINERS
-Date:   Fri, 11 Sep 2020 15:40:19 +0300
-Message-Id: <20200911124019.42178-25-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
-References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+        id S1726451AbgIKRin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgIKMpx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:45:53 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C8DC061573;
+        Fri, 11 Sep 2020 05:44:15 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m12so8243877otr.0;
+        Fri, 11 Sep 2020 05:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nj6ebQ1LelO8tJiVip6k1rVrHkVeMlZ4zIMMoXNlsek=;
+        b=kox2nOM5Vx8QiGrZU9+tMK1b8MvwNRGG8itgc1QVjK3pwmHR6je1TvzdIPsyiREIWM
+         ikGCzLVhGlYgMVlLcj517cXSxozvRGeRTJO97ZpJDIaHzZfaMAabzq0Gd2ONDPJOdrWD
+         i0kDIwMmU5Mliy8zicz80Rs8NW7c2u+SrgCAVXTCFcRWnub1E/IuEziwZlJ5haexf//W
+         g3gZ3UHHSmlHOfjPx0mMxEIP2dvqkPnLSWCiN/ooqi8XUpP6wPAKwNOjeL/4UvTr9X9/
+         9+bPlg4b9kz9DUZCSK/owoUFNsFKF/kWqVe9FBPcCxNA4iYzOYFg0+438BZ1o7ATcmV4
+         BcTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nj6ebQ1LelO8tJiVip6k1rVrHkVeMlZ4zIMMoXNlsek=;
+        b=efe6rBAtsz9viULN7AvexnUDAD4I39M6dSVfKsSrfrXniCRyf91R+e7YuYWk9enQwT
+         PSjvVfq83+sDiF8xwHmYTIvhKpRB8DJ2pjLG337ghbj9uZyTrD9l/w2VesunDyf6MLJ0
+         x379B3PmgoT0AdUSnMPZCkKPdJKqyWF4JtmOvEasUkWtXRNYlFKPbnjk8IlokzBW5tMg
+         WxjleTS/pComPtriynKxejntoRJwGGg2FENmn1m3NM5131bCgUSQ9sO2mYuzInG881kY
+         YMwGFuzCmqmkyN+ZhMJrKVg7baj0RAP6xH3Q9kfCnF/U5L2rWjhDdCq0sESdMQbLoOeW
+         atNQ==
+X-Gm-Message-State: AOAM532tekXXyVyP9Ohe30l+0znAvnEZucS3NnsOFV0W3zx+phCDfdWZ
+        pjOLYv99rhq6X/yr8yGXFJgXEMh+HzpAgKeC/J0=
+X-Google-Smtp-Source: ABdhPJy9smo79lDaJbFYlXf+SK4TUVokeX1B7e4jY2L84PaTnKK4hDfODNKlWttxoZ4ywTuul1Ow3+rp5TkOZp6H4kU=
+X-Received: by 2002:a9d:a2b:: with SMTP id 40mr1134118otg.308.1599828254741;
+ Fri, 11 Sep 2020 05:44:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
+ <159827190508.306468.12755090833140558156.stgit@warthog.procyon.org.uk>
+ <CAKgNAkho1WSOsxvCYQOs7vDxpfyeJ9JGdTL-Y0UEZtO3jVfmKw@mail.gmail.com>
+ <667616.1599063270@warthog.procyon.org.uk> <CAKgNAkhjDB9bvQ0h5b13fkbhuP9tYrkBQe7w1cbeOH8gM--D0g@mail.gmail.com>
+In-Reply-To: <CAKgNAkhjDB9bvQ0h5b13fkbhuP9tYrkBQe7w1cbeOH8gM--D0g@mail.gmail.com>
+Reply-To: mtk.manpages@gmail.com
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Date:   Fri, 11 Sep 2020 14:44:03 +0200
+Message-ID: <CAKgNAkh9h3aA1hiYownT2O=xg5JmZwmJUCvQ1Z4f85MTq-26Fw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] Add manpage for fsopen(2) and fsmount(2)
+To:     David Howells <dhowells@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the maintainer information for the SGX subsystem.
+Hi David,
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+A ping for these five patches please!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3b186ade3597..1d4daeb12d0a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9051,6 +9051,17 @@ F:	Documentation/x86/intel_txt.rst
- F:	arch/x86/kernel/tboot.c
- F:	include/linux/tboot.h
- 
-+INTEL SGX
-+M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-+M:	Sean Christopherson <sean.j.christopherson@intel.com>
-+L:	linux-sgx@vger.kernel.org
-+S:	Maintained
-+Q:	https://patchwork.kernel.org/project/intel-sgx/list/
-+T:	git https://github.com/jsakkine-intel/linux-sgx.git
-+F:	arch/x86/include/uapi/asm/sgx.h
-+F:	arch/x86/kernel/cpu/sgx/*
-+K:	\bSGX_
-+
- INTERCONNECT API
- M:	Georgi Djakov <georgi.djakov@linaro.org>
- L:	linux-pm@vger.kernel.org
+Cheers,
+
+Michael
+
+On Wed, 2 Sep 2020 at 22:14, Michael Kerrisk (man-pages)
+<mtk.manpages@gmail.com> wrote:
+>
+> On Wed, 2 Sep 2020 at 18:14, David Howells <dhowells@redhat.com> wrote:
+> >
+> > Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
+> >
+> > > The term "filesystem configuration context" is introduced, but never
+> > > really explained. I think it would be very helpful to have a sentence
+> > > or three that explains this concept at the start of the page.
+> >
+> > Does that need a .7 manpage?
+>
+> I was hoping a sentence or a paragraph in this page might suffice. Do
+> you think more is required?
+>
+> Cheers,
+>
+> Michael
+>
+> --
+> Michael Kerrisk
+> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+> Linux/UNIX System Programming Training: http://man7.org/training/
+
+
+
 -- 
-2.25.1
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
