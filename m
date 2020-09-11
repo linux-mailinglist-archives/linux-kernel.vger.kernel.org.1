@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2D2266400
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D84F266466
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgIKQ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:29:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:38784 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726239AbgIKQ27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:28:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F062106F;
-        Fri, 11 Sep 2020 09:28:58 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D35473F73C;
-        Fri, 11 Sep 2020 09:28:56 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:28:54 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Aubrey Li <aubrey.li@intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        valentin.schneider@arm.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@linux.intel.com>
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-Message-ID: <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
-References: <20200910054203.525420-1-aubrey.li@intel.com>
- <20200910054203.525420-2-aubrey.li@intel.com>
+        id S1726584AbgIKQhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:37:53 -0400
+Received: from aluxe.matcuer.unam.mx ([132.248.41.2]:33689 "EHLO
+        aluxe.matcuer.unam.mx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726431AbgIKQhu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:37:50 -0400
+X-Greylist: delayed 17251 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 12:37:49 EDT
+Received: from localhost (ip6-localhost [127.0.0.1])
+        by aluxe.matcuer.unam.mx (Postfix) with ESMTP id BCBE010C3E45;
+        Fri, 11 Sep 2020 05:48:40 -0500 (CDT)
+X-Virus-Scanned: Debian amavisd-new at matcuer.unam.mx
+Received: from aluxe.matcuer.unam.mx ([127.0.0.1])
+        by localhost (aluxe.matcuer.unam.mx [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id BixWoBr8_2Yr; Fri, 11 Sep 2020 05:48:38 -0500 (CDT)
+Received: from correo.matcuer.unam.mx (ip6-localhost [127.0.0.1])
+        by aluxe.matcuer.unam.mx (Postfix) with ESMTP id A851710C2606;
+        Fri, 11 Sep 2020 04:14:36 -0500 (CDT)
+Received: from 105.112.102.124
+        (SquirrelMail authenticated user otto)
+        by correo.matcuer.unam.mx with HTTP;
+        Fri, 11 Sep 2020 04:14:36 -0500
+Message-ID: <13e9a85f013a0d637155834c4107de93.squirrel@correo.matcuer.unam.mx>
+Date:   Fri, 11 Sep 2020 04:14:36 -0500
+Subject: 
+From:   "Mikhail Fridman" <otto@matcuer.unam.mx>
+Reply-To: mikhai.fridman261@gmail.com
+User-Agent: SquirrelMail/1.4.23 [SVN]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200910054203.525420-2-aubrey.li@intel.com>
-User-Agent: NeoMutt/20171215
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Priority: 3 (Normal)
+Importance: Normal
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/20 13:42, Aubrey Li wrote:
-> Added idle cpumask to track idle cpus in sched domain. When a CPU
-> enters idle, its corresponding bit in the idle cpumask will be set,
-> and when the CPU exits idle, its bit will be cleared.
-> 
-> When a task wakes up to select an idle cpu, scanning idle cpumask
-> has low cost than scanning all the cpus in last level cache domain,
-> especially when the system is heavily loaded.
-> 
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> ---
->  include/linux/sched/topology.h | 13 +++++++++++++
->  kernel/sched/fair.c            |  4 +++-
->  kernel/sched/topology.c        |  2 +-
->  3 files changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> index fb11091129b3..43a641d26154 100644
-> --- a/include/linux/sched/topology.h
-> +++ b/include/linux/sched/topology.h
-> @@ -65,8 +65,21 @@ struct sched_domain_shared {
->  	atomic_t	ref;
->  	atomic_t	nr_busy_cpus;
->  	int		has_idle_cores;
-> +	/*
-> +	 * Span of all idle CPUs in this domain.
-> +	 *
-> +	 * NOTE: this field is variable length. (Allocated dynamically
-> +	 * by attaching extra space to the end of the structure,
-> +	 * depending on how many CPUs the kernel has booted up with)
-> +	 */
-> +	unsigned long	idle_cpus_span[];
+I, Mikhail Fridman have selected you specifically as one of my
+beneficiaries for my Charitable Donation of $5 Million Dollars,
 
-Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
+Check the link below for confirmation:
 
-The patch looks useful. Did it help you with any particular workload? It'd be
-good to expand on that in the commit message.
+https://www.rt.com/business/343781-mikhail-fridman-will-charity/
 
-Thanks
+I await your earliest response for further directives.
 
---
-Qais Yousef
+Best Regards,
+Mikhail Fridman.
+
