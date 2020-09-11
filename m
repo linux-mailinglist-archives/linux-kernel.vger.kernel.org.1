@@ -2,61 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A602662F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8829C2662FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgIKQHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49158 "EHLO mail.kernel.org"
+        id S1726617AbgIKQIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:08:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726529AbgIKQHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:07:12 -0400
+        id S1726308AbgIKQII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:08:08 -0400
 Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AFC2206CA;
-        Fri, 11 Sep 2020 16:07:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67F69206CA;
+        Fri, 11 Sep 2020 16:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599840432;
-        bh=HMkToyAt+R5UW/0fJTeoIckq2g06NAPzV1gQYp89vEI=;
+        s=default; t=1599840488;
+        bh=iLPXQfche2cl2UNFwVe5Cn0pwE5wjPTc1yMcibij3Cc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rW40pgimHDCBZ3vHXEgiusgmWmT7c33pKGm3eMIMIJHF2eAVYvAbQbBax0f1VzpZL
-         7GRrVgdXVhGnr00ED/n/a2itqfP1aYXxYL8QXzDrhFZaI2IUqsJrt9zBMuVKFqYO6z
-         OOd1Jf5FYqf9x4SCl57HVjpIsmhSc5NfoUhTu41w=
-Date:   Fri, 11 Sep 2020 17:07:07 +0100
+        b=LzluMK/42p47BOEhqCg9J+En60njQGbHwN2+0wRwyoosXXO2/pLvAVJsq5zMFx1qz
+         uVCU9qpfDRiLxjKRXW38CC0EKI1OyvSsyZJDC+z8P1OI+d9DW/uqyNEGwC2oXnpu1u
+         AzDXcFsZscFOuTMQXVm2IWUukA/pz77wIuMh5Q60=
+Date:   Fri, 11 Sep 2020 17:08:04 +0100
 From:   Will Deacon <will@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCHv4 6/6] iommu: arm-smmu-impl: Remove unwanted extra blank
- lines
-Message-ID: <20200911160706.GA20802@willie-the-truck>
-References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
- <010101747d912d9f-c8050b8d-1e81-4be0-ac35-b221f657b490-000000@us-west-2.amazonses.com>
- <c26b5317-f12d-8be9-be45-3307ce5efbfc@arm.com>
+To:     Mark Salter <msalter@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/perf: xgene_pmu: Fix uninitialized resource
+ struct
+Message-ID: <20200911160802.GB20802@willie-the-truck>
+References: <20200902182729.27415-1-msalter@redhat.com>
+ <20200907135026.GC12551@willie-the-truck>
+ <489a7918b244e83736feff79c59a4b74d4e5cad0.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c26b5317-f12d-8be9-be45-3307ce5efbfc@arm.com>
+In-Reply-To: <489a7918b244e83736feff79c59a4b74d4e5cad0.camel@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 05:03:06PM +0100, Robin Murphy wrote:
-> BTW am I supposed to have received 3 copies of everything? Because I did...
+On Tue, Sep 08, 2020 at 02:37:22PM -0400, Mark Salter wrote:
+> On Mon, 2020-09-07 at 14:50 +0100, Will Deacon wrote:
+> > On Wed, Sep 02, 2020 at 02:27:29PM -0400, Mark Salter wrote:
+> > > diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+> > > index edac28cd25dd..fdbbd0804b92 100644
+> > > --- a/drivers/perf/xgene_pmu.c
+> > > +++ b/drivers/perf/xgene_pmu.c
+> > > @@ -1483,6 +1483,7 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
+> > >  		return NULL;
+> > >  
+> > >  	INIT_LIST_HEAD(&resource_list);
+> > > +	memset(&res, 0, sizeof(res));
+> > >  	rc = acpi_dev_get_resources(adev, &resource_list,
+> > >  				    acpi_pmu_dev_add_resource, &res);
+> > >  	acpi_dev_free_resource_list(&resource_list);
+> > 
+> > Hmm, to be honest, I'm not sure we should be calling devm_ioremap_resource()
+> > at all here. The resource is clearly bogus, even with this change: the name
+> > and the resource hierarchy pointers will all be NULL. I think it would be
+> > better to follow the TX2 PMU driver (drivers/perf/thunderx2_pmu.c) which
+> > appears to assign the resource directly in tx2_uncore_pmu_init_dev().
+> > 
+> > Is there a reason we can't do that?
+> > 
+> > Will
+> > 
+> 
+> There's no difference between xgene and tx2 wrt resouce name/hierarchy.
+> They both call devm_ioresource_remap() which ends up setting the name
+> and hierarchy. The difference is that xgene calls acpi_dev_resource_memory()
+> directly from the acpi_dev_get_resources() callback. TX2 doesn't use such a
+> callback and in that case, acpi_dev_resource_memory() gets called with a
+> zeroed struct.
+> 
+> That said, changing xgene to avoid the callback like TX2 does would fix the
+> problem as well. If you'd rather go that route, I can send a patch for it.
 
-Yeah, this seems to be happening for all of Sai's emails :/
+Yes please
 
 Will
