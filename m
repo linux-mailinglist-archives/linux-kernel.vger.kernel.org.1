@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2873126603D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75D9266000
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgIKN0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 09:26:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52674 "EHLO mail.kernel.org"
+        id S1726138AbgIKNDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 09:03:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726214AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:05:44 -0400
+        id S1725955AbgIKM4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:56:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0699322248;
-        Fri, 11 Sep 2020 12:58:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78B2D2220A;
+        Fri, 11 Sep 2020 12:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829102;
-        bh=wbfMpO1CvzPj98oV+GB0cklZ4KO/EvDvcqxWWtPeAu0=;
+        s=default; t=1599828898;
+        bh=qJYoeA8rT3BH29yUPVS7a/6SxvkuI+QN0m4oiym4bXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HoP6Yba63VhlowSyhDafCvgek1QrdcV18Pa5sDVRqfh+HOvDPnSSwlA7mt4nSvnC+
-         edEGBIj4cp6q0wZegQsVIXJu9fXQt6miDatMLtqqp5Kzie815f7ej7YaysBwQ8mbcr
-         RN/5URWhRMDo/gZPtvxvnxvUItANu/z1cd90W7tQ=
+        b=m5muY0dl25nTkCXg0gLnICpGcvfpXccgullGD9ylhojOlz8wopy9c2rcgrqiytNCU
+         jygfKH88ioDIfyIfki2r9eDlUYjECmwX6gMN+4bU/urQLXcqxIh6UjZfC5ERv3Egkr
+         V2QrjJ7etcuOs2dfiz4CV+U+7AiGsglBywVH/WDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Kloc <petr_kloc@yahoo.com>,
-        Teemu Likonen <tlikonen@iki.fi>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 38/71] qmi_wwan: new Telewell and Sierra device IDs
-Date:   Fri, 11 Sep 2020 14:46:22 +0200
-Message-Id: <20200911122506.828242015@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+d451401ffd00a60677ee@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.4 49/62] cfg80211: regulatory: reject invalid hints
+Date:   Fri, 11 Sep 2020 14:46:32 +0200
+Message-Id: <20200911122504.839242879@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
-References: <20200911122504.928931589@linuxfoundation.org>
+In-Reply-To: <20200911122502.395450276@linuxfoundation.org>
+References: <20200911122502.395450276@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjørn Mork <bjorn@mork.no>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 60cfe1eaccb8af598ebe1bdc44e157ea30fcdd81 ]
+commit 47caf685a6854593348f216e0b489b71c10cbe03 upstream.
 
-A new Sierra Wireless EM7305 device ID used in a Toshiba laptop,
-and two Longcheer device IDs entries used by Telewell TW-3G HSPA+
-branded modems.
+Reject invalid hints early in order to not cause a kernel
+WARN later if they're restored to or similar.
 
-Reported-by: Petr Kloc <petr_kloc@yahoo.com>
-Reported-by: Teemu Likonen <tlikonen@iki.fi>
-Signed-off-by: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+d451401ffd00a60677ee@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=d451401ffd00a60677ee
+Link: https://lore.kernel.org/r/20200819084648.13956-1-johannes@sipsolutions.net
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/usb/qmi_wwan.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/wireless/reg.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index 6104500314d18..d812335600212 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -910,6 +910,8 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x1199, 0x9056, 8)},	/* Sierra Wireless Modem */
- 	{QMI_FIXED_INTF(0x1199, 0x9057, 8)},
- 	{QMI_FIXED_INTF(0x1199, 0x9061, 8)},	/* Sierra Wireless Modem */
-+	{QMI_FIXED_INTF(0x1199, 0x9063, 8)},	/* Sierra Wireless EM7305 */
-+	{QMI_FIXED_INTF(0x1199, 0x9063, 10)},	/* Sierra Wireless EM7305 */
- 	{QMI_FIXED_INTF(0x1199, 0x9071, 8)},	/* Sierra Wireless MC74xx */
- 	{QMI_FIXED_INTF(0x1199, 0x9071, 10)},	/* Sierra Wireless MC74xx */
- 	{QMI_FIXED_INTF(0x1199, 0x9079, 8)},	/* Sierra Wireless EM74xx */
-@@ -928,6 +930,8 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x1bc7, 0x1101, 3)},	/* Telit ME910 dual modem */
- 	{QMI_FIXED_INTF(0x1bc7, 0x1200, 5)},	/* Telit LE920 */
- 	{QMI_QUIRK_SET_DTR(0x1bc7, 0x1201, 2)},	/* Telit LE920, LE920A4 */
-+	{QMI_FIXED_INTF(0x1c9e, 0x9801, 3)},	/* Telewell TW-3G HSPA+ */
-+	{QMI_FIXED_INTF(0x1c9e, 0x9803, 4)},	/* Telewell TW-3G HSPA+ */
- 	{QMI_FIXED_INTF(0x1c9e, 0x9b01, 3)},	/* XS Stick W100-2 from 4G Systems */
- 	{QMI_FIXED_INTF(0x0b3c, 0xc000, 4)},	/* Olivetti Olicard 100 */
- 	{QMI_FIXED_INTF(0x0b3c, 0xc001, 4)},	/* Olivetti Olicard 120 */
--- 
-2.25.1
-
+--- a/net/wireless/reg.c
++++ b/net/wireless/reg.c
+@@ -2383,6 +2383,9 @@ int regulatory_hint_user(const char *alp
+ 	if (WARN_ON(!alpha2))
+ 		return -EINVAL;
+ 
++	if (!is_world_regdom(alpha2) && !is_an_alpha2(alpha2))
++		return -EINVAL;
++
+ 	request = kzalloc(sizeof(struct regulatory_request), GFP_KERNEL);
+ 	if (!request)
+ 		return -ENOMEM;
 
 
