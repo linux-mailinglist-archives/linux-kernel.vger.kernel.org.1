@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71FA26767B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A9E267694
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgIKXSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 19:18:21 -0400
-Received: from mga03.intel.com ([134.134.136.65]:21440 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725871AbgIKXQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 19:16:42 -0400
-IronPort-SDR: mbmj6P8M4iZ6m8zvdLwuAuMMgNLgk8o/xdg3Oh2TGUQF3dnNCaOWq3WzR+6GTRk52N5kBYDXKb
- MGckNZhOZtqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="158906377"
-X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
-   d="scan'208";a="158906377"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 16:16:40 -0700
-IronPort-SDR: pemPjNftCRhiQAcLvWelSaAVY/HSVBPRiHJBEw6b4wkTHwmAdyjZinT/3l1YT0CbVpJYVVoIUU
- 0KC1unBvij9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
-   d="scan'208";a="329951001"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2020 16:16:37 -0700
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-To:     Qais Yousef <qais.yousef@arm.com>, Aubrey Li <aubrey.li@intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        valentin.schneider@arm.com, tim.c.chen@linux.intel.com,
-        linux-kernel@vger.kernel.org
-References: <20200910054203.525420-1-aubrey.li@intel.com>
- <20200910054203.525420-2-aubrey.li@intel.com>
- <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
- <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
-Message-ID: <8a853369-c8f0-b9e8-f4cb-481d73abefaf@linux.intel.com>
-Date:   Sat, 12 Sep 2020 07:16:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1725880AbgIKXgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 19:36:20 -0400
+Received: from mail4.ezej.site ([162.220.51.81]:33324 "EHLO mail4.ezej.site"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725601AbgIKXgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 19:36:14 -0400
+X-Greylist: delayed 57177 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 19:36:14 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=ajnzv.xyz;
+         s=default; h=Message-ID:Subject:To:From:Date:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Sender:Reply-To:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=6LBIqq4xKmWg6QcqY3mJ328X6weNTorPvJWm6yx1j4U=; b=iavCjxz+CyVKV0bo6+ZfUcTtlq
+        2054B7G1f+Lm8FDMsy81YM6KHurSaCDlVLxIiaCUSFHXohO0e9BhAzeWbbsIB2QU/toAbKDNwHBYE
+        cw/x8OY9FngTAVWIa70EDbajw2xGuihMyTgLfOC8kM3tcRrS0A+xihvY4BDURNAghvD7xiaotVwbN
+        96n38lHP/BakaH2Bt8U2abCWw7QD4hIhQbIrWdpmBMRS1n7+iQ/ZaWYbtoFf9irdVdP5PT8c6U2Y5
+        brEWaK1dPkima2pHN1Sju8tkXHYHq/Ol9aYI1EMjuTki8x/GQnDzKDjhq96Qed1OsvWLWe1fzk2C3
+        VwXjXTRQ==;
+Received: from [127.0.0.1] (port=56374 helo=mail4.ezej.site)
+        by mail4.ezej.site with esmtpa (Exim 4.92)
+        (envelope-from <amirahabbas@fastmail.com>)
+        id 1kGdhV-00005e-2g; Fri, 11 Sep 2020 07:42:29 +0000
 MIME-Version: 1.0
-In-Reply-To: <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Sep 2020 07:42:28 +0000
+From:   "Andrew A. Page" <amirahabbas@fastmail.com>
+To:     undisclosed-recipients:;
+Subject: Re.Dear Friend
+Message-ID: <4457c7b5f302295811445543bf3dd61b@fastmail.com>
+X-Sender: amirahabbas@fastmail.com
+User-Agent: Roundcube Webmail/1.3.7
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - mail4.ezej.site
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - fastmail.com
+X-Get-Message-Sender-Via: mail4.ezej.site: authenticated_id: page778@ajnzv.xyz
+X-Authenticated-Sender: mail4.ezej.site: page778@ajnzv.xyz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/12 7:04, Li, Aubrey wrote:
-> On 2020/9/12 0:28, Qais Yousef wrote:
->> On 09/10/20 13:42, Aubrey Li wrote:
->>> Added idle cpumask to track idle cpus in sched domain. When a CPU
->>> enters idle, its corresponding bit in the idle cpumask will be set,
->>> and when the CPU exits idle, its bit will be cleared.
->>>
->>> When a task wakes up to select an idle cpu, scanning idle cpumask
->>> has low cost than scanning all the cpus in last level cache domain,
->>> especially when the system is heavily loaded.
->>>
->>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
->>> ---
->>>  include/linux/sched/topology.h | 13 +++++++++++++
->>>  kernel/sched/fair.c            |  4 +++-
->>>  kernel/sched/topology.c        |  2 +-
->>>  3 files changed, 17 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
->>> index fb11091129b3..43a641d26154 100644
->>> --- a/include/linux/sched/topology.h
->>> +++ b/include/linux/sched/topology.h
->>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
->>>  	atomic_t	ref;
->>>  	atomic_t	nr_busy_cpus;
->>>  	int		has_idle_cores;
->>> +	/*
->>> +	 * Span of all idle CPUs in this domain.
->>> +	 *
->>> +	 * NOTE: this field is variable length. (Allocated dynamically
->>> +	 * by attaching extra space to the end of the structure,
->>> +	 * depending on how many CPUs the kernel has booted up with)
->>> +	 */
->>> +	unsigned long	idle_cpus_span[];
->>
->> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
-> 
-> I can use the existing free code. Do we have a problem of this?
-> 
->>
->> The patch looks useful. Did it help you with any particular workload? It'd be
->> good to expand on that in the commit message.
->>
-> Odd, that included in patch v1 0/1, did you receive it?
 
-I found it at here:
 
-https://lkml.org/lkml/2020/9/11/645
+-- 
+Hello,
 
-> 
-> Thanks,
-> -Aubrey
-> 
+How are you once again. I have been having difficulty reaching you. I 
+have an important business transaction to discuss with you.  There are 
+funds available and ready for investment which we will need your 
+assistance to invest. Do get back to me as soon as you can for more 
+details.
 
+Regards,
+
+Andrew A. Page
