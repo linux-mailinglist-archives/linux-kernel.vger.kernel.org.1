@@ -2,109 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB886266316
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFC526638B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726542AbgIKQKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:10:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:22472 "EHLO mga18.intel.com"
+        id S1726493AbgIKQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:19:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725847AbgIKPnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:43:18 -0400
-IronPort-SDR: v2h8cI4U2lW7Ge1lt9CEeY+eJ+wnXthXqgxXceDsrvZf7sKjrVCrOIi6bxlJ4Iukb729sjhwDP
- xhXEQ0X7F9GA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146483395"
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="146483395"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 06:28:26 -0700
-IronPort-SDR: 8M6e0lLQQ8exeFWaCMzgHU12m5LqC0cmkp6B32lg20xnzP/03rHUyEBr4qftr/yey5wB0jisE0
- zUm9ecDqdtFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="408157980"
-Received: from aubrey-work.sh.intel.com ([10.239.53.113])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Sep 2020 06:28:23 -0700
-From:   Aubrey Li <aubrey.li@intel.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        valentin.schneider@arm.com
-Cc:     tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@intel.com>
-Subject: [RFC PATCH v1 0/1] select idle cpu from idle cpumask in sched domain
-Date:   Thu, 10 Sep 2020 13:42:02 +0800
-Message-Id: <20200910054203.525420-1-aubrey.li@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726520AbgIKPab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:30:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D5352224A;
+        Fri, 11 Sep 2020 12:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599829122;
+        bh=QLxLHnsqBMRfkyabux2IZ0Ir8juf+/6Ln1bN5JXHj00=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HbukDnZvfHaCTnh8zCGBDyyEql9+LoI4oy986LAJ7+5072hRcytTYIL8bZdBK4GyU
+         YdwivvLZedwvo/cf2YctuACy0w32w6aQ8dpkfVUEOUWWhVIh1i3+9qVKLJ9xmPJgq+
+         kXoYpoi32GLi8j0P9ueIqynOSiLnqbaREs4J+5WE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 68/71] netlabel: fix problems with mapping removal
+Date:   Fri, 11 Sep 2020 14:46:52 +0200
+Message-Id: <20200911122508.337614546@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+References: <20200911122504.928931589@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm writting to see if it makes sense to track idle cpus in a shared cpumask
-in sched domain, then a task wakes up it can select idle cpu from this cpumask
-instead of scanning all the cpus in the last level cache domain, especially
-when the system is heavily loaded, the scanning cost could be significantly
-reduced. The price is that the atomic cpumask ops are added to the idle entry
-and exit paths.
+From: Paul Moore <paul@paul-moore.com>
 
-I tested the following benchmarks on a x86 4 socket system with 24 cores per
-socket and 2 hyperthreads per core, total 192 CPUs:
+[ Upstream commit d3b990b7f327e2afa98006e7666fb8ada8ed8683 ]
 
-uperf throughput: netperf workload, tcp_nodelay, r/w size = 90
+This patch fixes two main problems seen when removing NetLabel
+mappings: memory leaks and potentially extra audit noise.
 
-  threads	baseline-avg	%std	patch-avg	%std
-  96		1		1.24	0.98		2.76
-  144		1		1.13	1.35		4.01
-  192		1		0.58	1.67		3.25
-  240		1		2.49	1.68		3.55
+The memory leaks are caused by not properly free'ing the mapping's
+address selector struct when free'ing the entire entry as well as
+not properly cleaning up a temporary mapping entry when adding new
+address selectors to an existing entry.  This patch fixes both these
+problems such that kmemleak reports no NetLabel associated leaks
+after running the SELinux test suite.
 
-hackbench: process mode, 100000 loops, 40 file descriptors per group
+The potentially extra audit noise was caused by the auditing code in
+netlbl_domhsh_remove_entry() being called regardless of the entry's
+validity.  If another thread had already marked the entry as invalid,
+but not removed/free'd it from the list of mappings, then it was
+possible that an additional mapping removal audit record would be
+generated.  This patch fixes this by returning early from the removal
+function when the entry was previously marked invalid.  This change
+also had the side benefit of improving the code by decreasing the
+indentation level of large chunk of code by one (accounting for most
+of the diffstat).
 
-  group		baseline-avg	%std	patch-avg	%std
-  2(80)		1		12.05	0.97		9.88
-  3(120)	1		12.48	0.95		11.62
-  4(160)	1		13.83	0.97		13.22
-  5(200)	1		2.76	1.01		2.94	 
+Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
+Reported-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/netlabel/netlabel_domainhash.c |   59 ++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 29 deletions(-)
 
-schbench: 99th percentile latency, 16 workers per message thread
+--- a/net/netlabel/netlabel_domainhash.c
++++ b/net/netlabel/netlabel_domainhash.c
+@@ -99,6 +99,7 @@ static void netlbl_domhsh_free_entry(str
+ 			kfree(netlbl_domhsh_addr6_entry(iter6));
+ 		}
+ #endif /* IPv6 */
++		kfree(ptr->def.addrsel);
+ 	}
+ 	kfree(ptr->domain);
+ 	kfree(ptr);
+@@ -550,6 +551,8 @@ int netlbl_domhsh_add(struct netlbl_dom_
+ 				goto add_return;
+ 		}
+ #endif /* IPv6 */
++		/* cleanup the new entry since we've moved everything over */
++		netlbl_domhsh_free_entry(&entry->rcu);
+ 	} else
+ 		ret_val = -EINVAL;
+ 
+@@ -593,6 +596,12 @@ int netlbl_domhsh_remove_entry(struct ne
+ {
+ 	int ret_val = 0;
+ 	struct audit_buffer *audit_buf;
++	struct netlbl_af4list *iter4;
++	struct netlbl_domaddr4_map *map4;
++#if IS_ENABLED(CONFIG_IPV6)
++	struct netlbl_af6list *iter6;
++	struct netlbl_domaddr6_map *map6;
++#endif /* IPv6 */
+ 
+ 	if (entry == NULL)
+ 		return -ENOENT;
+@@ -610,6 +619,9 @@ int netlbl_domhsh_remove_entry(struct ne
+ 		ret_val = -ENOENT;
+ 	spin_unlock(&netlbl_domhsh_lock);
+ 
++	if (ret_val)
++		return ret_val;
++
+ 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
+ 	if (audit_buf != NULL) {
+ 		audit_log_format(audit_buf,
+@@ -619,40 +631,29 @@ int netlbl_domhsh_remove_entry(struct ne
+ 		audit_log_end(audit_buf);
+ 	}
+ 
+-	if (ret_val == 0) {
+-		struct netlbl_af4list *iter4;
+-		struct netlbl_domaddr4_map *map4;
+-#if IS_ENABLED(CONFIG_IPV6)
+-		struct netlbl_af6list *iter6;
+-		struct netlbl_domaddr6_map *map6;
+-#endif /* IPv6 */
+-
+-		switch (entry->def.type) {
+-		case NETLBL_NLTYPE_ADDRSELECT:
+-			netlbl_af4list_foreach_rcu(iter4,
+-					     &entry->def.addrsel->list4) {
+-				map4 = netlbl_domhsh_addr4_entry(iter4);
+-				cipso_v4_doi_putdef(map4->def.cipso);
+-			}
++	switch (entry->def.type) {
++	case NETLBL_NLTYPE_ADDRSELECT:
++		netlbl_af4list_foreach_rcu(iter4, &entry->def.addrsel->list4) {
++			map4 = netlbl_domhsh_addr4_entry(iter4);
++			cipso_v4_doi_putdef(map4->def.cipso);
++		}
+ #if IS_ENABLED(CONFIG_IPV6)
+-			netlbl_af6list_foreach_rcu(iter6,
+-					     &entry->def.addrsel->list6) {
+-				map6 = netlbl_domhsh_addr6_entry(iter6);
+-				calipso_doi_putdef(map6->def.calipso);
+-			}
++		netlbl_af6list_foreach_rcu(iter6, &entry->def.addrsel->list6) {
++			map6 = netlbl_domhsh_addr6_entry(iter6);
++			calipso_doi_putdef(map6->def.calipso);
++		}
+ #endif /* IPv6 */
+-			break;
+-		case NETLBL_NLTYPE_CIPSOV4:
+-			cipso_v4_doi_putdef(entry->def.cipso);
+-			break;
++		break;
++	case NETLBL_NLTYPE_CIPSOV4:
++		cipso_v4_doi_putdef(entry->def.cipso);
++		break;
+ #if IS_ENABLED(CONFIG_IPV6)
+-		case NETLBL_NLTYPE_CALIPSO:
+-			calipso_doi_putdef(entry->def.calipso);
+-			break;
++	case NETLBL_NLTYPE_CALIPSO:
++		calipso_doi_putdef(entry->def.calipso);
++		break;
+ #endif /* IPv6 */
+-		}
+-		call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
+ 	}
++	call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
+ 
+ 	return ret_val;
+ }
 
-  mthread	baseline-avg	%std	patch-avg	%std
-  6(96)		1		1.24	0.993		1.73
-  9(144)	1		0.38	0.998		0.39
-  12(192)	1		1.58	0.995		1.64
-  15(240)	1		51.71	0.606		37.41
-
-sysbench mysql throughput: read/write, table size = 10,000,000
-
-  thread	baseline-avg	%std	patch-avg	%std
-  96		1		1.77	1.015		1.71
-  144		1		3.39	0.998		4.05
-  192		1		2.88	1.002		2.81
-  240		1		2.07	1.011		2.09
-
-kbuild: kexec reboot every time
-
-  baseline-avg	patch-avg
-  1		1
-
-Any suggestions are highly appreciated!
-
-Thanks,
--Aubrey
-
-Aubrey Li (1):
-  sched/fair: select idle cpu from idle cpumask in sched domain
-
- include/linux/sched/topology.h | 13 +++++++++++++
- kernel/sched/fair.c            |  4 +++-
- kernel/sched/topology.c        |  2 +-
- 3 files changed, 17 insertions(+), 2 deletions(-)
-
--- 
-2.25.1
 
