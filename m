@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E26266935
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884EC2668DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725889AbgIKTxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:53:34 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57008 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgIKTxW (ORCPT
+        id S1726073AbgIKTdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:33:41 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51648 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725954AbgIKT3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:53:22 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BEdNEG111365;
-        Fri, 11 Sep 2020 14:41:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=DWZD12wORp22AFnbuvXtF9cNTFTZ+VmSgJMhUkzu+EI=;
- b=oGzhhCEXnSIt4ZdIqR25mKdqDYLCqeUinls1RO4x1cevclYg0g/rsJcw+91MDfXl6rdF
- U9ONmGbsfSvhkPbYp1uYhRnubSmdt05aieCE8RrQqVCO3sgfJd3SHa3wttMwVqyW/XLZ
- chOf3iNIHWmi6CdVX/MpYHX2ElrjMfHe/R3T95MmyPZIRo7MvgYHSWdPovP/mv4vFJvc
- 0syXXTg2PhScD370E9vxNRn5YK16QItpwjkxQKONILdg/NsonnoTtC/8T3ikBRzG8Wam
- 123njcBvAvRXo7L2V3K97qSgdh1DYZ6J6PU7YDnfJgiaqCOheE32YJCHeVBckVMarxiJ Cg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 33c23ren2x-1
+        Fri, 11 Sep 2020 15:29:52 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BJSbS1196406;
+        Fri, 11 Sep 2020 19:28:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=UmHFa+oDemSLAXWoNZ5PjEOnBdTa5ORZkuWyFRvcKWU=;
+ b=todjhhUe4nPBnZAYjmRZv3IAKQQMB/V12GIWWak2/fkf1tKfZvAta2VA0PRg14/JWNkP
+ wf+jn4wxdBRr7+zh79ZmWP+H2ww6E+WghkvRmz4NuODoiFvRhrzTiq8rRysHpc6kEEb1
+ F5DIfjd+i3298HmCEEADwtcsqQT1kthLaF4txzBWlx5htC4AVZhUDwneLPrzFS2qPIRd
+ N59DabbiOp1RxHp+nQVV7l/DgOlfI+qAYY9/671CQfnQLdLWCGVrmdlj3I840lAiHUyl
+ s2/c1Whvx8JOM23E7K8HPCT7YbUgXgAn3P85uwZd0s7/TUDuByb8hpdzhPOpFunFV/sQ Qg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 33c2mmg38t-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Sep 2020 14:41:52 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BEZigZ074065;
-        Fri, 11 Sep 2020 14:41:51 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 33dacq25x0-1
+        Fri, 11 Sep 2020 19:28:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BJQUEQ052944;
+        Fri, 11 Sep 2020 19:26:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 33cmm3y5b4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 14:41:51 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08BEfoVd002044;
-        Fri, 11 Sep 2020 14:41:50 GMT
-Received: from [10.74.86.16] (/10.74.86.16)
+        Fri, 11 Sep 2020 19:26:31 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08BJQOCe006332;
+        Fri, 11 Sep 2020 19:26:27 GMT
+Received: from nsvm-sadhukhan-1.osdevelopmeniad.oraclevcn.com (/100.100.230.216)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Sep 2020 07:41:50 -0700
-Subject: Re: [PATCH 1/2] xen/gntdev.c: Mark pages as dirty
-To:     Souptick Joarder <jrdr.linux@gmail.com>, jgross@suse.com,
-        sstabellini@kernel.org
-Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>, stable@vger.kernel.org
-References: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <55deef6a-4199-b003-b187-7e7c4d1725ff@oracle.com>
-Date:   Fri, 11 Sep 2020 10:41:47 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
-MIME-Version: 1.0
-In-Reply-To: <1599375114-32360-1-git-send-email-jrdr.linux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9740 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- bulkscore=0 phishscore=0 adultscore=0 suspectscore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9740 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 priorityscore=1501
- mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 spamscore=0
- malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1011
+        with ESMTP ; Fri, 11 Sep 2020 12:26:24 -0700
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+To:     kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, joro@8bytes.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, hpa@zytor.com
+Subject: [PATCH 0/4 v3] x86: AMD: Don't flush cache if hardware enforces cache coherency across encryption domains
+Date:   Fri, 11 Sep 2020 19:25:57 +0000
+Message-Id: <20200911192601.9591-1-krish.sadhukhan@oracle.com>
+X-Mailer: git-send-email 2.18.4
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=1
+ spamscore=0 mlxlogscore=682 adultscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009110155
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 priorityscore=1501
+ phishscore=0 adultscore=0 bulkscore=0 clxscore=1015 mlxlogscore=694
+ malwarescore=0 suspectscore=1 lowpriorityscore=0 spamscore=0
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110120
+ engine=8.12.0-2006250000 definitions=main-2009110156
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In some hardware implementations, coherency between the encrypted and
+unencrypted mappings of the same physical page is enforced. In such a system,
+it is not required for software to flush the page from all CPU caches in the
+system prior to changing the value of the C-bit for a page. This hardware-
+enforced cache coherency is indicated by EAX[10] in CPUID leaf 0x8000001f.
 
-On 9/6/20 2:51 AM, Souptick Joarder wrote:
-> There seems to be a bug in the original code when gntdev_get_page()
-> is called with writeable=true then the page needs to be marked dirty
-> before being put.
->
-> To address this, a bool writeable is added in gnt_dev_copy_batch, set
-> it in gntdev_grant_copy_seg() (and drop `writeable` argument to
-> gntdev_get_page()) and then, based on batch->writeable, use
-> set_page_dirty_lock().
->
-> Fixes: a4cdb556cae0 (xen/gntdev: add ioctl for grant copy)
-> Suggested-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: David Vrabel <david.vrabel@citrix.com>
+Add this as a CPUID feature and skip flushing caches if the feature is present.
 
+v2 -> v3:
+        Patch# 2: Moves the addition of the CPUID feature from 
+                  early_detect_mem_encrypt() to scattered.c.
+        Patch# 3,4: These two are the split of patch# 3 from v2. Patch# 3
+                 is for non[PATCH 0/4 v3] x86: AMD: Don't flush encrypted pages if hardware enforces cache coherency-SEV encryptions while patch#4 is for SEV
+                 encryptions.
 
-Cc: stable@vger.kernel.org
+[PATCH 1/4 v3] x86: AMD: Replace numeric value for SME CPUID leaf with a
+[PATCH 2/4 v3] x86: AMD: Add hardware-enforced cache coherency as a
+[PATCH 3/4 v3] x86: AMD: Don't flush cache if hardware enforces cache
+[PATCH 4/4 v3] KVM: SVM: Don't flush cache if hardware enforces cache
 
-(can be added at commit time)
+ arch/x86/boot/compressed/mem_encrypt.S | 5 +++--
+ arch/x86/include/asm/cpufeatures.h     | 6 ++++++
+ arch/x86/kernel/cpu/amd.c              | 2 +-
+ arch/x86/kernel/cpu/scattered.c        | 5 +++--
+ arch/x86/kvm/cpuid.c                   | 2 +-
+ arch/x86/kvm/svm/sev.c                 | 3 ++-
+ arch/x86/kvm/svm/svm.c                 | 4 ++--
+ arch/x86/mm/mem_encrypt_identity.c     | 4 ++--
+ arch/x86/mm/pat/set_memory.c           | 2 +-
+ 9 files changed, 21 insertions(+), 12 deletions(-)
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
-
+Krish Sadhukhan (4):
+      x86: AMD: Replace numeric value for SME CPUID leaf with a #define
+      x86: AMD: Add hardware-enforced cache coherency as a CPUID feature
+      x86: AMD: Don't flush cache if hardware enforces cache coherency across en
+cryption domnains
+      KVM: SVM: Don't flush cache if hardware enforces cache coherency across en
+cryption domains
 
