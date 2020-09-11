@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BB8265B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18780265B83
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgIKI0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgIKIZj (ORCPT
+        id S1725831AbgIKIZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:25:56 -0400
+Received: from a27-56.smtp-out.us-west-2.amazonses.com ([54.240.27.56]:51770
+        "EHLO a27-56.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725798AbgIKIZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:25:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145A5C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:25:37 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kGeNB-0002LJ-Fv; Fri, 11 Sep 2020 10:25:33 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kGeN7-00074m-PO; Fri, 11 Sep 2020 10:25:29 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] net: ag71xx: add flow control support
-Date:   Fri, 11 Sep 2020 10:25:28 +0200
-Message-Id: <20200911082528.27121-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911082528.27121-1-o.rempel@pengutronix.de>
-References: <20200911082528.27121-1-o.rempel@pengutronix.de>
+        Fri, 11 Sep 2020 04:25:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599812746;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
+        bh=yX4fvAPceX5+/piaZQeXdCCWrW97OFOzIlS8MV7usjE=;
+        b=Skfsz4zzk8lxCh+e4DpGXxDOwvY5knhVZZcafi0GlqaPgDliHuhr0LVOHauU2vWi
+        6OD5MnXshbEcjeuVU57OJRvBwsreKDILbSPPmTWbZuMqA7SE8F4xm91lZzSC6phRTOA
+        Y5yi2C2aTibGP7eEkiTjy676JErpwyX1Tgo0pGzI=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599812746;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
+        bh=yX4fvAPceX5+/piaZQeXdCCWrW97OFOzIlS8MV7usjE=;
+        b=Dx0JeaT7BoVECxLHCh0iWtpzBADGHpgeXjvZtaXVS/vQ0sNBc6p6MDPMKjOmKNPi
+        AaieeJ81qwMKmPvw+wjqndsZvUaJU6MxaR4IIEjWPz//yNrZr6kkT3At+UBur0qZh4g
+        MVtQiB7YtfByj4NIlGQT9AzeyjEiDXoDS2HtMNq0=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Sep 2020 08:25:46 +0000
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3 4/8] iommu/arm-smmu-qcom: Emulate bypass by using
+ context banks
+In-Reply-To: <20200904155513.282067-5-bjorn.andersson@linaro.org>
+References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+ <20200904155513.282067-5-bjorn.andersson@linaro.org>
+Message-ID: <010101747c453de8-892b662e-2836-4c7e-a61d-07b0542e8111-000000@us-west-2.amazonses.com>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
+X-SES-Outgoing: 2020.09.11-54.240.27.56
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add flow control support. The functionality was tested on AR9331 SoC and
-confirmed by iperf3 results and HW counters exported over ethtool.
-Following test configurations was used:
+On 2020-09-04 21:25, Bjorn Andersson wrote:
+> Some firmware found on various Qualcomm platforms traps writes to S2CR
+> of type BYPASS and writes FAULT into the register. In particular, this
+> prevents us from marking the streams for the display controller as
+> BYPASS to allow continued scanout of the screen through the
+> initialization of the ARM SMMU.
+> 
+> This adds a Qualcomm specific cfg_probe function, which probes for the
+> broken behavior of the S2CR registers and implements a custom
+> alloc_context_bank() that when necessary allocates a context bank
+> (without translation) for these domains as well.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v2:
+> - Move quirk from arm_smmudevice to qcom_smmu, as we localize the quirk
+>   handling to the Qualcomm specific implemntation.
+> 
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 52 ++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 229fc8ff8cea..284761a1cd8e 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -11,8 +11,14 @@
+> 
+>  struct qcom_smmu {
+>  	struct arm_smmu_device smmu;
+> +	bool bypass_broken;
+>  };
+> 
+> +static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+> +{
+> +	return container_of(smmu, struct qcom_smmu, smmu);
+> +}
+> +
+>  #define QCOM_ADRENO_SMMU_GPU_SID 0
+> 
+>  static bool qcom_adreno_smmu_is_gpu_device(struct device *dev)
+> @@ -162,6 +168,50 @@ static const struct of_device_id
+> qcom_smmu_client_of_match[] __maybe_unused = {
+>  	{ }
+>  };
+> 
+> +static int qcom_smmu_alloc_context_bank(struct arm_smmu_domain 
+> *smmu_domain,
+> +					struct arm_smmu_device *smmu,
+> +					struct device *dev, int start)
+> +{
+> +	struct iommu_domain *domain = &smmu_domain->domain;
+> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +
+> +	/* Keep identity domains as bypass, unless bypass is broken */
+> +	if (domain->type == IOMMU_DOMAIN_IDENTITY && !qsmmu->bypass_broken)
+> +		return ARM_SMMU_CBNDX_BYPASS;
+> +
+> +	/*
+> +	 * The identity domain to emulate bypass is the only domain without a
+> +	 * dev, use the last context bank for this to avoid collisions with
+> +	 * active contexts during initialization.
+> +	 */
+> +	if (!dev)
+> +		start = smmu->num_context_banks - 1;
+> +
+> +	return __arm_smmu_alloc_bitmap(smmu->context_map, start,
+> smmu->num_context_banks);
+> +}
+> +
+> +static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
+> +{
+> +	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 
+> 1);
+> +	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +	u32 reg;
+> +
+> +	/*
+> +	 * With some firmware writes to S2CR of type FAULT are ignored, and
+> +	 * writing BYPASS will end up as FAULT in the register. Perform a 
+> write
+> +	 * to S2CR to detect if this is the case with the current firmware.
+> +	 */
+> +	reg = FIELD_PREP(ARM_SMMU_S2CR_TYPE, S2CR_TYPE_BYPASS) |
+> +	      FIELD_PREP(ARM_SMMU_S2CR_CBNDX, 0xff) |
+> +	      FIELD_PREP(ARM_SMMU_S2CR_PRIVCFG, S2CR_PRIVCFG_DEFAULT);
+> +	arm_smmu_gr0_write(smmu, last_s2cr, reg);
+> +	reg = arm_smmu_gr0_read(smmu, last_s2cr);
+> +	if (FIELD_GET(ARM_SMMU_S2CR_TYPE, reg) != S2CR_TYPE_BYPASS)
+> +		qsmmu->bypass_broken = true;
+> +
 
-iMX6S receiver <--- TL-SG1005D switch <---- AR9331 sender
+Clever :)
 
-The switch is supporting symmytric flow control:
-Settings for eth0:
-        Supported ports: [ MII ]
-        Supported link modes:   10baseT/Half 10baseT/Full
-                                100baseT/Half 100baseT/Full
-        Supported pause frame use: Symmetric Receive-only
-        Supports auto-negotiation: Yes
-        Supported FEC modes: Not reported
-        Advertised link modes:  10baseT/Half 10baseT/Full
-                                100baseT/Half 100baseT/Full
-        Advertised pause frame use: Symmetric
-        Advertised auto-negotiation: Yes
-        Advertised FEC modes: Not reported
-        Link partner advertised link modes:  10baseT/Half 10baseT/Full
-                                             100baseT/Half 100baseT/Full
---->>   Link partner advertised pause frame use: Symmetric
-        Link partner advertised auto-negotiation: Yes
-        Link partner advertised FEC modes: Not reported
-        Speed: 100Mb/s
-        Duplex: Full
-        Auto-negotiation: on
-        Port: MII
-        PHYAD: 4
-        Transceiver: external
-        Link detected: yes
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-The iMX6S system was configured to 10Mbit, to let the switch use flow
-control:
-  - ethtool -s eth0 speed 10
-
-With flow control disabled on AR9331:
-  - ethtool -A eth0  rx off tx off
-  - iperf3 -u -c 172.17.0.1 -b100M -l1472 -t10
-
-[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
-[  5]   0.00-10.00  sec  66.2 MBytes  55.5 Mbits/sec  0.000 ms  0/47155 (0%)  sender
-[  5]   0.00-10.04  sec  11.5 MBytes  9.57 Mbits/sec  1.309 ms  38986/47146 (83%)  receiver
-
-With flow control enabled on AR9331:
-  - ethtool -A eth0  rx on tx on
-  - iperf3 -u -c 172.17.0.1 -b100M -l1472 -t10
-
-[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
-[  5]   0.00-10.00  sec  15.1 MBytes  12.6 Mbits/sec  0.000 ms  0/10727 (0%)  sender
-[  5]   0.00-10.05  sec  11.5 MBytes  9.57 Mbits/sec  1.371 ms  2525/10689 (24%)  receiver
-
-Similar results are get in opposite direction by introducing extra CPU
-load on AR9331:
-  - chrt 40 dd if=/dev/zero of=/dev/null &
-
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/ethernet/atheros/ag71xx.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
-index 8c80a87aee58..dd5c8a9038bb 100644
---- a/drivers/net/ethernet/atheros/ag71xx.c
-+++ b/drivers/net/ethernet/atheros/ag71xx.c
-@@ -1056,6 +1056,8 @@ static void ag71xx_mac_validate(struct phylink_config *config,
- 
- 	phylink_set(mask, MII);
- 
-+	phylink_set(mask, Pause);
-+	phylink_set(mask, Asym_Pause);
- 	phylink_set(mask, Autoneg);
- 	phylink_set(mask, 10baseT_Half);
- 	phylink_set(mask, 10baseT_Full);
-@@ -1106,7 +1108,7 @@ static void ag71xx_mac_link_up(struct phylink_config *config,
- 			       bool tx_pause, bool rx_pause)
- {
- 	struct ag71xx *ag = netdev_priv(to_net_dev(config->dev));
--	u32 cfg2;
-+	u32 cfg1, cfg2;
- 	u32 ifctl;
- 	u32 fifo5;
- 
-@@ -1140,6 +1142,15 @@ static void ag71xx_mac_link_up(struct phylink_config *config,
- 	ag71xx_wr(ag, AG71XX_REG_FIFO_CFG5, fifo5);
- 	ag71xx_wr(ag, AG71XX_REG_MAC_IFCTL, ifctl);
- 
-+	cfg1 = ag71xx_rr(ag, AG71XX_REG_MAC_CFG1);
-+	cfg1 &= ~(MAC_CFG1_TFC | MAC_CFG1_RFC);
-+	if (tx_pause)
-+		cfg1 |= MAC_CFG1_TFC;
-+
-+	if (rx_pause)
-+		cfg1 |= MAC_CFG1_RFC;
-+	ag71xx_wr(ag, AG71XX_REG_MAC_CFG1, cfg1);
-+
- 	ag71xx_hw_start(ag);
- }
- 
 -- 
-2.28.0
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
