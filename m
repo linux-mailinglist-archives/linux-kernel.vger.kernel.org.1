@@ -2,183 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFC526638B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D12682663CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgIKQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58836 "EHLO mail.kernel.org"
+        id S1726604AbgIKQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:25:38 -0400
+Received: from mx01-muc.bfs.de ([193.174.230.67]:6932 "EHLO mx01-muc.bfs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726520AbgIKPab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:30:31 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D5352224A;
-        Fri, 11 Sep 2020 12:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829122;
-        bh=QLxLHnsqBMRfkyabux2IZ0Ir8juf+/6Ln1bN5JXHj00=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HbukDnZvfHaCTnh8zCGBDyyEql9+LoI4oy986LAJ7+5072hRcytTYIL8bZdBK4GyU
-         YdwivvLZedwvo/cf2YctuACy0w32w6aQ8dpkfVUEOUWWhVIh1i3+9qVKLJ9xmPJgq+
-         kXoYpoi32GLi8j0P9ueIqynOSiLnqbaREs4J+5WE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 68/71] netlabel: fix problems with mapping removal
-Date:   Fri, 11 Sep 2020 14:46:52 +0200
-Message-Id: <20200911122508.337614546@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
-References: <20200911122504.928931589@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726447AbgIKPYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:24:06 -0400
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx01-muc.bfs.de (Postfix) with ESMTPS id 8F42420199;
+        Fri, 11 Sep 2020 15:07:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1599829623;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6E3rYFAFmZrISpyCxa1f771HtF2yNOuq1RjadVZhysY=;
+        b=rDSYCSe7ZDYYWhX+S+0BxwHBsDov1d5CDxN/hhv82w+5fy/R0WfK9WAXSR2A60w0uMgCwt
+        2kcnccbMF246KRqUhFNl8c3pN75jEOSbygmo96+oDwohB2pqSEs2GNXpYAWsSwK8wJ5I3d
+        GOmKgb5uhmsQXhc70RWgSDFU6qmLGmJIcQIqQxQeZ0P6lk34pTVwqPoa6WylUkHiWYRXNk
+        SwvYtE45epmTBdPQTgKkOQinJUnD0OpyaXIFf+GGkYE7mb22wpdS+yj2LWsKt2hthFiaM4
+        a8XQGCIqZYg++BvfXlxfK1/Eb9G6sC8IJnPgynur5iMlcHhzZ2tUTvPch73B0g==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Fri, 11 Sep
+ 2020 15:07:02 +0200
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
+ 15.01.2044.004; Fri, 11 Sep 2020 15:07:02 +0200
+From:   Walter Harms <wharms@bfs.de>
+To:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
+CC:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: AW: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long
+ int'
+Thread-Topic: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long
+ int'
+Thread-Index: AQHWh7gQECdZaDE3LEKYFjT0sUW8TaljZ7N2
+Date:   Fri, 11 Sep 2020 13:07:02 +0000
+Message-ID: <c15e4262afea4820961bd36e3386b582@bfs.de>
+References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>,<20200910211344.3562-18-colomar.6.4.3@gmail.com>
+In-Reply-To: <20200910211344.3562-18-colomar.6.4.3@gmail.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.40]
+x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25658.007
+x-tm-as-result: No-10--1.508000-5.000000
+x-tmase-matchedrid: v0Uhv4cnyYWe/kF8Pup4HBvgzEPRJaDEWw/S0HB7eoMTiSW9r3PknDyj
+        o+AkzeHqoM9050SCTLIS+pOxtKEjwvXYz2/SDtYzLFqCUQ7xhcyNY/pqxovzxZ9enr+Dhl0GKKi
+        9XIZVdsUEonpJ5L2U1+Mwa0EiWUk5jNea/HVv9rw/ApMPW/xhXkyQ5fRSh265Dfheddyhsqvqs9
+        E0tCHijOfOVcxjDhcwlnP9MMAZcdoLbigRnpKlKZx+7GyJjhAUMZAz0VgWU08+j5WrtZqnge0RO
+        L8uCZYTkvX/T0z5mGJfaa/N/1NR2T5rzQ1n8RpZ30V9wDbJOG3hwGKyRldHxWfvpucVLz+0xutS
+        1t8Wq0GIonbnNHgEwM/qYWYfQTGnSQOPumGIku0fwV6sBPR0lg==
+x-tm-as-user-approved-sender: No
+x-tm-as-user-blocked-sender: No
+x-tmase-result: 10--1.508000-5.000000
+x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25658.007
+x-tm-snts-smtp: 23665965B90E02EF2CE2DBDB51D0574D52A33A8D3B7234A9258B1F5BAE02FE182000:9
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.04
+Authentication-Results: mx01-muc.bfs.de;
+        none
+X-Spamd-Result: default: False [-0.04 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         TO_DN_SOME(0.00)[];
+         DKIM_SIGNED(0.00)[];
+         NEURAL_HAM(-0.00)[-1.036];
+         FREEMAIL_TO(0.00)[gmail.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-0.04)[57.85%]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
 
-[ Upstream commit d3b990b7f327e2afa98006e7666fb8ada8ed8683 ]
 
-This patch fixes two main problems seen when removing NetLabel
-mappings: memory leaks and potentially extra audit noise.
+sys/sysinfo.h:extern long int get_phys_pages (void)
 
-The memory leaks are caused by not properly free'ing the mapping's
-address selector struct when free'ing the entire entry as well as
-not properly cleaning up a temporary mapping entry when adding new
-address selectors to an existing entry.  This patch fixes both these
-problems such that kmemleak reports no NetLabel associated leaks
-after running the SELinux test suite.
+for the real world i would say that long int =3D=3D long but for the same r=
+eason
+i would say what the include says and stay away from discussions.
 
-The potentially extra audit noise was caused by the auditing code in
-netlbl_domhsh_remove_entry() being called regardless of the entry's
-validity.  If another thread had already marked the entry as invalid,
-but not removed/free'd it from the list of mappings, then it was
-possible that an additional mapping removal audit record would be
-generated.  This patch fixes this by returning early from the removal
-function when the entry was previously marked invalid.  This change
-also had the side benefit of improving the code by decreasing the
-indentation level of large chunk of code by one (accounting for most
-of the diffstat).
+jm2c,
+ wh
+________________________________________
+Von: linux-man-owner@vger.kernel.org [linux-man-owner@vger.kernel.org] im A=
+uftrag von Alejandro Colomar [colomar.6.4.3@gmail.com]
+Gesendet: Donnerstag, 10. September 2020 23:13
+An: mtk.manpages@gmail.com
+Cc: linux-man@vger.kernel.org; linux-kernel@vger.kernel.org; Alejandro Colo=
+mar
+Betreff: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long int'
 
-Fixes: 63c416887437 ("netlabel: Add network address selectors to the NetLabel/LSM domain mapping")
-Reported-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For consistency.
+
+Most man pages use 'long' instead of 'long int'.
+
+Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
 ---
- net/netlabel/netlabel_domainhash.c |   59 ++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
+ man3/get_phys_pages.3 | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/netlabel/netlabel_domainhash.c
-+++ b/net/netlabel/netlabel_domainhash.c
-@@ -99,6 +99,7 @@ static void netlbl_domhsh_free_entry(str
- 			kfree(netlbl_domhsh_addr6_entry(iter6));
- 		}
- #endif /* IPv6 */
-+		kfree(ptr->def.addrsel);
- 	}
- 	kfree(ptr->domain);
- 	kfree(ptr);
-@@ -550,6 +551,8 @@ int netlbl_domhsh_add(struct netlbl_dom_
- 				goto add_return;
- 		}
- #endif /* IPv6 */
-+		/* cleanup the new entry since we've moved everything over */
-+		netlbl_domhsh_free_entry(&entry->rcu);
- 	} else
- 		ret_val = -EINVAL;
- 
-@@ -593,6 +596,12 @@ int netlbl_domhsh_remove_entry(struct ne
- {
- 	int ret_val = 0;
- 	struct audit_buffer *audit_buf;
-+	struct netlbl_af4list *iter4;
-+	struct netlbl_domaddr4_map *map4;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	struct netlbl_af6list *iter6;
-+	struct netlbl_domaddr6_map *map6;
-+#endif /* IPv6 */
- 
- 	if (entry == NULL)
- 		return -ENOENT;
-@@ -610,6 +619,9 @@ int netlbl_domhsh_remove_entry(struct ne
- 		ret_val = -ENOENT;
- 	spin_unlock(&netlbl_domhsh_lock);
- 
-+	if (ret_val)
-+		return ret_val;
-+
- 	audit_buf = netlbl_audit_start_common(AUDIT_MAC_MAP_DEL, audit_info);
- 	if (audit_buf != NULL) {
- 		audit_log_format(audit_buf,
-@@ -619,40 +631,29 @@ int netlbl_domhsh_remove_entry(struct ne
- 		audit_log_end(audit_buf);
- 	}
- 
--	if (ret_val == 0) {
--		struct netlbl_af4list *iter4;
--		struct netlbl_domaddr4_map *map4;
--#if IS_ENABLED(CONFIG_IPV6)
--		struct netlbl_af6list *iter6;
--		struct netlbl_domaddr6_map *map6;
--#endif /* IPv6 */
--
--		switch (entry->def.type) {
--		case NETLBL_NLTYPE_ADDRSELECT:
--			netlbl_af4list_foreach_rcu(iter4,
--					     &entry->def.addrsel->list4) {
--				map4 = netlbl_domhsh_addr4_entry(iter4);
--				cipso_v4_doi_putdef(map4->def.cipso);
--			}
-+	switch (entry->def.type) {
-+	case NETLBL_NLTYPE_ADDRSELECT:
-+		netlbl_af4list_foreach_rcu(iter4, &entry->def.addrsel->list4) {
-+			map4 = netlbl_domhsh_addr4_entry(iter4);
-+			cipso_v4_doi_putdef(map4->def.cipso);
-+		}
- #if IS_ENABLED(CONFIG_IPV6)
--			netlbl_af6list_foreach_rcu(iter6,
--					     &entry->def.addrsel->list6) {
--				map6 = netlbl_domhsh_addr6_entry(iter6);
--				calipso_doi_putdef(map6->def.calipso);
--			}
-+		netlbl_af6list_foreach_rcu(iter6, &entry->def.addrsel->list6) {
-+			map6 = netlbl_domhsh_addr6_entry(iter6);
-+			calipso_doi_putdef(map6->def.calipso);
-+		}
- #endif /* IPv6 */
--			break;
--		case NETLBL_NLTYPE_CIPSOV4:
--			cipso_v4_doi_putdef(entry->def.cipso);
--			break;
-+		break;
-+	case NETLBL_NLTYPE_CIPSOV4:
-+		cipso_v4_doi_putdef(entry->def.cipso);
-+		break;
- #if IS_ENABLED(CONFIG_IPV6)
--		case NETLBL_NLTYPE_CALIPSO:
--			calipso_doi_putdef(entry->def.calipso);
--			break;
-+	case NETLBL_NLTYPE_CALIPSO:
-+		calipso_doi_putdef(entry->def.calipso);
-+		break;
- #endif /* IPv6 */
--		}
--		call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
- 	}
-+	call_rcu(&entry->rcu, netlbl_domhsh_free_entry);
- 
- 	return ret_val;
- }
-
+diff --git a/man3/get_phys_pages.3 b/man3/get_phys_pages.3
+index 4a9177dfd..97ba625b7 100644
+--- a/man3/get_phys_pages.3
++++ b/man3/get_phys_pages.3
+@@ -30,8 +30,8 @@ page counts
+ .nf
+ .B "#include <sys/sysinfo.h>"
+ .PP
+-.B long int get_phys_pages(void);
+-.B long int get_avphys_pages(void);
++.B long get_phys_pages(void);
++.B long get_avphys_pages(void);
+ .fi
+ .SH DESCRIPTION
+ The function
+--
+2.28.0
 
