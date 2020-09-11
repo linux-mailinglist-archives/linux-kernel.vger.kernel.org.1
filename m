@@ -2,75 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5223D2656C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 03:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7F12656C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 03:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbgIKBpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 21:45:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42876 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725710AbgIKBpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 21:45:05 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7452C3F805FEE07E17DD;
-        Fri, 11 Sep 2020 09:45:03 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
- 09:44:56 +0800
-From:   Wang ShaoBo <bobo.shaobowang@huawei.com>
-CC:     <cj.chengjian@huawei.com>, <huawei.libin@huawei.com>,
-        <agx@sigxcpu.org>, <laurentiu.palcu@oss.nxp.com>,
-        <l.stach@pengutronix.de>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH -next] drm/imx: fix unused but set variable warnings
-Date:   Fri, 11 Sep 2020 09:44:14 +0800
-Message-ID: <20200911014414.4663-1-bobo.shaobowang@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725783AbgIKB5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 21:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgIKB46 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 21:56:58 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE34C061573;
+        Thu, 10 Sep 2020 18:56:57 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id f2so3437054pgd.3;
+        Thu, 10 Sep 2020 18:56:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HG1zAgdPFrrU59ksZmiILqlFIp+EBIES682ABwEbay4=;
+        b=CRG9h3KAbPCIyKTVL5Ow6v7ZTVc44jcchGqT6g/gbB97QkzRI/pxAC5bAFcQNYgLOL
+         j7exE93qy0vMBx2QQagyNvKQ8jknKuNU1z9Gsyy9uns0WiNT7mHKge4rHTz3E5Aurw0o
+         +bBFnX3qBR+nksXEcSG5LzqlEJges90x2CzwhcSEhLZkKxM7V6tjiF8d431WXBwvFKqt
+         uXEffIpnGnStn3Z/HhiWir6ARemBbVZfus51skvx+qWlJMibQv4alYU0IYnWMh/s458V
+         0yGS9KVBcKQ0W1wTvmOKKS12HBXfy85GpuhCy7xaLz6agMBVVsL1hwxc6AG5ggrnohdc
+         q0Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HG1zAgdPFrrU59ksZmiILqlFIp+EBIES682ABwEbay4=;
+        b=dXkLekX9svbBigrYEaWnEEj/NRP4uMF06YB+QUK2krOut1J3w+nsY0ZlJK7rpl2ZqW
+         acWgLPhSZ7yeHtv9IaZ9xtgfQksg7KQui5xHT1FgmA1Cf+I69QysL1B4f7UQUsgcianC
+         n742lXJRbtbxK4JLZSdyWam02dzC+5sA7zo+1DGZMgZuIvQJbiuwk2xupRuGaXHCSkkM
+         WfPtbkCVs55suEt/XA1xF9lZ3698DaSWIK7Gu+KXDlSZhCscHjVkXJrpjhZ7yUh1sQDz
+         NbV8gYNGBjPktIgzinqjEeUgekKCm32AIZs/lhSgLguzbgnYMFqOT+fby6S8WFH7GVvj
+         uUfA==
+X-Gm-Message-State: AOAM532OipLd5tmS2chHAbuXltu79OcfR2pRAnlywwL8Be54DMTR1ulE
+        CKPrB6T3P5tI5g/FJFyaLf0=
+X-Google-Smtp-Source: ABdhPJwxENCUocwPmcx6aR/MU6SdUyHz5qi78cyuQMc3HZd1NLlxaHNTH0tLuis9MK6+/ANU21oVSA==
+X-Received: by 2002:aa7:9dd2:0:b029:13e:d13d:a109 with SMTP id g18-20020aa79dd20000b029013ed13da109mr8044459pfq.37.1599789416445;
+        Thu, 10 Sep 2020 18:56:56 -0700 (PDT)
+Received: from localhost.localdomain (sau-ff5be-or.servercontrol.com.au. [43.250.207.3])
+        by smtp.gmail.com with ESMTPSA id 82sm269257pgd.6.2020.09.10.18.56.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 18:56:55 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     masahiroy@kernel.org
+Cc:     jeremie.francois@gmail.com, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] scripts : config : Added example use when run without argument,extend help
+Date:   Fri, 11 Sep 2020 07:24:21 +0530
+Message-Id: <20200911015421.22193-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix unused but set variable warning building with `make W=1`:
+This patch extends the help section by adding an explicit example of use.
 
-drivers/gpu/drm/imx/dcss/dcss-plane.c:270:6: warning:
- variable ‘pixel_format’ set but not used [-Wunused-but-set-variable]
-  u32 pixel_format;
-      ^~~~~~~~~~~~
-
-Fixes: 9021c317b770 ("drm/imx: Add initial support for DCSS on iMX8MQ")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/gpu/drm/imx/dcss/dcss-plane.c | 2 --
- 1 file changed, 2 deletions(-)
+ scripts/config | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-plane.c b/drivers/gpu/drm/imx/dcss/dcss-plane.c
-index 961d671f171b..e13652e3a115 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-plane.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-plane.c
-@@ -267,7 +267,6 @@ static void dcss_plane_atomic_update(struct drm_plane *plane,
- 	struct dcss_plane *dcss_plane = to_dcss_plane(plane);
- 	struct dcss_dev *dcss = plane->dev->dev_private;
- 	struct drm_framebuffer *fb = state->fb;
--	u32 pixel_format;
- 	struct drm_crtc_state *crtc_state;
- 	bool modifiers_present;
- 	u32 src_w, src_h, dst_w, dst_h;
-@@ -277,7 +276,6 @@ static void dcss_plane_atomic_update(struct drm_plane *plane,
- 	if (!fb || !state->crtc || !state->visible)
- 		return;
+diff --git a/scripts/config b/scripts/config
+index eee5b7f3a092..d905dccabb94 100755
+--- a/scripts/config
++++ b/scripts/config
+@@ -45,6 +45,23 @@ make time.
+ By default, $myname will upper-case the given symbol. Use --keep-case to keep
+ the case of all following symbols unchanged.
  
--	pixel_format = state->fb->format->format;
- 	crtc_state = state->crtc->state;
- 	modifiers_present = !!(fb->flags & DRM_MODE_FB_MODIFIERS);
- 
++The concrete example, say, you want to change any particular config,like
++GCOV for profiling, you can simply use this command
++
++To enable:
++
++#scripts/config --enable GCOV_KERNEL  && grep GCOV .config
++
++ and the output will be like this:
++
++  CONFIG_GCOV_KERNEL=y
++
++To disable:
++
++#scripts/config --disable GCOV_KERNEL  && grep GCOV .config
++
++# CONFIG_GCOV_KERNEL is not set
++
+ $myname uses 'CONFIG_' as the default symbol prefix. Set the environment
+ variable CONFIG_ to the prefix to use. Eg.: CONFIG_="FOO_" $myname ...
+ EOL
 -- 
-2.17.1
+2.26.2
 
