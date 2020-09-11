@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82713265797
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9AC265793
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725838AbgIKDiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 23:38:46 -0400
+        id S1725814AbgIKDib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 23:38:31 -0400
 Received: from mail-eopbgr70051.outbound.protection.outlook.com ([40.107.7.51]:36230
         "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725778AbgIKDh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 23:37:58 -0400
+        id S1725795AbgIKDiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 10 Sep 2020 23:38:13 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CA9GRp7Tew3ixJdxkVD/DEutQMkjHyt915G6UCbYETbN/ekrZuHYF25DQmkO1Ailn2NX/3esiGAErF/jcgCMcfiLcugox62nIqRkMhP+0WlxFksG2mF6kjie68pg1nHzQg00WR2dnZeK6DnuH4urvNK/+CsVGyxSIKINEz9kcKkCHNsYbjzqODLvpqvPBTp88t+GOi6NBbsi0GAvVKbfAEvutimnb73GIPn7UVA1OniNw8R6SVON/3CUgk5Myc2jpScpZJy5LjQObKxwbqf193HGAzIO9fVn+4FrjAlFrwPcTjWiQ9zvSmcHE6gasdPn0yG15//95VH+k349hHeJ9g==
+ b=b32gPsQxW5IIOqhZRjQ1OmCktn8XjUO5r3YjPHQbLMFgrmZGOsmML0DLfKmZWnXk+zjskJ7Nv5uDD+8QI7mG5VFgjBQ2jwS3/43NMYULM82+hzaBGfzmQnQ2w4cSm6j014S37+HheM9B7ntoVsjL7c9f6w3ZJMZykn/ZlKUepJgvG/v2IdBGyfH/cWZ7KVFKcOSN+L522bef3HSi7ZIcKkP7dECUuS/p42C8mpqvKHnNrSXQMuN2XkYF5zuApMgjuwIdGfhXBXpvzNquEiHy12dvkEFD9Wyww6bd+Q3ZPvZRUzrSEh68YOr1LZGAYUVnVF6hS7AFSQckjFpukVRrHQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qcttnVBSK6XVWdIAzncorlxnBlk/3LRc8dfbGrywN74=;
- b=mTkZWpC+EOtP802DKGcZENN8v8kq0NVVjSFBqcGumAzZvlCDofTx8+5kWAz1TK/LUAZggtiPRoq3/iYGbGm+3WTA9CuH4K5Podh3GLmql7m0in5S4xVExnHVOIPY2WIFu/s5Vh8EkV7mScYwSRPZdbw3msz+a4YG4oxhNeD3iLx/GkkNU+DRWrQf/YAYODg9AvOEkb/oG/3YOvnUN3LJENGxvsOj45cAxEWrXlcgJQrc2fakDUtK7lFLqQNcMjPKjBlGqyuZlp15fVYQ/SzWP6TxfomQX64pMtl1ONkywqVVf2P4clB1CJ3WFu4+EeIFdC75zjoMXxMUoYJ39Bv1JQ==
+ bh=IKJSe/PA46LdbLJDeZgA2CkRgSQKlIWylm5bM7qK/wQ=;
+ b=K9WWyiPS+cx3AGGpr6awUm1g6OklsTU1G3amdexvu/v/HpFq8r69+l7KgMzshWc6TW3reULSgRNF6s769wfEBlooC2udwOwbYbuaIOE100RH8yDpebIpjGfmO3UBPbC+M4/bEvpO54p0HafxVL+Uxs0zsnEXg8C82RGDOulXMO+8JFGloSpePaggNYoqSBIE7BhJHPA8y4TXeoIwTwwCwFgQQWl9ciOxzEw3JNtSN3VBl1ysU5beQD4dx9oWYKAbJ5Fdf/PDFAg94Tj9Ws8qKzjHQx8j377KLtAy4P9VuX3tde9mM4XHSciayo7DHYzsr6rOCtgLqYKIKfnscnu+mA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qcttnVBSK6XVWdIAzncorlxnBlk/3LRc8dfbGrywN74=;
- b=QY2iJKmFCEh7+h8yMsemauPh04N+79F7TmG6E42vrmI6yoxE+va8x1pSLXNP+oZoH5dh87jxz6cV7vOn3Ns2VR9HXrL9Gkzt7CPeZCMbIUxyzjUAu9xO56yEbHnLMrNCa5j3n74wvVt2+CPTgpZrxMceNKbXiDVfiP9aa0qK7u8=
+ bh=IKJSe/PA46LdbLJDeZgA2CkRgSQKlIWylm5bM7qK/wQ=;
+ b=Mi/zLTJWHz0cpbjPG3eSAYejJYFZ1kMw/Z6XQAcwTi642TCakpveJcXbymHkMS/z0q1Mu5hIB1FUSWoyHsvulVutKS+Bsq3bgV4+h1PyyCndgbeAniiMZ1g3Ma2rFQaEtUBLfXEZ5hHZIPSkGBPoYKB65RwzbQ5+znb9DuTrWgg=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB7PR04MB5084.eurprd04.prod.outlook.com (2603:10a6:10:1c::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
- 2020 03:37:41 +0000
+ 2020 03:37:45 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::24d0:f783:3c7d:e232]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::24d0:f783:3c7d:e232%12]) with mapi id 15.20.3348.019; Fri, 11 Sep
- 2020 03:37:41 +0000
+ 2020 03:37:45 +0000
 From:   peng.fan@nxp.com
 To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
         abel.vesa@nxp.com, robh+dt@kernel.org
@@ -44,9 +44,9 @@ Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Anson.Huang@nxp.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         aisheng.dong@nxp.com, devicetree@vger.kernel.org,
         Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH 3/4] ARM: imx: imx7ulp: support HSRUN mode
-Date:   Fri, 11 Sep 2020 11:30:52 +0800
-Message-Id: <1599795053-5091-4-git-send-email-peng.fan@nxp.com>
+Subject: [PATCH 4/4] ARM: imx: cpuidle-imx7ulp: Stop mode disallowed when HSRUN
+Date:   Fri, 11 Sep 2020 11:30:53 +0800
+Message-Id: <1599795053-5091-5-git-send-email-peng.fan@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1599795053-5091-1-git-send-email-peng.fan@nxp.com>
 References: <1599795053-5091-1-git-send-email-peng.fan@nxp.com>
@@ -56,31 +56,31 @@ X-ClientProxiedBy: SG2PR02CA0070.apcprd02.prod.outlook.com
  (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 10.192.242.69 (119.31.174.67) by SG2PR02CA0070.apcprd02.prod.outlook.com (2603:1096:4:54::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 03:37:37 +0000
+Received: from 10.192.242.69 (119.31.174.67) by SG2PR02CA0070.apcprd02.prod.outlook.com (2603:1096:4:54::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Fri, 11 Sep 2020 03:37:41 +0000
 X-Mailer: git-send-email 2.7.4
 X-Originating-IP: [119.31.174.67]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5f3414ed-d81a-4441-b8ff-08d85604096a
+X-MS-Office365-Filtering-Correlation-Id: 3295791b-9f9a-417b-a228-08d856040bce
 X-MS-TrafficTypeDiagnostic: DB7PR04MB5084:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB5084FA2945A24EF25242262E88240@DB7PR04MB5084.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
+X-Microsoft-Antispam-PRVS: <DB7PR04MB5084E7F80D54E6B2176ED02E88240@DB7PR04MB5084.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:64;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 17MI2A95cK1JcPtK5k1anLdzmSh9iOYxigBrMpjpxxxqNFFNLIQFIHR/RF6IZR+sCrpE3YChxZKYNFChwoeBgYuZ8yN/9FHmg1+368zpQ1V6OCezyTUWQJLue41pShE+cy8tPJR2Al5uHYMsORLkpP0xYfBRUb8qL1dV+FUI9CmZJg1USJ4hQ9nQyW4/BBgp/+Dfptz67mqhVnDVwx9hCDRcT4jysZcL/PnPBAUShE6anhUojtsbJ/Y+tA3zcS25e0xR0uaOajTBrapLa/lURZwJnZGeMCRXR+EOC30LH3ZagV8jxz9iSt+g4GLAByfAwH5KRr+NVgfJVhc2j/5+zQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(366004)(39860400002)(2906002)(8936002)(5660300002)(4326008)(66946007)(6486002)(316002)(16576012)(478600001)(66556008)(66476007)(86362001)(36756003)(956004)(2616005)(26005)(16526019)(186003)(8676002)(6666004)(52116002)(9686003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: vh7bHQ1n/LWXjYtGWaDxlFiT54B/iNYi5PHpHupGWhp2lrmLbvXYzQ6XeKUp63rwz5ZFUA5RdOFy6xIn6w5+RTI0UzOcCSR5azJY2rwy5HlftxrCO9yrjSUp1JvWK8ldR+BSV02AizpQjKZzHjJ//xcXV0NYncDgEUgXLFMwzgtGPj520mqswqRki53jfY3OgXx3NhVM6UQiT8DveJ6aPIUmkF4WauDVFSbWMOM6FhP18W3Bmlz27JhOxH24Ti5wujKSno2/b/6c5I1dQYpmVU/AALhREajqAX8iwo1JqH5LbJ+lVyp48LaVxYQSx0IvsIaVkjV7pHCvP5ufOcXsRqvu7e9wlw+Fj6C444QXPobmwHNK1YD5t8GHRMGDEMmEKJ+5DCCVSw7pFCydGz8qzimAYjmd9TI3SuCp1K3Xb7RL9LxlFgEyH/2aJ5VQYA3G2AH4qwgBuPsBVS8tjPDvvmm5E5y3Xo4fRe/bxqCva+bOoSuXuqYqr6zpgXSKfPMu0eOBocOPm5aRbnr3u73oW1rE011e2LGJq3+6P0agTSNpTYB4SlBGsq75hw3m8BGcR1zMLKczW6VZeVSdKJgHjgRH/r4FbIJOlVWeB5frITsNmY6BwU6lGMz/yQtdRJUbAOHNxi9EHcZF66X6PTyQvw==
+X-Microsoft-Antispam-Message-Info: bvEj6lEEXIyreeq4ox1a3suxK7KZzdALn64b/fPmwwhOkfmiqIo5CmHN9EntjjxYs/pPqssZMfGmpbWcwAGLPVgdRcYvCAG7PsU4JqvuiJD45TRsVW9m+wEaGFJWV936DvGE7M0oRHSiezr7LBWLx9oy8kq/T0TuNH7hPlkfeNXypXGGmhFiLqkz41822EgsQNTcrVTshmWiYzHEfTilsA0L3hPtTQ3hxb3UdNYXi0rg9AnTPSIwRgAKFprTCa2MfLr/FkRE94KtBXcQRZ/qmj5LDQn1ZPTcwYCLUVSkpJtHp40WcIZv6p47EBy+NMOk19x7g24hdT5BljqvdDXkjg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(366004)(39860400002)(2906002)(8936002)(5660300002)(4326008)(66946007)(6486002)(316002)(16576012)(478600001)(66556008)(66476007)(86362001)(36756003)(83380400001)(956004)(2616005)(26005)(16526019)(186003)(8676002)(6666004)(52116002)(9686003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: lvJpmosTRWEwpJfiE30hyVZWUuf3bQGDHJgj4B2SwIAWCjiI8hjK+xfUTPd8Chrhdd2yuAThtDcq7BEvKFCdCJj4rQ3aR8ib2zn1yz905jn1ByG9W+hPH3/xNibEbW63zMK5emkfe0BQLx1UP0VjAEF2oPc6tM++3yCAv5IF+xEBnk3d6IfyABXz0Mym6Fx0wQPerwxX1n87slYCMC0hubM6QwKUKI3z3n3d0N4RIaoFy0fsmV4Bd2UWwV/mIsdCoN4/5gPAq0bDIYHIijsN4iJGq4NbBEbukENgx41yPXdeQwzgrwezpQAxTcRI99mtvgGnsY7SBDaJu3QlCoKYEJ2N/kmmKXyVSugAic6V7+ZiYm4QCN1rJDa31Y4yEesTi4pIifS1qxgZUk7sz4a3k9zmkoOrREv4fXMGb4Wl1sOGIGmrBqhYnt+iyyRIyTFfT+cf5lAr+FnQ+wbIW4EzSVvulRDCXAxilfSkVCRGl4EEkB3/eJXiJ9McjtNnIpVgCvJ5R0n2TYVcc+kud/OSPSauGTG7iGE2u69AYsiXeH7CUEqwvIWjH6ENYsOiAO3YsQ1FVOIllu9jUxxStJr1OP5QidtuEtXncEDBzABgBXy5NXAu2kKLg89EGYNoa8KnOdwDjJgX+IYnen61TB2/aA==
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f3414ed-d81a-4441-b8ff-08d85604096a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3295791b-9f9a-417b-a228-08d856040bce
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 03:37:41.2831
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2020 03:37:45.3113
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pHiKbSvo/tNUo5S5AvetJ+cVfC7/PsBuUYNGsuzzo9F+O5SeWYsp5R1Ifos3SJg2rV71K/qeNN6YH1rx21UCHQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9Ua4gp47zYdvk+J1avTht6+qyv8FXg+2Tk6NgMerJZ2BulEwK0qfSIYEWMfXM9uZWkRJOS32+3gnIQgUZW+Pmw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -89,55 +89,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peng Fan <peng.fan@nxp.com>
 
-Configure PMPROT to let ARM core could run into HSRUN mode.
-In LDO-enabled mode, HSRUN mode is not allowed, so add a check before
-configure PMPROT.
+When cpu runs in HSRUN mode, cpuidle is not allowed to run into
+Stop mode. So add imx7ulp_get_mode to get thr cpu run mode,
+and use WAIT mode instead, when cpu in HSRUN mode.
 
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- arch/arm/mach-imx/pm-imx7ulp.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/arm/mach-imx/common.h          |  1 +
+ arch/arm/mach-imx/cpuidle-imx7ulp.c | 14 +++++++++++---
+ arch/arm/mach-imx/pm-imx7ulp.c      | 10 ++++++++++
+ 3 files changed, 22 insertions(+), 3 deletions(-)
 
+diff --git a/arch/arm/mach-imx/common.h b/arch/arm/mach-imx/common.h
+index 72c3fcc32910..707ac650f1c2 100644
+--- a/arch/arm/mach-imx/common.h
++++ b/arch/arm/mach-imx/common.h
+@@ -103,6 +103,7 @@ void imx6_set_int_mem_clk_lpm(bool enable);
+ void imx6sl_set_wait_clk(bool enter);
+ int imx_mmdc_get_ddr_type(void);
+ int imx7ulp_set_lpm(enum ulp_cpu_pwr_mode mode);
++u32 imx7ulp_get_mode(void);
+ 
+ void imx_cpu_die(unsigned int cpu);
+ int imx_cpu_kill(unsigned int cpu);
+diff --git a/arch/arm/mach-imx/cpuidle-imx7ulp.c b/arch/arm/mach-imx/cpuidle-imx7ulp.c
+index ca86c967d19e..e7009d10b331 100644
+--- a/arch/arm/mach-imx/cpuidle-imx7ulp.c
++++ b/arch/arm/mach-imx/cpuidle-imx7ulp.c
+@@ -15,10 +15,18 @@
+ static int imx7ulp_enter_wait(struct cpuidle_device *dev,
+ 			    struct cpuidle_driver *drv, int index)
+ {
+-	if (index == 1)
++	u32 mode;
++
++	if (index == 1) {
+ 		imx7ulp_set_lpm(ULP_PM_WAIT);
+-	else
+-		imx7ulp_set_lpm(ULP_PM_STOP);
++	} else {
++		mode = imx7ulp_get_mode();
++
++		if (mode == 3)
++			imx7ulp_set_lpm(ULP_PM_WAIT);
++		else
++			imx7ulp_set_lpm(ULP_PM_STOP);
++	}
+ 
+ 	cpu_do_idle();
+ 
 diff --git a/arch/arm/mach-imx/pm-imx7ulp.c b/arch/arm/mach-imx/pm-imx7ulp.c
-index 2e756d8191fa..543ac69f5f70 100644
+index 543ac69f5f70..eb1578f0bfa5 100644
 --- a/arch/arm/mach-imx/pm-imx7ulp.c
 +++ b/arch/arm/mach-imx/pm-imx7ulp.c
-@@ -11,6 +11,10 @@
- 
- #include "common.h"
- 
-+#define PMC0_CTRL		0x28
-+#define BM_CTRL_LDOEN		BIT(31)
-+
-+#define SMC_PMPROT		0x8
- #define SMC_PMCTRL		0x10
- #define BP_PMCTRL_PSTOPO        16
- #define PSTOPO_PSTOP3		0x3
-@@ -25,7 +29,10 @@
- #define BM_PMCTRL_RUNM		(3 << BP_PMCTRL_RUNM)
- #define BM_PMCTRL_STOPM		(7 << BP_PMCTRL_STOPM)
- 
-+#define BM_PMPROT_AHSRUN	BIT(7)
-+
- static void __iomem *smc1_base;
-+static void __iomem *pmc0_base;
- 
- int imx7ulp_set_lpm(enum ulp_cpu_pwr_mode mode)
- {
-@@ -65,5 +72,13 @@ void __init imx7ulp_pm_init(void)
- 	of_node_put(np);
- 	WARN_ON(!smc1_base);
- 
-+	np = of_find_compatible_node(NULL, NULL, "fsl,imx7ulp-pmc-m4");
-+	pmc0_base = of_iomap(np, 0);
-+	WARN_ON(!pmc0_base);
-+	of_node_put(np);
-+
-+	if (!(readl_relaxed(pmc0_base + PMC0_CTRL) & BM_CTRL_LDOEN))
-+		writel_relaxed(BM_PMPROT_AHSRUN, smc1_base + SMC_PMPROT);
-+
- 	imx7ulp_set_lpm(ULP_PM_RUN);
+@@ -63,6 +63,16 @@ int imx7ulp_set_lpm(enum ulp_cpu_pwr_mode mode)
+ 	return 0;
  }
+ 
++u32 imx7ulp_get_mode(void)
++{
++	u32 mode;
++
++	mode = readl_relaxed(smc1_base + SMC_PMCTRL) & BM_PMCTRL_RUNM;
++	mode >>= BP_PMCTRL_RUNM;
++
++	return mode;
++}
++
+ void __init imx7ulp_pm_init(void)
+ {
+ 	struct device_node *np;
 -- 
 2.28.0
 
