@@ -2,153 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6176265F9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87198265F92
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725878AbgIKMgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:36:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16210 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725898AbgIKMVF (ORCPT
+        id S1725784AbgIKMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgIKMYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:21:05 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BCD1YB165620;
-        Fri, 11 Sep 2020 08:20:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=zdacK9mbo5spNdP46BQjABMYJwrXCJIDnRxfJoMcJ0g=;
- b=c7kD188Z/Z4gvIPcxs2/53B0y6s1z7VhRaAT0ErwVdvd138i/8bz0A8lemIpkNrMfEs3
- q5jr6rOT4C4c10eReNFGsDMU2GXrMcRpJcaXQlf4B6cejax3Gmr2BXysGWGgCzYA/3VO
- MBIpQtcXLb+e+HOhOUFJ9AdIH4DB033b/w9FMF/vIWMkQ6GBhu3vs7uxNNdh0mRAFIKq
- myJOwb6CaKZlbztnlr2vxb0VWmYVFXUfiMTdjOupJLJTHIgNHqqDRpPpTJeAZOAcVpyN
- 1bsjZXy0k97mfdz3cF+vsikucIjnhDCMIRd7Ev+khJpbI0j+zQCR+ordHQRlxjq6msW3 mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33g91v073v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 08:20:05 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BCET1B169362;
-        Fri, 11 Sep 2020 08:20:05 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33g91v072d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 08:20:04 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BCCx1R020959;
-        Fri, 11 Sep 2020 12:20:02 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 33f3yrh5sp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 12:20:02 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BCJxKU21627358
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 12:19:59 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4811F52051;
-        Fri, 11 Sep 2020 12:19:59 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.1.245])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id A66A45204E;
-        Fri, 11 Sep 2020 12:19:57 +0000 (GMT)
-Date:   Fri, 11 Sep 2020 14:19:56 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200911121955.GA10250@oc3871087118.ibm.com>
-References: <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad>
- <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad>
- <20200909180324.GI87483@ziepe.ca>
- <20200910093925.GB29166@oc3871087118.ibm.com>
- <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
- <20200910181319.GO87483@ziepe.ca>
- <0c9bcb54-914b-e582-dd6d-3861267b6c94@nvidia.com>
- <20200910221116.GQ87483@ziepe.ca>
+        Fri, 11 Sep 2020 08:24:22 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A510C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:24:20 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id w25so6931933otk.8
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 05:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zszRmbpQKBS0800usmmxgfyOo7qtmKwLO7PwkfuP3F8=;
+        b=AmQEQaDwdqKJEzBUQY5LjoMckUpmTiNa/rA3A6EyryNH5Q3YCUm/WD8+II8tBEbfkf
+         ReuQdzPVdnmecQIYWueOlcTfY17HwKnj4IID2x0dAsR1+kMv5MZDWlDpFMRzo+CGyGlR
+         Bh7iwTMpNIbD/tZDMU/CQZghNGaAT3u//6VOnELzpB5Iteowtb2ourR3U9ycUtkHxTdq
+         isLv7eIX/+kCQVTyqdbwaDg36ceXn+sm9A9EYIy/fCtX3t9dECkFwtRofM+QmtZQ4Vs1
+         8iSSuDyWJCmPXzF9i8yDc/n8I7BXKUh0deZFZEAnx5CahcEDu1FpOzw+UfmtxzcQ3sKu
+         M1BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zszRmbpQKBS0800usmmxgfyOo7qtmKwLO7PwkfuP3F8=;
+        b=aIeyiVSKVvUZkVZWoFjD4B6wUhAXdja7CWElcnWyOP4/SG09Q4l4WtPRmFD+3fJc91
+         wQxwhsmFfUYWkIiNovZE6VX0HdbZhKeUv2YRF0zZAXPt8UEWYiwJn7QwGwwIBBxYFNjE
+         MX+NXI8AbzxbAm5Sej7/KWysEPpfVXD5+Y4jBn3wlvuGF+8yVWJtMODt9e3g/cP1eUBr
+         adshi8af5p5t34MkqSJscmAWgKQEYk+BaSnfzwBMZTLviidiooF0CLpVRIOWsgDBbSNJ
+         dTOYYiq2SEChvvtFAH6DTXqYBCrCb1ViwvgbDR90BNZqAe/xmy3F50uKQxl3kJ2i4sfU
+         gF5w==
+X-Gm-Message-State: AOAM533HVZXAGWQJxKXqpIybAzLX1SGWkvG59piAxRY0C49T0ZWvXs+l
+        JflD41VfuJwli+J6yV3sxgep4XsgERbaoT5nWJSSKA==
+X-Google-Smtp-Source: ABdhPJwyGPMTPiRrUQ8QlagiNFgDDsDdayzyw2LOiwIJAAkn/SqZj/czRiWsWF0W2681jWFFmgtDjxaB1KbubSYDgMM=
+X-Received: by 2002:a05:6830:1e8c:: with SMTP id n12mr1091647otr.17.1599827058228;
+ Fri, 11 Sep 2020 05:24:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910221116.GQ87483@ziepe.ca>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_04:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 priorityscore=1501 adultscore=0 spamscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110095
+References: <20200907134055.2878499-1-elver@google.com> <20200907134055.2878499-5-elver@google.com>
+ <CACT4Y+aXNmQzp6J+mP+ELj8kUHmRPkibc1--KtV9a3ud_X8miw@mail.gmail.com>
+In-Reply-To: <CACT4Y+aXNmQzp6J+mP+ELj8kUHmRPkibc1--KtV9a3ud_X8miw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Fri, 11 Sep 2020 14:24:06 +0200
+Message-ID: <CANpmjNNGZ-bnzzG+nbnCMCNCWGxakJ3wq+pmDjsD5LyWmwmyoQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 04/10] mm, kfence: insert KFENCE hooks for SLAB
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 07:11:16PM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 10, 2020 at 02:22:37PM -0700, John Hubbard wrote:
-> 
-> > Or am I way off here, and it really is possible (aside from the current
-> > s390 situation) to observe something that "is no longer a page table"?
-> 
-> Yes, that is the issue. Remember there is no locking for GUP
-> fast. While a page table cannot be freed there is nothing preventing
-> the page table entry from being concurrently modified.
-> 
-> Without the stack variable it looks like this:
-> 
->        pud_t pud = READ_ONCE(*pudp);
->        if (!pud_present(pud))
->             return
->        pmd_offset(pudp, address);
-> 
-> And pmd_offset() expands to
-> 
->     return (pmd_t *)pud_page_vaddr(*pud) + pmd_index(address);
-> 
-> Between the READ_ONCE(*pudp) and (*pud) inside pmd_offset() the value
-> of *pud can change, eg to !pud_present.
-> 
-> Then pud_page_vaddr(*pud) will crash. It is not use after free, it
-> is using data that has not been validated.
+On Fri, 11 Sep 2020 at 09:17, Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Mon, Sep 7, 2020 at 3:41 PM Marco Elver <elver@google.com> wrote:
+> >
+> > From: Alexander Potapenko <glider@google.com>
+> >
+> > Inserts KFENCE hooks into the SLAB allocator.
+> >
+> > We note the addition of the 'orig_size' argument to slab_alloc*()
+> > functions, to be able to pass the originally requested size to KFENCE.
+> > When KFENCE is disabled, there is no additional overhead, since these
+> > functions are __always_inline.
+> >
+> > Co-developed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+> > ---
+> >  mm/slab.c        | 46 ++++++++++++++++++++++++++++++++++------------
+> >  mm/slab_common.c |  6 +++++-
+> >  2 files changed, 39 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/mm/slab.c b/mm/slab.c
+> > index 3160dff6fd76..30aba06ae02b 100644
+> > --- a/mm/slab.c
+> > +++ b/mm/slab.c
+> > @@ -100,6 +100,7 @@
+> >  #include       <linux/seq_file.h>
+> >  #include       <linux/notifier.h>
+> >  #include       <linux/kallsyms.h>
+> > +#include       <linux/kfence.h>
+> >  #include       <linux/cpu.h>
+> >  #include       <linux/sysctl.h>
+> >  #include       <linux/module.h>
+> > @@ -3206,7 +3207,7 @@ static void *____cache_alloc_node(struct kmem_cache *cachep, gfp_t flags,
+> >  }
+> >
+> >  static __always_inline void *
+> > -slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid,
+> > +slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid, size_t orig_size,
+> >                    unsigned long caller)
+> >  {
+> >         unsigned long save_flags;
+> > @@ -3219,6 +3220,10 @@ slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid,
+> >         if (unlikely(!cachep))
+> >                 return NULL;
+> >
+> > +       ptr = kfence_alloc(cachep, orig_size, flags);
+> > +       if (unlikely(ptr))
+> > +               goto out_hooks;
+> > +
+> >         cache_alloc_debugcheck_before(cachep, flags);
+> >         local_irq_save(save_flags);
+> >
+> > @@ -3251,6 +3256,7 @@ slab_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid,
+> >         if (unlikely(slab_want_init_on_alloc(flags, cachep)) && ptr)
+> >                 memset(ptr, 0, cachep->object_size);
+> >
+> > +out_hooks:
+> >         slab_post_alloc_hook(cachep, objcg, flags, 1, &ptr);
+> >         return ptr;
+> >  }
+> > @@ -3288,7 +3294,7 @@ __do_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
+> >  #endif /* CONFIG_NUMA */
+> >
+> >  static __always_inline void *
+> > -slab_alloc(struct kmem_cache *cachep, gfp_t flags, unsigned long caller)
+> > +slab_alloc(struct kmem_cache *cachep, gfp_t flags, size_t orig_size, unsigned long caller)
+> >  {
+> >         unsigned long save_flags;
+> >         void *objp;
+> > @@ -3299,6 +3305,10 @@ slab_alloc(struct kmem_cache *cachep, gfp_t flags, unsigned long caller)
+> >         if (unlikely(!cachep))
+> >                 return NULL;
+> >
+> > +       objp = kfence_alloc(cachep, orig_size, flags);
+> > +       if (unlikely(objp))
+> > +               goto leave;
+> > +
+> >         cache_alloc_debugcheck_before(cachep, flags);
+> >         local_irq_save(save_flags);
+> >         objp = __do_cache_alloc(cachep, flags);
+> > @@ -3309,6 +3319,7 @@ slab_alloc(struct kmem_cache *cachep, gfp_t flags, unsigned long caller)
+> >         if (unlikely(slab_want_init_on_alloc(flags, cachep)) && objp)
+> >                 memset(objp, 0, cachep->object_size);
+> >
+> > +leave:
+> >         slab_post_alloc_hook(cachep, objcg, flags, 1, &objp);
+> >         return objp;
+> >  }
+> > @@ -3414,6 +3425,11 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
+> >  static __always_inline void __cache_free(struct kmem_cache *cachep, void *objp,
+> >                                          unsigned long caller)
+> >  {
+> > +       if (kfence_free(objp)) {
+> > +               kmemleak_free_recursive(objp, cachep->flags);
+> > +               return;
+> > +       }
+> > +
+> >         /* Put the object into the quarantine, don't touch it for now. */
+> >         if (kasan_slab_free(cachep, objp, _RET_IP_))
+> >                 return;
+> > @@ -3479,7 +3495,7 @@ void ___cache_free(struct kmem_cache *cachep, void *objp,
+> >   */
+> >  void *kmem_cache_alloc(struct kmem_cache *cachep, gfp_t flags)
+> >  {
+> > -       void *ret = slab_alloc(cachep, flags, _RET_IP_);
+> > +       void *ret = slab_alloc(cachep, flags, cachep->object_size, _RET_IP_);
+>
+>
+> It's kinda minor, but since we are talking about malloc fast path:
+> will passing 0 instead of cachep->object_size (here and everywhere
+> else) and then using cachep->object_size on the slow path if 0 is
+> passed as size improve codegen?
 
-One thing I ask myself and it is probably a good moment to wonder.
+It doesn't save us much, maybe 1 instruction based on what I'm looking
+at right now. The main worry I have is that the 'orig_size' argument
+is now part of slab_alloc, and changing its semantics may cause
+problems in future if it's no longer just passed to kfence_alloc().
+Today, we can do the 'size = size ?: cache->object_size' trick inside
+kfence_alloc(), but at the cost breaking the intuitive semantics of
+slab_alloc's orig_size argument for future users. Is it worth it?
 
-What if the entry is still pud_present, but got remapped after
-READ_ONCE(*pudp)? IOW, it is still valid, but points elsewhere?
-
-> Jason
+Thanks,
+-- Marco
