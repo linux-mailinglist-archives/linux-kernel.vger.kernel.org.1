@@ -2,181 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B206B2662DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFFC2662CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgIKQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgIKQCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:02:40 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F13C0617A1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:50:09 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so11598194wrm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:50:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nT31LQihlGES3XBi9qi6rIDEsIrCyiWiwAwPBPR3FeQ=;
-        b=O1V65bei9i+sAdwH/CWpyxW5mBTdKr/oOaga84JeTelaHyfsHbulHu4x1iUSu5PWK2
-         8vksMccmoRfyYbwYegP9AdphFhNWTKXe/Ud/fs/LobE1sR2XCFz6woi0kFSObnj+ranY
-         1wXHE+6dl1Fc1xwZL1jdEIi/Nrv0m0EMOzEjR5J5dUfpZ+GDrNLH3roHYiQ2qaeIkz4h
-         YHwE7jLB9eARe7ME9vznJ23vwzMX1LnXAjaf0ePo7iZJrrLyYRpVqO81k86HxyML9B1U
-         BAm15l6t4fCQpoD3pjNoTwGpgD4ukZBf9e7i60l8R59qsGUS1t0gpwtFDUshlqvBx/aR
-         hrJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nT31LQihlGES3XBi9qi6rIDEsIrCyiWiwAwPBPR3FeQ=;
-        b=Yf80AOZerkUs0ziNQygelvDAHdpNqQVVRtfqCE2hAbcbYBs56rP7+8cILVXDL1lNEa
-         EzKloJH8+wjhwwblAFR71mTOvSw1Xkyt9H1KI20WTu7+H2Jvm8Fb60syaefUkLMUecEN
-         lhBtkklyAkj7GydN45brs9wD++W8D3VgVbDPmN45+OkPeNFgTdm2PiSXCyFdZZPEAjUZ
-         SxU/FjXhvVmOEVMNZhDzexhE0VuJdDTJpU+UtC+KGLjaAC1z2eiUoZ+RvpvZqADUe3J5
-         0n3mEoZxFo2cESzZBBnj6Yo/akU06lGTnCmqMJ/mqJ1dCnRLT7k+ka77KtePIYb7c2Cx
-         ze2g==
-X-Gm-Message-State: AOAM530pAtxnP+VuGQbScDTcKTHcPWmxxoB290eFBIISdF71+KsOpa4s
-        7nc5tbnKpj4haoq5GMMicayW3bLxc1G7gkH2
-X-Google-Smtp-Source: ABdhPJzgUZhv9R/6x7e+9tAD5bHrnj1uOz2SsmxNk4a9JkcFXFmrLU8LQvEveulMScnLKVKsnh4ywA==
-X-Received: by 2002:adf:94c1:: with SMTP id 59mr2348866wrr.29.1599832207377;
-        Fri, 11 Sep 2020 06:50:07 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id w14sm4865331wrk.95.2020.09.11.06.50.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 06:50:06 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Denis Efremov <efremov@linux.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Corbet <corbet@lwn.net>, cocci@systeme.lip6.fr,
+        id S1726584AbgIKQBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:01:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726308AbgIKQAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:00:42 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 484C521D92;
+        Fri, 11 Sep 2020 13:52:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599832329;
+        bh=LjRDiylts7q6dZKcMRvThFmI0JzgRUaAQ0Zu9SWC8cM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=G5S6/nCShLAwtjYpYZ/sM6FbyJH0ARlqvOpABTac5+ViMQ2glNr5jV/WVKCDHfAUU
+         PaA2zyNBo+YVCHMGgUpEUVDBQWZJ1i4fbBU/PbBFethII4/munr/J+4gkiRZ3HfDkP
+         NUgPxtx6zG1bBypf1Yc7A26cDrkl5ghXvhiaD0rI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 042A43522679; Fri, 11 Sep 2020 06:52:09 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 06:52:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     rcu@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts: kzfree.cocci: Deprecate use of kzfree
-Date:   Fri, 11 Sep 2020 14:49:42 +0100
-Message-Id: <20200911134956.60910-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+Subject: Re: [PATCH kernel] srcu: Fix static initialization
+Message-ID: <20200911135208.GX29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200908144306.33355-1-aik@ozlabs.ru>
+ <cc25257d-804e-8cf7-150b-e6bdbaf184be@ozlabs.ru>
+ <20200909115010.GG29330@paulmck-ThinkPad-P72>
+ <37f76aac-d8e3-8ab1-24e9-c417b719e2a6@ozlabs.ru>
+ <20200910185353.GS29330@paulmck-ThinkPad-P72>
+ <611a6a87-f673-c5b7-3b60-58805fba580a@ozlabs.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <611a6a87-f673-c5b7-3b60-58805fba580a@ozlabs.ru>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kzfree() is effectively deprecated as of commit 453431a54934 ("mm,
-treewide: rename kzfree() to kfree_sensitive()"). It is currently just a
-legacy alias for kfree_sensitive(), which achieves the same thing.
+On Fri, Sep 11, 2020 at 03:09:41PM +1000, Alexey Kardashevskiy wrote:
+> 
+> 
+> On 11/09/2020 04:53, Paul E. McKenney wrote:
+> > On Wed, Sep 09, 2020 at 10:31:03PM +1000, Alexey Kardashevskiy wrote:
+> >>
+> >>
+> >> On 09/09/2020 21:50, Paul E. McKenney wrote:
+> >>> On Wed, Sep 09, 2020 at 07:24:11PM +1000, Alexey Kardashevskiy wrote:
+> >>>>
+> >>>>
+> >>>> On 09/09/2020 00:43, Alexey Kardashevskiy wrote:
+> >>>>> init_srcu_struct_nodes() is called with is_static==true only internally
+> >>>>> and when this happens, the srcu->sda is not initialized in
+> >>>>> init_srcu_struct_fields() and we crash on dereferencing @sdp.
+> >>>>>
+> >>>>> This fixes the crash by moving "if (is_static)" out of the loop which
+> >>>>> only does useful work for is_static=false case anyway.
+> >>>>>
+> >>>>> Found by syzkaller.
+> >>>>>
+> >>>>> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+> >>>>> ---
+> >>>>>  kernel/rcu/srcutree.c | 5 +++--
+> >>>>>  1 file changed, 3 insertions(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> >>>>> index c100acf332ed..49b54a50bde8 100644
+> >>>>> --- a/kernel/rcu/srcutree.c
+> >>>>> +++ b/kernel/rcu/srcutree.c
+> >>>>> @@ -135,6 +135,9 @@ static void init_srcu_struct_nodes(struct srcu_struct *ssp, bool is_static)
+> >>>>>  				   levelspread[level - 1];
+> >>>>>  	}
+> >>>>>  
+> >>>>> +	if (is_static)
+> >>>>> +		return;
+> >>>>
+> >>>> Actually, this is needed here too:
+> >>>>
+> >>>>  if (!ssp->sda)
+> >>>>          return;
+> >>>>
+> >>>> as
+> >>>> ssp->sda = alloc_percpu(struct srcu_data)
+> >>>>
+> >>>> can fail if the process is killed too soon - it is quite easy to get
+> >>>> this situation with syzkaller (syscalls fuzzer)
+> >>>>
+> >>>> Makes sense?
+> >>>
+> >>> Just to make sure that I understand, these failures occur when the task
+> >>> running init_srcu_struct_nodes() is killed, correct?
+> >>
+> >> There are multiple user tasks (8) which open /dev/kvm, do 1 ioctl -
+> >> KVM_CREATE_VM - and terminate, running on 8 vcpus, 8 VMs, crashes every
+> >> 20min or so, less tasks or vcpus - and the problem does not appear.
+> >>
+> >>
+> >>>
+> >>> Or has someone managed to invoke (say) synchronize_srcu() on a
+> >>> dynamically allocated srcu_struct before invoking init_srcu_struct() on
+> >>> that srcu_struct?  
+> >>
+> >> Nah, none of that :)
+> >>
+> >> init_srcu_struct_nodes() assumes ssp->sda!=NULL but alloc_percpu() fails
+> >> here:
+> >>
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/mm/percpu.c#n1734
+> >> ===
+> >> 	} else if (mutex_lock_killable(&pcpu_alloc_mutex)) {
+> >> 			pcpu_memcg_post_alloc_hook(objcg, NULL, 0, size);
+> >> 			return NULL;
+> >> ===
+> >>
+> >> I am still up to reading that osr-rcuusage.pdf to provide better
+> >> analysis :) Thanks,
+> > 
+> > Ah, got it!  Does the following patch help?
+> > 
+> > There will likely also need to be changes to cleanup_srcu_struct(),
+> > but first let's see if I understand the problem.  ;-)
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > index c13348e..6f7880a 100644
+> > --- a/kernel/rcu/srcutree.c
+> > +++ b/kernel/rcu/srcutree.c
+> > @@ -177,11 +177,13 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp, bool is_static)
+> >  	INIT_DELAYED_WORK(&ssp->work, process_srcu);
+> >  	if (!is_static)
+> >  		ssp->sda = alloc_percpu(struct srcu_data);
+> > +	if (!ssp->sda)
+> > +		return -ENOMEM;
+> >  	init_srcu_struct_nodes(ssp, is_static);
+> >  	ssp->srcu_gp_seq_needed_exp = 0;
+> >  	ssp->srcu_last_gp_end = ktime_get_mono_fast_ns();
+> >  	smp_store_release(&ssp->srcu_gp_seq_needed, 0); /* Init done. */
+> 
+> The line above confuses me a bit. What you propose returns without
+> smp_store_release() called which should not matter I suppose.
 
-Update kzfree.cocci accordingly:
-1) Replace instances of kzfree with kfree_sensitive
-2) Merge different rules for memset/memset_explicit as kzfree and
-   kfree_sensitive are now equivalent
-3) Rename script to kfree_sensitive.cocci
+The idea is that if init_srcu_struct() returns -ENOMEM, the structure
+has not been initialized and had better not be used.  If the calling code
+cannot handle that outcome, then the calling code needs to do something
+to insulate init_srcu_struct() from signals.  One thing that it could
+do would be to invoke init_srcu_struct() from a workqueue handler and
+wait for this handler to complete.
 
-In addition:
-4) Move the script to the free/ subfolder, where it would seem to fit
-   better
+Please keep in mind that there is nothing init_srcu_struct() can do
+about this:  The srcu_struct is useless unless alloc_percpu() succeeds.
 
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- .../kfree_sensitive.cocci}                    | 38 +++++--------------
- 1 file changed, 10 insertions(+), 28 deletions(-)
- rename scripts/coccinelle/{api/kzfree.cocci => free/kfree_sensitive.cocci} (59%)
+And yes, I do need to update the header comments to make this clear.
 
-diff --git a/scripts/coccinelle/api/kzfree.cocci b/scripts/coccinelle/free/kfree_sensitive.cocci
-similarity index 59%
-rename from scripts/coccinelle/api/kzfree.cocci
-rename to scripts/coccinelle/free/kfree_sensitive.cocci
-index 33625bd7cec9..a87f93f2ed5c 100644
---- a/scripts/coccinelle/api/kzfree.cocci
-+++ b/scripts/coccinelle/free/kfree_sensitive.cocci
-@@ -1,13 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0-only
- ///
--/// Use kzfree, kvfree_sensitive rather than memset or
--/// memzero_explicit followed by kfree
-+/// Use k{,v}free_sensitive rather than memset or memzero_explicit followed by
-+/// k{,v}free
- ///
- // Confidence: High
- // Copyright: (C) 2020 Denis Efremov ISPRAS
- // Options: --no-includes --include-headers
- //
--// Keywords: kzfree, kvfree_sensitive
-+// Keywords: kfree_sensitive, kvfree_sensitive
- //
- 
- virtual context
-@@ -18,7 +18,7 @@ virtual report
- @initialize:python@
- @@
- # kmalloc_oob_in_memset uses memset to explicitly trigger out-of-bounds access
--filter = frozenset(['kmalloc_oob_in_memset', 'kzfree', 'kvfree_sensitive'])
-+filter = frozenset(['kmalloc_oob_in_memset', 'kfree_sensitive', 'kvfree_sensitive'])
- 
- def relevant(p):
-     return not (filter & {el.current_element for el in p})
-@@ -53,34 +53,16 @@ position m != cond.ok;
- type T;
- @@
- 
-+(
- - memzero_explicit@m((T)E, size);
--  ... when != E
--      when strict
--// TODO: uncomment when kfree_sensitive will be merged.
--// Only this case is commented out because developers
--// may not like patches like this since kzfree uses memset
--// internally (not memzero_explicit).
--//(
--//- kfree(E)@p;
--//+ kfree_sensitive(E);
--//|
--- \(vfree\|kvfree\)(E)@p;
--+ kvfree_sensitive(E, size);
--//)
--
--@rp_memset depends on patch@
--expression E, size;
--position p : script:python() { relevant(p) };
--position m != cond.ok;
--type T;
--@@
--
-+|
- - memset@m((T)E, 0, size);
-+)
-   ... when != E
-       when strict
- (
- - kfree(E)@p;
--+ kzfree(E);
-++ kfree_sensitive(E);
- |
- - \(vfree\|kvfree\)(E)@p;
- + kvfree_sensitive(E, size);
-@@ -91,11 +73,11 @@ p << r.p;
- @@
- 
- coccilib.report.print_report(p[0],
--  "WARNING: opportunity for kzfree/kvfree_sensitive")
-+  "WARNING: opportunity for k{,v}free_sensitive")
- 
- @script:python depends on org@
- p << r.p;
- @@
- 
- coccilib.org.print_todo(p[0],
--  "WARNING: opportunity for kzfree/kvfree_sensitive")
-+  "WARNING: opportunity for k{,v}free_sensitive")
--- 
-2.28.0
+> Otherwise it should work, although I cannot verify right now as my box
+> went down and since it is across Pacific - it may take time to power
+> cycle it :) Thanks,
 
+I know that feeling!  And here is hoping that the box is out of reach
+of the local hot spots.  ;-)
+
+							Thanx, Paul
+
+> > -	return ssp->sda ? 0 : -ENOMEM;
+> > +	return 0;
+> >  }
+> >  
+> >  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+> > 
+> 
+> -- 
+> Alexey
