@@ -2,114 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC66526655C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F37266631
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbgIKRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:00:23 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:55127 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725815AbgIKQ7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:59:41 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id AD5A08222E;
-        Fri, 11 Sep 2020 19:59:34 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1599843574;
-        bh=4a3rFaNzCxJ2n7YDmv06byi58tSMon7Mb8hu7R3/ijc=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=W4Urdn1r6QZPnFQGiFzusaSUBQoqkzVL8lRz1Wyp6ge7jXYnweglH8Z3YXFFCrzE7
-         bLzmQ9lX3pUvtO2Oa8o4RKGGZegOzJKw1XJC7DiI4fwa/G7z/01U585gflb1jUKoea
-         CpYtTBECVouxllWEkgqCcXqLdzDTuNzlK+Mu/rxA=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 11 Sep 2020 19:59:34 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Fri, 11 Sep 2020 19:59:34 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     =?iso-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>
-Subject: RE: [PATCH v3 02/10] fs/ntfs3: Add initialization of super block
-Thread-Topic: [PATCH v3 02/10] fs/ntfs3: Add initialization of super block
-Thread-Index: AQHWfUklkImnkcPlKk6YxFGcmZ/fxalYOsKAgAuCx5A=
-Date:   Fri, 11 Sep 2020 16:59:34 +0000
-Message-ID: <948ac894450d494ea15496c2e5b8c906@paragon-software.com>
-References: <20200828143938.102889-1-almaz.alexandrovich@paragon-software.com>
- <20200828143938.102889-3-almaz.alexandrovich@paragon-software.com>
- <20200904120625.2af76ebfnacbzwug@pali>
-In-Reply-To: <20200904120625.2af76ebfnacbzwug@pali>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1726428AbgIKRWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:22:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgIKNAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 09:00:11 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07C852226A;
+        Fri, 11 Sep 2020 12:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599828981;
+        bh=a4XW114z+HKfFa0PWhRmUfltqQ7/Le9Ecxk0vMQmFt0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pgeODwtUTEUFY+oaRrb+US3cE98lK3EtfXOum9bDlQ5uXT7iDDZee9gBktkrzms7G
+         epVgBV7i/Y144DCBzFjUTertvf3iU1271eM+arhwF576yTi2pgz6v/sK2o8U1E1KU4
+         YwwkD8/I9zpz3DX0y7/l1TXg5vzNyaP7NIW5IdNA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Subject: [PATCH 4.9 02/71] HID: core: Sanitize event code and type when mapping input
+Date:   Fri, 11 Sep 2020 14:45:46 +0200
+Message-Id: <20200911122505.058850881@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+References: <20200911122504.928931589@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: linux-fsdevel-owner@vger.kernel.org <linux-fsdevel-owner@vger.kernel.=
-org> On Behalf Of Pali Rohar
-Sent: Friday, September 4, 2020 3:06 PM
->=20
-> Hello Konstantin!
->=20
-> On Friday 28 August 2020 07:39:30 Konstantin Komarov wrote:
-> > +	if (nls_name[0]) {
-> > +		sbi->nls =3D load_nls(nls_name);
-> > +		if (!sbi->nls) {
-> > +			ntfs_printk(sb, KERN_ERR "failed to load \"%s\"",
-> > +				    nls_name);
-> > +			return -EINVAL;
-> > +		}
-> > +	} else {
-> > +		sbi->nls =3D load_nls_default();
-> > +		if (!sbi->nls) {
-> > +			ntfs_printk(sb, KERN_ERR "failed to load default nls");
-> > +			return -EINVAL;
-> > +		}
-> > +	}
-> > +
-> > +	if (!strcmp(sbi->nls->charset, "utf8")) {
-> > +		/*use utf16s_to_utf8s/utf8s_to_utf16s instead of nls*/
-> > +		unload_nls(sbi->nls);
-> > +		sbi->nls =3D NULL;
-> > +	}
->=20
-> You can slightly simplify this code to omit calling load_nls() for UTF-8.=
- E.g.:
->=20
->     if (strcmp(nls_name[0] ? nls_name : CONFIG_NLS_DEFAULT, "utf8") =3D=
-=3D 0) {
->         /* For UTF-8 use utf16s_to_utf8s/utf8s_to_utf16s instead of nls *=
-/
->         sbi->nls =3D NULL;
->     } else if (nls_name) {
->         sbi->nls =3D load_nls(nls_name);
->         if (!sbi->nls) {
->             /* handle error */
->         }
->     } else {
->         sbi->nls =3D load_nls_default();
->         if (!sbi->nls) {
->             /* handle error */
->         }
->     }
+From: Marc Zyngier <maz@kernel.org>
 
-Hi Pali! Thanks! Applied, check out the v5 please.
+commit 35556bed836f8dc07ac55f69c8d17dce3e7f0e25 upstream.
 
-Best regards
+When calling into hid_map_usage(), the passed event code is
+blindly stored as is, even if it doesn't fit in the associated bitmap.
+
+This event code can come from a variety of sources, including devices
+masquerading as input devices, only a bit more "programmable".
+
+Instead of taking the event code at face value, check that it actually
+fits the corresponding bitmap, and if it doesn't:
+- spit out a warning so that we know which device is acting up
+- NULLify the bitmap pointer so that we catch unexpected uses
+
+Code paths that can make use of untrusted inputs can now check
+that the mapping was indeed correct and bail out if not.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/hid/hid-input.c      |    4 ++++
+ drivers/hid/hid-multitouch.c |    2 ++
+ include/linux/hid.h          |   42 +++++++++++++++++++++++++++++-------------
+ 3 files changed, 35 insertions(+), 13 deletions(-)
+
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1026,6 +1026,10 @@ static void hidinput_configure_usage(str
+ 	}
+ 
+ mapped:
++	/* Mapping failed, bail out */
++	if (!bit)
++		return;
++
+ 	if (device->driver->input_mapped &&
+ 	    device->driver->input_mapped(device, hidinput, field, usage,
+ 					 &bit, &max) < 0) {
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -567,6 +567,8 @@ static int mt_touch_input_mapping(struct
+ 	case HID_UP_BUTTON:
+ 		code = BTN_MOUSE + ((usage->hid - 1) & HID_USAGE);
+ 		hid_map_usage(hi, usage, bit, max, EV_KEY, code);
++		if (!*bit)
++			return -1;
+ 		input_set_capability(hi->input, EV_KEY, code);
+ 		return 1;
+ 
+--- a/include/linux/hid.h
++++ b/include/linux/hid.h
+@@ -874,34 +874,49 @@ static inline void hid_device_io_stop(st
+  * @max: maximal valid usage->code to consider later (out parameter)
+  * @type: input event type (EV_KEY, EV_REL, ...)
+  * @c: code which corresponds to this usage and type
++ *
++ * The value pointed to by @bit will be set to NULL if either @type is
++ * an unhandled event type, or if @c is out of range for @type. This
++ * can be used as an error condition.
+  */
+ static inline void hid_map_usage(struct hid_input *hidinput,
+ 		struct hid_usage *usage, unsigned long **bit, int *max,
+-		__u8 type, __u16 c)
++		__u8 type, unsigned int c)
+ {
+ 	struct input_dev *input = hidinput->input;
+-
+-	usage->type = type;
+-	usage->code = c;
++	unsigned long *bmap = NULL;
++	unsigned int limit = 0;
+ 
+ 	switch (type) {
+ 	case EV_ABS:
+-		*bit = input->absbit;
+-		*max = ABS_MAX;
++		bmap = input->absbit;
++		limit = ABS_MAX;
+ 		break;
+ 	case EV_REL:
+-		*bit = input->relbit;
+-		*max = REL_MAX;
++		bmap = input->relbit;
++		limit = REL_MAX;
+ 		break;
+ 	case EV_KEY:
+-		*bit = input->keybit;
+-		*max = KEY_MAX;
++		bmap = input->keybit;
++		limit = KEY_MAX;
+ 		break;
+ 	case EV_LED:
+-		*bit = input->ledbit;
+-		*max = LED_MAX;
++		bmap = input->ledbit;
++		limit = LED_MAX;
+ 		break;
+ 	}
++
++	if (unlikely(c > limit || !bmap)) {
++		pr_warn_ratelimited("%s: Invalid code %d type %d\n",
++				    input->name, c, type);
++		*bit = NULL;
++		return;
++	}
++
++	usage->type = type;
++	usage->code = c;
++	*max = limit;
++	*bit = bmap;
+ }
+ 
+ /**
+@@ -915,7 +930,8 @@ static inline void hid_map_usage_clear(s
+ 		__u8 type, __u16 c)
+ {
+ 	hid_map_usage(hidinput, usage, bit, max, type, c);
+-	clear_bit(c, *bit);
++	if (*bit)
++		clear_bit(usage->code, *bit);
+ }
+ 
+ /**
+
+
