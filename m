@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2F9266480
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9101526647E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgIKQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S1725947AbgIKQkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgIKPLc (ORCPT
+        with ESMTP id S1726358AbgIKPLc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 11:11:32 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093A9C06179F
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:11:22 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id q63so9394063qkf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:11:21 -0700 (PDT)
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6D2C0617B1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:11:24 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id n10so8110412qtv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=euZWKDvSLszOg3hns89zvMgi1tbxQv2avHZee3eJ2yI=;
-        b=qBfjVizj8aDJByTIWD3AlHF0vazq0JRzEVHnlyJo5/NIS5vzxEDvesvDkS72qQWYZn
-         NcHjjsrCA9ZrOnv4cdzT1ApxtC9g+Wa0KpngbWvHSEWfCNfWKbE2HwmmNsGCn11In6Dk
-         WFzaFFM0REfbH2QJmlGpa5PHlR93uvWgHAZOV7zqPKT5y0RI5twXPrkHBTGKhxLMp+BN
-         0tn6myKDKpvS+YDQVHVxIoB8JzgE3bACjYysEB+rfFCdsGbBVjc5L+HVhvYjLFN5RQUt
-         hgGyx5kOHUpNaKrCUigwruBDOHKNfvPXy4H8FMUXjNrUmHht2a2Hak+TZCmavDVaS8WR
-         DoNg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GBjsv3xCSYkRCQ+2tezVOSNTy9uWd+LLZWMg/UVRDak=;
+        b=rQg0y29QtV3mSmib7w19eLw48nVkkAX9PLuOloEbZY7ZDaNagYLZA+vF2vvqaRk6ru
+         likOP/r8d4V9YRT796rlxL5QKHAxpRngBZ5RWoCVzjAf68AE4QIweZL06JHsCj6BuGmj
+         DYDcpG4aC1AStU2CeZUDOgjLz9SwAO2vj909DVcIy3LQ97/TYRHP8orLxmiHJZ5DRKBK
+         tXbxlhMEFlECVWwKyo3LGK267lO1D8QQO8kFQg4FTTLs+kOhvjiaaz6n9h+3RiFPRH0D
+         HCWIyC/gd5X6HUiZyLWPNGlcfXiiDWWO4kpUMFuqkhuORbCfv4ZNXVOiQYe+7iazze9b
+         YZgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=euZWKDvSLszOg3hns89zvMgi1tbxQv2avHZee3eJ2yI=;
-        b=Q8yEWDnKZDy6LN6Y/3QH04xxndqO7lNOcVJyOB0ojiIu8YAfJtvunTdvMjJDd1SLdB
-         C2d+bxCbb40EzSo4eKWWwndleiUi88yik1rfdlP5bwfhFnn0TOyuxzDoPDFjaEtAYcgb
-         sdq7jeN74ldA2OXrjrHKLlmOouO1rIDe89GGtwiUbedUjLX5sqTTlDbd8wYP55Csyntb
-         IW1Ifr6yHDUpHiiNfBysavTWy8H+HPydfV+rcTx6HyEk+GWo4qgz+ltf8ZRsqS6yJrl9
-         m4XjnZdqMSv4sdPolUyZFslqooZOJid/xn8x4SGV62hTDR6W8JxOiTQPOyZ/GS77HJqz
-         Ii2w==
-X-Gm-Message-State: AOAM531SqKTsszQQjKDFF4rh49Xre6czmUUmucdXIvPzSjWTXThkM08d
-        QN/f381BpHHu6411UmR/WyLsLA==
-X-Google-Smtp-Source: ABdhPJxfmWCOR7Q2dKc0X3lEWR4RYf+Baz8OuO11f6wPmq3V0V15Oe2aKlOQbU9BaEuSm32pNlc/VQ==
-X-Received: by 2002:a37:bf43:: with SMTP id p64mr1862870qkf.24.1599837081212;
-        Fri, 11 Sep 2020 08:11:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GBjsv3xCSYkRCQ+2tezVOSNTy9uWd+LLZWMg/UVRDak=;
+        b=G8P2vKOWJpE3F/S84L2NOh/kpezmUfaT4V2ThxfNF9MxxkbEtJmA0YRMHMxb/ZTBUC
+         o/QEKAhnjsVA2Uty+Cv8CJODMo4XCIVzkP77weOH3j3NIebz4U1l1ho15n1u7xibQaLV
+         C8QikNKzGniBugURQDPYXkdmxk6RtjFFhvN+/JsdH3Ni+HS8dtj07BEY3Y6wNuCvbfRv
+         aAYXP1OnQAL54VmklFgbaV7XLyMsLj8wSEV/wsjKOwZGFtRwQo4O+mhk+64Tpfflr1Mp
+         S0D1pvs3hucYPBUuVxkoGFwEVb2fC7ivtxirJt0r02GE+pKfzpX+OEeQHAh9ux8Kb3Kr
+         ogEQ==
+X-Gm-Message-State: AOAM530Bg5dbtI1ex8NtdGo5WefbNcauH9rXMDpEDlcxcXiZeLl/4d3O
+        J3ADb07TD5K6eexwyDBbEl+wSw==
+X-Google-Smtp-Source: ABdhPJx5llxFEeEL0XCkUvdKq1BQKgIPUOoUMkmtSPcsqKUyP1ToDqwIXZ/ZYbtoA2Ey6/hK0GtYcQ==
+X-Received: by 2002:ac8:4d05:: with SMTP id w5mr2275918qtv.339.1599837083503;
+        Fri, 11 Sep 2020 08:11:23 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id 201sm3216429qkf.103.2020.09.11.08.11.19
+        by smtp.gmail.com with ESMTPSA id 201sm3216429qkf.103.2020.09.11.08.11.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 08:11:20 -0700 (PDT)
+        Fri, 11 Sep 2020 08:11:23 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
-Cc:     AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
         David Airlie <airlied@linux.ie>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
         dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
         GPU),
         freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), Harigovindan P <harigovi@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        linux-kernel@vger.kernel.org (open list),
-        Rob Clark <robdclark@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Sean Paul <sean@poorly.run>,
-        zhengbin <zhengbin13@huawei.com>
-Subject: [PATCH v2 0/3] Add support for SM8150 and SM8250 DSI.
-Date:   Fri, 11 Sep 2020 11:09:36 -0400
-Message-Id: <20200911151001.13156-1-jonathan@marek.ca>
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/3] drm/msm/dsi: remove unused clk_pre/clk_post in msm_dsi_dphy_timing
+Date:   Fri, 11 Sep 2020 11:09:37 -0400
+Message-Id: <20200911151001.13156-2-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200911151001.13156-1-jonathan@marek.ca>
+References: <20200911151001.13156-1-jonathan@marek.ca>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -78,35 +73,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note I haven't tested SM8150 recently, but DSI is almost identical to SM8250.
+The clk_pre/clk_post values in shared_timings are used instead, and these
+are unused.
 
-v2:
- - added workaround for 5GHz max_rate overflowing in 32-bit builds
-   (based on robclark's suggestion)
- - Updated Kconfig option to mention SM8250 and not just SM8150
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> (SM8250)
+---
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Jonathan Marek (3):
-  drm/msm/dsi: remove unused clk_pre/clk_post in msm_dsi_dphy_timing
-  drm/msm/dsi: add DSI config for sm8150 and sm8250
-  drm/msm/dsi: add support for 7nm DSI PHY/PLL
-
- .../devicetree/bindings/display/msm/dsi.txt   |   6 +-
- drivers/gpu/drm/msm/Kconfig                   |   8 +
- drivers/gpu/drm/msm/Makefile                  |   2 +
- drivers/gpu/drm/msm/dsi/dsi.h                 |   2 +
- drivers/gpu/drm/msm/dsi/dsi.xml.h             | 423 ++++++++
- drivers/gpu/drm/msm/dsi/dsi_cfg.c             |   5 +-
- drivers/gpu/drm/msm/dsi/dsi_cfg.h             |   2 +
- drivers/gpu/drm/msm/dsi/phy/dsi_phy.c         | 102 ++
- drivers/gpu/drm/msm/dsi/phy/dsi_phy.h         |   6 +-
- drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c     | 255 +++++
- drivers/gpu/drm/msm/dsi/pll/dsi_pll.c         |   4 +
- drivers/gpu/drm/msm/dsi/pll/dsi_pll.h         |  10 +
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c     | 904 ++++++++++++++++++
- 13 files changed, 1724 insertions(+), 5 deletions(-)
- create mode 100644 drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
- create mode 100644 drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+index ef8672d7b123..886a9e3b44b5 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+@@ -50,8 +50,6 @@ extern const struct msm_dsi_phy_cfg dsi_phy_10nm_cfgs;
+ extern const struct msm_dsi_phy_cfg dsi_phy_10nm_8998_cfgs;
+ 
+ struct msm_dsi_dphy_timing {
+-	u32 clk_pre;
+-	u32 clk_post;
+ 	u32 clk_zero;
+ 	u32 clk_trail;
+ 	u32 clk_prepare;
 -- 
 2.26.1
 
