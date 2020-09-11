@@ -2,84 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9ED266890
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68BF26687D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgIKTK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:10:26 -0400
-Received: from gateway20.websitewelcome.com ([192.185.46.107]:25851 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725783AbgIKTKY (ORCPT
+        id S1725802AbgIKTCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:02:14 -0400
+Received: from 5.mo177.mail-out.ovh.net ([46.105.39.154]:38219 "EHLO
+        5.mo177.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgIKTCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:10:24 -0400
-X-Greylist: delayed 1454 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 15:10:23 EDT
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 0EE3B400CECD0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:21:37 -0500 (CDT)
-Received: from gator3309.hostgator.com ([192.254.250.173])
-        by cmsmtp with SMTP
-        id Go3jkTpCfn9FWGo3kkv7Qc; Fri, 11 Sep 2020 13:46:08 -0500
-X-Authority-Reason: nr=8
-Received: from pool-68-160-221-54.nycmny.fios.verizon.net ([68.160.221.54]:51155 helo=[192.168.1.133])
-        by gator3309.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <trapexit@spawn.link>)
-        id 1kGo3i-0008LX-KI; Fri, 11 Sep 2020 13:46:06 -0500
-Subject: Re: [fuse-devel] [PATCH V8 0/3] fuse: Add support for passthrough
- read/write
-To:     Alessio Balsini <balsini@android.com>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Anderson <dvander@google.com>,
-        Eric Yan <eric.yan@oneplus.com>, Jann Horn <jannh@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200911163403.79505-1-balsini@android.com>
-From:   Antonio SJ Musumeci <trapexit@spawn.link>
-Message-ID: <21e1b3be-6cc1-c73a-4e3e-963e2dd64f1f@spawn.link>
-Date:   Fri, 11 Sep 2020 14:46:04 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 11 Sep 2020 15:02:13 -0400
+Received: from player772.ha.ovh.net (unknown [10.108.54.36])
+        by mo177.mail-out.ovh.net (Postfix) with ESMTP id CFDAB140855
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 21:02:10 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player772.ha.ovh.net (Postfix) with ESMTPSA id 0C2161620AD18;
+        Fri, 11 Sep 2020 19:02:06 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-105G0064e52adae-e863-4d66-a4f7-f870f57de118,
+                    B3063C92EDE29B5A09E12E435EF56C89C4C75BBC) smtp.auth=steve@sk2.org
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
+Subject: [PATCH] docs: rewrite admin-guide/sysctl/abi.rst
+Date:   Fri, 11 Sep 2020 21:01:52 +0200
+Message-Id: <20200911190152.29730-1-steve@sk2.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200911163403.79505-1-balsini@android.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator3309.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - spawn.link
-X-BWhitelist: no
-X-Source-IP: 68.160.221.54
-X-Source-L: No
-X-Exim-ID: 1kGo3i-0008LX-KI
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: pool-68-160-221-54.nycmny.fios.verizon.net ([192.168.1.133]) [68.160.221.54]:51155
-X-Source-Auth: trapexit@spawn.link
-X-Email-Count: 18
-X-Source-Cap: YmlsZTtiaWxlO2dhdG9yMzMwOS5ob3N0Z2F0b3IuY29t
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 14533678950405000581
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudehledgudefhecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjedvrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/2020 12:34 PM, Alessio Balsini via fuse-devel wrote:
-> Add support for file system passthrough read/write of files when enabled in
-> userspace through the option FUSE_PASSTHROUGH.
-Might be more effort than it is worth but any thoughts on userland error 
-handling for passthrough? My use case, optionally, responds to read or 
-write errors in particular ways. It's not an unreasonable tradeoff to 
-disable passthrough if the user wants those features but was wondering 
-if there was any consideration of extending the protocol to pass 
-read/write errors back to the fuse server.
+Following the structure used in sysctl/kernel.rst, this updates
+abi.rst to use ReStructured Text more fully and updates the entries to
+match current kernels:
+
+  * the list of files is now the table of contents;
+  * links are used to point to other documentation and other sections;
+  * all the existing entries are no longer present, so this removes
+    them;
+  * document vsyscall32.
+
+Mentions of the kernel version are dropped. Since the document is
+entirely rewritten, I've replaced the copyright statement.
+
+Signed-off-by: Stephen Kitt <steve@sk2.org>
+---
+ Documentation/admin-guide/sysctl/abi.rst | 71 ++++++------------------
+ 1 file changed, 18 insertions(+), 53 deletions(-)
+
+diff --git a/Documentation/admin-guide/sysctl/abi.rst b/Documentation/admin-guide/sysctl/abi.rst
+index 599bcde7f0b7..d88b48db8bf9 100644
+--- a/Documentation/admin-guide/sysctl/abi.rst
++++ b/Documentation/admin-guide/sysctl/abi.rst
+@@ -2,66 +2,31 @@
+ Documentation for /proc/sys/abi/
+ ================================
+ 
+-kernel version 2.6.0.test2
++.. See scripts/check-sysctl-docs to keep this up to date:
++.. scripts/check-sysctl-docs -vtable="abi" \
++..         Documentation/admin-guide/sysctl/abi.rst \
++..         $(git grep -l register_sysctl_)
+ 
+-Copyright (c) 2003,  Fabian Frederick <ffrederick@users.sourceforge.net>
++Copyright (c) 2020, Stephen Kitt
+ 
+-For general info: index.rst.
++For general info, see :doc:`index`.
+ 
+ ------------------------------------------------------------------------------
+ 
+-This path is binary emulation relevant aka personality types aka abi.
+-When a process is executed, it's linked to an exec_domain whose
+-personality is defined using values available from /proc/sys/abi.
+-You can find further details about abi in include/linux/personality.h.
++The files in ``/proc/sys/abi`` can be used to see and modify
++ABI-related settings.
+ 
+-Here are the files featuring in 2.6 kernel:
++Currently, these files might (depending on your configuration)
++show up in ``/proc/sys/kernel``:
+ 
+-- defhandler_coff
+-- defhandler_elf
+-- defhandler_lcall7
+-- defhandler_libcso
+-- fake_utsname
+-- trace
++.. contents:: :local:
+ 
+-defhandler_coff
+----------------
++vsyscall32 (x86)
++================
+ 
+-defined value:
+-	PER_SCOSVR3::
++Determines whether the kernels maps a vDSO page into 32-bit processes;
++can be set to 1 to enable, or 0 to disable. Defaults to enabled if
++``CONFIG_COMPAT_VDSO`` is set, disabled otherwide.
+ 
+-		0x0003 | STICKY_TIMEOUTS | WHOLE_SECONDS | SHORT_INODE
+-
+-defhandler_elf
+---------------
+-
+-defined value:
+-	PER_LINUX::
+-
+-		0
+-
+-defhandler_lcall7
+------------------
+-
+-defined value :
+-	PER_SVR4::
+-
+-		0x0001 | STICKY_TIMEOUTS | MMAP_PAGE_ZERO,
+-
+-defhandler_libsco
+------------------
+-
+-defined value:
+-	PER_SVR4::
+-
+-		0x0001 | STICKY_TIMEOUTS | MMAP_PAGE_ZERO,
+-
+-fake_utsname
+-------------
+-
+-Unused
+-
+-trace
+------
+-
+-Unused
++This controls the same setting as the ``vdso32`` kernel boot
++parameter.
+
+base-commit: 5ff4aa70bf347e13ec87697b1c732ce86060c47d
+-- 
+2.20.1
+
