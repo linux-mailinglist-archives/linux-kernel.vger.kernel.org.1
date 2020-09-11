@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D22A266988
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577D5266991
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgIKU2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:28:39 -0400
-Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:57730
-        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725819AbgIKU2i (ORCPT
+        id S1725867AbgIKUfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725803AbgIKUfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:28:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599856117;
-        h=From:To:Cc:Subject:Date:Message-Id;
-        bh=70JxY9k5itTjoN4PvPHT19XpR+FmwDMiqLXF+u/QXNs=;
-        b=SkcJTE3oqXG/fqGygHe3jj7ohCZnRNhjIOIk90Gg7m6kQOeB7kGHM2gwO3bp7mzN
-        FBNczkJW6cI5Yt8dbkuiyKGnKL3d2PoHXWChRr82DgxnC1YzGnSPP2JyHRB7l7G5mGH
-        GyRhkaLnA+yiyOeS9yDCFFaYAYdZUYMZtyL+Mz8E=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599856117;
-        h=From:To:Cc:Subject:Date:Message-Id:Feedback-ID;
-        bh=70JxY9k5itTjoN4PvPHT19XpR+FmwDMiqLXF+u/QXNs=;
-        b=a/NpNliqtchuDArAGGMcABM8lvx+Gvs95ZmshXe8wHFJ0GJBRut9LoCF31yRGmwu
-        ggqM2xMemTLPm6qRmmqqMXBbd783K3RTruFiFCBVaAQ1FJyVnEA0timu3c80VQ0jLxV
-        8pkIriauc+ZDkFmpXYt8Bm+0zRlu6XpTQeYwXKYM=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7124CC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Subject: [PATCH v2] cma_alloc(), indefinitely retry allocations for -EBUSY failures
-Date:   Fri, 11 Sep 2020 20:28:37 +0000
-Message-ID: <010101747edb063a-d155fcf2-c8bd-433b-8548-154e4457e37c-000000@us-west-2.amazonses.com>
-X-Mailer: git-send-email 2.7.4
-X-SES-Outgoing: 2020.09.11-54.240.27.188
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+        Fri, 11 Sep 2020 16:35:17 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222D6C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:35:17 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id w11so7143116lfn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 13:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l83CKt/v13NjmKCQ0hFj9pT+gJolIjr8unWrFbwpxZI=;
+        b=SYIdzpdmt1uLZg4Uh+l4Wh/coyumMPJ2ONK3rnLVlvissJddQIDWr085g+PPB0YO00
+         cuJjP6AIMCiWtW7Y7+Bomwq/MNoFV9fDuIOfBdgGUEBb+ZxN77n9uRJdmgMDaHrq1MxZ
+         4c9diY10AEkOuRua8OafABX2Is9xp67JcV4XzAiOYQ3YJrm2YSFkmfZ+EF3zCwgqluOL
+         cEKxRz4ZAo+DwdEJT5n+m9l7ShJ1Yo3zfwbVcv6xWVzsYdD6wyJOAxSq63mVz5A8jKkn
+         efyMw8FIbkN6KnWvUB4qzOAmR0RUOvPUJ8zpatBxPIDHz5BYHHQGPD6Y03o6g+RHCjRq
+         tVWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l83CKt/v13NjmKCQ0hFj9pT+gJolIjr8unWrFbwpxZI=;
+        b=jGnxDNysIzdXnZVESPzO+gGfgvLwwbpDwteR5oU8TGQqQUoo/0V6aEBtqZ9nNA3dSE
+         MhSCp35OYEXU/2ewFv1rKfXBJT2FKEA1TRYhkc6J6bnHHraJcRAsMLGPAZdafYV9njV3
+         /SQadINhaTqZ9B+jzyeHxx5iZwgPiL45JZXwwywB8TZvmke6b/VFJ6/dgdlMadyk+Bxf
+         XwrWHT60Dc9xGxCp8ZRyzbOcxpktQuJmSbaE4+s4Mk3y/cuKCGUsRBHYHpqQh8A4PV+0
+         T+JFX1I19OsjArE4JRYgceoy5rDWndvuOUvfbSZ5/hsbQPyFzXIlnhgtEd6RDUQgCrsm
+         VBOA==
+X-Gm-Message-State: AOAM5323FqGsjdE7OThrpmnQi1jewkUqz4X0s4pqeCOuBAjn3AEgYCrC
+        XzLk1ZIhKY6CwXkj4XY3Dhs=
+X-Google-Smtp-Source: ABdhPJwTYdXXi4b9u9NeNWz8vNnIqRgbTEJ7b0P86kFYBbYigb4fzGvdF+1qYJaPceLmp1yN+gd8JA==
+X-Received: by 2002:a19:7912:: with SMTP id u18mr861449lfc.298.1599856514971;
+        Fri, 11 Sep 2020 13:35:14 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
+        by smtp.gmail.com with ESMTPSA id d1sm214390lfe.180.2020.09.11.13.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 13:35:14 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 0/3] drivers/virtio: Constify static struct virtio_device_id
+Date:   Fri, 11 Sep 2020 22:35:06 +0200
+Message-Id: <20200911203509.26505-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[PATCH v2] cma_alloc(), indefinitely retry allocations for -EBUSY failures
+Constify a couple of instances of static struct virtio_device_id which
+are never modified. This allows the compiler to put them in read-only
+memory.
 
-On mobile devices, failure to allocate from a CMA area constitutes a
-functional failure.  Sometimes during CMA allocations, we have observed
-that pages in a CMA area allocated through alloc_pages(), that we're trying
-to migrate away to make room for a CMA allocation, are temporarily pinned.
-This temporary pinning can occur when a process that owns the pinned page
-is being forked (the example is explained further in the commit text), or it is
-exiting.  This patch addresses this issue by indefinitely retrying allocations
-that fail due to a return of -EBUSY.
+Rikard Falkeborn (3):
+  virtio-balloon: Constify id_table
+  virtio_input: Constify id_table
+  virtio-mem: Constify mem_id_table
 
-** This change log was re-sent due to threading issues **
-
-Change log: 
-
-v1: We were performing retries of the allocation a fixed number of times.
-Andrew Morton disliked this, as it didn't guarantee that the allocation would
-succeed.
-
-https://lkml.org/lkml/2020/8/5/1096
-https://lkml.org/lkml/2020/8/21/1490
-
-v2: To address this concern, we switched to retrying indefinitely, as opposed to
-doing to retrying  the allocation a limited number of times.
-
-Chris Goldsworthy (1):
-  mm: cma: indefinitely retry allocations in cma_alloc
-
- mm/cma.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_balloon.c | 2 +-
+ drivers/virtio/virtio_input.c   | 2 +-
+ drivers/virtio/virtio_mem.c     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.28.0
 
