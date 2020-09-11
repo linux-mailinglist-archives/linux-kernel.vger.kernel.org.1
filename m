@@ -2,121 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F11B265D4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 12:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D362B265D53
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 12:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725554AbgIKKCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 06:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        id S1725851AbgIKKES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 06:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgIKKCi (ORCPT
+        with ESMTP id S1725710AbgIKKEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 06:02:38 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16D0DC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:02:37 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a15so11963763ljk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:02:37 -0700 (PDT)
+        Fri, 11 Sep 2020 06:04:14 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC05C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:04:13 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id e2so122713vsr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 03:04:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Eh1nUbbqqxmB+MKme978FO9UEGUoY3WguilYpMQusuk=;
-        b=xcuOWDRbIDvw+1MEKspQA2iMxMTo9XEAUGy07DDQvqxP/VvpaWDP/aefC8l686YZqu
-         iZYULv+YIEO++E7KXA5HYTCJy0h2+XPdQ3tHzqTPT1AQcSw3/htJZmGPWAL93Xm1NfJV
-         zZWieoYB9vLaPGbgColBzNf8YhWm+gSYR+ImLeTcifhxsi82dO9f1AGHt5X4dLamlGjC
-         AzEj923i+cOiO373HfWlaS1JC/IOi1rpp+pPnhVrSkRpLj02unZsKz9A87DKtO7Nfy+D
-         Ymmc48R6E2DJLVSc/p+Aq0jOP9Hcvbr44laVgD8PZkv7B8D7q3noB0F9nADHR8/qJc/D
-         CNIA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lv7DYSegmi05MQ2Or1cVULVSVjTeshwqgQaUDPulOTE=;
+        b=gyQaqmP/9o85fe1LiMX2cY1a7zMENgWNJsst1hDiZSI33Fosd3Qv5rUAPGvomlSiU2
+         aCLS3ARaIRotYG2VnNOxjwzt/FFcgjR9YaN9I56g1wQjxDYE5YeylRG2CapeXI8KF4Uy
+         W3OiNGzsxUBWEBMZqOvabMjSoxBJnqQ42FzVzZyua4B99MamgAo0mgjfcHxdfqZQDXJt
+         v7voKkopP50unQtCJonw4iiYQbfMjnj1uHTECeKNfEzowDdrMypLR/GdZPt+k9Dc4Bha
+         4x7IUuFy06fTbzFttIW36kDpODVIiw0Vy8NfN1RsU0SU3zlFygTIPgl4LYhlBjsk90wO
+         T3gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Eh1nUbbqqxmB+MKme978FO9UEGUoY3WguilYpMQusuk=;
-        b=diz5skIxPcvp0m0/rvYN+v8coTJNiHLKqlqkQizVNM0GpdL+nM4nrIM8wRV+sjPBcF
-         Gu99ukdvnOaG3iUdUr27J2mKlJSy1mqr/Tz6tNE5TBKSDtzxZ7XwHuWCRTuNDbiLnuOK
-         MoWjtYQrq+UKndLpdueGtuJDNVEbP4zgxM+cnKr9OVbIlH1IwUNcxa7hGyb4yj0NtFSY
-         /yatf+oIB8ViEXRMEn3uFKra72cpmgQEGg/G51YJX3IGitvWJ/tgVDwd30qjQw4/tmng
-         zdQLIrPP9K6jq/eHnUngn137nEA1UQ8MbNHraTOXRnvuQ3m+2M47JJFbZCwDKrGKYVDE
-         v4yg==
-X-Gm-Message-State: AOAM530+JV8zQL7OsYxkhX7MmaYuNaA4UzCLOtrR/kuP9uJkkFrn/ooq
-        e9Q/PrBlnnVM1FpteERqOMga6K8AnvDAdEFd
-X-Google-Smtp-Source: ABdhPJxiBLPmP1E/qIaYCcGGeDDFnt0WmCiOBtVezSksq/cPIltEuXfNjvc2sEwBZkUelUcQKMgd3Q==
-X-Received: by 2002:a05:651c:10d:: with SMTP id a13mr522824ljb.217.1599818556165;
-        Fri, 11 Sep 2020 03:02:36 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-181-252.NA.cust.bahnhof.se. [98.128.181.252])
-        by smtp.gmail.com with ESMTPSA id j7sm369179lfb.41.2020.09.11.03.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 03:02:35 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v5.9-rc5
-Date:   Fri, 11 Sep 2020 12:02:34 +0200
-Message-Id: <20200911100234.754555-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lv7DYSegmi05MQ2Or1cVULVSVjTeshwqgQaUDPulOTE=;
+        b=Z3l/7edgidcX9u1uuVVSwimXFpc3kubxkCKwX0NO/YjaWcgfsXOK3y3QgdG8Z4Vd9P
+         OaSr7h0DG+MV6j5/0kxfjZvohK20oKavMGTSDxm6ne9S7JjgTXEcj9moUMDtImIG92nG
+         3AEDaLPi/rEl0/eJFHRC4TCGRVM4nw2UBrejcv26jozGefKtctM0LXjWoMvdM5w8B4rf
+         TPodyYEB6Py0NOaTTmAqgcvFb9LKo8MK+jk54gZSCtEHe61ohrMTh/drP2Cr06HVvera
+         Mw0yjCgXyughhxapacMbSpuCg6KDv/J+A2F2/3um3NPrncM6cwyHCQUWDLTIUu3Y3Hyq
+         xxWQ==
+X-Gm-Message-State: AOAM533ZuZlnWVGfZHoUAFNMLy3meDoAH1xVZWMvExvFkHSmBFGZM25q
+        /LSGngkx4IZrfkwVR3BHncQB+QbQ344OOkvJXL6QtQ==
+X-Google-Smtp-Source: ABdhPJzQhkBpSUuU0Ob3GWHfokuWfgA4zmVG5+TujkYG/hWdckyrLWyFYgoTqFxrTETn15q2HAHHdhCozEtVDbO2gls=
+X-Received: by 2002:a67:e355:: with SMTP id s21mr496154vsm.50.1599818652720;
+ Fri, 11 Sep 2020 03:04:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <890ae5601594fca5de104695a682f4b6efbc631b.1599660554.git.viresh.kumar@linaro.org>
+In-Reply-To: <890ae5601594fca5de104695a682f4b6efbc631b.1599660554.git.viresh.kumar@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 11 Sep 2020 12:03:36 +0200
+Message-ID: <CAPDyKFropJGPHEmczi9rjWEJvgCOz8d9bLUdMmu6K+B+1w8c-w@mail.gmail.com>
+Subject: Re: [PATCH V2 resend] mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, 9 Sep 2020 at 16:12, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
+> find the OPP table with error -ENODEV (i.e. OPP table not present for
+> the device). And we can call dev_pm_opp_of_remove_table()
+> unconditionally here.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Here's a PR with a couple of MMC fixes intended for v5.9-rc5. Details about the
-highlights are as usual found in the signed tag.
-
-Please pull this in!
+Applied for next, thanks!
 
 Kind regards
-Ulf Hansson
+Uffe
 
-
-The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
-
-  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.9-rc4
-
-for you to fetch changes up to f0c393e2104e48c8a881719a8bd37996f71b0aee:
-
-  mmc: sdio: Use mmc_pre_req() / mmc_post_req() (2020-09-07 08:57:44 +0200)
-
-----------------------------------------------------------------
-MMC core:
- - sdio: Restore ~20% performance drop for SDHCI drivers, by using
-mmc_pre_req() and mmc_post_req() for SDIO requests.
-
-MMC host:
- - sdhci-of-esdhc: Fix support for erratum eSDHC7
- - mmc_spi: Allow the driver to be built when CONFIG_HAS_DMA is unset
- - sdhci-msm: Use retries to fix tuning
- - sdhci-acpi: Fix resume for eMMC HS400 mode
-
-----------------------------------------------------------------
-Adrian Hunter (1):
-      mmc: sdio: Use mmc_pre_req() / mmc_post_req()
-
-Chris Packham (1):
-      mmc: sdhci-of-esdhc: Don't walk device-tree on every interrupt
-
-Douglas Anderson (1):
-      mmc: sdhci-msm: Add retries when all tuning phases are found valid
-
-Raul E Rangel (1):
-      mmc: sdhci-acpi: Clear amd_sdhci_host on reset
-
-Ulf Hansson (1):
-      mmc: mmc_spi: Allow the driver to be built when CONFIG_HAS_DMA is unset
-
- drivers/mmc/core/sdio_ops.c       | 39 ++++++++++--------
- drivers/mmc/host/Kconfig          |  2 +-
- drivers/mmc/host/mmc_spi.c        | 86 +++++++++++++++++++++++----------------
- drivers/mmc/host/sdhci-acpi.c     | 31 ++++++++++----
- drivers/mmc/host/sdhci-msm.c      | 18 +++++++-
- drivers/mmc/host/sdhci-of-esdhc.c | 10 +++--
- 6 files changed, 123 insertions(+), 63 deletions(-)
+>
+> ---
+> V2:
+> - Compare with -ENODEV only for failures.
+> - Create new label to put clkname.
+> - Based on 5.9-rc4
+> ---
+>  drivers/mmc/host/sdhci-msm.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+> index 5a33389037cd..f7beaec6412e 100644
+> --- a/drivers/mmc/host/sdhci-msm.c
+> +++ b/drivers/mmc/host/sdhci-msm.c
+> @@ -263,7 +263,6 @@ struct sdhci_msm_host {
+>         unsigned long clk_rate;
+>         struct mmc_host *mmc;
+>         struct opp_table *opp_table;
+> -       bool has_opp_table;
+>         bool use_14lpp_dll_reset;
+>         bool tuning_done;
+>         bool calibration_done;
+> @@ -2285,11 +2284,9 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>
+>         /* OPP table is optional */
+>         ret = dev_pm_opp_of_add_table(&pdev->dev);
+> -       if (!ret) {
+> -               msm_host->has_opp_table = true;
+> -       } else if (ret != -ENODEV) {
+> +       if (ret && ret != -ENODEV) {
+>                 dev_err(&pdev->dev, "Invalid OPP table in Device tree\n");
+> -               goto opp_cleanup;
+> +               goto opp_put_clkname;
+>         }
+>
+>         /* Vote for maximum clock rate for maximum performance */
+> @@ -2453,8 +2450,8 @@ static int sdhci_msm_probe(struct platform_device *pdev)
+>         clk_bulk_disable_unprepare(ARRAY_SIZE(msm_host->bulk_clks),
+>                                    msm_host->bulk_clks);
+>  opp_cleanup:
+> -       if (msm_host->has_opp_table)
+> -               dev_pm_opp_of_remove_table(&pdev->dev);
+> +       dev_pm_opp_of_remove_table(&pdev->dev);
+> +opp_put_clkname:
+>         dev_pm_opp_put_clkname(msm_host->opp_table);
+>  bus_clk_disable:
+>         if (!IS_ERR(msm_host->bus_clk))
+> @@ -2474,8 +2471,7 @@ static int sdhci_msm_remove(struct platform_device *pdev)
+>
+>         sdhci_remove_host(host, dead);
+>
+> -       if (msm_host->has_opp_table)
+> -               dev_pm_opp_of_remove_table(&pdev->dev);
+> +       dev_pm_opp_of_remove_table(&pdev->dev);
+>         dev_pm_opp_put_clkname(msm_host->opp_table);
+>         pm_runtime_get_sync(&pdev->dev);
+>         pm_runtime_disable(&pdev->dev);
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
