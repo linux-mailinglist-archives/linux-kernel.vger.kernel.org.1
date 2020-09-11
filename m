@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE1526658B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775412665EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725780AbgIKRG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:06:26 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:55680 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgIKPCf (ORCPT
+        id S1726229AbgIKRSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:18:31 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:43692 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726195AbgIKO6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:02:35 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08BEmGPA089963;
-        Fri, 11 Sep 2020 09:48:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599835697;
-        bh=utgFM9WorG4OFofGm9b5aCjLlddXO94Yx+teMloJ8+U=;
-        h=Subject:To:References:From:Date:In-Reply-To;
-        b=XUkS/xO3at4lfOm/piZLuaB2/XlW4AlvLQpvHWo6dLE1BCI84/aX/tunBvIXAwOf2
-         u14gxPDv3NnLqmIjFavvaakscCKeUVkRapJrchoqm1hgmCNItBsjvuL9Cxn2uKu0XG
-         51r8CVPCTieQhopP8X7o52xHVnXkhlGWHKOYEf2Y=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08BEmGLX120810
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Sep 2020 09:48:16 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 11
- Sep 2020 09:48:16 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 11 Sep 2020 09:48:16 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08BEmFR2119261;
-        Fri, 11 Sep 2020 09:48:15 -0500
-Subject: Re: [PATCH] memory: omap-gpmc: Fix compile test on SPARC
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200911143251.399-1-krzk@kernel.org>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <bf9aa130-d5e7-d180-5a52-0cb244ffbf4f@ti.com>
-Date:   Fri, 11 Sep 2020 17:48:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 11 Sep 2020 10:58:24 -0400
+Received: by mail-ej1-f67.google.com with SMTP id o8so14186796ejb.10;
+        Fri, 11 Sep 2020 07:53:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dyRucZNm28md89mx/pOf3gZWnRQfYA7sbvDVwnAnZ74=;
+        b=bCUFZ8aMdJYNk2S0RLI52hKuc89u2e/S3ztdd0kNAN3j1qGI+191klxw7ZurMKgowz
+         F8VofdHN5kxXITLgEM8tjNprmA+deuMhhUmcoNttXxU6F1a2Uc2Xch62bQGpSOCwquQc
+         hhOtUWgH3YnzChhnrm+jWjESgv2ocXJHBRf4P4bqwLzJZTcaoBNPCTrnkyx/5adwIV+L
+         irIi9IkK7HxhFnW4XyQUoKQSlBbD+xkGBTRpdT1gVwPX27H00thD3M89LfqHQRMpjeFZ
+         vUPi7tMBO6aSRadZV4gLuuZsD0pKh5zUcsqOrVkggyQDJuJ9Nz/4qiqkVufpMqGr/Fhn
+         nIWw==
+X-Gm-Message-State: AOAM532LCNmjHwYwvvH7JZFjAdMuVYxmLbLanAk5RyUjhwr9QVh2UPSk
+        I+V0PbskZHzW0BU7c4aUpU8=
+X-Google-Smtp-Source: ABdhPJzEFJh32P9XFCoL6b6HJBE98lnsBmOx88hw37vP0PmvRkv5gR+ungj+zLUx4/JPA+XfKl1wAw==
+X-Received: by 2002:a17:906:9389:: with SMTP id l9mr2465355ejx.537.1599836023257;
+        Fri, 11 Sep 2020 07:53:43 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.174])
+        by smtp.googlemail.com with ESMTPSA id h2sm1753694ejk.33.2020.09.11.07.53.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 11 Sep 2020 07:53:42 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 16:53:40 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: Re: [PATCH v3 1/3] ARM: dts: exynos: Add assigned clock parent to
+ CMU in Exynos3250
+Message-ID: <20200911145340.GB15290@kozik-lap>
+References: <20200906142146.21266-1-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200911143251.399-1-krzk@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200906142146.21266-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On 11/09/2020 17:32, Krzysztof Kozlowski wrote:
-> SPARC comes without CONFIG_OF_ADDRESS thus compile testing fails on
-> linking:
+On Sun, Sep 06, 2020 at 04:21:44PM +0200, Krzysztof Kozlowski wrote:
+> Commit 52005dece527 ("ARM: dts: Add assigned clock parents to CMU node
+> for exynos3250") added assigned clocks under Clock Management Unit to
+> fix hangs when accessing ISP registers.
 > 
->    /usr/bin/sparc64-linux-gnu-ld: drivers/memory/omap-gpmc.o: in function `gpmc_probe_generic_child':
->    omap-gpmc.c:(.text.unlikely+0x14ec): undefined reference to `of_platform_device_create'
+> However the dtschema expects "clocks" property if "assigned-clocks" are
+> used.  Add reference to input clock, the parent used in
+> "assigned-clock-parents" to silence the dtschema warnings:
 > 
-> Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
+>   arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml: clock-controller@10030000: 'clocks' is a dependency of 'assigned-clocks'
+> 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
 > ---
->   drivers/memory/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> index 8072204bc21a..00e013b14703 100644
-> --- a/drivers/memory/Kconfig
-> +++ b/drivers/memory/Kconfig
-> @@ -104,6 +104,7 @@ config TI_EMIF
->   
->   config OMAP_GPMC
->   	bool "Texas Instruments OMAP SoC GPMC driver" if COMPILE_TEST
-> +	depends on OF_ADDRESS
-
-but of_platform_device_create() is defined in platform.c which gets built
-irrespective of OF_ADDRESS.
-
-Maybe we need to just depend on CONFIG_OF ?
-
->   	select GPIOLIB
->   	help
->   	  This driver is for the General Purpose Memory Controller (GPMC)
+> Changes since v2:
+> 1. Use XUSBXTI as real input clock.
 > 
+> Changes since v1:
+> 1. Add clocks property.
+> 
+> This is a v2 for:
+> https://lore.kernel.org/linux-samsung-soc/20200901101534.GE23793@kozik-lap/T/#me85ac382b847dadbc3f6ebf30e94e70b5df1ebb6
+> ---
+>  arch/arm/boot/dts/exynos3250-artik5.dtsi | 4 ++++
+>  arch/arm/boot/dts/exynos3250-monk.dts    | 4 ++++
+>  arch/arm/boot/dts/exynos3250-rinato.dts  | 4 ++++
 
-cheers,
--roger
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Applied.
+
+Best regards,
+Krzysztof
+
