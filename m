@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAA826689D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA3A2668A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgIKTQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgIKTQd (ORCPT
+        id S1725851AbgIKTRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:17:11 -0400
+Received: from a27-18.smtp-out.us-west-2.amazonses.com ([54.240.27.18]:55094
+        "EHLO a27-18.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725816AbgIKTRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:16:33 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77ACEC061573;
-        Fri, 11 Sep 2020 12:16:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=MSOm+YhchPha/Ywmk8Mz5tDd4CRt8uyIKrb/F7L6VkQ=; b=dcbfvu40/uDPgGemP/ebXWg8J
-        dkdeKiZqGjO1M9rgsVaISsjDyMIrDnYWGcyKn15NWLScRgrFuGsD8B5Vde3nF+mfHPgJ+ofIrMgk8
-        V+OdvFVaR453LxTdfDUNxAwqEbLuaupXABE5FDnHEV9NNp1JKg10v6cPVu22YQzfKHZ4n5YbE8gLc
-        Uro86Snbh98nIe86506kZ4UcgEnemuSk0m1KVBaWZXUiPKc86qQ/IY85nQ8XZy60DX9EaGHLo+N9R
-        UMdSQbLaqIEZ4HLVDAroUMwdEi3Qyg31xfaoErVpEPxHTntBCLFP7E0HCVq9651+RSBo8KUV91aE8
-        P0BGGHXsg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33022)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kGoWt-0007qX-2c; Fri, 11 Sep 2020 20:16:15 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kGoWq-0008R2-Fy; Fri, 11 Sep 2020 20:16:12 +0100
-Date:   Fri, 11 Sep 2020 20:16:12 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>, andrew@lunn.ch,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH net-next] net: mvpp2: Initialize link in
- mvpp2_isr_handle_{xlg,gmac_internal}
-Message-ID: <20200911191612.GH1551@shell.armlinux.org.uk>
-References: <20200910174826.511423-1-natechancellor@gmail.com>
- <20200910.152811.210183159970625640.davem@davemloft.net>
- <20200911003142.GA2469103@ubuntu-n2-xlarge-x86>
- <20200911111158.GF1551@shell.armlinux.org.uk>
- <20200911082236.7dfb7937@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200911160101.GA4061896@ubuntu-n2-xlarge-x86>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911160101.GA4061896@ubuntu-n2-xlarge-x86>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 11 Sep 2020 15:17:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599851823;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References;
+        bh=GAaaPTdJyZWkXSqI/af+MrePYbvKkuKJ7Aq9ymeNk5M=;
+        b=iXEcHnws2j9CVxgKqJy/GhSiJ4eK+RgWAZS/Pk7SkW6gm8Uq0neRXN5UEPISL00O
+        83oLLyMfI0ClxI6Buib8LxekjaG7NLC9Ce1aH0GIViU2IN3QBAIv9yfRjKJc98x3xDQ
+        WfiSgo+8rj4V5p/NwF4Q+iFSlpIKnTbs00+U7CcM=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599851823;
+        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:Feedback-ID;
+        bh=GAaaPTdJyZWkXSqI/af+MrePYbvKkuKJ7Aq9ymeNk5M=;
+        b=VbHtFSezCl4F6WT82yoexBRUmRv1J/dcaCkjeVeANBe8TBD3EMRU2hd37Dd0BgSU
+        OnJQnGl7h/gPYNI3bRAXdl8lqddhBHQVJ21T9m7GKi6ejTUTJq3e783vlDf5MulQb2O
+        /XcaYZdpQKqlCU9IAaQOalY5eToa0NBsXITf9DPE=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 86BEAC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratikp@codeaurora.org,
+        pdaly@codeaurora.org, sudraja@codeaurora.org,
+        iamjoonsoo.kim@lge.com, linux-arm-msm-owner@vger.kernel.org,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [PATCH v2] cma_alloc(), indefinitely retry allocations for -EBUSY failures
+Date:   Fri, 11 Sep 2020 19:17:03 +0000
+Message-ID: <010101747e997f12-3d4bb1df-b000-4e50-859b-829e6d7f491e-000000@us-west-2.amazonses.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
+References: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
+X-SES-Outgoing: 2020.09.11-54.240.27.18
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 09:01:01AM -0700, Nathan Chancellor wrote:
-> On Fri, Sep 11, 2020 at 08:22:36AM -0700, Jakub Kicinski wrote:
-> > On Fri, 11 Sep 2020 12:11:58 +0100 Russell King - ARM Linux admin wrote:
-> > > On Thu, Sep 10, 2020 at 05:31:42PM -0700, Nathan Chancellor wrote:
-> > > > Ah great, that is indeed cleaner, thank you for letting me know!  
-> > > 
-> > > Hmm, I'm not sure why gcc didn't find that. Strangely, the 0-day bot
-> > > seems to have only picked up on it with clang, not gcc.
-> > 
-> > May be similar to: https://lkml.org/lkml/2019/2/25/1092
-> > 
-> > Recent GCC is so bad at catching uninitialized vars I was considering
-> > build testing with GCC8 :/
-> 
-> It is even simpler than that, the warning was straight up disabled in
-> commit 78a5255ffb6a ("Stop the ad-hoc games with -Wno-maybe-initialized").
+On mobile devices, failure to allocate from a CMA area constitutes a
+functional failure.  Sometimes during CMA allocations, we have observed
+that pages in a CMA area allocated through alloc_pages(), that we're trying
+to migrate away to make room for a CMA allocation, are temporarily pinned.
+This temporary pinning can occur when a process that owns the pinned page
+is being forked (the example is explained further in the commit text), or it is
+exiting.  This patch addresses this issue by indefinitely retrying allocations
+that fail due to a return of -EBUSY.
 
-Great, so now rather than getting false positive warnings, we now
-get buggy code. That sounds like a good improvement to me.
+Change log: 
 
-Not.
+v1: We were performing retries of the allocation a fixed number of times.
+Andrew Morton disliked this, as it didn't guarantee that the allocation would
+succeed.
+
+v2: To address this concern, we switched to retrying indefinitely, as opposed to
+doing to retrying  the allocation a limited number of times.
+
+Chris Goldsworthy (1):
+  mm: cma: indefinitely retry allocations in cma_alloc
+
+ mm/cma.c | 25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
