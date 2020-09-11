@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5529E2668AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCE72668B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725803AbgIKTYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:24:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58124 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725770AbgIKTX5 (ORCPT
+        id S1725813AbgIKTYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgIKTYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:23:57 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BJ3lDc140475;
-        Fri, 11 Sep 2020 15:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3EROlRDCWp8OcJdYHfRi+TO7g3x6mxZvq5GRTKFOd8U=;
- b=KEM/NXHwHPIiTplq1HOhIvX5bAsmw36/0TQu/fZm18VA6D2Zq/anpjXZBRrLmVPOFpmy
- TTxOvSzULmhPdjNJXttCue5U+nbERKLQaVeEVEOnS3oyH0qJ94oxDELU20uLnyTimzz+
- PZxz2lNUjBZ0YpE9/YhEf2c23wjw2VO6eN18JT5ax0/YjI24xVuGFk72HZZpNa0aDy7q
- v2T/0GQBesxj+93SiMLgJLMINVa0ZePtFKARQFWBcmMWHmzb7JzfUKSzU4pTuvFimYEd
- 3W8uSHAS5ypVFxtmKSTkM6jA2EYmiJcLYSxMb+ksDBTr7gQ8JOOchFkAQF6mCn7BGq25 NQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33gexu0m0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 15:23:03 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BJ41F3141951;
-        Fri, 11 Sep 2020 15:23:02 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33gexu0kys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 15:23:02 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BJMmTu031168;
-        Fri, 11 Sep 2020 19:23:00 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 33c2a827a9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 19:23:00 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BJMvdY32768344
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 19:22:57 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C37A5A4040;
-        Fri, 11 Sep 2020 19:22:57 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B845EA4053;
-        Fri, 11 Sep 2020 19:22:51 +0000 (GMT)
-Received: from sig-9-65-251-51.ibm.com (unknown [9.65.251.51])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Sep 2020 19:22:51 +0000 (GMT)
-Message-ID: <46c6f4c1ccab14d914837aa1e4b4ab5674ecc93c.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 8/8] integrity: Asymmetric digsig supports
- SM2-with-SM3 algorithm
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org
-Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Date:   Fri, 11 Sep 2020 15:22:50 -0400
-In-Reply-To: <20200903131242.128665-9-tianjia.zhang@linux.alibaba.com>
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
-         <20200903131242.128665-9-tianjia.zhang@linux.alibaba.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
+        Fri, 11 Sep 2020 15:24:12 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B22CFC061573;
+        Fri, 11 Sep 2020 12:24:11 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id w5so12501694wrp.8;
+        Fri, 11 Sep 2020 12:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1mfwa+bfzGByFN7dyl+NfuUTCSKakmUOReWHAYo+s6Q=;
+        b=i+gqQpVdc1yKBM/qpcJKtRghF/U68gVAi0xr+4Rk75dMAWnl+S4EarnGXaggqqzYob
+         8YVnZT0JKZntIfGwt+KBK25yqdQZhR9Q+rPX8hW6n/QUyvdm0P6ufyMXZ7RJPRwN57MA
+         Se33qW8OsVREREcLz+rWZUGoRbHemAKGg9PBeyk9k0PgoQOUdRJcnAVb8i8k+WAJnQth
+         bAJNpHO+vkh0oFbRP7lBbFsTgm5wiYeQC1CzxucSzPV0kMm/k6qH5LXMPiAZOQgCWCCp
+         59Q67wU1Af79DP0k38u05aNVz9LFuQa2r8tjF49d/ETBjDH5ikfxSUOgoUPpt5BvyYMF
+         8QyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1mfwa+bfzGByFN7dyl+NfuUTCSKakmUOReWHAYo+s6Q=;
+        b=NNZd/ZqJcmsTBUifp2KZF5ewGJpV0vexI6KqucLyCoWe+jmfBfFvbBd98SWEcCm0FT
+         sNarrXg8JfgZ+2kfjxoA9bbV47QkRpcLdOGDbNVb/CRTcdWMAsfms+eFFGJza6uE7Tx/
+         iGOVFqQ7DsJHMzlVhRbOOs4IPSQ31tI5ffLv5JzA+JrM10sh1LATA4sVRAnHN6UcAAM4
+         PNDczHEY4M/LmD3Oxcy83TobRGnWnntnUkhbfsOD6pOB+HJ1VHzp/jw0kH1tKdK/cSQq
+         HdxD/c+e5gmW2VXbmstzyJLsoslLhCj+5BrulsuzevYldF3VXPnoV5By5rmYVewNItfu
+         s/dg==
+X-Gm-Message-State: AOAM5324OJyqKTCxgn413uukMKwuvgTRUOfqp+GOkyYK7TSaknl7dgKL
+        i/F6KEKEbWxSsxIc/iDqNeCERsuwJkDsOg==
+X-Google-Smtp-Source: ABdhPJzdilnfVr5wS0eFl3XNnyZ65+ZE1fauA4XAzww2Ohzj9LOBDGeLTdsIPVs8F3n/WgDosPqklA==
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr3450964wrw.325.1599852250003;
+        Fri, 11 Sep 2020 12:24:10 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id f6sm6225270wro.5.2020.09.11.12.24.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 12:24:09 -0700 (PDT)
+Subject: Re: AW: [PATCH 17/24] get_phys_pages.3: Write 'long' instead of 'long
+ int'
+To:     Walter Harms <wharms@bfs.de>,
+        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
+Cc:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
+ <20200910211344.3562-18-colomar.6.4.3@gmail.com>
+ <c15e4262afea4820961bd36e3386b582@bfs.de>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <14eaf338-2a29-18fe-c319-bcaddd5f86d1@gmail.com>
+Date:   Fri, 11 Sep 2020 21:24:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <c15e4262afea4820961bd36e3386b582@bfs.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_09:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- clxscore=1011 impostorscore=0 spamscore=0 mlxscore=0 priorityscore=1501
- suspectscore=3 lowpriorityscore=0 phishscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110148
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-03 at 21:12 +0800, Tianjia Zhang wrote:
-> Asymmetric digsig supports SM2-with-SM3 algorithm combination,
-> so that IMA can also verify SM2's signature data.
+
+
+On 2020-09-11 15:07, Walter Harms wrote:
 > 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
-
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com> (coding, not crypto
-perspective)
-> ---
->  security/integrity/digsig_asymmetric.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
 > 
-> diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-> index cfa4127d0518..b86a4a8f61ab 100644
-> --- a/security/integrity/digsig_asymmetric.c
-> +++ b/security/integrity/digsig_asymmetric.c
-> @@ -99,14 +99,22 @@ int asymmetric_verify(struct key *keyring, const char *sig,
->  	memset(&pks, 0, sizeof(pks));
->  
->  	pks.hash_algo = hash_algo_name[hdr->hash_algo];
-> -	if (hdr->hash_algo == HASH_ALGO_STREEBOG_256 ||
-> -	    hdr->hash_algo == HASH_ALGO_STREEBOG_512) {
-> +	switch (hdr->hash_algo) {
-> +	case HASH_ALGO_STREEBOG_256:
-> +	case HASH_ALGO_STREEBOG_512:
->  		/* EC-RDSA and Streebog should go together. */
->  		pks.pkey_algo = "ecrdsa";
->  		pks.encoding = "raw";
-> -	} else {
-> +		break;
-> +	case HASH_ALGO_SM3_256:
-> +		/* SM2 and SM3 should go together. */
-> +		pks.pkey_algo = "sm2";
-> +		pks.encoding = "raw";
-> +		break;
-> +	default:
->  		pks.pkey_algo = "rsa";
->  		pks.encoding = "pkcs1";
-> +		break;
->  	}
->  	pks.digest = (u8 *)data;
->  	pks.digest_size = datalen;
+> sys/sysinfo.h:extern long int get_phys_pages (void)
+> 
+> for the real world i would say that long int == long but for the same reason
+> i would say what the include says and stay away from discussions.
+> 
+> jm2c,
+>   wh
 
+I think that the man-pages don't need to follow other projects' 
+inconsistencies.  'long int' == 'long', so I think it's better to be 
+consistent here and hope that the other projects do that too.
 
+A newbie may see 'long int' and 'long' used differently in the man-pages 
+and wonder that there might be a good reason for that to happen, and 
+won't understand why.
+
+So I stand by this patch.
+
+Cheers,
+
+Alex
