@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1A72662DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39892662E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgIKQFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:05:15 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57166 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgIKQDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:03:53 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BG0CTU107632;
-        Fri, 11 Sep 2020 16:03:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=1w3n2CMiZHvxkG6zJpt/AznDLnSWylpcUPu/2eleBX4=;
- b=HO5og/R7qh/342P5DPHI/Og6bfNp5kU5q/MtvwFb1AaBrxH8dxW0km3hZgYba1/BRaGa
- AG137wdK+nEY0Tj/f/JSDFzZ7+ZVidjVY6QCQ6W/bSC9PwE/zO9iJvSuWzHqxM1o14ba
- Pi8JubAARLaIvp2na1zX6gvY3V56zbjbbl/vpCrDwpy00MkbaQD0f6Y0p3vyLQhVKU1n
- ZbhlLSh+jJ9nJeWMePYf0nF95+MGUZ0+wjNxMVPLhWDtC5ze3+V6R0tQW8T4tFr8YozB
- afZ9PcCiQFHnvBnmfAfqnn0S56aKk2y+i0vdH6hI5Dt/tDEnzJiXQMz5XJvSwiDiZz6t fw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33c3anf051-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 11 Sep 2020 16:03:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BG1Eba103298;
-        Fri, 11 Sep 2020 16:03:48 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 33cmkdc657-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 16:03:48 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08BG3kbb004122;
-        Fri, 11 Sep 2020 16:03:47 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 11 Sep 2020 09:03:46 -0700
-Date:   Fri, 11 Sep 2020 09:03:45 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     linux-xfs@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: xfs: support inode btree blockcounts in online repair
-Message-ID: <20200911160345.GT7955@magnolia>
-References: <7c612801-682a-0115-2b37-5d21b933960d@canonical.com>
+        id S1726527AbgIKQG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:06:27 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51191 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726184AbgIKQFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:05:21 -0400
+IronPort-SDR: kys1aNcFhmZQPIqPTrk5KaDVrHUYPSrSXKkYEtlyYKFzAq8h38KpklnrtuP71OKO184uPDrl3H
+ /7s7Baih+6Gw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="158071546"
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="158071546"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 09:05:01 -0700
+IronPort-SDR: J+uNvfXjsVKPaULLRObScXcXxC0aGVPmjVazhcEikrkeaQMnXn5rWg+TG/LI7fzWiTyQbwEHmM
+ 2PCEvdVhi3qg==
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="300969658"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 09:04:58 -0700
+Date:   Fri, 11 Sep 2020 09:04:56 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: always allow writing '0' to MSR_KVM_ASYNC_PF_EN
+Message-ID: <20200911160455.GB4344@sjchrist-ice>
+References: <20200911093147.484565-1-vkuznets@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7c612801-682a-0115-2b37-5d21b933960d@canonical.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009110130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
- clxscore=1011 bulkscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=999 suspectscore=1 adultscore=0 mlxscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110130
+In-Reply-To: <20200911093147.484565-1-vkuznets@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:16:33PM +0100, Colin Ian King wrote:
-> Hi,
+On Fri, Sep 11, 2020 at 11:31:47AM +0200, Vitaly Kuznetsov wrote:
+> Even without in-kernel LAPIC we should allow writing '0' to
+> MSR_KVM_ASYNC_PF_EN as we're not enabling the mechanism. In
+> particular, QEMU with 'kernel-irqchip=off' fails to start
+> a guest with
 > 
-> Static analysis with Coverity has detected an issue with the following
-> commit:
+> qemu-system-x86_64: error: failed to set MSR 0x4b564d02 to 0x0
 > 
-> commit 30deae31eab501f568aadea45cfb3258b9e522f5
-> Author: Darrick J. Wong <darrick.wong@oracle.com>
-> Date:   Wed Aug 26 10:48:50 2020 -0700
+> Fixes: 9d3c447c72fb2 ("KVM: X86: Fix async pf caused null-ptr-deref")
+> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
->     xfs: support inode btree blockcounts in online repair
-> 
-> the analysis is as follows:
-> 
-> 830                cur = xfs_inobt_init_cursor(mp, sc->tp, agi_bp,
-> sc->sa.agno,
-> 831                                XFS_BTNUM_FINO);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d39d6cf1d473..44a86f7f2397 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2730,9 +2730,6 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
+>  	if (data & 0x30)
+>  		return 1;
+>  
+> -	if (!lapic_in_kernel(vcpu))
+> -		return 1;
+> -
+>  	vcpu->arch.apf.msr_en_val = data;
+>  
+>  	if (!kvm_pv_async_pf_enabled(vcpu)) {
+> @@ -2741,6 +2738,9 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
+>  		return 0;
+>  	}
+>  
+> +	if (!lapic_in_kernel(vcpu))
 
-xfs_inobt_init_cursor can't return NULL (because we guarantee the
-allocation cannot fail) so all that really needs to be done here is to
-remove the pointless error check in lines 832-833.
+This doesn't actually verify that @data == 0.  kvm_pv_async_pf_enabled()
+returns true iff KVM_ASYNC_PF_ENABLED and KVM_ASYNC_PF_DELIVERY_AS_INT are
+set, e.g. this would allow setting one and not the other.  This also allows
+userspace to set vcpu->arch.apf.msr_en_val to an unsupported value, i.e.
+@data has already been propagated to the vcpu and isn't unwound.
 
---D
+Why not just pivot on @data when lapic_in_kernel() is false?  vcpu->arch.apic
+is immutable so there's no need to update apf.msr_en_val in either direction.
 
-> const: At condition error, the value of error must be equal to 0.
-> dead_error_condition: The condition error cannot be true.
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 539ea1cd6020..36969d5ec291 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2735,7 +2735,7 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
+                return 1;
+
+        if (!lapic_in_kernel(vcpu))
+-               return 1;
++               return data ? 1 : 0;
+
+        vcpu->arch.apf.msr_en_val = data;
+
+
+> +		return 1;
+> +
+>  	if (kvm_gfn_to_hva_cache_init(vcpu->kvm, &vcpu->arch.apf.data, gpa,
+>  					sizeof(u64)))
+>  		return 1;
+> -- 
+> 2.25.4
 > 
->  832                if (error)
-> 
-> CID: Logically dead code (DEADCODE)dead_error_line: Execution cannot
-> reach this statement: goto err;.
-> 
->  833                        goto err;
-> 
-> While it is tempting to change the if (error) check to if (cur), the
-> exit error path uses the errnoeous cur as follows:
-> 
->  842 err:
->  843       xfs_btree_del_cursor(cur, error);
->  844       return error;
-> 
-> so the error exit path needs some sorting out too.
