@@ -2,192 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C142661D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A08F2661CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgIKPI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:08:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:44099 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbgIKPCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:02:36 -0400
-IronPort-SDR: qjBrqU2C/hDcyoS6hFfjaJHC8/tLYIe4FyjT0xmJAEbZDnJqUJfD7uSL9pTWTlqVkrxDZ3LqMS
- /lPGyq1Qsggg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="222960845"
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="222960845"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 07:12:11 -0700
-IronPort-SDR: FJkBPqTlV7drwVzUoMaUpPusqGTZsZ6QB3TTPgi7OfjiuyCrwhIQ1CxqHZ12ULcEV4aubi+rxo
- E3vmJPwOEsPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
-   d="scan'208";a="286902885"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Sep 2020 07:12:10 -0700
-Received: from [10.251.9.220] (kliang2-MOBL.ccr.corp.intel.com [10.251.9.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 91E97580039;
-        Fri, 11 Sep 2020 07:12:09 -0700 (PDT)
-Subject: Re: [PATCH V2 3/4] perf stat: Support new per thread TopDown metrics
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-References: <20200910134501.11352-1-kan.liang@linux.intel.com>
- <20200910134501.11352-4-kan.liang@linux.intel.com>
- <CAM9d7ci1p1Ej-9=RuJLHJWQ76GR6gjHS2Y=rsQQ0LhNW5YKUBg@mail.gmail.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <b7d8dbb6-be8f-9c15-256b-fc57936aaa1e@linux.intel.com>
-Date:   Fri, 11 Sep 2020 10:12:07 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725962AbgIKPEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgIKO6U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 10:58:20 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC72C06135B
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:31:00 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id g4so10213437edk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 07:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7mgZuX+I018CPLyKtPUh7k/9HodG7wIMhXXoeD6+JKU=;
+        b=jkpy5S66o1feRhrtlzl6PzU1fYz4TE/zZjvhcBHu8qQD+l2uP0ug6wbXuJK9XU4+zS
+         Ml+05QzSwfORDdn+2bQvu4VdPK2hc1MOc+CNLNakaj+5eG4vOqQ+6C4yyw6O78nMtoDL
+         fYu9Skcyyh6a42fCJ70NDglzYCpuwLP8yZDm3HKrrSLSbHoGhva5SKerC7dFzpZNzzWf
+         QXwz7BMUIkVhL2MFmhQEV8f0wCTcrqy83/EsGthbVOTMtERTPPy0pauQg8lD+Eyvz4U8
+         e+xRRDyuXs0jNQBiTm6Ybs236Zx5Na+0jiuaPpAphBmFuJAz0xli0/wSs3jTZHX11Ryr
+         XlUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7mgZuX+I018CPLyKtPUh7k/9HodG7wIMhXXoeD6+JKU=;
+        b=bZP5tddSIkkmexM/kfXovEeUurBnD7gHhoAOorofDzVJo0fzkXsEbLgyzi2UPlCvhT
+         npSqB2/hImQUbs4YQS6kIC51LV1/gwbygJMARtQDOVpKN5z2hItEJwKTv9U2kvo3bWdZ
+         zKhEHL0xj5a+OIzRTx1cVrBri2HPZfFq31o4jBd58zqGUE/dyfSK00kQ3/1/aZgGE2sT
+         XDVsu0SKKuD3XUjvOdmPkhBZynT6pnb+vJu1D+yB6gVeWTzgIFfUCyOPGu3jYY18TRtT
+         QVXrx70Z1JrhONf1wNB2APmVcT/hEnkzrn3/DgU1ewu8/nHmy6pH0PZ78iWfbqCSphBq
+         bJog==
+X-Gm-Message-State: AOAM530YDK4s7I+dfaH1qX+OalgRxxKZycRGA/j+e9B/FQLiLNe5lRCG
+        3pw4jCNLfAzXa1GbRKEr+qh8lw==
+X-Google-Smtp-Source: ABdhPJwhmYbA1MMaXCK6kWdSVFv5YuQOmbMnYfXF79rYVkrYaDq+fAD+mllnm22XYjlgKXbocLQ7ng==
+X-Received: by 2002:aa7:d29a:: with SMTP id w26mr2271422edq.106.1599834659332;
+        Fri, 11 Sep 2020 07:30:59 -0700 (PDT)
+Received: from localhost.localdomain ([87.66.33.240])
+        by smtp.gmail.com with ESMTPSA id y21sm1716261eju.46.2020.09.11.07.30.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 07:30:58 -0700 (PDT)
+From:   Nicolas Rybowski <nicolas.rybowski@tessares.net>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
+Date:   Fri, 11 Sep 2020 16:30:16 +0200
+Message-Id: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7ci1p1Ej-9=RuJLHJWQ76GR6gjHS2Y=rsQQ0LhNW5YKUBg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+is_mptcp is a field from struct tcp_sock used to indicate that the
+current tcp_sock is part of the MPTCP protocol.
 
+In this protocol, a first socket (mptcp_sock) is created with
+sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
+isn't directly on the wire. This is the role of the subflow (kernel)
+sockets which are classical tcp_sock with sk_protocol set to
+IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
+sockets is the is_mptcp field from tcp_sock.
 
-On 9/10/2020 11:37 PM, Namhyung Kim wrote:
-> Hello,
-> 
-> On Thu, Sep 10, 2020 at 10:48 PM <kan.liang@linux.intel.com> wrote:
->>
->> From: Andi Kleen <ak@linux.intel.com>
->>
->> Icelake has support for reporting per thread TopDown metrics.
->> These are reported differently than the previous TopDown support,
->> each metric is standalone, but scaled to pipeline "slots".
->> We don't need to do anything special for HyperThreading anymore.
->> Teach perf stat --topdown to handle these new metrics and
->> print them in the same way as the previous TopDown metrics.
->> The restrictions of only being able to report information per core is
->> gone.
->>
->> Acked-by: Jiri Olsa <jolsa@redhat.com>
->> Co-developed-by: Kan Liang <kan.liang@linux.intel.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> Signed-off-by: Andi Kleen <ak@linux.intel.com>
->> ---
->>   tools/perf/Documentation/perf-stat.txt |  7 +-
->>   tools/perf/builtin-stat.c              | 30 ++++++++-
->>   tools/perf/util/stat-shadow.c          | 89 ++++++++++++++++++++++++++
->>   tools/perf/util/stat.c                 |  4 ++
->>   tools/perf/util/stat.h                 |  8 +++
->>   5 files changed, 134 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
->> index c9bfefc051fb..e803dbdc88a8 100644
->> --- a/tools/perf/Documentation/perf-stat.txt
->> +++ b/tools/perf/Documentation/perf-stat.txt
->> @@ -357,6 +357,11 @@ if the workload is actually bound by the CPU and not by something else.
->>   For best results it is usually a good idea to use it with interval
->>   mode like -I 1000, as the bottleneck of workloads can change often.
->>
->> +This enables --metric-only, unless overridden with --no-metric-only.
->> +
->> +The following restrictions only apply to older Intel CPUs and Atom,
->> +on newer CPUs (IceLake and later) TopDown can be collected for any thread:
->> +
->>   The top down metrics are collected per core instead of per
->>   CPU thread. Per core mode is automatically enabled
->>   and -a (global monitoring) is needed, requiring root rights or
->> @@ -368,8 +373,6 @@ echo 0 > /proc/sys/kernel/nmi_watchdog
->>   for best results. Otherwise the bottlenecks may be inconsistent
->>   on workload with changing phases.
->>
->> -This enables --metric-only, unless overridden with --no-metric-only.
->> -
->>   To interpret the results it is usually needed to know on which
->>   CPUs the workload runs on. If needed the CPUs can be forced using
->>   taskset.
->> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->> index 5583e22ca808..6290da5bd142 100644
->> --- a/tools/perf/builtin-stat.c
->> +++ b/tools/perf/builtin-stat.c
->> @@ -128,6 +128,15 @@ static const char * topdown_attrs[] = {
->>          NULL,
->>   };
->>
->> +static const char *topdown_metric_attrs[] = {
->> +       "slots",
->> +       "topdown-retiring",
->> +       "topdown-bad-spec",
->> +       "topdown-fe-bound",
->> +       "topdown-be-bound",
->> +       NULL,
->> +};
->> +
->>   static const char *smi_cost_attrs = {
->>          "{"
->>          "msr/aperf/,"
->> @@ -1691,6 +1700,24 @@ static int add_default_attributes(void)
->>                  char *str = NULL;
->>                  bool warn = false;
->>
->> +               if (!force_metric_only)
->> +                       stat_config.metric_only = true;
->> +
->> +               if (topdown_filter_events(topdown_metric_attrs, &str, 1) < 0) {
->> +                       pr_err("Out of memory\n");
->> +                       return -1;
->> +               }
->> +               if (topdown_metric_attrs[0] && str) {
->> +                       if (!stat_config.interval && !stat_config.metric_only) {
->> +                               fprintf(stat_config.output,
->> +                                       "Topdown accuracy may decrease when measuring long periods.\n"
->> +                                       "Please print the result regularly, e.g. -I1000\n");
->> +                       }
->> +                       goto setup_metrics;
->> +               }
->> +
->> +               str = NULL;
-> 
-> zfree(&str) ?
+Such an exposure in BPF is thus required to be able to differentiate
+plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
+programs.
 
-Yes, even the topdown events don't exist, str is still allocated.
-The str should be free.
+The choice has been made to silently pass the case when CONFIG_MPTCP is
+unset by defaulting is_mptcp to 0 in order to make BPF independent of
+the MPTCP configuration. Another solution is to make the verifier fail
+in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
+'#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
+will not run if MPTCP is not set.
 
-I will send V3 to fix it shortly.
+An example use-case is provided in
+https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
 
-Thanks,
-Kan
+Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+---
+ include/uapi/linux/bpf.h       | 1 +
+ net/core/filter.c              | 9 ++++++++-
+ tools/include/uapi/linux/bpf.h | 1 +
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-> 
-> Thanks
-> Namhyung
-> 
-> 
->> +
->>                  if (stat_config.aggr_mode != AGGR_GLOBAL &&
->>                      stat_config.aggr_mode != AGGR_CORE) {
->>                          pr_err("top down event configuration requires --per-core mode\n");
->> @@ -1702,8 +1729,6 @@ static int add_default_attributes(void)
->>                          return -1;
->>                  }
->>
->> -               if (!force_metric_only)
->> -                       stat_config.metric_only = true;
->>                  if (topdown_filter_events(topdown_attrs, &str,
->>                                  arch_topdown_check_group(&warn)) < 0) {
->>                          pr_err("Out of memory\n");
->> @@ -1712,6 +1737,7 @@ static int add_default_attributes(void)
->>                  if (topdown_attrs[0] && str) {
->>                          if (warn)
->>                                  arch_topdown_group_warn();
->> +setup_metrics:
->>                          err = parse_events(evsel_list, str, &errinfo);
->>                          if (err) {
->>                                  fprintf(stderr,
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 7dd314176df7..7d179eada1c3 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
+ 
+ struct bpf_sock_tuple {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index d266c6941967..dab48528dceb 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5837,7 +5837,7 @@ bool bpf_tcp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 				  struct bpf_insn_access_aux *info)
+ {
+ 	if (off < 0 || off >= offsetofend(struct bpf_tcp_sock,
+-					  icsk_retransmits))
++					  is_mptcp))
+ 		return false;
+ 
+ 	if (off % size != 0)
+@@ -5971,6 +5971,13 @@ u32 bpf_tcp_sock_convert_ctx_access(enum bpf_access_type type,
+ 	case offsetof(struct bpf_tcp_sock, icsk_retransmits):
+ 		BPF_INET_SOCK_GET_COMMON(icsk_retransmits);
+ 		break;
++	case offsetof(struct bpf_tcp_sock, is_mptcp):
++#ifdef CONFIG_MPTCP
++		BPF_TCP_SOCK_GET_COMMON(is_mptcp);
++#else
++		*insn++ = BPF_MOV32_IMM(si->dst_reg, 0);
++#endif
++		break;
+ 	}
+ 
+ 	return insn - insn_buf;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 7dd314176df7..7d179eada1c3 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
+ 	__u32 delivered;	/* Total data packets delivered incl. rexmits */
+ 	__u32 delivered_ce;	/* Like the above but only ECE marked packets */
+ 	__u32 icsk_retransmits;	/* Number of unrecovered [RTO] timeouts */
++	__u32 is_mptcp;		/* Is MPTCP subflow? */
+ };
+ 
+ struct bpf_sock_tuple {
+-- 
+2.28.0
+
