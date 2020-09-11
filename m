@@ -2,41 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF9A265EA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DA6265EAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgIKLQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 07:16:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:60196 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbgIKLQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:16:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 710BC113E;
-        Fri, 11 Sep 2020 04:16:08 -0700 (PDT)
-Received: from [192.168.1.205] (unknown [10.37.8.109])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D3E73F68F;
-        Fri, 11 Sep 2020 04:16:04 -0700 (PDT)
-Subject: Re: [PATCH v2] spi: spi-nxp-fspi: Add ACPI support
-To:     Mark Brown <broonie@kernel.org>,
-        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
-Cc:     Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Varun Sethi <V.Sethi@nxp.com>,
-        Arokia Samy <arokia.samy@nxp.com>,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
-        Paul Yang <Paul.Yang@arm.com>
-References: <20200911082806.115-1-kuldip.dwivedi@puresoftware.com>
- <20200911110018.GD4895@sirena.org.uk>
-From:   Ard Biesheuvel <ard.biesheuvel@arm.com>
-Message-ID: <9a6ce5d0-2f39-eb55-c3a9-cae2a8093fbc@arm.com>
-Date:   Fri, 11 Sep 2020 14:16:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1725790AbgIKLRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 07:17:33 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38045 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgIKLQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:16:36 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kGh2g-0007mi-2D; Fri, 11 Sep 2020 11:16:34 +0000
+From:   Colin Ian King <colin.king@canonical.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, Brian Foster <bfoster@redhat.com>
+Subject: re: xfs: support inode btree blockcounts in online repair
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <7c612801-682a-0115-2b37-5d21b933960d@canonical.com>
+Date:   Fri, 11 Sep 2020 12:16:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <20200911110018.GD4895@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,18 +35,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 1:00 PM, Mark Brown wrote:
-> On Fri, Sep 11, 2020 at 01:58:06PM +0530, kuldip dwivedi wrote:
-> 
->>   	/* find the resources - configuration register address space */
->>   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fspi_base");
->> +#ifdef CONFIG_ACPI
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +#endif
-> 
-> This is buggy, it is equivalent to just removing the name based lookup
-> since we'll do the name based lookup then unconditionally overwrite the
-> results with an index based lookup.
-> 
+Hi,
 
-Also, note that CONFIG_ACPI kernels may still boot in DT mode.
+Static analysis with Coverity has detected an issue with the following
+commit:
+
+commit 30deae31eab501f568aadea45cfb3258b9e522f5
+Author: Darrick J. Wong <darrick.wong@oracle.com>
+Date:   Wed Aug 26 10:48:50 2020 -0700
+
+    xfs: support inode btree blockcounts in online repair
+
+the analysis is as follows:
+
+830                cur = xfs_inobt_init_cursor(mp, sc->tp, agi_bp,
+sc->sa.agno,
+831                                XFS_BTNUM_FINO);
+
+const: At condition error, the value of error must be equal to 0.
+dead_error_condition: The condition error cannot be true.
+
+ 832                if (error)
+
+CID: Logically dead code (DEADCODE)dead_error_line: Execution cannot
+reach this statement: goto err;.
+
+ 833                        goto err;
+
+While it is tempting to change the if (error) check to if (cur), the
+exit error path uses the errnoeous cur as follows:
+
+ 842 err:
+ 843       xfs_btree_del_cursor(cur, error);
+ 844       return error;
+
+so the error exit path needs some sorting out too.
