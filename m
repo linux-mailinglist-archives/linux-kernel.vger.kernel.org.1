@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DE12659E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560B52659E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725730AbgIKHEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgIKHCb (ORCPT
+        id S1725843AbgIKHEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:04:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45110 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725786AbgIKHCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:02:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6004C061757;
-        Fri, 11 Sep 2020 00:02:30 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 07:02:28 -0000
+        Fri, 11 Sep 2020 03:02:33 -0400
+Date:   Fri, 11 Sep 2020 07:02:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599807748;
+        s=2020; t=1599807749;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5d9fe4eytXUd+WWgl53CTGZ6C41OK0l4pfyvLMLPzBM=;
-        b=4TWbKgyRoZNfR5l/x3w4Rbu6kLx/7nZbRQDIX/2K8IU16HKyyid7/pRWNedHLRzGXaEZQv
-        FU6LvZIATgXUAfG/adezZs9wa9JH9uXnxDgQws83e+Vfhxj2rzzYU6lq245Dq30QoQozHG
-        5zcrMoP8EX/DGa3G6u5kyoFCy935HJ0lUz5zWp+ixCJHT1x87S0ZiMBzj1xUfdSXoN8OhK
-        jR8snlgvG6ngcKj+unlZMAfNtp83NHmyArAmA98rWEBnL3WHS10ZndnIz3Dr91AOmrMGbh
-        +3+a8P7xEksMu6q4G9LYrIJgLzR1NyLsCect0i2RWEdgvFhj+PNx00ytj03y4Q==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=daWq2XO2fjGJ3kJ6pYkaVRIuo6C4pUxuCjADseWC16s=;
+        b=MIYF9bXY/bj+VO1C4hSnS8X3bX44zZ+gkS/NVJTDCKDl5+wEkTfmLbJKSnE+eh7wP0mDzE
+        oAapFkLHPp0+i2fTALa9SfebXQIw/XfddjK6ecdudSOUvSt79y/gff72X4cBLrCE9cBvq9
+        ecI16ePH/qE/Fij9BRC7DVv5+Uqtk5efWrDPBv4bLmFGpeXFWl+9o8X6VxwsuAwYyOCMec
+        puI/ExNlaiTBlpkYv2H7UUdGW2Trhw1xUI4P2eK2LNfGeU4pAJCy7YKxLp9LZyrKsUS95U
+        CLu/E/KnALO+12mlT8fRmbHUQ/FtO8okLwPQAVxJ9eOlN5ehGR779t/nQo+dkg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599807748;
+        s=2020e; t=1599807749;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5d9fe4eytXUd+WWgl53CTGZ6C41OK0l4pfyvLMLPzBM=;
-        b=0AbQ0w3TMfUVq71qvyxszMHlmJPLSV2Boh5q2uchp9g2xYKxpNoGpG/AIqoF0t7pz4hH4T
-        PIW5N55gXM23oNDA==
-From:   "tip-bot2 for Kim Phillips" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=daWq2XO2fjGJ3kJ6pYkaVRIuo6C4pUxuCjADseWC16s=;
+        b=uMUcAMuJcsY3nvh6oDZmJrJHdfd3fsP3Ta1IdKitQOelMVuerq7WRpgm363vID3Bmuq3Ji
+        P0KDfsvN1TcnJLDQ==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/amd: Fix sampling Large Increment per Cycle events
-Cc:     Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        stable@vger.kernel.org, x86 <x86@kernel.org>,
+Subject: [tip: perf/core] perf/core: Pull pmu::sched_task() into
+ perf_event_context_sched_out()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200821195754.20159-2-kan.liang@linux.intel.com>
+References: <20200821195754.20159-2-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <159980774821.20229.7720841504258329146.tip-bot2@tip-bot2>
+Message-ID: <159980774909.20229.18111367837276580444.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,51 +59,185 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     26e52558ead4b39c0e0fe7bf08f82f5a9777a412
-Gitweb:        https://git.kernel.org/tip/26e52558ead4b39c0e0fe7bf08f82f5a9777a412
-Author:        Kim Phillips <kim.phillips@amd.com>
-AuthorDate:    Tue, 08 Sep 2020 16:47:35 -05:00
+Commit-ID:     44fae179ce73a26733d9e2d346da4e1a1cb94647
+Gitweb:        https://git.kernel.org/tip/44fae179ce73a26733d9e2d346da4e1a1cb94647
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Fri, 21 Aug 2020 12:57:53 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 10 Sep 2020 11:19:35 +02:00
+CommitterDate: Thu, 10 Sep 2020 11:19:34 +02:00
 
-perf/x86/amd: Fix sampling Large Increment per Cycle events
+perf/core: Pull pmu::sched_task() into perf_event_context_sched_out()
 
-Commit 5738891229a2 ("perf/x86/amd: Add support for Large Increment
-per Cycle Events") mistakenly zeroes the upper 16 bits of the count
-in set_period().  That's fine for counting with perf stat, but not
-sampling with perf record when only Large Increment events are being
-sampled.  To enable sampling, we sign extend the upper 16 bits of the
-merged counter pair as described in the Family 17h PPRs:
+The pmu::sched_task() is a context switch callback. It passes the
+cpuctx->task_ctx as a parameter to the lower code. To find the
+cpuctx->task_ctx, the current code iterates a cpuctx list.
+The same context will iterated in perf_event_context_sched_out() soon.
+Share the cpuctx->task_ctx can avoid the unnecessary iteration of the
+cpuctx list.
 
-"Software wanting to preload a value to a merged counter pair writes the
-high-order 16-bit value to the low-order 16 bits of the odd counter and
-then writes the low-order 48-bit value to the even counter. Reading the
-even counter of the merged counter pair returns the full 64-bit value."
+The pmu::sched_task() is also required for the optimization case for
+equivalent contexts.
 
-Fixes: 5738891229a2 ("perf/x86/amd: Add support for Large Increment per Cycle Events")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+The task_ctx_sched_out() will eventually disable and reenable the PMU
+when schedule out events. Add perf_pmu_disable() and perf_pmu_enable()
+around task_ctx_sched_out() don't break anything.
+
+Drop the cpuctx->ctx.lock for the pmu::sched_task(). The lock is for
+per-CPU context, which is not necessary for the per-task context
+schedule.
+
+No one uses sched_cb_entry, perf_sched_cb_usages, sched_cb_list, and
+perf_pmu_sched_task() any more.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+Link: https://lkml.kernel.org/r/20200821195754.20159-2-kan.liang@linux.intel.com
 ---
- arch/x86/events/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/perf_event.h |  1 +-
+ kernel/events/core.c       | 47 +++++++++++++------------------------
+ 2 files changed, 17 insertions(+), 31 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 0f3d015..cb5cfef 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -1326,11 +1326,11 @@ int x86_perf_event_set_period(struct perf_event *event)
- 	wrmsrl(hwc->event_base, (u64)(-left) & x86_pmu.cntval_mask);
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 46a3974..0c19d27 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -872,7 +872,6 @@ struct perf_cpu_context {
+ 	struct list_head		cgrp_cpuctx_entry;
+ #endif
  
- 	/*
--	 * Clear the Merge event counter's upper 16 bits since
-+	 * Sign extend the Merge event counter's upper 16 bits since
- 	 * we currently declare a 48-bit counter width
- 	 */
- 	if (is_counter_pair(hwc))
--		wrmsrl(x86_pmu_event_addr(idx + 1), 0);
-+		wrmsrl(x86_pmu_event_addr(idx + 1), 0xffff);
+-	struct list_head		sched_cb_entry;
+ 	int				sched_cb_usage;
  
- 	/*
- 	 * Due to erratum on certan cpu we need
+ 	int				online;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 3f5fec4..45edb85 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -382,7 +382,6 @@ static DEFINE_MUTEX(perf_sched_mutex);
+ static atomic_t perf_sched_count;
+ 
+ static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
+-static DEFINE_PER_CPU(int, perf_sched_cb_usages);
+ static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
+ 
+ static atomic_t nr_mmap_events __read_mostly;
+@@ -3384,10 +3383,12 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+ 	struct perf_event_context *parent, *next_parent;
+ 	struct perf_cpu_context *cpuctx;
+ 	int do_switch = 1;
++	struct pmu *pmu;
+ 
+ 	if (likely(!ctx))
+ 		return;
+ 
++	pmu = ctx->pmu;
+ 	cpuctx = __get_cpu_context(ctx);
+ 	if (!cpuctx->task_ctx)
+ 		return;
+@@ -3417,11 +3418,15 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+ 		raw_spin_lock(&ctx->lock);
+ 		raw_spin_lock_nested(&next_ctx->lock, SINGLE_DEPTH_NESTING);
+ 		if (context_equiv(ctx, next_ctx)) {
+-			struct pmu *pmu = ctx->pmu;
+ 
+ 			WRITE_ONCE(ctx->task, next);
+ 			WRITE_ONCE(next_ctx->task, task);
+ 
++			perf_pmu_disable(pmu);
++
++			if (cpuctx->sched_cb_usage && pmu->sched_task)
++				pmu->sched_task(ctx, false);
++
+ 			/*
+ 			 * PMU specific parts of task perf context can require
+ 			 * additional synchronization. As an example of such
+@@ -3433,6 +3438,8 @@ static void perf_event_context_sched_out(struct task_struct *task, int ctxn,
+ 			else
+ 				swap(ctx->task_ctx_data, next_ctx->task_ctx_data);
+ 
++			perf_pmu_enable(pmu);
++
+ 			/*
+ 			 * RCU_INIT_POINTER here is safe because we've not
+ 			 * modified the ctx and the above modification of
+@@ -3455,21 +3462,22 @@ unlock:
+ 
+ 	if (do_switch) {
+ 		raw_spin_lock(&ctx->lock);
++		perf_pmu_disable(pmu);
++
++		if (cpuctx->sched_cb_usage && pmu->sched_task)
++			pmu->sched_task(ctx, false);
+ 		task_ctx_sched_out(cpuctx, ctx, EVENT_ALL);
++
++		perf_pmu_enable(pmu);
+ 		raw_spin_unlock(&ctx->lock);
+ 	}
+ }
+ 
+-static DEFINE_PER_CPU(struct list_head, sched_cb_list);
+-
+ void perf_sched_cb_dec(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	this_cpu_dec(perf_sched_cb_usages);
+-
+-	if (!--cpuctx->sched_cb_usage)
+-		list_del(&cpuctx->sched_cb_entry);
++	--cpuctx->sched_cb_usage;
+ }
+ 
+ 
+@@ -3477,10 +3485,7 @@ void perf_sched_cb_inc(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	if (!cpuctx->sched_cb_usage++)
+-		list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
+-
+-	this_cpu_inc(perf_sched_cb_usages);
++	cpuctx->sched_cb_usage++;
+ }
+ 
+ /*
+@@ -3509,20 +3514,6 @@ static void __perf_pmu_sched_task(struct perf_cpu_context *cpuctx, bool sched_in
+ 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
+ }
+ 
+-static void perf_pmu_sched_task(struct task_struct *prev,
+-				struct task_struct *next,
+-				bool sched_in)
+-{
+-	struct perf_cpu_context *cpuctx;
+-
+-	if (prev == next)
+-		return;
+-
+-	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry)
+-		__perf_pmu_sched_task(cpuctx, sched_in);
+-
+-}
+-
+ static void perf_event_switch(struct task_struct *task,
+ 			      struct task_struct *next_prev, bool sched_in);
+ 
+@@ -3545,9 +3536,6 @@ void __perf_event_task_sched_out(struct task_struct *task,
+ {
+ 	int ctxn;
+ 
+-	if (__this_cpu_read(perf_sched_cb_usages))
+-		perf_pmu_sched_task(task, next, false);
+-
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, next, false);
+ 
+@@ -12867,7 +12855,6 @@ static void __init perf_event_init_all_cpus(void)
+ #ifdef CONFIG_CGROUP_PERF
+ 		INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
+ #endif
+-		INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
+ 	}
+ }
+ 
