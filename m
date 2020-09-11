@@ -2,177 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D177265BB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE42265BB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbgIKIei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgIKIe0 (ORCPT
+        id S1725817AbgIKIfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:35:12 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:27191 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbgIKIfI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:34:26 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1611C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:34:25 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g4so10620810wrs.5
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M0S4mP0yQ288Ht2IB3N+dbHxuqNNpIHZMkWTvJtXhOc=;
-        b=PjsNQ/VGfWEB/Je9D2ogZjHZiDGDyOpS4ISuRBopjuEgW6j2F2opOiYWud3Q5U5GI3
-         AQeU9UOKGJv01qSSw1DB1PVTcy3ESKJYkbxgo7Nm08xdMV5HNfX1FK0KYi9N4L21ES1k
-         9U/1QUSJes6b4cEvGOcHiC1J0281ylA2mrnajr+Zz06h9OKNDuFugNOqajsZ3QumU0eZ
-         /x0BHg7x2ioMEalsdP8EQcU998V8ejjZs40169D0Dc4vOzndI7VIzlVpcC+FzfcBXsqq
-         fajcI4JOzvFDntYJ6wFTqoNnvj2yJUr57Lu0jh/M/UeE7LpGNCcTIUhnov7H9XqHLXwX
-         G8uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M0S4mP0yQ288Ht2IB3N+dbHxuqNNpIHZMkWTvJtXhOc=;
-        b=jvBxwCgmE7sNmCb2L1Urz1poE/NJYhcT3Yr3Bjyp1vbTkjxqhOveUU2rJ0Pcx9Tfuy
-         NhBdEacl477EtogGObcbaith8ppvMxppd978lTVnGb7UVgAXQwCQdw2JD4OVdQzyci0L
-         +VcYnlqAyIW9mbxs93erCJ7IaumGLpdaDRCxBdOcKk3xcUSqBtvbYfPIo4N8BSA428ic
-         llz2U4ADcxCVoHzVTFAVCGuFj7ZEM0kF35mJWYnLHyvaZbsAvZi0rqHbkWR1tJQLpdCJ
-         yQmJKxDvdgmiZM91FK599JK48kF8yPnGIslrNAeR14gcuGyyB4FhPlzebwzMp1kyYZ4z
-         u/uQ==
-X-Gm-Message-State: AOAM532Fmy/Lcg6Vr3JaZ9aZ6pWWSv5wiBhFL5ngYQL+T//lNP07NOtZ
-        LkKTeU1rDfaeXYT1dssj+wpDMQ==
-X-Google-Smtp-Source: ABdhPJz+kgniz8iKUb4blQrRirzDIa4lhBqRbiiOpeC5E8r1DBQFs2ka64TSwdoiUTGozKH7QGOAjw==
-X-Received: by 2002:adf:f290:: with SMTP id k16mr982616wro.124.1599813263810;
-        Fri, 11 Sep 2020 01:34:23 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id q186sm2803894wma.45.2020.09.11.01.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 01:34:23 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 09:34:21 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Jann Horn <jannh@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Jason Yan <yanaijie@huawei.com>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Saurav Girepunje <saurav.girepunje@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH RESEND v3 04/11] usb: xhci-rcar: convert to
- readl_poll_timeout_atomic()
-Message-ID: <20200911083421.g5cidlnwfiksggvk@holly.lan>
-References: <1599726112-4439-1-git-send-email-chunfeng.yun@mediatek.com>
- <1599726112-4439-4-git-send-email-chunfeng.yun@mediatek.com>
- <20200910131212.wm7zskxvcesl652c@holly.lan>
- <1599791601.24609.5.camel@mhfsdcap03>
+        Fri, 11 Sep 2020 04:35:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1599813302;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=7sx4/EPNUP09DwZc2KWs5gmrSO/3qsHOgl5SFdZtzfk=;
+        b=JJR/R2cK3UENYguz9SU5aSJP754bpZrYivWGarMPO6HshroE/IcehOPwg2yw7w4DTS
+        zd4E0j2FkGCcjJIYxiwfOAg0ddEQhOq9yxbFVWj5deFAAi1HrMhxNkYdlFh517r7hEOD
+        EsSLo0Kw9hsF6JKiz520RNfurX5w3R2Kki19taCQfE3l9jKjpViwL5g9WzU2q3xAi3ui
+        Zt20cBYzDPEfConBD5ULwkT7K4puSrLpnyCYAaxkeE5TbfjYxmuJGIlR6xoR8eMo7rDO
+        g71fKq49geCo24nqJ2Hw2yZSPS9OGGczcAEaKSts2jMzuOfBhiiiomS/TrN4FPmkAId/
+        sg5Q==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEIdhPgVC7iy9yGr7ESbX"
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
+        with ESMTPSA id g0b6c1w8B8Z0Lek
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 11 Sep 2020 10:35:00 +0200 (CEST)
+Date:   Fri, 11 Sep 2020 10:34:55 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Niklas Cassel <nks@flawful.org>
+Subject: Re: [PATCH v2] opp: Power on (virtual) power domains managed by the
+ OPP core
+Message-ID: <20200911083455.GA1591@gerhold.net>
+References: <20200826093328.88268-1-stephan@gerhold.net>
+ <20200827100104.yuf2nzb6qras7zcw@vireshk-i7>
+ <20200827114422.GA1784@gerhold.net>
+ <20200828063511.y47ofywtu5qo57bq@vireshk-i7>
+ <20200828095706.GA1865@gerhold.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1599791601.24609.5.camel@mhfsdcap03>
+In-Reply-To: <20200828095706.GA1865@gerhold.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 10:33:21AM +0800, Chunfeng Yun wrote:
-> On Thu, 2020-09-10 at 14:12 +0100, Daniel Thompson wrote:
-> > On Thu, Sep 10, 2020 at 04:21:45PM +0800, Chunfeng Yun wrote:
-> > > Use readl_poll_timeout_atomic() to simplify code
-> > > 
-> > > Cc: Mathias Nyman <mathias.nyman@linux.intel.com>
-> > > Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> > > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-> > > ---
-> > > v2~v3: no changes
-> > > ---
-> > >  drivers/usb/host/xhci-rcar.c | 43 ++++++++++++-------------------------------
-> > >  1 file changed, 12 insertions(+), 31 deletions(-)
-> > > 
-> > > diff --git a/drivers/usb/host/xhci-rcar.c b/drivers/usb/host/xhci-rcar.c
-> > > index c1025d3..74f836f 100644
-> > > --- a/drivers/usb/host/xhci-rcar.c
-> > > +++ b/drivers/usb/host/xhci-rcar.c
-> > > @@ -6,6 +6,7 @@
-> > >   */
-> > >  
-> > >  #include <linux/firmware.h>
-> > > +#include <linux/iopoll.h>
-> > >  #include <linux/module.h>
-> > >  #include <linux/platform_device.h>
-> > >  #include <linux/of.h>
-> > > @@ -127,8 +128,7 @@ static int xhci_rcar_download_firmware(struct usb_hcd *hcd)
-> > >  	void __iomem *regs = hcd->regs;
-> > >  	struct xhci_plat_priv *priv = hcd_to_xhci_priv(hcd);
-> > >  	const struct firmware *fw;
-> > > -	int retval, index, j, time;
-> > > -	int timeout = 10000;
-> > > +	int retval, index, j;
-> > >  	u32 data, val, temp;
-> > >  	u32 quirks = 0;
-> > >  	const struct soc_device_attribute *attr;
-> > > @@ -166,32 +166,19 @@ static int xhci_rcar_download_firmware(struct usb_hcd *hcd)
-> > >  		temp |= RCAR_USB3_DL_CTRL_FW_SET_DATA0;
-> > >  		writel(temp, regs + RCAR_USB3_DL_CTRL);
-> > >  
-> > > -		for (time = 0; time < timeout; time++) {
-> > > -			val = readl(regs + RCAR_USB3_DL_CTRL);
-> > > -			if ((val & RCAR_USB3_DL_CTRL_FW_SET_DATA0) == 0)
-> > > -				break;
-> > > -			udelay(1);
-> > > -		}
-> > > -		if (time == timeout) {
-> > > -			retval = -ETIMEDOUT;
-> > > +		retval = readl_poll_timeout_atomic(regs + RCAR_USB3_DL_CTRL,
-> > > +				val, !(val & RCAR_USB3_DL_CTRL_FW_SET_DATA0),
-> > > +				1, 10000);
-> > > +		if (retval < 0)
-> > >  			break;
-> > > -		}
-> > >  	}
-> > >  
-> > >  	temp = readl(regs + RCAR_USB3_DL_CTRL);
-> > >  	temp &= ~RCAR_USB3_DL_CTRL_ENABLE;
-> > >  	writel(temp, regs + RCAR_USB3_DL_CTRL);
-> > >  
-> > > -	for (time = 0; time < timeout; time++) {
-> > > -		val = readl(regs + RCAR_USB3_DL_CTRL);
-> > > -		if (val & RCAR_USB3_DL_CTRL_FW_SUCCESS) {
-> > > -			retval = 0;
-> > > -			break;
-> > > -		}
-> > > -		udelay(1);
-> > > -	}
-> > > -	if (time == timeout)
-> > > -		retval = -ETIMEDOUT;
-> > > +	retval = readl_poll_timeout_atomic((regs + RCAR_USB3_DL_CTRL),
-> > > +			val, (val & RCAR_USB3_DL_CTRL_FW_SUCCESS), 1, 10000);
+Hi Viresh,
+
+On Fri, Aug 28, 2020 at 11:57:28AM +0200, Stephan Gerhold wrote:
+> On Fri, Aug 28, 2020 at 12:05:11PM +0530, Viresh Kumar wrote:
+> > On 27-08-20, 13:44, Stephan Gerhold wrote:
+> > > Hmm. Actually I was using this parameter for initial testing, and forced
+> > > on the power domains from the qcom-cpufreq-nvmem driver. For my v1 patch
+> > > I wanted to enable the power domains in dev_pm_opp_set_rate(), so there
+> > > using the virt_devs parameter was not possible.
 > > 
-> > Directly assigning to retval at this point will clobber a previous
-> > -ETIMEDOUT error.
+> > Right, as we really do not want to enable it there and leave it for
+> > the real consumers to handle.
 > > 
-> > In other words if there is a timeout waiting for FW_SET_DATA0, but not for
-> > DW_SUCCESS, then we will return the wrong return value.
->
-> Yes, agree with you, but seems I keep its original logic unchanged.
+> > > On the other hand, creating the device links would be possible from the
+> > > platform driver by using the parameter.
+> > 
+> > Right.
+> > 
+> > > > And so I think again if this patch should be picked instead of letting
+> > > > the platform handle this ?
+> > > 
+> > > It seems like originally the motivation for the parameter was that
+> > > cpufreq consumers do *not* need to power on the power domains:
+> > > 
+> > > Commit 17a8f868ae3e ("opp: Return genpd virtual devices from dev_pm_opp_attach_genpd()"):
+> > >  "The cpufreq drivers don't need to do runtime PM operations on
+> > >   the virtual devices returned by dev_pm_domain_attach_by_name() and so
+> > >   the virtual devices weren't shared with the callers of
+> > >   dev_pm_opp_attach_genpd() earlier.
+> > > 
+> > >   But the IO device drivers would want to do that. This patch updates
+> > >   the prototype of dev_pm_opp_attach_genpd() to accept another argument
+> > >   to return the pointer to the array of genpd virtual devices."
+> > 
+> > Not just that I believe. There were also arguments that only the real
+> > consumer knows how to handle multiple power domains. For example for a
+> > USB or Camera module which can work in multiple modes, we may want to
+> > enable only one power domain in say slow mode and another power domain
+> > in fast mode. And so these kind of complex behavior/choices better be
+> > left for the end consumer and not try to handle this generically in
+> > the OPP core.
+> > 
+> [...]
+> 
+> It seems to me that there is more work needed to make such a use case
+> really work, but it's hard to speculate without a real example.
+> 
 
-I disagree.
+So it seems like we have a real example now. :)
 
-Your patch does not preserve the original logic. Your patch explicitly
-sets retval to zero if the second loop succeeds. The original code does
-not do this. As a result there is a change of return code for one of the
-error paths.
+As mentioned in my other mail [1] it turns out I actually have such a
+use case. I briefly explained it in [2], basically the clock that
+provides higher CPU frequencies has some voltage requirements that
+should be voted for using a power domain.
 
+The clock that provides the lower CPU frequencies has no such
+requirement, so I need to scale (and power on) a power domain only for
+some of the OPPs.
 
-Daniel.
+[1]: https://lore.kernel.org/linux-pm/20200831154938.GA33622@gerhold.net/
+[2]: https://lore.kernel.org/linux-arm-msm/20200910162610.GA7008@gerhold.net/
+
+So I think it would be good to discuss this use case first before we
+decide on this patch (how to enable power domains managed by the OPP
+core). I think there are two problems that need to be solved:
+
+1. How can we drop our performance state votes for some of the OPPs?
+   I explained that problem earlier already:
+
+> 
+> I was thinking about something like that, but can you actually drop
+> your performance state vote for one of the power domains using
+> "required-opps"?
+> 
+> At the moment it does not seem possible. I tried adding a special OPP
+> using opp-level = <0> to reference that from required-opps, but the OPP
+> core does not allow this:
+> 
+> 	vddcx: Not all nodes have performance state set (7: 6)
+> 	vddcx: Failed to add OPP table for index 0: -2
+> 
+> So the "virt_devs" parameter would allow you to disable the power
+> domain, but not to drop your performance state vote (you could only vote
+> for the lowest OPP, not 0...)
+
+Not sure if it makes sense but I think somehow allowing the additional
+opp-level = <0> would be a simple solution. For example:
+
+	rpmpd: power-controller {
+		rpmpd_opp_table: opp-table {
+			compatible = "operating-points-v2";
+
+            /*
+             * This one can be referenced to drop the performance state
+             * vote within required-opps.
+             */
+            rpmpd_opp_none: opp0 {
+                opp-level = <0>;
+            };
+
+			rpmpd_opp_retention: opp1 {
+				opp-level = <1>;
+			};
+
+            /* ... */
+        };
+    };                
+
+	cpu_opp_table: cpu-opp-table {
+		compatible = "operating-points-v2";
+		opp-shared;
+
+        /* Power domain is only needed for frequencies >= 998 MHz */
+		opp-200000000 {
+			opp-hz = /bits/ 64 <200000000>;
+			required-opps = <&rpmpd_opp_none>; /* = drop perf state */
+		};
+		opp-998400000 {
+			opp-hz = /bits/ 64 <998400000>;
+			required-opps = <&rpmpd_opp_svs_soc>;
+		};
+		opp-1209600000 {
+			opp-hz = /bits/ 64 <1209600000>;
+			required-opps = <&rpmpd_opp_nominal>;
+		};
+	};	
+
+2. Where/when to enable the power domains: I need to enable the power
+   domain whenever I have a vote for a performance state. In the example
+   above the power domain should get enabled for >= 998 MHz and disabled
+   otherwise.
+
+   At least for the CPUFreq case the "virt_devs" parameter does not
+   really help in this case...
+   dev_pm_opp_set_rate() is called within cpufreq-dt which is supposed
+   to be generic. So I can't enable the power domains myself from there.
+   Even if I made a custom cpufreq driver that has control over the
+   dev_pm_opp_set_rate() call - I don't really know exactly in the
+   driver for which frequencies a power domain is needed.
+
+   On the other hand, the OPP core does have that information.
+   This brings me back to my PATCH v1 (where I used runtime PM functions
+   instead of device links). If I modify it to enable the power domain
+   whenever we have a performance state vote > 0 when setting an OPP,
+   it would do exactly what I need...
+
+   I don't think it makes sense to do performance state votes without
+   enabling a power domain, so this approach sounds good to me...
+
+What do you think?
+
+Thanks!
+Stephan
