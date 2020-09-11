@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D06126620B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C912661FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgIKPYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:24:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53398 "EHLO mail.kernel.org"
+        id S1726399AbgIKPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIKPRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:17:39 -0400
+        id S1726408AbgIKPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:15:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DA5E223D6;
-        Fri, 11 Sep 2020 12:58:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AE0E223E8;
+        Fri, 11 Sep 2020 12:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829127;
-        bh=pg8QoShE6RW4IjYx3j1/NruMNLMONbUk0DC6zHwCcpE=;
+        s=default; t=1599829140;
+        bh=pOqmTT5z1pxK3xTG04T+GA+KPQhbWQMJzXgVzu1idOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lfc2RBeFSHZoiTtMMl9kZAB/zPuS1EjRXdJN1Kn0DBDJaxQ45QYtIWM32cRUIOVtk
-         vbOWdsCqwxeggkgOdluEU4U9QANef6PmwMZHynXaaPCsJV5HNuTfFLd3tz+HpnfE5W
-         L/dnEInbFkYTErd4k7WE3VSFYHGp9Gh8KrdLhrbU=
+        b=YdZaKN6AhUKv4f6lLUHIOCNqcYm8butgvf7ySdvNwemoRkHE4rJMUwxiW64QMszY3
+         M6DKh8q604S/LDF8/YCvYdMGIFUbAZPlYU7r2jJbhVSuq8KECvpCe/OOEAAqx7aROB
+         d3/g8axR05r/Ik8sgAqJXi8ZNL3xBbOcGk2EXc6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ying Xu <yinxu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        stable@vger.kernel.org,
+        syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 70/71] sctp: not disable bh in the whole sctp_get_port_local()
-Date:   Fri, 11 Sep 2020 14:46:54 +0200
-Message-Id: <20200911122508.433447547@linuxfoundation.org>
+Subject: [PATCH 4.14 11/12] tipc: fix shutdown() of connectionless socket
+Date:   Fri, 11 Sep 2020 14:47:05 +0200
+Message-Id: <20200911122458.967159042@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
-References: <20200911122504.928931589@linuxfoundation.org>
+In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
+References: <20200911122458.413137406@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,105 +45,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-[ Upstream commit 3106ecb43a05dc3e009779764b9da245a5d082de ]
+[ Upstream commit 2a63866c8b51a3f72cea388dfac259d0e14c4ba6 ]
 
-With disabling bh in the whole sctp_get_port_local(), when
-snum == 0 and too many ports have been used, the do-while
-loop will take the cpu for a long time and cause cpu stuck:
+syzbot is reporting hung task at nbd_ioctl() [1], for there are two
+problems regarding TIPC's connectionless socket's shutdown() operation.
 
-  [ ] watchdog: BUG: soft lockup - CPU#11 stuck for 22s!
-  [ ] RIP: 0010:native_queued_spin_lock_slowpath+0x4de/0x940
-  [ ] Call Trace:
-  [ ]  _raw_spin_lock+0xc1/0xd0
-  [ ]  sctp_get_port_local+0x527/0x650 [sctp]
-  [ ]  sctp_do_bind+0x208/0x5e0 [sctp]
-  [ ]  sctp_autobind+0x165/0x1e0 [sctp]
-  [ ]  sctp_connect_new_asoc+0x355/0x480 [sctp]
-  [ ]  __sctp_connect+0x360/0xb10 [sctp]
+----------
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <linux/nbd.h>
+#include <unistd.h>
 
-There's no need to disable bh in the whole function of
-sctp_get_port_local. So fix this cpu stuck by removing
-local_bh_disable() called at the beginning, and using
-spin_lock_bh() instead.
+int main(int argc, char *argv[])
+{
+        const int fd = open("/dev/nbd0", 3);
+        alarm(5);
+        ioctl(fd, NBD_SET_SOCK, socket(PF_TIPC, SOCK_DGRAM, 0));
+        ioctl(fd, NBD_DO_IT, 0); /* To be interrupted by SIGALRM. */
+        return 0;
+}
+----------
 
-The same thing was actually done for inet_csk_get_port() in
-Commit ea8add2b1903 ("tcp/dccp: better use of ephemeral
-ports in bind()").
+One problem is that wait_for_completion() from flush_workqueue() from
+nbd_start_device_ioctl() from nbd_ioctl() cannot be completed when
+nbd_start_device_ioctl() received a signal at wait_event_interruptible(),
+for tipc_shutdown() from kernel_sock_shutdown(SHUT_RDWR) from
+nbd_mark_nsock_dead() from sock_shutdown() from nbd_start_device_ioctl()
+is failing to wake up a WQ thread sleeping at wait_woken() from
+tipc_wait_for_rcvmsg() from sock_recvmsg() from sock_xmit() from
+nbd_read_stat() from recv_work() scheduled by nbd_start_device() from
+nbd_start_device_ioctl(). Fix this problem by always invoking
+sk->sk_state_change() (like inet_shutdown() does) when tipc_shutdown() is
+called.
 
-Thanks to Marcelo for pointing the buggy code out.
+The other problem is that tipc_wait_for_rcvmsg() cannot return when
+tipc_shutdown() is called, for tipc_shutdown() sets sk->sk_shutdown to
+SEND_SHUTDOWN (despite "how" is SHUT_RDWR) while tipc_wait_for_rcvmsg()
+needs sk->sk_shutdown set to RCV_SHUTDOWN or SHUTDOWN_MASK. Fix this
+problem by setting sk->sk_shutdown to SHUTDOWN_MASK (like inet_shutdown()
+does) when the socket is connectionless.
 
-v1->v2:
-  - use cond_resched() to yield cpu to other tasks if needed,
-    as Eric noticed.
+[1] https://syzkaller.appspot.com/bug?id=3fe51d307c1f0a845485cf1798aa059d12bf18b2
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Ying Xu <yinxu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Reported-by: syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/socket.c |   16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ net/tipc/socket.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -6687,8 +6687,6 @@ static long sctp_get_port_local(struct s
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -2126,18 +2126,21 @@ static int tipc_shutdown(struct socket *
+ 	lock_sock(sk);
  
- 	pr_debug("%s: begins, snum:%d\n", __func__, snum);
+ 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
+-	sk->sk_shutdown = SEND_SHUTDOWN;
++	if (tipc_sk_type_connectionless(sk))
++		sk->sk_shutdown = SHUTDOWN_MASK;
++	else
++		sk->sk_shutdown = SEND_SHUTDOWN;
  
--	local_bh_disable();
--
- 	if (snum == 0) {
- 		/* Search for an available port. */
- 		int low, high, remaining, index;
-@@ -6707,20 +6705,21 @@ static long sctp_get_port_local(struct s
- 				continue;
- 			index = sctp_phashfn(sock_net(sk), rover);
- 			head = &sctp_port_hashtable[index];
--			spin_lock(&head->lock);
-+			spin_lock_bh(&head->lock);
- 			sctp_for_each_hentry(pp, &head->chain)
- 				if ((pp->port == rover) &&
- 				    net_eq(sock_net(sk), pp->net))
- 					goto next;
- 			break;
- 		next:
--			spin_unlock(&head->lock);
-+			spin_unlock_bh(&head->lock);
-+			cond_resched();
- 		} while (--remaining > 0);
+ 	if (sk->sk_state == TIPC_DISCONNECTING) {
+ 		/* Discard any unreceived messages */
+ 		__skb_queue_purge(&sk->sk_receive_queue);
  
- 		/* Exhausted local port range during search? */
- 		ret = 1;
- 		if (remaining <= 0)
--			goto fail;
-+			return ret;
+-		/* Wake up anyone sleeping in poll */
+-		sk->sk_state_change(sk);
+ 		res = 0;
+ 	} else {
+ 		res = -ENOTCONN;
+ 	}
++	/* Wake up anyone sleeping in poll. */
++	sk->sk_state_change(sk);
  
- 		/* OK, here is the one we will use.  HEAD (the port
- 		 * hash table list entry) is non-NULL and we hold it's
-@@ -6735,7 +6734,7 @@ static long sctp_get_port_local(struct s
- 		 * port iterator, pp being NULL.
- 		 */
- 		head = &sctp_port_hashtable[sctp_phashfn(sock_net(sk), snum)];
--		spin_lock(&head->lock);
-+		spin_lock_bh(&head->lock);
- 		sctp_for_each_hentry(pp, &head->chain) {
- 			if ((pp->port == snum) && net_eq(pp->net, sock_net(sk)))
- 				goto pp_found;
-@@ -6819,10 +6818,7 @@ success:
- 	ret = 0;
- 
- fail_unlock:
--	spin_unlock(&head->lock);
--
--fail:
--	local_bh_enable();
-+	spin_unlock_bh(&head->lock);
- 	return ret;
- }
- 
+ 	release_sock(sk);
+ 	return res;
 
 
