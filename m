@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8762675FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79102675FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbgIKWg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
+        id S1725903AbgIKWib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbgIKWgY (ORCPT
+        with ESMTP id S1725880AbgIKWia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:36:24 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1563FC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:36:23 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id a2so9640027otr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Jd3rc9wLqDkcjq6CRTFLi+h7vU1J4+2KL8NUdpSrlYo=;
-        b=VVENOdypOQsLj973e7V3to+GykLNCsq1u30d8D0PFP0RQZAY9/nRpNroxTXJLl+qeX
-         nRtGvc1oNAgCYcAkPPNldpzv0PLp7Rm6jovxWiqDv94ZaVRTx7GRIgS8tHJCKrfrDdQ7
-         d/e7HmguGroUdZTs5N1vaQB4/UFhpTk/okS+c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jd3rc9wLqDkcjq6CRTFLi+h7vU1J4+2KL8NUdpSrlYo=;
-        b=hFcgvYYLNQtSepfia37DVmXVjp9sxs+nf7N1F/ynPhFyh9bi11CV3mgghDpZT5LbUQ
-         4JzAk4QEC6I6n9GSqcByPDNaPCODwt5kjGLCvF0LRLhCVI51YNMA7gEjwLcxBUd4QTN1
-         bgKOG7vAkAD8dYXORG9bmViDfPHx6syjzP3k5BBHn4/5IQbO/oXMuZZO0Bj621sgJBgt
-         t9hVPCYBinatHQYFLzlHrh82imejVdaAmIbfKOXnKC9GhTzOg0kpQwqXfJQe4ewSkQa5
-         cI9TBVQUR2Wz38Hh5vwB4tWCtNLE7W1FcYJW9wz9zoQLVEgOZLGoqYNljB+134e+IE+g
-         zHNA==
-X-Gm-Message-State: AOAM533Rls/sEmzpArbhWAAxfRbxvN+SBndWDEpdjj18ZN7K/aoczy9c
-        7VFffg6vy8SLsCQP4C3O9f/69Q==
-X-Google-Smtp-Source: ABdhPJycr4snTCmYhvfSD9Xd69cU/mxtUSOwbqaeV7tVy0U3iXmah8naR9mOIEkTUsxt70Q1G/WM/Q==
-X-Received: by 2002:a9d:57c3:: with SMTP id q3mr2398582oti.146.1599863782677;
-        Fri, 11 Sep 2020 15:36:22 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id h14sm571773otr.21.2020.09.11.15.36.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 15:36:22 -0700 (PDT)
-Subject: Re: [PATCH 4.4 00/62] 4.4.236-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200911122502.395450276@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <b1cd6ab3-e7e3-5796-199b-4cbb6c78a158@linuxfoundation.org>
-Date:   Fri, 11 Sep 2020 16:36:21 -0600
+        Fri, 11 Sep 2020 18:38:30 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9104BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=t7Z/d4twZtMQadL8AhLcFYmnmDZ4zjmrd51K7ZpbTXg=; b=vl/Sw9RYKUQXjFkK8CASehBBVD
+        dK79d+YG8eGaMIkRqbH7GkHW0e+tAaH7wCaRTL2Q3GIK8G9ENjoS7mMVJ9Rodz82Aord0C4GsaHSD
+        cwhyK4pnEyTZGGQyDlxyDCsYRG4fL7olt97ISMWEkWUlQGHMxi8NIKn2ExpH/lTZpdn6z7iDB65qx
+        H2ujlSEW99aING+WSmpumVL8LsLZBggHlShd4Y44Ku99KufzURuY7q56VExzIAj8s885/DI1RUP6T
+        /Z2ZLwtFMAsRpZA2yjHngHwTDUfU9S54PfCStG+MuT1yT7V6+hKcKiZy09kchGP4L+npRm0K9Ykbz
+        5wP6Nbyw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGrgX-0001fp-Jk; Fri, 11 Sep 2020 22:38:25 +0000
+Subject: Re: first bad commit: [5795eb443060148796beeba106e4366d7f1458a6]
+ scsi: sd_zbc: emulate ZONE_APPEND commands
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20200911195312.GA4110@zn.tnic>
+ <20200911221759.GA2869@nazgul.tnic>
+ <d7549a8f-ec57-7cee-577e-902f70c8bd42@infradead.org>
+ <SN4PR0401MB3598C3B9A281C3748D24954C9B240@SN4PR0401MB3598.namprd04.prod.outlook.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9f714044-3254-fca4-172a-a947d725c316@infradead.org>
+Date:   Fri, 11 Sep 2020 15:38:21 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200911122502.395450276@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <SN4PR0401MB3598C3B9A281C3748D24954C9B240@SN4PR0401MB3598.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,30 +56,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 6:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.236 release.
-> There are 62 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 9/11/20 3:26 PM, Johannes Thumshirn wrote:
+> On 12/09/2020 00:22, Randy Dunlap wrote:
+>> On 9/11/20 3:17 PM, Borislav Petkov wrote:
+>>> On Fri, Sep 11, 2020 at 09:53:12PM +0200, Borislav Petkov wrote:
+>>>> Now, looking at that patch:
+>>>>
+>>>>   5795eb443060 ("scsi: sd_zbc: emulate ZONE_APPEND commands")
+>>>>
+>>>> yeah, that doesn't revert cleanly. But it talks about zoned-something
+>>>> devices and that rings a bell because you guys broke my zoned device
+>>>> once already:
+>>>
+>>> Ok, so Johannes and I poked a bit on IRC and here it is:
+>>>
+>>> # CONFIG_BLK_DEV_ZONED is not set.
+>>>
+>>> Enabling it, fixes the issue.
+>>>
+>>
+>> Uh, you are not saying that enabling that CONFIG_ is the final fix, are you?
+>>
+>> If so, do I need to enable it, even if I don't have a zoned block device?
+>>
 > 
-> Responses should be made by Sun, 13 Sep 2020 12:24:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.236-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
->
+> No he does have a zoned block device and no this is not the final fix, I 
+> think one of the stubbed out functions is broken, but it's midnight here
+> so we're calling it a day and chime back in on Monday.
 
-Compiled and booted on my test system. No dmesg regressions.
+Sure, thanks for the answers.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-thanks,
--- Shuah
+> And this setup is a bit special, as Boris is using partitions on a host-aware
+> zoned block device which is somewhat exotic (see add_partition()).
+> 
+> Byte,
+
+?  :)
+
+
+-- 
+~Randy
+
