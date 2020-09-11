@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4462657C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505622657F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 06:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725818AbgIKD7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 23:59:05 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59462 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725648AbgIKD64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 23:58:56 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 581677D1528170FD2269;
-        Fri, 11 Sep 2020 11:58:54 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 11 Sep 2020
- 11:58:46 +0800
-From:   Zheng Bin <zhengbin13@huawei.com>
-To:     <sfrench@samba.org>, <linux-cifs@vger.kernel.org>,
-        <samba-technical@lists.samba.org>, <linux-kernel@vger.kernel.org>
-CC:     <yi.zhang@huawei.com>, <zhengbin13@huawei.com>
-Subject: [PATCH -next 5/5] cifs: fix comparison to bool warning in smb2ops.c
-Date:   Fri, 11 Sep 2020 12:05:39 +0800
-Message-ID: <20200911040539.113307-6-zhengbin13@huawei.com>
-X-Mailer: git-send-email 2.26.0.106.g9fadedd
-In-Reply-To: <20200911040539.113307-1-zhengbin13@huawei.com>
-References: <20200911040539.113307-1-zhengbin13@huawei.com>
+        id S1725767AbgIKERu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 00:17:50 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:63195 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbgIKERt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 00:17:49 -0400
+X-Greylist: delayed 1872 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 00:17:49 EDT
+Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
+        by twspam01.aspeedtech.com with ESMTP id 08B3SSNJ083872
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 11:28:28 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 08B3SMCn083854;
+        Fri, 11 Sep 2020 11:28:22 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 11 Sep
+ 2020 11:46:32 +0800
+From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <minyard@acm.org>, <linus.walleij@linaro.org>,
+        <haiyue.wang@linux.intel.com>, <cyrilbur@gmail.com>,
+        <rlippert@google.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+CC:     <ryan_chen@aspeedtech.com>
+Subject: [PATCH 0/4] Remove LPC register partitioning
+Date:   Fri, 11 Sep 2020 11:46:27 +0800
+Message-ID: <20200911034631.8473-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 08B3SMCn083854
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
+The LPC controller has no concept of the BMC and the Host partitions.
+The incorrect partitioning can impose unnecessary range restrictions
+on register access through the syscon regmap interface.
 
-fs/cifs/smb2ops.c:3199:6-15: WARNING: Comparison to bool
-fs/cifs/smb2ops.c:3223:5-14: WARNING: Comparison to bool
-fs/cifs/smb2ops.c:3301:6-15: WARNING: Comparison to bool
-fs/cifs/smb2ops.c:3311:6-15: WARNING: Comparison to bool
-fs/cifs/smb2ops.c:3341:6-15: WARNING: Comparison to bool
+For instance, HICRB contains the I/O port address configuration
+of KCS channel 1/2. However, the KCS#1/#2 drivers cannot access
+HICRB as it is located at the other LPC partition.
 
-Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
----
- fs/cifs/smb2ops.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+In addition, to be backward compatible, the newly added HW control
+bits could be added at any reserved bits over the LPC addressing space.
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 32f90dc82c84..213a0e3d9f76 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3196,7 +3196,7 @@ static long smb3_zero_range(struct file *file, struct cifs_tcon *tcon,
+Thereby, this patch series aims to remove the LPC partitioning for
+better driver development and maintenance.
 
- 	/* if file not oplocked can't be sure whether asking to extend size */
- 	if (!CIFS_CACHE_READ(cifsi))
--		if (keep_size == false) {
-+		if (!keep_size) {
- 			rc = -EOPNOTSUPP;
- 			trace_smb3_zero_err(xid, cfile->fid.persistent_fid,
- 				tcon->tid, ses->Suid, offset, len, rc);
-@@ -3220,7 +3220,7 @@ static long smb3_zero_range(struct file *file, struct cifs_tcon *tcon,
- 	/*
- 	 * do we also need to change the size of the file?
- 	 */
--	if (keep_size == false && i_size_read(inode) < offset + len) {
-+	if (!keep_size && i_size_read(inode) < offset + len) {
- 		eof = cpu_to_le64(offset + len);
- 		rc = SMB2_set_eof(xid, tcon, cfile->fid.persistent_fid,
- 				  cfile->fid.volatile_fid, cfile->pid, &eof);
-@@ -3298,7 +3298,7 @@ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
- 				tcon->ses->Suid, off, len);
- 	/* if file not oplocked can't be sure whether asking to extend size */
- 	if (!CIFS_CACHE_READ(cifsi))
--		if (keep_size == false) {
-+		if (!keep_size) {
- 			trace_smb3_falloc_err(xid, cfile->fid.persistent_fid,
- 				tcon->tid, tcon->ses->Suid, off, len, rc);
- 			free_xid(xid);
-@@ -3308,7 +3308,7 @@ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
- 	/*
- 	 * Extending the file
- 	 */
--	if ((keep_size == false) && i_size_read(inode) < off + len) {
-+	if (!keep_size && i_size_read(inode) < off + len) {
- 		rc = inode_newsize_ok(inode, off + len);
- 		if (rc)
- 			goto out;
-@@ -3338,7 +3338,7 @@ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
- 		goto out;
- 	}
+Chia-Wei, Wang (4):
+  ARM: dts: Remove LPC BMC and Host partitions
+  soc: aspeed: Fix LPC register offsets
+  ipmi: kcs: aspeed: Fix LPC register offsets
+  pinctrl: aspeed-g5: Fix LPC register offsets
 
--	if ((keep_size == true) || (i_size_read(inode) >= off + len)) {
-+	if (keep_size || (i_size_read(inode) >= off + len)) {
- 		/*
- 		 * Check if falloc starts within first few pages of file
- 		 * and ends within a few pages of the end of file to
---
-2.26.0.106.g9fadedd
+ arch/arm/boot/dts/aspeed-g4.dtsi           |  74 +++++------
+ arch/arm/boot/dts/aspeed-g5.dtsi           | 135 +++++++++------------
+ arch/arm/boot/dts/aspeed-g6.dtsi           | 135 +++++++++------------
+ drivers/char/ipmi/kcs_bmc_aspeed.c         |  13 +-
+ drivers/pinctrl/aspeed/pinctrl-aspeed-g5.c |   2 +-
+ drivers/soc/aspeed/aspeed-lpc-ctrl.c       |   6 +-
+ drivers/soc/aspeed/aspeed-lpc-snoop.c      |  11 +-
+ 7 files changed, 162 insertions(+), 214 deletions(-)
+
+-- 
+2.17.1
 
