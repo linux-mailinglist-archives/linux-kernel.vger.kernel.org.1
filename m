@@ -2,77 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C68B265B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43C5265B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725862AbgIKI1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:27:19 -0400
-Received: from a27-11.smtp-out.us-west-2.amazonses.com ([54.240.27.11]:48446
-        "EHLO a27-11.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725550AbgIKI1Q (ORCPT
+        id S1725835AbgIKI2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgIKI20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:27:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599812836;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=ZdtW6rpgsglIfBJcVsz/0AjRMgDcxq4B9Pi3Nq/Gau0=;
-        b=d18I5PZJ3ZuEz69pPONvGLAFdfJDdabo+N0pLq0mdKJskTzyJsoUfd7yzc5/suyc
-        bNyrzLkmbT5qWBgCG8cX2S48tbcQtkQdHsiNlerQKcBs6uePLgMtHH+HeR1/5+31UEq
-        YodjWblj9iv3/jwE26PhAauVgN8hVPPACHwY/wKo=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599812836;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=ZdtW6rpgsglIfBJcVsz/0AjRMgDcxq4B9Pi3Nq/Gau0=;
-        b=VPgVZ802cac9qdWcXdWR1DlLie0JUepsWIqHyZ07wVW66XxD5HQUqVwiD2lx1lv/
-        yeX3WHuj231DQhJ7F1X+0SKeeKzE/FIh+2ODD79yHswVvFPLUr+UGN3TulPj8TOzlka
-        0iGCmOOB1kfve3kkZt86wzZ0vDy7ojWRlYU/Y5nE=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Sep 2020 08:27:16 +0000
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 6/8] iommu/arm-smmu: Add impl hook for inherit boot
- mappings
-In-Reply-To: <20200904155513.282067-7-bjorn.andersson@linaro.org>
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-7-bjorn.andersson@linaro.org>
-Message-ID: <010101747c469bc0-66826685-dda8-4f60-87a0-88502a16f75a-000000@us-west-2.amazonses.com>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.11-54.240.27.11
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+        Fri, 11 Sep 2020 04:28:26 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEE1C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:28:26 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u13so6142090pgh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 01:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=puresoftware-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=h57aIxbVHgfEhRKG56U/dqmlM2O+oHnwpIQoHtwS6co=;
+        b=jTA2AwrOvEMFZXME9c3f6CT8RxwMboFumo0K/4BTKOiKIbsCpgNXqtnSvs8GJr7YEQ
+         zO3iwX4Il7NoBa7jjaD3LPINkVleQ99tmkHk35DkP+4CCgGq/ML+rdn+SGS64I7wb8pZ
+         K2WmdcfAD70T+oBeit+FPpQHdjQCmHAA9xeoOvHi0X7uIOE0fndk4cNTl8m58xoZXLdZ
+         3z+fm3mdtsLW/YL63yAQ59WVf+0GyB8Y7fRqACACcdRYOUYM0dUD3Mket9sZAwD1d7F1
+         HKapcp0jY08sQ7wlISMT6ENr4qnPrpmVUC4glGM54TiIpbQGWO/9xyPVzdjtfJF7AViU
+         WB0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=h57aIxbVHgfEhRKG56U/dqmlM2O+oHnwpIQoHtwS6co=;
+        b=VChZXGAc3pLuHdR0CTJM4/9ImZASfrgTyg7b/7HkCBWELFtCLccE6set6oz8bwHke2
+         SWo/PxNoWfPpMRptOcg7ArMiIamkfq5x9m3dL80D81XS93+QcB7oXgNKxt6wcZ3QKBlb
+         LWIdMBUQ9SIYeW6GyLScGkHo46F5iiZzcgpK4GDJduu8tEIrSzq2kGfNdw/IUh6+YREq
+         lzcovhcQkF8jJ2Q6cR43kie3tVqMn/2MjA+qDJQsnzYkoyMjerjoZ9iNBR7Ztaj+7BSV
+         cWsyjQuO21/n9IZ/f1g7/8XqarYroLyAixIsiM/Hzv0dyDD78UmeGKfwvIm7qCmNHUSi
+         JFaA==
+X-Gm-Message-State: AOAM533eUAe3vaVpQKfK/JMjx9tM9R6/bDnODSGL52YxQCi0UcBr7gNd
+        rPieomGp0uxbfez7/OMh9lzZ8w==
+X-Google-Smtp-Source: ABdhPJzU5TGFKGUiAC88FNr9JLSQg0WsfSY7pHIGJ05wwACQ9nDKHvgRkBZT+33LO6EkJPCYjAxMpw==
+X-Received: by 2002:a17:902:ab92:: with SMTP id f18mr1010186plr.12.1599812904486;
+        Fri, 11 Sep 2020 01:28:24 -0700 (PDT)
+Received: from DESKTOP-C4AMQCQ.domain.name ([223.235.80.111])
+        by smtp.gmail.com with ESMTPSA id l14sm1223646pjy.1.2020.09.11.01.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 01:28:23 -0700 (PDT)
+From:   kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+To:     Ashish Kumar <ashish.kumar@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Varun Sethi <V.Sethi@nxp.com>, Arokia Samy <arokia.samy@nxp.com>,
+        Ard Biesheuvel <Ard.Biesheuvel@arm.com>,
+        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>,
+        Paul Yang <Paul.Yang@arm.com>,
+        kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+Subject: [PATCH v2] spi: spi-nxp-fspi: Add ACPI support
+Date:   Fri, 11 Sep 2020 13:58:06 +0530
+Message-Id: <20200911082806.115-1-kuldip.dwivedi@puresoftware.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04 21:25, Bjorn Andersson wrote:
-> Add a new operation to allow platform implementations to inherit any
-> stream mappings from the boot loader.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> 
+Currently NXP fspi  driver has support of DT only. Adding ACPI
+support to the driver so that it can be used by UEFI firmware
+booting in ACPI mode. This driver will be probed if any firmware
+will expose HID "NXP0009" in DSDT table.
 
-Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Signed-off-by: kuldip dwivedi <kuldip.dwivedi@puresoftware.com>
+---
 
+Notes:
+    1. Add ACPI match table, NXP members are added to confirm HID for FSPI
+    2. Change the DT specific APIs to device property APIs
+           so that same API can be used in DT and ACPi mode.
+    3. Omit clock configuration part - in ACPI world, the firmware
+           is responsible for clock maintenance.
+    4. This patch is tested on LX2160A platform
+
+ drivers/spi/spi-nxp-fspi.c | 61 +++++++++++++++++++++++++++-----------
+ 1 file changed, 44 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/spi/spi-nxp-fspi.c b/drivers/spi/spi-nxp-fspi.c
+index 1ccda82da206..9e3991ec0dd2 100644
+--- a/drivers/spi/spi-nxp-fspi.c
++++ b/drivers/spi/spi-nxp-fspi.c
+@@ -3,7 +3,8 @@
+ /*
+  * NXP FlexSPI(FSPI) controller driver.
+  *
+- * Copyright 2019 NXP.
++ * Copyright 2019-2020 NXP
++ * Copyright 2020 Puresoftware Ltd.
+  *
+  * FlexSPI is a flexsible SPI host controller which supports two SPI
+  * channels and up to 4 external devices. Each channel supports
+@@ -30,6 +31,7 @@
+  *     Frieder Schrempf <frieder.schrempf@kontron.de>
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/bitops.h>
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+@@ -563,6 +565,9 @@ static int nxp_fspi_clk_prep_enable(struct nxp_fspi *f)
+ {
+ 	int ret;
+ 
++	if (is_acpi_node(f->dev->fwnode))
++		return 0;
++
+ 	ret = clk_prepare_enable(f->clk_en);
+ 	if (ret)
+ 		return ret;
+@@ -576,10 +581,15 @@ static int nxp_fspi_clk_prep_enable(struct nxp_fspi *f)
+ 	return 0;
+ }
+ 
+-static void nxp_fspi_clk_disable_unprep(struct nxp_fspi *f)
++static int nxp_fspi_clk_disable_unprep(struct nxp_fspi *f)
+ {
++	if (is_acpi_node(f->dev->fwnode))
++		return 0;
++
+ 	clk_disable_unprepare(f->clk);
+ 	clk_disable_unprepare(f->clk_en);
++
++	return 0;
+ }
+ 
+ /*
+@@ -1001,7 +1011,7 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 
+ 	f = spi_controller_get_devdata(ctlr);
+ 	f->dev = dev;
+-	f->devtype_data = of_device_get_match_data(dev);
++	f->devtype_data = device_get_match_data(dev);
+ 	if (!f->devtype_data) {
+ 		ret = -ENODEV;
+ 		goto err_put_ctrl;
+@@ -1011,6 +1021,9 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 
+ 	/* find the resources - configuration register address space */
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fspi_base");
++#ifdef CONFIG_ACPI
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++#endif
+ 	f->iobase = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(f->iobase)) {
+ 		ret = PTR_ERR(f->iobase);
+@@ -1019,6 +1032,9 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 
+ 	/* find the resources - controller memory mapped space */
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "fspi_mmap");
++#ifdef CONFIG_ACPI
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++#endif
+ 	if (!res) {
+ 		ret = -ENODEV;
+ 		goto err_put_ctrl;
+@@ -1029,22 +1045,24 @@ static int nxp_fspi_probe(struct platform_device *pdev)
+ 	f->memmap_phy_size = resource_size(res);
+ 
+ 	/* find the clocks */
+-	f->clk_en = devm_clk_get(dev, "fspi_en");
+-	if (IS_ERR(f->clk_en)) {
+-		ret = PTR_ERR(f->clk_en);
+-		goto err_put_ctrl;
+-	}
++	if (dev_of_node(&pdev->dev)) {
++		f->clk_en = devm_clk_get(dev, "fspi_en");
++		if (IS_ERR(f->clk_en)) {
++			ret = PTR_ERR(f->clk_en);
++			goto err_put_ctrl;
++		}
+ 
+-	f->clk = devm_clk_get(dev, "fspi");
+-	if (IS_ERR(f->clk)) {
+-		ret = PTR_ERR(f->clk);
+-		goto err_put_ctrl;
+-	}
++		f->clk = devm_clk_get(dev, "fspi");
++		if (IS_ERR(f->clk)) {
++			ret = PTR_ERR(f->clk);
++			goto err_put_ctrl;
++		}
+ 
+-	ret = nxp_fspi_clk_prep_enable(f);
+-	if (ret) {
+-		dev_err(dev, "can not enable the clock\n");
+-		goto err_put_ctrl;
++		ret = nxp_fspi_clk_prep_enable(f);
++		if (ret) {
++			dev_err(dev, "can not enable the clock\n");
++			goto err_put_ctrl;
++		}
+ 	}
+ 
+ 	/* find the irq */
+@@ -1127,6 +1145,14 @@ static const struct of_device_id nxp_fspi_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, nxp_fspi_dt_ids);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id nxp_fspi_acpi_ids[] = {
++	{ "NXP0009", .driver_data = (kernel_ulong_t)&lx2160a_data, },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, nxp_fspi_acpi_ids);
++#endif
++
+ static const struct dev_pm_ops nxp_fspi_pm_ops = {
+ 	.suspend	= nxp_fspi_suspend,
+ 	.resume		= nxp_fspi_resume,
+@@ -1136,6 +1162,7 @@ static struct platform_driver nxp_fspi_driver = {
+ 	.driver = {
+ 		.name	= "nxp-fspi",
+ 		.of_match_table = nxp_fspi_dt_ids,
++		.acpi_match_table = ACPI_PTR(nxp_fspi_acpi_ids),
+ 		.pm =   &nxp_fspi_pm_ops,
+ 	},
+ 	.probe          = nxp_fspi_probe,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
+
