@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D060265F74
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59068265F6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725893AbgIKMWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:22:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:33072 "EHLO foss.arm.com"
+        id S1725849AbgIKMVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 08:21:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725866AbgIKMRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725877AbgIKMRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 08:17:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D73E113E;
-        Fri, 11 Sep 2020 05:17:10 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 575903F68F;
-        Fri, 11 Sep 2020 05:17:09 -0700 (PDT)
-References: <20200911081745.214686199@infradead.org> <20200911082536.470013100@infradead.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bristot@redhat.com, swood@redhat.com
-Subject: Re: [PATCH 1/2] sched: Fix balance_callback()
-In-reply-to: <20200911082536.470013100@infradead.org>
-Date:   Fri, 11 Sep 2020 13:17:02 +0100
-Message-ID: <jhjsgbo5wzl.mognet@arm.com>
+Received: from localhost (unknown [122.171.196.109])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71CF821D40;
+        Fri, 11 Sep 2020 12:17:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599826635;
+        bh=P+FSpMhRQYWfJVCQ83j/JR1HDo0aoiOL7Q9B8t2+jNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KuAPW/VM1PxpeYQPg625T5U2dtwo563eZiKJULUnSIY+OaDncs2Qn/bs/5fOOxQwY
+         wPhDjn9Az03BJx31K85xL/RIS4ER+CISzvk+6CvaFi7xXBjnZhJpM45l6TJe2m/3ZW
+         YBNDGUItzmLXTGgT23U9Kqo9Ugkv1agJsRZV0Erg=
+Date:   Fri, 11 Sep 2020 17:47:11 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     dmaengine@vger.kernel.org, dan.j.williams@intel.com,
+        linux-kernel@vger.kernel.org, lokeshvutla@ti.com, nm@ti.com
+Subject: Re: [PATCH v2] dmaengine: ti: k3-udma: Use soc_device_match() for
+ SoC dependent parameters
+Message-ID: <20200911121711.GB77521@vkoul-mobl>
+References: <20200910124329.21206-1-peter.ujfalusi@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910124329.21206-1-peter.ujfalusi@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10-09-20, 15:43, Peter Ujfalusi wrote:
+> Use separate data for SoC dependent parameters. These parameters depends
+> on the DMA integration (either in HW or in SYSFW), the DMA controller
+> itself remains compatible with either the am654 or j721e variant.
+> 
+> j7200 have the same DMA as j721e with different number of channels, which
+> can be queried from HW, but SYSFW defines different rchan_oes_offset
+> number for j7200 (0x80) compared to j721e (0x400).
 
-On 11/09/20 09:17, Peter Zijlstra wrote:
-> The intent of balance_callback() has always been to delay executing
-> balancing operations until the end of the current rq->lock section.
-> This is because balance operations must often drop rq->lock, and that
-> isn't safe in general.
->
-> However, as noted by Scott, there were a few holes in that scheme;
-> balance_callback() was called after rq->lock was dropped, which means
-> another CPU can interleave and touch the callback list.
->
+Applied, thanks
 
-So that can be say __schedule() tail racing with some setprio; what's the
-worst that can (currently) happen here? Something like say two consecutive
-enqueuing of push_rt_tasks() to the callback list?
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi Vinod,
+> 
+> Changes since v1:
+> - mark the udma_soc_data for am654, j721e and j7200 as static
+> 
+> this patch is going to be needed when the j7200 support is upstream (we already
+> have the psil map in dmaengine/next for the UDMA).
+> 
+> Since the hardware itself is the same (but different number of channels) I
+> wanted to avoid a new set of compatible just becase STSFW is not using the same
+> rchan_oes_offset value for j7200 and j721e.
+> 
+> Vinod: this patch will not apply cleanly on dmaengine/next because it is on top
+> of dmaengine/next + the dmaengine/fixes. This might cause issues.
+> 
+> "dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3.0" in
+> fixes changes the rchan_oes_offset for am654 from 0x2000 to 0x200 and this patch
+> assumes 0x200...
+> 
+> is there anything I can do to make it easier for you?
 
-> Rework code to call the balance callbacks before dropping rq->lock
-> where possible, and otherwise splice the balance list onto a local
-> stack.
->
-> This guarantees that the balance list must be empty when we take
-> rq->lock. IOW, we'll only ever run our own balance callbacks.
->
+No worries, I have merged fixes into next and applied this. That is how
+we typically handle this case
 
-Makes sense to me.
-
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
-> Reported-by: Scott Wood <swood@redhat.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-[...]
-
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1220,6 +1220,8 @@ static inline void rq_pin_lock(struct rq
->  #ifdef CONFIG_SCHED_DEBUG
->       rq->clock_update_flags &= (RQCF_REQ_SKIP|RQCF_ACT_SKIP);
->       rf->clock_update_flags = 0;
-> +
-> +	SCHED_WARN_ON(rq->balance_callback);
-
-Clever!
-
->  #endif
->  }
->
+-- 
+~Vinod
