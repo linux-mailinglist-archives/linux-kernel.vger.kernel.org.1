@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4202675EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62832675EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgIKWbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S1725943AbgIKWcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgIKWbx (ORCPT
+        with ESMTP id S1725871AbgIKWc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:31:53 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8509C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:31:52 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id w16so10998006oia.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:31:52 -0700 (PDT)
+        Fri, 11 Sep 2020 18:32:27 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28203C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:32:27 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so2388953pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KcL7Atn1TT0RHvb3HOyYFB2hEM1Jyfn2XyvB0Ephdq8=;
-        b=BDfXMnBFfWwdXqDx+C+4miLuLmx4sKVOhZWq3vCSvEpwLti6YkZCLlhedFymyARKi2
-         TLMHc0Y0HvgK/HjADCIFxLns/nPNYEbuR/sE2YtCXwWm8bH5v4B1qfvso/4717IuLMMZ
-         hqRLGm1sPgplysMrV4syFJc5/H+2yRYMGq7zE=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5fqnO0t2+Ll5MSYJEMtNvP+VNTh8EknO1EV/7yDUvkg=;
+        b=EPXQA1SPomdGDXZu2xay/okEIXVEzDSIwhmerPylv6hnMl4XmTzRnRewEG4vkbU0r4
+         4CzBgYyeGKx9I2Yl+0zemaccCpnrmtycDQmYYqqMmZt0iOsIl5gwNiLmcj7z3ylcyaKo
+         fIGTEmI4Bd1lcOmOlxgGM3rk5P7lYd0Sx26+Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=KcL7Atn1TT0RHvb3HOyYFB2hEM1Jyfn2XyvB0Ephdq8=;
-        b=KHQ7cezBJitykKwGfAFUbgK3eR8/ymPkz5yTw4aLs3+pXIilU28q4yQ3FhwI+PPrDB
-         ZOAWb6dsCHHLd6Cx9L8dp7brti68mJZlur7Wjn8I2SEDY97K9i+MUcaetPrMh8lTV/u4
-         +gDifVFUj/ksxOZ4HB/oKzwTjhrWzRNZ8QpA3K4qxB7SKoi3ujakzIZWmCmyakO9NFzw
-         NCm5C+weW7koYfMhLjyXJjG5OgiWRCZFVpNROdHQBJ9jZZk3SRlMZzzMO+oi5nuVxf+0
-         1vKkeeOCObGrfUUU670eAEP0m3FlxACEGZmZuXkrn5RvSw7Y2YuATthgsW2luP2MppxB
-         ee8A==
-X-Gm-Message-State: AOAM532SX3/ZFY1g+WisQUQ477Um2sIFUdrFKytcNOx2rMDv6Ca2avtH
-        jhw25vtwPq5i45L9ZD4/85SkBA==
-X-Google-Smtp-Source: ABdhPJy/gNm6TmsGJ0uH9pKpKLm+koQVS9S24cWyuOqkxLchmOgPKp0tnUdWy0g1gIEKMfbpMn5SMA==
-X-Received: by 2002:aca:da06:: with SMTP id r6mr2575457oig.88.1599863512325;
-        Fri, 11 Sep 2020 15:31:52 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z5sm572813otp.16.2020.09.11.15.31.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 15:31:51 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/71] 4.9.236-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200911122504.928931589@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7ea50854-1513-015c-6b47-f74026068709@linuxfoundation.org>
-Date:   Fri, 11 Sep 2020 16:31:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=5fqnO0t2+Ll5MSYJEMtNvP+VNTh8EknO1EV/7yDUvkg=;
+        b=mWgzBbvmSQPbAFNSeqNSIU7rlRaMlOn+HvSPa6poNZ3Se8ScyRdetJ1BLpauOl16zP
+         ghUnWQEBZcHj8oiCZ1JWH8qhue3WuFuqyBVD4nz7r87E7AePIEBKNwt/OOSNh10807z8
+         eDMYsLScqLNkvVC8bXRsWsBs/Qp3m04WMAdx8mfuUl0chio89w2vxmDiewSFLpglEv5V
+         JDXtEeVZL2zdkQDKQARRBTfhppghXUyJIwIfvUskJri+JR8J8leikxwTFsfgOr8GD7o+
+         CXFnJNAoKBvo9Yc6DcS+fNaGEvd58XVUCMJE0EDb8SlMSVTCZJgs4RJFEzF5WJ5PgZuq
+         DUXg==
+X-Gm-Message-State: AOAM530j1iX8lKgHY8e7IQ7WKi0PcKfUJBD1ivRD1Ou0g2gRnSwFMcX7
+        z+BvwSqdlW5ge65Dqvvlf0KR2g==
+X-Google-Smtp-Source: ABdhPJw4KYhLZWrM8MzihLuYw4E30t5O+Y6VUTIE1WR3NPjAkywR4DujrtHCB/dKdL1Re5o04wfhiw==
+X-Received: by 2002:a17:902:d888:b029:d0:cb2d:f274 with SMTP id b8-20020a170902d888b02900d0cb2df274mr4451761plz.13.1599863546718;
+        Fri, 11 Sep 2020 15:32:26 -0700 (PDT)
+Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:2b94])
+        by smtp.gmail.com with ESMTPSA id l9sm2905230pgg.29.2020.09.11.15.32.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 15:32:26 -0700 (PDT)
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+To:     marcel@holtmann.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        Daniel Winkler <danielwinkler@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [RESEND PATCH] bluetooth: Set ext scan response only when it exists
+Date:   Fri, 11 Sep 2020 15:32:20 -0700
+Message-Id: <20200911153141.RESEND.1.Ib022565452fde0c02fbcf619950ef868715dd243@changeid>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/20 6:45 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.236 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 13 Sep 2020 12:24:42 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.236-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Only set extended scan response only when it exists. Otherwise, clear
+the scan response data.
 
-Compiled and booted on my test system. No dmesg regressions.
+Per the core spec v5.2, Vol 4, Part E, 7.8.55
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+If the advertising set is non-scannable and the Host uses this command
+other than to discard existing data, the Controller shall return the
+error code Invalid HCI Command Parameters (0x12).
 
-thanks,
--- Shuah
+On WCN3991, the controller correctly responds with Invalid Parameters
+when this is sent.  That error causes __hci_req_hci_power_on to fail
+with -EINVAL and LE devices can't connect because background scanning
+isn't configured.
+
+Here is an hci trace of where this issue occurs during power on:
+
+< HCI Command: LE Set Extended Advertising Parameters (0x08|0x0036) plen 25
+        Handle: 0x00
+        Properties: 0x0010
+          Use legacy advertising PDUs: ADV_NONCONN_IND
+        Min advertising interval: 181.250 msec (0x0122)
+        Max advertising interval: 181.250 msec (0x0122)
+        Channel map: 37, 38, 39 (0x07)
+        Own address type: Random (0x01)
+        Peer address type: Public (0x00)
+        Peer address: 00:00:00:00:00:00 (OUI 00-00-00)
+        Filter policy: Allow Scan Request from Any, Allow Connect...
+        TX power: 127 dbm (0x7f)
+        Primary PHY: LE 1M (0x01)
+        Secondary max skip: 0x00
+        Secondary PHY: LE 1M (0x01)
+        SID: 0x00
+        Scan request notifications: Disabled (0x00)
+> HCI Event: Command Complete (0x0e) plen 5
+      LE Set Extended Advertising Parameters (0x08|0x0036) ncmd 1
+        Status: Success (0x00)
+        TX power (selected): 9 dbm (0x09)
+< HCI Command: LE Set Advertising Set Random Address (0x08|0x0035) plen 7
+        Advertising handle: 0x00
+        Advertising random address: 08:FD:55:ED:22:28 (OUI 08-FD-55)
+> HCI Event: Command Complete (0x0e) plen 4
+      LE Set Advertising Set Random Address (0x08|0x0035) ncmd
+        Status: Success (0x00)
+< HCI Command: LE Set Extended Scan Response Data (0x08|0x0038) plen 35
+        Handle: 0x00
+        Operation: Complete scan response data (0x03)
+        Fragment preference: Minimize fragmentation (0x01)
+        Data length: 0x0d
+        Name (short): Chromebook
+> HCI Event: Command Complete (0x0e) plen 4
+      LE Set Extended Scan Response Data (0x08|0x0038) ncmd 1
+        Status: Invalid HCI Command Parameters (0x12)
+
+Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Reviewed-by: Daniel Winkler <danielwinkler@google.com>
+---
+
+ net/bluetooth/hci_request.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index e0269192f2e536..e17bc8a1c66ddd 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1533,11 +1533,14 @@ void __hci_req_update_scan_rsp_data(struct hci_request *req, u8 instance)
+ 
+ 		memset(&cp, 0, sizeof(cp));
+ 
+-		if (instance)
++		/* Extended scan response data doesn't allow a response to be
++		 * set if the instance isn't scannable.
++		 */
++		if (get_adv_instance_scan_rsp_len(hdev, instance))
+ 			len = create_instance_scan_rsp_data(hdev, instance,
+ 							    cp.data);
+ 		else
+-			len = create_default_scan_rsp_data(hdev, cp.data);
++			len = 0;
+ 
+ 		if (hdev->scan_rsp_data_len == len &&
+ 		    !memcmp(cp.data, hdev->scan_rsp_data, len))
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
