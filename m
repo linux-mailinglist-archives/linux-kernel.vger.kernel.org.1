@@ -2,97 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E2E2665C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257602665C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbgIKRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726277AbgIKRMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 11 Sep 2020 13:12:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41622 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726216AbgIKRJU (ORCPT
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32605 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726231AbgIKRJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:09:20 -0400
+        Fri, 11 Sep 2020 13:09:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599844157;
+        s=mimecast20190719; t=1599844161;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZfQ5cvgBj9DCEpY6quvn1kwK45qI2deGpfvYYbFQhqY=;
-        b=On4ForORHmJz1dc2iGD9bUAt/OdajVqnDYcZfM3WBIh/SXUmd1rQRrEJXzcYxKRKzOhH3B
-        uEKLO4x32cATONIKPaSuGzKDci/L71qkn31kikI6B34YwKzgwJqv1aKG2h6hCTsKJciNZ6
-        jo+pYiUOyYRK+59wxr9db7KvIpjCfhA=
+        bh=IBAi79BCgUQb7x/kKKWXp+YbGm17WGXJqEsuMSZt9FU=;
+        b=YBCLjIGoxtDXAb5rWkZkyZWw1ZCUmMjbJX7Lku6Dq8uM9Pt7+fOlQwFrifvfQOBcvez/Lv
+        Z0r1ATeMe56Oduioe0Pyh4jiyd0hVTFR886HYGWCX7aKVQpeT/lheKHfhug3gjmTYs2vpd
+        BNDjRaIyMkFlsIVE2D0lnrLn351lH/4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-edZUCXHpPuW925tcahNYxw-1; Fri, 11 Sep 2020 13:09:15 -0400
-X-MC-Unique: edZUCXHpPuW925tcahNYxw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-359-iPkZEvIvNi2wiRD5ZAqcvA-1; Fri, 11 Sep 2020 13:09:17 -0400
+X-MC-Unique: iPkZEvIvNi2wiRD5ZAqcvA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D41CD801AAF;
-        Fri, 11 Sep 2020 17:09:13 +0000 (UTC)
-Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E41A310027A6;
-        Fri, 11 Sep 2020 17:09:12 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 12:09:11 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: WARNING: Kernel stack regs has bad 'bp' value
-Message-ID: <20200911170911.mrkorgsplrrwp4rv@treble>
-References: <c0ba7077-7977-0155-d7be-d4133ebaee5c@deltatee.com>
- <20200911160053.w66xit3imcqsn33g@treble>
- <5a66f512-960b-7f24-068a-01c043ca9877@deltatee.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6466C10BBEDF;
+        Fri, 11 Sep 2020 17:09:16 +0000 (UTC)
+Received: from w520.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E63045C1BD;
+        Fri, 11 Sep 2020 17:09:15 +0000 (UTC)
+Date:   Fri, 11 Sep 2020 11:09:15 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     cohuck@redhat.com, pmorel@linux.ibm.com, schnelle@linux.ibm.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio iommu: Add dma limit capability
+Message-ID: <20200911110915.13302afa@w520.home>
+In-Reply-To: <1599842643-2553-2-git-send-email-mjrosato@linux.ibm.com>
+References: <1599842643-2553-1-git-send-email-mjrosato@linux.ibm.com>
+        <1599842643-2553-2-git-send-email-mjrosato@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5a66f512-960b-7f24-068a-01c043ca9877@deltatee.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 10:14:41AM -0600, Logan Gunthorpe wrote:
-> 
-> 
-> On 2020-09-11 10:00 a.m., Josh Poimboeuf wrote:
-> > Hi Logan,
-> > 
-> > Thanks for the bug report.  (Sorry I missed the first one, Naresh.)
-> > 
-> > The problem is that ret_from_fork() is no longer in .entry.text, so the
-> > following check in the FP unwinder doesn't work when ret_from_fork()
-> > gets interrupted.
-> > 
-> > 	/*
-> > 	 * Don't warn if the unwinder got lost due to an interrupt in entry
-> > 	 * code or in the C handler before the first frame pointer got set up:
-> > 	 */
-> > 	if (state->got_irq && in_entry_code(state->ip))
-> > 		goto the_end;
-> > 
-> > If you have the ability to recreate, can you try the following patch?
-> 
-> Sorry, but I can not reliably hit this bug. I hit it randomly twice last
-> week however, despite doing a bunch more runs this week, I haven't hit
-> it again.
-> 
-> I can add the patch to my testing next week but I ca not give you a
-> definitive answer on whether this fixes the bug.
-> 
-> Perhaps Naresh's test is a better reproducer.
+On Fri, 11 Sep 2020 12:44:03 -0400
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
 
-That's ok.  I forced a reproducer by putting an infinite loop in
-ret_from_fork to force an APIC interrupt with lockdep unwind.
+> Commit 492855939bdb ("vfio/type1: Limit DMA mappings per container")
+> added the ability to limit the number of memory backed DMA mappings.
+> However on s390x, when lazy mapping is in use, we use a very large
+> number of concurrent mappings.  Let's provide the limitation to
+> userspace via the IOMMU info chain so that userspace can take
+> appropriate mitigation.
+> 
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 17 +++++++++++++++++
+>  include/uapi/linux/vfio.h       | 16 ++++++++++++++++
+>  2 files changed, 33 insertions(+)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index 5fbf0c1..573c2c9 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2609,6 +2609,20 @@ static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
+>  	return vfio_info_add_capability(caps, &cap_mig.header, sizeof(cap_mig));
+>  }
+>  
+> +static int vfio_iommu_dma_limit_build_caps(struct vfio_iommu *iommu,
+> +					   struct vfio_info_cap *caps)
+> +{
+> +	struct vfio_iommu_type1_info_dma_limit cap_dma_limit;
+> +
+> +	cap_dma_limit.header.id = VFIO_IOMMU_TYPE1_INFO_DMA_LIMIT;
+> +	cap_dma_limit.header.version = 1;
+> +
+> +	cap_dma_limit.max = dma_entry_limit;
 
-The patch fixes it, I'll post an official version after some more
-testing.
 
--- 
-Josh
+I think you want to report iommu->dma_avail, which might change the
+naming and semantics of the capability a bit.  dma_entry_limit is a
+writable module param, so the current value might not be relevant to
+this container at the time that it's read.  When a container is opened
+we set iommu->dma_avail to the current dma_entry_limit, therefore later
+modifications of dma_entry_limit are only relevant to subsequent
+containers.
+
+It seems like there are additional benefits to reporting available dma
+entries as well, for example on mapping failure userspace could
+reevaluate, perhaps even validate usage counts between kernel and user.
+Thanks,
+
+Alex
+
+> +
+> +	return vfio_info_add_capability(caps, &cap_dma_limit.header,
+> +					sizeof(cap_dma_limit));
+> +}
+> +
+>  static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
+>  				     unsigned long arg)
+>  {
+> @@ -2642,6 +2656,9 @@ static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
+>  	ret = vfio_iommu_migration_build_caps(iommu, &caps);
+>  
+>  	if (!ret)
+> +		ret = vfio_iommu_dma_limit_build_caps(iommu, &caps);
+> +
+> +	if (!ret)
+>  		ret = vfio_iommu_iova_build_caps(iommu, &caps);
+>  
+>  	mutex_unlock(&iommu->lock);
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 9204705..c91e471 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -1039,6 +1039,22 @@ struct vfio_iommu_type1_info_cap_migration {
+>  	__u64	max_dirty_bitmap_size;		/* in bytes */
+>  };
+>  
+> +/*
+> + * The DMA limit capability allows to report the number of simultaneously
+> + * outstanding DMA mappings are supported.
+> + *
+> + * The structures below define version 1 of this capability.
+> + *
+> + * max: specifies the maximum number of outstanding DMA mappings allowed.
+> + */
+> +#define VFIO_IOMMU_TYPE1_INFO_DMA_LIMIT 3
+> +
+> +struct vfio_iommu_type1_info_dma_limit {
+> +	struct	vfio_info_cap_header header;
+> +	__u32	max;
+> +};
+> +
+> +
+>  #define VFIO_IOMMU_GET_INFO _IO(VFIO_TYPE, VFIO_BASE + 12)
+>  
+>  /**
 
