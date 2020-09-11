@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A896266396
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D96126638D
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgIKQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:20:53 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58712 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgIKQTI (ORCPT
+        id S1726522AbgIKQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:19:59 -0400
+Received: from a27-55.smtp-out.us-west-2.amazonses.com ([54.240.27.55]:54180
+        "EHLO a27-55.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726516AbgIKQTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:19:08 -0400
-Received: from [192.168.86.21] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BADE820716FA;
-        Fri, 11 Sep 2020 09:19:02 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BADE820716FA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1599841143;
-        bh=IGrl9wd59ouiSwrHZJue38Gb4uezQLGVnD6HcWU/o80=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FsBXu82EbG6MT9yrcRvWBKCe/fCu0gn4AeEUk/dfZHITC7I1H5MCCf54UkUgHic+Q
-         Q6RJ62GCP+uXr5rTl3rBDSNCjuooLp9aVofY2HZwXFj/+dwATBdWZ4oRCjIs0kWFaH
-         hJ/BhkB7cn3gds8zgReSqdEySHPgV159fhuezYAs=
-Subject: Re: [PATCH v3 1/6] IMA: generalize keyring specific measurement
- constructs
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
- <20200828015704.6629-2-tusharsu@linux.microsoft.com>
- <4802c73c2ed22c64ea4f315d3115ead919c3205e.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <1a456a10-bb49-206b-9fb9-cc996eea6e29@linux.microsoft.com>
-Date:   Fri, 11 Sep 2020 09:19:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 11 Sep 2020 12:19:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599841153;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
+        bh=XBT+2F8Be9EUhOk79AkAkxBza69lSFrrfNDtXiYkez8=;
+        b=aqGrYUHzMVKHuSU0ksGRsKHk5f3+HQbmzBV7srIhWvXSU3MnMFfopGf2xRhKKzGW
+        P7z9pzOnga24lmNNL5dAep7SjjgYF3FuoVk3cQ1VkSXvZWqRaY8UsU0BYWU6F1mSAk1
+        F738U9QdrC3Zb3zOJwWa4RJKbg4H0QGfxK9XYjo8=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599841153;
+        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
+        bh=XBT+2F8Be9EUhOk79AkAkxBza69lSFrrfNDtXiYkez8=;
+        b=KogK6wJVFQreN/mETzr9ra1qZ8nX2dQe6QNa2rJ/+xPUvUPRjNxbIcExRPOtBFPW
+        LND6H4YoiB9/JxbMQMyIwX2jhxA49OiK72QTjVmaTQMMOUQDs6jMk8gKo2+fasGs0XF
+        Yq1pzAp2Y7W97jCh8z5/GAq6O4N4mesJeAyeYKIs=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
 MIME-Version: 1.0
-In-Reply-To: <4802c73c2ed22c64ea4f315d3115ead919c3205e.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 11 Sep 2020 16:19:13 +0000
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCHv4 6/6] iommu: arm-smmu-impl: Remove unwanted extra blank
+ lines
+In-Reply-To: <c26b5317-f12d-8be9-be45-3307ce5efbfc@arm.com>
+References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
+ <010101747d912d9f-c8050b8d-1e81-4be0-ac35-b221f657b490-000000@us-west-2.amazonses.com>
+ <c26b5317-f12d-8be9-be45-3307ce5efbfc@arm.com>
+Message-ID: <010101747df6b106-0fd7caa1-471f-41e6-9f34-8d6eb3380f17-000000@us-west-2.amazonses.com>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
+X-SES-Outgoing: 2020.09.11-54.240.27.55
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020-08-31 4:55 a.m., Mimi Zohar wrote:
-> On Thu, 2020-08-27 at 18:56 -0700, Tushar Sugandhi wrote:
->> IMA functions such as ima_match_keyring(), process_buffer_measurement(),
->> ima_match_policy() etc. handle data specific to keyrings. Currently,
->> these constructs are not generic to handle any func specific data.
->> This makes it harder to extend without code duplication.
->>
->> Refactor the keyring specific measurement constructs to be generic and
->> reusable in other measurement scenarios.
+On 2020-09-11 21:33, Robin Murphy wrote:
+> On 2020-09-11 15:28, Sai Prakash Ranjan wrote:
+>> There are few places in arm-smmu-impl where there are
+>> extra blank lines, remove them
 > 
-> Mostly this patch changes the variable name from keyring to func_data,
-> which is good.  Other changes should be minimized.
+> FWIW those were deliberate - sometimes I like a bit of subtle space to
+> visually delineate distinct groups of definitions. I suppose it won't
+> be to everyone's taste :/
 > 
-The only other change in this patch is introduction of
-bool allow_empty_opt_list, which is needed as per my comment below.
 
-Maybe I can move "allow_empty_opt_list" to a new patch after this one in
-this series.
+Ah ok, I thought it was not intentional, I can drop it.
 
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
->> ---
+>> and while at it fix the
+>> checkpatch warning for space required before the open
+>> parenthesis.
 > 
-> <snip>
+> That one, however, was not ;)
 > 
->> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
->> index fe1df373c113..8866e84d0062 100644
->> --- a/security/integrity/ima/ima_policy.c
->> +++ b/security/integrity/ima/ima_policy.c
->> @@ -451,15 +451,21 @@ int ima_lsm_policy_change(struct notifier_block *nb, unsigned long event,
->>   }
->>   
->>   /**
->> - * ima_match_keyring - determine whether the keyring matches the measure rule
->> - * @rule: a pointer to a rule
->> - * @keyring: name of the keyring to match against the measure rule
->> + * ima_match_rule_data - determine whether the given func_data matches
->> + *			 the measure rule data
->> + * @rule: IMA policy rule
->> + * @opt_list: rule data to match func_data against
->> + * @func_data: data to match against the measure rule data
->> + * @allow_empty_opt_list: If true matches all func_data
->>    * @cred: a pointer to a credentials structure for user validation
->>    *
->> - * Returns true if keyring matches one in the rule, false otherwise.
->> + * Returns true if func_data matches one in the rule, false otherwise.
->>    */
->> -static bool ima_match_keyring(struct ima_rule_entry *rule,
->> -			      const char *keyring, const struct cred *cred)
->> +static bool ima_match_rule_data(struct ima_rule_entry *rule,
->> +				const struct ima_rule_opt_list *opt_list,
+
+I'll keep this one.
+
+> BTW am I supposed to have received 3 copies of everything? Because I 
+> did...
 > 
-> Ok
-> 
->> +				const char *func_data,
->> +				bool allow_empty_opt_list,
-> 
-> As the policy is loaded, shouldn't the rules should be checked, not
-> here on usage?
-> 
-> Mimi
 
-Since "keyrings=" is optional, I cannot check the rule at load time for
-keyrings. func=KEY_CHECK may or may not have "keyrings=", and both are
-valid scenarios.
+Ugh no, I just sent it once but something seems to have gone wrong.
+Apologies again if you receive this message also multiple times.
+I'll check further what's going wrong with my setup.
 
-However "critical_kernel_data_sources=" is mandatory for 
-func=CRITICAL_DATA.
+Thanks,
+Sai
 
-So I am already making that check at policy load time.
-
-See patch 5/6 – function ima_match_rules(), where I check for
-IMA_DATA_SOURCES.
-
-+       case CRITICAL_DATA:
-<snip>
-+               if (!(entry->flags & IMA_DATA_SOURCES) ||
-<snip>
-+                       return false;
-+
-
-Since ima_match_rule_data (this function) handles both func=KEY_CHECK 
-and func=CRITICAL_DATA, we have to use the bool "allow_empty_opt_list"
-to differentiate between the two scenarios – whether the rule is
-optional or not for a given func.
-
-> 
->> +				const struct cred *cred)
->>   {
->>   	bool matched = false;
->>   	size_t i;
->>
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
