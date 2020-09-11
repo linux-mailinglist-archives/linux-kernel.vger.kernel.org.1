@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6172661BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58524266225
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgIKPBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:01:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54394 "EHLO mail.kernel.org"
+        id S1725814AbgIKP37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:29:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgIKNCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 09:02:20 -0400
+        id S1726202AbgIKPZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:25:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0E43422242;
-        Fri, 11 Sep 2020 12:57:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A8E4422209;
+        Fri, 11 Sep 2020 12:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829050;
-        bh=QE17evv1Y7ctaurvyQ7i62yO2vJYXzF22gW2hz51gUo=;
+        s=default; t=1599829120;
+        bh=QV0sfvbwCfESZtYBZ+Zp5DwnEUH8bq3nh4G+4hWU03A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=isTATd3BebxFqIwpN21cHbVMb8srW7cKBBC1TLYHzgktuIRAeNl2cjdYa8o3RXTfk
-         WjAF8wNTfvCn7PqdvBObJMYxwMzqBQIy/ZK2icN1/4HqDHDdJenlwdQfO0rdFKuEdI
-         H7XfPHYbI3sJzLlXKduQrh828xi0+cHvGt7M+Mlo=
+        b=wPIuovvFc/hezj6zKMBdYesDPmLzucIHSkhYZfoONSffLwnx/KT03WDE0vXIrwFF6
+         UWQzFsXUy144/CwaQtOxq97g9usSBYb1ipR4BmDedFxSgqeHdB8Kg+BYiZtrGhWPft
+         Rlmq+wALcu3xB9ptNKAiUufkdApb8l+d1s1lxXgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ye Bin <yebin10@huawei.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.9 47/71] dm thin metadata:  Avoid returning cmd->bm wild pointer on error
-Date:   Fri, 11 Sep 2020 14:46:31 +0200
-Message-Id: <20200911122507.265553927@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Sherwood <rsher@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 67/71] bnxt: dont enable NAPI until rings are ready
+Date:   Fri, 11 Sep 2020 14:46:51 +0200
+Message-Id: <20200911122508.289139691@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -43,42 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-commit 219403d7e56f9b716ad80ab87db85d29547ee73e upstream.
+commit 96ecdcc992eb7f468b2cf829b0f5408a1fad4668 upstream.
 
-Maybe __create_persistent_data_objects() caller will use PTR_ERR as a
-pointer, it will lead to some strange things.
+Netpoll can try to poll napi as soon as napi_enable() is called.
+It crashes trying to access a doorbell which is still NULL:
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ CPU: 59 PID: 6039 Comm: ethtool Kdump: loaded Tainted: G S                5.9.0-rc1-00469-g5fd99b5d9950-dirty #26
+ RIP: 0010:bnxt_poll+0x121/0x1c0
+ Code: c4 20 44 89 e0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 41 8b 86 a0 01 00 00 41 23 85 18 01 00 00 49 8b 96 a8 01 00 00 0d 00 00 00 24 <89> 02
+41 f6 45 77 02 74 cb 49 8b ae d8 01 00 00 31 c0 c7 44 24 1a
+  netpoll_poll_dev+0xbd/0x1a0
+  __netpoll_send_skb+0x1b2/0x210
+  netpoll_send_udp+0x2c9/0x406
+  write_ext_msg+0x1d7/0x1f0
+  console_unlock+0x23c/0x520
+  vprintk_emit+0xe0/0x1d0
+  printk+0x58/0x6f
+  x86_vector_activate.cold+0xf/0x46
+  __irq_domain_activate_irq+0x50/0x80
+  __irq_domain_activate_irq+0x32/0x80
+  __irq_domain_activate_irq+0x32/0x80
+  irq_domain_activate_irq+0x25/0x40
+  __setup_irq+0x2d2/0x700
+  request_threaded_irq+0xfb/0x160
+  __bnxt_open_nic+0x3b1/0x750
+  bnxt_open_nic+0x19/0x30
+  ethtool_set_channels+0x1ac/0x220
+  dev_ethtool+0x11ba/0x2240
+  dev_ioctl+0x1cf/0x390
+  sock_do_ioctl+0x95/0x130
+
+Reported-by: Rob Sherwood <rsher@fb.com>
+Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-thin-metadata.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c |    9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/md/dm-thin-metadata.c
-+++ b/drivers/md/dm-thin-metadata.c
-@@ -700,12 +700,16 @@ static int __create_persistent_data_obje
- 					  THIN_MAX_CONCURRENT_LOCKS);
- 	if (IS_ERR(pmd->bm)) {
- 		DMERR("could not create block manager");
--		return PTR_ERR(pmd->bm);
-+		r = PTR_ERR(pmd->bm);
-+		pmd->bm = NULL;
-+		return r;
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -5589,14 +5589,14 @@ static int __bnxt_open_nic(struct bnxt *
+ 		}
  	}
  
- 	r = __open_or_format_metadata(pmd, format_device);
--	if (r)
-+	if (r) {
- 		dm_block_manager_destroy(pmd->bm);
-+		pmd->bm = NULL;
-+	}
+-	bnxt_enable_napi(bp);
+-
+ 	rc = bnxt_init_nic(bp, irq_re_init);
+ 	if (rc) {
+ 		netdev_err(bp->dev, "bnxt_init_nic err: %x\n", rc);
+-		goto open_err;
++		goto open_err_irq;
+ 	}
  
- 	return r;
- }
++	bnxt_enable_napi(bp);
++
+ 	if (link_re_init) {
+ 		mutex_lock(&bp->link_lock);
+ 		rc = bnxt_update_phy_setting(bp);
+@@ -5618,9 +5618,6 @@ static int __bnxt_open_nic(struct bnxt *
+ 
+ 	return 0;
+ 
+-open_err:
+-	bnxt_disable_napi(bp);
+-
+ open_err_irq:
+ 	bnxt_del_napi(bp);
+ 
 
 
