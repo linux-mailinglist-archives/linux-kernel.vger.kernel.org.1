@@ -2,331 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D842675DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4442675E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725908AbgIKW1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:27:23 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41827 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725882AbgIKW0w (ORCPT
+        id S1725946AbgIKW15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:27:57 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:39994 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgIKW1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:26:52 -0400
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id B107323E3E;
-        Sat, 12 Sep 2020 00:26:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1599863209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CmmwK2Y9u7jsPMtTnW9MItYW8rCYDk6ANdnsdKNOgqU=;
-        b=up4RrXzjlO92SvcRh6Z+R3wQ0gag4uRzavmr5z4uOvOsygkj5IysJP2NSWM/9sXQb7LucX
-        FnGxntFF85xuHZavU7onqeNByjzF+U4D7yhvFriAEwbrvQNtbi51GrrehtFvqCsmGpFgid
-        p5QNvJEcX44hh1eb6CXzOQ0tERGaAC0=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Jungseung Lee <js07.lee@samsung.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v2 4/4] mtd: spi-nor: implement OTP support for Winbond and similar flashes
-Date:   Sat, 12 Sep 2020 00:26:34 +0200
-Message-Id: <20200911222634.31804-5-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200911222634.31804-1-michael@walle.cc>
-References: <20200911222634.31804-1-michael@walle.cc>
+        Fri, 11 Sep 2020 18:27:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1599863228; x=1631399228;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=3TMzYydpa3NeX3bV2ElfXSee8xTDnLfEn215xEtYRok=;
+  b=kd6wfStsQGDIFGG2Bs5G9BRx8FxZoGIARAfGyBIcoXTZmD/hMwHwDx/y
+   OzkYkAHgG0mtwuFmPKh1qAH7gw/zEzVd+cFd8uXqCNd7Y6grKbWjoXW0g
+   zj+l6KNWd24ULB2+QCxtXXlb5Hcf4nxn51JaLh5FA3KeFJ8II3zLpvYvr
+   zIz1ayGruMjm+9DfeIuxvi1VO2g7WL/1Bdt4pyajNEirpgpHpJXDJHgkb
+   LyGrBVLieBdjwwdTSaSxEqh4TluOUcwa1vejv6w5FYIT6Dj0M2dH7eKz/
+   DlSDcYAvOhf843HNWz1WeHYaNrdj6tpn3Nf3jPrfu4oKZdeHaOk8uksdV
+   w==;
+IronPort-SDR: kJOEVshVTmQr8qydGoAVdEaS2vDpz4ui4vka6rRfc/3t6qo2rF72O1wXxDOatknrGikuT69X15
+ vYTdYqqqmvqFPlDdMnUoz1gxw1V0DScSlA4CzUC7//e969kks7OEbWtpYb+uZ46BVtnYfj6BX1
+ oKttlDfZMW7pEq/ySkrUFfPuk0S+/aLbuq8XkKkYYVQGni2KZY19LjFO+JOPDgyhX20d1/LLSQ
+ fzy3XOVoLw14t8e/yQ+vyDZakwGQme36ZulRJPH7TsyW+k9NprAQhrtZeQB6oCN8m/P6Qk1lnq
+ i+g=
+X-IronPort-AV: E=Sophos;i="5.76,418,1592841600"; 
+   d="scan'208";a="250478288"
+Received: from mail-bn8nam12lp2171.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.171])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Sep 2020 06:27:20 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eZJ7sPFOCqb5PYFlVSJ21z8n0lhle6luaznWUnx599M0YyQ91fF3/KCxquZ8XngRLFV0IP5XleACo5dE67BhiY+GcS7IZu2IsoiM1CutKcuAdoDj2ZAeK3ZapAltfc8NpwNvpBWsypFPCKXLHXYXPbzZseRRbohAoPxChASKbLyBTjNYR6+cj6gCVPaJI8jlIVXjJPyapaL+S6/+0Ekxx5WxSrDlEb7XBwPu80hfU7nYugcVKt8BQdPSqw5H5kEIi9XD/0YxmsGy4Jt9vlnf6ZOHz+RK6v5OfrDjON9gyGnFIm8J/JVACwYm6UjWOW8ct9nDhlsUgsHjjdoLVlB3gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IsU3TcIjjYUtWH/SUxF7LL4SoMxarmJ2qnC0C5XGcoM=;
+ b=eQVegAZ6/b+7/v7FLQpSig5KoaHTb7Zfs3ypscWEzNYa1l8JH+hhA/+S0ZjE7BgaRBODKPKWDe9jmMzrSMS0ByYHIpFFrQB8zGCuwlHocnXe2hK2gCDGYpFVqtyZKSru0KLyHPdGicNN+DvabBgfoRji7I+4M8m2CZmdS4KfBNFaUwPfI/svZ7CmBUlQPvlv1XyU/lHwX4myehzJS9C4AkRTOkSiY0Ig63U/Vfoxn/vUSYZP/IlbF/MJ43ggrJDCDWsQf7Uwnns79RuQug/sCZFCp8NoFagFuMob20tlgx+BRudym8bmHA2cziPoblCKOfBw/fWDSobwj/wIy0Vo5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IsU3TcIjjYUtWH/SUxF7LL4SoMxarmJ2qnC0C5XGcoM=;
+ b=raecDm5nJOJKtjnzgZ8aDDcFNIiPX8ukrEafMhCwXf1cyVMKzt7VM8X/3MtzvIMzG7H/vfqiER9jgVoZ64wXwlE1F8RbUiIm+JTmaaIdvfk5z+k5TPs7xtc9K1MaJIvn9S9jM7+zuTZvSqyoTnD5kzHGX6zd0/V6QuEHPI5obLY=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4461.namprd04.prod.outlook.com
+ (2603:10b6:805:ac::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Fri, 11 Sep
+ 2020 22:26:58 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3348.019; Fri, 11 Sep 2020
+ 22:26:58 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+CC:     Christoph Hellwig <hch@lst.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: first bad commit: [5795eb443060148796beeba106e4366d7f1458a6]
+ scsi: sd_zbc: emulate ZONE_APPEND commands
+Thread-Topic: first bad commit: [5795eb443060148796beeba106e4366d7f1458a6]
+ scsi: sd_zbc: emulate ZONE_APPEND commands
+Thread-Index: AQHWiHU5D1XE6L8r8ki3RtN8f0xMug==
+Date:   Fri, 11 Sep 2020 22:26:58 +0000
+Message-ID: <SN4PR0401MB3598C3B9A281C3748D24954C9B240@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200911195312.GA4110@zn.tnic>
+ <20200911221759.GA2869@nazgul.tnic>
+ <d7549a8f-ec57-7cee-577e-902f70c8bd42@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:142d:5701:4db3:21d3:689d:c45f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f3c36848-f5a1-45f9-1a63-08d856a1cbf3
+x-ms-traffictypediagnostic: SN6PR04MB4461:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR04MB446185F1A5CE5D2C89017F439B240@SN6PR04MB4461.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XN98lmIRQw1j5ZL97Ip0YkvB9yeezZsyXV3OlTQe1+u5wd2gBkeadQLPQRAGqsOq4C9n0SGPdnJTeAJ7nDSCt1vmeiC2dW0boUjbWii362x+K7Z2IHDNlgi9eEhwMHIYQLCUCLV9A5fvJ7JANMjpxiXtuSUNw86ITkfPMfe5MqtO2nhvRuxUapw0ghXNdxj7E6mITKYmTo38LJUlb1yceBeqyU0MVxlfDy22+LOTM1UrQlYoIG1RKfSI++cwBuKKHuVBfTpW+u1/FOEUAp377z76LM1YhwcKD3HpXBsUFW9j+V8PpO7A9KVm/3zhP4yAsgAt/4kPFBZrrHv8a+q++g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39860400002)(376002)(396003)(33656002)(52536014)(5660300002)(53546011)(83380400001)(186003)(4326008)(316002)(8676002)(8936002)(64756008)(66446008)(66946007)(55016002)(66476007)(66556008)(91956017)(478600001)(76116006)(6636002)(110136005)(86362001)(71200400001)(9686003)(7696005)(54906003)(2906002)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: DTftBoCST8sEke/LDt122spN92elQETbwNig6ljwchb3r1hshmLrLbjtCrKvtpiGg8JblURE/NFNwPgPftDxDkZHtLHBuruBUv1t9nva3/3oUDXDGWhrgRuAaTQN62qFjEc2sotLmi5Pqyz5T3EwYTOH3LT+0pxfZoQ+yTkHeCQtqNQJl03mzFXee+RuDeRtDSrGg0UhAzam4JGcOX5hH1mY/l4tkbKVBnTgpedM1o6um4SkiVlXGFmdtEMCbXKOohIb0eCRIyFW6GhfBnRdD2DdENeYbNqJop41GqcPFApcMhHNfWoG+bVFO4hpG7R5pClXFFqw09dxbrUJ3wTRMyR6bLP8aJgcOvR88O2RiDmWj/zbC3UKnN3thdM3myAROOpL+V1LDz3O0LDmTD3SLUev5P+7BgDSgwXqi41WphSKl6QDjgpT3vpbN9YFGDqpx9PdvPE1LNwHzgGHt+aDDpQZcLJKsYKGxhD4c+0hWLYsoov7Zr7xg+j79nHvInJRKUjeOMoisb3UozSpa4jpkdG9Uqyc6EKIu05556YU1cODn/IBffs6kUQKoeTFQLH8oCDWc+XKd/6/i1qhe07VWf266nfxT1PQKJJAWDQXJLEt3cj0O0rkqjeD9taRNHxPx2EeDiBr1EoIbP5WXat/59Ln8Xk9IPq2lakGrTQpNnY5g4oKO0cCw5dvehPRbWFNhIx679iMMXrSGHuywIkMVA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3c36848-f5a1-45f9-1a63-08d856a1cbf3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2020 22:26:58.2756
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1YfaeRcCqjNErHgdDykdYjx2uqVE4pbvsL0ktP5Cvrf35uS2kHaI5BtvNMz8MCk9yOnnwP8+g1SkOsIQy6esp03sOTqjxpsi+2jRBNF5gp8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4461
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new OTP ops to implement OTP access on Winbond flashes. Most
-Winbond flashes provides up to four different OTP areas ("Security
-Registers"). Newer flashes uses the first OTP area for SFDP data. Thus,
-for these flashes only the last three areas are handled and the first
-one is left untouched.
-
-This was tested on a Winbond W25Q32JW as well as on a W25Q32FW.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- drivers/mtd/spi-nor/core.c    | 161 ++++++++++++++++++++++++++++++++++
- drivers/mtd/spi-nor/core.h    |   4 +
- drivers/mtd/spi-nor/winbond.c |  18 +++-
- include/linux/mtd/spi-nor.h   |  10 +++
- 4 files changed, 191 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 348db19958e9..c150e3b6ee44 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2997,6 +2997,167 @@ int spi_nor_otp_is_locked_scur(struct spi_nor *nor, unsigned int region)
- 	return *scur & SCUR_LDSO;
- }
- 
-+/**
-+ * spi_nor_otp_read_secr() - read OTP data
-+ * @nor:	pointer to 'struct spi_nor'
-+ * @from:       offset to read from
-+ * @len:        number of bytes to read
-+ * @buf:        pointer to dst buffer
-+ *
-+ * Read OTP data by using the SPINOR_OP_RSECR commands. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: number of bytes read successfully, -errno otherwise
-+ */
-+int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf)
-+{
-+	u8 addr_width, read_opcode, read_dummy;
-+	struct spi_mem_dirmap_desc *rdesc;
-+	enum spi_nor_protocol read_proto;
-+	int ret;
-+
-+	read_opcode = nor->read_opcode;
-+	addr_width = nor->addr_width;
-+	read_dummy = nor->read_dummy;
-+	read_proto = nor->read_proto;
-+	rdesc = nor->dirmap.rdesc;
-+
-+	nor->read_opcode = SPINOR_OP_RSECR;
-+	nor->addr_width = 3;
-+	nor->read_dummy = 8;
-+	nor->read_proto = SNOR_PROTO_1_1_1;
-+	nor->dirmap.rdesc = NULL;
-+
-+	ret = spi_nor_read_data(nor, addr, len, buf);
-+
-+	nor->read_opcode = read_opcode;
-+	nor->addr_width = addr_width;
-+	nor->read_dummy = read_dummy;
-+	nor->read_proto = read_proto;
-+	nor->dirmap.rdesc = rdesc;
-+
-+	return ret;
-+}
-+
-+/**
-+ * spi_nor_otp_write_secr() - write OTP data
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @to:         offset to write to
-+ * @len:        number of bytes to write
-+ * @buf:        pointer to src buffer
-+ *
-+ * Write OTP data by using the SPINOR_OP_PSECR commands. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: number of bytes written successfully, -errno otherwise
-+ */
-+int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf)
-+{
-+	enum spi_nor_protocol write_proto;
-+	struct spi_mem_dirmap_desc *wdesc;
-+	u8 addr_width, program_opcode;
-+	int ret;
-+
-+	program_opcode = nor->program_opcode;
-+	addr_width = nor->addr_width;
-+	write_proto = nor->write_proto;
-+	wdesc = nor->dirmap.wdesc;
-+
-+	nor->program_opcode = SPINOR_OP_PSECR;
-+	nor->addr_width = 3;
-+	nor->write_proto = SNOR_PROTO_1_1_1;
-+	nor->dirmap.wdesc = NULL;
-+
-+	/*
-+	 * We only support a write to one single page. For now all winbond
-+	 * flashes only have one page per OTP region.
-+	 */
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		goto out;
-+
-+	ret = spi_nor_write_data(nor, addr, len, buf);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+
-+out:
-+	nor->program_opcode = program_opcode;
-+	nor->addr_width = addr_width;
-+	nor->write_proto = write_proto;
-+	nor->dirmap.wdesc = wdesc;
-+
-+	return ret;
-+}
-+
-+static int spi_nor_otp_lock_bit_cr(unsigned int region)
-+{
-+	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-+
-+	if (region >= ARRAY_SIZE(lock_bits))
-+		return -EINVAL;
-+
-+	return lock_bits[region];
-+}
-+
-+/**
-+ * spi_nor_otp_lock_sr2() - lock the OTP region
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Lock the OTP region by writing the status register-2. This method is used on
-+ * GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region)
-+{
-+	int lock_bit;
-+	u8 *sr2 = nor->bouncebuf;
-+	int ret;
-+
-+	lock_bit = spi_nor_otp_lock_bit_cr(region);
-+	if (lock_bit < 0)
-+		return lock_bit;
-+
-+	ret = spi_nor_read_cr(nor, sr2);
-+	if (ret)
-+		return ret;
-+
-+	/* check if its already locked */
-+	if (*sr2 & lock_bit)
-+		return 0;
-+
-+	return spi_nor_write_16bit_cr_and_check(nor, *sr2 | lock_bit);
-+}
-+
-+/**
-+ * spi_nor_otp_is_locked_sr2() - get the OTP region lock status
-+ * @nor:        pointer to 'struct spi_nor'
-+ * @region:     OTP region
-+ *
-+ * Retrieve the OTP region lock bit by reading the status register-2. This
-+ * method is used on GigaDevice and Winbond flashes.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region)
-+{
-+	int lock_bit;
-+	u8 *sr2 = nor->bouncebuf;
-+	int ret;
-+
-+	lock_bit = spi_nor_otp_lock_bit_cr(region);
-+	if (lock_bit < 0)
-+		return lock_bit;
-+
-+	ret = spi_nor_read_cr(nor, sr2);
-+	if (ret)
-+		return ret;
-+
-+	return (*sr2 & lock_bit);
-+}
- 
- static int spi_nor_init(struct spi_nor *nor)
- {
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 7ec4add17b72..74bbb7aef1f1 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -472,6 +472,10 @@ int spi_nor_otp_read_otp_mode(struct spi_nor *nor, loff_t from, uint64_t len, u8
- int spi_nor_otp_write_otp_mode(struct spi_nor *nor, loff_t to, uint64_t len, u8 *buf);
- int spi_nor_otp_lock_scur(struct spi_nor *nor, unsigned int region);
- int spi_nor_otp_is_locked_scur(struct spi_nor *nor, unsigned int region);
-+int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf);
-+int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, uint64_t len, u8 *buf);
-+int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
-+int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
- 
- int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- u8 spi_nor_convert_3to4_read(u8 opcode);
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 6dcde15fb1aa..3b14e96e993f 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -55,14 +55,19 @@ static const struct flash_info winbond_parts[] = {
- 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25q32dw", INFO(0xef6016, 0, 64 * 1024,  64,
- 			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+			   OTP_INFO(256, 3, 0x1000, 0x1000)
-+	},
-+
- 	{ "w25q32jv", INFO(0xef7016, 0, 64 * 1024,  64,
- 			   SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			   SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
- 	{ "w25q32jwm", INFO(0xef8016, 0, 64 * 1024,  64,
- 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
--			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+			    OTP_INFO(256, 3, 0x1000, 0x1000)
-+	},
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
- 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-@@ -122,9 +127,18 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 	return spi_nor_write_disable(nor);
- }
- 
-+static const struct spi_nor_otp_ops winbond_otp_ops = {
-+	.read = spi_nor_otp_read_secr,
-+	.write = spi_nor_otp_write_secr,
-+	.lock = spi_nor_otp_lock_sr2,
-+	.is_locked = spi_nor_otp_is_locked_sr2,
-+};
-+
- static void winbond_default_init(struct spi_nor *nor)
- {
- 	nor->params->set_4byte_addr_mode = winbond_set_4byte_addr_mode;
-+	if (nor->params->otp_info.n_otps)
-+		nor->params->otp_ops = &winbond_otp_ops;
- }
- 
- static const struct spi_nor_fixups winbond_fixups = {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 04195d3e43b8..4750fb631c96 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -110,6 +110,11 @@
- #define SPINOR_OP_RD_EVCR      0x65    /* Read EVCR register */
- #define SPINOR_OP_WD_EVCR      0x61    /* Write EVCR register */
- 
-+/* Used for GigaDevices and Winbond flashes. */
-+#define SPINOR_OP_ESECR		0x44	/* Erase Security registers */
-+#define SPINOR_OP_PSECR		0x42	/* Program Security registers */
-+#define SPINOR_OP_RSECR		0x48	/* Read Security registers */
-+
- /* Status Register bits. */
- #define SR_WIP			BIT(0)	/* Write in progress */
- #define SR_WEL			BIT(1)	/* Write enable latch */
-@@ -141,8 +146,13 @@
- 
- /* Status Register 2 bits. */
- #define SR2_QUAD_EN_BIT1	BIT(1)
-+#define SR2_LB0			BIT(2)	/* Security Register Lock Bit 0 */
-+#define SR2_LB1			BIT(3)	/* Security Register Lock Bit 1 */
-+#define SR2_LB2			BIT(4)	/* Security Register Lock Bit 2 */
-+#define SR2_LB3			BIT(5)	/* Security Register Lock Bit 3 */
- #define SR2_QUAD_EN_BIT7	BIT(7)
- 
-+
- /* Supported SPI protocols */
- #define SNOR_PROTO_INST_MASK	GENMASK(23, 16)
- #define SNOR_PROTO_INST_SHIFT	16
--- 
-2.20.1
-
+On 12/09/2020 00:22, Randy Dunlap wrote:=0A=
+> On 9/11/20 3:17 PM, Borislav Petkov wrote:=0A=
+>> On Fri, Sep 11, 2020 at 09:53:12PM +0200, Borislav Petkov wrote:=0A=
+>>> Now, looking at that patch:=0A=
+>>>=0A=
+>>>   5795eb443060 ("scsi: sd_zbc: emulate ZONE_APPEND commands")=0A=
+>>>=0A=
+>>> yeah, that doesn't revert cleanly. But it talks about zoned-something=
+=0A=
+>>> devices and that rings a bell because you guys broke my zoned device=0A=
+>>> once already:=0A=
+>>=0A=
+>> Ok, so Johannes and I poked a bit on IRC and here it is:=0A=
+>>=0A=
+>> # CONFIG_BLK_DEV_ZONED is not set.=0A=
+>>=0A=
+>> Enabling it, fixes the issue.=0A=
+>>=0A=
+> =0A=
+> Uh, you are not saying that enabling that CONFIG_ is the final fix, are y=
+ou?=0A=
+> =0A=
+> If so, do I need to enable it, even if I don't have a zoned block device?=
+=0A=
+>=0A=
+=0A=
+No he does have a zoned block device and no this is not the final fix, I =
+=0A=
+think one of the stubbed out functions is broken, but it's midnight here=0A=
+so we're calling it a day and chime back in on Monday.=0A=
+=0A=
+And this setup is a bit special, as Boris is using partitions on a host-awa=
+re=0A=
+zoned block device which is somewhat exotic (see add_partition()).=0A=
+=0A=
+Byte,=0A=
+	Johannes=0A=
+=0A=
