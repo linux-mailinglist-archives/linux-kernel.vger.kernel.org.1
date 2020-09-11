@@ -2,150 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE9D266416
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AAB26643B
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgIKQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgIKPTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:19:23 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34DF2221EB
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:16:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599837403;
-        bh=jAzQ1ZvicvLKfXMKWysDxGUXCfTXkX9dtV5xPOVfOhU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CQtk/oQM1rzTZL8kLuUYk/XCNu0mS8PAfuHWWxCKRceO53Kli45u6DHzXb31RhSQH
-         kuCSKVA2LHksRCzGeEILIxMa2Z4pj9WXJvwwXpg2/G7yZZJatr85CkNeAXuVTiIQ4S
-         uRydD9zXvMeI1qcw1jExLfrOZUmMQsjFpNlEsOj0=
-Received: by mail-ed1-f44.google.com with SMTP id l63so10326284edl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 08:16:43 -0700 (PDT)
-X-Gm-Message-State: AOAM533iR5grlgjFG6Ne8DX6GUszMgRSCM+g/rd4GJwcD9/2ldYOfPp2
-        Ezj3B4oUSRmzUG7lMQOwomRhUQcVsLmOxjDL+7s=
-X-Google-Smtp-Source: ABdhPJyX43jMLWrEQ8jpmSIRLi9MtRq5ZEmAZXXoN1vP85D9RLdKAg5Q9Q5VCjSkTJ+FjDanWCgt/efU99te4OAth18=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr2497177edb.143.1599837401638;
- Fri, 11 Sep 2020 08:16:41 -0700 (PDT)
+        id S1726454AbgIKQdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:33:46 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:42909 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726402AbgIKPRi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:17:38 -0400
+Received: (qmail 884616 invoked by uid 1000); 11 Sep 2020 11:17:23 -0400
+Date:   Fri, 11 Sep 2020 11:17:23 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] usb: ohci: Default to per-port over-current
+ protection
+Message-ID: <20200911151723.GA884518@rowland.harvard.edu>
+References: <20200910212512.16670-1-hamish.martin@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <1599553645-26928-1-git-send-email-yilun.xu@intel.com>
- <1599553645-26928-2-git-send-email-yilun.xu@intel.com> <20200908100102.GB24693@pi3>
- <20200911084234.GB7802@yilunxu-OptiPlex-7050> <CAJKOXPfjd99PLH1FBc2NSmc1Z=5PGrxezqPucdvvbDtyjm8jOA@mail.gmail.com>
- <20200911144356.GA11294@yilunxu-OptiPlex-7050>
-In-Reply-To: <20200911144356.GA11294@yilunxu-OptiPlex-7050>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 11 Sep 2020 17:16:29 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfqFvpNti46Uh1SJYCaezgyNeOb8dF8dAp4uFL0r0j7fA@mail.gmail.com>
-Message-ID: <CAJKOXPfqFvpNti46Uh1SJYCaezgyNeOb8dF8dAp4uFL0r0j7fA@mail.gmail.com>
-Subject: Re: [PATCH] memory: dfl-emif: add the DFL EMIF private feature driver
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        trix@redhat.com, matthew.gerlach@linux.intel.com,
-        russell.h.weight@intel.com, lgoncalv@redhat.com, hao.wu@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910212512.16670-1-hamish.martin@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 at 16:48, Xu Yilun <yilun.xu@intel.com> wrote:
->
-> On Fri, Sep 11, 2020 at 11:03:50AM +0200, Krzysztof Kozlowski wrote:
-> > On Fri, 11 Sep 2020 at 10:46, Xu Yilun <yilun.xu@intel.com> wrote:
-> > >
-> > > Sorry I missed one comments, see inline.
-> > >
-> > > On Tue, Sep 08, 2020 at 12:01:02PM +0200, Krzysztof Kozlowski wrote:
-> > > > On Tue, Sep 08, 2020 at 04:27:25PM +0800, Xu Yilun wrote:
-> > > > > This driver is for the EMIF private feature implemented under FPGA
-> > > > > Device Feature List (DFL) framework. It is used to expose memory
-> > > > > interface status information as well as memory clearing control.
-> > > > >
-> > > > > The purpose of memory clearing block is to zero out all private memory
-> > > > > when FPGA is to be reprogrammed. This gives users a reliable method to
-> > > > > prevent potential data leakage.
-> > > > >
-> > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > > > ---
-> > > > >  .../ABI/testing/sysfs-bus-dfl-devices-emif         |  25 +++
-> > > > >  drivers/memory/Kconfig                             |   9 +
-> > > > >  drivers/memory/Makefile                            |   2 +
-> > > > >  drivers/memory/dfl-emif.c                          | 211 +++++++++++++++++++++
-> > > > >  4 files changed, 247 insertions(+)
-> > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > > > >  create mode 100644 drivers/memory/dfl-emif.c
-> > > > >
-> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > > > > new file mode 100644
-> > > > > index 0000000..33d557e
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
-> > > > > @@ -0,0 +1,25 @@
-> > > > > +What:              /sys/bus/dfl/devices/dfl_dev.X/infX_cal_fail
-> > > > > +Date:              Sep 2020
-> > > > > +KernelVersion:     5.10
-> > > > > +Contact:   Xu Yilun <yilun.xu@intel.com>
-> > > > > +Description:       Read-only. It indicates if the calibration is failed on this
-> > > > > +           memory interface. "1" for calibration failure, "0" for OK.
-> > > >
-> > > > "if the calibration failed"
-> > > >
-> > > > > +           Format: %u
-> > > > > +
-> > > > > +What:              /sys/bus/dfl/devices/dfl_dev.X/infX_init_done
-> > > > > +Date:              Sep 2020
-> > > > > +KernelVersion:     5.10
-> > > > > +Contact:   Xu Yilun <yilun.xu@intel.com>
-> > > > > +Description:       Read-only. It indicates if the initialization is complete on
-> > > > > +           this memory interface. "1" for initialization complete, "0"
-> > > > > +           for not yet.
-> > > > > +           Format: %u
-> > > >
-> > > > "if the initialization completed"
-> > > >
-> > > > > +
-> > > > > +What:              /sys/bus/dfl/devices/dfl_dev.X/infX_clear
-> > > > > +Date:              Sep 2020
-> > > > > +KernelVersion:     5.10
-> > > > > +Contact:   Xu Yilun <yilun.xu@intel.com>
-> > > > > +Description:       Write-only. Writing "1" to this file will zero out all memory
-> > > > > +           data in this memory interface. Writing other values are
-> > > > > +           invalid.
-> > > >
-> > > > "Writing of other values is invalid."
-> > > >
-> > > > > +           Format: %u
-> > > > > diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-> > > > > index 8072204..fb0858f 100644
-> > > > > --- a/drivers/memory/Kconfig
-> > > > > +++ b/drivers/memory/Kconfig
-> > > > > @@ -215,6 +215,15 @@ config STM32_FMC2_EBI
-> > > > >       devices (like SRAM, ethernet adapters, FPGAs, LCD displays, ...) on
-> > > > >       SOCs containing the FMC2 External Bus Interface.
-> > > > >
-> > > > > +config FPGA_DFL_EMIF
-> > > > > +   tristate "DFL EMIF private feature support"
-> > > > > +   depends on FPGA_DFL && HAS_IOMEM
-> > > >
-> > > > Cannot be compile tested without FPGA_DFL?
-> > >
-> > > We need this FPGA_DFL dependency. The driver will use the
-> > > __dfl_driver_register(), which is defined in drivers/fpga/dfl.c, and
-> > > FPGA_DFL enables the compiling of dfl.c
-> >
-> > Yeah but the DFL headers provide empty stubs for such case, don't
-> > they? If they don't, probably they should.
->
-> The DFL headers don't provide the empty stubs, why they should? A DFL
-> driver should not be selected when the DFL framework & DFL bus is not
-> enabled in system.
+On Fri, Sep 11, 2020 at 09:25:11AM +1200, Hamish Martin wrote:
+> Some integrated OHCI controller hubs do not expose all ports of the hub
+> to pins on the SoC. In some cases the unconnected ports generate
+> spurious over-current events. For example the Broadcom 56060/Ranger 2 SoC
+> contains a nominally 3 port hub but only the first port is wired.
+> 
+> Default behaviour for ohci-platform driver is to use global over-current
+> protection mode (AKA "ganged"). This leads to the spurious over-current
+> events affecting all ports in the hub.
+> 
+> We now alter the default to use per-port over-current protection.
+> 
+> This patch results in the following configuration changes depending
+> on quirks:
+> - For quirk OHCI_QUIRK_SUPERIO no changes. These systems remain set up
+>   for ganged power switching and no over-current protection.
+> - For quirk OHCI_QUIRK_AMD756 or OHCI_QUIRK_HUB_POWER power switching
+>   remains at none, while over-current protection is now guaranteed to be
+>   set to per-port rather than the previous behaviour where it was either
+>   none or global over-current protection depending on the value at
+>   function entry.
+> 
+> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+> Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+> ---
+> 
+> Notes:
+>     Changes in v2:
+>     - remove clearing of RH_A_PSM in OHCI_QUIRK_HUB_POWER block.
+> 
+>  drivers/usb/host/ohci-hcd.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+> index dd37e77dae00..2845ea328a06 100644
+> --- a/drivers/usb/host/ohci-hcd.c
+> +++ b/drivers/usb/host/ohci-hcd.c
+> @@ -673,20 +673,24 @@ static int ohci_run (struct ohci_hcd *ohci)
+>  
+>  	/* handle root hub init quirks ... */
+>  	val = roothub_a (ohci);
+> -	val &= ~(RH_A_PSM | RH_A_OCPM);
+> +	/* Configure for per-port over-current protection by default */
+> +	val &= ~RH_A_NOCP;
+> +	val |= RH_A_OCPM;
+>  	if (ohci->flags & OHCI_QUIRK_SUPERIO) {
+> -		/* NSC 87560 and maybe others */
+> +		/* NSC 87560 and maybe others.
+> +		 * Ganged power switching, no over-current protection.
+> +		 */
+>  		val |= RH_A_NOCP;
+> -		val &= ~(RH_A_POTPGT | RH_A_NPS);
+> -		ohci_writel (ohci, val, &ohci->regs->roothub.a);
+> +		val &= ~(RH_A_POTPGT | RH_A_NPS | RH_A_PSM | RH_A_OCPM);
+>  	} else if ((ohci->flags & OHCI_QUIRK_AMD756) ||
+>  			(ohci->flags & OHCI_QUIRK_HUB_POWER)) {
+>  		/* hub power always on; required for AMD-756 and some
+> -		 * Mac platforms.  ganged overcurrent reporting, if any.
+> +		 * Mac platforms.
+>  		 */
+>  		val |= RH_A_NPS;
+> -		ohci_writel (ohci, val, &ohci->regs->roothub.a);
+>  	}
+> +	ohci_writel(ohci, val, &ohci->regs->roothub.a);
+> +
+>  	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
+>  	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
+>  						&ohci->regs->roothub.b);
+> -- 
+> 2.28.0
 
-Good point, this is not a consumer API. Then the config entry looks fine.
-
-Best regards,
-Krzysztof
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
