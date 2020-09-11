@@ -2,58 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623DF2657E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 06:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F284B2657F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 06:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725535AbgIKEOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 00:14:06 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:58424 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgIKEOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 00:14:05 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kGaRf-0005x0-5T; Fri, 11 Sep 2020 14:13:56 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 11 Sep 2020 14:13:55 +1000
-Date:   Fri, 11 Sep 2020 14:13:55 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
-Message-ID: <20200911041354.GA5275@gondor.apana.org.au>
-References: <202009061621.J89kO43Q%lkp@intel.com>
- <20200907062400.GA15841@gondor.apana.org.au>
- <20200907160029.GC11894@Red>
- <20200908050036.GA19817@gondor.apana.org.au>
- <20200910122248.GA22506@Red>
+        id S1725805AbgIKETU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 00:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgIKETO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 00:19:14 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08E4C061573;
+        Thu, 10 Sep 2020 21:19:12 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id fa1so1088276pjb.0;
+        Thu, 10 Sep 2020 21:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3GKrvUiFlFciRX7VQdx8esQeBBFrNeZILayTSwTWG9g=;
+        b=O/twqk4z0+Ftxyy+kfi7ndIejydgPDPb7gfaVqjXEOnQEUq5VNVC4hlcd5cH9Vnp/4
+         E5H3b7OCINXOcu8PI6b103VXApOcIzphPdrhGGlYWu7BDji7L3TCJd5GT87fQ1MqZx7L
+         pOJZrf18tyrIGe84p/VfjbYgka1B99sVEBCFntut+2s7YkTGEE5xfgNreRc/K+3m3Gvr
+         JI7mC+Gr/9jCU6m1a8Visc+5n+uv2zE4rsLqljBKoQ+/qnC7HMwZFdHqIdbRZgBo4Q52
+         g9i3L+IsLG/v3vm9ekHoLGwVbGCZB7ecaWx5Re4orxJC2TEZweHfeqnQCokiKteIOFi0
+         si/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3GKrvUiFlFciRX7VQdx8esQeBBFrNeZILayTSwTWG9g=;
+        b=smDho3sMGTPiLITzspjSRig6CW9tAKM66oCe7tr5IZV3a1Pep8sqMfNZEOA4IbgaNs
+         17wrZDpiLdixipkLeui7Omxl2uYkQQo3YMTEbsCGnSRZn6d+AP6uOpn+01w6hqDH/LcF
+         GTB3fgdAH5w2rwmHfh7OpfnI0Jm5GFZ0yezOjgntwMbFOLVmTSHxK/crIC+/1DKBKUEu
+         cLdQvgzWWI26YtA5E6t6dGEppVC8OecX6786ZBmzF7Qy4RxaM5XmwmriKKzFls8U+vt3
+         GcGXoYypcRYtilGvFMrhKFpmhWkOd6ygHHzq3D8GBm64NANhmnYrfB0oama45vFAhGuD
+         d/wg==
+X-Gm-Message-State: AOAM530khIHdS8LZJF/xkc9dRjpUU5fsRnuUAsHpeJYTBqQ4Dxn5oXYb
+        p8odOJ8nCPweHGbsNg+h5w07KDVZQw0=
+X-Google-Smtp-Source: ABdhPJxm8ZAn4MLLQXmqYeEclMvS7tgMlxh0wah1WLYGH8L+tUn4lLA/u5kH+I5qeVM4paD5/9ti9Q==
+X-Received: by 2002:a17:90a:f407:: with SMTP id ch7mr489565pjb.142.1599797951051;
+        Thu, 10 Sep 2020 21:19:11 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id s9sm493201pgm.40.2020.09.10.21.19.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Sep 2020 21:19:10 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     olteanv@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: dsa: b53: Configure VLANs while not filtering
+Date:   Thu, 10 Sep 2020 21:19:05 -0700
+Message-Id: <20200911041905.58191-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910122248.GA22506@Red>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 02:22:48PM +0200, Corentin Labbe wrote:
->
-> I get some md5 error on both A20+BE:
-> alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=129 ksize=0\", cfg=\"random: inplace use_finup nosimd src_divs=[<reimport,nosimd>85.99%@+3999, 5.85%@+30, <reimport>0.96%@+25, <reimport,nosimd>5.9%@+2263, <flush,nosimd>2.11%@+1950] iv_offset=2 key_offset=43\"
-> and A33+BE:
-> [   84.469045] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=322 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[<reimport>99.1%@+2668, <reimport>0.88%@alignmask+3630, 0.11%@+3403] iv_offset=33\"
-> +[   84.469074] need:35966fc8 b31ea266 2bf064e9 f20f40ad
-> +[   84.469084] have:e29e4491 f3b6effc fa366691 00e04bd9
-> 
-> Thoses errors are random. (1 boot out of 2)
+Update the B53 driver to support VLANs while not filtering. This
+requires us to enable VLAN globally within the switch upon driver
+initial configuration (dev->vlan_enabled).
 
-Do these really go away without this patch applied? AFAICS the
-generated code should be identical.
+We also need to remove the code that dealt with PVID re-configuration in
+b53_vlan_filtering() since that function worked under the assumption
+that it would only be called to make a bridge VLAN filtering, or not
+filtering, and we would attempt to move the port's PVID accordingly.
 
-Thanks,
+Now that VLANs are programmed all the time, even in the case of a
+non-VLAN filtering bridge, we would be programming a default_pvid for
+the bridged switch ports.
+
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/dsa/b53/b53_common.c | 23 ++++-------------------
+ 1 file changed, 4 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
+index 6a5796c32721..46ac8875f870 100644
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -1377,23 +1377,6 @@ EXPORT_SYMBOL(b53_phylink_mac_link_up);
+ int b53_vlan_filtering(struct dsa_switch *ds, int port, bool vlan_filtering)
+ {
+ 	struct b53_device *dev = ds->priv;
+-	u16 pvid, new_pvid;
+-
+-	b53_read16(dev, B53_VLAN_PAGE, B53_VLAN_PORT_DEF_TAG(port), &pvid);
+-	if (!vlan_filtering) {
+-		/* Filtering is currently enabled, use the default PVID since
+-		 * the bridge does not expect tagging anymore
+-		 */
+-		dev->ports[port].pvid = pvid;
+-		new_pvid = b53_default_pvid(dev);
+-	} else {
+-		/* Filtering is currently disabled, restore the previous PVID */
+-		new_pvid = dev->ports[port].pvid;
+-	}
+-
+-	if (pvid != new_pvid)
+-		b53_write16(dev, B53_VLAN_PAGE, B53_VLAN_PORT_DEF_TAG(port),
+-			    new_pvid);
+ 
+ 	b53_enable_vlan(dev, dev->vlan_enabled, vlan_filtering);
+ 
+@@ -1444,7 +1427,7 @@ void b53_vlan_add(struct dsa_switch *ds, int port,
+ 			untagged = true;
+ 
+ 		vl->members |= BIT(port);
+-		if (untagged && !dsa_is_cpu_port(ds, port))
++		if (untagged)
+ 			vl->untag |= BIT(port);
+ 		else
+ 			vl->untag &= ~BIT(port);
+@@ -1482,7 +1465,7 @@ int b53_vlan_del(struct dsa_switch *ds, int port,
+ 		if (pvid == vid)
+ 			pvid = b53_default_pvid(dev);
+ 
+-		if (untagged && !dsa_is_cpu_port(ds, port))
++		if (untagged)
+ 			vl->untag &= ~(BIT(port));
+ 
+ 		b53_set_vlan_entry(dev, vid, vl);
+@@ -2619,6 +2602,8 @@ struct b53_device *b53_switch_alloc(struct device *base,
+ 	dev->priv = priv;
+ 	dev->ops = ops;
+ 	ds->ops = &b53_switch_ops;
++	ds->configure_vlan_while_not_filtering = true;
++	dev->vlan_enabled = ds->configure_vlan_while_not_filtering;
+ 	mutex_init(&dev->reg_mutex);
+ 	mutex_init(&dev->stats_mutex);
+ 
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.25.1
+
