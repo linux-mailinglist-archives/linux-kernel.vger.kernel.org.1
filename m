@@ -2,124 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6B8266523
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D963F2664E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgIKQyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbgIKQwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:52:38 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FC5C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:52:38 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id w1so10736758edr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:52:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ymUunqCLw2vPuQ1VbXcUDi5LPgcqHOLwtMhV+h1hP00=;
-        b=LzixW8IE64pueJHPc4pkVfB4hu8uL7V9KR6+6qOQDiBrSui1M4vSI9xeqysgklBESL
-         0IQ4jxvW89dAuyt0txhLnLuupNLcl3TzUTNbKM8yk1mUHFyRH5GgOM7DPBaXlmnovHXl
-         RwxBgeTE5qnMUevVAeinQ8lEe8Rzs7ehh51xA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ymUunqCLw2vPuQ1VbXcUDi5LPgcqHOLwtMhV+h1hP00=;
-        b=mIZR6go7yWwuAPRtew6AIv+3tNih3WJXyNfenJ3dvTf4rGZZcwGamxJIgEDOQE9EV7
-         Z1Szc3lgvzlF1+ZMEcY1Rj91fC40/dnpAmfEWokkMiXXhJt6BKE5l6jfwt60LYNpJ2zT
-         9PDCeVTuhxCRi3JCu+cZKFP0IKi9lOcMYh2z8KXoxHtj/nla72CJLM9rqyiclzY5auEG
-         leKCP8B3PfLHc+1ccER++8GToxo7JEyDFjOAfK+DPZ1d72vS7ldNKE8tE33mJODZYBbV
-         dTunaMWFcILJiiDSs2jAZEYPZMhKCuePUd+ZgfEHDYNfvkZEJNRbjUzyvqXZyfB6xjFj
-         WbvA==
-X-Gm-Message-State: AOAM533g9G6zJFqN+yP65u7YAfji6YNs0uToyMjLB1qWUbzNNcZNK0Tj
-        vr3Gt1KWHW2y/CwzX5zpsLmVT/YI+atbQg==
-X-Google-Smtp-Source: ABdhPJzIschmatwsKv7WibHbeyrPClZkmL6rD7YNx8Dk6wtgMo4xngHPke2CwLhqTcgGofX+c5SQ4A==
-X-Received: by 2002:a50:ed94:: with SMTP id h20mr3111973edr.184.1599843156568;
-        Fri, 11 Sep 2020 09:52:36 -0700 (PDT)
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
-        by smtp.gmail.com with ESMTPSA id z21sm1928786eja.72.2020.09.11.09.52.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 09:52:36 -0700 (PDT)
-Received: by mail-wr1-f45.google.com with SMTP id a17so12149320wrn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:52:36 -0700 (PDT)
-X-Received: by 2002:ac2:5594:: with SMTP id v20mr585120lfg.344.1599842749970;
- Fri, 11 Sep 2020 09:45:49 -0700 (PDT)
+        id S1726270AbgIKQsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:48:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:39316 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726370AbgIKQqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:46:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4065106F;
+        Fri, 11 Sep 2020 09:46:48 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69EDD3F68F;
+        Fri, 11 Sep 2020 09:46:47 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:46:45 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     qianjun.kernel@gmail.com
+Cc:     tglx@linutronix.de, peterz@infradead.org, will@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org,
+        laoar.shao@gmail.com, urezki@gmail.com,
+        John Dias <joaodias@google.com>, Wei Wang <wvw@google.com>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH V6 1/1] Softirq:avoid large sched delay from the pending
+ softirqs
+Message-ID: <20200911164644.eqjqjucvqfvrmr67@e107158-lin.cambridge.arm.com>
+References: <20200909090931.8836-1-qianjun.kernel@gmail.com>
 MIME-Version: 1.0
-References: <0dbc6ec8-45ea-0853-4856-2bc1e661a5a5@intel.com>
- <20200909142904.00b72921@thinkpad> <aacad1b7-f121-44a5-f01d-385cb0f6351e@intel.com>
- <20200909192534.442f8984@thinkpad> <20200909180324.GI87483@ziepe.ca>
- <20200910093925.GB29166@oc3871087118.ibm.com> <CAHk-=wh4SuNvThq1nBiqk0N-fW6NsY5w=VawC=rJs7ekmjAhjA@mail.gmail.com>
- <20200910181319.GO87483@ziepe.ca> <0c9bcb54-914b-e582-dd6d-3861267b6c94@nvidia.com>
- <20200910221116.GQ87483@ziepe.ca> <20200911121955.GA10250@oc3871087118.ibm.com>
-In-Reply-To: <20200911121955.GA10250@oc3871087118.ibm.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Sep 2020 09:45:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiiEUD_XvNnXysYsKiT4B3SajWbZ4VKY3jYk-17EEaaiA@mail.gmail.com>
-Message-ID: <CAHk-=wiiEUD_XvNnXysYsKiT4B3SajWbZ4VKY3jYk-17EEaaiA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/3] mm/gup: fix gup_fast with dynamic page table folding
-To:     Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200909090931.8836-1-qianjun.kernel@gmail.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 5:20 AM Alexander Gordeev
-<agordeev@linux.ibm.com> wrote:
->
-> What if the entry is still pud_present, but got remapped after
-> READ_ONCE(*pudp)? IOW, it is still valid, but points elsewhere?
+On 09/09/20 17:09, qianjun.kernel@gmail.com wrote:
+> From: jun qian <qianjun.kernel@gmail.com>
+> 
+> When get the pending softirqs, it need to process all the pending
+> softirqs in the while loop. If the processing time of each pending
+> softirq is need more than 2 msec in this loop, or one of the softirq
+> will running a long time, according to the original code logic, it
+> will process all the pending softirqs without wakeuping ksoftirqd,
+> which will cause a relatively large scheduling delay on the
+> corresponding CPU, which we do not wish to see. The patch will check
+> the total time to process pending softirq, if the time exceeds 2 ms
+> we need to wakeup the ksofirqd to aviod large sched delay.
+> 
+> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
 
-That can't happen.
+In Android there's a patch that tries to avoid schedling an RT task on a cpu
+that is running softirqs. I wonder if this patch helps with this case.
 
-The GUP walk doesn't hold any locks, but it *is* done with interrupts
-disabled, and anybody who is modifying the page tables needs to do the
-TLB flush, and/or RCU-free them.
+https://android.googlesource.com/kernel/msm/+/5c3f54c34acf4d9ed01530288d4a98acff815d79%5E%21/#F0
 
-The interrupt disable means that on architectures where the TLB flush
-involves an IPI, it will be delayed until afterwards, but it also acts
-as a big RCU read lock hammer.
+John, Wei, is this something of interest to you?
 
-So the page tables can get modified under us, but the old pages won't
-be released and re-used.
+IIUC this patch will make sure the total softirq duration is 2ms rather than
+each call is 2ms.
 
-                Linus
+I persume if there's a single handler that takes a lot of time then this won't
+help. But in that case, one can argue there's a potential bug with this
+handler.
+
+Cheers
+
+--
+Qais Yousef
+
+> ---
+>  kernel/softirq.c | 83 ++++++++++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 69 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index c4201b7f..1f696c8 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -25,6 +25,7 @@
+>  #include <linux/smpboot.h>
+>  #include <linux/tick.h>
+>  #include <linux/irq.h>
+> +#include <linux/sched/clock.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/irq.h>
+> @@ -199,18 +200,17 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
+>  
+>  /*
+>   * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
+> - * but break the loop if need_resched() is set or after 2 ms.
+> - * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
+> - * certain cases, such as stop_machine(), jiffies may cease to
+> - * increment and so we need the MAX_SOFTIRQ_RESTART limit as
+> - * well to make sure we eventually return from this method.
+> + * but break the loop if need_resched() is set or after MAX_SOFTIRQ_TIME_NS
+> + * ns. In the loop, if the processing time of the softirq has exceeded
+> + * MAX_SOFTIRQ_TIME_NS ns, we also need to break the loop to wakeup the
+> + * ksofirqd.
+>   *
+>   * These limits have been established via experimentation.
+>   * The two things to balance is latency against fairness -
+>   * we want to handle softirqs as soon as possible, but they
+>   * should not be able to lock up the box.
+>   */
+> -#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
+> +#define MAX_SOFTIRQ_TIME_NS 2000000
+>  #define MAX_SOFTIRQ_RESTART 10
+>  
+>  #ifdef CONFIG_TRACE_IRQFLAGS
+> @@ -246,15 +246,20 @@ static inline void lockdep_softirq_end(bool in_hardirq)
+>  static inline void lockdep_softirq_end(bool in_hardirq) { }
+>  #endif
+>  
+> +DEFINE_PER_CPU(__u32, pending_new_flag);
+> +DEFINE_PER_CPU(__u32, pending_next_bit);
+> +#define SOFTIRQ_PENDING_MASK ((1UL << NR_SOFTIRQS) - 1)
+> +
+>  asmlinkage __visible void __softirq_entry __do_softirq(void)
+>  {
+> -	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
+> +	u64 end = sched_clock() + MAX_SOFTIRQ_TIME_NS;
+>  	unsigned long old_flags = current->flags;
+>  	int max_restart = MAX_SOFTIRQ_RESTART;
+>  	struct softirq_action *h;
+>  	bool in_hardirq;
+> -	__u32 pending;
+> -	int softirq_bit;
+> +	__u32 pending, pending_left, pending_new;
+> +	int softirq_bit, next_bit;
+> +	unsigned long flags;
+>  
+>  	/*
+>  	 * Mask out PF_MEMALLOC as the current task context is borrowed for the
+> @@ -277,10 +282,33 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+>  
+>  	h = softirq_vec;
+>  
+> -	while ((softirq_bit = ffs(pending))) {
+> -		unsigned int vec_nr;
+> +	next_bit = per_cpu(pending_next_bit, smp_processor_id());
+> +	per_cpu(pending_new_flag, smp_processor_id()) = 0;
+> +
+> +	pending_left = pending &
+> +		(SOFTIRQ_PENDING_MASK << next_bit);
+> +	pending_new = pending &
+> +		(SOFTIRQ_PENDING_MASK >> (NR_SOFTIRQS - next_bit));
+> +
+> +	/*
+> +	 * In order to be fair, we shold process the pengding bits by the
+> +	 * last processing order.
+> +	 */
+> +	while ((softirq_bit = ffs(pending_left)) ||
+> +		(softirq_bit = ffs(pending_new))) {
+>  		int prev_count;
+> +		unsigned int vec_nr = 0;
+>  
+> +		/*
+> +		 * when the left pengding bits have been handled, we should
+> +		 * to reset the h to softirq_vec.
+> +		 */
+> +		if (!ffs(pending_left)) {
+> +			if (per_cpu(pending_new_flag, smp_processor_id()) == 0) {
+> +				h = softirq_vec;
+> +				per_cpu(pending_new_flag, smp_processor_id()) = 1;
+> +			}
+> +		}
+>  		h += softirq_bit - 1;
+>  
+>  		vec_nr = h - softirq_vec;
+> @@ -298,17 +326,44 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+>  			preempt_count_set(prev_count);
+>  		}
+>  		h++;
+> -		pending >>= softirq_bit;
+> +
+> +		if (ffs(pending_left))
+> +			pending_left >>= softirq_bit;
+> +		else
+> +			pending_new >>= softirq_bit;
+> +
+> +		/*
+> +		 * the softirq's action has been run too much time,
+> +		 * so it may need to wakeup the ksoftirqd
+> +		 */
+> +		if (need_resched() && sched_clock() > end) {
+> +			/*
+> +			 * Ensure that the remaining pending bits will be
+> +			 * handled.
+> +			 */
+> +			local_irq_save(flags);
+> +			if (ffs(pending_left))
+> +				or_softirq_pending((pending_left << (vec_nr + 1)) |
+> +							pending_new);
+> +			else
+> +				or_softirq_pending(pending_new << (vec_nr + 1));
+> +			local_irq_restore(flags);
+> +			per_cpu(pending_next_bit, smp_processor_id()) = vec_nr + 1;
+> +			break;
+> +		}
+>  	}
+>  
+> +	/* reset the pending_next_bit */
+> +	per_cpu(pending_next_bit, smp_processor_id()) = 0;
+> +
+>  	if (__this_cpu_read(ksoftirqd) == current)
+>  		rcu_softirq_qs();
+>  	local_irq_disable();
+>  
+>  	pending = local_softirq_pending();
+>  	if (pending) {
+> -		if (time_before(jiffies, end) && !need_resched() &&
+> -		    --max_restart)
+> +		if (!need_resched() && --max_restart &&
+> +		    sched_clock() <= end)
+>  			goto restart;
+>  
+>  		wakeup_softirqd();
+> -- 
+> 1.8.3.1
+> 
