@@ -2,115 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BB82663EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66CC2663D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726555AbgIKQ1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:27:25 -0400
-Received: from a27-185.smtp-out.us-west-2.amazonses.com ([54.240.27.185]:36726
-        "EHLO a27-185.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725980AbgIKPVX (ORCPT
+        id S1726561AbgIKQ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726438AbgIKPYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:21:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=gbvhytky6xpx7itkhb67ktsxbiwpnxix; d=codeaurora.org; t=1599834500;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-        bh=hwi/OQiGwyQ//NyTOaTL55rONVhtBqdkXJjR5Q1eVS4=;
-        b=MV+yzgB3Xb1UOxSWPTPVDJ9ESvMM7NOsg+raGTlUuRP2FxEegZejpebvOb6tUW4d
-        S9mAB5zciXKd+LAeuzQ7++ez9Uzsqv9KAPdt0oGcLi7bhv1r1GHfqAJ57I7xjTk7JH9
-        IBmvmDZHmv5DFnS4Y/yeVONK3osB/6d7H59DTQyw=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599834500;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
-        bh=hwi/OQiGwyQ//NyTOaTL55rONVhtBqdkXJjR5Q1eVS4=;
-        b=hhNU+bMKfhuXGAAlL5TemdE0e3IVzflcJG4WZbW/8Oi1OPmfrCipM8HVFac3pJCc
-        xhO93VCLMW43/4f2bOBDoBDrS9IipNaUbOw8KjYrEQITNCs0JPhi/zIZoSJWfJLZ+ij
-        W8w7ur2w1NbPuYVySL3ar1FyRAY4RIPB3ik4I5sA=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34028C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        dri-devel@lists.freedesktop.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv4 6/6] iommu: arm-smmu-impl: Remove unwanted extra blank lines
-Date:   Fri, 11 Sep 2020 14:28:20 +0000
-Message-ID: <010101747d912de4-ee003b04-f4dd-489c-a7b3-6df2376a140f-000000@us-west-2.amazonses.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
+        Fri, 11 Sep 2020 11:24:05 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D4DC061371;
+        Fri, 11 Sep 2020 07:32:56 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGk6W-00EMOm-ND; Fri, 11 Sep 2020 14:32:44 +0000
+Date:   Fri, 11 Sep 2020 15:32:44 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     tony.luck@intel.com, fenghua.yu@intel.com,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Subject: Re: [PATCH] ia64: remove perfmon
+Message-ID: <20200911143244.GA3421308@ZenIV.linux.org.uk>
+References: <20200911094920.1173631-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SES-Outgoing: 2020.09.11-54.240.27.185
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911094920.1173631-1-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are few places in arm-smmu-impl where there are
-extra blank lines, remove them and while at it fix the
-checkpatch warning for space required before the open
-parenthesis.
+On Fri, Sep 11, 2020 at 11:49:19AM +0200, Christoph Hellwig wrote:
+> perfmon has been marked broken and thus been disabled for all builds
+> for more than two years.  Remove it entirely.
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-index ce78295cfa78..f5b5218cbe5b 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-@@ -19,7 +19,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
- 
- static int arm_smmu_gr0_ns(int offset)
- {
--	switch(offset) {
-+	switch (offset) {
- 	case ARM_SMMU_GR0_sCR0:
- 	case ARM_SMMU_GR0_sACR:
- 	case ARM_SMMU_GR0_sGFSR:
-@@ -54,7 +54,6 @@ static const struct arm_smmu_impl calxeda_impl = {
- 	.write_reg = arm_smmu_write_ns,
- };
- 
--
- struct cavium_smmu {
- 	struct arm_smmu_device smmu;
- 	u32 id_base;
-@@ -110,7 +109,6 @@ static struct arm_smmu_device *cavium_smmu_impl_init(struct arm_smmu_device *smm
- 	return &cs->smmu;
- }
- 
--
- #define ARM_MMU500_ACTLR_CPRE		(1 << 1)
- 
- #define ARM_MMU500_ACR_CACHE_LOCK	(1 << 26)
-@@ -197,7 +195,6 @@ static const struct arm_smmu_impl mrvl_mmu500_impl = {
- 	.reset = arm_mmu500_reset,
- };
- 
--
- struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
- {
- 	const struct device_node *np = smmu->dev->of_node;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Enthusiastically-ACKed-by: Al Viro <viro@zeniv.linux.org.uk>
