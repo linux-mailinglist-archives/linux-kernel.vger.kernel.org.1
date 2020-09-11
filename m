@@ -2,137 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0360A266405
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2D2266400
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIKQ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:29:36 -0400
-Received: from mga09.intel.com ([134.134.136.24]:31677 "EHLO mga09.intel.com"
+        id S1726490AbgIKQ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:29:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:38784 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726306AbgIKQ23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:28:29 -0400
-IronPort-SDR: YREpwWfwOeD0UPOyTTCQF8x61gsF0Jof46jsue7D293q+jsfaPM/ozeCF8rlkTRMWFrxFPUCxl
- VYJtuD78buLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="159738486"
-X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
-   d="scan'208";a="159738486"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 09:28:22 -0700
-IronPort-SDR: MRaDYQOI+Y37b7XzL5ehbRYu0W1Y6xATNgCXz6/+joIgRZb3IlK35VMeSAxF2m26DAwL9nQmAe
- UHXSMxDELuzQ==
-X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
-   d="scan'208";a="481379882"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 09:28:22 -0700
-Date:   Fri, 11 Sep 2020 09:28:20 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Colin King <colin.king@canonical.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH][next] KVM: SVM: nested: fix free of uninitialized
- pointers save and ctl
-Message-ID: <20200911162814.GC4344@sjchrist-ice>
-References: <20200911110730.24238-1-colin.king@canonical.com>
- <87o8mclei1.fsf@vitty.brq.redhat.com>
+        id S1726239AbgIKQ27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:28:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F062106F;
+        Fri, 11 Sep 2020 09:28:58 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D35473F73C;
+        Fri, 11 Sep 2020 09:28:56 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:28:54 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Aubrey Li <aubrey.li@intel.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        valentin.schneider@arm.com, tim.c.chen@linux.intel.com,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@linux.intel.com>
+Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
+ in sched domain
+Message-ID: <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
+References: <20200910054203.525420-1-aubrey.li@intel.com>
+ <20200910054203.525420-2-aubrey.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87o8mclei1.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200910054203.525420-2-aubrey.li@intel.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Joerg
+On 09/10/20 13:42, Aubrey Li wrote:
+> Added idle cpumask to track idle cpus in sched domain. When a CPU
+> enters idle, its corresponding bit in the idle cpumask will be set,
+> and when the CPU exits idle, its bit will be cleared.
+> 
+> When a task wakes up to select an idle cpu, scanning idle cpumask
+> has low cost than scanning all the cpus in last level cache domain,
+> especially when the system is heavily loaded.
+> 
+> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+> ---
+>  include/linux/sched/topology.h | 13 +++++++++++++
+>  kernel/sched/fair.c            |  4 +++-
+>  kernel/sched/topology.c        |  2 +-
+>  3 files changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index fb11091129b3..43a641d26154 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>  	atomic_t	ref;
+>  	atomic_t	nr_busy_cpus;
+>  	int		has_idle_cores;
+> +	/*
+> +	 * Span of all idle CPUs in this domain.
+> +	 *
+> +	 * NOTE: this field is variable length. (Allocated dynamically
+> +	 * by attaching extra space to the end of the structure,
+> +	 * depending on how many CPUs the kernel has booted up with)
+> +	 */
+> +	unsigned long	idle_cpus_span[];
 
-On Fri, Sep 11, 2020 at 01:49:42PM +0200, Vitaly Kuznetsov wrote:
-> Colin King <colin.king@canonical.com> writes:
-> 
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Currently the error exit path to outt_set_gif will kfree on
-> > uninitialized
-> 
-> typo: out_set_gif
-> 
-> > pointers save and ctl.  Fix this by ensuring these pointers are
-> > inintialized to NULL to avoid garbage pointer freeing.
-> >
-> > Addresses-Coverity: ("Uninitialized pointer read")
-> > Fixes: 6ccbd29ade0d ("KVM: SVM: nested: Don't allocate VMCB structures
-> > on stack")
-> 
-> Where is this commit id from? I don't see it in Paolo's kvm tree, if
-> it's not yet merged, maybe we should fix it and avoid introducing the
-> issue in the first place?
+Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
 
-Ya, AFAIK the series as not been applied.
+The patch looks useful. Did it help you with any particular workload? It'd be
+good to expand on that in the commit message.
 
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  arch/x86/kvm/svm/nested.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> > index 28036629abf8..2b15f49f9e5a 100644
-> > --- a/arch/x86/kvm/svm/nested.c
-> > +++ b/arch/x86/kvm/svm/nested.c
-> > @@ -1060,8 +1060,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
-> >  	struct vmcb *hsave = svm->nested.hsave;
-> >  	struct vmcb __user *user_vmcb = (struct vmcb __user *)
-> >  		&user_kvm_nested_state->data.svm[0];
-> > -	struct vmcb_control_area *ctl;
-> > -	struct vmcb_save_area *save;
-> > +	struct vmcb_control_area *ctl = NULL;
-> > +	struct vmcb_save_area *save = NULL;
-> >  	int ret;
-> >  	u32 cr0;
-> 
-> I think it would be better if we eliminate 'out_set_gif; completely as
-> the 'error path' we have looks a bit weird anyway. Something like
-> (untested):
+Thanks
 
-Ya, I agree that duplicating the single line for this one-off case is
-preferable to creating a convoluted set of labels.
-
-Joerg, can you fold this change into a prep patch for v4 of your "KVM: SVM:
-SEV-ES groundwork" series?
-
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 28036629abf8..d1ae94f40907 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -1092,7 +1092,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->  
->         if (!(kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE)) {
->                 svm_leave_nested(svm);
-> -               goto out_set_gif;
-> +               svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
-> +               return 0;
->         }
->  
->         if (!page_address_valid(vcpu, kvm_state->hdr.svm.vmcb_pa))
-> @@ -1145,7 +1146,6 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
->         load_nested_vmcb_control(svm, ctl);
->         nested_prepare_vmcb_control(svm);
->  
-> -out_set_gif:
->         svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
->  
->         ret = 0;
-> 
-> -- 
-> Vitaly
-> 
+--
+Qais Yousef
