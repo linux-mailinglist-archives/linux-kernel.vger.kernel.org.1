@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A9E267694
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00CB267692
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 01:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbgIKXgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 19:36:20 -0400
-Received: from mail4.ezej.site ([162.220.51.81]:33324 "EHLO mail4.ezej.site"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725601AbgIKXgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 19:36:14 -0400
-X-Greylist: delayed 57177 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 19:36:14 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=ajnzv.xyz;
-         s=default; h=Message-ID:Subject:To:From:Date:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=6LBIqq4xKmWg6QcqY3mJ328X6weNTorPvJWm6yx1j4U=; b=iavCjxz+CyVKV0bo6+ZfUcTtlq
-        2054B7G1f+Lm8FDMsy81YM6KHurSaCDlVLxIiaCUSFHXohO0e9BhAzeWbbsIB2QU/toAbKDNwHBYE
-        cw/x8OY9FngTAVWIa70EDbajw2xGuihMyTgLfOC8kM3tcRrS0A+xihvY4BDURNAghvD7xiaotVwbN
-        96n38lHP/BakaH2Bt8U2abCWw7QD4hIhQbIrWdpmBMRS1n7+iQ/ZaWYbtoFf9irdVdP5PT8c6U2Y5
-        brEWaK1dPkima2pHN1Sju8tkXHYHq/Ol9aYI1EMjuTki8x/GQnDzKDjhq96Qed1OsvWLWe1fzk2C3
-        VwXjXTRQ==;
-Received: from [127.0.0.1] (port=56374 helo=mail4.ezej.site)
-        by mail4.ezej.site with esmtpa (Exim 4.92)
-        (envelope-from <amirahabbas@fastmail.com>)
-        id 1kGdhV-00005e-2g; Fri, 11 Sep 2020 07:42:29 +0000
+        id S1725946AbgIKXaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 19:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgIKXak (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 19:30:40 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7952C061573;
+        Fri, 11 Sep 2020 16:30:40 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j7so1601257plk.11;
+        Fri, 11 Sep 2020 16:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bWPqtreNNvGR50JNC9uAvA3aDmdeHpNeB2iU9FqChh8=;
+        b=VldpTsvsVb0yxA+TZ858ZA74K9SkObObuhPjXREJB+ose1FtXtaDD1Eq0AcvL9NUOl
+         Ln/JXysaICHMMBESWpsJR3YtHTL7m7eRd8qh1RaKqcqcnZIAhNOOOnhOENlqQoBcD3Eo
+         Wtmt/bjwxtv1totFfE/HTSgtejCMT3mN53SXVhv8rym1RdsUfDFVP8iIePFbvlhpwME7
+         J/1cdo6JzMteoQvLddtzZswQocyDRVrccuBh25N7ZpTUIAc/aZLfF8cYNZ/GinQMaWj5
+         gBCWPF40KlsZkLPK6F0/LEOkLf0cm0Knmrz/GamMv4AQSwQqeJPKSUL3WXr19D2KKouM
+         XEmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bWPqtreNNvGR50JNC9uAvA3aDmdeHpNeB2iU9FqChh8=;
+        b=eaTNnP477tPXr6uaRCeTMA3UhbLZFfxk2CzF58trNDa6YxeJaTG7R7sktsd+P+DHRA
+         kmMI+tk0hA66Kl/7FtIOizblTBrog2JwKaeOnz0BeLHiBQTNhdcz2ofEdTFOqjh+NvkE
+         CAn+McBAtiOcVwmIve8wYijpUaYokwcBVdvHX6I67d6EIc5qJgMwVTqv7L6gPPX4aC4/
+         7/eK07SZUOxhfSt+xKAga37sY1M313LGo+CmkrEiQDWTIJ4+CH8O+Mz/BTiJcjd4o9MA
+         tV5ucGKB5O9M2muQRNq5nFQkFGsGJ8TrxrNFqg1eQRrr0u3IU6hEALtxsvJgfldsCHE5
+         rurQ==
+X-Gm-Message-State: AOAM5320oE9Z/+8xpTqNqaFiBAO+YdLCkP5g4MFEmmIp9pUx6pXOl8TR
+        EuIyoIfJvDwaxLf3xJWgs0A9Nn8tmpSDPAORPsI=
+X-Google-Smtp-Source: ABdhPJzkgo/F5yjSPwlWMSpNNzqWY7WR/e4ufL3baCX59Xb05mLY7BM1ZNd+xqLd7fcmW24IlXXdFv1H1L1hE23Jlbs=
+X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr4138240pjb.198.1599867040080;
+ Fri, 11 Sep 2020 16:30:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Sep 2020 07:42:28 +0000
-From:   "Andrew A. Page" <amirahabbas@fastmail.com>
-To:     undisclosed-recipients:;
-Subject: Re.Dear Friend
-Message-ID: <4457c7b5f302295811445543bf3dd61b@fastmail.com>
-X-Sender: amirahabbas@fastmail.com
-User-Agent: Roundcube Webmail/1.3.7
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - mail4.ezej.site
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - fastmail.com
-X-Get-Message-Sender-Via: mail4.ezej.site: authenticated_id: page778@ajnzv.xyz
-X-Authenticated-Sender: mail4.ezej.site: page778@ajnzv.xyz
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20200911060720.81033-1-xie.he.0141@gmail.com> <20200911.144121.2042949892921941512.davem@davemloft.net>
+In-Reply-To: <20200911.144121.2042949892921941512.davem@davemloft.net>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 11 Sep 2020 16:30:28 -0700
+Message-ID: <CAJht_EM8e_UxzVQk+NMzCaZdAj0iyFCYAYpgdo=ttrhxq=GBpg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net/socket.c: Remove an unused header file <linux/if_frad.h>
+To:     David Miller <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 11, 2020 at 2:41 PM David Miller <davem@davemloft.net> wrote:
+>
+> From: Xie He <xie.he.0141@gmail.com>
+> Date: Thu, 10 Sep 2020 23:07:20 -0700
+>
+> > This header file is not actually used in this file. Let's remove it.
+>
+> How did you test this assertion?  As Jakub showed, the
+> dlci_ioctl_set() function needs to be declared because socket.c
+> references it.
+>
+> All of your visual scanning of the code is wasted if you don't
+> do something simple like an "allmodconfig" or "allyesconfig"
+> build to test whether your change is correct or not.
+>
+> Don't leave that step for us, that's your responsibility.
+>
 
-
--- 
-Hello,
-
-How are you once again. I have been having difficulty reaching you. I 
-have an important business transaction to discuss with you.  There are 
-funds available and ready for investment which we will need your 
-assistance to invest. Do get back to me as soon as you can for more 
-details.
-
-Regards,
-
-Andrew A. Page
+OK. I'm sorry for this.
