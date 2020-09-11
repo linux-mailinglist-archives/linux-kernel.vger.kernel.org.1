@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1FF265FE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 14:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52ACB265FF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725895AbgIKM5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 08:57:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48796 "EHLO mail.kernel.org"
+        id S1726138AbgIKNAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 09:00:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726048AbgIKMye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 08:54:34 -0400
+        id S1726014AbgIKMyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 08:54:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A5A5022225;
-        Fri, 11 Sep 2020 12:53:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58B9D2222B;
+        Fri, 11 Sep 2020 12:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599828834;
-        bh=T6IXcbTZtskK1L7YVm0OiBCn2pW7sfMMpBbYy0pK7wk=;
+        s=default; t=1599828844;
+        bh=751jnFFiPM7Rz+YvYy29f9LhzmeeTfNIcCziFRBD/40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zTyf7e3XSzfSf/OknASKWycUoEtX0M5E95kxXpCgWVWr3MKI2hERscvbWcjvYgHUn
-         f+Lz3PvSibjaXk+fhBaBbTv1vRV0LsRVzOVh6BCtvFT2J6rcIr397dv1KYkJeFuown
-         JXWGk39DfFF+Xlv8KmAHev/61we8Q4Dod7bkZDDo=
+        b=a8S4YYZwBmoM16gSK3nqYYpW00eNrTiAMU7kNMNaphllIDgfu4m7Gn4zIoZc6XuLs
+         pJOMrb2nOvIRZBMLIK5cApDWWFEuDBqnNRgJ0CLcGZ1Chy7WY0OoGld2nu/mhUE9rg
+         ADr4MXntVtkKJEY1BxzPZinfeyI5n+b0jFIiivvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 05/62] hwmon: (applesmc) check status earlier.
-Date:   Fri, 11 Sep 2020 14:45:48 +0200
-Message-Id: <20200911122502.669077595@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 09/62] dmaengine: of-dma: Fix of_dma_router_xlates of_dma_xlate handling
+Date:   Fri, 11 Sep 2020 14:45:52 +0200
+Message-Id: <20200911122502.855779713@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122502.395450276@linuxfoundation.org>
 References: <20200911122502.395450276@linuxfoundation.org>
@@ -45,121 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-[ Upstream commit cecf7560f00a8419396a2ed0f6e5d245ccb4feac ]
+[ Upstream commit 5b2aa9f918f6837ae943557f8cec02c34fcf80e7 ]
 
-clang static analysis reports this representative problem
+of_dma_xlate callback can return ERR_PTR as well NULL in case of failure.
 
-applesmc.c:758:10: warning: 1st function call argument is an
-  uninitialized value
-        left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If error code is returned (not NULL) then the route should be released and
+the router should not be registered for the channel.
 
-buffer is filled by the earlier call
-
-	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, ...
-
-This problem is reported because a goto skips the status check.
-Other similar problems use data from applesmc_read_key before checking
-the status.  So move the checks to before the use.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Henrik Rydberg <rydberg@bitmath.org>
-Link: https://lore.kernel.org/r/20200820131932.10590-1-trix@redhat.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 56f13c0d9524c ("dmaengine: of_dma: Support for DMA routers")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20200806104928.25975-1-peter.ujfalusi@ti.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/applesmc.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ drivers/dma/of-dma.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
-index 0af7fd311979d..587fc5c686b3c 100644
---- a/drivers/hwmon/applesmc.c
-+++ b/drivers/hwmon/applesmc.c
-@@ -758,15 +758,18 @@ static ssize_t applesmc_light_show(struct device *dev,
+diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
+index 1e1f2986eba8f..86c591481dfe9 100644
+--- a/drivers/dma/of-dma.c
++++ b/drivers/dma/of-dma.c
+@@ -72,12 +72,12 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
+ 		return NULL;
+ 
+ 	chan = ofdma_target->of_dma_xlate(&dma_spec_target, ofdma_target);
+-	if (chan) {
+-		chan->router = ofdma->dma_router;
+-		chan->route_data = route_data;
+-	} else {
++	if (IS_ERR_OR_NULL(chan)) {
+ 		ofdma->dma_router->route_free(ofdma->dma_router->dev,
+ 					      route_data);
++	} else {
++		chan->router = ofdma->dma_router;
++		chan->route_data = route_data;
  	}
  
- 	ret = applesmc_read_key(LIGHT_SENSOR_LEFT_KEY, buffer, data_length);
-+	if (ret)
-+		goto out;
- 	/* newer macbooks report a single 10-bit bigendian value */
- 	if (data_length == 10) {
- 		left = be16_to_cpu(*(__be16 *)(buffer + 6)) >> 2;
- 		goto out;
- 	}
- 	left = buffer[2];
-+
-+	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
- 	if (ret)
- 		goto out;
--	ret = applesmc_read_key(LIGHT_SENSOR_RIGHT_KEY, buffer, data_length);
- 	right = buffer[2];
- 
- out:
-@@ -814,12 +817,11 @@ static ssize_t applesmc_show_fan_speed(struct device *dev,
- 	sprintf(newkey, fan_speed_fmt[to_option(attr)], to_index(attr));
- 
- 	ret = applesmc_read_key(newkey, buffer, 2);
--	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
-+
-+	speed = ((buffer[0] << 8 | buffer[1]) >> 2);
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%u\n", speed);
- }
- 
- static ssize_t applesmc_store_fan_speed(struct device *dev,
-@@ -854,12 +856,11 @@ static ssize_t applesmc_show_fan_manual(struct device *dev,
- 	u8 buffer[2];
- 
- 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
--	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
-+
-+	manual = ((buffer[0] << 8 | buffer[1]) >> to_index(attr)) & 0x01;
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", manual);
- }
- 
- static ssize_t applesmc_store_fan_manual(struct device *dev,
-@@ -875,10 +876,11 @@ static ssize_t applesmc_store_fan_manual(struct device *dev,
- 		return -EINVAL;
- 
- 	ret = applesmc_read_key(FANS_MANUAL, buffer, 2);
--	val = (buffer[0] << 8 | buffer[1]);
- 	if (ret)
- 		goto out;
- 
-+	val = (buffer[0] << 8 | buffer[1]);
-+
- 	if (input)
- 		val = val | (0x01 << to_index(attr));
- 	else
-@@ -954,13 +956,12 @@ static ssize_t applesmc_key_count_show(struct device *dev,
- 	u32 count;
- 
- 	ret = applesmc_read_key(KEY_COUNT_KEY, buffer, 4);
--	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
--						((u32)buffer[2]<<8) + buffer[3];
--
- 	if (ret)
- 		return ret;
--	else
--		return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
-+
-+	count = ((u32)buffer[0]<<24) + ((u32)buffer[1]<<16) +
-+						((u32)buffer[2]<<8) + buffer[3];
-+	return snprintf(sysfsbuf, PAGE_SIZE, "%d\n", count);
- }
- 
- static ssize_t applesmc_key_at_index_read_show(struct device *dev,
+ 	/*
 -- 
 2.25.1
 
