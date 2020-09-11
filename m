@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6042661C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FDB2661C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgIKPDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52804 "EHLO mail.kernel.org"
+        id S1726073AbgIKPCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726166AbgIKNCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726177AbgIKNCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 09:02:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5496D22283;
-        Fri, 11 Sep 2020 12:56:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFBE5222B7;
+        Fri, 11 Sep 2020 12:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829014;
-        bh=MwxD5VJzHt3uN3NMF6cZstG6zJoHeJtlRavYi1XCW/4=;
+        s=default; t=1599829033;
+        bh=/EX9EiUO7EKKl32UqMlP7UBxy3ovcwPdEaANNdKgzLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T9MK0hrAkROjVzE/fPrKwb05qIZajrlrWbgPgTtNs6XUx9y9E3FIrXNLWpkbkEUf7
-         tq4wlLO2ATzWvhQQZNpwFtCELEpCI2O6RoPOj+3RNx5JCAhTqrlDEvrbEbQY3444l9
-         FnMWfE/3cvGq+Xfe44HmykfTII5nkzjEGQSUyAeE=
+        b=SCIQLxv0E+gMszeWd24rb+ZvqrRCAvGXCDhhVzj2h79ISSIHwWO8IlxkiRzRWv+HS
+         YMSNrDKw5doPQIRWT5dGhjoA7n9TG5BpXVrEhyyWI/dSyLuDpyXEAOGjiCe50aBSIL
+         1uEeJuhJdiUMf0PWIUZbI5Dq+jnyVCQl8AP9LZpU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Engel <amit.engel@dell.com>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 05/71] nvmet: Disable keep-alive timer when kato is cleared to 0h
-Date:   Fri, 11 Sep 2020 14:45:49 +0200
-Message-Id: <20200911122505.205904909@linuxfoundation.org>
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 40/71] ALSA: ca0106: fix error code handling
+Date:   Fri, 11 Sep 2020 14:46:24 +0200
+Message-Id: <20200911122506.925427008@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -44,47 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Engel <amit.engel@dell.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 0d3b6a8d213a30387b5104b2fb25376d18636f23 ]
+commit ee0761d1d8222bcc5c86bf10849dc86cf008557c upstream.
 
-Based on nvme spec, when keep alive timeout is set to zero
-the keep-alive timer should be disabled.
+snd_ca0106_spi_write() returns 1 on error, snd_ca0106_pcm_power_dac()
+is returning the error code directly, and the caller is expecting an
+negative error code
 
-Signed-off-by: Amit Engel <amit.engel@dell.com>
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200824224541.1260307-1-ztong0001@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nvme/target/core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/pci/ca0106/ca0106_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/target/core.c b/drivers/nvme/target/core.c
-index 96ea6c76be6e5..63b87a8472762 100644
---- a/drivers/nvme/target/core.c
-+++ b/drivers/nvme/target/core.c
-@@ -205,6 +205,9 @@ static void nvmet_keep_alive_timer(struct work_struct *work)
- 
- static void nvmet_start_keep_alive_timer(struct nvmet_ctrl *ctrl)
- {
-+	if (unlikely(ctrl->kato == 0))
-+		return;
-+
- 	pr_debug("ctrl %d start keep-alive timer for %d secs\n",
- 		ctrl->cntlid, ctrl->kato);
- 
-@@ -214,6 +217,9 @@ static void nvmet_start_keep_alive_timer(struct nvmet_ctrl *ctrl)
- 
- static void nvmet_stop_keep_alive_timer(struct nvmet_ctrl *ctrl)
- {
-+	if (unlikely(ctrl->kato == 0))
-+		return;
-+
- 	pr_debug("ctrl %d stop keep-alive\n", ctrl->cntlid);
- 
- 	cancel_delayed_work_sync(&ctrl->ka_work);
--- 
-2.25.1
-
+--- a/sound/pci/ca0106/ca0106_main.c
++++ b/sound/pci/ca0106/ca0106_main.c
+@@ -551,7 +551,8 @@ static int snd_ca0106_pcm_power_dac(stru
+ 		else
+ 			/* Power down */
+ 			chip->spi_dac_reg[reg] |= bit;
+-		return snd_ca0106_spi_write(chip, chip->spi_dac_reg[reg]);
++		if (snd_ca0106_spi_write(chip, chip->spi_dac_reg[reg]) != 0)
++			return -ENXIO;
+ 	}
+ 	return 0;
+ }
 
 
