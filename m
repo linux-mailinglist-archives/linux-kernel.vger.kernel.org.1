@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D7E2664DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69395266549
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726254AbgIKQrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49232 "EHLO mail.kernel.org"
+        id S1726306AbgIKQ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:57:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726296AbgIKPIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:08:04 -0400
+        id S1726321AbgIKPFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:05:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30122223C6;
-        Fri, 11 Sep 2020 12:58:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C870922249;
+        Fri, 11 Sep 2020 12:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829117;
-        bh=4Xk5YfXF6sqYijZ5aWjpFFEN3fF6lqguy/KbKh6p48k=;
+        s=default; t=1599829125;
+        bh=9/wS5bEvxO14rDm9XvJDB9b7N/Md7uB+9PBrpl3OunM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hycLCDxuMJV15lE9re3Ios9fis84chndcLYUTiNbw5WPP+fi9upjqeL/R79LodMaY
-         bmxVSC+FFEHVvHB1mkwhpcp4udll22qy8X0770ese3OIgNFz20HO9NZgRVhdO7KDAn
-         XzwEBnOHremxgm9FxaiMeKE/6fiE3iRQbcDhbp54=
+        b=0YGcWj4XbqpAdoQ2ngj3J7YkS7c98Q9D/Y2KgWy/mpdFdKvEca4+XmnQfsBgf+ZSG
+         iCmJbONvvzmJTJ5nZd5nsfwsItdKINAMk+X35H+sxWDjn0BnCzr4x/8Ym+yASqg240
+         GLSjlfoi0nAkpD/8pXNUE4/DaCE5LmoHBObHT4Rg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        stable@vger.kernel.org, Kamil Lorenc <kamil@re-ws.pl>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 66/71] net: ethernet: mlx4: Fix memory allocation in mlx4_buddy_init()
-Date:   Fri, 11 Sep 2020 14:46:50 +0200
-Message-Id: <20200911122508.228000858@linuxfoundation.org>
+Subject: [PATCH 4.9 69/71] net: usb: dm9601: Add USB ID of Keenetic Plus DSL
+Date:   Fri, 11 Sep 2020 14:46:53 +0200
+Message-Id: <20200911122508.385749623@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -43,40 +43,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+From: Kamil Lorenc <kamil@re-ws.pl>
 
-commit cbedcb044e9cc4e14bbe6658111224bb923094f4 upstream.
+[ Upstream commit a609d0259183a841621f252e067f40f8cc25d6f6 ]
 
-On machines with much memory (> 2 TByte) and log_mtts_per_seg == 0, a
-max_order of 31 will be passed to mlx_buddy_init(), which results in
-s = BITS_TO_LONGS(1 << 31) becoming a negative value, leading to
-kvmalloc_array() failure when it is converted to size_t.
+Keenetic Plus DSL is a xDSL modem that uses dm9620 as its USB interface.
 
-  mlx4_core 0000:b1:00.0: Failed to initialize memory region table, aborting
-  mlx4_core: probe of 0000:b1:00.0 failed with error -12
-
-Fix this issue by changing the left shifting operand from a signed literal to
-an unsigned one.
-
-Fixes: 225c7b1feef1 ("IB/mlx4: Add a driver Mellanox ConnectX InfiniBand adapters")
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Signed-off-by: Kamil Lorenc <kamil@re-ws.pl>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/ethernet/mellanox/mlx4/mr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/dm9601.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/mellanox/mlx4/mr.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/mr.c
-@@ -114,7 +114,7 @@ static int mlx4_buddy_init(struct mlx4_b
- 		goto err_out;
+--- a/drivers/net/usb/dm9601.c
++++ b/drivers/net/usb/dm9601.c
+@@ -624,6 +624,10 @@ static const struct usb_device_id produc
+ 	 USB_DEVICE(0x0a46, 0x1269),	/* DM9621A USB to Fast Ethernet Adapter */
+ 	 .driver_info = (unsigned long)&dm9601_info,
+ 	},
++	{
++	 USB_DEVICE(0x0586, 0x3427),	/* ZyXEL Keenetic Plus DSL xDSL modem */
++	 .driver_info = (unsigned long)&dm9601_info,
++	},
+ 	{},			// END
+ };
  
- 	for (i = 0; i <= buddy->max_order; ++i) {
--		s = BITS_TO_LONGS(1 << (buddy->max_order - i));
-+		s = BITS_TO_LONGS(1UL << (buddy->max_order - i));
- 		buddy->bits[i] = kcalloc(s, sizeof (long), GFP_KERNEL | __GFP_NOWARN);
- 		if (!buddy->bits[i]) {
- 			buddy->bits[i] = vzalloc(s * sizeof(long));
 
 
