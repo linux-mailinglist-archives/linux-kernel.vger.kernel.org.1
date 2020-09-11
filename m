@@ -2,116 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03E726588F
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 07:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2162C265896
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 07:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725785AbgIKFFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 01:05:45 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:32062 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbgIKFFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 01:05:45 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BnkGq5Rzbz9tynY;
-        Fri, 11 Sep 2020 07:05:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id dI0xBi-CVjY0; Fri, 11 Sep 2020 07:05:39 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BnkGq2Bbrz9tynX;
-        Fri, 11 Sep 2020 07:05:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DBFAF8B832;
-        Fri, 11 Sep 2020 07:05:39 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ZU5cwRNYUVST; Fri, 11 Sep 2020 07:05:39 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 413958B75E;
-        Fri, 11 Sep 2020 07:05:39 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 0D0E265728; Fri, 11 Sep 2020 05:05:38 +0000 (UTC)
-Message-Id: <8ae4554357da4882612644a74387ae05525b2aaa.1599800716.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/kasan: Fix CONFIG_KASAN_VMALLOC for 8xx
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 11 Sep 2020 05:05:38 +0000 (UTC)
+        id S1725800AbgIKFKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 01:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgIKFKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 01:10:02 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3192C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 22:09:59 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kGbJh-0005w4-Dn; Fri, 11 Sep 2020 07:09:45 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kGbJf-0003v1-09; Fri, 11 Sep 2020 07:09:43 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v2 0/3] mainline Plymovent M2M board
+Date:   Fri, 11 Sep 2020 07:09:38 +0200
+Message-Id: <20200911050941.15013-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before the commit identified below, pages tables allocation was
-performed after the allocation of final shadow area for linear memory.
-But that commit switched the order, leading to page tables being
-already allocated at the time 8xx kasan_init_shadow_8M() is called.
-Due to this, kasan_init_shadow_8M() doesn't map the needed
-shadow entries because there are already page tables.
+changes v2:
+- fsl.yaml: reorder ply,plym2m
+- imx6dl-plym2m.dts: use hyphen instead of underscore in phy-clock
 
-kasan_init_shadow_8M() installs huge PMD entries instead of page
-tables. We could at that time free the page tables, but there is no
-point in creating page tables that get freed before being used.
+Oleksij Rempel (3):
+  dt-bindings: vendor-prefixes: Add an entry for Plymovent
+  dt-bindings: arm: fsl: add Plymovent M2M board
+  ARM: dts: add Plymovent M2M board
 
-Only book3s/32 hash needs early allocation of page tables. For other
-variants, we can keep the initial order and create remaining page
-tables after the allocation of final shadow memory for linear mem.
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/imx6dl-plym2m.dts           | 394 ++++++++++++++++++
+ 4 files changed, 398 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-plym2m.dts
 
-Move back the allocation of shadow page tables for
-CONFIG_KASAN_VMALLOC into kasan_init() after the loop which creates
-final shadow memory for linear mem.
-
-Fixes: 41ea93cf7ba4 ("powerpc/kasan: Fix shadow pages allocation failure")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/mm/kasan/kasan_init_32.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/mm/kasan/kasan_init_32.c b/arch/powerpc/mm/kasan/kasan_init_32.c
-index fb294046e00e..929716ea21e9 100644
---- a/arch/powerpc/mm/kasan/kasan_init_32.c
-+++ b/arch/powerpc/mm/kasan/kasan_init_32.c
-@@ -127,8 +127,7 @@ void __init kasan_mmu_init(void)
- {
- 	int ret;
- 
--	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE) ||
--	    IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-+	if (early_mmu_has_feature(MMU_FTR_HPTE_TABLE)) {
- 		ret = kasan_init_shadow_page_tables(KASAN_SHADOW_START, KASAN_SHADOW_END);
- 
- 		if (ret)
-@@ -139,11 +138,11 @@ void __init kasan_mmu_init(void)
- void __init kasan_init(void)
- {
- 	struct memblock_region *reg;
-+	int ret;
- 
- 	for_each_memblock(memory, reg) {
- 		phys_addr_t base = reg->base;
- 		phys_addr_t top = min(base + reg->size, total_lowmem);
--		int ret;
- 
- 		if (base >= top)
- 			continue;
-@@ -153,6 +152,13 @@ void __init kasan_init(void)
- 			panic("kasan: kasan_init_region() failed");
- 	}
- 
-+	if (IS_ENABLED(CONFIG_KASAN_VMALLOC)) {
-+		ret = kasan_init_shadow_page_tables(KASAN_SHADOW_START, KASAN_SHADOW_END);
-+
-+		if (ret)
-+			panic("kasan: kasan_init_shadow_page_tables() failed");
-+	}
-+
- 	kasan_remap_early_shadow_ro();
- 
- 	clear_page(kasan_early_shadow_page);
 -- 
-2.25.0
+2.28.0
 
