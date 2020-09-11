@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E7E2661DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8532661EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbgIKPJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:09:40 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56947 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726257AbgIKPEN (ORCPT
+        id S1725947AbgIKPQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:16:24 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:59212 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbgIKPNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:04:13 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 93E245C0235;
-        Fri, 11 Sep 2020 11:03:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 11 Sep 2020 11:03:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=F5vNC///6BzYfwb5gLzF7HsgwYb
-        oaMgrWu6nVN+w0PY=; b=lCGQkWh211MB8WDMMg0JMhsnyuD6g1f65uUEt1nGI7p
-        q3gKOCbfQ/dd2o1sHpNOUI+wdVXGKguGy2qCeakeG/rkTkMNXhkJfcXy3IN6dw5A
-        fL1rKPD/fzyLUUquFVg8Px0cIuC4VZyuegZuOJ6vy5IpxbhdolLc62cA22zgvKU4
-        LfGiPCRmGlw62YMfh8fcZsZH0YokyTxD7NmEfX7hu5yGulGrh7QbeWMpagaHqATZ
-        eTwLlCnOhCXmovrqoEbkO5qX0zUmuEV5Rkn61Utr826N7jPucWGJFmLb44xGucvV
-        SpXp+EAfJnljODz2xAoelhTgid/JuVrG1b1xcJ+DVKw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=F5vNC/
-        //6BzYfwb5gLzF7HsgwYboaMgrWu6nVN+w0PY=; b=UGzThUAJbuvh+VRDGgCml3
-        8DxQWBBdMlL94Xs1afRRPYKWAzy/4dgNeDw4PsKvNXDMrcbvih4CxbTI9ghHWDxL
-        rZaMuizp/kGimkOJk9q5d2S1UflN5Qmkf7O5EfXbHeirh6yrCkqI1edyUlkpZx3Z
-        UGeI/mbWYiup8p0folAA2xiMZlIVWlaAmsQK4z5CKlKrKEsBh4ozgDzVwehKCGDT
-        mZNaSyXH4qL38jJk2tCQikcjBDfxy/EPqeFsSsOMzoeaALlQ8o7SZ0vTpLO2/6dw
-        zg6l8jhaJmC4eDxhERmriobDBozr9pzdRVnY62HySQFP13cHz4GYa+NqwfGXbTcA
-        ==
-X-ME-Sender: <xms:vZFbX-2b1OjfstiLeTfCP7RTvi-7qB_FmslHsQ6qU9pfcNxmLDAPSA>
-    <xme:vZFbXxFuD7MdSk5HBIS_B37eOcjAmcF-wi_gTUgUjA4c-fcbpJoPRhSAwRKrk5hrW
-    HLONcOTTpIOs9_TC90>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudehledgkeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
-    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
-    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
-    hmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:vZFbX257gUfSxjGHn0uix84dD-QXYW2x590jglxfdM7jhUC1N8C-Eg>
-    <xmx:vZFbX_3NUTmwQ5kT9HDqr832SZCou3w7oJYCjJA4SAgJsE0wH0s1Hw>
-    <xmx:vZFbXxHHZW7DT9CLa5VhLWXiGgOPkid_Tr1vDrK1I0LZzRBOh3YVOw>
-    <xmx:v5FbX2RFAoNPc21RABrsxmpdGS934DifktuXHKF66MouenSfVvmsVw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BC7CE3280060;
-        Fri, 11 Sep 2020 11:03:24 -0400 (EDT)
-Date:   Fri, 11 Sep 2020 17:03:21 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     wens@csie.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] soc: sunxi: sram: remove unneeded semicolon
-Message-ID: <20200911150321.2k62u5fcx2enqjsc@gilmour.lan>
-References: <20200910140546.1191280-1-yanaijie@huawei.com>
+        Fri, 11 Sep 2020 11:13:23 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 08BFCplq011659
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Fri, 11 Sep 2020 08:12:51 -0700 (PDT)
+Received: from pek-lwang1-u1404.wrs.com (128.224.162.178) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Sep 2020 08:12:50 -0700
+From:   Li Wang <li.wang@windriver.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] vhost: reduce stack usage in log_used
+Date:   Fri, 11 Sep 2020 23:09:39 +0800
+Message-ID: <1599836979-4950-1-git-send-email-li.wang@windriver.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5soe5nbp6dp42zaj"
-Content-Disposition: inline
-In-Reply-To: <20200910140546.1191280-1-yanaijie@huawei.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the warning: [-Werror=-Wframe-larger-than=]
 
---5soe5nbp6dp42zaj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+drivers/vhost/vhost.c: In function log_used:
+drivers/vhost/vhost.c:1906:1:
+warning: the frame size of 1040 bytes is larger than 1024 bytes
 
-hi,
+Signed-off-by: Li Wang <li.wang@windriver.com>
+---
+ drivers/vhost/vhost.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-On Thu, Sep 10, 2020 at 10:05:46PM +0800, Jason Yan wrote:
-> Eliminate the following coccicheck warning:
->=20
-> drivers/soc/sunxi/sunxi_sram.c:197:2-3: Unneeded semicolon
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index b45519c..41769de 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -1884,25 +1884,31 @@ static int log_write_hva(struct vhost_virtqueue *vq, u64 hva, u64 len)
+ 
+ static int log_used(struct vhost_virtqueue *vq, u64 used_offset, u64 len)
+ {
+-	struct iovec iov[64];
++	struct iovec *iov;
+ 	int i, ret;
+ 
+ 	if (!vq->iotlb)
+ 		return log_write(vq->log_base, vq->log_addr + used_offset, len);
+ 
++	iov = kcalloc(64, sizeof(*iov), GFP_KERNEL);
++	if (!iov)
++		return -ENOMEM;
++
+ 	ret = translate_desc(vq, (uintptr_t)vq->used + used_offset,
+ 			     len, iov, 64, VHOST_ACCESS_WO);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+ 	for (i = 0; i < ret; i++) {
+ 		ret = log_write_hva(vq,	(uintptr_t)iov[i].iov_base,
+ 				    iov[i].iov_len);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	}
+ 
+-	return 0;
++out:
++	kfree(iov);
++	return ret;
+ }
+ 
+ int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
+-- 
+2.7.4
 
-Applied, thanks!
-Maxime
-
---5soe5nbp6dp42zaj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1uRuQAKCRDj7w1vZxhR
-xRCrAP49hBlh6psQjOrVR3j+GTuGgxjtsNj8MqZQ8OLDzg/HiAEA40t9fORe4MGF
-EKZCyKApHOaruDwv5lSlKw0WOy3wCwA=
-=bUcX
------END PGP SIGNATURE-----
-
---5soe5nbp6dp42zaj--
