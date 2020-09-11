@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877202663AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685492663B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgIKQWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
+        id S1726654AbgIKQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgIKP2P (ORCPT
+        with ESMTP id S1726252AbgIKP2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:28:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77ADC061796
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:29 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z19so7338029pfn.8
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:29 -0700 (PDT)
+        Fri, 11 Sep 2020 11:28:05 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08962C061798
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:35 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id c196so7490796pfc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Borfb2c/AuKaxrPEvHGpc2ZkIkK0QqkS7G7OkbQVw6o=;
-        b=jGOWZRFHUPusoZoYx87HUc0UdvWsBxz/6APZqblOC9XbCFv0ytJIfpKbUiqGR+qoBp
-         OecjXlHzj+qtca8/4IwvdC6BImis+apETeuCYAtSsst/IzfSeJ9zBlJJOWLAZ8Q3b6pm
-         yKHIP/rm3cGeLhNBMovZS3Ac8tjlfx5ca9yGhAwO+l3zo/53AazZkVt70xeUCA9FCju/
-         EGMp/NOXqs0btZS4XhRbtqqwXskqCdE6JBpojPgaA7D1Dyl9f8kzzekwPx3+YC8LIm61
-         J7tsBhGdMbL0TwkfjHVGE+2z6hAPvDArpTr24zfjOcqFOHryVEhD9n16KKxaEvvfXSfS
-         0BOw==
+        bh=J8XXWl4v9PBTaJqTU0LTHaO4yR2LTPizMFNymaqYIWU=;
+        b=oMLE8rM8iM22jHrw1tJVriGCJdRA1UU9284YM4yPrEVz8JGMXc468KKUHFkOv8kZaM
+         IQntWXGwecrKYhSd3zKZekV9erPYLtHP2zh2m+vEJKSME1gs9vAzG2PduN7/i5AI59yy
+         0txAVl3MJnpldlYdvFKDUWTEpnosfq1O51eVJtT97YcTYT28Ln+iIQbpO741qfgW0rtf
+         xcOwz5P8xsckuDs+y/C97e/Np1ciQuyhzZmKh2cDDh88U5kG0pjFoYklwm7SACpSOI11
+         4N+M6aUC/v72MEEGG7Zj4jGDZUl1daCgdXxJt4OgYItqqWGNOLZCLTJvL6d0OktecC/G
+         svXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Borfb2c/AuKaxrPEvHGpc2ZkIkK0QqkS7G7OkbQVw6o=;
-        b=LBrFSCR6wE9+srAWXp5+kL4vITu/ADiJfg8KEq6mIi9LC3KF4Ufmdj75WnVbw0JKeC
-         HO8dl3b49SsFYTSLa6pjZDJ84qmYoI4Uir5DA6tJnlC+YKWBq654lg7CkZJ6311Dmska
-         xPz1bo8jbypSuClZEUS2L20jVXYxlhzbYQ5/gS9H9xBAmB97WTUZqKJXgbHFGjpYsjTU
-         bpDCcRxIXbjXR8uwDfL/SR4/4/bZUWPr9vwYrnldRTPGAM5b/u9ynJhelXFujJ9pgQF1
-         rDcL5J0CkRY+OTMQao4t2BWFCu85DaOqaNT+WHFCeBK24qGebP9GYDF8O2GJUZyNaKkp
-         DVlQ==
-X-Gm-Message-State: AOAM533VHPtqS7TS87KKxM0euIlQ+NcfY4Q9HflsAbXz2TieHK3yu9af
-        VNtfXeAa7sz0nvbQD6oSWgk0oQ==
-X-Google-Smtp-Source: ABdhPJxr9ACTHLE1mqe3DgZIxSLIMmNQF1fyLmvRkWYTYL0CQRvGUt3F8c0z0XSGcO/b1SJoc8A1AA==
-X-Received: by 2002:a62:5244:: with SMTP id g65mr2133117pfb.132.1599830968549;
-        Fri, 11 Sep 2020 06:29:28 -0700 (PDT)
+        bh=J8XXWl4v9PBTaJqTU0LTHaO4yR2LTPizMFNymaqYIWU=;
+        b=OdcP+XFK9lt/sefB0FD+KHsQqKmu6/ZV3EFnK7N7TblGh17diQ6MrR8VAE9Ln56XrW
+         ewYC7xVXt5sZy+0RCgGZJVG12atpXKImfrUvPBS7RR3mSlt80PGew6jkTDqn3mMHTKZi
+         OcuYQvtlM7y81VdIiSjrBeEqpsaDYZmpSXb8PIWosNxK/YLdTDlMklNPVYLKkx3rTZCG
+         sukvLgf5lZ5qILTFHyC+hpeTNlJ65M72W8K9WbNJ96he8xtR8SKJA26vzx672eV72bpK
+         W1HJDuXuUIG/WsddrD2c2fg5iV+dWXCsSHy/FZhtJqFlUrlYE4g4JO2VAH9CT9WzoboH
+         BajA==
+X-Gm-Message-State: AOAM530uM+ueOqnHlGW/gRATn+akHJLJhbpu/owsT6FkRIzJfYmLXGOK
+        Uqpg65E8Vw9MEz6ajB5dNIJz6w==
+X-Google-Smtp-Source: ABdhPJw8LOM8mjmqzKYH9VAZAt/tSr5GGEC3yJjnUtjTsmmZ+TNtaich1KH/B6flKrFEBX4t5n1h7g==
+X-Received: by 2002:a62:cfc5:0:b029:13e:d13d:a083 with SMTP id b188-20020a62cfc50000b029013ed13da083mr2213644pfg.26.1599830975328;
+        Fri, 11 Sep 2020 06:29:35 -0700 (PDT)
 Received: from localhost.localdomain ([117.210.209.48])
-        by smtp.gmail.com with ESMTPSA id e10sm557988pgb.45.2020.09.11.06.29.22
+        by smtp.gmail.com with ESMTPSA id e10sm557988pgb.45.2020.09.11.06.29.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Sep 2020 06:29:27 -0700 (PDT)
+        Fri, 11 Sep 2020 06:29:34 -0700 (PDT)
 From:   Sumit Garg <sumit.garg@linaro.org>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
@@ -55,9 +55,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
         daniel.thompson@linaro.org, jason.wessel@windriver.com,
         kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
         Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v4 3/5] arm64: smp: Allocate and setup IPI as NMI
-Date:   Fri, 11 Sep 2020 18:58:42 +0530
-Message-Id: <1599830924-13990-4-git-send-email-sumit.garg@linaro.org>
+Subject: [PATCH v4 4/5] arm64: kgdb: Round up cpus using IPI as NMI
+Date:   Fri, 11 Sep 2020 18:58:43 +0530
+Message-Id: <1599830924-13990-5-git-send-email-sumit.garg@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1599830924-13990-1-git-send-email-sumit.garg@linaro.org>
 References: <1599830924-13990-1-git-send-email-sumit.garg@linaro.org>
@@ -66,54 +66,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate an unused IPI that can be turned as NMI using ipi_nmi framework.
-Also, invoke corresponding NMI setup/teardown APIs.
+arm64 platforms with GICv3 or later supports pseudo NMIs which can be
+leveraged to round up CPUs which are stuck in hard lockup state with
+interrupts disabled that wouldn't be possible with a normal IPI.
+
+So instead switch to round up CPUs using IPI turned as NMI. And in
+case a particular arm64 platform doesn't supports pseudo NMIs,
+this IPI will act as a normal IPI which maintains existing kgdb
+functionality.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- arch/arm64/kernel/smp.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/include/asm/kgdb.h |  8 ++++++++
+ arch/arm64/kernel/ipi_nmi.c   |  5 ++++-
+ arch/arm64/kernel/kgdb.c      | 21 +++++++++++++++++++++
+ 3 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index b6bde26..3f3b1ff 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -43,6 +43,7 @@
- #include <asm/daifflags.h>
- #include <asm/kvm_mmu.h>
- #include <asm/mmu_context.h>
+diff --git a/arch/arm64/include/asm/kgdb.h b/arch/arm64/include/asm/kgdb.h
+index 21fc85e..6f3d3af 100644
+--- a/arch/arm64/include/asm/kgdb.h
++++ b/arch/arm64/include/asm/kgdb.h
+@@ -24,6 +24,14 @@ static inline void arch_kgdb_breakpoint(void)
+ extern void kgdb_handle_bus_error(void);
+ extern int kgdb_fault_expected;
+ 
++#ifdef CONFIG_KGDB
++extern void ipi_kgdb_nmicallback(int cpu, void *regs);
++#else
++static inline void ipi_kgdb_nmicallback(int cpu, void *regs)
++{
++}
++#endif
++
+ #endif /* !__ASSEMBLY__ */
+ 
+ /*
+diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
+index 355ef92..627bc11 100644
+--- a/arch/arm64/kernel/ipi_nmi.c
++++ b/arch/arm64/kernel/ipi_nmi.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
++#include <linux/kgdb.h>
+ #include <linux/smp.h>
+ 
+ #include <asm/nmi.h>
+@@ -26,7 +27,9 @@ void arch_send_call_nmi_func_ipi_mask(cpumask_t *mask)
+ 
+ static irqreturn_t ipi_nmi_handler(int irq, void *data)
+ {
+-	/* nop, NMI handlers for special features can be added here. */
++	unsigned int cpu = smp_processor_id();
++
++	ipi_kgdb_nmicallback(cpu, get_irq_regs());
+ 
+ 	return IRQ_HANDLED;
+ }
+diff --git a/arch/arm64/kernel/kgdb.c b/arch/arm64/kernel/kgdb.c
+index 1a157ca3..0991275 100644
+--- a/arch/arm64/kernel/kgdb.c
++++ b/arch/arm64/kernel/kgdb.c
+@@ -17,6 +17,7 @@
+ 
+ #include <asm/debug-monitors.h>
+ #include <asm/insn.h>
 +#include <asm/nmi.h>
- #include <asm/numa.h>
- #include <asm/processor.h>
- #include <asm/smp_plat.h>
-@@ -962,6 +963,8 @@ static void ipi_setup(int cpu)
+ #include <asm/traps.h>
  
- 	for (i = 0; i < nr_ipi; i++)
- 		enable_percpu_irq(ipi_irq_base + i, 0);
-+
-+	ipi_nmi_setup(cpu);
+ struct dbg_reg_def_t dbg_reg_def[DBG_MAX_REG_NUM] = {
+@@ -353,3 +354,23 @@ int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+ 	return aarch64_insn_write((void *)bpt->bpt_addr,
+ 			*(u32 *)bpt->saved_instr);
  }
- 
- static void ipi_teardown(int cpu)
-@@ -973,6 +976,8 @@ static void ipi_teardown(int cpu)
- 
- 	for (i = 0; i < nr_ipi; i++)
- 		disable_percpu_irq(ipi_irq_base + i);
 +
-+	ipi_nmi_teardown(cpu);
- }
- 
- void __init set_smp_ipi_range(int ipi_base, int n)
-@@ -993,6 +998,9 @@ void __init set_smp_ipi_range(int ipi_base, int n)
- 		irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
- 	}
- 
-+	if (n > nr_ipi)
-+		set_smp_ipi_nmi(ipi_base + nr_ipi);
++void ipi_kgdb_nmicallback(int cpu, void *regs)
++{
++	if (atomic_read(&kgdb_active) != -1)
++		kgdb_nmicallback(cpu, regs);
++}
 +
- 	ipi_irq_base = ipi_base;
- 
- 	/* Setup the boot CPU immediately */
++#ifdef CONFIG_SMP
++void kgdb_roundup_cpus(void)
++{
++	struct cpumask mask;
++
++	cpumask_copy(&mask, cpu_online_mask);
++	cpumask_clear_cpu(raw_smp_processor_id(), &mask);
++	if (cpumask_empty(&mask))
++		return;
++
++	arch_send_call_nmi_func_ipi_mask(&mask);
++}
++#endif
 -- 
 2.7.4
 
