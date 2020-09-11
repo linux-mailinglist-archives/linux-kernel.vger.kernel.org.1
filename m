@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8625F26572D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 04:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE1E26573A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 05:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgIKC5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 10 Sep 2020 22:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725440AbgIKC5d (ORCPT
+        id S1725809AbgIKDFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 10 Sep 2020 23:05:24 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:52823 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgIKDFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 10 Sep 2020 22:57:33 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF94C0617A4;
-        Thu, 10 Sep 2020 19:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=HFnsD6JV3NOwtLdRVNqcKu08NGR+4LMb6IvOb5ypRuI=; b=Le2NgUZpmKT76kcFn1NILh9Gxl
-        ka6REOFA1eLEHwsZtOksCBvgTArjAx2SGB38XhZYSme2MgW8z62IgocJ0uVW9qdBmWyV3QVaA3leu
-        oFnLgQCARdDm2dKjCxn0Wyw+37jsAgab8owQ1zvjP4vRQe5NjeKqKPyC2inSnKuZmnTkQgRlbPQWh
-        YA5COXz8/iA5LeGzWHSUpt6eokOlLjgH8/uC9GSg2KcJf35IzwF4d4+Xn19I1U23/LJYGDcD8RSGP
-        8Xvxd+H15dSAzG4h+iZC3k1QDJQvnF37KJgC3m+KhXg4Tvmz3gGJL2tb+VeCKq7TxQ8Yd5xQihEV2
-        znxaOM+g==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGZFg-000203-7h; Fri, 11 Sep 2020 02:57:28 +0000
-Subject: Re: [PATCH] fs: use correct parameter in notes of
- generic_file_llseek_size()
-To:     Tianxianting <tian.xianting@h3c.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200905071525.12259-1-tian.xianting@h3c.com>
- <3808373d663146c882c22397a1d6587f@h3c.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <07de1867-e61c-07fb-8809-91d5e573329b@infradead.org>
-Date:   Thu, 10 Sep 2020 19:57:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 10 Sep 2020 23:05:23 -0400
+Received: by mail-wm1-f66.google.com with SMTP id q9so3053023wmj.2
+        for <linux-kernel@vger.kernel.org>; Thu, 10 Sep 2020 20:05:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LRvgh7xT8c341pFXvQMf59Y/vyKAqow7gzK3SkaD0gA=;
+        b=o79YzdfLur5u+sxsKsXZRs2ChTE21mrR347nnRY8b25tSQjUQ7xmB7i3yRzv2oPa/C
+         +oSyw3v8x1lo0zU2wCaYmfhPEc6R5BJ+76o5rM7EIdNFF06nI9CUhB4NfEq26BZJBVoS
+         FbieYILSJyq9Wf22+cMUTB6m4KEmdfLitRPvHvy1jSkfczPVfMQz0TO4PYyWxYgPeR/q
+         nvC9yC6IfBkKLAEhXbJrJnFIv3Ct3m7nDzBMBArKT4KlMOZ7r7MhzzegoPpFFpTQf0e1
+         0DRE0ZKamHgY29yWDWz9JsFwUD0d0zSQPfiRVlFYu47zy2oy1XeqT+D7ahnZz5a9gmeJ
+         IkPg==
+X-Gm-Message-State: AOAM5334MGSwRQBUEl9Ei77MgC+3/NjAljRerPv5w2HihcbIkdk9nQKi
+        rgkz26rirO0I3tpaMQqkw3Hj69Oz7roSfCDTqwE=
+X-Google-Smtp-Source: ABdhPJyStEmlGUEtXywXUbOSoydCcgLWj59nbougouX9u8g/ctB3jl2feFzabMXJ+gzVF5vMGSZ3s1eAwYYnj52HHXc=
+X-Received: by 2002:a7b:c404:: with SMTP id k4mr2922917wmi.168.1599793521756;
+ Thu, 10 Sep 2020 20:05:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3808373d663146c882c22397a1d6587f@h3c.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200910104153.1672460-1-jolsa@kernel.org> <CAM9d7cjqq8+wcZWJ77oONKXu-FsaT_YvRxzaGbRT8PjLOw-AkQ@mail.gmail.com>
+ <20200910144744.GA1663813@krava>
+In-Reply-To: <20200910144744.GA1663813@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 11 Sep 2020 12:05:10 +0900
+Message-ID: <CAM9d7ciEAA_3Quo1-q7hU=Te+hBgJ2wYAjbDazXd7yS70HrhPA@mail.gmail.com>
+Subject: Re: [PATCH] perf: Fix race in perf_mmap_close function
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Wade Mealing <wmealing@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 7:06 PM, Tianxianting wrote:
-> Hi viro,
-> Could I get your feedback?
-> This patch fixed the build warning, I think it can be applied, thanks :) 
-> 
-> -----Original Message-----
-> From: tianxianting (RD) 
-> Sent: Saturday, September 05, 2020 3:15 PM
-> To: viro@zeniv.linux.org.uk
-> Cc: linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; tianxianting (RD) <tian.xianting@h3c.com>
-> Subject: [PATCH] fs: use correct parameter in notes of generic_file_llseek_size()
-> 
-> Fix warning when compiling with W=1:
-> fs/read_write.c:88: warning: Function parameter or member 'maxsize' not described in 'generic_file_llseek_size'
-> fs/read_write.c:88: warning: Excess function parameter 'size' description in 'generic_file_llseek_size'
-> 
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+Hi Jiri,
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+On Thu, Sep 10, 2020 at 11:50 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Sep 10, 2020 at 10:48:02PM +0900, Namhyung Kim wrote:
+>
+> SNIP
+>
+> > >   _do_fork+0x83/0x3a0
+> > >   __do_sys_wait4+0x83/0x90
+> > >   __do_sys_clone+0x85/0xa0
+> > >   do_syscall_64+0x5b/0x1e0
+> > >   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > >
+> > > Using atomic decrease and check instead of separated calls.
+> > > This fixes CVE-2020-14351.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  kernel/events/core.c | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > >
+> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > > index 7ed5248f0445..29313cc54d9e 100644
+> > > --- a/kernel/events/core.c
+> > > +++ b/kernel/events/core.c
+> > > @@ -5903,8 +5903,6 @@ static void perf_mmap_close(struct vm_area_struct *vma)
+> > >                 mutex_unlock(&event->mmap_mutex);
+> > >         }
+> > >
+> > > -       atomic_dec(&rb->mmap_count);
+> > > -
+> > >         if (!atomic_dec_and_mutex_lock(&event->mmap_count, &event->mmap_mutex))
+> > >                 goto out_put;
+> >
+> > But when it takes the goto, rb->mmap_count won't decrement anymore..
+>
+> event->mmap_count is per event, so if we have have race in here,
+> 2 threads can go through with each event->mmap_count reaching zero
 
-Thanks.
+Maybe I'm missing something.
 
-> ---
->  fs/read_write.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 5db58b8c7..058563ee2 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -71,7 +71,7 @@ EXPORT_SYMBOL(vfs_setpos);
->   * @file:	file structure to seek on
->   * @offset:	file offset to seek to
->   * @whence:	type of seek
-> - * @size:	max size of this file in file system
-> + * @maxsize:	max size of this file in file system
->   * @eof:	offset used for SEEK_END position
->   *
->   * This is a variant of generic_file_llseek that allows passing in a custom
-> 
+But as far as I can see, perf_mmap_close() always decremented both
+rb->mmap_count and event->mmap_count.  But with this change,
+it seems not decrement rb->mmap_count when event->mmap_count
+doesn't go to zero, right?
 
-
--- 
-~Randy
+Thanks
+Namhyung
