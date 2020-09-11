@@ -2,109 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EEB265B7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 445F2265B7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 10:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725778AbgIKIYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 04:24:23 -0400
-Received: from a27-186.smtp-out.us-west-2.amazonses.com ([54.240.27.186]:37690
-        "EHLO a27-186.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725554AbgIKIYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 04:24:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599812662;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID;
-        bh=YcrG/LuDfQatkkUvVrsoN1HVKrTFRH1ANNeQ0qNYkz8=;
-        b=DUSaScYiCJ+raicYx6PC8kJo1NZWhtaOIhxZaqBLTQfRe266L96vZANC8RplN+ME
-        Fvq3CRdWVJjfMCQIM7NSfeMadS8Qe2cFjhQxjOhPmqiPQRwmBF9CCHXxg+m5CYmIMPo
-        2zuKib071dm6UsLGGZJi+Qd4jBjbl2OaGpL8CJWQ=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599812662;
-        h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:Feedback-ID;
-        bh=YcrG/LuDfQatkkUvVrsoN1HVKrTFRH1ANNeQ0qNYkz8=;
-        b=bMRG+z/eKKjD1h7AkzMrPGwmcU/lNl7oPBoiMqSgDXPBPDQmSTDZxtqmCpe3C2HB
-        6IwX9aTMUQSSvJ8H6+nNTJfStgdtTJuhEt7QMCRw445KYnmTXhqhhOxDpC3XCobFaSB
-        74L4A8XMfZ56PYY1erJWRGsBN9umrWbNtgSeGHeM=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+        id S1725613AbgIKIZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 04:25:40 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12232 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725554AbgIKIZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 04:25:37 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 738753D7BCA3945F5F93;
+        Fri, 11 Sep 2020 16:25:34 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 11 Sep 2020 16:25:26 +0800
+Subject: Re: [PATCH v2 net] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+References: <1599562954-87257-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpX0_mz+McZdzZ7HFTjBihOKz5E6i4qJQSoFbZ=SZkVh=Q@mail.gmail.com>
+ <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
+Message-ID: <763e6ad2-5e3a-a9db-9cb0-5b4529c56b50@huawei.com>
+Date:   Fri, 11 Sep 2020 16:25:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <830f85b5-ef29-c68e-c982-de20ac880bd9@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 11 Sep 2020 08:24:22 +0000
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 3/8] iommu/arm-smmu: Consult context bank allocator for
- identify domains
-In-Reply-To: <20200904155513.282067-4-bjorn.andersson@linaro.org>
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-4-bjorn.andersson@linaro.org>
-Message-ID: <010101747c43f329-e6376c08-27e9-4b2e-92cd-f2e0a28d9e3c-000000@us-west-2.amazonses.com>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
-X-SES-Outgoing: 2020.09.11-54.240.27.186
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04 21:25, Bjorn Andersson wrote:
-> For implementations of the ARM SMMU where stream mappings of bypass 
-> type
-> are prohibited identity domains can be implemented by using context
-> banks with translation disabled.
+On 2020/9/11 16:13, Yunsheng Lin wrote:
+> On 2020/9/11 4:07, Cong Wang wrote:
+>> On Tue, Sep 8, 2020 at 4:06 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+>>> Currently there is concurrent reset and enqueue operation for the
+>>> same lockless qdisc when there is no lock to synchronize the
+>>> q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
+>>> qdisc_deactivate() called by dev_deactivate_queue(), which may cause
+>>> out-of-bounds access for priv->ring[] in hns3 driver if user has
+>>> requested a smaller queue num when __dev_xmit_skb() still enqueue a
+>>> skb with a larger queue_mapping after the corresponding qdisc is
+>>> reset, and call hns3_nic_net_xmit() with that skb later.
+>>>
+>>> Reused the existing synchronize_net() in dev_deactivate_many() to
+>>> make sure skb with larger queue_mapping enqueued to old qdisc(which
+>>> is saved in dev_queue->qdisc_sleeping) will always be reset when
+>>> dev_reset_queue() is called.
+>>>
+>>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>> ---
+>>> ChangeLog V2:
+>>>         Reuse existing synchronize_net().
+>>> ---
+>>>  net/sched/sch_generic.c | 48 +++++++++++++++++++++++++++++++++---------------
+>>>  1 file changed, 33 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+>>> index 265a61d..54c4172 100644
+>>> --- a/net/sched/sch_generic.c
+>>> +++ b/net/sched/sch_generic.c
+>>> @@ -1131,24 +1131,10 @@ EXPORT_SYMBOL(dev_activate);
+>>>
+>>>  static void qdisc_deactivate(struct Qdisc *qdisc)
+>>>  {
+>>> -       bool nolock = qdisc->flags & TCQ_F_NOLOCK;
+>>> -
+>>>         if (qdisc->flags & TCQ_F_BUILTIN)
+>>>                 return;
+>>> -       if (test_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state))
+>>> -               return;
+>>> -
+>>> -       if (nolock)
+>>> -               spin_lock_bh(&qdisc->seqlock);
+>>> -       spin_lock_bh(qdisc_lock(qdisc));
+>>>
+>>>         set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
+>>> -
+>>> -       qdisc_reset(qdisc);
+>>> -
+>>> -       spin_unlock_bh(qdisc_lock(qdisc));
+>>> -       if (nolock)
+>>> -               spin_unlock_bh(&qdisc->seqlock);
+>>>  }
+>>>
+>>>  static void dev_deactivate_queue(struct net_device *dev,
+>>> @@ -1165,6 +1151,30 @@ static void dev_deactivate_queue(struct net_device *dev,
+>>>         }
+>>>  }
+>>>
+>>> +static void dev_reset_queue(struct net_device *dev,
+>>> +                           struct netdev_queue *dev_queue,
+>>> +                           void *_unused)
+>>> +{
+>>> +       struct Qdisc *qdisc;
+>>> +       bool nolock;
+>>> +
+>>> +       qdisc = dev_queue->qdisc_sleeping;
+>>> +       if (!qdisc)
+>>> +               return;
+>>> +
+>>> +       nolock = qdisc->flags & TCQ_F_NOLOCK;
+>>> +
+>>> +       if (nolock)
+>>> +               spin_lock_bh(&qdisc->seqlock);
+>>> +       spin_lock_bh(qdisc_lock(qdisc));
+>>
+>>
+>> I think you do not need this lock for lockless one.
 > 
-> Postpone the decision to skip allocating a context bank until the
-> implementation specific context bank allocator has been consulted and 
-> if
-> it decides to use a context bank for the identity map, don't enable
-> translation (i.e. omit ARM_SMMU_SCTLR_M).
+> It seems so.
+> Maybe another patch to remove qdisc_lock(qdisc) for lockless
+> qdisc?
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
 > 
-
-<snip>...
-
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> index ddf2ca4c923d..235d9a3a6ab6 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> @@ -243,6 +243,8 @@ enum arm_smmu_cbar_type {
->  #define TLB_LOOP_TIMEOUT		1000000	/* 1s! */
->  #define TLB_SPIN_COUNT			10
+>>
+>>> +
+>>> +       qdisc_reset(qdisc);
+>>> +
+>>> +       spin_unlock_bh(qdisc_lock(qdisc));
+>>> +       if (nolock)
+>>> +               spin_unlock_bh(&qdisc->seqlock);
+>>> +}
+>>> +
+>>>  static bool some_qdisc_is_busy(struct net_device *dev)
+>>>  {
+>>>         unsigned int i;
+>>> @@ -1213,12 +1223,20 @@ void dev_deactivate_many(struct list_head *head)
+>>>                 dev_watchdog_down(dev);
+>>>         }
+>>>
+>>> -       /* Wait for outstanding qdisc-less dev_queue_xmit calls.
+>>> +       /* Wait for outstanding qdisc-less dev_queue_xmit calls or
+>>> +        * outstanding qdisc enqueuing calls.
+>>>          * This is avoided if all devices are in dismantle phase :
+>>>          * Caller will call synchronize_net() for us
+>>>          */
+>>>         synchronize_net();
+>>>
+>>> +       list_for_each_entry(dev, head, close_list) {
+>>> +               netdev_for_each_tx_queue(dev, dev_reset_queue, NULL);
+>>> +
+>>> +               if (dev_ingress_queue(dev))
+>>> +                       dev_reset_queue(dev, dev_ingress_queue(dev), NULL);
+>>> +       }
+>>> +
+>>>         /* Wait for outstanding qdisc_run calls. */
+>>>         list_for_each_entry(dev, head, close_list) {
+>>>                 while (some_qdisc_is_busy(dev)) {
+>>
+>> Do you want to reset before waiting for TX action?
+>>
+>> I think it is safer to do it after, at least prior to commit 759ae57f1b
+>> we did after.
 > 
-> +#define ARM_SMMU_CBNDX_BYPASS		0xffff
-> +
->  /* Shared driver definitions */
->  enum arm_smmu_arch_version {
->  	ARM_SMMU_V1,
-> @@ -346,6 +348,7 @@ struct arm_smmu_cfg {
->  	u32				sctlr_clr;    /* bits to mask in SCTLR */
->  	enum arm_smmu_cbar_type		cbar;
->  	enum arm_smmu_context_fmt	fmt;
-> +	bool				m;
+> The reference to the txq->qdisc is always protected by RCU, so the synchronize_net()
+> should be enought to ensure there is no skb enqueued to the old qdisc that is saved
+> in the dev_queue->qdisc_sleeping, because __dev_queue_xmit can only see the new qdisc
+> after synchronize_net(), which is noop_qdisc, and noop_qdisc will make sure any skb
+> enqueued to it will be dropped and freed, right?
+> 
+> If we do any additional reset that is not related to qdisc in dev_reset_queue(), we
+> can move it after some_qdisc_is_busy() checking.
+> 
+> Also, it seems the __QDISC_STATE_DEACTIVATED checking in qdisc_run() is unnecessary
+> after this patch, because after synchronize_net() qdisc_run() will now see the old
+> qdisc.
 
-Can we use mmu_enable instead of m here to be more descriptive?
+now -> not
+sorry for the typo.
 
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+> 
+> static inline void qdisc_run(struct Qdisc *q)
+> {
+> 	if (qdisc_run_begin(q)) {
+> 		/* NOLOCK qdisc must check 'state' under the qdisc seqlock
+> 		 * to avoid racing with dev_qdisc_reset()
+> 		 */
+> 		if (!(q->flags & TCQ_F_NOLOCK) ||
+> 		    likely(!test_bit(__QDISC_STATE_DEACTIVATED, &q->state)))
+> 			__qdisc_run(q);
+> 		qdisc_run_end(q);
+> 	}
+> }
+> 
+>>
+>> Thanks.
+>> .
+>>
+> .
+> 
