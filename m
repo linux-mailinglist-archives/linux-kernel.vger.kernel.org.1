@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419AD267607
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0F6267609
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725946AbgIKWkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        id S1725957AbgIKWkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgIKWkf (ORCPT
+        with ESMTP id S1725849AbgIKWkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:40:35 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269D5C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:40:35 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u4so13711099ljd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 15:40:35 -0700 (PDT)
+        Fri, 11 Sep 2020 18:40:52 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3DAC061573;
+        Fri, 11 Sep 2020 15:40:52 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q63so10696093qkf.3;
+        Fri, 11 Sep 2020 15:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QVD1gZDtb4fovFqzFSv9irG+x3sWgcFoSpx/oNvkoLE=;
-        b=wWvQJhNNIRUX720qs0qN6+3c+1AchsI6qKG/w09Wn7lBRPPTO9VrrYHzLzstivrpb+
-         1ntUr9NR+s11KMAsEoV2yW5FVFhWj/UMQzNeUlnXk9b4of6XLFIL95AQZBMFzXDsgEzo
-         8ufltuCI0KxK+2XTSpc08ZmJ4BoPeH2CA89Y0qQTRX78I9bJtA9NGelq3Hi04uPzbl10
-         S64Oow+7ks4NSY/8yQlfgPXaZ4/2FgT3F35IJVfVki/Kfv/cF1kjxx/ka43qIKd3OEnz
-         OYSd0D+MUzpFUSRqh8uiUTRNjAgqdPF5kun9fp6XUEaQWHVhOONtBRs7igJUcvMgFnUP
-         eZ3w==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YYtbWxsMj/6n0uZf9WI97Rz4VWxjIwP6xqNBdneeUNo=;
+        b=JkeVh8VK3P/IsY0yYuXRdbFDfSKwWuZBsdVeYQRNJXfK2KGyYQA/AQG1w6u3J0hR27
+         xeKsvGfP60teeylfKsR7sGVXFMV23UrkcYS7IDmwba1mQ6wUDlymmXWC2YHbSd29ru18
+         pt2KX5E/s3IOIPopfD1+EeR9VSvm3ykan7xzxtVrzfWo4ez/vOxR+5JrJjTOwyjKrpFu
+         TuMTwzTuMnCHWaDumPkGYbWJTCWoxq4zR3eSIPh7oON1BRWWNFipreIaAwRz8hYzfHqT
+         1o5fPvv/NulyfvabHbVdfiQCigpSGk1nVtsUJ2oyfjGmIk7eh233XREeAOk/JxjqdGzp
+         66JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QVD1gZDtb4fovFqzFSv9irG+x3sWgcFoSpx/oNvkoLE=;
-        b=dfHxOGrkMPVYJ6xH0Ncixv0FQFGWE3Xr3eW5owiaAiB8dUcNKR71SNJGr+mrLMY9FF
-         sV7t5ZODUBLc2p1+jw0wFbqODt0Thc4/Qwn9tcwSC5JHr7L5HUX4lyt7T2t43WqD+E26
-         i+okswIKVXlUM0gyA4NweAubsa/g04U/AYchAkh+FmXihFE2kQ6tyCpdwNuxnWmsdMRy
-         AT2DnwMwf9jiMygeE1oZWlzDq0bU7KUwjGoq8/m0e4gh7K8oSDbx1uArUZ49nU9hOlpu
-         K8optaLTal47zo3umtaje+HOHU2Qjo32rsadr2V4RB/pckrERlLpi2rXrFzHcZjnoma7
-         9WHA==
-X-Gm-Message-State: AOAM530zRd4+FArOc7vyERlehw4qRpDabifBYLsq1a20No/yQT3BGbcF
-        fzTjzRfyzwsuP7pw6zMfARBBYmkyCY+bs1qD1MeZQw==
-X-Google-Smtp-Source: ABdhPJxxNqP9whJBEo8PXefOIUInGr92nmFnc34eTFWtLjjf5s45gth3jWS60mVcMNMD5wKHe5/WUmhmwWvm9MNerb8=
-X-Received: by 2002:a2e:541c:: with SMTP id i28mr1587321ljb.77.1599864031892;
- Fri, 11 Sep 2020 15:40:31 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=YYtbWxsMj/6n0uZf9WI97Rz4VWxjIwP6xqNBdneeUNo=;
+        b=Z+j1neCA+DIyHAVJooW8hbEFVzaoyF6pPlF3Q7SJAXBl5EuAEUzNro/cHXNwKgZtp2
+         5HfIB7HfJzgDmPbsdvcM8vMg5TfO2nIxCG9E8jwhMYFlpnpdCT65zoIs1vlcmUhPUgiQ
+         yhJn9E789zcob3AecRt43nn7v01W47oUzBGpVLN3ycsfbSusT+8rrqslCO+BUsxNp7sw
+         JbfUi5oe2rjAHOqJzV2L5zSyJ+cU+zQvfUkp863A/FexSB8QpsRcGsk/CEDoWQ0hH0C9
+         /GNRr+M86Tr7+CJtS1eDf6nRS8fQijZgWMz/85ytIc81lFq+usl6vZx9boKkJ1IuNaoA
+         QafQ==
+X-Gm-Message-State: AOAM533K0jI0eXmGgFQJ8YXZF7Hg6asyGiVMGjlrl+gLXmMMKQDaL9Bz
+        gDtfa/DquL6bgx7hbcXnzdc=
+X-Google-Smtp-Source: ABdhPJzYGdYMQAwnuAGDo9b4JV7knr1wG0BIH42y4L824JuZkGPlSDZvBU9CfgyDOTI4FYI1TP5zbA==
+X-Received: by 2002:a37:5684:: with SMTP id k126mr3444195qkb.43.1599864051399;
+        Fri, 11 Sep 2020 15:40:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:95ac])
+        by smtp.gmail.com with ESMTPSA id b43sm4570299qtk.84.2020.09.11.15.40.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 15:40:50 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 18:40:49 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org
+Subject: [PATCH v2 block/for-next] blk-iocost: fix divide-by-zero in
+ transfer_surpluses()
+Message-ID: <20200911224049.GA865564@mtj.thefacebook.com>
+References: <20200911170746.GG4295@mtj.thefacebook.com>
+ <ff46ca79-433e-3279-a8eb-35156639be7b@kernel.dk>
 MIME-Version: 1.0
-References: <20200910022435.2773735-1-guro@fb.com> <20200910224309.GB1307870@carbon.dhcp.thefacebook.com>
- <CALvZod6VZLZ+ABqHK=Vv_S3m=OarSJf0ttGeAOKhw+1zGj65gQ@mail.gmail.com> <20200911213402.GB1163084@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200911213402.GB1163084@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 11 Sep 2020 15:40:20 -0700
-Message-ID: <CALvZod7+-DFfN7cpb8W7O2jHEgU1BSmPyW+-hfmTTUKUi4QG1A@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg/slab: fix racy access to page->mem_cgroup in mem_cgroup_from_obj()
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ff46ca79-433e-3279-a8eb-35156639be7b@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 2:34 PM Roman Gushchin <guro@fb.com> wrote:
->
-[snip]
-> >
-> > Also have you taken a look at [1]? I am still trying to figure out how
-> > that is possible.
-> >
-> > [1] https://lore.kernel.org/lkml/20200901075321.GL4299@shao2-debian/
->
-> Hm, yeah, it's complicated. At the very first glance it looks like that the
-> obj_cgroups vector is placed onto the very same page it describes, or at least
-> it shares the kmem_cache with it, with some bad consequences. Could be something
-> SLAB-specific, newer saw anything like that with SLUB.
-> Or maybe it's completely unrelated and has been attributed to this commit
-> by mistake.
->
-> I've spent several hours running the provided test in a loop, but wasn't
-> lucky enough to trigger it. Did you try?
->
+Conceptually, root_iocg->hweight_donating must be less than WEIGHT_ONE but
+all hweight calculations round up and thus it may end up >= WEIGHT_ONE
+triggering divide-by-zero and other issues. Bound the value to avoid
+surprises.
 
-Yeah same, no success in reproducing it.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Fixes: e08d02aa5fc9 ("blk-iocost: implement Andy's method for donation weight updates")
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+Jens, I was flipping between doing max_t(, 1) over the whole divider and
+doing min_t(, WEIGHT_ONE - 1) for hweight_donating. I thought that I as
+testing after the last change but it obviously wasn't and the previous patch
+doesn't compile due to missing type argument. Can you please apply this
+patch instead? I can send an incremental patch if that'd be better. My
+apologies.
+
+Thanks.
+
+ block/blk-iocost.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index fc897bb142bcd..6e29b4dcf3566 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1881,15 +1881,21 @@ static void transfer_surpluses(struct list_head *surpluses, struct ioc_now *now)
+ 
+ 	/*
+ 	 * Calculate the global donation rate (gamma) - the rate to adjust
+-	 * non-donating budgets by. No need to use 64bit multiplication here as
+-	 * the first operand is guaranteed to be smaller than WEIGHT_ONE
+-	 * (1<<16).
++	 * non-donating budgets by.
++	 *
++	 * No need to use 64bit multiplication here as the first operand is
++	 * guaranteed to be smaller than WEIGHT_ONE (1<<16).
++	 *
++	 * We know that there are beneficiary nodes and the sum of the donating
++	 * hweights can't be whole; however, due to the round-ups during hweight
++	 * calculations, root_iocg->hweight_donating might still end up equal to
++	 * or greater than whole. Limit the range when calculating the divider.
+ 	 *
+ 	 * gamma = (1 - t_r') / (1 - t_r)
+ 	 */
+ 	gamma = DIV_ROUND_UP(
+ 		(WEIGHT_ONE - root_iocg->hweight_after_donation) * WEIGHT_ONE,
+-		WEIGHT_ONE - root_iocg->hweight_donating);
++		WEIGHT_ONE - min_t(u32, root_iocg->hweight_donating, WEIGHT_ONE - 1));
+ 
+ 	/*
+ 	 * Calculate adjusted hwi, child_adjusted_sum and inuse for the inner
