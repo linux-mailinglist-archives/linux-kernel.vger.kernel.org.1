@@ -2,91 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA728265F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F2A265F0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 13:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725815AbgIKLt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 07:49:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725819AbgIKLrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 07:47:17 -0400
-Received: from localhost (unknown [122.171.196.109])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 172A4221E7;
-        Fri, 11 Sep 2020 11:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599824837;
-        bh=T5hi2wkZ1BsNn5NEzkD7Mfirzp6ADMP2cxY2M3N8TkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bHpEoEUKlZdeWR4fKbgkvrv0OLAT5h0g4wHB9Pt1B/+9ZlbbRHo9Tl2xNgsDtnHXb
-         mpW3YSsF5ZZiQULHcl5fKRCl8oUV9BFqjzF6w7+6+wikDOwps7GTssubqgGfmHpi3H
-         evXqSKxU1aYKqopaUBWbgSs7hCpsDKOwvWQuZyXg=
-Date:   Fri, 11 Sep 2020 17:17:11 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, Yu Chen <chenyu56@huawei.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/8] Add PHY USB3 drivers for Hikey 970
-Message-ID: <20200911114711.GX77521@vkoul-mobl>
-References: <cover.1599716786.git.mchehab+huawei@kernel.org>
+        id S1725777AbgIKLvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 07:51:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20141 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725872AbgIKLt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 07:49:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599824989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DbEzTZlBUFKy7piP8BvfmrFeBFroI6ej+Yt1VrkfQ1U=;
+        b=LZoeWlLZb4vmTg4+ss+vPj3woN6mhLPeaXrh5+Zh3tvkPiu70yDY18dXlNnvAJpPRDs2sE
+        1BA39WCEJvo/Cv55Gw+b7JYXwK9XsrRRLQRbnfuMqLSNQuVqNGTh6vyJHjRtVIi+R6AWyy
+        rLOKHy3U5PM3J2eRIppn3AAxLWuwDEU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-PlQxzSSHPamsyoRlTjaRvw-1; Fri, 11 Sep 2020 07:49:46 -0400
+X-MC-Unique: PlQxzSSHPamsyoRlTjaRvw-1
+Received: by mail-wr1-f70.google.com with SMTP id v5so3381036wrs.17
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 04:49:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=DbEzTZlBUFKy7piP8BvfmrFeBFroI6ej+Yt1VrkfQ1U=;
+        b=NQ/wTdz32XSHzTVhmqRDsp/kk84eoFMeyFSnPLJwaX/G8Ea7xmCKlodailZjQOMb6Y
+         7nY6jzVtGK78DEiYpEmEAd89bMPr4vQlAOwlXnJrQMNyS+Wtje0WZa+S0cJNY2EjDizS
+         +VlozTDskzJ2cgbXLW8RUhEfKPLvKb17vewOq5pDpv43RaKO+Lpgd++ncpiRzP9ryYNl
+         p9VO3soJvIEjVytF7Pu4qyvTDjBjfE3S0fTvpMZgLIvYFblPbuAEFWSyo5zzHvQCcqjv
+         SknBPY99PiWcUqebVXaalbSZ1aI72WmM0BZH4hbCwPrEmjE2IVQZMR0ajZ05RHh3oGGx
+         6H8w==
+X-Gm-Message-State: AOAM530kJzwls1rjD4BFHrdRkwKTWhLbSj2vC0O6D4ivzW2ANWojvaaN
+        AGAfMqGajLcXhYasQgPr3IEBOg2XXFDAmFpMCg7NhhE50asUxCErWv9ZepIdJ7YhbQExcZ4WGjr
+        cZdjVpPxPLAIBGD1pVKk2BoAw
+X-Received: by 2002:adf:e952:: with SMTP id m18mr1661039wrn.171.1599824984852;
+        Fri, 11 Sep 2020 04:49:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQpXn3O6dhb557D4NANTuUDGxEUZvFWXlBeAuUYP1vZZatKQtPsXhGfsneRWhJehwI7Yiyhw==
+X-Received: by 2002:adf:e952:: with SMTP id m18mr1661017wrn.171.1599824984563;
+        Fri, 11 Sep 2020 04:49:44 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id k84sm3776613wmf.6.2020.09.11.04.49.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 04:49:44 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer\:X86 ARCHITECTURE" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH][next] KVM: SVM: nested: fix free of uninitialized pointers save and ctl
+In-Reply-To: <20200911110730.24238-1-colin.king@canonical.com>
+References: <20200911110730.24238-1-colin.king@canonical.com>
+Date:   Fri, 11 Sep 2020 13:49:42 +0200
+Message-ID: <87o8mclei1.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1599716786.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10-09-20, 07:52, Mauro Carvalho Chehab wrote:
-> This patch series add the PHY layer needed in order to support the USB
-> functionality on Hikey 970 boards.
-> 
-> v3:
-> - split a namespace patch on two (one with code changes and another
->   one with dt-bindings changes);
-> - placed just the PHY driver on this series. Another series will add the
->   USB HUB driver and the DTS changes required to enable USB support
->   for this board.
+Colin King <colin.king@canonical.com> writes:
 
-I have only cover in my inbox, no other patches. Even lore doesn't show
-the series, not sure what happened here
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> Currently the error exit path to outt_set_gif will kfree on
+> uninitialized
 
-> 
-> Mauro Carvalho Chehab (6):
->   phy: hisilicon: phy-hi3670-usb3: use a consistent namespace
->   dts: phy: phy-hi3670-usb3.txt: use a consistent namespace
->   phy: hisilicon: phy-hi3670-usb3: fix coding style
->   phy: hisilicon: phy-hi3670-usb3: change some DT properties
->   dt-bindings: phy: convert phy-kirin970-usb3.txt to yaml
->   MAINTAINERS: add myself as maintainer for Kirin 970 USB PHY
-> 
-> Yu Chen (2):
->   phy: hisilicon: add USB physical layer for Kirin 3670
->   phy: hisilicon: phy-hi3670-usb3: fix some issues at the init code
-> 
->  .../bindings/phy/hisilicon,hi3670-usb3.yaml   |  72 ++
->  MAINTAINERS                                   |   9 +-
->  drivers/phy/hisilicon/Kconfig                 |  10 +
->  drivers/phy/hisilicon/Makefile                |   1 +
->  drivers/phy/hisilicon/phy-hi3670-usb3.c       | 671 ++++++++++++++++++
->  5 files changed, 762 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
->  create mode 100644 drivers/phy/hisilicon/phy-hi3670-usb3.c
-> 
-> -- 
-> 2.26.2
-> 
+typo: out_set_gif
+
+> pointers save and ctl.  Fix this by ensuring these pointers are
+> inintialized to NULL to avoid garbage pointer freeing.
+>
+> Addresses-Coverity: ("Uninitialized pointer read")
+> Fixes: 6ccbd29ade0d ("KVM: SVM: nested: Don't allocate VMCB structures
+> on stack")
+
+Where is this commit id from? I don't see it in Paolo's kvm tree, if
+it's not yet merged, maybe we should fix it and avoid introducing the
+issue in the first place?
+
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  arch/x86/kvm/svm/nested.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 28036629abf8..2b15f49f9e5a 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -1060,8 +1060,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+>  	struct vmcb *hsave = svm->nested.hsave;
+>  	struct vmcb __user *user_vmcb = (struct vmcb __user *)
+>  		&user_kvm_nested_state->data.svm[0];
+> -	struct vmcb_control_area *ctl;
+> -	struct vmcb_save_area *save;
+> +	struct vmcb_control_area *ctl = NULL;
+> +	struct vmcb_save_area *save = NULL;
+>  	int ret;
+>  	u32 cr0;
+
+I think it would be better if we eliminate 'out_set_gif; completely as
+the 'error path' we have looks a bit weird anyway. Something like
+(untested):
+
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 28036629abf8..d1ae94f40907 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1092,7 +1092,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 
+        if (!(kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE)) {
+                svm_leave_nested(svm);
+-               goto out_set_gif;
++               svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
++               return 0;
+        }
+ 
+        if (!page_address_valid(vcpu, kvm_state->hdr.svm.vmcb_pa))
+@@ -1145,7 +1146,6 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+        load_nested_vmcb_control(svm, ctl);
+        nested_prepare_vmcb_control(svm);
+ 
+-out_set_gif:
+        svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
+ 
+        ret = 0;
 
 -- 
-~Vinod
+Vitaly
+
