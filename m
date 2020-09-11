@@ -2,70 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2E4426644B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C1126647A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgIKQez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:34:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:38960 "EHLO foss.arm.com"
+        id S1726254AbgIKQkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:40:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:32686 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726553AbgIKQeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:34:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 352DF113E;
-        Fri, 11 Sep 2020 09:34:21 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4BC73F73C;
-        Fri, 11 Sep 2020 09:34:19 -0700 (PDT)
-Subject: Re: [PATCHv4 6/6] iommu: arm-smmu-impl: Remove unwanted extra blank
- lines
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel@lists.freedesktop.org,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1599832685.git.saiprakash.ranjan@codeaurora.org>
- <010101747d912d9f-c8050b8d-1e81-4be0-ac35-b221f657b490-000000@us-west-2.amazonses.com>
- <c26b5317-f12d-8be9-be45-3307ce5efbfc@arm.com>
- <20200911160706.GA20802@willie-the-truck>
- <010101747df8e9df-fad2f88d-e970-4753-a99a-2cfeeb1a29a9-000000@us-west-2.amazonses.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7ff9b238-e203-059f-d793-1c44475c6aa2@arm.com>
-Date:   Fri, 11 Sep 2020 17:34:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725848AbgIKQj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 12:39:59 -0400
+IronPort-SDR: ZLyRwnYAKAuOf81/7pb4B5c58IO5GmR8A2I90iPOV8Fs09ruvVK6Yg5t7z5DAS5aHSC84eWd4p
+ pq3lzC1N2N4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="159741900"
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="159741900"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 09:39:59 -0700
+IronPort-SDR: UxHoHvY6JGdy6oFJdCShGUqV54JTAXF8LDcmBr7Ede4T+kyU1rOyotJz3yPlbpKz0qnvsU1CBm
+ pGIkwB5tUmSw==
+X-IronPort-AV: E=Sophos;i="5.76,416,1592895600"; 
+   d="scan'208";a="481382696"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 09:39:58 -0700
+Date:   Fri, 11 Sep 2020 09:39:57 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     fenghua.yu@intel.com, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Subject: Re: [PATCH] ia64: remove perfmon
+Message-ID: <20200911163957.GA828@agluck-desk2.amr.corp.intel.com>
+References: <20200911094920.1173631-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <010101747df8e9df-fad2f88d-e970-4753-a99a-2cfeeb1a29a9-000000@us-west-2.amazonses.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911094920.1173631-1-hch@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-11 17:21, Sai Prakash Ranjan wrote:
-> On 2020-09-11 21:37, Will Deacon wrote:
->> On Fri, Sep 11, 2020 at 05:03:06PM +0100, Robin Murphy wrote:
->>> BTW am I supposed to have received 3 copies of everything? Because I 
->>> did...
->>
->> Yeah, this seems to be happening for all of Sai's emails :/
->>
+On Fri, Sep 11, 2020 at 11:49:19AM +0200, Christoph Hellwig wrote:
+> perfmon has been marked broken and thus been disabled for all builds
+> for more than two years.  Remove it entirely.
 > 
-> Sorry, I am not sure what went wrong as I only sent this once
-> and there are no recent changes to any of my configs, I'll
-> check it further.
+> Cc: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Actually on closer inspection it appears to be "correct" behaviour. I'm 
-still subscribed to LAKML and the IOMMU list on this account, but 
-normally Office 365 deduplicates so aggressively that I have rules set 
-up to copy list mails that I'm cc'ed on back to my inbox, in case they 
-arrive first and cause the direct copy to get eaten - apparently there's 
-something unique about your email setup that manages to defeat the 
-deduplicator and make it deliver all 3 copies intact... :/
+Applied. Thanks
 
-Robin.
+-Tony
