@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E85266898
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C062266891
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgIKTOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgIKTOr (ORCPT
+        id S1725861AbgIKTKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:10:42 -0400
+Received: from 1.mo69.mail-out.ovh.net ([178.33.251.173]:39760 "EHLO
+        1.mo69.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbgIKTKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:14:47 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F43BC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:14:47 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so15161737ejb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:14:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lUTLfTAHN/JEc/vY2NZSlPv25B0eM9+I2UvpN7fipvE=;
-        b=Clxn1QsgKc2lKUePPSN2NAL/bI5bjfBFRul7KsPI2uaRRhC0MOrKjvIFIZdRmVowg5
-         Sj/tT1SzRVgDZ+3t3dHFGme2ZZ2AzNzf/iHPNpa3Fuz0WH5hvvP/wmiJL+the/L7uCVO
-         8PyXw3Q3ZjkkDqlxpbtvaLMr+QGOuNdWTmuIw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lUTLfTAHN/JEc/vY2NZSlPv25B0eM9+I2UvpN7fipvE=;
-        b=XK3/DsbOQ0e77ajJ4ws7o0O8IL5kx+phSfoV8JIOUw9WqSmbr9OjSCbvkVPgGFqLW1
-         zp4ZtCZRoTDIMTNXkRpjjp0p8LjM+rAmf46g3bOMnNd749JMsmUELOrZeB6sWHaubac6
-         6D5Z1lY+BLnx1TfFhbQcBlvw/tNTC6sCoVIe+C/VfvHQRRM5zInS73swmF5J34QNMwDR
-         jJaHGg/FtDI/X49QIttBktz61zpEkDvUlVD9acd+QtJ18aSdPXpddXg9X3jiOJdU9KdO
-         PaCE1ehDNfPXce4WQLJ7CcaAxFRhbBnK43o6WlL7Urmar7Nai7qcpFry+PH2lFBNEZk9
-         m75A==
-X-Gm-Message-State: AOAM530hA3W6jL9pcZNmUAqiZGAZ8sq5D3Q2SLib7iKfPoL1OLgUhtud
-        igRhXTw5y75i4ssLeVsJLsD/UTgMgxa9AA==
-X-Google-Smtp-Source: ABdhPJwCX5zMi80QrbparanrNRkOlkgcGayrXj+sGbqbvy5/UUAMkZP909UBH6pvMarKtHtKbEgVIg==
-X-Received: by 2002:a17:906:660f:: with SMTP id b15mr3622559ejp.333.1599851685538;
-        Fri, 11 Sep 2020 12:14:45 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id g10sm2092755ejp.34.2020.09.11.12.14.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 12:14:45 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id w1so11227387edr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:14:45 -0700 (PDT)
-X-Received: by 2002:ac2:4ec7:: with SMTP id p7mr651524lfr.352.1599851382451;
- Fri, 11 Sep 2020 12:09:42 -0700 (PDT)
+        Fri, 11 Sep 2020 15:10:40 -0400
+Received: from player737.ha.ovh.net (unknown [10.108.54.141])
+        by mo69.mail-out.ovh.net (Postfix) with ESMTP id 260969CA8F
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 21:10:35 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player737.ha.ovh.net (Postfix) with ESMTPSA id F01A5C9A58B6;
+        Fri, 11 Sep 2020 19:10:27 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-103G00563ebb549-6379-4903-9510-438db0f803e1,
+                    B3063C92EDE29B5A09E12E435EF56C89C4C75BBC) smtp.auth=steve@sk2.org
+Date:   Fri, 11 Sep 2020 21:10:26 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix references to nommu-mmap.rst
+Message-ID: <20200911211026.349af8bd@heffalump.sk2.org>
+In-Reply-To: <20200812092230.27541-1-steve@sk2.org>
+References: <20200812092230.27541-1-steve@sk2.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200911070939.GB1362448@hirez.programming.kicks-ass.net> <patch.git-2c4880212370.your-ad-here.call-01599849957-ext-4686@work.hours>
-In-Reply-To: <patch.git-2c4880212370.your-ad-here.call-01599849957-ext-4686@work.hours>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 11 Sep 2020 12:09:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg0cqRnqT=pBFx+wk3mQVzuCxQ3ea_nYOTyaCG4Ohkk_Q@mail.gmail.com>
-Message-ID: <CAHk-=wg0cqRnqT=pBFx+wk3mQVzuCxQ3ea_nYOTyaCG4Ohkk_Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/gup: fix gup_fast with dynamic page table folding
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/AuRstjFKFLZyfdUTEZCfQ9i"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 14675542335775460851
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudehledgudefjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtvdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepjeekffdvhfejkeffudekhedvtddvhfeiheehvdehkeetkedufeejffeuueevvddvnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejfeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:04 PM Vasily Gorbik <gor@linux.ibm.com> wrote:
->
-> Currently to make sure that every page table entry is read just once
-> gup_fast walks perform READ_ONCE and pass pXd value down to the next
-> gup_pXd_range function by value e.g.:
-[ ... ]
+--Sig_/AuRstjFKFLZyfdUTEZCfQ9i
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ack, this looks sane to me.
+Hi,
 
-I was going to ask how horrible it would be to convert all the other
-users, but a quick grep convinced me that yeah, it's only GUP that is
-this special, and we don't want to make this interface be the real one
-for everything else too..
+This is still relevant as far as I can tell; master and docs-next still have
+references to the old nommu-mmap.rst.
 
-                Linus
+Regards,
+
+Stephen
+
+On Wed, 12 Aug 2020 11:22:30 +0200, Stephen Kitt <steve@sk2.org> wrote:
+> nommu-mmap.rst was moved to Documentation/admin-guide/mm; this patch
+> updates the remaining stale references to Documentation/mm.
+>=20
+> Fixes: 800c02f5d030 ("docs: move nommu-mmap.txt to admin-guide and rename=
+ to ReST")
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> ---
+>  init/Kconfig | 2 +-
+>  mm/Kconfig   | 2 +-
+>  mm/nommu.c   | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 2dd5531dae98..8d5fefd1f229 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1957,7 +1957,7 @@ config MMAP_ALLOW_UNINITIALIZED
+>  	  userspace.  Since that isn't generally a problem on no-MMU systems,
+>  	  it is normally safe to say Y here.
+>=20
+> -	  See Documentation/mm/nommu-mmap.rst for more information.
+> +	  See Documentation/admin-guide/mm/nommu-mmap.rst for more information.
+>=20
+> config SYSTEM_DATA_VERIFICATION
+>  	def_bool n
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index d41f3fa7e923..29e239497718 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -387,7 +387,7 @@ config NOMMU_INITIAL_TRIM_EXCESS
+>  	  This option specifies the initial value of this option.  The default
+>  	  of 1 says that all excess pages should be trimmed.
+> =20
+> -	  See Documentation/mm/nommu-mmap.rst for more information.
+> +	  See Documentation/admin-guide/mm/nommu-mmap.rst for more information.=
+=20
+>=20
+> config TRANSPARENT_HUGEPAGE
+>  	bool "Transparent Hugepage Support"
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index 64539971188b..e8e2c5bb6f0a 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -5,7 +5,7 @@
+>   *  Replacement code for mm functions to support CPU's that don't
+>   *  have any form of memory management unit (thus no virtual memory).
+>   *
+> - *  See Documentation/mm/nommu-mmap.rst
+> + *  See Documentation/admin-guide/mm/nommu-mmap.rst
+>   *
+>   *  Copyright (c) 2004-2008 David Howells <dhowells@redhat.com>
+>   *  Copyright (c) 2000-2003 David McCullough <davidm@snapgear.com>
+>=20
+> base-commit: e176b7a3054eef44a22f6ca3d14168dcf9bad21e
+> --=20
+> 2.20.1
+>=20
+
+--Sig_/AuRstjFKFLZyfdUTEZCfQ9i
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl9by6IACgkQgNMC9Yht
+g5zJug/+PuyOts/ThOL3MseC1uGD+F/sYHoE+CzyUG3QBb+FwbsNVlnOPNNRbcSY
+OcTG8r/fgx4sLGWbBGeFBTcvD2CR77bHkMbZ1y+SH7O10nN9yDAZlCpmUks/oazL
+1RqgC5wLu3zZ3wJ7iLR0Dl9lkN9qbxaV+wj1hUr+AAOIapmHtzXagGQgtI3Wyzds
+ChFTxUrMdMSS9cXrXtrUrQhU2DupiO56U4fIT8TkG7QgeFoGHmlgcxKSnKAG6lZ8
+R9uZFsuzn9TfQGCItThWkA2RersrgZNru/hKwqDLfNby3Enzs9dI/BZxz+BF0twO
+qeFd5cMCfEXyftuXfnOnK1Aof7uTpHZaNKs+JWLNDL2NiMps84MSpHzn9D/sDJN6
+CCibbMf0MZiuplrK/7zGaw1gToP8u9lpRlfEnFxhV0TGikW2s0N0xJAPJ7dRzdvo
+s03lYMnvdzLwAB+Ti4ZIqwR/TnE+6Q3vBFv+HsYEpbVo2TQl/DvcMpP+L34k9/E0
+gXTeubC25JV63alRxYs/qp0YcLcBCzrp6st0Mzve28m7mURHE9KpCePZshvryDOY
+opz8cpIUHu3ryZDjkgaUR5+rAZp8EzWSBDxAuKmJ/lmbm8P4F0ljCuN1qcvOgm9V
+EJh0eOoqPOZUcIJ4LtUb/KRmQV1UQGUOWcrSaZib9MXXObqhLzU=
+=sUfx
+-----END PGP SIGNATURE-----
+
+--Sig_/AuRstjFKFLZyfdUTEZCfQ9i--
