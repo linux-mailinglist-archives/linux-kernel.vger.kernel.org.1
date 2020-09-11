@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD2B266835
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE1526683E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 20:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbgIKSXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 14:23:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgIKSXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 14:23:18 -0400
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB92821D40;
-        Fri, 11 Sep 2020 18:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599848597;
-        bh=YY2vBU2Yo4rqMxD/qeQ8+2/9DSz2T2a0UG6lbEEq3G8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q4ZuwCgX7Z+2ZOJ+NeU4ULnNdUzb+Xbc21jw35Xfapk2cL99q9nlvKuFcGO/dP4tW
-         5pc+giXQQDPB/5B3farttH5r0q1GtXJY6F0mWYOOhoe7AmAWDsWGf+qLwG1n6ac/Xe
-         yoK0gX0Jkou6UnrlnX9slwVTm6nQVGvp9Nb+A+3M=
-Received: by mail-ot1-f44.google.com with SMTP id h17so9161084otr.1;
-        Fri, 11 Sep 2020 11:23:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532y/PQ+iL4g+Y+Uou8ZhS8ACsMF5vxcfRBO60aj5GECeR3IVK/z
-        QtUJsNg2+sinOhOrewm3uksHXPCF/QlW33VMrxM=
-X-Google-Smtp-Source: ABdhPJxBcPAsLveygKkrrNoxlgHdpRQY+vCwFDpMuEgOBUXrCiwKgj/V2tpmS4Nlr8qpxhjVTweRYEeB0rXov2e7QIw=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr1931544otk.108.1599848596998;
- Fri, 11 Sep 2020 11:23:16 -0700 (PDT)
+        id S1725905AbgIKS2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 14:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725787AbgIKS2a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 14:28:30 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55328C061573;
+        Fri, 11 Sep 2020 11:28:30 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id t14so7214205pgl.10;
+        Fri, 11 Sep 2020 11:28:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oGy60kweS4PLkfhdZmoSU7gQz4aGeok5OjY4ObJDP3I=;
+        b=Uiw9LuGCDx+ZA1o2eCV1Z6buvR0PRsB+Cy7f75w4ow/kzlc71uer9OpgqjhWmoXhCV
+         DRnbxvrFBm39hKRFg2+8R9LlPfAQXyPcI66DpXraYhwIyDEGSBiGJojCY0kKpVvsY2IK
+         Oh1hVqBJ2oA4kD9BR4DNX74b2xh7W8GxiAOMmHpKW/xRX1eY/3n+97KY+gS4E9e59z5Y
+         JPHPt3pLHR2llBdD+eBL4sfPNYQRW3Jti+AUhWWohqaSxHm/dH+/5ANJXHJ60QHCig/T
+         lJ4GhVBqz70OJOTzm3CaJNXGfZZvW9U8U6wWk9h0MFJ0RRfzdXpJBbzeS+otCud9xuzs
+         CtmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oGy60kweS4PLkfhdZmoSU7gQz4aGeok5OjY4ObJDP3I=;
+        b=hpoKqu+BGXK5mPP4ULVzXsNTyBDzO9dhmqGamG6zNVL1eB8CKkZhmGCyQxvLyjZ3Bf
+         NnYVaRLpVVCqRw62YbSpDz1imULtTPmA9ZKxwD/x5WphPUyBlokC6PYbZ9JGZcQel+RP
+         Cj0Pxyxhn3VZrznIqjv+3Ut0xH0ellEOufskqZY1YM5E8E3i82Lw07tc/JzfV6rb0IdZ
+         nesqSgCClilYcnOOh0NU0rv4YsDiqiWYqhbiaI63RiN0mNKeqnGsfBY+tUoQow4AJoC2
+         x+G+HexivGtzaPzHZXYcCO/tKVYGU4oKw6xYTvKsl9ZWF0A57P8Mwp+GhTOzztXcMUuR
+         w/cA==
+X-Gm-Message-State: AOAM531kS3nb22AMlbrjawYbkDKpaae16gkf8R9blK8TdInZtY+6AcM0
+        ouci/a8le7sBzqqgfHGiuCaSYgap9qQ=
+X-Google-Smtp-Source: ABdhPJyFF5iTbocGnmVsysQxi2B8gmRoPwAJ1cURQE1YitrYXHfW9rDraKW8q7TLBdpOVHIXf2szyA==
+X-Received: by 2002:a63:d703:: with SMTP id d3mr2562886pgg.428.1599848909479;
+        Fri, 11 Sep 2020 11:28:29 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id q18sm2991908pfg.158.2020.09.11.11.28.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 11:28:28 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: dsa: b53: Configure VLANs while not
+ filtering
+To:     netdev@vger.kernel.org
+Cc:     olteanv@gmail.com, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200911041905.58191-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <12b6df34-6f0b-fb40-2f04-1927d88f5321@gmail.com>
+Date:   Fri, 11 Sep 2020 11:28:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200828203332.11129-1-Smita.KoralahalliChannabasappa@amd.com>
- <20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com>
- <878sdvv20h.fsf@kokedama.swc.toshiba.co.jp> <102d0c75-d642-8f8b-68c7-792499c2a62a@amd.com>
- <87a6y7qshg.fsf@kokedama.swc.toshiba.co.jp>
-In-Reply-To: <87a6y7qshg.fsf@kokedama.swc.toshiba.co.jp>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 11 Sep 2020 21:23:05 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXGd8KgP6_-Ebec1wpxpCnjjOe4_uovcYW3GD1BA5au=3Q@mail.gmail.com>
-Message-ID: <CAMj1kXGd8KgP6_-Ebec1wpxpCnjjOe4_uovcYW3GD1BA5au=3Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] cper, apei, mce: Pass x86 CPER through the MCA
- handling chain
-To:     Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-Cc:     Smita Koralahalli Channabasappa <skoralah@amd.com>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-efi <linux-efi@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        devel@acpica.org, Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200911041905.58191-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Sep 2020 at 09:34, Punit Agrawal <punit1.agrawal@toshiba.co.jp> wrote:
->
-> Hi Smita,
->
-> Smita Koralahalli Channabasappa <skoralah@amd.com> writes:
->
-> > On 8/31/20 12:05 AM, Punit Agrawal wrote:
-> >
-> >> Hi Smita,
-> >>
-> >> A couple of comments below -
-> >>
-> >> Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> writes:
-> >>
-> >> [...]
-> >>
-> >>
-> >>> diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
-> >>> index 2531de49f56c..374b8e18552a 100644
-> >>> --- a/drivers/firmware/efi/cper-x86.c
-> >>> +++ b/drivers/firmware/efi/cper-x86.c
-> >>> @@ -1,7 +1,7 @@
-> >>>   // SPDX-License-Identifier: GPL-2.0
-> >>>   // Copyright (C) 2018, Advanced Micro Devices, Inc.
-> >>>   -#include <linux/cper.h>
-> >> Why is the include dropped? AFAICT, the definitions from there are still
-> >> being used after this patch.
-> >
-> > Dropped because <acpi/apei.h> already includes <linux/cper.h>
->
-> Generally, you want to follow the rule that if a declaration from a
-> header file is being used, it should show up in the includes. The same
-> applies to both source as well as header files.
->
-> It doesn't matter if another include in the source file in turn ends up
-> including the same header again; the #ifdef guards are there to prevent
-> duplicate declarations.
->
-> The rationale is that if future changes remove the usage of
-> <acpi/apei.h>, the C file can still be compiled after dropping the
-> include; there should be no need to then re-introduce <linux/cper.h> at
-> that point.
->
-> Hope that makes sense.
->
 
-Agreed. If the code still uses declarations from linux/cper.h after
-the patch, the #include should remain.
+
+On 9/10/2020 9:19 PM, Florian Fainelli wrote:
+> Update the B53 driver to support VLANs while not filtering. This
+> requires us to enable VLAN globally within the switch upon driver
+> initial configuration (dev->vlan_enabled).
+> 
+> We also need to remove the code that dealt with PVID re-configuration in
+> b53_vlan_filtering() since that function worked under the assumption
+> that it would only be called to make a bridge VLAN filtering, or not
+> filtering, and we would attempt to move the port's PVID accordingly.
+> 
+> Now that VLANs are programmed all the time, even in the case of a
+> non-VLAN filtering bridge, we would be programming a default_pvid for
+> the bridged switch ports.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+
+David, Jakub, please hold off applying this just yet, Vladimir has 
+submitted another patch for testing that would be IMHO a better way to 
+deal with DSA switches that have an egress tagged default_pvid. 
+Depending on the outcome of that patch, I will resubmit this one or 
+request that you apply it.
+
+Thanks
+-- 
+Florian
