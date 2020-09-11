@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB41426636C
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 169C826636A
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726206AbgIKQQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:16:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59466 "EHLO mail.kernel.org"
+        id S1726579AbgIKQPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgIKPbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:31:55 -0400
+        id S1726502AbgIKPb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:31:59 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE6E3206E9;
-        Fri, 11 Sep 2020 15:31:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A442B221EB;
+        Fri, 11 Sep 2020 15:31:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599838315;
-        bh=FHvyb4YZgNi7A1rAW27pN0TMAcoCOgzJV9MBqHtD1zk=;
+        s=default; t=1599838317;
+        bh=pnr+KrdHtt/fH3wF75oJarZDsiMbxqG9tfzitZPzg8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9YTBNGFbO526oLa7IxaFS1Ac6jLa/MRtq8fur3NAQ9nzzpgqcW//ucF3ax75U3Fo
-         EAdWKWfzTSWv0Pd4B2XSRPYpBPMCY2xyqgJ14zNed48Q+Jv8u37fR5XNFTu9rhVSCn
-         BAIBYlEKFViWDAvtVa80jOzvzjUTuCvZEBkAEU3M=
+        b=InakMd/Cg43FCBJCQfqfmzrJM5frJWjVHYplr4j2J9EmgQ1ATT4usy1uDp2E2uh6v
+         BF1Y2778HCu4JJdHNCAk0LRdlyIo8hAI8bHioZ15YupxJ8gdIh+jkwXXsLwkgJAWPh
+         tIKn6ZUZiRFKs3ALZhkuLHook1AQ0Pk1LR/XL6d4=
 From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        rcampbell@nvidia.com, akpm@linux-foundation.org,
+To:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Jonathan.Cameron@Huawei.com, linux-kernel@vger.kernel.org,
-        Suzuki Poulose <suzuki.poulose@arm.com>, ziy@nvidia.com
-Subject: Re: [PATCH V2 0/2] arm64/mm: Enable THP migration
-Date:   Fri, 11 Sep 2020 16:31:48 +0100
-Message-Id: <159983265112.1321153.11672723276282744978.b4-ty@kernel.org>
+        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH V4] arm64/cpuinfo: Define HWCAP name arrays per their actual bit definitions
+Date:   Fri, 11 Sep 2020 16:31:49 +0100
+Message-Id: <159983818680.1465915.16143462979896283824.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1599627183-14453-1-git-send-email-anshuman.khandual@arm.com>
-References: <1599627183-14453-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
+References: <1599630535-29337-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,22 +45,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 9 Sep 2020 10:23:01 +0530, Anshuman Khandual wrote:
-> This series enables THP migration on arm64 via ARCH_ENABLE_THP_MIGRATION.
-> But first this modifies all existing THP helpers like pmd_present() and
-> pmd_trans_huge() etc per expected generic memory semantics as concluded
-> from a previous discussion here.
-> 
-> https://lkml.org/lkml/2018/10/9/220
-> 
-> [...]
+On Wed, 9 Sep 2020 11:18:55 +0530, Anshuman Khandual wrote:
+> HWCAP name arrays (hwcap_str, compat_hwcap_str, compat_hwcap2_str) that are
+> scanned for /proc/cpuinfo are detached from their bit definitions making it
+> vulnerable and difficult to correlate. It is also bit problematic because
+> during /proc/cpuinfo dump these arrays get traversed sequentially assuming
+> they reflect and match actual HWCAP bit sequence, to test various features
+> for a given CPU. This redefines name arrays per their HWCAP bit definitions
+> . It also warns after detecting any feature which is not expected on arm64.
 
-Applied to arm64 (for-next/mm), thanks!
+Applied to arm64 (for-next/cpuinfo), thanks!
 
-[1/2] arm64/mm: Change THP helpers to comply with generic MM semantics
-      https://git.kernel.org/arm64/c/b65399f6111b
-[2/2] arm64/mm: Enable THP migration
-      https://git.kernel.org/arm64/c/53fa117bb33c
+[1/1] arm64/cpuinfo: Define HWCAP name arrays per their actual bit definitions
+      https://git.kernel.org/arm64/c/4e56de82d4ec
 
 Cheers,
 -- 
