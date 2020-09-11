@@ -2,97 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB0F265D07
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 11:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27E7265D0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 11:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725784AbgIKJx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 05:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgIKJxz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 05:53:55 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D525EC061573;
-        Fri, 11 Sep 2020 02:53:54 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id s65so5210070pgb.0;
-        Fri, 11 Sep 2020 02:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=8V0xBW7DTj25tKrCkSmr/DtXLxDvaz2DIFrG4wH1eVo=;
-        b=Ey+mNbeCTGY96r1CKzPPi32hOjx2VLgLJRjWik6lrEOnatSNRNzRlAuyWB4R6M6c61
-         yUpAAr249xov8mWH64Scr+XgVY/0oQf0bUDtzf/rkIRnQ+7sY8IRmBwgUU7zZ7zI2Dg1
-         8L01CCSPtkV3qmMgZaXrWJZvjHCka1LkKFGi4Z0kTfbgUrEIRoTG+zF+V6bu9Ew8R0cN
-         1S+yoK+yzA9HHMEsiwYhEcL6iN2MYX2TaSEHI3HBMT77kvOpP5DuM4VRwAvNvDuly4NP
-         z6uICgdESJtQ5RMM6N/uPUoHdzkO/0+YKKvP5gnlBZq6fWdReGIwR8MattrFGzrFohwU
-         1ecg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=8V0xBW7DTj25tKrCkSmr/DtXLxDvaz2DIFrG4wH1eVo=;
-        b=MtlgBais9YduR6rtZQwuPQGXtGlg9WLj1Evwz1MBs13S+npl3lc08G2ipBnxH5EJVB
-         9DGgTDaj+VnJZPA9kZeaF7rkXzQVWI8ptKXkW7W6XptdXCLRXJLleOFHTWiB6qgGn1xO
-         FaYw49pX4aVIBpwt8nB8Nk66je/oJnhlpljsOg+XXQo7bLMx1awHU8ChyBGn8sSC2mpg
-         0TTRHb9cBz2sI+gr1skE7IKU/IU+G07Rwhn6kuKB6edtwhXYPkwIYkEbSYFF6+Dwyl2c
-         QLjtVIGwB5Z6Gg9BpzqkTwEIvUg890DC4LE6J90zHZzgII8rjMeAnivdLt77k6cPRYs9
-         EQiQ==
-X-Gm-Message-State: AOAM5307jNKWJh5PGZ/kOuOJYTOg1jgpj2DBQdHrYjCFASdrnkS62kgM
-        CAnFEYvD9IrEs/4mze/wAGs=
-X-Google-Smtp-Source: ABdhPJxCsui9XwpDxJW4IYUX9m1QTPkEGom9uMzfEqjjpfE8pSptXn91LdbbhAqmuFXKXyC7G7Wq+Q==
-X-Received: by 2002:a62:cecb:: with SMTP id y194mr1420782pfg.106.1599818032695;
-        Fri, 11 Sep 2020 02:53:52 -0700 (PDT)
-Received: from localhost.localdomain (ec2-13-52-163-24.us-west-1.compute.amazonaws.com. [13.52.163.24])
-        by smtp.gmail.com with ESMTPSA id x4sm1790158pff.57.2020.09.11.02.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 02:53:52 -0700 (PDT)
-From:   Xiaoliang Pang <dawning.pang@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        matthias.bgg@gmail.com, swboyd@chromium.org, yuehaibing@huawei.com,
-        tianjia.zhang@linux.alibaba.com, ryder.lee@mediatek.com
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dawning.pang@gmail.com
-Subject: [PATCH v5] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
-Date:   Fri, 11 Sep 2020 17:53:39 +0800
-Message-Id: <20200911095339.9970-1-dawning.pang@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725814AbgIKJzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 05:55:06 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:12515 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725710AbgIKJzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 05:55:03 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bnrhf3d4Qz9v1Z1;
+        Fri, 11 Sep 2020 11:54:58 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 1uQtGWb0214J; Fri, 11 Sep 2020 11:54:58 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bnrhf2VxJz9v1Yd;
+        Fri, 11 Sep 2020 11:54:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D49728B83B;
+        Fri, 11 Sep 2020 11:54:58 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 71B-b_lCudje; Fri, 11 Sep 2020 11:54:58 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id AF0128B838;
+        Fri, 11 Sep 2020 11:54:55 +0200 (CEST)
+Subject: Re: [PATCH] powerpc/traps: fix recoverability of machine check
+ handling on book3s/32
+To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <1c804764d38fb084b420b12ca13e8c1b2dea075e.1548166189.git.christophe.leroy@c-s.fr>
+ <20200911091542.GE29521@kitsune.suse.cz>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <69e1863a-468d-55d7-f2b2-e700b22609a3@csgroup.eu>
+Date:   Fri, 11 Sep 2020 11:54:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20200911091542.GE29521@kitsune.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the init loop, if an error occurs in function 'dma_alloc_coherent',
-then goto the err_cleanup section,
-in the cleanup loop, after run i--,
-the struct mtk_ring rising[i] will not be released,
-causing a memory leak
+Hello,
 
-Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
----
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Le 11/09/2020 à 11:15, Michal Suchánek a écrit :
+> Hello,
+> 
+> does this logic apply to "Unrecoverable System Reset" as well?
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index 7e3ad085b5bd..f83cead30d8f 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -469,13 +469,13 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 	return 0;
- 
- err_cleanup:
--	for (; i--; ) {
-+	do {
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->res_base, ring[i]->res_dma);
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
--	}
-+	} while (i--);
- 	return err;
- }
- 
--- 
-2.17.1
+I don't know, I don't think I have any way the generate a System Reset 
+on my board to check it.
 
+Christophe
+
+> 
+> Thanks
+> 
+> Michal
+> 
+> On Tue, Jan 22, 2019 at 02:11:24PM +0000, Christophe Leroy wrote:
+>> Looks like book3s/32 doesn't set RI on machine check, so
+>> checking RI before calling die() will always be fatal
+>> allthought this is not an issue in most cases.
+>>
+>> Fixes: b96672dd840f ("powerpc: Machine check interrupt is a non-maskable interrupt")
+>> Fixes: daf00ae71dad ("powerpc/traps: restore recoverability of machine_check interrupts")
+>> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+>> Cc: stable@vger.kernel.org
+>> ---
+>>   arch/powerpc/kernel/traps.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+>> index 64936b60d521..c740f8bfccc9 100644
+>> --- a/arch/powerpc/kernel/traps.c
+>> +++ b/arch/powerpc/kernel/traps.c
+>> @@ -763,15 +763,15 @@ void machine_check_exception(struct pt_regs *regs)
+>>   	if (check_io_access(regs))
+>>   		goto bail;
+>>   
+>> -	/* Must die if the interrupt is not recoverable */
+>> -	if (!(regs->msr & MSR_RI))
+>> -		nmi_panic(regs, "Unrecoverable Machine check");
+>> -
+>>   	if (!nested)
+>>   		nmi_exit();
+>>   
+>>   	die("Machine check", regs, SIGBUS);
+>>   
+>> +	/* Must die if the interrupt is not recoverable */
+>> +	if (!(regs->msr & MSR_RI))
+>> +		nmi_panic(regs, "Unrecoverable Machine check");
+>> +
+>>   	return;
+>>   
+>>   bail:
+>> -- 
+>> 2.13.3
+>>
