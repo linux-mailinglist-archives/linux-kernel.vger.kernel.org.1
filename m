@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066E22659FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764DA2659FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 09:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725791AbgIKHFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 03:05:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41208 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgIKHFJ (ORCPT
+        id S1725885AbgIKHFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 03:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725601AbgIKHFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 03:05:09 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D936F1C0B76; Fri, 11 Sep 2020 09:05:03 +0200 (CEST)
-Date:   Fri, 11 Sep 2020 09:05:03 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Gene Chen <gene.chen.richtek@gmail.com>, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v3 1/2] leds: mt6360: Add LED driver for MT6360
-Message-ID: <20200911070503.GA9818@amd>
-References: <1599474459-20853-1-git-send-email-gene.chen.richtek@gmail.com>
- <1599474459-20853-2-git-send-email-gene.chen.richtek@gmail.com>
- <559a568e-3a2e-33c6-43aa-547a18f8e26b@gmail.com>
+        Fri, 11 Sep 2020 03:05:43 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C09BC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:37 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z25so9930287iol.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 00:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=otF8H1RNd/1xFgPWM+UYeAZ5JGJnziYMUvZT/Xjw4hM=;
+        b=qe4hkqMBNjrfKmSzuLVus6EU9eYDBsofp7qqtq8YlvMw/Wjw74o8vcRMGH9JvNfccZ
+         RjXMT1koZlUphilobl4V1XvQAi+X2mDvt2q7b+muUVlyHxx94WmHNIl09v2Yoyt8sNa3
+         WtWX6BM+X+zYBPZxkjFLsJipzKs6YD59tk5p8MMlvBc1MwGDuo0cC0/IuJwWpfHxvDfA
+         Q3mU2POB/NRiZYsQ+sUnXy5Sz1krQd3Y+QZD0qaP3WLaSYzlQTFEr+WaCByAXoZTKuNq
+         TNWTF2B+eRYvSopuAXve89apo0iWr2xpAlRQbuHzugZa9WocdsJLJQ2+A+dxQz4eW4ph
+         jctA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=otF8H1RNd/1xFgPWM+UYeAZ5JGJnziYMUvZT/Xjw4hM=;
+        b=nR8UkRLg2Nzrj6XuFYyQMpH917tBm7QWnDgLjk30f9ravVx7or3apHY7A5ooyrX80D
+         470AasNZfYwqLw0Of/PzzMK/ycC9HypUPxpSqRdT/21kWQiZjewmXCAvk/HItZvPIxfP
+         G80SCxgwLkDWJcnmElfTtzUQFO1i0x7NBQLkljceuPXPSvcTitRWebYr3fgGznw+RfC2
+         zUojlUXQxiVL8mPJ+cQ5jVJFq1iXuFEZITV5fV//YvXAVQ6jzqy/G/+EVAnB3C6lXnnE
+         3uQVJze4OCCiicZ2WDRm1mdXMwPYFpBtOGTNcQXWYW+0982BhYRTGFFeLUBC3t8VynI6
+         bIqA==
+X-Gm-Message-State: AOAM530ETkVZtEfiR9hLCFnmI4F/1GpitChbsWGaOiiLqnAb7gJ3ijbp
+        PIZ2dDSC5r4BNVftVE/8wuyh+MObvCS9UlXAzbF/K7EYnv8=
+X-Google-Smtp-Source: ABdhPJwodniZiAtfvQUmjWFccNMw2WLlrmOeP9LT9dEB93y9plKXNJu5aLa8hLG3YBW74NGPxP1i41/CNLxqL0iHbp0=
+X-Received: by 2002:a5e:9b04:: with SMTP id j4mr731216iok.59.1599807936340;
+ Fri, 11 Sep 2020 00:05:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
-In-Reply-To: <559a568e-3a2e-33c6-43aa-547a18f8e26b@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200910052347.1790735-1-cychiang@chromium.org> <20200910052347.1790735-2-cychiang@chromium.org>
+In-Reply-To: <20200910052347.1790735-2-cychiang@chromium.org>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Fri, 11 Sep 2020 15:05:25 +0800
+Message-ID: <CA+Px+wUh_PDZCg15bx7=teUeS=0fr22fnCKq5u2WUoTOXdTrbg@mail.gmail.com>
+Subject: Re: [PATCH v8 1/3] ASoC: hdmi-codec: Use set_jack ops to set jack
+To:     Cheng-Yi Chiang <cychiang@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Patrick Lai <plai@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Douglas Anderson <dianders@chromium.org>, dgreid@chromium.org,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        ALSA development <alsa-devel@alsa-project.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 10, 2020 at 1:24 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
+> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+> index 8c6f540533ba..d1de5bcd5daa 100644
+> --- a/sound/soc/codecs/hdmi-codec.c
+> +++ b/sound/soc/codecs/hdmi-codec.c
+> @@ -698,13 +698,9 @@ static void plugged_cb(struct device *dev, bool plugged)
+>                 hdmi_codec_jack_report(hcp, 0);
+>  }
+>
+> -/**
+> - * hdmi_codec_set_jack_detect - register HDMI plugged callback
+> - * @component: the hdmi-codec instance
+> - * @jack: ASoC jack to report (dis)connection events on
+> - */
+> -int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+> -                              struct snd_soc_jack *jack)
+> +static int hdmi_codec_set_jack_detect(struct snd_soc_component *component,
+> +                                     struct snd_soc_jack *jack,
+> +                                     void *data)
+To be neat, name it "hdmi_codec_set_jack".
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>  static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
+>  {
+> @@ -806,6 +801,7 @@ static const struct snd_soc_component_driver hdmi_driver = {
+>         .use_pmdown_time        = 1,
+>         .endianness             = 1,
+>         .non_legacy_dai_naming  = 1,
+> +       .set_jack               = hdmi_codec_set_jack_detect,
+"hdmi_codec_set_jack" looks better to me.
 
-Hi!
+If you would send a newer version, consider changing the name.
 
-> >+{
-> >+	struct mt6360_led *led =3D container_of(lcdev, struct mt6360_led, flas=
-h.led_cdev);
-> >+	struct mt6360_priv *priv =3D led->priv;
-> >+	u32 enable_mask =3D MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led->led_=
-no);
-> >+	u32 val =3D (level) ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-> >+	u32 prev =3D priv->fled_torch_used, curr;
-> >+	int ret;
-> >+
-> >+	dev_dbg(lcdev->dev, "[%d] brightness %d\n", led->led_no, level);
-> >+	if (priv->fled_strobe_used) {
-> >+		dev_warn(lcdev->dev, "Please disable strobe first [%d]\n", priv->fled=
-_strobe_used);
->=20
-> Doesn't hardware handle that? IOW, what happens when you have enabled
-> both torch and flash? If flash just overrides torch mode, than you
-> should not prevent enabling torch in this case.
-
-Yep, this is strange/confusing... and was reason why I asked for not
-supporting strobe from sysfs.
-
-Could I get you to remove code you are not commenting at when
-reviewing?
-
-> >+MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
-> >+MODULE_DESCRIPTION("MT6360 Led Driver");
-
-Led -> LED.
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9bIZ8ACgkQMOfwapXb+vIelgCePgj6nGNi1tecOoGv2il2xaai
-cg8An3XTOtdxJXBTbkGrDdoc9j8KA4Wx
-=c1KM
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
+With that:
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
