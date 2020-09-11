@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4F52663B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B252D2663F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgIKQWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:22:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2622 "EHLO
+        id S1726228AbgIKQ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:27:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35964 "EHLO
         mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726488AbgIKP2G (ORCPT
+        by vger.kernel.org with ESMTP id S1726470AbgIKPUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:28:06 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BDXg9X191729;
+        Fri, 11 Sep 2020 11:20:54 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08BDbmuT094124;
         Fri, 11 Sep 2020 09:48:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=VCevs/yaQHazFXInnTan+oDgN62pOgD9NgM/TFWnlsU=;
- b=JxXO2bpi+aaQKD5mQomg9rDjIcfJBbMQBPCXsjTyIW6ZM4/T7OUN9gMD62k386Zx/RHH
- CLPhsmGVqzj6wuG0LfSDCMMmAJlE8naYcX0iiAKxbqS9MIXxpIRY5KMyYlFVUbYNfIZd
- xvKzqP+JEVvviyhwX2PAozUwLMhHk5on/Xz81m9Z+VxEaawNkDYOjbvY9+MKV3pxVLWm
- c1iehqsSwN6bhCPhUowgT+Bz7TX51mydzAoX4m5CgWoDec+1t1EPeXonz3vlVU7UP3Uf
- 0hkoYjXKEPD99t36chveHh9MDHbtUBBjmtHkZ5yw/rZgKPZQwMxT0LsNPJwu3bluVAWJ Cw== 
+ bh=/DlSfj+qc/DKFfnxqp/QaMVjzQLq0SBZzTsv8j+fWSw=;
+ b=RicVnspy5d63Y6X25prYN377f+LRKdK/q3Xjo+Nsn2aC+TlLrCvfIlSxvg2lz+N/KABB
+ IJPYJofo2YZbkyJ97mVp4O9gStaNwFjOnpwtAwnhBhHkAessXAxVNZ21FvOvEG/nzsgy
+ ZJUwc+P5jKEzZ46BkUL9RvOCj0q4bkXrwINyZOtdMGuGGwgZXKtgObusq4HC/Kdav5F7
+ 7utc8xrMaAq/aofBtyW+dz7u4COGIp2cotgSSaVd0ZZCrmISCFaNNtD2lRsgfcPYhGGC
+ qicrJwSNE5cJvKe8rg8SjYPXB1jc912bm7pV9C7eKzuPYx7x/BDiKoTPKiIk6TcqFIhu pw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33g9fy22ey-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33ga35ghmh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 11 Sep 2020 09:48:40 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BDXh72191783;
-        Fri, 11 Sep 2020 09:48:39 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33g9fy22dr-1
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08BDc8o9095555;
+        Fri, 11 Sep 2020 09:48:40 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33ga35ghks-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 11 Sep 2020 09:48:39 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BDiGpg005376;
-        Fri, 11 Sep 2020 13:48:37 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 33f91w90bh-1
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08BDh2jx029635;
+        Fri, 11 Sep 2020 13:48:38 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 33c2a8f9u4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Sep 2020 13:48:36 +0000
+        Fri, 11 Sep 2020 13:48:38 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BDmYPO31588724
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08BDmZoj35324388
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Sep 2020 13:48:34 GMT
+        Fri, 11 Sep 2020 13:48:35 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2351CAE045;
+        by IMSVA (Postfix) with ESMTP id 37973AE04D;
+        Fri, 11 Sep 2020 13:48:35 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BED6BAE053;
         Fri, 11 Sep 2020 13:48:34 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6DA0AE053;
-        Fri, 11 Sep 2020 13:48:33 +0000 (GMT)
 Received: from pomme.tlslab.ibm.com (unknown [9.145.47.39])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Sep 2020 13:48:33 +0000 (GMT)
+        Fri, 11 Sep 2020 13:48:34 +0000 (GMT)
 From:   Laurent Dufour <ldufour@linux.ibm.com>
 To:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
         Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
@@ -64,9 +64,9 @@ Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
         Tony Luck <tony.luck@intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] mm: replace memmap_context by memplug_context
-Date:   Fri, 11 Sep 2020 15:48:29 +0200
-Message-Id: <20200911134831.53258-2-ldufour@linux.ibm.com>
+Subject: [PATCH 3/3] mm: don't panic when links can't be created in sysfs
+Date:   Fri, 11 Sep 2020 15:48:31 +0200
+Message-Id: <20200911134831.53258-4-ldufour@linux.ibm.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911134831.53258-1-ldufour@linux.ibm.com>
 References: <20200911134831.53258-1-ldufour@linux.ibm.com>
@@ -74,170 +74,139 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-11_04:2020-09-10,2020-09-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- clxscore=1015 suspectscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=994 priorityscore=1501 adultscore=0 bulkscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009110104
+ definitions=2020-09-11_05:2020-09-10,2020-09-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ bulkscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 lowpriorityscore=0 suspectscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009110109
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memmap_context is used to detect whether a memory operation is due to a
-hot-add operation or happening at boot time.
+At boot time, or when doing memory hot-add operations, if the links in
+sysfs can't be created, the system is still able to run, so just report the
+error in the kernel log.
 
-Makes it general to the hotplug operation, renaming it at memplug_context
-and move its define in the corresponding header.
+Since the number of memory blocks managed could be high, the messages are
+rate limited.
 
-There is no functional change introduced by this patch
+As a consequence, link_mem_sections() has no status to report anymore.
 
-Suggested-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Cc: David Hildenbrand <david@redhat.com>
 ---
- arch/ia64/mm/init.c            |  6 +++---
- include/linux/memory_hotplug.h |  9 +++++++++
- include/linux/mm.h             |  2 +-
- include/linux/mmzone.h         |  4 ----
- mm/memory_hotplug.c            |  2 +-
- mm/page_alloc.c                | 10 +++++-----
- 6 files changed, 19 insertions(+), 14 deletions(-)
+ drivers/base/node.c  | 25 +++++++++++++++++--------
+ include/linux/node.h | 17 ++++++++---------
+ mm/memory_hotplug.c  |  5 ++---
+ 3 files changed, 27 insertions(+), 20 deletions(-)
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 0b3fb4c7af29..b5054b5e77c8 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 	if (map_start < map_end)
- 		memmap_init_zone((unsigned long)(map_end - map_start),
- 				 args->nid, args->zone, page_to_pfn(map_start),
--				 MEMMAP_EARLY, NULL);
-+				 MEMPLUG_EARLY, NULL);
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index 862516c5a5ae..749a1c8ea992 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -811,12 +811,21 @@ static int register_mem_sect_under_node(struct memory_block *mem_blk,
+ 		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
+ 					&mem_blk->dev.kobj,
+ 					kobject_name(&mem_blk->dev.kobj));
+-		if (ret)
+-			return ret;
++		if (ret && ret != -EEXIST)
++			pr_err_ratelimited(
++				"can't create %s to %s link in sysfs (%d)\n",
++				kobject_name(&node_devices[nid]->dev.kobj),
++				kobject_name(&mem_blk->dev.kobj), ret);
+ 
+-		return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
++		ret = sysfs_create_link_nowarn(&mem_blk->dev.kobj,
+ 				&node_devices[nid]->dev.kobj,
+ 				kobject_name(&node_devices[nid]->dev.kobj));
++		if (ret && ret != -EEXIST)
++			pr_err_ratelimited(
++				"can't create %s to %s link in sysfs (%d)\n",
++				kobject_name(&mem_blk->dev.kobj),
++				kobject_name(&node_devices[nid]->dev.kobj),
++				ret);
+ 	}
+ 	/* mem section does not span the specified node */
  	return 0;
+@@ -837,17 +846,17 @@ void unregister_memory_block_under_nodes(struct memory_block *mem_blk)
+ 			  kobject_name(&node_devices[mem_blk->nid]->dev.kobj));
  }
  
-@@ -547,8 +547,8 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
- 	     unsigned long start_pfn)
+-int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
+-		      enum memplug_context context)
++void link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
++		       enum memplug_context context)
  {
- 	if (!vmem_map) {
--		memmap_init_zone(size, nid, zone, start_pfn, MEMMAP_EARLY,
--				NULL);
-+		memmap_init_zone(size, nid, zone, start_pfn,
-+				 MEMPLUG_EARLY, NULL);
- 	} else {
- 		struct page *start;
- 		struct memmap_init_callback_data args;
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 375515803cd8..cd2bd21d3a4d 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -15,6 +15,15 @@ struct memory_block;
- struct resource;
- struct vmem_altmap;
+ 	struct rmsun_args args = {
+ 		.nid = nid,
+ 		.context = context,
+ 	};
  
-+/*
-+ * Memory plugin context, use to differentiate memory added at boot time and
-+ * hot-plugged memory.
-+ */
-+enum memplug_context {
-+	MEMPLUG_EARLY,
-+	MEMPLUG_HOTPLUG,
-+};
-+
- #ifdef CONFIG_MEMORY_HOTPLUG
- /*
-  * Return page for the valid pfn only if the page is online. All pfn
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1983e08f5906..4157cc1bd17f 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2409,7 +2409,7 @@ extern int __meminit __early_pfn_to_nid(unsigned long pfn,
+-	return walk_memory_blocks(PFN_PHYS(start_pfn),
+-				  PFN_PHYS(end_pfn - start_pfn), (void *)&args,
+-				  register_mem_sect_under_node);
++	walk_memory_blocks(PFN_PHYS(start_pfn),
++			   PFN_PHYS(end_pfn - start_pfn), (void *)&args,
++			   register_mem_sect_under_node);
+ }
  
- extern void set_dma_reserve(unsigned long new_dma_reserve);
- extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
--		enum memmap_context, struct vmem_altmap *);
-+		enum memplug_context, struct vmem_altmap *);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
- extern void mem_init(void);
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 8379432f4f2f..ec254ab793b5 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -824,10 +824,6 @@ bool zone_watermark_ok(struct zone *z, unsigned int order,
- 		unsigned int alloc_flags);
- bool zone_watermark_ok_safe(struct zone *z, unsigned int order,
- 		unsigned long mark, int highest_zoneidx);
--enum memmap_context {
--	MEMMAP_EARLY,
--	MEMMAP_HOTPLUG,
--};
- extern void init_currently_empty_zone(struct zone *zone, unsigned long start_pfn,
- 				     unsigned long size);
+ #ifdef CONFIG_HUGETLBFS
+diff --git a/include/linux/node.h b/include/linux/node.h
+index 8ff08520488c..6bdd6f3ed3aa 100644
+--- a/include/linux/node.h
++++ b/include/linux/node.h
+@@ -99,15 +99,14 @@ extern struct node *node_devices[];
+ typedef  void (*node_registration_func_t)(struct node *);
  
+ #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_NUMA)
+-extern int link_mem_sections(int nid, unsigned long start_pfn,
+-			     unsigned long end_pfn,
+-			     enum memplug_context context);
++void link_mem_sections(int nid, unsigned long start_pfn,
++		       unsigned long end_pfn,
++		       enum memplug_context context);
+ #else
+-static inline int link_mem_sections(int nid, unsigned long start_pfn,
+-				    unsigned long end_pfn,
+-				    enum memplug_context context)
++static inline void link_mem_sections(int nid, unsigned long start_pfn,
++				     unsigned long end_pfn,
++				     enum memplug_context context)
+ {
+-	return 0;
+ }
+ #endif
+ 
+@@ -130,8 +129,8 @@ static inline int register_one_node(int nid)
+ 		if (error)
+ 			return error;
+ 		/* link memory sections under this node */
+-		error = link_mem_sections(nid, start_pfn, end_pfn,
+-					  MEMPLUG_EARLY);
++		link_mem_sections(nid, start_pfn, end_pfn,
++				  MEMPLUG_EARLY);
+ 	}
+ 
+ 	return error;
 diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index e9d5ab5d3ca0..fc21625e42de 100644
+index 912d355ca446..668418071a49 100644
 --- a/mm/memory_hotplug.c
 +++ b/mm/memory_hotplug.c
-@@ -729,7 +729,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
- 	 * are reserved so nobody should be touching them so we should be safe
- 	 */
- 	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
--			MEMMAP_HOTPLUG, altmap);
-+			 MEMPLUG_HOTPLUG, altmap);
- 
- 	set_zone_contiguous(zone);
- }
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index fab5e97dc9ca..7f49fcf38b8c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5975,7 +5975,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * done. Non-atomic initialization, single-pass.
-  */
- void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--		unsigned long start_pfn, enum memmap_context context,
-+		unsigned long start_pfn, enum memplug_context context,
- 		struct vmem_altmap *altmap)
- {
- 	unsigned long pfn, end_pfn = start_pfn + size;
-@@ -6007,7 +6007,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		 * There can be holes in boot-time mem_map[]s handed to this
- 		 * function.  They do not exist on hotplugged memory.
- 		 */
--		if (context == MEMMAP_EARLY) {
-+		if (context == MEMPLUG_EARLY) {
- 			if (overlap_memmap_init(zone, &pfn))
- 				continue;
- 			if (defer_init(nid, pfn, end_pfn))
-@@ -6016,7 +6016,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 
- 		page = pfn_to_page(pfn);
- 		__init_single_page(page, pfn, zone, nid);
--		if (context == MEMMAP_HOTPLUG)
-+		if (context == MEMPLUG_HOTPLUG)
- 			__SetPageReserved(page);
- 
- 		/*
-@@ -6099,7 +6099,7 @@ void __ref memmap_init_zone_device(struct zone *zone,
- 		 * check here not to call set_pageblock_migratetype() against
- 		 * pfn out of zone.
- 		 *
--		 * Please note that MEMMAP_HOTPLUG path doesn't clear memmap
-+		 * Please note that MEMPLUG_HOTPLUG path doesn't clear memmap
- 		 * because this is done early in section_activate()
- 		 */
- 		if (!(pfn & (pageblock_nr_pages - 1))) {
-@@ -6137,7 +6137,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
- 			memmap_init_zone(size, nid, zone, start_pfn,
--					 MEMMAP_EARLY, NULL);
-+					 MEMPLUG_EARLY, NULL);
- 		}
+@@ -1080,9 +1080,8 @@ int __ref add_memory_resource(int nid, struct resource *res)
  	}
- }
+ 
+ 	/* link memory sections under this node.*/
+-	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
+-				MEMPLUG_HOTPLUG);
+-	BUG_ON(ret);
++	link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
++			  MEMPLUG_HOTPLUG);
+ 
+ 	/* create new memmap entry */
+ 	if (!strcmp(res->name, "System RAM"))
 -- 
 2.28.0
 
