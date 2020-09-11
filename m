@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AA026645D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F0F266548
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgIKQhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:37:04 -0400
-Received: from sonic306-8.consmr.mail.bf2.yahoo.com ([74.6.132.47]:33153 "EHLO
-        sonic306-8.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726073AbgIKPNu (ORCPT
+        id S1726241AbgIKQ5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:57:49 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42218 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726305AbgIKPE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:13:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599837215; bh=KhejUjG+aIFEdaJtUCWO7uMjCXcLLdLXH7PJ9JLxOyc=; h=Date:From:Reply-To:Subject:References:From:Subject; b=aNM+wX+8ocEWiBS2O1ESJ+dVrWh+9OJfkOGz/jE/HW6OhXH7sZqP7hM6uro7E3JCe0zIxmdJwANr3F/78kmWr0SByf1ADuxX/sg/hTw5tksETmrmxou6GQM2F1q709d7JKb4uk3wpcGd6LWFGgfIsLbnm2Q8NsmNWjSPwwENpdI0HFtvQnpheRH6RV0aqViWnD4VXeqVfCYlPzTK9EpSC0bJZGCY8Lrlyqu4xKD/NzRDmKYML7jCYDrvIR4Y5cbMjKzNxYCNv/wT7Z78BTtqq4rQ/m0pDh10tHHfVIgTlQlAeLglpNgqIqZA4/2vaR1c+wKbNVvKLm+sdCNyMBcglQ==
-X-YMail-OSG: d.JwdRcVM1mVBCghaVBWHKb0K5b5MtyOcCu_h9epMCCDslBkwymP62wAEnAR7cd
- AH..lhjjTx.kzPHVGfuC9_4LVf.FrGw1KW.4FhhMkKLPSQfW00ggB3w6fbS0lsLRBEfy0MevBC0V
- puiNvigiOs_vYW.XtRc3wcilWuhaRPNf1amATqmBRK.vjL8O0_NLl0is5RPVsmCnchJ63K_PFzPA
- ztGiNs_MsKZEKHnQ_fTYLlVOmfEmnKCa1Ak13_cL8uawn7mL0SXdrV6jGyWglIxTspDVOyvdCxJx
- raW8nvIgQMQFGtOY2jtDYY3hANNUEi21nF7qRxIuic0bTOc50MPOFq7DRtuyOK2Zl_aVeo7JaWbF
- slwZ8x.lj9bf2ikoFIasj_v0.LkSKgBMjoyi.bIz7BWsmPxzAPYgDj4fiDyWV.FVlgz.izHhM4z.
- 7UpxQrCitFelP2m.fbgLXBNK6SyNsDWoFWyCFW3wIWtriY1YMFnNnhivLejRBbH8_Sdgl9Ri4dj0
- 1MhKrDblrwzhxz9T4beFS2N_26fzk4qhEvzpHSkTHLKGyqWiaF9MzMH7Ug_avysC5hItS4uEG1I7
- 5U7b5B2xAZhYOL7Yjxq13l5MYR8f342Qyz0hVgQSqTl5_f3fBmBpkVjV4El62mc7.0RnVOLfID04
- EZxtvMImuM1Rk8wpBl4iWq7JwIzVF0cm6mRPZqNJNphYuMvc7CKzw7gOgmxseuN_VKcC8t7VJdZA
- 0gj9TTcjjaqW5Izbhdmr1k5YIp8tMa6lkXG8JYD4SBeP7hc5C6R_1sI6TvqJe9MZT19Rz6wC1Zfu
- X4Gm2IWhLYnfEj8_KNc6b.70iPXcB5qFIpC2eNIEh_yfpKwmaGV9fZJ5kF8Gilqvs2UQscmpEAp8
- KLs3uG1JRvWUtq0sOzsxTG40uJd4HZTRGAqx_kZRojJL5wkFQ8NOeMnNJ6HgZNa1TpdV8VOxrNnn
- CWNqI5.mzXdQUWLgdIBU4yS4hsb_coHuZGZCVnMpOJWXYFh3XMeBv8Iy_Jdx.vKfAB7qz1aOgdY3
- 5.sHnkKTcTwGotfDYv3uFfMR6I7v6bBtaA1Zs0E1eDPVGh5obTv42U87EynkuXwbxaJsIxrP8Xw_
- jL7Yy7LeavltsFpaW7o2E4mB80TkhQlnXbBc34Kcy1gwz5u1ZLOq2jh.jVkz9gQfXWZXTZNRIiSW
- 9yWvIj6U5ATL5DehIcXNb4H4BBphNO5J3d1gdNO7ZYRNVO5tf9WOIwIaYCW9YvOBK0jC9g39p1Hs
- d5_gysn2mxzLQEKdlQpNXvOCfDlkoDKf6mLB2Q4VKVdLvgQ7hJr236QsoFStZadVBcGUJn8hISmS
- axm6nlgCV7P7YzXOPmqggZZTS.822xeqjnwasT_dMoSaB1YEj_ByFnVSmPtOlNtJXlHbZV8how21
- cyeM0TiLC.AJqNU_HMBpFhjHrJXhbd47s8fYlKpYjL9cfD6UCOOpbZSIGvJEGlCfzQ_S.xOcESOf
- o
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.bf2.yahoo.com with HTTP; Fri, 11 Sep 2020 15:13:35 +0000
-Date:   Fri, 11 Sep 2020 15:02:34 +0000 (UTC)
-From:   "Mrs. Maureen Hinckley" <mau11@righbv.in>
-Reply-To: maurhinck4@gmail.com
-Message-ID: <2022699321.1101095.1599836554052@mail.yahoo.com>
-Subject: RE
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <2022699321.1101095.1599836554052.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16583 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+        Fri, 11 Sep 2020 11:04:29 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id DA4558EE21C;
+        Fri, 11 Sep 2020 08:04:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1599836666;
+        bh=yhrDiYi9c8FE4wC2C86eKSK5/tP+mtNUZsOBeMc7Vzc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GG9RMhwBXb3CICZQMZm9a4wVWVt6Ol3eFNMBxAfJmWq4hQgPx+g1bhEuf5tVSH43W
+         CpQhW2TTOG3WcIxLq77wP6UHE55ai2mZF2pqByFiubhxsRQLwRsy7j/UAQirc+n/ov
+         Hz0RaVNlD904A1y9gLwulrhpgULCyeDAi5xevVSw=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FWbnV69cVc6j; Fri, 11 Sep 2020 08:04:26 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 0BF3A8EE0F8;
+        Fri, 11 Sep 2020 08:04:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1599836666;
+        bh=yhrDiYi9c8FE4wC2C86eKSK5/tP+mtNUZsOBeMc7Vzc=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=GG9RMhwBXb3CICZQMZm9a4wVWVt6Ol3eFNMBxAfJmWq4hQgPx+g1bhEuf5tVSH43W
+         CpQhW2TTOG3WcIxLq77wP6UHE55ai2mZF2pqByFiubhxsRQLwRsy7j/UAQirc+n/ov
+         Hz0RaVNlD904A1y9gLwulrhpgULCyeDAi5xevVSw=
+Message-ID: <1599836664.4041.21.camel@HansenPartnership.com>
+Subject: Re: [PATCH] security: keys: Use kvfree_sensitive in a few places
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 11 Sep 2020 08:04:24 -0700
+In-Reply-To: <20200911114400.82207-1-alex.dewar90@gmail.com>
+References: <20200911114400.82207-1-alex.dewar90@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2020-09-11 at 12:44 +0100, Alex Dewar wrote:
+> In big_key.c, there are a few places where memzero_explicit + kvfree
+> is used. It is better to use kvfree_sensitive instead, which is more
+> readable and also prevents the compiler from eliding the call to
+> memzero_explicit. Fix this.
 
+That last bit is untrue: the compiler can't elide memzero_explicit ...
+that's why it has the explicit suffix.
 
-I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
- thousand USD) to you. Contact us via my email at (maurhinck4@gmail.com) fo=
-r further details.
+The original problem was a lot of people do memset(.., 0, ..); kfree()
+which the compiler can elide if it understands the memory is going out
+of scope.  Or the even more problematic memset(..., 0, ...) on a stack
+variable before it goes out of scope.
 
-Best Regards,
-Mrs. Maureen Hinckley,
-Copyright =C2=A92020 The Maureen Hinckley Foundation All Rights Reserved.
+We can argue about readability but there's no secret leak here.
+
+James
+
