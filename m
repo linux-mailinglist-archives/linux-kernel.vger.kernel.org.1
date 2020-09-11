@@ -2,91 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E5D26622D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD9526629E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 17:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgIKPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 11:31:20 -0400
-Received: from 59-125-125-110.HINET-IP.hinet.net ([59.125.125.110]:58859 "HELO
-        mail.jen-ai.org.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726254AbgIKP1P (ORCPT
+        id S1726571AbgIKPyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 11:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgIKPwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:27:15 -0400
-Received: from mail.jen-ai.org.tw (localhost.localdomain [127.0.0.1])
-        by mail.jen-ai.org.tw (Postfix) with ESMTP id F12FD12070A;
-        Fri, 11 Sep 2020 21:49:16 +0800 (CST)
-From:   "Malayan Banking Berhad" <mbtransfer.com.my@jen-ai.org.tw>
-Reply-To: mbtransfer2u@hotmail.com
-Subject: Good day customer,
-Date:   Fri, 11 Sep 2020 21:49:16 +0800
-Message-Id: <20200911132311.M28858@mail.jen-ai.org.tw>
-X-Mailer: OpenWebMail 2.53 
-X-OriginatingIP: 197.210.70.234 (j1650)
+        Fri, 11 Sep 2020 11:52:41 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0AAC0617A2
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:52:42 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g10so8370385otq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 06:52:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nzmY8qHBC7Hn4hT/mqduo9xIcqJb48H8H8bYW2+kdKs=;
+        b=BX0LOotVaYOnKN4OT6XmK+cMBT1CxWmFzPpGGk1mY5LWvunLEszBuF8rCp+wK3bbsg
+         JB6Ceqrdxgab2ORWCFl63fFW+c0flSFFwAmetVwEYcIFHW+SKIj+V//cxLKgQnk56png
+         O5njrWf9XoUCdd2ECAo+ygPmlXqPGhghoCHphtBTAIAr4dsAN0hHNtoz3O0BzKx7r3Ap
+         ZPpmNl//tbXnoWHkCx5DeUG6ELFCT7QQAB02gukcUyhFZsdvwO45O08zRsQxlNOVW+uj
+         8O5KFwFX/IwZ+2pHyC4JLncr2Rrh1WnET/yEi+8AYneoUXgSWHS8bVkb+AjK5N1+2Mjx
+         it+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nzmY8qHBC7Hn4hT/mqduo9xIcqJb48H8H8bYW2+kdKs=;
+        b=jDGlZQP7uo1OI7rMj3bXerxQgZJaGvsU5FW01gAsXzEmXnOyf/+uSlF9iISoJ9oNVH
+         akupcCVoQ9nGGZEK55825UPSZtUb/9q3ops3jp+EI3HjEe9uW6fFxXFX8UgHaYxksbOm
+         cZfFAeX87LqTZxAPM8yTDwuFXk5gXJVQiJCm+Lr7aqJMzAvBgmpFPYZopO92OvymE7xI
+         kTfUEB675ELGn5p3Ixut3AMDmeoN7YAG074wZN1r51DpJlKXs6agn1SB/WG3bX7QrW/w
+         VM/TrFKep+pVHdlm5iYmNjF1Cf+7g68CyiWjshmFsCvzIn+EUdnYrowlw5Mc9I0H2wdf
+         fXCQ==
+X-Gm-Message-State: AOAM533p4mtoAm1/YXmjGGBWBhGK39zh6KdkHA7HhMJb5tr9Zl1ohiFl
+        /DDHwaXfdpTno7uuYTT9E729bw==
+X-Google-Smtp-Source: ABdhPJxY+os+5x0DwAanxGsJ38K45dys4bD8AAAM2cMbDKFwfx8nSxclD9cDMJzBOUbOwthuqItxBg==
+X-Received: by 2002:a9d:5a91:: with SMTP id w17mr1295437oth.345.1599832355866;
+        Fri, 11 Sep 2020 06:52:35 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id p20sm411734ook.27.2020.09.11.06.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 06:52:35 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 08:52:32 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     skakit@codeaurora.org
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>,
+        msavaliy@qti.qualcomm.com
+Subject: Re: [PATCH V5 2/4] arm64: dts: qcom: sc7180: Add necessary pinctrl
+ and interrupt config for BT UART
+Message-ID: <20200911135232.GY3715@yoga>
+References: <1599742438-16811-1-git-send-email-skakit@codeaurora.org>
+ <1599742438-16811-3-git-send-email-skakit@codeaurora.org>
+ <CAD=FV=ULJqgHutr524wb-wVq4gejqo1p_zqRXP=h4Co6Gvmzew@mail.gmail.com>
+ <010101747ca94cce-42d129fa-0374-4f12-aab8-2ccafd02b3c7-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset=big5
-To:     undisclosed-recipients:;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <010101747ca94cce-42d129fa-0374-4f12-aab8-2ccafd02b3c7-000000@us-west-2.amazonses.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Malayan Banking Berhad (MAYBANK)
-Kampung Bandarshah,
-93400 Kuching,
-Sarawak,
-Malaysia.
+On Fri 11 Sep 05:15 CDT 2020, skakit@codeaurora.org wrote:
 
-Good day customer,
+> On 2020-09-10 20:10, Doug Anderson wrote:
+> > Hi,
+> > 
+> > On Thu, Sep 10, 2020 at 5:55 AM satya priya <skakit@codeaurora.org>
+> > wrote:
+> > > 
+> > > Add a suitable sleep configuration for uart3 to support Bluetooth
+> > > wakeup.
+> > > 
+> > > If QUP function is selected in sleep state, UART RTS/RFR is pulled
+> > > high
+> > > during suspend and BT SoC not able to send wakeup bytes. So, configure
+> > > GPIO mode in sleep state to keep it low during suspend.
+> > > 
+> > > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > > Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> > > ---
+> > > Changes in V2:
+> > >  - This patch adds sleep state for BT UART. Newly added in V2.
+> > > 
+> > > Changes in V3:
+> > >  - Remove "output-high" for TX from both sleep and default states
+> > >    as it is not required. Configure pull-up for TX in sleep state.
+> > > 
+> > > Changes in V4:
+> > >  - As per Matthias's comment, removed drive-strength for sleep state
+> > >    and fixed nit-pick.
+> > > 
+> > > Changes in V5:
+> > >  - As per Matthias's comments, moved pinmux change for sleep state,
+> > >    pinctrl and interrupt config to the board specific file.
+> > > 
+> > >  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 48
+> > > +++++++++++++++++++++++++++++++++
+> > >  1 file changed, 48 insertions(+)
+> > 
+> > Similar comment to patch #1 in that this applies only to the IDP board
+> > but that's not obvious from ${SUBJECT}
+> > 
+> 
+> Okay.
+> 
+> > 
+> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > > b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > > index 04888df..e529a41 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > > +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > > @@ -344,6 +344,10 @@
+> > >  };
+> > > 
+> > >  &uart3 {
+> > > +       pinctrl-names = "default", "sleep";
+> > > +       pinctrl-1 = <&qup_uart3_sleep>;
+> > > +       interrupts-extended = <&intc GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
+> > > +                               <&tlmm 41 IRQ_TYPE_EDGE_FALLING>;
+> > 
+> > You need a:
+> > 
+> > /delete-property/interrupts;
+> > 
+> > ...or, alternatively, a patch before this one that converts all the
+> > UARTs in sc7180 to just use interrupts-extended.
+> > 
+> 
+> Sure, I will add this. But I think when both are added,
+> "interrupts-extended" will get priority as per [1] and there wouldn't be any
+> problem.
+> 
 
-We the management and staff of Maybank Berhad is informing you about your
-Telekom Malaysia Berhad pending funds transfer of RM 270,000 which crediting
-status is 98% and your attention is needed urgently so as enable you
-successfully receive your gift in your bank account.
+You're indeed correct, please stick with what you have.
 
-In regards to your funds transfer process we need instant confirmation from
-you before we proceed with the final step that leads to the crediting of your
-funds to your personal bank account and we want you to act fast and make sure
-you follow up with this final process in other for you to receive your
-pending funds.
+Regards,
+Bjorn
 
-All you need to do is to confirm your bank account details correctly and make
-sure there is no mistake because we are doing direct bank in to your bank
-account which is cash deposit because we noticed for more than a year you
-haven't receive your gift in your bank account and this is why we are trying
-our very best to make sure you receive it this time.
-
-Provide the details correctly;
-
-Bank Account Name:
-Bank Name:
-Account Number:
-Phone Number:
-
-As soon as we receive your details we will proceed with instant bank transfer
-of your funds RM 270,000 to your personal bank account and once we have
-successfully deposited your funds in your bank account, we will send the copy
-of deposit slip to you and also send an SMS to your phone for you to confirm
-and check if you have receive your gift in your bank account.
-
-I want you to also know that if there is any fee you have spent in the past
-it will also be added to your gift sum of RM 270,000 as both will be
-deposited into your bank account. Bear it in mind that cash deposit at the
-bank counter do not require any charges because it's direct hand to hand cash
-deposit.
-
-All you have to provide will be for the security keeping fee and that is the
-only fee you will have to pay and the amount will be mentioned as soon as you
-reply back to this email.
-
-Get back to us with the required details and do not be afraid because this is
-not a scam and also you do not have to pay any charges for this cash deposit
-process.
-
-Thanks for your time reading this email as i await your reply shortly.
-
-Datuk Abdul Farid Alias
-Chief Executive Officer (CEO)
-Whatsapp: 01135016449
-MAYBANK
-Kuching, Sarawak.
+> [1] https://www.kernel.org/doc/Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+> 
+> > 
+> > >         status = "okay";
+> > 
+> > Slight nit is that usually I see the status line first.  All the other
+> > instances in this file have it that way.  Can you match?
+> > 
+> 
+> Ok, will correct it.
+> 
+> > 
+> > 
+> > 
+> > -Doug
