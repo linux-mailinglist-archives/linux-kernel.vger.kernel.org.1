@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3CB2675CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AF22675C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgIKWUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 18:20:18 -0400
-Received: from mga05.intel.com ([192.55.52.43]:21776 "EHLO mga05.intel.com"
+        id S1725906AbgIKWUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:20:01 -0400
+Received: from mga07.intel.com ([134.134.136.100]:16361 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725887AbgIKWT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 18:19:57 -0400
-IronPort-SDR: MENACvQq7MeSA5yA1r0aa+Ha30tNdZsPEuATySo5IQnfRwwIKedLgVeitmvPnHdz0LnmjVmIze
- sPpL/QavCf/w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="243688141"
+        id S1725883AbgIKWTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 18:19:55 -0400
+IronPort-SDR: e3hFCevxzdyqtTMUL+TYKqLMZWFZKo7uBff9NX/ofIgDfI4H+nwxC0GhAS6K4opP98z/oD4nqr
+ sHA/LkQ/cNsQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="223050587"
 X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
-   d="scan'208";a="243688141"
+   d="scan'208";a="223050587"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 15:19:53 -0700
-IronPort-SDR: FGVxPQWEe7QSSMY87rMn6CXZaH9HHfIWsKn2HCTnO7g8GX+WVY6zMMZByG0UvPtryEcn1dcT3e
- cfmUaaxmrjPA==
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 15:19:53 -0700
+IronPort-SDR: ZfRzk4QYNLFsZrAfpQjNUzSsXnoqiOPtK2+t8otn2199WsIADUL/r5AbUoKEOA0zHm5LD2JIAn
+ OS7y5CX6kL5Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,417,1592895600"; 
-   d="scan'208";a="337624399"
+   d="scan'208";a="505641810"
 Received: from lkp-server01.sh.intel.com (HELO a75722977aa5) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Sep 2020 15:19:52 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 11 Sep 2020 15:19:52 -0700
 Received: from kbuild by a75722977aa5 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kGrOZ-0000OG-Kv; Fri, 11 Sep 2020 22:19:51 +0000
-Date:   Sat, 12 Sep 2020 06:19:42 +0800
+        id 1kGrOZ-0000OD-Ip; Fri, 11 Sep 2020 22:19:51 +0000
+Date:   Sat, 12 Sep 2020 06:19:45 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- e2def7d49d0812ea40a224161b2001b2e815dce2
-Message-ID: <5f5bf7fe.dchg1T3uszaX4hPj%lkp@intel.com>
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 33b4711df4c1b3aec7c267c60fc24abccfadd40c
+Message-ID: <5f5bf801.yYY7phtvlDN/JbfC%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,13 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  ras/core
-branch HEAD: e2def7d49d0812ea40a224161b2001b2e815dce2  x86/mce: Make mce_rdmsrl() panic on an inaccessible MSR
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cpu
+branch HEAD: 33b4711df4c1b3aec7c267c60fc24abccfadd40c  x86/cpu/centaur: Add Centaur family >=7 CPUs initialization support
 
 elapsed time: 723m
 
-configs tested: 131
-configs skipped: 2
+configs tested: 123
+configs skipped: 60
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -88,10 +88,6 @@ powerpc                      ppc64e_defconfig
 sparc                       sparc64_defconfig
 arm                            hisi_defconfig
 arm                     am200epdkit_defconfig
-mips                        maltaup_defconfig
-arc                            hsdk_defconfig
-m68k                        m5272c3_defconfig
-m68k                          multi_defconfig
 sh                          r7780mp_defconfig
 arm                          prima2_defconfig
 arm64                            alldefconfig
@@ -99,6 +95,7 @@ m68k                         amcore_defconfig
 mips                        bcm47xx_defconfig
 sh                              ul2_defconfig
 arc                        vdk_hs38_defconfig
+arc                            hsdk_defconfig
 powerpc                        icon_defconfig
 powerpc                      ppc44x_defconfig
 powerpc                 mpc85xx_cds_defconfig
@@ -114,11 +111,6 @@ c6x                        evmc6472_defconfig
 powerpc                      pmac32_defconfig
 sh                           se7722_defconfig
 powerpc64                           defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     taishan_defconfig
-mips                      loongson3_defconfig
-microblaze                    nommu_defconfig
-arc                          axs103_defconfig
 powerpc                 mpc836x_rdk_defconfig
 m68k                       m5249evb_defconfig
 riscv                          rv32_defconfig
