@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A7826630B
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68C2266321
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgIKQJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        id S1726662AbgIKQLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbgIKQJZ (ORCPT
+        with ESMTP id S1726657AbgIKQKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 12:09:25 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22CDC061573;
-        Fri, 11 Sep 2020 09:09:24 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a17so12024196wrn.6;
-        Fri, 11 Sep 2020 09:09:24 -0700 (PDT)
+        Fri, 11 Sep 2020 12:10:54 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2DAC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:10:53 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id b79so5298255wmb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 09:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=kF3M0VHm/sZfXwfpUGn8gtMPq/WOXn1La3E2HQo2qRw=;
-        b=VCEJZlPMh5mA2vGW4gRyTeLdCCDcyrkFNhS12DFsiIl5+rolnD1UiT/mAe/4gP7jGr
-         hnVn0ci+b+dRkWITbUWPh8EFNvFUcOA0l0zDpSyh8Wj/2nmwtzL1ZWIGNrVtWcEvxakh
-         a3ImdXgytvz4ocdSnmjHVdzakdA0AZ8z3VOzMmnPvtVocpDiuFowH/JOSsS2IUixcwIf
-         VkNZzuEqwOyRY8bEwRe7npCOZIi0B5gkRLVJHBXHvh672gZY4rBLjX60FwG+dPQDc5v5
-         9IfIsRl9P7cNxzO7dpoFS3D8XP5QC+UqO0IYMARNteCcKjSUgoFQUuiWZdV8zsg9ypNZ
-         X2eg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DbxEUQps6vESScXmyaIzM2lV4nvnmCDf4+bKC4mI+8E=;
+        b=QhEUrtgWKj+fZDMyKLwE/BKdNRzvaTQpARmk62ty0kGcVZPcAPywlm22mc9BY1YG2B
+         naOPmTBAF/1xl/fT0oV4GdOE67fzk7jmY3lvaE51nNC69qu9CLGLN8DA8nnA+9ifurXo
+         geXkXHDs/iwILRS0Lzr1OIGz/k1sFbuM45shEKHEjPHiKkhzKj0a53sglfQ+fKH1kjpv
+         4AHTDdt/P4cydao/Lj/hy09u8HvDO982rfjxJfMS54mW6LG4WyGuwx618Hx/kR61E+z1
+         ba7Mbo+1qhX1OOYxxWYCefHJwf71oQXGwvjanwXQajdTADvqIc4Q8XCkOpxDlJcgDxUZ
+         JvyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=kF3M0VHm/sZfXwfpUGn8gtMPq/WOXn1La3E2HQo2qRw=;
-        b=GDNefyjaofVl6H4mFXkSfa9USG9uhDH0qV2cMEQE0Zq0iob9zLnNKKmWj02G3miRK7
-         34cAyw2U1c/rC8yGaW02h+eaB1ul126UN2WJh13iMMWes2HxdKoFLZ1+smsHOa6avzbt
-         EXG27BHkfRv7crJqEo3ruOdFb+dJDoP8xXIxbwvTlbubuL2xc6AL6KeJqHB7YQcZZ9BK
-         7HeNh0WuxXURkhqQ/lAwhuMEDyiy3gmh4Xc4lFZEuQB2oNlEmDkNYZnBGZigUFre6j9b
-         EsGlznvRYBvtCrhePrHI5JbfJHbOfdb/ZVHW2BfogXIGaLDZcsRl6EEB9w4v8dFG7+os
-         hXWQ==
-X-Gm-Message-State: AOAM5336yXgxMYZ05JXtpEFj7TfObdjA1x/MwqHVEEppJIDj76FHadaH
-        pQJpSHZr6qBk7xsibUpP69TcWk36JXc7PIDm
-X-Google-Smtp-Source: ABdhPJwPSqvu2enCOLMILSViYbHAZKMDV0Qz699kBYQoxBPTIngm0AbKoSXr+gpWwdsHqKjeKG5nBA==
-X-Received: by 2002:a5d:53d1:: with SMTP id a17mr2638483wrw.98.1599840562399;
-        Fri, 11 Sep 2020 09:09:22 -0700 (PDT)
-Received: from [192.168.0.18] (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id b187sm5244540wmb.8.2020.09.11.09.09.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 09:09:21 -0700 (PDT)
-Subject: Re: [PATCH] security: keys: Use kvfree_sensitive in a few places
-To:     efremov@linux.com
-Cc:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200911114400.82207-1-alex.dewar90@gmail.com>
- <f97076d2-de8a-4600-ee81-4cf4fcdc3ec1@linux.com>
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Message-ID: <f0ac74e6-6e33-e736-494c-001e85327fdb@gmail.com>
-Date:   Fri, 11 Sep 2020 17:09:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DbxEUQps6vESScXmyaIzM2lV4nvnmCDf4+bKC4mI+8E=;
+        b=cvBWuFJzFkHB85tDJWb51Rl03gpXQ3DMKIOvbQw7dBUi+NbROhuslHJICFkj8zV5wL
+         MKvx1brWi+hJ7NnovL7pT4dYyUodEBB7SdZyKpPm1lZOnIDDl1NxKrKr+zHA2RaMUiiC
+         Sw0n8n3yGXFJViYA+VLruu2wuqhI97BgCBbFHIhrmH712vND+6MZ9qj7mkFbUZhw/r7X
+         biLFv+JHyz8AcZIFHSJ7u5vT+Jy/REO9pVlG3TXw+TvJA10zf2mDplSqI0a3es25GU0R
+         tN/bT3rj+rD/XkTEk4FYNZZTvtzE1Elk4V6UZoHGMJgE7C0WRkIjRLcXKC5rfUbvlx5m
+         5LJQ==
+X-Gm-Message-State: AOAM533Qjwh06lzHmdIgKdqn8SjQQGjG6Cg2alh2g6QHlrEdt0jy/ze4
+        h24ykkcJZf1obBvOxu1R4yzDMFk0q6M6DY4tHGTR2w==
+X-Google-Smtp-Source: ABdhPJwpsy55MicdcbSdsk7lZoPbb7vZsk90rfIo7W28Aj3HC04QgM46znERfjCsfJQ+KWY8OwY9zlQuMuRiAaiBGyc=
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr2898135wmh.152.1599840652329;
+ Fri, 11 Sep 2020 09:10:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f97076d2-de8a-4600-ee81-4cf4fcdc3ec1@linux.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+In-Reply-To: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Fri, 11 Sep 2020 21:40:16 +0530
+Message-ID: <CAMi1Hd2CFjQLoXTSuo9wUWWO-hNvuvZr_PffS1NfgP-6agWDOA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] iommu/arm-smmu: Support maintaining bootloader mappings
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu <iommu@lists.linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-11 17:05, Denis Efremov wrote:
-> Hi,
+On Fri, 4 Sep 2020 at 21:25, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
 >
-> same patch
+> Based on previous attempts and discussions this is the latest attempt at
+> inheriting stream mappings set up by the bootloader, for e.g. boot splash or
+> efifb.
 >
-> https://lkml.org/lkml/2020/8/27/168
+> Per Will's request this builds on the work by Jordan and Rob for the Adreno
+> SMMU support. It applies cleanly ontop of v16 of their series, which can be
+> found at
+> https://lore.kernel.org/linux-arm-msm/20200901164707.2645413-1-robdclark@gmail.com/
 >
-> Thanks,
-> Denis
-Ah ok. Sorry for the noise!
->
-> On 9/11/20 2:44 PM, Alex Dewar wrote:
->> In big_key.c, there are a few places where memzero_explicit + kvfree is
->> used. It is better to use kvfree_sensitive instead, which is more
->> readable and also prevents the compiler from eliding the call to
->> memzero_explicit. Fix this.
->>
->> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> ---
->>   security/keys/big_key.c | 9 +++------
->>   1 file changed, 3 insertions(+), 6 deletions(-)
->>
->> diff --git a/security/keys/big_key.c b/security/keys/big_key.c
->> index 691347dea3c1..d17e5f09eeb8 100644
->> --- a/security/keys/big_key.c
->> +++ b/security/keys/big_key.c
->> @@ -121,8 +121,7 @@ int big_key_preparse(struct key_preparsed_payload *prep)
->>   		*path = file->f_path;
->>   		path_get(path);
->>   		fput(file);
->> -		memzero_explicit(buf, enclen);
->> -		kvfree(buf);
->> +		kvfree_sensitive(buf, enclen);
->>   	} else {
->>   		/* Just store the data in a buffer */
->>   		void *data = kmalloc(datalen, GFP_KERNEL);
->> @@ -140,8 +139,7 @@ int big_key_preparse(struct key_preparsed_payload *prep)
->>   err_enckey:
->>   	kfree_sensitive(enckey);
->>   error:
->> -	memzero_explicit(buf, enclen);
->> -	kvfree(buf);
->> +	kvfree_sensitive(buf, enclen);
->>   	return ret;
->>   }
->>   
->> @@ -273,8 +271,7 @@ long big_key_read(const struct key *key, char *buffer, size_t buflen)
->>   err_fput:
->>   		fput(file);
->>   error:
->> -		memzero_explicit(buf, enclen);
->> -		kvfree(buf);
->> +		kvfree_sensitive(buf, enclen);
->>   	} else {
->>   		ret = datalen;
->>   		memcpy(buffer, key->payload.data[big_key_data], datalen);
->>
 
+Boot tested the series on Xiaomi Poco F1 phone (sdm845)
+
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
+
+> Bjorn Andersson (8):
+>   iommu/arm-smmu: Refactor context bank allocation
+>   iommu/arm-smmu: Delay modifying domain during init
+>   iommu/arm-smmu: Consult context bank allocator for identify domains
+>   iommu/arm-smmu-qcom: Emulate bypass by using context banks
+>   iommu/arm-smmu-qcom: Consistently initialize stream mappings
+>   iommu/arm-smmu: Add impl hook for inherit boot mappings
+>   iommu/arm-smmu: Provide helper for allocating identity domain
+>   iommu/arm-smmu-qcom: Setup identity domain for boot mappings
+>
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 111 ++++++++++++++++++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c      | 122 ++++++++++++++-------
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  14 ++-
+>  3 files changed, 205 insertions(+), 42 deletions(-)
+>
+> --
+> 2.28.0
+>
