@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EF8266086
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8C1266051
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 15:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725785AbgIKNnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 09:43:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52804 "EHLO mail.kernel.org"
+        id S1725996AbgIKNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 09:32:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726202AbgIKNFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 11 Sep 2020 09:05:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 094EE22244;
-        Fri, 11 Sep 2020 12:57:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7ECE1223B0;
+        Fri, 11 Sep 2020 12:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829067;
-        bh=WrKfuh3yAbeARMYEHR1js9UP1lzjuhWNQKJKsRGMwbg=;
+        s=default; t=1599829070;
+        bh=GZalELLdj00pJWebLs/+xLJXt9Zukgi9cgkU6nGhhT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pirSo71w2yZIoqOUcuLqses2fxB0OqL2CPPn3InnLvm4kIUyeXsMfep0qDYEUpr/v
-         CoffsopHQvCyqLtOzq5L6PqjCmX2tv8jzLHGqQLr+i/q8ScJ8JmoqqO7qAvTxzQLiR
-         6NRHosyI5FMsoaD3FgqaDjH9K2RsOVQmK/NUooQM=
+        b=Z//DYQdNDuurHdgfxTuud3UryOyz6/8ovJ69dPzeJsc1ufI6igwWXTVFctP+/Tiri
+         QxOv2HUkKVZggYXRK3QksLgVWRGwV0Wxy+ICuFXizpMtRivHhLO0IrK/ROhbHHT7kF
+         fokdlEsZ9RMbN1SVMiwyM2my7lJz8jNN3lzeWJjU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         James Morse <james.morse@arm.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Andre Przywara <andre.przywara@arm.com>
-Subject: [PATCH 4.9 53/71] KVM: arm64: Defer guest entry when an asynchronous exception is pending
-Date:   Fri, 11 Sep 2020 14:46:37 +0200
-Message-Id: <20200911122507.555558810@linuxfoundation.org>
+Subject: [PATCH 4.9 54/71] KVM: arm64: Survive synchronous exceptions caused by AT instructions
+Date:   Fri, 11 Sep 2020 14:46:38 +0200
+Message-Id: <20200911122507.607246851@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
 References: <20200911122504.928931589@linuxfoundation.org>
@@ -46,69 +47,136 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: James Morse <james.morse@arm.com>
 
-commit 5dcd0fdbb492d49dac6bf21c436dfcb5ded0a895 upstream.
+commit 88a84ccccb3966bcc3f309cdb76092a9892c0260 upstream.
 
-SError that occur during world-switch's entry to the guest will be
-accounted to the guest, as the exception is masked until we enter the
-guest... but we want to attribute the SError as precisely as possible.
+KVM doesn't expect any synchronous exceptions when executing, any such
+exception leads to a panic(). AT instructions access the guest page
+tables, and can cause a synchronous external abort to be taken.
 
-Reading DISR_EL1 before guest entry requires free registers, and using
-ESB+DISR_EL1 to consume and read back the ESR would leave KVM holding
-a host SError... We would rather leave the SError pending and let the
-host take it once we exit world-switch. To do this, we need to defer
-guest-entry if an SError is pending.
+The arm-arm is unclear on what should happen if the guest has configured
+the hardware update of the access-flag, and a memory type in TCR_EL1 that
+does not support atomic operations. B2.2.6 "Possible implementation
+restrictions on using atomic instructions" from DDI0487F.a lists
+synchronous external abort as a possible behaviour of atomic instructions
+that target memory that isn't writeback cacheable, but the page table
+walker may behave differently.
 
-Read the ISR to see if SError (or an IRQ) is pending. If so fake an
-exit. Place this check between __guest_enter()'s save of the host
-registers, and restore of the guest's. SError that occur between
-here and the eret into the guest must have affected the guest's
-registers, which we can naturally attribute to the guest.
+Make KVM robust to synchronous exceptions caused by AT instructions.
+Add a get_user() style helper for AT instructions that returns -EFAULT
+if an exception was generated.
 
-The dsb is needed to ensure any previous writes have been done before
-we read ISR_EL1. On systems without the v8.2 RAS extensions this
-doesn't give us anything as we can't contain errors, and the ESR bits
-to describe the severity are all implementation-defined. Replace
-this with a nop for these systems.
+While KVM's version of the exception table mixes synchronous and
+asynchronous exceptions, only one of these can occur at each location.
 
-v4.9-backport: as this kernel version doesn't have the RAS support at
-all, remove the RAS alternative.
+Re-enter the guest when the AT instructions take an exception on the
+assumption the guest will take the same exception. This isn't guaranteed
+to make forward progress, as the AT instructions may always walk the page
+tables, but guest execution may use the translation cached in the TLB.
+
+This isn't a problem, as since commit 5dcd0fdbb492 ("KVM: arm64: Defer guest
+entry when an asynchronous exception is pending"), KVM will return to the
+host to process IRQs allowing the rest of the system to keep running.
 
 Cc: stable@vger.kernel.org # v4.9
 Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-[ James: Removed v8.2 RAS related barriers ]
-Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kvm/hyp/entry.S |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/include/asm/kvm_asm.h |   28 ++++++++++++++++++++++++++++
+ arch/arm64/kvm/hyp/hyp-entry.S   |   12 ++++++++++--
+ arch/arm64/kvm/hyp/switch.c      |    8 ++++----
+ 3 files changed, 42 insertions(+), 6 deletions(-)
 
---- a/arch/arm64/kvm/hyp/entry.S
-+++ b/arch/arm64/kvm/hyp/entry.S
-@@ -17,6 +17,7 @@
+--- a/arch/arm64/include/asm/kvm_asm.h
++++ b/arch/arm64/include/asm/kvm_asm.h
+@@ -82,6 +82,34 @@ extern u32 __init_stage2_translation(voi
+ 		*__hyp_this_cpu_ptr(sym);				\
+ 	 })
  
- #include <linux/linkage.h>
- 
-+#include <asm/alternative.h>
- #include <asm/asm-offsets.h>
- #include <asm/assembler.h>
- #include <asm/fpsimdmacros.h>
-@@ -62,6 +63,15 @@ ENTRY(__guest_enter)
- 	// Store the host regs
- 	save_callee_saved_regs x1
- 
-+	// Now the host state is stored if we have a pending RAS SError it must
-+	// affect the host. If any asynchronous exception is pending we defer
-+	// the guest entry.
-+	mrs	x1, isr_el1
-+	cbz	x1,  1f
-+	mov	x0, #ARM_EXCEPTION_IRQ
-+	ret
++#define __KVM_EXTABLE(from, to)						\
++	"	.pushsection	__kvm_ex_table, \"a\"\n"		\
++	"	.align		3\n"					\
++	"	.long		(" #from " - .), (" #to " - .)\n"	\
++	"	.popsection\n"
 +
-+1:
- 	add	x18, x0, #VCPU_CONTEXT
++
++#define __kvm_at(at_op, addr)						\
++( { 									\
++	int __kvm_at_err = 0;						\
++	u64 spsr, elr;							\
++	asm volatile(							\
++	"	mrs	%1, spsr_el2\n"					\
++	"	mrs	%2, elr_el2\n"					\
++	"1:	at	"at_op", %3\n"					\
++	"	isb\n"							\
++	"	b	9f\n"						\
++	"2:	msr	spsr_el2, %1\n"					\
++	"	msr	elr_el2, %2\n"					\
++	"	mov	%w0, %4\n"					\
++	"9:\n"								\
++	__KVM_EXTABLE(1b, 2b)						\
++	: "+r" (__kvm_at_err), "=&r" (spsr), "=&r" (elr)		\
++	: "r" (addr), "i" (-EFAULT));					\
++	__kvm_at_err;							\
++} )
++
++
+ #else /* __ASSEMBLY__ */
  
- 	// Restore guest regs x0-x17
+ .macro hyp_adr_this_cpu reg, sym, tmp
+--- a/arch/arm64/kvm/hyp/hyp-entry.S
++++ b/arch/arm64/kvm/hyp/hyp-entry.S
+@@ -201,6 +201,15 @@ el1_error:
+ 	mov	x0, #ARM_EXCEPTION_EL1_SERROR
+ 	b	__guest_exit
+ 
++el2_sync:
++	save_caller_saved_regs_vect
++	stp     x29, x30, [sp, #-16]!
++	bl	kvm_unexpected_el2_exception
++	ldp     x29, x30, [sp], #16
++	restore_caller_saved_regs_vect
++
++	eret
++
+ el2_error:
+ 	save_caller_saved_regs_vect
+ 	stp     x29, x30, [sp, #-16]!
+@@ -238,7 +247,6 @@ ENDPROC(\label)
+ 	invalid_vector	el2t_irq_invalid
+ 	invalid_vector	el2t_fiq_invalid
+ 	invalid_vector	el2t_error_invalid
+-	invalid_vector	el2h_sync_invalid
+ 	invalid_vector	el2h_irq_invalid
+ 	invalid_vector	el2h_fiq_invalid
+ 	invalid_vector	el1_sync_invalid
+@@ -255,7 +263,7 @@ ENTRY(__kvm_hyp_vector)
+ 	ventry	el2t_fiq_invalid		// FIQ EL2t
+ 	ventry	el2t_error_invalid		// Error EL2t
+ 
+-	ventry	el2h_sync_invalid		// Synchronous EL2h
++	ventry	el2_sync			// Synchronous EL2h
+ 	ventry	el2h_irq_invalid		// IRQ EL2h
+ 	ventry	el2h_fiq_invalid		// FIQ EL2h
+ 	ventry	el2_error			// Error EL2h
+--- a/arch/arm64/kvm/hyp/switch.c
++++ b/arch/arm64/kvm/hyp/switch.c
+@@ -206,10 +206,10 @@ static bool __hyp_text __translate_far_t
+ 	 * saved the guest context yet, and we may return early...
+ 	 */
+ 	par = read_sysreg(par_el1);
+-	asm volatile("at s1e1r, %0" : : "r" (far));
+-	isb();
+-
+-	tmp = read_sysreg(par_el1);
++	if (!__kvm_at("s1e1r", far))
++		tmp = read_sysreg(par_el1);
++	else
++		tmp = 1; /* back to the guest */
+ 	write_sysreg(par, par_el1);
+ 
+ 	if (unlikely(tmp & 1))
 
 
