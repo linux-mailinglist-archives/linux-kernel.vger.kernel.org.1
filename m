@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69395266549
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED73266445
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgIKQ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:57:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46948 "EHLO mail.kernel.org"
+        id S1726540AbgIKQeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:34:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgIKPFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:05:30 -0400
+        id S1726445AbgIKPPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:15:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C870922249;
-        Fri, 11 Sep 2020 12:58:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9482C223E0;
+        Fri, 11 Sep 2020 12:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599829125;
-        bh=9/wS5bEvxO14rDm9XvJDB9b7N/Md7uB+9PBrpl3OunM=;
+        s=default; t=1599829135;
+        bh=4TZtepcvRkMtB2LjKKBWw+jkZjaqiqtRySt+xi5nguc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0YGcWj4XbqpAdoQ2ngj3J7YkS7c98Q9D/Y2KgWy/mpdFdKvEca4+XmnQfsBgf+ZSG
-         iCmJbONvvzmJTJ5nZd5nsfwsItdKINAMk+X35H+sxWDjn0BnCzr4x/8Ym+yASqg240
-         GLSjlfoi0nAkpD/8pXNUE4/DaCE5LmoHBObHT4Rg=
+        b=MuXSORVe+t0axW+lTYJutYJdKrJTF4+HSHwCVAYh+Y8D3aDY7WBIIJZC67oZoD3aD
+         cf3znsEILhMcxk8xNFg6Eyl+DJmBl/qX8ygImALdK6FZDMd+Khixb5u0u9VIkCXW/H
+         L0rzvCXvd5LPvV5f/JfpUMzNWovdrrHJTLI9sVVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamil Lorenc <kamil@re-ws.pl>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 69/71] net: usb: dm9601: Add USB ID of Keenetic Plus DSL
-Date:   Fri, 11 Sep 2020 14:46:53 +0200
-Message-Id: <20200911122508.385749623@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 01/12] ALSA; firewire-tascam: exclude Tascam FE-8 from detection
+Date:   Fri, 11 Sep 2020 14:46:55 +0200
+Message-Id: <20200911122458.490379101@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
-References: <20200911122504.928931589@linuxfoundation.org>
+In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
+References: <20200911122458.413137406@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,31 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamil Lorenc <kamil@re-ws.pl>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-[ Upstream commit a609d0259183a841621f252e067f40f8cc25d6f6 ]
+Tascam FE-8 is known to support communication by asynchronous transaction
+only. The support can be implemented in userspace application and
+snd-firewire-ctl-services project has the support. However, ALSA
+firewire-tascam driver is bound to the model.
 
-Keenetic Plus DSL is a xDSL modem that uses dm9620 as its USB interface.
+This commit changes device entries so that the model is excluded. In a
+commit 53b3ffee7885 ("ALSA: firewire-tascam: change device probing
+processing"), I addressed to the concern that version field in
+configuration differs depending on installed firmware. However, as long
+as I checked, the version number is fixed. It's safe to return version
+number back to modalias.
 
-Signed-off-by: Kamil Lorenc <kamil@re-ws.pl>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 53b3ffee7885 ("ALSA: firewire-tascam: change device probing processing")
+Cc: <stable@vger.kernel.org> # 4.4+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20200823075537.56255-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/net/usb/dm9601.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/firewire/tascam/tascam.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
---- a/drivers/net/usb/dm9601.c
-+++ b/drivers/net/usb/dm9601.c
-@@ -624,6 +624,10 @@ static const struct usb_device_id produc
- 	 USB_DEVICE(0x0a46, 0x1269),	/* DM9621A USB to Fast Ethernet Adapter */
- 	 .driver_info = (unsigned long)&dm9601_info,
- 	},
-+	{
-+	 USB_DEVICE(0x0586, 0x3427),	/* ZyXEL Keenetic Plus DSL xDSL modem */
-+	 .driver_info = (unsigned long)&dm9601_info,
-+	},
- 	{},			// END
- };
+diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
+index d3fdc463a884e..1e61cdce28952 100644
+--- a/sound/firewire/tascam/tascam.c
++++ b/sound/firewire/tascam/tascam.c
+@@ -225,11 +225,39 @@ static void snd_tscm_remove(struct fw_unit *unit)
+ }
  
+ static const struct ieee1394_device_id snd_tscm_id_table[] = {
++	// Tascam, FW-1884.
+ 	{
+ 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+-			       IEEE1394_MATCH_SPECIFIER_ID,
++			       IEEE1394_MATCH_SPECIFIER_ID |
++			       IEEE1394_MATCH_VERSION,
+ 		.vendor_id = 0x00022e,
+ 		.specifier_id = 0x00022e,
++		.version = 0x800000,
++	},
++	// Tascam, FE-8 (.version = 0x800001)
++	// This kernel module doesn't support FE-8 because the most of features
++	// can be implemented in userspace without any specific support of this
++	// module.
++	//
++	// .version = 0x800002 is unknown.
++	//
++	// Tascam, FW-1082.
++	{
++		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++			       IEEE1394_MATCH_SPECIFIER_ID |
++			       IEEE1394_MATCH_VERSION,
++		.vendor_id = 0x00022e,
++		.specifier_id = 0x00022e,
++		.version = 0x800003,
++	},
++	// Tascam, FW-1804.
++	{
++		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++			       IEEE1394_MATCH_SPECIFIER_ID |
++			       IEEE1394_MATCH_VERSION,
++		.vendor_id = 0x00022e,
++		.specifier_id = 0x00022e,
++		.version = 0x800004,
+ 	},
+ 	/* FE-08 requires reverse-engineering because it just has faders. */
+ 	{}
+-- 
+2.25.1
+
 
 
