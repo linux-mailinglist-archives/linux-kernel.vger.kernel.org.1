@@ -2,73 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D76266966
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABAC26696E
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 22:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725832AbgIKUL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 16:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgIKULY (ORCPT
+        id S1725876AbgIKUNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 16:13:09 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49058 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbgIKUNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 16:11:24 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C0BC061573;
-        Fri, 11 Sep 2020 13:11:24 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id BA2E029BA66
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     peterz@infradead.org
-Cc:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, willy@infradead.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v6 2/9] kernel: entry: Support TIF_SYSCAL_INTERCEPT on common entry code
-Organization: Collabora
-References: <20200904203147.2908430-1-krisman@collabora.com>
-        <20200904203147.2908430-3-krisman@collabora.com>
-        <20200911093549.GE1362448@hirez.programming.kicks-ass.net>
-Date:   Fri, 11 Sep 2020 16:11:19 -0400
-In-Reply-To: <20200911093549.GE1362448@hirez.programming.kicks-ass.net>
-        (peterz@infradead.org's message of "Fri, 11 Sep 2020 11:35:49 +0200")
-Message-ID: <874ko4nkew.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Fri, 11 Sep 2020 16:13:07 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BKA7X3014506;
+        Fri, 11 Sep 2020 20:12:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=RJJA5VIeYEDyLlWxqH87o0yLo3b4m+0xgt6JvxypFdQ=;
+ b=YD2gQHu7lSiJapybCXsLhCgpZK9ro2yjDfqZwk3OdxozfUNdSBSSRhrHxPQl/jZZ9FCg
+ XFHqQfFh+5OhxodNwXwuzizuTOQhbdOoZDLXeWSPw/LeYwQx3kEJxOEMIUOgcWjlpFBX
+ 8oQak2VLFTstPWh72LCWNjxA5p0z428RYdtg3cUJTI45kHG6uU4Pd4oHxNcnUFFgZgkD
+ JYRc7eSvahLEPru7HbzDLbVtKegkYwZb3EtzuY9SfKQLxoSI86ZnKCEV3GS9v2e+oXpV
+ Ts8QM+2XwGnN25nzKVF+UMV65PkuizaVTySSzF1bPiCGVgGvp4090g9s2fRvkZ2GAK1t fA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 33c3ang6y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 11 Sep 2020 20:12:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08BKAUY4191652;
+        Fri, 11 Sep 2020 20:12:54 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 33cmm40qqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Sep 2020 20:12:54 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08BKCrAM029955;
+        Fri, 11 Sep 2020 20:12:53 GMT
+Received: from monkey.oracle.com (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 11 Sep 2020 13:12:52 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH] hugetlb: add lockdep check for i_mmap_rwsem held in huge_pmd_share
+Date:   Fri, 11 Sep 2020 13:12:48 -0700
+Message-Id: <20200911201248.88537-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009110163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ clxscore=1015 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009110163
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-peterz@infradead.org writes:
+As a debugging aid, huge_pmd_share should make sure i_mmap_rwsem is held
+if necessary.  To clarify the 'if necessary', expand the comment block
+at the beginning of huge_pmd_share.
 
-> On Fri, Sep 04, 2020 at 04:31:40PM -0400, Gabriel Krisman Bertazi wrote:
->> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
->> index efebbffcd5cc..72ce9ca860c6 100644
->> --- a/include/linux/entry-common.h
->> +++ b/include/linux/entry-common.h
->> @@ -21,10 +21,6 @@
->>  # define _TIF_SYSCALL_TRACEPOINT	(0)
->>  #endif
->>  
->> -#ifndef _TIF_SECCOMP
->> -# define _TIF_SECCOMP			(0)
->> -#endif
->> -
->>  #ifndef _TIF_SYSCALL_AUDIT
->>  # define _TIF_SYSCALL_AUDIT		(0)
->>  #endif
->
-> Why doesn't this add:
->
-> #ifndef _TIF_SYSCALL_INTERCEPT
-> #define _TIF_SYSCALL_INTERCEPT		(0)
-> #endif
->
+No functional change.  The added i_mmap_assert_locked() call is only
+enabled if CONFIG_LOCKDEP.
 
-I will add in the next version.  Thanks!
+Ideally, this should have been included with commit 34ae204f1851
+("hugetlbfs: remove call to huge_pte_alloc without i_mmap_rwsem").
 
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ mm/hugetlb.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 81a41aa080a5..61469fd3ad92 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5337,10 +5337,16 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+  * !shared pmd case because we can allocate the pmd later as well, it makes the
+  * code much cleaner.
+  *
+- * This routine must be called with i_mmap_rwsem held in at least read mode.
+- * For hugetlbfs, this prevents removal of any page table entries associated
+- * with the address space.  This is important as we are setting up sharing
+- * based on existing page table entries (mappings).
++ * This routine must be called with i_mmap_rwsem held in at least read mode if
++ * sharing is possible.  For hugetlbfs, this prevents removal of any page
++ * table entries associated with the address space.  This is important as we
++ * are setting up sharing based on existing page table entries (mappings).
++ *
++ * NOTE: This routine is only called from huge_pte_alloc.  Some callers of
++ * huge_pte_alloc know that sharing is not possible and do not take
++ * i_mmap_rwsem as a performance optimization.  This is handled by the
++ * if !vma_shareable check at the beginning of the routine. i_mmap_rwsem is
++ * only required for subsequent processing.
+  */
+ pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud)
+ {
+@@ -5357,6 +5363,7 @@ pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud)
+ 	if (!vma_shareable(vma, addr))
+ 		return (pte_t *)pmd_alloc(mm, pud, addr);
+ 
++	i_mmap_assert_locked(mapping);
+ 	vma_interval_tree_foreach(svma, &mapping->i_mmap, idx, idx) {
+ 		if (svma == vma)
+ 			continue;
 -- 
-Gabriel Krisman Bertazi
+2.25.4
+
