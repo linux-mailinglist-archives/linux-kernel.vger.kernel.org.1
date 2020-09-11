@@ -2,125 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911F026690D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7335266916
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 21:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbgIKTkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 15:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgIKTkD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 15:40:03 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D09C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:40:02 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 19so8830780qtp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 12:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BK+tuqq8QDNrIoMgEZ8skJmt+wwLfpOudGjevs6T6M8=;
-        b=pR94XQptn8bYWaLD/i62y0BbH4X2j7wiJqZGlqseUoyJZSGJ0zI0HKYeJ35DMYKrYj
-         WbhjcV6+xwWxfqIPSocDLvuU4le3AHcBTI0Kkw63m7PTGBSfCFh8H4C0gtlUJ6ddWvCd
-         XcdsVVT9YWUzwHhTOFC4l3Lbeao4TtBRlS8AFvOhX/pLbALT6BgXMIp8At2yTcyVWT+X
-         /Gi+2KyTFER9vciFK2XRsy2Nx/3JqByhLTyHCxqiGpqrTEcqOAYJOLnNIo+XUP+DsmVi
-         X10VcO/OtSw+SdWqS+NdVAAiGzoxEsRPjZQhGjyOxN9ZUZUawxj+MaNI5ivGNv9YOJ5y
-         bbyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BK+tuqq8QDNrIoMgEZ8skJmt+wwLfpOudGjevs6T6M8=;
-        b=cau/2PTuLKXb6vnMnkeHxKYYg0c+127lZp1nWUFyowoPlfzoZ/Xrn3I27V5f3Cv9cI
-         xaXHM5nOk7oRI6dtb5t6ha+xs91q7Dk6gnF2QyZekT90zqFPK/Oo3DlsA2wddRUa+wAf
-         BGjvj8TFpJXhvzW1iIy67eTpsShL+VR2vliHmYh384DbB/Co/DxFCu4dnZ2fkw7GW0ND
-         NoYzRnDO4m7BRdBMjqhoq2hghG3EXAe6knjOzkBv67+craD3sc8JpxSETDH5m2a/yGXK
-         J4orNN1MlTm+MtuA35jRF8E6X7PPuUoKRedMGQ8E3/X727QKoZXKsqqEDiZns+3vQd7m
-         dJ8w==
-X-Gm-Message-State: AOAM530mSV5JR2w1DphR+pt7QVwFajr2zdGm19n4KGBxymoJPhehLDUp
-        TGL5jQlozdnDX0HsVyYO0iVy5g==
-X-Google-Smtp-Source: ABdhPJxer3roPhN5O41vGECqY/2AzhDkztmY22iufRFTo4PTGgzF7YR4n8VSHFjV/DPaACcXuMPDOw==
-X-Received: by 2002:ac8:3a06:: with SMTP id w6mr3467667qte.255.1599853201602;
-        Fri, 11 Sep 2020 12:40:01 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id o4sm3733647qkk.75.2020.09.11.12.40.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 12:40:00 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kGots-0059mB-64; Fri, 11 Sep 2020 16:40:00 -0300
-Date:   Fri, 11 Sep 2020 16:40:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Mike Rapoport <rppt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        linux-x86 <x86@kernel.org>,
-        linux-arm <linux-arm-kernel@lists.infradead.org>,
-        linux-power <linuxppc-dev@lists.ozlabs.org>,
-        linux-sparc <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [PATCH] mm/gup: fix gup_fast with dynamic page table folding
-Message-ID: <20200911194000.GB1221970@ziepe.ca>
-References: <20200911070939.GB1362448@hirez.programming.kicks-ass.net>
- <patch.git-2c4880212370.your-ad-here.call-01599849957-ext-4686@work.hours>
+        id S1725822AbgIKTnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 15:43:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725779AbgIKTnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 15:43:40 -0400
+Received: from localhost (p54b331d7.dip0.t-ipconnect.de [84.179.49.215])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8518921D6C;
+        Fri, 11 Sep 2020 19:43:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599853420;
+        bh=2fV5YPRAOsv2GDWDbhx3RjScHFIk8rHvyfwRHv5CKIQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EhL38Cr0cMvh+csxo8gz5+VHg8Vc+7P+i1OPJimC2lnlmluD0Jjm/jqgbq2s3TYDS
+         QKH3u50sKTDqM0pPtf8JPwZoyEqCJtBtc3kBsB2Nf7EIHmkGNYrQvxKOXVUjxo9oJe
+         00R7UGUICw7hNarJstPdcBIngxtybFPf5rhW6ebA=
+Date:   Fri, 11 Sep 2020 21:43:36 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for v5.9
+Message-ID: <20200911194333.GA2270@ninjato>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ew6BAiZeqk4r7MaW"
 Content-Disposition: inline
-In-Reply-To: <patch.git-2c4880212370.your-ad-here.call-01599849957-ext-4686@work.hours>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 09:03:06PM +0200, Vasily Gorbik wrote:
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index e8cbc2e795d5..e899d3506671 100644
-> +++ b/include/linux/pgtable.h
-> @@ -1427,6 +1427,16 @@ typedef unsigned int pgtbl_mod_mask;
->  #define mm_pmd_folded(mm)	__is_defined(__PAGETABLE_PMD_FOLDED)
->  #endif
->  
-> +#ifndef p4d_offset_lockless
-> +#define p4d_offset_lockless(pgdp, pgd, address) p4d_offset(&pgd, address)
-> +#endif
-> +#ifndef pud_offset_lockless
-> +#define pud_offset_lockless(p4dp, p4d, address) pud_offset(&p4d, address)
-> +#endif
-> +#ifndef pmd_offset_lockless
-> +#define pmd_offset_lockless(pudp, pud, address) pmd_offset(&pud, address)
 
-Needs brackets: &(pgd) 
+--ew6BAiZeqk4r7MaW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-These would probably be better as static inlines though, as only s390
-compiles will type check pudp like this.
+Linus,
 
-Jason
+here are some "usual" driver bugfixes for the I2C subsystem.
+
+Please pull.
+
+Thanks,
+
+   Wolfram
+
+
+The following changes since commit f4d51dffc6c01a9e94650d95ce0104964f8ae822:
+
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+
+for you to fetch changes up to 0a355aeb24081e4538d4d424cd189f16c0bbd983:
+
+  i2c: algo: pca: Reapply i2c bus settings after reset (2020-09-09 10:22:40 +0200)
+
+----------------------------------------------------------------
+Evan Nimmo (1):
+      i2c: algo: pca: Reapply i2c bus settings after reset
+
+Tali Perry (1):
+      i2c: npcm7xx: Fix timeout calculation
+
+Vadym Kochan (1):
+      misc: eeprom: at24: register nvmem only after eeprom is ready to use
+
+Wolfram Sang (1):
+      Merge tag 'at24-fixes-for-v5.9-rc5' of git://git.kernel.org/.../brgl/linux into i2c/for-current
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Alex Qiu (1):
+      (Rev.) i2c: npcm7xx: Fix timeout calculation
+
+Andy Shevchenko (1):
+      (Rev.) i2c: algo: pca: Reapply i2c bus settings after reset
+
+Avi Fishman (1):
+      (Rev.) i2c: npcm7xx: Fix timeout calculation
+
+Chris Packham (1):
+      (Rev.) i2c: algo: pca: Reapply i2c bus settings after reset
+
+Joel Stanley (1):
+      (Rev.) i2c: npcm7xx: Fix timeout calculation
+
+ drivers/i2c/algos/i2c-algo-pca.c | 35 +++++++++++++++++++++++------------
+ drivers/i2c/busses/i2c-npcm7xx.c |  8 ++++++--
+ drivers/misc/eeprom/at24.c       | 11 +++++++----
+ include/linux/i2c-algo-pca.h     | 15 +++++++++++++++
+ 4 files changed, 51 insertions(+), 18 deletions(-)
+
+--ew6BAiZeqk4r7MaW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9b02AACgkQFA3kzBSg
+KbYNchAAre/GnSj7dj3q8R7u/Dcp0nrqO2FGlr+IJu8kWa6+NX+PwQceNBYcUHgY
+nLaRUjnEyHW8skOoXPI7ruj0eYE0h1a3k0Ka5q7dSa+jcZg9/BQ0eWjLApK7Zoy2
+7SNZonDAJxWO7Mqe9Vi69e6Cu0ofd2NyXTVv71SIbwhOQkipWRcQ8fZaOEZTo5p8
+uPL/yLlzeyki5hQTtK9vfYxdENidMkGtYuahBc0ONPs61zeeR0IKD31IX99HFSDi
+HC2F+2qb35ezM8UKI4PLBKqD3msQkaoUXjvhmOW6DOwluG22vxsq4LK47QqA3IbB
+oZV9EpKpPgYnqhHmP5+P6Al1E5EZpBkM9r6V5Nt9AoCWLsy2jfGwFil9/I6nklwy
+2FO+8Iv9Ql73CaPyZwTnenPpZ1Jd6JNVLDbQEUYwHdEQSdy8+vlKUyacba9Y8u00
+Yisdi6Uyd+73lpf89SFJ147GVRSrBqEhhnkK7HL0tOUGeH90yMr73wfC3LYpq4jT
+eLmn7NmA01aMchDsNSX/nZjIh/oDcOuAjByz38a3ZAE4n/G4pHhp6IChSDrzcu+B
+kQokZ/sTkZbTl0wu8HamkqdKzgo4gVuEHXt3nGSHm8jtFUD4ht7SsSAFsrWV2pQc
+0A5vxsTZzNOlWpR94/hsNNugBYK5Q3CB1jULbPRQPyCXLwktjyk=
+=FNUA
+-----END PGP SIGNATURE-----
+
+--ew6BAiZeqk4r7MaW--
