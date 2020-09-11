@@ -2,167 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82803266A7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 23:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6CE266AB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 00:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725895AbgIKV7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 17:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
+        id S1725919AbgIKWAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 18:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgIKV7N (ORCPT
+        with ESMTP id S1725846AbgIKWAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 17:59:13 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E965C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:59:12 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id p65so9134806qtd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 14:59:12 -0700 (PDT)
+        Fri, 11 Sep 2020 18:00:35 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4147FC061573;
+        Fri, 11 Sep 2020 15:00:34 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id n25so13689943ljj.4;
+        Fri, 11 Sep 2020 15:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=jr65qAjWonZpJu277jcIQGXrj5NFYpjfdQGASbMcApw=;
-        b=PAx0hw+t/3ZbaZRgRxQmmfoZPvYgr6k/2qKOgxpqH4bRcPJY/OsTDUEcJaX9XFUITc
-         JeT4Ba/PqCySsufq3RG7YDNQCSbbvDDo6xgTx3YV/Sb6aajkWBHTWurvTJAyifNNR6ZN
-         XNoxCtzEv0bCfwsSJnsIcUoNtStX3MDBCrPRvQAtkYN4OIN82H7r6QT62GfVCJ31Lksg
-         bbf+0jLWHSk0n1eZlz/Ag+bSz+3lUyNGTgUoS8c7d/NIqsJ0AAL+QlHvCF7dOk6p4Ufw
-         NY0RBINgQ39tCILagkNBI2uilbB4GvQm67qVRW3SdqPHJjvp1Ca5WwyrgHn7k1DhWEh9
-         l7Jw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aEgWM0r5trDxYSVZugmm4kVCes2l5cIV/KtzSzEdKs8=;
+        b=QPThOWpmoTeN+/VzCdTyY2AxRP6XR0kodivTJH9kX/DHLx6SugAlfBl4MWNjOPaF9a
+         Ktn1m/LB4CMHl1xZHwZa94fO3G64zhkne/UeAFVxnAVkGFVwSDMYFLcPsNp9TXtH9OWC
+         Jo3nIskbIqjz0Vxqms4AXMVEd2C+yMyrpiU56GqSBx1g9MR0WHIIVWZYt/6PRJBJpvd1
+         348OAGUifELBi6bRfxBh5KF1N+2lTrn2ryU5v+48Kr5DAxmrL9NlqYzlKksLG+aP/dL5
+         +zBlG+WedPkBmukpTrMDN5J8W8Qp/dT9cj9OMFuFw6wN2YuYMb7Imhj9xGbnDpGkVRql
+         Sn3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=jr65qAjWonZpJu277jcIQGXrj5NFYpjfdQGASbMcApw=;
-        b=inCG1PRP3z1ZbtA/3MZ2YIqIHC9gXb7p5+wCZOnc0rns1wBPhcI/D9RVykE36meh9N
-         sSPNn0h7QW38vrXzDb+Ce0vdUtDheevdgQvWgtnVHNFIq4i0aXS0i/nqkmDUDJAGl4Io
-         e2dSqF+DK7qOanOwAgfwi0QFcciGhXamOMdMDmZvFcIV0u4bdDKYwK+7gsT2SU1t1uYp
-         gdT9gXk59iiSQaX1fNfRDzk50Rvwbq4V1e+U6QWC7f9EWvLxj1dpvlzycCUBFgmURClb
-         M0ivbqYaWSdu+HpsuY7jBxEsVqYvSj83+IqAbwDLO6KzrQk364k0dRzHn2nhLQBu5LDO
-         n4dQ==
-X-Gm-Message-State: AOAM533O3DkhLBz+PwCkAUsYTjjM3BwMb5wa8kxyfCh3g+iYynd8iuNv
-        /5yGcQg8/EHF+JuE3t4VwjgPsg==
-X-Google-Smtp-Source: ABdhPJxPk5RFqrR9QQcqLJxvQh6Sqt4bPDD6YaFxC44pQGWIaDaLN1dbWKvZdqVt/swblfgxnvNzDg==
-X-Received: by 2002:aed:3e0e:: with SMTP id l14mr4123228qtf.150.1599861550657;
-        Fri, 11 Sep 2020 14:59:10 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id p129sm4183033qkc.43.2020.09.11.14.59.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aEgWM0r5trDxYSVZugmm4kVCes2l5cIV/KtzSzEdKs8=;
+        b=DJX7PA8LxcrhzVMBIbXTrJME5DrMStmZa8eJwS02VESkuX/6pVs/zlINvcPbX0cjjy
+         mpqFNisDR1fdmBjrFIXywfGcGybFfxhS4mnCXFaM7fNaodCH/9IT8XMdPPkrvKD1YIpE
+         lqk8l8rJKu4zX5rGait783vkR8yrtBPl3ZFOmR59XFSNUPa0lzTLolOOpRIAmoZKfK5F
+         +nqGUxnwkNpcLtpCjKdNda3hpYUpIZuQcP3mF/Q2cCzG81p6BP7jGep03TVFfH5+ESmA
+         yI4qp8zXb9UFkIFlYaZ6ulmDqBkOq9ExvA0t2yHGdpVxFISfavSMkx3njyQDt/e+maLn
+         PBmA==
+X-Gm-Message-State: AOAM531LvDrn4MDh81hQzwccNX3tn1yczv9+RL/cb63TGsKJ9/S6jkCh
+        B28FBPgTJl0VjRRiwECY6kw=
+X-Google-Smtp-Source: ABdhPJwaQ1zNtGFUUMSerl15iT5BaTZTabcPeauEEEe3mqogKMt0WDbzttjo9xpMC0WWtzByMd1DJQ==
+X-Received: by 2002:a2e:92cb:: with SMTP id k11mr1438939ljh.163.1599861630076;
+        Fri, 11 Sep 2020 15:00:30 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
+        by smtp.gmail.com with ESMTPSA id k10sm688507lja.112.2020.09.11.15.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 14:59:10 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:59:04 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     viro@zeniv.linux.org.uk
-Cc:     torvalds@linux-foundation.org, vgoyal@redhat.com,
-        miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: slab-out-of-bounds in iov_iter_revert()
-Message-ID: <20200911215903.GA16973@lca.pw>
+        Fri, 11 Sep 2020 15:00:29 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Jerin Jacob <jerinj@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH net-next] octeontx2-af: Constify npc_kpu_profile_{action,cam}
+Date:   Sat, 12 Sep 2020 00:00:15 +0200
+Message-Id: <20200911220015.41830-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Super easy to reproduce on today's mainline by just fuzzing for a few minutes
-on virtiofs (if it ever matters). Any thoughts?
+These are never modified, so constify them to allow the compiler to
+place them in read-only memory. This moves about 25kB to read-only
+memory as seen by the output of the size command.
 
-[  511.089112] BUG: KASAN: slab-out-of-bounds in iov_iter_revert+0xd8/0x3c0
-iov_iter_revert at lib/iov_iter.c:1135
-(inlined by) iov_iter_revert at lib/iov_iter.c:1080
-[  511.092650] Read of size 8 at addr ffff88869e11dff8 by task trinity-c1/11868
-[  511.096178] 
-[  511.096897] CPU: 20 PID: 11868 Comm: trinity-c1 Not tainted 5.9.0-rc4+ #1
-[  511.100257] Hardware name: Red Hat KVM, BIOS 1.14.0-1.module+el8.3.0+7638+07cf13d2 04/01/2014
-[  511.103999] Call Trace:
-[  511.105002]  dump_stack+0x7c/0xb0
-[  511.106329]  ? iov_iter_revert+0xd8/0x3c0
-[  511.107915]  print_address_description.constprop.7+0x1e/0x230
-[  511.110193]  ? kmsg_dump_rewind_nolock+0x59/0x59
-[  511.112038]  ? _raw_write_lock_irqsave+0xe0/0xe0
-[  511.113890]  ? iov_iter_revert+0xd8/0x3c0
-[  511.115469]  ? iov_iter_revert+0xd8/0x3c0
-[  511.117082]  kasan_report.cold.9+0x37/0x86
-[  511.118711]  ? do_readv+0x20/0x1b0
-[  511.120078]  ? iov_iter_revert+0xd8/0x3c0
-[  511.122614]  iov_iter_revert+0xd8/0x3c0
-[  511.124673]  generic_file_read_iter+0x139/0x220
-[  511.127386]  fuse_file_read_iter+0x239/0x270 [fuse]
-[  511.130229]  ? fuse_direct_IO+0x600/0x600 [fuse]
-[  511.133491]  ? rwsem_optimistic_spin+0x3d0/0x3d0
-[  511.137177]  ? wake_up_q+0x92/0xd0
-[  511.139702]  ? kasan_unpoison_shadow+0x30/0x40
-[  511.142518]  do_iter_readv_writev+0x307/0x350
-[  511.144850]  ? no_seek_end_llseek_size+0x20/0x20
-[  511.147155]  do_iter_read+0x13f/0x2e0
-[  511.148696]  vfs_readv+0xcc/0x130
-[  511.150118]  ? compat_rw_copy_check_uvector+0x1e0/0x1e0
-[  511.152300]  ? enqueue_hrtimer+0x60/0x100
-[  511.154043]  ? hrtimer_start_range_ns+0x32f/0x4c0
-[  511.157561]  ? hrtimer_run_softirq+0x100/0x100
-[  511.161514]  ? _raw_spin_lock_irq+0x7b/0xd0
-[  511.164570]  ? _raw_write_unlock_irqrestore+0x20/0x20
-[  511.167568]  ? hrtimer_active+0x71/0xa0
-[  511.169331]  ? mutex_lock+0x8e/0xe0
-[  511.171694]  ? __mutex_lock_slowpath+0x10/0x10
-[  511.174580]  ? perf_call_bpf_enter.isra.21+0x110/0x110
-[  511.177926]  ? __fget_light+0xa3/0x100
-[  511.179916]  do_readv+0xc1/0x1b0
-[  511.181331]  ? vfs_readv+0x130/0x130
-[  511.182867]  ? ktime_get_coarse_real_ts64+0x4a/0x70
-[  511.185455]  do_syscall_64+0x33/0x40
-[  511.188008]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  511.191314] RIP: 0033:0x7f11e9b4578d
-[  511.193639] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d cb 56 2c 00 f7 d8 64 89 08
-[  511.202148] RSP: 002b:00007fff9b5eec58 EFLAGS: 00000246 ORIG_RAX: 0000000000000013
-[  511.205620] RAX: ffffffffffffffda RBX: 0000000000000013 RCX: 00007f11e9b4578d
-[  511.210533] RDX: 0000000000000091 RSI: 0000000002c49450 RDI: 00000000000000e1
-[  511.214992] RBP: 0000000000000013 R08: 000000008d8d8d8d R09: 00000000000002d2
-[  511.218631] R10: 00000020845754a0 R11: 0000000000000246 R12: 0000000000000002
-[  511.221595] R13: 00007f11ea227058 R14: 00007f11ea2356c0 R15: 00007f11ea227000
-[  511.225949] 
-[  511.227008] Allocated by task 11748:
-[  511.229204]  kasan_save_stack+0x19/0x40
-[  511.231404]  __kasan_kmalloc.constprop.8+0xc1/0xd0
-[  511.234647]  perf_event_mmap+0x28f/0x5f0
-[  511.237170]  mmap_region+0x1cc/0xa50
-[  511.239192]  do_mmap+0x3e5/0x6a0
-[  511.241337]  vm_mmap_pgoff+0x15f/0x1b0
-[  511.243586]  ksys_mmap_pgoff+0x2d3/0x320
-[  511.245903]  do_syscall_64+0x33/0x40
-[  511.247914]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  511.250139] 
-[  511.250797] Freed by task 11748:
-[  511.252160]  kasan_save_stack+0x19/0x40
-[  511.253775]  kasan_set_track+0x1c/0x30
-[  511.255348]  kasan_set_free_info+0x1b/0x30
-[  511.257072]  __kasan_slab_free+0x108/0x150
-[  511.258785]  kfree+0x95/0x380
-[  511.260050]  perf_event_mmap+0x4aa/0x5f0
-[  511.261694]  mmap_region+0x1cc/0xa50
-[  511.263198]  do_mmap+0x3e5/0x6a0
-[  511.264564]  vm_mmap_pgoff+0x15f/0x1b0
-[  511.266133]  ksys_mmap_pgoff+0x2d3/0x320
-[  511.267773]  do_syscall_64+0x33/0x40
-[  511.269276]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  511.272756] 
-[  511.273583] The buggy address belongs to the object at ffff88869e11c000
-[  511.273583]  which belongs to the cache kmalloc-4k of size 4096
-[  511.281456] The buggy address is located 4088 bytes to the right of
-[  511.281456]  4096-byte region [ffff88869e11c000, ffff88869e11d000)
-[  511.288473] The buggy address belongs to the page:
-[  511.291093] page:0000000073d20fbc refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x69e118
-[  511.296681] head:0000000073d20fbc order:3 compound_mapcount:0 compound_pincount:0
-[  511.301118] flags: 0x17ffffc0010200(slab|head)
-[  511.303426] raw: 0017ffffc0010200 0000000000000000 0000000300000001 ffff888107c4ef80
-[  511.307482] raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-[  511.310957] page dumped because: kasan: bad access detected
-[  511.313233] 
-[  511.313867] Memory state around the buggy address:
-[  511.315849]  ffff88869e11de80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  511.318933]  ffff88869e11df00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  511.322715] >ffff88869e11df80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  511.325993]                                                                 ^
-[  511.330020]  ffff88869e11e000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  511.334333]  ffff88869e11e080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Before:
+   text    data     bss     dec     hex filename
+ 296203   65464    1248  362915   589a3 drivers/net/ethernet/marvell/octeontx2/af/octeontx2_af.ko
+
+After:
+   text    data     bss     dec     hex filename
+ 321003   40664    1248  362915   589a3 drivers/net/ethernet/marvell/octeontx2/af/octeontx2_af.ko
+
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  4 +-
+ .../marvell/octeontx2/af/npc_profile.h        | 68 +++++++++----------
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  6 +-
+ 3 files changed, 39 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index 3803af9231c6..95c646ae7e23 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -173,8 +173,8 @@ struct npc_kpu_profile_action {
+ struct npc_kpu_profile {
+ 	int cam_entries;
+ 	int action_entries;
+-	struct npc_kpu_profile_cam *cam;
+-	struct npc_kpu_profile_action *action;
++	const struct npc_kpu_profile_cam *cam;
++	const struct npc_kpu_profile_action *action;
+ };
+ 
+ /* NPC KPU register formats */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
+index aa2727e6211a..b29c6689ace2 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc_profile.h
+@@ -418,7 +418,7 @@ enum NPC_ERRLEV_E {
+ 	NPC_ERRLEV_ENUM_LAST = 16,
+ };
+ 
+-static struct npc_kpu_profile_action ikpu_action_entries[] = {
++static const struct npc_kpu_profile_action ikpu_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		12, 16, 20, 0, 0,
+@@ -997,7 +997,7 @@ static struct npc_kpu_profile_action ikpu_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu1_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu1_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU1_ETHER, 0xff,
+ 		NPC_ETYPE_IP,
+@@ -1666,7 +1666,7 @@ static struct npc_kpu_profile_cam kpu1_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu2_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu2_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU2_CTAG, 0xff,
+ 		NPC_ETYPE_IP,
+@@ -2794,7 +2794,7 @@ static struct npc_kpu_profile_cam kpu2_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu3_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu3_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU3_CTAG, 0xff,
+ 		NPC_ETYPE_IP,
+@@ -3913,7 +3913,7 @@ static struct npc_kpu_profile_cam kpu3_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu4_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu4_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU4_MPLS, 0xff,
+ 		NPC_MPLS_S,
+@@ -4006,7 +4006,7 @@ static struct npc_kpu_profile_cam kpu4_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu5_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu5_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU5_IP, 0xff,
+ 		0x0000,
+@@ -4576,7 +4576,7 @@ static struct npc_kpu_profile_cam kpu5_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu6_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu6_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU6_IP6_EXT, 0xff,
+ 		0x0000,
+@@ -4921,7 +4921,7 @@ static struct npc_kpu_profile_cam kpu6_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu7_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu7_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU7_IP6_EXT, 0xff,
+ 		0x0000,
+@@ -5140,7 +5140,7 @@ static struct npc_kpu_profile_cam kpu7_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu8_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu8_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU8_TCP, 0xff,
+ 		0x0000,
+@@ -5872,7 +5872,7 @@ static struct npc_kpu_profile_cam kpu8_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu9_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu9_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU9_TU_MPLS_IN_GRE, 0xff,
+ 		NPC_MPLS_S,
+@@ -6334,7 +6334,7 @@ static struct npc_kpu_profile_cam kpu9_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu10_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu10_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU10_TU_MPLS, 0xff,
+ 		NPC_MPLS_S,
+@@ -6499,7 +6499,7 @@ static struct npc_kpu_profile_cam kpu10_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu11_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu11_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU11_TU_ETHER, 0xff,
+ 		NPC_ETYPE_IP,
+@@ -6808,7 +6808,7 @@ static struct npc_kpu_profile_cam kpu11_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu12_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu12_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU12_TU_IP, 0xff,
+ 		NPC_IPNH_TCP,
+@@ -7063,7 +7063,7 @@ static struct npc_kpu_profile_cam kpu12_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu13_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu13_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU13_TU_IP6_EXT, 0xff,
+ 		0x0000,
+@@ -7075,7 +7075,7 @@ static struct npc_kpu_profile_cam kpu13_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu14_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu14_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU14_TU_IP6_EXT, 0xff,
+ 		0x0000,
+@@ -7087,7 +7087,7 @@ static struct npc_kpu_profile_cam kpu14_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu15_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu15_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU15_TU_TCP, 0xff,
+ 		0x0000,
+@@ -7288,7 +7288,7 @@ static struct npc_kpu_profile_cam kpu15_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_cam kpu16_cam_entries[] = {
++static const struct npc_kpu_profile_cam kpu16_cam_entries[] = {
+ 	{
+ 		NPC_S_KPU16_TCP_DATA, 0xff,
+ 		0x0000,
+@@ -7345,7 +7345,7 @@ static struct npc_kpu_profile_cam kpu16_cam_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu1_action_entries[] = {
++static const struct npc_kpu_profile_action kpu1_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		8, 0, 6, 3, 0,
+@@ -7962,7 +7962,7 @@ static struct npc_kpu_profile_action kpu1_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu2_action_entries[] = {
++static const struct npc_kpu_profile_action kpu2_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		8, 0, 6, 2, 0,
+@@ -8965,7 +8965,7 @@ static struct npc_kpu_profile_action kpu2_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu3_action_entries[] = {
++static const struct npc_kpu_profile_action kpu3_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		8, 0, 6, 1, 0,
+@@ -9960,7 +9960,7 @@ static struct npc_kpu_profile_action kpu3_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu4_action_entries[] = {
++static const struct npc_kpu_profile_action kpu4_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 0,
+@@ -10043,7 +10043,7 @@ static struct npc_kpu_profile_action kpu4_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu5_action_entries[] = {
++static const struct npc_kpu_profile_action kpu5_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_LC, NPC_EC_IP_TTL_0,
+ 		0, 0, 0, 0, 1,
+@@ -10550,7 +10550,7 @@ static struct npc_kpu_profile_action kpu5_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu6_action_entries[] = {
++static const struct npc_kpu_profile_action kpu6_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 1,
+@@ -10857,7 +10857,7 @@ static struct npc_kpu_profile_action kpu6_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu7_action_entries[] = {
++static const struct npc_kpu_profile_action kpu7_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 1,
+@@ -11052,7 +11052,7 @@ static struct npc_kpu_profile_action kpu7_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu8_action_entries[] = {
++static const struct npc_kpu_profile_action kpu8_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_LD, NPC_EC_TCP_FLAGS_FIN_ONLY,
+ 		0, 0, 0, 0, 1,
+@@ -11703,7 +11703,7 @@ static struct npc_kpu_profile_action kpu8_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu9_action_entries[] = {
++static const struct npc_kpu_profile_action kpu9_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 0,
+@@ -12114,7 +12114,7 @@ static struct npc_kpu_profile_action kpu9_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu10_action_entries[] = {
++static const struct npc_kpu_profile_action kpu10_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		8, 0, 6, 1, 0,
+@@ -12261,7 +12261,7 @@ static struct npc_kpu_profile_action kpu10_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu11_action_entries[] = {
++static const struct npc_kpu_profile_action kpu11_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		8, 0, 6, 0, 0,
+@@ -12536,7 +12536,7 @@ static struct npc_kpu_profile_action kpu11_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu12_action_entries[] = {
++static const struct npc_kpu_profile_action kpu12_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		2, 12, 0, 2, 0,
+@@ -12763,7 +12763,7 @@ static struct npc_kpu_profile_action kpu12_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu13_action_entries[] = {
++static const struct npc_kpu_profile_action kpu13_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 1,
+@@ -12774,7 +12774,7 @@ static struct npc_kpu_profile_action kpu13_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu14_action_entries[] = {
++static const struct npc_kpu_profile_action kpu14_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 1,
+@@ -12785,7 +12785,7 @@ static struct npc_kpu_profile_action kpu14_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu15_action_entries[] = {
++static const struct npc_kpu_profile_action kpu15_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_LG, NPC_EC_TCP_FLAGS_FIN_ONLY,
+ 		0, 0, 0, 0, 1,
+@@ -12964,7 +12964,7 @@ static struct npc_kpu_profile_action kpu15_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile_action kpu16_action_entries[] = {
++static const struct npc_kpu_profile_action kpu16_action_entries[] = {
+ 	{
+ 		NPC_ERRLEV_RE, NPC_EC_NOERR,
+ 		0, 0, 0, 0, 1,
+@@ -13015,7 +13015,7 @@ static struct npc_kpu_profile_action kpu16_action_entries[] = {
+ 	},
+ };
+ 
+-static struct npc_kpu_profile npc_kpu_profiles[] = {
++static const struct npc_kpu_profile npc_kpu_profiles[] = {
+ 	{
+ 		ARRAY_SIZE(kpu1_cam_entries),
+ 		ARRAY_SIZE(kpu1_action_entries),
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index e2e585d4de9b..6a1ddb2da1a5 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -906,7 +906,7 @@ static void npc_load_mkex_profile(struct rvu *rvu, int blkaddr)
+ }
+ 
+ static void npc_config_kpuaction(struct rvu *rvu, int blkaddr,
+-				 struct npc_kpu_profile_action *kpuaction,
++				 const struct npc_kpu_profile_action *kpuaction,
+ 				 int kpu, int entry, bool pkind)
+ {
+ 	struct npc_kpu_action0 action0 = {0};
+@@ -948,7 +948,7 @@ static void npc_config_kpuaction(struct rvu *rvu, int blkaddr,
+ }
+ 
+ static void npc_config_kpucam(struct rvu *rvu, int blkaddr,
+-			      struct npc_kpu_profile_cam *kpucam,
++			      const struct npc_kpu_profile_cam *kpucam,
+ 			      int kpu, int entry)
+ {
+ 	struct npc_kpu_cam cam0 = {0};
+@@ -976,7 +976,7 @@ static inline u64 enable_mask(int count)
+ }
+ 
+ static void npc_program_kpu_profile(struct rvu *rvu, int blkaddr, int kpu,
+-				    struct npc_kpu_profile *profile)
++				    const struct npc_kpu_profile *profile)
+ {
+ 	int entry, num_entries, max_entries;
+ 
+-- 
+2.28.0
+
