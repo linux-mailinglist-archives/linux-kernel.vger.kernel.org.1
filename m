@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F05266470
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92ED266433
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 18:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgIKQiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 12:38:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28926 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726274AbgIKPMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 11:12:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599837121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aiWmHLDD0Ad0LUM9I3Re3J2jS/emquPxE/7QtuwNOPg=;
-        b=gxXCtIupESgbz961KIg5tC4lEmLWzKToPJBqqrL5WIchgdrsdUGifvttRW07oWQtkxCInS
-        rLNv/SsI/azVsJHj2mLVsZ+cGXkEW22ym9M2v4+SkyUAF6rFPdvA9mj758sYLqEx90AtZp
-        Jm+d0g8OSvLNiLA0hOM2YRmH5+4zdE8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-4NT_19gWN0K2miAueSjn9w-1; Fri, 11 Sep 2020 09:53:13 -0400
-X-MC-Unique: 4NT_19gWN0K2miAueSjn9w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62D58CD046;
-        Fri, 11 Sep 2020 13:53:12 +0000 (UTC)
-Received: from [10.36.112.212] (ovpn-112-212.ams2.redhat.com [10.36.112.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B1135DA2A;
-        Fri, 11 Sep 2020 13:53:00 +0000 (UTC)
-Subject: Re: MSI/MSIX for VFIO platform
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Vikas Gupta <vikas.gupta@broadcom.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vikram Prakash <vikram.prakash@broadcom.com>,
-        Srinath Mannam <srinath.mannam@broadcom.com>
-References: <c94c36305980f80674aa699e27b9895b@mail.gmail.com>
- <20200910105735.1e060b95@w520.home>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <f9b3c805-cd64-3402-ff73-339c35c4c27a@redhat.com>
-Date:   Fri, 11 Sep 2020 15:52:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726423AbgIKQc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 12:32:57 -0400
+Received: from mga18.intel.com ([134.134.136.126]:20408 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726418AbgIKPTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 11:19:01 -0400
+IronPort-SDR: aNyfM9wNeliUF6yCC63zXsKB4ICo5WwM0rq/A/1qklXb1ap2itW5qC67FsNrLDbfnA42weh77M
+ bous9ExZjVxQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9740"; a="146487813"
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="146487813"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 06:56:39 -0700
+IronPort-SDR: vmjohGXeCztnlk0HvpTJJd5IK/ylPkCfq+HKaYOu83Xe+UYZw4oOsfGeUHsoE/+XJ7K8FKmbE4
+ ANMKFfA6LC5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,415,1592895600"; 
+   d="scan'208";a="342306628"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by FMSMGA003.fm.intel.com with SMTP; 11 Sep 2020 06:56:34 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 11 Sep 2020 16:56:34 +0300
+Date:   Fri, 11 Sep 2020 16:56:34 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/imx/dcss: fix 64-bit divisions
+Message-ID: <20200911135634.GI6112@intel.com>
+References: <20200911134827.32142-1-laurentiu.palcu@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20200910105735.1e060b95@w520.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200911134827.32142-1-laurentiu.palcu@oss.nxp.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vikas,
-
-On 9/10/20 6:57 PM, Alex Williamson wrote:
-> On Thu, 10 Sep 2020 16:15:27 +0530
-> Vikas Gupta <vikas.gupta@broadcom.com> wrote:
+On Fri, Sep 11, 2020 at 04:48:27PM +0300, Laurentiu Palcu wrote:
+> Use div_s64() for the 64-bit divisions. This would allow the driver to compile
+> on 32-bit architectures, if needed.
 > 
->> Hi Alex/Cornelia,
->>
->> We are looking for MSI interrupts for platform devices in user-space
->> applications via event/poll mechanism using VFIO.
->>
->> Since there is no support for MSI/MSIX handling in VFIO-platform in kernel,
->> it may not possible to get this feature in user-space.
->>
->> Is there any other way we can get this feature in user-space OR can you
->> please suggest if any patch or feature is in progress for same in VFIO
->> platform?
->>
->> Any suggestions would be helpful.
+> Signed-off-by: Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>
+> ---
+>  drivers/gpu/drm/imx/dcss/dcss-scaler.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Eric (Cc'd) is the maintainer of vfio-platform.
+> diff --git a/drivers/gpu/drm/imx/dcss/dcss-scaler.c b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
+> index cd21905de580..7c1e0e461244 100644
+> --- a/drivers/gpu/drm/imx/dcss/dcss-scaler.c
+> +++ b/drivers/gpu/drm/imx/dcss/dcss-scaler.c
+> @@ -134,7 +134,7 @@ static int div_q(int A, int B)
+>  	else
+>  		temp -= B / 2;
+>  
+> -	result = (int)(temp / B);
+> +	result = (int)(div_s64(temp, B));
+>  	return result;
+>  }
+>  
+> @@ -237,7 +237,7 @@ static void dcss_scaler_gaussian_filter(int fc_q, bool use_5_taps,
+>  			ll_temp = coef[phase][i];
+>  			ll_temp <<= PSC_COEFF_PRECISION;
+>  			ll_temp += sum >> 1;
+> -			ll_temp /= sum;
+
+That looks like hand rolled DIV_ROUND_CLOSEST_ULL()
+
+> +			ll_temp = div_s64(ll_temp, sum);
+>  			coef[phase][i] = (int)ll_temp;
+>  		}
+>  	}
+> -- 
+> 2.17.1
 > 
-> vfio-platform devices don't have IRQ indexes dedicated to MSI and MSI-X
-> like vfio-pci devices do (technically these are PCI concepts, but I
-> assume we're referring generically to message signaled interrupts), but
-> that's simply due to the lack of standardization in platform devices.
-> Logically these are simply collections of edge triggered interrupts,
-> which the vfio device API supports generically, it's simply a matter
-> that the vfio bus driver exposing a vfio-platform device create an IRQ
-> index exposing these vectors.  Thanks,
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-I have not worked on MSI support and I am not aware of any work
-happening in this area.
-
-First I would recommend to look at IRQ related uapis exposed by VFIO:
-VFIO_DEVICE_GET_IRQ_INFO
-VFIO_DEVICE_SET_IRQS
-
-and try to understand if they can be implemented for MSIs in a generic
-way in the vfio_platform driver using platform-msi helpers.
-
-For instance VFIO_DEVICE_GET_IRQ_INFO would need to return the number of
-requested vectors. On init I guess we should allocate vectors using
-platform_msi_domain_alloc_irqs/ devm_request_irq and in the handler
-trigger the eventfd provided through VFIO_DEVICE_SET_IRQS.
-
-On userspace where you have to trap the MSI setup to call the above
-functions and setup irqfd injection. This would be device specific as
-opposed to PCI. That's just rough ideas at the moment.
-
-Thanks
-
-Eric
-
-> 
-> Alex
-> 
-
+-- 
+Ville Syrjälä
+Intel
