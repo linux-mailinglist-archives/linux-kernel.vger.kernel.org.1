@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B41A266653
-	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62214266654
+	for <lists+linux-kernel@lfdr.de>; Fri, 11 Sep 2020 19:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgIKRZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 13:25:51 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38670 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726392AbgIKRYt (ORCPT
+        id S1726194AbgIKRZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 13:25:56 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39538 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726287AbgIKRZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 13:24:49 -0400
+        Fri, 11 Sep 2020 13:25:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599845087;
+        s=mimecast20190719; t=1599845140;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RTZXM9ptUnJ0xEP6DUmb1wgp/BBQlEDO0De4uqNpfTg=;
-        b=aF+8AMfaSFqizUp1bMCyda0HA6xgwVxpUbeAIBgYWQ6bo3c9uN57kA2EyDObp8Jw+EqW1R
-        jPYx0tgYplRzo9lPd71m/H2qmsskm9MHfr3xFkD+QAPNkV2+vBrMIlDSNLkJ5IfdvEhOck
-        4QdatWP89liCjzMoRRPCtAxq16bqpf4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-130-CgTpHwMQPaWHZT17V6TS_A-1; Fri, 11 Sep 2020 13:24:45 -0400
-X-MC-Unique: CgTpHwMQPaWHZT17V6TS_A-1
-Received: by mail-wm1-f70.google.com with SMTP id s19so1624563wme.2
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:24:45 -0700 (PDT)
+        bh=Rq3sqFL6vTqtj3WUeeDyK7taU7BHDxoUtnP2+8arByI=;
+        b=Tmybk7QSPiiqzSjZZsJIiJfDExgyLmwX90fgkW+kNWlTVaRPhWLRDiiMDIOwXvc5sVs09R
+        Oa5YycB/NfDFVs5jdFuwRCX2jt0MynV4HG2288qb3vAXZhZZZxS8WkxnA+9gZXCV+ewklg
+        uZefuWYHSu5a9vW9eX1ouRDjQJMFErI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-9b49q9DuPI-UffjuoPqj7A-1; Fri, 11 Sep 2020 13:25:36 -0400
+X-MC-Unique: 9b49q9DuPI-UffjuoPqj7A-1
+Received: by mail-wm1-f72.google.com with SMTP id d22so1617605wmd.6
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 10:25:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=RTZXM9ptUnJ0xEP6DUmb1wgp/BBQlEDO0De4uqNpfTg=;
-        b=R9a7upG4z9ytaezOuCGjaUZ6Ta/EUlyrEELLTpbJ4MqpWNSFhtNEuzOXjlWffWYDr+
-         X9S1AVeaMwNhwGApqPp40nQOgAOYSPZvr9yPaPMUgobTeZPR5b9HKx6DNDuev6Q+1e8K
-         n72kaT5jBwTZNmeB8wt3cuwphpIrCPoZXV7E6jxGiGQ8LWK2Hw4dO2lx3+L7R185utlr
-         /+VF3G6nzjudzz0WsPd4MyC3ioS96I9TnRSgMpSXKjBLwpJuVIdIA5yx9t045XQvCuZX
-         CbzigAzcHwuCvNOVInw69EbRa97erco0frwoPk6cfy8xB5k5AIYYw14o6DYPKsoESWnM
-         X31Q==
-X-Gm-Message-State: AOAM531K+hrZa5CFkUI9hk6AF1FMDNouEX+Ndc5blV0NfYQJ3cUNpVZs
-        TgfkIw5RpIgGEdOKOtjP5t1dTEKARe4FJJiTDwDyhj78GWTyoXNTkmFSpxT75/mdOzeX9U6MjAQ
-        PVNmbW58dooluL8l3nUxKnLfx
-X-Received: by 2002:a5d:4d51:: with SMTP id a17mr3080291wru.248.1599845083711;
-        Fri, 11 Sep 2020 10:24:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzTo6ySxP9uRzVQ/ulExL6XxUV8Kw/YxJCmDZGFtV1pnzQkh4dHLtC9DmRIe0/Y7vWAQtSBYQ==
-X-Received: by 2002:a5d:4d51:: with SMTP id a17mr3080266wru.248.1599845083506;
-        Fri, 11 Sep 2020 10:24:43 -0700 (PDT)
+        bh=Rq3sqFL6vTqtj3WUeeDyK7taU7BHDxoUtnP2+8arByI=;
+        b=ZqNPXLKRbDpnxfbRLlmOPGc23YmOySEDFKXqGa/cp6NEUYCk1wGmnQOjKxxiAJtg4k
+         QH9LyAabXqnYNjwXDX3VThLzHxD1U3oiqruXWluUdJ7yhFAg43xuaxGnmiYUO9pihcog
+         jkpA53OmCf+C+L4HWm1DO3of+YFwOl0B+utuF/Td8yOtEn2e5MyviDxoc1xNYN7GpS8f
+         ri7L8mvyxyfCT8531jAm8LpoleSClWZYAfMhoFP8/UuSCH3ZjEen/mnUx62iGl+H02wN
+         +OBLj+qra9SnYs4xe+N7lYVptv2R4cCHAzOEOcjkiXAYwI4/Qz8gN+TYDUrUt/62gl/F
+         EvFw==
+X-Gm-Message-State: AOAM532NM0u1bsDVI/y/Quey7CaiGWp9eGxo/BT+08zJXFj9A8ThJBtH
+        SyEMvIqlQNMr1RP8imeovmVXMVciRgyRbwmn+um6XmTCFeZOHIX+PBTYtZfItkUC5BABsEbnlOm
+        mpW+Ro7jvwk5kFSmf8a+TMtw2
+X-Received: by 2002:a1c:2e4b:: with SMTP id u72mr3249512wmu.69.1599845134542;
+        Fri, 11 Sep 2020 10:25:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzE3otLO4wRNpP+aV23Yy58U5CCa3uZE7eu4+twKiyBsylZXDLRLWm38SWtnPOOlZPoIflB5g==
+X-Received: by 2002:a1c:2e4b:: with SMTP id u72mr3249501wmu.69.1599845134341;
+        Fri, 11 Sep 2020 10:25:34 -0700 (PDT)
 Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id o128sm5640022wmo.39.2020.09.11.10.24.42
+        by smtp.gmail.com with ESMTPSA id k84sm5399436wmf.6.2020.09.11.10.25.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 11 Sep 2020 10:24:43 -0700 (PDT)
-Subject: Re: [patch] KVM: SVM: Periodically schedule when unregistering
- regions on destroy
-To:     David Rientjes <rientjes@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org
-References: <alpine.DEB.2.23.453.2008251255240.2987727@chino.kir.corp.google.com>
+        Fri, 11 Sep 2020 10:25:33 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: always allow writing '0' to MSR_KVM_ASYNC_PF_EN
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20200911093147.484565-1-vkuznets@redhat.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <baabe38e-c277-bce8-4fd2-a33ab7e4cc72@redhat.com>
-Date:   Fri, 11 Sep 2020 19:24:42 +0200
+Message-ID: <f8e18679-dd49-f3e0-49fa-6f7cf1e1c025@redhat.com>
+Date:   Fri, 11 Sep 2020 19:25:33 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.23.453.2008251255240.2987727@chino.kir.corp.google.com>
+In-Reply-To: <20200911093147.484565-1-vkuznets@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -76,59 +75,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/20 21:56, David Rientjes wrote:
-> There may be many encrypted regions that need to be unregistered when a
-> SEV VM is destroyed.  This can lead to soft lockups.  For example, on a
-> host running 4.15:
+On 11/09/20 11:31, Vitaly Kuznetsov wrote:
+> Even without in-kernel LAPIC we should allow writing '0' to
+> MSR_KVM_ASYNC_PF_EN as we're not enabling the mechanism. In
+> particular, QEMU with 'kernel-irqchip=off' fails to start
+> a guest with
 > 
-> watchdog: BUG: soft lockup - CPU#206 stuck for 11s! [t_virtual_machi:194348]
-> CPU: 206 PID: 194348 Comm: t_virtual_machi
-> RIP: 0010:free_unref_page_list+0x105/0x170
-> ...
-> Call Trace:
->  [<0>] release_pages+0x159/0x3d0
->  [<0>] sev_unpin_memory+0x2c/0x50 [kvm_amd]
->  [<0>] __unregister_enc_region_locked+0x2f/0x70 [kvm_amd]
->  [<0>] svm_vm_destroy+0xa9/0x200 [kvm_amd]
->  [<0>] kvm_arch_destroy_vm+0x47/0x200
->  [<0>] kvm_put_kvm+0x1a8/0x2f0
->  [<0>] kvm_vm_release+0x25/0x30
->  [<0>] do_exit+0x335/0xc10
->  [<0>] do_group_exit+0x3f/0xa0
->  [<0>] get_signal+0x1bc/0x670
->  [<0>] do_signal+0x31/0x130
+> qemu-system-x86_64: error: failed to set MSR 0x4b564d02 to 0x0
 > 
-> Although the CLFLUSH is no longer issued on every encrypted region to be
-> unregistered, there are no other changes that can prevent soft lockups for
-> very large SEV VMs in the latest kernel.
-> 
-> Periodically schedule if necessary.  This still holds kvm->lock across the
-> resched, but since this only happens when the VM is destroyed this is
-> assumed to be acceptable.
-> 
-> Signed-off-by: David Rientjes <rientjes@google.com>
+> Fixes: 9d3c447c72fb2 ("KVM: X86: Fix async pf caused null-ptr-deref")
+> Reported-by: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->  arch/x86/kvm/svm/sev.c | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/x86/kvm/x86.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1106,6 +1106,7 @@ void sev_vm_destroy(struct kvm *kvm)
->  		list_for_each_safe(pos, q, head) {
->  			__unregister_enc_region_locked(kvm,
->  				list_entry(pos, struct enc_region, list));
-> +			cond_resched();
->  		}
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d39d6cf1d473..44a86f7f2397 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2730,9 +2730,6 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
+>  	if (data & 0x30)
+>  		return 1;
+>  
+> -	if (!lapic_in_kernel(vcpu))
+> -		return 1;
+> -
+>  	vcpu->arch.apf.msr_en_val = data;
+>  
+>  	if (!kvm_pv_async_pf_enabled(vcpu)) {
+> @@ -2741,6 +2738,9 @@ static int kvm_pv_enable_async_pf(struct kvm_vcpu *vcpu, u64 data)
+>  		return 0;
 >  	}
 >  
+> +	if (!lapic_in_kernel(vcpu))
+> +		return 1;
+> +
+>  	if (kvm_gfn_to_hva_cache_init(vcpu->kvm, &vcpu->arch.apf.data, gpa,
+>  					sizeof(u64)))
+>  		return 1;
 > 
 
-Queued, thanks.  Sorry for the delay.
-
-I am currently on leave so I am going through the patches and queuing
-them, but I will only push kvm/next and kvm/queue next week.  kvm/master
-patches will be sent to Linus for the next -rc though.
+Queued, thanks.
 
 Paolo
 
