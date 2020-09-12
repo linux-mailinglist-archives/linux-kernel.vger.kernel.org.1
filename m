@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5962678F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B408C2678F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725857AbgILItk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 04:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        id S1725846AbgILItj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 04:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgILIt2 (ORCPT
+        with ESMTP id S1725823AbgILIt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 04:49:28 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE365C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:49:27 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id t16so12667653edw.7
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:49:27 -0700 (PDT)
+        Sat, 12 Sep 2020 04:49:29 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F52C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:49:28 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so2146073edq.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XSthICaxogmtYPZILEJBq63RkXJbSw500dA6isem7pI=;
-        b=Jkuy6aY7YCzAdzLWshANNuiqPg1ToOPWlzBSlvOjyUwbwbW1qz4naHcfIKkQUguJxJ
-         chKkIbCtGTq4/+9XOTKtbfIeWnSInsxdZMlm+XGJepKMmb81IEqcUt2LLuOQrwcvMQxt
-         LZGRbsBrgjdRODQcAWuofhZ2iDfuxWxXbgl1Sh7fUxmOv+oSkJNxzYMO1UzUhXRYUBGN
-         p3ekd6oCiNwrwPI5eHqRDShPi0z127iSe10jO/AEvpmf+a7UgGeOhyD13cad3wGdBVS7
-         kjmu0jMHRyscYQfnuP1ABiaJ+lheV3yFl1i3lNuxQkMaoysdGNnh+vAZtnbNGuPKAzu9
-         e0DA==
+        bh=1dw1Ylfivm/LIakXCeDCNCtbBlPy2BWgjC2cncXDgSg=;
+        b=d3HDGUqFafr8t93XAAI+a3kLTsBxW6oIx1OhNIJCkF0UxTwVgwDsXrm6AkPQqdR8X0
+         rHVn2HdhYXGifeBm14S0S6dswREBL46Yl61//96LzZWKKtmER0ZkTZAGPSUS+jJCv59N
+         CEoCHSyPZlYSAzp0pRTrYUocL3RqUWbBIniLENhPwIhKx50jw4lE6UAlgc/5D6FYz/Rg
+         dCv88Dc6Bn+tkWxKua90lV6QLTCBmx1lJhGKv+lChFApJyIbiSOg9zcgJgiUAwFkMf9W
+         srPgiDOKaouFblAKVrTI9hCONvCwA8nfCKDDE5YMO2uguWbNOgMDSGlVTFz8NKC8Z40R
+         cbSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XSthICaxogmtYPZILEJBq63RkXJbSw500dA6isem7pI=;
-        b=g85fANzeNJZw864yGJXjiZio3XksknMOBXiVey6CXmZDVDlz5yOv/9E6zCNW7sd9aE
-         WvSp3/1r6T+lBduxtk5e25sJeWgmzcKvNogOtTcdC5DTWYM0clqGnSowLcxxG44CQe9K
-         XKzOTaRyJ3kukiBWOHoHkfnr41J/bZfHoUpG94T5bIPxF/zf2XwvzNXfCed/uAK5O5sj
-         vMAuifeFzc5A+NuwZBH8dc/CtExKQoWytiIkuNSeXPhuH7KfpZJQUx/pSR6Ak4wiYXMj
-         0YmMY9qIU50EIaPdLF8TiEXEP2RYS1mlnJoS7UeiKFjPL9frgZqPSdsLrG8HMaxaS7vG
-         fvig==
-X-Gm-Message-State: AOAM533W6/GVnakeKTGK/fcNvUp16UPGuCoyvZLealR38r+187HPFH+e
-        daCwxMpn+TJWS/dfJb2KWrA=
-X-Google-Smtp-Source: ABdhPJz3ddQfeeIQumdSV7kdW/fmchul1r1nb8YkIgNFKa2fxAVMn4ZZht4d/MTbF/JVUuQlW+lgUw==
-X-Received: by 2002:a50:bb65:: with SMTP id y92mr7074411ede.53.1599900566531;
-        Sat, 12 Sep 2020 01:49:26 -0700 (PDT)
+        bh=1dw1Ylfivm/LIakXCeDCNCtbBlPy2BWgjC2cncXDgSg=;
+        b=PxmGLBRg4lINlyd2/51DBirhYnNAeCQ09EzFx7lYTJOQtrabLuYR1FZ0KSseUd1t0b
+         hWZJya4wFhi5VfDJ57JdbXXg2glFOPwnRhdAEG4nv9UPT6jGuLntcNEaV9uf5XFfjCfK
+         /9CqBbc1LEB3paJw4gY4cf9tPzTe88BukO4GOW6DYIlH6l4NP8GgynyKhDTqKF7vDtNS
+         xiDJd7d2xcwUyFWMJJA4LJ9DhMxRjiHDgf2hdxtmGJt0VEmoK3TlB6vEgDJvvugnUrt2
+         lY0xCHPbtUM+QbL0J2ZpCMAIebYzHi4qet1Qe3epOOclUeK2maOX5FSzyZff1pkrAH3M
+         bJyQ==
+X-Gm-Message-State: AOAM533MYolA2ANSFEvCHWlITctTFqSP8LGlihhM0S5DHR1yacxOknZY
+        yiXQdRdIx4NCSkyFecr9clQ=
+X-Google-Smtp-Source: ABdhPJw3xgnvxAXdFIW3LzAlTSB2CRn6WLSdF04mUQb2Sgubl0bhtJrael0ti7sdzPTGm9JXmErQ9g==
+X-Received: by 2002:a50:fd87:: with SMTP id o7mr6981205edt.180.1599900567615;
+        Sat, 12 Sep 2020 01:49:27 -0700 (PDT)
 Received: from localhost.localdomain (ipservice-092-219-207-039.092.219.pools.vodafone-ip.de. [92.219.207.39])
-        by smtp.gmail.com with ESMTPSA id s23sm4009598edt.10.2020.09.12.01.49.25
+        by smtp.gmail.com with ESMTPSA id s23sm4009598edt.10.2020.09.12.01.49.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 01:49:26 -0700 (PDT)
+        Sat, 12 Sep 2020 01:49:27 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 2/5] staging: rtl8723bs: make cckrates{only}_included static
-Date:   Sat, 12 Sep 2020 10:45:17 +0200
-Message-Id: <20200912084520.8383-2-straube.linux@gmail.com>
+Subject: [PATCH 3/5] staging: rtl8723bs: convert cckrates{only}_included to bool
+Date:   Sat, 12 Sep 2020 10:45:18 +0200
+Message-Id: <20200912084520.8383-3-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200912084520.8383-1-straube.linux@gmail.com>
 References: <20200912084520.8383-1-straube.linux@gmail.com>
@@ -66,50 +66,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Functions cckrates_included() and cckratesonly_included() are used only
-in the file core/rtw_wlan_util.c. Make them static and remove extern
-declarations from include/rtw_mlme_ext.c.
+Functions cckrates_included() and cckratesonly_included() return
+boolean values. Convert the return type from int to bool.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_wlan_util.c   | 4 ++--
- drivers/staging/rtl8723bs/include/rtw_mlme_ext.h | 2 --
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index 4e0d86b2e2e0..22e4305d70a2 100644
+index 22e4305d70a2..7733d076af85 100644
 --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
 +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
 @@ -54,7 +54,7 @@ static u8 rtw_basic_rate_ofdm[3] = {
  	IEEE80211_OFDM_RATE_24MB | IEEE80211_BASIC_RATE_MASK
  };
  
--int cckrates_included(unsigned char *rate, int ratelen)
-+static int cckrates_included(unsigned char *rate, int ratelen)
+-static int cckrates_included(unsigned char *rate, int ratelen)
++static bool cckrates_included(unsigned char *rate, int ratelen)
  {
  	int i;
  
-@@ -68,7 +68,7 @@ int cckrates_included(unsigned char *rate, int ratelen)
+@@ -68,7 +68,7 @@ static int cckrates_included(unsigned char *rate, int ratelen)
  	return false;
  }
  
--int cckratesonly_included(unsigned char *rate, int ratelen)
-+static int cckratesonly_included(unsigned char *rate, int ratelen)
+-static int cckratesonly_included(unsigned char *rate, int ratelen)
++static bool cckratesonly_included(unsigned char *rate, int ratelen)
  {
  	int i;
- 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-index 14583799039f..1567831caf91 100644
---- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-@@ -716,8 +716,6 @@ void sa_query_timer_hdl(struct timer_list *t);
- 		DBG_871X("%s set_sa_query_timer(%p, %d)\n", __func__, (mlmeext), (ms)); \
- 		_set_timer(&(mlmeext)->sa_query_timer, (ms)); \
- 	} while (0)
--extern int cckrates_included(unsigned char *rate, int ratelen);
--extern int cckratesonly_included(unsigned char *rate, int ratelen);
- 
- extern void process_addba_req(struct adapter *padapter, u8 *paddba_req, u8 *addr);
  
 -- 
 2.28.0
