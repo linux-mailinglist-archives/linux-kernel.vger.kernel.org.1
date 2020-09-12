@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EED1267BCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E82267BCD
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725884AbgILSn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 14:43:56 -0400
-Received: from smtprelay0026.hostedemail.com ([216.40.44.26]:47874 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725838AbgILSnw (ORCPT
+        id S1725890AbgILSte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 14:49:34 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:45066 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgILSt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 14:43:52 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 5B52F1803F9A8;
-        Sat, 12 Sep 2020 18:43:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:4321:5007:10004:10400:10848:11026:11232:11657:11658:11914:12043:12114:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: shock79_1b09319270f9
-X-Filterd-Recvd-Size: 1573
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 12 Sep 2020 18:43:50 +0000 (UTC)
-Message-ID: <38299e7c135de26dc7cf3fbe25d6a74e4632bbd9.camel@perches.com>
-Subject: Re: [PATCH 1/5] staging: rtl8723bs: refactor cckrates{only}_included
-From:   Joe Perches <joe@perches.com>
-To:     Michael Straube <straube.linux@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sat, 12 Sep 2020 11:43:49 -0700
-In-Reply-To: <f5fdb27843143dfefb1a1a416dab63931fef6d41.camel@perches.com>
-References: <20200912084520.8383-1-straube.linux@gmail.com>
-         <f5fdb27843143dfefb1a1a416dab63931fef6d41.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 12 Sep 2020 14:49:27 -0400
+Received: by mail-il1-f199.google.com with SMTP id m80so9504888ilb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 11:49:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=z5R//UxRboItQPh7MDI3JddIQL61MajQx6warYtOYbk=;
+        b=pXT0+WatD/BTejruZiLbXSPXqKWvr+POr/F3r73chkC/C7ztZG7oVn4tlbuFM7UryH
+         Fcl2P2LPcBsKfjip+DcVhSNPPYY9OfW2J/hAYE7Mg9gP1earZtnaDTxUbdcE1elsR6s1
+         28rOXdjgfyhROW65mXYd3o8plnqo9got1WIXyIkxHY0BRNZd92ZoPAWSC1YVGBQpmxs6
+         pW62iSnOipXk6YtA1t2jjwkMbMJO4DCRozBy/GF8vT4oglgDGaTucxq80a27N/3zXg7H
+         FnOKO6JpTgsM3ZKOrbHgP5m181bkyqSLb3M2GMHWlmRpLgl4QD912bqEptDcpO07+8fD
+         7U+A==
+X-Gm-Message-State: AOAM530X/vvWo2eNvDEfd3WbPOP0hJp6K/fe4v/lvBDlX3wQMysyMCmb
+        hkA1PbMfqJegbQwKZFjnlm+Lvr3Q6O1osYwOUgE3MuMJCrfJ
+X-Google-Smtp-Source: ABdhPJxSw+rGOoF525+CoZRVY7+xls38p9IS6yfSueGw6LmNHJqJuQICeDB3rXspXnSC3chEEdehPq/J6p1+ACim7BWVBTjAPkmR
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:c914:: with SMTP id t20mr6965290jao.117.1599936566237;
+ Sat, 12 Sep 2020 11:49:26 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 11:49:26 -0700
+In-Reply-To: <0000000000004ba2fe05aebfc526@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1a2f805af224224@google.com>
+Subject: Re: WARNING: refcount bug in io_wqe_worker
+From:   syzbot <syzbot+956ef5eac18eadd0fb7f@syzkaller.appspotmail.com>
+To:     anant.thazhemadam@gmail.com, asml.silence@gmail.com,
+        axboe@kernel.dk, hdanton@sina.com, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-09-12 at 11:22 -0700, Joe Perches wrote:
-> On Sat, 2020-09-12 at 10:45 +0200, Michael Straube wrote:
-> > Refactor cckrates_included() and cckratesonly_included() to simplify
-> > the code and improve readability.
-[]
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-[]
-> bool cckratesonly_included(unsigned char *rate, int ratelen)
-> {
-[]
-> 	if (i <= 0)
-	if (ratelen <= 0)  of course...
+syzbot has found a reproducer for the following issue on:
 
-> 		return false;
-> 
-> 	for (i = 0; i < ratelen; i++) {
-> 		if (!is_cckrate(rate[i])
-> 			return false;
-> 	}
-> 
-> 	return true;
-> }
-> 
-> 
+HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f2ce0d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=956ef5eac18eadd0fb7f
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f3a853900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157f7263900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+956ef5eac18eadd0fb7f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 0 PID: 7382 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 7382 Comm: io_wqe_worker-1 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x347/0x7c0 kernel/panic.c:231
+ __warn.cold+0x20/0x46 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Code: e9 db fe ff ff 48 89 df e8 2c dd 18 fe e9 8a fe ff ff e8 c2 d6 d8 fd 48 c7 c7 60 dc 93 88 c6 05 0d 0d 12 07 01 e8 b1 d7 a9 fd <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
+RSP: 0018:ffffc9000810fe08 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88809592a200 RSI: ffffffff815db9a7 RDI: fffff52001021fb3
+RBP: 0000000000000003 R08: 0000000000000001 R09: ffff8880ae6318e7
+R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809a6080b8
+R13: ffff8880a7896e30 R14: ffff8880a7896e00 R15: ffff8880a6727f00
+ refcount_sub_and_test include/linux/refcount.h:274 [inline]
+ refcount_dec_and_test include/linux/refcount.h:294 [inline]
+ io_worker_exit fs/io-wq.c:236 [inline]
+ io_wqe_worker+0xcdb/0x10e0 fs/io-wq.c:596
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
