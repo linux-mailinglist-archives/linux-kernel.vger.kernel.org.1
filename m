@@ -2,144 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7084026772A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 04:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B5C26772B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 04:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725795AbgILCK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 22:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48998 "EHLO
+        id S1725775AbgILCOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 22:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgILCKY (ORCPT
+        with ESMTP id S1725562AbgILCOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 22:10:24 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D529DC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 19:10:23 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id z2so9404521qtv.12
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 19:10:23 -0700 (PDT)
+        Fri, 11 Sep 2020 22:14:09 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F24C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 19:14:08 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id cr8so6195027qvb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 19:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZiqJJzRszA8sfylho0I06IV4lu0RleMsXL29ujwW9Qc=;
-        b=NhZ6t58sndgHcFesG2epVOV01yvEmPYqN8GFSC1/TpoKeXCsxndzzKNQu4jsKA7Hr5
-         Xs08pBMsNdgRG7Uxzv7m955oW+OslAMzQdzIxBpA1XQqDnmtNNvOZCr20BhdNoTLIqKC
-         0hgWV1DU7XaVbjufHui2ymxoInHFlP/KqFfxpm7PbX3+ggGYgu2NWc9qYpVilJ+BRx0X
-         R281BW7nSbkNpxCqdK8JqGdSbRy3Cw7vNNdmncqaY2snh4mMTj0UW0aJU2yjANsq3pGr
-         RZaer54KiY1/8xVWPpQhSJ0ITjyrabRFxulj4dY6jEGXofmmYetEPA64FEdstcPVClP2
-         lk2w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=2v1i6ZchjJszrJRz/D9EWNCywGeiZUhvr2WWU4Ulyq8=;
+        b=Q2vaHepLzKNvoHsZIdLC1U+mqVqMe+VnWuWcr00gXxXnynTK6+NMBU8TnurWZq5wQ/
+         sLpMp/RcfQDHLFNYpQWat+FKt+v62r9AwYRLPHM76/W0l3D51LCM1xWTQidMk5o65Q2a
+         68JLpyFywXx2OEuKEYfxVGPrwVC37+Pcra6kJl1fAMqTTKwk0ym4FDvUlVuE1Hp+6QpW
+         tTPg65euQypFj5YnpO+PbRErsx53f2tOj9z2UX9s9sG//RzRQ3nnp+6xeczE5uMgnpcb
+         Z/pd59n9QmVgR/KQQxKo8e8twBPMhbEQhJVZwMEFG00UNpkNF3+5JlQj29x1QhqtKORM
+         3+uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZiqJJzRszA8sfylho0I06IV4lu0RleMsXL29ujwW9Qc=;
-        b=e3L4LGYpZCWJrQWkvZOT4NpUN4V/eg89O5qZPIJ4ghv1V32QMUB3XFkAGqj4a722vv
-         lq1ORnZNWTeItTw9JniwWNelWYr7lmgtz5boP8WJfawzsRKJtgWbEc7CxP1YPXwzltHx
-         cYL+iPvBixibXFNPt+uhaMtuEIaHVo+caRHmdtnF2/aZR3f/lMq5xGlVgPjRQ/g9kSEI
-         ramWFVQ1NdhO1A7foNBnPAec+81XVXlI0lfhNA7Fi2MaPvwMKVSkf6UUFwMSF9GtHP7H
-         yJB8hUuMEa8VMpD8hADkueiydshYv3iFZt02W4IsJB5tbZK9lgklAj0HuF+0/PIIUceC
-         SKFQ==
-X-Gm-Message-State: AOAM531W6jNzHBw3AVl6UPPsO0HAXpnvueVhIg7pEheDJuZJKFNbc4iA
-        VLdy1DiEBOk/drAwrLGD1dZzhKIORL4QwUeB6sBUSA==
-X-Google-Smtp-Source: ABdhPJyQ9TcOcosXc8x+MEogEBhbztazXLTte+z2BLrqlvJOLe/OFX/EBEgJi/a6XOqalPPPB9DZD/3ae4mc6P8ir5k=
-X-Received: by 2002:ac8:1667:: with SMTP id x36mr4647841qtk.51.1599876622754;
- Fri, 11 Sep 2020 19:10:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200912013441.9730-1-atish.patra@wdc.com> <20200912013441.9730-4-atish.patra@wdc.com>
-In-Reply-To: <20200912013441.9730-4-atish.patra@wdc.com>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Sat, 12 Sep 2020 10:10:09 +0800
-Message-ID: <CAHCEehJqV1aBQjWCB1b=r+aQmkMmQnx1ynYzHgCW92NNntZrfg@mail.gmail.com>
-Subject: Re: [RFC/RFT PATCH v2 3/5] riscv: Separate memory init from paging init
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=2v1i6ZchjJszrJRz/D9EWNCywGeiZUhvr2WWU4Ulyq8=;
+        b=TlFqnK1DrDM0Y3PzkWXo/2/FufGArKIj40Tf1uJofEqlo0zNRLiYlmiQfUfmDfajVG
+         ghYYILamhCwp1bRKjw3oVGaWHuqC3RTHM/MyBbLrWk2M17+7GUm0a+mw/RPQXwknaSei
+         1NFxE2iOeOqsRsUlFMVmiXJwyGgNoPzyxDaxvmP7qn6N/870RsivTnqoSn57V50YlUSg
+         UigQwmRLlCD7Mooefs9XLMKWTPNAv+hWl5P/dff+jayXhU9hxvCACpHb31dzJI+ggV2n
+         DLkYkEGpEsEZp4mApWjZcls81k7IK2Sygkpn7KxQti42I2UZPE3RyTC9/JyhMmLwCEfx
+         gIiw==
+X-Gm-Message-State: AOAM532gu27GqJ4q9M7jVYDWWWNM7AgHOj4cBPqZkDG+DzjHr1wZA9Ab
+        CQsK+kwTGCcZev2NY6FLugNeLQ==
+X-Google-Smtp-Source: ABdhPJyjhUQThw7AHefe9ubtQznGC91RMFqfIl62Tn/HQoIKPD51ToQSRneKEzlhCi5WVMgFV+azkg==
+X-Received: by 2002:a0c:bd02:: with SMTP id m2mr4885406qvg.0.1599876847157;
+        Fri, 11 Sep 2020 19:14:07 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x59sm5101052qte.14.2020.09.11.19.14.01
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 11 Sep 2020 19:14:04 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 19:13:39 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Anup Patel <anup@brainfault.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jia He <justin.he@arm.com>, linux-arch@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+In-Reply-To: <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org> <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com> <alpine.LSU.2.11.2009091524260.10087@eggly.anvils> <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-2118919784-1599876844=:22739"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Atish Patra <atish.patra@wdc.com> =E6=96=BC 2020=E5=B9=B49=E6=9C=8812=E6=97=
-=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=889:34=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Currently, we perform some memory init functions in paging init. But,
-> that will be an issue for NUMA support where DT needs to be flattened
-> before numa initialization and memblock_present can only be called
-> after numa initialization.
->
-> Move memory initialization related functions to a separate function.
->
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/include/asm/pgtable.h | 1 +
->  arch/riscv/kernel/setup.c        | 1 +
->  arch/riscv/mm/init.c             | 6 +++++-
->  3 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
-table.h
-> index eaea1f717010..515b42f98d34 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -466,6 +466,7 @@ static inline void __kernel_map_pages(struct page *pa=
-ge, int numpages, int enabl
->  extern void *dtb_early_va;
->  void setup_bootmem(void);
->  void paging_init(void);
-> +void misc_mem_init(void);
->
->  #define FIRST_USER_ADDRESS  0
->
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 2c6dd329312b..07fa6d13367e 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -78,6 +78,7 @@ void __init setup_arch(char **cmdline_p)
->  #else
->         unflatten_device_tree();
->  #endif
-> +       misc_mem_init();
->
->  #ifdef CONFIG_SWIOTLB
->         swiotlb_init(1);
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 188281fc2816..8f31a5428ce4 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -568,8 +568,12 @@ static void __init resource_init(void)
->  void __init paging_init(void)
->  {
->         setup_vm_final();
-> -       sparse_init();
->         setup_zero_page();
-> +}
-> +
-> +void __init misc_mem_init(void)
-> +{
-> +       sparse_init();
->         zone_sizes_init();
->         resource_init();
->  }
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thank you, Atish.
-Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
+--0-2118919784-1599876844=:22739
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Fri, 11 Sep 2020, Alex Shi wrote:
+> =E5=9C=A8 2020/9/10 =E4=B8=8A=E5=8D=887:16, Hugh Dickins =E5=86=99=E9=81=
+=93:
+> > On Wed, 9 Sep 2020, Alex Shi wrote:
+> >> =E5=9C=A8 2020/9/9 =E4=B8=8A=E5=8D=887:41, Hugh Dickins =E5=86=99=E9=
+=81=93:
+> >>>
+> >>> [PATCH v18 05/32] mm/thp: remove code path which never got into
+> >>> This is a good simplification, but I see no sign that you understand
+> >>> why it's valid: it relies on lru_add_page_tail() being called while
+> >>> head refcount is frozen to 0: we would not get this far if someone
+> >>> else holds a reference to the THP - which they must hold if they have
+> >>> isolated the page from its lru (and that's true before or after your
+> >>> per-memcg changes - but even truer after those changes, since PageLRU
+> >>> can then be flipped without lru_lock at any instant): please explain
+> >>> something of this in the commit message.
+> >>
+> >> Is the following commit log better?
+> >>
+> >>     split_huge_page() will never call on a page which isn't on lru lis=
+t, so
+> >>     this code never got a chance to run, and should not be run, to add=
+ tail
+> >>     pages on a lru list which head page isn't there.
+> >>
+> >>     Hugh Dickins' mentioned:
+> >>     The path should never be called since lru_add_page_tail() being ca=
+lled
+> >>     while head refcount is frozen to 0: we would not get this far if s=
+omeone
+> >>     else holds a reference to the THP - which they must hold if they h=
+ave
+> >>     isolated the page from its lru.
+> >>
+> >>     Although the bug was never triggered, it'better be removed for cod=
+e
+> >>     correctness, and add a warn for unexpected calling.
+> >=20
+> > Not much better, no.  split_huge_page() can easily be called for a page
+> > which is not on the lru list at the time,=20
+>=20
+> Hi Hugh,
+>=20
+> Thanks for comments!
+>=20
+> There are some discussion on this point a couple of weeks ago,
+> https://lkml.org/lkml/2020/7/9/760
+>=20
+> Matthew Wilcox and Kirill have the following comments,
+> > I don't understand how we get to split_huge_page() with a page that's
+> > not on an LRU list.  Both anonymous and page cache pages should be on
+> > an LRU list.  What am I missing?
+>=20
+> Right, and it's never got removed from LRU during the split. The tail
+> pages have to be added to LRU because they now separate from the tail
+> page.
+>=20
+> --=20
+>  Kirill A. Shutemov
+
+Yes, those were among the mails that I read through before getting
+down to review.  I was surprised by their not understanding, but
+it was a bit late to reply to that thread.
+
+Perhaps everybody had been focused on pages which have been and
+naturally belong on an LRU list, rather than pages which are on
+the LRU list at the instant that split_huge_page() is called.
+
+There are a number of places where PageLRU gets cleared, and a
+number of places where we del_page_from_lru_list(), I think you'll
+agree: your patches touch all or most of them.  Let's think of a
+common one, isolate_lru_pages() used by page reclaim, but the same
+would apply to most of the others.
+
+Then there a number of places where split_huge_page() is called:
+I am having difficulty finding any of those which cannot race with
+page reclaim, but shall we choose anon THP's deferred_split_scan(),
+or shmem THP's shmem_punch_compound()?
+
+What prevents either of those from calling split_huge_page() at
+a time when isolate_lru_pages() has removed the page from LRU?
+
+But there's no problem in this race, because anyone isolating the
+page from LRU must hold their own reference to the page (to prevent
+it from being freed independently), and the can_split_huge_page() or
+page_ref_freeze() in split_huge_page_to_list() will detect that and
+fail the split with -EBUSY (or else succeed and prevent new references
+from being acquired).  So this case never reaches lru_add_page_tail().
+
+>=20
+> > and I don't know what was the
+> > bug which was never triggered. =20
+>=20
+> So the only path to the removed part should be a bug, like  sth here,
+> https://lkml.org/lkml/2020/7/10/118
+> or
+> https://lkml.org/lkml/2020/7/10/972
+
+Oh, the use of split_huge_page() in __iommu_dma_alloc_pages() is just
+nonsense, I thought it had already been removed - perhaps some debate
+over __GFP_COMP held it up.  Not something you need worry about in
+this patchset.
+
+>=20
+> > Stick with whatever text you end up with
+> > for the combination of 05/32 and 18/32, and I'll rewrite it after.
+>=20
+> I am not object to merge them into one, I just don't know how to say
+> clear about 2 patches in commit log. As patch 18, TestClearPageLRU
+> add the incorrect posibility of remove lru bit during split, that's
+> the reason of code path rewrite and a WARN there.
+
+I did not know that was why you were putting 18/32 in at that
+point, it does not mention TestClearPageLRU at all.  But the fact
+remains that it's a nice cleanup, contains a reassuring WARN if we
+got it wrong (and I've suggested a WARN on the other branch too),
+it was valid before your changes, and it's valid after your changes.
+Please merge it back into the uglier 05/32, and again I'll rewrite
+whatever comment you come up with if necessary.
+
+> >=20
+> >>> [PATCH v18 06/32] mm/thp: narrow lru locking
+> >>> Why? What part does this play in the series? "narrow lru locking" can
+> >>> also be described as "widen page cache locking":=20
+> >>
+> >> Uh, the page cache locking isn't widen, it's still on the old place.
+> >=20
+> > I'm not sure if you're joking there. Perhaps just a misunderstanding.
+> >=20
+> > Yes, patch 06/32 does not touch the xa_lock(&mapping->i_pages) and
+> > xa_lock(&swap_cache->i_pages) lines (odd how we've arrived at two of
+> > those, but please do not get into cleaning it up now); but it removes
+> > the spin_lock_irqsave(&pgdata->lru_lock, flags) which used to come
+> > before them, and inserts a spin_lock(&pgdat->lru_lock) after them.
+> >=20
+> > You call that narrowing the lru locking, okay, but I see it as also
+> > pushing the page cache locking outwards: before this patch, page cache
+> > lock was taken inside lru_lock; after this patch, page cache lock is
+> > taken outside lru_lock.  If you cannot see that, then I think you
+> > should not have touched this code at all; but it's what we have
+> > been testing, and I think we should go forward with it.
+> >=20
+> >>> But I wish you could give some reason for it in the commit message!
+> >>
+> >> It's a head scratch task. Would you like to tell me what's detailed in=
+fo=20
+> >> should be there? Thanks!
+> >=20
+> > So, you don't know why you did it either: then it will be hard to
+> > justify.  I guess I'll have to write something for it later.  I'm
+> > strongly tempted just to drop the patch, but expect it will become
+> > useful later, for using lock_page_memcg() before getting lru_lock.
+> >=20
+>=20
+> I thought the xa_lock and lru_lock relationship was described clear
+> in the commit log,
+
+You say "lru_lock and page cache xa_lock have no reason with current
+sequence", but you give no reason for inverting their sequence:
+"let's" is not a reason.
+
+> and still no idea of the move_lock in the chain.
+
+memcg->move_lock is what's at the heart of lock_page_memcg(), but
+as much as possible that tries to avoid the overhead of actually
+taking it, since moving memcg is a rare operation.  For lock ordering,
+see the diagram in mm/rmap.c, which 23/32 updates to match this change.
+
+Before this commit: lru_lock > move_lock > i_pages lock was the
+expected lock ordering (but it looks as if the lru_lock > move_lock
+requirement came from my per-memcg lru_lock patches).
+
+After this commit:  move_lock > i_pages lock > lru_lock is the
+required lock ordering, since there are strong reasons (in dirty
+writeback) for move_lock > i_pages lock.
+
+> Please refill them for what I overlooked.
+
+Will do, but not before reviewing your remaining patches.
+
+> Thanks!
+>=20
+> >>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> >>> Is that correct? Or Wei Yang suggested some part of it perhaps?
+> >>
+> >> Yes, we talked a lot to confirm the locking change is safe.
+> >=20
+> > Okay, but the patch was written by you, and sent by you to Andrew:
+> > that is not a case for "Signed-off-by: Someone Else".
+> >=20
+>=20
+> Ok. let's remove his signed-off.
+>=20
+> >>> [PATCH v18 27/32] mm/swap.c: optimizing __pagevec_lru_add lru_lock
+> >>> Could we please drop this one for the moment? And come back to it lat=
+er
+> >>> when the basic series is safely in.  It's a good idea to try sorting
+> >>> together those pages which come under the same lock (though my guess =
+is
+> >>> that they naturally gather themselves together quite well already); b=
+ut
+> >>> I'm not happy adding 360 bytes to the kernel stack here (and that in
+> >>> addition to 192 bytes of horrid pseudo-vma in the shmem swapin case),
+> >>> though that could be avoided by making it per-cpu. But I hope there's
+> >>> a simpler way of doing it, as efficient, but also useful for the othe=
+r
+> >>> pagevec operations here: perhaps scanning the pagevec for same page->
+> >>> mem_cgroup (and flags node bits), NULLing entries as they are done.
+> >>> Another, easily fixed, minor defect in this patch: if I'm reading it
+> >>> right, it reverses the order in which the pages are put on the lru?
+> >>
+> >> this patch could give about 10+% performance gain on my multiple memcg
+> >> readtwice testing. fairness locking cost the performance much.
+> >=20
+> > Good to know, should have been mentioned.  s/fairness/Repeated/
+> >=20
+> > But what was the gain or loss on your multiple memcg readtwice
+> > testing without this patch, compared against node-only lru_lock?
+> > The 80% gain mentioned before, I presume.  So this further
+> > optimization can wait until the rest is solid.
+>=20
+> the gain based on the patch 26.
+
+If I understand your brief comment there, you're saying that
+in a fixed interval of time, the baseline 5.9-rc did 100 runs,
+the patches up to and including 26/32 did 180 runs, then with
+27/32 on top, did 198 runs?
+
+That's a good improvement by 27/32, but not essential for getting
+the patchset in: I don't think 27/32 is the right way to do it,
+so I'd still prefer to hold it back from the "initial offering".
+
+>=20
+> >=20
+> >>
+> >> I also tried per cpu solution but that cause much trouble of per cpu f=
+unc
+> >> things, and looks no benefit except a bit struct size of stack, so if=
+=20
+> >> stack size still fine. May we could use the solution and improve it be=
+tter.
+> >> like, functionlize, fix the reverse issue etc.
+> >=20
+> > I don't know how important the stack depth consideration is nowadays:
+> > I still care, maybe others don't, since VMAP_STACK became an option.
+> >=20
+> > Yes, please fix the reversal (if I was right on that); and I expect
+> > you could use a singly linked list instead of the double.
+>=20
+> single linked list is more saving, but do we have to reverse walking to s=
+eek
+> the head or tail for correct sequence?
+
+I imagine all you need is to start off with a
+=09for (i =3D pagevec_count(pvec) - 1; i >=3D 0; i--)
+loop.
+
+>=20
+> >=20
+> > But I'll look for an alternative - later, once the urgent stuff
+> > is completed - and leave the acks on this patch to others.
+>=20
+> Ok, looking forward for your new solution!
+>=20
+> Thanks
+> Alex
+--0-2118919784-1599876844=:22739--
