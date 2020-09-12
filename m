@@ -2,221 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A792679D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26F92679EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgILLL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        id S1725825AbgILLWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgILLLP (ORCPT
+        with ESMTP id S1725834AbgILLWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:11:15 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A7BC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:11:14 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w3so14601974ljo.5
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:11:14 -0700 (PDT)
+        Sat, 12 Sep 2020 07:22:06 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431F0C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:22:00 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y4so14590595ljk.8
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:22:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=difJeTP+wV7JyemjeWX3GldS9tsqpKh0tmwoGysikgA=;
-        b=PHEEwmZH0GmE/ddgwQsvtRHwatJShCMl8y2YHwI7N4grJggqzM1xLhzEsjLeosNc9t
-         nnouvutJlZBAv+T3DkIn8zydOcB6d4qKPGPX3XgzaQSl8rEckvpDZkgXBUDmqZnYHkrE
-         n7tdrjSjl12tQhG2/cWnj+zy9zSL0o4NoCsJXtQQkakVGRfEBqGMWHRQBiCIWST5c76i
-         E2Bpq8CjKtVcVE+y7QWsVJM7w4toH+r7cbhss3XIeEz0hu2N29G6Lk/+eVDj8YNOZ4+H
-         U2WoMdzqMLsZXwe5XaJat9yNYPEVRKt0sAbhYVGTTC8Z8FjPIcie8ywoxH3t9httEGMA
-         d+/Q==
+        bh=N4XM0NGOBVrvxRIjbN8hNHboDvUOhNwTM2cQ78WbgOQ=;
+        b=BOxO26eY7fdi3kjFx2/i8247sbgu3bLtqaDUJF2O5Dz8oJoUMUR3QjPNgSAImAtwU5
+         wOeXIbkB3/lk8JV6ye7hme5qnGqvwbxD6cK2rNa3SngdTrtTF0Ee13Wqpb/7F0BdHoml
+         pRUgDROJjMEyLBVwZ16TI65DfZSvg0OTXWuc9Rv8IdGs8477jh2wNaltvNG3DUb2dtRW
+         7bXfdGx4UZlto77f+N7vwiCdxFlornVTH6BtCq/B9oDW3QfnARH6KCqdIH/PbaSEZT/G
+         hwTtc9PJkRvm7RvUYIo1tENNisa+4c9pczPp3KPoAtGGQ/l5AXaTMrQ5E08V0rscyiu5
+         oknA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=difJeTP+wV7JyemjeWX3GldS9tsqpKh0tmwoGysikgA=;
-        b=j3y4Rpy8hdvYhzwTOlhK94sv8QUfYUamxNPDSRTc5XCF2fOjoBdOkxGOrNfAEhSvlM
-         xn6ysoMxTAi8h5uF40OPzb1KT1/sB5kA9KgeE/46LiTtzQb9xo5QHmz+iUC05RGIKFh/
-         VdMOW+zKQptIWhyMWM0C+kXVj46ojOmGfsTDUP6DpRt7L7ZF/LvF+VLJOqTmay3MlpWL
-         dey1XP1zfYW2d1Bz/VkeKBJ2qhZXeye91G9P55eoQ8J+hD4zCLZ1PiNMywKj3RQzvYcw
-         45oD/HtlOWk3uPIAmB+yY3ZkaYaB0vsgj+u4LvDXytm++OKcAZyW/NXQZEhpwt38F1It
-         Oo0w==
-X-Gm-Message-State: AOAM531awAT9v2WDfEohmhgckyRxr9aKqttw0L9YpXdz8QHzwcKvYVto
-        iVesuYeCOYbzSJq1o9K+5s2QCOdpwyEa2WVNBilwCg==
-X-Google-Smtp-Source: ABdhPJzzO4J1ksW5rgtoJxMVbDnefY+BTIco1KcPrO3ijTsjJfIAo2n7aBEwVvZ7iqVJVytssUr0NCLz+Ssx70c/ZWM=
-X-Received: by 2002:a05:651c:107b:: with SMTP id y27mr2047736ljm.338.1599909072951;
- Sat, 12 Sep 2020 04:11:12 -0700 (PDT)
+        bh=N4XM0NGOBVrvxRIjbN8hNHboDvUOhNwTM2cQ78WbgOQ=;
+        b=C8aszuCUoUHZPkMy/UXptIMFQITuppzztYlZB3NWfr8ZoajoJs4tXPyPc5EQByoc5e
+         rPIPMJbO9mdh23DeFTtJcguzZ/keSI2M9TG3c4AEDmUpRK3I3R1bXfyDPo0dHGxkRL1h
+         z35bzlesyTlQ6wgBX74Kq/j9utxtaDolIk2mTkcIjGB/mRSIvhvKpw6d9XNlHcNdyB86
+         KVybDU302yKkzY4w8tYwMfN6q/kEV12++XKjkRec4CDTulPmpOvGSoaCai1YadhnbeJJ
+         sG40O5MDtXiKKZfRwW6uvWDfIwLY/ek914vXc3qzAXvGLSkalwqnSdVsF346SRuAhgLG
+         JR5Q==
+X-Gm-Message-State: AOAM530yoAfnxSxTIMupij0xpa5uQYHi5FpygiTetXeUQXcc4BWSvbjt
+        NkVSQnkMPBxY8+GyePGlLnxQxtE19Oy1mhIpoh4wNA==
+X-Google-Smtp-Source: ABdhPJwqN4Z3roEFA97X0gaDxoSq8NUqYoBglU/t/H2RePc2u5FV7yd43ijLS+EEbthcRDhQwcGKpT+GQ2CbiTALet8=
+X-Received: by 2002:a2e:4e09:: with SMTP id c9mr2338153ljb.283.1599909718644;
+ Sat, 12 Sep 2020 04:21:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903133528.8595-1-lars.povlsen@microchip.com> <20200903133528.8595-3-lars.povlsen@microchip.com>
-In-Reply-To: <20200903133528.8595-3-lars.povlsen@microchip.com>
+References: <20200905214955.907950-1-heiko@sntech.de>
+In-Reply-To: <20200905214955.907950-1-heiko@sntech.de>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 13:11:02 +0200
-Message-ID: <CACRpkdbUv4r+Cghs1e4OEFCW4Yd1bGGQcWZ5TEb2uDWnVXhPSw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl driver
- for Microsemi Serial GPIO
-To:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+Date:   Sat, 12 Sep 2020 13:21:47 +0200
+Message-ID: <CACRpkdYYtZRuuBpYpPCw1Dkpqr-53MgayebT-D2aZkbDUX1d-Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: rockchip: depend on OF
+To:     Heiko Stuebner <heiko@sntech.de>
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        kbuild test robot <lkp@intel.com>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 3:35 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+On Sat, Sep 5, 2020 at 11:50 PM Heiko Stuebner <heiko@sntech.de> wrote:
 
-> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
-> (SGPIO) device used in various SoC's.
+> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 >
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-(...)
+> The Rockchip pinctrl driver needs to handle information from Devicetree
+> so only makes sense getting compiled on systems with CONFIG_OF enabled.
+>
+> This also fixes a problem found by the "kernel-test-robot" when compiling
+> the driver on test-builds that do not have CONFIG_OF enabled:
+>
+>   drivers/pinctrl/pinctrl-rockchip.c: In function 'rockchip_pinctrl_parse_groups':
+> >> drivers/pinctrl/pinctrl-rockchip.c:2881:9: error: implicit declaration of function 'pinconf_generic_parse_dt_config'; did you mean 'pinconf_generic_dump_config'? [-Werror=implicit-function-declaration]
+>     2881 |   ret = pinconf_generic_parse_dt_config(np_config, NULL,
+>          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>          |         pinconf_generic_dump_config
+>    drivers/pinctrl/pinctrl-rockchip.c: In function 'rockchip_gpiolib_register':
+> >> drivers/pinctrl/pinctrl-rockchip.c:3473:5: error: 'struct gpio_chip' has no member named 'of_node'
+>     3473 |   gc->of_node = bank->of_node;
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
 
-> diff --git a/drivers/pinctrl/pinctrl-mchp-sgpio.c b/drivers/pinctrl/pinctrl-mchp-sgpio.c
-
-Can we just spell it out
-pinctrl-microchip-sgpio.c ?
-
-The abbreviation seems arbitrary and unnecessary.
-
-I do see that this chip is using the pinctrl abstractions (very nicely)
-and should be under drivers/pinctrl/*.
-
-Sadly it doesn't mean the bindings need to be in pinctrl ... unless you
-plan to add pinctrl bindings later.
-
-> +config PINCTRL_MCHP_SGPIO
-> +       bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
-> +       depends on OF
-> +       depends on HAS_IOMEM
-> +       select GPIOLIB
-> +       select GENERIC_PINCONF
-> +       select GENERIC_PINCTRL_GROUPS
-> +       select GENERIC_PINMUX_FUNCTIONS
-
-Nice use of these abstractions!
-
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-
-What's up with this OR MIT? I'd like Kate to OK this.
-
-> +#define MCHP_SGPIOS_PER_BANK   32
-> +#define MCHP_SGPIO_BANK_DEPTH  4
-> +
-> +#define PIN_NAM_SZ     (sizeof("SGPIO_D_pXXbY")+1)
-> +
-> +enum {
-> +       REG_INPUT_DATA,
-> +       REG_PORT_CONFIG,
-> +       REG_PORT_ENABLE,
-> +       REG_SIO_CONFIG,
-> +       REG_SIO_CLOCK,
-> +       MAXREG
-> +};
-> +
-> +struct mchp_sgpio_props {
-
-Just call it struct microchip_gpio_variant it is easier to read and
-does not abbreviate randomly, also it is a per-variant set of properties
-so calling it variant is more to the point.
-
-> +struct mchp_sgpio_priv {
-
-I would just spell it out struct microchip_sgpio, it is implicit that
-the struct is private since it is defined in a c file.
-
-> +struct mchp_sgpio_port_addr {
-
-struct microchip_sgpio_port_addr
-
-(Admittedly this is a bit about taste.)
-
-> +static inline void sgpio_writel(struct mchp_sgpio_priv *priv,
-> +                               u32 val, u32 rno, u32 off)
-> +{
-> +       u32 __iomem *reg = &priv->regs[priv->props->regoff[rno] + off];
-> +
-> +       writel(val, reg);
-> +}
-> +
-> +static inline void sgpio_clrsetbits(struct mchp_sgpio_priv *priv,
-> +                                   u32 rno, u32 off, u32 clear, u32 set)
-> +{
-> +       u32 __iomem *reg = &priv->regs[priv->props->regoff[rno] + off];
-> +       u32 val = readl(reg);
-> +
-> +       val &= ~clear;
-> +       val |= set;
-> +
-> +       writel(val, reg);
-> +}
-
-This looks like a reimplementation of regmap_update_bits for a bit,
-have you considered just using regmap? It's pretty simple.
-
-> +static int mchp_sgpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
-> +{
-> +       struct mchp_sgpio_priv *priv = gpiochip_get_data(gc);
-> +
-> +       /* Fixed-position function */
-> +       return sgpio_is_input(priv, gpio) ? 0 : -EINVAL;
-> +}
-> +
-> +static int mchp_sgpio_direction_output(struct gpio_chip *gc,
-> +                                      unsigned int gpio, int value)
-> +{
-> +       struct mchp_sgpio_priv *priv = gpiochip_get_data(gc);
-> +       struct mchp_sgpio_port_addr addr;
-> +
-> +       sgpio_pin_to_addr(priv, gpio, &addr);
-> +
-> +       /* Fixed-position function */
-> +       if (addr.input)
-> +               return -EINVAL;
-> +
-> +       sgpio_output_set(priv, &addr, value);
-> +
-> +       return 0;
-> +}
-
-This looks like the right way to handle this!
-
-> +static int mchp_sgpio_of_xlate(struct gpio_chip *gc,
-> +                              const struct of_phandle_args *gpiospec,
-> +                              u32 *flags)
-> +{
-> +       struct mchp_sgpio_priv *priv = gpiochip_get_data(gc);
-> +       int pin, base;
-> +
-> +       if (gpiospec->args[0] > MCHP_SGPIOS_PER_BANK ||
-> +           gpiospec->args[1] > priv->bitcount)
-> +               return -EINVAL;
-> +       base = priv->bitcount * gpiospec->args[0];
-> +       pin = base + gpiospec->args[1];
-> +       /* Add to 2nd half of output range if output */
-> +       if (gpiospec->args[2] == PIN_OUTPUT)
-> +               pin += (priv->ngpios / 2);
-> +
-> +       if (pin > gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       if (flags)
-> +               *flags = gpiospec->args[3];
-> +
-> +       return pin;
-> +}
-
-I don't like this. I would certainly prefer the driver to just use standard
-GPIO bindings. I do not understand why this is necessary.
-
-If for nothing else, there should be a big comment explaining this.
-
-The only real problem I have with the driver is this extra flag tagged onto
-all the GPIOs, this seems unnecessary, and something the hardware
-driver should already know from the compatible string.
+Patch applied.
 
 Yours,
 Linus Walleij
