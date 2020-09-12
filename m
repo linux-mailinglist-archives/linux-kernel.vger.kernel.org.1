@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDA2267948
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DF526794B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgILJtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 05:49:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34496 "EHLO mail.kernel.org"
+        id S1725862AbgILJtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 05:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725813AbgILJtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 05:49:21 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        id S1725813AbgILJtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 05:49:31 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A120214D8;
-        Sat, 12 Sep 2020 09:49:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 368FA2158C;
+        Sat, 12 Sep 2020 09:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599904160;
-        bh=oNheghBTMGf20w2jhhK9s/ksfsN7xnyd7oIDFq5CbBY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QFLfSjoAuAjG/LccnLPi94ijxxhgGL4A9K6lBEHWAJGH3YtCknJykEXLonywG/SHP
-         eGe9+KTYvAcqDEefc4DJa3JmUC8wGOu0amfrLzaB3ZVPcLZXyo/9Pe4k2wvmD6xuBG
-         ZlKKbfZzIQSthP6DiiTUfxBKKv7XeQXVSOanWBpc=
-Date:   Sat, 12 Sep 2020 17:49:14 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>
-Cc:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Varun Sethi <V.Sethi@nxp.com>, Leo Li <leoyang.li@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Kuldeep Singh <kuldeep.singh@nxp.com>
-Subject: Re: [PATCH 2/2] arm64: dts: lx2160a: add device tree for lx2162aqds
- board
-Message-ID: <20200912094913.GB25109@dragon>
-References: <1599059610-7570-1-git-send-email-meenakshi.aggarwal@nxp.com>
- <1599059610-7570-2-git-send-email-meenakshi.aggarwal@nxp.com>
- <20200905075419.GN9261@dragon>
- <AM7PR04MB688571606382A8992C71E8E38E260@AM7PR04MB6885.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM7PR04MB688571606382A8992C71E8E38E260@AM7PR04MB6885.eurprd04.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1599904171;
+        bh=4vje+z9+P6A/HC9X/gDMYBUeRvdaF/zQ7kLSuIEw1do=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oxayzcTNssw5o2mMEsYCc3td5fpoy0deB3Eo0TXBLd80gCTxjsNdBI4ooKQO1gJ8D
+         N98hW+iLFJ6V1BYfzrfKJz9gm3ZqtrThvnSkgPqu9b+4sCI42SfQERxnUtacEjDEZU
+         6Hvu+OyENBdgs7x9YHQmadotRkLKxH1u5n5GjU54=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kH29x-00BCtT-BA; Sat, 12 Sep 2020 10:49:29 +0100
+Date:   Sat, 12 Sep 2020 10:49:28 +0100
+Message-ID: <87lfhfl3yv.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     tglx@linutronix.de, jason@lakedaemon.net, s-anna@ti.com,
+        robh+dt@kernel.org, lee.jones@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        david@lechnology.com, praneeth@ti.com
+Subject: Re: [RESEND PATCH v5 4/5] irqchip/irq-pruss-intc: Implement irq_{get,set}_irqchip_state ops
+In-Reply-To: <1598886558-16546-5-git-send-email-grzegorz.jaszczyk@linaro.org>
+References: <1598886558-16546-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+        <1598886558-16546-5-git-send-email-grzegorz.jaszczyk@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: grzegorz.jaszczyk@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, s-anna@ti.com, robh+dt@kernel.org, lee.jones@linaro.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, david@lechnology.com, praneeth@ti.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 07:10:12AM +0000, Meenakshi Aggarwal wrote:
-> > > +	sb_3v3: regulator-sb3v3 {
-> > > +		compatible = "regulator-fixed";
-> > > +		regulator-name = "MC34717-3.3VSB";
-> > > +		regulator-min-microvolt = <3300000>;
-> > > +		regulator-max-microvolt = <3300000>;
-> > > +		regulator-boot-on;
-> > > +		regulator-always-on;
-> > 
-> > I do not see any point to have regulator-boot-on or regulator-always-on for a
-> > regulator that doesn't have on/off control.
-> [Meenakshi Aggarwal] Properties are added to specify that platform firmware's out of reset configuration enabled the regulator and 
-> regulator should never be disabled or change its operative status.
-
-What I was wondering if how this regulator is enabled by firmware, by
-some GPIO control?  In that case, 'gpio' property should be there to
-describe the GPIO control.
-
+On Mon, 31 Aug 2020 16:09:17 +0100,
+Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org> wrote:
 > 
-> Can you help in understanding why these optional properties cannot be used together
+> From: David Lechner <david@lechnology.com>
+> 
+> This implements the irq_get_irqchip_state and irq_set_irqchip_state
+> callbacks for the TI PRUSS INTC driver. The set callback can be used
+> by drivers to "kick" a PRU by injecting a PRU system event.
+> 
+> Example:
+>      irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
+>
 
-It's totally fine to use these properties together.  But if the
-regulator doesn't have on/off control, neither of them makes sense.
+Please drop this "example", it brings nothing without the full
+context. This patch just implements a standard callback.
 
-Shawn
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
