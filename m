@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A95267A20
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A28267A22
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbgILLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:47:30 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12240 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725885AbgILLqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:46:09 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3B5DF83C78525F93F05F;
-        Sat, 12 Sep 2020 19:46:02 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 12 Sep 2020 19:45:56 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Jianguo Chen <chenjianguo3@huawei.com>
-Subject: [PATCH v2 9/9] dt-bindings: sp804: add support for Hisilicon sp804 timer
-Date:   Sat, 12 Sep 2020 19:45:36 +0800
-Message-ID: <20200912114536.2910-10-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200912114536.2910-1-thunder.leizhen@huawei.com>
-References: <20200912114536.2910-1-thunder.leizhen@huawei.com>
+        id S1725956AbgILLs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:48:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbgILLrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 07:47:19 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 027F7214D8;
+        Sat, 12 Sep 2020 11:47:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599911223;
+        bh=tcy2pv8jwy7gfP4u9YzIxvq8wYbaPrazMLwunNOxOtM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ir6W8kWKHKmWml+SmsxBudZOi7onIp501EbyEtnnXDc54J75qcJaKzYZsHfimml2k
+         CB7SRGWB7Jdj4ocEg12OCYfbFAugkcOvOh9BBD/126Zu5Xgd+Lzbnj4zgqj/QSPpAx
+         uBGo7/iOuzOLu72E9Jv3ye3bfdLHmzoa9P8dZPKk=
+Date:   Sat, 12 Sep 2020 13:47:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Using a pointer and kzalloc in place of a struct directly
+Message-ID: <20200912114706.GA171774@kroah.com>
+References: <000000000000c82fe505aef233c6@google.com>
+ <20200912113804.6465-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912113804.6465-1-anant.thazhemadam@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Hisilicon SoCs, such as Hi1212, use the Hisilicon extended sp804
-timer.
+On Sat, Sep 12, 2020 at 05:08:04PM +0530, Anant Thazhemadam wrote:
+> Updated the usage of a struct variable directly, in bpf_link_get_info_by_fd
+> to using a pointer of the same type instead, which points to a memory 
+> location allocated using kzalloc.
+> 
+> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- Documentation/devicetree/bindings/timer/arm,sp804.txt | 2 ++
- 1 file changed, 2 insertions(+)
+Note, your "To:" line seemed corrupted, and why not cc: the bpf mailing
+list as well?
 
-diff --git a/Documentation/devicetree/bindings/timer/arm,sp804.txt b/Documentation/devicetree/bindings/timer/arm,sp804.txt
-index 5cd8eee74af1..01a5451d33f2 100644
---- a/Documentation/devicetree/bindings/timer/arm,sp804.txt
-+++ b/Documentation/devicetree/bindings/timer/arm,sp804.txt
-@@ -3,6 +3,8 @@ ARM sp804 Dual Timers
- 
- Required properties:
- - compatible: Should be "arm,sp804" & "arm,primecell"
-+	or "hisilicon,sp804" & "arm,primecell" for some Hisilicon SoCs,
-+	such as Hi1212.
- - interrupts: Should contain the list of Dual Timer interrupts. This is the
- 	interrupt for timer 1 and timer 2. In the case of a single entry, it is
- 	the combined interrupt or if "arm,sp804-has-irq" is present that
--- 
-2.26.0.106.g9fadedd
+Anyway, comment on your patch below:
 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 4108ef3b828b..01b9c203ef65 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3605,30 +3605,31 @@ static int bpf_link_get_info_by_fd(struct file *file,
+>  				  union bpf_attr __user *uattr)
+>  {
+>  	struct bpf_link_info __user *uinfo = u64_to_user_ptr(attr->info.info);
+> -	struct bpf_link_info info;
+> +	struct bpf_link_info *info = NULL;
+>  	u32 info_len = attr->info.info_len;
+>  	int err;
+>  
+> -	err = bpf_check_uarg_tail_zero(uinfo, sizeof(info), info_len);
+> +	err = bpf_check_uarg_tail_zero(uinfo, sizeof(struct bpf_link_info), info_len);
+> +
+>  	if (err)
+>  		return err;
+>  	info_len = min_t(u32, sizeof(info), info_len);
+>  
+> -	memset(&info, 0, sizeof(info));
+> -	if (copy_from_user(&info, uinfo, info_len))
+> +	info = kzalloc(sizeof(struct bpf_link_info), GFP_KERNEL);
+> +	if (copy_from_user(info, uinfo, info_len))
+>  		return -EFAULT;
 
+You leaked memory :(
+
+Did you test this patch?  Where do you free this memory, I don't see
+that happening anywhere in this patch, did I miss it?
+
+And odds are this change will slow things down, right?  Why make this
+change, what's wrong with the structure being on the stack?
+
+thanks,
+
+greg k-h
