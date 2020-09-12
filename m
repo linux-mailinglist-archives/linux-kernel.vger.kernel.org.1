@@ -2,184 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2A1267719
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 03:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B672267721
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 03:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgILBgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 21:36:13 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:40554 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgILBfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 21:35:18 -0400
-Received: by mail-io1-f72.google.com with SMTP id f8so8045089iow.7
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 18:35:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=1Au+jF0U9NdQpjmGSupuqP1uY7GjUPeo4ovRK8rNqtg=;
-        b=MFkOWcGdxbKXzxoMJF8jxr0fUU7kslV/BH4SjigOpvY0EblCZ+mp0SmoW0wqkYPHT5
-         XGabBFu8YownY22mXJsWQx+sX4iNht6X5KUTCtVSYefBo2IcZIHSyiZJoLnUdQXWy5YZ
-         K2i8bDEC7vJgQHxpjoEAhpWAJxEI2h9p7MKMkaAj8TKo431hNpifeat/rC5v7zwcSyVP
-         wmrBJKYnzSIz5K10oigQbIBHq2p6V0k2ZHmi+FWKvRXxN+bZg8n2H2+A6TG4gwIfHdHi
-         iIa/4cyC/MVNv55gnJvv8CZj6Zr8woM4h1wTp6up6iRGYsAftP4/aih4WX3qaKV4vi4b
-         oaIQ==
-X-Gm-Message-State: AOAM5310jDWQGsyNtyQlHPQFiV38w88e6Fa7oORW1VCRxdnNrBgwVEAI
-        7r37CbXHS+zs/S+Pq2KhOGt6xF3ZKVr9lXhTJd6bf1F0f5v6
-X-Google-Smtp-Source: ABdhPJykGvkkfF0TalkCAFdl6JKCUiPAmVhfOt5G9R1UhpC7B/l/0I/FrHN9AfoIj2ouf2dGbvl10ZQCmRDRvIvA/3F/8kp7mqZ8
-MIME-Version: 1.0
-X-Received: by 2002:a6b:fb0c:: with SMTP id h12mr3621463iog.98.1599874514946;
- Fri, 11 Sep 2020 18:35:14 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 18:35:14 -0700
-In-Reply-To: <0000000000004991e705ac9d1a83@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000026136505af13d0ab@google.com>
-Subject: Re: inconsistent lock state in sco_conn_del
-From:   syzbot <syzbot+65684128cd7c35bc66a1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1725777AbgILByt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 21:54:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48738 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725681AbgILByq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 21:54:46 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxyMRfKlxf8LUUAA--.5028S2;
+        Sat, 12 Sep 2020 09:54:39 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: netlogic: Remove unused code
+Date:   Sat, 12 Sep 2020 09:54:39 +0800
+Message-Id: <1599875679-8741-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxyMRfKlxf8LUUAA--.5028S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr1UuFW5Zr1DWrWfAw15XFb_yoWftrb_C3
+        y3Za17G3ySgr17WrW3Xr93JryDCr48Xwn7C3ZxZrs0yrnxAr45J3yUtw4xZ3y7uay2vrZ5
+        Zay5K3yUtr1kWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb28YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_KwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY_M3UUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Remove some unused code.
 
-HEAD commit:    e8878ab8 Merge tag 'spi-fix-v5.9-rc4' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12130759900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=65684128cd7c35bc66a1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ef0fd900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c3a853900000
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/include/asm/netlogic/psb-bootinfo.h | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+65684128cd7c35bc66a1@syzkaller.appspotmail.com
-
-================================
-WARNING: inconsistent lock state
-5.9.0-rc4-syzkaller #0 Not tainted
---------------------------------
-inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
-syz-executor675/31233 [HC0[0]:SC0[0]:HE1:SE1] takes:
-ffff8880a75c50a0 (slock-AF_BLUETOOTH-BTPROTO_SCO){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff8880a75c50a0 (slock-AF_BLUETOOTH-BTPROTO_SCO){+.?.}-{2:2}, at: sco_conn_del+0x128/0x270 net/bluetooth/sco.c:176
-{IN-SOFTIRQ-W} state was registered at:
-  lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
-  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-  spin_lock include/linux/spinlock.h:354 [inline]
-  sco_sock_timeout+0x24/0x140 net/bluetooth/sco.c:83
-  call_timer_fn+0x1ac/0x760 kernel/time/timer.c:1413
-  expire_timers kernel/time/timer.c:1458 [inline]
-  __run_timers.part.0+0x67c/0xaa0 kernel/time/timer.c:1755
-  __run_timers kernel/time/timer.c:1736 [inline]
-  run_timer_softirq+0xae/0x1a0 kernel/time/timer.c:1768
-  __do_softirq+0x1f7/0xa91 kernel/softirq.c:298
-  asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
-  __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
-  run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
-  do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
-  invoke_softirq kernel/softirq.c:393 [inline]
-  __irq_exit_rcu kernel/softirq.c:423 [inline]
-  irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
-  sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
-  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-  unwind_next_frame+0x139a/0x1f90 arch/x86/kernel/unwind_orc.c:607
-  arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
-  stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:123
-  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
-  kasan_set_track mm/kasan/common.c:56 [inline]
-  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
-  slab_post_alloc_hook mm/slab.h:518 [inline]
-  slab_alloc mm/slab.c:3312 [inline]
-  kmem_cache_alloc+0x13a/0x3a0 mm/slab.c:3482
-  __d_alloc+0x2a/0x950 fs/dcache.c:1709
-  d_alloc+0x4a/0x230 fs/dcache.c:1788
-  d_alloc_parallel+0xe9/0x18e0 fs/dcache.c:2540
-  lookup_open.isra.0+0x9ac/0x1350 fs/namei.c:3030
-  open_last_lookups fs/namei.c:3177 [inline]
-  path_openat+0x96d/0x2730 fs/namei.c:3365
-  do_filp_open+0x17e/0x3c0 fs/namei.c:3395
-  do_sys_openat2+0x16d/0x420 fs/open.c:1168
-  do_sys_open fs/open.c:1184 [inline]
-  __do_sys_open fs/open.c:1192 [inline]
-  __se_sys_open fs/open.c:1188 [inline]
-  __x64_sys_open+0x119/0x1c0 fs/open.c:1188
-  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-irq event stamp: 853
-hardirqs last  enabled at (853): [<ffffffff87f733af>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
-hardirqs last  enabled at (853): [<ffffffff87f733af>] _raw_spin_unlock_irq+0x1f/0x80 kernel/locking/spinlock.c:199
-hardirqs last disabled at (852): [<ffffffff87f73764>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
-hardirqs last disabled at (852): [<ffffffff87f73764>] _raw_spin_lock_irq+0xa4/0xd0 kernel/locking/spinlock.c:167
-softirqs last  enabled at (0): [<ffffffff8144c929>] copy_process+0x1a99/0x6920 kernel/fork.c:2018
-softirqs last disabled at (0): [<0000000000000000>] 0x0
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
-  <Interrupt>
-    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
-
- *** DEADLOCK ***
-
-3 locks held by syz-executor675/31233:
- #0: ffff88809f104f40 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close+0xf5/0x1080 net/bluetooth/hci_core.c:1720
- #1: ffff88809f104078 (&hdev->lock){+.+.}-{3:3}, at: hci_dev_do_close+0x253/0x1080 net/bluetooth/hci_core.c:1757
- #2: ffffffff8a9188c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_disconn_cfm include/net/bluetooth/hci_core.h:1435 [inline]
- #2: ffffffff8a9188c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_conn_hash_flush+0xc7/0x220 net/bluetooth/hci_conn.c:1557
-
-stack backtrace:
-CPU: 1 PID: 31233 Comm: syz-executor675 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_usage_bug kernel/locking/lockdep.c:4020 [inline]
- valid_state kernel/locking/lockdep.c:3361 [inline]
- mark_lock_irq kernel/locking/lockdep.c:3560 [inline]
- mark_lock.cold+0x7a/0x7f kernel/locking/lockdep.c:4006
- mark_usage kernel/locking/lockdep.c:3923 [inline]
- __lock_acquire+0x876/0x5570 kernel/locking/lockdep.c:4380
- lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- sco_conn_del+0x128/0x270 net/bluetooth/sco.c:176
- sco_disconn_cfm net/bluetooth/sco.c:1178 [inline]
- sco_disconn_cfm+0x62/0x80 net/bluetooth/sco.c:1171
- hci_disconn_cfm include/net/bluetooth/hci_core.h:1438 [inline]
- hci_conn_hash_flush+0x114/0x220 net/bluetooth/hci_conn.c:1557
- hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1770
- hci_unregister_dev+0x1bd/0xe30 net/bluetooth/hci_core.c:3790
- vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0xb7d/0x29f0 kernel/exit.c:806
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
- exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x447279
-Code: Bad RIP value.
-RSP: 002b:00007fd19f624d88 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 00000000006dcc28 RCX: 0000000000447279
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006dcc28
-RBP: 00000000006dcc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc2c
-R13: 0000000000000004 R14: 0000000000000003 R15: 00007fd19f6256d0
+diff --git a/arch/mips/include/asm/netlogic/psb-bootinfo.h b/arch/mips/include/asm/netlogic/psb-bootinfo.h
+index 6878307..272544b 100644
+--- a/arch/mips/include/asm/netlogic/psb-bootinfo.h
++++ b/arch/mips/include/asm/netlogic/psb-bootinfo.h
+@@ -77,21 +77,6 @@ struct psb_info {
+ 	uint64_t avail_mem_map;
+ };
+ 
+-enum {
+-	NETLOGIC_IO_SPACE = 0x10,
+-	PCIX_IO_SPACE,
+-	PCIX_CFG_SPACE,
+-	PCIX_MEMORY_SPACE,
+-	HT_IO_SPACE,
+-	HT_CFG_SPACE,
+-	HT_MEMORY_SPACE,
+-	SRAM_SPACE,
+-	FLASH_CONTROLLER_SPACE
+-};
+-
+-#define NLM_MAX_ARGS	64
+-#define NLM_MAX_ENVS	32
+-
+ /* This is what netlboot passes and linux boot_mem_map is subtly different */
+ #define NLM_BOOT_MEM_MAP_MAX	32
+ struct nlm_boot_mem_map {
+-- 
+2.1.0
 
