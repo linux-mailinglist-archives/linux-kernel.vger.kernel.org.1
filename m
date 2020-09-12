@@ -2,96 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8ED42679C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A792679D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbgILLKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        id S1725885AbgILLL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgILLJw (ORCPT
+        with ESMTP id S1725994AbgILLLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:09:52 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C364AC061346
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:08:36 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o68so9214496pfg.2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:08:36 -0700 (PDT)
+        Sat, 12 Sep 2020 07:11:15 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A7BC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:11:14 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w3so14601974ljo.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:11:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FZnp4yDc6/H8oZY5gPE0ntNCiw9S8Y24vH6szdlcBNQ=;
-        b=Zk/gIvdNfjQE/2unl26djetvFbMWk4A8shRgP7V779rbL1iDmAqb/WJsaeUEyvkWho
-         8jG+lsS6GNlo3kWdNKOEks2fdvmH3bO73kMlDWOuyuO55TqqWNyvjERND1Wyg09jCOar
-         c+he/PZbFxcnDUtW7NY4RKVcPovh+GacMTNqc=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=difJeTP+wV7JyemjeWX3GldS9tsqpKh0tmwoGysikgA=;
+        b=PHEEwmZH0GmE/ddgwQsvtRHwatJShCMl8y2YHwI7N4grJggqzM1xLhzEsjLeosNc9t
+         nnouvutJlZBAv+T3DkIn8zydOcB6d4qKPGPX3XgzaQSl8rEckvpDZkgXBUDmqZnYHkrE
+         n7tdrjSjl12tQhG2/cWnj+zy9zSL0o4NoCsJXtQQkakVGRfEBqGMWHRQBiCIWST5c76i
+         E2Bpq8CjKtVcVE+y7QWsVJM7w4toH+r7cbhss3XIeEz0hu2N29G6Lk/+eVDj8YNOZ4+H
+         U2WoMdzqMLsZXwe5XaJat9yNYPEVRKt0sAbhYVGTTC8Z8FjPIcie8ywoxH3t9httEGMA
+         d+/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FZnp4yDc6/H8oZY5gPE0ntNCiw9S8Y24vH6szdlcBNQ=;
-        b=msaEHDD6m011TfyVkaDmEzt+Xl4ZfyLA331HxOunlb1VzUPn1vFkbQBDukkJdbO3JR
-         jS0YgcSFKpNMEjTuDGMwqGzowPdA/Ww2WKczVyKfJUkmZeo9paKCcWPdDzDA0XKXkmxc
-         rNfUK6lUz9sbqoxbVc36gnzuRHQm4R6eQdfMl2LBhTt74vZryNISuJvvdF/FWw45OQt5
-         K0lgouqvWpi5+Lf+KSh6SRWHIfKUWb13TbM4ejvu+CHBf3oj/S76Q/+KZEkSD3gpnndp
-         OmscgPSHtqsT3CbFE//4YKSgbbHGsAWxlHZfbDCQWJPP8y2n1c1IN7sduvATzExS2Pg8
-         6zjg==
-X-Gm-Message-State: AOAM532GQoGW1AkA1/xawqCOU6mYe3W0A+WQNNXhZxLIBWRI/SNfxXKM
-        oeS7C1Nf0/SJ86OHGI/019t+oQ==
-X-Google-Smtp-Source: ABdhPJxq4vqIb6iJR4MN1IGlGkXsD9IVC0sP3rRF3lcvwIHfpvEszE0WWk+A5K78Aa5hwg8SNrEAAg==
-X-Received: by 2002:aa7:9ac9:0:b029:13e:d13d:a133 with SMTP id x9-20020aa79ac90000b029013ed13da133mr6030859pfp.27.1599908916069;
-        Sat, 12 Sep 2020 04:08:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 17sm4796064pfi.55.2020.09.12.04.08.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 04:08:34 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 15/15] selftests/seccomp: Use __NR_mknodat instead of __NR_mknod
-Date:   Sat, 12 Sep 2020 04:08:20 -0700
-Message-Id: <20200912110820.597135-16-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200912110820.597135-1-keescook@chromium.org>
-References: <20200912110820.597135-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=difJeTP+wV7JyemjeWX3GldS9tsqpKh0tmwoGysikgA=;
+        b=j3y4Rpy8hdvYhzwTOlhK94sv8QUfYUamxNPDSRTc5XCF2fOjoBdOkxGOrNfAEhSvlM
+         xn6ysoMxTAi8h5uF40OPzb1KT1/sB5kA9KgeE/46LiTtzQb9xo5QHmz+iUC05RGIKFh/
+         VdMOW+zKQptIWhyMWM0C+kXVj46ojOmGfsTDUP6DpRt7L7ZF/LvF+VLJOqTmay3MlpWL
+         dey1XP1zfYW2d1Bz/VkeKBJ2qhZXeye91G9P55eoQ8J+hD4zCLZ1PiNMywKj3RQzvYcw
+         45oD/HtlOWk3uPIAmB+yY3ZkaYaB0vsgj+u4LvDXytm++OKcAZyW/NXQZEhpwt38F1It
+         Oo0w==
+X-Gm-Message-State: AOAM531awAT9v2WDfEohmhgckyRxr9aKqttw0L9YpXdz8QHzwcKvYVto
+        iVesuYeCOYbzSJq1o9K+5s2QCOdpwyEa2WVNBilwCg==
+X-Google-Smtp-Source: ABdhPJzzO4J1ksW5rgtoJxMVbDnefY+BTIco1KcPrO3ijTsjJfIAo2n7aBEwVvZ7iqVJVytssUr0NCLz+Ssx70c/ZWM=
+X-Received: by 2002:a05:651c:107b:: with SMTP id y27mr2047736ljm.338.1599909072951;
+ Sat, 12 Sep 2020 04:11:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200903133528.8595-1-lars.povlsen@microchip.com> <20200903133528.8595-3-lars.povlsen@microchip.com>
+In-Reply-To: <20200903133528.8595-3-lars.povlsen@microchip.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 13:11:02 +0200
+Message-ID: <CACRpkdbUv4r+Cghs1e4OEFCW4Yd1bGGQcWZ5TEb2uDWnVXhPSw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] pinctrl: pinctrl-mchp-sgpio: Add pinctrl driver
+ for Microsemi Serial GPIO
+To:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __NR_mknod syscall doesn't exist on arm64 (only __NR_mknodat).
-Switch to the modern syscall.
+On Thu, Sep 3, 2020 at 3:35 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
 
-Fixes: ad5682184a81 ("selftests/seccomp: Check for EPOLLHUP for user_notif")
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> This adds a pinctrl driver for the Microsemi/Microchip Serial GPIO
+> (SGPIO) device used in various SoC's.
+>
+> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+(...)
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 26c712c6a575..b34ede28f314 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -3773,7 +3773,7 @@ TEST(user_notification_filter_empty)
- 	if (pid == 0) {
- 		int listener;
- 
--		listener = user_notif_syscall(__NR_mknod, SECCOMP_FILTER_FLAG_NEW_LISTENER);
-+		listener = user_notif_syscall(__NR_mknodat, SECCOMP_FILTER_FLAG_NEW_LISTENER);
- 		if (listener < 0)
- 			_exit(EXIT_FAILURE);
- 
--- 
-2.25.1
+> diff --git a/drivers/pinctrl/pinctrl-mchp-sgpio.c b/drivers/pinctrl/pinctrl-mchp-sgpio.c
 
+Can we just spell it out
+pinctrl-microchip-sgpio.c ?
+
+The abbreviation seems arbitrary and unnecessary.
+
+I do see that this chip is using the pinctrl abstractions (very nicely)
+and should be under drivers/pinctrl/*.
+
+Sadly it doesn't mean the bindings need to be in pinctrl ... unless you
+plan to add pinctrl bindings later.
+
+> +config PINCTRL_MCHP_SGPIO
+> +       bool "Pinctrl driver for Microsemi/Microchip Serial GPIO"
+> +       depends on OF
+> +       depends on HAS_IOMEM
+> +       select GPIOLIB
+> +       select GENERIC_PINCONF
+> +       select GENERIC_PINCTRL_GROUPS
+> +       select GENERIC_PINMUX_FUNCTIONS
+
+Nice use of these abstractions!
+
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+
+What's up with this OR MIT? I'd like Kate to OK this.
+
+> +#define MCHP_SGPIOS_PER_BANK   32
+> +#define MCHP_SGPIO_BANK_DEPTH  4
+> +
+> +#define PIN_NAM_SZ     (sizeof("SGPIO_D_pXXbY")+1)
+> +
+> +enum {
+> +       REG_INPUT_DATA,
+> +       REG_PORT_CONFIG,
+> +       REG_PORT_ENABLE,
+> +       REG_SIO_CONFIG,
+> +       REG_SIO_CLOCK,
+> +       MAXREG
+> +};
+> +
+> +struct mchp_sgpio_props {
+
+Just call it struct microchip_gpio_variant it is easier to read and
+does not abbreviate randomly, also it is a per-variant set of properties
+so calling it variant is more to the point.
+
+> +struct mchp_sgpio_priv {
+
+I would just spell it out struct microchip_sgpio, it is implicit that
+the struct is private since it is defined in a c file.
+
+> +struct mchp_sgpio_port_addr {
+
+struct microchip_sgpio_port_addr
+
+(Admittedly this is a bit about taste.)
+
+> +static inline void sgpio_writel(struct mchp_sgpio_priv *priv,
+> +                               u32 val, u32 rno, u32 off)
+> +{
+> +       u32 __iomem *reg = &priv->regs[priv->props->regoff[rno] + off];
+> +
+> +       writel(val, reg);
+> +}
+> +
+> +static inline void sgpio_clrsetbits(struct mchp_sgpio_priv *priv,
+> +                                   u32 rno, u32 off, u32 clear, u32 set)
+> +{
+> +       u32 __iomem *reg = &priv->regs[priv->props->regoff[rno] + off];
+> +       u32 val = readl(reg);
+> +
+> +       val &= ~clear;
+> +       val |= set;
+> +
+> +       writel(val, reg);
+> +}
+
+This looks like a reimplementation of regmap_update_bits for a bit,
+have you considered just using regmap? It's pretty simple.
+
+> +static int mchp_sgpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
+> +{
+> +       struct mchp_sgpio_priv *priv = gpiochip_get_data(gc);
+> +
+> +       /* Fixed-position function */
+> +       return sgpio_is_input(priv, gpio) ? 0 : -EINVAL;
+> +}
+> +
+> +static int mchp_sgpio_direction_output(struct gpio_chip *gc,
+> +                                      unsigned int gpio, int value)
+> +{
+> +       struct mchp_sgpio_priv *priv = gpiochip_get_data(gc);
+> +       struct mchp_sgpio_port_addr addr;
+> +
+> +       sgpio_pin_to_addr(priv, gpio, &addr);
+> +
+> +       /* Fixed-position function */
+> +       if (addr.input)
+> +               return -EINVAL;
+> +
+> +       sgpio_output_set(priv, &addr, value);
+> +
+> +       return 0;
+> +}
+
+This looks like the right way to handle this!
+
+> +static int mchp_sgpio_of_xlate(struct gpio_chip *gc,
+> +                              const struct of_phandle_args *gpiospec,
+> +                              u32 *flags)
+> +{
+> +       struct mchp_sgpio_priv *priv = gpiochip_get_data(gc);
+> +       int pin, base;
+> +
+> +       if (gpiospec->args[0] > MCHP_SGPIOS_PER_BANK ||
+> +           gpiospec->args[1] > priv->bitcount)
+> +               return -EINVAL;
+> +       base = priv->bitcount * gpiospec->args[0];
+> +       pin = base + gpiospec->args[1];
+> +       /* Add to 2nd half of output range if output */
+> +       if (gpiospec->args[2] == PIN_OUTPUT)
+> +               pin += (priv->ngpios / 2);
+> +
+> +       if (pin > gc->ngpio)
+> +               return -EINVAL;
+> +
+> +       if (flags)
+> +               *flags = gpiospec->args[3];
+> +
+> +       return pin;
+> +}
+
+I don't like this. I would certainly prefer the driver to just use standard
+GPIO bindings. I do not understand why this is necessary.
+
+If for nothing else, there should be a big comment explaining this.
+
+The only real problem I have with the driver is this extra flag tagged onto
+all the GPIOs, this seems unnecessary, and something the hardware
+driver should already know from the compatible string.
+
+Yours,
+Linus Walleij
