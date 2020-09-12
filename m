@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC040267962
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D14F267963
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725843AbgILKKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 06:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S1725845AbgILKOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 06:14:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgILKKi (ORCPT
+        with ESMTP id S1725817AbgILKOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 06:10:38 -0400
+        Sat, 12 Sep 2020 06:14:12 -0400
 Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC87C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:10:37 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b12so8352030lfp.9
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:10:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFE2C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:14:12 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id z17so8344824lfi.12
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IDTYW3trvJhHdaQhRFqDVdIqzcok74e7pbHeU+yogTA=;
-        b=a0OfaWjMNAUmatft5DHcMJCpcnT45zK5jdP/4JhxgcfIa0Y133kYVJ613Yl/XPRUIN
-         vZgnToloBgjePkBogAawPrCQ3/Y0qlCDfrhdlSISvq+ywNzw0TxaEXT0iFYZNgcggtMS
-         KztpalH8ZsyaUUrP5zZaLwfL6ocKKAfW6Oe8AICzITsn1njl42GKxufhCFB9ksSCJXTM
-         Tyi44ZAQeY6A/3tPzbpB/EB8qn1TkKlMVe+C3luy1KVoA8OpY5fpRvk5FGW1CN0uJAO/
-         YCeXZDZSTzyXxPs+MzEK1n8Ep2iz0dJ2Fee9JZXmJDqdQrUwTE8H+IuimABpFQj2segi
-         cRpQ==
+        bh=OBccPzPZ2YTyc6MlKlPsvIVV7guFEGuVrYceUR3+Rf4=;
+        b=d+OPRFt9JXvkEKZ64+tj9IFUJ4907bRj/OmZIk9KnxUmCQmNHLxXhrNtUQqcqUFVAP
+         yztLccas0tE0GkjUlhfPdr5i9CZYT+hBOUDYRzkQEMP66q8HGzlf7BdKrwExomTY5vCr
+         6zJ+dyaiq9MsEfmDIj68uvKKp6L+l3PP3Ol3QCtooPVsJLdTtjWftAxhtW83kCtWjDwS
+         nHGFur8ySqI80mna/HKhPLNqMPcXinDCIodiUYo3dor5sKzqQKCPhnVbKrsKCSDBnA+B
+         7cIhGxW70E5pnxikJ5RlzciDVJLjl2c8+7CrDK0RuPRomEwPxjat3LiYNnk3YPwRhZGr
+         xOaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IDTYW3trvJhHdaQhRFqDVdIqzcok74e7pbHeU+yogTA=;
-        b=JgDX0AsWvMFk3azxBFWw2Gqk6MjT/tr2Zwt1ASqrnjrqND+Y2/7sFNhNn82XP63ek+
-         cGXj9vYr4zPIa3aVTmsw4nFU+Uogu/OtGytWR89ZhnUtAca0Cemi6Evbp3cbVA0oMEbs
-         6XvVEfnTyeBoSvaqujyQYrY0AiS3ZVwq4qn+eqV/8rxfwbq6IFmZijW7BR2egnytU/CX
-         2UQO/fmhdD4RAZ+0eYLV3hJyk9ZVlxqVx/vJ8HqBq/8YTYRQSdckFiqTWCrBmK2HlqpU
-         2XMQ8JJSysTxqtrazEufPxX3VnBlbtbyxHlNYyKhU8nOvJufoVxSOKRBriqYn94yj2vU
-         AmVQ==
-X-Gm-Message-State: AOAM532W2AittXH12HXPEbzCAnI/jkzWi4asH4ksAYdvsQhjhLZcls9M
-        KgU2+Ln+EtKB8CKGryqVs61mb3FCMJIgpIcZ5OGoaA==
-X-Google-Smtp-Source: ABdhPJxTOAgaEnT6FSfqJfn6/7PDv7Rc9QfJO8+OWRg0oI/ayMmxaHnaiS/hAfgtTxf5T0oIxgxuuHzDXr96RDEjciI=
-X-Received: by 2002:a19:6c2:: with SMTP id 185mr1451633lfg.441.1599905435954;
- Sat, 12 Sep 2020 03:10:35 -0700 (PDT)
+        bh=OBccPzPZ2YTyc6MlKlPsvIVV7guFEGuVrYceUR3+Rf4=;
+        b=AWsdYPslXxwEhWRZ/vqK7p7VUUe+D2gDFrK2Os6Kcp4y94+dV9i6gPidMfmEd1vsTq
+         Zccvq0WFRgQxxWZOriGLdEf0kkYcp4nAucNi76N7ZOqfH+4CCrZWt1MxNI0mQKk51JVF
+         Pg0ENK9QWtnKIEN4gv5mBcYM0y6wDRjgi9qRTgzub++BBt4E58//ciNx2FlBlOduR1xv
+         1uMWWGrwxcdPvKegY8S2KT3Vg1pBUbMoAhy94KtLIG40nruHQZxeKGDt/q+ALjFZlDaF
+         EuWY9xLx80oBeR2SJthEcSx/h9dch22HUHqinZsYtTGZTnzk3HsHvFbx+Ll1uUbARXZO
+         jxxQ==
+X-Gm-Message-State: AOAM533T9HHIXobqPl3S03faOjTJpYQFtLZoAVV+lwijkmT1JCx7N8DN
+        0LlC5Dd1zaWI2Kmj3YvhkhiASb3Mv8wZ//yZN3G4LOa6VK6lZg==
+X-Google-Smtp-Source: ABdhPJwt6ftsLinxhDZqIFzA22RlkzFr8tInipb89v2/wRu4ZSHPSsjsvjpLMCzSGQGWgQXndoWPq1WjS+atO/1E3oI=
+X-Received: by 2002:a19:6419:: with SMTP id y25mr1528439lfb.333.1599905650598;
+ Sat, 12 Sep 2020 03:14:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200829174154.GA9319@Kaladin>
-In-Reply-To: <20200829174154.GA9319@Kaladin>
+References: <20200830195748.30221-1-avolmat@me.com>
+In-Reply-To: <20200830195748.30221-1-avolmat@me.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 12:10:25 +0200
-Message-ID: <CACRpkdbmRAoBp-r+U5_yQOfGcS7UWrzZWb+0XXFHb4bD=OJA6A@mail.gmail.com>
-Subject: Re: [PATCH] bus: arm-integrator-lm: Add of_node_put() before return statement
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-Cc:     Julia Lawall <Julia.Lawall@lip6.fr>,
+Date:   Sat, 12 Sep 2020 12:13:59 +0200
+Message-ID: <CACRpkdaMK8xkvGiSXx=kVjncB=BNy_jcvKsQNTCxRwSKGKJ8Lg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] arm: sti: LL_UART updates & STiH418 addition
+To:     Alain Volmat <avolmat@me.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Olof Johansson <olof@lixom.net>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Enrico Weigelt <info@metux.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Patrice CHOTARD <patrice.chotard@st.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 7:42 PM Sumera Priyadarsini
-<sylphrenadin@gmail.com> wrote:
+On Sun, Aug 30, 2020 at 9:58 PM Alain Volmat <avolmat@me.com> wrote:
 
-> Every iteration of for_each_available_child_of_node() decrements
-> the reference count of the previous node, however when control is
-> transferred from the middle of the loop, as in the case of a return
-> or break or goto, there is no decrement thus ultimately resulting in
-> a memory leak.
+> This serie update the STi Platform LL_UART code to rely on
+> DEBUG_UART_PHYS & DEBUG_UART_VIRT and add the STiH418 SoC support.
 >
-> Fix a potential memory leak in arm-integrator-lm.c by inserting
-> of_node_put() before a return statement.
->
-> Issue found with Coccinelle.
->
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> Alain Volmat (2):
+>   arm: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for sti LL_UART
+>   arm: sti LL_UART: add STiH418 SBC UART0 support
 
-Patch applied.
+Both patches looks good to me:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+I made some patches to the debug UARTs that are pending in Russell's
+patch tracker:
+https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9004/1
+https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9005/1
+https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9006/1
+
+It doesn't look like these will conflict with your patches but please take
+a look just to make sure.
 
 Yours,
 Linus Walleij
