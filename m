@@ -2,182 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFBE26786E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F0C267870
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgILHCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbgILHCc (ORCPT
+        id S1725865AbgILHGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 03:06:05 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45262 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgILHGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:02:32 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943C5C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:02:31 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y17so8083518lfa.8
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sior-be.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jxzV7OeV/u6WZ1FrNJGs1u2GFmJUBCevegoF1E8SEwA=;
-        b=DX3RTFww1uIDcS70n/yaRr9/zxHH0SOYtbFEtl7FdPpk7jQEu9yLEwkr3gCIzOKAWE
-         s3V5d3ibBFPFGFZoeUPPZR88DNqTC4ThXdXAH567M++OPwgPa+LGiUMaLKDItCEsiVVE
-         dbG1/qhpJpgXfWEA7P3w53Mtkc5Kl/QgTIWzS9EjKjOyOQXLn1PTFdrdbNZ17awEZf7S
-         aHi+JBwV66f4JXCfuspOHrNdskixeI4gZRwyy1k/BCaUaKUXhtOlreuJFZsMwWzzbhHt
-         lHgKLh9xw+2rjstTlQl1p8eru5q3MzpZkqgBy/3mMyhCY8+ssGj3XEbvte4W6dAeRgF5
-         tvrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jxzV7OeV/u6WZ1FrNJGs1u2GFmJUBCevegoF1E8SEwA=;
-        b=GWxPUAKEHE2rO0Qybg6UztFmVfL0z3ML3Nzsf6o7vmbAGyaEIyps/lZGHJuKN3o00/
-         vA7mLU6iQ6ZIU67F1HxkBJK4wkvdfTd9FZwxPhvaci2969hABFW/bsRjEOLLzw5AMW+L
-         Rq5uDn4L7Gos9nmXkb9/JM8pSkGpU0909qhdIezntBoBV7jAmzcxy46FFMsUbLw4efnw
-         dHLBV5iIAIRjJngnTzw/oMWWzGFn6Jo6r/HboiwEM6tsisRu5WtXSYPAJQ1HnXGzVO2d
-         l0V5EPo049SNVK8tGmS8z0bu/9xkLjna1hKL6P7CCRdZYfMqP+Elvf/EW6qM81vJswKj
-         SwoA==
-X-Gm-Message-State: AOAM533aC5c+jy85hocsI0QDxjLY34H5njx1pL1VQHjEv+UX1pTQsdpC
-        jPq6HGKUzU4wp0Twe2/oMQlVHVBFhyyp9g8kQ+yXfw==
-X-Google-Smtp-Source: ABdhPJwihLBYNiYtj9myRi7INttgreLMwWGBdvOILa/JUNAMywIm8xDJAy5b4IOM1A9qiEQrm1uXPjInaGYIslEEQpQ=
-X-Received: by 2002:a19:85d7:: with SMTP id h206mr1467608lfd.325.1599894149788;
- Sat, 12 Sep 2020 00:02:29 -0700 (PDT)
+        Sat, 12 Sep 2020 03:06:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 02F1129AFA5
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     luto@kernel.org, tglx@linutronix.de
+Cc:     hpa@zytor.com, bp@alien8.de, rric@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH 0/6] Prepare for removal of TIF_IA32 and TIF_X32
+Date:   Sat, 12 Sep 2020 03:05:47 -0400
+Message-Id: <20200912070553.330622-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <743818af-fa38-e31a-1780-84a6a7e72e25@web.de> <20200908181122.9100-1-aho@sior.be>
- <20200911053923.GS28614@zhen-hp.sh.intel.com>
-In-Reply-To: <20200911053923.GS28614@zhen-hp.sh.intel.com>
-From:   Aho Sior <aho@sior.be>
-Date:   Sat, 12 Sep 2020 09:02:33 +0200
-Message-ID: <CABGf9v-VXpVZk_pq_-iPCMXbezRK1NZy5oY9ZwgXvGETi4EVEQ@mail.gmail.com>
-Subject: Re: [Intel-gfx][PATCH v2] drm/i915/gvt: Prevent NULL pointer
- dereference in intel_vgpu_reg_rw_edid()
-To:     Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc:     dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        intel-gfx@lists.freedesktop.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Zhi Wang <zhi.a.wang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perfect!
-I can confirm it resolves the issue as well, thank you very much.
+We are running out of TI flags for x86.  This patchset removes several
+usages of TIF_IA32 and TIF_x32 in preparation to reclaim these flags.
+After these cleanups, there is still one more user for both of them,
+which I need to take a better look before removing.
 
-Have a great day,
-Alejandro Sior.
+Many of the ideas for this patchset came from Andy Lutomirski (Thank
+you!)
 
+These were tested by exercising these paths with x32 and ia32 binaries.
 
-On Fri, 11 Sep 2020 at 07:58, Zhenyu Wang <zhenyuw@linux.intel.com> wrote:
->
-> On 2020.09.08 20:11:21 +0200, Alejandro Sior wrote:
-> > In the function intel_vgpu_reg_rw_edid of kvmgt.c, pos can be equal
-> > to NULL for GPUs that do not properly support EDID. In those cases, when
-> > pos gets passed to the handle_edid functions, it gets added a short offset
-> > then it's dereferenced in memcpy's, leading to NULL pointer
-> > dereference kernel oops.
-> >
-> > More concretely, that kernel oops renders some Broadwell GPUs users
-> > unable to set up virtual machines with virtual GPU passthrough (virtual
-> > machines hang indefinitely when trying to make use of the virtual GPU),
-> > and make them unable to remove the virtual GPUs once the kernel oops has
-> > happened (it hangs indefinitely, and notably too when the kernel tries to
-> > shutdown). The issues that this causes and steps to reproduce are
-> > discussed in more details in this github issue post:
-> > https://github.com/intel/gvt-linux/issues/170#issuecomment-685806160
-> >
-> > Check if pos is equal to NULL, and if it is, set ret to a negative
-> > value, making the module simply indicate that the access to EDID region
-> > has failed, without any fatal repercussion.
-> >
-> > Signed-off-by: Alejandro Sior <aho@sior.be>
-> >
-> > ---
-> > Changes in v2:
-> > - removed middle name of author to comply with git name
-> > - rephrased the patch description with imperative phrasing
-> > - removed useless paragraph
-> > - made a paragraph more concise
-> > - fixed typos
-> > - made individual lines shorter than 75 chars
-> >
-> >  drivers/gpu/drm/i915/gvt/kvmgt.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> > index ad8a9df49f29..49163363ba4a 100644
-> > --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> > +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> > @@ -557,7 +557,9 @@ static size_t intel_vgpu_reg_rw_edid(struct intel_vgpu *vgpu, char *buf,
-> >               (struct vfio_edid_region *)kvmgt_vdev(vgpu)->region[i].data;
-> >       loff_t pos = *ppos & VFIO_PCI_OFFSET_MASK;
-> >
-> > -     if (pos < region->vfio_edid_regs.edid_offset) {
-> > +     if (pos == NULL) {
-> > +             ret = -EINVAL;
-> > +     } else if (pos < region->vfio_edid_regs.edid_offset) {
-> >               ret = handle_edid_regs(vgpu, region, buf, count, pos, iswrite);
-> >       } else {
-> >               pos -= EDID_BLOB_OFFSET;
->
-> Thanks for reporting this! Sorry that we failed to do sanity validation on older
-> platform when enabling vfio edid function for all platform.
->
-> Could you try below one to see if it fixes your problem? Instead of refusing
-> possible read of edid, this fixes port number for BDW.
->
-> From d5d9304b6bfdc31356fd2feb1ddbbf28073fe3d4 Mon Sep 17 00:00:00 2001
-> From: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Date: Fri, 11 Sep 2020 13:50:20 +0800
-> Subject: [PATCH] drm/i915/gvt: Fix port number for BDW on EDID region setup
->
-> Current BDW virtual display port is initialized as PORT_B, so need
-> to use same port for VFIO EDID region, otherwise invalid EDID blob
-> pointer is assigned.
->
-> Fixes: 0178f4ce3c3b ("drm/i915/gvt: Enable vfio edid for all GVT supported platform")
-> Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-> ---
->  drivers/gpu/drm/i915/gvt/vgpu.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/gvt/vgpu.c b/drivers/gpu/drm/i915/gvt/vgpu.c
-> index 8fa9b31a2484..f6d7e33c7099 100644
-> --- a/drivers/gpu/drm/i915/gvt/vgpu.c
-> +++ b/drivers/gpu/drm/i915/gvt/vgpu.c
-> @@ -368,6 +368,7 @@ void intel_gvt_destroy_idle_vgpu(struct intel_vgpu *vgpu)
->  static struct intel_vgpu *__intel_gvt_create_vgpu(struct intel_gvt *gvt,
->                 struct intel_vgpu_creation_params *param)
->  {
-> +       struct drm_i915_private *dev_priv = gvt->gt->i915;
->         struct intel_vgpu *vgpu;
->         int ret;
->
-> @@ -436,7 +437,10 @@ static struct intel_vgpu *__intel_gvt_create_vgpu(struct intel_gvt *gvt,
->         if (ret)
->                 goto out_clean_sched_policy;
->
-> -       ret = intel_gvt_hypervisor_set_edid(vgpu, PORT_D);
-> +       if (IS_BROADWELL(dev_priv))
-> +               ret = intel_gvt_hypervisor_set_edid(vgpu, PORT_B);
-> +       else
-> +               ret = intel_gvt_hypervisor_set_edid(vgpu, PORT_D);
->         if (ret)
->                 goto out_clean_sched_policy;
->
-> --
-> 2.28.0
->
->
->
-> --
->
-> $gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
+Gabriel Krisman Bertazi (6):
+  x86: events: Avoid TIF_IA32 when checking 64bit mode
+  x86: Simplify compat syscall userspace allocation
+  x86: oprofile: Avoid TIF_IA32 when checking 64bit mode
+  x86: elf: Use e_machine to choose DLINFO in compat
+  x86: elf: Use e_machine to select start_thread for x32
+  x86: elf: Use e_machine to select setup_additional_pages for x32
+
+ arch/x86/entry/vdso/vma.c     | 21 ++++++++++++---------
+ arch/x86/events/core.c        |  2 +-
+ arch/x86/events/intel/ds.c    |  2 +-
+ arch/x86/events/intel/lbr.c   |  2 +-
+ arch/x86/include/asm/compat.h | 15 +++++++--------
+ arch/x86/include/asm/elf.h    | 24 ++++++++++++++++++------
+ arch/x86/kernel/perf_regs.c   |  2 +-
+ arch/x86/kernel/process_64.c  | 11 +++++++----
+ arch/x86/oprofile/backtrace.c |  2 +-
+ 9 files changed, 49 insertions(+), 32 deletions(-)
+
+-- 
+2.28.0
+
