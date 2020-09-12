@@ -2,46 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D568C267877
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6DB267878
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgILHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:08:07 -0400
-Received: from verein.lst.de ([213.95.11.211]:39054 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbgILHIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:08:06 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id CC3BF68B02; Sat, 12 Sep 2020 09:08:02 +0200 (CEST)
-Date:   Sat, 12 Sep 2020 09:08:02 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     luto@kernel.org, tglx@linutronix.de, hpa@zytor.com, bp@alien8.de,
-        rric@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 2/6] x86: Simplify compat syscall userspace allocation
-Message-ID: <20200912070802.GA19621@lst.de>
-References: <20200912070553.330622-1-krisman@collabora.com> <20200912070553.330622-3-krisman@collabora.com>
+        id S1725869AbgILHJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 03:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbgILHJq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 03:09:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7892C061573;
+        Sat, 12 Sep 2020 00:09:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UX+sELG/O2QlTkbk4dZbI5Ic1AnJp5qJR4pe5RJ3BhI=; b=THtGOvnijZZ6IFAddfcATZPhYt
+        dv4o9zRVA9jd5pDgPjqnDN1nzCR+xlNk/Qy28gPUCPD/RW27CUaQDbc7NQamLdNCFDfqbaIaTchHm
+        QsaqmtoKXG+WXq4KoEGvX5C4QrAtd3U+YrETxQfLb5tHVid/R8ooDRnzDave7xOAsye2+nAOdp/q5
+        T6cuWAesZ1JjGizRjAGm+XJkWXG5nZ6jfZusQKjkZDTqU6MqDLcCnQnA3pMi4iJdQg13Ql2GTK2Th
+        gh/IlVb3qBQfP7apTJt+3q7MsTcob0Cw7HyNrVkybaSYQ3pw8lG7QjGXCivSyO8OQwdBvvlHve3yJ
+        6HC+iKLA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGzf0-0000Xp-Ji; Sat, 12 Sep 2020 07:09:22 +0000
+Date:   Sat, 12 Sep 2020 08:09:22 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Balsundar P <balsundar.p@microsemi.com>, hch@infradead.org,
+        Zou Wei <zou_wei@huawei.com>, Hannes Reinecke <hare@suse.de>,
+        Sagar Biradar <Sagar.Biradar@microchip.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] scsi: aacraid: improve compat_ioctl handlers
+Message-ID: <20200912070922.GA1945@infradead.org>
+References: <20200908213715.3553098-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200912070553.330622-3-krisman@collabora.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200908213715.3553098-1-arnd@arndb.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 03:05:49AM -0400, Gabriel Krisman Bertazi wrote:
-> When allocating user memory space for a compat system call, don't
-> consider whether the originating code is IA32 or X32, just allocate from
-> a safe region for both, beyond the redzone.  This should be safe for
-> IA32, and has the benefit of avoiding TIF_IA32, which we want to drop.
+On Tue, Sep 08, 2020 at 11:36:21PM +0200, Arnd Bergmann wrote:
+> @@ -243,8 +244,23 @@ static int next_getadapter_fib(struct aac_dev * dev, void __user *arg)
+>  	struct list_head * entry;
+>  	unsigned long flags;
+>  
+> -	if(copy_from_user((void *)&f, arg, sizeof(struct fib_ioctl)))
+> -		return -EFAULT;
+> +	if (in_compat_syscall()) {
+> +		struct compat_fib_ioctl {
+> +			u32	fibctx;
+> +			s32	wait;
+> +			compat_uptr_t fib;
+> +		} cf;
 
-This doesn't look wrong, by why bother (maybe Ccing me on the whole
-seris as you always should instead of sending annoying out of context
-single patches would have told..).
+I find the struct declaration deep down in the function a little
+annoying.
 
-We will hopefully kill off compat_alloc_user_space in the next few
-merge windows..
+But otherwise this looks good;
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
