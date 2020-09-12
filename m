@@ -2,51 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 281062676DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93C52676DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbgILAhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 20:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        id S1725938AbgILAmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 20:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgILAhQ (ORCPT
+        with ESMTP id S1725910AbgILAmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 20:37:16 -0400
+        Fri, 11 Sep 2020 20:42:14 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA6BC061573;
-        Fri, 11 Sep 2020 17:37:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B421DC061786;
+        Fri, 11 Sep 2020 17:42:13 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id D75CA12354C86;
-        Fri, 11 Sep 2020 17:20:26 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:37:12 -0700 (PDT)
-Message-Id: <20200911.173712.1523119778628815614.davem@davemloft.net>
-To:     grygorii.strashko@ti.com
-Cc:     netdev@vger.kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: ti: cpsw_new: fix suspend/resume
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4275D12354CA0;
+        Fri, 11 Sep 2020 17:25:25 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:42:11 -0700 (PDT)
+Message-Id: <20200911.174211.1015381506002905995.davem@davemloft.net>
+To:     Divya.Koppera@microchip.com
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        kuba@kernel.org, marex@denx.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH v3 net-next] net: phy: mchp: Add support for LAN8814
+ QUAD PHY
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200910205229.21288-1-grygorii.strashko@ti.com>
-References: <20200910205229.21288-1-grygorii.strashko@ti.com>
+In-Reply-To: <20200911131844.24371-1-Divya.Koppera@microchip.com>
+References: <20200911061020.22413-1-Divya.Koppera@microchip.com>
+        <20200911131844.24371-1-Divya.Koppera@microchip.com>
 X-Mailer: Mew version 6.8 on Emacs 27.1
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 11 Sep 2020 17:20:27 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 11 Sep 2020 17:25:25 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
-Date: Thu, 10 Sep 2020 23:52:29 +0300
+From: Divya Koppera <Divya.Koppera@microchip.com>
+Date: Fri, 11 Sep 2020 18:48:44 +0530
 
-> Add missed suspend/resume callbacks to properly restore networking after
-> suspend/resume cycle.
+> LAN8814 is a low-power, quad-port triple-speed (10BASE-T/100BASETX/1000BASE-T)
+> Ethernet physical layer transceiver (PHY). It supports transmission and
+> reception of data on standard CAT-5, as well as CAT-5e and CAT-6, unshielded
+> twisted pair (UTP) cables.
 > 
-> Fixes: ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> LAN8814 supports industry-standard QSGMII (Quad Serial Gigabit Media
+> Independent Interface) and Q-USGMII (Quad Universal Serial Gigabit Media
+> Independent Interface) providing chip-to-chip connection to four Gigabit
+> Ethernet MACs using a single serialized link (differential pair) in each
+> direction.
+> 
+> The LAN8814 SKU supports high-accuracy timestamping functions to
+> support IEEE-1588 solutions using Microchip Ethernet switches, as well as
+> customer solutions based on SoCs and FPGAs.
+> 
+> The LAN8804 SKU has same features as that of LAN8814 SKU except that it does
+> not support 1588, SyncE, or Q-USGMII with PCH/MCH.
+> 
+> This adds support for 10BASE-T, 100BASE-TX, and 1000BASE-T,
+> QSGMII link with the MAC.
+> 
+> Signed-off-by: Divya Koppera<divya.koppera@microchip.com>
 
-Applied and queued up for -stable, thanks.
+Applied, thanks.
