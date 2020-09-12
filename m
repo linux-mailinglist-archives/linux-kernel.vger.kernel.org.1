@@ -2,151 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D992678FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A69F267905
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725888AbgILIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 04:50:20 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:40718 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgILIuR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 04:50:17 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 6D69372CA54;
-        Sat, 12 Sep 2020 11:50:13 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-        by imap.altlinux.org (Postfix) with ESMTPSA id 2144F4A4A16;
-        Sat, 12 Sep 2020 11:50:13 +0300 (MSK)
-Date:   Sat, 12 Sep 2020 11:50:13 +0300
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v6 6/8] X.509: support OSCCA certificate parse
-Message-ID: <20200912085013.ugm2azs5xr7iirda@altlinux.org>
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
- <20200903131242.128665-7-tianjia.zhang@linux.alibaba.com>
+        id S1725833AbgILJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 05:00:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725805AbgILJA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 05:00:56 -0400
+Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBD7B2064E;
+        Sat, 12 Sep 2020 09:00:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599901253;
+        bh=rcf9qiinGewlooZVkc80E5ROEyjsEkJ+kBVWXO6MfGo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rmS2mVBQsBuVpsEf3dZvxcBuB4tyPfGQA91imrrsLltfGApoHZhsvzuI1pgCEa9zo
+         BYR9OF6nS4jEtd5uYhtlm4+SxuYdYgukHuoUIL2INAnRoSFm0ktUGAGMjJKCQhf+t8
+         u+S0ClHSlqm18Kxblkv4TO/cV3+395klFLJT1tuE=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kH1Oq-001RET-QC; Sat, 12 Sep 2020 11:00:48 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH] vidtv: prefer using dev_foo() instead of pr_foo()
+Date:   Sat, 12 Sep 2020 11:00:47 +0200
+Message-Id: <59b26c081ca3ca472578481fdc748f59ab8187af.1599901241.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20200903131242.128665-7-tianjia.zhang@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 09:12:40PM +0800, Tianjia Zhang wrote:
-> The digital certificate format based on SM2 crypto algorithm as
-> specified in GM/T 0015-2012. It was published by State Encryption
-> Management Bureau, China.
-> 
-> This patch adds the OID object identifier defined by OSCCA. The
-> x509 certificate supports sm2-with-sm3 type certificate parsing.
-> It uses the standard elliptic curve public key, and the sm2
-> algorithm signs the hash generated by sm3.
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
-> ---
->  crypto/asymmetric_keys/x509_cert_parser.c | 14 +++++++++++++-
->  include/linux/oid_registry.h              |  6 ++++++
->  2 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> index 26ec20ef4899..6a8aee22bfd4 100644
-> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> @@ -234,6 +234,10 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
->  	case OID_gost2012Signature512:
->  		ctx->cert->sig->hash_algo = "streebog512";
->  		goto ecrdsa;
-> +
-> +	case OID_sm2_with_sm3:
-> +		ctx->cert->sig->hash_algo = "sm3";
-> +		goto sm2;
->  	}
->  
->  rsa_pkcs1:
-> @@ -246,6 +250,11 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
->  	ctx->cert->sig->encoding = "raw";
->  	ctx->algo_oid = ctx->last_oid;
->  	return 0;
-> +sm2:
-> +	ctx->cert->sig->pkey_algo = "sm2";
-> +	ctx->cert->sig->encoding = "raw";
-> +	ctx->algo_oid = ctx->last_oid;
-> +	return 0;
->  }
->  
->  /*
-> @@ -266,7 +275,8 @@ int x509_note_signature(void *context, size_t hdrlen,
->  	}
->  
->  	if (strcmp(ctx->cert->sig->pkey_algo, "rsa") == 0 ||
-> -	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0) {
-> +	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0 ||
-> +	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0) {
->  		/* Discard the BIT STRING metadata */
->  		if (vlen < 1 || *(const u8 *)value != 0)
->  			return -EBADMSG;
-> @@ -456,6 +466,8 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->  	else if (ctx->last_oid == OID_gost2012PKey256 ||
->  		 ctx->last_oid == OID_gost2012PKey512)
->  		ctx->cert->pub->pkey_algo = "ecrdsa";
-> +	else if (ctx->last_oid == OID_id_ecPublicKey)
-> +		ctx->cert->pub->pkey_algo = "sm2";
->  	else
->  		return -ENOPKG;
->  
-> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-> index 657d6bf2c064..48fe3133ff39 100644
-> --- a/include/linux/oid_registry.h
-> +++ b/include/linux/oid_registry.h
-> @@ -107,6 +107,12 @@ enum OID {
->  	OID_gostTC26Sign512B,		/* 1.2.643.7.1.2.1.2.2 */
->  	OID_gostTC26Sign512C,		/* 1.2.643.7.1.2.1.2.3 */
->  
-> +	/* OSCCA */
-> +	OID_sm2,			/* 1.2.156.10197.1.301 */
-> +	OID_sm3,			/* 1.2.156.10197.1.401 */
-> +	OID_sm2_with_sm3,		/* 1.2.156.10197.1.501 */
-> +	OID_sm3WithRSAEncryption,	/* 1.2.156.10197.1.504 */
+It is better to use the higher level dev_foo() than pr_foo()
+for printks.
 
-OID_sm3WithRSAEncryption identifier is unused and this mode looks not
-implemented. But, this is probably ok for possible future extension.
+Change them at vidtv at the more trivial places.
 
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../media/test-drivers/vidtv/vidtv_bridge.c   | 19 +++++++--------
+ .../media/test-drivers/vidtv/vidtv_channel.c  | 23 ++++++++++---------
+ .../media/test-drivers/vidtv/vidtv_demod.c    | 10 ++++----
+ drivers/media/test-drivers/vidtv/vidtv_mux.c  | 18 ++++++++-------
+ drivers/media/test-drivers/vidtv/vidtv_mux.h  |  5 +++-
+ .../media/test-drivers/vidtv/vidtv_tuner.c    | 17 +++++++-------
+ 6 files changed, 51 insertions(+), 41 deletions(-)
 
-Thanks,
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+index 9f0e53e9fe69..270c183b1d67 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
+@@ -9,12 +9,10 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
+ 
+-#define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+-
+ #include <linux/moduleparam.h>
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+-#include <linux/printk.h>
++#include <linux/dev_printk.h>
+ #include <linux/time.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
+@@ -146,10 +144,11 @@ vidtv_bridge_on_new_pkts_avail(void *priv, u8 *buf, u32 npkts)
+ static int vidtv_start_streaming(struct vidtv_dvb *dvb)
+ {
+ 	struct vidtv_mux_init_args mux_args = {0};
++	struct device *dev = &dvb->pdev->dev;
+ 	u32 mux_buf_sz;
+ 
+ 	if (dvb->streaming) {
+-		pr_warn_ratelimited("Already streaming. Skipping.\n");
++		dev_warn_ratelimited(dev, "Already streaming. Skipping.\n");
+ 		return 0;
+ 	}
+ 
+@@ -165,21 +164,23 @@ static int vidtv_start_streaming(struct vidtv_dvb *dvb)
+ 	mux_args.priv                        = dvb;
+ 
+ 	dvb->streaming = true;
+-	dvb->mux = vidtv_mux_init(mux_args);
++	dvb->mux = vidtv_mux_init(dev, mux_args);
+ 	vidtv_mux_start_thread(dvb->mux);
+ 
+-	pr_info_ratelimited("Started streaming\n");
++	dev_dbg_ratelimited(dev, "Started streaming\n");
+ 	return 0;
+ }
+ 
+ static int vidtv_stop_streaming(struct vidtv_dvb *dvb)
+ {
++	struct device *dev = &dvb->pdev->dev;
++
+ 	dvb->streaming = false;
+ 	vidtv_mux_stop_thread(dvb->mux);
+ 	vidtv_mux_destroy(dvb->mux);
+ 	dvb->mux = NULL;
+ 
+-	pr_info_ratelimited("Stopped streaming\n");
++	dev_dbg_ratelimited(dev, "Stopped streaming\n");
+ 	return 0;
+ }
+ 
+@@ -438,8 +439,8 @@ static int vidtv_bridge_dvb_init(struct vidtv_dvb *dvb)
+ 
+ static int vidtv_bridge_probe(struct platform_device *pdev)
+ {
+-	int ret;
+ 	struct vidtv_dvb *dvb;
++	int ret;
+ 
+ 	dvb = kzalloc(sizeof(*dvb), GFP_KERNEL);
+ 	if (!dvb)
+@@ -455,7 +456,7 @@ static int vidtv_bridge_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, dvb);
+ 
+-	pr_info("Successfully initialized vidtv!\n");
++	dev_info(&pdev->dev, "Successfully initialized vidtv!\n");
+ 	return ret;
+ 
+ err_dvb:
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_channel.c b/drivers/media/test-drivers/vidtv/vidtv_channel.c
+index ac4bdf05395e..0a62b97e6a27 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_channel.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_channel.c
+@@ -18,11 +18,9 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
+ 
+-#define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+-
+ #include <linux/types.h>
+ #include <linux/slab.h>
+-#include <linux/printk.h>
++#include <linux/dev_printk.h>
+ #include <linux/ratelimit.h>
+ 
+ #include "vidtv_channel.h"
+@@ -104,10 +102,10 @@ struct vidtv_channel
+ }
+ 
+ static struct vidtv_psi_table_sdt_service
+-*vidtv_channel_sdt_serv_cat_into_new(const struct vidtv_channel *channels)
++*vidtv_channel_sdt_serv_cat_into_new(struct vidtv_mux *m)
+ {
+ 	/* Concatenate the services */
+-	const struct vidtv_channel *cur_chnl = channels;
++	const struct vidtv_channel *cur_chnl = m->channels;
+ 
+ 	struct vidtv_psi_table_sdt_service *curr = NULL;
+ 	struct vidtv_psi_table_sdt_service *head = NULL;
+@@ -123,7 +121,8 @@ static struct vidtv_psi_table_sdt_service
+ 		curr = cur_chnl->service;
+ 
+ 		if (!curr)
+-			pr_warn_ratelimited("No services found for channel %s\n", cur_chnl->name);
++			dev_warn_ratelimited(m->dev,
++					     "No services found for channel %s\n", cur_chnl->name);
+ 
+ 		while (curr) {
+ 			service_id = be16_to_cpu(curr->service_id);
+@@ -145,10 +144,10 @@ static struct vidtv_psi_table_sdt_service
+ }
+ 
+ static struct vidtv_psi_table_pat_program*
+-vidtv_channel_pat_prog_cat_into_new(const struct vidtv_channel *channels)
++vidtv_channel_pat_prog_cat_into_new(struct vidtv_mux *m)
+ {
+ 	/* Concatenate the programs */
+-	const struct vidtv_channel *cur_chnl = channels;
++	const struct vidtv_channel *cur_chnl = m->channels;
+ 	struct vidtv_psi_table_pat_program *curr = NULL;
+ 	struct vidtv_psi_table_pat_program *head = NULL;
+ 	struct vidtv_psi_table_pat_program *tail = NULL;
+@@ -162,7 +161,9 @@ vidtv_channel_pat_prog_cat_into_new(const struct vidtv_channel *channels)
+ 		curr = cur_chnl->program;
+ 
+ 		if (!curr)
+-			pr_warn_ratelimited("No programs found for channel %s\n", cur_chnl->name);
++			dev_warn_ratelimited(m->dev,
++					     "No programs found for channel %s\n",
++					     cur_chnl->name);
+ 
+ 		while (curr) {
+ 			serv_id = be16_to_cpu(curr->service_id);
+@@ -251,8 +252,8 @@ void vidtv_channel_si_init(struct vidtv_mux *m)
+ 
+ 	m->si.sdt = vidtv_psi_sdt_table_init(m->transport_stream_id);
+ 
+-	programs = vidtv_channel_pat_prog_cat_into_new(m->channels);
+-	services = vidtv_channel_sdt_serv_cat_into_new(m->channels);
++	programs = vidtv_channel_pat_prog_cat_into_new(m);
++	services = vidtv_channel_sdt_serv_cat_into_new(m);
+ 
+ 	/* assemble all programs and assign to PAT */
+ 	vidtv_psi_pat_program_assign(m->si.pat, programs);
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_demod.c b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+index d18860fcb0e7..3eb48b4a9a6b 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_demod.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+@@ -76,8 +76,9 @@ static const struct vidtv_demod_cnr_to_qual_s vidtv_demod_t_cnr_2_qual[] = {
+ static const struct vidtv_demod_cnr_to_qual_s
+ 	     *vidtv_match_cnr_s(struct dvb_frontend *fe)
+ {
++	const struct vidtv_demod_cnr_to_qual_s *cnr2qual = NULL;
++	struct device *dev = fe->dvb->device;
+ 	struct dtv_frontend_properties *c;
+-	const struct vidtv_demod_cnr_to_qual_s *cnr2qual = NULL;
+ 	u32 array_size = 0;
+ 	u32 i;
+ 
+@@ -106,9 +107,10 @@ static const struct vidtv_demod_cnr_to_qual_s
+ 		break;
+ 
+ 	default:
+-		pr_warn_ratelimited("%s: unsupported delivery system: %u\n",
+-				    __func__,
+-				    c->delivery_system);
++		dev_warn_ratelimited(dev,
++				     "%s: unsupported delivery system: %u\n",
++				     __func__,
++				     c->delivery_system);
+ 		break;
+ 	}
+ 
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+index 540f404372aa..d1db9dc6dc89 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
+@@ -12,13 +12,11 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
+ 
+-#define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+-
+ #include <linux/types.h>
+ #include <linux/slab.h>
+ #include <linux/jiffies.h>
+ #include <linux/kernel.h>
+-#include <linux/printk.h>
++#include <linux/dev_printk.h>
+ #include <linux/ratelimit.h>
+ #include <linux/delay.h>
+ #include <linux/vmalloc.h>
+@@ -147,7 +145,8 @@ static u32 vidtv_mux_push_si(struct vidtv_mux *m)
+ 						m->si.pat);
+ 
+ 		if (pmt_pid > TS_LAST_VALID_PID) {
+-			pr_warn_ratelimited("PID: %d not found\n", pmt_pid);
++			dev_warn_ratelimited(m->dev,
++					     "PID: %d not found\n", pmt_pid);
+ 			continue;
+ 		}
+ 
+@@ -331,7 +330,8 @@ static u32 vidtv_mux_pad_with_nulls(struct vidtv_mux *m, u32 npkts)
+ 
+ 	/* sanity check */
+ 	if (nbytes != npkts * TS_PACKET_LEN)
+-		pr_err_ratelimited("%d != %d\n", nbytes, npkts * TS_PACKET_LEN);
++		dev_err_ratelimited(m->dev, "%d != %d\n",
++				    nbytes, npkts * TS_PACKET_LEN);
+ 
+ 	return nbytes;
+ }
+@@ -402,7 +402,7 @@ static void vidtv_mux_tick(struct work_struct *work)
+ 
+ 		/* if the buffer is not aligned there is a bug somewhere */
+ 		if (nbytes % TS_PACKET_LEN)
+-			pr_err_ratelimited("Misaligned buffer\n");
++			dev_err_ratelimited(m->dev, "Misaligned buffer\n");
+ 
+ 		if (m->on_new_packets_available_cb)
+ 			m->on_new_packets_available_cb(m->priv,
+@@ -418,7 +418,7 @@ static void vidtv_mux_tick(struct work_struct *work)
+ void vidtv_mux_start_thread(struct vidtv_mux *m)
+ {
+ 	if (m->streaming) {
+-		pr_warn_ratelimited("Already streaming. Skipping.\n");
++		dev_warn_ratelimited(m->dev, "Already streaming. Skipping.\n");
+ 		return;
+ 	}
+ 
+@@ -435,10 +435,12 @@ void vidtv_mux_stop_thread(struct vidtv_mux *m)
+ 	}
+ }
+ 
+-struct vidtv_mux *vidtv_mux_init(struct vidtv_mux_init_args args)
++struct vidtv_mux *vidtv_mux_init(struct device *dev,
++				 struct vidtv_mux_init_args args)
+ {
+ 	struct vidtv_mux *m = kzalloc(sizeof(*m), GFP_KERNEL);
+ 
++	m->dev = dev;
+ 	m->timing.pcr_period_usecs = args.pcr_period_usecs;
+ 	m->timing.si_period_usecs  = args.si_period_usecs;
+ 
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.h b/drivers/media/test-drivers/vidtv/vidtv_mux.h
+index 8622a62cd9bc..67de85fd50aa 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_mux.h
++++ b/drivers/media/test-drivers/vidtv/vidtv_mux.h
+@@ -100,6 +100,8 @@ struct vidtv_mux_pid_ctx {
+  * @priv: Private data.
+  */
+ struct vidtv_mux {
++	struct device *dev;
++
+ 	struct vidtv_mux_timing timing;
+ 
+ 	u32 mux_rate_kbytes_sec;
+@@ -151,7 +153,8 @@ struct vidtv_mux_init_args {
+ 	void *priv;
+ };
+ 
+-struct vidtv_mux *vidtv_mux_init(struct vidtv_mux_init_args args);
++struct vidtv_mux *vidtv_mux_init(struct device *dev,
++				 struct vidtv_mux_init_args args);
+ void vidtv_mux_destroy(struct vidtv_mux *m);
+ 
+ void vidtv_mux_start_thread(struct vidtv_mux *m);
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_tuner.c b/drivers/media/test-drivers/vidtv/vidtv_tuner.c
+index c8e64bab0379..39e848ae5836 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_tuner.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_tuner.c
+@@ -10,8 +10,6 @@
+  * Copyright (C) 2020 Daniel W. S. Almeida
+  */
+ 
+-#define pr_fmt(fmt) KBUILD_MODNAME ":%s, %d: " fmt, __func__, __LINE__
+-
+ #include <linux/errno.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+@@ -149,9 +147,10 @@ static s32 vidtv_tuner_check_frequency_shift(struct dvb_frontend *fe)
+ 		break;
+ 
+ 	default:
+-		pr_warn("%s: unsupported delivery system: %u\n",
+-			__func__,
+-			c->delivery_system);
++		dev_warn(fe->dvb->device,
++			 "%s: unsupported delivery system: %u\n",
++			 __func__,
++			 c->delivery_system);
+ 
+ 		return -EINVAL;
+ 	}
+@@ -179,6 +178,7 @@ vidtv_tuner_get_signal_strength(struct dvb_frontend *fe, u16 *strength)
+ {
+ 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+ 	const struct vidtv_tuner_cnr_to_qual_s *cnr2qual = NULL;
++	struct device *dev = fe->dvb->device;
+ 	u32 array_size = 0;
+ 	s32 shift;
+ 	u32 i;
+@@ -208,9 +208,10 @@ vidtv_tuner_get_signal_strength(struct dvb_frontend *fe, u16 *strength)
+ 		break;
+ 
+ 	default:
+-		pr_warn_ratelimited("%s: unsupported delivery system: %u\n",
+-				    __func__,
+-				    c->delivery_system);
++		dev_warn_ratelimited(dev,
++				     "%s: unsupported delivery system: %u\n",
++				     __func__,
++				     c->delivery_system);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.26.2
 
-
-> +
->  	OID__NR
->  };
->  
