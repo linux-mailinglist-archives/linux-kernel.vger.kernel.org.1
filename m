@@ -2,336 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AB7267898
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F4C2678A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725800AbgILHoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:44:09 -0400
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:28238 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgILHoH (ORCPT
+        id S1725832AbgILHsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 03:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbgILHsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:44:07 -0400
-Received: from localhost.localdomain ([93.22.150.101])
-        by mwinf5d23 with ME
-        id Svk1230032BWSNM03vk1CK; Sat, 12 Sep 2020 09:44:04 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 12 Sep 2020 09:44:04 +0200
-X-ME-IP: 93.22.150.101
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org, chessman@tux.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] tlan: switch from 'pci_' to 'dma_' API
-Date:   Sat, 12 Sep 2020 09:43:58 +0200
-Message-Id: <20200912074359.334234-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sat, 12 Sep 2020 03:48:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27591C061573;
+        Sat, 12 Sep 2020 00:48:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IH5DArEEUQKAhama86We+J3idWYzbB7Kr/M6CMlyXsM=; b=Hd5tTi7+OX5kB1HDk6IIpB97Nx
+        flc+UUqoHVRy1GRLfNQ4DZeWaVZwNDYlH+FEOwgXlinTuVYdcrVsdmsqm5oAUcZaJ+2mhmB33Rfrg
+        QfcQ8Axh9Ierh4HypbtllM5w414Po0CRM9GN16CKxnBrqbLMWItRkAzk6c5Msha7V1kGXN703Dlfs
+        DWqStT5e3qxTrOa3WtNS6ufGwEvCpWGG+Ikal4HtPYIBAd7ic9RJiNXS32nhZcaKIpxCtKsHWRIfq
+        B4NfrOxe0sSbU2w8N52qLBWO9dJjSMX0PRwVO3hKbKnAeW24nL6d8FzUxccDkqUJ1UKVdrAZOwNhG
+        gMWEn0FQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kH0GL-0002UJ-Hb; Sat, 12 Sep 2020 07:47:57 +0000
+Date:   Sat, 12 Sep 2020 08:47:57 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        hch@infradead.org, Anand Lodnoor <anand.lodnoor@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] scsi: megaraid_sas: simplify compat_ioctl handling
+Message-ID: <20200912074757.GA6688@infradead.org>
+References: <20200908213715.3553098-1-arnd@arndb.de>
+ <20200908213715.3553098-3-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908213715.3553098-3-arnd@arndb.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Tue, Sep 08, 2020 at 11:36:23PM +0200, Arnd Bergmann wrote:
+> There have been several attempts to fix serious problems
+> in the compat handling in megasas_mgmt_compat_ioctl_fw(),
+> and it also uses the compat_alloc_user_space() function.
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+I just looked into this a few weeks ago but didn't get that far..
 
-When memory is allocated in 'tlan_init()' GFP_KERNEL can be used because
-it is only called from a probe function or a module_init function and no
-lock is taken in the between.
-The call chain is:
-  tlan_probe                        (module_init function)
-    --> tlan_eisa_probe
-or
-  tlan_init_one                     (probe function)
+> +static struct megasas_iocpacket *megasas_compat_iocpacket_get_user(void __user *arg)
 
-then in both cases:
-    --> tlan_probe1
-      --> tlan_init
+Pointlessly long line.
+
+> +{
+> +	int err = -EFAULT;
+> +#ifdef CONFIG_COMPAT
+
+I find the ifdef inside the function a little weird.  Doing it in the
+caller would be a little less bad.  What I ended up doing in my
+unfinished patch was to move the compat handling into a new
+megaraid_sas_compat.c file, so we'd always get the prototypes in a
+header, but given that all the calls are eliminated for the !COMPAT
+case we'd avoid ifdefs entirely, but having that file for a single
+function is also rather silly.
+
+> +	struct megasas_iocpacket *ioc;
+> +	struct compat_megasas_iocpacket __user *cioc = arg;
+> +	int i;
+> +
+> +	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
+
+Missing NULL check here.
+
+> +	if (copy_from_user(ioc, arg,
+> +			   offsetof(struct megasas_iocpacket, frame) + 128))
+> +		goto out;
+
+the 128 here while copied from the original code should probably be
+replaced with a sizeof(frame->raw).
+
+> +	if (ioc->sense_len) {
+> +		compat_uptr_t *sense_ioc_ptr;
+> +		void __user *sense_cioc;
+> +
+> +		/* make sure the pointer is inside of frame.raw */
+> +		if (ioc->sense_off >
+> +		    (sizeof(ioc->frame.raw) - sizeof(void __user*))) {
+> +			err = -EINVAL;
+> +			goto out;
+> +		}
+> +
+> +		sense_ioc_ptr = (compat_uptr_t *)&ioc->frame.raw[ioc->sense_off];
+> +		sense_cioc = compat_ptr(get_unaligned(sense_ioc_ptr));
+> +		put_unaligned((unsigned long)sense_cioc, (void **)sense_ioc_ptr);
+
+I think we should really handle this where the sense point is set up.
+This is the untested hunk I had:
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/ti/tlan.c | 61 ++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/net/ethernet/ti/tlan.c b/drivers/net/ethernet/ti/tlan.c
-index 76a342ea3797..1203a3c0febb 100644
---- a/drivers/net/ethernet/ti/tlan.c
-+++ b/drivers/net/ethernet/ti/tlan.c
-@@ -305,9 +305,8 @@ static void tlan_remove_one(struct pci_dev *pdev)
- 	unregister_netdev(dev);
- 
- 	if (priv->dma_storage) {
--		pci_free_consistent(priv->pci_dev,
--				    priv->dma_size, priv->dma_storage,
--				    priv->dma_storage_dma);
-+		dma_free_coherent(&priv->pci_dev->dev, priv->dma_size,
-+				  priv->dma_storage, priv->dma_storage_dma);
- 	}
- 
- #ifdef CONFIG_PCI
-@@ -482,7 +481,7 @@ static int tlan_probe1(struct pci_dev *pdev, long ioaddr, int irq, int rev,
- 
- 		priv->adapter = &board_info[ent->driver_data];
- 
--		rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		rc = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 		if (rc) {
- 			pr_err("No suitable PCI mapping available\n");
- 			goto err_out_free_dev;
-@@ -584,8 +583,8 @@ static int tlan_probe1(struct pci_dev *pdev, long ioaddr, int irq, int rev,
- 	return 0;
- 
- err_out_uninit:
--	pci_free_consistent(priv->pci_dev, priv->dma_size, priv->dma_storage,
--			    priv->dma_storage_dma);
-+	dma_free_coherent(&priv->pci_dev->dev, priv->dma_size,
-+			  priv->dma_storage, priv->dma_storage_dma);
- err_out_free_dev:
- 	free_netdev(dev);
- err_out_regions:
-@@ -609,9 +608,9 @@ static void tlan_eisa_cleanup(void)
- 		dev = tlan_eisa_devices;
- 		priv = netdev_priv(dev);
- 		if (priv->dma_storage) {
--			pci_free_consistent(priv->pci_dev, priv->dma_size,
--					    priv->dma_storage,
--					    priv->dma_storage_dma);
-+			dma_free_coherent(&priv->pci_dev->dev, priv->dma_size,
-+					  priv->dma_storage,
-+					  priv->dma_storage_dma);
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 48fad675b5ed02..c3ddcfce86df50 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -8231,7 +8231,12 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
+ 			goto out;
  		}
- 		release_region(dev->base_addr, 0x10);
- 		unregister_netdev(dev);
-@@ -826,9 +825,8 @@ static int tlan_init(struct net_device *dev)
  
- 	dma_size = (TLAN_NUM_RX_LISTS + TLAN_NUM_TX_LISTS)
- 		* (sizeof(struct tlan_list));
--	priv->dma_storage = pci_alloc_consistent(priv->pci_dev,
--						 dma_size,
--						 &priv->dma_storage_dma);
-+	priv->dma_storage = dma_alloc_coherent(&priv->pci_dev->dev, dma_size,
-+					       &priv->dma_storage_dma, GFP_KERNEL);
- 	priv->dma_size = dma_size;
- 
- 	if (priv->dma_storage == NULL) {
-@@ -1069,9 +1067,9 @@ static netdev_tx_t tlan_start_tx(struct sk_buff *skb, struct net_device *dev)
- 
- 	tail_list->forward = 0;
- 
--	tail_list->buffer[0].address = pci_map_single(priv->pci_dev,
-+	tail_list->buffer[0].address = dma_map_single(&priv->pci_dev->dev,
- 						      skb->data, txlen,
--						      PCI_DMA_TODEVICE);
-+						      DMA_TO_DEVICE);
- 	tlan_store_skb(tail_list, skb);
- 
- 	tail_list->frame_size = (u16) txlen;
-@@ -1365,10 +1363,10 @@ static u32 tlan_handle_tx_eof(struct net_device *dev, u16 host_int)
- 		struct sk_buff *skb = tlan_get_skb(head_list);
- 
- 		ack++;
--		pci_unmap_single(priv->pci_dev, head_list->buffer[0].address,
--				 max(skb->len,
--				     (unsigned int)TLAN_MIN_FRAME_SIZE),
--				 PCI_DMA_TODEVICE);
-+		dma_unmap_single(&priv->pci_dev->dev,
-+				 head_list->buffer[0].address,
-+				 max(skb->len, (unsigned int)TLAN_MIN_FRAME_SIZE),
-+				 DMA_TO_DEVICE);
- 		dev_kfree_skb_any(skb);
- 		head_list->buffer[8].address = 0;
- 		head_list->buffer[9].address = 0;
-@@ -1511,8 +1509,8 @@ static u32 tlan_handle_rx_eof(struct net_device *dev, u16 host_int)
- 			goto drop_and_reuse;
- 
- 		skb = tlan_get_skb(head_list);
--		pci_unmap_single(priv->pci_dev, frame_dma,
--				 TLAN_MAX_FRAME_SIZE, PCI_DMA_FROMDEVICE);
-+		dma_unmap_single(&priv->pci_dev->dev, frame_dma,
-+				 TLAN_MAX_FRAME_SIZE, DMA_FROM_DEVICE);
- 		skb_put(skb, frame_size);
- 
- 		dev->stats.rx_bytes += frame_size;
-@@ -1521,8 +1519,8 @@ static u32 tlan_handle_rx_eof(struct net_device *dev, u16 host_int)
- 		netif_rx(skb);
- 
- 		head_list->buffer[0].address =
--			pci_map_single(priv->pci_dev, new_skb->data,
--				       TLAN_MAX_FRAME_SIZE, PCI_DMA_FROMDEVICE);
-+			dma_map_single(&priv->pci_dev->dev, new_skb->data,
-+				       TLAN_MAX_FRAME_SIZE, DMA_FROM_DEVICE);
- 
- 		tlan_store_skb(head_list, new_skb);
- drop_and_reuse:
-@@ -1923,10 +1921,10 @@ static void tlan_reset_lists(struct net_device *dev)
- 		if (!skb)
- 			break;
- 
--		list->buffer[0].address = pci_map_single(priv->pci_dev,
-+		list->buffer[0].address = dma_map_single(&priv->pci_dev->dev,
- 							 skb->data,
- 							 TLAN_MAX_FRAME_SIZE,
--							 PCI_DMA_FROMDEVICE);
-+							 DMA_FROM_DEVICE);
- 		tlan_store_skb(list, skb);
- 		list->buffer[1].count = 0;
- 		list->buffer[1].address = 0;
-@@ -1954,12 +1952,10 @@ static void tlan_free_lists(struct net_device *dev)
- 		list = priv->tx_list + i;
- 		skb = tlan_get_skb(list);
- 		if (skb) {
--			pci_unmap_single(
--				priv->pci_dev,
--				list->buffer[0].address,
--				max(skb->len,
--				    (unsigned int)TLAN_MIN_FRAME_SIZE),
--				PCI_DMA_TODEVICE);
-+			dma_unmap_single(&priv->pci_dev->dev,
-+					 list->buffer[0].address,
-+					 max(skb->len, (unsigned int)TLAN_MIN_FRAME_SIZE),
-+					 DMA_TO_DEVICE);
- 			dev_kfree_skb_any(skb);
- 			list->buffer[8].address = 0;
- 			list->buffer[9].address = 0;
-@@ -1970,10 +1966,9 @@ static void tlan_free_lists(struct net_device *dev)
- 		list = priv->rx_list + i;
- 		skb = tlan_get_skb(list);
- 		if (skb) {
--			pci_unmap_single(priv->pci_dev,
-+			dma_unmap_single(&priv->pci_dev->dev,
- 					 list->buffer[0].address,
--					 TLAN_MAX_FRAME_SIZE,
--					 PCI_DMA_FROMDEVICE);
-+					 TLAN_MAX_FRAME_SIZE, DMA_FROM_DEVICE);
- 			dev_kfree_skb_any(skb);
- 			list->buffer[8].address = 0;
- 			list->buffer[9].address = 0;
--- 
-2.25.1
+-		sense_ptr = (void *)cmd->frame + ioc->sense_off;
++		if (in_compat_syscall())
++			sense_ptr = compat_ptr((uintptr_t)cmd->frame) +
++					ioc->sense_off;
++		else
++			sense_ptr = (void *)cmd->frame + ioc->sense_off;
++
+ 		if (instance->consistent_mask_64bit)
+ 			put_unaligned_le64(sense_handle, sense_ptr);
+ 		else
 
+The same might make sense for the iovecs, but I didn't get to that
+yet..
+
+
+>  static long
+>  megasas_mgmt_compat_ioctl(struct file *file, unsigned int cmd,
+>  			  unsigned long arg)
+>  {
+>  	switch (cmd) {
+>  	case MEGASAS_IOC_FIRMWARE32:
+> -		return megasas_mgmt_compat_ioctl_fw(file, arg);
+> +		return megasas_mgmt_ioctl_fw(file, arg);
+>  	case MEGASAS_IOC_GET_AEN:
+>  		return megasas_mgmt_ioctl_aen(file, arg);
+>  	}
+
+We should be able to kill off megasas_mgmt_compat_ioctl entirely now.
