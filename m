@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AC8267C48
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9AA267C4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725926AbgILUtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 16:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
+        id S1725937AbgILUtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 16:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgILUsw (ORCPT
+        with ESMTP id S1725893AbgILUsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 16:48:52 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF9CC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 13:48:52 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id z19so9396419lfr.4
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 13:48:52 -0700 (PDT)
+        Sat, 12 Sep 2020 16:48:54 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F262C0613ED
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 13:48:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id b19so15317883lji.11
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 13:48:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H+vO3aXanl1nFthl3D75DmV+OYAyLES0i5j4W9OxAc0=;
-        b=efg1UOI+FZRyM3b2QOAcXOibtQw/e5eTwnpfi64urVq5niHiX6Z3AAFzimcaJLlywR
-         WZ1Iqs/cJ7a7r2Us7qNoTk1UbJxjevlTYDACWl3aIiL9hvtdmYTJ2uH3TRySQi2Z3gjq
-         0f7AdtrwEMxsQb+dyxg243kkxOK+5Rv+M0xuhmhZDEbeERnc9FdDkjqli2aEigAbMfPG
-         lLw5JHFNcVGICwaAdHy7RFH/mE0iwKo1X4m6TmyMgDXzbZ4OFA4UWv+QFRaesj0NNc2t
-         r/97Bu+IetnOskuISnDhrE/VDX+D9wWHl98F/ub8fw0tVZYAsTxoskJBqglgJ/CZPQ7g
-         twZQ==
+        bh=fQhJnEUl8bKAkFa65yFvhmvrLixAqXbiZILnY1ZEMao=;
+        b=LRXOF3sWRwcqMNnMYTh5DKEE+LNBd86t5QpHAOKq66KAaB5EtsubTjXFWa8yJKquQH
+         t8TmKki29YGZoLNTPRXCBdXCfSN2Kf59BT6fldQ/KBoMTjAIhE3NYbkpj2XnKHhc1VKL
+         FsHL4eLuFwUivfLMoxycwcZHWne6+Moa8tsaR7xTJd/jYZzjLiokKGv1PVzIOw9kLmIL
+         7/7P3UvWCT7o7OT1OglDrf7iGc568d67pOsFlToT/p/ihJNuqfvOnh0iXCZZyTbaieZ7
+         Jxko5+7Gqjcr0Lb+qJesZ3ktmPLljtpcciz/YRrucq1u3+SJTjYQGOA4M594zH6mCYZP
+         274w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H+vO3aXanl1nFthl3D75DmV+OYAyLES0i5j4W9OxAc0=;
-        b=Oiuzwu85W3ktUApKjbn/3LTaRg467RXAhdqNMYhh6jZLPCsXYFYBayoYOE1dHmYDh2
-         94RH08Q58MArwabe3T5uiYFsocMIoPXySuC/EYapHAFLWxtf2dBkZN6TzflpWFyBhYD2
-         aj3znH6Jw0+ceLB91FKjByEa+gPDtE2UEUqeBs917XkPaEMNBa+5/W7dOvlleL/BAz+p
-         ZP9NfDilYXhsSbWZHmmMFhmDoXUE/IUv/q2Hu36XdnS/QD3zRSH6oLb+mm7OfSxbq58F
-         9d0yr4o7OsNmugUVuXysoNYjzEmjGuE9O1VhP5mV+SVxmMXOY7VFHDtrAMOOo+oHzsMM
-         KimA==
-X-Gm-Message-State: AOAM532oVB4uHmVEOYpYOaCPgpgiEplrcgn+2T0xcBc6OqtWWPh5XO7+
-        7ZfitCxnKDqejseEmTvOVcc=
-X-Google-Smtp-Source: ABdhPJxENQh43gHrpNCWOhxMJCKepku5trU+mDzrdtSTJkiZXOx9YmcxdHlPCdzrDODIrITwDt5YAA==
-X-Received: by 2002:a19:89d7:: with SMTP id l206mr2811958lfd.110.1599943730715;
-        Sat, 12 Sep 2020 13:48:50 -0700 (PDT)
+        bh=fQhJnEUl8bKAkFa65yFvhmvrLixAqXbiZILnY1ZEMao=;
+        b=FpZC/k3nyYk+FuZv0tuzhbb/GZku8T4l2c5o3weckZf+qbgRc/ZIdmHsT+MweZEulx
+         xH1iXCHakx4b6EjewSTZvRf6LnJoTGSDBaJDhnfGgYeUktf5iG+UMeuH6RUXODnIZ/bJ
+         Iez2agKz9kbeixaiJnVfTngbXQTQB8OZZuHJDSf1LPze9LwiQ0u3Zi8Gr5SyNvS+D9Vz
+         gwbSG6fofg2s4hPd7Zzcq50w0iiHOkWP8EwTLmxUn68DaVLEBwV4aixeHOjCDHgfPjuN
+         u9000FmcItb3g4iFiTJfUe569+WEhL2ol+UiBrtJMu1bzYET6jSNkgzOm5DqmOqiMxSd
+         VzCA==
+X-Gm-Message-State: AOAM531G7PywJcEwFMqY7oQONj4mg1sNaw+qjtb/DZei+/uuFvzHwt5w
+        X1e3RBRlMQr1zx61aayPUJ0=
+X-Google-Smtp-Source: ABdhPJxOBsg83nTFAV5EBS3z819r9J05Y8Lc1BWaSfw75ivW1h8wTX2Z4i9jPjpT9/16tqJ8S2VnmQ==
+X-Received: by 2002:a2e:8159:: with SMTP id t25mr2838076ljg.137.1599943731934;
+        Sat, 12 Sep 2020 13:48:51 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id r7sm1729753lfn.84.2020.09.12.13.48.49
+        by smtp.gmail.com with ESMTPSA id r7sm1729753lfn.84.2020.09.12.13.48.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 13:48:50 -0700 (PDT)
+        Sat, 12 Sep 2020 13:48:51 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
         Yuti Amonkar <yamonkar@cadence.com>,
         Sanket Parmar <sparmar@cadence.com>,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 2/3] phy: cadence: salvo: Constify cdns_nxp_sequence_pair
-Date:   Sat, 12 Sep 2020 22:46:38 +0200
-Message-Id: <20200912204639.501669-3-rikard.falkeborn@gmail.com>
+Subject: [PATCH 3/3] phy: cadence: torrent: Constify regmap_config structs
+Date:   Sat, 12 Sep 2020 22:46:39 +0200
+Message-Id: <20200912204639.501669-4-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200912204639.501669-1-rikard.falkeborn@gmail.com>
 References: <20200912204639.501669-1-rikard.falkeborn@gmail.com>
@@ -69,45 +69,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cdns_nxp_sequence_pair[] are never modified and can be made const to allow
-the compiler to put them in read-only memory.
+The regmap_config structs are never modified and can be made const to
+allow the compiler to put them in read-only memory.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/phy/cadence/phy-cadence-salvo.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/phy/cadence/phy-cadence-torrent.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/phy/cadence/phy-cadence-salvo.c b/drivers/phy/cadence/phy-cadence-salvo.c
-index 8c33d3215f2d..88e239adc3b8 100644
---- a/drivers/phy/cadence/phy-cadence-salvo.c
-+++ b/drivers/phy/cadence/phy-cadence-salvo.c
-@@ -97,7 +97,7 @@ struct cdns_reg_pairs {
+diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
+index 7116127358ee..835bd7563f36 100644
+--- a/drivers/phy/cadence/phy-cadence-torrent.c
++++ b/drivers/phy/cadence/phy-cadence-torrent.c
+@@ -331,21 +331,21 @@ static int cdns_regmap_dptx_read(void *context, unsigned int reg,
+ 	.reg_read = cdns_regmap_read, \
+ }
  
- struct cdns_salvo_data {
- 	u8 reg_offset_shift;
--	struct cdns_reg_pairs *init_sequence_val;
-+	const struct cdns_reg_pairs *init_sequence_val;
- 	u8 init_sequence_length;
+-static struct regmap_config cdns_torrent_tx_lane_cdb_config[] = {
++static const struct regmap_config cdns_torrent_tx_lane_cdb_config[] = {
+ 	TORRENT_TX_LANE_CDB_REGMAP_CONF("0"),
+ 	TORRENT_TX_LANE_CDB_REGMAP_CONF("1"),
+ 	TORRENT_TX_LANE_CDB_REGMAP_CONF("2"),
+ 	TORRENT_TX_LANE_CDB_REGMAP_CONF("3"),
  };
  
-@@ -126,7 +126,7 @@ static void cdns_salvo_write(struct cdns_salvo_phy *salvo_phy,
-  * Below bringup sequence pair are from Cadence PHY's User Guide
-  * and NXP platform tuning results.
-  */
--static struct cdns_reg_pairs cdns_nxp_sequence_pair[] = {
-+static const struct cdns_reg_pairs cdns_nxp_sequence_pair[] = {
- 	{0x0830, PHY_PMA_CMN_CTRL1},
- 	{0x0010, TB_ADDR_CMN_DIAG_HSCLK_SEL},
- 	{0x00f0, TB_ADDR_CMN_PLL0_VCOCAL_INIT_TMR},
-@@ -217,7 +217,7 @@ static int cdns_salvo_phy_init(struct phy *phy)
- 		return ret;
+-static struct regmap_config cdns_torrent_rx_lane_cdb_config[] = {
++static const struct regmap_config cdns_torrent_rx_lane_cdb_config[] = {
+ 	TORRENT_RX_LANE_CDB_REGMAP_CONF("0"),
+ 	TORRENT_RX_LANE_CDB_REGMAP_CONF("1"),
+ 	TORRENT_RX_LANE_CDB_REGMAP_CONF("2"),
+ 	TORRENT_RX_LANE_CDB_REGMAP_CONF("3"),
+ };
  
- 	for (i = 0; i < data->init_sequence_length; i++) {
--		struct cdns_reg_pairs *reg_pair = data->init_sequence_val + i;
-+		const struct cdns_reg_pairs *reg_pair = data->init_sequence_val + i;
+-static struct regmap_config cdns_torrent_common_cdb_config = {
++static const struct regmap_config cdns_torrent_common_cdb_config = {
+ 	.name = "torrent_common_cdb",
+ 	.reg_stride = 1,
+ 	.fast_io = true,
+@@ -353,7 +353,7 @@ static struct regmap_config cdns_torrent_common_cdb_config = {
+ 	.reg_read = cdns_regmap_read,
+ };
  
- 		cdns_salvo_write(salvo_phy, reg_pair->off, reg_pair->val);
- 	}
+-static struct regmap_config cdns_torrent_phy_pcs_cmn_cdb_config = {
++static const struct regmap_config cdns_torrent_phy_pcs_cmn_cdb_config = {
+ 	.name = "torrent_phy_pcs_cmn_cdb",
+ 	.reg_stride = 1,
+ 	.fast_io = true,
+@@ -361,7 +361,7 @@ static struct regmap_config cdns_torrent_phy_pcs_cmn_cdb_config = {
+ 	.reg_read = cdns_regmap_read,
+ };
+ 
+-static struct regmap_config cdns_torrent_phy_pma_cmn_cdb_config = {
++static const struct regmap_config cdns_torrent_phy_pma_cmn_cdb_config = {
+ 	.name = "torrent_phy_pma_cmn_cdb",
+ 	.reg_stride = 1,
+ 	.fast_io = true,
+@@ -369,7 +369,7 @@ static struct regmap_config cdns_torrent_phy_pma_cmn_cdb_config = {
+ 	.reg_read = cdns_regmap_read,
+ };
+ 
+-static struct regmap_config cdns_torrent_dptx_phy_config = {
++static const struct regmap_config cdns_torrent_dptx_phy_config = {
+ 	.name = "torrent_dptx_phy",
+ 	.reg_stride = 1,
+ 	.fast_io = true,
 -- 
 2.28.0
 
