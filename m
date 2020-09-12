@@ -2,238 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1932676FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC682676FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725984AbgILAul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 20:50:41 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:52418 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725857AbgILAuh (ORCPT
+        id S1725902AbgILA6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 20:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725871AbgILA6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 20:50:37 -0400
-IronPort-SDR: S7HKLIEgVQCnVBwByHnjbWJSIAn4vkbuUc8GmSB/lCpxPOpJaOdY0h7UZetQNlwdyH0BqNhSJf
- gRBHCWXeyhe3R76LAbWIIutPaRoUctShu+lJ1RWDRbgjpSLKkdZqxEf00/FvKX7wnqXREu4gCg
- +5a83F09TJw72HJweJatqdho7MKLoce5gIZGBBlg+LMdeCHyrvy1L9nmcIORczC5BoPJ//loA5
- ojexcn7KFtPNA08RmfvfAVd9VKk+gq72eruUm25zSMFsEYnXXAPnyLgoFWuGhk4fY7tCX6W1mI
- lS0=
-X-IronPort-AV: E=Sophos;i="5.76,418,1592899200"; 
-   d="scan'208";a="55030244"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa1.mentor.iphmx.com with ESMTP; 11 Sep 2020 16:50:36 -0800
-IronPort-SDR: KLfswWze6mM3NcT/VAwlPzjKpTgBvcxDKrC3RMH+3ebPQz3g3B0AlcamgH8b/6BerHVi/xzSjk
- TmAzUIJVC3PbKKMaoKZpxoCsuKRgjZOXp30IWFiDNmRzQFvvRqQST5rmUEpSy5j4kXNBXrLZwv
- YSdapYxkMPFN4WYbsh+WiiNDpgIrCvjyCSrTlRpPxwc892DdHuacZsC7vOlvjcrl6+BzrUZp4S
- yzhq745oT69N7nSOGpSuhm/aMHm0w8y01mJjqLkP5VSR/2w/9VDFUL7CBsV4RkQPxFEZOOQmgS
- PsU=
-Subject: Re: [PATCH v2 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "nick@shmanahar.org" <nick@shmanahar.org>,
-        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Andrew_Gabbasov@mentor.com" <Andrew_Gabbasov@mentor.com>,
-        "erosca@de.adit-jv.com" <erosca@de.adit-jv.com>,
-        "digetx@gmail.com" <digetx@gmail.com>
-References: <20200903155904.17454-1-jiada_wang@mentor.com>
- <CAHp75Vfw1bJ+0pRJKVJ=nCJ-5rVzYLjkP4iWPqiG-it0qp5GFg@mail.gmail.com>
-From:   "Wang, Jiada" <jiada_wang@mentor.com>
-Message-ID: <7c57ae66-41ad-aba3-a466-6c6f79652638@mentor.com>
-Date:   Sat, 12 Sep 2020 09:50:22 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 11 Sep 2020 20:58:36 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB27C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:58:35 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id o20so8504566pfp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:58:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BQEBitiGkWGlZM4yqpZopSRzm6HS+moeiC97y9ea1YU=;
+        b=Ihn4Rqwl3X1/PBt7G/kTyamrsinQUF3TxCWPjg6e8OQN476ND9CVfuKHuqlxU1qDUm
+         a/hBBnKCIBRIYQEhRLK9iu9C2/iMSUK0EXz/GagWIL9phdjvZZo4JX+iH1rW1Y6FFfJb
+         Dai1I/MiwXHFQCRxKKJF0jTk7f16ia64TZ8gE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BQEBitiGkWGlZM4yqpZopSRzm6HS+moeiC97y9ea1YU=;
+        b=bWQp1bcA4YyTbp0bzk3mrLLNKz3tgiF0zqYEcM3UCvJDWdS26tKjRJH3KGRhKYU559
+         3ROoT3e5N1BHqoELKPGshceOdEWiK6QctGmrMbaZL+lsU38guNYTztpZBnYt+onZtGyA
+         RhAJVbcLyVIPoAzaX8QZfeqRcdqYt7/8HIaqbQYrssWvHlD/pf+g7K4iEbc1rtszCokt
+         7rY4CNDR9LDIdyW3kFoBhZaxOCFwa+vC5lonFsiKeII3EwKdoyORXdy6gcSkiUXsgmHI
+         VDDpwqDhVs+IjEZbAk0Py8PVWMQvQI1Lhoq81q7G3l+6Xi+dBkoACCXkOD4b1nDo8aYr
+         QOlA==
+X-Gm-Message-State: AOAM530EVS6ihztRPK/yHnysoGFOD8qztJr8G9wTQs5k5QgsmpCoXG7L
+        cTQhMdv99ZWgmZzjfPgwiV/m8g==
+X-Google-Smtp-Source: ABdhPJy3+8gD4qTnMB/dc12Fcc9iJI2FPBjz7f+Cbs5qUkcTc1/Dc6JOH6fHskMCyzeP5MnAqaG96A==
+X-Received: by 2002:a63:5966:: with SMTP id j38mr3469299pgm.187.1599872314545;
+        Fri, 11 Sep 2020 17:58:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k2sm3357001pfi.169.2020.09.11.17.58.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 17:58:33 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Kyle Huey <me@kylehuey.com>, Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] core/entry: Report syscall correctly for trace and audit
+Date:   Fri, 11 Sep 2020 17:58:26 -0700
+Message-Id: <20200912005826.586171-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfw1bJ+0pRJKVJ=nCJ-5rVzYLjkP4iWPqiG-it0qp5GFg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: svr-orw-mbx-02.mgc.mentorg.com (147.34.90.202) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
+On v5.8 when doing seccomp syscall rewrites (e.g. getpid into getppid
+as seen in the seccomp selftests), trace (and audit) correctly see the
+rewritten syscall on entry and exit:
 
-Thanks for your comment
+	seccomp_bpf-1307  [000] .... 22974.874393: sys_enter: NR 110 (...
+	seccomp_bpf-1307  [000] .N.. 22974.874401: sys_exit: NR 110 = 1304
 
-On 2020/09/06 3:02, Andy Shevchenko wrote:
-> 
-> 
-> On Thursday, September 3, 2020, Jiada Wang <jiada_wang@mentor.com 
-> <mailto:jiada_wang@mentor.com>> wrote:
-> 
->     From: Nick Dyer <nick.dyer@itdev.co.uk <mailto:nick.dyer@itdev.co.uk>>
-> 
->     Some maXTouch chips (eg mXT1386) will not respond on the first I2C
->     request
->     when they are in a sleep state. It must be retried after a delay for the
->     chip to wake up.
-> 
->     Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk
->     <mailto:nick.dyer@itdev.co.uk>>
->     Acked-by: Yufeng Shen <miletus@chromium.org
->     <mailto:miletus@chromium.org>>
-> 
-> 
->     (cherry picked from ndyer/linux/for-upstream commit
->     63fd7a2cd03c3a572a5db39c52f4856819e1835d)
-> 
-> 
-> It’s a noise for upstream.
-> 
-sure, I will remove it
+With mainline we see a mismatched enter and exit (the original syscall
+is incorrectly visible on entry):
 
->     [gdavis: Forward port and fix conflicts.]
->     Signed-off-by: George G. Davis <george_davis@mentor.com
->     <mailto:george_davis@mentor.com>>
->     [jiada: return exact errno when i2c_transfer & i2c_master_send fails]
->     Signed-off-by: Jiada Wang <jiada_wang@mentor.com
->     <mailto:jiada_wang@mentor.com>>
->     ---
->       drivers/input/touchscreen/atmel_mxt_ts.c | 45 ++++++++++++++++--------
->       1 file changed, 30 insertions(+), 15 deletions(-)
-> 
->     diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c
->     b/drivers/input/touchscreen/atmel_mxt_ts.c
->     index a2189739e30f..5d4cb15d21dc 100644
->     --- a/drivers/input/touchscreen/atmel_mxt_ts.c
->     +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
->     @@ -196,6 +196,7 @@ enum t100_type {
->       #define MXT_CRC_TIMEOUT                1000    /* msec */
->       #define MXT_FW_RESET_TIME      3000    /* msec */
->       #define MXT_FW_CHG_TIMEOUT     300     /* msec */
->     +#define MXT_WAKEUP_TIME                25      /* msec */
-> 
-> 
-> Can we simple add _MS unit suffix to the definition?
-As Dmitry commented, I'd like to keep it as-is, probably a separate 
-patch to update all these together.
-> 
-> 
->       /* Command to unlock bootloader */
->       #define MXT_UNLOCK_CMD_MSB     0xaa
->     @@ -626,6 +627,7 @@ static int __mxt_read_reg(struct i2c_client *client,
->              struct i2c_msg xfer[2];
->              u8 buf[2];
->              int ret;
->     +       bool retry = false;
-> 
-> 
-> Keep this ordered by length.
-I will move "retry" upper.
-> 
-> 
->              buf[0] = reg & 0xff;
->              buf[1] = (reg >> 8) & 0xff;
->     @@ -642,17 +644,22 @@ static int __mxt_read_reg(struct i2c_client
->     *client,
->              xfer[1].len = len;
->              xfer[1].buf = val;
-> 
->     -       ret = i2c_transfer(client->adapter, xfer, 2);
->     -       if (ret == 2) {
->     -               ret = 0;
->     -       } else {
->     -               if (ret >= 0)
->     -                       ret = -EIO;
->     -               dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
->     -                       __func__, ret);
->     +retry_read:
->     +       ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
->     +       if (ret != ARRAY_SIZE(xfer)) {
->     +               if (!retry) {
-> 
-> 
-> Why not positive conditional?
-to me, it's not much different either positive or negative conditional,
-can you elaborate more about this?
+	seccomp_bpf-1030  [000] ....    21.806766: sys_enter: NR 39 (...
+	seccomp_bpf-1030  [000] ....    21.806767: sys_exit: NR 110 = 1027
 
+When ptrace or seccomp change the syscall, this needs to be visible to
+trace and audit at that time as well. Update the syscall earlier so they
+see the correct value.
 
-> 
->     +                       dev_dbg(&client->dev, "%s: i2c retry\n",
->     __func__);
-> 
-> 
-> __func__ is redundant for dev_dbg().
-> 
->     +                       msleep(MXT_WAKEUP_TIME);
->     +                       retry = true;
->     +                       goto retry_read;
-> 
->     +               } else {
-> 
-> 
-> Redundant in either case of conditional. Allows to drop indentation level.
-I will remove the redundant conditional
+Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+Fixes: d88d59b64ca3 ("core/entry: Respect syscall number rewrites")
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Kyle Huey <me@kylehuey.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ kernel/entry/common.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Thanks,
-Jiada
-> 
->     +                       dev_err(&client->dev, "%s: i2c transfer
->     failed (%d)\n",
->     +                               __func__, ret);
->     +                       return ret < 0 ? ret : -EIO;
->     +               }
->              }
-> 
->     -       return ret;
->     +       return 0;
->       }
-> 
-> 
-> Same comments about below.
-> 
->       static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16
->     len,
->     @@ -661,6 +668,7 @@ static int __mxt_write_reg(struct i2c_client
->     *client, u16 reg, u16 len,
->              u8 *buf;
->              size_t count;
->              int ret;
->     +       bool retry = false;
-> 
->              count = len + 2;
->              buf = kmalloc(count, GFP_KERNEL);
->     @@ -671,14 +679,21 @@ static int __mxt_write_reg(struct i2c_client
->     *client, u16 reg, u16 len,
->              buf[1] = (reg >> 8) & 0xff;
->              memcpy(&buf[2], val, len);
-> 
->     +retry_write:
->              ret = i2c_master_send(client, buf, count);
->     -       if (ret == count) {
->     -               ret = 0;
->     +       if (ret != count) {
->     +               if (!retry) {
->     +                       dev_dbg(&client->dev, "%s: i2c retry\n",
->     __func__);
->     +                       msleep(MXT_WAKEUP_TIME);
->     +                       retry = true;
->     +                       goto retry_write;
->     +               } else {
->     +                       dev_err(&client->dev, "%s: i2c send failed
->     (%d)\n",
->     +                               __func__, ret);
->     +                       ret = ret < 0 ? ret : -EIO;
->     +               }
->              } else {
->     -               if (ret >= 0)
->     -                       ret = -EIO;
->     -               dev_err(&client->dev, "%s: i2c send failed (%d)\n",
->     -                       __func__, ret);
->     +               ret = 0;
->              }
-> 
->              kfree(buf);
->     -- 
->     2.17.1
-> 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 18683598edbc..6fdb6105e6d6 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+ 			return ret;
+ 	}
+ 
++	/* Either of the above might have changed the syscall number */
++	syscall = syscall_get_nr(current, regs);
++
+ 	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_enter(regs, syscall);
+ 
+ 	syscall_enter_audit(regs, syscall);
+ 
+-	/* The above might have changed the syscall number */
+-	return ret ? : syscall_get_nr(current, regs);
++	return ret ? : syscall;
+ }
+ 
+ static __always_inline long
+-- 
+2.25.1
+
