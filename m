@@ -2,147 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3618267741
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 04:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9037267742
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 04:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725773AbgILC15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 22:27:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbgILC1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 22:27:54 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F685221E5;
-        Sat, 12 Sep 2020 02:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599877673;
-        bh=qeOGHnpHBvjCzROP5xRGUPHNe7r1quhBR7ajt9uB/Lw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X58c73aDuTLEPDZK85/VNHTDS2cxdewBLoXa2/y+LtgGXXyNq8pAtiXqxUP7NKSBO
-         3FEMktEwCbtlPKUCSc3fVM9xDLmfy4PtEXjXckVa7Np0z6UGXybvcUZUuRtZZ3btZ3
-         AWkQwCQclLYkAXgIQNLAhDJsbk2FYvUIaHshacLU=
-Date:   Sat, 12 Sep 2020 11:27:49 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@elte.hu>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86@vger.kernel.org
-Subject: Re: [BUGFIX PATCH] kprobes: Fix to check probe enabled before
- disarm_kprobe_ftrace()
-Message-Id: <20200912112749.549b81a06433df61dbbe754e@kernel.org>
-In-Reply-To: <159888672694.1411785.5987998076694782591.stgit@devnote2>
-References: <159888672694.1411785.5987998076694782591.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1725805AbgILC2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 22:28:34 -0400
+Received: from smtprelay0241.hostedemail.com ([216.40.44.241]:35008 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725562AbgILC2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 22:28:32 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 87C84182CED2A;
+        Sat, 12 Sep 2020 02:28:30 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1963:2198:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3868:3871:3874:4321:5007:7903:8603:8957:10004:10400:10848:11232:11473:11658:11914:12296:12297:12740:12760:12895:13019:13161:13229:13439:14096:14097:14659:14721:21080:21451:21627:30012:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: waste77_160c1bc270f3
+X-Filterd-Recvd-Size: 3171
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 12 Sep 2020 02:28:28 +0000 (UTC)
+Message-ID: <f32cdd694fcf647bbe17b54b983324bc24f1360c.camel@perches.com>
+Subject: Re: [PATCH v5 01/10] fs/ntfs3: Add headers and misc files
+From:   Joe Perches <joe@perches.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, mark@harmstone.com,
+        nborisov@suse.com
+Date:   Fri, 11 Sep 2020 19:28:27 -0700
+In-Reply-To: <20200911141018.2457639-2-almaz.alexandrovich@paragon-software.com>
+References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
+         <20200911141018.2457639-2-almaz.alexandrovich@paragon-software.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ingo,
+On Fri, 2020-09-11 at 17:10 +0300, Konstantin Komarov wrote:
+> This adds headers and misc files
 
-Could you also pick this fix to fix the reproducible warning?
+The code may be ok, but its cosmetics are poor.
 
-Thank you,
+> diff --git a/fs/ntfs3/debug.h b/fs/ntfs3/debug.h
+[]
+> +#define QuadAlign(n) (((n) + 7u) & (~7u))
+> +#define IsQuadAligned(n) (!((size_t)(n)&7u))
+> +#define Quad2Align(n) (((n) + 15(&u) & (~15u))
+> +#define IsQuad2Aligned(n) (!((size_t)(n)&15u))
+> +#define Quad4Align(n) (((n) + 31u) & (~31u))
+> +#define IsSizeTAligned(n) (!((size_t)(n) & (sizeof(size_t) - 1)))
+> +#define DwordAlign(n) (((n) + 3u) & (~3u))
+> +#define IsDwordAligned(n) (!((size_t)(n)&3u))
+> +#define WordAlign(n) (((n) + 1u) & (~1u))
+> +#define IsWordAligned(n) (!((size_t)(n)&1u))
 
-On Tue,  1 Sep 2020 00:12:07 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+All of these could use column alignment.
+IsSizeTAligned could is the kernel's IS_ALIGNED
 
-> Commit 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at
-> kprobe_ftrace_handler") fixed one bug but not completely fixed yet.
-> If we run a kprobe_module.tc of ftracetest, kernel showed a warning
-> as below.
-> 
-> 
-> # ./ftracetest test.d/kprobe/kprobe_module.tc
-> === Ftrace unit tests ===
-> [1] Kprobe dynamic event - probing module
-> ...
-> [   22.400215] ------------[ cut here ]------------
-> [   22.400962] Failed to disarm kprobe-ftrace at trace_printk_irq_work+0x0/0x7e [trace_printk] (-2)
-> [   22.402139] WARNING: CPU: 7 PID: 200 at kernel/kprobes.c:1091 __disarm_kprobe_ftrace.isra.0+0x7e/0xa0
-> [   22.403358] Modules linked in: trace_printk(-)
-> [   22.404028] CPU: 7 PID: 200 Comm: rmmod Not tainted 5.9.0-rc2+ #66
-> [   22.404870] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-> [   22.406139] RIP: 0010:__disarm_kprobe_ftrace.isra.0+0x7e/0xa0
-> [   22.406947] Code: 30 8b 03 eb c9 80 3d e5 09 1f 01 00 75 dc 49 8b 34 24 89 c2 48 c7 c7 a0 c2 05 82 89 45 e4 c6 05 cc 09 1f 01 01 e8 a9 c7 f0 ff <0f> 0b 8b 45 e4 eb b9 89 c6 48 c7 c7 70 c2 05 82 89 45 e4 e8 91 c7
-> [   22.409544] RSP: 0018:ffffc90000237df0 EFLAGS: 00010286
-> [   22.410385] RAX: 0000000000000000 RBX: ffffffff83066024 RCX: 0000000000000000
-> [   22.411434] RDX: 0000000000000001 RSI: ffffffff810de8d3 RDI: ffffffff810de8d3
-> [   22.412687] RBP: ffffc90000237e10 R08: 0000000000000001 R09: 0000000000000001
-> [   22.413762] R10: 0000000000000000 R11: 0000000000000001 R12: ffff88807c478640
-> [   22.414852] R13: ffffffff8235ebc0 R14: ffffffffa00060c0 R15: 0000000000000000
-> [   22.415941] FS:  00000000019d48c0(0000) GS:ffff88807d7c0000(0000) knlGS:0000000000000000
-> [   22.417264] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   22.418176] CR2: 00000000005bb7e3 CR3: 0000000078f7a000 CR4: 00000000000006a0
-> [   22.419309] Call Trace:
-> [   22.419990]  kill_kprobe+0x94/0x160
-> [   22.420652]  kprobes_module_callback+0x64/0x230
-> [   22.421470]  notifier_call_chain+0x4f/0x70
-> [   22.422184]  blocking_notifier_call_chain+0x49/0x70
-> [   22.422979]  __x64_sys_delete_module+0x1ac/0x240
-> [   22.423733]  do_syscall_64+0x38/0x50
-> [   22.424366]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [   22.425176] RIP: 0033:0x4bb81d
-> [   22.425741] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e0 ff ff ff f7 d8 64 89 01 48
-> [   22.428726] RSP: 002b:00007ffc70fef008 EFLAGS: 00000246 ORIG_RAX: 00000000000000b0
-> [   22.430169] RAX: ffffffffffffffda RBX: 00000000019d48a0 RCX: 00000000004bb81d
-> [   22.431375] RDX: 0000000000000000 RSI: 0000000000000880 RDI: 00007ffc70fef028
-> [   22.432543] RBP: 0000000000000880 R08: 00000000ffffffff R09: 00007ffc70fef320
-> [   22.433692] R10: 0000000000656300 R11: 0000000000000246 R12: 00007ffc70fef028
-> [   22.434635] R13: 0000000000000000 R14: 0000000000000002 R15: 0000000000000000
-> [   22.435682] irq event stamp: 1169
-> [   22.436240] hardirqs last  enabled at (1179): [<ffffffff810df542>] console_unlock+0x422/0x580
-> [   22.437466] hardirqs last disabled at (1188): [<ffffffff810df19b>] console_unlock+0x7b/0x580
-> [   22.438608] softirqs last  enabled at (866): [<ffffffff81c0038e>] __do_softirq+0x38e/0x490
-> [   22.439637] softirqs last disabled at (859): [<ffffffff81a00f42>] asm_call_on_stack+0x12/0x20
-> [   22.440690] ---[ end trace 1e7ce7e1e4567276 ]---
-> [   22.472832] trace_kprobe: This probe might be able to register after target module is loaded. Continue.
-> 
-> 
-> This is because the kill_kprobe() calls disarm_kprobe_ftrace() even
-> if the given probe is not enabled. In that case, ftrace_set_filter_ip()
-> fails because the given probe point is not registered to ftrace.
-> 
-> Fix to check the given (going) probe is enabled before invoking
-> disarm_kprobe_ftrace().
-> 
-> Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  kernel/kprobes.c |    5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 287b263c9cb9..d43b48ecdb4f 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2159,9 +2159,10 @@ static void kill_kprobe(struct kprobe *p)
->  
->  	/*
->  	 * The module is going away. We should disarm the kprobe which
-> -	 * is using ftrace.
-> +	 * is using ftrace, because ftrace framework is still available at
-> +	 * MODULE_STATE_GOING notification.
->  	 */
-> -	if (kprobe_ftrace(p))
-> +	if (kprobe_ftrace(p) && !kprobe_disabled(p) && !kprobes_all_disarmed)
->  		disarm_kprobe_ftrace(p);
->  }
->  
-> 
+#define IsQuadAligned(n)	(!((size_t)(n) & 7u))
+#define QuadAlign(n)		(((n) + 7u) & (~7u))
+#define IsQuadAligned(n)	(!((size_t)(n) & 7u))
+#define Quad2Align(n)		(((n) + 15u) & (~15u))
+#define IsQuad2Aligned(n)	(!((size_t)(n) & 15u))
+
+Though all of these could also use two macros with
+the same form.  Something like:
+
+#define NTFS3_ALIGN(n, at)	(((n) + ((at) - 1)) & (~((at) - 1)))
+#define NTFS3_IS_ALIGNED(n, at)	(!((size_t)(n) & ((at) - 1)))
+
+So all of these could be ordered by size and use actual size
+
+#define WordAlign(n)		NTFS3_ALIGN(n, 2)
+#define IsWordAligned(n)	NTFS3_IS_ALIGNED(n, 2)
+#define DwordAlign(n)		NTFS3_ALIGN(n, 4)
+#define IsDwordAligned(n)	
+NTFS3_IS_ALIGNED(n, 4)
+#define QuadAlign(n)		NTFS3_ALIGN(n, 8)
+#define IsQuadAligned(n)	NTFS3_IS_ALIGNED(n, 8)
+#define
+Quad2Align(n)		NTFS3_ALIGN(n, 16)
+#define IsQuad2Aligned(n)	NTFS3_IS_ALIGNED(n, 16)
+
+#define IsSizeTAligned(n)	NTFS3_IS_ALIGNED(n, sizeof(size_t))
 
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> +#ifdef CONFIG_PRINTK
+> +__printf(2, 3) void ntfs_printk(const struct super_block *sb, const char *fmt,
+> +				...);
+
+Better would be
+
+__printf(2, 3)
+void ntfs_printk(const struct super_block *sb, const char *fmt, ...);
+
+etc...
+
+There's a lot of code that could be made more readable for a human.
+
+
+
