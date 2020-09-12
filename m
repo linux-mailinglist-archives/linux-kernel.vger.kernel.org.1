@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183462679EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5BB2679F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbgILLXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:23:25 -0400
-Received: from vps.xff.cz ([195.181.215.36]:38394 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbgILLWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:22:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1599909724; bh=sDy+L9GumU/BwR2PlpaYqxa0X1FG691hBIWSRVNXZvQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=i6sRXRptOCR5+GNCQdFsfmqrtChYSDm3YCcO/sR12n9WrtD6wcSKaLjXMV6Wfyp2o
-         YoF5RYSMiyr47R1rJ5rn2wablgv+EJmnaabrL6RS7VA/OnwtvuMewQowULNa+ZOHXA
-         YSVQl4ectJ+UmOMx120jbc/z78+++AXRxg+SctK8=
-From:   Ondrej Jirman <megous@megous.com>
-To:     linux-sunxi@googlegroups.com
-Cc:     Ondrej Jirman <megous@megous.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
-        sunXi SoC support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] mfd: sun4i-gpadc: Interrupt numbers should start from 1
-Date:   Sat, 12 Sep 2020 13:22:00 +0200
-Message-Id: <20200912112200.226530-1-megous@megous.com>
+        id S1725850AbgILL2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725820AbgILL16 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 07:27:58 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04158C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:27:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id k25so14592032ljg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:27:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XMgjoPvhBymfHHvxoDHXTWG3WNCgF0x+QyIygNl61qo=;
+        b=K2ir22V83VWYej3YXRtevdddjiVrwkyl9QVqmYMZG3B7/24spsZWiQX+krop1tfWAB
+         KB58AfX+WRynhoSlRl51gU8WCfEolkXA1set4DxteuYMb5BDl6uhbE6WkgCZtTjOrYMH
+         gNH/SykGqxdt2Zt1DR0Axxpf7uyfmhHnHlB7aS0nGBSZpaMOMSFsm1ukk2jnQWul6pv/
+         HARODYj7k1Jw9VcX63i/zQDmEEIyWjyZX6UnlNB8z/46S9IrO2TpLRWMGKIQoXuBWElD
+         azi9iVA2mvJV8N5bx2mtIrNhkcgXgScgOLAThgzgvg+NKpfoJibr3DiTfkIcylg+nkCy
+         UPhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XMgjoPvhBymfHHvxoDHXTWG3WNCgF0x+QyIygNl61qo=;
+        b=j4dN5WWOXTiY1+vIEocDWVjnWbDZSK73PKdehePMiOhtNl1zRZGpcjydEE5215heOG
+         qXm/01bRlUtNegPk5+JwSFll2Av9+ZjFylcJM5K8N916eh7gjpI9V06tBMnfOKb1vK46
+         +P2MXbxc3aJivjXyBa5zGO/Kw5D+je8HHblsc0eykIOdjCGVhmAu7S0AzSSF08fCUaT1
+         LNMEDu2E2WDjpmebjJhMkUE+BQ5jcF+lhIO/FHgKEcLIFdlapAnRgWnEtCcn/2zy84Gi
+         8nR6XzprRQizyVlPORMY7EmNhl9SobBm/w4YucFzF7RbQZ7dMYqfI9xsfgupD1t7i//l
+         NMtQ==
+X-Gm-Message-State: AOAM533mnQ7HbeLgQc9sCKrY7v6ahA6ZGnfe+lkRZlhTXlVfzdSpiO5V
+        7yrWEYoR013U4YpVne0DR2FWGwE6Bn5hBpZsH9fiNA==
+X-Google-Smtp-Source: ABdhPJwQe9XEaD08U6BUOCKzC2OeLI06PoyDUFw0hqEreXKuQOwFBcqG+MtAuhhsofCax+HVS//1g9iR5Ma1hBfvdUk=
+X-Received: by 2002:a2e:4e09:: with SMTP id c9mr2344401ljb.283.1599910074793;
+ Sat, 12 Sep 2020 04:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <c4ec95a7-aaf1-2331-352f-2def319a1c7d@rock-chips.com> <20200117081358.5772-1-jay.xu@rock-chips.com>
+In-Reply-To: <20200117081358.5772-1-jay.xu@rock-chips.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 13:27:44 +0200
+Message-ID: <CACRpkdYGJsK4Ek8pDCeNMWt41dd2s--Lkxewh4Po4E-45UdwMg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] pinctrl: rockchip: codingstyle for pinctrl-rockchip
+To:     Jianqun Xu <jay.xu@rock-chips.com>
+Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        David Wu <david.wu@rock-chips.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This avoids a warning:
+Jianqun, Heiko,
 
-[    2.891592] ------------[ cut here ]------------
-[    2.895052] WARNING: CPU: 0 PID: 149 at drivers/base/platform.c:317 __platform_get_irq_byname+0x7c/0x8c
-[    2.903212] usb 1-1: new high-speed USB device number 2 using ehci-platform
-[    2.908930] 0 is an invalid IRQ number
-[    2.911425] Modules linked in: sun4i_gpadc_iio(+) r8188eu(C) lib80211 ohci_platform ohci_hcd ehci_platform ehci_hcd cyttsp4_i2c cyttsp_i2c_common cyttsp4_core g_cdc usb_f_acm u_serial usb_f_ecm u_ether libcomposite sunxi phy_generic musb_hdrc udc_core usbcore sun5ieink
-[    2.934048] CPU: 0 PID: 149 Comm: tablet-init Tainted: G         C        5.8.0-rc2-00316-gc6a5213fdeba-dirty #8
-[    2.943027] Hardware name: Allwinner sun4i/sun5i Families
-[    2.947204] [<c010c080>] (unwind_backtrace) from [<c0109ee4>] (show_stack+0x10/0x14)
-[    2.953714] [<c0109ee4>] (show_stack) from [<c012cd04>] (__warn+0xc0/0xd8)
-[    2.959364] [<c012cd04>] (__warn) from [<c012cda0>] (warn_slowpath_fmt+0x84/0x94)
-[    2.965599] [<c012cda0>] (warn_slowpath_fmt) from [<c0592a60>] (__platform_get_irq_byname+0x7c/0x8c)
-[    2.973480] [<c0592a60>] (__platform_get_irq_byname) from [<c0592a80>] (platform_get_irq_byname+0x10/0x48)
-[    2.981896] [<c0592a80>] (platform_get_irq_byname) from [<bf1142f0>] (sun4i_irq_init+0x38/0xe0 [sun4i_gpadc_iio])
-[    2.990923] [<bf1142f0>] (sun4i_irq_init [sun4i_gpadc_iio]) from [<bf1145cc>] (sun4i_gpadc_probe+0x234/0x308 [sun4i_gpadc_iio])
-[    3.001152] [<bf1145cc>] (sun4i_gpadc_probe [sun4i_gpadc_iio]) from [<c0592edc>] (platform_drv_probe+0x48/0x98)
-[    3.010051] [<c0592edc>] (platform_drv_probe) from [<c0591074>] (really_probe+0x1e0/0x348)
-[    3.017152] [<c0591074>] (really_probe) from [<c05912e8>] (driver_probe_device+0x5c/0xb4)
-[    3.024081] [<c05912e8>] (driver_probe_device) from [<c05914e0>] (device_driver_attach+0x58/0x60)
-[    3.031696] [<c05914e0>] (device_driver_attach) from [<c0591540>] (__driver_attach+0x58/0xcc)
-[    3.038966] [<c0591540>] (__driver_attach) from [<c058f418>] (bus_for_each_dev+0x64/0x90)
-[    3.045886] [<c058f418>] (bus_for_each_dev) from [<c0590490>] (bus_add_driver+0x15c/0x1e0)
-[    3.052892] [<c0590490>] (bus_add_driver) from [<c0591dc4>] (driver_register+0x7c/0x114)
-[    3.059731] [<c0591dc4>] (driver_register) from [<c0101674>] (do_one_initcall+0x44/0x194)
-[    3.066696] [<c0101674>] (do_one_initcall) from [<c01946e8>] (do_init_module+0x5c/0x220)
-[    3.073568] [<c01946e8>] (do_init_module) from [<c0196a3c>] (load_module+0x20ec/0x2380)
-[    3.080340] [<c0196a3c>] (load_module) from [<c0196e04>] (sys_init_module+0x134/0x154)
-[    3.087020] [<c0196e04>] (sys_init_module) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
-[    3.093852] Exception stack(0xc8ea7fa8 to 0xc8ea7ff0)
-[    3.097649] 7fa0:                   00000000 00000000 b6fe2000 00003b14 00031284 00000005
-[    3.104596] 7fc0: 00000000 00000000 b6fe2000 00000080 00052220 be9fd940 00052246 0000002e
-[    3.111626] 7fe0: be9fd79c be9fd780 00015bd0 0001dcf4
-[    3.115468] ---[ end trace df4dd47fb61bf5a4 ]---
+On Fri, Jan 17, 2020 at 9:14 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
 
-Signed-off-by: Ondrej Jirman <megous@megous.com>
----
- include/linux/mfd/sun4i-gpadc.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Do codingstyle for pinctrl-rockchip by spliting driver by SoC types.
+>
+> Convenienty for reviewing, the first patch only moving
+> pinctrl-rockchip.c from driver/pinctrl to driver/pinctrl/rockchip/ .
+>
+> Jianqun Xu (2):
+>   pinctrl: rockchip: new rockchip dir for pinctrl-rockchip
+>   pinctrl: rockchip: split rockchip pinctrl driver by SoC type
 
-diff --git a/include/linux/mfd/sun4i-gpadc.h b/include/linux/mfd/sun4i-gpadc.h
-index ea0ccf33a459..021f820f9d52 100644
---- a/include/linux/mfd/sun4i-gpadc.h
-+++ b/include/linux/mfd/sun4i-gpadc.h
-@@ -81,8 +81,8 @@
- #define SUN4I_GPADC_TEMP_DATA				0x20
- #define SUN4I_GPADC_DATA				0x24
- 
--#define SUN4I_GPADC_IRQ_FIFO_DATA			0
--#define SUN4I_GPADC_IRQ_TEMP_DATA			1
-+#define SUN4I_GPADC_IRQ_FIFO_DATA			1
-+#define SUN4I_GPADC_IRQ_TEMP_DATA			2
- 
- /* 10s delay before suspending the IP */
- #define SUN4I_GPADC_AUTOSUSPEND_DELAY			10000
--- 
-2.28.0
+Why were these patches never applied? Is it my fault?
 
+I don't even have patch 2/2 in my mailbox, possibly it was
+too big!
+
+Heiko if you're OK with this change can Jianqun just send a
+rebased version?
+
+Yours,
+Linus Walleij
