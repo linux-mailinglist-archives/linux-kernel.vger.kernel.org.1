@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2D5267B5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56FC267B62
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbgILQRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 12:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
+        id S1725872AbgILQVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 12:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbgILQQw (ORCPT
+        with ESMTP id S1725385AbgILQV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 12:16:52 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363F9C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:16:51 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so8947102lfi.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:16:51 -0700 (PDT)
+        Sat, 12 Sep 2020 12:21:27 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE0CC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:21:26 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k25so14998610ljg.9
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:21:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9U094qqCq9d4miMet+MZEOYG8XbE21uClAnLKejltBc=;
-        b=YAeVSe5Osg2SXWG44jaIOAY1b/3jhgKvB4Bu+/p517wil9XaoCFMb/SFfZKuBdlQ7k
-         RxmGRUXxd0VLFX0exm5WSxx7aKflLcpDtUlppZUkuz3aQ79UR4TjIQeO2AhqqjR7Wkul
-         mPaZmim0Li8U5WFu7vfqRf2mzIJm1R42Q2A+54i1j67bF30hTGLcmmQHBWuxl6NHLoyX
-         9nclgltPHcYGCNxwmsSMBXQEPKS17dPFYi9GKRhFP6xMiA/ycvTq1fnOxpc8q4PTXTo2
-         WrgWGvA3hM+6bda7WPisZUToo8MRKj4q88tefqK96HQxdKjF1OAPwKyck15Ses0a+tb4
-         jlBg==
+        bh=ceHdCye1rZFHPMpbvMuaDDh6m4ibQ8TQMedh+7r0zLc=;
+        b=cMNxE8uHLMChfvm6U+9bV/2Bt8cgvwUbPW/dlCKijtoThNFRT+S2xo1wY+iOsOgCPQ
+         gIpdZ+mAByOKUHDqQr14vTpJnk5sABXB9TY3dnMxMhhIF4J7MqEm+J8hIKREKxIQrLyG
+         n+1dnD6vojkzFXxwwdQGUQeMl9EsddwfAKCEf3LaCWTh8NZb7wKx94OqjMpoFVZXdgOq
+         8Jea4cbR09kgy8cHWw3o0n9iEo9rI24Vv9AUVbfQXMhCc/f76D+J99mzqGJHhs+YHe33
+         zcsd0OLexAi6hMKaNRWRwQIha3wZ30n9gbu9MTdfnQQ9DtuqjSzMvxevYxmqFwfsBDEW
+         n8GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9U094qqCq9d4miMet+MZEOYG8XbE21uClAnLKejltBc=;
-        b=GARpyVhA8j5wUQaFRyiZJU9e3ZJE0JsRYNKi/TysNzRryWb8KjlzQYQ+0YE6qsGSh1
-         7uYNLfIHWye6DEVcvFl0j87pJyhf5kZrle8ToNdS8AahgT3LKjoNqNesTGl2sHozku4+
-         uPTjl+L8ehoofrjIfbshikybR08C2AnX9nq5fPOcMyMyuNGVGKGY4+q1czTM5icLfRqe
-         RjaWQIZr0e5q3QC6xKbNq7bWzeHouBzAxj7qPqxNWkJ+0Bl9r+QV1xuVaBX/nK+1FmIO
-         kGTn2uiJKSx6yk0KxO4+q99cnYD0CxNMs5un7b3gUt3C5hUsjBavEsHuC1ktGYCpm6QB
-         Znug==
-X-Gm-Message-State: AOAM531+kPk1bB5srPdmLj25kQCG1Ys0+Gai+3r9YNZmdEZaxO4Odyrn
-        w81kDj7lO+t3J4fiJwhyVgNGYiwKTTqCV2V+pzZc+Q==
-X-Google-Smtp-Source: ABdhPJyxyrQtW5hXYVHMhi10Oq4pHIB0NH2ATk3u2qZ+1xXJqbLNuSz38EwTMJ4U5Lfc1EZ+TVMsa1cmiQDormQOmwY=
-X-Received: by 2002:a19:6c2:: with SMTP id 185mr1785569lfg.441.1599927409676;
- Sat, 12 Sep 2020 09:16:49 -0700 (PDT)
+        bh=ceHdCye1rZFHPMpbvMuaDDh6m4ibQ8TQMedh+7r0zLc=;
+        b=PN0D8awshMuhnPl1tTv9jOZGsP5pV0WlRXCz06//PEuHOTn51Fc/h+FN/7pUlekqHA
+         1QYzCqfGXbGUQFGnGg63HM3KkQtYKwy7qhC3azisyKYbNy8r9B1M/F457qifK6hdIvjh
+         inAnY2Cn9KRN0XoYrcbXz6rvFzr6Fga6xLjzz3mapR41hOqQqUApbohTQXD1dPamwUtS
+         E4CdADeNtA7o8I8c1tAzrPhQ4y3bDEGT7ZXdpQisd2HtyZqOajhgzQmD8CtYQaK8kYL4
+         1Nt/xnQFYgu94Q1aWJ54//q4ocyE2qrmy3uregNHAdS+bwKo6swK2GCMyjukrhvk6KZr
+         fq+Q==
+X-Gm-Message-State: AOAM5323O9nwESu7p73nawV5j1rbYXWmblWsG8jtP20Wy4u8lGKc5Zcf
+        UfSkFsWR2M8KBsimO+L7xwZpfEdeO5k3l/qPz1o3/g==
+X-Google-Smtp-Source: ABdhPJzUTM5Qu8W8cqR01KjJKFKfwYrGLOE/Wv7VoxMeLogxvSeKSjyy0erd6NfY7efIJHri68EyWhDv5RBpVPNuoxk=
+X-Received: by 2002:a2e:810e:: with SMTP id d14mr2795301ljg.100.1599927685055;
+ Sat, 12 Sep 2020 09:21:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200907211712.9697-1-chris.packham@alliedtelesis.co.nz> <20200907211712.9697-4-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20200907211712.9697-4-chris.packham@alliedtelesis.co.nz>
+References: <20200825143348.1358679-1-thierry.reding@gmail.com>
+In-Reply-To: <20200825143348.1358679-1-thierry.reding@gmail.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 18:16:39 +0200
-Message-ID: <CACRpkdZ13B==RROumpfB1sjO_uPG0Jx-LRwjm-w_6wr_wb1v8A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ARM: dts: Add i2c0 pinctrl information for 98dx3236
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+Date:   Sat, 12 Sep 2020 18:21:14 +0200
+Message-ID: <CACRpkdZCmB-v58XTH6oCLWp96=uUH3XooB3A1sY-XvrubXBm4g@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: devicetree: Keep deferring even on timeout
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 7, 2020 at 11:17 PM Chris Packham
-<chris.packham@alliedtelesis.co.nz> wrote:
+On Tue, Aug 25, 2020 at 4:33 PM Thierry Reding <thierry.reding@gmail.com> wrote:
 
-> Add pinctrl information for the 98dx3236 (and variants). There is only
-> one choice for i2c0 MPP14 and MPP15.
+> From: Thierry Reding <treding@nvidia.com>
 >
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> driver_deferred_probe_check_state() may return -ETIMEDOUT instead of
+> -EPROBE_DEFER after all built-in drivers have been probed. This can
+> cause issues for built-in drivers that depend on resources provided by
+> loadable modules.
+>
+> One such case happens on Tegra where I2C controllers are used during
+> early boot to set up the system PMIC, so the I2C driver needs to be a
+> built-in driver. At the same time, some instances of the I2C controller
+> depend on the DPAUX hardware for pinmuxing. Since the DPAUX is handled
+> by the display driver, which is usually not built-in, the pin control
+> states will not become available until after the root filesystem has
+> been mounted and the display driver loaded from it.
+>
+> Fixes: bec6c0ecb243 ("pinctrl: Remove use of driver_deferred_probe_check_state_continue()")
+> Suggested-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+I applied this patch (rather than Johns') since John agreed this
+is a better solution.
 
-Please merge this through the ARM SoC maintenance path.
+I got Greg's ACK on Johns patch but not this one, but anyways
+it shows he's convenient with the concept so here we go.
 
 Yours,
 Linus Walleij
