@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00F9267C6D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 23:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4D3267C74
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 23:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgILVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 17:08:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:49739 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725884AbgILVID (ORCPT
+        id S1725919AbgILVIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 17:08:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725888AbgILVIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 17:08:03 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-152-zrJDEg8gOCS9olL-jujjvg-1; Sat, 12 Sep 2020 22:07:38 +0100
-X-MC-Unique: zrJDEg8gOCS9olL-jujjvg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 12 Sep 2020 22:07:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 12 Sep 2020 22:07:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Michael Kerrisk (man-pages)'" <mtk.manpages@gmail.com>,
-        "Alejandro Colomar" <colomar.6.4.3@gmail.com>
-CC:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 01/24] inet_net_pton.3: Use 'PRIx32' rather than "%x" when
- printing 'uint32_t' values
-Thread-Topic: [PATCH 01/24] inet_net_pton.3: Use 'PRIx32' rather than "%x"
- when printing 'uint32_t' values
-Thread-Index: AQHWiB5QTRM4xYy+JEuo3yfg2blY96llf04A
-Date:   Sat, 12 Sep 2020 21:07:38 +0000
-Message-ID: <8ed10b6c63df4ff095f1341648405f03@AcuMS.aculab.com>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-2-colomar.6.4.3@gmail.com>
- <928d25b7-7f97-f9b9-80ce-0550c18131c2@gmail.com>
-In-Reply-To: <928d25b7-7f97-f9b9-80ce-0550c18131c2@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 12 Sep 2020 17:08:18 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D2DC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 14:08:17 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z19so9601417pfn.8
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 14:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hkdmHZJNcU+7N2ujCFsZPcv/unm2Wh+tx7Rkz6iTuF0=;
+        b=n+aUgG/RdRP686huE3p5uz0c0aoEJ5mJl26a3jq1Q33zTy4H3FB4bwCKZF5u6wdJgO
+         zz7he6IVgc5ADax0REzyDDWXGHQF2QSqLHbsS/vPCNZ+dpOV+5WeTNMXJbt0lS0nWWgE
+         NCFVo40UENKFCM99tOaWb/pynEAIUh28jH3kU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hkdmHZJNcU+7N2ujCFsZPcv/unm2Wh+tx7Rkz6iTuF0=;
+        b=j/BQgYAeJSh0CijjYFHh2/wUOuXT4ppgM1U1j/4rR8EJQTVKkENwvuXHLkFhW8yuPl
+         /N34icMALD2OK+BVfF5LJgVeAs9zKeiCNZriuccwVQWChjJXdkQhpBe0HoryK1EI87xc
+         Zp5FLdzflHNPgK3V4s2nBuhuyrzuwihghBXfFQKJchpzP70W+eDYBRttan6/SCG2M7Mk
+         EtulhyJUHj7itI9WrZvVBX8gIPpRTeiKjtm9+sYSzMSPRUiIZp+b0cUHHjAzJjdQfv+e
+         r48jymO+qZRHufRAoYE9Pq82A7q5mt99jIA13KPUd/kSine4RfNwtvC0G+jipaDdJ6fi
+         Da4w==
+X-Gm-Message-State: AOAM532GYPTEvwIPvc/CYOiHNkhXrGRT50YLQmukqfTrHSOQrcluJrxl
+        rI+nwHiLiRm1hSEXk+fA1ASDMQ==
+X-Google-Smtp-Source: ABdhPJz22rwSO4QjmaRCwJE0H6ZOVP9TpnHWSmb2igzOtjxEis+mUFk/egFXQj1mz3ang7qDeLgZ7g==
+X-Received: by 2002:a63:29c7:: with SMTP id p190mr5938653pgp.292.1599944897297;
+        Sat, 12 Sep 2020 14:08:17 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id e10sm3369020pgb.45.2020.09.12.14.08.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 14:08:16 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Akash Asthana <akashast@codeaurora.org>, swboyd@chromium.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: [PATCH 1/3] spi: spi-geni-qcom: Use the FIFO even more
+Date:   Sat, 12 Sep 2020 14:07:59 -0700
+Message-Id: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWljaGFlbCBLZXJyaXNrDQo+IFNlbnQ6IDExIFNlcHRlbWJlciAyMDIwIDEwOjMxDQo+
-IA0KPiBIaSBBbGV4LA0KPiANCj4gT24gOS8xMC8yMCAxMToxMyBQTSwgQWxlamFuZHJvIENvbG9t
-YXIgd3JvdGU6DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxlamFuZHJvIENvbG9tYXIgPGNvbG9tYXIu
-Ni40LjNAZ21haWwuY29tPg0KPiA+IC0tLQ0KPiA+ICBtYW4zL2luZXRfbmV0X3B0b24uMyB8IDMg
-KystDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkN
-Cj4gPg0KPiA+IGRpZmYgLS1naXQgYS9tYW4zL2luZXRfbmV0X3B0b24uMyBiL21hbjMvaW5ldF9u
-ZXRfcHRvbi4zDQo+ID4gaW5kZXggMDBmOTRiOWQ0Li5kNzRhMzNkNzQgMTAwNjQ0DQo+ID4gLS0t
-IGEvbWFuMy9pbmV0X25ldF9wdG9uLjMNCj4gPiArKysgYi9tYW4zL2luZXRfbmV0X3B0b24uMw0K
-PiA+IEBAIC0zMzIsNiArMzMyLDcgQEAgUmF3IGFkZHJlc3M6ICAgICAgICAgICAgICBjMWE4MDE4
-MA0KPiA+ICAvKiBMaW5rIHdpdGggIlwtbHJlc29sdiIgKi8NCj4gPg0KPiA+ICAjaW5jbHVkZSA8
-YXJwYS9pbmV0Lmg+DQo+ID4gKyNpbmNsdWRlIDxpbnR0eXBlcy5oPg0KPiA+ICAjaW5jbHVkZSA8
-c3RkaW8uaD4NCj4gPiAgI2luY2x1ZGUgPHN0ZGxpYi5oPg0KPiA+DQo+ID4gQEAgLTM4MSw3ICsz
-ODIsNyBAQCBtYWluKGludCBhcmdjLCBjaGFyICphcmd2W10pDQo+ID4gICAgICAgICBtYXkgbm90
-IGhhdmUgYmVlbiB0b3VjaGVkIGJ5IGluZXRfbmV0X250b3AoKSwgYW5kIHNvIHdpbGwgc3RpbGwN
-Cj4gPiAgICAgICAgIGhhdmUgYW55IGluaXRpYWwgdmFsdWUgdGhhdCB3YXMgc3BlY2lmaWVkIGlu
-IGFyZ3ZbMl0uICovDQo+ID4NCj4gPiAtICAgIHByaW50ZigiUmF3IGFkZHJlc3M6ICAgICAgICAg
-ICAgICAleFxlbiIsIGh0b25sKGFkZHIuc19hZGRyKSk7DQo+ID4gKyAgICBwcmludGYoIlJhdyBh
-ZGRyZXNzOiAgICAgICAgICAgICAgJSJQUkl4MzIiXGVuIiwgaHRvbmwoYWRkci5zX2FkZHIpKTsN
-Cj4gPg0KPiA+ICAgICAgZXhpdChFWElUX1NVQ0NFU1MpOw0KPiA+ICB9DQo+IA0KPiBTbywgSSdt
-IGluIGEgbGl0dGxlIGJpdCBvZiBkb3VidCBhYm91dCBwYXRjaGVzIDAxIGFuZCAwMi4gRG9lcw0K
-PiB0aGlzIHJlYWxseSB3aW4gdXMgYW55dGhpbmc/IE9uIHRoZSBvbmUgaGFuZCwgJSJQUkl4MzIi
-IGlzIG1vcmUNCj4gZGlmZmljdWx0IHRvIHJlYWQgdGhhbiAleC4gT24gdGhlIG90aGVyLCBkb2Vz
-IGl0IHdpbiB1cyBhbnl0aGluZw0KPiBpbiB0ZXJtcyBvZiBwb3J0YWJpbGl0eT8gQXQgZmlyc3Qg
-Z2xhbmNlLCB0aGUgYW5zd2VycyBzZWVtcyB0byBtZQ0KPiB0byBiZSAibm8iLiBZb3VyIHRob3Vn
-aHRzPw0KDQpPbiAzMmJpdCBzeXN0ZW1zIHVpbnQzMl90IG1pZ2h0IGJlIGVpdGhlciAnaW50JyBv
-ciAnbG9uZycuDQpTbyB0aGUgZm9ybWF0IGhhcyB0byBtYXRjaCAtIGV2ZW4gdGhvdWdoIHRoZSBB
-QkkgaXMgcHJvYmFibHkNCnRoZSBzYW1lIGluIGJvdGggY2FzZXMuDQoNCk1pbmQgeW91LCBodG9u
-bCgpIGl0c2VsZiBjb3VsZCBiZSBwcm9ibGVtYXRpYy4NCk9uIEJFIHN5c3RlbXMgaXQgaXMgbGlr
-ZWx5IHRvIGJlICNkZWZpbmUgaHRvbmwoeCkgKHgpDQpzbyB0aGUgdHlwZSBpcyB3aGF0ZXZlciB3
-YXMgcGFzc2VkLg0KT24gTEUgc3lzdGVtcyBpdCBtaWdodCBldmVuIGJlIGxvbmcgaHRvbmwobG9u
-ZykNCiAtIHdoaWNoIGlzIGl0cyBoaXN0b3JpYyBwcm90b3R5cGUuDQoNCglEYXZpZA0KDQotDQpS
-ZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWls
-dG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMp
-DQo=
+In commit 902481a78ee4 ("spi: spi-geni-qcom: Actually use our FIFO") I
+explained that the maximum size we could program the FIFO was
+"mas->tx_fifo_depth - 3" but that I chose "mas->tx_fifo_depth()"
+because I was worried about decreased bandwidth.
+
+Since that time:
+* All the interconnect patches have landed, making things run at the
+  proper speed.
+* I've done more measurements.
+
+This lets me confirm that there's really no downside of using the FIFO
+more.  Specifically I did "flashrom -p ec -r /tmp/foo.bin" on a
+Chromebook and averaged over several runs.
+
+Before: It took 6.66 seconds and 59669 interrupts fired.
+After:  It took 6.66 seconds and 47992 interrupts fired.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/spi/spi-geni-qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+index 0dc3f4c55b0b..7f0bf0dec466 100644
+--- a/drivers/spi/spi-geni-qcom.c
++++ b/drivers/spi/spi-geni-qcom.c
+@@ -308,7 +308,7 @@ static int spi_geni_init(struct spi_geni_master *mas)
+ 	 * Hardware programming guide suggests to configure
+ 	 * RX FIFO RFR level to fifo_depth-2.
+ 	 */
+-	geni_se_init(se, mas->tx_fifo_depth / 2, mas->tx_fifo_depth - 2);
++	geni_se_init(se, mas->tx_fifo_depth - 3, mas->tx_fifo_depth - 2);
+ 	/* Transmit an entire FIFO worth of data per IRQ */
+ 	mas->tx_wm = 1;
+ 	ver = geni_se_get_qup_hw_version(se);
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
