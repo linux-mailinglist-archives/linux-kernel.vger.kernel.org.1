@@ -2,124 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABCA2678F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D992678FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725876AbgILIts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 04:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgILItb (ORCPT
+        id S1725888AbgILIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 04:50:20 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:40718 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbgILIuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 04:49:31 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727E2C061786
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:49:31 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id i26so16566449ejb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Jdgvmur4zZ45shy8MlKtlFT8bpQMj/q3VfHaj2WJNPE=;
-        b=eDU5O/puhfGxnYze7xTkXajmPZf3EA56I+qWGnb8jHZRBEya/uIol/2yMjcO0pl6lR
-         UFg0RuOko3bON5y5dmyXzvWrAVxsrR+S5b9Uip6KBoZAgeZI8PyTrxG23pHjdvLHkT1y
-         0nmHW9ZYjs0nFF9x0jigf0Rpl8bb6giL5DTbF5jI8bMphBFjqpFW6s4Y2R9C/PBHme27
-         rXdH6sePNa5DN2qalcm+ovBp9MwoFAL774MoR3jFewfFrlt7SHT/aDiVZpoKykpUHg7Q
-         Ml7kIIsepbXXDMZ+DsGYihI5ZbdcAiRoaYY+2/oKGBKRFuSCHlzRS+3j4P3lJbkS7rFL
-         r28g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Jdgvmur4zZ45shy8MlKtlFT8bpQMj/q3VfHaj2WJNPE=;
-        b=SsrHSEVc5UEgVbi7EWLEuSTqzB9xQFpne2WUiFQmz3gzl0NPpIPZbbJ6q1wx7OPwLy
-         Y54FEq2kf7AIgO0KyHFAfb9w0eVhCXEFIi2zV9AmsiTHket68rn/zo4hUa+/ekqdidjr
-         yJOpjDNbN5UtpMabMGA+doZNK5fAXB8i05fn4BnehzP9F72bBiNfUNRs0Vp8sjoIZU34
-         1ZJDmc3kQKyU/dOpWSAJurWHvMWjSMpBMjpVJpBso/6KotDQT+TtDaCxEvuBg/j3ag2y
-         CK0/Pz5QSdPu8OHYeMn23Yy+/ssmtN1wSbjg11rcQNZX/K+K+RHDDwpR6Zz2todbAbTB
-         s+Sg==
-X-Gm-Message-State: AOAM531SBKqCVuJsq/nL6CfjIK6WWGZlghYbHuRzf9GyoEMAbwmvBwHv
-        SkvvG8Uv9lZQ7K8ribBq7Xo=
-X-Google-Smtp-Source: ABdhPJzUwttHfYX1XD5UBc5FEBwkFlOIgJRwOQRm1RCTq4pLc5e4kkR4FYD0oBkRmdx1llR/HqAqdg==
-X-Received: by 2002:a17:906:1e11:: with SMTP id g17mr5061731ejj.298.1599900570219;
-        Sat, 12 Sep 2020 01:49:30 -0700 (PDT)
-Received: from localhost.localdomain (ipservice-092-219-207-039.092.219.pools.vodafone-ip.de. [92.219.207.39])
-        by smtp.gmail.com with ESMTPSA id s23sm4009598edt.10.2020.09.12.01.49.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 01:49:29 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 5/5] staging: rtl8723bs: remove 5 GHz code
-Date:   Sat, 12 Sep 2020 10:45:20 +0200
-Message-Id: <20200912084520.8383-5-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200912084520.8383-1-straube.linux@gmail.com>
-References: <20200912084520.8383-1-straube.linux@gmail.com>
+        Sat, 12 Sep 2020 04:50:17 -0400
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 6D69372CA54;
+        Sat, 12 Sep 2020 11:50:13 +0300 (MSK)
+Received: from altlinux.org (sole.flsd.net [185.75.180.6])
+        by imap.altlinux.org (Postfix) with ESMTPSA id 2144F4A4A16;
+        Sat, 12 Sep 2020 11:50:13 +0300 (MSK)
+Date:   Sat, 12 Sep 2020 11:50:13 +0300
+From:   Vitaly Chikunov <vt@altlinux.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-security-module@vger.kernel.org,
+        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH v6 6/8] X.509: support OSCCA certificate parse
+Message-ID: <20200912085013.ugm2azs5xr7iirda@altlinux.org>
+References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+ <20200903131242.128665-7-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20200903131242.128665-7-tianjia.zhang@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acoording to the TODO code valid only for 5 GHz should be removed.
+On Thu, Sep 03, 2020 at 09:12:40PM +0800, Tianjia Zhang wrote:
+> The digital certificate format based on SM2 crypto algorithm as
+> specified in GM/T 0015-2012. It was published by State Encryption
+> Management Bureau, China.
+> 
+> This patch adds the OID object identifier defined by OSCCA. The
+> x509 certificate supports sm2-with-sm3 type certificate parsing.
+> It uses the standard elliptic curve public key, and the sm2
+> algorithm signs the hash generated by sm3.
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
+> ---
+>  crypto/asymmetric_keys/x509_cert_parser.c | 14 +++++++++++++-
+>  include/linux/oid_registry.h              |  6 ++++++
+>  2 files changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 26ec20ef4899..6a8aee22bfd4 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -234,6 +234,10 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
+>  	case OID_gost2012Signature512:
+>  		ctx->cert->sig->hash_algo = "streebog512";
+>  		goto ecrdsa;
+> +
+> +	case OID_sm2_with_sm3:
+> +		ctx->cert->sig->hash_algo = "sm3";
+> +		goto sm2;
+>  	}
+>  
+>  rsa_pkcs1:
+> @@ -246,6 +250,11 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
+>  	ctx->cert->sig->encoding = "raw";
+>  	ctx->algo_oid = ctx->last_oid;
+>  	return 0;
+> +sm2:
+> +	ctx->cert->sig->pkey_algo = "sm2";
+> +	ctx->cert->sig->encoding = "raw";
+> +	ctx->algo_oid = ctx->last_oid;
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -266,7 +275,8 @@ int x509_note_signature(void *context, size_t hdrlen,
+>  	}
+>  
+>  	if (strcmp(ctx->cert->sig->pkey_algo, "rsa") == 0 ||
+> -	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0) {
+> +	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0 ||
+> +	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0) {
+>  		/* Discard the BIT STRING metadata */
+>  		if (vlen < 1 || *(const u8 *)value != 0)
+>  			return -EBADMSG;
+> @@ -456,6 +466,8 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>  	else if (ctx->last_oid == OID_gost2012PKey256 ||
+>  		 ctx->last_oid == OID_gost2012PKey512)
+>  		ctx->cert->pub->pkey_algo = "ecrdsa";
+> +	else if (ctx->last_oid == OID_id_ecPublicKey)
+> +		ctx->cert->pub->pkey_algo = "sm2";
+>  	else
+>  		return -ENOPKG;
+>  
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index 657d6bf2c064..48fe3133ff39 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -107,6 +107,12 @@ enum OID {
+>  	OID_gostTC26Sign512B,		/* 1.2.643.7.1.2.1.2.2 */
+>  	OID_gostTC26Sign512C,		/* 1.2.643.7.1.2.1.2.3 */
+>  
+> +	/* OSCCA */
+> +	OID_sm2,			/* 1.2.156.10197.1.301 */
+> +	OID_sm3,			/* 1.2.156.10197.1.401 */
+> +	OID_sm2_with_sm3,		/* 1.2.156.10197.1.501 */
+> +	OID_sm3WithRSAEncryption,	/* 1.2.156.10197.1.504 */
 
-- find and remove remaining code valid only for 5 GHz. Most of the obvious
-  ones have been removed, but things like channel > 14 still exist.
+OID_sm3WithRSAEncryption identifier is unused and this mode looks not
+implemented. But, this is probably ok for possible future extension.
 
-Remove code path only valid for channels > 14.
+Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- .../staging/rtl8723bs/core/rtw_wlan_util.c    | 31 +++++++------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
+Thanks,
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index cad35ce0c21a..fdb5a6b51c03 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -1754,26 +1754,17 @@ void update_wireless_mode(struct adapter *padapter)
- 	if ((pmlmeinfo->HT_info_enable) && (pmlmeinfo->HT_caps_enable))
- 		pmlmeinfo->HT_enable = 1;
- 
--	if (pmlmeext->cur_channel > 14) {
--		if (pmlmeinfo->VHT_enable)
--			network_type = WIRELESS_11AC;
--		else if (pmlmeinfo->HT_enable)
--			network_type = WIRELESS_11_5N;
--
--		network_type |= WIRELESS_11A;
--	} else {
--		if (pmlmeinfo->VHT_enable)
--			network_type = WIRELESS_11AC;
--		else if (pmlmeinfo->HT_enable)
--			network_type = WIRELESS_11_24N;
--
--		if (cckratesonly_included(rate, ratelen))
--			network_type |= WIRELESS_11B;
--		else if (cckrates_included(rate, ratelen))
--			network_type |= WIRELESS_11BG;
--		else
--			network_type |= WIRELESS_11G;
--	}
-+	if (pmlmeinfo->VHT_enable)
-+		network_type = WIRELESS_11AC;
-+	else if (pmlmeinfo->HT_enable)
-+		network_type = WIRELESS_11_24N;
-+
-+	if (cckratesonly_included(rate, ratelen))
-+		network_type |= WIRELESS_11B;
-+	else if (cckrates_included(rate, ratelen))
-+		network_type |= WIRELESS_11BG;
-+	else
-+		network_type |= WIRELESS_11G;
- 
- 	pmlmeext->cur_wireless_mode = network_type & padapter->registrypriv.wireless_mode;
- 
--- 
-2.28.0
 
+> +
+>  	OID__NR
+>  };
+>  
