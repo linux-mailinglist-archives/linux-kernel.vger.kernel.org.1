@@ -2,53 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EF92676CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F622676D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725897AbgILA3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 20:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
+        id S1725905AbgILAfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 20:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgILA3g (ORCPT
+        with ESMTP id S1725857AbgILAfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 20:29:36 -0400
+        Fri, 11 Sep 2020 20:35:06 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290EC061757;
-        Fri, 11 Sep 2020 17:29:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6976EC061757;
+        Fri, 11 Sep 2020 17:35:05 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id D56531216DC6C;
-        Fri, 11 Sep 2020 17:12:46 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:29:32 -0700 (PDT)
-Message-Id: <20200911.172932.404393416760806051.davem@davemloft.net>
-To:     vadym.kochan@plvision.eu
-Cc:     elder@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: ipa: fix u32_replace_bits by u32p_xxx version
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 6E0501226F541;
+        Fri, 11 Sep 2020 17:18:17 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:35:03 -0700 (PDT)
+Message-Id: <20200911.173503.2013046040329976699.davem@davemloft.net>
+To:     grygorii.strashko@ti.com
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, vigneshr@ti.com,
+        m-karicheri2@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: Re: [PATCH net-next v3 0/9] net: ethernet: ti: ale: add static
+ configuration 
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200910154152.24499-1-vadym.kochan@plvision.eu>
-References: <20200910154152.24499-1-vadym.kochan@plvision.eu>
+In-Reply-To: <20200910202807.17473-1-grygorii.strashko@ti.com>
+References: <20200910202807.17473-1-grygorii.strashko@ti.com>
 X-Mailer: Mew version 6.8 on Emacs 27.1
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 11 Sep 2020 17:12:47 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 11 Sep 2020 17:18:17 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vadym.kochan@plvision.eu>
-Date: Thu, 10 Sep 2020 18:41:52 +0300
+From: Grygorii Strashko <grygorii.strashko@ti.com>
+Date: Thu, 10 Sep 2020 23:27:58 +0300
 
-> Looks like u32p_replace_bits() should be used instead of
-> u32_replace_bits() which does not modifies the value but returns the
-> modified version.
+> As existing, as newly introduced CPSW ALE versions have differences in 
+> supported features and ALE table formats. Especially it's actual for the
+> recent AM65x/J721E/J7200 and future AM64x SoCs, which supports more
+> features like: auto-aging, classifiers, Link aggregation, additional HW
+> filtering, etc.
 > 
-> Fixes: 2b9feef2b6c2 ("soc: qcom: ipa: filter and routing tables")
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> Reviewed-by: Alex Elder <elder@linaro.org>
+> The existing ALE configuration interface is not practical in terms of 
+> adding new features and requires consumers to program a lot static
+> parameters. And any attempt to add new features will case endless adding
+> and maintaining different combination of flags and options. Because CPSW
+> ALE configuration is static and fixed for SoC (or set of SoC), It is
+> reasonable to add support for static ALE configurations inside ALE module.
+> 
+> This series introduces static ALE configuration table for different ALE 
+> variants and provides option for consumers to select required ALE
+> configuration by providing ALE const char *dev_id identifier (Patch 2).
+> And all existing driver have been switched to use new approach (Patches 3-6).
+> 
+> After this ALE HW auto-ageing feature can be enabled for AM65x CPSW ALE 
+> variant (Patch 7).
+> 
+> Finally, Patches 8-9 introduces tables to describe the ALE VLAN entries 
+> fields as the ALE VLAN entries are too much differ between different TI
+> CPSW ALE versions. So, handling them using flags, defines and get/set
+> functions are became over-complicated.
+ ...
 
-Applied and queued up for -stable, thank you.
+Series applied, thank you.
