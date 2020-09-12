@@ -2,332 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45C1267717
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 03:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2A1267719
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 03:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725838AbgILBfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 21:35:42 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:13356 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgILBey (ORCPT
+        id S1725860AbgILBgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 21:36:13 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:40554 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725820AbgILBfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 21:34:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1599874495; x=1631410495;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JkSJpzvIaD6c9g/5xpC8MP5lV35I6QGKFzDpcrYYtoA=;
-  b=UFucOdsPDfQpy1DAIzT7TWEyNDDCkAEyd9Du0IsRiqYC2x7uVI4ZPUZA
-   95ZdUgXAbOUvcm0L2FqeHFKaco5Anv+v9Ry5D6tq/7m9Bh/QEXGNApCtn
-   ZBYi5rkQfEgIetvGnER2A58p0/jmkleIyV/jTTSDIsaTdNGJJnYDzdxVC
-   R2z4tCJnsoy6j5k0v1igymH+bPXD8MDlBOOKIsRPIsqGlx+sWaOmzA7hj
-   jamRtIDoTuVqqjEiJ6D+bGKDcXMBlCEsMS/ZpiNKq2kdc0LWV4Sx/e9Wu
-   wur/XqTsIosd4Q+/6cz/9YMM6Mo59IWzURXZNvGF19GB7GARNzyZrKuWA
-   g==;
-IronPort-SDR: K/G3xlfWBxWCT5mSPhgFjmWhqqFsB6QE5Jnayw18VH3vIL1w5v1zcmjqYmA8oY8rv4KYOurfTn
- 47k32fCm2QILjeSOjcy6VGPU+1XaEwcLYOUyL04fKBCm7YBMjDXO7KgFST7SfoO5OyxX846aX7
- X0js4rszELejK0FgEPE6idWiA5lZQDlzywcfPLLG+jXh7FXrTwpds1zWrxIQXoUDPfthqENNeA
- YjV0VDOrh4A6wQKoJIPEmZTpmBeHvVqa6a9ZZE8UhFw/xhqjiMXSscD2JsmaSuuilAIIIE16wi
- L24=
-X-IronPort-AV: E=Sophos;i="5.76,418,1592841600"; 
-   d="scan'208";a="147177963"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 12 Sep 2020 09:34:50 +0800
-IronPort-SDR: 3LOLVja06A0hmdmkFZUptBSaxQcbxzHAPfTsI2/XYeoUMp+8BnxFc6rnekAjAfyhL+ycGosAx0
- 0FgFPzxixrFg==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 18:22:04 -0700
-IronPort-SDR: au43y8yvcMAKuIcwxIiE9zPcVwxZdxmh9+KeLC62rL5Nr/sxoxnIDjhf24+clJ06XxG8ooG1wl
- GH4g/3IHqz9Q==
-WDCIronportException: Internal
-Received: from unknown (HELO jedi-01.hgst.com) ([10.86.59.229])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2020 18:34:48 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Anup Patel <anup@brainfault.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jia He <justin.he@arm.com>, linux-arch@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Mike Rapoport <rppt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [RFC/RFT PATCH v2 5/5] riscv: Add numa support for riscv64 platform
-Date:   Fri, 11 Sep 2020 18:34:41 -0700
-Message-Id: <20200912013441.9730-6-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200912013441.9730-1-atish.patra@wdc.com>
-References: <20200912013441.9730-1-atish.patra@wdc.com>
+        Fri, 11 Sep 2020 21:35:18 -0400
+Received: by mail-io1-f72.google.com with SMTP id f8so8045089iow.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 18:35:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=1Au+jF0U9NdQpjmGSupuqP1uY7GjUPeo4ovRK8rNqtg=;
+        b=MFkOWcGdxbKXzxoMJF8jxr0fUU7kslV/BH4SjigOpvY0EblCZ+mp0SmoW0wqkYPHT5
+         XGabBFu8YownY22mXJsWQx+sX4iNht6X5KUTCtVSYefBo2IcZIHSyiZJoLnUdQXWy5YZ
+         K2i8bDEC7vJgQHxpjoEAhpWAJxEI2h9p7MKMkaAj8TKo431hNpifeat/rC5v7zwcSyVP
+         wmrBJKYnzSIz5K10oigQbIBHq2p6V0k2ZHmi+FWKvRXxN+bZg8n2H2+A6TG4gwIfHdHi
+         iIa/4cyC/MVNv55gnJvv8CZj6Zr8woM4h1wTp6up6iRGYsAftP4/aih4WX3qaKV4vi4b
+         oaIQ==
+X-Gm-Message-State: AOAM5310jDWQGsyNtyQlHPQFiV38w88e6Fa7oORW1VCRxdnNrBgwVEAI
+        7r37CbXHS+zs/S+Pq2KhOGt6xF3ZKVr9lXhTJd6bf1F0f5v6
+X-Google-Smtp-Source: ABdhPJykGvkkfF0TalkCAFdl6JKCUiPAmVhfOt5G9R1UhpC7B/l/0I/FrHN9AfoIj2ouf2dGbvl10ZQCmRDRvIvA/3F/8kp7mqZ8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:fb0c:: with SMTP id h12mr3621463iog.98.1599874514946;
+ Fri, 11 Sep 2020 18:35:14 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 18:35:14 -0700
+In-Reply-To: <0000000000004991e705ac9d1a83@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000026136505af13d0ab@google.com>
+Subject: Re: inconsistent lock state in sco_conn_del
+From:   syzbot <syzbot+65684128cd7c35bc66a1@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the generic numa implementation to add NUMA support for RISC-V.
-This is based on Greentime's patch[1] but modified to use generic NUMA
-implementation and few more fixes.
+syzbot has found a reproducer for the following issue on:
 
-[1] https://lkml.org/lkml/2020/1/10/233
+HEAD commit:    e8878ab8 Merge tag 'spi-fix-v5.9-rc4' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12130759900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=65684128cd7c35bc66a1
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ef0fd900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c3a853900000
 
-Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/Kconfig              | 31 ++++++++++++++++++++++++++++++-
- arch/riscv/include/asm/mmzone.h | 13 +++++++++++++
- arch/riscv/include/asm/numa.h   |  8 ++++++++
- arch/riscv/include/asm/pci.h    | 14 ++++++++++++++
- arch/riscv/kernel/setup.c       | 10 ++++++++--
- arch/riscv/kernel/smpboot.c     | 12 +++++++++++-
- arch/riscv/mm/init.c            |  4 +++-
- 7 files changed, 87 insertions(+), 5 deletions(-)
- create mode 100644 arch/riscv/include/asm/mmzone.h
- create mode 100644 arch/riscv/include/asm/numa.h
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+65684128cd7c35bc66a1@syzkaller.appspotmail.com
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index df18372861d8..7beb6ddb6eb1 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -137,7 +137,7 @@ config PAGE_OFFSET
- 	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
- 
- config ARCH_FLATMEM_ENABLE
--	def_bool y
-+	def_bool !NUMA
- 
- config ARCH_SPARSEMEM_ENABLE
- 	def_bool y
-@@ -295,6 +295,35 @@ config TUNE_GENERIC
- 
- endchoice
- 
-+# Common NUMA Features
-+config NUMA
-+	bool "NUMA Memory Allocation and Scheduler Support"
-+	select GENERIC_ARCH_NUMA
-+	select OF_NUMA
-+	select ARCH_SUPPORTS_NUMA_BALANCING
-+	help
-+	  Enable NUMA (Non-Uniform Memory Access) support.
-+
-+	  The kernel will try to allocate memory used by a CPU on the
-+	  local memory of the CPU and add some more NUMA awareness to the kernel.
-+
-+config NODES_SHIFT
-+	int "Maximum NUMA Nodes (as a power of 2)"
-+	range 1 10
-+	default "2"
-+	depends on NEED_MULTIPLE_NODES
-+	help
-+	  Specify the maximum number of NUMA Nodes available on the target
-+	  system.  Increases memory reserved to accommodate various tables.
-+
-+config USE_PERCPU_NUMA_NODE_ID
-+	def_bool y
-+	depends on NUMA
-+
-+config NEED_PER_CPU_EMBED_FIRST_CHUNK
-+	def_bool y
-+	depends on NUMA
-+
- config RISCV_ISA_C
- 	bool "Emit compressed instructions when building Linux"
- 	default y
-diff --git a/arch/riscv/include/asm/mmzone.h b/arch/riscv/include/asm/mmzone.h
-new file mode 100644
-index 000000000000..fa17e01d9ab2
---- /dev/null
-+++ b/arch/riscv/include/asm/mmzone.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_MMZONE_H
-+#define __ASM_MMZONE_H
-+
-+#ifdef CONFIG_NUMA
-+
-+#include <asm/numa.h>
-+
-+extern struct pglist_data *node_data[];
-+#define NODE_DATA(nid)		(node_data[(nid)])
-+
-+#endif /* CONFIG_NUMA */
-+#endif /* __ASM_MMZONE_H */
-diff --git a/arch/riscv/include/asm/numa.h b/arch/riscv/include/asm/numa.h
-new file mode 100644
-index 000000000000..8c8cf4297cc3
---- /dev/null
-+++ b/arch/riscv/include/asm/numa.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_NUMA_H
-+#define __ASM_NUMA_H
-+
-+#include <asm/topology.h>
-+#include <asm-generic/numa.h>
-+
-+#endif	/* __ASM_NUMA_H */
-diff --git a/arch/riscv/include/asm/pci.h b/arch/riscv/include/asm/pci.h
-index 1c473a1bd986..658e112c3ce7 100644
---- a/arch/riscv/include/asm/pci.h
-+++ b/arch/riscv/include/asm/pci.h
-@@ -32,6 +32,20 @@ static inline int pci_proc_domain(struct pci_bus *bus)
- 	/* always show the domain in /proc */
- 	return 1;
- }
-+
-+#ifdef	CONFIG_NUMA
-+
-+static inline int pcibus_to_node(struct pci_bus *bus)
-+{
-+	return dev_to_node(&bus->dev);
-+}
-+#ifndef cpumask_of_pcibus
-+#define cpumask_of_pcibus(bus)	(pcibus_to_node(bus) == -1 ?		\
-+				 cpu_all_mask :				\
-+				 cpumask_of_node(pcibus_to_node(bus)))
-+#endif
-+#endif	/* CONFIG_NUMA */
-+
- #endif  /* CONFIG_PCI */
- 
- #endif  /* _ASM_RISCV_PCI_H */
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 07fa6d13367e..53a806a9cbaf 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -101,13 +101,19 @@ void __init setup_arch(char **cmdline_p)
- 
- static int __init topology_init(void)
- {
--	int i;
-+	int i, ret;
-+
-+	for_each_online_node(i)
-+		register_one_node(i);
- 
- 	for_each_possible_cpu(i) {
- 		struct cpu *cpu = &per_cpu(cpu_devices, i);
- 
- 		cpu->hotpluggable = cpu_has_hotplug(i);
--		register_cpu(cpu, i);
-+		ret = register_cpu(cpu, i);
-+		if (unlikely(ret))
-+			pr_warn("Warning: %s: register_cpu %d failed (%d)\n",
-+			       __func__, i, ret);
- 	}
- 
- 	return 0;
-diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-index 96167d55ed98..5e276c25646f 100644
---- a/arch/riscv/kernel/smpboot.c
-+++ b/arch/riscv/kernel/smpboot.c
-@@ -27,6 +27,7 @@
- #include <asm/cpu_ops.h>
- #include <asm/irq.h>
- #include <asm/mmu_context.h>
-+#include <asm/numa.h>
- #include <asm/tlbflush.h>
- #include <asm/sections.h>
- #include <asm/sbi.h>
-@@ -45,13 +46,18 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- 	int cpuid;
- 	int ret;
-+	unsigned int curr_cpuid;
-+
-+	curr_cpuid = smp_processor_id();
-+	numa_store_cpu_info(curr_cpuid);
-+	numa_add_cpu(curr_cpuid);
- 
- 	/* This covers non-smp usecase mandated by "nosmp" option */
- 	if (max_cpus == 0)
- 		return;
- 
- 	for_each_possible_cpu(cpuid) {
--		if (cpuid == smp_processor_id())
-+		if (cpuid == curr_cpuid)
- 			continue;
- 		if (cpu_ops[cpuid]->cpu_prepare) {
- 			ret = cpu_ops[cpuid]->cpu_prepare(cpuid);
-@@ -59,6 +65,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- 				continue;
- 		}
- 		set_cpu_present(cpuid, true);
-+		numa_store_cpu_info(cpuid);
- 	}
- }
- 
-@@ -79,6 +86,7 @@ void __init setup_smp(void)
- 		if (hart == cpuid_to_hartid_map(0)) {
- 			BUG_ON(found_boot_cpu);
- 			found_boot_cpu = 1;
-+			early_map_cpu_to_node(0, of_node_to_nid(dn));
- 			continue;
- 		}
- 		if (cpuid >= NR_CPUS) {
-@@ -88,6 +96,7 @@ void __init setup_smp(void)
- 		}
- 
- 		cpuid_to_hartid_map(cpuid) = hart;
-+		early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
- 		cpuid++;
- 	}
- 
-@@ -153,6 +162,7 @@ asmlinkage __visible void smp_callin(void)
- 	current->active_mm = mm;
- 
- 	notify_cpu_starting(curr_cpuid);
-+	numa_add_cpu(curr_cpuid);
- 	update_siblings_masks(curr_cpuid);
- 	set_cpu_online(curr_cpuid, 1);
- 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 8f31a5428ce4..bc484babb9ca 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -20,6 +20,7 @@
- #include <asm/soc.h>
- #include <asm/io.h>
- #include <asm/ptdump.h>
-+#include <asm/numa.h>
- 
- #include "../kernel/head.h"
- 
-@@ -188,7 +189,6 @@ void __init setup_bootmem(void)
- 
- 	early_init_fdt_scan_reserved_mem();
- 	memblock_allow_resize();
--	memblock_dump_all();
- 
- 	for_each_memblock(memory, reg) {
- 		unsigned long start_pfn = memblock_region_memory_base_pfn(reg);
-@@ -573,9 +573,11 @@ void __init paging_init(void)
- 
- void __init misc_mem_init(void)
- {
-+	arch_numa_init();
- 	sparse_init();
- 	zone_sizes_init();
- 	resource_init();
-+	memblock_dump_all();
- }
- 
- #ifdef CONFIG_SPARSEMEM_VMEMMAP
--- 
-2.24.0
+================================
+WARNING: inconsistent lock state
+5.9.0-rc4-syzkaller #0 Not tainted
+--------------------------------
+inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
+syz-executor675/31233 [HC0[0]:SC0[0]:HE1:SE1] takes:
+ffff8880a75c50a0 (slock-AF_BLUETOOTH-BTPROTO_SCO){+.?.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff8880a75c50a0 (slock-AF_BLUETOOTH-BTPROTO_SCO){+.?.}-{2:2}, at: sco_conn_del+0x128/0x270 net/bluetooth/sco.c:176
+{IN-SOFTIRQ-W} state was registered at:
+  lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
+  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+  spin_lock include/linux/spinlock.h:354 [inline]
+  sco_sock_timeout+0x24/0x140 net/bluetooth/sco.c:83
+  call_timer_fn+0x1ac/0x760 kernel/time/timer.c:1413
+  expire_timers kernel/time/timer.c:1458 [inline]
+  __run_timers.part.0+0x67c/0xaa0 kernel/time/timer.c:1755
+  __run_timers kernel/time/timer.c:1736 [inline]
+  run_timer_softirq+0xae/0x1a0 kernel/time/timer.c:1768
+  __do_softirq+0x1f7/0xa91 kernel/softirq.c:298
+  asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+  __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+  run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+  do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+  invoke_softirq kernel/softirq.c:393 [inline]
+  __irq_exit_rcu kernel/softirq.c:423 [inline]
+  irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+  sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+  unwind_next_frame+0x139a/0x1f90 arch/x86/kernel/unwind_orc.c:607
+  arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
+  stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:123
+  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+  kasan_set_track mm/kasan/common.c:56 [inline]
+  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+  slab_post_alloc_hook mm/slab.h:518 [inline]
+  slab_alloc mm/slab.c:3312 [inline]
+  kmem_cache_alloc+0x13a/0x3a0 mm/slab.c:3482
+  __d_alloc+0x2a/0x950 fs/dcache.c:1709
+  d_alloc+0x4a/0x230 fs/dcache.c:1788
+  d_alloc_parallel+0xe9/0x18e0 fs/dcache.c:2540
+  lookup_open.isra.0+0x9ac/0x1350 fs/namei.c:3030
+  open_last_lookups fs/namei.c:3177 [inline]
+  path_openat+0x96d/0x2730 fs/namei.c:3365
+  do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+  do_sys_openat2+0x16d/0x420 fs/open.c:1168
+  do_sys_open fs/open.c:1184 [inline]
+  __do_sys_open fs/open.c:1192 [inline]
+  __se_sys_open fs/open.c:1188 [inline]
+  __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+irq event stamp: 853
+hardirqs last  enabled at (853): [<ffffffff87f733af>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:168 [inline]
+hardirqs last  enabled at (853): [<ffffffff87f733af>] _raw_spin_unlock_irq+0x1f/0x80 kernel/locking/spinlock.c:199
+hardirqs last disabled at (852): [<ffffffff87f73764>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:126 [inline]
+hardirqs last disabled at (852): [<ffffffff87f73764>] _raw_spin_lock_irq+0xa4/0xd0 kernel/locking/spinlock.c:167
+softirqs last  enabled at (0): [<ffffffff8144c929>] copy_process+0x1a99/0x6920 kernel/fork.c:2018
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+  <Interrupt>
+    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor675/31233:
+ #0: ffff88809f104f40 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close+0xf5/0x1080 net/bluetooth/hci_core.c:1720
+ #1: ffff88809f104078 (&hdev->lock){+.+.}-{3:3}, at: hci_dev_do_close+0x253/0x1080 net/bluetooth/hci_core.c:1757
+ #2: ffffffff8a9188c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_disconn_cfm include/net/bluetooth/hci_core.h:1435 [inline]
+ #2: ffffffff8a9188c8 (hci_cb_list_lock){+.+.}-{3:3}, at: hci_conn_hash_flush+0xc7/0x220 net/bluetooth/hci_conn.c:1557
+
+stack backtrace:
+CPU: 1 PID: 31233 Comm: syz-executor675 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_usage_bug kernel/locking/lockdep.c:4020 [inline]
+ valid_state kernel/locking/lockdep.c:3361 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3560 [inline]
+ mark_lock.cold+0x7a/0x7f kernel/locking/lockdep.c:4006
+ mark_usage kernel/locking/lockdep.c:3923 [inline]
+ __lock_acquire+0x876/0x5570 kernel/locking/lockdep.c:4380
+ lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ sco_conn_del+0x128/0x270 net/bluetooth/sco.c:176
+ sco_disconn_cfm net/bluetooth/sco.c:1178 [inline]
+ sco_disconn_cfm+0x62/0x80 net/bluetooth/sco.c:1171
+ hci_disconn_cfm include/net/bluetooth/hci_core.h:1438 [inline]
+ hci_conn_hash_flush+0x114/0x220 net/bluetooth/hci_conn.c:1557
+ hci_dev_do_close+0x5c6/0x1080 net/bluetooth/hci_core.c:1770
+ hci_unregister_dev+0x1bd/0xe30 net/bluetooth/hci_core.c:3790
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ get_signal+0x428/0x1f00 kernel/signal.c:2757
+ arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+ exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
+ exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447279
+Code: Bad RIP value.
+RSP: 002b:00007fd19f624d88 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00000000006dcc28 RCX: 0000000000447279
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000006dcc28
+RBP: 00000000006dcc20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dcc2c
+R13: 0000000000000004 R14: 0000000000000003 R15: 00007fd19f6256d0
 
