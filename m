@@ -2,133 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CEE267A43
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 14:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1AD267A4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 14:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgILM0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 08:26:11 -0400
-Received: from mout.gmx.net ([212.227.15.18]:42351 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725845AbgILM0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 08:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599913491;
-        bh=cyVUZti2CjaYGbyBo+/FrS/YkqKumirWsJ3OYoBuVZI=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=ZF95JOjXqYx9AJ4KoGxnCuPu4JILIy6LlDlprJhWoKsV5P+mPqEGRqg+wJIjEejsw
-         Q23P6kPYr7DdcYSETv+a/wnV+8T1ZOtRsNI+iLkqjvEc/gmp6DG5pUr0JC8KJDmVap
-         GwqE9oZbuM4YF9Xq05Zt3HIcMfDEwSnmQwPSNen8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M4JmN-1kHLhT3ay1-000OAT; Sat, 12
- Sep 2020 14:24:51 +0200
-Date:   Sat, 12 Sep 2020 14:24:34 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     kernel-hardening@lists.openwall.com, John Wood <john.wood@gmx.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation
- (fbfam)
-Message-ID: <20200912101606.GB3041@ubuntu>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <202009101656.FB68C6A@keescook>
- <20200911144806.GA4128@ubuntu>
- <202009120053.9FB7F2A7@keescook>
+        id S1725876AbgILMeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 08:34:14 -0400
+Received: from mail-oo1-f68.google.com ([209.85.161.68]:45849 "EHLO
+        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgILMeM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 08:34:12 -0400
+Received: by mail-oo1-f68.google.com with SMTP id h8so2924370ooc.12;
+        Sat, 12 Sep 2020 05:34:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PMaZ+IG/MAdIGBCktihvMwzdamRFz/leNPggdqRYcVU=;
+        b=nPMZauhe9ObNVFSMsQM5GdnBT3RFpNS7fmWdNchCW+z5ffJ7kN2pCvgNfH+Jp3HPuo
+         2fiwm8l4zITCFdoB7PY8jaJyNLd/Nhh9ewa6EhwBQ3hZVIkCJZlhDMD4sf1VPl5VovAT
+         m+rWS1Z6UtYfljtf2DN3fTzZezHz4i3WHCdsgdGrhD+ZOWeg5hq7NkAQoNc7oTjUCuVH
+         M1vpe9w302HpRYovXHpxHfWL+dyja12tT0dh/HsjVa3AmZhUA7N+huHgOUKpD5PjsoRr
+         xA30vnfM4NFA17TvHquA1lVU7/CQNlTph9EE0PZrGeCFL4W+q/ICJxID/1ZAHUOTdufu
+         g1HQ==
+X-Gm-Message-State: AOAM53244vG23wenF0XsqeoVrX6P4it1D6N/GmJk3C570WTyYDRhME+6
+        qVH22Sj6NkkqvTS0Z+Savip48S3/WC9S4nDvubFJgFjy
+X-Google-Smtp-Source: ABdhPJyY3uhUd2u1IHy+W7UyB38+/N8z1KWX42Rq5P92O+CHNhabGO7XIYzRYip1fYThpbY5yR+yx2PVmpjrwu3Kh6E=
+X-Received: by 2002:a4a:5403:: with SMTP id t3mr4747089ooa.11.1599914050891;
+ Sat, 12 Sep 2020 05:34:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009120053.9FB7F2A7@keescook>
-X-Provags-ID: V03:K1:npjZWnUf5TOz3ACicrJqbfTigA7qrI003qPlqypDTuPvgm+95jg
- YVCSKfru8/GIlF7z/GnQmjEwFn18T6mdKX+7Kq1cdpggQuT8QQGQLlWl8cizXN0QO2ImlWp
- lsK9Lh4rxK295qEcLuudCA1FoiK4uAHqvuFPFA7mxK0UwS7n2iKXVTejRXkMrPzz0a/DPWg
- jB7cnY0DAPVNYPNGHmFYA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kM4SSDt4uQQ=:nBe8EQ3ju1FY8S52B8tufT
- SLY/PdHmHsxOukdrVgPSqeUShbvq8DRdaERY8a4NT7BpQbtnkpjbWU8mo5y3io4UUxNY5XDgV
- YF3rKRRa3nfY/9g2WJYT7q3RPCMFI3fhFX4ad4+G1FxWPS6DoX3KVs6LU304crJkil2dmNYge
- wHzqP25Rpct/MdgYTOgMQt64xxRTBJIJzDdUzqInPM0Z4hVmcFLBlpVkQ08bF3OwDRpa3ucZL
- AZRMq6H2xyNVZZGS8m8PgCF8u7Kp/NWRo7zpkuUUVSrrgUs4banrntqpog0lPiHGXE6LsHgSm
- Z014RPcLlPr+AjXK4OfqArHi4v7VNrQKVRnnTsgaf3J4YydkwR/i5XFwtxaWQbm/PGxl8jeSB
- jh2/gu1pqh7+R+H5nYuwBaPZJVvkfj7y4D6mmAcV/KvPWXpe4n3eF8Yc4YNy+lSDJw4VfUU/B
- qz9lu5WkxMFF+8Mj2zruobOloJSPBc4BDiiZNiNSngXqRypXFHXRg/YP4nJO9JLeqbSRzxI7J
- EVvwGkw3/FatpigE9YkQ8hm0727NIzsEyfvkutchG3zl2mzvbHTwfBwK0A1yY8Ur1SxCBPRzQ
- BDI0TGsbfxP7I5AmNHoI6rBWXeqJLgqGQAtp+eddcuv4qetkHTDwMx43p/aLbxbpgZXNx6Khi
- 54Cy4wdMPX39chpt5nfh8jUxvmQu8VrBHnwwcaaS7IfmI+s5Xos3wDflrcSXjT3QxQmrfG0TN
- WdfMoJzXjFRn1k5xT96TDaZJ7OAI+/qUU+flkaTwUTMhDV9zztY8AnDq0As7D/rHs7ESVCUHZ
- hqpVkSzCOw17QSfHkPfGsDrxCShjzmuiyIzsgV8E1L/NbjldC5dKLdYMWRLne/c5dR1j0mrEB
- hTNXegbDyXLRcD5SiZ4tiPdySnPyfZYiaMQjVcqWQfsqj+qt69MEOoXWlHhorhaLQHdsh430d
- VmlLwcS5iDjeTkkDUizHhpsop+jxk2tqUbBsqnWfYSQ9OxH+XACFINzDlziIs/f7zTnYRHHLO
- 03gMAODv5GF0vse0mOEI6uz1gfg84DmE6LlEPboPsPxypFBz8aWIpIXFzS7y80YjaGpb4IPEA
- i06V9hcC4dvueYqa6iR/bWftKb8j/m//xqw8W5VzG2XTBfayHF1AI9W5dHUnd/0NzUzITJwMb
- cFlL20/KWViropiQ8VZwCFU2q2dtJF0KJOQg0o2sdp3sisfv+DYnuoyXzfAA1s13Hy/WKV8B6
- 6AajfiVfu9W8SL12enciU8YYeeZ33/JLgLu8XaA==
-Content-Transfer-Encoding: quoted-printable
+References: <20200901150237.15302-1-geert+renesas@glider.be>
+ <20200910.122033.2205909020498878557.davem@davemloft.net> <CAMuHMdUd4VtpOGr26KAmF22N32obNqQzq3tbcPxLJ7mxUtSyrg@mail.gmail.com>
+ <20200911.174400.306709791543819081.davem@davemloft.net>
+In-Reply-To: <20200911.174400.306709791543819081.davem@davemloft.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 12 Sep 2020 14:33:59 +0200
+Message-ID: <CAMuHMdW0agywTHr4bDO9f_xbQibCxDykdkcAmuRJQO90=E6-Zw@mail.gmail.com>
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+To:     David Miller <davem@davemloft.net>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Gaku Inami <gaku.inami.xh@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 12:55:03AM -0700, Kees Cook wrote:
-> On Fri, Sep 11, 2020 at 04:48:06PM +0200, John Wood wrote:
-> > My original patch serie is composed of 9 patches, so the 3 lasts are l=
-ost.
-> > Kees: Have you removed them for some reason? Can you send them for rev=
-iew?
-> >
-> > security/fbfam: Add two new prctls to enable and disable the fbfam fea=
-ture
-> > https://github.com/johwood/linux/commit/8a36399847213e7eb7b45b853568a5=
-3666bd0083
-> >
-> > Documentation/security: Add documentation for the fbfam feature
-> > https://github.com/johwood/linux/commit/fb46804541f5c0915f3f48acefbe6d=
-c998815609
-> >
-> > MAINTAINERS: Add a new entry for the fbfam feature
-> > https://github.com/johwood/linux/commit/4303bc8935334136c6ef47b5e50b87=
-cd2c472c1f
+Hi David,
+
+On Sat, Sep 12, 2020 at 2:44 AM David Miller <davem@davemloft.net> wrote:
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> Date: Fri, 11 Sep 2020 08:32:55 +0200
 >
-> Oh, hm, I'm not sure where they went. I think they were missing from my
-> inbox when I saved your series from email. An oversight on my part;
-> apologies!
-
-I sent the full serie to Matthew Wilcox <willy@infradead.org> only, as he
-wanted to help re-sending the full serie. Then I saw that only 6 patches
-appeared in the linux-doc mailing list.
-
-I can try to send the three pending patches in different stages (for examp=
-le
-one patch every 4 or 5 hours) to avoid blocking my email. I hope. Or I can
-send the three pending patches only to the kernel-hardening mailing list
-and you re-send to all the people involved. Or any other solution you
-propose. It's up to you.
-
-> > Is there a problem if I ask for some guidance (replying to this thread=
-)
-> > during the process to do my second patch series?
+> > On Thu, Sep 10, 2020 at 9:20 PM David Miller <davem@davemloft.net> wrote:
+> >> From: Geert Uytterhoeven <geert+renesas@glider.be>
+> >> Date: Tue,  1 Sep 2020 17:02:37 +0200
+> >>
+> >> > This reverts commit 124eee3f6955f7aa19b9e6ff5c9b6d37cb3d1e2c.
+> >> >
+> >> > Inami-san reported that this commit breaks bridge support in a Xen
+> >> > environment, and that reverting it fixes this.
+> >> >
+> >> > During system resume, bridge ports are no longer enabled, as that relies
+> >> > on the receipt of the NETDEV_CHANGE notification.  This notification is
+> >> > not sent, as netdev_state_change() is no longer called.
+> >> >
+> >> > Note that the condition this commit intended to fix never existed
+> >> > upstream, as the patch triggering it and referenced in the commit was
+> >> > never applied upstream.  Hence I can confirm s2ram on r8a73a4/ape6evm
+> >> > and sh73a0/kzm9g works fine before/after this revert.
+> >> >
+> >> > Reported-by Gaku Inami <gaku.inami.xh@renesas.com>
+> >> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> >>
+> >> Maybe you cannot reproduce it, but the problem is there and it still
+> >> looks very real to me.
+> >>
+> >> netdev_state_change() does two things:
+> >>
+> >> 1) Emit the NETDEV_CHANGE notification
+> >>
+> >> 2) Emit an rtmsg_ifinfo() netlink message, which in turn tries to access
+> >>    the device statistics via ->ndo_get_stats*().
+> >>
+> >> It is absolutely wrong to do #2 when netif_device_present() is false.
+> >>
+> >> So I cannot apply this patch as-is, sorry.
+> >
+> > Thanks a lot for looking into this!
+> >
+> > But doing #1 is still safe?  That is the part that calls into the bridge
+> > code.  So would moving the netif_device_present() check from
+> > linkwatch_do_dev() to netdev_state_change(), to prevent doing #2, be
+> > acceptable?
 >
-> Please feel free! I'm happy to help. :)
+> I have a better question.  Why is a software device like the bridge,
+> that wants to effectively exist and still receive netdev event
+> notifications, marking itself as not present?
+>
+> That's seems like the real bug here.
 
-It's a pleasure working with you. Thanks a lot.
+"dev" is not the bridge device, but the physical Ethernet interface, which
+may already be suspended during s2ram.
 
-> --
-> Kees Cook
+Gr{oetje,eeting}s,
 
-Regards,
-John Wood
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
