@@ -2,105 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81D82676C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CEBC2676C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725919AbgILAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 20:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725871AbgILAUE (ORCPT
+        id S1725901AbgILAXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 20:23:48 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:45613 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbgILAXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 20:20:04 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EDCC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:20:04 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id v15so7659269pgh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:20:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=SyGy6Bq4kFQAzKhwg1lifdjeQFiT7l9/bEhNqsf8ppg=;
-        b=IaBeXW2/8x82RUjFwxsHtLxoYAihstfszh62hfBCA9+yAxYZ9gpYnlAv6tPtMjluD2
-         W4YgpVEHrvkwmjpB7XBgr/CVF1mDuFPjlYDs1eFtLv5laVPmRCjzyQzWMoO5OrcQ0bq4
-         MIwSyocr28NJC4ImXAKjBDRT4unFqVVyJaK7Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=SyGy6Bq4kFQAzKhwg1lifdjeQFiT7l9/bEhNqsf8ppg=;
-        b=XjxNje1qf9gtt1HW93B+SvaKjmefaEMcsX96WR4rZ7lf6+6u6hHQdg2OKSC5s9qwlK
-         d1sGnt7epoyJFidWlrIoA8PkCC4+ayxjeTuGUo2M2kKSb66HeuFDNyfVZNoPXg1Xy+R1
-         5eELo7DcLrIQZwCiloC7a+YH2/26lXWrWVIJ5nFQ1KJLX2cmpyNjKVLKZGlsp04zFPic
-         F8Vh5Z56PWgTO/8Gig7c9/uMlbrovZP+uowxM+EespQqq8XJo3oFS5HGFH8mC53+p7yz
-         J2NUa8Jq4MQsC0siVNGXlWldgAAJlS4YXBIqiC2T9Av+LqfJGINzESg+q3ro/pTjuzFR
-         eR5A==
-X-Gm-Message-State: AOAM532emzs3aN8pJHHxtr0y5LUwKhc+0tlORQ1YqLEeJSHtw8/NYB1r
-        ogS8rZkUfOwVon/+4v8eXcY/cA==
-X-Google-Smtp-Source: ABdhPJzoxkCCvM4+8lu95KPIcKpwWlo1kQksotUdkydOxxi1XwuMQBpzlz3tK2UypL865H4yo08ywg==
-X-Received: by 2002:a63:4284:: with SMTP id p126mr3481718pga.104.1599870004236;
-        Fri, 11 Sep 2020 17:20:04 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n9sm3313483pfu.163.2020.09.11.17.20.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 17:20:03 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 17:20:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kees Cook <keescook@chromium.org>,
-        syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com,
-        Tycho Andersen <tycho@tycho.pizza>
-Subject: [GIT PULL] seccomp fixes for v5.9-rc5
-Message-ID: <202009111718.B94EAD7@keescook>
+        Fri, 11 Sep 2020 20:23:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1599870224; x=1631406224;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/hsea2x47F0MN5xVlvN7uaRSxJBMCY8XyO44RdpLtjI=;
+  b=qPCVe3AXjFGlsvLKRIkO4alSG8RsR/f25siTsE0ooIa+8H8GDW5Io2zM
+   mYEkw2OFYtlK6rS+IAZXf9PedavDDmsWxLhakbMlmS8JFkumOj+tamklL
+   MtTpDW59+Ra+1XOdaD4QAj3zLx4XgLT0U9JcaBzznceHhzKkeHy7RMJFR
+   ExHv7ErV8xn9msktHDzEgmrlLilz4CRmwZ5VOTPeFM5WMQhc2Hn+xV493
+   FGkStGIBPxS0tEPLKh2J4AVXlWaQ8rvSzfyXbGMpZX1twXO7O1APXK0Mf
+   Pukmmq4828ChO/XBGH6zyHpPvvZOeBwVhzxDmOGLG/1/OZEBd1stYoxdC
+   Q==;
+IronPort-SDR: cH1tNnzDqcgIc9KegDyNYEW6P7AvNexkHd8CjGsVkaftC6nEISF8WhAYxOqFZ9peVbzP7yQpP5
+ ojsrSl8MuB+StP6dZlQR3HmXmhrXk9rLpxNZb/RG2b5PkV1q7cZYTsSKpSlsmHkIGLw7O7sx40
+ ++7BW/XnqXH2sqRhLzobdbW8b0wjKTlLk9bHv1/lI42VS2h2BW2wAPRdlpr+MLTLJ/0E8WbyML
+ Ag4kHnMtYICpNTijxuffu8qWrH18r5EcPD9QMADDNa9+gCGcMBAZeUBsJ/A12RJba8aD+EQH4B
+ ezI=
+X-IronPort-AV: E=Sophos;i="5.76,418,1592841600"; 
+   d="scan'208";a="147094439"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Sep 2020 08:23:44 +0800
+IronPort-SDR: tjAy55HmZUZKfZfKVD+xMwM/u1ZVKSmLDGMtV0UHTr4Mbh7hPnxB92GgyF/xzBbe6tjglLslEZ
+ Rm4BGAO0HBaA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 17:10:59 -0700
+IronPort-SDR: AyWggxGakAL0OV49dIZqCueRDcobwmAd0LGIlkqV8w1WCFzOuTkNrgG2qsCRYMQvV0pYvpGeca
+ x3D9x7AmYBQw==
+WDCIronportException: Internal
+Received: from unknown (HELO jedi-01.hgst.com) ([10.86.59.229])
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2020 17:23:43 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Zong Li <zong.li@sifive.com>, Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH] RISC-V: Consider sparse memory while removing unusable memory
+Date:   Fri, 11 Sep 2020 17:23:41 -0700
+Message-Id: <20200912002341.4869-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Currently, any usable memory area beyond page_offset is removed by adding the
+memory sizes from each memblock. That may not work for sparse memory
+as memory regions can be very far apart resulting incorrect removal of some
+usable memory.
 
-Please pull these seccomp fixes for v5.9-rc5. This fixes a rare race
-condition in seccomp when using TSYNC and USER_NOTIF together where a
-memory allocation would not get freed (found by syzkaller, fixed by
-Tycho). Additionally updates Tycho's MAINTAINERS and .mailmap entries
-for his new address.
+Just use the start of the first memory block and the end of the last memory
+block to compute the size of the total memory that can be used.
 
-Thanks!
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+ arch/riscv/mm/init.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
--Kees
-
-The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
-
-  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.9-rc5
-
-for you to fetch changes up to e839317900e9f13c83d8711d684de88c625b307a:
-
-  seccomp: don't leave dangling ->notif if file allocation fails (2020-09-08 11:30:16 -0700)
-
-----------------------------------------------------------------
-seccomp fixes for v5.9-rc5
-
-- Fix memory resource leak of user_notif under TSYNC race (Tycho Andersen)
-
-----------------------------------------------------------------
-Tycho Andersen (3):
-      seccomp: don't leak memory when filter install races
-      mailmap, MAINTAINERS: move to tycho.pizza
-      seccomp: don't leave dangling ->notif if file allocation fails
-
- .mailmap         |  1 +
- MAINTAINERS      |  2 +-
- kernel/seccomp.c | 24 ++++++++++++++++++------
- 3 files changed, 20 insertions(+), 7 deletions(-)
-
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 787c75f751a5..188281fc2816 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -147,7 +147,6 @@ void __init setup_bootmem(void)
+ {
+ 	struct memblock_region *reg;
+ 	phys_addr_t mem_size = 0;
+-	phys_addr_t total_mem = 0;
+ 	phys_addr_t mem_start, end = 0;
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+ 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
+@@ -155,18 +154,17 @@ void __init setup_bootmem(void)
+ 	/* Find the memory region containing the kernel */
+ 	for_each_memblock(memory, reg) {
+ 		end = reg->base + reg->size;
+-		if (!total_mem)
++		if (!mem_start)
+ 			mem_start = reg->base;
+ 		if (reg->base <= vmlinux_start && vmlinux_end <= end)
+ 			BUG_ON(reg->size == 0);
+-		total_mem = total_mem + reg->size;
+ 	}
+ 
+ 	/*
+ 	 * Remove memblock from the end of usable area to the
+ 	 * end of region
+ 	 */
+-	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
++	mem_size = min(end - mem_start, (phys_addr_t)-PAGE_OFFSET);
+ 	if (mem_start + mem_size < end)
+ 		memblock_remove(mem_start + mem_size,
+ 				end - mem_start - mem_size);
 -- 
-Kees Cook
+2.24.0
+
