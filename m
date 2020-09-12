@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2754C267A90
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 15:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F78D267A9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 15:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725876AbgILNFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 09:05:33 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:33448 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbgILNF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 09:05:28 -0400
-Received: from zn.tnic (p200300ec2f1f6200f2fe65a0519df81f.dip0.t-ipconnect.de [IPv6:2003:ec:2f1f:6200:f2fe:65a0:519d:f81f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 809851EC03D2;
-        Sat, 12 Sep 2020 15:05:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599915926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=mDYEnNZ93sQ+DUzfOKyjtgJDGqR5jZv35kCSP5ZDSLQ=;
-        b=TkNtwS8AeJQbXWMyDivYRc7k1doCzvTcsCKmlFO22S93H2i8Sf9oPpuBP9LK15yy5qz2r/
-        61aomu/Aensqi06aQBp3zySJ8HziKKf1jfw3T1UhOv4qqWWNe+lvcJUu3G+qmgXkSlg79e
-        YaCB/jTWxHzP7YSAYMvGmaso3aEu+GQ=
-Date:   Sat, 12 Sep 2020 15:05:15 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: first bad commit: [5795eb443060148796beeba106e4366d7f1458a6]
- scsi: sd_zbc: emulate ZONE_APPEND commands
-Message-ID: <20200912130515.GB3678@zn.tnic>
-References: <20200911195312.GA4110@zn.tnic>
- <20200911221759.GA2869@nazgul.tnic>
- <20200911230703.GA2971@nazgul.tnic>
- <CY4PR04MB3751630AAB4A625BD64C66C3E7250@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200912083739.GA4827@zn.tnic>
- <CY4PR04MB3751C8FA76C49708370E928DE7250@CY4PR04MB3751.namprd04.prod.outlook.com>
+        id S1725869AbgILNb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 09:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgILNbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 09:31:22 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF935C061573;
+        Sat, 12 Sep 2020 06:31:19 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id u8so8711701lff.1;
+        Sat, 12 Sep 2020 06:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8nLk3sekrjFnDz3iYznJbS7ByYpbHuy0+9+SFQMlFto=;
+        b=mxsW4AoOMo6Jx7q+zDI0Zalpzf4bsb4hnqIz2OqN/MnXa34Gx7Mtfj0tKAANekxrkA
+         yUdupvGSO358WWcvaITyE6Ew8QhZvrtHDIyx1Y1dcotrOknCCyRZvUYSbSS+Un9sa9Gj
+         i8qXTpxSIr9oOXYmVyA3Pho+SBgL/y/pdXcD519Miu0lexeo3QT4uY4BFSKm69yMLg2T
+         DmOpH3rJv09XQD2rLyTEbhIR0KkHTP6rncVOYicjf37IxNK9GAKIipsh1RuEfSZa+z7A
+         yPlto9m3zcwbitHo9x0yMXy3RISFBGX8HwXrj8VAYdw5sVYxhSDBBz3vNOONSGcboB/r
+         YxcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8nLk3sekrjFnDz3iYznJbS7ByYpbHuy0+9+SFQMlFto=;
+        b=re80auLotB6eVW8/InM+hPbbjhY1lEpkTDFsTHj8PFiHk4NnPLvJM6pMnZDqfco6AY
+         EUNSafGH4T1I8GIRXJfu7huCJ8a8d+ve25MjYt+q6SiKTk0hA+xZ6phB+0i98eP+1H3K
+         1NUc0GvtBxlA9OL2BUO8DOUfZpKrFb+ivRWhyIv9CkfG3uKLa/DDjVirCDZQVHnCHu+1
+         0WeyloRf1W4HWEktVWEHe5fp7uo+aJx/ULX30QhpaTj3owR13SL/6TgfL24PyhN2N1RB
+         RMB7APlTfKN7mUbdYP1KS8KV5svxvKFv1moEnui5Sl4t6Y7WJujLN/mwUjioSiazYgmK
+         0JTw==
+X-Gm-Message-State: AOAM5316kyy8hPHTY29pduPYle/hMXEGvBSA1HFHJ6GFiLIfupxn9MLz
+        YNHl3LmFYbbU4XqW4Chv1kY=
+X-Google-Smtp-Source: ABdhPJyboeaBbTV2x7HtPLl76uVzaYiBa0W3ArFu+F9dT5KtbdEq1P/OFPWnJcsm0tZV3vJkrP8PeA==
+X-Received: by 2002:a19:9cf:: with SMTP id 198mr2329692lfj.214.1599917478217;
+        Sat, 12 Sep 2020 06:31:18 -0700 (PDT)
+Received: from mobilestation ([95.79.127.85])
+        by smtp.gmail.com with ESMTPSA id n62sm1330226lfa.82.2020.09.12.06.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 06:31:17 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 16:31:14 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Dingtianhong <dingtianhong@huawei.com>
+Cc:     "hoan@os.amperecomputing.com" <hoan@os.amperecomputing.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel.openeuler" <kernel.openeuler@huawei.com>
+Subject: Re: [PATCH] gpio: dwapb: add support for new hisilicon ascend soc
+Message-ID: <20200912133114.uqhqgd7etfdt77zt@mobilestation>
+References: <1598070473-46624-1-git-send-email-dingtianhong@huawei.com>
+ <20200825095726.yvg34q74xy57qhrx@mobilestation>
+ <856a6200-2bbb-9ffa-9233-53168bd7c49b@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CY4PR04MB3751C8FA76C49708370E928DE7250@CY4PR04MB3751.namprd04.prod.outlook.com>
+In-Reply-To: <856a6200-2bbb-9ffa-9233-53168bd7c49b@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 12:18:52PM +0000, Damien Le Moal wrote:
-> But it was Thunderbird, getting real plain text emails with outlook is
-> impossible.
+On Sun, Sep 06, 2020 at 06:18:07AM +0000, Dingtianhong wrote:
 
-Yeap.
+[...]
 
-> Corruption I think came from the copy-paste from the Mac bash
-> terminal... Tabs get replaced by spacers.
+> > On Sat, Aug 22, 2020 at 12:27:53PM +0800, Ding Tianhong wrote:
+> >> The hisilicon ascend soc's gpio is based on the synopsys DW gpio,
+> >> and expand the register to support for INTCOMB_MASK, the new
+> >> register is used to enable/disable the interrupt combine features.
+> > 
+> > I am wondering what does the "Interrupt Combine" feature do? Is it the same as
+> > the GPIO_INTR_IO pre-synthesize parameter of the DW_apb_gpio IP-core? Is it
+> > possible to tune the DW APB GPIO controller at runtime sending up to the IRQ
+> > controller either combined or individual interrupts?
+> > 
+> 
+> looks like the same.
+> 
+> > If the later is true, then probably having the "Interrupt Combine" feature
+> > enabled must depend on whether an individual or combined interrupts are supplied
+> > in dts, etc...
+> > 
+> 
+> needed.
+> 
+> > Could you explain the way the feature works and the corresponding layout
+> > register in more details?
+> > 
+> 
+> Ok
+> The hisilicon chip use the register called GPIO_INTCOMB_MASK (offset is 0xffc) to enable the combien interrupt.
+> it is very simple, if GPIO_INTCOMB_MASK.bit0 is 0, then all combine interrupte could not be used (default
+> setting), otherwise if 1, then the 32 ports could use the same irq line, that is all.
 
-Yeah, never copy-paste hunks. I go "git diff > /tmp/diff" and then load
-it into the editor which has the mail opened ":r /tmp/diff" (vim).
+The main question is whether your hardware is capable of working with both
+combined and individual interrupts. Is your version of the DW APB GPIO
+controller able to generate both types of them? How is it connected to the
+parental interrupt controller?
 
-> Host-managed is still a thing, getting bigger. But host-aware never really
-> gained a lot of traction due to, I think, the potentially very weird performance
-> profile they can get into (Hmmm... similar to recent drive-managed noise...)
+So If the GPIO and IRQ controllers are attached to each other with a single lane
+gpio_intr_flag, then indeed it's pure combined IRQ design and we'll have to make
+sure that GPIO_INTCOMB_MASK.bit0 is set to one before using the DW GPIO block.
+If they are also connected with each other by 32 individual GPIO-IRQ
+gpio_intr{_n}N lanes, then setting or clearing of the GPIO_INTCOMB_MASK.bit0
+flag will for example depend on the number IRQ lanes specified in a dts file. In
+the later case the patch needs to be altered, but it would provide a better
+support of the hisilicon ascend soc's GPIO capabilities.
 
-Yeah, I had the suspicion that it would be some raisins like that.
-
-> No worries, we will fix the mess (sorry we hit you again !).
-
-Yeah, thanks and no probs.
-
-> The patch was space corrupted, but could you still try it ? Did it solve your
-> problem ? I can recend it (minus space corruption) if needed.
-
-Yeah, I see
-
-[    3.263400] ata4: SATA max UDMA/133 abar m131072@0xfe380000 port 0xfe380280 irq 45
-[    4.943083] ata4: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-[    4.951590] ata4.00: NCQ Send/Recv Log not supported
-[    4.961868] ata4.00: ATA-10: ST8000AS0022-1WL17Z, SN01, max UDMA/133
-[    4.977167] ata4.00: 15628053168 sectors, multi 16: LBA48 NCQ (depth 32), AA
-[    4.987217] ata4.00: NCQ Send/Recv Log not supported
-[    5.004230] ata4.00: configured for UDMA/133
-
-but no "sdc" device or a partition or so. So I can't even do fdisk -l on it.
-
-I see your other version - I'll test that later because real life awaits
-and it is weekend and so on...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+-Sergey
