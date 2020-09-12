@@ -2,190 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924E62678E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785FC2678E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgILIjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 04:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S1725833AbgILIkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 04:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgILIjE (ORCPT
+        with ESMTP id S1725800AbgILIkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 04:39:04 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C134C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:39:03 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id cy2so6453466qvb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:39:03 -0700 (PDT)
+        Sat, 12 Sep 2020 04:40:46 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62F3C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:40:44 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k13so2032888plk.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:40:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=t+vGWEoJxp91SsNDolPTSq+7zjC/jYdCePf+SxUM8GU=;
-        b=DGtRL6Tbceqb0N+n02ZUW5GRPqfqmNmUDurGwj8oZMmd4F5Lhsl0tIGQjWUxvMSNQN
-         yhi92u1IZOFzeBw7bslzjFppRiKI/kQ6DUTv+OfbT9814NinYRuckT9C32fdbn1pDTan
-         AEFBUKu5KM/gk/EVPmSUo0F4aGg/rRIvIrINtKxaQw8YkL3UfiZi1PuxGCwYRZD9Qizp
-         GEawDzYMcm09lgvcqR22jxvUTZ2i7w0n/mJbeta+hGleLeTgsDEJgDFiB+DRYJ3SGnM5
-         Ke1QWlZ2LQAf9tSSijK8ZBr2m0Eg6OKZeB0uVCaKJr4PvsICy9mBOIjf/oGVqHOeRnfU
-         m2Kg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xtZpYqJi2Eh1iCduCHOJ+h77NknG0j+OKsQgYvK291Q=;
+        b=aw7itSEeTJJzT2wS1waWn3QoWAFE2Rnm8cV2CO7tT69YDo7gEiKozK1mGeNQob02Ii
+         c/lpmqphdvUbCf6NJO96JhB87t1IdfH17rWXMQbMN9nuNsyBtkvi2vD4peBSDiJfKnNn
+         LhiHbyxb+UGBPCoCWciHsyiWAnhYi7pqC2YF0JUgaq+6TsH9iPOah3d/sk4dLvlkhuyO
+         U+s8IyGWITEWrBw3DqZsEDzawfC3D6W9Cm8SolrMGzfSElybJO+ZSb8vKMtkGPXw4NcQ
+         BRKvsvXKGx9LG5iOfH9sHiIBEqBk+dyKw6MaYDh8A1vr/+LnfiLGZsGagf/fahfxFd2i
+         ugzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=t+vGWEoJxp91SsNDolPTSq+7zjC/jYdCePf+SxUM8GU=;
-        b=dUpWyhC+/M93gjfWMIkgJFlPRA6CnhSw4JtnQ/Nyys9RMD5N3Fk+INrWsq2CIzG9qq
-         yOUPVE4AYbdWz63rWbYS3I/1IdIYWL7oaW5BRDQxFXDYXwVw4c8zs6n53RSurX8rXujb
-         cPwnzO16YyscUmAxzf4tJQ62o2ntuj6Cz1jp76vbopngivltp3sDmcD37JWyg4FNg1Vc
-         Lmx1vSXoGnVF0pRYDgGkV0YkMOMa54ga3xRzJczYdwGdxZAaoyXPOxP/yX4YO9d52XeF
-         6p80vT3dLPL3ezrqlwuT5xGoWzyGFJ6ICw/CpN16xS1jUqDyStCbYHYAxW+xmFKTfL91
-         D8pQ==
-X-Gm-Message-State: AOAM531cLvCb3pmLVugIZ51OUoXFjq243oRBAOrlOuc63weN+mCTsg0Y
-        tfEOh0IcIhaSfyLzOHoGNbbXjg==
-X-Google-Smtp-Source: ABdhPJwriv/y6+ub3Fs5ZDgAvBfXcMmxXW+goduf+GXSgFcnz8NQ7PLMVYLvBAlnr9np4WOgMtRfnQ==
-X-Received: by 2002:ad4:4523:: with SMTP id l3mr5389790qvu.109.1599899942234;
-        Sat, 12 Sep 2020 01:39:02 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 205sm6565315qki.118.2020.09.12.01.38.57
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 12 Sep 2020 01:38:59 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 01:38:56 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-In-Reply-To: <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009112216260.23961@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org> <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xtZpYqJi2Eh1iCduCHOJ+h77NknG0j+OKsQgYvK291Q=;
+        b=Xq3sHV8Zg3r1WDywvFh9h2kDWqUDgbgIB4J5vDIz2tAfWl1ZICbV3pOBYyRW1FY/wg
+         aMyCni3atbhxCEOWCUCHIkpULU9IH6iaL69k+P99pFIsWA3lX15h+lumTTBKtG2AcPUW
+         o2SelQCDM0+EIOPnHyQc/4sXBKtQsa4KzPG3/yvV2sSMUs35ZZXBCITtksbfyo2sNQRS
+         IAriq8Ecrp5dg5QR1F8UK8+cJyNA04awbymejs7vDRJWKLRaLOa4PIiyevGXmMQctGaS
+         i+BGFvVmBwmY4BrKfN0aOSecVI0i54eZVfT01eCV8vR7l+1KojSByTBRyN6zSGHaXckk
+         LXVA==
+X-Gm-Message-State: AOAM53395xoo5E2EpUK+DZ8z0zO+apbzzQRAI67i1MEp2k44C5WT8c91
+        YYrBqaNu92E8YeSPQrxD7+E=
+X-Google-Smtp-Source: ABdhPJzZcn+s/PFPMGentFcESDpGVRZhUChlRUiTJzIXjPkcJ269s9m/RC3BlMACaK3CVlK8JhLktQ==
+X-Received: by 2002:a17:90b:4acf:: with SMTP id mh15mr5478887pjb.204.1599900044119;
+        Sat, 12 Sep 2020 01:40:44 -0700 (PDT)
+Received: from localhost (g168.115-65-169.ppp.wakwak.ne.jp. [115.65.169.168])
+        by smtp.gmail.com with ESMTPSA id i126sm646895pfc.48.2020.09.12.01.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 01:40:43 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 17:40:41 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        openrisc@lists.librecores.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 3/3] openrisc: Fix issue with get_user for 64-bit
+ values
+Message-ID: <20200912084041.GQ3562056@lianli.shorne-pla.net>
+References: <20200910233940.2132107-1-shorne@gmail.com>
+ <20200910233940.2132107-4-shorne@gmail.com>
+ <20200911205526.65llro2gnh7zlsu4@ltop.local>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-916415362-1599899939=:23961"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911205526.65llro2gnh7zlsu4@ltop.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Sep 11, 2020 at 10:55:26PM +0200, Luc Van Oostenryck wrote:
+> On Fri, Sep 11, 2020 at 08:39:40AM +0900, Stafford Horne wrote:
+> > A build failure was raised by kbuild with the following error.
+> > 
+> >     drivers/android/binder.c: Assembler messages:
+> >     drivers/android/binder.c:3861: Error: unrecognized keyword/register name `l.lwz ?ap,4(r24)'
+> >     drivers/android/binder.c:3866: Error: unrecognized keyword/register name `l.addi ?ap,r0,0'
+> > 
+> > The issue is with 64-bit get_user() calls on openrisc.  I traced this to
+> > a problem where in the internally in the get_user macros there is a cast
+> > to long __gu_val this causes GCC to think the get_user call is 32-bit.
+> > This binder code is really long and GCC allocates register r30, which
+> > triggers the issue. The 64-bit get_user asm tries to get the 64-bit pair
+> > register, which for r30 overflows the general register names and returns
+> > the dummy register ?ap.
+> > 
+> > The fix here is to move the temporary variables into the asm macros.  We
+> > use a 32-bit __gu_tmp for 32-bit and smaller macro and a 64-bit tmp in
+> > the 64-bit macro.  The cast in the 64-bit macro has a trick of casting
+> > through __typeof__((x)-(x)) which avoids the below warning.  This was
+> > barrowed from riscv.
+> > 
+> >     arch/openrisc/include/asm/uaccess.h:240:8: warning: cast to pointer from integer of different size
+> > 
+> > I tested this is a small unit test to check reading between 64-bit and
+> > 32-bit pointers to 64-bit and 32-bit values in all combinations.  Also I
+> > ran make C=1 to confirm no new sparse warnings came up.  It all looks
+> > clean to me.
+> 
+> It looks correct to me too now at C & assembly level.
+> Feel free to add my:
+> Reviewed-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 
---0-916415362-1599899939=:23961
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Thanks a lot.
 
-On Wed, 9 Sep 2020, Alex Shi wrote:
-> =E5=9C=A8 2020/9/9 =E4=B8=8A=E5=8D=887:41, Hugh Dickins =E5=86=99=E9=81=
-=93:
-> >=20
-> > The use of lock_page_memcg() in __munlock_pagevec() in 20/32,
-> > introduced in patchset v17, looks good but it isn't: I was lucky that
-> > systemd at reboot did some munlocking that exposed the problem to lockd=
-ep.
-> > The first time into the loop, lock_page_memcg() is done before lru_lock
-> > (as 06/32 has allowed); but the second time around the loop, it is done
-> > while still holding lru_lock.
->=20
-> I don't know the details of lockdep show. Just wondering could it possibl=
-e=20
-> to solid the move_lock/lru_lock sequence?
-> or try other blocking way which mentioned in commit_charge()?
->=20
-> >=20
-> > lock_page_memcg() really needs to be absorbed into (a variant of)
-> > relock_page_lruvec(), and I do have that (it's awkward because of
-> > the different ways in which the IRQ flags are handled).  And out of
-> > curiosity, I've also tried using that in mm/swap.c too, instead of the
-> > TestClearPageLRU technique: lockdep is happy, but an update_lru_size()
-> > warning showed that it cannot safely be mixed with the TestClearPageLRU
-> > technique (that I'd left in isolate_lru_page()).  So I'll stash away
-> > that relock_page_lruvec(), and consider what's best for mm/mlock.c:
-> > now that I've posted these comments so far, that's my priority, then
-> > to get the result under testing again, before resuming these comments.
->=20
-> No idea of your solution, but looking forward for your good news! :)
-
-Yes, it is good news, and simpler than anything suggested above.
-
-The main difficulties will probably be to look good in the 80 columns
-(I know that limit has been lifted recently, but some of us use xterms
-side by side), and to explain it.
-
-mm/mlock.c has not been kept up-to-date very well: and in particular,
-you have taken too seriously that "Serialize with any parallel
-__split_huge_page_refcount()..." comment that you updated to two
-comments "Serialize split tail pages in __split_huge_page_tail()...".
-
-Delete them! The original comment was by Vlastimil for v3.14 in 2014.
-But Kirill redesigned THP refcounting for v4.5 in 2016: that's when
-__split_huge_page_refcount() went away.  And with the new refcounting,
-the THP splitting races that lru_lock protected munlock_vma_page()
-and __munlock_pagevec() from: those races have become impossible.
-
-Or maybe there never was such a race in __munlock_pagevec(): you
-have added the comment there, assuming lru_lock was for that purpose,
-but that was probably just the convenient place to take it,
-to cover all the del_page_from_lru()s.
-
-Observe how split_huge_page_to_list() uses unmap_page() to remove
-all pmds and all ptes for the huge page being split, and remap_page()
-only replaces the migration entries (used for anon but not for shmem
-or file) after doing all of the __split_huge_page_tail()s, before
-unlocking any of the pages.  Recall that munlock_vma_page() and
-__munlock_pagevec() are being applied to pages found mapped
-into userspace, by ptes or pmd: there are none of those while
-__split_huge_page_tail() is being used, so no race to protect from.
-
-(Could a newly detached tail be freshly faulted into userspace just
-before __split_huge_page() has reached the head?  Not quite, the
-fault has to wait to get the tail's page lock. But even if it
-could, how would that be a problem for __munlock_pagevec()?)
-
-There's lots more that could be said: for example, PageMlocked will
-always be clear on the THP head during __split_huge_page_tail(),
-because the last unmap of a PageMlocked page does clear_page_mlock().
-But that's not required to prove the case, it's just another argument
-against the "Serialize" comment you have in __munlock_pagevec().
-
-So, no need for the problematic lock_page_memcg(page) there in
-__munlock_pagevec(), nor to lock (or relock) lruvec just below it.
-__munlock_pagevec() still needs lru_lock to del_page_from_lru_list(),
-of course, but that must be done after your TestClearPageMlocked has
-stabilized page->memcg.  Use relock_page_lruvec_irq() here?  I suppose
-that will be easiest, but notice how __munlock_pagevec_fill() has
-already made sure that all the pages in the pagevec are from the same
-zone (and it cannot do the same for memcg without locking page memcg);
-so some of relock's work will be redundant.
-
-Otherwise, I'm much happier with your mm/mlock.c since looking at it
-in more detail: a couple of nits though - drop the clear_page_mlock()
-hunk from 25/32 - kernel style says do it the way you are undoing by
--=09if (!isolate_lru_page(page)) {
-+=09if (!isolate_lru_page(page))
- =09=09putback_lru_page(page);
--=09} else {
-+=09else {
-I don't always follow that over-braced style when making changes,
-but you should not touch otherwise untouched code just to make it
-go against the approved style.  And in munlock_vma_page(),
--=09if (!TestClearPageMlocked(page)) {
-+=09if (!TestClearPageMlocked(page))
- =09=09/* Potentially, PTE-mapped THP: do not skip the rest PTEs */
--=09=09nr_pages =3D 1;
--=09=09goto unlock_out;
--=09}
-+=09=09return 0;
-please restore the braces: with that comment line in there,
-the compiler does not need the braces, but the human eye does.
-
-Hugh
---0-916415362-1599899939=:23961--
+-Stafford
