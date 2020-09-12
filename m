@@ -2,430 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D6A267A11
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA29F267A15
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725879AbgILLog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:44:36 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:37072 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgILLoY (ORCPT
+        id S1725882AbgILLqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:46:02 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53676 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgILLpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:44:24 -0400
-Received: from localhost.localdomain ([93.22.150.101])
-        by mwinf5d26 with ME
-        id SzkL230082BWSNM03zkMqK; Sat, 12 Sep 2020 13:44:21 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 12 Sep 2020 13:44:21 +0200
-X-ME-IP: 93.22.150.101
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org, jiri@resnulli.us
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] rocker: switch from 'pci_' to 'dma_' API
-Date:   Sat, 12 Sep 2020 13:44:18 +0200
-Message-Id: <20200912114418.340728-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Sat, 12 Sep 2020 07:45:55 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08CBiqu7007393;
+        Sat, 12 Sep 2020 11:44:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=l4mURHiKjI+SrvaN8x+pKb4j8guE6NrVqWv+0/JSCDg=;
+ b=DoU9vVTtM1TaOMJZkxZur7PB/wF9eiE7dKwsMBesDP/n00jboCtkgVIC7LrlgZ9V+0N5
+ Mo84dHUZnYTiAABL8T2xbHFs5HKTO5TifA3tpQoVEJgoDlBP4iBco1Q1bbkrQPTtihB6
+ T9nCZkll87UwJTjzfSoGdBNhWxEZW0sfkTgAiy5olmNaK9mSXqtUiJ5LG3glbvWNa7/2
+ XAg37tQKAV9ylJyAOphXaf/KQOu5FBRKQXO9WoPYSPEbDpS6+1LJJFvrQ+BS06/zZLRX
+ 8sUrHimbE5Bwp2s3v95gdGPLH8T69a69Nl24yKXEJnVHuUTzusy5zrQkVMZK4BaPvXpd 8A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33gp9kruqy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 12 Sep 2020 11:44:52 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08CBfEA9171412;
+        Sat, 12 Sep 2020 11:44:52 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33gp50999v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 12 Sep 2020 11:44:52 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08CBiWSL025714;
+        Sat, 12 Sep 2020 11:44:33 GMT
+Received: from [192.168.1.126] (/47.220.66.60)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 12 Sep 2020 04:44:32 -0700
+Subject: Re: [PATCH v12 0/9] support reserving crashkernel above 4G on arm64
+ kdump
+To:     Chen Zhou <chenzhou10@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org, james.morse@arm.com, tglx@linutronix.de,
+        mingo@redhat.com, dyoung@redhat.com, bhe@redhat.com,
+        corbet@lwn.net, prabhakar.pkin@gmail.com, bhsharma@redhat.com
+Cc:     horms@verge.net.au, robh+dt@kernel.org, arnd@arndb.de,
+        nsaenzjulienne@suse.de, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-doc@vger.kernel.org, guohanjun@huawei.com,
+        xiexiuqi@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com
+References: <20200907134745.25732-1-chenzhou10@huawei.com>
+From:   John Donnelly <john.p.donnelly@oracle.com>
+Message-ID: <e9b1b5db-a848-468e-6baf-2f7b4d658805@oracle.com>
+Date:   Sat, 12 Sep 2020 06:44:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200907134745.25732-1-chenzhou10@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009120114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9741 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1011 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009120115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
-
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
-
-When memory is allocated in 'rocker_dma_ring_create()' GFP_KERNEL can be
-used because it is already used in the same function just a few lines
-above.
 
 
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
+On 9/7/20 8:47 AM, Chen Zhou wrote:
+> There are following issues in arm64 kdump:
+> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+> will fail when there is no enough low memory.
+> 2. If reserving crashkernel above 4G, in this case, crash dump
+> kernel will boot failure because there is no low memory available
+> for allocation.
+> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+> the devices in crash dump kernel need to use ZONE_DMA will alloc
+> fail.
+> 
+> To solve these issues, change the behavior of crashkernel=X.
+> crashkernel=X tries low allocation in DMA zone, and fall back to
+> high allocation if it fails.
+> If requized size X is too large and leads to very little low memory
+> in DMA zone after low allocation, the system may not work normally.
+> So add a threshold and go for high allocation directly if the required
+> size is too large. The value of threshold is set as the half of
+> the low memory.
+> 
+> We can also use "crashkernel=X,high" to select a high region above
+> DMA zone, which also tries to allocate at least 256M low memory in
+> DMA zone automatically.
+> "crashkernel=Y,low" can be used to allocate specified size low memory.
+> For non-RPi4 platforms, change DMA zone memtioned above to DMA32 zone.
+> 
+> When reserving crashkernel in high memory, some low memory is reserved
+> for crash dump kernel devices. So there may be two regions reserved for
+> crash dump kernel.
+> In order to distinct from the high region and make no effect to the use
+> of existing kexec-tools, rename the low region as "Crash kernel (low)",
+> and pass the low region by reusing DT property
+> "linux,usable-memory-range". We made the low memory region as the last
+> range of "linux,usable-memory-range" to keep compatibility with existing
+> user-space and older kdump kernels.
+> 
+> Besides, we need to modify kexec-tools:
+> arm64: support more than one crash kernel regions(see [1])
+> 
+> Another update is document about DT property 'linux,usable-memory-range':
+> schemas: update 'linux,usable-memory-range' node schema(see [2])
+> 
+> This patchset contains the following nine patches:
+> 0001-x86-kdump-move-CRASH_ALIGN-to-2M.patch
+> 0002-x86-kdump-make-the-lower-bound-of-crash-kernel-reser.patch
+> 0003-x86-kdump-use-macro-CRASH_ADDR_LOW_MAX-in-functions-.patch
+> 0004-x86-kdump-move-reserve_crashkernel-_low-into-crash_c.patch
+> 0005-arm64-kdump-introduce-some-macroes-for-crash-kernel-.patch
+> 0006-arm64-kdump-reimplement-crashkernel-X.patch
+> 0007-kdump-add-threshold-for-the-required-memory.patch
+> 0008-arm64-kdump-add-memory-for-devices-by-DT-property-li.patch
+> 0009-kdump-update-Documentation-about-crashkernel.patch
+> 
+> 0001-0003 are some x86 cleanups which prepares for making
+> functionsreserve_crashkernel[_low]() generic.
+> 
+> 0004 makes functions reserve_crashkernel[_low]() generic.
+> 0005-0006 reimplements crashkernel=X.
+> 0007 adds threshold for the required memory.
+> 0008 adds memory for devices by DT property linux,usable-memory-range.
+> 0009 updates the doc.
+> 
+> Changes since [v11]
+> - Rebased on top of 5.9-rc4.
+> - Make the function reserve_crashkernel() of x86 generic.
+> Suggested by Catalin, make the function reserve_crashkernel() of x86 generic
+> and arm64 use the generic version to reimplement crashkernel=X.
+> 
+> Changes since [v10]
+> - Reimplement crashkernel=X suggested by Catalin, Many thanks to Catalin.
+> 
+> Changes since [v9]
+> - Patch 1 add Acked-by from Dave.
+> - Update patch 5 according to Dave's comments.
+> - Update chosen schema.
+> 
+> Changes since [v8]
+> - Reuse DT property "linux,usable-memory-range".
+> Suggested by Rob, reuse DT property "linux,usable-memory-range" to pass the low
+> memory region.
+> - Fix kdump broken with ZONE_DMA reintroduced.
+> - Update chosen schema.
+> 
+> Changes since [v7]
+> - Move x86 CRASH_ALIGN to 2M
+> Suggested by Dave and do some test, move x86 CRASH_ALIGN to 2M.
+> - Update Documentation/devicetree/bindings/chosen.txt.
+> Add corresponding documentation to Documentation/devicetree/bindings/chosen.txt
+> suggested by Arnd.
+> - Add Tested-by from Jhon and pk.
+> 
+> Changes since [v6]
+> - Fix build errors reported by kbuild test robot.
+> 
+> Changes since [v5]
+> - Move reserve_crashkernel_low() into kernel/crash_core.c.
+> - Delete crashkernel=X,high.
+> - Modify crashkernel=X,low.
+> If crashkernel=X,low is specified simultaneously, reserve spcified size low
+> memory for crash kdump kernel devices firstly and then reserve memory above 4G.
+> In addition, rename crashk_low_res as "Crash kernel (low)" for arm64, and then
+> pass to crash dump kernel by DT property "linux,low-memory-range".
+> - Update Documentation/admin-guide/kdump/kdump.rst.
+> 
+> Changes since [v4]
+> - Reimplement memblock_cap_memory_ranges for multiple ranges by Mike.
+> 
+> Changes since [v3]
+> - Add memblock_cap_memory_ranges back for multiple ranges.
+> - Fix some compiling warnings.
+> 
+> Changes since [v2]
+> - Split patch "arm64: kdump: support reserving crashkernel above 4G" as
+> two. Put "move reserve_crashkernel_low() into kexec_core.c" in a separate
+> patch.
+> 
+> Changes since [v1]:
+> - Move common reserve_crashkernel_low() code into kernel/kexec_core.c.
+> - Remove memblock_cap_memory_ranges() i added in v1 and implement that
+> in fdt_enforce_memory_region().
+> There are at most two crash kernel regions, for two crash kernel regions
+> case, we cap the memory range [min(regs[*].start), max(regs[*].end)]
+> and then remove the memory range in the middle.
+> 
+> [1]: https://urldefense.com/v3/__http://lists.infradead.org/pipermail/kexec/2020-June/020737.html__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BsfMsIet$
+> [2]: https://urldefense.com/v3/__https://github.com/robherring/dt-schema/pull/19__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6Bv1JxB2D$
+> [v1]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/2/1174__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BgTzrgKq$
+> [v2]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/9/86__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6Btz3iM8F$
+> [v3]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/9/306__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BuqcVDab$
+> [v4]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/4/15/273__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6Bgdlc1Y7$
+> [v5]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/5/6/1360__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BsuuZ6C_$
+> [v6]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/8/30/142__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6Bo4IxHqi$
+> [v7]: https://urldefense.com/v3/__https://lkml.org/lkml/2019/12/23/411__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BjlqN_6I$
+> [v8]: https://urldefense.com/v3/__https://lkml.org/lkml/2020/5/21/213__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BlBSztwY$
+> [v9]: https://urldefense.com/v3/__https://lkml.org/lkml/2020/6/28/73__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BoNFCNt9$
+> [v10]: https://urldefense.com/v3/__https://lkml.org/lkml/2020/7/2/1443__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BvfD2Ihf$
+> [v11]: https://urldefense.com/v3/__https://lkml.org/lkml/2020/8/1/150__;!!GqivPVa7Brio!IzjRTihkWj0uY8lqf60OD7rbqIAhyGD20C4EZpBaPsNfWxuPgeU1Av-fzig6BohKxmce$
+> 
+> Chen Zhou (9):
+>    x86: kdump: move CRASH_ALIGN to 2M
+>    x86: kdump: make the lower bound of crash kernel reservation
+>      consistent
+>    x86: kdump: use macro CRASH_ADDR_LOW_MAX in functions
+>      reserve_crashkernel[_low]()
+>    x86: kdump: move reserve_crashkernel[_low]() into crash_core.c
+>    arm64: kdump: introduce some macroes for crash kernel reservation
+>    arm64: kdump: reimplement crashkernel=X
+>    kdump: add threshold for the required memory
+>    arm64: kdump: add memory for devices by DT property
+>      linux,usable-memory-range
+>    kdump: update Documentation about crashkernel
+> 
+>   Documentation/admin-guide/kdump/kdump.rst     |  25 ++-
+>   .../admin-guide/kernel-parameters.txt         |  13 +-
+>   arch/arm64/include/asm/kexec.h                |  15 ++
+>   arch/arm64/include/asm/processor.h            |   1 +
+>   arch/arm64/kernel/setup.c                     |  13 +-
+>   arch/arm64/mm/init.c                          | 105 ++++------
+>   arch/arm64/mm/mmu.c                           |   4 +
+>   arch/x86/include/asm/kexec.h                  |  28 +++
+>   arch/x86/kernel/setup.c                       | 165 +--------------
+>   include/linux/crash_core.h                    |   4 +
+>   include/linux/kexec.h                         |   2 -
+>   kernel/crash_core.c                           | 192 ++++++++++++++++++
+>   kernel/kexec_core.c                           |  17 --
+>   13 files changed, 328 insertions(+), 256 deletions(-)
+> 
 
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
 
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
+I did a brief unit-test on 5.9-rc4.
 
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
+Please add:
 
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
 
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+Tested-by:  John Donnelly <John.p.donnelly@oracle.com>
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
+This activity is over a year old. It needs accepted.
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
 
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
 
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/net/ethernet/rocker/rocker_main.c | 83 ++++++++++++-----------
- 1 file changed, 43 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
-index 42458a46ffaf..b35b27720175 100644
---- a/drivers/net/ethernet/rocker/rocker_main.c
-+++ b/drivers/net/ethernet/rocker/rocker_main.c
-@@ -200,9 +200,9 @@ static int rocker_dma_test_offset(const struct rocker *rocker,
- 	buf = alloc + offset;
- 	expect = buf + ROCKER_TEST_DMA_BUF_SIZE;
- 
--	dma_handle = pci_map_single(pdev, buf, ROCKER_TEST_DMA_BUF_SIZE,
--				    PCI_DMA_BIDIRECTIONAL);
--	if (pci_dma_mapping_error(pdev, dma_handle)) {
-+	dma_handle = dma_map_single(&pdev->dev, buf, ROCKER_TEST_DMA_BUF_SIZE,
-+				    DMA_BIDIRECTIONAL);
-+	if (dma_mapping_error(&pdev->dev, dma_handle)) {
- 		err = -EIO;
- 		goto free_alloc;
- 	}
-@@ -234,8 +234,8 @@ static int rocker_dma_test_offset(const struct rocker *rocker,
- 		goto unmap;
- 
- unmap:
--	pci_unmap_single(pdev, dma_handle, ROCKER_TEST_DMA_BUF_SIZE,
--			 PCI_DMA_BIDIRECTIONAL);
-+	dma_unmap_single(&pdev->dev, dma_handle, ROCKER_TEST_DMA_BUF_SIZE,
-+			 DMA_BIDIRECTIONAL);
- free_alloc:
- 	kfree(alloc);
- 
-@@ -441,9 +441,9 @@ static int rocker_dma_ring_create(const struct rocker *rocker,
- 	if (!info->desc_info)
- 		return -ENOMEM;
- 
--	info->desc = pci_alloc_consistent(rocker->pdev,
--					  info->size * sizeof(*info->desc),
--					  &info->mapaddr);
-+	info->desc = dma_alloc_coherent(&rocker->pdev->dev,
-+					info->size * sizeof(*info->desc),
-+					&info->mapaddr, GFP_KERNEL);
- 	if (!info->desc) {
- 		kfree(info->desc_info);
- 		return -ENOMEM;
-@@ -465,9 +465,9 @@ static void rocker_dma_ring_destroy(const struct rocker *rocker,
- {
- 	rocker_write64(rocker, DMA_DESC_ADDR(info->type), 0);
- 
--	pci_free_consistent(rocker->pdev,
--			    info->size * sizeof(struct rocker_desc),
--			    info->desc, info->mapaddr);
-+	dma_free_coherent(&rocker->pdev->dev,
-+			  info->size * sizeof(struct rocker_desc), info->desc,
-+			  info->mapaddr);
- 	kfree(info->desc_info);
- }
- 
-@@ -506,8 +506,9 @@ static int rocker_dma_ring_bufs_alloc(const struct rocker *rocker,
- 			goto rollback;
- 		}
- 
--		dma_handle = pci_map_single(pdev, buf, buf_size, direction);
--		if (pci_dma_mapping_error(pdev, dma_handle)) {
-+		dma_handle = dma_map_single(&pdev->dev, buf, buf_size,
-+					    direction);
-+		if (dma_mapping_error(&pdev->dev, dma_handle)) {
- 			kfree(buf);
- 			err = -EIO;
- 			goto rollback;
-@@ -526,7 +527,8 @@ static int rocker_dma_ring_bufs_alloc(const struct rocker *rocker,
- 	for (i--; i >= 0; i--) {
- 		const struct rocker_desc_info *desc_info = &info->desc_info[i];
- 
--		pci_unmap_single(pdev, dma_unmap_addr(desc_info, mapaddr),
-+		dma_unmap_single(&pdev->dev,
-+				 dma_unmap_addr(desc_info, mapaddr),
- 				 desc_info->data_size, direction);
- 		kfree(desc_info->data);
- 	}
-@@ -546,7 +548,8 @@ static void rocker_dma_ring_bufs_free(const struct rocker *rocker,
- 
- 		desc->buf_addr = 0;
- 		desc->buf_size = 0;
--		pci_unmap_single(pdev, dma_unmap_addr(desc_info, mapaddr),
-+		dma_unmap_single(&pdev->dev,
-+				 dma_unmap_addr(desc_info, mapaddr),
- 				 desc_info->data_size, direction);
- 		kfree(desc_info->data);
- 	}
-@@ -615,7 +618,7 @@ static int rocker_dma_rings_init(struct rocker *rocker)
- 	spin_lock_init(&rocker->cmd_ring_lock);
- 
- 	err = rocker_dma_ring_bufs_alloc(rocker, &rocker->cmd_ring,
--					 PCI_DMA_BIDIRECTIONAL, PAGE_SIZE);
-+					 DMA_BIDIRECTIONAL, PAGE_SIZE);
- 	if (err) {
- 		dev_err(&pdev->dev, "failed to alloc command dma ring buffers\n");
- 		goto err_dma_cmd_ring_bufs_alloc;
-@@ -636,7 +639,7 @@ static int rocker_dma_rings_init(struct rocker *rocker)
- 	}
- 
- 	err = rocker_dma_ring_bufs_alloc(rocker, &rocker->event_ring,
--					 PCI_DMA_FROMDEVICE, PAGE_SIZE);
-+					 DMA_FROM_DEVICE, PAGE_SIZE);
- 	if (err) {
- 		dev_err(&pdev->dev, "failed to alloc event dma ring buffers\n");
- 		goto err_dma_event_ring_bufs_alloc;
-@@ -650,7 +653,7 @@ static int rocker_dma_rings_init(struct rocker *rocker)
- 	rocker_dma_cmd_ring_waits_free(rocker);
- err_dma_cmd_ring_waits_alloc:
- 	rocker_dma_ring_bufs_free(rocker, &rocker->cmd_ring,
--				  PCI_DMA_BIDIRECTIONAL);
-+				  DMA_BIDIRECTIONAL);
- err_dma_cmd_ring_bufs_alloc:
- 	rocker_dma_ring_destroy(rocker, &rocker->cmd_ring);
- 	return err;
-@@ -659,11 +662,11 @@ static int rocker_dma_rings_init(struct rocker *rocker)
- static void rocker_dma_rings_fini(struct rocker *rocker)
- {
- 	rocker_dma_ring_bufs_free(rocker, &rocker->event_ring,
--				  PCI_DMA_BIDIRECTIONAL);
-+				  DMA_BIDIRECTIONAL);
- 	rocker_dma_ring_destroy(rocker, &rocker->event_ring);
- 	rocker_dma_cmd_ring_waits_free(rocker);
- 	rocker_dma_ring_bufs_free(rocker, &rocker->cmd_ring,
--				  PCI_DMA_BIDIRECTIONAL);
-+				  DMA_BIDIRECTIONAL);
- 	rocker_dma_ring_destroy(rocker, &rocker->cmd_ring);
- }
- 
-@@ -675,9 +678,9 @@ static int rocker_dma_rx_ring_skb_map(const struct rocker_port *rocker_port,
- 	struct pci_dev *pdev = rocker->pdev;
- 	dma_addr_t dma_handle;
- 
--	dma_handle = pci_map_single(pdev, skb->data, buf_len,
--				    PCI_DMA_FROMDEVICE);
--	if (pci_dma_mapping_error(pdev, dma_handle))
-+	dma_handle = dma_map_single(&pdev->dev, skb->data, buf_len,
-+				    DMA_FROM_DEVICE);
-+	if (dma_mapping_error(&pdev->dev, dma_handle))
- 		return -EIO;
- 	if (rocker_tlv_put_u64(desc_info, ROCKER_TLV_RX_FRAG_ADDR, dma_handle))
- 		goto tlv_put_failure;
-@@ -686,7 +689,7 @@ static int rocker_dma_rx_ring_skb_map(const struct rocker_port *rocker_port,
- 	return 0;
- 
- tlv_put_failure:
--	pci_unmap_single(pdev, dma_handle, buf_len, PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&pdev->dev, dma_handle, buf_len, DMA_FROM_DEVICE);
- 	desc_info->tlv_size = 0;
- 	return -EMSGSIZE;
- }
-@@ -734,7 +737,7 @@ static void rocker_dma_rx_ring_skb_unmap(const struct rocker *rocker,
- 		return;
- 	dma_handle = rocker_tlv_get_u64(attrs[ROCKER_TLV_RX_FRAG_ADDR]);
- 	len = rocker_tlv_get_u16(attrs[ROCKER_TLV_RX_FRAG_MAX_LEN]);
--	pci_unmap_single(pdev, dma_handle, len, PCI_DMA_FROMDEVICE);
-+	dma_unmap_single(&pdev->dev, dma_handle, len, DMA_FROM_DEVICE);
- }
- 
- static void rocker_dma_rx_ring_skb_free(const struct rocker *rocker,
-@@ -796,7 +799,7 @@ static int rocker_port_dma_rings_init(struct rocker_port *rocker_port)
- 	}
- 
- 	err = rocker_dma_ring_bufs_alloc(rocker, &rocker_port->tx_ring,
--					 PCI_DMA_TODEVICE,
-+					 DMA_TO_DEVICE,
- 					 ROCKER_DMA_TX_DESC_SIZE);
- 	if (err) {
- 		netdev_err(rocker_port->dev, "failed to alloc tx dma ring buffers\n");
-@@ -813,7 +816,7 @@ static int rocker_port_dma_rings_init(struct rocker_port *rocker_port)
- 	}
- 
- 	err = rocker_dma_ring_bufs_alloc(rocker, &rocker_port->rx_ring,
--					 PCI_DMA_BIDIRECTIONAL,
-+					 DMA_BIDIRECTIONAL,
- 					 ROCKER_DMA_RX_DESC_SIZE);
- 	if (err) {
- 		netdev_err(rocker_port->dev, "failed to alloc rx dma ring buffers\n");
-@@ -831,12 +834,12 @@ static int rocker_port_dma_rings_init(struct rocker_port *rocker_port)
- 
- err_dma_rx_ring_skbs_alloc:
- 	rocker_dma_ring_bufs_free(rocker, &rocker_port->rx_ring,
--				  PCI_DMA_BIDIRECTIONAL);
-+				  DMA_BIDIRECTIONAL);
- err_dma_rx_ring_bufs_alloc:
- 	rocker_dma_ring_destroy(rocker, &rocker_port->rx_ring);
- err_dma_rx_ring_create:
- 	rocker_dma_ring_bufs_free(rocker, &rocker_port->tx_ring,
--				  PCI_DMA_TODEVICE);
-+				  DMA_TO_DEVICE);
- err_dma_tx_ring_bufs_alloc:
- 	rocker_dma_ring_destroy(rocker, &rocker_port->tx_ring);
- 	return err;
-@@ -848,10 +851,10 @@ static void rocker_port_dma_rings_fini(struct rocker_port *rocker_port)
- 
- 	rocker_dma_rx_ring_skbs_free(rocker_port);
- 	rocker_dma_ring_bufs_free(rocker, &rocker_port->rx_ring,
--				  PCI_DMA_BIDIRECTIONAL);
-+				  DMA_BIDIRECTIONAL);
- 	rocker_dma_ring_destroy(rocker, &rocker_port->rx_ring);
- 	rocker_dma_ring_bufs_free(rocker, &rocker_port->tx_ring,
--				  PCI_DMA_TODEVICE);
-+				  DMA_TO_DEVICE);
- 	rocker_dma_ring_destroy(rocker, &rocker_port->tx_ring);
- }
- 
-@@ -1858,7 +1861,7 @@ static void rocker_tx_desc_frags_unmap(const struct rocker_port *rocker_port,
- 			continue;
- 		dma_handle = rocker_tlv_get_u64(frag_attrs[ROCKER_TLV_TX_FRAG_ATTR_ADDR]);
- 		len = rocker_tlv_get_u16(frag_attrs[ROCKER_TLV_TX_FRAG_ATTR_LEN]);
--		pci_unmap_single(pdev, dma_handle, len, DMA_TO_DEVICE);
-+		dma_unmap_single(&pdev->dev, dma_handle, len, DMA_TO_DEVICE);
- 	}
- }
- 
-@@ -1871,8 +1874,8 @@ static int rocker_tx_desc_frag_map_put(const struct rocker_port *rocker_port,
- 	dma_addr_t dma_handle;
- 	struct rocker_tlv *frag;
- 
--	dma_handle = pci_map_single(pdev, buf, buf_len, DMA_TO_DEVICE);
--	if (unlikely(pci_dma_mapping_error(pdev, dma_handle))) {
-+	dma_handle = dma_map_single(&pdev->dev, buf, buf_len, DMA_TO_DEVICE);
-+	if (unlikely(dma_mapping_error(&pdev->dev, dma_handle))) {
- 		if (net_ratelimit())
- 			netdev_err(rocker_port->dev, "failed to dma map tx frag\n");
- 		return -EIO;
-@@ -1892,7 +1895,7 @@ static int rocker_tx_desc_frag_map_put(const struct rocker_port *rocker_port,
- nest_cancel:
- 	rocker_tlv_nest_cancel(desc_info, frag);
- unmap_frag:
--	pci_unmap_single(pdev, dma_handle, buf_len, DMA_TO_DEVICE);
-+	dma_unmap_single(&pdev->dev, dma_handle, buf_len, DMA_TO_DEVICE);
- 	return -EMSGSIZE;
- }
- 
-@@ -2905,17 +2908,17 @@ static int rocker_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err_pci_request_regions;
- 	}
- 
--	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
-+	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
- 	if (!err) {
--		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
-+		err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64));
- 		if (err) {
--			dev_err(&pdev->dev, "pci_set_consistent_dma_mask failed\n");
-+			dev_err(&pdev->dev, "dma_set_coherent_mask failed\n");
- 			goto err_pci_set_dma_mask;
- 		}
- 	} else {
--		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
-+		err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 		if (err) {
--			dev_err(&pdev->dev, "pci_set_dma_mask failed\n");
-+			dev_err(&pdev->dev, "dma_set_mask failed\n");
- 			goto err_pci_set_dma_mask;
- 		}
- 	}
--- 
-2.25.1
 
