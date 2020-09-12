@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53761267C4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1923C267C4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725952AbgILUtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 16:49:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41854 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgILUtA (ORCPT
+        id S1725963AbgILUtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 16:49:42 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57685 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725923AbgILUtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 16:49:00 -0400
+        Sat, 12 Sep 2020 16:49:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599943737;
+        s=mimecast20190719; t=1599943752;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=cJuHYlMJJGIC0qBjlrqnGCpyE1IZMKKDiH+/8N+tl5c=;
-        b=dr0Ce72Zjyh5SeDxwKvFw4/m19xObHSL43mDbzO+s7revoyWKKXwlq0IY0uNdFBtynqS7+
-        +8klonsDyYpwtdJshU07+r1pbtmiutmK7sGN9COiJxZdxJ1wrsu8qZUgFCtDVTNVUNJSSX
-        NWJmUnANjHfzUCxNxI/5uGqTukRwVWY=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-p3zf0SIKPoafLJQv-Lbi0Q-1; Sat, 12 Sep 2020 16:48:54 -0400
-X-MC-Unique: p3zf0SIKPoafLJQv-Lbi0Q-1
-Received: by mail-lf1-f72.google.com with SMTP id c194so1522097lfg.14
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 13:48:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cJuHYlMJJGIC0qBjlrqnGCpyE1IZMKKDiH+/8N+tl5c=;
-        b=c431fH09pr5pwUKRMQhQ6vsn2+EbC5dinrolqC6fhaOOVglkRkWuPobv1L3lp72cYH
-         yfze7sXRg6Nz8Ri1c5yFlZC7oTkbyf6iYkVjruA9zBFnznigFrdQrlkqulDd7XkQs5ZA
-         O7dTIGQPIyvdRWpjmwhH2ambQYytvHUtAh/Y28VRnxyfTkTEjQ+UflqMnwUe5uMOhfV0
-         uESPpwnYfZzyAgQ+Bwv3niG0TbmKdlklQq4Xi3FiQG/Egk8T4Qc1tgYAohsx/AB6HzEx
-         ZtsmB+oVsIoq0q5Qb4y2mukYZ6sGOE0qAcYG6x5EQ5epKoerdG1n5vK7J56kz7na3vXw
-         mFzg==
-X-Gm-Message-State: AOAM530ZRScAWy59aapfiumcF/kEEMqBOmhyh2SHVjjkwXB2JL6RSjxI
-        Fjz8WoUv0MlFsgNx+hUTFh0VQzg5q+o8CFnNFOQJtsremBVPmCl+ktMAqAYzLBn6FdsKJNX4d1N
-        nZ3PCVmVYoeMDm4dlPaAwiyMjzjqX3XzqpceiOudP
-X-Received: by 2002:a2e:8046:: with SMTP id p6mr2567816ljg.372.1599943732616;
-        Sat, 12 Sep 2020 13:48:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDE6x8wpSTW0zchyo7JE5ZtuT3H92rSVgfacoMie83rLd05GidX9QR1xfHp5MvqzE7vmFLBF7QNJ6Y0VNPIQs=
-X-Received: by 2002:a2e:8046:: with SMTP id p6mr2567810ljg.372.1599943732385;
- Sat, 12 Sep 2020 13:48:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <alpine.LRH.2.21.2009121002100.17638@namei.org> <202009120055.F6BF704620@keescook>
- <20200912093652.GA3041@ubuntu> <20200912144722.GE3117@suse.de>
-In-Reply-To: <20200912144722.GE3117@suse.de>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Sat, 12 Sep 2020 22:48:39 +0200
-Message-ID: <CAFqZXNtwDpX+O69Jj3AmxMoiW7o6SE07SqDDFnGMObu8hLDQDg@mail.gmail.com>
-Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation (fbfam)
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     John Wood <john.wood@gmx.com>, James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+        bh=4AxzX4krOcHBm8+hBaUbmqWLp68cQ/w1UdDPA60DZiY=;
+        b=aSeQRstplr06VOCpELQ7mBI4h8eXy7oRpN9tVqWYl+AzBENxvOpUJtGPn6MopCWM+1iD8i
+        Y49M1ZsCA5gnaoSVA2f4KLLjQPUmSmMXuRM90xH8DXkppfgc+AZb7KF2MHBd+1ncvLSVcj
+        8XKAZ/KqbujU5ho70aYrS4TCZw7ihwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-BCe_ZU25N7ChGLLBGdRJxA-1; Sat, 12 Sep 2020 16:49:10 -0400
+X-MC-Unique: BCe_ZU25N7ChGLLBGdRJxA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CF081074657;
+        Sat, 12 Sep 2020 20:49:07 +0000 (UTC)
+Received: from krava (unknown [10.40.192.28])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0EC7A5D9D2;
+        Sat, 12 Sep 2020 20:49:02 +0000 (UTC)
+Date:   Sat, 12 Sep 2020 22:49:02 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 0/4] Fixes for setting event freq/periods
+Message-ID: <20200912204902.GE1714160@krava>
+References: <20200912025655.1337192-1-irogers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912025655.1337192-1-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 4:51 PM Mel Gorman <mgorman@suse.de> wrote:
-> On Sat, Sep 12, 2020 at 11:36:52AM +0200, John Wood wrote:
-> > On Sat, Sep 12, 2020 at 12:56:18AM -0700, Kees Cook wrote:
-> > > On Sat, Sep 12, 2020 at 10:03:23AM +1000, James Morris wrote:
-> > > > On Thu, 10 Sep 2020, Kees Cook wrote:
-> > > >
-> > > > > [kees: re-sending this series on behalf of John Wood <john.wood@gmx.com>
-> > > > >  also visible at https://github.com/johwood/linux fbfam]
-> > > > >
-> > > > > From: John Wood <john.wood@gmx.com>
-> > > >
-> > > > Why are you resending this? The author of the code needs to be able to
-> > > > send and receive emails directly as part of development and maintenance.
-> >
-> > I tried to send the full patch serie by myself but my email got blocked. After
-> > get support from my email provider it told to me that my account is young,
-> > and due to its spam policie I am not allow, for now, to send a big amount
-> > of mails in a short period. They also informed me that soon I will be able
-> > to send more mails. The quantity increase with the age of the account.
-> >
->
-> If you're using "git send-email" then specify --confirm=always and
-> either manually send a mail every few seconds or use an expect script
-> like
->
-> #!/bin/bash
-> EXPECT_SCRIPT=
-> function cleanup() {
->         if [ "$EXPECT_SCRIPT" != "" ]; then
->                 rm $EXPECT_SCRIPT
->         fi
-> }
-> trap cleanup EXIT
->
-> EXPECT_SCRIPT=`mktemp`
-> cat > $EXPECT_SCRIPT <<EOF
-> spawn sh ./SEND
-> expect {
->         "Send this email"   { sleep 10; exp_send y\\r; exp_continue }
-> }
-> EOF
->
-> expect -f $EXPECT_SCRIPT
-> exit $?
->
-> This will work if your provider limits the rate mails are sent rather
-> than the total amount.
+On Fri, Sep 11, 2020 at 07:56:51PM -0700, Ian Rogers wrote:
+> Some fixes that address issues for regular and pfm4 events with 2
+> additional perf_event_attr tests. Various authors, David Sharp isn't
+> currently at Google.
+> 
+> v3. moved a loop into a helper following Adrian Hunter's suggestion. 
+> v2. corrects the commit message following Athira Rajeev's suggestion.
+> 
+> David Sharp (1):
+>   perf record: Set PERF_RECORD_PERIOD if attr->freq is set.
+> 
+> Ian Rogers (2):
+>   perf record: Don't clear event's period if set by a term
+>   perf test: Leader sampling shouldn't clear sample period
+> 
+> Stephane Eranian (1):
+>   perf record: Prevent override of attr->sample_period for libpfm4
+>     events
 
-...or you could keep it simple and just pass "--batch-size 1
---relogin-delay 10" to git send-email ;)
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
--- 
-Ondrej Mosnacek
-Software Engineer, Platform Security - SELinux kernel
-Red Hat, Inc.
+thanks,
+jirka
+
+> 
+>  tools/perf/tests/attr/README             |  1 +
+>  tools/perf/tests/attr/test-record-group2 | 29 ++++++++++++++++++++
+>  tools/perf/util/evsel.c                  | 10 ++++---
+>  tools/perf/util/record.c                 | 34 ++++++++++++++++++------
+>  4 files changed, 63 insertions(+), 11 deletions(-)
+>  create mode 100644 tools/perf/tests/attr/test-record-group2
+> 
+> -- 
+> 2.28.0.618.gf4bc123cb7-goog
+> 
 
