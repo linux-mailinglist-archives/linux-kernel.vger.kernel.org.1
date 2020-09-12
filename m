@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C85267B12
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC68267B14
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbgILOxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 10:53:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34599 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725969AbgILOra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 10:47:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599922048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=vhedvMNzaUEDcUuhwo/iLfGVABBNwD7Ffu7xTey6+9c=;
-        b=gYt53RMHtTRRKwLyBlIJ02gqjMsJM9NWKCJ81juj7fGS2ntTwXJSdsIX3v5GSQq3H1rDv2
-        5Trq0z25gCrvmQMOJEDjPN8u5z+UfpYKty5UmUvizkdhfeUntvuiUvl8XiiveQQKsyoZtz
-        9bcskbttFIg1YKLkHz62IwXA6YVaDr0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-115-6C1luu21NxKuh3f_IJthFw-1; Sat, 12 Sep 2020 10:47:26 -0400
-X-MC-Unique: 6C1luu21NxKuh3f_IJthFw-1
-Received: by mail-qv1-f71.google.com with SMTP id di5so4428990qvb.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 07:47:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vhedvMNzaUEDcUuhwo/iLfGVABBNwD7Ffu7xTey6+9c=;
-        b=MECNuTjB1iHggLjCXJEdtUN7dullBrWZSynbnQltC0p9nG7j7M/ZL+CBXbbc8tyybY
-         NhBY06gb1BqU5TeGuMjpQxQkn7LpPqeG5+KL16aI4qHya6kEdoUrZl8jeP17B5DQGt8d
-         E8sWpUAoPUlVmSWRJ63638HywHla//Kx1S7lykCXJmyFWs0WHyiVyZgUlAFrri9ab1gw
-         GwJ7H+S1Tze1oCRa4DO1iypRX4MtL5qpaXz/hBaAGrHCaZORwsEMz2lhaeI9JjMx89PP
-         zvb9lzhpD8Pz5Lu1yHlRBupqv3PqDeYj6s17BDvUlqsJBE+2H6ZE8LYlRyh495baXMb7
-         KqLQ==
-X-Gm-Message-State: AOAM532nbyIV6pRfwVs4kn3dVCE9fFDosKSppFt8aK04Q2/dvWhLaWw2
-        j3wImtx2KIB6mKNVIXRltvP3Wy4bJ4/WY+mAOG9JJardO+lr+oQkFAQbe8nqsxIRDtQ4OC6y0KB
-        rymplLpr4d6Wb9aaUzrzTW+hO
-X-Received: by 2002:a0c:e989:: with SMTP id z9mr6441208qvn.81.1599922045828;
-        Sat, 12 Sep 2020 07:47:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwly9+TI3qlwz43wKPoJau1E8RyrgfhK9Hk6G2EG0hVy9Xgse6md8eIDmPt0UBEDtJtU63ziQ==
-X-Received: by 2002:a0c:e989:: with SMTP id z9mr6441201qvn.81.1599922045640;
-        Sat, 12 Sep 2020 07:47:25 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u2sm7425387qkf.61.2020.09.12.07.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 07:47:25 -0700 (PDT)
-From:   trix@redhat.com
-To:     jerome.pouiller@silabs.com, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] staging: wfx: simplify virt_addr_valid call
-Date:   Sat, 12 Sep 2020 07:47:19 -0700
-Message-Id: <20200912144719.13929-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1725982AbgILOwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 10:52:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40796 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbgILOrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 10:47:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7EB33AB91;
+        Sat, 12 Sep 2020 14:47:41 +0000 (UTC)
+Date:   Sat, 12 Sep 2020 15:47:22 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     John Wood <john.wood@gmx.com>
+Cc:     James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation
+ (fbfam)
+Message-ID: <20200912144722.GE3117@suse.de>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <alpine.LRH.2.21.2009121002100.17638@namei.org>
+ <202009120055.F6BF704620@keescook>
+ <20200912093652.GA3041@ubuntu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20200912093652.GA3041@ubuntu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Sat, Sep 12, 2020 at 11:36:52AM +0200, John Wood wrote:
+> On Sat, Sep 12, 2020 at 12:56:18AM -0700, Kees Cook wrote:
+> > On Sat, Sep 12, 2020 at 10:03:23AM +1000, James Morris wrote:
+> > > On Thu, 10 Sep 2020, Kees Cook wrote:
+> > >
+> > > > [kees: re-sending this series on behalf of John Wood <john.wood@gmx.com>
+> > > >  also visible at https://github.com/johwood/linux fbfam]
+> > > >
+> > > > From: John Wood <john.wood@gmx.com>
+> > >
+> > > Why are you resending this? The author of the code needs to be able to
+> > > send and receive emails directly as part of development and maintenance.
+> 
+> I tried to send the full patch serie by myself but my email got blocked. After
+> get support from my email provider it told to me that my account is young,
+> and due to its spam policie I am not allow, for now, to send a big amount
+> of mails in a short period. They also informed me that soon I will be able
+> to send more mails. The quantity increase with the age of the account.
+> 
 
-Reviewing sram_write_dma_safe(), there are two
-identical calls to virt_addr_valid().  The second
-call can be simplified by a comparison of variables
-set from the first call.
+If you're using "git send-email" then specify --confirm=always and
+either manually send a mail every few seconds or use an expect script
+like
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/staging/wfx/fwio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#!/bin/bash
+EXPECT_SCRIPT=
+function cleanup() {
+	if [ "$EXPECT_SCRIPT" != "" ]; then
+		rm $EXPECT_SCRIPT
+	fi
+}
+trap cleanup EXIT
 
-diff --git a/drivers/staging/wfx/fwio.c b/drivers/staging/wfx/fwio.c
-index 22d3b684f04f..c99adb0c99f1 100644
---- a/drivers/staging/wfx/fwio.c
-+++ b/drivers/staging/wfx/fwio.c
-@@ -94,7 +94,7 @@ static int sram_write_dma_safe(struct wfx_dev *wdev, u32 addr, const u8 *buf,
- 		tmp = buf;
- 	}
- 	ret = sram_buf_write(wdev, addr, tmp, len);
--	if (!virt_addr_valid(buf))
-+	if (tmp != buf)
- 		kfree(tmp);
- 	return ret;
- }
+EXPECT_SCRIPT=`mktemp`
+cat > $EXPECT_SCRIPT <<EOF
+spawn sh ./SEND
+expect {
+	"Send this email"   { sleep 10; exp_send y\\r; exp_continue }
+}
+EOF
+
+expect -f $EXPECT_SCRIPT
+exit $?
+
+This will work if your provider limits the rate mails are sent rather
+than the total amount.
+
 -- 
-2.18.1
-
+Mel Gorman
+SUSE Labs
