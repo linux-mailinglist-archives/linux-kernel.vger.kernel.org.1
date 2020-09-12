@@ -2,109 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC1026799A
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E47226799C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgILKpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 06:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbgILKpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 06:45:09 -0400
-Received: from kernel.org (unknown [87.71.73.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E727421548;
-        Sat, 12 Sep 2020 10:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599907509;
-        bh=JlaG0VihU/kpNynKTFEbZN+fiVclrSFZQ7o5lYSLsCo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MxwNZ3DR4pd+Et17gzUK/aZwG6cHSOwhCuo5WvAt83UKFrpsgCeTfsR3fzflwbVXS
-         bvbjd9Xh5RzjmKMl8sjHJhCIuZtc/VlON3F/iJxiwNWoxovf9oBrzZeVM3M263wQQL
-         J3d3mZE2F/hRn4VlAXoWKb4o7NCbh1xdTj57Dk3A=
-Date:   Sat, 12 Sep 2020 13:45:02 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: Re: [PATCH] RISC-V: Consider sparse memory while removing unusable
- memory
-Message-ID: <20200912104502.GF2142832@kernel.org>
-References: <20200912002341.4869-1-atish.patra@wdc.com>
+        id S1725869AbgILKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 06:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbgILKpP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 06:45:15 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2451BC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:45:15 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id mm21so2967672pjb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:45:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lkuXqN8dqWKzdrjlBRBC+QDQOX5NBg+pLH7DeRXH8eE=;
+        b=rbGEY2ml6P4YmGCLMJkrk6jnaTnFY6ENY1hS8ELAelyi4jjkcVGdGY1unjljjcjp8W
+         RdNiNM7R5dchauITFfVkov/s8SL6PxR3+QbTlOtHknwKrhUk8EXZcH+7zBOJ212yKcMC
+         QSO2Bxq+ZGk24oTOcc09hp37BKg3aS5LmL+DnfSn7llKWsu/TEs7kna+x6AwSA8IILkd
+         M/9tbmf4fIKs29C9TY7SsXeGMQcSKXmWpdR4pecl1RQVO4gzJs/gqQwhyir7tck3HOBE
+         Msfmr80cnUvEG5oQSlcDSS/0EJNUEn++2iVEV1WiMCHKOZUt1CFhrvk3RtnlYx5vGdAd
+         wD2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lkuXqN8dqWKzdrjlBRBC+QDQOX5NBg+pLH7DeRXH8eE=;
+        b=fU4JiijnwClHgQrYcp3rmSQ5VpFShq46TJCaNQBupVJ/FyTI95JAb56oCh3ufQosJO
+         Hi4WAFgkGpGJpuK80nrR79Y5rzoOpOCTKORGoageoGIHImcwJzx3f/1v6z35wOGfqLY9
+         Fe0I9mQJtWTSiIc3f24/Usr9Oi/2in3XhBUfEhU+N6UZfH0vxDERGaKIlODwNkRfFHHj
+         42hrVPjoGrNUW/WFrcIFz5aaBO4LXAGUA4fK3b+pdQJXxFWavcGzebZs7/Z8aTsJX9MN
+         7zKRz+dX1ZupStyttv1kPxKYBvX52O8OWpkPQzFri5uuMMW55pMuCp38FNh9pmhYOq+U
+         r3ZA==
+X-Gm-Message-State: AOAM532o7Ff+K9LoFeVYZ3Mq4L5rVGvu+EcXUnXoQEuJKcbJRE9SpFBG
+        +qY1K4UbXRdKfE68n49BDoXmrQ==
+X-Google-Smtp-Source: ABdhPJxOJuuvw8phqgsbxxKfx/6Ima835whbu8/ZuD7ibDaZTIcuCuCerlcQ+Caq1Oon6gnZQ1gNJQ==
+X-Received: by 2002:a17:90a:6701:: with SMTP id n1mr6179958pjj.87.1599907514399;
+        Sat, 12 Sep 2020 03:45:14 -0700 (PDT)
+Received: from kaaira-HP-Pavilion-Notebook ([2405:201:6801:484c:954a:305:9758:cc93])
+        by smtp.gmail.com with ESMTPSA id c127sm4803357pfa.165.2020.09.12.03.45.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 12 Sep 2020 03:45:13 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 16:15:08 +0530
+From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Helen Koike <helen.koike@collabora.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 9/9] media: vimc: Run multiple captures on same thread
+Message-ID: <20200912104508.GF5022@kaaira-HP-Pavilion-Notebook>
+References: <20200819180442.11630-1-kgupta@es.iitr.ac.in>
+ <20200819180442.11630-10-kgupta@es.iitr.ac.in>
+ <58df4c43-ab07-0001-f725-9098f18a8e6f@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200912002341.4869-1-atish.patra@wdc.com>
+In-Reply-To: <58df4c43-ab07-0001-f725-9098f18a8e6f@ideasonboard.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Atish,
-
-On Fri, Sep 11, 2020 at 05:23:41PM -0700, Atish Patra wrote:
-> Currently, any usable memory area beyond page_offset is removed by adding the
-> memory sizes from each memblock. That may not work for sparse memory
-> as memory regions can be very far apart resulting incorrect removal of some
-> usable memory.
-
-If I understand correctly, the memory with physical addresses larger
-than (-PAGE_OFFSET) cannot be used. Since it was aready
-memblock_add()'ed during device tree parsing, you need to remove it from
-memblock.
-
-For that you can use memblock_enforce_memory_limit(-PAGE_OFFSET).
-
-> Just use the start of the first memory block and the end of the last memory
-> block to compute the size of the total memory that can be used.
+On Wed, Sep 02, 2020 at 11:46:50AM +0100, Kieran Bingham wrote:
+> Hi Kaaira,
 > 
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/mm/init.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+> On 19/08/2020 19:04, Kaaira Gupta wrote:
+> > If multiple captures try to enable stream, start their stream but do not
+> > initialise the pipeline again. Also, don't start the thread separately.
+> > Starting their streams will update the use count and their frames would
+> > be processed by the already running thread.
+> > 
+> > Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+> > ---
+> >  drivers/media/test-drivers/vimc/vimc-streamer.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/media/test-drivers/vimc/vimc-streamer.c b/drivers/media/test-drivers/vimc/vimc-streamer.c
+> > index fade37bee26d..880c31759cc0 100644
+> > --- a/drivers/media/test-drivers/vimc/vimc-streamer.c
+> > +++ b/drivers/media/test-drivers/vimc/vimc-streamer.c
+> > @@ -275,13 +275,14 @@ int vimc_streamer_s_stream(struct vimc_stream *stream,
+> >  		return ret;
+> >  
+> >  	if (enable) {
+> > -		if (stream->kthread)
+> > -			return 0;
+> >  
+> >  		ret = vimc_streamer_stream_start(ved);
+> >  		if (ret)
+> >  			goto out;
+> >  
+> > +		if (stream->kthread)
+> > +			goto out;
+> > +
 > 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 787c75f751a5..188281fc2816 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -147,7 +147,6 @@ void __init setup_bootmem(void)
->  {
->  	struct memblock_region *reg;
->  	phys_addr_t mem_size = 0;
-> -	phys_addr_t total_mem = 0;
->  	phys_addr_t mem_start, end = 0;
->  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
->  	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> @@ -155,18 +154,17 @@ void __init setup_bootmem(void)
->  	/* Find the memory region containing the kernel */
->  	for_each_memblock(memory, reg) {
->  		end = reg->base + reg->size;
-> -		if (!total_mem)
-> +		if (!mem_start)
->  			mem_start = reg->base;
->  		if (reg->base <= vmlinux_start && vmlinux_end <= end)
->  			BUG_ON(reg->size == 0);
-> -		total_mem = total_mem + reg->size;
->  	}
->  
->  	/*
->  	 * Remove memblock from the end of usable area to the
->  	 * end of region
->  	 */
-> -	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> +	mem_size = min(end - mem_start, (phys_addr_t)-PAGE_OFFSET);
->  	if (mem_start + mem_size < end)
->  		memblock_remove(mem_start + mem_size,
->  				end - mem_start - mem_size);
+> This goto out makes it look like it's an error path. So that probably
+> warrants a comment along the lines of 'don't reinitialise the pipeline
+> if it has already started'. ?
+> 
+> I wonder if it's better to handle the pipeline_init during _stream_start
+> 'only' in the code path where it's the first stream ?
+
+stream_start needs to be called for both (or all) the captures, while
+init must be called just once...so I think keeping it here inside
+s_stream and calling it just once will be okay too as that wouldn't need
+refcounts..but yes I think I should keep them symmetrical for better
+readability of code. What do you think is a better method?
+
+> 
+> Then similarly, the pipeline_terminate would happen on stream_stop
+> 'only' when it's the last stream.
+> 
+> Or I guess that is handled by the refcount ... Hrm it would be nice to
+> be able to make/keep it symmetrical somehow.
+> 
+> 
+> >  		ret = vimc_streamer_pipeline_init(stream, ved);
+> >  		if (ret)
+> >  			goto out;
+> > 
+> 
 > -- 
-> 2.24.0
-> 
-
--- 
-Sincerely yours,
-Mike.
+> Regards
+> --
+> Kieran
