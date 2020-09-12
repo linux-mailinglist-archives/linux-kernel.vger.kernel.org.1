@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C31026791B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E006267920
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbgILJW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 05:22:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbgILJWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 05:22:51 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A89F20796;
-        Sat, 12 Sep 2020 09:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599902571;
-        bh=6Q+AbG3QWiHA3HGr6g8w/t8tM48q/RSUlhmIjzNTm2c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=taXULLzJdemj1hNMoUcfGjFKmY8SoaoJ31nKoJ8mgmCQj8NYfBoYtJeP+0a05pCru
-         j6QT0xU8t/cCQvlRdOrtvIONqvArorto45uojn6zMLnINTYiY0w6DoUPlAR2HSAew0
-         1wqVzt37O7P09wNXFUHt8kFln6gMfNQQPzNH6E+0=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kH1k7-001cEl-Kd; Sat, 12 Sep 2020 11:22:47 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: [PATCH] media: vidtv: fix 32-bit warnings
-Date:   Sat, 12 Sep 2020 11:22:46 +0200
-Message-Id: <008267108695f5cdf6744d861b2b6e5084bedfee.1599902564.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1725852AbgILJ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 05:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbgILJ0x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 05:26:53 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45494C0613ED
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:26:51 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m5so8296543lfp.7
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S+48eoB8+wThondXw2toHob0ZQwe3LgTU2CE7AlUBMM=;
+        b=OuRWaG40whjIBcB91iNEvAaHGH0XDNk5AXjxsFd+lICwB8++pB5UsygLg6jwo/lL2A
+         qd53HqFUUnm3cDfBUscBkRR1u9VdxLP7qcflg9bAFk0JXmup6OrDzfQpQsCOhL9SY7XW
+         vR0VT+2T1bqV19wiKfCyC3E9Nx/TcZ88mR8/c8gXF0yduk3xdoC/Ir50d7AIkuzKUjUy
+         4F0dMDAIYUEth89uoIqHYVdc8C+bdXJyz5JmcupsoZY0mzUstYXOqCoD/nN76FZS7ImA
+         lJD8JSIjMf3V+xJpzWOjcQptKuobR+0USHm2aAa9OpznGdsOHeTJ6ZJVdmq+wn0U96tO
+         N3jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S+48eoB8+wThondXw2toHob0ZQwe3LgTU2CE7AlUBMM=;
+        b=gxPNd1Eacd01lDRMWTYzA3CwDioL7DLY+uSuG2GLprzxBoiC1xughkYgvNeKupc7qC
+         rGfEn0xzHBDNWGvDZgc+JL632yMVJNtk+PrlJf1mJdB2m5p37rY/pDVbL6S117ixhrCT
+         yXrgr9dnAHqdT5o/gEjlKZwNDNMyn7V2IwglxM+AvyAgQTWYzej971Tbuc5TR5urbLDZ
+         0avocTeUzXGGhXJRLOWAXpjsDQPslwDYEmK+zx8C24tb0oLTWBgq48XgLTySn+LEUf1X
+         eMKL/rhz/47DgsBIr+hm77FXJwpRhViya2Gtntc8/dRUT8ZYR0nyvye4UZh/m+7jwnKf
+         yfTA==
+X-Gm-Message-State: AOAM530gk7I2N6fK4UZKm3TziG5xo/sU9yxNukGkh/ZU4aJjSoORfqC0
+        sKV6RBjQiiUjrargxAB6g0+y2DN5qikPcosClHSLnA==
+X-Google-Smtp-Source: ABdhPJxdoNVDkt5k0KwL4T1WSSnHEJDy+mY/l76Bcz8T6aGaxXWR//LA/bThMnertfCCTg+IRPpUIcuvCtcRsJJk2dk=
+X-Received: by 2002:a19:520b:: with SMTP id m11mr1331733lfb.502.1599902810277;
+ Sat, 12 Sep 2020 02:26:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200827200827.26462-1-krzk@kernel.org> <20200827200827.26462-6-krzk@kernel.org>
+In-Reply-To: <20200827200827.26462-6-krzk@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 11:26:39 +0200
+Message-ID: <CACRpkdZJ78LBANGOdE6+kokfJV5hUYWaXhdhG+9cFUyj6YjVpw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] gpio: zynq: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Ray Jui <rjui@broadcom.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Keerthy <j-keerthy@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several warnings produced when the driver is built
-for 32-bit archs. Solve them.
+On Thu, Aug 27, 2020 at 10:08 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/test-drivers/vidtv/vidtv_common.c |  4 ++--
- drivers/media/test-drivers/vidtv/vidtv_pes.c    | 12 ++++++------
- drivers/media/test-drivers/vidtv/vidtv_s302m.c  |  2 +-
- 3 files changed, 9 insertions(+), 9 deletions(-)
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and also it prints the error value.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_common.c b/drivers/media/test-drivers/vidtv/vidtv_common.c
-index 9093df32e0ab..63b3055bd715 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_common.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_common.c
-@@ -42,7 +42,7 @@ u32 vidtv_memcpy(void *to,
- 		 size_t len)
- {
- 	if (unlikely(to_offset + len > to_size)) {
--		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %lu, had %zu\n",
-+		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %zu, had %zu\n",
- 				   to_offset + len,
- 				   to_size);
- 		return 0;
-@@ -78,7 +78,7 @@ u32 vidtv_memset(void *to,
- 		 size_t len)
- {
- 	if (unlikely(to_offset + len > to_size)) {
--		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %lu, had %zu\n",
-+		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %zu, had %zu\n",
- 				   to_offset + len,
- 				   to_size);
- 		return 0;
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.c b/drivers/media/test-drivers/vidtv/vidtv_pes.c
-index 8237434f3fc2..4ffc4a1c33ee 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_pes.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_pes.c
-@@ -91,13 +91,13 @@ static u32 vidtv_pes_write_pts_dts(struct pes_header_write_args args)
- 		return 0;
- 
- 	#ifdef __BIG_ENDIAN
--	mask1 = GENMASK(30, 32);
--	mask2 = GENMASK(15, 29);
--	mask3 = GENMASK(0, 14);
-+	mask1 = GENMASK_ULL(30, 32);
-+	mask2 = GENMASK_ULL(15, 29);
-+	mask3 = GENMASK_ULL(0, 14);
- 	#else
--	mask1 = GENMASK(32, 30);
--	mask2 = GENMASK(29, 15);
--	mask3 = GENMASK(14, 0);
-+	mask1 = GENMASK_ULL(32, 30);
-+	mask2 = GENMASK_ULL(29, 15);
-+	mask3 = GENMASK_ULL(14, 0);
- 	#endif
- 
- 	/* see ISO/IEC 13818-1 : 2000 p. 32 */
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-index 467470295942..7cabc71b26e4 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-@@ -415,7 +415,7 @@ static void vidtv_s302m_write_frames(struct vidtv_encoder *e)
- 		au->nbytes = nbytes_per_unit;
- 
- 		if (au_sz + sizeof(struct vidtv_smpte_s302m_es) != nbytes_per_unit) {
--			pr_warn_ratelimited("write size was %d, expected %lu\n",
-+			pr_warn_ratelimited("write size was %zu, expected %zu\n",
- 					    nbytes_per_unit,
- 					    au_sz + sizeof(struct vidtv_smpte_s302m_es));
- 		}
--- 
-2.26.2
+All six patches applied!
 
+Thanks!
+Yours,
+Linus Walleij
