@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A1C267B59
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2D5267B5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725872AbgILQPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 12:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S1725880AbgILQRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 12:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgILQPo (ORCPT
+        with ESMTP id S1725868AbgILQQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 12:15:44 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A45C0613ED
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:15:43 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id q8so8995190lfb.6
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:15:43 -0700 (PDT)
+        Sat, 12 Sep 2020 12:16:52 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363F9C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:16:51 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id z17so8947102lfi.12
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1mfFSLJ2aT99PDQEJLg63CY2EfFTeT2UQOOCsNtG5XQ=;
-        b=ik2OaDdzUHuVOMNMLsgvQOnL4fvUvEqien4NjpuI5VfIclMzHKWaow1odpvd5sDPJU
-         +LXHDLiPBxR8ThB4sl5aU07BCGyBsQ0CUT5VU6uQyRjR0z/eVMBKV/EafigpOJM2w6fx
-         tUF49I4gg9jJzUNcM/EjXzreHBPpIlb/n4r5NT5TvcdPcNldy6x3TCHdfhOof7EJKQ/u
-         kLZH5q/yNZIk9TzYMtUHe6cNExS56wCEroXgH0iLeRteyVneoKhJ3FbCUEVL5W4iG82t
-         Hyl6zxvpxVVMdWTF4rS9E+pNohfmkBfFjwohofeLq61gNe4dH/KzLBRCSgspSF7nutvm
-         ByUw==
+        bh=9U094qqCq9d4miMet+MZEOYG8XbE21uClAnLKejltBc=;
+        b=YAeVSe5Osg2SXWG44jaIOAY1b/3jhgKvB4Bu+/p517wil9XaoCFMb/SFfZKuBdlQ7k
+         RxmGRUXxd0VLFX0exm5WSxx7aKflLcpDtUlppZUkuz3aQ79UR4TjIQeO2AhqqjR7Wkul
+         mPaZmim0Li8U5WFu7vfqRf2mzIJm1R42Q2A+54i1j67bF30hTGLcmmQHBWuxl6NHLoyX
+         9nclgltPHcYGCNxwmsSMBXQEPKS17dPFYi9GKRhFP6xMiA/ycvTq1fnOxpc8q4PTXTo2
+         WrgWGvA3hM+6bda7WPisZUToo8MRKj4q88tefqK96HQxdKjF1OAPwKyck15Ses0a+tb4
+         jlBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1mfFSLJ2aT99PDQEJLg63CY2EfFTeT2UQOOCsNtG5XQ=;
-        b=cI6ge6jC/zuokD/DQhssHowEIis2E6pZoGHdhI97+540dswEkS8fzl4txQUeXrCIi1
-         o4khoZxqCygs+9/s3RNuEmzjQr0BEhaDKQcQeRKV9g+4UMZNU+8nZAy2Pr/8q4+mNW92
-         oBouuOCGn2jytkG6wZJhR+MjtPHINrdE6cjKl8E1JQKXNS4oWnO+Ktsw325TLM5W1RWE
-         dotpMeUNdXVLyYfVZrN982P/K+m7ZBTJ98WfYdCsU6R2Wum2KTZk0XYPyDHOojbWvMlH
-         rAbkPbnZN0aWdB9jQcFFZ+SRtob/USAw4RgTLKVj0c64EheNh0jhjroIg9lVlNakzxDs
-         pkqA==
-X-Gm-Message-State: AOAM532cvPnLkt1Qz0b5+FnKCWr8A2WFb3ImuSp/fAFzMu6BaKvVpBL6
-        HhdT1uOsLk9Ly+W6NzHl/f4FibZWG8hRDd5KAY2wBw==
-X-Google-Smtp-Source: ABdhPJwzk5Ff3ZAWzHOFqk2anJO10WsYhRwbjNzmrZfdwXqXvmayMoWnkftiDhcCyLXCuPFXWkcBZk4GHcnDyvYoRF0=
-X-Received: by 2002:a05:6512:370b:: with SMTP id z11mr1756518lfr.571.1599927340316;
- Sat, 12 Sep 2020 09:15:40 -0700 (PDT)
+        bh=9U094qqCq9d4miMet+MZEOYG8XbE21uClAnLKejltBc=;
+        b=GARpyVhA8j5wUQaFRyiZJU9e3ZJE0JsRYNKi/TysNzRryWb8KjlzQYQ+0YE6qsGSh1
+         7uYNLfIHWye6DEVcvFl0j87pJyhf5kZrle8ToNdS8AahgT3LKjoNqNesTGl2sHozku4+
+         uPTjl+L8ehoofrjIfbshikybR08C2AnX9nq5fPOcMyMyuNGVGKGY4+q1czTM5icLfRqe
+         RjaWQIZr0e5q3QC6xKbNq7bWzeHouBzAxj7qPqxNWkJ+0Bl9r+QV1xuVaBX/nK+1FmIO
+         kGTn2uiJKSx6yk0KxO4+q99cnYD0CxNMs5un7b3gUt3C5hUsjBavEsHuC1ktGYCpm6QB
+         Znug==
+X-Gm-Message-State: AOAM531+kPk1bB5srPdmLj25kQCG1Ys0+Gai+3r9YNZmdEZaxO4Odyrn
+        w81kDj7lO+t3J4fiJwhyVgNGYiwKTTqCV2V+pzZc+Q==
+X-Google-Smtp-Source: ABdhPJyxyrQtW5hXYVHMhi10Oq4pHIB0NH2ATk3u2qZ+1xXJqbLNuSz38EwTMJ4U5Lfc1EZ+TVMsa1cmiQDormQOmwY=
+X-Received: by 2002:a19:6c2:: with SMTP id 185mr1785569lfg.441.1599927409676;
+ Sat, 12 Sep 2020 09:16:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200907211712.9697-1-chris.packham@alliedtelesis.co.nz> <20200907211712.9697-2-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20200907211712.9697-2-chris.packham@alliedtelesis.co.nz>
+References: <20200907211712.9697-1-chris.packham@alliedtelesis.co.nz> <20200907211712.9697-4-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20200907211712.9697-4-chris.packham@alliedtelesis.co.nz>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 18:15:29 +0200
-Message-ID: <CACRpkdZbo6zN+F0K6oHyWRTWN3raRGVNzps4VCB+QuSzsyq9Ow@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] pinctrl: mvebu: Fix i2c sda definition for 98DX3236
+Date:   Sat, 12 Sep 2020 18:16:39 +0200
+Message-ID: <CACRpkdZ13B==RROumpfB1sjO_uPG0Jx-LRwjm-w_6wr_wb1v8A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] ARM: dts: Add i2c0 pinctrl information for 98dx3236
 To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
 Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
         Gregory Clement <gregory.clement@bootlin.com>,
@@ -60,9 +60,7 @@ Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>,
-        Rob Herring <robh@kernel.org>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -72,18 +70,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Sep 7, 2020 at 11:17 PM Chris Packham
 <chris.packham@alliedtelesis.co.nz> wrote:
 
-> Per the datasheet the i2c functions use MPP_Sel=0x1. They are documented
-> as using MPP_Sel=0x4 as well but mixing 0x1 and 0x4 is clearly wrong. On
-> the board tested 0x4 resulted in a non-functioning i2c bus so stick with
-> 0x1 which works.
+> Add pinctrl information for the 98dx3236 (and variants). There is only
+> one choice for i2c0 MPP14 and MPP15.
 >
-> Fixes: d7ae8f8dee7f ("pinctrl: mvebu: pinctrl driver for 98DX3236 SoC")
 > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-This patch 1/3 applied for pin control fixes.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Patches 2 & 3 should go via the SoC tree.
+Please merge this through the ARM SoC maintenance path.
 
 Yours,
 Linus Walleij
