@@ -2,181 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE762678A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772A22678AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725854AbgILHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgILHw1 (ORCPT
+        id S1725865AbgILHyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 03:54:10 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45646 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725809AbgILHyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:52:27 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E82C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:52:26 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id u14so3843207uaq.1
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zxztea30xe4XNiG9NCyw+l4HYaGwfmnd3JgO7+jw3Pk=;
-        b=Aw9NptenT0zjf5k5U6QuKbXcf6qR7dmdOVPtc/tdL2RSegOXL+6UNOpJ3bSYWYQOvM
-         F2xfEIknqpBe184JiLZZGnzIZSTulz+wGpMJvQ8D0COIbVZzLqGdttM0Q4ixB/SEKiUa
-         GMRvlXA1JCxP1kOYABer0zaWcN52n4/SaMZNXu8FLr06n3bSnw5YWquiujlmOdFud3Gt
-         AjeYgkv1gfI7sTixu0GD234xDYME/B3Sna+aPxOGU+9dHyUK+VowsD3HzSxMaOiRzlJl
-         xScmkqCI0j+bv73ntteLVFBeoI7aKX67XSFbR0VRWw4mjNbOSb5PHkxoh5I1B8mpqo5k
-         FJrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zxztea30xe4XNiG9NCyw+l4HYaGwfmnd3JgO7+jw3Pk=;
-        b=UdftnPryIX+E8C5rrhvqYNxvYZvhqlj679WCyB1GVWiXplz2zaWfavoiTk84FSHijk
-         RQYQY0ytYFTDjU0TH0VjdNWdE8mJsi4m6W4GVROu6RbxTcq4PvlYo4Jp6ZcxWplh03UY
-         s+0/JTU4HFUBCK073IYnZ9SQHN7yx9+kNhAjP4SgxbACpNgfEeXK0zVPMFOwS86zHvIz
-         Vj4xPuFxDOTtubLknzbuA8vnSiQRvmQO24Xscsvf5RfkLZNFWUmz9mPYS0x6HcyqNIPE
-         CZX8OqJQcik3Vfp36xxcP599LSCUQW+kjJ2zPeuBY3qi9QDyaAKp7Rq6lx/NgaOLn418
-         /ziA==
-X-Gm-Message-State: AOAM533sko9o26aPE6Frw1XnSOgSPeCSfjRBvkjklYx5ZQVGLbBJddF5
-        gOi+0brtucvdL8pxnRCh/RVwn/MAeWn+8nXyqz5LbA==
-X-Google-Smtp-Source: ABdhPJy5xPR/H+g3JodOXvFZIMEb2UDD22jZoVWLZMzJ7tVV/uiGJk8yv30i8Ia39y+zm81DeWldxckFhERjCS84Wt0=
-X-Received: by 2002:a9f:3491:: with SMTP id r17mr2880940uab.113.1599897145898;
- Sat, 12 Sep 2020 00:52:25 -0700 (PDT)
+        Sat, 12 Sep 2020 03:54:06 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 08D8629B631
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     luto@kernel.org, tglx@linutronix.de, hpa@zytor.com, bp@alien8.de,
+        rric@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 2/6] x86: Simplify compat syscall userspace allocation
+Organization: Collabora
+References: <20200912070553.330622-1-krisman@collabora.com>
+        <20200912070553.330622-3-krisman@collabora.com>
+        <20200912070802.GA19621@lst.de>
+Date:   Sat, 12 Sep 2020 03:54:01 -0400
+In-Reply-To: <20200912070802.GA19621@lst.de> (Christoph Hellwig's message of
+        "Sat, 12 Sep 2020 09:08:02 +0200")
+Message-ID: <87zh5vmnvq.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20200911122458.413137406@linuxfoundation.org>
-In-Reply-To: <20200911122458.413137406@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 12 Sep 2020 13:22:14 +0530
-Message-ID: <CA+G9fYswUq1JbqQSjEvr2uXi1s8QJisJeyRFV+fZP+YqTuzP5w@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/12] 4.14.198-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 at 18:29, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Christoph Hellwig <hch@lst.de> writes:
+
+> On Sat, Sep 12, 2020 at 03:05:49AM -0400, Gabriel Krisman Bertazi wrote:
+>> When allocating user memory space for a compat system call, don't
+>> consider whether the originating code is IA32 or X32, just allocate from
+>> a safe region for both, beyond the redzone.  This should be safe for
+>> IA32, and has the benefit of avoiding TIF_IA32, which we want to drop.
 >
-> This is the start of the stable review cycle for the 4.14.198 release.
-> There are 12 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 13 Sep 2020 12:24:42 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.198-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+> This doesn't look wrong, by why bother (maybe Ccing me on the whole
+> seris as you always should instead of sending annoying out of context
+> single patches would have told..).
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Hi Chris,
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thanks for the quick reply. sorry and I will make sure to cc you for the
+rest of the series if this spin again.  The reason is the removal of
+TIF_IA32 to reclaim some bits in the ti flags.
 
-Summary
-------------------------------------------------------------------------
+If you want to see the rest of it immediately: <https://lkml.org/lkml/2020/9/12/28>
 
-kernel: 4.14.198-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 69fa365ca674b7df0b29cce9ffdfc43c0fa311dc
-git describe: v4.14.197-13-g69fa365ca674
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.197-13-g69fa365ca674
+> We will hopefully kill off compat_alloc_user_space in the next few
+> merge windows..
 
-No regressions (compared to build v4.14.197)
+I plan to kill TIF_IA32 hopefully in the next merge window, to
+facilitate other work I'm doing and I wouldn't like to wait for other
+stuff, since this is trivial enough.  Can I get your reviewed-by here?
 
-No fixes (compared to build v4.14.197)
+Thanks,
 
-
-Ran 19581 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* linux-log-parser
-* perf
-* network-basic-tests
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* ltp-open-posix-tests
-* ssuite
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Gabriel Krisman Bertazi
