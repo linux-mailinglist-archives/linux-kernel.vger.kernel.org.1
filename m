@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224102678AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B76A2678B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbgILHzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgILHzH (ORCPT
+        id S1725878AbgILHzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 03:55:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27984 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725817AbgILHzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:55:07 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15D9C0613ED
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:55:06 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bh1so1997100plb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SwmgBKMctXV6TtEg0fYkPqOSmPyVvQUoCAnAPe5+4Yw=;
-        b=bhWveefsCp+YI5xlakkMnFNndET2vW3kVhSGwfV/mCfiv4CDzaMV/OCiIzY0SHzzv6
-         b1dtKF6usuNxBxxNupsYEbODeK5eyIybIL46HK2kKImUz0TfGPmz6XFk/CQ+rl1AYdGg
-         2oYPI7IzyUunJ7NBRgfFqO9TKqfzQ+XD+O5ow=
+        Sat, 12 Sep 2020 03:55:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599897345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CMsih95ppexED5XQI9GoRgCwwBN6vlyz7YM0OAysBhw=;
+        b=N0IshfJtP0QuIJNQt79W9Dz8e3VJF/wSlsK7uRYex8RqsbHlwe/ZscGtuhhUOC33qh8v+C
+        G7R3WslOAlQ1LubZjL2YcGyyzN7T2DE3q+oISUE7WZlZShcUNatuqMokGdSzgFMXKOzv2d
+        72Hf6ZbVhlYakcCYpqkigqSWPd46Fcw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-yaMgLDbWMAWQctkZYHS9qg-1; Sat, 12 Sep 2020 03:55:42 -0400
+X-MC-Unique: yaMgLDbWMAWQctkZYHS9qg-1
+Received: by mail-wr1-f69.google.com with SMTP id a10so4084076wrw.22
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:55:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SwmgBKMctXV6TtEg0fYkPqOSmPyVvQUoCAnAPe5+4Yw=;
-        b=d7Du/RGvqqvsDAcVVC9lu6FKfqOt5OsuFLRTTydtPgl6ASz6yhbIibK6jAY2O5+NlK
-         85mr2Llkq0PnRQAepiwfaXrkYITYcsIZuSJ9RhCKZb7XoTyyWldXN7eF8952Xd9wjdON
-         ThGauP9GLkEGnxZEEo6UzVIYwTlVNMqdbG3Xq9cUQQbktUD3ViVezZB+GfUrkms0/cn3
-         6/03OXPWmAD4+F/NRdYK+V2cRJP2aDsdoCJ9dcd68PO5RTJKxg2aTisOb5/YqpqUK+qK
-         ywxShufnfukOylSeA51mqy1fQIR+Fb8NVnSbOhfUtHgtPqCr8shLXCL29w9uArAuy2Z5
-         RkBw==
-X-Gm-Message-State: AOAM532fu0b6hqp0+yeY7tEs7uvp3lWwlld/o5G5g5/wdleKFTq76K4Z
-        AaKhCZCZXGT8jMkuC4UloNK9Sg==
-X-Google-Smtp-Source: ABdhPJxqrfVafrPK3gxgwUxw9HHTOjH0Ec5Yun4GlH4SiLxpVSA605MrMv2cG84RTf0D+4l68327UA==
-X-Received: by 2002:a17:90b:3cb:: with SMTP id go11mr5054511pjb.152.1599897305693;
-        Sat, 12 Sep 2020 00:55:05 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a16sm3464188pgh.48.2020.09.12.00.55.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 00:55:04 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 00:55:03 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Jann Horn <jannh@google.com>, Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CMsih95ppexED5XQI9GoRgCwwBN6vlyz7YM0OAysBhw=;
+        b=aWC3WksIsoCkNUQqLITv+A+nb4el4Z/SzS8yylaR1yxCIBCcU3vu0FHKxTnXISaMgW
+         /4JYqDTb7fb4+FruFCCjzQfWub18ubmdC48qpObqGjFRsORggxzbSWI1K6fp91fNNkws
+         /fOpOyQ+C+m6X2AlG5e0YHilCVh2hCtqdkj4Vp5mSaPVZdx5kMFfp816V4xuLuoTzBSX
+         RaRPeFPk6PHyNsEUipleYv0wagQdiv18hvNWoFLWtesp5+za60SdATml9d52hJoveJT3
+         GerwwtIDkRPaD/yBhoL6IYQjH+vNG01lrINFmtVrmG5vyHzXgR8XX/E6XNfgaVGzWufH
+         yf2w==
+X-Gm-Message-State: AOAM531/DbIkq4vD3TtlvM3OvwEYXfLsIPrE+ql9g5/Hl4tlJkdAPxaL
+        GyJi4QpcQR+gJxIYv/+IyhtHDCpJZFZgy/YtbZ7nDAwwVLOGzY6A6VyzQcCClqelzEoXByObPHc
+        dfazjAJNSv4d1wIZTEsFNvzx0
+X-Received: by 2002:a5d:4d51:: with SMTP id a17mr5739911wru.248.1599897341636;
+        Sat, 12 Sep 2020 00:55:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyg6CN+GEydxbMQMopXakFuMzw3iVzO6YDM9LKHVc0oXuGeulvNCjUe0zMburgKy2PGf4Mkag==
+X-Received: by 2002:a5d:4d51:: with SMTP id a17mr5739895wru.248.1599897341427;
+        Sat, 12 Sep 2020 00:55:41 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id j14sm8882364wrr.66.2020.09.12.00.55.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 12 Sep 2020 00:55:40 -0700 (PDT)
+Subject: Re: [PATCH 1/3] SVM: nSVM: correctly restore GIF on vmexit from
+ nesting after migration
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
         Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation
- (fbfam)
-Message-ID: <202009120053.9FB7F2A7@keescook>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <202009101656.FB68C6A@keescook>
- <20200911144806.GA4128@ubuntu>
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200827162720.278690-1-mlevitsk@redhat.com>
+ <20200827162720.278690-2-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ad5cee03-7e2c-1e7a-a5c6-88fa5305224e@redhat.com>
+Date:   Sat, 12 Sep 2020 09:55:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911144806.GA4128@ubuntu>
+In-Reply-To: <20200827162720.278690-2-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 04:48:06PM +0200, John Wood wrote:
-> In other words, a late reply to this serie comments is not a lack of
-> interest. Moreover, I think it would be better that I try to understand and
-> to implement your ideas before anything else.
+On 27/08/20 18:27, Maxim Levitsky wrote:
+> However in nested_svm_vmexit we were first were setting GIF to false,
+> but then we overwrite this with value from the hsave area.
 
-Understood! :)
+Do you mean we are overwriting the resulting intercepts with values from
+the hsave area?  If so, I can rewrite the commit message but the patch
+is good!
 
-> My original patch serie is composed of 9 patches, so the 3 lasts are lost.
-> Kees: Have you removed them for some reason? Can you send them for review?
-> 
-> security/fbfam: Add two new prctls to enable and disable the fbfam feature
-> https://github.com/johwood/linux/commit/8a36399847213e7eb7b45b853568a53666bd0083
-> 
-> Documentation/security: Add documentation for the fbfam feature
-> https://github.com/johwood/linux/commit/fb46804541f5c0915f3f48acefbe6dc998815609
-> 
-> MAINTAINERS: Add a new entry for the fbfam feature
-> https://github.com/johwood/linux/commit/4303bc8935334136c6ef47b5e50b87cd2c472c1f
+Paolo
 
-Oh, hm, I'm not sure where they went. I think they were missing from my
-inbox when I saved your series from email. An oversight on my part;
-apologies!
-
-> Is there a problem if I ask for some guidance (replying to this thread)
-> during the process to do my second patch series?
-
-Please feel free! I'm happy to help. :)
-
-> My goal is to learn as much as possible doing something useful for the
-> linux kernel.
-
-Sounds good; thanks!
-
--- 
-Kees Cook
