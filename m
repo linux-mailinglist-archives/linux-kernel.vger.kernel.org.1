@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836FA267B56
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A1C267B59
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725846AbgILQMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 12:12:25 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:25721 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725385AbgILQMR (ORCPT
+        id S1725872AbgILQPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 12:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgILQPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 12:12:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599927135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=OnLO4ADFj7Z7o5P1yfw7tWD6Tiz1740E30zuroEwIIM=;
-        b=WPR2hSzbCn2pHF5qRtNI3munksa9bPEm7sGs6Pg8dtfRDC/QHENE4OFP1G6dun8KgWQmk0
-        iAYOmfsebiM3choAShrM5M0EZtr7PGMy20oulcDQ6kM52TD8UxMAe0iWHoHC0+jxFRIGcy
-        ssJaQeeeK0M8xjuYWgoEqQG75wFNJjA=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-UzMkexVYMNSz1hPoR-OsYw-1; Sat, 12 Sep 2020 12:12:13 -0400
-X-MC-Unique: UzMkexVYMNSz1hPoR-OsYw-1
-Received: by mail-qk1-f200.google.com with SMTP id w126so7860811qka.5
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:12:13 -0700 (PDT)
+        Sat, 12 Sep 2020 12:15:44 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A45C0613ED
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:15:43 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id q8so8995190lfb.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1mfFSLJ2aT99PDQEJLg63CY2EfFTeT2UQOOCsNtG5XQ=;
+        b=ik2OaDdzUHuVOMNMLsgvQOnL4fvUvEqien4NjpuI5VfIclMzHKWaow1odpvd5sDPJU
+         +LXHDLiPBxR8ThB4sl5aU07BCGyBsQ0CUT5VU6uQyRjR0z/eVMBKV/EafigpOJM2w6fx
+         tUF49I4gg9jJzUNcM/EjXzreHBPpIlb/n4r5NT5TvcdPcNldy6x3TCHdfhOof7EJKQ/u
+         kLZH5q/yNZIk9TzYMtUHe6cNExS56wCEroXgH0iLeRteyVneoKhJ3FbCUEVL5W4iG82t
+         Hyl6zxvpxVVMdWTF4rS9E+pNohfmkBfFjwohofeLq61gNe4dH/KzLBRCSgspSF7nutvm
+         ByUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=OnLO4ADFj7Z7o5P1yfw7tWD6Tiz1740E30zuroEwIIM=;
-        b=NSruh4Gh6dTWiKH4X7R/A7iq5nk5GY2DfaOKEwIsJ8cgORu7EapQwMV/kTaqeMJDS5
-         hneGdmK0MfsaPH/1t4VTTlNhSKe6Q2+g9D054c78emzUwlh3Co7EvB/EcGTyW/XoN1C7
-         vWQXcCRxVfPuTn86gXNwXFO1I5u3qWnh9Fk4YY9gFkLvlofPAcOkzlvJwVCHeZOunioI
-         bi7JpFufDzixbd9dqN1nbhfIHP0GqppBiSTwJXftMY2KzM4qhdbvex0iAZgxs8+sHZf3
-         IW59cPbjGoqEm8qp2STcK3XaEn2qUjv7qP3FkNgr7oMeZrQvK7bCbTRAyGvMi9tHZXYT
-         Bq3w==
-X-Gm-Message-State: AOAM530JuGCTN94wh73pHplsj36zohT2CywGzHUuuNdkwz7tkQTkSeKb
-        ZAmCxRDp0L8xhNFL/aFX9TMsQ+o5ZELQyIlMAwRuxqpJXNr1Vm0PzBfoYr6pG4YdU4ItrcZegdD
-        2aAltjL9+1Gd93OxapW9LotnD
-X-Received: by 2002:a37:a495:: with SMTP id n143mr6285701qke.394.1599927133295;
-        Sat, 12 Sep 2020 09:12:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyP+4lH+ouC+KfulEQPisuyxi+7vR480dD2LFSfHaIQiCkElD7umePVZ+w6VEUe/W6iJgbyBQ==
-X-Received: by 2002:a37:a495:: with SMTP id n143mr6285675qke.394.1599927133032;
-        Sat, 12 Sep 2020 09:12:13 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id m138sm7642421qke.99.2020.09.12.09.12.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 09:12:12 -0700 (PDT)
-From:   trix@redhat.com
-To:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] PCI: dwc: do not export a static symbol
-Date:   Sat, 12 Sep 2020 09:12:06 -0700
-Message-Id: <20200912161206.15848-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1mfFSLJ2aT99PDQEJLg63CY2EfFTeT2UQOOCsNtG5XQ=;
+        b=cI6ge6jC/zuokD/DQhssHowEIis2E6pZoGHdhI97+540dswEkS8fzl4txQUeXrCIi1
+         o4khoZxqCygs+9/s3RNuEmzjQr0BEhaDKQcQeRKV9g+4UMZNU+8nZAy2Pr/8q4+mNW92
+         oBouuOCGn2jytkG6wZJhR+MjtPHINrdE6cjKl8E1JQKXNS4oWnO+Ktsw325TLM5W1RWE
+         dotpMeUNdXVLyYfVZrN982P/K+m7ZBTJ98WfYdCsU6R2Wum2KTZk0XYPyDHOojbWvMlH
+         rAbkPbnZN0aWdB9jQcFFZ+SRtob/USAw4RgTLKVj0c64EheNh0jhjroIg9lVlNakzxDs
+         pkqA==
+X-Gm-Message-State: AOAM532cvPnLkt1Qz0b5+FnKCWr8A2WFb3ImuSp/fAFzMu6BaKvVpBL6
+        HhdT1uOsLk9Ly+W6NzHl/f4FibZWG8hRDd5KAY2wBw==
+X-Google-Smtp-Source: ABdhPJwzk5Ff3ZAWzHOFqk2anJO10WsYhRwbjNzmrZfdwXqXvmayMoWnkftiDhcCyLXCuPFXWkcBZk4GHcnDyvYoRF0=
+X-Received: by 2002:a05:6512:370b:: with SMTP id z11mr1756518lfr.571.1599927340316;
+ Sat, 12 Sep 2020 09:15:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200907211712.9697-1-chris.packham@alliedtelesis.co.nz> <20200907211712.9697-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20200907211712.9697-2-chris.packham@alliedtelesis.co.nz>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 18:15:29 +0200
+Message-ID: <CACRpkdZbo6zN+F0K6oHyWRTWN3raRGVNzps4VCB+QuSzsyq9Ow@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] pinctrl: mvebu: Fix i2c sda definition for 98DX3236
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kalyan Kinthada <kalyan.kinthada@alliedtelesis.co.nz>,
+        Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, Sep 7, 2020 at 11:17 PM Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
 
-Building produces this warning
-WARNING: modpost: "dw_pcie_link_set_max_speed"
-  [vmlinux] is a static EXPORT_SYMBOL_GPL
+> Per the datasheet the i2c functions use MPP_Sel=0x1. They are documented
+> as using MPP_Sel=0x4 as well but mixing 0x1 and 0x4 is clearly wrong. On
+> the board tested 0x4 resulted in a non-functioning i2c bus so stick with
+> 0x1 which works.
+>
+> Fixes: d7ae8f8dee7f ("pinctrl: mvebu: pinctrl driver for 98DX3236 SoC")
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-dw_pcie_link_set_max_speed() has a static storage-class
-specifier so it should not be exported.
+This patch 1/3 applied for pin control fixes.
 
-Fixes: 3af45d34d30c ("PCI: dwc: Centralize link gen setting")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/pci/controller/dwc/pcie-designware.c | 1 -
- 1 file changed, 1 deletion(-)
+Patches 2 & 3 should go via the SoC tree.
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-index 4d105efb5722..3c3a4d1dbc0b 100644
---- a/drivers/pci/controller/dwc/pcie-designware.c
-+++ b/drivers/pci/controller/dwc/pcie-designware.c
-@@ -508,7 +508,6 @@ static void dw_pcie_link_set_max_speed(struct dw_pcie *pci, u32 link_gen)
- 	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCAP, cap | link_speed);
- 
- }
--EXPORT_SYMBOL_GPL(dw_pcie_link_set_max_speed);
- 
- static u8 dw_pcie_iatu_unroll_enabled(struct dw_pcie *pci)
- {
--- 
-2.18.1
-
+Yours,
+Linus Walleij
