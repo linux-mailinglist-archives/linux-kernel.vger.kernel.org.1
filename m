@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472BC267737
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 04:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21B526773D
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 04:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgILCTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 22:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgILCTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 22:19:17 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F15C061573;
-        Fri, 11 Sep 2020 19:19:14 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g10so9953810otq.9;
-        Fri, 11 Sep 2020 19:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Jc/kYUiVYyrhvxpJ+DFw3vb2aJvbu3hBgwtEJnsB20E=;
-        b=uvTZS1Q24sUAwO97bnu5dgTkuw3yE1pTld2aCvT4A6WvKpMOsc3CizaOCI12akozr/
-         SRmTYPM3Cv3aonNARGvC9ACRRaYOXlGz3ShUfHMGjZSjicaCkdBK08GG6Io6EJY7GJVt
-         l+d4Jl7X3KswynacUDNNEOLUBwKYb+u5cSP9SPPH4zDv2yY0Q35qmgqae879CJAd7HSP
-         6u8Ln4XztW+HpjkPANUabgKPmIJTmXSRnP1iJ45dr1LImH2+sqqSrXhgf/E/hUGgfzA5
-         X7lJM0lRADCjp1f5N8qZJB1ru1RYWLgfYjF1Cj6rZgHNv6IWxVzRrsuajCCg+zFhZKw2
-         M1Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Jc/kYUiVYyrhvxpJ+DFw3vb2aJvbu3hBgwtEJnsB20E=;
-        b=KksQbbyUrlH1f1HBVVq5TY7uDGhCpASI39a4QtY1AaqWQfVWksTRSVNwOntD7kpz5a
-         aCEsgKAQ4xIgSu+HPY7nXr5CHYeCqtqdUnZliNPmfNKAuZ1BWQX+9OjYflB9aM7SxN2Z
-         R3z2o+8Zak4x2pODmR9JPh0cFukKBRD7zBW81zj9gCPqsHWafgpvKbZU4oPR32/SNabA
-         nur/bn58MC0OQ29gIeCu0hpamQV7o2rMQhD2kT0t1TxSyUdXRTsjEAVliJNqOtq+vysW
-         2/k3mOo4RUu6Dd/B4p6qCq12NYD+ejZe61bhwANVY5xVNrl1gF7RbWmCUIFh/Atdvwub
-         CHXw==
-X-Gm-Message-State: AOAM532sEhwf0fW1bHkDmq3v6i8SXR5St1Cao25MD/Vc/YZSI4AnnPr6
-        LwuSOJssqYa7jPsI/fwYccI=
-X-Google-Smtp-Source: ABdhPJyj11nlZ8D8jnF3gt+mWR2GdTkEA9WV/u/Q6L7QHVeQMHSzJoPcXRZMeip1jK43YUjLNFpPFg==
-X-Received: by 2002:a9d:6498:: with SMTP id g24mr3038740otl.179.1599877154171;
-        Fri, 11 Sep 2020 19:19:14 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r33sm675567ooi.48.2020.09.11.19.19.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 11 Sep 2020 19:19:13 -0700 (PDT)
-Date:   Fri, 11 Sep 2020 19:19:12 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 00/16] 5.8.9-rc1 review
-Message-ID: <20200912021912.GD50655@roeck-us.net>
-References: <20200911122459.585735377@linuxfoundation.org>
+        id S1725795AbgILCYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 22:24:16 -0400
+Received: from m12-14.163.com ([220.181.12.14]:33449 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbgILCYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 22:24:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=QMo56
+        RhklZ2LepW7CTmbVzItjGLs4oQqQgOIOoy4EJ0=; b=jl3DmpbkJvv1blArBxvUR
+        LxxlyFr2VK6eun+wAVTY9itRY7EWNDq0WLcGY9i9b5ltDexaxs80TArIg6GCpUNL
+        L0926CxhVA1RVQ2NGQBblWAnGIo1ztwHOpvsclrTnklDecmvH8fB3OP36cXTBRUm
+        R/eOBHzwty6GA1r7fMSYuI=
+Received: from [192.168.1.166] (unknown [58.33.126.61])
+        by smtp10 (Coremail) with SMTP id DsCowADHzVEsMVxf83FjKg--.8433S2;
+        Sat, 12 Sep 2020 10:23:41 +0800 (CST)
+Subject: Re: [PATCH v3 1/2] leds: is31fl319x: Add shutdown pin and generate a
+ 5ms low pulse when startup
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     jacek.anaszewski@gmail.com, dmurphy@ti.com, robh+dt@kernel.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200825082206.26575-1-von81@163.com>
+ <20200909091825.GA14289@amd>
+From:   Grant Feng <von81@163.com>
+Message-ID: <68948033-6d74-a10f-c81f-ee65a528032d@163.com>
+Date:   Sat, 12 Sep 2020 10:23:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911122459.585735377@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200909091825.GA14289@amd>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DsCowADHzVEsMVxf83FjKg--.8433S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUyPkuUUUUU
+X-Originating-IP: [58.33.126.61]
+X-CM-SenderInfo: xyrqmii6rwjhhfrp/1tbiNw2dOlWBh8RtKAAAsP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 02:47:17PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.9 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 13 Sep 2020 12:24:42 +0000.
-> Anything received after that time might be too late.
-> 
+Thanks for the info.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+Best regards,
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+                                                 Grant
 
-Guenter
+On 2020-09-09 17:18, Pavel Machek wrote:
+> On Tue 2020-08-25 16:22:05, Grant Feng wrote:
+>> generate a 5ms low pulse on shutdown pin when startup, then the chip
+>> becomes more stable in the complex EM environment.
+> Thanks, I applied the series.
+>
+> Best regards,
+> 								Pavel
+> 								
+
