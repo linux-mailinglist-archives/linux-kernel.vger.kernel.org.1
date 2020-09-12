@@ -2,126 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D70267A36
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 14:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69303267A39
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 14:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgILMNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 08:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
+        id S1725879AbgILMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 08:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725845AbgILMNq (ORCPT
+        with ESMTP id S1725845AbgILMOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 08:13:46 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13787C061573;
-        Sat, 12 Sep 2020 05:13:46 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id w7so9153201pfi.4;
-        Sat, 12 Sep 2020 05:13:45 -0700 (PDT)
+        Sat, 12 Sep 2020 08:14:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA55C061573;
+        Sat, 12 Sep 2020 05:14:00 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so16969932ejf.6;
+        Sat, 12 Sep 2020 05:14:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=6iamJ+CPgTGx0IN+LNnGj7Oz2Z9AmP/boJFOuQdvGTs=;
-        b=h4hVTG1Jc9FKA3P9PQh72bfuOtSJ5tMVuVEBO+E/Ng83VD9L8i4VQSpCB4NOGFiDnY
-         bsAFxqvlhPUpEszLUGtkUtIsN4Z/Xo+AM13oCu1UAqcaFcSZeMapCDvO3+kr64+nHUCW
-         8DoXDuyY4+NR2y4gQOWOxAstAmRVJoY9Yc35jwZmyaT4eJUt8pHsnqoooVqNneHv5/Ci
-         2iarWAZtvlXzDSENIgYpVxlXU/b3nAlmMB56ZwFytEtTXDzLLM/KoakWE4usY5sNxcH8
-         4vDg3zBEbNze/Rhj+xrmbO27ppt9RKYQTj625n8HzBdDBCv+qFrllG0L2L4fbVvgzwrk
-         mxCA==
+        h=from:to:cc:subject:date:message-id;
+        bh=gEpdRqAvRKHN0Q4Rm3fCmgidSOyPeuBoBtSoBHiF1iM=;
+        b=TKCneEZYS78YeCzkuObuNRlmqDwnQ5CAdjUjwQPmNPFFqN4sw1USBAFbuh4yfzTAXI
+         d89QuRbQfprknG7kM693aUeZgoiVLBvGWLfDdPF+Jsg6qwR/qd7ry1Nh1unyvpBBslFv
+         JLp+V4AvrsYElb4iLFN0Et6lsoTOXOqY9SenmNn8Lg4zipZ23EjTClY1EevDaQwK5QDq
+         WRV0OUCKca9r7m03MNC2wPYhEv2q9JbZZFUk8laj5MBrimncEdqibw4OKTWc4e7gU273
+         8ntc/UJD3QfzODiPkOtNwMkWyw2mDaDTviYsMrXu1KNwhdgLMQc15C6CIAB+IZch9tCm
+         NTww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=6iamJ+CPgTGx0IN+LNnGj7Oz2Z9AmP/boJFOuQdvGTs=;
-        b=CNK3bYSEduTKRo+oiB+9phNX9kx101FpilroHbioMDRA2QFO2xXP46H3dCUqsdwq5v
-         ABEQrR61yvu2ANIZV6r8GGRTjQhJn+QrBAZ+ZjET6CA9ayt0ptAY1IyMMwhA5Uqfixeh
-         GoRYLa2fXM6gYgIUuRulkXwNrGmsQVypNlNdgq22o22VebtkIWinkdzDYtAzlsvDeiVC
-         OYciMvKbUZycPEofL07lqeyvFI+fcZkdjOZbaeDsbDTA7cJvn7+IYDS0acHrIIlPzddi
-         jqDETWurSM5MOYANMEgUawZcrweN5ZcjzA03thV2fD66V4m/Tg2q/Ro0GMtRqI7GvEj1
-         zgXg==
-X-Gm-Message-State: AOAM532OlsmBVm+9QTtsTQJjpyE29am8ncYeHwL1raqmWDfCf9f4PAci
-        G2fsRYVY6NzCiUGaaGiPUfSwu3eRBQq0hJZgyhM=
-X-Google-Smtp-Source: ABdhPJymUo09GQ6iiOIob0IVg8nEmABEr8waE5YJ5uissFILanil7KQJ/bM/eReDSiy1OldlpfW6LA==
-X-Received: by 2002:a63:5703:: with SMTP id l3mr4738826pgb.329.1599912824758;
-        Sat, 12 Sep 2020 05:13:44 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.202.95])
-        by smtp.gmail.com with ESMTPSA id 203sm5043839pfz.131.2020.09.12.05.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Sep 2020 05:13:44 -0700 (PDT)
-Subject: Re: [PATCH] Using a pointer and kzalloc in place of a struct directly
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-References: <000000000000c82fe505aef233c6@google.com>
- <20200912113804.6465-1-anant.thazhemadam@gmail.com>
- <20200912114706.GA171774@kroah.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <09477eb1-bbeb-74e8-eba9-d72cce6104db@gmail.com>
-Date:   Sat, 12 Sep 2020 17:43:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200912114706.GA171774@kroah.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gEpdRqAvRKHN0Q4Rm3fCmgidSOyPeuBoBtSoBHiF1iM=;
+        b=Jim0HxzSyNUlrKzvaoQwIxtEnBqekwShysI10O9SltuKJbVlHEPOYz8cQWK+LBN6FN
+         OsB9uPeaU2Y4Vv9u0ZDVFPiV3aZtKL5zXg6q2sT7dZBt3v6QHVzE5e2ThX4Ifezw8H49
+         KSLZHEChUkJoWiS37vGEkNp+xc+jDmFBJFb0xRlrw/4I7KbLcqg+XqMtuVzJIyJF9v7q
+         a2F+1D+Z+T4gZGOeyy9Z1tDXlXUzBMGsS2sI0n5GPDMxScweE31IuNs6bI0YVq+2Osyq
+         yHWKulDYgLa0mpygOateRgIM2Mq9rCzwlfhu51e17fxsTi3wbA7cFsCTjJllIhRcbNQ2
+         4ruA==
+X-Gm-Message-State: AOAM530M0QkCDNgAApAK5WE5ZOO/fASMJnHsJm6m9oXEZPbi1m4YkHZT
+        DuWstOk4jpRhEq5jzCsSWno=
+X-Google-Smtp-Source: ABdhPJz0i2HLJ4Q4WLY7Fe3aVzacLAzPDRqohJ5LhoMI3ZKwHaH9Q6bmI2jsZKWienwLlFq266hoeA==
+X-Received: by 2002:a17:906:e0c7:: with SMTP id gl7mr5771634ejb.109.1599912839273;
+        Sat, 12 Sep 2020 05:13:59 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2dd9:a000:782a:45ff:c1e1:cfe9])
+        by smtp.gmail.com with ESMTPSA id t14sm4606365edc.7.2020.09.12.05.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 05:13:58 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: make linux-usb list remarks consistent
+Date:   Sat, 12 Sep 2020 14:13:46 +0200
+Message-Id: <20200912121346.2796-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit f24f27b85ead ("MAINTAINERS: add entry for mediatek usb3 DRD IP
+driver") claims linux-usb@vger.kernel.org is moderated for
+non-subscribers, but all other 46 entries for linux-usb@vger.kernel.org
+do not mention that.
 
-On 12/09/20 5:17 pm, Greg KH wrote:
-> Note, your "To:" line seemed corrupted, and why not cc: the bpf mailing
-> list as well?
-Oh, I'm sorry about that. I pulled the emails of all the people to whom
-this mail was sent off from the header in lkml mail, and just cc-ed
-everyone.
+Adjust this entry to be consistent with all others.
 
-> You leaked memory :(
->
-> Did you test this patch?  Where do you free this memory, I don't see
-> that happening anywhere in this patch, did I miss it?
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on current master and next-20200911
 
-Yes, I did test this patch, which didn't seem to trigger any issues.
-It surprised me so much, that I ended up sending it in, to have
-it checked out.
+Greg, please pick this minor non-urgent clean-up patch for your -next tree.
 
-I wasn't sure where exactly the memory allocated here was
-supposed to be freed (might be why the current implementation
-isn't exactly using kzalloc). I forgot to mention it in the initial mail,
-and I was hoping that someone would point me in the right direction
-(if this approach was actually going to be considered, that is, which in
-retrospect I now feel might not be the best thing)
+This patch submission will also show me if linux-usb is moderated or not.
+I have not subscribed to linux-usb and if it shows up quickly in the
+archive, the list is probably not moderated, and hence, validating the
+patch.
 
-> And odds are this change will slow things down, right?  Why make this
-> change, what's wrong with the structure being on the stack?
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-For more clarity, I'm not exactly pushing for this patch to get accepted,
-as much as I'm trying to understand what exactly is going on, and maybe
-even understand syzbot's working a little better in the process.
-
-At the time when I did send in this patch, the error seemed to be
-present as far as syzbot was concerned. (I had sent in a test request not
-too long before I sent this in, which returned a positive).
-I just wanted to know, in the off-chance that the commit fix that was
-pointed out wasn't merged in the tree yet when syzbot tested it, why
-exactly would a patch like this lead to no issues getting triggered?
-(I understand that if the fix was in the tree when syzbot ran the next test,
-this patch immediately is rendered obsolete, ofcourse)
-
-It felt somewhat a bit like an anomaly to me, and I figured it might be
-worth investigating, is all; and I'd either infer something about syzbot,
-or about whatever just happened there.
-
-Now that I say it out loud, I realize it might sound a little silly, but
-then again, I had tested the 'validity' of the bug, not too long before I
-sent in the patch for syzbot to test too, and it seemed to be present when I did.
-
-Thanks,
-Anant
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 26af84f97353..4396a8986518 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11112,7 +11112,7 @@ F:	net/dsa/tag_mtk.c
+ 
+ MEDIATEK USB3 DRD IP DRIVER
+ M:	Chunfeng Yun <chunfeng.yun@mediatek.com>
+-L:	linux-usb@vger.kernel.org (moderated for non-subscribers)
++L:	linux-usb@vger.kernel.org
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
+-- 
+2.17.1
 
