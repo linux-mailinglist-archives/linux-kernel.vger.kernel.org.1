@@ -2,69 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4CA267AC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D24E267AC5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725871AbgILOLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 10:11:35 -0400
-Received: from crapouillou.net ([89.234.176.41]:34372 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgILOL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 10:11:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599919885; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HQijmfnvg3UR0Um86vQ7Wg9AGguLzSf/LgNFa86K0NI=;
-        b=vcRL1wOSXm2t51tFJKBFmd88KxTrt9HW5cZ322xf8NX2fNlaKhEgKAd0RPf7n1OnlMUOYP
-        tDraUvjJeLZtOAtEZKflsRKzYOw5WzlT8KrOC0Q71JRhA0oO7hc4+8w0PkV2x1mSIFm+gp
-        +1A7jOj+k37hidqO3rb3R6Si3lMXagg=
-Date:   Sat, 12 Sep 2020 16:11:15 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 0/3] pinctrl: Ingenic: Add support for SSI and I2S
- pins.
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        linux-kernel@vger.kernel.org
-Message-Id: <R2UJGQ.OBF3BSB45X872@crapouillou.net>
-In-Reply-To: <CACRpkdYGg_w2wzw7T0PHjEomkqFn8Jw4bTzfovi5qT0qdScMvw@mail.gmail.com>
-References: <20200912060425.30423-1-zhouyanjie@wanyeetech.com>
-        <CACRpkdYGg_w2wzw7T0PHjEomkqFn8Jw4bTzfovi5qT0qdScMvw@mail.gmail.com>
+        id S1725887AbgILOMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 10:12:50 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:16754 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgILOMk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 10:12:40 -0400
+Received: from localhost.localdomain ([93.22.150.101])
+        by mwinf5d61 with ME
+        id T2Cb230012BWSNM032Cbu9; Sat, 12 Sep 2020 16:12:37 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 12 Sep 2020 16:12:37 +0200
+X-ME-IP: 93.22.150.101
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, andy@greyhouse.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net: tehuti: switch from 'pci_' to 'dma_' API
+Date:   Sat, 12 Sep 2020 16:12:32 +0200
+Message-Id: <20200912141232.343630-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Le sam. 12 sept. 2020 =C3=A0 12:31, Linus Walleij=20
-<linus.walleij@linaro.org> a =C3=A9crit :
-> On Sat, Sep 12, 2020 at 8:05 AM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
-> <zhouyanjie@wanyeetech.com> wrote:
->=20
->>  1.Add SSI pins support for JZ4770 and JZ4780.
->>  2.Correct the pullup and pulldown parameters of JZ4780.
->>  3.Add I2S pins support for JZ4780, X1000, X1500, and X1830.
->>=20
->>  v2->v3:
->>  1.Add Paul Cercueil's Reviewed-by.
->>  2.Fix bug about PE15's pull-up parameter.
->=20
-> This looks good to me, I'm just waiting for Paul to look at patches=20
-> 2&3
-> before applying.
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-for the patchset.
+When memory is allocated in 'bdx_fifo_init()' GFP_ATOMIC must be used
+because it can be called from a '.ndo_set_rx_mode' function. Such functions
+hold the 'netif_addr_lock' spinlock.
 
-Cheers,
--Paul
+  .ndo_set_rx_mode              (see struct net_device_ops)
+    --> bdx_change_mtu
+      --> bdx_open
+        --> bdx_rx_init
+        --> bdx_tx_init
+          --> bdx_fifo_init
 
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/tehuti/tehuti.c | 53 +++++++++++++---------------
+ 1 file changed, 25 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+index e28727297563..a142e4c9fc03 100644
+--- a/drivers/net/ethernet/tehuti/tehuti.c
++++ b/drivers/net/ethernet/tehuti/tehuti.c
+@@ -153,11 +153,11 @@ bdx_fifo_init(struct bdx_priv *priv, struct fifo *f, int fsz_type,
+ 	u16 memsz = FIFO_SIZE * (1 << fsz_type);
+ 
+ 	memset(f, 0, sizeof(struct fifo));
+-	/* pci_alloc_consistent gives us 4k-aligned memory */
+-	f->va = pci_alloc_consistent(priv->pdev,
+-				     memsz + FIFO_EXTRA_SPACE, &f->da);
++	/* dma_alloc_coherent gives us 4k-aligned memory */
++	f->va = dma_alloc_coherent(&priv->pdev->dev, memsz + FIFO_EXTRA_SPACE,
++				   &f->da, GFP_ATOMIC);
+ 	if (!f->va) {
+-		pr_err("pci_alloc_consistent failed\n");
++		pr_err("dma_alloc_coherent failed\n");
+ 		RET(-ENOMEM);
+ 	}
+ 	f->reg_CFG0 = reg_CFG0;
+@@ -183,8 +183,8 @@ static void bdx_fifo_free(struct bdx_priv *priv, struct fifo *f)
+ {
+ 	ENTER;
+ 	if (f->va) {
+-		pci_free_consistent(priv->pdev,
+-				    f->memsz + FIFO_EXTRA_SPACE, f->va, f->da);
++		dma_free_coherent(&priv->pdev->dev,
++				  f->memsz + FIFO_EXTRA_SPACE, f->va, f->da);
+ 		f->va = NULL;
+ 	}
+ 	RET();
+@@ -1033,9 +1033,8 @@ static void bdx_rx_free_skbs(struct bdx_priv *priv, struct rxf_fifo *f)
+ 	for (i = 0; i < db->nelem; i++) {
+ 		dm = bdx_rxdb_addr_elem(db, i);
+ 		if (dm->dma) {
+-			pci_unmap_single(priv->pdev,
+-					 dm->dma, f->m.pktsz,
+-					 PCI_DMA_FROMDEVICE);
++			dma_unmap_single(&priv->pdev->dev, dm->dma,
++					 f->m.pktsz, DMA_FROM_DEVICE);
+ 			dev_kfree_skb(dm->skb);
+ 		}
+ 	}
+@@ -1097,9 +1096,8 @@ static void bdx_rx_alloc_skbs(struct bdx_priv *priv, struct rxf_fifo *f)
+ 
+ 		idx = bdx_rxdb_alloc_elem(db);
+ 		dm = bdx_rxdb_addr_elem(db, idx);
+-		dm->dma = pci_map_single(priv->pdev,
+-					 skb->data, f->m.pktsz,
+-					 PCI_DMA_FROMDEVICE);
++		dm->dma = dma_map_single(&priv->pdev->dev, skb->data,
++					 f->m.pktsz, DMA_FROM_DEVICE);
+ 		dm->skb = skb;
+ 		rxfd = (struct rxf_desc *)(f->m.va + f->m.wptr);
+ 		rxfd->info = CPU_CHIP_SWAP32(0x10003);	/* INFO=1 BC=3 */
+@@ -1259,16 +1257,15 @@ static int bdx_rx_receive(struct bdx_priv *priv, struct rxd_fifo *f, int budget)
+ 		    (skb2 = netdev_alloc_skb(priv->ndev, len + NET_IP_ALIGN))) {
+ 			skb_reserve(skb2, NET_IP_ALIGN);
+ 			/*skb_put(skb2, len); */
+-			pci_dma_sync_single_for_cpu(priv->pdev,
+-						    dm->dma, rxf_fifo->m.pktsz,
+-						    PCI_DMA_FROMDEVICE);
++			dma_sync_single_for_cpu(&priv->pdev->dev, dm->dma,
++						rxf_fifo->m.pktsz,
++						DMA_FROM_DEVICE);
+ 			memcpy(skb2->data, skb->data, len);
+ 			bdx_recycle_skb(priv, rxdd);
+ 			skb = skb2;
+ 		} else {
+-			pci_unmap_single(priv->pdev,
+-					 dm->dma, rxf_fifo->m.pktsz,
+-					 PCI_DMA_FROMDEVICE);
++			dma_unmap_single(&priv->pdev->dev, dm->dma,
++					 rxf_fifo->m.pktsz, DMA_FROM_DEVICE);
+ 			bdx_rxdb_free_elem(db, rxdd->va_lo);
+ 		}
+ 
+@@ -1478,8 +1475,8 @@ bdx_tx_map_skb(struct bdx_priv *priv, struct sk_buff *skb,
+ 	int i;
+ 
+ 	db->wptr->len = skb_headlen(skb);
+-	db->wptr->addr.dma = pci_map_single(priv->pdev, skb->data,
+-					    db->wptr->len, PCI_DMA_TODEVICE);
++	db->wptr->addr.dma = dma_map_single(&priv->pdev->dev, skb->data,
++					    db->wptr->len, DMA_TO_DEVICE);
+ 	pbl->len = CPU_CHIP_SWAP32(db->wptr->len);
+ 	pbl->pa_lo = CPU_CHIP_SWAP32(L32_64(db->wptr->addr.dma));
+ 	pbl->pa_hi = CPU_CHIP_SWAP32(H32_64(db->wptr->addr.dma));
+@@ -1716,8 +1713,8 @@ static void bdx_tx_cleanup(struct bdx_priv *priv)
+ 		BDX_ASSERT(db->rptr->len == 0);
+ 		do {
+ 			BDX_ASSERT(db->rptr->addr.dma == 0);
+-			pci_unmap_page(priv->pdev, db->rptr->addr.dma,
+-				       db->rptr->len, PCI_DMA_TODEVICE);
++			dma_unmap_page(&priv->pdev->dev, db->rptr->addr.dma,
++				       db->rptr->len, DMA_TO_DEVICE);
+ 			bdx_tx_db_inc_rptr(db);
+ 		} while (db->rptr->len > 0);
+ 		tx_level -= db->rptr->len;	/* '-' koz len is negative */
+@@ -1765,8 +1762,8 @@ static void bdx_tx_free_skbs(struct bdx_priv *priv)
+ 	ENTER;
+ 	while (db->rptr != db->wptr) {
+ 		if (likely(db->rptr->len))
+-			pci_unmap_page(priv->pdev, db->rptr->addr.dma,
+-				       db->rptr->len, PCI_DMA_TODEVICE);
++			dma_unmap_page(&priv->pdev->dev, db->rptr->addr.dma,
++				       db->rptr->len, DMA_TO_DEVICE);
+ 		else
+ 			dev_kfree_skb(db->rptr->addr.skb);
+ 		bdx_tx_db_inc_rptr(db);
+@@ -1902,12 +1899,12 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (err)			/* it triggers interrupt, dunno why. */
+ 		goto err_pci;		/* it's not a problem though */
+ 
+-	if (!(err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64))) &&
+-	    !(err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)))) {
++	if (!(err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64))) &&
++	    !(err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(64)))) {
+ 		pci_using_dac = 1;
+ 	} else {
+-		if ((err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) ||
+-		    (err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32)))) {
++		if ((err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) ||
++		    (err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32)))) {
+ 			pr_err("No usable DMA configuration, aborting\n");
+ 			goto err_dma;
+ 		}
+-- 
+2.25.1
 
