@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366D9267840
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADEA267846
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725813AbgILGfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 02:35:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22178 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgILGe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 02:34:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599892497; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=TZbeRycGRlE5zMmEDJ3WaYnEdaM+rXIMHX3RcmeDB2w=;
- b=eStWslLvbM6tI+/rBxUeifkKt+8vUp8wMiboWKvPGjlpRA4ZMosNGvx6Ash4iHiJLJFgGw6d
- FvIURuULAbdGH21PqU32jmXNCBBw34jT4helVD+teh3p3vAfTWqXC12lZpP6iJ0ea6fA84mP
- PXDeG8fXn5vMEzFbXYEPhbLSRpk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f5c6c10238e1efa37b2c9c4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Sep 2020 06:34:56
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3FA3C433CA; Sat, 12 Sep 2020 06:34:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0377C433CA;
-        Sat, 12 Sep 2020 06:34:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D0377C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1725839AbgILGq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 02:46:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725813AbgILGqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 02:46:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599893181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TFfBOM91iLP1SjI0vZrul8BPW6RVcNXYqE3XcKBqSQA=;
+        b=Tjc/rZwr/ezAPC0jdyBKJuUf+xTkNr2nxlYRlXNvleEHmbTBwkiOFY5HZXEhDn/l7QKLBa
+        QC6pTT375ija8EKcPkFjyNx7j81qEKnDZlAl7JV3nhQDwjNM18tcVnFdlvtJL5bsclzoCs
+        d8/8C5jBve8MCU9raYEulkVFJompxEA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-TKZAky5VNUO6HNYIrfdpmQ-1; Sat, 12 Sep 2020 02:46:19 -0400
+X-MC-Unique: TKZAky5VNUO6HNYIrfdpmQ-1
+Received: by mail-wm1-f72.google.com with SMTP id l26so2311639wmg.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 23:46:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TFfBOM91iLP1SjI0vZrul8BPW6RVcNXYqE3XcKBqSQA=;
+        b=IGi7I93n65zFviSdCdRmB7O9cmU1FEAN1F9rK6XlSiLQlxWVw62DICO7MEgLUWsejI
+         ON6UXU6o9dgIYAp/mU3V6idXRMAoLB7dH4TDOTs1IeDlM5Se1FSOB/aS8GCwhnkc5gn1
+         YkYtgj4QUNzCjfkXMZSG2Tz5a4JE8bMKse6pgibHrgBpux2rRvSX7B1jZWXx7QCGIhqh
+         A8hR5yHYEJR/qkVU9LeYTYPFYP91A0LnTrIVfHRNv325Q3cp2z8/qq7hlo/2hK8+9PE7
+         BGcyU07qATiHgx2J92WD1JyToMKuin+Qin8+GJVleg0pNBBZMFwotemnNxz4/ExAXFGl
+         foVA==
+X-Gm-Message-State: AOAM531TzmiNIsme0GVWikMb/iHaIrf0SdGWxcPQJ7k6YrEBdtapAYNI
+        3d4uC0RuIUk7HNED0jw3kLZTpk7eb0H5s6Q8AKlSzSG5VWjk63NPSD2xVr4SFhvXZvkaQ5XK717
+        ahYhiCT3JXnJAkmkzrPv9IZll
+X-Received: by 2002:adf:84c3:: with SMTP id 61mr5375726wrg.131.1599893178160;
+        Fri, 11 Sep 2020 23:46:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJytNHdaGj7CH2JrSIfFxD6Mr0PL45XbVa+e8uovi64GV/yFY9bz3q4vtw91Ojua76ATT2UcUw==
+X-Received: by 2002:adf:84c3:: with SMTP id 61mr5375704wrg.131.1599893177896;
+        Fri, 11 Sep 2020 23:46:17 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id p16sm8681576wro.71.2020.09.11.23.46.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 23:46:17 -0700 (PDT)
+Subject: Re: [PATCH v2 5/9] KVM: LAPIC: Narrow down the kick target vCPU
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1599731444-3525-1-git-send-email-wanpengli@tencent.com>
+ <1599731444-3525-6-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <9281f28a-e2bd-a79c-fc94-4999f4c6307a@redhat.com>
+Date:   Sat, 12 Sep 2020 08:46:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <1599731444-3525-6-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 06/29] wil6210: Fix a couple of formatting issues in
- 'wil6210_debugfs_init'
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200910065431.657636-7-lee.jones@linaro.org>
-References: <20200910065431.657636-7-lee.jones@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, wil6210@qti.qualcomm.com,
-        Maya Erez <merez@codeaurora.org>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200912063455.C3FA3C433CA@smtp.codeaurora.org>
-Date:   Sat, 12 Sep 2020 06:34:55 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> wrote:
-
-> Kerneldoc expects attributes/parameters to be in '@*.: ' format and
-> gets confused if the variable does not follow the type/attribute
-> definitions.
+On 10/09/20 11:50, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> Fixes the following W=1 kernel build warning(s):
+> The kick after setting KVM_REQ_PENDING_TIMER is used to handle the timer
+> fires on a different pCPU which vCPU is running on, this kick is expensive
+> since memory barrier, rcu, preemption disable/enable operations. We don't
+> need this kick when injecting already-expired timer, we also should call
+> out the VMX preemption timer case, which also passes from_timer_fn=false
+> but doesn't need a kick because kvm_lapic_expired_hv_timer() is called
+> from the target vCPU.
 > 
->  drivers/net/wireless/ath/wil6210/debugfs.c:456: warning: Function parameter or member 'wil' not described in 'wil6210_debugfs_init_offset'
->  drivers/net/wireless/ath/wil6210/debugfs.c:456: warning: Function parameter or member 'dbg' not described in 'wil6210_debugfs_init_offset'
->  drivers/net/wireless/ath/wil6210/debugfs.c:456: warning: Function parameter or member 'base' not described in 'wil6210_debugfs_init_offset'
->  drivers/net/wireless/ath/wil6210/debugfs.c:456: warning: Function parameter or member 'tbl' not described in 'wil6210_debugfs_init_offset'
+> Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+>  arch/x86/kvm/lapic.c | 4 +++-
+>  arch/x86/kvm/x86.c   | 6 ------
+>  arch/x86/kvm/x86.h   | 1 -
+>  3 files changed, 3 insertions(+), 8 deletions(-)
 > 
-> Cc: Kalle Valo <kvalo@codeaurora.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: wil6210@qti.qualcomm.com
-> Cc: netdev@vger.kernel.org
-> Reviewed-by: Maya Erez <merez@codeaurora.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index e446bdf..3b32d3b 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -1642,7 +1642,9 @@ static void apic_timer_expired(struct kvm_lapic *apic, bool from_timer_fn)
+>  	}
+>  
+>  	atomic_inc(&apic->lapic_timer.pending);
+> -	kvm_set_pending_timer(vcpu);
+> +	kvm_make_request(KVM_REQ_PENDING_TIMER, vcpu);
+> +	if (from_timer_fn)
+> +		kvm_vcpu_kick(vcpu);
+>  }
 
-Aren't these also applied already? Please don't resend already applied
-patches.
+This only matters for !APICv, but it's nice anyway.
 
-8 patches set to Rejected.
+Paolo
 
-11766845 [06/29] wil6210: Fix a couple of formatting issues in 'wil6210_debugfs_init'
-11766747 [16/29] wil6210: wmi: Fix formatting and demote non-conforming function headers
-11766827 [17/29] wil6210: interrupt: Demote comment header which is clearly not kernel-doc
-11766825 [18/29] wil6210: txrx: Demote obvious abuse of kernel-doc
-11766823 [19/29] wil6210: txrx_edma: Demote comments which are clearly not kernel-doc
-11766821 [20/29] wil6210: pmc: Demote a few nonconformant kernel-doc function headers
-11766819 [21/29] wil6210: wil_platform: Demote kernel-doc header to standard comment block
-11766817 [22/29] wil6210: wmi: Correct misnamed function parameter 'ptr_'
-
--- 
-https://patchwork.kernel.org/patch/11766845/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>  static void start_sw_tscdeadline(struct kvm_lapic *apic)
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index d39d6cf..dcf4494 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1774,12 +1774,6 @@ static s64 get_kvmclock_base_ns(void)
+>  }
+>  #endif
+>  
+> -void kvm_set_pending_timer(struct kvm_vcpu *vcpu)
+> -{
+> -	kvm_make_request(KVM_REQ_PENDING_TIMER, vcpu);
+> -	kvm_vcpu_kick(vcpu);
+> -}
+> -
+>  static void kvm_write_wall_clock(struct kvm *kvm, gpa_t wall_clock)
+>  {
+>  	int version;
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 995ab69..ea20b8b 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -246,7 +246,6 @@ static inline bool kvm_vcpu_latch_init(struct kvm_vcpu *vcpu)
+>  	return is_smm(vcpu) || kvm_x86_ops.apic_init_signal_blocked(vcpu);
+>  }
+>  
+> -void kvm_set_pending_timer(struct kvm_vcpu *vcpu);
+>  void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip);
+>  
+>  void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr);
+> 
 
