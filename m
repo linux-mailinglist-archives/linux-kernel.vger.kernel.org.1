@@ -2,172 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF9F267853
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0BD267855
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbgILGrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 02:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgILGrQ (ORCPT
+        id S1725893AbgILGsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 02:48:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47386 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725846AbgILGrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 02:47:16 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53912C061573;
-        Fri, 11 Sep 2020 23:47:16 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j2so13453663wrx.7;
-        Fri, 11 Sep 2020 23:47:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7nD/VaObHAeyrLefzOwE6wmeihoCl1D26CpOc/uRRug=;
-        b=TEkKIx09OQ+Lmc5ndk/XboKZOxYsNbDLhNYTrRz/4n5fa7+ZexhYo1ud2EjS2Km7+W
-         nZV7N76qIWGjAb8pz0L/lH0UpCdoaC4VFGa2WSW0hq4raGLG4tf/m1Fp/ksYqyYHL4X+
-         zCfSjCWBPRHnzGuIi5MnHDeaDKO+kHqoRcY0OHClicpOt85dQJd+4XkiyTOTZVVYM8iS
-         hC098KO5I8FI3OMWgZ+7i88/Rm8+0fKqAAXdH1BkH6LP/Em4qWET6WZyVWk7i+5WWSAB
-         oXzYQIy29GejLYLx7l9791DxUlAnPV1y2aaHqqQTX5dLiSSKta3E4AEYJLu2PS78XZ+1
-         GY/g==
+        Sat, 12 Sep 2020 02:47:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599893270;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k4tzdMPT4Ag7XjRut0d5gVcFKeBdX0XWZ6t+mUPAXZM=;
+        b=bMg0zYaboiPfGwEkqqZnH2fY2xAk1HyRTPm5Rj4b1IrpcVvcfXFgQcyTknoP6vuISf+Qaq
+        np/WkAPZJ0xZSaAorNANwT8JaUtu6B4Kb/iVMfpMPxigHHx8MkcdgBBNcmWpUCcqSOWqb3
+        x0YRKmTA5bxbBnQ5z9xwYFo3F64zH68=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-8UuqwGrNOySss9uHS7XQaQ-1; Sat, 12 Sep 2020 02:47:48 -0400
+X-MC-Unique: 8UuqwGrNOySss9uHS7XQaQ-1
+Received: by mail-wm1-f71.google.com with SMTP id c200so453436wmd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 23:47:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7nD/VaObHAeyrLefzOwE6wmeihoCl1D26CpOc/uRRug=;
-        b=t1s8D6OjY35nFa78pgXkL6iX9Wn9AYh70F9liGU2Hc7BbecftjkosXkNAH7Bq5Cgl+
-         g0x5gJmEyE94xBp+qMLDgtjPs+p6zbY+/hQgHyw9AGPnIuN1Ykt7sGPZyqMSf2EkVN2c
-         OSqD0GSuDIcu2+fBOYJIP+3GJFGnjpd5826g7dTXJeHqdMSt+zL0qdoxFcAgc98BEoHD
-         kfbd1EGxDjdtPIiTRtG9HLZcJuCY0zrpVB4226la6FaqkIBKY8SevaExPehrHp/jF5Qn
-         ukUfwpjrUovXfgXwGyu3JlKllEzOjR0HI1Rhe4914GPrkUh0UQnHUu6SgT/RBp8RwY3D
-         f6uQ==
-X-Gm-Message-State: AOAM533+tOGu5pda6Y8is+hiGW2/qXIrpdu1eVTlA9alq8eXHihwmLKx
-        5HNgEgLl46vTWn3kRuqD/WhnLJ8bFLPepQ==
-X-Google-Smtp-Source: ABdhPJzJis/Ysz+nIhjBe42SqyNBJykcYw/moA9a/RZRxrMEkUjq5Z81S5ref+Xgiz0jQBFu1n7Jwg==
-X-Received: by 2002:a5d:5404:: with SMTP id g4mr5314662wrv.134.1599893235056;
-        Fri, 11 Sep 2020 23:47:15 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id y1sm8426815wmi.36.2020.09.11.23.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 23:47:14 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 08:47:13 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Bob Peterson <rpeterso@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Daniel Craig <Daniel.Craig@csiro.au>,
-        Nicolas Courtel <courtel@cena.fr>
-Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction ail
- lists
-Message-ID: <20200912064713.GA291675@eldamar.local>
-References: <20200623195316.864547658@linuxfoundation.org>
- <20200623195323.968867013@linuxfoundation.org>
- <20200910194319.GA131386@eldamar.local>
- <20200911115816.GB3717176@kroah.com>
- <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com>
- <20200911122024.GA3758477@kroah.com>
- <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k4tzdMPT4Ag7XjRut0d5gVcFKeBdX0XWZ6t+mUPAXZM=;
+        b=skEis+28E6cdd75YO2SpqGWrmQl5hOKd4UNH3a7NeT7yawE0uy7QGc6btxKNpISa8O
+         tiaIcO4lC4GGhryeMgjjnJysO8p7r2WRtaPrB9D+dRcVkGeBJbtKG4HD6gp2Fs+OP/Ba
+         jUUfw1ikiJDcdWc3K+/jsIeoTj/12WPcsKfJxLcdfPqPjMYSKyhcoi55oaASL/EpuDBR
+         +3sM1IwfCTgP4L1I9jTTGtQRPkvTrquHXn+KeKRUcY0Bs05ztowoO6O9RJ6ahnWVuBcJ
+         PKvO0bDeXg6cukt4A72zg1WluT1/EaeALBcU/dSmPODS14rqWEj1jsyYIq3G/MM97kFK
+         X8ew==
+X-Gm-Message-State: AOAM530dW7mEEZidIq+henWkO3sqTh14guHMKH67PQrpXgPJOXwhyKl0
+        yY+rPybQ9PpXETi1hdtx/2CeR3xMJ/AIpuGVT/zchWiMTe0QcnZiLxTeHRKZIaHSs38SFSL32NY
+        gWn78kzu911JGtz9pVX/weVMx
+X-Received: by 2002:a7b:c8c9:: with SMTP id f9mr5733465wml.67.1599893267278;
+        Fri, 11 Sep 2020 23:47:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxty33MEuHSQi4MTLGa4bmojFvAwBALUmBDJldvnQpqgiwbPgv10PDa1ok0MRL6H+D3faDPvA==
+X-Received: by 2002:a7b:c8c9:: with SMTP id f9mr5733447wml.67.1599893267106;
+        Fri, 11 Sep 2020 23:47:47 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id h186sm8739380wmf.24.2020.09.11.23.47.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 23:47:46 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] KVM: collect sporadic patches
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1599731444-3525-1-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <019b3e94-b2b2-00a6-2904-a7c4a66b73e8@redhat.com>
+Date:   Sat, 12 Sep 2020 08:47:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1599731444-3525-1-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bob, hi Greg,
+On 10/09/20 11:50, Wanpeng Li wrote:
+> Collect sporadic patches for easy apply.
+> 
+> Wanpeng Li (9):
+>   KVM: LAPIC: Return 0 when getting the tscdeadline timer if the lapic
+>     is hw disabled
+>   KVM: LAPIC: Guarantee the timer is in tsc-deadline mode when setting
+>   KVM: LAPIC: Fix updating DFR missing apic map recalculation
+>   KVM: VMX: Don't freeze guest when event delivery causes an APIC-access
+>     exit
+>   KVM: LAPIC: Narrow down the kick target vCPU
+>   KVM: LAPIC: Reduce world switch latency caused by timer_advance_ns
+>   KVM: SVM: Get rid of handle_fastpath_set_msr_irqoff()
+>   KVM: SVM: Move svm_complete_interrupts() into svm_vcpu_run()
+>   KVM: SVM: Reenable handle_fastpath_set_msr_irqoff() after
+>     complete_interrupts()
+> 
+>  arch/x86/kvm/lapic.c   | 36 ++++++++++++++++++++----------------
+>  arch/x86/kvm/svm/svm.c | 17 +++++++++--------
+>  arch/x86/kvm/vmx/vmx.c |  5 ++---
+>  arch/x86/kvm/x86.c     |  6 ------
+>  arch/x86/kvm/x86.h     |  1 -
+>  5 files changed, 31 insertions(+), 34 deletions(-)
+> 
 
-On Fri, Sep 11, 2020 at 08:49:14AM -0400, Bob Peterson wrote:
-> ----- Original Message -----
-> > On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
-> > > ----- Original Message -----
-> > > > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
-> > > > > Hi,
-> > > > > 
-> > > > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
-> > > > > > From: Bob Peterson <rpeterso@redhat.com>
-> > > > > > 
-> > > > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
-> > > > > > 
-> > > > > > Before this patch, transactions could be merged into the system
-> > > > > > transaction by function gfs2_merge_trans(), but the transaction ail
-> > > > > > lists were never merged. Because the ail flushing mechanism can run
-> > > > > > separately, bd elements can be attached to the transaction's buffer
-> > > > > > list during the transaction (trans_add_meta, etc) but quickly moved
-> > > > > > to its ail lists. Later, in function gfs2_trans_end, the transaction
-> > > > > > can be freed (by gfs2_trans_end) while it still has bd elements
-> > > > > > queued to its ail lists, which can cause it to either lose track of
-> > > > > > the bd elements altogether (memory leak) or worse, reference the bd
-> > > > > > elements after the parent transaction has been freed.
-> > > > > > 
-> > > > > > Although I've not seen any serious consequences, the problem becomes
-> > > > > > apparent with the previous patch's addition of:
-> > > > > > 
-> > > > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
-> > > > > > 
-> > > > > > to function gfs2_trans_free().
-> > > > > > 
-> > > > > > This patch adds logic into gfs2_merge_trans() to move the merged
-> > > > > > transaction's ail lists to the sdp transaction. This prevents the
-> > > > > > use-after-free. To do this properly, we need to hold the ail lock,
-> > > > > > so we pass sdp into the function instead of the transaction itself.
-> > > > > > 
-> > > > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-> > > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > (snip)
-> > > > > 
-> > > > > In Debian two user confirmed issues on writing on a GFS2 partition
-> > > > > with this commit applied. The initial Debian report is at
-> > > > > https://bugs.debian.org/968567 and Daniel Craig reported it into
-> > > > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
-> > > > > 
-> > > > > Writing to a gfs2 filesystem fails and results in a soft lookup of the
-> > > > > machine for kernels with that commit applied. I cannot reporduce the
-> > > > > issue myself due not having a respective setup available, but Daniel
-> > > > > described a minimal serieos of steps to reproduce the issue.
-> > > > > 
-> > > > > This might affect as well other stable series where this commit was
-> > > > > applied, as there was a similar report for someone running 5.4.58 in
-> > > > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
-> > > > 
-> > > > Can you report this to the gfs2 developers?
-> > > > 
-> > > > thanks,
-> > > > 
-> > > > greg k-h
-> > > 
-> > > Hi Greg,
-> > > 
-> > > No need. The patch came from the gfs2 developers. I think he just wants
-> > > it added to a stable release.
-> > 
-> > What commit needs to be added to a stable release?
-> > 
-> > confused,
-> > 
-> > greg k-h
-> 
-> Sorry Greg,
-> 
-> It's pretty early here and the caffeine hadn't quite hit my system.
-> The problem is most likely that 4.19.132 is missing this upstream patch:
-> 
-> cbcc89b630447ec7836aa2b9242d9bb1725f5a61
-> 
-> I'm not sure how or why 83d060ca8d90fa1e3feac227f995c013100862d3 got
-> put into stable without a stable CC but cbcc89b6304 is definitely
-> required.
-> 
-> I'd like to suggest Salvatore try cherry-picking this patch to see if
-> it fixes the problem, and if so, perhaps Greg can add it to stable.
+Queued what was left, thanks.
 
-I can confirm (Daniel was able to test): Applying cbcc89b63044 ("gfs2:
-initialize transaction tr_ailX_lists earlier") fixes the issue. So
-would be great if you can pick that up for stable for those series
-which had 83d060ca8d90 ("gfs2: fix use-after-free on transaction ail
-lists") as well.
+Paolo
 
-Regards,
-Salvatore
