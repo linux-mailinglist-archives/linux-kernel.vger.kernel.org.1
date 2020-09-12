@@ -2,229 +2,1058 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1CA267B17
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEC4267B22
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 17:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgILOvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 10:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
+        id S1725875AbgILO5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 10:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbgILOtR (ORCPT
+        with ESMTP id S1725887AbgILOlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 10:49:17 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00060C061573;
-        Sat, 12 Sep 2020 07:49:06 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id r8so10155734qtp.13;
-        Sat, 12 Sep 2020 07:49:06 -0700 (PDT)
+        Sat, 12 Sep 2020 10:41:25 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE09FC061786;
+        Sat, 12 Sep 2020 07:41:24 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id gr14so17299549ejb.1;
+        Sat, 12 Sep 2020 07:41:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding:content-disposition;
-        bh=VIl8oc5v5kZHCnLewFAw9Hm4WzGzc8lZoGkyc1yZSGg=;
-        b=OhWSmM+j6Ushw+TOLq8Paac0y/kTpOQ57F92Bc24OvDxcz/sX3g5ne3/sjpcJ94kOC
-         vas5DOvGZQD3XnPnv7NMv+SrJlSCKq0U7IeWsmoIctiBA35HfZuwzacKg26kGUaRzd+f
-         PzuhwcbY6rk+2mQh3h6SN8xAx2Omr4YbsAmCMvCoMMbUjyyYOsRBaD0P4jJ7IzCM/HgB
-         j8sTI5DQSddnoxAD64yASNyFE74ZIgJZsGLf5PaN9Tu742ZZzYXu78+F1QlDZ6WqMxI5
-         6gA2aC4VbUqH3a2XB/LKsvQWYtkIYo8gIl56pixCC7SoHTcpx6QBzO24gnwz+ySXap7P
-         /I/A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=p5BpSgZulfPCvix4AXMS+uC4iyKNNICwo6XSO9qZVNk=;
+        b=tJPWlPLkI7rWU4kmH50AAPTMtRLvkAs9+yL/hHBW2GPiLMrwGAg7+zWRgoxJEJFsGH
+         NcJReGq28+f5boqNdol/6REUoCfom1ljcpaMYU7TNvSvMmcTdUMQAUHAO4Ea+WKoS6ha
+         T9FK+bU1Qw+17h0/Pbs8gkLs8LOFwicH48p559tM9vWUh17FJo+nIMP1pV0q2U5m5VHz
+         jJanKH5cOjIAwR6WXQPr44m3ogKXzMexGZD4I3YBYFqWvyqYGxK8QHkMpyXG3LGZPk2z
+         VYKz1M2eRObCae2u7XxdFKG3u5Wmo2k10ZJU7Ll66dF2sASZAnOlTfWi3EaeICzPO80M
+         Qx5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding
-         :content-disposition;
-        bh=VIl8oc5v5kZHCnLewFAw9Hm4WzGzc8lZoGkyc1yZSGg=;
-        b=RTG1GWuQ0Cvo31m32sYPKZC9xzs/mSJ4yDQ54c1M4UBRoQyr5lrrAkAu2BXtGgS/eD
-         m4ZUh0S5MrEDlh0Lr5dZ5NdCyWs7rSQ3jPkaCJ0ywrBNb5EQ6KJakApTJLGXpDIyjdoO
-         fyDFmKrA7OUlvlkLymXMsBGCijvBTT5MqSAv01DMCv9zUhVML5AA6iATXVy0Uikf69t6
-         laTYTbdWaTi9Oq1qdI2XIrDd+Fid+68ujRfmp5E8feajHpNfk9P0bgvuXOYVxSrTv6XR
-         DnaSUcfEj2hesQ9lDOliAotKB9Zecxm+APSFPqXjiFdzgFupdfbfed17WTXAd0Xw03rp
-         oswQ==
-X-Gm-Message-State: AOAM532XXzzA/aYXiG7RaGailhaH3f0t+8Y3abta0YTIXDHb4vpu48Vp
-        ESvnUfQxJ/WUs3/0R4R7+muabHaxtigunw==
-X-Google-Smtp-Source: ABdhPJwdK6yoyN6rPp1ADzpOBTulPM9j81xXYdaDM9bskGm9V+vOJFWEQJtXIGsQF8OP5SVIVQM4WA==
-X-Received: by 2002:ac8:d01:: with SMTP id q1mr6600235qti.276.1599922146141;
-        Sat, 12 Sep 2020 07:49:06 -0700 (PDT)
-Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id u55sm7781126qtu.42.2020.09.12.07.49.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 12 Sep 2020 07:49:05 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 11:49:01 -0300
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        "=?utf-8?Q?r.verdejo=40samsung.com?=" <r.verdejo@samsung.com>,
-        "=?utf-8?Q?nicolas=40ndufresne.ca?=" <nicolas@ndufresne.ca>,
-        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
-        <linux-media@vger.kernel.org>,
-        "=?utf-8?Q?skhan=40linuxfoundation.org?=" <skhan@linuxfoundation.org>,
-        "=?utf-8?Q?linux-kernel-mentees=40lists.linuxfoundation.org?=" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
-        <linux-kernel@vger.kernel.org>
-Message-ID: <15028D87-A496-4CAD-91A6-E4467489C4D0@getmailspring.com>
-In-Reply-To: <20200912111506.2d2bd512@coco.lan>
-References: <20200912111506.2d2bd512@coco.lan>
-Subject: Re: [v10 0/4] media: vidtv: Implement a virtual DVB driver
-X-Mailer: Mailspring
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=p5BpSgZulfPCvix4AXMS+uC4iyKNNICwo6XSO9qZVNk=;
+        b=TYUWZQ5/Ag37DATdNeUEY/jG0s1+J6/t9LFj54jdx0NL5GezYSxFK9JIlpNjdx6gnt
+         gyywmpTUWecW/r65Cgv29H6FgQviSrgK6LUFfhe//052EcDLffkDGpPNnOx1glcP9iEY
+         L98NTg0XAQ45qBu8tSizx8sJqHSnV6qqEbXlksA0dkSqnSFtX0cUEBLiI/rCcbqRoXPD
+         2gBALEag/UQFfzr0m66U/+WbNzA6lm2TNhyrMxKZKxyBCMaUMijJ/8OhgNVpcyB+EeXf
+         faq1BXG2S+2IwBneARgCQTzFZZc5f/bTwiLDvoGN6O56ZPX6Zx5r5teuRovhFsIg+URA
+         Q3YA==
+X-Gm-Message-State: AOAM532nmJOzTzATt2gMVN7PW1/8MSR62mYTrjUdFCUqmYD7uqGRXUlz
+        L51Cwn3oeZQrw7Uf4SjT4l/LD8hVdbQ=
+X-Google-Smtp-Source: ABdhPJwYyM23u2CEE2dPDX4BvipA5ZMj/fr31Vy4QBwI7UAJFY6R11KPL/p8FBB2kL+wewrYGez9Yw==
+X-Received: by 2002:a17:906:7fca:: with SMTP id r10mr6259977ejs.534.1599921682632;
+        Sat, 12 Sep 2020 07:41:22 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id y25sm4842938edv.15.2020.09.12.07.41.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 07:41:21 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, gregkh@linuxfoundation.org,
+        davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        f.fainelli@gmail.com, Omer Shpigelman <oshpigelman@habana.ai>
+Subject: [PATCH v2 04/14] habanalabs/gaudi: add support for NIC QMANs
+Date:   Sat, 12 Sep 2020 17:40:56 +0300
+Message-Id: <20200912144106.11799-5-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200912144106.11799-1-oded.gabbay@gmail.com>
+References: <20200912144106.11799-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans and Mauro & all
+From: Omer Shpigelman <oshpigelman@habana.ai>
 
+Initialize the QMANs that are responsible to submit doorbells to the NIC
+engines. Add support for stopping and disabling them, and reset them as
+part of the hard-reset procedure of GAUDI. This will allow the user to
+submit work to the NICs.
 
->Why the dvb_ prefix? All virtual drivers just start with 'vi'.
->
->And wouldn't it make more sense to call dvb_vidtv_bridge.ko just vidtv.ko?
->Just like the other virtual media drivers?
+Add support for receiving events on QMAN errors from the firmware.
 
-I guess Mauro was the one to come up with the dvb_* prefix for the
-kernel modules for the reasons he explicited up in this thread. 
+However, the nic_ports_mask is still initialized to 0. That means this code
+won't initialize the QMANs just yet. That will be in a later patch.
 
-As far as dvb_vidtv_bridge.ko and vidtv_bridge.c, I just wanted to be
-verbose so that people would look at this and see that it is the code
-for a bridge driver, since this is also supposed to be a template. 
+Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/common/habanalabs.h |   3 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c       | 741 ++++++++++++++++++--
+ drivers/misc/habanalabs/gaudi/gaudiP.h      |  32 +
+ 3 files changed, 731 insertions(+), 45 deletions(-)
 
-Also because I had some trouble myself figuring out what was what when
-first browsing through other dvb drivers. That said, I am 100% onboard
-with renaming this to vidtv.ko or whatever seems more appropiate :)
-
-
->Yet, I agree with you that at least an alias is needed.
->earlier today, I wrote a patch with such purpose:
-
-If you all would like to just leave this at that ^ I am also ok with it.
-
->For regression testing of vidtv during the daily build it would be
-great if
->the contrib/test/test-media script can be enhanced to include vidtv.
-
-Sure, I can do that if you'd like. Can you provide some tips on how to
-get started? :)
-
->Note that this script relies on the /dev/mediaX devices to run the
-tests. I
->noticed that vidtv doesn't appear to create a /dev/mediaX device, even though
->CONFIG_MEDIA_CONTROLLER_DVB=y. This is definitely something that would
-be good
->to support in vidtv.
-
-I didn't write any code for this specifically. I was under the
-impression that the dvb core would create any/all the necessary files. Mauro?
-
-
->I'm thinking on something like:
->
->echo 1 >/sys/kernel/debug/vidtv/discontinuity
->
->to generate a frame numbering discontinuity
->
->and other things like that, changing S/N ratio and other parameters
->and injecting errors, in order to test the effects on user apps.
-
-Can you provide an initial list of things you would like to see? I can
-then implement these and we can go from there
-
-When you say 'frame numbering discontinuity', do you mean having a gap
-in the the TS continuity counter for a given pid?
-
-For the s302m encoder, maybe we can add some noise to the samples?
-
-> changing S/N ratio
-
-Btw 'lose lock if signal goes bad' code in vidtv_tuner.c and
-vidtv_demod.c does not work currently. Mainly because they expect an
-array of valid frequencies to compare to and as of now there's no default.
-
-I mean these, just to be clear:
-
-static unsigned int vidtv_valid_dvb_t_freqs[NUM_VALID_TUNER_FREQS];
-module_param_array(vidtv_valid_dvb_t_freqs, uint, NULL, 0);
-MODULE_PARM_DESC(vidtv_valid_dvb_t_freqs,
-  		 "Valid DVB-T frequencies to simulate");
-
-static unsigned int vidtv_valid_dvb_c_freqs[NUM_VALID_TUNER_FREQS];
-module_param_array(vidtv_valid_dvb_c_freqs, uint, NULL, 0);
-MODULE_PARM_DESC(vidtv_valid_dvb_c_freqs,
-		 "Valid DVB-C frequencies to simulate");
-
-static unsigned int vidtv_valid_dvb_s_freqs[NUM_VALID_TUNER_FREQS];
-module_param_array(vidtv_valid_dvb_s_freqs, uint, NULL, 0);
-MODULE_PARM_DESC(vidtv_valid_dvb_s_freqs,
-		 "Valid DVB-C frequencies to simulate");
-
-static unsigned int max_frequency_shift_hz;
-module_param(max_frequency_shift_hz, uint, 0);
-MODULE_PARM_DESC(max_frequency_shift_hz,
-		 "Maximum shift in HZ allowed when tuning in a channel")
-
-
-
-
-
-
-> No. I meant the audio was not a sinusoidal wave after such change.
-
-This encoder is dead simple and yet I have been struggling :/
-
-Here is the relevant decoding code in libavcodec/s302m.c:
-
-        for (; buf_size > 4; buf_size -= 5) {
-            *o++ = (ff_reverse[buf[1]]        <<  8) |
-                    ff_reverse[buf[0]];
-            *o++ = (ff_reverse[buf[4] & 0xf0] << 12) |
-                   (ff_reverse[buf[3]]        <<  4) |
-                   (ff_reverse[buf[2]]        >>  4);
-            buf += 5;
-        }
-
-I am somewhat confident that the opposite to the above is precisely what
-I sent you last:
-
-> f.data[0] = reverse[sample & 0xff];
-> f.data[1] = reverse[(sample & 0xff00) >> 8];
-> f.data[2] = (vucf << 4) | (reverse[(sample & 0x0f)] >> 4);
-> f.data[3] = reverse[(sample & 0x0ff0) >> 4];
-> f.data[4] = reverse[(sample & 0xf000) >> 12] >> 4;
-
-
-Their encoder, which works perfectly of course, is:
-
-libavcodec/s302menc.c:
-
-        for (c = 0; c < frame->nb_samples; c++) {
-            uint8_t vucf = s->framing_index == 0 ? 0x10 : 0;
-
-            for (channels = 0; channels < avctx->channels; channels +=
-2) {
-                o[0] = ff_reverse[ samples[0] & 0xFF];
-                o[1] = ff_reverse[(samples[0] & 0xFF00) >>  8];
-                o[2] = ff_reverse[(samples[1] & 0x0F)   <<  4] | vucf;
-                o[3] = ff_reverse[(samples[1] & 0x0FF0) >>  4];
-                o[4] = ff_reverse[(samples[1] & 0xF000) >> 12];
-                o += 5;
-                samples += 2;
-
-            }
-
-            s->framing_index++;
-            if (s->framing_index >= 192)
-                s->framing_index = 0;
-        }
-
-In which samples[0] and samples[1] are the same for stereo audio.
-
-If you feel like we should only address this later I can drop this
-subject but as we've both established, the encoder in v10 is flat out
-wrong. Your call :)
-
-
--- thanks
--- Daniel
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index eaa9bf3f82a3..146cf14d4d81 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -1574,8 +1574,6 @@ struct hl_mmu_funcs {
+  * @pmmu_huge_range: is a different virtual addresses range used for PMMU with
+  *                   huge pages.
+  * @init_done: is the initialization of the device done.
+- * @mmu_enable: is MMU enabled.
+- * @mmu_huge_page_opt: is MMU huge pages optimization enabled.
+  * @device_cpu_disabled: is the device CPU disabled (due to timeouts)
+  * @dma_mask: the dma mask that was set for this device
+  * @in_debug: is device under debug. This, together with fpriv_list, enforces
+@@ -1691,6 +1689,7 @@ struct hl_device {
+ 	u8				supports_cb_mapping;
+ 
+ 	/* Parameters for bring-up */
++	u64				nic_ports_mask;
+ 	u8				mmu_enable;
+ 	u8				mmu_huge_page_opt;
+ 	u8				cpu_enable;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 6f7f6ad7a358..ecf89d1e37c8 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -301,46 +301,46 @@ static enum hl_queue_type gaudi_queue_type[GAUDI_QUEUE_ID_SIZE] = {
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_TPC_7_1 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_TPC_7_2 */
+ 	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_TPC_7_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_0_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_0_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_0_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_0_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_1_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_1_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_1_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_1_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_2_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_2_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_2_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_2_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_3_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_3_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_3_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_3_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_4_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_4_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_4_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_4_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_5_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_5_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_5_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_5_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_6_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_6_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_6_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_6_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_7_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_7_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_7_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_7_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_8_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_8_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_8_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_8_3 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_9_0 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_9_1 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_9_2 */
+-	QUEUE_TYPE_NA,  /* GAUDI_QUEUE_ID_NIC_9_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_0_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_0_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_0_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_0_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_1_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_1_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_1_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_1_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_2_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_2_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_2_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_2_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_3_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_3_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_3_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_3_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_4_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_4_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_4_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_4_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_5_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_5_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_5_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_5_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_6_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_6_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_6_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_6_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_7_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_7_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_7_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_7_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_8_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_8_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_8_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_8_3 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_9_0 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_9_1 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_9_2 */
++	QUEUE_TYPE_INT, /* GAUDI_QUEUE_ID_NIC_9_3 */
+ };
+ 
+ struct ecc_info_extract_params {
+@@ -793,6 +793,27 @@ static int gaudi_late_init(struct hl_device *hdev)
+ 		return rc;
+ 	}
+ 
++	if ((hdev->card_type == cpucp_card_type_pci) &&
++			(hdev->nic_ports_mask & 0x3)) {
++		dev_info(hdev->dev,
++			"PCI card detected, only 8 ports are enabled\n");
++		hdev->nic_ports_mask &= ~0x3;
++
++		/* Stop and disable unused NIC QMANs */
++		WREG32(mmNIC0_QM0_GLBL_CFG1, NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++					NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++					NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++		WREG32(mmNIC0_QM1_GLBL_CFG1, NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++					NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++					NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++		WREG32(mmNIC0_QM0_GLBL_CFG0, 0);
++		WREG32(mmNIC0_QM1_GLBL_CFG0, 0);
++
++		gaudi->hw_cap_initialized &= ~(HW_CAP_NIC0 | HW_CAP_NIC1);
++	}
++
+ 	rc = hl_fw_send_pci_access_msg(hdev, CPUCP_PACKET_ENABLE_PCI_ACCESS);
+ 	if (rc) {
+ 		dev_err(hdev->dev, "Failed to enable PCI access from CPU\n");
+@@ -939,6 +960,9 @@ static int gaudi_alloc_internal_qmans_pq_mem(struct hl_device *hdev)
+ 		case GAUDI_QUEUE_ID_TPC_0_0 ... GAUDI_QUEUE_ID_TPC_7_3:
+ 			q->pq_size = TPC_QMAN_SIZE_IN_BYTES;
+ 			break;
++		case GAUDI_QUEUE_ID_NIC_0_0 ... GAUDI_QUEUE_ID_NIC_9_3:
++			q->pq_size = NIC_QMAN_SIZE_IN_BYTES;
++			break;
+ 		default:
+ 			dev_err(hdev->dev, "Bad internal queue index %d", i);
+ 			rc = -EINVAL;
+@@ -2333,6 +2357,133 @@ static void gaudi_init_tpc_qmans(struct hl_device *hdev)
+ 	}
+ }
+ 
++static void gaudi_init_nic_qman(struct hl_device *hdev, u32 nic_offset,
++				int qman_id, u64 qman_base_addr, int nic_id)
++{
++	u32 mtr_base_lo, mtr_base_hi;
++	u32 so_base_lo, so_base_hi;
++	u32 q_off;
++	u32 nic_qm_err_cfg;
++
++	mtr_base_lo = lower_32_bits(CFG_BASE +
++				mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_ADDRL_0);
++	mtr_base_hi = upper_32_bits(CFG_BASE +
++				mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_MON_PAY_ADDRL_0);
++	so_base_lo = lower_32_bits(CFG_BASE +
++				mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_0);
++	so_base_hi = upper_32_bits(CFG_BASE +
++				mmSYNC_MNGR_E_N_SYNC_MNGR_OBJS_SOB_OBJ_0);
++
++	q_off = nic_offset + qman_id * 4;
++
++	WREG32(mmNIC0_QM0_PQ_BASE_LO_0 + q_off, lower_32_bits(qman_base_addr));
++	WREG32(mmNIC0_QM0_PQ_BASE_HI_0 + q_off, upper_32_bits(qman_base_addr));
++
++	WREG32(mmNIC0_QM0_PQ_SIZE_0 + q_off, ilog2(NIC_QMAN_LENGTH));
++	WREG32(mmNIC0_QM0_PQ_PI_0 + q_off, 0);
++	WREG32(mmNIC0_QM0_PQ_CI_0 + q_off, 0);
++
++	WREG32(mmNIC0_QM0_CP_LDMA_TSIZE_OFFSET_0 + q_off, 0x74);
++	WREG32(mmNIC0_QM0_CP_LDMA_SRC_BASE_LO_OFFSET_0 + q_off, 0x14);
++	WREG32(mmNIC0_QM0_CP_LDMA_DST_BASE_LO_OFFSET_0 + q_off, 0x1C);
++
++	WREG32(mmNIC0_QM0_CP_MSG_BASE0_ADDR_LO_0 + q_off, mtr_base_lo);
++	WREG32(mmNIC0_QM0_CP_MSG_BASE0_ADDR_HI_0 + q_off, mtr_base_hi);
++	WREG32(mmNIC0_QM0_CP_MSG_BASE1_ADDR_LO_0 + q_off, so_base_lo);
++	WREG32(mmNIC0_QM0_CP_MSG_BASE1_ADDR_HI_0 + q_off, so_base_hi);
++
++	if (qman_id == 0) {
++		/* Configure RAZWI IRQ */
++		nic_qm_err_cfg = NIC_QMAN_GLBL_ERR_CFG_MSG_EN_MASK;
++		if (hdev->stop_on_err) {
++			nic_qm_err_cfg |=
++				NIC_QMAN_GLBL_ERR_CFG_STOP_ON_ERR_EN_MASK;
++		}
++
++		WREG32(mmNIC0_QM0_GLBL_ERR_CFG + nic_offset, nic_qm_err_cfg);
++		WREG32(mmNIC0_QM0_GLBL_ERR_ADDR_LO + nic_offset,
++			lower_32_bits(CFG_BASE +
++				mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR));
++		WREG32(mmNIC0_QM0_GLBL_ERR_ADDR_HI + nic_offset,
++			upper_32_bits(CFG_BASE +
++				mmGIC_DISTRIBUTOR__5_GICD_SETSPI_NSR));
++		WREG32(mmNIC0_QM0_GLBL_ERR_WDATA + nic_offset,
++			gaudi_irq_map_table[GAUDI_EVENT_NIC0_QM0].cpu_id +
++									nic_id);
++
++		WREG32(mmNIC0_QM0_ARB_ERR_MSG_EN + nic_offset,
++				QM_ARB_ERR_MSG_EN_MASK);
++
++		/* Increase ARB WDT to support streams architecture */
++		WREG32(mmNIC0_QM0_ARB_SLV_CHOISE_WDT + nic_offset,
++				GAUDI_ARB_WDT_TIMEOUT);
++
++		WREG32(mmNIC0_QM0_GLBL_CFG1 + nic_offset, 0);
++		WREG32(mmNIC0_QM0_GLBL_PROT + nic_offset,
++				QMAN_INTERNAL_MAKE_TRUSTED);
++	}
++}
++
++/**
++ * gaudi_init_nic_qmans - Initialize NIC QMAN registers
++ *
++ * @hdev: pointer to hl_device structure
++ *
++ * Initialize the H/W registers of the NIC QMANs
++ *
++ */
++void gaudi_init_nic_qmans(struct hl_device *hdev)
++{
++	struct gaudi_device *gaudi = hdev->asic_specific;
++	struct gaudi_internal_qman_info *q;
++	u64 qman_base_addr;
++	u32 nic_offset = 0;
++	u32 nic_delta_between_qmans =
++			mmNIC0_QM1_GLBL_CFG0 - mmNIC0_QM0_GLBL_CFG0;
++	u32 nic_delta_between_nics =
++			mmNIC1_QM0_GLBL_CFG0 - mmNIC0_QM0_GLBL_CFG0;
++	int i, nic_id, internal_q_index;
++
++	if (!hdev->nic_ports_mask)
++		return;
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC_MASK)
++		return;
++
++	dev_dbg(hdev->dev, "Initializing NIC QMANs\n");
++
++	for (nic_id = 0 ; nic_id < NIC_NUMBER_OF_ENGINES ; nic_id++) {
++		if (!(hdev->nic_ports_mask & (1 << nic_id))) {
++			nic_offset += nic_delta_between_qmans;
++			if (nic_id & 1) {
++				nic_offset -= (nic_delta_between_qmans * 2);
++				nic_offset += nic_delta_between_nics;
++			}
++			continue;
++		}
++
++		for (i = 0 ; i < QMAN_STREAMS ; i++) {
++			internal_q_index = GAUDI_QUEUE_ID_NIC_0_0 +
++						nic_id * QMAN_STREAMS + i;
++			q = &gaudi->internal_qmans[internal_q_index];
++			qman_base_addr = (u64) q->pq_dma_addr;
++			gaudi_init_nic_qman(hdev, nic_offset, (i & 0x3),
++						qman_base_addr, nic_id);
++		}
++
++		/* Enable the QMAN */
++		WREG32(mmNIC0_QM0_GLBL_CFG0 + nic_offset, NIC_QMAN_ENABLE);
++
++		nic_offset += nic_delta_between_qmans;
++		if (nic_id & 1) {
++			nic_offset -= (nic_delta_between_qmans * 2);
++			nic_offset += nic_delta_between_nics;
++		}
++
++		gaudi->hw_cap_initialized |= 1 << (HW_CAP_NIC_SHIFT + nic_id);
++	}
++}
++
+ static void gaudi_disable_pci_dma_qmans(struct hl_device *hdev)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+@@ -2385,6 +2536,30 @@ static void gaudi_disable_tpc_qmans(struct hl_device *hdev)
+ 	}
+ }
+ 
++static void gaudi_disable_nic_qmans(struct hl_device *hdev)
++{
++	struct gaudi_device *gaudi = hdev->asic_specific;
++	u32 nic_mask, nic_offset = 0;
++	u32 nic_delta_between_qmans =
++			mmNIC0_QM1_GLBL_CFG0 - mmNIC0_QM0_GLBL_CFG0;
++	u32 nic_delta_between_nics =
++			mmNIC1_QM0_GLBL_CFG0 - mmNIC0_QM0_GLBL_CFG0;
++	int nic_id;
++
++	for (nic_id = 0 ; nic_id < NIC_NUMBER_OF_ENGINES ; nic_id++) {
++		nic_mask = 1 << (HW_CAP_NIC_SHIFT + nic_id);
++
++		if (gaudi->hw_cap_initialized & nic_mask)
++			WREG32(mmNIC0_QM0_GLBL_CFG0 + nic_offset, 0);
++
++		nic_offset += nic_delta_between_qmans;
++		if (nic_id & 1) {
++			nic_offset -= (nic_delta_between_qmans * 2);
++			nic_offset += nic_delta_between_nics;
++		}
++	}
++}
++
+ static void gaudi_stop_pci_dma_qmans(struct hl_device *hdev)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+@@ -2443,6 +2618,73 @@ static void gaudi_stop_tpc_qmans(struct hl_device *hdev)
+ 	WREG32(mmTPC7_QM_GLBL_CFG1, 0x1F << TPC0_QM_GLBL_CFG1_CP_STOP_SHIFT);
+ }
+ 
++static void gaudi_stop_nic_qmans(struct hl_device *hdev)
++{
++	struct gaudi_device *gaudi = hdev->asic_specific;
++
++	/* Stop upper CPs of QMANs */
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC0)
++		WREG32(mmNIC0_QM0_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC1)
++		WREG32(mmNIC0_QM1_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC2)
++		WREG32(mmNIC1_QM0_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC3)
++		WREG32(mmNIC1_QM1_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC4)
++		WREG32(mmNIC2_QM0_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC5)
++		WREG32(mmNIC2_QM1_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC6)
++		WREG32(mmNIC3_QM0_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC7)
++		WREG32(mmNIC3_QM1_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC8)
++		WREG32(mmNIC4_QM0_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++
++	if (gaudi->hw_cap_initialized & HW_CAP_NIC9)
++		WREG32(mmNIC4_QM1_GLBL_CFG1,
++				NIC0_QM0_GLBL_CFG1_PQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CQF_STOP_MASK |
++				NIC0_QM0_GLBL_CFG1_CP_STOP_MASK);
++}
++
+ static void gaudi_pci_dma_stall(struct hl_device *hdev)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+@@ -2632,6 +2874,7 @@ static void gaudi_halt_engines(struct hl_device *hdev, bool hard_reset)
+ 	else
+ 		wait_timeout_ms = GAUDI_RESET_WAIT_MSEC;
+ 
++	gaudi_stop_nic_qmans(hdev);
+ 
+ 	gaudi_stop_mme_qmans(hdev);
+ 	gaudi_stop_tpc_qmans(hdev);
+@@ -2649,6 +2892,7 @@ static void gaudi_halt_engines(struct hl_device *hdev, bool hard_reset)
+ 
+ 	msleep(wait_timeout_ms);
+ 
++	gaudi_disable_nic_qmans(hdev);
+ 	gaudi_disable_mme_qmans(hdev);
+ 	gaudi_disable_tpc_qmans(hdev);
+ 	gaudi_disable_hbm_dma_qmans(hdev);
+@@ -2964,11 +3208,13 @@ static int gaudi_hw_init(struct hl_device *hdev)
+ 
+ 	gaudi_init_tpc_qmans(hdev);
+ 
++	gaudi_init_nic_qmans(hdev);
++
+ 	hdev->asic_funcs->set_clock_gating(hdev);
+ 
+ 	gaudi_enable_timestamp(hdev);
+ 
+-	/* MSI must be enabled before CPU queues are initialized */
++	/* MSI must be enabled before CPU queues and NIC are initialized */
+ 	rc = gaudi_enable_msi(hdev);
+ 	if (rc)
+ 		goto disable_queues;
+@@ -3067,7 +3313,7 @@ static void gaudi_hw_fini(struct hl_device *hdev, bool hard_reset)
+ 					HW_CAP_HBM | HW_CAP_PCI_DMA |
+ 					HW_CAP_MME | HW_CAP_TPC_MASK |
+ 					HW_CAP_HBM_DMA | HW_CAP_PLL |
+-					HW_CAP_MMU |
++					HW_CAP_NIC_MASK | HW_CAP_MMU |
+ 					HW_CAP_SRAM_SCRAMBLER |
+ 					HW_CAP_HBM_SCRAMBLER |
+ 					HW_CAP_CLK_GATE);
+@@ -3337,6 +3583,166 @@ static void gaudi_ring_doorbell(struct hl_device *hdev, u32 hw_queue_id, u32 pi)
+ 		db_reg_offset = mmTPC7_QM_PQ_PI_3;
+ 		break;
+ 
++	case GAUDI_QUEUE_ID_NIC_0_0:
++		db_reg_offset = mmNIC0_QM0_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_0_1:
++		db_reg_offset = mmNIC0_QM0_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_0_2:
++		db_reg_offset = mmNIC0_QM0_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_0_3:
++		db_reg_offset = mmNIC0_QM0_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_1_0:
++		db_reg_offset = mmNIC0_QM1_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_1_1:
++		db_reg_offset = mmNIC0_QM1_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_1_2:
++		db_reg_offset = mmNIC0_QM1_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_1_3:
++		db_reg_offset = mmNIC0_QM1_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_2_0:
++		db_reg_offset = mmNIC1_QM0_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_2_1:
++		db_reg_offset = mmNIC1_QM0_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_2_2:
++		db_reg_offset = mmNIC1_QM0_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_2_3:
++		db_reg_offset = mmNIC1_QM0_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_3_0:
++		db_reg_offset = mmNIC1_QM1_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_3_1:
++		db_reg_offset = mmNIC1_QM1_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_3_2:
++		db_reg_offset = mmNIC1_QM1_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_3_3:
++		db_reg_offset = mmNIC1_QM1_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_4_0:
++		db_reg_offset = mmNIC2_QM0_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_4_1:
++		db_reg_offset = mmNIC2_QM0_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_4_2:
++		db_reg_offset = mmNIC2_QM0_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_4_3:
++		db_reg_offset = mmNIC2_QM0_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_5_0:
++		db_reg_offset = mmNIC2_QM1_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_5_1:
++		db_reg_offset = mmNIC2_QM1_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_5_2:
++		db_reg_offset = mmNIC2_QM1_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_5_3:
++		db_reg_offset = mmNIC2_QM1_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_6_0:
++		db_reg_offset = mmNIC3_QM0_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_6_1:
++		db_reg_offset = mmNIC3_QM0_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_6_2:
++		db_reg_offset = mmNIC3_QM0_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_6_3:
++		db_reg_offset = mmNIC3_QM0_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_7_0:
++		db_reg_offset = mmNIC3_QM1_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_7_1:
++		db_reg_offset = mmNIC3_QM1_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_7_2:
++		db_reg_offset = mmNIC3_QM1_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_7_3:
++		db_reg_offset = mmNIC3_QM1_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_8_0:
++		db_reg_offset = mmNIC4_QM0_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_8_1:
++		db_reg_offset = mmNIC4_QM0_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_8_2:
++		db_reg_offset = mmNIC4_QM0_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_8_3:
++		db_reg_offset = mmNIC4_QM0_PQ_PI_3;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_9_0:
++		db_reg_offset = mmNIC4_QM1_PQ_PI_0;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_9_1:
++		db_reg_offset = mmNIC4_QM1_PQ_PI_1;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_9_2:
++		db_reg_offset = mmNIC4_QM1_PQ_PI_2;
++		break;
++
++	case GAUDI_QUEUE_ID_NIC_9_3:
++		db_reg_offset = mmNIC4_QM1_PQ_PI_3;
++		break;
++
+ 	default:
+ 		invalid_queue = true;
+ 	}
+@@ -4233,6 +4639,17 @@ static int gaudi_parse_cb_no_ext_queue(struct hl_device *hdev,
+ 					struct hl_cs_parser *parser)
+ {
+ 	struct asic_fixed_properties *asic_prop = &hdev->asic_prop;
++	struct gaudi_device *gaudi = hdev->asic_specific;
++	u32 nic_mask_q_id = 1 << (HW_CAP_NIC_SHIFT +
++		((parser->hw_queue_id - GAUDI_QUEUE_ID_NIC_0_0) >> 2));
++
++	if ((parser->hw_queue_id >= GAUDI_QUEUE_ID_NIC_0_0) &&
++			(parser->hw_queue_id <= GAUDI_QUEUE_ID_NIC_9_3) &&
++			(!(gaudi->hw_cap_initialized & nic_mask_q_id))) {
++		dev_err(hdev->dev, "h/w queue %d is disabled\n",
++				parser->hw_queue_id);
++		return -EINVAL;
++	}
+ 
+ 	/* For internal queue jobs just check if CB address is valid */
+ 	if (hl_mem_area_inside_range((u64) (uintptr_t) parser->user_cb,
+@@ -4466,6 +4883,12 @@ static void gaudi_restore_qm_registers(struct hl_device *hdev)
+ 		qman_offset = i * TPC_QMAN_OFFSET;
+ 		WREG32(mmTPC0_QM_ARB_CFG_0 + qman_offset, 0);
+ 	}
++
++	for (i = 0 ; i < NIC_NUMBER_OF_ENGINES ; i++) {
++		qman_offset = (i >> 1) * NIC_MACRO_QMAN_OFFSET +
++				(i & 0x1) * NIC_ENGINE_QMAN_OFFSET;
++		WREG32(mmNIC0_QM0_ARB_CFG_0 + qman_offset, 0);
++	}
+ }
+ 
+ static void gaudi_restore_user_registers(struct hl_device *hdev)
+@@ -4900,6 +5323,136 @@ static void gaudi_mmu_prepare(struct hl_device *hdev, u32 asid)
+ 	gaudi_mmu_prepare_reg(hdev, mmMME2_ACC_WBC, asid);
+ 	gaudi_mmu_prepare_reg(hdev, mmMME3_ACC_WBC, asid);
+ 
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC0) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM0_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM0_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM0_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM0_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM0_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC1) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM1_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM1_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM1_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM1_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC0_QM1_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC2) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM0_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM0_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM0_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM0_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM0_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC3) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM1_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM1_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM1_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM1_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC1_QM1_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC4) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM0_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM0_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM0_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM0_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM0_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC5) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM1_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM1_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM1_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM1_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC2_QM1_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC6) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM0_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM0_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM0_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM0_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM0_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC7) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM1_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM1_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM1_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM1_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC3_QM1_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC8) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM0_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM0_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM0_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM0_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM0_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
++	if (hdev->nic_ports_mask & GAUDI_NIC_MASK_NIC9) {
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM1_GLBL_NON_SECURE_PROPS_0,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM1_GLBL_NON_SECURE_PROPS_1,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM1_GLBL_NON_SECURE_PROPS_2,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM1_GLBL_NON_SECURE_PROPS_3,
++				asid);
++		gaudi_mmu_prepare_reg(hdev, mmNIC4_QM1_GLBL_NON_SECURE_PROPS_4,
++				asid);
++	}
++
+ 	gaudi_mmu_prepare_reg(hdev, mmPSOC_GLOBAL_CONF_TRACE_ARUSER, asid);
+ 	gaudi_mmu_prepare_reg(hdev, mmPSOC_GLOBAL_CONF_TRACE_AWUSER, asid);
+ 
+@@ -5429,6 +5982,8 @@ static void gaudi_handle_ecc_event(struct hl_device *hdev, u16 event_type,
+ 		params.num_memories = 33;
+ 		params.derr = true;
+ 		params.disable_clock_gating = true;
++		extract_info_from_fw = false;
++		break;
+ 	default:
+ 		return;
+ 	}
+@@ -5480,6 +6035,56 @@ static void gaudi_handle_qman_err(struct hl_device *hdev, u16 event_type)
+ 			mmDMA0_QM_ARB_ERR_CAUSE + index * DMA_QMAN_OFFSET;
+ 		snprintf(desc, ARRAY_SIZE(desc), "%s%d", "DMA_QM", index);
+ 		break;
++	case GAUDI_EVENT_NIC0_QM0:
++		glbl_sts_addr = mmNIC0_QM0_GLBL_STS1_0;
++		arb_err_addr = mmNIC0_QM0_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC0_QM0");
++		break;
++	case GAUDI_EVENT_NIC0_QM1:
++		glbl_sts_addr = mmNIC0_QM1_GLBL_STS1_0;
++		arb_err_addr = mmNIC0_QM1_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC0_QM1");
++		break;
++	case GAUDI_EVENT_NIC1_QM0:
++		glbl_sts_addr = mmNIC1_QM0_GLBL_STS1_0;
++		arb_err_addr = mmNIC1_QM0_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC1_QM0");
++		break;
++	case GAUDI_EVENT_NIC1_QM1:
++		glbl_sts_addr = mmNIC1_QM1_GLBL_STS1_0;
++		arb_err_addr = mmNIC1_QM1_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC1_QM1");
++		break;
++	case GAUDI_EVENT_NIC2_QM0:
++		glbl_sts_addr = mmNIC2_QM0_GLBL_STS1_0;
++		arb_err_addr = mmNIC2_QM0_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC2_QM0");
++		break;
++	case GAUDI_EVENT_NIC2_QM1:
++		glbl_sts_addr = mmNIC2_QM1_GLBL_STS1_0;
++		arb_err_addr = mmNIC2_QM1_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC2_QM1");
++		break;
++	case GAUDI_EVENT_NIC3_QM0:
++		glbl_sts_addr = mmNIC3_QM0_GLBL_STS1_0;
++		arb_err_addr = mmNIC3_QM0_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC3_QM0");
++		break;
++	case GAUDI_EVENT_NIC3_QM1:
++		glbl_sts_addr = mmNIC3_QM1_GLBL_STS1_0;
++		arb_err_addr = mmNIC3_QM1_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC3_QM1");
++		break;
++	case GAUDI_EVENT_NIC4_QM0:
++		glbl_sts_addr = mmNIC4_QM0_GLBL_STS1_0;
++		arb_err_addr = mmNIC4_QM0_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC4_QM0");
++		break;
++	case GAUDI_EVENT_NIC4_QM1:
++		glbl_sts_addr = mmNIC4_QM1_GLBL_STS1_0;
++		arb_err_addr = mmNIC4_QM1_ARB_ERR_CAUSE;
++		snprintf(desc, ARRAY_SIZE(desc), "NIC4_QM1");
++		break;
+ 	default:
+ 		return;
+ 	}
+@@ -5857,6 +6462,16 @@ static void gaudi_handle_eqe(struct hl_device *hdev,
+ 	case GAUDI_EVENT_MME0_QM ... GAUDI_EVENT_MME2_QM:
+ 	case GAUDI_EVENT_DMA0_QM ... GAUDI_EVENT_DMA7_QM:
+ 		fallthrough;
++	case GAUDI_EVENT_NIC0_QM0:
++	case GAUDI_EVENT_NIC0_QM1:
++	case GAUDI_EVENT_NIC1_QM0:
++	case GAUDI_EVENT_NIC1_QM1:
++	case GAUDI_EVENT_NIC2_QM0:
++	case GAUDI_EVENT_NIC2_QM1:
++	case GAUDI_EVENT_NIC3_QM0:
++	case GAUDI_EVENT_NIC3_QM1:
++	case GAUDI_EVENT_NIC4_QM0:
++	case GAUDI_EVENT_NIC4_QM1:
+ 	case GAUDI_EVENT_DMA0_CORE ... GAUDI_EVENT_DMA7_CORE:
+ 		gaudi_print_irq_info(hdev, event_type, true);
+ 		gaudi_handle_qman_err(hdev, event_type);
+@@ -6090,10 +6705,11 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+ 	const char *fmt = "%-5d%-9s%#-14x%#-12x%#x\n";
+ 	const char *mme_slave_fmt = "%-5d%-9s%-14s%-12s%#x\n";
++	const char *nic_fmt = "%-5d%-9s%#-14x%#x\n";
+ 	u32 qm_glbl_sts0, qm_cgm_sts, dma_core_sts0, tpc_cfg_sts, mme_arch_sts;
+ 	bool is_idle = true, is_eng_idle, is_slave;
+ 	u64 offset;
+-	int i, dma_id;
++	int i, dma_id, port;
+ 
+ 	mutex_lock(&gaudi->clk_gate_mutex);
+ 
+@@ -6182,6 +6798,45 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 		}
+ 	}
+ 
++	if (s)
++		seq_puts(s, "\nNIC  is_idle  QM_GLBL_STS0  QM_CGM_STS\n"
++				"---  -------  ------------  ----------\n");
++
++	for (i = 0 ; i < (NIC_NUMBER_OF_ENGINES / 2) ; i++) {
++		offset = i * NIC_MACRO_QMAN_OFFSET;
++		port = 2 * i;
++		if (hdev->nic_ports_mask & BIT(port)) {
++			qm_glbl_sts0 = RREG32(mmNIC0_QM0_GLBL_STS0 + offset);
++			qm_cgm_sts = RREG32(mmNIC0_QM0_CGM_STS + offset);
++			is_eng_idle = IS_QM_IDLE(qm_glbl_sts0, qm_cgm_sts);
++			is_idle &= is_eng_idle;
++
++			if (mask)
++				*mask |= ((u64) !is_eng_idle) <<
++						(GAUDI_ENGINE_ID_NIC_0 + port);
++			if (s)
++				seq_printf(s, nic_fmt, port,
++						is_eng_idle ? "Y" : "N",
++						qm_glbl_sts0, qm_cgm_sts);
++		}
++
++		port = 2 * i + 1;
++		if (hdev->nic_ports_mask & BIT(port)) {
++			qm_glbl_sts0 = RREG32(mmNIC0_QM1_GLBL_STS0 + offset);
++			qm_cgm_sts = RREG32(mmNIC0_QM1_CGM_STS + offset);
++			is_eng_idle = IS_QM_IDLE(qm_glbl_sts0, qm_cgm_sts);
++			is_idle &= is_eng_idle;
++
++			if (mask)
++				*mask |= ((u64) !is_eng_idle) <<
++						(GAUDI_ENGINE_ID_NIC_0 + port);
++			if (s)
++				seq_printf(s, nic_fmt, port,
++						is_eng_idle ? "Y" : "N",
++						qm_glbl_sts0, qm_cgm_sts);
++		}
++	}
++
+ 	if (s)
+ 		seq_puts(s, "\n");
+ 
+diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
+index b70b810c21c9..858434d50b59 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudiP.h
++++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
+@@ -79,6 +79,7 @@
+ #define TPC_QMAN_OFFSET		(mmTPC1_QM_BASE - mmTPC0_QM_BASE)
+ #define MME_QMAN_OFFSET		(mmMME1_QM_BASE - mmMME0_QM_BASE)
+ #define NIC_MACRO_QMAN_OFFSET	(mmNIC1_QM0_BASE - mmNIC0_QM0_BASE)
++#define NIC_ENGINE_QMAN_OFFSET	(mmNIC0_QM1_BASE - mmNIC0_QM0_BASE)
+ 
+ #define TPC_CFG_OFFSET		(mmTPC1_CFG_BASE - mmTPC0_CFG_BASE)
+ 
+@@ -132,6 +133,10 @@
+ #define TPC_QMAN_LENGTH			1024
+ #define TPC_QMAN_SIZE_IN_BYTES		(TPC_QMAN_LENGTH * QMAN_PQ_ENTRY_SIZE)
+ 
++#define NIC_QMAN_LENGTH			1024
++#define NIC_QMAN_SIZE_IN_BYTES		(NIC_QMAN_LENGTH * QMAN_PQ_ENTRY_SIZE)
++
++
+ #define SRAM_USER_BASE_OFFSET  GAUDI_DRIVER_SRAM_RESERVED_SIZE_FROM_START
+ 
+ /* Virtual address space */
+@@ -153,6 +158,19 @@
+ #define HW_CAP_SRAM_SCRAMBLER	BIT(10)
+ #define HW_CAP_HBM_SCRAMBLER	BIT(11)
+ 
++#define HW_CAP_NIC0		BIT(14)
++#define HW_CAP_NIC1		BIT(15)
++#define HW_CAP_NIC2		BIT(16)
++#define HW_CAP_NIC3		BIT(17)
++#define HW_CAP_NIC4		BIT(18)
++#define HW_CAP_NIC5		BIT(19)
++#define HW_CAP_NIC6		BIT(20)
++#define HW_CAP_NIC7		BIT(21)
++#define HW_CAP_NIC8		BIT(22)
++#define HW_CAP_NIC9		BIT(23)
++#define HW_CAP_NIC_MASK		GENMASK(23, 14)
++#define HW_CAP_NIC_SHIFT	14
++
+ #define HW_CAP_TPC0		BIT(24)
+ #define HW_CAP_TPC1		BIT(25)
+ #define HW_CAP_TPC2		BIT(26)
+@@ -200,6 +218,20 @@ enum gaudi_tpc_mask {
+ 	GAUDI_TPC_MASK_ALL = 0xFF
+ };
+ 
++enum gaudi_nic_mask {
++	GAUDI_NIC_MASK_NIC0 = 0x01,
++	GAUDI_NIC_MASK_NIC1 = 0x02,
++	GAUDI_NIC_MASK_NIC2 = 0x04,
++	GAUDI_NIC_MASK_NIC3 = 0x08,
++	GAUDI_NIC_MASK_NIC4 = 0x10,
++	GAUDI_NIC_MASK_NIC5 = 0x20,
++	GAUDI_NIC_MASK_NIC6 = 0x40,
++	GAUDI_NIC_MASK_NIC7 = 0x80,
++	GAUDI_NIC_MASK_NIC8 = 0x100,
++	GAUDI_NIC_MASK_NIC9 = 0x200,
++	GAUDI_NIC_MASK_ALL = 0x3FF
++};
++
+ /**
+  * struct gaudi_internal_qman_info - Internal QMAN information.
+  * @pq_kernel_addr: Kernel address of the PQ memory area in the host.
+-- 
+2.17.1
 
