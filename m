@@ -2,264 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A969267783
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 05:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2D826776F
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 05:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725871AbgILD2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 23:28:45 -0400
-Received: from mga07.intel.com ([134.134.136.100]:27600 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725801AbgILD2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 23:28:21 -0400
-IronPort-SDR: FJHeHlqdvI6pVhx/MoAFkAPsVzkuwCy9+LwdGpVA8ehn7q6+op3fapc7h4LRvcPJyHf7sqgOxC
- Y4mh1BsugERQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="223074017"
-X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
-   d="scan'208";a="223074017"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 20:28:18 -0700
-IronPort-SDR: mopWuaxPAktfWcu9Aw9DSgFZNdp8ZqQ+lfl4n2xmsELXWXmU278ypX7gGmifljBm+0nEM0BLaa
- 8+tIcvBEQcow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
-   d="scan'208";a="408321438"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Sep 2020 20:28:15 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Intel-gfx@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v3 6/6] iommu/vt-d: Cleanup after converting to dma-iommu ops
-Date:   Sat, 12 Sep 2020 11:22:00 +0800
-Message-Id: <20200912032200.11489-7-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200912032200.11489-1-baolu.lu@linux.intel.com>
-References: <20200912032200.11489-1-baolu.lu@linux.intel.com>
+        id S1725788AbgILDYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 23:24:43 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56632 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725773AbgILDYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 23:24:41 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08C3Iepe147448;
+        Fri, 11 Sep 2020 23:24:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=V5pwQsadCcCfTYtSw89ovAAuc89xWD6rBGuanc9BszQ=;
+ b=nHTTsRWDXBiynYEqNGc6Q7UQ1NYXdkr/3h+oQ4i8hsHdF8zbuX+E5ddXNAm6o8+FmPL9
+ Be5UOLRs5yBXMbaNxkOzM+KvSrHhIklQOqKrWHs3NI6LW7Y4GrmC/1FECHJzOpwxVTHW
+ 3CVC65cnZq41JVxtrFsS1LslQ6EvPwMPkM7uuMM7BC587xsn6/3I6EkzAN0C5a1PfLKV
+ KxeiryBiyOB5QiUKBTOP1Bq+bXx9uUm60TTxl/fFocIWG/nyMl20A3uYMpdgYb5fwBGm
+ rRmmPRH2qXSZvrkudnixLHWcP/oIrFYezh2GbnLTBc+Q9ZQT2Y9kQQMod5TRUFvRRftX 7g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33gpakg1s6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 23:24:01 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08C3JVIK148553;
+        Fri, 11 Sep 2020 23:24:01 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33gpakg1ry-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 11 Sep 2020 23:24:00 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08C3LouD012165;
+        Sat, 12 Sep 2020 03:24:00 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma01wdc.us.ibm.com with ESMTP id 33gny7r4s1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 12 Sep 2020 03:24:00 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08C3NtlG65733052
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 12 Sep 2020 03:23:55 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 07AFE7805E;
+        Sat, 12 Sep 2020 03:23:59 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9FD337805C;
+        Sat, 12 Sep 2020 03:23:51 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.211.151.100])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Sat, 12 Sep 2020 03:23:51 +0000 (GMT)
+References: <20200908230856.9799-1-nramas@linux.microsoft.com>
+ <20200908230856.9799-4-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [PATCH v6 3/3] arm64: Add IMA kexec buffer to DTB
+In-reply-to: <20200908230856.9799-4-nramas@linux.microsoft.com>
+Date:   Sat, 12 Sep 2020 00:23:49 -0300
+Message-ID: <87363nu18a.fsf@morokweng.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-12_01:2020-09-10,2020-09-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=2
+ mlxlogscore=691 malwarescore=0 spamscore=0 lowpriorityscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009120027
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some cleanups after converting the driver to use dma-iommu ops.
-- Remove nobounce option;
-- Cleanup and simplify the path in domain mapping.
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- .../admin-guide/kernel-parameters.txt         |  5 --
- drivers/iommu/intel/iommu.c                   | 90 ++++++-------------
- 2 files changed, 28 insertions(+), 67 deletions(-)
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1068742a6df..0d11ef43d314 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1866,11 +1866,6 @@
- 			Note that using this option lowers the security
- 			provided by tboot because it makes the system
- 			vulnerable to DMA attacks.
--		nobounce [Default off]
--			Disable bounce buffer for untrusted devices such as
--			the Thunderbolt devices. This will treat the untrusted
--			devices as the trusted ones, hence might expose security
--			risks of DMA attacks.
- 
- 	intel_idle.max_cstate=	[KNL,HW,ACPI,X86]
- 			0	disables intel_idle and fall back on acpi_idle.
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index adc231790e0a..fe2544c95013 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -355,7 +355,6 @@ static int dmar_forcedac;
- static int intel_iommu_strict;
- static int intel_iommu_superpage = 1;
- static int iommu_identity_mapping;
--static int intel_no_bounce;
- static int iommu_skip_te_disable;
- 
- #define IDENTMAP_GFX		2
-@@ -457,9 +456,6 @@ static int __init intel_iommu_setup(char *str)
- 		} else if (!strncmp(str, "tboot_noforce", 13)) {
- 			pr_info("Intel-IOMMU: not forcing on after tboot. This could expose security risk for tboot\n");
- 			intel_iommu_tboot_noforce = 1;
--		} else if (!strncmp(str, "nobounce", 8)) {
--			pr_info("Intel-IOMMU: No bounce buffer. This could expose security risks of DMA attacks\n");
--			intel_no_bounce = 1;
- 		}
- 
- 		str += strcspn(str, ",");
-@@ -2230,15 +2226,14 @@ static inline int hardware_largepage_caps(struct dmar_domain *domain,
- 	return level;
- }
- 
--static int __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
--			    struct scatterlist *sg, unsigned long phys_pfn,
--			    unsigned long nr_pages, int prot)
-+static int
-+__domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
-+		 unsigned long phys_pfn, unsigned long nr_pages, int prot)
- {
- 	struct dma_pte *first_pte = NULL, *pte = NULL;
--	phys_addr_t pteval;
--	unsigned long sg_res = 0;
- 	unsigned int largepage_lvl = 0;
- 	unsigned long lvl_pages = 0;
-+	phys_addr_t pteval;
- 	u64 attr;
- 
- 	BUG_ON(!domain_pfn_supported(domain, iov_pfn + nr_pages - 1));
-@@ -2250,26 +2245,14 @@ static int __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 	if (domain_use_first_level(domain))
- 		attr |= DMA_FL_PTE_PRESENT | DMA_FL_PTE_XD | DMA_FL_PTE_US;
- 
--	if (!sg) {
--		sg_res = nr_pages;
--		pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
--	}
-+	pteval = ((phys_addr_t)phys_pfn << VTD_PAGE_SHIFT) | attr;
- 
- 	while (nr_pages > 0) {
- 		uint64_t tmp;
- 
--		if (!sg_res) {
--			unsigned int pgoff = sg->offset & ~PAGE_MASK;
--
--			sg_res = aligned_nrpages(sg->offset, sg->length);
--			sg->dma_address = ((dma_addr_t)iov_pfn << VTD_PAGE_SHIFT) + pgoff;
--			sg->dma_length = sg->length;
--			pteval = (sg_phys(sg) - pgoff) | attr;
--			phys_pfn = pteval >> VTD_PAGE_SHIFT;
--		}
--
- 		if (!pte) {
--			largepage_lvl = hardware_largepage_caps(domain, iov_pfn, phys_pfn, sg_res);
-+			largepage_lvl = hardware_largepage_caps(domain, iov_pfn,
-+					phys_pfn, nr_pages);
- 
- 			first_pte = pte = pfn_to_dma_pte(domain, iov_pfn, &largepage_lvl);
- 			if (!pte)
-@@ -2281,7 +2264,7 @@ static int __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 				pteval |= DMA_PTE_LARGE_PAGE;
- 				lvl_pages = lvl_to_nr_pages(largepage_lvl);
- 
--				nr_superpages = sg_res / lvl_pages;
-+				nr_superpages = nr_pages / lvl_pages;
- 				end_pfn = iov_pfn + nr_superpages * lvl_pages - 1;
- 
- 				/*
-@@ -2315,48 +2298,45 @@ static int __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 		lvl_pages = lvl_to_nr_pages(largepage_lvl);
- 
- 		BUG_ON(nr_pages < lvl_pages);
--		BUG_ON(sg_res < lvl_pages);
- 
- 		nr_pages -= lvl_pages;
- 		iov_pfn += lvl_pages;
- 		phys_pfn += lvl_pages;
- 		pteval += lvl_pages * VTD_PAGE_SIZE;
--		sg_res -= lvl_pages;
- 
- 		/* If the next PTE would be the first in a new page, then we
--		   need to flush the cache on the entries we've just written.
--		   And then we'll need to recalculate 'pte', so clear it and
--		   let it get set again in the if (!pte) block above.
--
--		   If we're done (!nr_pages) we need to flush the cache too.
--
--		   Also if we've been setting superpages, we may need to
--		   recalculate 'pte' and switch back to smaller pages for the
--		   end of the mapping, if the trailing size is not enough to
--		   use another superpage (i.e. sg_res < lvl_pages). */
-+		 * need to flush the cache on the entries we've just written.
-+		 * And then we'll need to recalculate 'pte', so clear it and
-+		 * let it get set again in the if (!pte) block above.
-+		 *
-+		 * If we're done (!nr_pages) we need to flush the cache too.
-+		 *
-+		 * Also if we've been setting superpages, we may need to
-+		 * recalculate 'pte' and switch back to smaller pages for the
-+		 * end of the mapping, if the trailing size is not enough to
-+		 * use another superpage (i.e. nr_pages < lvl_pages).
-+		 */
- 		pte++;
- 		if (!nr_pages || first_pte_in_page(pte) ||
--		    (largepage_lvl > 1 && sg_res < lvl_pages)) {
-+		    (largepage_lvl > 1 && nr_pages < lvl_pages)) {
- 			domain_flush_cache(domain, first_pte,
- 					   (void *)pte - (void *)first_pte);
- 			pte = NULL;
- 		}
--
--		if (!sg_res && nr_pages)
--			sg = sg_next(sg);
- 	}
-+
- 	return 0;
- }
- 
--static int domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
--			  struct scatterlist *sg, unsigned long phys_pfn,
--			  unsigned long nr_pages, int prot)
-+static int
-+domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
-+	       unsigned long phys_pfn, unsigned long nr_pages, int prot)
- {
- 	int iommu_id, ret;
- 	struct intel_iommu *iommu;
- 
- 	/* Do the real mapping first */
--	ret = __domain_mapping(domain, iov_pfn, sg, phys_pfn, nr_pages, prot);
-+	ret = __domain_mapping(domain, iov_pfn, phys_pfn, nr_pages, prot);
- 	if (ret)
- 		return ret;
- 
-@@ -2368,20 +2348,6 @@ static int domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
- 	return 0;
- }
- 
--static inline int domain_sg_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
--				    struct scatterlist *sg, unsigned long nr_pages,
--				    int prot)
--{
--	return domain_mapping(domain, iov_pfn, sg, 0, nr_pages, prot);
--}
--
--static inline int domain_pfn_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
--				     unsigned long phys_pfn, unsigned long nr_pages,
--				     int prot)
--{
--	return domain_mapping(domain, iov_pfn, NULL, phys_pfn, nr_pages, prot);
--}
--
- static void domain_context_clear_one(struct intel_iommu *iommu, u8 bus, u8 devfn)
- {
- 	unsigned long flags;
-@@ -2638,7 +2604,7 @@ static int iommu_domain_identity_map(struct dmar_domain *domain,
- 	 */
- 	dma_pte_clear_range(domain, first_vpfn, last_vpfn);
- 
--	return __domain_mapping(domain, first_vpfn, NULL,
-+	return __domain_mapping(domain, first_vpfn,
- 				first_vpfn, last_vpfn - first_vpfn + 1,
- 				DMA_PTE_READ|DMA_PTE_WRITE);
- }
-@@ -4895,8 +4861,8 @@ static int intel_iommu_map(struct iommu_domain *domain,
- 	/* Round up size to next multiple of PAGE_SIZE, if it and
- 	   the low bits of hpa would take us onto the next page */
- 	size = aligned_nrpages(hpa, size);
--	ret = domain_pfn_mapping(dmar_domain, iova >> VTD_PAGE_SHIFT,
--				 hpa >> VTD_PAGE_SHIFT, size, prot);
-+	ret = domain_mapping(dmar_domain, iova >> VTD_PAGE_SHIFT,
-+			     hpa >> VTD_PAGE_SHIFT, size, prot);
- 	return ret;
- }
- 
+> Any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device tree
+> needs to be removed and its corresponding memory reservation in
+> the currently running kernel needs to be freed.
+>
+> The address and size of the current kernel's IMA measurement log need
+> to be added to the device tree's IMA kexec buffer node and memory for
+> the buffer needs to be reserved for the log to be carried over to
+> the next kernel on the kexec call.
+>
+> Remove any existing FDT_PROP_IMA_KEXEC_BUFFER property in the device
+> tree and free the corresponding memory reservation in the currently
+> running kernel. Add FDT_PROP_IMA_KEXEC_BUFFER property to the device
+> tree and reserve the memory for storing the IMA log.
+> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
+> that the IMA measurement log information is present in the device tree
+> for ARM64.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
 -- 
-2.17.1
-
+Thiago Jung Bauermann
+IBM Linux Technology Center
