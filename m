@@ -2,403 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018EE267957
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB9E267960
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgILKCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 06:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S1725848AbgILKIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 06:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgILKCI (ORCPT
+        with ESMTP id S1725825AbgILKIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 06:02:08 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1658C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:02:07 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 7so8134853pgm.11
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:02:07 -0700 (PDT)
+        Sat, 12 Sep 2020 06:08:13 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9638BC061786
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:08:12 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w3so14519903ljo.5
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=a1HgkSoPAd2rSLtyE3hRo+VC/fOsTWlIABJ5qw8q3+4=;
-        b=i4wN95lQ0WZeQIab486jK3LRXqJX5+2j6VeCpIB+aJxmZOkRSU1NOoBqqB+5RrwKB7
-         Eb6B4wr7mpL1pQNVUzYHur8ETp7HLu32lW35knHR7+AW9njE+ch7JSdJ+9EVbbjSq0z5
-         fjWbHLhKHR6/fYQlVDSMLUY6vFJ0JF2b0pVcEleUOPjJ1Hd+AjFniC2DG7LeJ6RS6y5n
-         L9dqcBklh7M9ZzG6dRueFuF7NrJXANl3P1uV0X6zJ6zBE0K4Ey56ctgBy3jmqmvFne1M
-         0qdlq1aDOVSCicSkRNnamTYz7I3XaO6iP++1cMLLkuB1p9ZS58E+4vDTKKSWmkH8TLzj
-         H49Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LhS5fiHNS+mf8gdgKUyRgo45ZOROmtSlUAQLqDxlfa4=;
+        b=m84ZT5BPICoUprfBrZfjZJo2ToERzKGaIY2M6zIDJinD/VsTcZGwo12Haard8p1vhC
+         MjZ8Hx1mOMoZusfjl0oIINyvWLew3L/D9Vjr6BiIPqengZMXdB/f0RVu1NZMRU2Q3z2V
+         kDw7HrGgkIRJkY7ZdDYxtEtXHKR5/QKvHKBVMwnPxWhPJDa8IJD1nxJmu+ACxDeUAVRj
+         eWLRVBXOA6MNERWuGkqiqoNBVFHwzaDGQ/HFBHpcyhLZgLwuWw0uLKa/KkF+xDYIC+Fm
+         y512jagysE3SZE1JiPHWpTndTacUnZvwMYiNVx5FAlo6DD9u1U+4vzX3/glDN2wD5pMh
+         pEFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=a1HgkSoPAd2rSLtyE3hRo+VC/fOsTWlIABJ5qw8q3+4=;
-        b=U/tHORhmm2YOMCIpQDKj5mle7jSz8xIrUu7MQuaR7otfbwTMk/jxbpi1DCTGMy84s+
-         sgFG9T3ddiB3LTb0rydP9DPymk/j1cMoJoEAXfBec0qTfoXLkF/qd3MOiZEBGlFjnvBc
-         6Msw9onvKGhbZjlCjWhONPPd5eoMSDoFCYaGLV8AN9rF86Qch0iGvcH4VlvD56MfTbl7
-         NwjDRX4sHlZpSt1VMKJ3rNww1a27i40wD6G4D+GEHNQ7Nl1ktkoKdDOLAS9rDkjq/7sl
-         WRuJanmhnvyUuZsqyZcPPXUYcZUKUIZIQJm68B1okPgzbTySKM+En4cxbV2MeTblwBma
-         OqTg==
-X-Gm-Message-State: AOAM533t3o22slGyrmpFbB64KVMoohukkb1RUuwGKtuiYTR3n24KwICT
-        17ptHd6FMPGl7zndfKuiN6qxtA==
-X-Google-Smtp-Source: ABdhPJylqokYJfHm//OXSeUATVxkKoOFySm/Ti6uZ4W2saQYqrL+cKgRbJegZ3gDjR2IiUQJuqXQgA==
-X-Received: by 2002:a65:615a:: with SMTP id o26mr4479817pgv.54.1599904925893;
-        Sat, 12 Sep 2020 03:02:05 -0700 (PDT)
-Received: from kaaira-HP-Pavilion-Notebook ([2405:201:6801:484c:954a:305:9758:cc93])
-        by smtp.gmail.com with ESMTPSA id l78sm4692023pfd.26.2020.09.12.03.02.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 12 Sep 2020 03:02:05 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 15:31:59 +0530
-From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
-To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Helen Koike <helen.koike@collabora.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/9] media: vimc: Add get_frame callback
-Message-ID: <20200912100159.GA5022@kaaira-HP-Pavilion-Notebook>
-References: <20200819180442.11630-1-kgupta@es.iitr.ac.in>
- <20200819180442.11630-3-kgupta@es.iitr.ac.in>
- <80345b28-88e6-b119-5152-9f016dea2c76@ideasonboard.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LhS5fiHNS+mf8gdgKUyRgo45ZOROmtSlUAQLqDxlfa4=;
+        b=OYmYUqqd0upjEk+ZC4X+yZ5X0ntiB95OtQB8/uCGaYm/AG4RatWxqFJ8p6YQzSiXV0
+         waFVcGv3BmuClCG7qt/Fkjzilo0l/o4rkbBkB9NmPDqxM7CUxZNFoTZl6liOnrRdlNHE
+         XNPGvAly17VaKq7KHJ3kxEuTRqJ3X/LxIBlzLSIYQh7LA9cPCTdGQv3EzkTL+hWRmH1l
+         BgKLj8pHHPSuHsvdR/oJSuP0rF0M0y8gCzdQ10fJEwbPaSd5VBV30IM2Pj9mjVVQ5wdG
+         q4d1Ynf+kZxo860EdsQrpqvVHDZi7OIP+ExgBFyznpbqh0R+ahZ+7/GOKNUIDWp1gaAx
+         fBJw==
+X-Gm-Message-State: AOAM5311vS8lkugJ/z0YufLIEpqXbvnvW9CHdV/ZFR8glfQoMG7u47Yq
+        oiCpW1T1dAGmYEh4MYEnTvdjcpkCFxfVsg7eX+FGAQ==
+X-Google-Smtp-Source: ABdhPJztH8Y3Zl30n6XdqCSNpq33ojnWBwr/h05qXrY6CWiTumbfWA4LLSAc0k49IpbpJ+j5i9pFRwI9T1f7AE6sj0s=
+X-Received: by 2002:a2e:9988:: with SMTP id w8mr2308597lji.286.1599905290685;
+ Sat, 12 Sep 2020 03:08:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80345b28-88e6-b119-5152-9f016dea2c76@ideasonboard.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200910175733.11046-1-krzk@kernel.org> <20200910175733.11046-2-krzk@kernel.org>
+ <CACPK8XdocAX5mOXf3VP29cNXH+6unYunB9NiT3qFVKyzR6WXPg@mail.gmail.com>
+ <CAJKOXPe6Tf0B5W27XaD5zLk77OBzGCHpirhTdZjFH0oh8GvWgg@mail.gmail.com> <c162b6ad-57f1-a75a-11e3-9c80c60bd845@ti.com>
+In-Reply-To: <c162b6ad-57f1-a75a-11e3-9c80c60bd845@ti.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 12:07:59 +0200
+Message-ID: <CACRpkdbrrzkYVW13V89PJ5_WRGhxSL0rOxAHA_7hYSyw28Shvg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/15] dt-bindings: gpio: convert bindings for NXP
+ PCA953x family to dtschema
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 04:36:56PM +0100, Kieran Bingham wrote:
-> Hi Kaaira,
-> 
-> On 19/08/2020 19:04, Kaaira Gupta wrote:
-> > In the process of making vimc compatible for multiple streams, we need
-> > to create a frame passing process such that two different entities can
-> > get the frame from a common entity. This isn't possible currently without
-> > calling process_frame twice for the common entity, as process_frames
-> > returns the frame which gets passed on.
-> > 
-> > So, to take care of this, add a get_frame callback to vimc device and
-> > use it to get the frames for an entity from previous entity instead of
-> > returning and passing the frames as an argument in process_frame.
-> > 
-> > Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
-> > ---
-> >  .../media/test-drivers/vimc/vimc-capture.c    | 18 +++++++++++++++---
-> >  drivers/media/test-drivers/vimc/vimc-common.h |  7 ++++---
-> >  .../media/test-drivers/vimc/vimc-debayer.c    | 19 ++++++++++++++++---
-> >  drivers/media/test-drivers/vimc/vimc-scaler.c | 18 +++++++++++++++---
-> >  drivers/media/test-drivers/vimc/vimc-sensor.c | 11 +++++++++--
-> >  .../media/test-drivers/vimc/vimc-streamer.c   | 10 ++++++----
-> >  6 files changed, 65 insertions(+), 18 deletions(-)
-> > 
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
-> > index c63496b17b9a..a8cbb8e4d5ba 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-capture.c
-> > +++ b/drivers/media/test-drivers/vimc/vimc-capture.c
-> > @@ -355,12 +355,13 @@ static void vimc_cap_unregister(struct vimc_ent_device *ved)
-> >  	video_unregister_device(&vcap->vdev);
-> >  }
-> >  
-> > -static void *vimc_cap_process_frame(struct vimc_ent_device *ved,
-> > -				    const void *frame)
-> > +static int vimc_cap_process_frame(struct vimc_ent_device *ved)
-> >  {
-> >  	struct vimc_cap_device *vcap = container_of(ved, struct vimc_cap_device,
-> >  						    ved);
-> >  	struct vimc_cap_buffer *vimc_buf;
-> > +	struct v4l2_subdev *sd;
-> > +	const void *frame;
-> >  	void *vbuf;
-> >  
-> >  	spin_lock(&vcap->qlock);
-> > @@ -370,7 +371,7 @@ static void *vimc_cap_process_frame(struct vimc_ent_device *ved,
-> >  					    typeof(*vimc_buf), list);
-> >  	if (!vimc_buf) {
-> >  		spin_unlock(&vcap->qlock);
-> > -		return ERR_PTR(-EAGAIN);
-> > +		return -EAGAIN;
-> >  	}
-> >  
-> >  	/* Remove this entry from the list */
-> > @@ -385,12 +386,22 @@ static void *vimc_cap_process_frame(struct vimc_ent_device *ved,
-> >  
-> >  	vbuf = vb2_plane_vaddr(&vimc_buf->vb2.vb2_buf, 0);
-> >  
-> > +	sd = media_entity_to_v4l2_subdev(vimc_get_source_entity(ved->ent));
-> > +	ved = v4l2_get_subdevdata(sd);
-> > +	frame = ved->get_frame(ved);
-> 
-> Hrm, this code block is used in several places throughout this patch,
-> and it aliases the function parameter ved to a new device which isn't
-> nice. Not a problem as long as it's not used for the original VED after
-> of course.
-> 
-> But I wonder if we should instead add a helper into vimc-common.c:
-> 
-> struct vimc_ent_device *vimc_get_source_ved(struct vimc_ent_device *ved)
-> {
-> 	struct media_entity *ent;
-> 	struct v4l2_subdev *sd;
-> 
-> 	ent = vimc_get_source_entity(ved->ent);
-> 	if (!ent)
-> 		return NULL;
-> 
-> 	sd = media_entity_to_v4l2_subdev(ent);
-> 
-> 	return v4l2_get_subdevdata(sd);
-> }
-> 
-> It might not be necessary though, just an idea. If you like it, it can
-> be a patch on it's own after the vimc_get_source_entity() moving patch.
+On Fri, Sep 11, 2020 at 11:54 AM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
 
-Yes indeed the source ved is calculated at many places in the entire
-driver (other than this patchset as well), so if you like I can add a
-helper for that.
+> More over, there is already generic schema for gpio hogs: gpio-hog.yaml
 
-> 
-> 
-> But it does show that vimc_get_source_entity() can return NULL which
-> might have to be checked... though perhaps we 'know' it will always be
-> valid ...
-> 
-> Also, following the links for each entity, for each frame sounds like
-> quite a lot of work. I wonder if the active source entity should be
-> cached in each VED ...
+Where is this? I don't have it in my GPIO devel branch for sure, and
+it is not in linux-next either so not in Bartosz' tree.
 
-is caching only for calculating the frame okay? If it is I can do it in
-this series itself if you like
+I did suggest that I want a gpio-common.yaml file which includes the
+hogs.
 
-> 
-> That could be done on top anyway...
-> 
-> Overall, this looks like it will work, so with comments addressed how
-> you wish,
-> 
-> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> 
-> 
-> > +
-> >  	memcpy(vbuf, frame, vcap->format.sizeimage);
-> >  
-> >  	/* Set it as ready */
-> >  	vb2_set_plane_payload(&vimc_buf->vb2.vb2_buf, 0,
-> >  			      vcap->format.sizeimage);
-> >  	vb2_buffer_done(&vimc_buf->vb2.vb2_buf, VB2_BUF_STATE_DONE);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static void *vimc_cap_get_frame(struct vimc_ent_device *ved)
-> > +{
-> >  	return NULL;
-> >  }
-> >  
-> > @@ -455,6 +466,7 @@ static struct vimc_ent_device *vimc_cap_add(struct vimc_device *vimc,
-> >  	vcap->ved.ent = &vcap->vdev.entity;
-> >  	vcap->ved.process_frame = vimc_cap_process_frame;
-> >  	vcap->ved.vdev_get_format = vimc_cap_get_format;
-> > +	vcap->ved.get_frame = vimc_cap_get_frame;
-> >  	vcap->ved.dev = vimc->mdev.dev;
-> >  
-> >  	/* Initialize the video_device struct */
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-common.h b/drivers/media/test-drivers/vimc/vimc-common.h
-> > index 4c580d854007..287d66edff49 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-common.h
-> > +++ b/drivers/media/test-drivers/vimc/vimc-common.h
-> > @@ -85,7 +85,8 @@ struct vimc_pix_map {
-> >   *
-> >   * @dev:		a pointer of the device struct of the driver
-> >   * @ent:		the pointer to struct media_entity for the node
-> > - * @process_frame:	callback send a frame to that node
-> > + * @get_frame:		callback that sends a frame processed by the entity
-> 
-> s/sends a/obtains the/
-> 
-> 
-> 
-> > + * @process_frame:	callback that processes a frame
-> >   * @vdev_get_format:	callback that returns the current format a pad, used
-> >   *			only when is_media_entity_v4l2_video_device(ent) returns
-> >   *			true
-> > @@ -101,8 +102,8 @@ struct vimc_pix_map {
-> >  struct vimc_ent_device {
-> >  	struct device *dev;
-> >  	struct media_entity *ent;
-> > -	void * (*process_frame)(struct vimc_ent_device *ved,
-> > -				const void *frame);
-> > +	void * (*get_frame)(struct vimc_ent_device *ved);
-> > +	int (*process_frame)(struct vimc_ent_device *ved);
-> >  	void (*vdev_get_format)(struct vimc_ent_device *ved,
-> >  			      struct v4l2_pix_format *fmt);
-> >  };
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-debayer.c b/drivers/media/test-drivers/vimc/vimc-debayer.c
-> > index c3f6fef34f68..f61e6e8899ac 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-debayer.c
-> > +++ b/drivers/media/test-drivers/vimc/vimc-debayer.c
-> > @@ -491,17 +491,22 @@ static void vimc_deb_calc_rgb_sink(struct vimc_deb_device *vdeb,
-> >  	}
-> >  }
-> >  
-> > -static void *vimc_deb_process_frame(struct vimc_ent_device *ved,
-> > -				    const void *sink_frame)
-> > +static int vimc_deb_process_frame(struct vimc_ent_device *ved)
-> >  {
-> >  	struct vimc_deb_device *vdeb = container_of(ved, struct vimc_deb_device,
-> >  						    ved);
-> >  	unsigned int rgb[3];
-> >  	unsigned int i, j;
-> > +	struct v4l2_subdev *sd;
-> > +	const void *sink_frame;
-> >  
-> >  	/* If the stream in this node is not active, just return */
-> >  	if (!vdeb->src_frame)
-> > -		return ERR_PTR(-EINVAL);
-> > +		return -EINVAL;
-> > +
-> > +	sd = media_entity_to_v4l2_subdev(vimc_get_source_entity(ved->ent));
-> > +	ved = v4l2_get_subdevdata(sd);
-> > +	sink_frame = ved->get_frame(ved);
-> >  
-> >  	for (i = 0; i < vdeb->sink_fmt.height; i++)
-> >  		for (j = 0; j < vdeb->sink_fmt.width; j++) {
-> > @@ -509,6 +514,13 @@ static void *vimc_deb_process_frame(struct vimc_ent_device *ved,
-> >  			vdeb->set_rgb_src(vdeb, i, j, rgb);
-> >  		}
-> >  
-> > +	return 0;
-> > +}
-> > +
-> > +static void *vimc_deb_get_frame(struct vimc_ent_device *ved)
-> > +{
-> > +	struct vimc_deb_device *vdeb = container_of(ved, struct vimc_deb_device,
-> > +						    ved);
-> >  	return vdeb->src_frame;
-> >  }
-> >  
-> > @@ -593,6 +605,7 @@ static struct vimc_ent_device *vimc_deb_add(struct vimc_device *vimc,
-> >  		goto err_free_hdl;
-> >  
-> >  	vdeb->ved.process_frame = vimc_deb_process_frame;
-> > +	vdeb->ved.get_frame = vimc_deb_get_frame;
-> >  	vdeb->ved.dev = vimc->mdev.dev;
-> >  	vdeb->mean_win_size = vimc_deb_ctrl_mean_win_size.def;
-> >  
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-scaler.c b/drivers/media/test-drivers/vimc/vimc-scaler.c
-> > index 121fa7d62a2e..347f9cd4a168 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-scaler.c
-> > +++ b/drivers/media/test-drivers/vimc/vimc-scaler.c
-> > @@ -455,18 +455,29 @@ static void vimc_sca_fill_src_frame(const struct vimc_sca_device *const vsca,
-> >  			vimc_sca_scale_pix(vsca, i, j, sink_frame);
-> >  }
-> >  
-> > -static void *vimc_sca_process_frame(struct vimc_ent_device *ved,
-> > -				    const void *sink_frame)
-> > +static int vimc_sca_process_frame(struct vimc_ent_device *ved)
-> >  {
-> >  	struct vimc_sca_device *vsca = container_of(ved, struct vimc_sca_device,
-> >  						    ved);
-> > +	const void *sink_frame;
-> > +	struct v4l2_subdev *sd;
-> >  
-> >  	/* If the stream in this node is not active, just return */
-> >  	if (!vsca->src_frame)
-> > -		return ERR_PTR(-EINVAL);
-> > +		return -EINVAL;
-> >  
-> > +	sd = media_entity_to_v4l2_subdev(vimc_get_source_entity(ved->ent));
-> > +	ved = v4l2_get_subdevdata(sd);
-> > +	sink_frame = ved->get_frame(ved);
-> >  	vimc_sca_fill_src_frame(vsca, sink_frame);
-> >  
-> > +	return 0;
-> > +};
-> > +
-> > +static void *vimc_sca_get_frame(struct vimc_ent_device *ved)
-> > +{
-> > +	struct vimc_sca_device *vsca = container_of(ved, struct vimc_sca_device,
-> > +						    ved);
-> >  	return vsca->src_frame;
-> >  };
-> >  
-> > @@ -505,6 +516,7 @@ static struct vimc_ent_device *vimc_sca_add(struct vimc_device *vimc,
-> >  	}
-> >  
-> >  	vsca->ved.process_frame = vimc_sca_process_frame;
-> > +	vsca->ved.get_frame = vimc_sca_get_frame;
-> >  	vsca->ved.dev = vimc->mdev.dev;
-> >  
-> >  	/* Initialize the frame format */
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-sensor.c b/drivers/media/test-drivers/vimc/vimc-sensor.c
-> > index ba5db5a150b4..32a2c39de2cd 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-sensor.c
-> > +++ b/drivers/media/test-drivers/vimc/vimc-sensor.c
-> > @@ -190,8 +190,7 @@ static const struct v4l2_subdev_pad_ops vimc_sen_pad_ops = {
-> >  	.set_fmt		= vimc_sen_set_fmt,
-> >  };
-> >  
-> > -static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
-> > -				    const void *sink_frame)
-> > +static int vimc_sen_process_frame(struct vimc_ent_device *ved)
-> >  {
-> >  	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
-> >  						    ved);
-> > @@ -238,6 +237,13 @@ static void *vimc_sen_process_frame(struct vimc_ent_device *ved,
-> >  		break;
-> >  	}
-> >  
-> > +	return 0;
-> > +}
-> > +
-> > +static void *vimc_sen_get_frame(struct vimc_ent_device *ved)
-> > +{
-> > +	struct vimc_sen_device *vsen = container_of(ved, struct vimc_sen_device,
-> > +						    ved);
-> >  	return vsen->frame;
-> >  }
-> >  
-> > @@ -429,6 +435,7 @@ static struct vimc_ent_device *vimc_sen_add(struct vimc_device *vimc,
-> >  		goto err_free_tpg;
-> >  
-> >  	vsen->ved.process_frame = vimc_sen_process_frame;
-> > +	vsen->ved.get_frame = vimc_sen_get_frame;
-> >  	vsen->ved.dev = vimc->mdev.dev;
-> >  
-> >  	/* Initialize the frame format */
-> > diff --git a/drivers/media/test-drivers/vimc/vimc-streamer.c b/drivers/media/test-drivers/vimc/vimc-streamer.c
-> > index 4f8384246042..c1644d69686d 100644
-> > --- a/drivers/media/test-drivers/vimc/vimc-streamer.c
-> > +++ b/drivers/media/test-drivers/vimc/vimc-streamer.c
-> > @@ -125,7 +125,8 @@ static int vimc_streamer_pipeline_init(struct vimc_stream *stream,
-> >  static int vimc_streamer_thread(void *data)
-> >  {
-> >  	struct vimc_stream *stream = data;
-> > -	u8 *frame = NULL;
-> > +	struct vimc_ent_device *ved;
-> > +	int ret;
-> >  	int i;
-> >  
-> >  	set_freezable();
-> > @@ -136,9 +137,10 @@ static int vimc_streamer_thread(void *data)
-> >  			break;
-> >  
-> >  		for (i = stream->pipe_size - 1; i >= 0; i--) {
-> > -			frame = stream->ved_pipeline[i]->process_frame(
-> > -					stream->ved_pipeline[i], frame);
-> > -			if (!frame || IS_ERR(frame))
-> > +			ved = stream->ved_pipeline[i];
-> > +			ret = ved->process_frame(ved);
-> > +
-> > +			if (ret)
-> >  				break;
-> >  		}
-> >  		//wait for 60hz
-> > 
-> 
-> -- 
-> Regards
-> --
-> Kieran
+> Originally, gpio bindings were defined without restricting gpio hog node names and,
+> generic schema follows this.
+>
+> I think, the generic "gpio-hogs" sub-node may be introduced to place gpio hogs child nodes,
+> if gpio hogs node names restriction need to be introduces (*which i'm not sure is reasonable*).
+>
+> gpio@20 {
+>         gpio-hogs {
+>                 yyy-hog {
+>                          gpio-hog;
+>                          gpios
+>                 }
+>         }
+>
+> But this require as gpio code as generic gpio schema update (with backward compatibility in mind).
+
+The whole problem I have with the DT bindings is that defining
+them is not really a Linux problem and the people maintaining it even want
+to move it out of the Linux kernel tree. It is supposedly the responsibility of
+all operating systems using device tree including but not limited to BSD
+and Zephyr.
+
+But there is noone picking up the responsibility outside of the Linux kernel
+tree except for Rob and Rob cannot do everything.
+
+With things like this it breaks apart because noone takes the overall
+responsibility. And as subsystem maintainer I am fully overloaded with
+the Linux side of things.
+
+This is of course not your or anyone else's fault. But:
+GPIO DT binding maintainers/writers wanted!
+
+Yours,
+Linus Walleij
