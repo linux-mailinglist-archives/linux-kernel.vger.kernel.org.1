@@ -2,150 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1684267C36
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F41267C3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgILUC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 16:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgILUCv (ORCPT
+        id S1725903AbgILUaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 16:30:02 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59791 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725872AbgILUaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 16:02:51 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DEDC061573;
-        Sat, 12 Sep 2020 13:02:51 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so8669753pgl.2;
-        Sat, 12 Sep 2020 13:02:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=jCctqS19HvE4LQdwQiL4Ym9XyRUXESqazdevqYADPsY=;
-        b=QPZNlo3hEkkcw24e4OYy4P8aVV1HndQGaUcnZGSGYEz2FwMoVMNo8DyzcwGJ8Ax/JA
-         aQnreQ4a+057HFzfj8KsLXP7+q+5/ll9QogFSRLhlvpUTDqF02CmPOuGiC+6+Qo9wusr
-         ubXt2afuQeSOcveSxw8KK09/v0nGdEqXn901uOZIgaEfDWFNnS020miOwpQFlSbwuzEb
-         G4r53CrDKCWQS3lghQCjsE7163YlD7RKSIdlHFCdtN48j5uJvYvRSn6bCouL2Maiives
-         3na8sVhvoPVqzK2BQJ0rmR/zF9CW9KHfefHvjfutsFp6xrMmnNOfBT3eOlXggwRT9o6R
-         NHwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=jCctqS19HvE4LQdwQiL4Ym9XyRUXESqazdevqYADPsY=;
-        b=bqgX7oB6uL43Ta05LH6r7HvicPmfGQgJMC67BHF/7wtCzAC2dFrgGu/0eXM0g0X8Vo
-         8TBEitPvSixErF8kjvil7sZDrzdXABZcSv+35AZE1KTEWzvriFkKiOv5xDKGXSfx7S5c
-         4mqcp48Tt0t3rK/ypwQjzEr1qX7Ry/ILlHO9+jMA3KWFZ22ZJra9NgSrVIUcimFJ+KOw
-         0JgREEO7T+59V6UTCthUAnI65Bq8yGjXeBGy2LMfmkQRGsFM15M75s3eBoMsBbjGpgGv
-         GrNMs4819v7INzzA1Od22y2KD15Bykr3gPHXO26so2tNR49KFmQGsAL62URrJG8m8alN
-         2PUg==
-X-Gm-Message-State: AOAM531QR84s1qmC1wEa4Y3x5sVN+OZ7u1ZXxJaAkOYuB2t2BM0nIEoj
-        NL2rAM5Z7JtVYtB12PgEFBlUwGewRfq4cJHtM2A=
-X-Google-Smtp-Source: ABdhPJxzAJnBlyVisHCNXXYkf2LG/uTOIHzvGMTeuGV7xNFC6CWYyoIvzFH5oBX2yCoPL+zbI0VJEQ==
-X-Received: by 2002:a63:42:: with SMTP id 63mr5920627pga.419.1599940970711;
-        Sat, 12 Sep 2020 13:02:50 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.202.95])
-        by smtp.gmail.com with ESMTPSA id w206sm6137334pfc.1.2020.09.12.13.02.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Sep 2020 13:02:50 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Subject: Re: [PATCH] Using a pointer and kzalloc in place of a struct directly
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-References: <000000000000c82fe505aef233c6@google.com>
- <20200912113804.6465-1-anant.thazhemadam@gmail.com>
- <20200912114706.GA171774@kroah.com>
- <09477eb1-bbeb-74e8-eba9-d72cce6104db@gmail.com>
- <20200912145525.GA769913@kroah.com>
-Message-ID: <45d9f933-a5c8-ddbd-c014-2bdd5d911e13@gmail.com>
-Date:   Sun, 13 Sep 2020 01:32:43 +0530
+        Sat, 12 Sep 2020 16:30:00 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 86DF5580325;
+        Sat, 12 Sep 2020 16:29:58 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sat, 12 Sep 2020 16:29:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=5
+        mCG9J9WZRXStCP3oo6BwMCg/UTfEFWOfJogf9Cxk4A=; b=JqKaZgMAyVoSXFJmf
+        j2RCuI7D4ffirixPHrLfWJpTs0BlBhFdM2uvpWDEBa/xJ/xcuUYwi0I4BSHlQOEa
+        zMg/Zo43nmfVOCqnmZU+6+ukA6X8VR1FB9Woshrd9yp6sFS5knywehlb+8AascPJ
+        NGmwdEVz1OtiL3qeQ+P067J5dJ10rfFsjM6aigY080S4X0xn99gJXiGhA02rxE0S
+        NofTBtaZSjmonlGWEkF53ZMP5Zlm1iXwxh22WzJdufYtIhtSE+rEto20FwMO4iLf
+        ghVBNVtu06luDLmXhJm2hFVXr+dlXVc+VOAKn5ORsUe4vi6XrbFtxgsUF1xBB8cb
+        xsgJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=5mCG9J9WZRXStCP3oo6BwMCg/UTfEFWOfJogf9Cxk
+        4A=; b=VSpScBqL7Al/3NxfviQ6cTPLRui3u/bUuNnF1lSD6CVNBDlzslc9CqcyI
+        dhmGGUwRu0tYyyikDo+BB0aBlBVAtQszwvB9MeF5DmQ2CqPdohXpIRyg6QgbiS9C
+        Rz893kxSI2AwJOpbFsizbq8XU/NB1xRV8hbwiHYkOR7Rd9fTwWxjQjRJzUbWsMqQ
+        Awug1gbxbYluHv8d8eVzSXPAYeOD2hrXWsiriIoMtKTYhLB1kjBwg0zK+RjHgL5M
+        jPWlZ+6zMQK3UMeCWo1qWNEcQirpOk3hjZMaPaRvomYyTcstDoJmwW0b12pc/OBB
+        bUtKNyL9UKWDzkTpia1c2FX+bXjEA==
+X-ME-Sender: <xms:xC9dXzupv5rZz2PFg-zJGQf3q44GBg2XwdpBDr9QsnSKcQf24r7dGQ>
+    <xme:xC9dX0csAIqI732GK8VZ5w-GPqaoiMVzVNBJWGzNj-coU9JTesfqDNV0TZHMHsba_
+    j91MaB1pBMDG5y_aQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeiuddgudehudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpefurghm
+    uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpeduvdelffekjefhudeileehjeetheelfeeiieekgfetueeghfdt
+    veekfeevgfehieenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeejtddrud
+    efhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:xC9dX2z8rkTdeq05Y7Sy0xZlKLverWAcPok7ROAgvgELP5MGImCLgA>
+    <xmx:xC9dXyPuvRWDEDWygJpOBUqcGrVVwrNTKxwDJnH5App5l9wfxRYSCQ>
+    <xmx:xC9dXz-bWQRorOFWCNSHXeiuGJ7iEIt29sOW35hT5hLJznepcyNkew>
+    <xmx:xi9dXyW2qmtj314Yd5cGnuxsjmMz_UrsJmR-mr6gw7ySP-hGyf0ReA>
+Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 080E6328005A;
+        Sat, 12 Sep 2020 16:29:55 -0400 (EDT)
+Subject: Re: [PATCH v3 3/7] ASoC: sun4i-i2s: Add support for H6 I2S
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Marcus Cooper <codekipper@gmail.com>
+References: <CAJiuCcfXqizcq_JuXRCsqEqM2562cr1SGJ0pmy07jcJxAXojOw@mail.gmail.com>
+ <20200430084600.samghw4zxb5zdbez@gilmour.lan>
+ <CAJiuCcf_LHrJ6QdZgH8HyN6TRiT+GiD+t4UggFCrz-VwVHXV6w@mail.gmail.com>
+ <20200504120942.lnrxnnmykqnvw3fb@gilmour.lan>
+ <CAJiuCceF340FiLvyeXNZtvqftQMAmk=MtFDLT_9696ix+eH1Yw@mail.gmail.com>
+ <20200729143927.47f5tbuaob4ph3lp@gilmour.lan>
+ <20200729151548.GB5612@sirena.org.uk>
+ <CAJiuCcdf=TNLPTUPzHP9NzPHqdxG06TRDkQfONY+ScK0DV_v5w@mail.gmail.com>
+ <20200903205851.gdnpthserywsxrbs@gilmour.lan>
+ <80b5a4e3-c8bc-9521-4ff1-12bb6424516f@sholland.org>
+ <20200910143314.qku7po6htiiq5lzf@gilmour.lan>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <57f8bdeb-14dc-583e-ffa8-43d7a9f1bb24@sholland.org>
+Date:   Sat, 12 Sep 2020 15:29:55 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200912145525.GA769913@kroah.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200910143314.qku7po6htiiq5lzf@gilmour.lan>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Maxime,
 
-On 12/09/20 8:25 pm, Greg KH wrote:
-> On Sat, Sep 12, 2020 at 05:43:38PM +0530, Anant Thazhemadam wrote:
->> On 12/09/20 5:17 pm, Greg KH wrote:
->>> Note, your "To:" line seemed corrupted, and why not cc: the bpf mailing
->>> list as well?
->> Oh, I'm sorry about that. I pulled the emails of all the people to whom
->> this mail was sent off from the header in lkml mail, and just cc-ed
->> everyone.
+On 9/10/20 9:33 AM, Maxime Ripard wrote:
+> On Thu, Sep 03, 2020 at 09:54:39PM -0500, Samuel Holland wrote:
+>> On 9/3/20 3:58 PM, Maxime Ripard wrote:
+>>> On Thu, Sep 03, 2020 at 10:02:31PM +0200, ClÃ©ment PÃ©ron wrote:
+>>>> Hi Maxime,
+>>>>
+>>>> On Wed, 29 Jul 2020 at 17:16, Mark Brown <broonie@kernel.org> wrote:
+>>>>>
+>>>>> On Wed, Jul 29, 2020 at 04:39:27PM +0200, Maxime Ripard wrote:
+>>>>>
+>>>>>> It really looks like the polarity of LRCK is fine though. The first word
+>>>>>> is sent with LRCK low, and then high, so we have channel 0 and then
+>>>>>> channel 1 which seems to be the proper ordering?
 >>
->>> You leaked memory :(
+>> Which image file is this in reference to?
+>>
+>>>>> Yes, that's normal.
+>>>>
+>>>> Thank you very much for this test.
+>>>>
+>>>> So I will revert the following commit:
+>>>>
+>>>> ASoC: sun4i-i2s: Fix the LRCK polarity
+>>>>
+>>>> https://github.com/clementperon/linux/commit/dd657eae8164f7e4bafe8b875031a7c6c50646a9
 >>>
->>> Did you test this patch?  Where do you free this memory, I don't see
->>> that happening anywhere in this patch, did I miss it?
->> Yes, I did test this patch, which didn't seem to trigger any issues.
->> It surprised me so much, that I ended up sending it in, to have
->> it checked out.
-> You might not have noticed the memory leak if you were not looking for
-> it.
->
-> How did you test this?
-Ah, that must be it. I tested this using syzbot, which wouldn't have looked
-for memory leaks, but only the issue that was reported. My apologies.
->> I wasn't sure where exactly the memory allocated here was
->> supposed to be freed (might be why the current implementation
->> isn't exactly using kzalloc). I forgot to mention it in the initial mail,
->> and I was hoping that someone would point me in the right direction
->> (if this approach was actually going to be considered, that is, which in
->> retrospect I now feel might not be the best thing)
-> It has to be freed somewhere, you wrote the patch  :)
->
-> But back to the original question here, why do you feel this change is
-> needed?  What does this do better/faster/more correct than the code that
-> is currently there?  Unless you can provide that, the change should not
-> be needed, right?
-I was initially trying to see if allocating memory would be an appropriate
-heuristic in trying to get a better sense of the bug and crash report, and
-at that moment, that was my goal, and figured that I'd deal with rest
-(such as freeing the memory) later on, if this was a something that could work.
+>>> Like I said, the current code is working as expected with regard to the
+>>> LRCK polarity. The issue is that the samples are delayed and start to be
+>>> transmitted on the wrong phase of the signal.
+>>
+>> Since an I2S LRCK frame is radially symmetric, "wrong phase" and "inverted
+>> polarity" look the same. The only way to definitively distinguish them is by
+>> looking at the sample data.
+>>
+>> In "i2s-h6.png", the samples are all zeroes, so you're assuming that the first
+>> sample transmitted (that is, when the bit clock starts transitioning) was a
+>> "left" sample.
+>>
+>> However, in "h6-i2s-start-data.png", there are pairs of samples we can look at.
+>> I'm still assuming that similar samples are a left/right pair, but that's
+>> probably a safe assumption. Here we see the first sample in each pair is
+>> transmitted with LRCK *high*, and the second sample in the pair is transmitted
+>> with LRCK *low*. This is the opposite of your claim above.
+>>
+>> An ideal test would put left/right markers and frame numbers in the data
+>> channel. The Python script below can generate such a file. Then you would know
+>> how much startup delay there is, which channel the "first sample" came from, and
+>> how each channel maps to the LRCK level.
+>>
+>> It would also be helpful to test DSP_A mode, where the LRCK signal is
+>> asymmetric and an inversion would be obvious.
+> 
+> I had no idea that there was a wave module in Python, that's a great
+> suggestion, thanks!
+> 
+> You'll find attached the screenshots for both the I2S and DSP_A formats.
+> I zoomed out a bit to be able to have the first valid samples, but it
+> should be readable.
+> 
+> The code I used is there:
+> https://github.com/mripard/linux/tree/sunxi/h6-i2s-test
+> 
+> It's basically the v3, plus the DT bits.
+> 
+> As you can see, in the i2s case, LRCK starts low and then goes up, with
+> the first channel (0x2*** samples) transmitted first, so everything
+> looks right here.
+> 
+> On the DSP_A screenshot, LRCK will be low with small bursts high, and
+> once again with the first channel being transmitted first, so it looks
+> right to me too.
 
-I was surprised when the patch (although it caused a memory leak), seemed
-to pass the test for the bug, without triggering any issues; since this patch
-basically only allocates memory as compared to locally declaring variables.
+Indeed, for H6 i2s0 with LRCK inversion in software, everything looks correct on
+the wire.
 
-I wanted some input or explanation, about how is it that doing this no longer
-triggers the bug?
-It felt (and still feels) extremely unlikely to me, that allocating memory also
-prevents the issue, which is why I figured it might do some help asking
-someone, if it does, and I just felt sending in the patch might make it at least
-a little less absurd sounding.
-Also, if simply allocating memory provides this security (which syzbot seems to
-approve, but I still do not understand fully how), wouldn't it be a
-welcome change?
+It's still concerning to me that the BSP has no evidence of this inversion,
+either for i2s0 or i2s1[1]. And the inversion seems not to be required for HDMI
+audio on mainline either (but there could be an inversion on the HDMI side or on
+the interconnect).
 
-Like I said, I'm trying to understand how things work, a little better here,
-and I apologize for any confusion that I may have caused.
+Even so, your research is sufficient justification for me that the code is
+correct as-is (with the inversion). Thank you very much for collecting the data!
 
-TLDR;
-I tried allocating memory as a heuristic while trying to understand
-the bug and the bpf-next tree a little better.
-Surprisingly the bug didn't seem to get triggered.
-I would like to know the reason why the bug didn't get triggered when syzbot
-applied this patch to the bpf-next tree.
-If the reason, and allocating memory approach seems sensible  enough,
-(or provides some sort of security that I seem to oblivious to), I will try and
-come up with a way to free the allocated memory, and send in a v2 as well.
+Cheers,
+Samuel
 
-(For anyone who might say that there is another commit that fixes this - yes, I
-am aware.
-However, if you take a look at the bug at
-            https://syzkaller.appspot.com/bug?extid=976d5ecfab0c7eb43ac3
-you can see that a generic test (no patch attached) to see if the bug was
-still valid was issued much later, and it still turned out to trigger an issue)
-
+[1]:
+https://github.com/Allwinner-Homlet/H6-BSP4.9-linux/blob/e634a960316dddd1eb50f2a6cf237f2f1c6da3e6/sound/soc/sunxi/sunxi-daudio.c#L1062
+where 1 == SND_SOC_DAIFMT_NB_NF, and there's no inversion in
+sunxi_daudio_init_fmt().
