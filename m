@@ -2,169 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4524267A2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEB9267A31
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 14:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgILLyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:54:38 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:41192 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgILLyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:54:24 -0400
-Received: by mail-il1-f205.google.com with SMTP id e23so9088964ill.8
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:54:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QzpUN7h/ywNYhAKS1AakFzoFJB4yM5eHT7ViEh1lJuw=;
-        b=nMVuIW5jLZjdPwIB8r8OZVNPxZ404KSEWxQKrUmvWEeRpQ8IS967yhmeg1k7eF66S6
-         HqKKkGbctsm+xiAIUy02ValtorSg/EhWC/69+0DHQToTwEnIc4jkoc2nycIaYLZiJ7y2
-         PGbJWGm2GCzxdefVVODrFTxZdfjexKv+MDEmKd53dBAXdVgdn9Patxy+WhFhM/OswrEZ
-         Wj32DFr+IBQYO7xbu0Y5+5mdnOYlVmF+XW/CGKw4AW/uRfluzuZsZoDfKB/R5hfMMW0C
-         F3U5uOCnCyc0bQlsrNQNK6n9GIH9+qotg/qe+1jQtOU7dQ5a8xJA4mNBYwl3tnmWYjUu
-         PFyw==
-X-Gm-Message-State: AOAM530N1xVYkxDDpNKRykFUYU04bh87IfeSJ/tEK3g2VH7hrnCvkSGQ
-        NkhagT0ePNYPLFHwSGBICbdnXhs+Qe0Hespf5V0KCYl6VEOP
-X-Google-Smtp-Source: ABdhPJzQgz3XcsB/JIg0WAtPqSFzqVutJsOO6oRSsPtnG55+taEr2KDT19ZyPqtlkzydQep/CFWtR7QYJdaoVvpPhcpfZ3aTkpBu
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:26c1:: with SMTP id g1mr5105834ioo.10.1599911662612;
- Sat, 12 Sep 2020 04:54:22 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 04:54:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000052792305af1c7614@google.com>
-Subject: BUG: unable to handle kernel paging request in pvclock_gtod_notify
-From:   syzbot <syzbot+815c663e220da75b02b6@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1725857AbgILMBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 08:01:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgILMAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 08:00:53 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6CF7207EA;
+        Sat, 12 Sep 2020 12:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599912051;
+        bh=IpaqtpvBIrmcYR7m/bPjpB9hmFSlPm1waXx3HuuWiEU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DzBEH0LUWx9va/ZJ8pRBDeiWgJst8toWIqcGzkpe2KqzncxrMaZyiEiFZzNQSf75/
+         /SKDUtbzOg5/K05ZrWneP8Ed70fb6V8GGEweUkaxCvCbLdwDYTp9NsO0zccDSmnC7J
+         KO11LwIS1sLf7aArsHXmBUBKgCe8618g3+gha4Ds=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kH4D3-00BEOo-Lw; Sat, 12 Sep 2020 13:00:49 +0100
+Date:   Sat, 12 Sep 2020 13:00:48 +0100
+Message-ID: <87k0wzkxvz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, jason@lakedaemon.net,
+        catalin.marinas@arm.com, tglx@linutronix.de, will@kernel.org,
+        yuzenghui@huawei.com
+Subject: Re: [PATCH v2 2/2] irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ == 0
+In-Reply-To: <20200819133630.527243-3-alexandru.elisei@arm.com>
+References: <20200819133630.527243-1-alexandru.elisei@arm.com>
+        <20200819133630.527243-3-alexandru.elisei@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, jason@lakedaemon.net, catalin.marinas@arm.com, tglx@linutronix.de, will@kernel.org, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Alex,
 
-syzbot found the following issue on:
+Thanks for taking the time for putting this together, as it has been a
+long standing issue that needed fixing.
 
-HEAD commit:    e8878ab8 Merge tag 'spi-fix-v5.9-rc4' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=137c47a5900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=815c663e220da75b02b6
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1737a8be900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ff15ed900000
+On Wed, 19 Aug 2020 14:36:30 +0100,
+Alexandru Elisei <alexandru.elisei@arm.com> wrote:
+> 
+> The GIC's internal view of the priority mask register and the assigned
+> interrupt priorities are based on whether GIC security is enabled and
+> whether firmware routes Group 0 interrupts to EL3. At the moment, we
+> support priority masking when ICC_PMR_EL1 and interrupt priorities are
+> either both modified by the GIC, or both left unchanged.
+> 
+> Trusted Firmware-A's default interrupt routing model allows Group 0
+> interrupts to be delivered to the non-secure world (SCR_EL3.FIQ == 0).
+> Unfortunately, this is precisely the case that the GIC driver doesn't
+> support: ICC_PMR_EL1 remains unchanged, but the GIC's view of interrupt
+> priorities is different from the software programmed values.
+> 
+> Support pseudo-NMIs when SCR_EL3.FIQ == 0 by using a different value to
+> mask regular interrupts. All the other values remain the same.
+> 
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>  arch/arm64/include/asm/arch_gicv3.h |  8 ++++-
+>  arch/arm64/include/asm/daifflags.h  |  4 +--
+>  arch/arm64/include/asm/irqflags.h   | 18 ++++++----
+>  arch/arm64/include/asm/ptrace.h     | 12 +++++++
+>  arch/arm64/kernel/entry.S           |  2 +-
+>  arch/arm64/kernel/image-vars.h      |  2 ++
+>  arch/arm64/kvm/hyp/nvhe/switch.c    |  2 +-
+>  drivers/irqchip/irq-gic-v3.c        | 52 ++++++++++++++++++++++-------
+>  8 files changed, 77 insertions(+), 23 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/arch_gicv3.h b/arch/arm64/include/asm/arch_gicv3.h
+> index 6647ae4f0231..908152e8659b 100644
+> --- a/arch/arm64/include/asm/arch_gicv3.h
+> +++ b/arch/arm64/include/asm/arch_gicv3.h
+> @@ -162,7 +162,13 @@ static inline void gic_pmr_mask_irqs(void)
+>  	 * are applied to IRQ priorities
+>  	 */
+>  	BUILD_BUG_ON((0x80 | (GICD_INT_DEF_PRI >> 1)) >= GIC_PRIO_IRQON);
+> -	gic_write_pmr(GIC_PRIO_IRQOFF);
+> +	/*
+> +	 * Same situation as above, but now we make sure that we can mask
+> +	 * regular interrupts.
+> +	 */
+> +	BUILD_BUG_ON((0x80 | (GICD_INT_DEF_PRI >> 1)) < (GIC_PRIO_IRQOFF_NS |
+> +							 GIC_PRIO_PSR_I_SET));
+> +	gic_write_pmr(gic_prio_irqoff());
+>  }
+>  
+>  static inline void gic_arch_enable_irqs(void)
+> diff --git a/arch/arm64/include/asm/daifflags.h b/arch/arm64/include/asm/daifflags.h
+> index ec213b4a1650..3efa240a6c48 100644
+> --- a/arch/arm64/include/asm/daifflags.h
+> +++ b/arch/arm64/include/asm/daifflags.h
+> @@ -22,7 +22,7 @@
+>  static inline void local_daif_mask(void)
+>  {
+>  	WARN_ON(system_has_prio_mask_debugging() &&
+> -		(read_sysreg_s(SYS_ICC_PMR_EL1) == (GIC_PRIO_IRQOFF |
+> +		(read_sysreg_s(SYS_ICC_PMR_EL1) == (gic_prio_irqoff() |
+>  						    GIC_PRIO_PSR_I_SET)));
+>  
+>  	asm volatile(
+> @@ -87,7 +87,7 @@ static inline void local_daif_restore(unsigned long flags)
+>  			 * asynchronous errors, we can take NMIs
+>  			 */
+>  			flags &= ~PSR_I_BIT;
+> -			pmr = GIC_PRIO_IRQOFF;
+> +			pmr = gic_prio_irqoff();
+>  		} else {
+>  			pmr = GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET;
+>  		}
+> diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
+> index aa4b6521ef14..af353c78d5f8 100644
+> --- a/arch/arm64/include/asm/irqflags.h
+> +++ b/arch/arm64/include/asm/irqflags.h
+> @@ -28,10 +28,13 @@
+>   */
+>  static inline void arch_local_irq_enable(void)
+>  {
+> +	u64 pmr_irqon = GIC_PRIO_IRQON;
+> +
+>  	if (system_has_prio_mask_debugging()) {
+> -		u32 pmr = read_sysreg_s(SYS_ICC_PMR_EL1);
+> +		u64 pmr = read_sysreg_s(SYS_ICC_PMR_EL1);
+> +		u64 pmr_irqoff = gic_prio_irqoff();
+>  
+> -		WARN_ON_ONCE(pmr != GIC_PRIO_IRQON && pmr != GIC_PRIO_IRQOFF);
+> +		WARN_ON_ONCE(pmr != pmr_irqon && pmr != pmr_irqoff);
+>  	}
+>  
+>  	asm volatile(ALTERNATIVE(
+> @@ -39,7 +42,7 @@ static inline void arch_local_irq_enable(void)
+>  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		:
+> -		: "r" ((unsigned long) GIC_PRIO_IRQON)
+> +		: "r" (pmr_irqon)
+>  		: "memory");
+>  
+>  	pmr_sync();
+> @@ -47,10 +50,13 @@ static inline void arch_local_irq_enable(void)
+>  
+>  static inline void arch_local_irq_disable(void)
+>  {
+> +	u64 pmr_irqoff = gic_prio_irqoff();
+> +
+>  	if (system_has_prio_mask_debugging()) {
+> -		u32 pmr = read_sysreg_s(SYS_ICC_PMR_EL1);
+> +		u64 pmr = read_sysreg_s(SYS_ICC_PMR_EL1);
+> +		u64 pmr_irqon = GIC_PRIO_IRQON;
+>  
+> -		WARN_ON_ONCE(pmr != GIC_PRIO_IRQON && pmr != GIC_PRIO_IRQOFF);
+> +		WARN_ON_ONCE(pmr != pmr_irqon && pmr != pmr_irqoff);
+>  	}
+>  
+>  	asm volatile(ALTERNATIVE(
+> @@ -58,7 +64,7 @@ static inline void arch_local_irq_disable(void)
+>  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		:
+> -		: "r" ((unsigned long) GIC_PRIO_IRQOFF)
+> +		: "r" (pmr_irqoff)
+>  		: "memory");
+>  }
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+815c663e220da75b02b6@syzkaller.appspotmail.com
+I believe all the changes in this file can be avoided, see below.
 
-BUG: unable to handle page fault for address: fffffc0068936230
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6839 Comm: syz-executor947 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:update_pvclock_gtod arch/x86/kvm/x86.c:1741 [inline]
-RIP: 0010:pvclock_gtod_notify+0xab/0x570 arch/x86/kvm/x86.c:7449
-Code: ff 74 24 10 31 f6 41 b8 01 00 00 00 48 c7 c7 a8 20 eb 8b e8 f7 87 4e 00 48 89 da 58 48 b8 00 77 00 77 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 65 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b
-RSP: 0018:ffffc90000da8be8 EFLAGS: 00010806
-RAX: dffffc0077007700 RBX: ffffffff8c975980 RCX: ffffffff815a184b
-RDX: 1ffffffff192eb30 RSI: 0000000000000001 RDI: 0000000000000082
-RBP: 0000000000010002 R08: 0000000000000000 R09: ffffffff8c5f5a1f
-R10: fffffbfff18beb43 R11: 0000000000000001 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff89ae98e0
-FS:  00000000011af880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffc0068936230 CR3: 0000000091e56000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- update_pvclock_gtod kernel/time/timekeeping.c:581 [inline]
- timekeeping_update+0x28a/0x4a0 kernel/time/timekeeping.c:675
- timekeeping_advance+0x6ad/0xa40 kernel/time/timekeeping.c:2122
- tick_do_update_jiffies64.part.0+0x1ec/0x330 kernel/time/tick-sched.c:101
- tick_do_update_jiffies64 kernel/time/tick-sched.c:64 [inline]
- tick_sched_do_timer kernel/time/tick-sched.c:147 [inline]
- tick_sched_timer+0x236/0x2a0 kernel/time/tick-sched.c:1321
- __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
- __hrtimer_run_queues+0x1d5/0xfc0 kernel/time/hrtimer.c:1588
- hrtimer_interrupt+0x32a/0x930 kernel/time/hrtimer.c:1650
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0x142/0x5e0 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0xb2/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:get_current arch/x86/include/asm/current.h:15 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:196
-Code: 48 89 ef 5d e9 51 90 3f 00 5d be 03 00 00 00 e9 66 27 27 02 66 0f 1f 44 00 00 48 8b be b0 01 00 00 e8 b4 ff ff ff 31 c0 c3 90 <65> 48 8b 14 25 c0 fe 01 00 65 8b 05 f0 b0 8d 7e a9 00 01 ff 00 48
-RSP: 0018:ffffc900016472c0 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffffc90001647600 RCX: ffffffff82082278
-RDX: 0000000000000000 RSI: ffff8880945ae340 RDI: 0000000000000005
-RBP: 00000000000026ac R08: 0000000000000000 R09: ffff8880930654d7
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000000
-R13: 0000000000000000 R14: 00000000000026ad R15: 0000000000000000
- mb_mark_used+0xacb/0xd90 fs/ext4/mballoc.c:1645
- ext4_mb_use_best_found+0x207/0x8e0 fs/ext4/mballoc.c:1705
- ext4_mb_measure_extent fs/ext4/mballoc.c:1812 [inline]
- ext4_mb_complex_scan_group+0x6db/0x9e0 fs/ext4/mballoc.c:2051
- ext4_mb_regular_allocator+0xbef/0x2090 fs/ext4/mballoc.c:2444
- ext4_mb_new_blocks+0x1da1/0x4730 fs/ext4/mballoc.c:4920
- ext4_ext_map_blocks+0x2320/0x61b0 fs/ext4/extents.c:4238
- ext4_map_blocks+0x7b8/0x1650 fs/ext4/inode.c:625
- ext4_getblk+0xad/0x530 fs/ext4/inode.c:832
- ext4_bread+0x7c/0x380 fs/ext4/inode.c:882
- ext4_append+0x15d/0x370 fs/ext4/namei.c:67
- ext4_init_new_dir fs/ext4/namei.c:2765 [inline]
- ext4_mkdir+0x5e0/0xdf0 fs/ext4/namei.c:2810
- vfs_mkdir+0x507/0x770 fs/namei.c:3649
- do_mkdirat+0x262/0x2d0 fs/namei.c:3672
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x449787
-Code: 1f 40 00 b8 5a 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad 11 fc ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8d 11 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe59231c88 EFLAGS: 00000206 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 000000000016b209 RCX: 0000000000449787
-RDX: 00007ffe59231cf5 RSI: 00000000000001ff RDI: 00007ffe59231cf0
-RBP: 00000000000003f6 R08: 0000000000000000 R09: 0000000000000005
-R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000152
-R13: 000000000040ae30 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: fffffc0068936230
----[ end trace 4b95ae1173d358ef ]---
-RIP: 0010:update_pvclock_gtod arch/x86/kvm/x86.c:1741 [inline]
-RIP: 0010:pvclock_gtod_notify+0xab/0x570 arch/x86/kvm/x86.c:7449
-Code: ff 74 24 10 31 f6 41 b8 01 00 00 00 48 c7 c7 a8 20 eb 8b e8 f7 87 4e 00 48 89 da 58 48 b8 00 77 00 77 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 65 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b
-RSP: 0018:ffffc90000da8be8 EFLAGS: 00010806
-RAX: dffffc0077007700 RBX: ffffffff8c975980 RCX: ffffffff815a184b
-RDX: 1ffffffff192eb30 RSI: 0000000000000001 RDI: 0000000000000082
-RBP: 0000000000010002 R08: 0000000000000000 R09: ffffffff8c5f5a1f
-R10: fffffbfff18beb43 R11: 0000000000000001 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff89ae98e0
-FS:  00000000011af880(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffc0068936230 CR3: 0000000091e56000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>  
+> diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
+> index 966ed30ed5f7..a19cd6ff4d1b 100644
+> --- a/arch/arm64/include/asm/ptrace.h
+> +++ b/arch/arm64/include/asm/ptrace.h
+> @@ -32,6 +32,7 @@
+>   */
+>  #define GIC_PRIO_IRQON			0xe0
+>  #define GIC_PRIO_IRQOFF			(GIC_PRIO_IRQON & ~0x80)
+> +#define GIC_PRIO_IRQOFF_NS		0xa0
+>  #define GIC_PRIO_PSR_I_SET		(1 << 4)
+>  
+>  /* Additional SPSR bits not exposed in the UABI */
+> @@ -129,6 +130,17 @@
+>  #define compat_sp_fiq	regs[29]
+>  #define compat_lr_fiq	regs[30]
+>  
+> +#define gic_prio_irqoff()						\
+> +	({								\
+> +		extern struct static_key_false gic_nonsecure_priorities;\
+> +		u8 __prio = GIC_PRIO_IRQOFF;				\
+> +									\
+> +		if (static_branch_unlikely(&gic_nonsecure_priorities))	\
+> +			__prio = GIC_PRIO_IRQOFF_NS;			\
+> +									\
+> +		__prio;							\
+> +	})
+> +
 
+This single change is causing quite a lot of churn, most of which
+could be avoided if you actually reused the macro name:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
+index 966ed30ed5f7..f85a00817fa5 100644
+--- a/arch/arm64/include/asm/ptrace.h
++++ b/arch/arm64/include/asm/ptrace.h
+@@ -31,9 +31,21 @@
+  * interrupt disabling temporarily does not rely on IRQ priorities.
+  */
+ #define GIC_PRIO_IRQON			0xe0
+-#define GIC_PRIO_IRQOFF			(GIC_PRIO_IRQON & ~0x80)
++#define __GIC_PRIO_IRQOFF		(GIC_PRIO_IRQON & ~0x80)
++#define __GIC_PRIO_IRQOFF_NS		0xa0
+ #define GIC_PRIO_PSR_I_SET		(1 << 4)
+ 
++#define GIC_PRIO_IRQOFF						\
++	({								\
++		extern struct static_key_false gic_nonsecure_priorities;\
++		u8 __prio = __GIC_PRIO_IRQOFF;				\
++									\
++		if (static_branch_unlikely(&gic_nonsecure_priorities))	\
++			__prio = __GIC_PRIO_IRQOFF_NS;			\
++									\
++		__prio;							\
++	})
++
+ /* Additional SPSR bits not exposed in the UABI */
+ #define PSR_MODE_THREAD_BIT	(1 << 0)
+ #define PSR_IL_BIT		(1 << 20)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+"With this simple trick", a lot of the churn in this patch vanishes:
+
+ arch/arm64/include/asm/arch_gicv3.h |  8 +++++-
+ arch/arm64/include/asm/ptrace.h     | 14 +++++++++-
+ arch/arm64/kernel/entry.S           |  2 +-
+ arch/arm64/kernel/image-vars.h      |  2 ++
+ drivers/irqchip/irq-gic-v3.c        | 52 ++++++++++++++++++++++++++++---------
+ 5 files changed, 63 insertions(+), 15 deletions(-)
+
+>  static inline unsigned long compat_psr_to_pstate(const unsigned long psr)
+>  {
+>  	unsigned long pstate;
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index 2646178c8329..e4fa944dbf1d 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -653,7 +653,7 @@ alternative_else_nop_endif
+>  #ifdef CONFIG_ARM64_PSEUDO_NMI
+>  	/*
+>  	 * When using IRQ priority masking, we can get spurious interrupts while
+> -	 * PMR is set to GIC_PRIO_IRQOFF. An NMI might also have occurred in a
+> +	 * PMR is set to mask interrupts. An NMI might also have occurred in a
+>  	 * section with interrupts disabled. Skip tracing in those cases.
+>  	 */
+>  	test_irqs_unmasked	res=x0, pmr=x20
+> diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+> index 9e897c500237..c4476a99dee8 100644
+> --- a/arch/arm64/kernel/image-vars.h
+> +++ b/arch/arm64/kernel/image-vars.h
+> @@ -101,6 +101,8 @@ KVM_NVHE_ALIAS(vgic_v3_cpuif_trap);
+>  /* Static key checked in pmr_sync(). */
+>  #ifdef CONFIG_ARM64_PSEUDO_NMI
+>  KVM_NVHE_ALIAS(gic_pmr_sync);
+> +/* Static key checked in gic_prio_irqoff(). */
+> +KVM_NVHE_ALIAS(gic_nonsecure_priorities);
+>  #endif
+>  
+>  #endif /* CONFIG_KVM */
+> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
+> index 341be2f2f312..729a3a59ad6a 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
+> @@ -237,7 +237,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
+>  
+>  	/* Returning to host will clear PSR.I, remask PMR if needed */
+>  	if (system_uses_irq_prio_masking())
+> -		gic_write_pmr(GIC_PRIO_IRQOFF);
+> +		gic_write_pmr(gic_prio_irqoff());
+>  
+>  	return exit_code;
+>  }
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index ce8944ae1b84..19e52c025c59 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -75,16 +75,14 @@ static DEFINE_STATIC_KEY_TRUE(supports_deactivate_key);
+>   *
+>   * If SCR_EL3.FIQ == 1, the values writen to/read from PMR and RPR at non-secure
+>   * EL1 are subject to a similar operation thus matching the priorities presented
+> - * from the (re)distributor when security is enabled.
+> + * from the (re)distributor when security is enabled. When SCR_EL3.FIQ == 0,
+> + * these values are unchanched by the GIC.
+>   *
+>   * see GICv3/GICv4 Architecture Specification (IHI0069D):
+>   * - section 4.8.1 Non-secure accesses to register fields for Secure interrupt
+>   *   priorities.
+>   * - Figure 4-7 Secure read of the priority field for a Non-secure Group 1
+>   *   interrupt.
+> - *
+> - * For now, we only support pseudo-NMIs if we have non-secure view of
+> - * priorities.
+>   */
+>  static DEFINE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+>  
+> @@ -97,6 +95,9 @@ static DEFINE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+>  DEFINE_STATIC_KEY_FALSE(gic_pmr_sync);
+>  EXPORT_SYMBOL(gic_pmr_sync);
+>  
+> +DEFINE_STATIC_KEY_FALSE(gic_nonsecure_priorities);
+> +EXPORT_SYMBOL(gic_nonsecure_priorities);
+> +
+>  /* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
+>  static refcount_t *ppi_nmi_refs;
+>  
+> @@ -932,14 +933,16 @@ static void gic_cpu_sys_reg_init(void)
+>  	/* Set priority mask register */
+>  	if (!gic_prio_masking_enabled()) {
+>  		write_gicreg(DEFAULT_PMR_VALUE, ICC_PMR_EL1);
+> -	} else {
+> +	} else if (gic_supports_nmi()) {
+>  		/*
+>  		 * Mismatch configuration with boot CPU, the system is likely
+>  		 * to die as interrupt masking will not work properly on all
+>  		 * CPUs
+>  		 */
+> -		WARN_ON(gic_supports_nmi() && group0 &&
+> -			!gic_dist_security_disabled());
+> +		if (static_branch_unlikely(&gic_nonsecure_priorities))
+> +			WARN_ON(!group0 || gic_dist_security_disabled());
+> +		else
+> +			WARN_ON(group0 && !gic_dist_security_disabled());
+
+It'd be worth adding a comment saying that this never runs on the boot
+CPU (I just spent 10 minutes wondering why this worked).
+
+>  	}
+>  
+>  	/*
+> @@ -1544,11 +1547,6 @@ static void gic_enable_nmi_support(void)
+>  	if (!gic_prio_masking_enabled())
+>  		return;
+>  
+> -	if (gic_has_group0() && !gic_dist_security_disabled()) {
+> -		pr_warn("SCR_EL3.FIQ is cleared, cannot enable use of pseudo-NMIs\n");
+> -		return;
+> -	}
+> -
+>  	ppi_nmi_refs = kcalloc(gic_data.ppi_nr, sizeof(*ppi_nmi_refs), GFP_KERNEL);
+>  	if (!ppi_nmi_refs)
+>  		return;
+> @@ -1567,6 +1565,36 @@ static void gic_enable_nmi_support(void)
+>  	pr_info("Pseudo-NMIs enabled using %s ICC_PMR_EL1 synchronisation\n",
+>  		static_branch_unlikely(&gic_pmr_sync) ? "forced" : "relaxed");
+>  
+> +	/*
+> +	 * How priority values are used by the GIC depends on two things:
+> +	 * the security state of the GIC (controlled by the GICD_CTRL.DS bit)
+> +	 * and if Group 0 interrupts can be delivered to Linux in the non-secure
+> +	 * world as FIQs (controlled by the SCR_EL3.FIQ bit). These affect the
+> +	 * the ICC_PMR_EL1 register and the priority that software assigns to
+> +	 * interrupts:
+> +	 *
+> +	 * GICD_CTRL.DS | SCR_EL3.FIQ | ICC_PMR_EL1 | Group 1 priority
+> +	 * -----------------------------------------------------------
+> +	 *      1       |      -      |  unchanged  |    unchanged
+> +	 * -----------------------------------------------------------
+> +	 *      0       |      1      |  non-secure |    non-secure
+> +	 * -----------------------------------------------------------
+> +	 *      0       |      0      |  unchanged  |    non-secure
+> +	 *
+> +	 * where non-secure means that the value is right-shifted by one and the
+> +	 * MSB bit set, to make it fit in the non-secure priority range.
+> +	 *
+> +	 * In the first two cases, where ICC_PMR_EL1 and the interrupt priority
+> +	 * are both either modified, or unchanged, we can use the same set of
+> +	 * priorities.
+> +	 *
+> +	 * In the last case, where only the interrupt priorities are modified to
+> +	 * be in the non-secure range, we use a different PMR value to mask IRQs
+> +	 * and the rest of the values that we use remain unchanged.
+> +	 */
+> +	if (gic_has_group0() && !gic_dist_security_disabled())
+> +		static_branch_enable(&gic_nonsecure_priorities);
+> +
+>  	static_branch_enable(&supports_pseudo_nmis);
+>  
+>  	if (static_branch_likely(&supports_deactivate_key))
+> -- 
+> 2.28.0
+> 
+> 
+
+Otherwise, this looks pretty good, and I'd like to take this into 5.10
+if you can respin it quickly.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
