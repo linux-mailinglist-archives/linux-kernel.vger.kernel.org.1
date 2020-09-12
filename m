@@ -2,243 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A4026775D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 05:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC2F267765
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 05:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725799AbgILDDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 23:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725769AbgILDDB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 23:03:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4BCC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 20:02:59 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z4so13219463wrr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 20:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Xj+c0/1W6D7MoWeS7Se7wkf4GCD04VRBZrJX1ESo/Kw=;
-        b=gm1oWlYTyvhMWoCjgb0nzGnI7xRzhrNjaLI44LSLcx5X5rWk+SQ1GOzh14iav2GRG4
-         nEaRu4fSFAGEVxEow1I+itYMmVFQwn6lZULb+yHAacuT8zDlOopZxVmgsn7W0M2WBCbF
-         gIjQ0FpuslM9KinmwZNxrR8T+QBpdk4EPxZxJQFmjXfQ5v/w4eYYfLPlxK8iwJwnXKb8
-         spRjZYEUX0SPGvBKy8ve3/VwR/pmZ2At/kvoY5NJKcrCr5JpCjjTN0xtvt2bnU/tmBEl
-         BYM05NDk5Icj8eUuUTA8e4D4DMZQbAADjd6Dgr5ox7Ank8XoeCpeEob15tQORfNuvhTa
-         tv3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Xj+c0/1W6D7MoWeS7Se7wkf4GCD04VRBZrJX1ESo/Kw=;
-        b=J+PyPu6ShZD5OS2aJevi2aujBK9thpOsF18uyFWS4/vX8tCvOVlOQawXXcc5bUPn5m
-         syW6i2lcpBGtDIlO+XwIt/oXr9Pvwxrh7bX8qcmR0c886OJKB8vahmsV9DSxKI4wuyUU
-         KFf7d95dKgG8tlHOG2m/Et3+W4o03b9khCaaws/wDNXHScnRyImk0C74IfnnjPtrSFpy
-         MUjg8A6jeswDWPWyRJscPu9AapMv0VkQScaPJM0NG5GOH2cZWppAKt1FOxO63dZ2cvAd
-         z9Yx0N4s04/z7v3OR7XhPNWmzr0McnFot613vekIxHxNxoy9c4YK54IihL1I5Obm2xfE
-         teKg==
-X-Gm-Message-State: AOAM530VMoOTAvdKVOiisyU7ywkoSSBqmNFqdbmV7XwLsGI5t14R5LpI
-        gsBCoAIxUDklGH+OnLcIxLZzIt5JzRhuyYTDkQT+UQ==
-X-Google-Smtp-Source: ABdhPJwz5vXD4BSA+8XBATUD1gHgEuHZK4xZUY+lfBKg46DLl+e326mEG78d5Jghblv/AH5PZTUAZWqLQfyGL93TcYg=
-X-Received: by 2002:a5d:608a:: with SMTP id w10mr4658649wrt.48.1599879777910;
- Fri, 11 Sep 2020 20:02:57 -0700 (PDT)
+        id S1725792AbgILDN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 23:13:59 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11561 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725768AbgILDN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 23:13:57 -0400
+IronPort-SDR: 7vrVV87JtpRU8suMXOXzn17n75QFSZWn4dP1/T7UtUqg4/9G+9SZ7DTtX+6wWjmFLwMVtbtJ6c
+ WcM3pOy5oGvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9741"; a="138397365"
+X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
+   d="scan'208";a="138397365"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 20:13:53 -0700
+IronPort-SDR: loX3EgoYAZYme1znZJfeaI/r7pIPYNsgYHy4/zzxkRoOl4GgCMscW7J0njqdIzhqNsEmDKhHWJ
+ 0XHzTAidexJw==
+X-IronPort-AV: E=Sophos;i="5.76,418,1592895600"; 
+   d="scan'208";a="481555306"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.203]) ([10.254.212.203])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2020 20:13:49 -0700
+Cc:     baolu.lu@linux.intel.com, Tom Murphy <murphyt7@tcd.ie>,
+        intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH V2 5/5] DO NOT MERGE: iommu: disable list appending in
+ dma-iommu
+To:     Christoph Hellwig <hch@infradead.org>
+References: <20200903201839.7327-1-murphyt7@tcd.ie>
+ <20200903201839.7327-6-murphyt7@tcd.ie>
+ <20200907070035.GA25114@infradead.org>
+ <CALQxJute8_y=JsW4UV1awSccOjxT_1OyPdymq=R_PurVQzENeQ@mail.gmail.com>
+ <20200908053619.GA15418@infradead.org> <20200908055510.GA19078@infradead.org>
+ <9655fdc9-6ea0-e4c1-e104-a9a8981ecb1e@linux.intel.com>
+ <20200908062326.GB20774@infradead.org>
+ <a10026ea-6de5-b7b1-80af-8000dfd4601b@linux.intel.com>
+ <20200909070620.GB28245@infradead.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <8c8f3df1-7fab-d019-7e4a-4ce5f5b2b273@linux.intel.com>
+Date:   Sat, 12 Sep 2020 11:13:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200728085734.609930-1-irogers@google.com> <20200728085734.609930-3-irogers@google.com>
- <20200728155940.GC1319041@krava> <20200728160954.GD1319041@krava>
- <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
- <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
- <20200904160303.GD939481@krava> <CAP-5=fWOSi4B3g1DARkh6Di-gU4FgmjnhbPYRBdvSdLSy_KC5Q@mail.gmail.com>
- <20200904184803.GA3749996@kernel.org> <20200904185013.GA3752059@kernel.org>
- <20200904185106.GB3752059@kernel.org> <CAP-5=fXn74c-TAzOCLz2O1XZ773dwUz5nCHwQXp5nuQzWBS64A@mail.gmail.com>
-In-Reply-To: <CAP-5=fXn74c-TAzOCLz2O1XZ773dwUz5nCHwQXp5nuQzWBS64A@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 11 Sep 2020 20:02:43 -0700
-Message-ID: <CAP-5=fVaUBwvgMphwaiWSdGuCZVwgDB-wozvcd5qdJXXgPQn4g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
- attr->sample_period for libpfm4 events
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200909070620.GB28245@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 3:34 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Fri, Sep 4, 2020 at 11:51 AM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Fri, Sep 04, 2020 at 03:50:13PM -0300, Arnaldo Carvalho de Melo escr=
-eveu:
-> > > Em Fri, Sep 04, 2020 at 03:48:03PM -0300, Arnaldo Carvalho de Melo es=
-creveu:
-> > > > Em Fri, Sep 04, 2020 at 09:22:10AM -0700, Ian Rogers escreveu:
-> > > > > On Fri, Sep 4, 2020 at 9:03 AM Jiri Olsa <jolsa@redhat.com> wrote=
-:
-> > > > > > On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
-> > > > > > > On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > > > > > > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com=
-> wrote:
-> > > > > > > > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote=
-:
-> > > > > > > > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wr=
-ote:
-> > > > > > > > > [jolsa@krava perf]$ sudo ./perf test 17 -v
-> > > > > > > > > 17: Setup struct perf_event_attr                         =
- :
-> > > >
-> > > > > > > > > running './tests/attr/test-record-C0'
-> > > > > > > > > expected sample_period=3D4000, got 3000
-> > > > > > > > > FAILED './tests/attr/test-record-C0' - match failure
-> > > >
-> > > > > > > > I'm not able to reproduce this. Do you have a build configu=
-ration or
-> > > > > > > > something else to look at? The test doesn't seem obviously =
-connected
-> > > > > > > > with this patch.
-> > > >
-> > > > > > > Jiri, any update? Thanks,
-> > > >
-> > > > > > sorry, I rebased and ran it again and it passes for me now,
-> > > > > > so it got fixed along the way
-> > > >
-> > > > > No worries, thanks for the update! It'd be nice to land this and =
-the
-> > > > > other libpfm fixes.
-> > > >
-> > > > I applied it and it generated this regression:
-> > > >
-> > > > FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-per=
-iod' - match failure
-> > > >
-> > > > I'll look at the other patches that are pending in this regard to s=
-ee
-> > > > what needs to be squashed so that we don't break bisect.
-> > >
-> > > So, more context:
-> > >
-> > > running '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-peri=
-od'
-> > > expected exclude_hv=3D0, got 1
-> > > FAILED '/home/acme/libexec/perf-core/tests/attr/test-record-pfm-perio=
-d' - match failure
-> > > test child finished with -1
-> > > ---- end ----
-> > > Setup struct perf_event_attr: FAILED!
-> > > [root@five ~]#
-> > >
-> > > Ian, can you take a look at this?
-> >
-> > Further tests I've performed:
-> >
-> >     Committer testing:
-> >
-> >     Not linking with libpfm:
-> >
-> >       # ldd ~/bin/perf | grep libpfm
-> >       #
-> >
-> >     Before:
-> >
-> >       # perf record -c 10000 -e cycles/period=3D12345/,instructions sle=
-ep 0.0001
-> >       [ perf record: Woken up 1 times to write data ]
-> >       [ perf record: Captured and wrote 0.052 MB perf.data (258 samples=
-) ]
-> >       # perf evlist -v
-> >       cycles/period=3D12345/: size: 120, { sample_period, sample_freq }=
-: 12345, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit=
-: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclud=
-e_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> >       instructions: size: 120, config: 0x1, { sample_period, sample_fre=
-q }: 10000, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inhe=
-rit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-> >       #
-> >
-> >     After:
-> >
-> >       #
-> >       # perf record -c 10000 -e cycles/period=3D12345/,instructions sle=
-ep 0.0001
-> >       [ perf record: Woken up 1 times to write data ]
-> >       [ perf record: Captured and wrote 0.053 MB perf.data (284 samples=
-) ]
-> >       # perf evlist -v
-> >       cycles/period=3D12345/: size: 120, { sample_period, sample_freq }=
-: 12345, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inherit=
-: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclud=
-e_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> >       instructions: size: 120, config: 0x1, { sample_period, sample_fre=
-q }: 10000, sample_type: IP|TID|TIME|ID, read_format: ID, disabled: 1, inhe=
-rit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-> >       #
-> >
-> >     Linking with libpfm:
-> >
-> >       # ldd ~/bin/perf | grep libpfm
-> >             libpfm.so.4 =3D> /lib64/libpfm.so.4 (0x00007f54c7d75000)
-> >       #
-> >
-> >       # perf record -c 10000 --pfm-events=3Dcycles:period=3D77777 sleep=
- 1
-> >       [ perf record: Woken up 1 times to write data ]
-> >       [ perf record: Captured and wrote 0.043 MB perf.data (141 samples=
-) ]
-> >       # perf evlist -v
-> >       cycles:period=3D77777: size: 120, { sample_period, sample_freq }:=
- 10000, sample_type: IP|TID|TIME, read_format: ID, disabled: 1, inherit: 1,=
- exclude_hv: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all=
-: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> >       #
-> >
-> >     After:
-> >
-> >       # perf record -c 10000 --pfm-events=3Dcycles:period=3D77777 sleep=
- 1
-> >       [ perf record: Woken up 1 times to write data ]
-> >       [ perf record: Captured and wrote 0.039 MB perf.data (19 samples)=
- ]
-> >       # perf evlist -v
-> >       cycles:period=3D77777: size: 120, { sample_period, sample_freq }:=
- 77777, sample_type: IP|TID|TIME, read_format: ID, disabled: 1, inherit: 1,=
- exclude_hv: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all=
-: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> >       #
-> >
-> Hi Arnaldo,
->
-> I've been trying to reproduce the test failure you mention and I've
-> not been able to. This follow up e-mail seems to show things working
-> as intended. Did the issue resolve itself?
+On 2020/9/9 15:06, Christoph Hellwig wrote:
+> On Wed, Sep 09, 2020 at 09:43:09AM +0800, Lu Baolu wrote:
+>> +       /*
+>> +        * The Intel graphic device driver is used to assume that the
+>> returned
+>> +        * sg list is not combound. This blocks the efforts of converting
+>> the
+> 
+> This adds pointless overly long lines.
+> 
+>> +        * Intel IOMMU driver to dma-iommu api's. Add this quirk to make the
+>> +        * device driver work and should be removed once it's fixed in i915
+>> +        * driver.
+>> +        */
+>> +       if (dev_is_pci(dev) &&
+>> +           to_pci_dev(dev)->vendor == PCI_VENDOR_ID_INTEL &&
+>> +           (to_pci_dev(dev)->class >> 16) == PCI_BASE_CLASS_DISPLAY) {
+>> +               for_each_sg(sg, s, nents, i) {
+>> +                       unsigned int s_iova_off = sg_dma_address(s);
+>> +                       unsigned int s_length = sg_dma_len(s);
+>> +                       unsigned int s_iova_len = s->length;
+>> +
+>> +                       s->offset += s_iova_off;
+>> +                       s->length = s_length;
+>> +                       sg_dma_address(s) = dma_addr + s_iova_off;
+>> +                       sg_dma_len(s) = s_length;
+>> +                       dma_addr += s_iova_len;
+>> +               }
+>> +
+>> +               return nents;
+>> +       }
+> 
+> This wants an IS_ENABLED() check.  And probably a pr_once reminding
+> of the workaround.
+> 
 
-It looks like the test to ensure the period for pfm events worked:
-https://lore.kernel.org/lkml/20200728124539.GB40195@kernel.org/
-has been applied without the fixes in patches 1 and 2. I've resent the
-patches, hopefully addressing all feedback.
-https://lore.kernel.org/lkml/20200912025655.1337192-1-irogers@google.com/
+Will fix in the next version.
 
-Thanks,
-Ian
+Best regards,
+baolu
