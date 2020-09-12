@@ -2,280 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D97267BBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E234267BBC
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbgILSSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 14:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgILSST (ORCPT
+        id S1725885AbgILSWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 14:22:21 -0400
+Received: from smtprelay0016.hostedemail.com ([216.40.44.16]:47890 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725872AbgILSWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 14:18:19 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9524BC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 11:18:18 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id f18so9470443pfa.10
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 11:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a1GTBXxKUvJxoon/aNt1MN6fmALohNRxcmfcvMYUVuI=;
-        b=cwvhRxfbcTFj4svbdXDZ9jcAEMhYVMR7LZ4P87bq1El3TaxmfOrqur6oTokv//oGuR
-         O6lBjAZZoASK01mJbAZUMKWC8cxKClvwn+gDUrgegq07Rhz3N7cIq0hUCJNbKT3N6xVs
-         DZAooRgvRH8KK96ejVU7xL8oGc/eW70Ngbe6s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a1GTBXxKUvJxoon/aNt1MN6fmALohNRxcmfcvMYUVuI=;
-        b=PZ108hiMGtrrQNXCasyFKCc0bqfq7u7mNcEneCT3acZC9JdYkLg983/BJpXPsT54Jo
-         lMpS7xg12z6Ixy77tAHcHQ+JdN437I5PYSgdCRluiXClgMBIZS1mzMbsSDPsOhvzEjjS
-         4HXutGfxNGF7roAJKS8xGdG+61aCGLKGFvrD/Xe/pZeqgcvzmSdJyTTCNyJmKSvMdQTA
-         lPb0WMlSl8ZPhG0foqubd+y+mzmF1b9+/zToRF2VVqZV6AOpTKfFj10S8ZxMaJiUMgfA
-         fsMi7lPdfbyPKgOK61o78sEU5BhrzH99GYryQpEbsQM4i8cE0jTcAb1rV/JcmfZHb+O3
-         30mQ==
-X-Gm-Message-State: AOAM532HyEnlgf6l6w7WvKD07oTKbyZBZxyitNjn6WmOjGZH9LRhIYdM
-        eCbT0Zmkn83QUtpzPc7tlobwnQ==
-X-Google-Smtp-Source: ABdhPJxwX4AccK3tYQzQmCHCIqpQZFNdVItS5jcKZcDzjfHI6EGkPeg1jTKnv2I6CfAhC/+Xma58Vw==
-X-Received: by 2002:aa7:80d3:: with SMTP id a19mr7177026pfn.102.1599934698016;
-        Sat, 12 Sep 2020 11:18:18 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id f6sm5858183pfq.82.2020.09.12.11.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 11:18:17 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     swboyd@chromium.org, Akash Asthana <akashast@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH] spi: spi-geni-qcom: Don't wait to start 1st transfer if transmitting
-Date:   Sat, 12 Sep 2020 11:17:25 -0700
-Message-Id: <20200912111716.1.Ied5e843fad0d6b733a1fb8bcfb364dd2fa889eb3@changeid>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+        Sat, 12 Sep 2020 14:22:13 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 2D7D0100E7B40;
+        Sat, 12 Sep 2020 18:22:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3872:4321:5007:7514:7904:10004:10400:10848:11026:11232:11657:11658:11914:12043:12114:12297:12438:12555:12740:12760:12895:13439:14181:14659:14721:21080:21451:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:22,LUA_SUMMARY:none
+X-HE-Tag: copy82_03013a6270f9
+X-Filterd-Recvd-Size: 3020
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 12 Sep 2020 18:22:09 +0000 (UTC)
+Message-ID: <f5fdb27843143dfefb1a1a416dab63931fef6d41.camel@perches.com>
+Subject: Re: [PATCH 1/5] staging: rtl8723bs: refactor cckrates{only}_included
+From:   Joe Perches <joe@perches.com>
+To:     Michael Straube <straube.linux@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Sat, 12 Sep 2020 11:22:08 -0700
+In-Reply-To: <20200912084520.8383-1-straube.linux@gmail.com>
+References: <20200912084520.8383-1-straube.linux@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we're sending bytes over SPI, we know the FIFO is empty at the
-start of the transfer.  There's no reason to wait for the interrupt
-telling us to start--we can just start right away.  Then if we
-transmit everything in one swell foop we don't even need to bother
-listening for TX interrupts.
+On Sat, 2020-09-12 at 10:45 +0200, Michael Straube wrote:
+> Refactor cckrates_included() and cckratesonly_included() to simplify
+> the code and improve readability.
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+> index a5790a648a5b..4e0d86b2e2e0 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+> @@ -56,11 +56,12 @@ static u8 rtw_basic_rate_ofdm[3] = {
+>  
+>  int cckrates_included(unsigned char *rate, int ratelen)
+>  {
+> -	int	i;
+> +	int i;
+>  
+>  	for (i = 0; i < ratelen; i++) {
+> -		if  ((((rate[i]) & 0x7f) == 2)	|| (((rate[i]) & 0x7f) == 4) ||
+> -		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) == 22))
+> +		u8 r = rate[i] & 0x7f;
+> +
+> +		if (r == 2 || r == 4 || r == 11 || r == 22)
+>  			return true;
+>  	}
+>  
+> @@ -69,11 +70,12 @@ int cckrates_included(unsigned char *rate, int ratelen)
+>  
+>  int cckratesonly_included(unsigned char *rate, int ratelen)
+>  {
+> -	int	i;
+> +	int i;
+>  
+>  	for (i = 0; i < ratelen; i++) {
+> -		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
+> -		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
+> +		u8 r = rate[i] & 0x7f;
+> +
+> +		if (r != 2 && r != 4 && r != 11 && r != 22)
+>  			return false;
 
-In a test of "flashrom -p ec -r /tmp/foo.bin" interrupts were reduced
-from ~30560 to ~29730, about a 3% savings.
+It would be simpler to add and use an inline like:
 
-This patch looks bigger than it is because I moved a few functions
-rather than adding a forward declaration.  The only actual change to
-geni_spi_handle_tx() was to make it return a bool indicating if there
-is more to tx.
+static bool is_cckrate(unsigned char rate)
+{
+	rate &= 0x7f;
+	return rate == 2 || rate == 4 || rate == 11 || rate == 22;
+}
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+so these could be
 
- drivers/spi/spi-geni-qcom.c | 167 +++++++++++++++++++-----------------
- 1 file changed, 86 insertions(+), 81 deletions(-)
+bool cckrates_included(unsigned char *rate, int ratelen)
+{
+	int i;
 
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 0dc3f4c55b0b..49c9eb870755 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -326,6 +326,88 @@ static int spi_geni_init(struct spi_geni_master *mas)
- 	return 0;
- }
- 
-+static unsigned int geni_byte_per_fifo_word(struct spi_geni_master *mas)
-+{
-+	/*
-+	 * Calculate how many bytes we'll put in each FIFO word.  If the
-+	 * transfer words don't pack cleanly into a FIFO word we'll just put
-+	 * one transfer word in each FIFO word.  If they do pack we'll pack 'em.
-+	 */
-+	if (mas->fifo_width_bits % mas->cur_bits_per_word)
-+		return roundup_pow_of_two(DIV_ROUND_UP(mas->cur_bits_per_word,
-+						       BITS_PER_BYTE));
-+
-+	return mas->fifo_width_bits / BITS_PER_BYTE;
-+}
-+
-+static bool geni_spi_handle_tx(struct spi_geni_master *mas)
-+{
-+	struct geni_se *se = &mas->se;
-+	unsigned int max_bytes;
-+	const u8 *tx_buf;
-+	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
-+	unsigned int i = 0;
-+
-+	max_bytes = (mas->tx_fifo_depth - mas->tx_wm) * bytes_per_fifo_word;
-+	if (mas->tx_rem_bytes < max_bytes)
-+		max_bytes = mas->tx_rem_bytes;
-+
-+	tx_buf = mas->cur_xfer->tx_buf + mas->cur_xfer->len - mas->tx_rem_bytes;
-+	while (i < max_bytes) {
-+		unsigned int j;
-+		unsigned int bytes_to_write;
-+		u32 fifo_word = 0;
-+		u8 *fifo_byte = (u8 *)&fifo_word;
-+
-+		bytes_to_write = min(bytes_per_fifo_word, max_bytes - i);
-+		for (j = 0; j < bytes_to_write; j++)
-+			fifo_byte[j] = tx_buf[i++];
-+		iowrite32_rep(se->base + SE_GENI_TX_FIFOn, &fifo_word, 1);
-+	}
-+	mas->tx_rem_bytes -= max_bytes;
-+	if (!mas->tx_rem_bytes) {
-+		writel(0, se->base + SE_GENI_TX_WATERMARK_REG);
-+		return false;
-+	}
-+	return true;
-+}
-+
-+static void geni_spi_handle_rx(struct spi_geni_master *mas)
-+{
-+	struct geni_se *se = &mas->se;
-+	u32 rx_fifo_status;
-+	unsigned int rx_bytes;
-+	unsigned int rx_last_byte_valid;
-+	u8 *rx_buf;
-+	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
-+	unsigned int i = 0;
-+
-+	rx_fifo_status = readl(se->base + SE_GENI_RX_FIFO_STATUS);
-+	rx_bytes = (rx_fifo_status & RX_FIFO_WC_MSK) * bytes_per_fifo_word;
-+	if (rx_fifo_status & RX_LAST) {
-+		rx_last_byte_valid = rx_fifo_status & RX_LAST_BYTE_VALID_MSK;
-+		rx_last_byte_valid >>= RX_LAST_BYTE_VALID_SHFT;
-+		if (rx_last_byte_valid && rx_last_byte_valid < 4)
-+			rx_bytes -= bytes_per_fifo_word - rx_last_byte_valid;
-+	}
-+	if (mas->rx_rem_bytes < rx_bytes)
-+		rx_bytes = mas->rx_rem_bytes;
-+
-+	rx_buf = mas->cur_xfer->rx_buf + mas->cur_xfer->len - mas->rx_rem_bytes;
-+	while (i < rx_bytes) {
-+		u32 fifo_word = 0;
-+		u8 *fifo_byte = (u8 *)&fifo_word;
-+		unsigned int bytes_to_read;
-+		unsigned int j;
-+
-+		bytes_to_read = min(bytes_per_fifo_word, rx_bytes - i);
-+		ioread32_rep(se->base + SE_GENI_RX_FIFOn, &fifo_word, 1);
-+		for (j = 0; j < bytes_to_read; j++)
-+			rx_buf[i++] = fifo_byte[j];
-+	}
-+	mas->rx_rem_bytes -= rx_bytes;
-+}
-+
- static void setup_fifo_xfer(struct spi_transfer *xfer,
- 				struct spi_geni_master *mas,
- 				u16 mode, struct spi_master *spi)
-@@ -398,8 +480,10 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
- 	 * setting up GENI SE engine, as driver starts data transfer
- 	 * for the watermark interrupt.
- 	 */
--	if (m_cmd & SPI_TX_ONLY)
--		writel(mas->tx_wm, se->base + SE_GENI_TX_WATERMARK_REG);
-+	if (m_cmd & SPI_TX_ONLY) {
-+		if (geni_spi_handle_tx(mas))
-+			writel(mas->tx_wm, se->base + SE_GENI_TX_WATERMARK_REG);
-+	}
- 	spin_unlock_irq(&mas->lock);
- }
- 
-@@ -417,85 +501,6 @@ static int spi_geni_transfer_one(struct spi_master *spi,
- 	return 1;
- }
- 
--static unsigned int geni_byte_per_fifo_word(struct spi_geni_master *mas)
--{
--	/*
--	 * Calculate how many bytes we'll put in each FIFO word.  If the
--	 * transfer words don't pack cleanly into a FIFO word we'll just put
--	 * one transfer word in each FIFO word.  If they do pack we'll pack 'em.
--	 */
--	if (mas->fifo_width_bits % mas->cur_bits_per_word)
--		return roundup_pow_of_two(DIV_ROUND_UP(mas->cur_bits_per_word,
--						       BITS_PER_BYTE));
--
--	return mas->fifo_width_bits / BITS_PER_BYTE;
--}
--
--static void geni_spi_handle_tx(struct spi_geni_master *mas)
--{
--	struct geni_se *se = &mas->se;
--	unsigned int max_bytes;
--	const u8 *tx_buf;
--	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
--	unsigned int i = 0;
--
--	max_bytes = (mas->tx_fifo_depth - mas->tx_wm) * bytes_per_fifo_word;
--	if (mas->tx_rem_bytes < max_bytes)
--		max_bytes = mas->tx_rem_bytes;
--
--	tx_buf = mas->cur_xfer->tx_buf + mas->cur_xfer->len - mas->tx_rem_bytes;
--	while (i < max_bytes) {
--		unsigned int j;
--		unsigned int bytes_to_write;
--		u32 fifo_word = 0;
--		u8 *fifo_byte = (u8 *)&fifo_word;
--
--		bytes_to_write = min(bytes_per_fifo_word, max_bytes - i);
--		for (j = 0; j < bytes_to_write; j++)
--			fifo_byte[j] = tx_buf[i++];
--		iowrite32_rep(se->base + SE_GENI_TX_FIFOn, &fifo_word, 1);
--	}
--	mas->tx_rem_bytes -= max_bytes;
--	if (!mas->tx_rem_bytes)
--		writel(0, se->base + SE_GENI_TX_WATERMARK_REG);
--}
--
--static void geni_spi_handle_rx(struct spi_geni_master *mas)
--{
--	struct geni_se *se = &mas->se;
--	u32 rx_fifo_status;
--	unsigned int rx_bytes;
--	unsigned int rx_last_byte_valid;
--	u8 *rx_buf;
--	unsigned int bytes_per_fifo_word = geni_byte_per_fifo_word(mas);
--	unsigned int i = 0;
--
--	rx_fifo_status = readl(se->base + SE_GENI_RX_FIFO_STATUS);
--	rx_bytes = (rx_fifo_status & RX_FIFO_WC_MSK) * bytes_per_fifo_word;
--	if (rx_fifo_status & RX_LAST) {
--		rx_last_byte_valid = rx_fifo_status & RX_LAST_BYTE_VALID_MSK;
--		rx_last_byte_valid >>= RX_LAST_BYTE_VALID_SHFT;
--		if (rx_last_byte_valid && rx_last_byte_valid < 4)
--			rx_bytes -= bytes_per_fifo_word - rx_last_byte_valid;
--	}
--	if (mas->rx_rem_bytes < rx_bytes)
--		rx_bytes = mas->rx_rem_bytes;
--
--	rx_buf = mas->cur_xfer->rx_buf + mas->cur_xfer->len - mas->rx_rem_bytes;
--	while (i < rx_bytes) {
--		u32 fifo_word = 0;
--		u8 *fifo_byte = (u8 *)&fifo_word;
--		unsigned int bytes_to_read;
--		unsigned int j;
--
--		bytes_to_read = min(bytes_per_fifo_word, rx_bytes - i);
--		ioread32_rep(se->base + SE_GENI_RX_FIFOn, &fifo_word, 1);
--		for (j = 0; j < bytes_to_read; j++)
--			rx_buf[i++] = fifo_byte[j];
--	}
--	mas->rx_rem_bytes -= rx_bytes;
--}
--
- static irqreturn_t geni_spi_isr(int irq, void *data)
- {
- 	struct spi_master *spi = data;
--- 
-2.28.0.618.gf4bc123cb7-goog
+	for (i = 0; i < ratelen; i++) {
+		if (is_cckrate(rate[i])
+			return true;
+	}
+
+	return false;
+}
+
+bool cckratesonly_included(unsigned char *rate, int ratelen)
+{
+	int i;
+
+	if (i <= 0)
+		return false;
+
+	for (i = 0; i < ratelen; i++) {
+		if (!is_cckrate(rate[i])
+			return false;
+	}
+
+	return true;
+}
+
 
