@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06632676C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232422676C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbgILA0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 20:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725824AbgILA0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 20:26:01 -0400
-Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 203B1206B8;
-        Sat, 12 Sep 2020 00:26:00 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.9.235-rt153
-Date:   Sat, 12 Sep 2020 00:24:30 -0000
-Message-ID: <159987027022.533157.12748246912511844774@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        id S1725922AbgILAZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 20:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbgILAZA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 11 Sep 2020 20:25:00 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FEFC061573;
+        Fri, 11 Sep 2020 17:25:00 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 99B23120ED4A3;
+        Fri, 11 Sep 2020 17:08:12 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:24:58 -0700 (PDT)
+Message-Id: <20200911.172458.1064584936977530501.davem@davemloft.net>
+To:     luobin9@huawei.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        luoxianjun@huawei.com, yin.yinshi@huawei.com,
+        cloud.wangxiaoyun@huawei.com, chiqijun@huawei.com
+Subject: Re: [PATCH net v1] hinic: fix rewaking txq after netif_tx_disable
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200910140440.20361-1-luobin9@huawei.com>
+References: <20200910140440.20361-1-luobin9@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 11 Sep 2020 17:08:12 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+From: Luo bin <luobin9@huawei.com>
+Date: Thu, 10 Sep 2020 22:04:40 +0800
 
-I'm pleased to announce the 4.9.235-rt153 stable release.
+> When calling hinic_close in hinic_set_channels, all queues are
+> stopped after netif_tx_disable, but some queue may be rewaken in
+> free_tx_poll by mistake while drv is handling tx irq. If one queue
+> is rewaken core may call hinic_xmit_frame to send pkt after
+> netif_tx_disable within a short time which may results in accessing
+> memory that has been already freed in hinic_close. So we call
+> napi_disable before netif_tx_disable in hinic_close to fix this bug.
+> 
+> Fixes: 2eed5a8b614b ("hinic: add set_channels ethtool_ops support")
+> Signed-off-by: Luo bin <luobin9@huawei.com>
+> ---
+> V0~V1:
+> - call napi_disable before netif_tx_disable instead of judging whether
+>   the netdev is in down state before waking txq in free_tx_poll to fix
+>   this bug
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.9-rt
-  Head SHA1: 0e7258df4e13bd29c182837d9b642b2ad7868847
-
-Or to build 4.9.235-rt153 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.235.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.235-rt153.patch.xz
-
-
-You can also build from 4.9.234-rt152 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/incr/patch-4.9.234-rt152-rt153.patch.xz
-
-Enjoy!
-Clark
+Applied and queued up for -stable, thank you.
