@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EFC26792B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E70267935
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgILJcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 05:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgILJcI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 05:32:08 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45274C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:32:04 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id z19so8312996lfr.4
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H2+1+lFS9e2x2hBzwkej0Ucg9+b0mRnWv3h+Nk0VEhc=;
-        b=F/LmfzKwVmJGkJp8JUKJpYXw7183G9gmer0hMVh67ZTsQ3b2QfirEOW54AH3eG2BH2
-         Khz7k36m/ev0ExNW1uA24WxPUZMDwc21qZm1Feg0Dlg/TfuudGRjyyi7isasXA9Z+frM
-         Iu/H0Q/kd5+ijGvHn4tL7TFHZE9oL2IEENJY53ZMhkO95nsnaI0ggb5ZonK7Ccf0kA5A
-         f8CCvMxbcRkmwzhw3gwABj9zu8fRVG7v148Coc3ZFEuViHOxT9wBctYMe1CLT8JmIp3j
-         PMeOSC+WQfeRlmktm3WdzgWvhQ4xpa4TancIkG1+YyetUplCXw/y4ousBXiLniACsGY+
-         Nknw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H2+1+lFS9e2x2hBzwkej0Ucg9+b0mRnWv3h+Nk0VEhc=;
-        b=nMI4s8yjyJ/c9HKC7t6rRB3jYCT+rgYKzK/v45FYKI52d543nFGaxl6UK2x6AOTqWa
-         EBIhutvSswEI9CdsJTFGsxCChG8eKNb2lqig3g7BFv0whgl0fbURVIrQOXdm2uel+ev6
-         nrA+ctuxp5MHClL92y3GtXZLG6JvXP47wt2rmMuH57Gxt42FLf3jBchdwx5S6O1E8dBn
-         Y8IlJU2onrveL7EQ/i5CRnc0U6tvPcs0u67IIYPI5FddAskxQu+C1c00P1OcxT1UAkZh
-         55SId9TdUho7WXqaU37y0D2wlu9aV44BjnnSGRn5cwSyDQmr0oto42leFJmXJBAux0tp
-         qgZA==
-X-Gm-Message-State: AOAM531Ist5vgrB+cm/rKvm2y5SvzjdcabE5sBHW/s9LccKajvht8ebf
-        7jnfRKGYlqTKtLb49UcSoEJY42dMeAlgsYVgRV3I0g==
-X-Google-Smtp-Source: ABdhPJwA7lxb97H7/GSEpzY7AhqxbEl9kOazDzHAzC46vevwdTRefjbg4JQOpNxmfn2dwH+RbV+Ka8hs2iFnFEUNQ9g=
-X-Received: by 2002:a19:1c8:: with SMTP id 191mr1380440lfb.585.1599903121665;
- Sat, 12 Sep 2020 02:32:01 -0700 (PDT)
+        id S1725849AbgILJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 05:38:31 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59077 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725825AbgILJi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 05:38:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1599903434;
+        bh=skrUagSvgqgEZzCi9PdeBBeP4Cqi1Erda0k0fJgiIB8=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=FftAd7pnCH3fzdB/mQwK5o3526+5rvmiQVz+tQTbnxcymkk3GlkdpnrB1m2vpsdbp
+         bVEFr4c00PT2nMP+9JAormOkurommMEJuzzsM4/u0ca4qnWDib1RRNZL4PXOSjCKAh
+         fDfSSux5fckZULv312TbZpx8w+A0tRK5qrIOmacA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49hB-1khfbc3Ii9-0105Mu; Sat, 12
+ Sep 2020 11:37:14 +0200
+Date:   Sat, 12 Sep 2020 11:36:52 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     James Morris <jmorris@namei.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com, John Wood <john.wood@gmx.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation
+ (fbfam)
+Message-ID: <20200912093652.GA3041@ubuntu>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <alpine.LRH.2.21.2009121002100.17638@namei.org>
+ <202009120055.F6BF704620@keescook>
 MIME-Version: 1.0
-References: <20200828213226.1734264-1-thomas.preston@codethink.co.uk>
-In-Reply-To: <20200828213226.1734264-1-thomas.preston@codethink.co.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 11:31:50 +0200
-Message-ID: <CACRpkda3fz8mnROr1Rx3o7k8=90yRjDV3wS2qqutv-5YxKdWjw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] pinctrl: mcp23s08: Fixups for mcp23x17
-To:     Thomas Preston <thomas.preston@codethink.co.uk>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        =?UTF-8?B?SmFuIEt1bmRyw6F0?= <jan.kundrat@cesnet.cz>,
-        Phil Reid <preid@electromag.com.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202009120055.F6BF704620@keescook>
+X-Provags-ID: V03:K1:82dXCEl3cI4cxk3DUO6WIKkws0kGiKuodYSB2Poy3pHIMexgZ3i
+ ocFk/YHAJ3DjbN6PRnUmpAr0uwh00WrBXziJGf+yniVRw7LGtyUeiPQxsr9LYsq68ZOZ/WG
+ OENMjSgGJ5obexYYwh4gx7hG4Wndyaod5tu/wNF+B9F43ME0vKJv7InV5yifThD30BcMIi2
+ Q7LJJJvz5chA4C5qqIZxQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B2c/eYE3vYI=:Zbn3OSff8V0GZehoI25jPB
+ XIfX7t9qpGtZR8iToZ2IiS6lBYW3veovlwaqN8mf32YrZRUISKTblWhYZOBmzwc6y1t6GWQFg
+ NdXxqlWHuT/7m6k6X/TrkwVRrGN25qz+McCYG8lPBpTCw7ivlZfj9Z735ZZ5uyw755BwbxKH2
+ Mcahz9+L5cwafaC6wE+M3yFzSdDdqgOjLEneU3IiQe9CTo6o2/XnE+5on3hC6R5N5Y/2wDA1d
+ e4Nnj6ywD8yk/2CJj10pGq6SUZacy1ZB7XDohXjC0rYrS6WCSuKTw9DBk+yy15YbsEvPdlA2N
+ U61QJgWqOuK7zU9LSzpDbGlzdDkM29EjmqSg8P2SlrTrkBRGhfgRapA8x8jtt2G4JUr6RTnPT
+ U8pEJsZM7xoOvN8OzB0KEELqXvLCwnGb26LA9reUNMcWkpu1B5cNO0ZtKB/pSiuWGE7RTChJb
+ l5S+YoiivwbgZwCkA9KRrYfEE27VDdXvdizZqQesZOP1P5mOqbwqDei1qY2Sv0yXC1qPnTOkz
+ 2p0M3jHGbC2w8rgDcdZXLGPjbtoT7xTwD3cEBxAcclCYf0WWOTq/olDnkhk/m/uZvK2dVhHlS
+ WjQwncs9EkPlHrctJvP2Oe2OS9q8wHNtJBIDdeppW9IJm8Qii6I31cidHaVDNjYX1mBhCFkLN
+ jiScnSXnSMd1b/7nVji25Xc3vuYViuTid6XK9zHV7YyP+iL2R5BpKiRTdMtgSv5CHC/pBSzko
+ JDSvogEy9A5MmMidBC+cOz55JnA3hHDDfs/7A1NmktypKRT11aVSggosuWvmDBjMJJdOWEl7H
+ uMFJ54BGGSRmkHruKcQQJ725axPIs21Kt6iBcda6GFvnWDVGBa20iL4mT0yqMunGI5UabkMaT
+ fZbWHEO+dHExVkhgVhOK5FbTAYXqmf+xh1GQWmR7t5wfL9Ca5InGyqkBXRyorIMZJTVAR2/PU
+ +0HSLXm/WAi1uBa5W3DiiKIqzLwGM/N26IefxV4lU4Llo9ttwCaSbT53Z6Sgn2C23GZja/Rnb
+ pw05y6c0WGrchZCat0neiVuDUAaVQJg1Qp/LUGvu6/DholigBT2VFgsI+Rs7fRD4x9Vw4YQC7
+ mMkA9u/JNdyN2AIqH8u52XMNg7egvycBRjfeMC/whjW1damf6Wjredeau9o/d5+3ZJF1XpIiH
+ /lOMjNgOO53bzcOPNaS3HB3MpkPxpyK+D3BtdQwAK9AxA7TtZvKdMNdfvTKHQTXVpfh9ez+8i
+ u+gvCQ8PYYgQYTpOab3Yestd59t2YICSNXMfnpA==
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 11:32 PM Thomas Preston
-<thomas.preston@codethink.co.uk> wrote:
+On Sat, Sep 12, 2020 at 12:56:18AM -0700, Kees Cook wrote:
+> On Sat, Sep 12, 2020 at 10:03:23AM +1000, James Morris wrote:
+> > On Thu, 10 Sep 2020, Kees Cook wrote:
+> >
+> > > [kees: re-sending this series on behalf of John Wood <john.wood@gmx.=
+com>
+> > >  also visible at https://github.com/johwood/linux fbfam]
+> > >
+> > > From: John Wood <john.wood@gmx.com>
+> >
+> > Why are you resending this? The author of the code needs to be able to
+> > send and receive emails directly as part of development and maintenanc=
+e.
 
-> Hi again,
-> Second round of these mcp23s03 driver fixups.
->
-> Changes since v1:
-> - Split up the fixups patch.
-> - I'm pretty certain the "mcp23x16" structs are typos, so I put it as
->   0001, because the second patch doesn't really make sense without it.
-> - I lost the `(MCP_GPIO << 1) + 1` changes because the regmap handles
->   GPIOB 0x13 with `.val_bits = 16`.
-> - Dropped the interrupt-controller changes.
+I tried to send the full patch serie by myself but my email got blocked. A=
+fter
+get support from my email provider it told to me that my account is young,
+and due to its spam policie I am not allow, for now, to send a big amount
+of mails in a short period. They also informed me that soon I will be able
+to send more mails. The quantity increase with the age of the account.
 
-Patches applied!
+I hope that for the next version all works as expected.
+Apologies.
 
-Yours,
-Linus Walleij
+> I wanted to flush it from my "review" TODO list, mainly.
+
+Thanks Kees for the re-send and review.
+
+> --
+> Kees Cook
+
+Regards,
+John Wood
