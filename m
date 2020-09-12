@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E564E267795
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 05:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47392677A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 06:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725820AbgILDsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 23:48:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbgILDsT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 23:48:19 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 725C3208FE;
-        Sat, 12 Sep 2020 03:48:18 +0000 (UTC)
-Date:   Fri, 11 Sep 2020 23:48:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Bo Gan <ganb@vmware.com>, Sharath George <sharathg@vmware.com>,
-        Srivatsa Bhat <srivatsab@vmware.com>,
-        Him Kalyan Bordoloi <bordoloih@vmware.com>
-Subject: [REGRESSION] Needless shutting down of oneshot timer in nohz mode
-Message-ID: <20200911234816.474ad4bd@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725812AbgILEMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 00:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgILEMY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 00:12:24 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E14C061573
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 21:12:21 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id n133so11901348qkn.11
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 21:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kvVGrPVZzIS1i2wMlAaPm2He75bpFK9MoRWDiUbgtrI=;
+        b=LOnXBIRfM1m+SDbt03QQez4K9AQTpwY4BzgDtgbOWh3vWGRXZfvZgx8CoI51L3dU1+
+         rzwCQdhFEeLE9ijCRS/NOw7SXxwjPuOvawllEoIhsgmn0d2fF225WK79X0bAKicP1eJS
+         Hi3DybCPE9MISX2o0ztPziiiFSR+IatAS1aPL/WlMg4ZTXiSAxuDfXy3rDktl5Yn3DB8
+         IU9m3w1Z7Yjpnqqn01BzQD6PNk77gJ83Sr9/rbGVkS8egXXWjsYfkEvHlpFzcsN42sWy
+         qr6SWCwJR67ukO+DibepLoyVeAN5NEgf7mBgl2vZt7bz6e3LDCsW0BlCBO9hOcEXvUUX
+         RjDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kvVGrPVZzIS1i2wMlAaPm2He75bpFK9MoRWDiUbgtrI=;
+        b=p3mASK9hhI6Uh8Y6lB49hT4wlLe/ZZKhcX5NP8O53O8aX/ijq7MsBGRYu9fwX3RG1f
+         NNxtxdgevKVgkF2XCWOCLohekoFp0/zzU7hF3OQOUlJdgDsTU1ahJxpgnQ8NBIrdFEos
+         x6ORSGmHDx0ggqKi9BbqMcPbEK5FMQ4BIUA3LtoLYz1mYGey4MOroP9yAIsaDMisU2T8
+         u7AguLDUKJBC8Jgzo55rd97i2cFQUb5iEbB7s69G6zdxAThN8yFoKe1TPNiPkbCAh/N+
+         0w8SEbCGevVRlCPuaZxkCYECbVsyykCbkK0gQ/ngXS+fWYU5XHweSG2ZWSdrAHAX0SsC
+         86Qw==
+X-Gm-Message-State: AOAM532kXHI4Bk/kRIoSgOgm/7pkJvloXoLuk/HO7HkJmey3tGIFPqWw
+        qs1WXCY9qLVR67c7cXEaWV0=
+X-Google-Smtp-Source: ABdhPJwFOb4CWBMbjqUUNM6KprIUtjbmLfvtN+whuLuU57rftiyP/7+dtjU8B/3jMFeRfR7OANGNlQ==
+X-Received: by 2002:a37:5684:: with SMTP id k126mr4169396qkb.43.1599883940411;
+        Fri, 11 Sep 2020 21:12:20 -0700 (PDT)
+Received: from winbook.localdomain (ool-944c2509.dyn.optonline.net. [148.76.37.9])
+        by smtp.gmail.com with ESMTPSA id z26sm5331265qkj.107.2020.09.11.21.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 21:12:20 -0700 (PDT)
+From:   Henry Burns <henrywolfeburns@gmail.com>
+To:     henrywolfeburns@gmail.com
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf vendor events amd: remove trailing comma
+Date:   Sat, 12 Sep 2020 00:10:56 -0400
+Message-Id: <20200912041101.2123-1-henrywolfeburns@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+amdzen2/core.json had a trailing comma on the x_ret_fus_brnch_inst
+event. Since that goes against the JSON standard, lets remove it.
 
-The VMware PhotonOS team is evaluating 4.19-rt compared to CentOS
-3.10-rt (franken kernel from Red Hat). They found a regression between
-the two kernels that was found to be introduced by:
+Signed-off-by: Henry Burns <henrywolfeburns@gmail.com>
+---
+ tools/perf/pmu-events/arch/x86/amdzen2/core.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- d25408756accb ("clockevents: Stop unused clockevent devices")
+diff --git a/tools/perf/pmu-events/arch/x86/amdzen2/core.json b/tools/perf/pmu-events/arch/x86/amdzen2/core.json
+index de89e5a44ff1..4b75183da94a 100644
+--- a/tools/perf/pmu-events/arch/x86/amdzen2/core.json
++++ b/tools/perf/pmu-events/arch/x86/amdzen2/core.json
+@@ -125,6 +125,6 @@
+   {
+     "EventName": "ex_ret_fus_brnch_inst",
+     "EventCode": "0x1d0",
+-    "BriefDescription": "Retired Fused Instructions. The number of fuse-branch instructions retired per cycle. The number of events logged per cycle can vary from 0-8.",
++    "BriefDescription": "Retired Fused Instructions. The number of fuse-branch instructions retired per cycle. The number of events logged per cycle can vary from 0-8."
+   }
+ ]
+-- 
+2.25.1
 
-The issue is running this on a guest, and it causes a noticeable wake
-up latency in cyclictest. The 4.19-rt kernel has two extra apic
-instructions causing for two extra VMEXITs to occur over the 3.10-rt
-kernel. I found out the reason why, and this is true for vanilla 5.9-rc
-as well.
-
-When running isocpus with NOHZ_FULL, I see the following.
-
-  tick_nohz_idle_stop_tick() {
-	hrtimer_start_range_ns() {
-		remove_hrtimer(timer)
-			/* no more timers on the base */
-			expires = KTIME_MAX;
-			tick_program_event() {
-				clock_switch_state(ONESHOT_STOPPED);
-				/* call to apic to shutdown timer */
-			}
-		}
-		[..]
-		hrtimer_reprogram(timer) {
-			tick_program_event() {
-				clock_switch_state(ONESHOT);
-				/* call to apic to enable timer again! */
-		}
-	}
- }
-
-
-Thus, we are needlessly shutting down and restarting the apic every
-time we call tick_nohz_stop_tick() if there is a timer still on the
-queue.
-
-I'm not exactly sure how to fix this. Is there a way we can hold off
-disabling the clock here until we know that it isn't going to be
-immediately enabled again?
-
--- Steve
