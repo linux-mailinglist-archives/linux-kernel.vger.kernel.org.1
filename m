@@ -2,50 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265D9267C30
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB35267C31
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 22:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbgILUA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 16:00:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
+        id S1725929AbgILUAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 16:00:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725892AbgILUAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 16:00:23 -0400
-Subject: Re: [GIT PULL] SMB3 DFS Fix
+        id S1725914AbgILUA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 16:00:26 -0400
+Subject: Re: [GIT PULL] seccomp fixes for v5.9-rc5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599940822;
-        bh=h/1KOfd2TqTSi//lfIGGOxG+zaYP8F/XCxqYsvdAa5k=;
+        s=default; t=1599940826;
+        bh=oHYtXHZLM7zfyZNRaIyJTsTW+t6XyMP2+2GbPyV6zXU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=xbSuZmJQsX8ZDCZpleN2blbI5WxrzExHG0HXfD4bxm2b/T5d5sPMnWkFQurrnEv60
-         JsVYDUc9aHAsBhZM7C6C1RArcGoQoyDo6DVDB6FZ4FFVYupU4FSEHFuMzIh5VCxFgc
-         /vHP/kco7rX/MyNOLyq1NlEPqF8zw6XnVB5yY5NY=
+        b=TEqe4rx29uJYTLoZmo2FbExlzmEsdRmzkJqDfU38MGxqFb4jqDaOXVdBFplBZRscz
+         agGJU7Xdaz/5z/Z67jmYwnuFRGSoleDwmzBVVyZv14CHbkF24S+UJlXoEl1uLjwxF/
+         sNQwmBYWeP0nZdH7H/AOMEapW6Q0aADMhBz2sWt0=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5mtri0syQbck4DG0o1t9Ri8vHmb_q3PUg0nca7nHbnLTQg@mail.gmail.com>
-References: <CAH2r5mtri0syQbck4DG0o1t9Ri8vHmb_q3PUg0nca7nHbnLTQg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-cifs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5mtri0syQbck4DG0o1t9Ri8vHmb_q3PUg0nca7nHbnLTQg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc4-smb3-fix
-X-PR-Tracked-Commit-Id: 01ec372cef1e5afa4ab843bbaf88a6fcb64dc14c
+In-Reply-To: <202009111718.B94EAD7@keescook>
+References: <202009111718.B94EAD7@keescook>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <202009111718.B94EAD7@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.9-rc5
+X-PR-Tracked-Commit-Id: e839317900e9f13c83d8711d684de88c625b307a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5a3c558a9f05f4664f569b06f04d6b217785fd21
-Message-Id: <159994082277.28783.4514566928537891429.pr-tracker-bot@kernel.org>
-Date:   Sat, 12 Sep 2020 20:00:22 +0000
-To:     Steve French <smfrench@gmail.com>
+X-PR-Merge-Commit-Id: ef2e9a563b0cd7965e2a1263125dcbb1c86aa6cc
+Message-Id: <159994082647.29146.17798103258761298184.pr-tracker-bot@kernel.org>
+Date:   Sat, 12 Sep 2020 20:00:26 +0000
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kees Cook <keescook@chromium.org>,
+        syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com,
+        Tycho Andersen <tycho@tycho.pizza>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 12 Sep 2020 11:56:45 -0500:
+The pull request you sent on Fri, 11 Sep 2020 17:20:02 -0700:
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc4-smb3-fix
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.9-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5a3c558a9f05f4664f569b06f04d6b217785fd21
+https://git.kernel.org/torvalds/c/ef2e9a563b0cd7965e2a1263125dcbb1c86aa6cc
 
 Thank you!
 
