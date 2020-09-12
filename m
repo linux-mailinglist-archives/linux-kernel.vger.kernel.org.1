@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AA026780B
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 07:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0472B267818
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbgILF7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 01:59:44 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:56593 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725808AbgILF7k (ORCPT
+        id S1725808AbgILGFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 02:05:37 -0400
+Received: from out28-123.mail.aliyun.com ([115.124.28.123]:52016 "EHLO
+        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgILGFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 01:59:40 -0400
-X-UUID: f25248f627934c929426b30cf3561136-20200912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=i9ffQliwWH6EmfVZu18WwAkTORgoZOjNhfKuRo1pCM0=;
-        b=tB7yoDOWxPj3fjDSStcDiZ7Aj+hoy0lXlsZZHpMEuMeL/4tE2j14anyrae/f5qK9ITMl+mAi6F6hRg9obxIp9327UjXHuL8yytQ3euK0mGv7DWafqY3dXnX/K+eLc087j9YqBQDweuvWrFsdDo/3SbMtMxleZS2CUnf6RnBx40c=;
-X-UUID: f25248f627934c929426b30cf3561136-20200912
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1817924852; Sat, 12 Sep 2020 13:59:28 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 12 Sep 2020 13:59:26 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 12 Sep 2020 13:59:25 +0800
-From:   <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>
-Subject: [PATCH] i2c: mediatek: Fix generic definitions for bus frequencies
-Date:   Sat, 12 Sep 2020 13:57:26 +0800
-Message-ID: <1599890246-21191-1-git-send-email-qii.wang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Sat, 12 Sep 2020 02:05:25 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1040136|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.0219345-0.00153944-0.976526;FP=0|0|0|0|0|-1|-1|-1;HT=e01l07381;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.IW5skju_1599890708;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IW5skju_1599890708)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Sat, 12 Sep 2020 14:05:20 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linus.walleij@linaro.org, paul@crapouillou.net
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: [PATCH v3 0/3] pinctrl: Ingenic: Add support for SSI and I2S pins.
+Date:   Sat, 12 Sep 2020 14:04:22 +0800
+Message-Id: <20200912060425.30423-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCg0KVGhlIG1hc3RlciBjb2Rl
-IG5lZWRzIHRvIGJlaW5nIHNlbnQgd2hlbiB0aGUgc3BlZWQgaXMgbW9yZSB0aGFuDQpJMkNfTUFY
-X0ZBU1RfTU9ERV9QTFVTX0ZSRVEgaW5zdGVhZCBvZg0KSTJDX01BWF9ISUdIX1NQRUVEX01PREVf
-RlJFUS4gRml4IGl0Lg0KDQpTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0
-ZWsuY29tPg0KLS0tDQogZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyB8IDYgKysrLS0t
-DQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCg0KZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMgYi9kcml2ZXJzL2kyYy9i
-dXNzZXMvaTJjLW10NjV4eC5jDQppbmRleCBlZmMxNDA0Li4wY2JkZmJlIDEwMDY0NA0KLS0tIGEv
-ZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KKysrIGIvZHJpdmVycy9pMmMvYnVzc2Vz
-L2kyYy1tdDY1eHguYw0KQEAgLTY4MSw4ICs2ODEsOCBAQCBzdGF0aWMgaW50IG10a19pMmNfY2Fs
-Y3VsYXRlX3NwZWVkKHN0cnVjdCBtdGtfaTJjICppMmMsIHVuc2lnbmVkIGludCBjbGtfc3JjLA0K
-IAl1bnNpZ25lZCBpbnQgY250X211bDsNCiAJaW50IHJldCA9IC1FSU5WQUw7DQogDQotCWlmICh0
-YXJnZXRfc3BlZWQgPiBJMkNfTUFYX0ZBU1RfTU9ERV9QTFVTX0ZSRVEpDQotCQl0YXJnZXRfc3Bl
-ZWQgPSBJMkNfTUFYX0ZBU1RfTU9ERV9QTFVTX0ZSRVE7DQorCWlmICh0YXJnZXRfc3BlZWQgPiBJ
-MkNfTUFYX0hJR0hfU1BFRURfTU9ERV9GUkVRKQ0KKwkJdGFyZ2V0X3NwZWVkID0gSTJDX01BWF9I
-SUdIX1NQRUVEX01PREVfRlJFUTsNCiANCiAJbWF4X3N0ZXBfY250ID0gbXRrX2kyY19tYXhfc3Rl
-cF9jbnQodGFyZ2V0X3NwZWVkKTsNCiAJYmFzZV9zdGVwX2NudCA9IG1heF9zdGVwX2NudDsNCkBA
-IC03NTksNyArNzU5LDcgQEAgc3RhdGljIGludCBtdGtfaTJjX3NldF9zcGVlZChzdHJ1Y3QgbXRr
-X2kyYyAqaTJjLCB1bnNpZ25lZCBpbnQgcGFyZW50X2NsaykNCiAJZm9yIChjbGtfZGl2ID0gMTsg
-Y2xrX2RpdiA8PSBtYXhfY2xrX2RpdjsgY2xrX2RpdisrKSB7DQogCQljbGtfc3JjID0gcGFyZW50
-X2NsayAvIGNsa19kaXY7DQogDQotCQlpZiAodGFyZ2V0X3NwZWVkID4gSTJDX01BWF9GQVNUX01P
-REVfRlJFUSkgew0KKwkJaWYgKHRhcmdldF9zcGVlZCA+IEkyQ19NQVhfRkFTVF9NT0RFX1BMVVNf
-RlJFUSkgew0KIAkJCS8qIFNldCBtYXN0ZXIgY29kZSBzcGVlZCByZWdpc3RlciAqLw0KIAkJCXJl
-dCA9IG10a19pMmNfY2FsY3VsYXRlX3NwZWVkKGkyYywgY2xrX3NyYywNCiAJCQkJCQkgICAgICBJ
-MkNfTUFYX0ZBU1RfTU9ERV9GUkVRLA0KLS0gDQoxLjkuMQ0K
+1.Add SSI pins support for JZ4770 and JZ4780.
+2.Correct the pullup and pulldown parameters of JZ4780.
+3.Add I2S pins support for JZ4780, X1000, X1500, and X1830.
+
+v2->v3:
+1.Add Paul Cercueil's Reviewed-by.
+2.Fix bug about PE15's pull-up parameter.
+
+周琰杰 (Zhou Yanjie) (3):
+  pinctrl: Ingenic: Add SSI pins support for JZ4770 and JZ4780.
+  pinctrl: Ingenic: Correct the pullup and pulldown parameters of JZ4780
+  pinctrl: Ingenic: Add I2S pins support for Ingenic SoCs.
+
+ drivers/pinctrl/pinctrl-ingenic.c | 349 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 347 insertions(+), 2 deletions(-)
+
+-- 
+2.11.0
 
