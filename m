@@ -2,125 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E234267BBC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CAB267BC0
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgILSWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 14:22:21 -0400
-Received: from smtprelay0016.hostedemail.com ([216.40.44.16]:47890 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725872AbgILSWN (ORCPT
+        id S1725890AbgILSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 14:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbgILSZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 14:22:13 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 2D7D0100E7B40;
-        Sat, 12 Sep 2020 18:22:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:3872:4321:5007:7514:7904:10004:10400:10848:11026:11232:11657:11658:11914:12043:12114:12297:12438:12555:12740:12760:12895:13439:14181:14659:14721:21080:21451:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:22,LUA_SUMMARY:none
-X-HE-Tag: copy82_03013a6270f9
-X-Filterd-Recvd-Size: 3020
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 12 Sep 2020 18:22:09 +0000 (UTC)
-Message-ID: <f5fdb27843143dfefb1a1a416dab63931fef6d41.camel@perches.com>
-Subject: Re: [PATCH 1/5] staging: rtl8723bs: refactor cckrates{only}_included
-From:   Joe Perches <joe@perches.com>
-To:     Michael Straube <straube.linux@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sat, 12 Sep 2020 11:22:08 -0700
-In-Reply-To: <20200912084520.8383-1-straube.linux@gmail.com>
-References: <20200912084520.8383-1-straube.linux@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sat, 12 Sep 2020 14:25:00 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15679C061573;
+        Sat, 12 Sep 2020 11:25:00 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a17so14526313wrn.6;
+        Sat, 12 Sep 2020 11:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tGJ7MqBZLv0eAFVjI5IdEGfiU4O8rQsPVnooROi6laU=;
+        b=YvrlhxZRmzgDhT6xrPgh7jVcpAHPv91I8p1bnd/Ybyjw2xx04UgOiVehjFNGf/zdTZ
+         gQ0jfYsMN1aXiFy8ncXY7biHgcFJxBNKTva0qEOsfvL8Wferx6Qwexf2brdyU7OrgxxH
+         SiZLYXvlXgmh+qUr+YWjq534h/vUUMwKEHCEUHPq/9hTK1JhyxmgYaHANgJTCLbXPfpL
+         gSmlSA70QICucG4alPltitONxnLqXhXtk9Ajv/rr3h7FQ9XCLRPnOUi9WnHE+hUqJ9ga
+         E9TSVq4k18EzfRW0xnSjlX2NRWcAABlN7ZoNDh2QRMCS4aHx8sUBJ6NGm5VTSqb7bMrP
+         ldvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tGJ7MqBZLv0eAFVjI5IdEGfiU4O8rQsPVnooROi6laU=;
+        b=SQVjbebn+pxnGpimVW0XEs9qkV5VwsDFsRTB3y3XAj3pXAF012VgUtFWrRfIrMvnVV
+         MqfYlw7em3tPj4m3k3ccRWf/4yypKGjktebHBl7fux9/HTKEyHTrLvvCNz24xW3VWI8G
+         jL7ecgy4tR8wqMm0+1/sgYBeU94us+G5KrSNDN44MH+VScUAjCJ72idncKIXT9rIJQfN
+         Wm6eszd9GYbW84yD5Eln9J3QvaeaboC1qr9JEWZtN4dsLwv5o08J/sFkYTVcQl50AQN5
+         t+Oyzojr7wWm6euD01HnAo0Qmw4gi+P0kUgbpIa77FfXNZAKpub9/vurmSmC2h27IGOo
+         jp1A==
+X-Gm-Message-State: AOAM531AcE452+Iu7JeIEpfROjPVvzKyeCuQfM0tbEKUcOr+3qeyPUG6
+        +Y2UganqX7tlmkBUXfEOddFxHTN/IAbsgljDFJc=
+X-Google-Smtp-Source: ABdhPJxnDbMbdSz2hPUfBzuQYfyUTosQbk+FaVCIPdDlwDrvWHXaJSinnkB//3oqC3oIBn+8QNJvFjyBHY+WTCVuogU=
+X-Received: by 2002:a5d:4a0c:: with SMTP id m12mr7873322wrq.83.1599935096172;
+ Sat, 12 Sep 2020 11:24:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200827211658.27479-1-tanmay@codeaurora.org>
+In-Reply-To: <20200827211658.27479-1-tanmay@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Sat, 12 Sep 2020 11:25:52 -0700
+Message-ID: <CAF6AEGttutrtxntAeRDtb3Hf_0i4z+9+rWMuShTrPVwTUHKTdg@mail.gmail.com>
+Subject: Re: [PATCH v12 0/5] Add support for DisplayPort driver on SnapDragon
+To:     Tanmay Shah <tanmay@codeaurora.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
+        Abhinav Kumar <abhinavk@codeaurora.org>, khsieh@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-09-12 at 10:45 +0200, Michael Straube wrote:
-> Refactor cckrates_included() and cckratesonly_included() to simplify
-> the code and improve readability.
-> 
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> index a5790a648a5b..4e0d86b2e2e0 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> @@ -56,11 +56,12 @@ static u8 rtw_basic_rate_ofdm[3] = {
->  
->  int cckrates_included(unsigned char *rate, int ratelen)
->  {
-> -	int	i;
-> +	int i;
->  
->  	for (i = 0; i < ratelen; i++) {
-> -		if  ((((rate[i]) & 0x7f) == 2)	|| (((rate[i]) & 0x7f) == 4) ||
-> -		     (((rate[i]) & 0x7f) == 11)  || (((rate[i]) & 0x7f) == 22))
-> +		u8 r = rate[i] & 0x7f;
-> +
-> +		if (r == 2 || r == 4 || r == 11 || r == 22)
->  			return true;
->  	}
->  
-> @@ -69,11 +70,12 @@ int cckrates_included(unsigned char *rate, int ratelen)
->  
->  int cckratesonly_included(unsigned char *rate, int ratelen)
->  {
-> -	int	i;
-> +	int i;
->  
->  	for (i = 0; i < ratelen; i++) {
-> -		if  ((((rate[i]) & 0x7f) != 2) && (((rate[i]) & 0x7f) != 4) &&
-> -		     (((rate[i]) & 0x7f) != 11)  && (((rate[i]) & 0x7f) != 22))
-> +		u8 r = rate[i] & 0x7f;
-> +
-> +		if (r != 2 && r != 4 && r != 11 && r != 22)
->  			return false;
+Fyi, I've pushed this series and the dp-compliance bits to msm-next-dp[1]
 
-It would be simpler to add and use an inline like:
+I didn't include the dp audio series yet, which seems to need some
+minor rebasing.  (And a small request, when resending, cc
+freedreno@lists.freedesktop.org, so it shows up in the patchwork
+instance[2] I use)
 
-static bool is_cckrate(unsigned char rate)
-{
-	rate &= 0x7f;
-	return rate == 2 || rate == 4 || rate == 11 || rate == 22;
-}
+You might want to double check that I got the correct versions of the
+series, etc.  And that nothing else (other than audio) is missing.
 
-so these could be
+BR,
+-R
 
-bool cckrates_included(unsigned char *rate, int ratelen)
-{
-	int i;
+[1] https://gitlab.freedesktop.org/drm/msm/-/commits/msm-next-dp
+[2] https://patchwork.freedesktop.org/project/freedreno
 
-	for (i = 0; i < ratelen; i++) {
-		if (is_cckrate(rate[i])
-			return true;
-	}
-
-	return false;
-}
-
-bool cckratesonly_included(unsigned char *rate, int ratelen)
-{
-	int i;
-
-	if (i <= 0)
-		return false;
-
-	for (i = 0; i < ratelen; i++) {
-		if (!is_cckrate(rate[i])
-			return false;
-	}
-
-	return true;
-}
-
-
+On Thu, Aug 27, 2020 at 2:17 PM Tanmay Shah <tanmay@codeaurora.org> wrote:
+>
+> These patches add Display-Port driver on SnapDragon/msm hardware.
+> This series also contains device-tree bindings for msm DP driver.
+> It also contains Makefile and Kconfig changes to compile msm DP driver.
+>
+> The block diagram of DP driver is shown below:
+>
+>
+>                  +-------------+
+>                  |DRM FRAMEWORK|
+>                  +------+------+
+>                         |
+>                    +----v----+
+>                    | DP DRM  |
+>                    +----+----+
+>                         |
+>                    +----v----+
+>      +------------+|   DP    +----------++------+
+>      +        +---+| DISPLAY |+---+      |      |
+>      |        +    +-+-----+-+    |      |      |
+>      |        |      |     |      |      |      |
+>      |        |      |     |      |      |      |
+>      |        |      |     |      |      |      |
+>      v        v      v     v      v      v      v
+>  +------+ +------+ +---+ +----+ +----+ +---+ +-----+
+>  |  DP  | |  DP  | |DP | | DP | | DP | |DP | | DP  |
+>  |PARSER| | HPD  | |AUX| |LINK| |CTRL| |PHY| |POWER|
+>  +--+---+ +---+--+ +---+ +----+ +--+-+ +-+-+ +-----+
+>     |                              |     |
+>  +--v---+                         +v-----v+
+>  |DEVICE|                         |  DP   |
+>  | TREE |                         |CATALOG|
+>  +------+                         +---+---+
+>                                       |
+>                                   +---v----+
+>                                   |CTRL/PHY|
+>                                   |   HW   |
+>                                   +--------+
+>
+> Changes in v12:
+>
+> -- Add support of pm ops in display port driver
+> -- Clear bpp depth bits before writing to MISC register
+> -- Fix edid read
+>
+> Previous change log:
+> https://lkml.kernel.org/lkml/20200818051137.21478-1-tanmay@codeaurora.org/
+>
+> Chandan Uddaraju (4):
+>   dt-bindings: msm/dp: add bindings of DP/DP-PLL driver for Snapdragon
+>   drm: add constant N value in helper file
+>   drm/msm/dp: add displayPort driver support
+>   drm/msm/dp: add support for DP PLL driver
+>
+> Jeykumar Sankaran (1):
+>   drm/msm/dpu: add display port support in DPU
+>
+> Tanmay Shah (1):
+>   drm/msm/dp: Add Display Port HPD feature
+>
+>  drivers/gpu/drm/i915/display/intel_display.c  |    2 +-
+>  drivers/gpu/drm/msm/Kconfig                   |    9 +
+>  drivers/gpu/drm/msm/Makefile                  |   14 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   |   27 +-
+>  .../drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |    8 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |   83 +-
+>  drivers/gpu/drm/msm/dp/dp_aux.c               |  535 ++++++
+>  drivers/gpu/drm/msm/dp/dp_aux.h               |   30 +
+>  drivers/gpu/drm/msm/dp/dp_catalog.c           | 1045 ++++++++++
+>  drivers/gpu/drm/msm/dp/dp_catalog.h           |  105 +
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c              | 1693 +++++++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_ctrl.h              |   35 +
+>  drivers/gpu/drm/msm/dp/dp_display.c           | 1046 ++++++++++
+>  drivers/gpu/drm/msm/dp/dp_display.h           |   31 +
+>  drivers/gpu/drm/msm/dp/dp_drm.c               |  168 ++
+>  drivers/gpu/drm/msm/dp/dp_drm.h               |   18 +
+>  drivers/gpu/drm/msm/dp/dp_hpd.c               |   69 +
+>  drivers/gpu/drm/msm/dp/dp_hpd.h               |   79 +
+>  drivers/gpu/drm/msm/dp/dp_link.c              | 1214 ++++++++++++
+>  drivers/gpu/drm/msm/dp/dp_link.h              |  132 ++
+>  drivers/gpu/drm/msm/dp/dp_panel.c             |  486 +++++
+>  drivers/gpu/drm/msm/dp/dp_panel.h             |   95 +
+>  drivers/gpu/drm/msm/dp/dp_parser.c            |  267 +++
+>  drivers/gpu/drm/msm/dp/dp_parser.h            |  138 ++
+>  drivers/gpu/drm/msm/dp/dp_pll.c               |   99 +
+>  drivers/gpu/drm/msm/dp/dp_pll.h               |   61 +
+>  drivers/gpu/drm/msm/dp/dp_pll_10nm.c          |  930 +++++++++
+>  drivers/gpu/drm/msm/dp/dp_pll_private.h       |   89 +
+>  drivers/gpu/drm/msm/dp/dp_power.c             |  373 ++++
+>  drivers/gpu/drm/msm/dp/dp_power.h             |  103 +
+>  drivers/gpu/drm/msm/dp/dp_reg.h               |  518 +++++
+>  drivers/gpu/drm/msm/msm_drv.c                 |    2 +
+>  drivers/gpu/drm/msm/msm_drv.h                 |   59 +-
+>  include/drm/drm_dp_helper.h                   |    1 +
+>  34 files changed, 9545 insertions(+), 19 deletions(-)
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_display.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_display.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_link.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_link.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_10nm.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_private.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_power.c
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_power.h
+>  create mode 100644 drivers/gpu/drm/msm/dp/dp_reg.h
+>
+>
+> base-commit: d012a7190fc1fd72ed48911e77ca97ba4521bccd
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
