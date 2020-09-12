@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E70267935
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EF5267937
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725849AbgILJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 05:38:31 -0400
-Received: from mout.gmx.net ([212.227.17.20]:59077 "EHLO mout.gmx.net"
+        id S1725869AbgILJie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 05:38:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbgILJi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 05:38:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1599903434;
-        bh=skrUagSvgqgEZzCi9PdeBBeP4Cqi1Erda0k0fJgiIB8=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=FftAd7pnCH3fzdB/mQwK5o3526+5rvmiQVz+tQTbnxcymkk3GlkdpnrB1m2vpsdbp
-         bVEFr4c00PT2nMP+9JAormOkurommMEJuzzsM4/u0ca4qnWDib1RRNZL4PXOSjCKAh
-         fDfSSux5fckZULv312TbZpx8w+A0tRK5qrIOmacA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N49hB-1khfbc3Ii9-0105Mu; Sat, 12
- Sep 2020 11:37:14 +0200
-Date:   Sat, 12 Sep 2020 11:36:52 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     James Morris <jmorris@namei.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com, John Wood <john.wood@gmx.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation
- (fbfam)
-Message-ID: <20200912093652.GA3041@ubuntu>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <alpine.LRH.2.21.2009121002100.17638@namei.org>
- <202009120055.F6BF704620@keescook>
+        id S1725825AbgILJic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 05:38:32 -0400
+Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2E0C208B3;
+        Sat, 12 Sep 2020 09:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599903512;
+        bh=wtWr/uv4YptSfy3vfLKpz9nXj+q8TtXd2IlsaXU5w28=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HTHO8i5+4TJ6K9xaLstbXGV0L5J8PNdlNCmC3H26j1Av2ke9Vag+Pru6JPVbW5RRX
+         OnLg0HMXQP3u3PgmUUCsKmCnxoTyabwSP0z+DHav/+l/zEZfmV1q/RvDeny7YdsgP5
+         mqd4AobuVBGiPg/qNV74FgDvG0qcvmtNSjRNkMVU=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kH1zJ-001cQi-9k; Sat, 12 Sep 2020 11:38:29 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: [PATCH v2] media: vidtv: fix 32-bit warnings
+Date:   Sat, 12 Sep 2020 11:38:27 +0200
+Message-Id: <542c6b0339aaf6636d996592763ea3b2c82640b1.1599903505.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009120055.F6BF704620@keescook>
-X-Provags-ID: V03:K1:82dXCEl3cI4cxk3DUO6WIKkws0kGiKuodYSB2Poy3pHIMexgZ3i
- ocFk/YHAJ3DjbN6PRnUmpAr0uwh00WrBXziJGf+yniVRw7LGtyUeiPQxsr9LYsq68ZOZ/WG
- OENMjSgGJ5obexYYwh4gx7hG4Wndyaod5tu/wNF+B9F43ME0vKJv7InV5yifThD30BcMIi2
- Q7LJJJvz5chA4C5qqIZxQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B2c/eYE3vYI=:Zbn3OSff8V0GZehoI25jPB
- XIfX7t9qpGtZR8iToZ2IiS6lBYW3veovlwaqN8mf32YrZRUISKTblWhYZOBmzwc6y1t6GWQFg
- NdXxqlWHuT/7m6k6X/TrkwVRrGN25qz+McCYG8lPBpTCw7ivlZfj9Z735ZZ5uyw755BwbxKH2
- Mcahz9+L5cwafaC6wE+M3yFzSdDdqgOjLEneU3IiQe9CTo6o2/XnE+5on3hC6R5N5Y/2wDA1d
- e4Nnj6ywD8yk/2CJj10pGq6SUZacy1ZB7XDohXjC0rYrS6WCSuKTw9DBk+yy15YbsEvPdlA2N
- U61QJgWqOuK7zU9LSzpDbGlzdDkM29EjmqSg8P2SlrTrkBRGhfgRapA8x8jtt2G4JUr6RTnPT
- U8pEJsZM7xoOvN8OzB0KEELqXvLCwnGb26LA9reUNMcWkpu1B5cNO0ZtKB/pSiuWGE7RTChJb
- l5S+YoiivwbgZwCkA9KRrYfEE27VDdXvdizZqQesZOP1P5mOqbwqDei1qY2Sv0yXC1qPnTOkz
- 2p0M3jHGbC2w8rgDcdZXLGPjbtoT7xTwD3cEBxAcclCYf0WWOTq/olDnkhk/m/uZvK2dVhHlS
- WjQwncs9EkPlHrctJvP2Oe2OS9q8wHNtJBIDdeppW9IJm8Qii6I31cidHaVDNjYX1mBhCFkLN
- jiScnSXnSMd1b/7nVji25Xc3vuYViuTid6XK9zHV7YyP+iL2R5BpKiRTdMtgSv5CHC/pBSzko
- JDSvogEy9A5MmMidBC+cOz55JnA3hHDDfs/7A1NmktypKRT11aVSggosuWvmDBjMJJdOWEl7H
- uMFJ54BGGSRmkHruKcQQJ725axPIs21Kt6iBcda6GFvnWDVGBa20iL4mT0yqMunGI5UabkMaT
- fZbWHEO+dHExVkhgVhOK5FbTAYXqmf+xh1GQWmR7t5wfL9Ca5InGyqkBXRyorIMZJTVAR2/PU
- +0HSLXm/WAi1uBa5W3DiiKIqzLwGM/N26IefxV4lU4Llo9ttwCaSbT53Z6Sgn2C23GZja/Rnb
- pw05y6c0WGrchZCat0neiVuDUAaVQJg1Qp/LUGvu6/DholigBT2VFgsI+Rs7fRD4x9Vw4YQC7
- mMkA9u/JNdyN2AIqH8u52XMNg7egvycBRjfeMC/whjW1damf6Wjredeau9o/d5+3ZJF1XpIiH
- /lOMjNgOO53bzcOPNaS3HB3MpkPxpyK+D3BtdQwAK9AxA7TtZvKdMNdfvTKHQTXVpfh9ez+8i
- u+gvCQ8PYYgQYTpOab3Yestd59t2YICSNXMfnpA==
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 12:56:18AM -0700, Kees Cook wrote:
-> On Sat, Sep 12, 2020 at 10:03:23AM +1000, James Morris wrote:
-> > On Thu, 10 Sep 2020, Kees Cook wrote:
-> >
-> > > [kees: re-sending this series on behalf of John Wood <john.wood@gmx.=
-com>
-> > >  also visible at https://github.com/johwood/linux fbfam]
-> > >
-> > > From: John Wood <john.wood@gmx.com>
-> >
-> > Why are you resending this? The author of the code needs to be able to
-> > send and receive emails directly as part of development and maintenanc=
-e.
+There are several warnings produced when the driver is built
+for 32-bit archs. Solve them.
 
-I tried to send the full patch serie by myself but my email got blocked. A=
-fter
-get support from my email provider it told to me that my account is young,
-and due to its spam policie I am not allow, for now, to send a big amount
-of mails in a short period. They also informed me that soon I will be able
-to send more mails. The quantity increase with the age of the account.
+Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/test-drivers/vidtv/vidtv_common.c |  4 ++--
+ drivers/media/test-drivers/vidtv/vidtv_pes.c    | 12 ++++++------
+ drivers/media/test-drivers/vidtv/vidtv_s302m.c  |  2 +-
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-I hope that for the next version all works as expected.
-Apologies.
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_common.c b/drivers/media/test-drivers/vidtv/vidtv_common.c
+index 9093df32e0ab..63b3055bd715 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_common.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_common.c
+@@ -42,7 +42,7 @@ u32 vidtv_memcpy(void *to,
+ 		 size_t len)
+ {
+ 	if (unlikely(to_offset + len > to_size)) {
+-		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %lu, had %zu\n",
++		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %zu, had %zu\n",
+ 				   to_offset + len,
+ 				   to_size);
+ 		return 0;
+@@ -78,7 +78,7 @@ u32 vidtv_memset(void *to,
+ 		 size_t len)
+ {
+ 	if (unlikely(to_offset + len > to_size)) {
+-		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %lu, had %zu\n",
++		pr_err_ratelimited("overflow detected, skipping. Try increasing the buffer size. Needed %zu, had %zu\n",
+ 				   to_offset + len,
+ 				   to_size);
+ 		return 0;
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_pes.c b/drivers/media/test-drivers/vidtv/vidtv_pes.c
+index 8237434f3fc2..4ffc4a1c33ee 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_pes.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_pes.c
+@@ -91,13 +91,13 @@ static u32 vidtv_pes_write_pts_dts(struct pes_header_write_args args)
+ 		return 0;
+ 
+ 	#ifdef __BIG_ENDIAN
+-	mask1 = GENMASK(30, 32);
+-	mask2 = GENMASK(15, 29);
+-	mask3 = GENMASK(0, 14);
++	mask1 = GENMASK_ULL(30, 32);
++	mask2 = GENMASK_ULL(15, 29);
++	mask3 = GENMASK_ULL(0, 14);
+ 	#else
+-	mask1 = GENMASK(32, 30);
+-	mask2 = GENMASK(29, 15);
+-	mask3 = GENMASK(14, 0);
++	mask1 = GENMASK_ULL(32, 30);
++	mask2 = GENMASK_ULL(29, 15);
++	mask3 = GENMASK_ULL(14, 0);
+ 	#endif
+ 
+ 	/* see ISO/IEC 13818-1 : 2000 p. 32 */
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+index 467470295942..59e056fb6d33 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
+@@ -415,7 +415,7 @@ static void vidtv_s302m_write_frames(struct vidtv_encoder *e)
+ 		au->nbytes = nbytes_per_unit;
+ 
+ 		if (au_sz + sizeof(struct vidtv_smpte_s302m_es) != nbytes_per_unit) {
+-			pr_warn_ratelimited("write size was %d, expected %lu\n",
++			pr_warn_ratelimited("write size was %u, expected %zu\n",
+ 					    nbytes_per_unit,
+ 					    au_sz + sizeof(struct vidtv_smpte_s302m_es));
+ 		}
+-- 
+2.26.2
 
-> I wanted to flush it from my "review" TODO list, mainly.
-
-Thanks Kees for the re-send and review.
-
-> --
-> Kees Cook
-
-Regards,
-John Wood
