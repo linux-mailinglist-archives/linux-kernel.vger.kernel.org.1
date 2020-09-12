@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF967267B26
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 17:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24501267B2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 17:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbgILPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 11:02:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgILOzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 10:55:24 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D24C20855;
-        Sat, 12 Sep 2020 14:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599922522;
-        bh=qInZn1/egWCEWFvA4yvyOBeLuLl91HdsgrtXiTqOoz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wZC0P8vUa9KFX5+Mjhd/cZcHpQDema900na2XGcmJg0Ip4+qdgCDsLXYoN8mXLrW0
-         nBfrUmIwlaDvplV6wsKnHphRi1igdYpzuUygBSy4k216R7g+BU37xB1gsodpkJppsI
-         OMdmH++O0NAxH0ErQHr0+1sajmWVgbgfq6lO7HMc=
-Date:   Sat, 12 Sep 2020 16:55:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Using a pointer and kzalloc in place of a struct directly
-Message-ID: <20200912145525.GA769913@kroah.com>
-References: <000000000000c82fe505aef233c6@google.com>
- <20200912113804.6465-1-anant.thazhemadam@gmail.com>
- <20200912114706.GA171774@kroah.com>
- <09477eb1-bbeb-74e8-eba9-d72cce6104db@gmail.com>
+        id S1725889AbgILPH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 11:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725850AbgILPHx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 11:07:53 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98456C061573;
+        Sat, 12 Sep 2020 08:07:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ns0xiwrnJendxN6CLtcox2ImSbCLh3e9jw5WmzFYNI8=; b=Fe2I67kfkTO1R1g0KBKMpXFStG
+        gJc/PLRzuGX0cfpNiI1WuH3686jPQc1haYhCarW5LvrlrUuBr10pm0FsC2DKZLyoM1bz/LwGASQ8Z
+        eijcOqVQp0I7ZRWAvFqCT9WxYyOLzLSRGscWvL6ZKFDvL7E5BG0PmP0SCK9BRM1djmTVe+b9Fu8As
+        behoGvhI9TeXgjpySNZUEAKWkhVejYhxbmZqV7sz2wrEeiYXZKMbRS/3a0JorZU+hxlZF3Sb8zCeF
+        luEX4WoUrRmncQb7t9HdIDLpIvlmZ/IddF0H38srMkHHJHou+GSWoVs/tAM6/ONeI01jWJPGsWr7y
+        yClvn3RQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kH77t-0004Fq-M6; Sat, 12 Sep 2020 15:07:41 +0000
+Subject: Re: [PATCH v2 08/14] habanalabs/gaudi: add a new IOCTL for NIC
+ control operations
+To:     Oded Gabbay <oded.gabbay@gmail.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     SW_Drivers@habana.ai, gregkh@linuxfoundation.org,
+        davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        f.fainelli@gmail.com, Omer Shpigelman <oshpigelman@habana.ai>
+References: <20200912144106.11799-1-oded.gabbay@gmail.com>
+ <20200912144106.11799-9-oded.gabbay@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <59a861d7-86e5-d806-a195-fd229d27ffb4@infradead.org>
+Date:   Sat, 12 Sep 2020 08:07:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09477eb1-bbeb-74e8-eba9-d72cce6104db@gmail.com>
+In-Reply-To: <20200912144106.11799-9-oded.gabbay@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 05:43:38PM +0530, Anant Thazhemadam wrote:
-> 
-> On 12/09/20 5:17 pm, Greg KH wrote:
-> > Note, your "To:" line seemed corrupted, and why not cc: the bpf mailing
-> > list as well?
-> Oh, I'm sorry about that. I pulled the emails of all the people to whom
-> this mail was sent off from the header in lkml mail, and just cc-ed
-> everyone.
-> 
-> > You leaked memory :(
-> >
-> > Did you test this patch?  Where do you free this memory, I don't see
-> > that happening anywhere in this patch, did I miss it?
-> 
-> Yes, I did test this patch, which didn't seem to trigger any issues.
-> It surprised me so much, that I ended up sending it in, to have
-> it checked out.
+Hi,
 
-You might not have noticed the memory leak if you were not looking for
-it.
+On 9/12/20 7:41 AM, Oded Gabbay wrote:
+> +#define HL_IOCTL_NIC	_IOWR('H', 0x07, struct hl_nic_args)
 
-How did you test this?
 
-> I wasn't sure where exactly the memory allocated here was
-> supposed to be freed (might be why the current implementation
-> isn't exactly using kzalloc). I forgot to mention it in the initial mail,
-> and I was hoping that someone would point me in the right direction
-> (if this approach was actually going to be considered, that is, which in
-> retrospect I now feel might not be the best thing)
+ioctl numbers ('H') should be documented in
+Documentation/userspace-api/ioctl/ioctl-number.rst
 
-It has to be freed somewhere, you wrote the patch  :)
+Sorry if I missed seeing that. (I scanned quickly.)
 
-But back to the original question here, why do you feel this change is
-needed?  What does this do better/faster/more correct than the code that
-is currently there?  Unless you can provide that, the change should not
-be needed, right?
+thanks.
 
-thanks,
+-- 
+~Randy
 
-greg k-h
