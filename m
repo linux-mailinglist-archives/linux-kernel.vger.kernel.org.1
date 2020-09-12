@@ -2,143 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4372678BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A722678BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 10:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbgILH7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:59:23 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:46157 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbgILH7V (ORCPT
+        id S1725832AbgILIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 04:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbgILIHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:59:21 -0400
-Received: by mail-io1-f80.google.com with SMTP id j8so105996iof.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:59:20 -0700 (PDT)
+        Sat, 12 Sep 2020 04:07:08 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E742C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:07:07 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id c127so6722062vsc.1
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 01:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CDZH2yx3hPs808I2LrHJaGugWVB/v76tWmgxKeMP3h0=;
+        b=oOB65dxKJx2wi0D+lgVztvj3BE0u8G7VjGZUppjVh3WoZI34U7dPbC96pWnUZ8QId/
+         P1+Le0XKO1Msp+XJ5sFanGqvgxUjaRZ6mmZZDoXx2UWX0NVLUrpBDUgn3NtzG+8RoToF
+         iPmxcpa37EHy6N46JnoNp4cCUMd3pslLTLAtU6bN77OvSWn+34vi3B26/QQ1puIh38/B
+         Y6RoV7usdIouo6xlmLAS627ygEuicO6GEZ488eu/I2pWNTjQIGrVT8dUlQmq9SXx8W3n
+         akf/Y29/xJUIP7pXIxGtVye17Z5a1UMdWgfJZ3Yxv+X40UfdWfIDz5GmVpjxbu9rpIhf
+         A9EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=go9OmBFDLb2n53CiVIZT2Q/pl1bejLw6HkAlVDkgsBE=;
-        b=L9fO7O5lxHfAJs44WGmRM3qN6/YJ/vqa38Q0WP3g4pahaoBSxnZhevlib5/hfT0aEl
-         iVDFsqLBZGoNUCmaVGuU0lufuXY8tTHvCQKjDvJctNkGUbroeIubEjQ4OSFInmy+sqvX
-         XD6g4Dk66kV+WxLcpaw+2BMEnC10j1ta7wuoKgExArSV3AmXniQaXEc1J1dMwDipPWWo
-         JNOoTfXeLnnnhGjdRY07I6hq67KAslVdZFVMpTNZkrCkMQ+r6gK0wElsPERBlWfybnPH
-         ChACmv83WXXf2QdiRNuykXkO1gb8Iyu6JHZIsX/4qw69Hf8cunYZzQ6oZ2nObjKUIUtd
-         sJ5g==
-X-Gm-Message-State: AOAM531aji8yO+Sfn/PkpHQoY6lSH7u7TttmUfdBtpwau4glW6CEsF/S
-        1CEz0Huoda0N1InxZI7UdL18azajcXl6BSp8Z4I1sSu8woa4
-X-Google-Smtp-Source: ABdhPJxwV1H3W0bPHW/nlO//YfrCJZcoP3tSXnp34cEVfY3njErOz56u9OumJ1xOcGiIuXLJ3BO3D8OVXrZjFYplsbuMCK9FRZE/
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CDZH2yx3hPs808I2LrHJaGugWVB/v76tWmgxKeMP3h0=;
+        b=WH9yrXYsn3jc50krHXRFV0XJ0crvkSdd9f8YV123fPGKbZ3IsRCucXmIIzkFCdoBL3
+         30dcJ5w2AQtewRMz8p4c9MgLGveNmQFDIR9rGEsI0eOIfJMr3GWxeb57aYGf/4qI9nx6
+         iCpP6DxqqlAWJ3k7CpoWqrm7Sj6dshy6xArBgmw7QPN2x4RxObpbTrzUen86Wt2e9Vz1
+         WMi9E0iIdJZz4X+aVPoL2k5PbC3T6HJGFIS4RrRW1pHHy8MCNNxNJX6fknEmTfiYLhIr
+         oaTHVhuVKh9+EFhfp2pK5xV9CxXwzBQYpQehIgca+2jUPFgY9WRLyn2yoMQBz1RKe8Cm
+         BOnw==
+X-Gm-Message-State: AOAM533WrlG3R5gvAj9ZgZ653DYmY2zKQJBG+Rlx36mYjxOBE7SIx3nK
+        s++cvQCerfQFTvkauu/Ox1/qX6xB6RYwVpA6xL07vg==
+X-Google-Smtp-Source: ABdhPJyJPzXkgRFli+FHijgzDmn5KPpA6VURPC4qi6Iqx0f6uPkoPayyMv/yjEL+m1DYlBemD7bSKLEiM8NO9JYbDQA=
+X-Received: by 2002:a67:7c52:: with SMTP id x79mr3045305vsc.21.1599898026206;
+ Sat, 12 Sep 2020 01:07:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8612:: with SMTP id f18mr4583223iol.135.1599897560098;
- Sat, 12 Sep 2020 00:59:20 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 00:59:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf2d3605af192d03@google.com>
-Subject: KMSAN: uninit-value in netif_receive_generic_xdp
-From:   syzbot <syzbot+026212ad75beeadc9907@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, glider@google.com,
-        linux-kernel@vger.kernel.org, mingo@kernel.org, paulmck@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
+References: <20200911122504.928931589@linuxfoundation.org>
+In-Reply-To: <20200911122504.928931589@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 12 Sep 2020 13:36:54 +0530
+Message-ID: <CA+G9fYsCVApK+_Mo96y8QY8oNZ+4J7-w0HK_TQmnho5nYPUu-g@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/71] 4.9.236-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 11 Sep 2020 at 18:27, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.236 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 13 Sep 2020 12:24:42 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.236-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-syzbot found the following issue on:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-HEAD commit:    3b3ea602 x86: add failure injection to get/put/clear_user
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=177d7335900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
-dashboard link: https://syzkaller.appspot.com/bug?extid=026212ad75beeadc9907
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
+Summary
+------------------------------------------------------------------------
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+026212ad75beeadc9907@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in netif_receive_generic_xdp+0x15c9/0x2530 net/core/dev.c:4670
-CPU: 1 PID: 16 Comm: ksoftirqd/1 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- netif_receive_generic_xdp+0x15c9/0x2530 net/core/dev.c:4670
- do_xdp_generic net/core/dev.c:4735 [inline]
- __netif_receive_skb_core+0x823/0x6520 net/core/dev.c:5107
- __netif_receive_skb_one_core net/core/dev.c:5279 [inline]
- __netif_receive_skb+0x164/0x670 net/core/dev.c:5395
- process_backlog+0x50d/0xba0 net/core/dev.c:6239
- napi_poll+0x43b/0xfd0 net/core/dev.c:6684
- net_rx_action+0x35c/0xd40 net/core/dev.c:6752
- __do_softirq+0x2ea/0x7f5 kernel/softirq.c:293
- run_ksoftirqd+0x25/0x40 kernel/softirq.c:634
- smpboot_thread_fn+0x5f5/0xa90 kernel/smpboot.c:165
- kthread+0x551/0x590 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-
-Uninit was stored to memory at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:310
- kmsan_memcpy_memmove_metadata+0x272/0x2e0 mm/kmsan/kmsan.c:247
- kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:267
- __msan_memcpy+0x43/0x50 mm/kmsan/kmsan_instr.c:116
- pskb_expand_head+0x3fd/0x1e30 net/core/skbuff.c:1636
- netif_receive_generic_xdp+0x629/0x2530 net/core/dev.c:4616
- do_xdp_generic net/core/dev.c:4735 [inline]
- __netif_receive_skb_core+0x823/0x6520 net/core/dev.c:5107
- __netif_receive_skb_one_core net/core/dev.c:5279 [inline]
- __netif_receive_skb+0x164/0x670 net/core/dev.c:5395
- process_backlog+0x50d/0xba0 net/core/dev.c:6239
- napi_poll+0x43b/0xfd0 net/core/dev.c:6684
- net_rx_action+0x35c/0xd40 net/core/dev.c:6752
- __do_softirq+0x2ea/0x7f5 kernel/softirq.c:293
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2839 [inline]
- __kmalloc_node_track_caller+0xeab/0x12e0 mm/slub.c:4478
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1083 [inline]
- alloc_skb_with_frags+0x1f2/0xc10 net/core/skbuff.c:5770
- sock_alloc_send_pskb+0xc83/0xe50 net/core/sock.c:2356
- sock_alloc_send_skb+0xca/0xe0 net/core/sock.c:2373
- j1939_sk_alloc_skb net/can/j1939/socket.c:843 [inline]
- j1939_sk_send_loop net/can/j1939/socket.c:1025 [inline]
- j1939_sk_sendmsg+0xe11/0x2950 net/can/j1939/socket.c:1160
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0xc82/0x1240 net/socket.c:2352
- ___sys_sendmsg net/socket.c:2406 [inline]
- __sys_sendmsg+0x6d1/0x840 net/socket.c:2439
- __compat_sys_sendmsg net/compat.c:466 [inline]
- __do_compat_sys_sendmsg net/compat.c:473 [inline]
- __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:470
- __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:470
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2af/0x480 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
+kernel: 4.9.236-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 59285d12c5e318944255026d4ae511ff47d57106
+git describe: v4.9.235-72-g59285d12c5e3
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.235-72-g59285d12c5e3
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+No regressions (compared to build v4.9.235)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+No fixes (compared to build v4.9.235)
+
+
+Ran 14979 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* linux-log-parser
+* perf
+* network-basic-tests
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* kselftest/net
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
