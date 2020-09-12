@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD472679C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1262679D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725926AbgILLKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
+        id S1725988AbgILLLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgILLJW (ORCPT
+        with ESMTP id S1725837AbgILLJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:09:22 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEE3C061388
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:08:33 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f2so6185071pgd.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:08:33 -0700 (PDT)
+        Sat, 12 Sep 2020 07:09:29 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBF3C06138E
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:08:35 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z19so9073010pfn.8
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:08:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pONZKNsoYmecan6Kvfo6IohiIkOTvwMfLoaC7wDxjJY=;
-        b=AHH/amkQdeWLyBAxU3pffopTPxgFrBFBprJ+PpEdvWf1lAYD5H+lgruCFy2n/X0+XX
-         yY7j6ILtJvVkoXTgPU/Q0Nx0Ff/quYRXHPXNvwJmR6j+U5zNUucDghfcm6CBWGBetvGy
-         4eTIchjU58tkxxv/jWjM7df5Qqcmyycxt1Xts=
+        bh=grGRfF2oc4Mrj7QbeeTIjwfyG+77vtq6pTEp1U/ruko=;
+        b=K1BHHo1evlP7HOYg1ZAzFN6YM48ETae3xI7p7rULuTb/67o1w2O4DRWN5Of3sP+nNA
+         1hp7xWjAewTidrGnugC/X0nQz1mf/c7PFnmJRbgewvDbBnJaFQM3m/iV9mMms3GpIJPH
+         rvw0kaANVUvR5b4Wf+1UIc1c0gKVU9OgmMr6w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pONZKNsoYmecan6Kvfo6IohiIkOTvwMfLoaC7wDxjJY=;
-        b=BkvhXYY0AmksdYY8O3Mxpw8FLNny6n2sRRi0nbah9/s4H2qhd1JrsVDhvkGdOGY+xS
-         cttXHY8WbY1U0YQCV88ttxU8lsx6gzp/L7pYeIxndKKIeaiNEI+9LHNS5948pQfb4MoU
-         UZMqng8oHqmHR3Cok8ji2qtv7UHLSWqpLlsP06LXqbJoVYoC+fsM9C6aJvJ/yMu10x51
-         NfM+pUou5hSRwYG4IrmrFjPAS5Lt9fy8qtwSdeHEFz+30Ij3HnLJl0bWypCY05zngUO1
-         TZzK/F2Y6lOP3GynWOuWSMo6pURxN8aKpSk37Ri2I4amlEoZlUREwxdmTx+WL7PsYeV8
-         0y9A==
-X-Gm-Message-State: AOAM530a/C30sQmt1W+nC+6V89bm8GGXmVWjqQNp8dNN7H4qwWLZmVbF
-        zLec3DgK54Ezb352IE/vcbEYIw==
-X-Google-Smtp-Source: ABdhPJxh5feYLWNyYkQfm0AMemI2YVevpROI7r4tOHO1a8H0MHk0I/H+X87vqakNf9zn1pnikeC7qw==
-X-Received: by 2002:a05:6a00:8c5:b029:13e:ce2c:88bd with SMTP id s5-20020a056a0008c5b029013ece2c88bdmr5950676pfu.0.1599908913398;
-        Sat, 12 Sep 2020 04:08:33 -0700 (PDT)
+        bh=grGRfF2oc4Mrj7QbeeTIjwfyG+77vtq6pTEp1U/ruko=;
+        b=g2m07ZHsWxd0EzvY/xqJeRSpIQIdPjF+cXNqI7CZzyMVEwTj6H5/94uonNvby5kieN
+         LJ9u4MR68iZRLqs1kNtZPpBcA+chVYH4BN3JMJThRx8wEMGzRN70fWKXwe1K5Eyy461R
+         Ek8j4YjH+ZPEUnPjMgvZx9t+e+BPpLSqFHRA6Rylz6KKcUFEdhhjo7sf18yfBLXjYTgy
+         JZouhgzH2khMWDD3LdVxnVomBdG5JDtnt2Isdzo8LkM4wKsTBLhERfp3H+8GHZJ7kmCq
+         lizYUMMmlUGN2D/12e4be2/e9LVL3mJWuhG5Ar/8PU3DfJTrhvGADp38HjbvpbvdmvKj
+         +T7Q==
+X-Gm-Message-State: AOAM530uPUrVx53LWA5mHF8740jJ7c1jgiD+cE8vV2m8ewCmmj5AeGT6
+        Ph1myWBLPTmxYOScZ1HueWmBWA==
+X-Google-Smtp-Source: ABdhPJz0lqRrd9ZAIbQNwHdMwokn/e8KIK1qcB2JeErSyyv6PiiwOqirwQ5yiqUysT88RrlcDZ8BVA==
+X-Received: by 2002:aa7:8084:0:b029:13f:b82a:1725 with SMTP id v4-20020aa780840000b029013fb82a1725mr3857546pff.9.1599908914782;
+        Sat, 12 Sep 2020 04:08:34 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id np1sm4004435pjb.2.2020.09.12.04.08.27
+        by smtp.gmail.com with ESMTPSA id j20sm4905489pfh.146.2020.09.12.04.08.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 04:08:27 -0700 (PDT)
+        Sat, 12 Sep 2020 04:08:31 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -57,9 +57,9 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-xtensa@linux-xtensa.org,
         linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 12/15] selftests/seccomp: powerpc: Fix seccomp return value testing
-Date:   Sat, 12 Sep 2020 04:08:17 -0700
-Message-Id: <20200912110820.597135-13-keescook@chromium.org>
+Subject: [PATCH 13/15] selftests/seccomp: powerpc: Set syscall return during ptrace syscall exit
+Date:   Sat, 12 Sep 2020 04:08:18 -0700
+Message-Id: <20200912110820.597135-14-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200912110820.597135-1-keescook@chromium.org>
 References: <20200912110820.597135-1-keescook@chromium.org>
@@ -70,44 +70,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On powerpc, the errno is not inverted, and depends on ccr.so being
-set. Add this to a powerpc definition of SYSCALL_RET_SET().
+Some archs (like ppc) only support changing the return code during
+syscall exit when ptrace is used. As the syscall number might not
+be available anymore during syscall exit, it needs to be saved
+during syscall enter. Adjust the ptrace tests to do this.
 
-Co-developed-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Suggested-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 Link: https://lore.kernel.org/linux-kselftest/20200911181012.171027-1-cascardo@canonical.com/
-Fixes: 5d83c2b37d43 ("selftests/seccomp: Add powerpc support")
+Fixes: 58d0a862f573 ("seccomp: add tests for ptrace hole")
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/testing/selftests/seccomp/seccomp_bpf.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 34 +++++++++++--------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 623953a53032..bbab2420d708 100644
+index bbab2420d708..26c712c6a575 100644
 --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
 +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -1750,6 +1750,21 @@ TEST_F(TRACE_poke, getpid_runs_normally)
- # define ARCH_REGS		struct pt_regs
- # define SYSCALL_NUM(_regs)	(_regs).gpr[0]
- # define SYSCALL_RET(_regs)	(_regs).gpr[3]
-+# define SYSCALL_RET_SET(_regs, _val)				\
-+	do {							\
-+		typeof(_val) _result = (_val);			\
-+		/*						\
-+		 * A syscall error is signaled by CR0 SO bit	\
-+		 * and the code is stored as a positive value.	\
-+		 */						\
-+		if (_result < 0) {				\
-+			SYSCALL_RET(_regs) = -result;		\
-+			(_regs).ccr |= 0x10000000;		\
-+		} else {					\
-+			SYSCALL_RET(_regs) = result;		\
-+			(_regs).ccr &= ~0x10000000;		\
-+		}						\
-+	} while (0)
- #elif defined(__s390__)
- # define ARCH_REGS		s390_regs
- # define SYSCALL_NUM(_regs)	(_regs).gprs[2]
+@@ -1949,12 +1949,19 @@ void tracer_seccomp(struct __test_metadata *_metadata, pid_t tracee,
+ 
+ }
+ 
++FIXTURE(TRACE_syscall) {
++	struct sock_fprog prog;
++	pid_t tracer, mytid, mypid, parent;
++	long syscall_nr;
++};
++
+ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
+ 		   int status, void *args)
+ {
+-	int ret, nr;
++	int ret;
+ 	unsigned long msg;
+ 	static bool entry;
++	FIXTURE_DATA(TRACE_syscall) *self = args;
+ 
+ 	/*
+ 	 * The traditional way to tell PTRACE_SYSCALL entry/exit
+@@ -1968,24 +1975,23 @@ void tracer_ptrace(struct __test_metadata *_metadata, pid_t tracee,
+ 	EXPECT_EQ(entry ? PTRACE_EVENTMSG_SYSCALL_ENTRY
+ 			: PTRACE_EVENTMSG_SYSCALL_EXIT, msg);
+ 
+-	if (!entry)
+-		return;
+-
+-	nr = get_syscall(_metadata, tracee);
++	/*
++	 * Some architectures only support setting return values during
++	 * syscall exit under ptrace, and on exit the syscall number may
++	 * no longer be available. Therefore, save it here, and call
++	 * "change syscall and set return values" on both entry and exit.
++	 */
++	if (entry)
++		self->syscall_nr = get_syscall(_metadata, tracee);
+ 
+-	if (nr == __NR_getpid)
++	if (self->syscall_nr == __NR_getpid)
+ 		change_syscall(_metadata, tracee, __NR_getppid, 0);
+-	if (nr == __NR_gettid)
++	if (self->syscall_nr == __NR_gettid)
+ 		change_syscall(_metadata, tracee, -1, 45000);
+-	if (nr == __NR_openat)
++	if (self->syscall_nr == __NR_openat)
+ 		change_syscall(_metadata, tracee, -1, -ESRCH);
+ }
+ 
+-FIXTURE(TRACE_syscall) {
+-	struct sock_fprog prog;
+-	pid_t tracer, mytid, mypid, parent;
+-};
+-
+ FIXTURE_VARIANT(TRACE_syscall) {
+ 	/*
+ 	 * All of the SECCOMP_RET_TRACE behaviors can be tested with either
+@@ -2044,7 +2050,7 @@ FIXTURE_SETUP(TRACE_syscall)
+ 	self->tracer = setup_trace_fixture(_metadata,
+ 					   variant->use_ptrace ? tracer_ptrace
+ 							       : tracer_seccomp,
+-					   NULL, variant->use_ptrace);
++					   self, variant->use_ptrace);
+ 
+ 	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
+ 	ASSERT_EQ(0, ret);
 -- 
 2.25.1
 
