@@ -2,150 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3967D267700
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 03:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1AE267703
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 03:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgILBCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 21:02:43 -0400
-Received: from esa2.mentor.iphmx.com ([68.232.141.98]:59507 "EHLO
-        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbgILBCm (ORCPT
+        id S1725906AbgILBFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 11 Sep 2020 21:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbgILBFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 21:02:42 -0400
-X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Fri, 11 Sep 2020 21:02:41 EDT
-IronPort-SDR: EfE4iC2+4LL0/B/o46YkugYCqq4P9Aiy+NH1MSArpXsRfj0+A6cgkzW+LP9SsIvVn8thcB0mVn
- V3O4uuu7finBoaRxU2Oe1XSJ5JATtKUUnK6nbQwD/R5x0ugtq80k83R+11q+rA+/qKzVUAMztT
- MaL3BuXZFNtHJOip0ltG5V3lCDHrx5M7P7q/pNbQ9H+Evymq9A5Tyodo0j58G2lzQ+J1C4F9sl
- LDhTU78heQ0YCVfYlWy4/6UHvOc422JfvcVz/KYeUqpOsFufiOV27pKSJPla6I+gKp0g3n0FHC
- 7/8=
-X-IronPort-AV: E=Sophos;i="5.76,418,1592899200"; 
-   d="scan'208";a="52850486"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa2.mentor.iphmx.com with ESMTP; 11 Sep 2020 16:55:26 -0800
-IronPort-SDR: zhk17P7uRb4t8+9rp61vPQuDeQ4c3kiOn7MRQ8sHjY/F0fOlTP7vsX0dTqLF6S+J4inoOsr/wX
- UvKKZmtrkl7dmQPy0twpcyv5wKju2KfcwMB1Fj23il6sY8qgA05rJJNMhrTdmsyXb4YrgFoiwQ
- 9R4Cc3gk4IwNhOrA9QCQzH3OH0+o6ueZoi+2CEwAL2jhIPNJAyrlZrTTnvB26olB1NqTFJKxLE
- 3eB35hrCWv4XQYDRhTfm2fb17C7Os7ZrfvARqs6o901OSD9+f45xO69w57o+75e/XGysP9qNSN
- 9SM=
-From:   Jiada Wang <jiada_wang@mentor.com>
-To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <digetx@gmail.com>, <andy.shevchenko@gmail.com>,
-        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>,
-        <jiada_wang@mentor.com>
-Subject: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-Date:   Sat, 12 Sep 2020 09:55:21 +0900
-Message-ID: <20200912005521.26319-1-jiada_wang@mentor.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 11 Sep 2020 21:05:06 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB9AC061573;
+        Fri, 11 Sep 2020 18:05:06 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id d6so8529097pfn.9;
+        Fri, 11 Sep 2020 18:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZjXjUVmZF9Je/npmgyHHsEFigRjciCrwD+03QLzZ/B0=;
+        b=W6ZkEJmfC8Hp2Py+sCcKu8LCOj9X7Q0O8/PN5c2rVsrLh4BhgWrA+U98IGJFtfZc6p
+         gEChuOc0H4Tov378LjW650QLFU7shLJ8G5MdG4saCrPSky8QiieoyFrFVkmu5caHdgWe
+         J0xHjiqHMO2C/1a3kEjFZdyrtnGeD1A5j/y2KM2dpcA337Ty9qSKlQfmSqdhVIwy8+lW
+         CFCuMLvyyr4sc52Ym9wpjAK8BGTUhDMNsI5ev65UeC1DLtwrMEpaVpV1blvuLWrCw9bB
+         ijbLSRct5z0bwS2EeF4EBPJm9VUTUohajP03DQ6u36lxjCyQzkWyiH/nrw0YGlicwClH
+         XIng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZjXjUVmZF9Je/npmgyHHsEFigRjciCrwD+03QLzZ/B0=;
+        b=MJjNY4Di/J6asDVL0AWDAdMRVws/sIKZv8Ee+v9dDyr9wL47GSTqgbaES9q/ap7MLh
+         xg6g5Kd0TQMmDYkubyg6yc9/hjPXq0mAG0bZ2l+kb/1GAIiw0yOFljZiZ7E8Kkm5iOnY
+         i4+lHgiebsJVqp/RwaftVbypQFCqsamlE8mHocchKwCZS20Tk5eNe5KMFMfqpc+53qUi
+         h9Ow8cYPwLoJgnl8Y46cXlXxdZ0LW70B34ERgvm184QTo8pGbUvY+rywuh/B1mmX8UAw
+         XKzeYQGCQ5aR7+uuHsrGsz6qT2ZopKyEiGUADz+YgcHvE6il/4QbWzZ+DFdPkvZMiSva
+         xg9A==
+X-Gm-Message-State: AOAM531c1UgWDyjCbWRb5YqBC8waPP8C7YCdBQdzwJmok1nSQc82kshd
+        ansqk9nEx1nBynyS4FDdD5g=
+X-Google-Smtp-Source: ABdhPJygWooC9xk13M5/iFbsJviMOxZVBqjo+Y1fInOD20nCNiT+ZetxuSiqK5d1wm3yCKmCjEYZTQ==
+X-Received: by 2002:aa7:9a41:: with SMTP id x1mr4416983pfj.138.1599872705690;
+        Fri, 11 Sep 2020 18:05:05 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id y23sm3334096pfp.65.2020.09.11.18.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Sep 2020 18:05:04 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 10:05:02 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>, Jean Delvare <jdelvare@suse.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH] i2c: do not acpi/of match device in i2c_device_probe()
+Message-ID: <20200912010502.GB535@jagdpanzerIV.localdomain>
+References: <20200826144920.110605-1-sergey.senozhatsky@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826144920.110605-1-sergey.senozhatsky@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Dyer <nick.dyer@itdev.co.uk>
+On (20/08/26 23:49), Sergey Senozhatsky wrote:
+> i2c, apparently, can match the same device twice - the first
+> time in ->match bus hook (i2c_device_match()), and the second
+> one in ->probe (i2c_device_probe()) bus hook.
+> 
+> To make things more complicated, the second matching does not
+> do exactly same checks as the first one. Namely, i2c_device_match()
+> calls acpi_driver_match_device() which considers devices that
+> provide of_match_table and performs of_compatible() matching for
+> such devices. One important thing to note here is that ACPI
+> of_compatible() matching (acpi_of_match_device()) is part of ACPI
+> and does not depend on CONFIG_OF.
+> 
+> i2c_device_probe(), on the other hand, calls acpi_match_device()
+> which does not perform of_compatible() matching, but instead
+> i2c_device_probe() relies on CONFIG_OF API to perform of_match_table
+> matching, IOW ->probe matching, unlike ->match matching, depends on
+> CONFIG_OF. This can break i2c device probing on !CONFIG_OF systems
+> if the device does not provide .id_table.
+> 
+>  i2c_device_probe()
+>  ...
+>    if (!driver->id_table &&
+>        !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
+>        !i2c_of_match_device(dev->driver->of_match_table, client)) {
+>        status = -ENODEV;
+>        goto put_sync_adapter;
+>    }
+> 
+> i2c_of_match_device() on !CONFIG_OF systems is always false, so we never
+> perform of_match_table matching. i2c_acpi_match_device() does ACPI match
+> only, no of_compatible() matching takes place, even though the device
+> provides .of_match_table and ACPI is capable of matching such device.
+> 
+> It is not entirely clear why the device is matched again in bus
+> ->probe after successful and proper matching in bus ->match. Let's
+> remove ->probe matching.
 
-Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
-when they are in a sleep state. It must be retried after a delay for the
-chip to wake up.
+Hi,
 
-Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
-[gdavis: Forward port and fix conflicts.]
-Signed-off-by: George G. Davis <george_davis@mentor.com>
-[jiada: return exact errno when i2c_transfer & i2c_master_send fails
-	rename "retry" to "retried" and keep its order in length
-	set "ret" to correct errno before calling dev_err()
-	remove reduntant conditional]
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/input/touchscreen/atmel_mxt_ts.c | 38 ++++++++++++++++--------
- 1 file changed, 26 insertions(+), 12 deletions(-)
+Gentle ping.
 
-diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-index a2189739e30f..bad3ac58503d 100644
---- a/drivers/input/touchscreen/atmel_mxt_ts.c
-+++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-@@ -196,6 +196,7 @@ enum t100_type {
- #define MXT_CRC_TIMEOUT		1000	/* msec */
- #define MXT_FW_RESET_TIME	3000	/* msec */
- #define MXT_FW_CHG_TIMEOUT	300	/* msec */
-+#define MXT_WAKEUP_TIME		25	/* msec */
- 
- /* Command to unlock bootloader */
- #define MXT_UNLOCK_CMD_MSB	0xaa
-@@ -624,6 +625,7 @@ static int __mxt_read_reg(struct i2c_client *client,
- 			       u16 reg, u16 len, void *val)
- {
- 	struct i2c_msg xfer[2];
-+	bool retried = false;
- 	u8 buf[2];
- 	int ret;
- 
-@@ -642,22 +644,28 @@ static int __mxt_read_reg(struct i2c_client *client,
- 	xfer[1].len = len;
- 	xfer[1].buf = val;
- 
--	ret = i2c_transfer(client->adapter, xfer, 2);
--	if (ret == 2) {
--		ret = 0;
--	} else {
--		if (ret >= 0)
--			ret = -EIO;
-+retry_read:
-+	ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
-+	if (ret != ARRAY_SIZE(xfer)) {
-+		if (!retried) {
-+			dev_dbg(&client->dev, "i2c retry\n");
-+			msleep(MXT_WAKEUP_TIME);
-+			retried = true;
-+			goto retry_read;
-+		}
-+		ret = ret < 0 ? ret : -EIO;
- 		dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
- 			__func__, ret);
-+		return ret;
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
- 			   const void *val)
- {
-+	bool retried = false;
- 	u8 *buf;
- 	size_t count;
- 	int ret;
-@@ -671,14 +679,20 @@ static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
- 	buf[1] = (reg >> 8) & 0xff;
- 	memcpy(&buf[2], val, len);
- 
-+retry_write:
- 	ret = i2c_master_send(client, buf, count);
--	if (ret == count) {
--		ret = 0;
--	} else {
--		if (ret >= 0)
--			ret = -EIO;
-+	if (ret != count) {
-+		if (!retried) {
-+			dev_dbg(&client->dev, "i2c retry\n");
-+			msleep(MXT_WAKEUP_TIME);
-+			retried = true;
-+			goto retry_write;
-+		}
-+		ret = ret < 0 ? ret : -EIO;
- 		dev_err(&client->dev, "%s: i2c send failed (%d)\n",
- 			__func__, ret);
-+	} else {
-+		ret = 0;
- 	}
- 
- 	kfree(buf);
--- 
-2.17.1
-
+	-ss
