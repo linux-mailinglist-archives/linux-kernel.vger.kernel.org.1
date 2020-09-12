@@ -2,95 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E82267BCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D28C267BD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgILSte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 14:49:34 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:45066 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgILSt1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 14:49:27 -0400
-Received: by mail-il1-f199.google.com with SMTP id m80so9504888ilb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 11:49:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=z5R//UxRboItQPh7MDI3JddIQL61MajQx6warYtOYbk=;
-        b=pXT0+WatD/BTejruZiLbXSPXqKWvr+POr/F3r73chkC/C7ztZG7oVn4tlbuFM7UryH
-         Fcl2P2LPcBsKfjip+DcVhSNPPYY9OfW2J/hAYE7Mg9gP1earZtnaDTxUbdcE1elsR6s1
-         28rOXdjgfyhROW65mXYd3o8plnqo9got1WIXyIkxHY0BRNZd92ZoPAWSC1YVGBQpmxs6
-         pW62iSnOipXk6YtA1t2jjwkMbMJO4DCRozBy/GF8vT4oglgDGaTucxq80a27N/3zXg7H
-         FnOKO6JpTgsM3ZKOrbHgP5m181bkyqSLb3M2GMHWlmRpLgl4QD912bqEptDcpO07+8fD
-         7U+A==
-X-Gm-Message-State: AOAM530X/vvWo2eNvDEfd3WbPOP0hJp6K/fe4v/lvBDlX3wQMysyMCmb
-        hkA1PbMfqJegbQwKZFjnlm+Lvr3Q6O1osYwOUgE3MuMJCrfJ
-X-Google-Smtp-Source: ABdhPJxSw+rGOoF525+CoZRVY7+xls38p9IS6yfSueGw6LmNHJqJuQICeDB3rXspXnSC3chEEdehPq/J6p1+ACim7BWVBTjAPkmR
+        id S1725897AbgILSva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 14:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725869AbgILSv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 14:51:26 -0400
+Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0213C21531;
+        Sat, 12 Sep 2020 18:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599936685;
+        bh=P66Txe5+VJdHdGDRo+c/qKU+eLrUox/ztsfTNqqL5yQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BLN8VomcrIUFmm5X1nRt3rZzZ7RLSzo8BJ4ctwlGhCqhHlwOyVabGQzfNnHqNS1bN
+         SoT18eja7TE+mYJRFtyF0HVwAhPqElNls4w0vAAlWQw14IE1GgO/aTGO/hVF/5U2iR
+         C5ag45YkD9rBkhg3rA/UXhsCzBHGAfZQlW580Xnc=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kHAcM-001il9-IM; Sat, 12 Sep 2020 20:51:22 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH 1/2] media: vidtv: fix frequency tuning logic
+Date:   Sat, 12 Sep 2020 20:51:20 +0200
+Message-Id: <34e866e222b9827ecae40ea89a1e6958873fa2db.1599936678.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:c914:: with SMTP id t20mr6965290jao.117.1599936566237;
- Sat, 12 Sep 2020 11:49:26 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 11:49:26 -0700
-In-Reply-To: <0000000000004ba2fe05aebfc526@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1a2f805af224224@google.com>
-Subject: Re: WARNING: refcount bug in io_wqe_worker
-From:   syzbot <syzbot+956ef5eac18eadd0fb7f@syzkaller.appspotmail.com>
-To:     anant.thazhemadam@gmail.com, asml.silence@gmail.com,
-        axboe@kernel.dk, hdanton@sina.com, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Right now, there are some issues at the tuning logic:
 
-HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12f2ce0d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=956ef5eac18eadd0fb7f
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f3a853900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157f7263900000
+1) the config struct is not copied at the tuner driver.
+   so, it won't use any frequency table at all;
+2) the code that checks for frequency shifts is called
+   at set_params. So, lock_status will never be zeroed;
+3) the signal strength will also report a strong
+   signal, even if not tuned;
+4) the logic is not excluding non-set frequencies.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+956ef5eac18eadd0fb7f@syzkaller.appspotmail.com
+Fix those issues.
 
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 7382 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 7382 Comm: io_wqe_worker-1 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- panic+0x347/0x7c0 kernel/panic.c:231
- __warn.cold+0x20/0x46 kernel/panic.c:600
- report_bug+0x1bd/0x210 lib/bug.c:198
- handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Code: e9 db fe ff ff 48 89 df e8 2c dd 18 fe e9 8a fe ff ff e8 c2 d6 d8 fd 48 c7 c7 60 dc 93 88 c6 05 0d 0d 12 07 01 e8 b1 d7 a9 fd <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
-RSP: 0018:ffffc9000810fe08 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88809592a200 RSI: ffffffff815db9a7 RDI: fffff52001021fb3
-RBP: 0000000000000003 R08: 0000000000000001 R09: ffff8880ae6318e7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88809a6080b8
-R13: ffff8880a7896e30 R14: ffff8880a7896e00 R15: ffff8880a6727f00
- refcount_sub_and_test include/linux/refcount.h:274 [inline]
- refcount_dec_and_test include/linux/refcount.h:294 [inline]
- io_worker_exit fs/io-wq.c:236 [inline]
- io_wqe_worker+0xcdb/0x10e0 fs/io-wq.c:596
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/test-drivers/vidtv/vidtv_tuner.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_tuner.c b/drivers/media/test-drivers/vidtv/vidtv_tuner.c
+index 39e848ae5836..268f980c6de8 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_tuner.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_tuner.c
+@@ -120,7 +120,7 @@ vidtv_tuner_get_dev(struct dvb_frontend *fe)
+ 	return i2c_get_clientdata(fe->tuner_priv);
+ }
+ 
+-static s32 vidtv_tuner_check_frequency_shift(struct dvb_frontend *fe)
++static int vidtv_tuner_check_frequency_shift(struct dvb_frontend *fe)
+ {
+ 	struct vidtv_tuner_dev *tuner_dev = vidtv_tuner_get_dev(fe);
+ 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
+@@ -156,6 +156,8 @@ static s32 vidtv_tuner_check_frequency_shift(struct dvb_frontend *fe)
+ 	}
+ 
+ 	for (i = 0; i < array_sz; i++) {
++		if (!valid_freqs[i])
++			break;
+ 		shift = abs(c->frequency - valid_freqs[i]);
+ 
+ 		if (!shift)
+@@ -177,6 +179,7 @@ static int
+ vidtv_tuner_get_signal_strength(struct dvb_frontend *fe, u16 *strength)
+ {
+ 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	struct vidtv_tuner_dev *tuner_dev = vidtv_tuner_get_dev(fe);
+ 	const struct vidtv_tuner_cnr_to_qual_s *cnr2qual = NULL;
+ 	struct device *dev = fe->dvb->device;
+ 	u32 array_size = 0;
+@@ -184,6 +187,10 @@ vidtv_tuner_get_signal_strength(struct dvb_frontend *fe, u16 *strength)
+ 	u32 i;
+ 
+ 	shift = vidtv_tuner_check_frequency_shift(fe);
++	if (shift < 0) {
++		tuner_dev->hw_state.lock_status = 0;
++		return shift;
++	}
+ 
+ 	switch (c->delivery_system) {
+ 	case SYS_DVBT:
+@@ -288,6 +295,7 @@ static int vidtv_tuner_set_params(struct dvb_frontend *fe)
+ 	struct vidtv_tuner_dev *tuner_dev = vidtv_tuner_get_dev(fe);
+ 	struct vidtv_tuner_config config  = tuner_dev->config;
+ 	struct dtv_frontend_properties *c = &fe->dtv_property_cache;
++	s32 shift;
+ 
+ 	u32 min_freq = fe->ops.tuner_ops.info.frequency_min_hz;
+ 	u32 max_freq = fe->ops.tuner_ops.info.frequency_max_hz;
+@@ -305,6 +313,13 @@ static int vidtv_tuner_set_params(struct dvb_frontend *fe)
+ 	tuner_dev->hw_state.lock_status = TUNER_STATUS_LOCKED;
+ 
+ 	msleep_interruptible(config.mock_tune_delay_msec);
++
++	shift = vidtv_tuner_check_frequency_shift(fe);
++	if (shift < 0) {
++		tuner_dev->hw_state.lock_status = 0;
++		return shift;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -395,6 +410,7 @@ static int vidtv_tuner_i2c_probe(struct i2c_client *client,
+ 	       &vidtv_tuner_ops,
+ 	       sizeof(struct dvb_tuner_ops));
+ 
++	memcpy(&tuner_dev->config, config, sizeof(tuner_dev->config));
+ 	fe->tuner_priv = client;
+ 
+ 	return 0;
+-- 
+2.26.2
 
