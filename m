@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C159267B76
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FAE267B79
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbgILQwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 12:52:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38428 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725846AbgILQw2 (ORCPT
+        id S1725877AbgILQ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 12:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgILQ46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 12:52:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599929547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y1i+tRnD/Pinc/Vxe3A21hdWo97zYy4i/YlaOs9ixmA=;
-        b=PTbAcMhCzngkxJ2KazryplhqTwy74JLXnhhqxIIicEzoOh+b4nHVlAteo5QCwOxsC2hEC5
-        iUrr8K6zU7PhsUjbcUMLFw7rntMkZER9P6MDqaGsI0ihhbobsI3HB94KEYeXIRl8Qkm3nJ
-        5TueUIvaW+H5PGf9eyDkARN4XJqGP74=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-Cfr_laRzNjKlrRt-FML29w-1; Sat, 12 Sep 2020 12:52:23 -0400
-X-MC-Unique: Cfr_laRzNjKlrRt-FML29w-1
-Received: by mail-wm1-f72.google.com with SMTP id u5so1843076wme.3
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:52:23 -0700 (PDT)
+        Sat, 12 Sep 2020 12:56:58 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8768CC061573;
+        Sat, 12 Sep 2020 09:56:57 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id s19so3569817ybc.5;
+        Sat, 12 Sep 2020 09:56:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=xbyA/GhLmm802k+NpQuEmlW1nB1YSqQcPl78ocdQUxI=;
+        b=RspZVvO/1mKx6D2LOsPL+aZNZNNIC/vGR+qHNBeyJzGhQCVXJ+ituaqYg7B6v9epFy
+         mxBii+UBLK/eHGxhBfLMj0Oicaky2lQvwEtY0rRD8F9BQayzMLY9Bd5Dmr8Houek4sx3
+         jY5pB0knNcT9IFOzj5LfULTxvTxpHJqm9Dhpa3M6ryFIc2YItyWXGgWDj5fQMJhm32NJ
+         Ek4YT7ZnFPbpIWGylaCGntLuNSwhPsY+QsxKt4mfEQKJdF1JsnYsiUxIh005g9d2xJf4
+         3fFGJqNJyq2AmC++Gkzcx50VPSjrItX7zdXVJI+UWxbnA1X3HiBriROJyaiwQUQbzZlD
+         cbVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y1i+tRnD/Pinc/Vxe3A21hdWo97zYy4i/YlaOs9ixmA=;
-        b=iykj8NqX3w91SBajuZ4m0JuYghCgHags10kSx2Rt58JZMOES5qWYjHzT2FC0vL1qOQ
-         A+POzcMyhkhv7OjMHwy2nRmWE1djwCP1OLrBigZEhn7LiQp5E4T73LtCTqqg5NVUrBb4
-         /nubG8ozCgnU3Y5kiiT9SjK+m/2u+OtUuKvIelpNJDPdSNegMYfgpNR3m5npY/OXzMqN
-         cweABlNAYPkzSFYfj65jbZQ42QUmaSyeZuyZqcuTgrUk8NR6Qx6VQfGPdbrOa5Lm9UEx
-         55F6MVMeoRoRNMBTpxMUXZErAiEidSjjrLRpGt9WRlYIikdo81XNvbjo/+BIOZGTWVLe
-         Ogkg==
-X-Gm-Message-State: AOAM531/etoclA19lCorUbeR+jUYZgxauxj8+oq8/hPnV/W3gCWJT0Ho
-        RzSmMYymMcJXRCdq1mtRk8ggobFNYLDo3B8Eh8oXSOwOUMPebPPzg9Mf7OSIQ3zaLCBly+RhsoV
-        2mNstw4SCJOBU9WPCWNtnfA98
-X-Received: by 2002:a1c:2543:: with SMTP id l64mr7147048wml.96.1599929542005;
-        Sat, 12 Sep 2020 09:52:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0dg+YHQj+TRcLDt2n8FPsN7Qa+ebcOURMGqwY+M6Mj9h+GWE/XZW5TAev48TdVLTD9KHx6w==
-X-Received: by 2002:a1c:2543:: with SMTP id l64mr7147038wml.96.1599929541809;
-        Sat, 12 Sep 2020 09:52:21 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9fd9:16f2:2095:52d7? ([2001:b07:6468:f312:9fd9:16f2:2095:52d7])
-        by smtp.gmail.com with ESMTPSA id y5sm10962968wmg.21.2020.09.12.09.52.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Sep 2020 09:52:21 -0700 (PDT)
-Subject: Re: [PATCH v6 04/12] KVM: SVM: Modify intercept_exceptions to generic
- intercepts
-To:     Babu Moger <babu.moger@amd.com>, vkuznets@redhat.com,
-        sean.j.christopherson@intel.com, jmattson@google.com
-Cc:     wanpengli@tencent.com, kvm@vger.kernel.org, joro@8bytes.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, tglx@linutronix.de
-References: <159985237526.11252.1516487214307300610.stgit@bmoger-ubuntu>
- <159985250037.11252.1361972528657052410.stgit@bmoger-ubuntu>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <1654dd89-2f15-62b6-d3a7-53f3ec422dd0@redhat.com>
-Date:   Sat, 12 Sep 2020 18:52:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=xbyA/GhLmm802k+NpQuEmlW1nB1YSqQcPl78ocdQUxI=;
+        b=agZPtDSRZp5jB5qnXhEwRy6eCzj/ldhzYX3nXHBwSdJoa5azXv9fYOEpdkGGtFKzIw
+         qhZQ5prwCem1PQRUTMNJ9i8+0Ci5UJK1ud+rg8qQPzSWts9HNT1eWVaM0r1U9QCgeuMe
+         8Hk5JTuI7Hb9XcSH2OQtMP5eEeL8F3u11eh8QK5qCZAPetDcucEwLJvsiNL6xT679gke
+         EHOOfxN0ihn0QGT7VvSj3tbxjhJW4lboThJwYgThijO7BTTGZW6X+CuKO+tv0hCfjfYi
+         3XAjWYJsS5AqBu2G43yR1mD/B43BMEz9O1WbcW/rEelGR5NFboqlymROR8mX5LqvZcOP
+         8q/g==
+X-Gm-Message-State: AOAM530Fx71k/E3vBGiYCGdcWRIcBGDiUS1x4iKqdkaUi+tCKp1Y9esl
+        rI/MZXsm3FihJWg5N1imZ5dUeV0/3O2B7/HUftM1o177klj8mw==
+X-Google-Smtp-Source: ABdhPJyTf/Ip4GuS/Xrb3Tji3rm/XPTp+9A6BkGZjR38cCVzIGAK/BSMjzkQVTEiAIRdZFEH+zPm8hywKiqUVyYSCtM=
+X-Received: by 2002:a25:d4b:: with SMTP id 72mr10009412ybn.183.1599929816545;
+ Sat, 12 Sep 2020 09:56:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <159985250037.11252.1361972528657052410.stgit@bmoger-ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 12 Sep 2020 11:56:45 -0500
+Message-ID: <CAH2r5mtri0syQbck4DG0o1t9Ri8vHmb_q3PUg0nca7nHbnLTQg@mail.gmail.com>
+Subject: [GIT PULL] SMB3 DFS Fix
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/20 21:28, Babu Moger wrote:
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 1a5f3908b388..11892e86cb39 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1003,11 +1003,11 @@ static void init_vmcb(struct vcpu_svm *svm)
->  
->  	set_dr_intercepts(svm);
->  
-> -	set_exception_intercept(svm, PF_VECTOR);
-> -	set_exception_intercept(svm, UD_VECTOR);
-> -	set_exception_intercept(svm, MC_VECTOR);
-> -	set_exception_intercept(svm, AC_VECTOR);
-> -	set_exception_intercept(svm, DB_VECTOR);
-> +	set_exception_intercept(svm, INTERCEPT_PF_VECTOR);
-> +	set_exception_intercept(svm, INTERCEPT_UD_VECTOR);
-> +	set_exception_intercept(svm, INTERCEPT_MC_VECTOR);
-> +	set_exception_intercept(svm, INTERCEPT_AC_VECTOR);
-> +	set_exception_intercept(svm, INTERCEPT_DB_VECTOR);
+Please pull the following changes since commit
+f4d51dffc6c01a9e94650d95ce0104964f8ae822:
 
-I think these should take a vector instead, and add 64 in the functions.
+  Linux 5.9-rc4 (2020-09-06 17:11:40 -0700)
 
-Paolo
+are available in the Git repository at:
 
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.9-rc4-smb3-fix
+
+for you to fetch changes up to 01ec372cef1e5afa4ab843bbaf88a6fcb64dc14c:
+
+  cifs: fix DFS mount with cifsacl/modefromsid (2020-09-06 23:59:53 -0500)
+
+----------------------------------------------------------------
+A fix for lookup on DFS link when cifsacl or modefromsid used
+
+Build verification test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/397
+----------------------------------------------------------------
+Ronnie Sahlberg (1):
+      cifs: fix DFS mount with cifsacl/modefromsid
+
+ fs/cifs/inode.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+-- 
+Thanks,
+
+Steve
