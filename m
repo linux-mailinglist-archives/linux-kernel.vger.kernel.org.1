@@ -2,112 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044BE267C80
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 23:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840B5267C9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 23:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgILVIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 17:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgILVIU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 17:08:20 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F30C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 14:08:19 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b124so9574943pfg.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 14:08:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lNyBzqYxhNLfRyzcGYVhpsNYZE01k6vdArIGmMCZyP4=;
-        b=HY13hSv3vsmDbVwvsXcGM1uwa9ssg1EaF0jrXqrOxFlN9zlWG928ZYfHs81NzfcTzB
-         M2M6AgkZ5clA0Vw+h0s8afCY+On1qQfAcpHnOOz/Kj7rY+9H3WBU996zkr9qy9t/T3T2
-         Sb146Z4Fh3WT70BYQuGvrkIzyVAd7UGgJ4rfg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lNyBzqYxhNLfRyzcGYVhpsNYZE01k6vdArIGmMCZyP4=;
-        b=BXq5B6HYfBo1Mp8kpNJnyylH3KwI7Cm8778kVfemPVN/9z2qPnujyCr1FVWMbtR4pV
-         O5kpJMwHjFhT4/EcpOsrfrkx+oD2tFEmN9qCZoDXR+en75qkAW9AwhTHdnZALW6WUU7o
-         c4UW5LsPe35Im41bM8k3JvlnDUuhexBoEeNbzgvY4/ez6bQxPfRmpq3eZylI1tmKbL50
-         AtBG1X8HnuUbV+IS4/H3EurKh37c+AzSQPUF4o90j3ovC4654oHRme14ixx+AaGy3KZn
-         Es+idDRHnfvQ9IGfJM2Do0CcBNTEFTLIzIBUMXLH8+Ph7tAfwetvPbuTHrEmFaN/hDMG
-         S/Wg==
-X-Gm-Message-State: AOAM531Ws4RTUia9fqUqh8MXIYMmD4457GJ6v2VmllesHHqfxKVxD2wO
-        qmcoL5mGMtqTS/UeGkCTiQ/LUw==
-X-Google-Smtp-Source: ABdhPJw7Hcc5QSI5JuRjeZo+HyHcn5RCuI7pIwHNcKnmRxgH6mJMLxHWdY8tE5JD+7KF58ozETdhvA==
-X-Received: by 2002:a63:4418:: with SMTP id r24mr5829295pga.8.1599944899358;
-        Sat, 12 Sep 2020 14:08:19 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id e10sm3369020pgb.45.2020.09.12.14.08.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 14:08:18 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Akash Asthana <akashast@codeaurora.org>, swboyd@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: [PATCH 3/3] spi: spi-geni-qcom: Slightly optimize setup of bidirectional xfters
-Date:   Sat, 12 Sep 2020 14:08:01 -0700
-Message-Id: <20200912140730.3.Ided778fb4cd078e36c6b240d1b279cd7a534a313@changeid>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
-References: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
+        id S1725909AbgILV5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 17:57:12 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30150 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725884AbgILV5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 17:57:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1599947830; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=TZ33EHR4272clrUcslEj15kwdb8DH6WPAy+4HHTw1qU=;
+ b=J/fLp0FLv3W6aSf0TsIh55gk9cAnEXU7rxAhC1H/tZ3Kc7i6pr5WQ2sQtth+Arzjw31Nu81j
+ PpV8yjLooPhGaEYDCl8F8d+WlCGhVglF6ZXI39KpQonupTIzElAxppaSx7lVscjFMd8mkfjI
+ BwCrwLEtPM1kXmGsZZLHkX4H8QQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f5d443554e87432bea779b8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 12 Sep 2020 21:57:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7408C433FF; Sat, 12 Sep 2020 21:57:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83666C433C6;
+        Sat, 12 Sep 2020 21:57:07 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 12 Sep 2020 14:57:07 -0700
+From:   abhinavk@codeaurora.org
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Tanmay Shah <tanmay@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
+        khsieh@codeaurora.org
+Subject: Re: [PATCH v12 0/5] Add support for DisplayPort driver on SnapDragon
+In-Reply-To: <CAF6AEGttutrtxntAeRDtb3Hf_0i4z+9+rWMuShTrPVwTUHKTdg@mail.gmail.com>
+References: <20200827211658.27479-1-tanmay@codeaurora.org>
+ <CAF6AEGttutrtxntAeRDtb3Hf_0i4z+9+rWMuShTrPVwTUHKTdg@mail.gmail.com>
+Message-ID: <1943d0d636cd20c1088b30d6b1fb4866@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When setting up a bidirectional transfer we need to program both the
-TX and RX lengths.  We don't need a memory barrier between those two
-writes.  Factor out the __iowmb() and use writel_relaxed().  This
-saves a fraction of a microsecond of setup overhead on bidirectional
-transfers.
+Thanks Rob for pushing the changes. I confirm that the versions which 
+you have pushed are the latest ones.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+I have rebased audio changes on top of the latest DP changes
+and posted them here https://patchwork.freedesktop.org/series/81612/.
+The other DP change which is missing is the video pattern CTS change 
+https://patchwork.freedesktop.org/series/81614/ which
+also I have now rebased on top of the latest DP patch series and posted.
 
- drivers/spi/spi-geni-qcom.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Thanks
 
-diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
-index 92d88bf85a90..6c7e12b68bf0 100644
---- a/drivers/spi/spi-geni-qcom.c
-+++ b/drivers/spi/spi-geni-qcom.c
-@@ -376,15 +376,22 @@ static void setup_fifo_xfer(struct spi_transfer *xfer,
- 	len &= TRANS_LEN_MSK;
- 
- 	mas->cur_xfer = xfer;
-+
-+	/*
-+	 * Factor out the __iowmb() so that we can use writel_relaxed() for
-+	 * both writes below and thus only incur the overhead once even if
-+	 * we execute both of them.
-+	 */
-+	__iowmb();
-+
- 	if (xfer->tx_buf) {
- 		m_cmd |= SPI_TX_ONLY;
- 		mas->tx_rem_bytes = xfer->len;
--		writel(len, se->base + SE_SPI_TX_TRANS_LEN);
-+		writel_relaxed(len, se->base + SE_SPI_TX_TRANS_LEN);
- 	}
--
- 	if (xfer->rx_buf) {
- 		m_cmd |= SPI_RX_ONLY;
--		writel(len, se->base + SE_SPI_RX_TRANS_LEN);
-+		writel_relaxed(len, se->base + SE_SPI_RX_TRANS_LEN);
- 		mas->rx_rem_bytes = xfer->len;
- 	}
- 
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+Abhinav
+On 2020-09-12 11:25, Rob Clark wrote:
+> Fyi, I've pushed this series and the dp-compliance bits to 
+> msm-next-dp[1]
+> 
+> I didn't include the dp audio series yet, which seems to need some
+> minor rebasing.  (And a small request, when resending, cc
+> freedreno@lists.freedesktop.org, so it shows up in the patchwork
+> instance[2] I use)
+> 
+> You might want to double check that I got the correct versions of the
+> series, etc.  And that nothing else (other than audio) is missing.
+> 
+> BR,
+> -R
+> 
+> [1] https://gitlab.freedesktop.org/drm/msm/-/commits/msm-next-dp
+> [2] https://patchwork.freedesktop.org/project/freedreno
+> 
+> On Thu, Aug 27, 2020 at 2:17 PM Tanmay Shah <tanmay@codeaurora.org> 
+> wrote:
+>> 
+>> These patches add Display-Port driver on SnapDragon/msm hardware.
+>> This series also contains device-tree bindings for msm DP driver.
+>> It also contains Makefile and Kconfig changes to compile msm DP 
+>> driver.
+>> 
+>> The block diagram of DP driver is shown below:
+>> 
+>> 
+>>                  +-------------+
+>>                  |DRM FRAMEWORK|
+>>                  +------+------+
+>>                         |
+>>                    +----v----+
+>>                    | DP DRM  |
+>>                    +----+----+
+>>                         |
+>>                    +----v----+
+>>      +------------+|   DP    +----------++------+
+>>      +        +---+| DISPLAY |+---+      |      |
+>>      |        +    +-+-----+-+    |      |      |
+>>      |        |      |     |      |      |      |
+>>      |        |      |     |      |      |      |
+>>      |        |      |     |      |      |      |
+>>      v        v      v     v      v      v      v
+>>  +------+ +------+ +---+ +----+ +----+ +---+ +-----+
+>>  |  DP  | |  DP  | |DP | | DP | | DP | |DP | | DP  |
+>>  |PARSER| | HPD  | |AUX| |LINK| |CTRL| |PHY| |POWER|
+>>  +--+---+ +---+--+ +---+ +----+ +--+-+ +-+-+ +-----+
+>>     |                              |     |
+>>  +--v---+                         +v-----v+
+>>  |DEVICE|                         |  DP   |
+>>  | TREE |                         |CATALOG|
+>>  +------+                         +---+---+
+>>                                       |
+>>                                   +---v----+
+>>                                   |CTRL/PHY|
+>>                                   |   HW   |
+>>                                   +--------+
+>> 
+>> Changes in v12:
+>> 
+>> -- Add support of pm ops in display port driver
+>> -- Clear bpp depth bits before writing to MISC register
+>> -- Fix edid read
+>> 
+>> Previous change log:
+>> https://lkml.kernel.org/lkml/20200818051137.21478-1-tanmay@codeaurora.org/
+>> 
+>> Chandan Uddaraju (4):
+>>   dt-bindings: msm/dp: add bindings of DP/DP-PLL driver for Snapdragon
+>>   drm: add constant N value in helper file
+>>   drm/msm/dp: add displayPort driver support
+>>   drm/msm/dp: add support for DP PLL driver
+>> 
+>> Jeykumar Sankaran (1):
+>>   drm/msm/dpu: add display port support in DPU
+>> 
+>> Tanmay Shah (1):
+>>   drm/msm/dp: Add Display Port HPD feature
+>> 
+>>  drivers/gpu/drm/i915/display/intel_display.c  |    2 +-
+>>  drivers/gpu/drm/msm/Kconfig                   |    9 +
+>>  drivers/gpu/drm/msm/Makefile                  |   14 +
+>>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   |   27 +-
+>>  .../drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |    8 +
+>>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |   83 +-
+>>  drivers/gpu/drm/msm/dp/dp_aux.c               |  535 ++++++
+>>  drivers/gpu/drm/msm/dp/dp_aux.h               |   30 +
+>>  drivers/gpu/drm/msm/dp/dp_catalog.c           | 1045 ++++++++++
+>>  drivers/gpu/drm/msm/dp/dp_catalog.h           |  105 +
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.c              | 1693 
+>> +++++++++++++++++
+>>  drivers/gpu/drm/msm/dp/dp_ctrl.h              |   35 +
+>>  drivers/gpu/drm/msm/dp/dp_display.c           | 1046 ++++++++++
+>>  drivers/gpu/drm/msm/dp/dp_display.h           |   31 +
+>>  drivers/gpu/drm/msm/dp/dp_drm.c               |  168 ++
+>>  drivers/gpu/drm/msm/dp/dp_drm.h               |   18 +
+>>  drivers/gpu/drm/msm/dp/dp_hpd.c               |   69 +
+>>  drivers/gpu/drm/msm/dp/dp_hpd.h               |   79 +
+>>  drivers/gpu/drm/msm/dp/dp_link.c              | 1214 ++++++++++++
+>>  drivers/gpu/drm/msm/dp/dp_link.h              |  132 ++
+>>  drivers/gpu/drm/msm/dp/dp_panel.c             |  486 +++++
+>>  drivers/gpu/drm/msm/dp/dp_panel.h             |   95 +
+>>  drivers/gpu/drm/msm/dp/dp_parser.c            |  267 +++
+>>  drivers/gpu/drm/msm/dp/dp_parser.h            |  138 ++
+>>  drivers/gpu/drm/msm/dp/dp_pll.c               |   99 +
+>>  drivers/gpu/drm/msm/dp/dp_pll.h               |   61 +
+>>  drivers/gpu/drm/msm/dp/dp_pll_10nm.c          |  930 +++++++++
+>>  drivers/gpu/drm/msm/dp/dp_pll_private.h       |   89 +
+>>  drivers/gpu/drm/msm/dp/dp_power.c             |  373 ++++
+>>  drivers/gpu/drm/msm/dp/dp_power.h             |  103 +
+>>  drivers/gpu/drm/msm/dp/dp_reg.h               |  518 +++++
+>>  drivers/gpu/drm/msm/msm_drv.c                 |    2 +
+>>  drivers/gpu/drm/msm/msm_drv.h                 |   59 +-
+>>  include/drm/drm_dp_helper.h                   |    1 +
+>>  34 files changed, 9545 insertions(+), 19 deletions(-)
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_display.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_display.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_link.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_link.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_10nm.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_private.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_power.c
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_power.h
+>>  create mode 100644 drivers/gpu/drm/msm/dp/dp_reg.h
+>> 
+>> 
+>> base-commit: d012a7190fc1fd72ed48911e77ca97ba4521bccd
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
