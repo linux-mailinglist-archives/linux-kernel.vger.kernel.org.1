@@ -2,155 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811BC2679A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405852679AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725878AbgILKvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 06:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S1725850AbgILLG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbgILKux (ORCPT
+        with ESMTP id S1725825AbgILLGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 06:50:53 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6FEC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:50:52 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u4so14544476ljd.10
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:50:52 -0700 (PDT)
+        Sat, 12 Sep 2020 07:06:15 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EA9C061573;
+        Sat, 12 Sep 2020 04:06:14 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r25so13832301ioj.0;
+        Sat, 12 Sep 2020 04:06:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Wg0fr0Xi3XkN+YWO9v5UT+RzHkdd/M+Kasz4B3DfYQg=;
-        b=zR0tBZ2My4K92cIteSx5alzLJ32K3bYdevLiA8UGJqStIU+KJq9DJfMtO7LDzh/ZkT
-         2GLXtXQ1lZb+XkYiG69fIvar6Zzkh0EvJfTth6FZ2xAlGtnkmuxQJ39TsWv6N6JHWKmi
-         wMP7qd8M8G+OePycMmPeFZTk8FpMKH9hYkKkGwTIzh1YIH6o5u9fGNfwnpmF+vYbdZFM
-         B6ZYHe9Qq594ZZoBNaokzOhVqvZGfMbR++p8BaJ1m5Jy49KRL+qoPVGgkvlSjaVgeqqW
-         xNMqh3/2zGfmRTvbU+YZVtGYdWxlwaxJefH1x53q6B97BBUbtI9rzOcdichmwdlmrwuF
-         2cQA==
+        bh=Wt/BiPlhiIijnCfs5MY8bni1nAXL8ZGQRplqmawDiJw=;
+        b=Fns5pJ8dHr9fbV01v6J6KIic9ztxehvvTUv2PP4jS9BV2Vn23ePY7bGsQaJE31zBqq
+         obL6MK1BqJkbdTXnzld4/WYe11IMIQlZD+hQ+jL53jSQhWRqegm+3uXsQltWF6NVXaPG
+         RMCegmlFyGmLJBolh222AzGmTCjd6U8sCroQcUmHSjyYgBwAdTvATszZPRAulmfIeijO
+         HgNV5v2obfs6ausFSE7J6Ao/NUAtN7ao3AynpSOnEB8QfddahxEPdLainURp//WlAPP3
+         MAk/Dn+ArmblaNKts9urkWkJzGz1ZNOgm4a2Md56a4tRgkQn65yGV9GQQewJYDWPPdMP
+         PQuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Wg0fr0Xi3XkN+YWO9v5UT+RzHkdd/M+Kasz4B3DfYQg=;
-        b=OxvkYG5bVGlabJj0xrNFiNy/FpGo0DzJn0rUnTYUaDOSFZGqzTxiVSkJ6spziZ+E/S
-         Y6UizEk5JxF8K3fef35efCqf8M5s0munsyMPPCPIcZrTvD68M8cqpi4ftTX3mOhev8Yh
-         +cnRkCeniBiAC8YiYuiKfJARoZI342SPvU12YQ153MIhSoMy7BAZGRpdEXyw+ZrGVqWG
-         xglmTXgqsSlldIZwH92P2Xq8am3f41yIXBThGtEioeWdg4SKiPGL5y0++25BXITOh8a6
-         A3C/V2aAED7dXF5tkQKKtnWz7LG/u/cddPgKDAhOMXFrA4v6JL98Mk7LvUyFI4HbAvpQ
-         YF3A==
-X-Gm-Message-State: AOAM5319nFb76+J8WD1HkJTMNPxTIkArdDbG7SScKhRqS/ZSZRE0EbLh
-        YLl0DbjazgMNko1onttfFENOZo/2EDAqZmd4wooa7g==
-X-Google-Smtp-Source: ABdhPJyrL0Q5hyLukWGBJStErc5rCrkaAA8Fumpbu7+P2HoQvwGOhXNmH16VkHLaE0zD8ERoYgCIrPuSvLxqYH7jV+I=
-X-Received: by 2002:a05:651c:28c:: with SMTP id b12mr2286938ljo.293.1599907851023;
- Sat, 12 Sep 2020 03:50:51 -0700 (PDT)
+        bh=Wt/BiPlhiIijnCfs5MY8bni1nAXL8ZGQRplqmawDiJw=;
+        b=bDSrlfkwal/g0DqJrdtu9BO5PPWg0Zn66bxW0BljBOmnxuhSomNmG7+8p7eikH4JMv
+         g44lVK2Zp4HHXIYfii/FYYKSVNE58igEFoQV24PvJ+HRzaeeMDb5zxN0qUtax2y00JiG
+         AnVWBdCkxTGWa6w92lXbAQ4fU+464N5yaEWnBvQrNb3q5jaEgPGWKZiCCCAslNdCrwDI
+         iMKKj6npgEndRel5zFYyV+7FSbBJ1II6XRUytV9f6Gw7nry4MWgOGaGQddzvqlMC+jz+
+         bWBajUXC+4+y3xiRZP5RoGdmPJRHbzlkUG/K301QY7ju12yqEbhQk3rWYddpBUKyPxRn
+         nbww==
+X-Gm-Message-State: AOAM532LXqk++vZsT1DJST2nHizyPbSYqKgz9HlRYYBchRhmao+0jgPe
+        J0H1ycXB9QwABpvsYAyP59WzysJNPL0CRWOzlal41wpogKzQUg==
+X-Google-Smtp-Source: ABdhPJyIGOjyoDAt31kCPoFRuvy2qtq52QdjfvOdj5kyLn4eBQbJ3C431ebgVGnvmwoGOYeBsUw6DxNIh6c8W/JcPik=
+X-Received: by 2002:a02:734f:: with SMTP id a15mr5944005jae.120.1599908773866;
+ Sat, 12 Sep 2020 04:06:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903133528.8595-1-lars.povlsen@microchip.com> <20200903133528.8595-2-lars.povlsen@microchip.com>
-In-Reply-To: <20200903133528.8595-2-lars.povlsen@microchip.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 12:50:40 +0200
-Message-ID: <CACRpkdZUQG1T_Bx5G275tSjDez0skDKGSc370B57FZ35NA6iEA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: Add bindings for
- pinctrl-mchp-sgpio driver
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
+References: <20200911163403.79505-1-balsini@android.com> <20200911163403.79505-2-balsini@android.com>
+In-Reply-To: <20200911163403.79505-2-balsini@android.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 12 Sep 2020 14:06:02 +0300
+Message-ID: <CAOQ4uxiWK5dNMkrriApMVZQi6apmnMijcCw5j4fa2thHFdnFcw@mail.gmail.com>
+Subject: Re: [PATCH V8 1/3] fuse: Definitions and ioctl() for passthrough
+To:     Alessio Balsini <balsini@android.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Akilesh Kailash <akailash@google.com>,
+        David Anderson <dvander@google.com>,
+        Eric Yan <eric.yan@oneplus.com>, Jann Horn <jannh@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <stefanoduo@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
+On Fri, Sep 11, 2020 at 7:34 PM Alessio Balsini <balsini@android.com> wrote:
+>
+> Introduce the new FUSE passthrough ioctl(), which allows userspace to
+> specify a direct connection between a FUSE file and a lower file system
+> file.
+> Such ioctl() requires userspace to specify:
+> - the file descriptor of one of its opened files,
+> - the unique identifier of the FUSE request associated with a pending
+>   open/create operation,
+> both encapsulated into a fuse_passthrough_out data structure.
+> The ioctl() will search for the pending FUSE request matching the unique
+> identifier, and update the passthrough file pointer of the request with the
+> file pointer referenced by the passed file descriptor.
+> When that pending FUSE request is handled, the passthrough file pointer
+> is copied to the fuse_file data structure, so that the link between FUSE
+> and lower file system is consolidated.
+>
+> In order for the passthrough mode to be successfully activated, the lower
+> file system file must implement both read_ and write_iter file operations.
+> This extra check avoids special pseudofiles to be targets for this feature.
+> An additional enforced limitation is that when FUSE passthrough is enabled,
+> no further file system stacking is allowed.
+>
+> Signed-off-by: Alessio Balsini <balsini@android.com>
+> ---
+[...]
+> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+> index bba747520e9b..eb223130a917 100644
+> --- a/fs/fuse/inode.c
+> +++ b/fs/fuse/inode.c
+> @@ -965,6 +965,12 @@ static void process_init_reply(struct fuse_conn *fc, struct fuse_args *args,
+>                                         min_t(unsigned int, FUSE_MAX_MAX_PAGES,
+>                                         max_t(unsigned int, arg->max_pages, 1));
+>                         }
+> +                       if (arg->flags & FUSE_PASSTHROUGH) {
+> +                               fc->passthrough = 1;
+> +                               /* Prevent further stacking */
+> +                               fc->sb->s_stack_depth =
+> +                                       FILESYSTEM_MAX_STACK_DEPTH;
+> +                       }
 
-thanks for your patch!
+That seems a bit limiting.
+I suppose what you really want to avoid is loops into FUSE fd.
+There may be a way to do this with forbidding overlay over FUSE passthrough
+or the other way around.
 
-On Thu, Sep 3, 2020 at 3:35 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+You can set fc->sb->s_stack_depth = FILESYSTEM_MAX_STACK_DEPTH - 1
+here and in passthrough ioctl you can check for looping into a fuse fs with
+passthrough enabled on the passed fd (see below) ...
 
-> This adds DT bindings for the Microsemi/Microchip SGPIO controller,
 
-What I do not understand is why this GPIO controller is placed in the
-bindings of the pin controllers? Do you plan to add pin control
-properties to the bindings in the future?
-
-> +description: |
-> +  By using a serial interface, the SIO controller significantly extend
-> +  the number of available GPIOs with a minimum number of additional
-> +  pins on the device. The primary purpose of the SIO controllers is to
-> +  connect control signals from SFP modules and to act as an LED
-> +  controller.
-
-This doesn't sound like it will ever be pin control?
-
-> +  gpio-controller: true
+>                 } else {
+>                         ra_pages = fc->max_read / PAGE_SIZE;
+>                         fc->no_lock = 1;
+> @@ -1002,7 +1008,8 @@ void fuse_send_init(struct fuse_conn *fc)
+>                 FUSE_WRITEBACK_CACHE | FUSE_NO_OPEN_SUPPORT |
+>                 FUSE_PARALLEL_DIROPS | FUSE_HANDLE_KILLPRIV | FUSE_POSIX_ACL |
+>                 FUSE_ABORT_ERROR | FUSE_MAX_PAGES | FUSE_CACHE_SYMLINKS |
+> -               FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA;
+> +               FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
+> +               FUSE_PASSTHROUGH;
+>         ia->args.opcode = FUSE_INIT;
+>         ia->args.in_numargs = 1;
+>         ia->args.in_args[0].size = sizeof(ia->in);
+> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
+> new file mode 100644
+> index 000000000000..86ab4eafa7bf
+> --- /dev/null
+> +++ b/fs/fuse/passthrough.c
+> @@ -0,0 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
-> +  '#gpio-cells':
-> +    description: GPIO consumers must specify four arguments, first the
-> +      port number, then the bit number, then a input/output flag and
-> +      finally the GPIO flags (from include/dt-bindings/gpio/gpio.h).
-> +      The dt-bindings/gpio/mchp-sgpio.h file define manifest constants
-> +      PIN_INPUT and PIN_OUTPUT.
-> +    const: 4
+> +#include "fuse_i.h"
+> +
+> +int fuse_passthrough_setup(struct fuse_req *req, unsigned int fd)
+> +{
+> +       int ret;
+> +       int fs_stack_depth;
+> +       struct file *passthrough_filp;
+> +       struct inode *passthrough_inode;
+> +       struct super_block *passthrough_sb;
+> +
+> +       /* Passthrough mode can only be enabled at file open/create time */
+> +       if (req->in.h.opcode != FUSE_OPEN && req->in.h.opcode != FUSE_CREATE) {
+> +               pr_err("FUSE: invalid OPCODE for request.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       passthrough_filp = fget(fd);
+> +       if (!passthrough_filp) {
+> +               pr_err("FUSE: invalid file descriptor for passthrough.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       ret = -EINVAL;
+> +       if (!passthrough_filp->f_op->read_iter ||
+> +           !passthrough_filp->f_op->write_iter) {
+> +               pr_err("FUSE: passthrough file misses file operations.\n");
+> +               goto out;
+> +       }
+> +
+> +       passthrough_inode = file_inode(passthrough_filp);
+> +       passthrough_sb = passthrough_inode->i_sb;
+> +       fs_stack_depth = passthrough_sb->s_stack_depth + 1;
 
-I do not follow this new third input/output flag at all.
+... for example:
 
-- If it is a property of the hardware, it is something the driver should
-  handle by determining which hardware it is from the compatible
-  string.
+       if (fs_stack_depth && passthrough_sb->s_type == fuse_fs_type) {
+               pr_err("FUSE: stacked passthrough file\n");
+               goto out;
+       }
 
-- If it is a configuration it should be turned into something that is generic
-  and useful for *all* GPIO controllers. If it is pin config it should use
-  the pinconf bindings rather than shortcuts like this, but I think it is
-  something the driver can do as an effect of the pin being requested
-  as input or output in the operating system, depending on who the
-  consumer is. Linux for example has GPIOD_OUT_LOW,
-  GPIOD_OUT_HIGH, GPIOD_IN, GPIOD_ASIS...
+But maybe we want to ban passthrough to any lower FUSE at least for start.
 
-- Is it not just a hog? We have bindings for those.
+> +       ret = -EEXIST;
 
-> +  microchip,sgpio-port-ranges:
-> +    description: This is a sequence of tuples, defining intervals of
-> +      enabled ports in the serial input stream. The enabled ports must
-> +      match the hardware configuration in order for signals to be
-> +      properly written/read to/from the controller holding
-> +      registers. Being tuples, then number of arguments must be
-> +      even. The tuples mast be ordered (low, high) and are
-> +      inclusive. Arguments must be between 0 and 31.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    minItems: 2
-> +    maxItems: 64
+Why EEXIST? Why not EINVAL?
 
-And you are *absolutely sure* that you can't just figure this out
-from the compatible string? Or add a few compatible strings for
-the existing variants?
+> +       if (fs_stack_depth > FILESYSTEM_MAX_STACK_DEPTH) {
+> +               pr_err("FUSE: maximum fs stacking depth exceeded for passthrough\n");
+> +               goto out;
+> +       }
+> +
+> +       req->args->passthrough_filp = passthrough_filp;
+> +       return 0;
+> +out:
+> +       fput(passthrough_filp);
+> +       return ret;
+> +}
+> +
 
-> +  microchip,sgpio-frequency:
-> +    description: The sgpio controller frequency (Hz). This dictates
-> +      the serial bitstream speed, which again affects the latency in
-> +      getting control signals back and forth between external shift
-> +      registers. The speed must be no larger than half the system
-> +      clock, and larger than zero.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    minimum: 1
-> +    default: 12500000
+And speaking of overlayfs, I believe you may be able to test your code with
+fuse-overlayfs (passthrough to upper files).
 
-I understand why you need this binding now, OK.
+This is a project with real users running real workloads who may be
+able to provide you with valuable feedback from testing.
 
-> +/* mchp-sgpio specific pin type defines */
-> +#undef PIN_OUTPUT
-> +#undef PIN_INPUT
-> +#define PIN_OUTPUT     0
-> +#define PIN_INPUT      1
+Thanks,
+Amir.
 
-I'm not a fan of this. It seems like something that should be set in
-response to the gpiochip callbacks .direction_input and
-.direction_output callbacks.
-
-Yours,
-Linus Walleij
+[1] https://github.com/containers/fuse-overlayfs
