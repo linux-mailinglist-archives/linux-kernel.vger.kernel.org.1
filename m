@@ -2,176 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6021267B00
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C85267B12
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 16:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgILOqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 10:46:04 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:57675
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725925AbgILOnU (ORCPT
+        id S1725902AbgILOxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 10:53:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34599 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725969AbgILOra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 10:43:20 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="358800815"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Sep 2020 16:43:13 +0200
-Date:   Sat, 12 Sep 2020 16:43:13 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v2] coccinelle: misc: add flexible_array.cocci script
-In-Reply-To: <20200809212655.58457-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2009121642070.2362@hadrien>
-References: <20200806220342.25426-1-efremov@linux.com> <20200809212655.58457-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Sat, 12 Sep 2020 10:47:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599922048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=vhedvMNzaUEDcUuhwo/iLfGVABBNwD7Ffu7xTey6+9c=;
+        b=gYt53RMHtTRRKwLyBlIJ02gqjMsJM9NWKCJ81juj7fGS2ntTwXJSdsIX3v5GSQq3H1rDv2
+        5Trq0z25gCrvmQMOJEDjPN8u5z+UfpYKty5UmUvizkdhfeUntvuiUvl8XiiveQQKsyoZtz
+        9bcskbttFIg1YKLkHz62IwXA6YVaDr0=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-6C1luu21NxKuh3f_IJthFw-1; Sat, 12 Sep 2020 10:47:26 -0400
+X-MC-Unique: 6C1luu21NxKuh3f_IJthFw-1
+Received: by mail-qv1-f71.google.com with SMTP id di5so4428990qvb.13
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 07:47:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vhedvMNzaUEDcUuhwo/iLfGVABBNwD7Ffu7xTey6+9c=;
+        b=MECNuTjB1iHggLjCXJEdtUN7dullBrWZSynbnQltC0p9nG7j7M/ZL+CBXbbc8tyybY
+         NhBY06gb1BqU5TeGuMjpQxQkn7LpPqeG5+KL16aI4qHya6kEdoUrZl8jeP17B5DQGt8d
+         E8sWpUAoPUlVmSWRJ63638HywHla//Kx1S7lykCXJmyFWs0WHyiVyZgUlAFrri9ab1gw
+         GwJ7H+S1Tze1oCRa4DO1iypRX4MtL5qpaXz/hBaAGrHCaZORwsEMz2lhaeI9JjMx89PP
+         zvb9lzhpD8Pz5Lu1yHlRBupqv3PqDeYj6s17BDvUlqsJBE+2H6ZE8LYlRyh495baXMb7
+         KqLQ==
+X-Gm-Message-State: AOAM532nbyIV6pRfwVs4kn3dVCE9fFDosKSppFt8aK04Q2/dvWhLaWw2
+        j3wImtx2KIB6mKNVIXRltvP3Wy4bJ4/WY+mAOG9JJardO+lr+oQkFAQbe8nqsxIRDtQ4OC6y0KB
+        rymplLpr4d6Wb9aaUzrzTW+hO
+X-Received: by 2002:a0c:e989:: with SMTP id z9mr6441208qvn.81.1599922045828;
+        Sat, 12 Sep 2020 07:47:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwly9+TI3qlwz43wKPoJau1E8RyrgfhK9Hk6G2EG0hVy9Xgse6md8eIDmPt0UBEDtJtU63ziQ==
+X-Received: by 2002:a0c:e989:: with SMTP id z9mr6441201qvn.81.1599922045640;
+        Sat, 12 Sep 2020 07:47:25 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u2sm7425387qkf.61.2020.09.12.07.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 07:47:25 -0700 (PDT)
+From:   trix@redhat.com
+To:     jerome.pouiller@silabs.com, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] staging: wfx: simplify virt_addr_valid call
+Date:   Sat, 12 Sep 2020 07:47:19 -0700
+Message-Id: <20200912144719.13929-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
+Reviewing sram_write_dma_safe(), there are two
+identical calls to virt_addr_valid().  The second
+call can be simplified by a comparison of variables
+set from the first call.
 
-On Mon, 10 Aug 2020, Denis Efremov wrote:
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/staging/wfx/fwio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Commit 68e4cd17e218 ("docs: deprecated.rst: Add zero-length and one-element
-> arrays") marks one-element and zero-length arrays as deprecated. Kernel
-> code should always use "flexible array members" instead.
->
-> The script warns about one-element and zero-length arrays in structs.
->
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
-> Changes in v2:
->  - all uapi headers are now filtered-out. Unfortunately, coccinelle
->    doesn't provide structure names in Location.current_element.
->    For structures the field is always "something_else". Thus, there is
->    no easy way to create a list of existing structures in uapi headers
->    and suppress the warning only for them, but not for the newly added
->    uapi structures.
->  - The pattern doesn't require 2+ fields in a structure/union anymore.
->    Now it also checks single field structures/unions.
->  - The pattern simplified and now uses disjuction in array elements
->    (Thanks, Markus)
->  - Unions are removed from patch mode
->  - one-element arrays are removed from patch mode. Correct patch may
->    involve turning the array to a simple field instead of a flexible
->    array.
->
-> On the current master branch, the rule generates:
->  - context: https://gist.github.com/evdenis/e2b4323491f9eff35376372df07f723c
->  - patch: https://gist.github.com/evdenis/46081da9d68ecefd07edc3769cebcf32
->
->  scripts/coccinelle/misc/flexible_array.cocci | 88 ++++++++++++++++++++
->  1 file changed, 88 insertions(+)
->  create mode 100644 scripts/coccinelle/misc/flexible_array.cocci
->
-> diff --git a/scripts/coccinelle/misc/flexible_array.cocci b/scripts/coccinelle/misc/flexible_array.cocci
-> new file mode 100644
-> index 000000000000..bf6dcda1783e
-> --- /dev/null
-> +++ b/scripts/coccinelle/misc/flexible_array.cocci
-> @@ -0,0 +1,88 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Zero-length and one-element arrays are deprecated, see
-> +/// Documentation/process/deprecated.rst
-> +/// Flexible-array members should be used instead.
-> +///
-> +//
-> +// Confidence: High
-> +// Copyright: (C) 2020 Denis Efremov ISPRAS.
-> +// Comments:
-> +// Options: --no-includes --include-headers
-> +
-> +virtual context
-> +virtual report
-> +virtual org
-> +virtual patch
-> +
-> +@initialize:python@
-> +@@
-> +def relevant(positions):
-> +    for p in positions:
-> +        if "uapi" in p.file:
-> +             return False
-> +    return True
-> +
-> +@r depends on !patch@
-> +identifier name, array;
-> +type T;
-> +position p : script:python() { relevant(p) };
-> +@@
-> +
-> +(
-> +  struct name {
-> +    ...
-> +*   T array@p[\(0\|1\)];
-> +  };
-> +|
-> +  struct {
-> +    ...
-> +*   T array@p[\(0\|1\)];
-> +  };
-> +|
-> +  union name {
-> +    ...
-> +*   T array@p[\(0\|1\)];
-> +  };
-> +|
-> +  union {
-> +    ...
-> +*   T array@p[\(0\|1\)];
-> +  };
-> +)
-> +
-> +@depends on patch exists@
+diff --git a/drivers/staging/wfx/fwio.c b/drivers/staging/wfx/fwio.c
+index 22d3b684f04f..c99adb0c99f1 100644
+--- a/drivers/staging/wfx/fwio.c
++++ b/drivers/staging/wfx/fwio.c
+@@ -94,7 +94,7 @@ static int sram_write_dma_safe(struct wfx_dev *wdev, u32 addr, const u8 *buf,
+ 		tmp = buf;
+ 	}
+ 	ret = sram_buf_write(wdev, addr, tmp, len);
+-	if (!virt_addr_valid(buf))
++	if (tmp != buf)
+ 		kfree(tmp);
+ 	return ret;
+ }
+-- 
+2.18.1
 
-exists is not necessary here.  There are not multiple control-flow paths
-through a structure declaration.
-
-> +identifier name, array;
-> +type T;
-> +position p : script:python() { relevant(p) };
-> +@@
-> +
-> +(
-> +  struct name {
-> +    ...
-> +    T array@p[
-> +-       0
-> +    ];
-> +  };
-> +|
-> +  struct {
-> +    ...
-> +    T array@p[
-> +-       0
-> +    ];
-> +  };
-> +)
-> +
-> +@script: python depends on report@
-> +p << r.p;
-> +@@
-> +
-> +msg = "WARNING: use flexible-array member instead"
-> +coccilib.report.print_report(p[0], msg)
-> +
-> +@script: python depends on org@
-> +p << r.p;
-> +@@
-> +
-> +msg = "WARNING: use flexible-array member instead"
-> +coccilib.org.print_todo(p, msg)
-
-This should be coccilib.org.print_todo(p[0], msg)
-
-julia
