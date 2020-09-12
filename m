@@ -2,169 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDE126782C
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4809267831
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 08:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbgILGT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 02:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbgILGTZ (ORCPT
+        id S1725881AbgILGUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 02:20:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30327 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725839AbgILGUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 02:19:25 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D41C061573;
-        Fri, 11 Sep 2020 23:19:25 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id b6so13344051iof.6;
-        Fri, 11 Sep 2020 23:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RWUUdByFvtqb1glreh6Bs2mDpnkxfWc+Wt1JUPVGjnk=;
-        b=oeRCKcxXBk+ojLrRlwIdT3VESa294A5UXZF4bv+munDBcqKQw8iEd1t+/7K8ouFph0
-         rQyy8ekphcTE3vjeYDn7BG5mWubXgm4IT4aNf3a4x9s5EVh9BStZPNw1DBTgFRKAgVTj
-         vCedXQa5w8KuAnyx6OSAjFDtfDfYEWhdpPhx923FHm29ohE1utAiJAZQ/1nZ9b917Vem
-         wqIoU3oP7v7MinNN50b0n0FNseDccrMs1IM8p70+mOkKsJ3/pRWsfbUDp4HQqoSoCKDo
-         bvQeDXU5Q4Ls5jDabFolMZQG+2pOFLqQ1IdB1bl/mBMRHOFJPfF4aSycwsSSody+CKp/
-         wdew==
+        Sat, 12 Sep 2020 02:20:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599891620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wtddZ/g5BzSG6r0hO9D5GNe6gRNbI691h+YLFCj4YNs=;
+        b=GKHJMYtFFhAldoL9QfLC8fWgUvVuq8kB/+2vP0ADLPfHTUoFm66QZbw6evH3ro6ycHdAmO
+        7FH099TNrf1ymQGv1eJiTmViKrs6VfuLGcY3hr+129HS5FDynSCh+j3FUzlezu33U7Tx9J
+        bXy+omDO9FkT4AUW49oRRXGsr+fjfdg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-BjTVc6VzO6WtkDVuS--_Lw-1; Sat, 12 Sep 2020 02:20:17 -0400
+X-MC-Unique: BjTVc6VzO6WtkDVuS--_Lw-1
+Received: by mail-wm1-f72.google.com with SMTP id m125so1678218wmm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 23:20:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RWUUdByFvtqb1glreh6Bs2mDpnkxfWc+Wt1JUPVGjnk=;
-        b=EWwvhLZ8AVJVxiDYUsYMyq1F+genR91EcWPAs56l6jN1hU0k32VjfT00VRePUAJE6Q
-         2xvW1T3birg1iVKhUSXFgvpgpckwuIz0JQ1KC/3HgTPpswG1TOQwIo0whwqmXTAkcIa5
-         UYVP+Z60KZ66K9y1xrGt42bL+1HIW8cEMGyh4ylnChopo1bmq+lffK2THdXKSq1gkkYF
-         lpKTiGYlHUvIP+866+10XrCyDH7kTakbx620f0sdhGTzrLrOvnZGGF951TPzome9BczK
-         EXAWR/dzJ9Vt9IC1KuTfx1rgx51D/+LkxpQJnp+wC3+wTMiql8m6Nafapp7fFmuN6UlP
-         c+tw==
-X-Gm-Message-State: AOAM530dm69ShM5ShCUUMN8k+Lu9AZ9sXcaFTaK9JJrLxvQOYMuFwRNX
-        JbW0tu6+6AJ0blqQITipNmcdJMkdrVuIm54V260=
-X-Google-Smtp-Source: ABdhPJwJ++P1wFa8xAYXha0p/f9NmOdh5QtDmdi2cIbl3aMXW1zuAUNjHk5PNBxI8lAoW3lZaC9GGWhxDbVOKw7wuEk=
-X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr4459738iow.64.1599891562643;
- Fri, 11 Sep 2020 23:19:22 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wtddZ/g5BzSG6r0hO9D5GNe6gRNbI691h+YLFCj4YNs=;
+        b=thM7A87gnQD+hL9LZJkasgYdYzpS5OH6p6vWxh66lYk6dws1tjdjr+nqfP+IVTcYfH
+         GFAzsIbqeePvX7R4+MzXKnxM0W0AWiRmKSqeUVQdWFkqotM5i7u6Jbqh33wTXlkZIL92
+         l8DQxTMlW745HHsRXuJ2r49lSVHFmqBXCB/Ait/fKoAsXOz16molstWn9wbRq3K1VX1S
+         H+zDWBLnrF6TdM9xgkqfcuocpAegqaZ1Yq5WETZNxkMrdoPNDzQz+/lBdV7zeEw/dfZs
+         cR3bAdxIJE4s7URprT/QMhXaBQXdK1nQuTCYM3oNo6Pkb12ntZmm9kZvcHf9SqPf7xYE
+         SC6w==
+X-Gm-Message-State: AOAM531GM8OgSqmCQKEYcUxzu2/hsCxsSJmH7pKnzDdcAjbpTXND8lYG
+        oKPaCvX3x4Nw7qc/ROWDpkjQuMin5ysKFxlhSHRXzBQmW/bvgwVOWxOP1V4DLuZptU7bRvNRK9n
+        B+ECFbqPumWl6D5s00fEWBX8G
+X-Received: by 2002:a1c:e3c3:: with SMTP id a186mr525471wmh.189.1599891616755;
+        Fri, 11 Sep 2020 23:20:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3J9onSbFlnBmb71KhpXE0SnDHzaeYgliqwQ1/UJzyJ+sCi/4G2rJz2kHw7uY91FM3JgxYsw==
+X-Received: by 2002:a1c:e3c3:: with SMTP id a186mr525461wmh.189.1599891616575;
+        Fri, 11 Sep 2020 23:20:16 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id u66sm8430591wmg.44.2020.09.11.23.20.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Sep 2020 23:20:16 -0700 (PDT)
+Subject: Re: [PATCH 2/3] KVM: SVM: Move svm_complete_interrupts() into
+ svm_vcpu_run()
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Paul K ." <kronenpj@kronenpj.dyndns.org>
+References: <1599620119-12971-1-git-send-email-wanpengli@tencent.com>
+ <87eenbmjo4.fsf@vitty.brq.redhat.com>
+ <CANRm+CxR=U1jYMsqGEUOJ+G6ekUs3igZxzNzrepHp17QYrcEnw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a9ae6d3d-e616-58c5-5db5-149fb702631f@redhat.com>
+Date:   Sat, 12 Sep 2020 08:20:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200623052059.1893966-1-david@fromorbit.com>
-In-Reply-To: <20200623052059.1893966-1-david@fromorbit.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 12 Sep 2020 09:19:11 +0300
-Message-ID: <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
-Subject: More filesystem need this fix (xfs: use MMAPLOCK around filemap_map_pages())
-To:     Andreas Gruenbacher <agruenba@redhat.com>, Jan Kara <jack@suse.cz>,
-        Theodore Tso <tytso@mit.edu>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Qiuyang Sun <sunqiuyang@huawei.com>
-Cc:     linux-xfs <linux-xfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANRm+CxR=U1jYMsqGEUOJ+G6ekUs3igZxzNzrepHp17QYrcEnw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 8:21 AM Dave Chinner <david@fromorbit.com> wrote:
->
-> From: Dave Chinner <dchinner@redhat.com>
->
-> The page faultround path ->map_pages is implemented in XFS via
-> filemap_map_pages(). This function checks that pages found in page
-> cache lookups have not raced with truncate based invalidation by
-> checking page->mapping is correct and page->index is within EOF.
->
-> However, we've known for a long time that this is not sufficient to
-> protect against races with invalidations done by operations that do
-> not change EOF. e.g. hole punching and other fallocate() based
-> direct extent manipulations. The way we protect against these
-> races is we wrap the page fault operations in a XFS_MMAPLOCK_SHARED
-> lock so they serialise against fallocate and truncate before calling
-> into the filemap function that processes the fault.
->
-> Do the same for XFS's ->map_pages implementation to close this
-> potential data corruption issue.
->
-> Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> ---
->  fs/xfs/xfs_file.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 7b05f8fd7b3d..4b185a907432 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -1266,10 +1266,23 @@ xfs_filemap_pfn_mkwrite(
->         return __xfs_filemap_fault(vmf, PE_SIZE_PTE, true);
->  }
->
-> +static void
-> +xfs_filemap_map_pages(
-> +       struct vm_fault         *vmf,
-> +       pgoff_t                 start_pgoff,
-> +       pgoff_t                 end_pgoff)
-> +{
-> +       struct inode            *inode = file_inode(vmf->vma->vm_file);
-> +
-> +       xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
-> +       filemap_map_pages(vmf, start_pgoff, end_pgoff);
-> +       xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
-> +}
-> +
->  static const struct vm_operations_struct xfs_file_vm_ops = {
->         .fault          = xfs_filemap_fault,
->         .huge_fault     = xfs_filemap_huge_fault,
-> -       .map_pages      = filemap_map_pages,
-> +       .map_pages      = xfs_filemap_map_pages,
->         .page_mkwrite   = xfs_filemap_page_mkwrite,
->         .pfn_mkwrite    = xfs_filemap_pfn_mkwrite,
->  };
-> --
-> 2.26.2.761.g0e0b3e54be
->
+On 09/09/20 10:47, Wanpeng Li wrote:
+>> One more thing:
+>>
+>> VMX version does
+>>
+>>         vmx_complete_interrupts(vmx);
+>>         if (is_guest_mode(vcpu))
+>>                 return EXIT_FASTPATH_NONE;
+>>
+>> and on SVM we analyze is_guest_mode() inside
+>> svm_exit_handlers_fastpath() - should we also change that for
+>> conformity?
+> 
+> Agreed, will do in v2.
 
-It appears that ext4, f2fs, gfs2, orangefs, zonefs also need this fix
+Please just send an incremental patch.  Thanks!
 
-zonefs does not support hole punching, so it may not need to use
-mmap_sem at all.
+Paolo
 
-It is interesting to look at how this bug came to be duplicated in so
-many filesystems, because there are lessons to be learned.
-
-Commit f1820361f83d ("mm: implement ->map_pages for page cache")
-added to ->map_pages() operation and its commit message said:
-
-"...It should be safe to use filemap_map_pages() for ->map_pages() if
-    filesystem use filemap_fault() for ->fault()."
-
-At the time, all of the aforementioned filesystems used filemap_fault()
-for ->fault().
-
-But since then, ext4, xfs, f2fs and just recently gfs2 have added a filesystem
-->fault() operation.
-
-orangefs has added vm_operations since and zonefs was added since,
-probably copying the mmap_sem handling from ext4. Both have a filesystem
-->fault() operation.
-
-It was surprising for me to see that some of the filesystem developers
-signed on the added ->fault() operations are not strangers to mm. The
-recent gfs2 change was even reviewed by an established mm developer
-[1].
-
-So what can we learn from this case study? How could we fix the interface to
-avoid repeating the same mistake in the future?
-
-Thanks,
-Amir.
-
-[1] https://lore.kernel.org/linux-fsdevel/20200703113801.GD25523@casper.infradead.org/
