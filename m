@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59889267B49
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 17:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B394D267B54
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 18:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725869AbgILPve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 11:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33602 "EHLO
+        id S1725873AbgILQKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 12:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgILPv0 (ORCPT
+        with ESMTP id S1725863AbgILQKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 11:51:26 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C871C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 08:51:25 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id j7so2363729plk.11
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 08:51:25 -0700 (PDT)
+        Sat, 12 Sep 2020 12:10:00 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F351C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:09:59 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id u21so15023959ljl.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 09:09:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5MxdQf9tv8eKzDg+x6Dz/JKJDrhNk6PlqBxr5x7bwNs=;
-        b=w6jbt/CYSIpBugZJMVeS5NXurkdpxIawr2/+p5QKDl9ySs+weYpHK8k+foGfrwF4Tp
-         3OlxZZtGbi+3nDmKvs49wq0tcgm9aKlYhWTR3UW1f/XpTCA0ZN0qDZMrLgLDaz9VHxNj
-         ZcDSWsLbsvbivWVPnacSeT37LPh5zNjNIlIOIzxFVJUJ0Fdx3y6mzxqX1c+s+u8dQSbA
-         XlmPiOQeEZmWRaZs5WdzCjuHeBaNEWWN5v4HH3Skq/8Bptolk093bINUyVF1DDCcDgTk
-         pf21/VIdwJvxHEGlpJmjwRF//wmPw7y7qPJ1p9FZ/xfr2LTYJpx2g6S1fnvTOGwRpLT+
-         csKw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GfTGBer8RATBfD/BSJV0RKCtt8U1lAtJViRDynBOF3Y=;
+        b=ycL9Gnq0/OzDgoOKpHTuxmOkkI6Wqxi6nmetrLaT1oRp9EIFNJUGyMQBljjJc0nG0v
+         8DnLbLZVq+iAsyYymh3bjnH7D7YlKJv8aBvY55T6z30DyAP7rYZXn/ZxAuZylk/+jf5g
+         IGeMcMBnmhV6ts6k29Dta0ZpiTk+7JBWJzKVFhcgknuTFGPlSiDKeskyD8S4lX3ShfVP
+         4UUIKVJcosIBOpTICwljI997syj93RrvH8j8+T5ZdCHUych916vW5KU2Qycwa5WQ4FYp
+         aVI7ZBtqN9vlqQpSzPmZ+o1RdGeQ7Zg9Jxz7Jp8Pk+YefbujkTtz3WC8lwE3hNu1jIIr
+         avrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5MxdQf9tv8eKzDg+x6Dz/JKJDrhNk6PlqBxr5x7bwNs=;
-        b=p0GaTHqdb6SYd+zN7elsbwIXt/szh17DluFTM/KkzLsFhx1U2msVPGYLoFsQxOSlqD
-         tg7xfc1l3KdUekx+NyY/iY3mr80dYT7+46TzWEf+53zUllsDrzSMQe+3QDVKEAMPuZuX
-         BcdLVewIwHFjbNy3iUxgA4YxbpMUYMplcWaKNRwAZJwtYersuD9hY0Fl8+pPD1cKlRQ1
-         wOrawUX5cRYydlakG5kH9L92H11LsKudv0dTTU0r8zEl3IoOflpC1rNEyq1aFJVUpG+P
-         goF/hdCPX7MJzTHH79tuzoZq+6KFWleE6xuvli4QFa2xZB/bYbMrIj3Pj1GIe/cy07gU
-         dQQA==
-X-Gm-Message-State: AOAM532HSquCSbE5+TPO/zS1r+633EsXEJ4sKVV+pod59kAqxAmMMhhf
-        AFgfDeBwWxuhGleU+erWqJr+rA==
-X-Google-Smtp-Source: ABdhPJy6/dMj1soW8/OLyYEGy7kbZ4UUlnazKCDGWJoQx26D4vqSHo2SJCAuXiLCgyi3+OIje1XQEg==
-X-Received: by 2002:a17:90a:f415:: with SMTP id ch21mr7118293pjb.18.1599925884681;
-        Sat, 12 Sep 2020 08:51:24 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id kf10sm4691156pjb.2.2020.09.12.08.51.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 12 Sep 2020 08:51:23 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: Fix out-of-bounds on the buf returned by memory_stat_format
-Date:   Sat, 12 Sep 2020 23:51:00 +0800
-Message-Id: <20200912155100.25578-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GfTGBer8RATBfD/BSJV0RKCtt8U1lAtJViRDynBOF3Y=;
+        b=baHFV0g4NAx/wbFe1EFVbmGzzsEUDKThanZk51WxyXITyp2+ghQ3mp7jqs4lSwBn7J
+         MBbvQKE1Z2fwWHubkAVYxNqI+8XQKd2G/03w4BmjCHUhPKHIM3pJ35frW6CChT3cUBIc
+         YkHTPHa6ejG4Nl/8EcWePDKKL+MOTwxAQeh4ag5ebUfbBiMTeHWwcXLsNd15c2eha1wN
+         MOjafY81OtyP+G3tc4j8p2FYWK6xzparWxrgtLeS9GfpGadlsmNacJMmYJaYuRh47/tO
+         n9gZeqW6fmc8uaMASzCEFdqBrIP2krGyrjkphOH+kvs5ovoUqudRKUChmSwdd7+aGivs
+         gq7A==
+X-Gm-Message-State: AOAM531OHf8K7GLRQUh4IXX6bN45fUIqO/Lw5Lv2b9I/Uv1uFxY97tK3
+        fFG/24Dmdxrr9V+zVA8eswT1m4NSo5MgrAe/NDh0gA==
+X-Google-Smtp-Source: ABdhPJy6ZAMEu7rVKygsqJ8Y9WlGqdtya7BDyOamAGm5sKv1JX++wYpkxrw3S1w7pibhY9m++Hz/VmzIUzLA6GfJrgc=
+X-Received: by 2002:a2e:a177:: with SMTP id u23mr2426839ljl.104.1599926995989;
+ Sat, 12 Sep 2020 09:09:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
+In-Reply-To: <f32130bf-cfd4-b1bf-538c-dbc9ee2d947a@eaxlabs.cz>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 18:09:45 +0200
+Message-ID: <CACRpkdZ5YU=ix9Qd8KBfqK9i9e3q-2THt06BJiTTEMUkGap_NQ@mail.gmail.com>
+Subject: Re: pinctrl: sx150x bug
+To:     Martin DEVERA <devik@eaxlabs.cz>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memory_stat_format() returns a format string, but the return buf
-may not including the trailing '\0'. So the users may read the buf
-out of bounds.
+On Wed, Aug 5, 2020 at 11:28 AM Martin DEVERA <devik@eaxlabs.cz> wrote:
 
-Fixes: c8713d0b2312 ("mm: memcontrol: dump memory.stat during cgroup OOM")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+> I encountered bug in SX1502 expander driver in 5.7.7. Here is relevant
+> DTS part:
+>
+> compatible = "semtech,sx1502q";
+> gpio4_cfg_pins: gpio2-cfg {
+>                          pins = "gpio5";
+>                          output-high;
+>      };
+>
+> And part of OOPS:
+>
+> [    0.673996] [<c023cfa6>] (gpiochip_get_data) from [<c023b235>]
+> (sx150x_gpio_direction_output+0xd)
+> [    0.683259] [<c023b235>] (sx150x_gpio_direction_output) from
+> [<c023b363>] (sx150x_pinconf_set+0x)
+> [    0.692796] [<c023b363>] (sx150x_pinconf_set) from [<c0238fef>]
+> (pinconf_apply_setting+0x39/0x7e)
+> [    0.701635] [<c0238fef>] (pinconf_apply_setting) from [<c0236c77>]
+> (pinctrl_commit_state+0xa5/0x)
+> [    0.710648] [<c0236c77>] (pinctrl_commit_state) from [<c0237e03>]
+> (pinctrl_enable+0xff/0x1d4)
+> [    0.719139] [<c0237e03>] (pinctrl_enable) from [<c023b791>]
+> (sx150x_probe+0x1a3/0x358)
+> [    0.727027] [<c023b791>] (sx150x_probe) from [<c02c38bf>]
+> (i2c_device_probe+0x1bb/0x1dc)
+>
+> The problem is that sx150x_pinconf_set uses sx150x_gpio_direction_output
+> but gpio is not
+> setup yet. Patch below fixes it but I'm not sure whether is it correct:
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index f2ef9a770eeb..20c8a1080074 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1492,12 +1492,13 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
- 	return false;
- }
- 
--static char *memory_stat_format(struct mem_cgroup *memcg)
-+static const char *memory_stat_format(struct mem_cgroup *memcg)
- {
- 	struct seq_buf s;
- 	int i;
- 
--	seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
-+	/* Reserve a byte for the trailing null */
-+	seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE - 1);
- 	if (!s.buffer)
- 		return NULL;
- 
-@@ -1606,7 +1607,8 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
- 	/* The above should easily fit into one page */
--	WARN_ON_ONCE(seq_buf_has_overflowed(&s));
-+	if (WARN_ON_ONCE(seq_buf_putc(&s, '\0')))
-+		s.buffer[PAGE_SIZE - 1] = '\0';
- 
- 	return s.buffer;
- }
-@@ -1644,7 +1646,7 @@ void mem_cgroup_print_oom_context(struct mem_cgroup *memcg, struct task_struct *
-  */
- void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
- {
--	char *buf;
-+	const char *buf;
- 
- 	pr_info("memory: usage %llukB, limit %llukB, failcnt %lu\n",
- 		K((u64)page_counter_read(&memcg->memory)),
-@@ -6415,7 +6417,7 @@ static int memory_events_local_show(struct seq_file *m, void *v)
- static int memory_stat_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
--	char *buf;
-+	const char *buf;
- 
- 	buf = memory_stat_format(memcg);
- 	if (!buf)
--- 
-2.20.1
+I simply rebased and applied this patch now.
 
+Yours,
+Linus Walleij
