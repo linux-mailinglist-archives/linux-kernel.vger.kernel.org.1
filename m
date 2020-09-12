@@ -2,104 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0A1267BC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EED1267BCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 20:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725890AbgILSdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 14:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgILSdr (ORCPT
+        id S1725884AbgILSn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 14:43:56 -0400
+Received: from smtprelay0026.hostedemail.com ([216.40.44.26]:47874 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725838AbgILSnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 14:33:47 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D90C061573;
-        Sat, 12 Sep 2020 11:33:47 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id b12so13690355edz.11;
-        Sat, 12 Sep 2020 11:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=sDdNABI91Tfr3hqKhoVLbPlEvPq5j5lfipsDHNaq4ik=;
-        b=POua7IFvCe0e6K6KYqXq0wSmVk2tqbCN7sftakcwvJNpHX0YWSIhY+GoCljfJ7I85a
-         4TjrNL9eFYYu82+CcAtWBegXoOq2YF0aCOYUldzXY7tyTzld4fgEXkuqPPpTpTNYMOnp
-         1xxCjpKqHLog0AVRcRXJoisHzc6dygviNaZR7Iydf2rPC7KhdbwvwEtpA0zPJp31fNPX
-         7sye9aW+jbSAuy4nufR2RvSzrugllPJUjN/1lSVihOPtB3/mMPvs9ve6zmhqJGYsMIfk
-         bjp4PjbSBK4SXk4iUrxMcnOqwoBGa4lzz9DfHlq0J6UjZoiifd7GzPWKmfXvmhxmzXrk
-         3Wbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=sDdNABI91Tfr3hqKhoVLbPlEvPq5j5lfipsDHNaq4ik=;
-        b=YXKTlQqFsS8tA+YaEj0zA+m3zZwZpNawsj87fmKUOAd5Y8eyJw4UsBmIYU0D4GRukb
-         9OLE9xZP+w667t38PykV2dcnSEsy5zW8YqTQZizDDbRi2tDAXgD04uvYbIKqKXRs+ITi
-         bzVIaUqkyT/Zl3Kc7h8xKFKRaB8Cgwp0dGlIwFg5Ps4YXFGSYL4Ly3CPNriR9OuxFopd
-         GO0OUuVm920uL/vKVVaicPcl6lmAEmnDWsOi8mZIyBYnTeaV/MmODiT71jM3lDTxV5pn
-         Yzsu6ZmSvzNUXgJGYGsZFFHZM89zzWiyUNYkyELwLCrGszlzEAJp2F8xDgEKeTgpGTe3
-         ihhA==
-X-Gm-Message-State: AOAM530ybowsdZp5nblvPRi3D98fg8qLYaVouLLc0yX4Hm2KPtE9i/UG
-        2iJcFb/KqzX0pcbGVOpp15g=
-X-Google-Smtp-Source: ABdhPJxhXt41CHf1+Qod2riES3Z2vcmnrRmGcoecWnMBU11QIqnqWnaonf9eRAkhxYhvUjVqdDursg==
-X-Received: by 2002:a05:6402:2c3:: with SMTP id b3mr9567811edx.213.1599935625874;
-        Sat, 12 Sep 2020 11:33:45 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2dd9:a000:10b6:eb2f:be44:9365])
-        by smtp.gmail.com with ESMTPSA id v2sm3589248ejh.57.2020.09.12.11.33.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 11:33:45 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-aspeed@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org
-Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: make linux-aspeed list remarks consistent
-Date:   Sat, 12 Sep 2020 20:33:34 +0200
-Message-Id: <20200912183334.22683-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 12 Sep 2020 14:43:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 5B52F1803F9A8;
+        Sat, 12 Sep 2020 18:43:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:4321:5007:10004:10400:10848:11026:11232:11657:11658:11914:12043:12114:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: shock79_1b09319270f9
+X-Filterd-Recvd-Size: 1573
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 12 Sep 2020 18:43:50 +0000 (UTC)
+Message-ID: <38299e7c135de26dc7cf3fbe25d6a74e4632bbd9.camel@perches.com>
+Subject: Re: [PATCH 1/5] staging: rtl8723bs: refactor cckrates{only}_included
+From:   Joe Perches <joe@perches.com>
+To:     Michael Straube <straube.linux@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Sat, 12 Sep 2020 11:43:49 -0700
+In-Reply-To: <f5fdb27843143dfefb1a1a416dab63931fef6d41.camel@perches.com>
+References: <20200912084520.8383-1-straube.linux@gmail.com>
+         <f5fdb27843143dfefb1a1a416dab63931fef6d41.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f15a3ea80391 ("MAINTAINERS: Add ASPEED BMC GFX DRM driver entry")
-does not mention that linux-aspeed@lists.ozlabs.org is moderated for
-non-subscribers, but the other three entries for
-linux-aspeed@lists.ozlabs.org do.
+On Sat, 2020-09-12 at 11:22 -0700, Joe Perches wrote:
+> On Sat, 2020-09-12 at 10:45 +0200, Michael Straube wrote:
+> > Refactor cckrates_included() and cckratesonly_included() to simplify
+> > the code and improve readability.
+[]
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+[]
+> bool cckratesonly_included(unsigned char *rate, int ratelen)
+> {
+[]
+> 	if (i <= 0)
+	if (ratelen <= 0)  of course...
 
-By 'majority vote' among entries, let us assume it was just missed here and
-adjust it to be consistent with others.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on master and next-20200911
-
-Joel, please ack.
-David, Daniel, please pick this minor non-urgent clean-up patch.
-
-This patch submission will also show me if linux-aspeed is moderated or
-not. I have not subscribed to linux-aspeed and if it shows up quickly in
-the archive, the list is probably not moderated; and if it takes longer,
-it is moderated, and hence, validating the patch.
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 26af84f97353..f2561c3fc9db 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5448,7 +5448,7 @@ F:	drivers/gpu/drm/panel/panel-arm-versatile.c
- 
- DRM DRIVER FOR ASPEED BMC GFX
- M:	Joel Stanley <joel@jms.id.au>
--L:	linux-aspeed@lists.ozlabs.org
-+L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
- S:	Supported
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/gpu/aspeed-gfx.txt
--- 
-2.17.1
+> 		return false;
+> 
+> 	for (i = 0; i < ratelen; i++) {
+> 		if (!is_cckrate(rate[i])
+> 			return false;
+> 	}
+> 
+> 	return true;
+> }
+> 
+> 
 
