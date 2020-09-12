@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AA4267B2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 17:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7B9267B34
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 17:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbgILPIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 11:08:36 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:22313 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725850AbgILPIX (ORCPT
+        id S1725877AbgILPUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 11:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgILPUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 11:08:23 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="467361552"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Sep 2020 17:08:19 +0200
-Date:   Sat, 12 Sep 2020 17:08:19 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     Julia Lawall <julia.lawall@inria.fr>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
-        alex.dewar90@gmail.com, alexandre.belloni@bootlin.com,
-        corbet@lwn.net, mchehab+huawei@kernel.org
-Subject: Re: [PATCH] coccinelle: api: update kzfree script to
- kfree_sensitive
-In-Reply-To: <20200811074953.73994-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2009121707040.2362@hadrien>
-References: <20200604140805.111613-1-efremov@linux.com> <20200811074953.73994-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sat, 12 Sep 2020 11:20:19 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E55C061573;
+        Sat, 12 Sep 2020 08:20:18 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id y5so10946919otg.5;
+        Sat, 12 Sep 2020 08:20:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fo9uIYfYdavh6FlcFZkkGbDCKuvjGNXRzN0vh8S869w=;
+        b=cjD6oMG5w+KpyEFu9cIwxyzDENFMLFaCpZ4QQ7rJyVFZK1XHSowipfzw0GPJKaTw+/
+         totPHpIgtVdNMpiQ2dG+88n6GIhVisw9kdqyC6GQtLg2iCzvqAyokUR/uwv3ACqU2IqY
+         6x3fG54GfCmy56vHayTZRXiKKVugpyFYqes705AQNF0iZlQ+QiGLTNS3Spxp7Wn3LZBm
+         lm4MQEcVpUBrC9IBV0MowhpVHiS4Qt6pGKAv/DMfY3MDiocOXU9sZZCp1RmMjK1bHpD0
+         5Whuu595++T72sC2OIXCKvUxB1Oxi0PwcRkHZf5ZBsFkjisUMBeQuw9l5vW622hGGy4d
+         Gzgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fo9uIYfYdavh6FlcFZkkGbDCKuvjGNXRzN0vh8S869w=;
+        b=PaVsxk0mlg2RYUza+sqM5/aImFoTRLfJdwYJi2IJOgojhdbNuB1y27qbdeJMAHClsl
+         vO1eVJtyjvb6DE85zZxCtsihA/FiwZG9c6kK6hTujaYkdsRFVLGSXlkXD6wpch9dKVlZ
+         gvnzKeqb11sdfh2+ioFc3qiGUjUAjV+3Aju8XjDLAOfJ7mk3h6UPQ71IP1QhkG+S2eNh
+         97lLPfxT/qw1xs5Xzbh06yFVqrNf3RwbX/xvPCsDL8cNW8QwRb/wPvwog85VrCLKxsZt
+         zAwD0GvuYfLHDRYaxovbU7DmEbc5xh7eEBpRMeME9+zLcfH9T0EgjILXc6AHvnNpGaAQ
+         RH6g==
+X-Gm-Message-State: AOAM530nZrzEG1N67OBouFZ6KN1jxm1brTgVAJlFe2KC/QofDPRWv87O
+        IZtTUCrOsz8TXwEZ4vU/3MoFHt4BsE/TNVBG9ZzjMwEthqiUVA==
+X-Google-Smtp-Source: ABdhPJz0NCwM2ZgDabxxN9iTCTmMmQ7+vu/J4Pn1B2whShMeWwC1BMsCY8H24XSxPWpktlSdQf+iSv1Z9sdm2ACq0y0=
+X-Received: by 2002:a9d:5a92:: with SMTP id w18mr4204763oth.145.1599924017654;
+ Sat, 12 Sep 2020 08:20:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200912144106.11799-1-oded.gabbay@gmail.com> <20200912144106.11799-9-oded.gabbay@gmail.com>
+ <59a861d7-86e5-d806-a195-fd229d27ffb4@infradead.org>
+In-Reply-To: <59a861d7-86e5-d806-a195-fd229d27ffb4@infradead.org>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Sat, 12 Sep 2020 18:19:50 +0300
+Message-ID: <CAFCwf12kfQJk5XwcX7qRRC-oLfXAUr+DSdBv0X9RcEDpyxJirA@mail.gmail.com>
+Subject: Re: [PATCH v2 08/14] habanalabs/gaudi: add a new IOCTL for NIC
+ control operations
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Omer Shpigelman <oshpigelman@habana.ai>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, 11 Aug 2020, Denis Efremov wrote:
-
-> Commit 453431a54934 ("mm, treewide: rename kzfree() to kfree_sensitive()")
-> renames kzfree to kfree_sensitive and uses memzero_explicit(...) instead of
-> memset(..., 0, ...) internally. Update cocci script to reflect these
-> changes.
+On Sat, Sep 12, 2020 at 6:07 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-
-Applied, thanks.
-
-> ---
-> Julia, I think you can squash this commit with original script, or I can
-> resend the whole script since it's not merged to the mainline.
+> Hi,
 >
->  .../{kzfree.cocci => kfree_sensitive.cocci}   | 29 +++++++++----------
->  1 file changed, 13 insertions(+), 16 deletions(-)
->  rename scripts/coccinelle/api/{kzfree.cocci => kfree_sensitive.cocci} (70%)
+> On 9/12/20 7:41 AM, Oded Gabbay wrote:
+> > +#define HL_IOCTL_NIC _IOWR('H', 0x07, struct hl_nic_args)
 >
-> diff --git a/scripts/coccinelle/api/kzfree.cocci b/scripts/coccinelle/api/kfree_sensitive.cocci
-> similarity index 70%
-> rename from scripts/coccinelle/api/kzfree.cocci
-> rename to scripts/coccinelle/api/kfree_sensitive.cocci
-> index 33625bd7cec9..e4a066a0b77d 100644
-> --- a/scripts/coccinelle/api/kzfree.cocci
-> +++ b/scripts/coccinelle/api/kfree_sensitive.cocci
-> @@ -1,13 +1,13 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  ///
-> -/// Use kzfree, kvfree_sensitive rather than memset or
-> -/// memzero_explicit followed by kfree
-> +/// Use kfree_sensitive, kvfree_sensitive rather than memset or
-> +/// memzero_explicit followed by kfree.
->  ///
->  // Confidence: High
->  // Copyright: (C) 2020 Denis Efremov ISPRAS
->  // Options: --no-includes --include-headers
->  //
-> -// Keywords: kzfree, kvfree_sensitive
-> +// Keywords: kfree_sensitive, kvfree_sensitive
->  //
 >
->  virtual context
-> @@ -18,7 +18,8 @@ virtual report
->  @initialize:python@
->  @@
->  # kmalloc_oob_in_memset uses memset to explicitly trigger out-of-bounds access
-> -filter = frozenset(['kmalloc_oob_in_memset', 'kzfree', 'kvfree_sensitive'])
-> +filter = frozenset(['kmalloc_oob_in_memset',
-> +		    'kfree_sensitive', 'kvfree_sensitive'])
+> ioctl numbers ('H') should be documented in
+> Documentation/userspace-api/ioctl/ioctl-number.rst
 >
->  def relevant(p):
->      return not (filter & {el.current_element for el in p})
-> @@ -56,17 +57,13 @@ type T;
->  - memzero_explicit@m((T)E, size);
->    ... when != E
->        when strict
-> -// TODO: uncomment when kfree_sensitive will be merged.
-> -// Only this case is commented out because developers
-> -// may not like patches like this since kzfree uses memset
-> -// internally (not memzero_explicit).
-> -//(
-> -//- kfree(E)@p;
-> -//+ kfree_sensitive(E);
-> -//|
-> +(
-> +- kfree(E)@p;
-> ++ kfree_sensitive(E);
-> +|
->  - \(vfree\|kvfree\)(E)@p;
->  + kvfree_sensitive(E, size);
-> -//)
-> +)
+> Sorry if I missed seeing that. (I scanned quickly.)
 >
->  @rp_memset depends on patch@
->  expression E, size;
-> @@ -80,7 +77,7 @@ type T;
->        when strict
->  (
->  - kfree(E)@p;
-> -+ kzfree(E);
-> ++ kfree_sensitive(E);
->  |
->  - \(vfree\|kvfree\)(E)@p;
->  + kvfree_sensitive(E, size);
-> @@ -91,11 +88,11 @@ p << r.p;
->  @@
+> thanks.
 >
->  coccilib.report.print_report(p[0],
-> -  "WARNING: opportunity for kzfree/kvfree_sensitive")
-> +  "WARNING: opportunity for kfree_sensitive/kvfree_sensitive")
->
->  @script:python depends on org@
->  p << r.p;
->  @@
->
->  coccilib.org.print_todo(p[0],
-> -  "WARNING: opportunity for kzfree/kvfree_sensitive")
-> +  "WARNING: opportunity for kfree_sensitive/kvfree_sensitive")
 > --
-> 2.26.2
+> ~Randy
 >
->
+
+Hi Randy,
+It is already documented for some time now:
+
+'H'   00-0F  uapi/misc/habanalabs.h                                  conflict!
+
+I think you commented on this a few releases ago and I added it then :)
+
+Thanks,
+Oded
