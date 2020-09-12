@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C5326798E
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4FB267991
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 12:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgILKfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 06:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S1725881AbgILKgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 06:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgILKfv (ORCPT
+        with ESMTP id S1725820AbgILKgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 06:35:51 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43436C061573;
-        Sat, 12 Sep 2020 03:35:50 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id l9so6950429wme.3;
-        Sat, 12 Sep 2020 03:35:50 -0700 (PDT)
+        Sat, 12 Sep 2020 06:36:35 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5148C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:36:34 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x69so8422177lff.3
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 03:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/GqII6YFRmle5ooyyYumbT88Wz1v4a3gTrrvPa6xyuU=;
-        b=PYIkjuP1wK92Fc1t2W7kDjFmenb5CaVDX6oaRIxPFdx95eyrQpYTBVq3v1I5ep1NMc
-         B5U/DjA2IoQCRk48CSaXE6SEF+KM8VxBKXmDvxOGZFR9EjmhwyPjXCRChrpPD5xvXeKN
-         ikEDT5wNVDQkN+2WFwp/2agcn5iB812qTCkmIIihVpDfMI03brf++XgluoQfId+Hf64t
-         P5IZcI/nVLepy8pomPJnFHDmGN3ueG/vpJjZ3bBZYY5uR1pvicuNRf4GrO98zfa9U9+v
-         1/BN9U0QXJFni9yNtpeY19rZrod8SUuOsNiXWlXcA4hxTGi0u2Y439BNwDEo8UDeXFks
-         ZB7w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RF8m2xC4JB4qyW3nCqkmJE2v3IVbH777DHP9r98chVU=;
+        b=ZdAifYhj2ckBuaqC7gwZR7Hupf7v18XeH6Ksh6kg+yA5O8P0Qnbfx9ZEFfkqW0fTOy
+         lNszaKVc2NrsIDl1Egk7zLIrGNG0Ldo9UZJUcVS9IZVJkzXjn8CU8VVFivI17aeYfd+T
+         Jw9pNYWslgFu/FSgrEuYYb4RkkkzEPjBhUexfGTSPM0KnPb3qZxqBmZdq/2k3u04i6Qs
+         4Kst372V4IhEqb/0UqRTctNzZNV3duEfTaf7tKIlJl1AgMGryVizSQvmm6QuyWqLotes
+         ToifTRd3uH4Bz/BY28YZp5rWMeB9KXGmdnWQn1rhIugm5IKnafz7O0t1dTBhevtbIr6X
+         wZpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/GqII6YFRmle5ooyyYumbT88Wz1v4a3gTrrvPa6xyuU=;
-        b=D7iCacDqHiRr0kPhQkUzOxhXBx7qtFIs1USLAjx9D/dHcB2qi0pdwwfD/+EpelH0nE
-         xf6uilDA8RuswRz/Gh5jg3vLcf/OYWCezY7yyjavK6l2KAR8l6LEBtuxiPHLKUVP7fe9
-         6XCNMT5SPtMNXE3tJ2PjVEPBJzgytXR6kikV+7U/debVacZDjp14p6IvlgUwvxt+gKVk
-         vJ7DP9cujM7PA2IryFWTkiinlObnUlJJJf16105Q6vDBw9q1PPkio0JDLVZKLnTukJjT
-         odt0Trd/2hmttltw6V32DCpnXWLJqBAVGNpcIJoEuX74YR39LMaz4GFXdI6ySThGIvxC
-         HS5w==
-X-Gm-Message-State: AOAM530ymbsIf0gH5iHpnpliTp65+HEDq8Fnas9CfURcOKcJMUG2ew0J
-        rWGG2l3td7Gle0ZwwOPpU1Wf4WpYQlbntfIN
-X-Google-Smtp-Source: ABdhPJwSH85cILOwNHZ32AM+pMn7uODfhxDzNKv2VBsdgg8cvv2IbFSh7/vMoDsb/TT3rUPJYyRbvg==
-X-Received: by 2002:a05:600c:2742:: with SMTP id 2mr2658231wmw.136.1599906948699;
-        Sat, 12 Sep 2020 03:35:48 -0700 (PDT)
-Received: from localhost.localdomain (188.147.111.252.nat.umts.dynamic.t-mobile.pl. [188.147.111.252])
-        by smtp.gmail.com with ESMTPSA id d2sm9701109wro.34.2020.09.12.03.35.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 03:35:48 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, viro@zeniv.linux.org.uk
-Subject: [PATCH] fs/pipe.c: clean code by removing unnecessary initialization
-Date:   Sat, 12 Sep 2020 12:34:52 +0200
-Message-Id: <20200912103452.23855-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RF8m2xC4JB4qyW3nCqkmJE2v3IVbH777DHP9r98chVU=;
+        b=TrHGoCJd7R3zm0CTMtVdhlLr2XwKnjtYlbo7Qvi8yZPRenAXKmB3BwMSgGThZNYGFz
+         v4jXtdZG+ZNJKI75YdOj9qGIlrqiZ73JpT8G+7Xg2k3c6lDfyvhFL8NQgQG++fJ9yHlt
+         RyDFudNEkbtHI3gQ9w4JmvJx/zkMji+vhUs4TYGSA27Na0Rt2ESts80tc94GxldIiGsf
+         I/gs9zO1lD5Kfn0u5ycY4w3+vt5vg/5/tomZpHEF3ghvpmosHgAYea0lGyCuNiKGWGRZ
+         EUHIZLswC3h3GRVJ41o3Vj0NDZQUIsU3i1PzRWqM+2B2rkWkUtRTytd8agszGAJGQjom
+         Ci1g==
+X-Gm-Message-State: AOAM530gTjo3iGX979kRuANKxAicFzdBEqrD4SXIaEBBy7IPljeYUrMq
+        zf+7RFG3aWH8HEquut8pQdfIoj6jbPM/OpK5NzkJLg==
+X-Google-Smtp-Source: ABdhPJyoD2XPyfxM3troBciEM2Mczg6M+QUgoHKVC37fUndkhJdOxvWEyjUmNDBgtw0N6y9hRBKROUhaDN/qwicI9KA=
+X-Received: by 2002:a05:6512:370b:: with SMTP id z11mr1453851lfr.571.1599906993330;
+ Sat, 12 Sep 2020 03:36:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1595572867.git.frank@allwinnertech.com>
+In-Reply-To: <cover.1595572867.git.frank@allwinnertech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 12 Sep 2020 12:36:22 +0200
+Message-ID: <CACRpkdZqNSGkDCm6HGpS63iWp5b4WrZpdqz8QEeu4CVzkhGQ=Q@mail.gmail.com>
+Subject: Re: [PATCH v5 00/16] Allwinner A100 Initial support
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Frank Lee <tiny.windzz@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Ondrej Jirman <megous@megous.com>,
+        Corentin Labbe <clabbe@baylibre.com>, bage@linutronix.de,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+On Fri, Jul 24, 2020 at 8:53 AM Frank Lee <frank@allwinnertech.com> wrote:
 
-Previously variable 'buf' was initialized, but was not read later before
-reassigning.  So the initialization can be removed.
+>   dt-bindings: pinctrl: sunxi: Get rid of continual nesting
+>   dt-bindings: pinctrl: sunxi: Add A100 pinctrl bindings
+>   pinctrl: sunxi: add support for the Allwinner A100 pin controller
 
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- fs/pipe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+These three patches (3,4,5) are now applied to the pinctrl tree.
 
-diff --git a/fs/pipe.c b/fs/pipe.c
-index 60dbee457143..a18ee5f6383b 100644
---- a/fs/pipe.c
-+++ b/fs/pipe.c
-@@ -495,7 +495,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
- 		head = pipe->head;
- 		if (!pipe_full(head, pipe->tail, pipe->max_usage)) {
- 			unsigned int mask = pipe->ring_size - 1;
--			struct pipe_buffer *buf = &pipe->bufs[head & mask];
-+			struct pipe_buffer *buf;
- 			struct page *page = pipe->tmp_page;
- 			int copied;
- 
--- 
-2.20.1
-
+Yours,
+Linus Walleij
