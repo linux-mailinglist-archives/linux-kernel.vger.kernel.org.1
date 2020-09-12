@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8C7267B7D
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 19:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC365267B80
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 19:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbgILRCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 13:02:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35168 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbgILRCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 13:02:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1B24B02A;
-        Sat, 12 Sep 2020 17:02:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6619DDA7C5; Sat, 12 Sep 2020 19:01:19 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.9-rc5
-Date:   Sat, 12 Sep 2020 19:01:18 +0200
-Message-Id: <cover.1599836573.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1725892AbgILRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 13:03:36 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:57949 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgILRD1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 13:03:27 -0400
+Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MlwJv-1kzn5i262V-00j2c4; Sat, 12 Sep 2020 19:03:25 +0200
+Received: by mail-qk1-f170.google.com with SMTP id q5so13046377qkc.2;
+        Sat, 12 Sep 2020 10:03:25 -0700 (PDT)
+X-Gm-Message-State: AOAM532YYb7pYi4ysDzOIk8XprAbqp5lOYLjABWnOcCmdlXYUUYPizWz
+        M+xdmwGDEXf2omLoViJW1IDQkPv1gQ5SKl6H3LE=
+X-Google-Smtp-Source: ABdhPJwrFDiQN6ar3nG7uFmwIH05x3gLlT9Xo/ra0kyl9Nr9O28w9hfUNyR7+vG9Vv9FPreMq7aWAM44U13zJtHoAhc=
+X-Received: by 2002:a37:a483:: with SMTP id n125mr6418718qke.286.1599930204172;
+ Sat, 12 Sep 2020 10:03:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200908213715.3553098-1-arnd@arndb.de> <20200908213715.3553098-2-arnd@arndb.de>
+ <20200912072053.GB1945@infradead.org>
+In-Reply-To: <20200912072053.GB1945@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 12 Sep 2020 19:03:08 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1ymnvnAjdcO3Dzfy9bp4LO-2uhtimOkrmFStynJYXrqQ@mail.gmail.com>
+Message-ID: <CAK8P3a1ymnvnAjdcO3Dzfy9bp4LO-2uhtimOkrmFStynJYXrqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] scsi: megaraid_sas: check user-provided offsets
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Anand Lodnoor <anand.lodnoor@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:hbMAjJDifK2HVVhi27X5Besa5VEM3hTSvOoV1MK/IerO8sGzQjV
+ 6iV4Ta6BpFB2HGCeo3d0feQUcq7c9Vdq/YOT+SbHa1VY6N47rU//ptvJ5Qv7p9d/Wg9+kmi
+ 1qfqSP7vGUrSa2aNfOe9wL3y1qwUkH5sTrt3BkZMCkG/wgpps4RVce/BckAmh+inNgTdxDR
+ ahEs0/Q15WqJSrkYKDDNw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:q/7iCtCs4Ew=:peIsGLb79b+/RHge38VB3M
+ okC4WIhEPCfDdABZPI6XYuN6Z4H9bjT4h0zWigyT6qPxyTysQNHkAoJbeM+Vqro4NOPmKj8+r
+ BO44JIXF6sF/gdmnXE/i2DyqlTvwzxHpATM3sEl3TIg94BgKH6VV+Td9kbGKH8zZ7rY/B4DzT
+ 1BEX9RXGl3ZK+RfdFBxKBNA6BYJSFPhnou324FibIecbi3Q9vic+BMhK/uRNpZnvBLTyHd1rQ
+ HzL8XhrVhzFAyaGF6D90WEXteYuQy5wIopMsNkZiOxuvPTLKipCJoSU+8fXP64Okek3Bo8AW3
+ qhurNFP15tdhclxLjTpizoLtD9dB6F6steziwU2yRnoHPCg9TtZpigRF9Wumr9mfmmbmPTaNE
+ yxtAEIRYQ0si9jVL7Uw26qnrTYdMoss2Lnq60Id0Xs6muC/CCJzmVwsOLPVI84KjU1HIFfYIZ
+ SHDSZhii1EsGt9HPZLxt1+3ARq8CzsKEJvgsVSF0TGhDm8uEtmb9twoJmZIUWpAfqutpWT6BQ
+ 9HhFvYZ3wT1v+q1vwb7COoBmUOfWyqvKZR+iIojX0WKsEo496pfwWdfsWtX5Z8sZ5ec6a9PwV
+ h2sfSo2wGQBs4kvJ+AHSCPiPQGGOBxwEdUXTeKVQ0ZKpl94dSa8KvNZCI+gs/iYfKZLFe124N
+ YynUUlaZtg6+R9JORRJ5tENomBFWIqseSyOieboMqvL/psA09XIeQ33TU32J+ZxM7l2Qi8qBf
+ nYteDh2NcWUAQfGxbCehE4u3TQUIUbu0wks7gTD3LSACLFPMMPIZ2PL9P+YPmPkDcqCLn/+x6
+ JIZuD9h8c4lYkvRuiWBfBzeG0InUhv2q6tzlVq8ALbrS+5beVFsXQIOl/bPoKdTbKwGnoCJb4
+ S6wHh7lrfOQYqZtDYuP1C4FHs5xy7W3PujeZfk2QwrL16eFb2jfgEnqggEcW+ojiMXq+AcuOz
+ +RLl86lSXgbiesPOmbdCGTInaZzFM6FimEwMat/e6F9ZVJhM8lzmy
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Sep 12, 2020 at 9:20 AM Christoph Hellwig <hch@infradead.org> wrote:
+> On Tue, Sep 08, 2020 at 11:36:22PM +0200, Arnd Bergmann wrote:
 
-a few more fixes:
+> > Cc: stable@vger.kernel.org
+>
+> What about a Fixes tag instead?
 
-- regression fix, crash after failed snapshot creation
+Sure, I can add that. It's been broken since 2.6.15 though, when the driver was
+initially merged.
 
-- one more lockep fix, use nofs allocation when allocating missing
-  device
-
-- fix reloc tree leak on degraded mount
-
-- make some extent buffer alignment checks less strict to mount
-  filesystems created by btrfs-convert
-
-Please pull, thanks.
-
-----------------------------------------------------------------
-The following changes since commit f96d6960abbc52e26ad124e69e6815283d3e1674:
-
-  btrfs: tree-checker: fix the error message for transid error (2020-08-27 14:16:05 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc4-tag
-
-for you to fetch changes up to 2d892ccdc163a3d2e08c5ed1cea8b61bf7e4f531:
-
-  btrfs: fix NULL pointer dereference after failure to create snapshot (2020-09-07 21:18:35 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (1):
-      btrfs: fix NULL pointer dereference after failure to create snapshot
-
-Josef Bacik (2):
-      btrfs: fix lockdep splat in add_missing_dev
-      btrfs: free data reloc tree on failed mount
-
-Qu Wenruo (1):
-      btrfs: require only sector size alignment for parent eb bytenr
-
- fs/btrfs/disk-io.c     |  2 ++
- fs/btrfs/extent-tree.c | 19 +++++++++----------
- fs/btrfs/print-tree.c  | 12 +++++++-----
- fs/btrfs/transaction.c |  1 +
- fs/btrfs/volumes.c     | 10 ++++++++++
- 5 files changed, 29 insertions(+), 15 deletions(-)
+     Arnd
