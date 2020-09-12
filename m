@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772A22678AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224102678AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 09:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgILHyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 03:54:10 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45646 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgILHyG (ORCPT
+        id S1725874AbgILHzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 03:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgILHzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 03:54:06 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 08D8629B631
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     luto@kernel.org, tglx@linutronix.de, hpa@zytor.com, bp@alien8.de,
-        rric@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: [PATCH 2/6] x86: Simplify compat syscall userspace allocation
-Organization: Collabora
-References: <20200912070553.330622-1-krisman@collabora.com>
-        <20200912070553.330622-3-krisman@collabora.com>
-        <20200912070802.GA19621@lst.de>
-Date:   Sat, 12 Sep 2020 03:54:01 -0400
-In-Reply-To: <20200912070802.GA19621@lst.de> (Christoph Hellwig's message of
-        "Sat, 12 Sep 2020 09:08:02 +0200")
-Message-ID: <87zh5vmnvq.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Sat, 12 Sep 2020 03:55:07 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15D9C0613ED
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:55:06 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bh1so1997100plb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 00:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SwmgBKMctXV6TtEg0fYkPqOSmPyVvQUoCAnAPe5+4Yw=;
+        b=bhWveefsCp+YI5xlakkMnFNndET2vW3kVhSGwfV/mCfiv4CDzaMV/OCiIzY0SHzzv6
+         b1dtKF6usuNxBxxNupsYEbODeK5eyIybIL46HK2kKImUz0TfGPmz6XFk/CQ+rl1AYdGg
+         2oYPI7IzyUunJ7NBRgfFqO9TKqfzQ+XD+O5ow=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SwmgBKMctXV6TtEg0fYkPqOSmPyVvQUoCAnAPe5+4Yw=;
+        b=d7Du/RGvqqvsDAcVVC9lu6FKfqOt5OsuFLRTTydtPgl6ASz6yhbIibK6jAY2O5+NlK
+         85mr2Llkq0PnRQAepiwfaXrkYITYcsIZuSJ9RhCKZb7XoTyyWldXN7eF8952Xd9wjdON
+         ThGauP9GLkEGnxZEEo6UzVIYwTlVNMqdbG3Xq9cUQQbktUD3ViVezZB+GfUrkms0/cn3
+         6/03OXPWmAD4+F/NRdYK+V2cRJP2aDsdoCJ9dcd68PO5RTJKxg2aTisOb5/YqpqUK+qK
+         ywxShufnfukOylSeA51mqy1fQIR+Fb8NVnSbOhfUtHgtPqCr8shLXCL29w9uArAuy2Z5
+         RkBw==
+X-Gm-Message-State: AOAM532fu0b6hqp0+yeY7tEs7uvp3lWwlld/o5G5g5/wdleKFTq76K4Z
+        AaKhCZCZXGT8jMkuC4UloNK9Sg==
+X-Google-Smtp-Source: ABdhPJxqrfVafrPK3gxgwUxw9HHTOjH0Ec5Yun4GlH4SiLxpVSA605MrMv2cG84RTf0D+4l68327UA==
+X-Received: by 2002:a17:90b:3cb:: with SMTP id go11mr5054511pjb.152.1599897305693;
+        Sat, 12 Sep 2020 00:55:05 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a16sm3464188pgh.48.2020.09.12.00.55.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 00:55:04 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 00:55:03 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     John Wood <john.wood@gmx.com>
+Cc:     Jann Horn <jannh@google.com>, Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [RESEND][RFC PATCH 0/6] Fork brute force attack mitigation
+ (fbfam)
+Message-ID: <202009120053.9FB7F2A7@keescook>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <202009101656.FB68C6A@keescook>
+ <20200911144806.GA4128@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911144806.GA4128@ubuntu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
+On Fri, Sep 11, 2020 at 04:48:06PM +0200, John Wood wrote:
+> In other words, a late reply to this serie comments is not a lack of
+> interest. Moreover, I think it would be better that I try to understand and
+> to implement your ideas before anything else.
 
-> On Sat, Sep 12, 2020 at 03:05:49AM -0400, Gabriel Krisman Bertazi wrote:
->> When allocating user memory space for a compat system call, don't
->> consider whether the originating code is IA32 or X32, just allocate from
->> a safe region for both, beyond the redzone.  This should be safe for
->> IA32, and has the benefit of avoiding TIF_IA32, which we want to drop.
->
-> This doesn't look wrong, by why bother (maybe Ccing me on the whole
-> seris as you always should instead of sending annoying out of context
-> single patches would have told..).
+Understood! :)
 
-Hi Chris,
+> My original patch serie is composed of 9 patches, so the 3 lasts are lost.
+> Kees: Have you removed them for some reason? Can you send them for review?
+> 
+> security/fbfam: Add two new prctls to enable and disable the fbfam feature
+> https://github.com/johwood/linux/commit/8a36399847213e7eb7b45b853568a53666bd0083
+> 
+> Documentation/security: Add documentation for the fbfam feature
+> https://github.com/johwood/linux/commit/fb46804541f5c0915f3f48acefbe6dc998815609
+> 
+> MAINTAINERS: Add a new entry for the fbfam feature
+> https://github.com/johwood/linux/commit/4303bc8935334136c6ef47b5e50b87cd2c472c1f
 
-Thanks for the quick reply. sorry and I will make sure to cc you for the
-rest of the series if this spin again.  The reason is the removal of
-TIF_IA32 to reclaim some bits in the ti flags.
+Oh, hm, I'm not sure where they went. I think they were missing from my
+inbox when I saved your series from email. An oversight on my part;
+apologies!
 
-If you want to see the rest of it immediately: <https://lkml.org/lkml/2020/9/12/28>
+> Is there a problem if I ask for some guidance (replying to this thread)
+> during the process to do my second patch series?
 
-> We will hopefully kill off compat_alloc_user_space in the next few
-> merge windows..
+Please feel free! I'm happy to help. :)
 
-I plan to kill TIF_IA32 hopefully in the next merge window, to
-facilitate other work I'm doing and I wouldn't like to wait for other
-stuff, since this is trivial enough.  Can I get your reviewed-by here?
+> My goal is to learn as much as possible doing something useful for the
+> linux kernel.
 
-Thanks,
+Sounds good; thanks!
 
 -- 
-Gabriel Krisman Bertazi
+Kees Cook
