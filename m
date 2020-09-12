@@ -2,150 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25062676EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64982676F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 02:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbgILArs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 11 Sep 2020 20:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725959AbgILAp6 (ORCPT
+        id S1725961AbgILAtW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 11 Sep 2020 20:49:22 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:54791 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725907AbgILAtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 11 Sep 2020 20:45:58 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D82C0617A1
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:45:44 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id r25so13017558ioj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GXt6HV+Ir2mOjyqv+jsDtLLXzMvpXAXcGItzvsZha8c=;
-        b=col5BAuWHgufoYczLGg0c0uTkur7OT3fhzhEM2E4Yg1F1SZJ7iCmlUUdT/KWCFtdNO
-         VjYKjvkzB8BBop24zMqOLP7RggE8CaaKS4k/0bkg4s63Gqb1D7m7gqfFs7TotA5UOxpZ
-         uk8qO33Rqhx3keJuJ4FMcJ6WPFot+5dWJf//FMkXToqd2ohG8zg0K9ZQc269QDLGSx2X
-         DFNTK1g4A2VWYztqJbFRkK8+IzKQtI5CYWpWvvD9a1fkcFcxmcrMxH5ndGHlQZyXNVmg
-         0tykMnobVMtlDMuW20WnMc7bnQbuzvtgu2G4Ka3MtAwhfI4U0mLZiHbNUDDtCg25Btz+
-         FYrw==
+        Fri, 11 Sep 2020 20:49:17 -0400
+Received: by mail-io1-f78.google.com with SMTP id o18so7995160ioa.21
+        for <linux-kernel@vger.kernel.org>; Fri, 11 Sep 2020 17:49:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GXt6HV+Ir2mOjyqv+jsDtLLXzMvpXAXcGItzvsZha8c=;
-        b=DZaBnWBvE1CF42Q+puBYiLGFjwIRbhXqFu9OqsU4AndJnMA797HJzzSRIudkqQGWOz
-         wf1/iof3+RjBSldIipEaV+/4KPeGOY+xlN0hH0+gJ5AUiUTimqEQosDMpvAZtvvMubAG
-         ivC8hN7SmQmn1FQAVH/BzMIIpb+JSiUhu4itiFR16Fy+hhzxC42T4h6bA+tbft7k8ruZ
-         hhhyH06DWcw/xWId19D89sGgqbWseGRx9q0DVN1S6ueq5rIw6w2Z9nUgFCmfksoZg/mQ
-         vugvR8HiRJ5SnX9ql0QYcD2LAoJ3hod0JqzwbnbPA5hip3qZffPQu5lt1/RS+4E42zB1
-         UxaQ==
-X-Gm-Message-State: AOAM5311YKmeec0uiGD7ewLLpiVkUIIeIIo0SCKdsH1ioKUv+XGhu8eQ
-        ZgqGZCGT3vucUCRV4dxoOJmYdQ==
-X-Google-Smtp-Source: ABdhPJyzpx+Djdb8D8+nDOjBeFx02S6O6iIWzrGQWvaIlO5ReLG4c7iyTcqX4Ls+X/5gTT7empfg4g==
-X-Received: by 2002:a05:6638:220c:: with SMTP id l12mr4269019jas.139.1599871542598;
-        Fri, 11 Sep 2020 17:45:42 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id z4sm2107807ilh.45.2020.09.11.17.45.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Sep 2020 17:45:42 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 7/7] net: ipa: do not enable GSI interrupt for wakeup
-Date:   Fri, 11 Sep 2020 19:45:32 -0500
-Message-Id: <20200912004532.1386-8-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200912004532.1386-1-elder@linaro.org>
-References: <20200912004532.1386-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
+         :content-transfer-encoding;
+        bh=UEAagO8N0YCGrzOE2Py+N/qlEMOU1z8uYtoFqQLaUA4=;
+        b=WJLihHz7dHX0CN0hDJQZP1CiAQRpG1yYDlrST06YZ5QICgrV/IKxWS+oXljNIdTHST
+         TZVBHcH0uC1kQ3na7Hr0NyVX6GWxsN6Tyzo+YEy3ZM42cL/Mh/MbMDMAe1Vp8LO+Lrk5
+         sEiYP+aIw29bh5ocE1bJn+M1XOxmTPlsAqayDoiNB724Z5eMD6ItboOoWcL5vOsDWkWN
+         HzpA8liRHfP79uQhkbrE9KMg4yjSGAq3PZCheLjgm3InCf8kaYv7+dX8S/joDLSU3wG1
+         RhmzQ01ky2gw4ltOiMd7tmqX8i7iEkxvvYECJTLj88zUc3BEQzhR5fDLQVFXj6fL5i9K
+         dEuA==
+X-Gm-Message-State: AOAM533BxJ04k/e9LZJCgdTIlnUJ2u4hCtENI3Fe849/SjdIVHOy50jB
+        wd5Q0aOx55FHIYnWDXmKjzBd0qqNtxqB549nLjnbS6vTKq6U
+X-Google-Smtp-Source: ABdhPJz3Hdd4xiqtJaDvONlBAEu0euQcOiSlE9hDH19B/rvwiHGRWaa5p7pCHUX65WBu+gj9iaMrk07XO7J1gHICzL9AaR+Zv/yb
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1193:: with SMTP id y19mr3813810ili.252.1599871756474;
+ Fri, 11 Sep 2020 17:49:16 -0700 (PDT)
+Date:   Fri, 11 Sep 2020 17:49:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb202905af132b8f@google.com>
+Subject: kernel panic: stack is corrupted in get_kernel_gp_address
+From:   syzbot <syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com>
+To:     alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We now trigger a system resume when we receive an IPA SUSPEND
-interrupt.  We should *not* wake up on GSI interrupts.
+Hello,
 
-Signed-off-by: Alex Elder <elder@linaro.org>
+syzbot found the following issue on:
+
+HEAD commit:    f4d51dff Linux 5.9-rc4
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14aa2d3e900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6459d8f8984c0929e54
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=164270dd900000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13c7d9f9900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1027d9f9900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c7d9f9900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d6459d8f8984c0929e54@syzkaller.appspotmail.com
+
+���ACode: Bad RIP value.
+Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: get_kernel_gp_address+0x1a0/0x1c0 arch/x86/kernel/traps.c:520
+Kernel Offset: disabled
+
+
 ---
- drivers/net/ipa/gsi.c | 17 ++++-------------
- drivers/net/ipa/gsi.h |  1 -
- 2 files changed, 4 insertions(+), 14 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 0e63d35320aaf..cb75f7d540571 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -1987,31 +1987,26 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev, bool prefetch,
- 	}
- 	gsi->irq = irq;
- 
--	ret = enable_irq_wake(gsi->irq);
--	if (ret)
--		dev_warn(dev, "error %d enabling gsi wake irq\n", ret);
--	gsi->irq_wake_enabled = !ret;
--
- 	/* Get GSI memory range and map it */
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "gsi");
- 	if (!res) {
- 		dev_err(dev, "DT error getting \"gsi\" memory property\n");
- 		ret = -ENODEV;
--		goto err_disable_irq_wake;
-+		goto err_free_irq;
- 	}
- 
- 	size = resource_size(res);
- 	if (res->start > U32_MAX || size > U32_MAX - res->start) {
- 		dev_err(dev, "DT memory resource \"gsi\" out of range\n");
- 		ret = -EINVAL;
--		goto err_disable_irq_wake;
-+		goto err_free_irq;
- 	}
- 
- 	gsi->virt = ioremap(res->start, size);
- 	if (!gsi->virt) {
- 		dev_err(dev, "unable to remap \"gsi\" memory\n");
- 		ret = -ENOMEM;
--		goto err_disable_irq_wake;
-+		goto err_free_irq;
- 	}
- 
- 	ret = gsi_channel_init(gsi, prefetch, count, data, modem_alloc);
-@@ -2025,9 +2020,7 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev, bool prefetch,
- 
- err_iounmap:
- 	iounmap(gsi->virt);
--err_disable_irq_wake:
--	if (gsi->irq_wake_enabled)
--		(void)disable_irq_wake(gsi->irq);
-+err_free_irq:
- 	free_irq(gsi->irq, gsi);
- 
- 	return ret;
-@@ -2038,8 +2031,6 @@ void gsi_exit(struct gsi *gsi)
- {
- 	mutex_destroy(&gsi->mutex);
- 	gsi_channel_exit(gsi);
--	if (gsi->irq_wake_enabled)
--		(void)disable_irq_wake(gsi->irq);
- 	free_irq(gsi->irq, gsi);
- 	iounmap(gsi->virt);
- }
-diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
-index 061312773df09..3f9f29d531c43 100644
---- a/drivers/net/ipa/gsi.h
-+++ b/drivers/net/ipa/gsi.h
-@@ -150,7 +150,6 @@ struct gsi {
- 	struct net_device dummy_dev;	/* needed for NAPI */
- 	void __iomem *virt;
- 	u32 irq;
--	bool irq_wake_enabled;
- 	u32 channel_count;
- 	u32 evt_ring_count;
- 	struct gsi_channel channel[GSI_CHANNEL_COUNT_MAX];
--- 
-2.20.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
