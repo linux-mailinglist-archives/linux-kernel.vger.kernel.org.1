@@ -2,88 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5BB2679F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FC4267A02
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 13:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgILL2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 07:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgILL16 (ORCPT
+        id S1725880AbgILLhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 07:37:43 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:17470 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725825AbgILLhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 07:27:58 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04158C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:27:56 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id k25so14592032ljg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 04:27:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XMgjoPvhBymfHHvxoDHXTWG3WNCgF0x+QyIygNl61qo=;
-        b=K2ir22V83VWYej3YXRtevdddjiVrwkyl9QVqmYMZG3B7/24spsZWiQX+krop1tfWAB
-         KB58AfX+WRynhoSlRl51gU8WCfEolkXA1set4DxteuYMb5BDl6uhbE6WkgCZtTjOrYMH
-         gNH/SykGqxdt2Zt1DR0Axxpf7uyfmhHnHlB7aS0nGBSZpaMOMSFsm1ukk2jnQWul6pv/
-         HARODYj7k1Jw9VcX63i/zQDmEEIyWjyZX6UnlNB8z/46S9IrO2TpLRWMGKIQoXuBWElD
-         azi9iVA2mvJV8N5bx2mtIrNhkcgXgScgOLAThgzgvg+NKpfoJibr3DiTfkIcylg+nkCy
-         UPhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XMgjoPvhBymfHHvxoDHXTWG3WNCgF0x+QyIygNl61qo=;
-        b=j4dN5WWOXTiY1+vIEocDWVjnWbDZSK73PKdehePMiOhtNl1zRZGpcjydEE5215heOG
-         qXm/01bRlUtNegPk5+JwSFll2Av9+ZjFylcJM5K8N916eh7gjpI9V06tBMnfOKb1vK46
-         +P2MXbxc3aJivjXyBa5zGO/Kw5D+je8HHblsc0eykIOdjCGVhmAu7S0AzSSF08fCUaT1
-         LNMEDu2E2WDjpmebjJhMkUE+BQ5jcF+lhIO/FHgKEcLIFdlapAnRgWnEtCcn/2zy84Gi
-         8nR6XzprRQizyVlPORMY7EmNhl9SobBm/w4YucFzF7RbQZ7dMYqfI9xsfgupD1t7i//l
-         NMtQ==
-X-Gm-Message-State: AOAM533mnQ7HbeLgQc9sCKrY7v6ahA6ZGnfe+lkRZlhTXlVfzdSpiO5V
-        7yrWEYoR013U4YpVne0DR2FWGwE6Bn5hBpZsH9fiNA==
-X-Google-Smtp-Source: ABdhPJwQe9XEaD08U6BUOCKzC2OeLI06PoyDUFw0hqEreXKuQOwFBcqG+MtAuhhsofCax+HVS//1g9iR5Ma1hBfvdUk=
-X-Received: by 2002:a2e:4e09:: with SMTP id c9mr2344401ljb.283.1599910074793;
- Sat, 12 Sep 2020 04:27:54 -0700 (PDT)
+        Sat, 12 Sep 2020 07:37:36 -0400
+Received: from localhost.localdomain ([93.22.150.101])
+        by mwinf5d26 with ME
+        id SzV12300C2BWSNM03zV1aR; Sat, 12 Sep 2020 13:29:04 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 12 Sep 2020 13:29:04 +0200
+X-ME-IP: 93.22.150.101
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
+        mst@redhat.com, mhabets@solarflare.com, vaibhavgupta40@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] sc92031: switch from 'pci_' to 'dma_' API
+Date:   Sat, 12 Sep 2020 13:28:58 +0200
+Message-Id: <20200912112858.339548-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <c4ec95a7-aaf1-2331-352f-2def319a1c7d@rock-chips.com> <20200117081358.5772-1-jay.xu@rock-chips.com>
-In-Reply-To: <20200117081358.5772-1-jay.xu@rock-chips.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 13:27:44 +0200
-Message-ID: <CACRpkdYGJsK4Ek8pDCeNMWt41dd2s--Lkxewh4Po4E-45UdwMg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] pinctrl: rockchip: codingstyle for pinctrl-rockchip
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        David Wu <david.wu@rock-chips.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jianqun, Heiko,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-On Fri, Jan 17, 2020 at 9:14 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-> Do codingstyle for pinctrl-rockchip by spliting driver by SoC types.
->
-> Convenienty for reviewing, the first patch only moving
-> pinctrl-rockchip.c from driver/pinctrl to driver/pinctrl/rockchip/ .
->
-> Jianqun Xu (2):
->   pinctrl: rockchip: new rockchip dir for pinctrl-rockchip
->   pinctrl: rockchip: split rockchip pinctrl driver by SoC type
+When memory is allocated in 'sc92031_open()' GFP_KERNEL can be used
+because it is a '.ndo_open' function and no lock is taken in the between.
+'.ndo_open' functions are synchronized with the rtnl_lock() semaphore.
 
-Why were these patches never applied? Is it my fault?
 
-I don't even have patch 2/2 in my mailbox, possibly it was
-too big!
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-Heiko if you're OK with this change can Jianqun just send a
-rebased version?
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
 
-Yours,
-Linus Walleij
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/silan/sc92031.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/ethernet/silan/sc92031.c b/drivers/net/ethernet/silan/sc92031.c
+index f94078f8ebe5..91b60c51079b 100644
+--- a/drivers/net/ethernet/silan/sc92031.c
++++ b/drivers/net/ethernet/silan/sc92031.c
+@@ -993,15 +993,15 @@ static int sc92031_open(struct net_device *dev)
+ 	struct sc92031_priv *priv = netdev_priv(dev);
+ 	struct pci_dev *pdev = priv->pdev;
+ 
+-	priv->rx_ring = pci_alloc_consistent(pdev, RX_BUF_LEN,
+-			&priv->rx_ring_dma_addr);
++	priv->rx_ring = dma_alloc_coherent(&pdev->dev, RX_BUF_LEN,
++					   &priv->rx_ring_dma_addr, GFP_KERNEL);
+ 	if (unlikely(!priv->rx_ring)) {
+ 		err = -ENOMEM;
+ 		goto out_alloc_rx_ring;
+ 	}
+ 
+-	priv->tx_bufs = pci_alloc_consistent(pdev, TX_BUF_TOT_LEN,
+-			&priv->tx_bufs_dma_addr);
++	priv->tx_bufs = dma_alloc_coherent(&pdev->dev, TX_BUF_TOT_LEN,
++					   &priv->tx_bufs_dma_addr, GFP_KERNEL);
+ 	if (unlikely(!priv->tx_bufs)) {
+ 		err = -ENOMEM;
+ 		goto out_alloc_tx_bufs;
+@@ -1031,11 +1031,11 @@ static int sc92031_open(struct net_device *dev)
+ 	return 0;
+ 
+ out_request_irq:
+-	pci_free_consistent(pdev, TX_BUF_TOT_LEN, priv->tx_bufs,
+-			priv->tx_bufs_dma_addr);
++	dma_free_coherent(&pdev->dev, TX_BUF_TOT_LEN, priv->tx_bufs,
++			  priv->tx_bufs_dma_addr);
+ out_alloc_tx_bufs:
+-	pci_free_consistent(pdev, RX_BUF_LEN, priv->rx_ring,
+-			priv->rx_ring_dma_addr);
++	dma_free_coherent(&pdev->dev, RX_BUF_LEN, priv->rx_ring,
++			  priv->rx_ring_dma_addr);
+ out_alloc_rx_ring:
+ 	return err;
+ }
+@@ -1058,10 +1058,10 @@ static int sc92031_stop(struct net_device *dev)
+ 	spin_unlock_bh(&priv->lock);
+ 
+ 	free_irq(pdev->irq, dev);
+-	pci_free_consistent(pdev, TX_BUF_TOT_LEN, priv->tx_bufs,
+-			priv->tx_bufs_dma_addr);
+-	pci_free_consistent(pdev, RX_BUF_LEN, priv->rx_ring,
+-			priv->rx_ring_dma_addr);
++	dma_free_coherent(&pdev->dev, TX_BUF_TOT_LEN, priv->tx_bufs,
++			  priv->tx_bufs_dma_addr);
++	dma_free_coherent(&pdev->dev, RX_BUF_LEN, priv->rx_ring,
++			  priv->rx_ring_dma_addr);
+ 
+ 	return 0;
+ }
+@@ -1407,11 +1407,11 @@ static int sc92031_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	pci_set_master(pdev);
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++	err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (unlikely(err < 0))
+ 		goto out_set_dma_mask;
+ 
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
++	err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (unlikely(err < 0))
+ 		goto out_set_dma_mask;
+ 
+-- 
+2.25.1
+
