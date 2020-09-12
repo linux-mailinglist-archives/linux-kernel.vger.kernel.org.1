@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E278267950
-	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6631A267953
+	for <lists+linux-kernel@lfdr.de>; Sat, 12 Sep 2020 11:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725865AbgILJ4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 05:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S1725872AbgILJ6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 05:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgILJ4b (ORCPT
+        with ESMTP id S1725813AbgILJ6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 05:56:31 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80921C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:56:28 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id b22so4778224lfs.13
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:56:28 -0700 (PDT)
+        Sat, 12 Sep 2020 05:58:35 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2CCC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:58:34 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id z19so8354019lfr.4
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 02:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aXnQCOIDAF26igRuvqn750+4zYYh14IpEdhmofjxQak=;
-        b=xXRX+sXQl2Yor9/vyjzNVwZpQAHrNs++yHDa5IZtmtzpkCY16gRtp2GI3dxU5ePpd8
-         59gYmkXwH5sZkb50EaqC/XNyiZVtFCMasDKCaYRUARYl1wIa81aGdOuLpzE2QFioX1Up
-         pdcGHCwfB1fZ+Uw6KdRt+orQ040DUUeIue0jQLgkvn6nqm3tFMjWsk1KiajGGeaCYBpB
-         cdtpldn1apNnsqvIaRys6s5EkU5X2xZkSwfuTU2jSbCho634oLn93vCsPg6FReb6WNc+
-         aTcGdIc9VsWIz+ShYCgBM5dRg6XI5U/9obGY1TnF3uAHXxh8CTcL2BjGLtLZgJMEASWs
-         pwtA==
+        bh=qEROEvI5Y0fCmozE88h0a1g1Y25QBKKf6eIHwJfruhM=;
+        b=bNkjodzgEyCHQlbMXE1deFOC+aEb+jZ/eg8pcskEb63rdUJ+ZCeEv0qADusqXyFQlc
+         A11APrQ8MRSDsiGuWjfcWfUicTuhJdcfAwBCzSZF3AI2dko5bJJE/+P6P2RvpWhV/ZJW
+         cfRKDxMcMAwi4jqwEY1QL3E8PLR7qOl6D3LhtSY1EQ6kna+PNpHDhnbZq7o1e4oNRtIS
+         k1tXIBeWW3YzjbDT0D4KMDI1g6L5EVxNLSjlbe+aE1Qp3BB7uy1GKQ1k68s6iGK5THKQ
+         hs3cS8rZn+V42ez4GUuUuM1DpR5Vs3XOaoHye7MswUQ7kohVMsfNhrpYFV4O+DHq4uKk
+         M7KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aXnQCOIDAF26igRuvqn750+4zYYh14IpEdhmofjxQak=;
-        b=V0g2LRKTBDtxVoDgua+yGJiod6YnCY2aFDnwdA7ahcXYPf9cF56PpqXy8F5TD0dMcM
-         TZxo/ZLCsijGdUCu3Yaie3Sj6QckRQND5GmEZuDIcGBtH8vQnMj6b+d4WuLQQtC1yn1w
-         XMdto7GmB0we5sSRpj+3vI11YLdhkdz1Fpn5MCfDxMlHJM0FU1zN5swiQFc9ZkvNt3fu
-         o74x3/qGNawSiHDhz5ZACmJg37qsdNmoYDgno+DeWtM6PvFjrQkiaIwB6ccCeWg8XDTw
-         xPoPEI+kmt71wy3SdwYBluB9GnfJI32nBgTt6Td9MrVHs9ftU2jNR9nYyrHgLReYZyHk
-         2RPA==
-X-Gm-Message-State: AOAM533A5tafMFstxG9CO7ZBfEsIZ1cp04dKs2cqKv12iZbj1Sjbo2xp
-        vqBJZZHeQqWvMb2KBBbV0LYQSKeof7pt4Gobi2ro3g==
-X-Google-Smtp-Source: ABdhPJzsJw+me4s6PcSBWtViiL7mpCuWNhF8Uv7+9d1J2YQfVg+ItSNv+pEIEGjGpXGcSCM2228OCGoWH5J06YkwNbs=
-X-Received: by 2002:a05:6512:370b:: with SMTP id z11mr1418607lfr.571.1599904586862;
- Sat, 12 Sep 2020 02:56:26 -0700 (PDT)
+        bh=qEROEvI5Y0fCmozE88h0a1g1Y25QBKKf6eIHwJfruhM=;
+        b=Z6dXnEnghMPyhukaHb07NqiPi+hzy9w9N9pkQ7N/eUGbflJ1pfYu/PJvS6gHn3G05x
+         TrSYNfijx38GXBjMSm838J7nu6AWijrjuLqk/f92lA88rEtSix863h/ArT5RyS+6UoQj
+         +FryNu7H5cTT7SYK7Q6wUO5qHTS7NYRLGSeXjz+WcSNBAk3M+jcuMEpFrxLdwoimOyJM
+         tNfKFTDxOJDRO/pUnVhkEDc2zY7o531ErWy5fWQHxNuKUPwu5dvul+Gtx5sgapZsIC9x
+         tqBgyjO/bHM6nsJjMVkvsVgxeeyEK8UctSubxityow9cyY2YG3ioi2uGVA4HY5nOBP7Z
+         WoCg==
+X-Gm-Message-State: AOAM533kwfIth8Ir6Z2dam0U5q7UmDeHmSo/qoqM10lebPaKkjPXSVfo
+        kYq80KSm30puQFBmM6t+A2Y3uHJ9VmUhvYFQWLhrpA==
+X-Google-Smtp-Source: ABdhPJz2DrvLqFno9Czac040PFbYE4v0es0Eq6+34Rf534KupzpDXiQZE1x4bI74fTkUy2VMuaKKZBCTxqQ4dSSRceI=
+X-Received: by 2002:a19:520b:: with SMTP id m11mr1358539lfb.502.1599904713123;
+ Sat, 12 Sep 2020 02:58:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <1595382353-17486-1-git-send-email-Anson.Huang@nxp.com>
- <CAK8P3a13gcF_+dkfxZW0u_YuJ92hY1JukWfzM+e30iM=YUhraQ@mail.gmail.com>
- <DB3PR0402MB3916F080E4912B27B18BEADEF5720@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a2CBYV2xEkedQYmzL4XgHPeu02=vmLffq+RWwvEvuUGKQ@mail.gmail.com>
- <DB3PR0402MB391674F67A1B9F2732883C0BF5720@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a0XpKnbz79dH4i7HofGgpAodtmgdBmVBVQOKfCiJMkpPw@mail.gmail.com>
- <DB3PR0402MB3916634EA84687D6C7535BC1F5720@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <CAK8P3a06tu4UgTxT4q9eS4=z5AHiEWQMhk5PfZEz=4t+f26s5Q@mail.gmail.com> <DB3PR0402MB391685755C70D85A1E797C0BF52C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB391685755C70D85A1E797C0BF52C0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <20200910175733.11046-1-krzk@kernel.org> <20200910175733.11046-3-krzk@kernel.org>
+In-Reply-To: <20200910175733.11046-3-krzk@kernel.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 12 Sep 2020 11:56:16 +0200
-Message-ID: <CACRpkdYN4VdNZOC5f5eAxp=6cXq25owiNW0KVKRupbEFRSANKQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/4] gpio: mxc: Support module build
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
+Date:   Sat, 12 Sep 2020 11:58:22 +0200
+Message-ID: <CACRpkdZXu2J4z=1j-syxSbz2x-QiLeTBpwHSOVNfmZ31RgM6Ng@mail.gmail.com>
+Subject: Re: [PATCH v2 02/15] dt-bindings: gpio: convert bindings for Maxim
+ MAX732x family to dtschema
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
         Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Peng Fan <peng.fan@nxp.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Joel Stanley <joel@jms.id.au>, Lubomir Rintel <lkundrak@v3.sk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        "michael@walle.cc" <michael@walle.cc>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 3:31 AM Anson Huang <anson.huang@nxp.com> wrote:
+On Thu, Sep 10, 2020 at 7:58 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 
-> Hi, Linus
->         Do you have chance to take a look at this patch series?
+> Convert the Maxim MAX732x family of GPIO expanders bindings to device
+> tree schema by merging it with existing PCA95xx schema.  These are quite
+> similar so merging reduces duplication.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-I've seen there was plenty discussion about them, like this one,
-so I expected a repost (didn't anything change at all?) also a rebase
-on v5.9-rc1 so I do not have to deal with any merge conflicts.
-
-Could you rebase and resend?
+Can I just apply this one patch to the GPIO tree?
 
 Yours,
 Linus Walleij
