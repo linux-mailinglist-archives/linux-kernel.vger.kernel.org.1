@@ -2,231 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2434268096
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF60F26809B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbgIMR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 13:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgIMR01 (ORCPT
+        id S1725944AbgIMRnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 13:43:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5410 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725928AbgIMRnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 13:26:27 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0883CC06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 10:26:27 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id w25so11594015otk.8
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 10:26:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UKGm1o6ci+6OzS/GEtQveNQ09fS6eC3dzYofKCv9jQc=;
-        b=qfeOXAtlRDa585kNr3Der+wBnxr114EMqq17zu8BM5iDOIL7rR4XZJ9gPOtq/OLXwk
-         mlzjCOSAnHKLHGp9YorzRuSiesr5Jv1Ib7M9zKA8uQrp8LBvDGpfk/wUlFCx2zfQh8EW
-         9mocwO8Y/hevYAjd7ijjmYTV0pIlJMDNwCcbsZ/+e/206yAZM7iYQQLtTkvYrPwdCIFg
-         EYNByJ/qCTNc5pRsNNAzu/UpLpT2LU1/MLeX4lohinXkl9/qI2dazlawWJ1lQsUZzm0R
-         FqDLPW7JPhRCkbb8E32cM0YdxmwCqgZwuY5kHGn+WwOM5I/O4mazbd7R+rTTs745o3xE
-         zFgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to
-         :user-agent;
-        bh=UKGm1o6ci+6OzS/GEtQveNQ09fS6eC3dzYofKCv9jQc=;
-        b=lM12+HrS0Sol0P9p0potA+NvNFbVwY5dJr36LupPSIq4JmcBmkMx/LA8cJMexl+qRm
-         6QaUzpJimgMtnRu5vZSQLkFoAOdKaTX/NszRl4Zpybq5NNEl+uYo4P9kCwFq4kwWABLd
-         z216es1acLyBnlxlqfh/GNfGMJzbXLfMy4+FIKpipMsEMJIwpwfTqbs3s2r/AkAXLcLJ
-         o+JGuFUWhK0Xt5PIypWd3oT/mabYFSuiHz7jXdqATvdTk0QbnjOGK7W0iNrK2VyiGdrH
-         Oz1B+Fpfxq7YmpQXY8zHwOOf2DwEvRJzgGa+GTo54L/JcizDVCuW/Z+wAXKqfkLLdeu8
-         qOdQ==
-X-Gm-Message-State: AOAM531nMa/+Qw9vPwJ+2MeQT3kAX/UaYplqhvQMKwcS96OBN2Fze4wy
-        ds0yY/oHuH2/HSd1YzK3vw==
-X-Google-Smtp-Source: ABdhPJxQBW52K8fMchI97XM8veaegh1EWnK6b/7ohJYYpJCQPgdzCRJda6/bFA8OLPJtg5yQNLJaTg==
-X-Received: by 2002:a9d:2384:: with SMTP id t4mr6183643otb.337.1600017986230;
-        Sun, 13 Sep 2020 10:26:26 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id l23sm1803466otk.79.2020.09.13.10.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 10:26:25 -0700 (PDT)
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:ecd3:d2ae:8b57:1a08])
-        by serve.minyard.net (Postfix) with ESMTPSA id DEFCA180056;
-        Sun, 13 Sep 2020 17:26:23 +0000 (UTC)
-Date:   Sun, 13 Sep 2020 12:26:22 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Tianxianting <tian.xianting@h3c.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ipmi: retry to get device id when error
-Message-ID: <20200913172622.GI15602@minyard.net>
-Reply-To: minyard@acm.org
-References: <20200913120203.3368-1-tian.xianting@h3c.com>
- <20200913123930.GH15602@minyard.net>
- <a5ac0e7e90a442e6b29ba243ae1920c0@h3c.com>
+        Sun, 13 Sep 2020 13:43:31 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08DHX57K118157;
+        Sun, 13 Sep 2020 13:43:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=raGJKI+HRFvs4YXTZcQuyRCT/PKrNxwk6roMThBfvRQ=;
+ b=UJZKy2mksVEVyQ1/bBumJ7TNYkAzG8GgFzLFJ75LR759wZrN+QJ2klZZdkIPeqCh1WTE
+ NGR676cNJ+0JD51U0G980LCQGRdKp39zH7fbhsfGDX2d43Sviv/6RBIhnTwaxToshARI
+ fG+uM4EXEJoVrC/usBAzGGR1i5KZJNvC56N1CAF06ENfVuCyag0s6gWpBTOmla8lqt5W
+ T6Njr3bd5TgUY76bzxAKK69DlaCwl1gGQdN35UoGltCLIKKM1Ge1DIdV20Uws8YNdPPr
+ khAItSc5J62HGgxewgf5oJguJ6PYFCIIWRpz4CgS15hVIO1UECa9MssQbjGVF6YkU0Md /g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33hn0ctygc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Sep 2020 13:43:07 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08DHY2X8119839;
+        Sun, 13 Sep 2020 13:43:06 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33hn0ctyfp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Sep 2020 13:43:06 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08DHh4W7013004;
+        Sun, 13 Sep 2020 17:43:04 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma01fra.de.ibm.com with ESMTP id 33hkfag327-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Sep 2020 17:43:04 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08DHh24X9699678
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Sep 2020 17:43:02 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 10A25A405B;
+        Sun, 13 Sep 2020 17:43:02 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22906A4054;
+        Sun, 13 Sep 2020 17:42:58 +0000 (GMT)
+Received: from satheesh (unknown [9.85.80.111])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 13 Sep 2020 17:42:57 +0000 (GMT)
+Date:   Sun, 13 Sep 2020 23:12:54 +0530
+From:   Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v5 05/10] powerpc/smp: Dont assume l2-cache to be
+ superset of sibling
+Message-ID: <20200913174254.GA561070@satheesh>
+Reply-To: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+ <20200810071834.92514-6-srikar@linux.vnet.ibm.com>
+ <87y2lgr0ic.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a5ac0e7e90a442e6b29ba243ae1920c0@h3c.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87y2lgr0ic.fsf@mpe.ellerman.id.au>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-13_06:2020-09-10,2020-09-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 mlxscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009130160
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 02:10:01PM +0000, Tianxianting wrote:
-> Hi Corey
-> Thanks for your quickly reply,
-> We didn't try the method you mentioned, actually, I didn't know it before you told me:(
-> The issue ever occurred on our 2 ceph storage server both with low probability.
-> We finally use this patch to solve the issue, it can automatically solve the issue when it happened. So no need to judge and reload ipmi driver manually or develop additional scripts to make it.
-> The 1 second delay is acceptable to us.
+On Fri, Sep 11, 2020 at 09:55:23PM +1000, Michael Ellerman wrote:
+> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> > Current code assumes that cpumask of cpus sharing a l2-cache mask will
+> > always be a superset of cpu_sibling_mask.
+> >
+> > Lets stop that assumption. cpu_l2_cache_mask is a superset of
+> > cpu_sibling_mask if and only if shared_caches is set.
 > 
-> If there really isn't a BMC out there, ipmi driver will not be loaded, is it right?
+> I'm seeing oopses with this:
+> 
+> [    0.117392][    T1] smp: Bringing up secondary CPUs ...
+> [    0.156515][    T1] smp: Brought up 2 nodes, 2 CPUs
+> [    0.158265][    T1] numa: Node 0 CPUs: 0
+> [    0.158520][    T1] numa: Node 1 CPUs: 1
+> [    0.167453][    T1] BUG: Unable to handle kernel data access on read at 0x8000000041228298
+> [    0.167992][    T1] Faulting instruction address: 0xc00000000018c128
+> [    0.168817][    T1] Oops: Kernel access of bad area, sig: 11 [#1]
+> [    0.168964][    T1] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+> [    0.169417][    T1] Modules linked in:
+> [    0.170047][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc2-00095-g7430ad5aa700 #209
+> [    0.170305][    T1] NIP:  c00000000018c128 LR: c00000000018c0cc CTR: c00000000004dce0
+> [    0.170498][    T1] REGS: c00000007e343880 TRAP: 0380   Not tainted  (5.9.0-rc2-00095-g7430ad5aa700)
+> [    0.170602][    T1] MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 44002222  XER: 00000000
+> [    0.170985][    T1] CFAR: c00000000018c288 IRQMASK: 0
+> [    0.170985][    T1] GPR00: 0000000000000000 c00000007e343b10 c00000000173e400 0000000000004000
+> [    0.170985][    T1] GPR04: 0000000000000000 0000000000000800 0000000000000800 0000000000000000
+> [    0.170985][    T1] GPR08: 0000000000000000 c00000000122c298 c00000003fffc000 c00000007fd05ce8
+> [    0.170985][    T1] GPR12: c00000007e0119f8 c000000001930000 00000000ffff8ade 0000000000000000
+> [    0.170985][    T1] GPR16: c00000007e3c0640 0000000000000917 c00000007e3c0658 0000000000000008
+> [    0.170985][    T1] GPR20: c0000000015d0bb8 00000000ffff8ade c000000000f57400 c000000001817c28
+> [    0.170985][    T1] GPR24: c00000000176dc80 c00000007e3c0890 c00000007e3cfe00 0000000000000000
+> [    0.170985][    T1] GPR28: c000000001772310 c00000007e011900 c00000007e3c0800 0000000000000001
+> [    0.172750][    T1] NIP [c00000000018c128] build_sched_domains+0x808/0x14b0
+> [    0.172900][    T1] LR [c00000000018c0cc] build_sched_domains+0x7ac/0x14b0
+> [    0.173186][    T1] Call Trace:
+> [    0.173484][    T1] [c00000007e343b10] [c00000000018bfe8] build_sched_domains+0x6c8/0x14b0 (unreliable)
+> [    0.173821][    T1] [c00000007e343c50] [c00000000018dcdc] sched_init_domains+0xec/0x130
+> [    0.174037][    T1] [c00000007e343ca0] [c0000000010d59d8] sched_init_smp+0x50/0xc4
+> [    0.174207][    T1] [c00000007e343cd0] [c0000000010b45c4] kernel_init_freeable+0x1b4/0x378
+> [    0.174378][    T1] [c00000007e343db0] [c0000000000129fc] kernel_init+0x24/0x158
+> [    0.174740][    T1] [c00000007e343e20] [c00000000000d9d0] ret_from_kernel_thread+0x5c/0x6c
+> [    0.175050][    T1] Instruction dump:
+> [    0.175626][    T1] 554905ee 71480040 7d2907b4 4182016c 2c290000 3920006e 913e002c 41820034
+> [    0.175841][    T1] 7c6307b4 e9300020 78631f24 7d58182a <7d2a482a> f93e0080 7d404828 314a0001
+> [    0.178340][    T1] ---[ end trace 6876b88dd1d4b3bb ]---
+> [    0.178512][    T1]
+> [    1.180458][    T1] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> 
+> That's qemu:
+> 
+> qemu-system-ppc64 -nographic -vga none -M pseries -cpu POWER8 \
+>   -kernel build~/vmlinux \
+>   -m 2G,slots=2,maxmem=4G \
+>   -object memory-backend-ram,size=1G,id=m0 \
+>   -object memory-backend-ram,size=1G,id=m1 \
+>   -numa node,nodeid=0,memdev=m0 \
+>   -numa node,nodeid=1,memdev=m1 \
+>   -smp 2,sockets=2,maxcpus=2  \
 
-No, there are systems that have IPMI controllers that are specified in
-the ACPI/SMBIOS tables but have no IPMI controller.
+PowerKVM guest vCPUs does not yet have L2 and L3 cache elements
+I had this bug raised some time ago, probably related?
+https://bugs.launchpad.net/qemu/+bug/1774605
 
-> 
-> May be we can adjust to retry 3 times with 500ms interval? 
 
-Maybe there is another way.  What I'm guessing is happening is not that
-the interface is lossy, but that the BMC is in the middle of a reset or
-an upgrade.  The D5 completion code means: Cannot execute command. Command,
-or request parameter(s), not supported in present state.
-
-That error is also returned from bt_start_transaction() in the driver if
-the driver is not in the right state when starting a transaction,
-which may point to a bug in the BT state machine.  Search for
-IPMI_NOT_IN_MY_STATE_ERR in drivers/char/ipmi/ipmi_bt_sm.c.
-
-If it's coming fron the state machine, it would be handy to know what
-state it was in when the error happened to help trace the bug down.
-That's what I would suggest first.  Fix the fundamental bug, if you can.
-a pr_warn() added to the code there would be all that's needed, and
-thats probably a good permanent addition.
-
-I would be ok with a patch that retried some number of times if it got a
-D5 completion code.  That wouldn't have any effect on other systems.
-Plus you could add a D1 and D2 completion code, which are similar
-things.  Add the new completion codes to include/uapi/linux/ipmi_msgdefs.h
-and implement the retry.  That makes sense from a general point of view.
-
-Thanks,
-
--corey
-
+Regards,
+-Satheesh.
 > 
-> Thanks in advance if you can feedback again.
 > 
-> -----Original Message-----
-> From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey Minyard
-> Sent: Sunday, September 13, 2020 8:40 PM
-> To: tianxianting (RD) <tian.xianting@h3c.com>
-> Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] ipmi: retry to get device id when error
+> On mambo I get:
 > 
-> On Sun, Sep 13, 2020 at 08:02:03PM +0800, Xianting Tian wrote:
-> > We can't get bmc's device id with low probability when loading ipmi 
-> > driver, it caused bmc device register failed. This issue may caused by 
-> > bad lpc signal quality. When this issue happened, we got below kernel printks:
-> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: IPMI message handler: device id demangle failed: -22
-> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: using default values
-> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: req2rsp=5 secs retries=2
-> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: Unable to get the device id: -5
-> > 	[Wed Sep  9 19:52:04 2020] ipmi_si IPI0001:00: Unable to register 
-> > device: error -5
-> > 
-> > When this issue happened, we want to manually unload the driver and 
-> > try to load it again, but it can't be unloaded by 'rmmod' as it is already 'in use'.
+> [    0.005069][    T1] smp: Bringing up secondary CPUs ...
+> [    0.011656][    T1] smp: Brought up 2 nodes, 8 CPUs
+> [    0.011682][    T1] numa: Node 0 CPUs: 0-3
+> [    0.011709][    T1] numa: Node 1 CPUs: 4-7
+> [    0.012015][    T1] BUG: arch topology borken
+> [    0.012040][    T1]      the SMT domain not a subset of the CACHE domain
+> [    0.012107][    T1] BUG: Unable to handle kernel data access on read at 0x80000001012e7398
+> [    0.012142][    T1] Faulting instruction address: 0xc0000000001aa4f0
+> [    0.012174][    T1] Oops: Kernel access of bad area, sig: 11 [#1]
+> [    0.012206][    T1] LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA PowerNV
+> [    0.012236][    T1] Modules linked in:
+> [    0.012264][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc2-00095-g7430ad5aa700 #1
+> [    0.012304][    T1] NIP:  c0000000001aa4f0 LR: c0000000001aa498 CTR: 0000000000000000
+> [    0.012341][    T1] REGS: c0000000ef583880 TRAP: 0380   Not tainted  (5.9.0-rc2-00095-g7430ad5aa700)
+> [    0.012379][    T1] MSR:  9000000002009033 <SF,HV,VEC,EE,ME,IR,DR,RI,LE>  CR: 44002222  XER: 00040000
+> [    0.012439][    T1] CFAR: c0000000000101b0 IRQMASK: 0
+> [    0.012439][    T1] GPR00: 0000000000000000 c0000000ef583b10 c0000000017fd000 0000000000004000
+> [    0.012439][    T1] GPR04: 0000000000000000 0000000000000800 0000000000000000 0000000000000000
+> [    0.012439][    T1] GPR08: 0000000000000000 c0000000012eb398 c0000000ffffc000 0000000000000000
+> [    0.012439][    T1] GPR12: 0000000000000020 c0000000019f0000 00000000ffff8ad1 0000000000000000
+> [    0.012439][    T1] GPR16: c0000000ef068658 c0000000018d7ba8 0000000000000008 c000000001690bb8
+> [    0.012439][    T1] GPR20: c00000000182dc80 c0000000ef06be90 00000000ffff8ad1 c000000001014aa8
+> [    0.012439][    T1] GPR24: 0000000000000917 c0000000ef068e00 0000000000000000 c0000000ef06be00
+> [    0.012439][    T1] GPR28: 0000000000000001 c0000000ef068640 c0000000ef4a1800 c000000001832310
+> [    0.012774][    T1] NIP [c0000000001aa4f0] build_sched_domains+0x5c0/0x14f0
+> [    0.012812][    T1] LR [c0000000001aa498] build_sched_domains+0x568/0x14f0
+> [    0.012842][    T1] Call Trace:
+> [    0.012872][    T1] [c0000000ef583b10] [c0000000001aa3b4] build_sched_domains+0x484/0x14f0 (unreliable)
+> [    0.012922][    T1] [c0000000ef583c50] [c0000000001ac3d8] sched_init_domains+0xd8/0x120
+> [    0.012966][    T1] [c0000000ef583ca0] [c0000000011962d0] sched_init_smp+0x50/0xc4
+> [    0.013008][    T1] [c0000000ef583cd0] [c00000000117451c] kernel_init_freeable+0x1b4/0x378
+> [    0.013051][    T1] [c0000000ef583db0] [c000000000012994] kernel_init+0x2c/0x158
+> [    0.013092][    T1] [c0000000ef583e20] [c00000000000d9d0] ret_from_kernel_thread+0x5c/0x6c
+> [    0.013128][    T1] Instruction dump:
+> [    0.013151][    T1] e93b003a 712a0040 552a05ee 418203c4 2c2a0000 3920006e 913b002c 41820034
+> [    0.013206][    T1] 7c6307b4 e93d0020 78631f24 7d54182a <7d2a482a> f93b0080 7d404828 314a0001
+> [    0.013267][    T1] ---[ end trace 1bf5f6f38a9fd096 ]---
 > 
-> I'm not sure this patch is a good idea; it would cause a long boot delay in situations where there really isn't a BMC out there.  Yes, it happens.
 > 
-> You don't have to reload the driver to add a device, though.  You can hot-add devices using /sys/modules/ipmi_si/parameters/hotmod.  Look in Documentation/driver-api/ipmi.rst for details.
+> Did I miss a lead-up patch?
 > 
-> Does that work for you?
+> See here for what I have applied:
+>   https://github.com/linuxppc/linux/commits/next-test
 > 
-> -corey
-> 
-> > 
-> > We add below 'printk' in handle_one_recv_msg(), when this issue 
-> > happened, the msg we received is "Recv: 1c 01 d5", which means the 
-> > data_len is 1, data[0] is 0xd5.
-> > 	Debug code:
-> > 	static int handle_one_recv_msg(struct ipmi_smi *intf,
-> >                                struct ipmi_smi_msg *msg) {
-> >         	printk("Recv: %*ph\n", msg->rsp_size, msg->rsp);
-> > 		... ...
-> > 	}
-> > Then in ipmi_demangle_device_id(), it returned '-EINVAL' as 'data_len < 7'
-> > and 'data[0] != 0'.
-> > 
-> > We used this patch to retry to get device id when error happen, we 
-> > reproduced this issue again and the retry succeed on the first retry, 
-> > we finally got the correct msg and then all is ok:
-> > Recv: 1c 01 00 01 81 05 84 02 af db 07 00 01 00 b9 00 10 00
-> > 
-> > So use retry machanism in this patch to give bmc more opportunity to 
-> > correctly response kernel.
-> > 
-> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> > ---
-> >  drivers/char/ipmi/ipmi_msghandler.c | 17 ++++++++++++++---
-> >  1 file changed, 14 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/char/ipmi/ipmi_msghandler.c 
-> > b/drivers/char/ipmi/ipmi_msghandler.c
-> > index 737c0b6b2..bfb2de77a 100644
-> > --- a/drivers/char/ipmi/ipmi_msghandler.c
-> > +++ b/drivers/char/ipmi/ipmi_msghandler.c
-> > @@ -34,6 +34,7 @@
-> >  #include <linux/uuid.h>
-> >  #include <linux/nospec.h>
-> >  #include <linux/vmalloc.h>
-> > +#include <linux/delay.h>
-> >  
-> >  #define IPMI_DRIVER_VERSION "39.2"
-> >  
-> > @@ -60,6 +61,9 @@ enum ipmi_panic_event_op {  #else  #define 
-> > IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE  #endif
-> > +
-> > +#define GET_DEVICE_ID_MAX_RETRY	5
-> > +
-> >  static enum ipmi_panic_event_op ipmi_send_panic_event = 
-> > IPMI_PANIC_DEFAULT;
-> >  
-> >  static int panic_op_write_handler(const char *val, @@ -2426,19 
-> > +2430,26 @@ send_get_device_id_cmd(struct ipmi_smi *intf)  static int 
-> > __get_device_id(struct ipmi_smi *intf, struct bmc_device *bmc)  {
-> >  	int rv;
-> > -
-> > -	bmc->dyn_id_set = 2;
-> > +	unsigned int retry_count = 0;
-> >  
-> >  	intf->null_user_handler = bmc_device_id_handler;
-> >  
-> > +retry:
-> > +	bmc->dyn_id_set = 2;
-> > +
-> >  	rv = send_get_device_id_cmd(intf);
-> >  	if (rv)
-> >  		return rv;
-> >  
-> >  	wait_event(intf->waitq, bmc->dyn_id_set != 2);
-> >  
-> > -	if (!bmc->dyn_id_set)
-> > +	if (!bmc->dyn_id_set) {
-> > +		msleep(1000);
-> > +		if (++retry_count <= GET_DEVICE_ID_MAX_RETRY)
-> > +			goto retry;
-> > +
-> >  		rv = -EIO; /* Something went wrong in the fetch. */
-> > +	}
-> >  
-> >  	/* dyn_id_set makes the id data available. */
-> >  	smp_rmb();
-> > --
-> > 2.17.1
-> > 
+> cheers
