@@ -2,74 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6844A267FE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 17:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDA3267FE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 17:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbgIMPUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 11:20:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbgIMPUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 11:20:34 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42AA021D7E;
-        Sun, 13 Sep 2020 15:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600010434;
-        bh=Clk04YddRZ2JcKZqXKj7dicQ6+RqZ+uoJawDi26trmA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AR+IHDlliqAwQX3MJd6shqcPv6MPr2LCGsTr5lfz2LCm7axzD/BtgT5cyt9mkfbjs
-         wZ9UWoxeLZ9eFG/gjxuw18htt7F3vMcRewxF3BNkja8zREee7hG0374lnyGZKX9us8
-         MPzJQ2ne8OScWQyPM53noX5t0FPGt80RTkgvo0hg=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kHTns-00BS8M-Mh; Sun, 13 Sep 2020 16:20:32 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Huacai Chen <chenhc@lemote.com>,
-        Thomas Gleixner <tglx@linutronix.de>, t-kristo@ti.com,
-        lokeshvutla@ti.com, nm@ti.com, ssantosh@kernel.org,
-        YueHaibing <yuehaibing@huawei.com>
-Cc:     Huacai Chen <chenhuacai@gmail.com>,
-        Fuxin Zhang <zhangfx@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH -next] irqchip/ti-sci-intr: Fix unsigned comparison to zero
-Date:   Sun, 13 Sep 2020 16:20:27 +0100
-Message-Id: <160001025578.3778.3949132960332724841.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200826035321.18620-1-yuehaibing@huawei.com>
-References: <20200826035321.18620-1-yuehaibing@huawei.com>
+        id S1725951AbgIMP1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 11:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgIMP1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 11:27:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020C5C06174A;
+        Sun, 13 Sep 2020 08:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=C1bbDqi5VCfzqw76j0WaYj+8YMSHM3OKpSoM0GoYCKo=; b=OZONTHLY9/TgFfO41JQ+xf6am3
+        GJdQeLzpPTtraP+6usD99lKEXnWfjZkuGOgAo/Cj4cPBjC0sXLpR/6bOD43DcmCv65a+BtJX0DB/E
+        iJj620MXIapmzXo0y5OoRIGq8YjAylAfC2KBLSG8SqqgFvaJoGD2aCJK7bK/CZJXhrNH7gZZwCyq0
+        ud+9D0y83Gyi7Ng6HsQp6NfE7Qc+y/cF2xnZ9Ilrw0WN2JKzxieVj/i4pyQXRZXSAnnFIGDlnYhNE
+        XVPdPUH0RHEUs5gBqZ3pm4qm/eCgkvV+Sx18YN3Glw8zlK1Uhba6tusVYMJK5NLL3QfI7zbal90lH
+        K/pli+oQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHTuB-0007a9-UV; Sun, 13 Sep 2020 15:27:04 +0000
+Date:   Sun, 13 Sep 2020 16:27:03 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH v18 06/32] mm/thp: narrow lru locking
+Message-ID: <20200913152703.GI6583@casper.infradead.org>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1598273705-69124-7-git-send-email-alex.shi@linux.alibaba.com>
+ <20200910134923.GR6583@casper.infradead.org>
+ <514f6afa-dbf7-11c5-5431-1d558d2c20c9@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tsbogend@alpha.franken.de, jason@lakedaemon.net, chenhc@lemote.com, tglx@linutronix.de, t-kristo@ti.com, lokeshvutla@ti.com, nm@ti.com, ssantosh@kernel.org, yuehaibing@huawei.com, chenhuacai@gmail.com, zhangfx@lemote.com, jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <514f6afa-dbf7-11c5-5431-1d558d2c20c9@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Aug 2020 11:53:21 +0800, YueHaibing wrote:
-> ti_sci_intr_xlate_irq() return -ENOENT on fail, p_hwirq
-> should be int type.
+On Fri, Sep 11, 2020 at 11:37:50AM +0800, Alex Shi wrote:
+> 
+> 
+> 在 2020/9/10 下午9:49, Matthew Wilcox 写道:
+> > On Mon, Aug 24, 2020 at 08:54:39PM +0800, Alex Shi wrote:
+> >> lru_lock and page cache xa_lock have no reason with current sequence,
+> >> put them together isn't necessary. let's narrow the lru locking, but
+> >> left the local_irq_disable to block interrupt re-entry and statistic update.
+> > 
+> > What stats are you talking about here?
+> 
+> Hi Matthew,
+> 
+> Thanks for comments!
+> 
+> like __dec_node_page_state(head, NR_SHMEM_THPS); will have preemptive warning...
 
-Applied to irq/irqchip-fixes-5.9, thanks!
+OK, but those stats are guarded by 'if (mapping)', so this patch doesn't
+produce that warning because we'll have taken the xarray lock and disabled
+interrupts.
 
-[1/1] irqchip/ti-sci-intr: Fix unsigned comparison to zero
-      commit: 8ddf1905a904ca86d71ca1c435e4b0b2a0b70df8
+> > How about this patch instead?  It occurred to me we already have
+> > perfectly good infrastructure to track whether or not interrupts are
+> > already disabled, and so we should use that instead of ensuring that
+> > interrupts are disabled, or tracking that ourselves.
+> 
+> So your proposal looks like;
+> 1, xa_lock_irq(&mapping->i_pages); (optional)
+> 2, spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+> 3, spin_lock_irqsave(&pgdat->lru_lock, flags);
+> 
+> Is there meaningful for the 2nd and 3rd flags?
 
-Cheers,
+Yes.  We want to avoid doing:
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+	if (mapping)
+		spin_lock(&ds_queue->split_queue_lock);
+	else
+		spin_lock_irq(&ds_queue->split_queue_lock);
+...
+	if (mapping)
+		spin_unlock(&ds_queue->split_queue_lock);
+	else
+		spin_unlock_irq(&ds_queue->split_queue_lock);
 
+Just using _irqsave has the same effect and is easier to reason about.
+
+> IIRC, I had a similar proposal as your, the flags used in xa_lock_irqsave(),
+> but objected by Hugh.
+
+I imagine Hugh's objection was that we know it's safe to disable/enable
+interrupts here because we're in a sleepable context.  But for the
+other two locks, we'd rather not track whether we've already disabled
+interrupts or not.
+
+Maybe you could dig up the email from Hugh?  I can't find it.
 
