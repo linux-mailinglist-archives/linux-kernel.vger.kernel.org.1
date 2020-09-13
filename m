@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AB62680C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DB42680CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgIMSkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 14:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
+        id S1725961AbgIMSmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 14:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbgIMSkC (ORCPT
+        with ESMTP id S1725936AbgIMSmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 14:40:02 -0400
+        Sun, 13 Sep 2020 14:42:47 -0400
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33500C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 11:40:02 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id w16so14889345qkj.7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 11:40:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBF0C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 11:42:46 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id v123so14878641qkd.9
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 11:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K8ubMUZDeeKR9nMv2dJn/qnSOG8J0zmmqr6tWo71S1Q=;
-        b=uWpnYqMmRwbT1cbVOA3uSB9aiNhLiGNKSfR3OmWJcSe8xYfTNqrg3yQuC1EAwDbIm4
-         w5fNm4PE54LRJAiukAQfvQBQrJt65BaE3Ln0IXBFDHeObOtA3VV66Mg1HIcBWPbcELgC
-         j1tnmKy5qoVvw3X6G3q1fbGQy9+DYHfBDC+dR+7QTHEor8srv/dX5Wj3pb2gSgVT0VfD
-         5dVnmunz7B/UB4yuQEoZ7R/qbSWyQL4blWohA62Mg7Q/EadasHPqofXJra4txBDLyykm
-         Jf+ZVM/4XFqTjdYXSVBhxmP1eKBxj4al8g2Gv0uvM/48rxHMTOLiyTOo5f+z9m51vH9A
-         TU6A==
+        bh=0jHT31ssRcmY7ESE4GVbo7WflQpjnUMgGP99rhdZqTo=;
+        b=XtjAXeDbAzYnt5xUw1wrTDDaTX7HrUGx7xGdWDkl+h31ILt+RsWuoCkdHDAxu7gyoa
+         WEMo7wCOAdsaINHXzt0zddMEndq36m6vytOl9mrFiGGF8abruG73b1v2n9mz0jhALg7h
+         QuRUk5Xx+4CvQpoTrH00gd/1eFBOmJhCNdJpvHc7tEO7xRmJ1P1pv1dBiDFqj3aXZgHK
+         OwwDUfAk/XWhUU86EdZd1EVNxzgMB9TC56N1s9pMWKvjFbESAQgdzLiOtWjYlIBgihf1
+         EokXQIj8pKBBFKw36BoS3Ht2bYh6DU7WLO4t0Kalcm+D+pU0B/RAGnDeDDeZUsUOGfoi
+         0SPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K8ubMUZDeeKR9nMv2dJn/qnSOG8J0zmmqr6tWo71S1Q=;
-        b=RN5hj5/GcFCmfndapjkBANa1R07YS0HBwBqNWK7ELLDOM/61huELnN6+eRF2CpB0OL
-         vcSDPx3ebnrTytMbeMsvlslJKmhNe5LV1nntjYU4ZeahltGL//Kzq+i3UyA5nqgSw8gz
-         Aut+uNsu6Xk4ipEtUDuOeT7iuTPFvwkPGUTq1Pl6lfL8nK7ev00bv1hTU5mna4SmEZ5T
-         rvn1YWwRf8jQuIzo+o++p3ArCblFYCKHbJYUdDQzXsFOK6cqvvFiiZxg2/XM7pi8mnwL
-         6IGnCl+zEdCVzyQypMUNZSdb9bXRKNB3Wk6AQ0sh6hlCddXlmZ0dBBwflYnb6czyamtK
-         MTxA==
-X-Gm-Message-State: AOAM5332IRjGqu8AKLTn1lK84Y+tVZFCJrBj1uWDoM2Q4oh8IJ9a4LUJ
-        oaGp2KAT2aaYe2jIXvdV7Wt4pXV900KA7OdhOFc=
-X-Google-Smtp-Source: ABdhPJz2nR8dyQeiqPb44/9pqa7J3ZE9ait6L7YKmea4APll3PekOjSXhvIRmzdXDOVHVAjs7Px8QpYXm2d9bR8AMc4=
-X-Received: by 2002:a37:474c:: with SMTP id u73mr10364919qka.45.1600022401427;
- Sun, 13 Sep 2020 11:40:01 -0700 (PDT)
+        bh=0jHT31ssRcmY7ESE4GVbo7WflQpjnUMgGP99rhdZqTo=;
+        b=lHDuQMEfQ3AhwLgghqjf/quzN+uhDR11kgYOzVPPTkn/6wZiAyIAMYiGiIC8smjpAi
+         RK8su/OXu7CIZQUOWZzsIGxu6AZOJEpTwC+xIDvZEvESVdHVrTBjlYGHvrwKvBhCBSJN
+         LmHC2sq9kwMXwdhfDzMVKmNcoZvnnnFHD5bcykof4EplNGTpjU9dN0vWUw74NdVWxWUA
+         8kcq2JXM/auevM6s7ETbINGLwN0lEAxEzu5QJC+ZQ9JDZzuRVSWenlUoZaMKNFZwY/ow
+         i7XOJjZ47WEH/CRH+jRlKBTnJbHv81/xt3+9kMpfQER+7on43xg6icQmeK2IbYedYFZ7
+         Iu0g==
+X-Gm-Message-State: AOAM533qsg9TRfo/TZC5drVpRpDb1E6porbHWhXsbXkafbWYcLZdSqao
+        xV8OTuSrzih+k1u5Jm4p/vahxxC0FKu4h1cfryU=
+X-Google-Smtp-Source: ABdhPJw/m0CM9zylJN/yWgP2jPSsGqo8GaGn2BHaGVIsRN5Vhjx+jhYGgtS7zLNLJzl9RFJNqmSPKokcBsp4ol4mn1o=
+X-Received: by 2002:a37:a189:: with SMTP id k131mr9496229qke.34.1600022565905;
+ Sun, 13 Sep 2020 11:42:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200828033250.910168-1-chengzhihao1@huawei.com> <CAFLxGvwzTiDDLaN3Q5BSa2+7cwxBooeJuHSrgNPaM9=ONBLTkg@mail.gmail.com>
-In-Reply-To: <CAFLxGvwzTiDDLaN3Q5BSa2+7cwxBooeJuHSrgNPaM9=ONBLTkg@mail.gmail.com>
+References: <20200817142909.1972897-1-chengzhihao1@huawei.com>
+In-Reply-To: <20200817142909.1972897-1-chengzhihao1@huawei.com>
 From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Sun, 13 Sep 2020 20:39:50 +0200
-Message-ID: <CAFLxGvx1a7wGWJGhNvW5w3acGysEnuYbpJ_v=wOLpubB47=BKA@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: setflags: Don't show error message when
- vfs_ioc_setflags_prepare() fails
+Date:   Sun, 13 Sep 2020 20:42:34 +0200
+Message-ID: <CAFLxGvxOw1ZY9PoeuJNGaweFBTjoW3jAj2=TtF5wMkBm-dgh9A@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: ubifs_jnl_change_xattr: Remove assertion 'nlink >
+ 0' for host inode
 To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     "zhangyi (F)" <yi.zhang@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org
+Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, linux-mtd@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 9:23 PM Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
+On Mon, Aug 17, 2020 at 4:29 PM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
 >
-> On Fri, Aug 28, 2020 at 5:33 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
-> >
-> > Following process will trigger ubifs_err:
-> >   1. useradd -m freg                                        (Under root)
-> >   2. cd /home/freg && mkdir mp                              (Under freg)
-> >   3. mount -t ubifs /dev/ubi0_0 /home/freg/mp               (Under root)
-> >   4. cd /home/freg && echo 123 > mp/a                       (Under root)
-> >   5. cd mp && chown freg a && chgrp freg a && chmod 777 a   (Under root)
-> >   6. chattr +i a                                            (Under freg)
-> >
-> > UBIFS error (ubi0:0 pid 1723): ubifs_ioctl [ubifs]: can't modify inode
-> > 65 attributes
-> > chattr: Operation not permitted while setting flags on a
-> >
-> > This is not an UBIFS problem, it was caused by task priviliage checking
-> > on file operations. Remove error message printing from kernel just like
-> > other filesystems (eg. ext4), since we already have enough information
-> > from userspace tools.
-> >
-> > Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> > ---
-> >  fs/ubifs/ioctl.c | 1 -
-> >  1 file changed, 1 deletion(-)
+> Changing xattr of a temp file will trigger following assertion failed
+> and make ubifs turn into readonly filesystem:
+>   ubifs_assert_failed [ubifs]: UBIFS assert failed: host->i_nlink > 0,
+>   in fs/ubifs/journal.c:1801
 >
-> Makes sense, thanks for fixing!
+> Reproducer:
+>   1. fd = open(__O_TMPFILE)
+>   2. fsetxattr(fd, key, value2, XATTR_CREATE)
+>   3. fsetxattr(fd, key, value2, XATTR_REPLACE)
+>
+> Fix this by removing assertion 'nlink > 0' for host inode.
+>
+> Reported-by: Chengsong Ke <kechengsong@huawei.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Applied to fixes.
+Applied to fixes, thanks!
 
 -- 
 Thanks,
