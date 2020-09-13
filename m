@@ -2,68 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06002680DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115722680DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgIMSoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 14:44:02 -0400
-Received: from smtprelay0206.hostedemail.com ([216.40.44.206]:60586 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725949AbgIMSnz (ORCPT
+        id S1725949AbgIMSsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 14:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgIMSsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 14:43:55 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 39ABE9888;
-        Sun, 13 Sep 2020 18:43:53 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3622:3653:3866:3870:3873:4250:4321:4605:5007:6117:6119:8660:10004:10400:10848:11026:11232:11658:11914:12043:12297:12438:12683:12740:12895:13019:13069:13148:13230:13311:13357:13894:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: brush59_2c0c5bc27102
-X-Filterd-Recvd-Size: 1946
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 13 Sep 2020 18:43:51 +0000 (UTC)
-Message-ID: <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
-Subject: Re: [PATCH v5 03/10] fs/ntfs3: Add bitmap
-From:   Joe Perches <joe@perches.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
-        willy@infradead.org, rdunlap@infradead.org, mark@harmstone.com,
-        nborisov@suse.com
-Date:   Sun, 13 Sep 2020 11:43:50 -0700
-In-Reply-To: <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
-References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
-         <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Sun, 13 Sep 2020 14:48:47 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6436EC06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 11:48:47 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id y11so11862110qtn.9
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 11:48:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bnrnz0wLHPS+ADEtoROH+0raPS2mbY3JQqic/8V4qFo=;
+        b=HDAIpXCMHOFDC/TpLEJiFG4ZzYm5vEKTKfZaloG6KNfmGivbxDD8VDVgfVWEdD3Hjy
+         sZZlREk0j2MyhC9csJj6NwTs/RuREkjExKMcMqZfcGrE7RGz9DdpIvWJkygUOnU4wSVP
+         Yj2KpfQZZlMTpl+J6uFPoSuFeF01RVsToRDkBqAeoMGURddwAGweepoM7LwH1fNp0A/6
+         Q2UWsov5E6hcUP8nqkfOFmUTeSo9UWjPBs+nIKMk8YvH7u85UVQ4+J09UJgDE2wyu41P
+         HwBe+14vl214W4nYtfInZHSnwgXmief0yXCsHeJKg1XWf0Sh6XpgYVNuUtsIPBpJROJ7
+         TKMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bnrnz0wLHPS+ADEtoROH+0raPS2mbY3JQqic/8V4qFo=;
+        b=W3Ll3KPoqJyNjR/jiJwBcIBNDlFtOC1Qef//z70ohTXzaYz+7kXHhboGgX5jygN6Iy
+         pUZTIG2JPPuxb56zkjcUGY3ApS3TAm0D3nqrVVd1d2vgxNq/xTkv6kQn+gVe9YzbmAfE
+         f2U/72b+w1mNJoCHqsHsFis/1LOmyymRdfZJDt99bAkf6USY0SlgwVneER4NC2i9VKw6
+         driTKX8CNOs10dHE3aj8ePiyPI/d6/H+wcK85iFIfSDSM7vphVsC5NJLky8P9G5jM9yZ
+         D7vjoCFXTrjw5KK68DMXk+1BxKWf80Q3MB32JfECkx1UDoB55p457sL1NYxF3qS8u7OT
+         3Ajw==
+X-Gm-Message-State: AOAM5309eUlGV5kFuDZTB9Mlp8sc5EEZ2R3cS9g1/wBpZqbamBNonGp5
+        8pBEKuzgDgcNfAf6rXEMJDR8FdVyhysTQJ/yyBoyM5PJHN0=
+X-Google-Smtp-Source: ABdhPJyGVtyaUYumPq8Vt3gwM5wnfDJyWmR9RfgKELlSyeLh3U3wsnMZozD6DFwDRZs7ozO3N4VJ41fA+oM8CO3L/vk=
+X-Received: by 2002:ac8:fa4:: with SMTP id b33mr10813208qtk.13.1600022924801;
+ Sun, 13 Sep 2020 11:48:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200601091231.3794350-1-chengzhihao1@huawei.com>
+ <CAFLxGvwLSvYsQ+OPi85VS8aQ2uge_JqQRD2C8h=XMORvCej3Sw@mail.gmail.com>
+ <211afcd0-d5b3-5ac0-1fd1-dc789634a858@huawei.com> <CAFLxGvwRDfB4mqxJhOLwWvoZ3yzpVY-kuAiovYLf8T7WwJqaTg@mail.gmail.com>
+ <9caa4860-975c-70bb-c8b9-737d1db9ead4@huawei.com> <CAFLxGvycs7DNu5o5QY1WwTPfS6cTTykTh-91n9TQZ7yP_ADr4A@mail.gmail.com>
+ <2086f822-e67a-43e4-76d8-5339eaccd3ac@huawei.com> <CAFLxGvzwoC1GcjJOfwpc8V5LD79=8XiJaNV2HjOm8EdQcCbp+w@mail.gmail.com>
+ <5f7ae548-350b-cedf-3c8e-25fea06a8377@huawei.com> <CAFLxGvy-RRksDvPcB6z8GQUoMFZ_NRGxk9aM2FuTZ22UWU6Knw@mail.gmail.com>
+ <56435b1e-ffdf-9d4a-5865-f2ce3b36644f@huawei.com>
+In-Reply-To: <56435b1e-ffdf-9d4a-5865-f2ce3b36644f@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Sun, 13 Sep 2020 20:48:33 +0200
+Message-ID: <CAFLxGvxdXOg7aHeHH0t8sZGvsTkY9QeN8RK8iRL7x7ge=MqFSw@mail.gmail.com>
+Subject: Re: [PATCH] ubi: check kthread_should_stop() after the setting of
+ task state
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-11 at 17:10 +0300, Konstantin Komarov wrote:
-> This adds bitmap
+On Sat, Aug 8, 2020 at 5:26 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote=
+:
+> =E5=9C=A8 2020/8/8 3:29, Richard Weinberger =E5=86=99=E9=81=93:
+> > On Fri, Aug 7, 2020 at 4:18 AM Zhihao Cheng <chengzhihao1@huawei.com> w=
+rote:
+>
+> > Maybe it's just me being dense and in need for a vacation. ;-)
 
-$ make fs/ntfs3/
-  SYNC    include/config/auto.conf.cmd
-  CALL    scripts/checksyscalls.sh
-  CALL    scripts/atomic/check-atomics.sh
-  DESCEND  objtool
-  CC      fs/ntfs3/bitfunc.o
-  CC      fs/ntfs3/bitmap.o
-fs/ntfs3/bitmap.c: In function ‘wnd_rescan’:
-fs/ntfs3/bitmap.c:556:4: error: implicit declaration of function ‘page_cache_readahead_unbounded’; did you mean ‘page_cache_ra_unbounded’? [-Werror=implicit-function-declaration]
-  556 |    page_cache_readahead_unbounded(
-      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      |    page_cache_ra_unbounded
-cc1: some warnings being treated as errors
-make[2]: *** [scripts/Makefile.build:283: fs/ntfs3/bitmap.o] Error 1
-make[1]: *** [scripts/Makefile.build:500: fs/ntfs3] Error 2
-make: *** [Makefile:1792: fs] Error 2
+Applied to fixes. :-)
 
-
-
+--=20
+Thanks,
+//richard
