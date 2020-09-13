@@ -2,64 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D09A2267E4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 09:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A38267E4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 09:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725950AbgIMHCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 03:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgIMHBh (ORCPT
+        id S1725929AbgIMHCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 03:02:46 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:55005 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgIMHBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 03:01:37 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67572C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 00:01:36 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d9so10072331pfd.3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 00:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DTITQjXjsPqeS3q5uQCStGzc676txDfh5hSNVhc3r6s=;
-        b=EQNxbcmrx5LKBOZbdD8y3CWQOUtvm9Q9+0LXa4r0Mj0wtS+MstvPvKBH10e+vDijQV
-         qtvQZ6EPHWdqk+TXzscujfYxeiG+eqJL4hXQuJvTDB1Q7noGY2y0+q/5KwhUWju9ytls
-         VsLgAd9qO1HQVHzT2m6u0HrCBaGI8wG96AL7z7s8X6JU7rzM5lmOVAAcHiWKG8nVZuEZ
-         u184xHmL/m/0Ptklo5uCIPA8bK5rnZKIp+LKwh0GCFkJF6u8uZsqkUaPKaFLu5ZkDzdJ
-         FD3lsNrc8KwB7ScA80kn8z79unTGX1dZ4sJ2p3+lT9gqjjDaPUVQbFdTrswlwUWzbSmg
-         wb4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DTITQjXjsPqeS3q5uQCStGzc676txDfh5hSNVhc3r6s=;
-        b=jdHVwuw0YeFxTelIjTyn4juHFtlPwbWk+ZS2UbhtsVNMOWDu3Q0cMorE42ZiJ6UrKN
-         NSTcha/TI2LC6sYHT8eL+HCzzGdbOzal4SUyOOUHzHKbgPPFTuiRTBPjg8+HFAqlIoG7
-         FYEJ2cyv7e69hcCUKXG7hdaaRj+J5l9O1uY+zLDvpBwVioCAAk1kQXEvWUBabFnhKJrQ
-         nJOwxJux0OhPBZbLco0gmg48/76e4f3d9BNuqGI1XvmB+GuG+Ll+Y9+J/BVfKU2d60sV
-         2K2Hc2uVvgnmGQ5ubJSBfy9DeQX0mgxarWIitVXTVc/CbiF6e3DrP4dmuhZrIhFNHY2Y
-         6P8g==
-X-Gm-Message-State: AOAM532SrystqXc7/IBibBOGqUoyVgXEieKXGqS8WQv3K5PxCiQH3Vqu
-        vvhWKzKPvXslPtQlqf/gldlqcw==
-X-Google-Smtp-Source: ABdhPJwj4J678KdwNwTZPyPKY01PXjumQEW0bpphGuGp/1blnPWmE1TRf+I/un6mZ5cooWqy1Mz4VQ==
-X-Received: by 2002:a63:b20d:: with SMTP id x13mr4919769pge.136.1599980495724;
-        Sun, 13 Sep 2020 00:01:35 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id z84sm6877245pfc.105.2020.09.13.00.01.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Sep 2020 00:01:35 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        corbet@lwn.net, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com
-Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v3] mm: memcontrol: Add the missing numa_stat interface for cgroup v2
-Date:   Sun, 13 Sep 2020 15:00:10 +0800
-Message-Id: <20200913070010.44053-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        Sun, 13 Sep 2020 03:01:23 -0400
+Received: from localhost.localdomain ([93.23.14.57])
+        by mwinf5d69 with ME
+        id TK1G2300N1Drbmd03K1H9L; Sun, 13 Sep 2020 09:01:18 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Sep 2020 09:01:18 +0200
+X-ME-IP: 93.23.14.57
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, hkallweit1@gmail.com,
+        gustavoars@kernel.org, vaibhavgupta40@gmail.com, mst@redhat.com,
+        leon@kernel.org
+Cc:     linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] tulip: windbond-840: Fix a debug message
+Date:   Sun, 13 Sep 2020 09:01:07 +0200
+Message-Id: <20200913070107.352166-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,236 +37,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the cgroup v1, we have a numa_stat interface. This is useful for
-providing visibility into the numa locality information within an
-memcg since the pages are allowed to be allocated from any physical
-node. One of the use cases is evaluating application performance by
-combining this information with the application's CPU allocation.
-But the cgroup v2 does not. So this patch adds the missing information.
+'w89c840_open()' is incorrectly reported in a debug message. Use __func__
+instead.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Suggested-by: Shakeel Butt <shakeelb@google.com>
-Reported-by: kernel test robot <lkp@intel.com>
+While at it, fix some style issue in the same function.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- changelog in v3:
- 1. Fix compiler error on powerpc architecture reported by kernel test robot.
- 2. Fix a typo from "anno" to "anon".
+ drivers/net/ethernet/dec/tulip/winbond-840.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- changelog in v2:
- 1. Add memory.numa_stat interface in cgroup v2.
-
- Documentation/admin-guide/cgroup-v2.rst |  72 ++++++++++++++++
- mm/memcontrol.c                         | 107 ++++++++++++++++++++++++
- 2 files changed, 179 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 6be43781ec7f..92207f0012e4 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
- 		collapsing an existing range of pages. This counter is not
- 		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
+diff --git a/drivers/net/ethernet/dec/tulip/winbond-840.c b/drivers/net/ethernet/dec/tulip/winbond-840.c
+index 7388e58486a6..89cbdc1f4857 100644
+--- a/drivers/net/ethernet/dec/tulip/winbond-840.c
++++ b/drivers/net/ethernet/dec/tulip/winbond-840.c
+@@ -630,9 +630,10 @@ static int netdev_open(struct net_device *dev)
+ 		goto out_err;
  
-+  memory.numa_stat
-+	A read-only flat-keyed file which exists on non-root cgroups.
-+
-+	This breaks down the cgroup's memory footprint into different
-+	types of memory, type-specific details, and other information
-+	per node on the state of the memory management system.
-+
-+	This is useful for providing visibility into the numa locality
-+	information within an memcg since the pages are allowed to be
-+	allocated from any physical node. One of the use cases is evaluating
-+	application performance by combining this information with the
-+	application's CPU allocation.
-+
-+	All memory amounts are in bytes.
-+
-+	The output format of memory.numa_stat is::
-+
-+	  type N0=<node 0 pages> N1=<node 1 pages> ...
-+
-+	The entries are ordered to be human readable, and new entries
-+	can show up in the middle. Don't rely on items remaining in a
-+	fixed position; use the keys to look up specific values!
-+
-+	  anon
-+		Amount of memory per node used in anonymous mappings such
-+		as brk(), sbrk(), and mmap(MAP_ANONYMOUS)
-+
-+	  file
-+		Amount of memory per node used to cache filesystem data,
-+		including tmpfs and shared memory.
-+
-+	  kernel_stack
-+		Amount of memory per node allocated to kernel stacks.
-+
-+	  shmem
-+		Amount of cached filesystem data per node that is swap-backed,
-+		such as tmpfs, shm segments, shared anonymous mmap()s
-+
-+	  file_mapped
-+		Amount of cached filesystem data per node mapped with mmap()
-+
-+	  file_dirty
-+		Amount of cached filesystem data per node that was modified but
-+		not yet written back to disk
-+
-+	  file_writeback
-+		Amount of cached filesystem data per node that was modified and
-+		is currently being written back to disk
-+
-+	  anon_thp
-+		Amount of memory per node used in anonymous mappings backed by
-+		transparent hugepages
-+
-+	  inactive_anon, active_anon, inactive_file, active_file, unevictable
-+		Amount of memory, swap-backed and filesystem-backed,
-+		per node on the internal memory management lists used
-+		by the page reclaim algorithm.
-+
-+		As these represent internal list state (eg. shmem pages are on anon
-+		memory management lists), inactive_foo + active_foo may not be equal to
-+		the value for the foo counter, since the foo counter is type-based, not
-+		list-based.
-+
-+	  slab_reclaimable
-+		Amount of memory per node used for storing in-kernel data
-+		structures which might be reclaimed, such as dentries and
-+		inodes.
-+
-+	  slab_unreclaimable
-+		Amount of memory per node used for storing in-kernel data
-+		structures which cannot be reclaimed on memory pressure.
-+
-   memory.swap.current
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1b403d6f5da0..2dadb1aaedaa 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6427,6 +6427,107 @@ static int memory_stat_show(struct seq_file *m, void *v)
- 	return 0;
- }
+ 	if (debug > 1)
+-		netdev_dbg(dev, "w89c840_open() irq %d\n", irq);
++		netdev_dbg(dev, "%s() irq %d\n", __func__, irq);
  
-+#ifdef CONFIG_NUMA
-+struct numa_stat {
-+	const char *name;
-+	unsigned int ratio;
-+	enum node_stat_item idx;
-+};
-+
-+static struct numa_stat numa_stats[] = {
-+	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
-+	{ "file", PAGE_SIZE, NR_FILE_PAGES },
-+	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-+	{ "shmem", PAGE_SIZE, NR_SHMEM },
-+	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-+	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-+	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	/*
-+	 * The ratio will be initialized in numa_stats_init(). Because
-+	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
-+	 * constant(e.g. powerpc).
-+	 */
-+	{ "anon_thp", 0, NR_ANON_THPS },
-+#endif
-+	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-+	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-+	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-+	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-+	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-+	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-+	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-+};
-+
-+static int __init numa_stats_init(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+		if (numa_stats[i].idx == NR_ANON_THPS)
-+			numa_stats[i].ratio = HPAGE_PMD_SIZE;
-+#endif
-+	}
-+
-+	return 0;
-+}
-+pure_initcall(numa_stats_init);
-+
-+static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
-+					   unsigned int nid,
-+					   enum node_stat_item idx)
-+{
-+	VM_BUG_ON(nid >= nr_node_ids);
-+	return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
-+}
-+
-+static const char *memory_numa_stat_format(struct mem_cgroup *memcg)
-+{
-+	int i;
-+	struct seq_buf s;
-+
-+	/* Reserve a byte for the trailing null */
-+	seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE - 1);
-+	if (!s.buffer)
-+		return NULL;
-+
-+	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-+		int nid;
-+
-+		seq_buf_printf(&s, "%s", numa_stats[i].name);
-+		for_each_node_state(nid, N_MEMORY) {
-+			u64 size;
-+
-+			size = memcg_node_page_state(memcg, nid,
-+						     numa_stats[i].idx);
-+			size *= numa_stats[i].ratio;
-+			seq_buf_printf(&s, " N%d=%llu", nid, size);
-+		}
-+		seq_buf_putc(&s, '\n');
-+	}
-+
-+	/* The above should easily fit into one page */
-+	if (WARN_ON_ONCE(seq_buf_putc(&s, '\0')))
-+		s.buffer[PAGE_SIZE - 1] = '\0';
-+
-+	return s.buffer;
-+}
-+
-+static int memory_numa_stat_show(struct seq_file *m, void *v)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+	const char *buf;
-+
-+	buf = memory_numa_stat_format(memcg);
-+	if (!buf)
-+		return -ENOMEM;
-+	seq_puts(m, buf);
-+	kfree(buf);
-+	return 0;
-+}
-+#endif
-+
- static int memory_oom_group_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-@@ -6504,6 +6605,12 @@ static struct cftype memory_files[] = {
- 		.name = "stat",
- 		.seq_show = memory_stat_show,
- 	},
-+#ifdef CONFIG_NUMA
-+	{
-+		.name = "numa_stat",
-+		.seq_show = memory_numa_stat_show,
-+	},
-+#endif
- 	{
- 		.name = "oom.group",
- 		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
+-	if((i=alloc_ringdesc(dev)))
++	i = alloc_ringdesc(dev);
++	if (i)
+ 		goto out_err;
+ 
+ 	spin_lock_irq(&np->lock);
+@@ -642,7 +643,7 @@ static int netdev_open(struct net_device *dev)
+ 
+ 	netif_start_queue(dev);
+ 	if (debug > 2)
+-		netdev_dbg(dev, "Done netdev_open()\n");
++		netdev_dbg(dev, "Done %s()\n", __func__);
+ 
+ 	/* Set the timer to check for link beat. */
+ 	timer_setup(&np->timer, netdev_timer, 0);
 -- 
-2.20.1
+2.25.1
 
