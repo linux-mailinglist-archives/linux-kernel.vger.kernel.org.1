@@ -2,214 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6AE26807A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AE1268084
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgIMRLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 13:11:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16450 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725928AbgIMRLD (ORCPT
+        id S1725949AbgIMRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 13:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgIMRRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 13:11:03 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08DH270b152170;
-        Sun, 13 Sep 2020 13:10:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=Dgsia/5LQ2jqVmTvmLFqD/K6oGAUxu6vI0wlZRbayO8=;
- b=eto8ugTbpHD26yviTfv910Px5hCBItA9vPgU+9IUdyVtkTMcuQi4kDDJ5b9KtqOVa+se
- xw5g8ZmcZcEoYrKZ/ergTn87YtZ1H+932Oo/jHj7MaGXTBzc58qbMqa53QQqmel5JuL+
- A0df9/6+Hthcl6Iei8EqEpDM5s5PowjHP1YoPLE1dYeF13zbwS/oPuKiBiELGjLby70c
- kpAZ32uMoJSJV7bEmdfxetwerOrP1MVNoxFJHRo9RDzp2+CIEguks2SYm1Gxkf9ScC1i
- iuGiVPSqoGznLMnNhghIVIn8nyY2nRBxq9o872SyexDvI15nybTcYNGYImVf1wcyyufI /w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33hqbjg8f9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Sep 2020 13:10:47 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08DH2qt2153689;
-        Sun, 13 Sep 2020 13:10:46 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33hqbjg8es-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Sep 2020 13:10:46 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08DH7odG004965;
-        Sun, 13 Sep 2020 17:10:44 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 33hb1j0gmu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Sep 2020 17:10:44 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08DHAfuN18612542
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Sep 2020 17:10:41 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 426885204E;
-        Sun, 13 Sep 2020 17:10:41 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id D3FBD5204F;
-        Sun, 13 Sep 2020 17:10:38 +0000 (GMT)
-Date:   Sun, 13 Sep 2020 22:40:38 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Subject: Re: [PATCH v5 05/10] powerpc/smp: Dont assume l2-cache to be
- superset of sibling
-Message-ID: <20200913171038.GB11808@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
- <20200810071834.92514-6-srikar@linux.vnet.ibm.com>
- <87y2lgr0ic.fsf@mpe.ellerman.id.au>
- <20200912044603.GA11808@linux.vnet.ibm.com>
- <87imciqwhq.fsf@mpe.ellerman.id.au>
+        Sun, 13 Sep 2020 13:17:48 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1B7C06174A;
+        Sun, 13 Sep 2020 10:17:47 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id jw11so4172155pjb.0;
+        Sun, 13 Sep 2020 10:17:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CD+rj96ISkGxvzLNQ3PLcvQIi9uSSq1sV+SXI9K2/i0=;
+        b=XUFjsHL6RgupQxtg+XEdjUCw5yy/Oaxg/AQp0lcNUsbuV93ri08NECvYrR6w8hTYrq
+         Oq9eJIK4YhHJ22jMYOVdb5cq30eTjHZGl2svHc02cIToNNVUpQzoxms5XfhwYM5Eh0rk
+         0x+i1Q9Mkg56RC7cPECWj7TamD6GKYicFhDCTClukVLLT/TWFz5apF97OeJK4ECTf8D9
+         EFsYYneEx1AdXvgTWs90Gsf4T9ldK9BspF7A2Y4CLjIkwxVGarmfIM+D+lTZfVi30a10
+         ER0BlM+tXmEZ+qJE43WCo+NNnCN9w1eARwlZ5deKASCvw1rK22Ua9u9Sb/Pd3v00TlQ2
+         JTzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CD+rj96ISkGxvzLNQ3PLcvQIi9uSSq1sV+SXI9K2/i0=;
+        b=LJHrSJUqJtzUr2zevfa+ZXTP0RGiVuer0qqWGkYJKdWxq93Que3gKYWRSyXViBI84s
+         +bdUWLHaP7cLbmWs7FWbZuo4/ic1MRc26Thfm28u0gg1g3mpcUEEKnN10lug8NK2kyS2
+         ww71h+r5rIbnItDHGNh2P42n2P3UbjshSHV20UXgQY0fAGB+wUMNzqD0+VRYUHXAoj5Y
+         I4QgpKVUfTrTGMLHg7vgzb1EhKpI+gGlSNGAE1lgD9w3QyE1V1LTuezJRjv6DPjAciKh
+         N7M4cirR32/hlJxsFoivOaaUL+Vl57Oh7t9ymX1wZK8k08kkX2BwDXKJ1tOwF/KVij7+
+         cJoQ==
+X-Gm-Message-State: AOAM530U2K2V9piKG0f5Fm6VPr9x5CayEC4FizFcMLcoXtJc/YHvCoa2
+        xKtQIZyftVsW9NLrzhdHPpo=
+X-Google-Smtp-Source: ABdhPJzX4PaPpmtgFjp1c1G8m5ToMIdgqlwR39sBQrZLcqeieNRaK5AlKXXJvZBtgXma2RahjB2ZcQ==
+X-Received: by 2002:a17:90a:de81:: with SMTP id n1mr10698917pjv.92.1600017466236;
+        Sun, 13 Sep 2020 10:17:46 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id q23sm7927913pfg.143.2020.09.13.10.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 10:17:45 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 10:17:43 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, benh@kernel.crashing.org,
+        brendanhiggins@google.com, wsa@kernel.org, rentao.bupt@gmail.com,
+        ryan_chen@aspeedtech.com
+Subject: Re: [PATCH v3 2/5] input: misc: Add IBM Operation Panel driver
+Message-ID: <20200913171743.GH1665100@dtor-ws>
+References: <20200909203059.23427-1-eajames@linux.ibm.com>
+ <20200909203059.23427-3-eajames@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87imciqwhq.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-13_05:2020-09-10,2020-09-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- clxscore=1015 impostorscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009130149
+In-Reply-To: <20200909203059.23427-3-eajames@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to make it work where CPUs dont have a l2-cache element.
+Hi Eddie,
 
------------->8-----------------------------------------8<---------------------
+On Wed, Sep 09, 2020 at 03:30:56PM -0500, Eddie James wrote:
+> Add a driver to get the button events from the panel and provide
+> them to userspace with the input subsystem. The panel is
+> connected with I2C and controls the bus, so the driver registers
+> as an I2C slave device.
+> 
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+> ---
+>  MAINTAINERS                    |   1 +
+>  drivers/input/misc/Kconfig     |  18 ++++
+>  drivers/input/misc/Makefile    |   1 +
+>  drivers/input/misc/ibm-panel.c | 189 +++++++++++++++++++++++++++++++++
+>  4 files changed, 209 insertions(+)
+>  create mode 100644 drivers/input/misc/ibm-panel.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 28408d29d873..5429da957a1a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8351,6 +8351,7 @@ M:	Eddie James <eajames@linux.ibm.com>
+>  L:	linux-input@vger.kernel.org
+>  S:	Maintained
+>  F:	Documentation/devicetree/bindings/input/ibm,op-panel.yaml
+> +F:	drivers/input/misc/ibm-panel.c
+>  
+>  IBM Power 842 compression accelerator
+>  M:	Haren Myneni <haren@us.ibm.com>
+> diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+> index 362e8a01980c..65ab1ce7b259 100644
+> --- a/drivers/input/misc/Kconfig
+> +++ b/drivers/input/misc/Kconfig
+> @@ -708,6 +708,24 @@ config INPUT_ADXL34X_SPI
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called adxl34x-spi.
+>  
+> +config INPUT_IBM_PANEL
+> +	tristate "IBM Operation Panel driver"
+> +	depends on I2C_SLAVE || COMPILE_TEST
+> +	help
+> +	  Say Y here if you have an IBM Operation Panel connected to your system
+> +	  over I2C. The panel is typically connected only to a system's service
+> +	  processor (BMC).
+> +
+> +	  If unsure, say N.
+> +
+> +	  The Operation Panel is a controller with some buttons and an LCD
+> +	  display that allows someone with physical access to the system to
+> +	  perform various administrative tasks. This driver only supports the part
+> +	  of the controller that sends commands to the system.
+> +
+> +	  To compile this driver as a module, choose M here: the module will be
+> +	  called ibm-panel.
+> +
+>  config INPUT_IMS_PCU
+>  	tristate "IMS Passenger Control Unit driver"
+>  	depends on USB
+> diff --git a/drivers/input/misc/Makefile b/drivers/input/misc/Makefile
+> index a48e5f2d859d..7e9edf0a142b 100644
+> --- a/drivers/input/misc/Makefile
+> +++ b/drivers/input/misc/Makefile
+> @@ -38,6 +38,7 @@ obj-$(CONFIG_INPUT_GPIO_DECODER)	+= gpio_decoder.o
+>  obj-$(CONFIG_INPUT_GPIO_VIBRA)		+= gpio-vibra.o
+>  obj-$(CONFIG_INPUT_HISI_POWERKEY)	+= hisi_powerkey.o
+>  obj-$(CONFIG_HP_SDC_RTC)		+= hp_sdc_rtc.o
+> +obj-$(CONFIG_INPUT_IBM_PANEL)		+= ibm-panel.o
+>  obj-$(CONFIG_INPUT_IMS_PCU)		+= ims-pcu.o
+>  obj-$(CONFIG_INPUT_IQS269A)		+= iqs269a.o
+>  obj-$(CONFIG_INPUT_IXP4XX_BEEPER)	+= ixp4xx-beeper.o
+> diff --git a/drivers/input/misc/ibm-panel.c b/drivers/input/misc/ibm-panel.c
+> new file mode 100644
+> index 000000000000..7329f4641636
+> --- /dev/null
+> +++ b/drivers/input/misc/ibm-panel.c
+> @@ -0,0 +1,189 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) IBM Corporation 2020
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/input.h>
+> +#include <linux/kernel.h>
+> +#include <linux/limits.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/spinlock.h>
+> +
+> +#define DEVICE_NAME	"ibm-panel"
+> +
+> +struct ibm_panel {
+> +	u8 idx;
+> +	u8 command[11];
+> +	spinlock_t lock;	/* protects writes to idx and command */
+> +	struct input_dev *input;
+> +};
+> +
+> +static void ibm_panel_process_command(struct ibm_panel *panel)
+> +{
+> +	u8 i;
+> +	u8 chksum;
+> +	u16 sum = 0;
+> +	int pressed;
+> +	int released;
+> +
+> +	if (panel->command[0] != 0xff && panel->command[1] != 0xf0) {
+> +		dev_dbg(&panel->input->dev, "command invalid\n");
+> +		return;
+> +	}
+> +
+> +	for (i = 0; i < sizeof(panel->command) - 1; ++i) {
+> +		sum += panel->command[i];
+> +		if (sum & 0xff00) {
+> +			sum &= 0xff;
+> +			sum++;
+> +		}
+> +	}
+> +
+> +	chksum = sum & 0xff;
+> +	chksum = ~chksum;
+> +	chksum++;
 
-From b25d47b01b7195b1df19083a4043fa6a87a901a3 Mon Sep 17 00:00:00 2001
-From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Date: Thu, 9 Jul 2020 13:33:38 +0530
-Subject: [PATCH v5.2 05/10] powerpc/smp: Dont assume l2-cache to be superset of
- sibling
+Maybe move checksum calculation into a separate function?
 
-Current code assumes that cpumask of cpus sharing a l2-cache mask will
-always be a superset of cpu_sibling_mask.
+> +
+> +	if (chksum != panel->command[sizeof(panel->command) - 1]) {
+> +		dev_dbg(&panel->input->dev, "command failed checksum\n");
+> +		return;
+> +	}
+> +
+> +	released = panel->command[2] & 0x80;
+> +	pressed = released ? 0 : 1;
 
-Lets stop that assumption. cpu_l2_cache_mask is a superset of
-cpu_sibling_mask if and only if shared_caches is set.
+	pressed = !(panel->command[2] & BIT(7));
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Jordan Niethe <jniethe5@gmail.com>
-Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog v1 -> v2:
-	Set cpumask after verifying l2-cache. (Gautham)
+or "pressed = !released;" if you want to keep both.
 
-Changelog v5 -> v5.2:
-	If cpu has no l2-cache set cpumask as per its
-                 sibling mask. (Michael Ellerman)
+> +
+> +	switch (panel->command[2] & 0xf) {
+> +	case 0:
+> +		input_report_key(panel->input, BTN_NORTH, pressed);
+> +		break;
+> +	case 1:
+> +		input_report_key(panel->input, BTN_SOUTH, pressed);
+> +		break;
+> +	case 2:
+> +		input_report_key(panel->input, BTN_SELECT, pressed);
+> +		break;
+> +	default:
+> +		dev_dbg(&panel->input->dev, "unknown command %u\n",
+> +			panel->command[2] & 0xf);
+> +		return;
+> +	}
+> +
+> +	input_sync(panel->input);
+> +}
+> +
+> +static int ibm_panel_i2c_slave_cb(struct i2c_client *client,
+> +				  enum i2c_slave_event event, u8 *val)
+> +{
+> +	unsigned long flags;
+> +	struct ibm_panel *panel = i2c_get_clientdata(client);
+> +
+> +	dev_dbg(&panel->input->dev, "event: %u data: %02x\n", event, *val);
+> +
+> +	spin_lock_irqsave(&panel->lock, flags);
+> +
+> +	switch (event) {
+> +	case I2C_SLAVE_STOP:
+> +		if (panel->idx == sizeof(panel->command))
+> +			ibm_panel_process_command(panel);
+> +		else
+> +			dev_dbg(&panel->input->dev,
+> +				"command incorrect size %u\n", panel->idx);
+> +		fallthrough;
+> +	case I2C_SLAVE_WRITE_REQUESTED:
+> +		panel->idx = 0;
+> +		break;
+> +	case I2C_SLAVE_WRITE_RECEIVED:
+> +		if (panel->idx < sizeof(panel->command))
+> +			panel->command[panel->idx++] = *val;
+> +		else
+> +			/*
+> +			 * The command is too long and therefore invalid, so set the index
+> +			 * to it's largest possible value. When a STOP is finally received,
+> +			 * the command will be rejected upon processing.
+> +			 */
+> +			panel->idx = U8_MAX;
+> +		break;
+> +	case I2C_SLAVE_READ_REQUESTED:
+> +	case I2C_SLAVE_READ_PROCESSED:
+> +		*val = 0xff;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	spin_unlock_irqrestore(&panel->lock, flags);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ibm_panel_probe(struct i2c_client *client,
+> +			   const struct i2c_device_id *id)
+> +{
+> +	int rc;
+> +	struct ibm_panel *panel = devm_kzalloc(&client->dev, sizeof(*panel),
+> +					       GFP_KERNEL);
+> +
+> +	if (!panel)
+> +		return -ENOMEM;
+> +
+> +	panel->input = devm_input_allocate_device(&client->dev);
+> +	if (!panel->input)
+> +		return -ENOMEM;
+> +
+> +	panel->input->name = client->name;
+> +	panel->input->id.bustype = BUS_I2C;
+> +	input_set_capability(panel->input, EV_KEY, BTN_NORTH);
+> +	input_set_capability(panel->input, EV_KEY, BTN_SOUTH);
+> +	input_set_capability(panel->input, EV_KEY, BTN_SELECT);
 
- arch/powerpc/kernel/smp.c | 43 +++++++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+North/South/Select are gamepad buttons, not general purpose ones. I
+think you should not hard-code keymap in the driver, but rather use
+device property to specify keymap that makes sense for the particular
+board's application.
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 9f4333d..168532e 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1186,9 +1186,23 @@ static bool update_mask_by_l2(int cpu, struct cpumask *(*mask_fn)(int))
- 	int i;
- 
- 	l2_cache = cpu_to_l2cache(cpu);
--	if (!l2_cache)
-+	if (!l2_cache) {
-+		struct cpumask *(*sibling_mask)(int) = cpu_sibling_mask;
-+
-+		/*
-+		 * If no l2cache for this CPU, assume all siblings to share
-+		 * cache with this CPU.
-+		 */
-+		if (has_big_cores)
-+			sibling_mask = cpu_smallcore_mask;
-+
-+		for_each_cpu(i, sibling_mask(cpu))
-+			set_cpus_related(cpu, i, cpu_l2_cache_mask);
-+
- 		return false;
-+	}
- 
-+	cpumask_set_cpu(cpu, mask_fn(cpu));
- 	for_each_cpu(i, cpu_online_mask) {
- 		/*
- 		 * when updating the marks the current CPU has not been marked
-@@ -1271,29 +1285,30 @@ static void add_cpu_to_masks(int cpu)
- 	 * add it to it's own thread sibling mask.
- 	 */
- 	cpumask_set_cpu(cpu, cpu_sibling_mask(cpu));
-+	cpumask_set_cpu(cpu, cpu_core_mask(cpu));
- 
- 	for (i = first_thread; i < first_thread + threads_per_core; i++)
- 		if (cpu_online(i))
- 			set_cpus_related(i, cpu, cpu_sibling_mask);
- 
- 	add_cpu_to_smallcore_masks(cpu);
--	/*
--	 * Copy the thread sibling mask into the cache sibling mask
--	 * and mark any CPUs that share an L2 with this CPU.
--	 */
--	for_each_cpu(i, cpu_sibling_mask(cpu))
--		set_cpus_related(cpu, i, cpu_l2_cache_mask);
- 	update_mask_by_l2(cpu, cpu_l2_cache_mask);
- 
--	/*
--	 * Copy the cache sibling mask into core sibling mask and mark
--	 * any CPUs on the same chip as this CPU.
--	 */
--	for_each_cpu(i, cpu_l2_cache_mask(cpu))
--		set_cpus_related(cpu, i, cpu_core_mask);
-+	if (pkg_id == -1) {
-+		struct cpumask *(*mask)(int) = cpu_sibling_mask;
-+
-+		/*
-+		 * Copy the sibling mask into core sibling mask and
-+		 * mark any CPUs on the same chip as this CPU.
-+		 */
-+		if (shared_caches)
-+			mask = cpu_l2_cache_mask;
-+
-+		for_each_cpu(i, mask(cpu))
-+			set_cpus_related(cpu, i, cpu_core_mask);
- 
--	if (pkg_id == -1)
- 		return;
-+	}
- 
- 	for_each_cpu(i, cpu_online_mask)
- 		if (get_physical_package_id(i) == pkg_id)
+> +
+> +	rc = input_register_device(panel->input);
+> +	if (rc) {
+> +		dev_err(&client->dev, "Failed to register input device: %d\n",
+> +			rc);
+> +		return rc;
+> +	}
+> +
+> +	spin_lock_init(&panel->lock);
+> +
+> +	i2c_set_clientdata(client, panel);
+> +	rc = i2c_slave_register(client, ibm_panel_i2c_slave_cb);
+> +	if (rc) {
+> +		input_unregister_device(panel->input);
+
+You are using devm, there is no need to manually unregister input
+device.
+
+> +		return rc;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ibm_panel_remove(struct i2c_client *client)
+> +{
+> +	int rc;
+> +	struct ibm_panel *panel = i2c_get_clientdata(client);
+> +
+> +	rc = i2c_slave_unregister(client);
+> +
+> +	input_unregister_device(panel->input);
+
+This is not needed.
+
+> +
+> +	return rc;
+
+The remove operation is not reversible, so there is no need to return
+error here. Just log en error if i2c_slave_unregister() fails if you
+want, and return 0.
+
+> +}
+> +
+> +static const struct of_device_id ibm_panel_match[] = {
+> +	{ .compatible = "ibm,op-panel" },
+> +	{ }
+> +};
+> +
+> +static struct i2c_driver ibm_panel_driver = {
+> +	.driver = {
+> +		.name = DEVICE_NAME,
+> +		.of_match_table = ibm_panel_match,
+> +	},
+> +	.probe = ibm_panel_probe,
+> +	.remove = ibm_panel_remove,
+> +};
+> +module_i2c_driver(ibm_panel_driver);
+> +
+> +MODULE_AUTHOR("Eddie James <eajames@linux.ibm.com>");
+> +MODULE_DESCRIPTION("IBM Operation Panel Driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.26.2
+> 
+
+Thanks.
+
 -- 
-2.17.1
-
+Dmitry
