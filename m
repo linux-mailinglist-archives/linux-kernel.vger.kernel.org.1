@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDA3267FE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 17:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3E9267FF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 17:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgIMP1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 11:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725937AbgIMP1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 11:27:49 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020C5C06174A;
-        Sun, 13 Sep 2020 08:27:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=C1bbDqi5VCfzqw76j0WaYj+8YMSHM3OKpSoM0GoYCKo=; b=OZONTHLY9/TgFfO41JQ+xf6am3
-        GJdQeLzpPTtraP+6usD99lKEXnWfjZkuGOgAo/Cj4cPBjC0sXLpR/6bOD43DcmCv65a+BtJX0DB/E
-        iJj620MXIapmzXo0y5OoRIGq8YjAylAfC2KBLSG8SqqgFvaJoGD2aCJK7bK/CZJXhrNH7gZZwCyq0
-        ud+9D0y83Gyi7Ng6HsQp6NfE7Qc+y/cF2xnZ9Ilrw0WN2JKzxieVj/i4pyQXRZXSAnnFIGDlnYhNE
-        XVPdPUH0RHEUs5gBqZ3pm4qm/eCgkvV+Sx18YN3Glw8zlK1Uhba6tusVYMJK5NLL3QfI7zbal90lH
-        K/pli+oQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHTuB-0007a9-UV; Sun, 13 Sep 2020 15:27:04 +0000
-Date:   Sun, 13 Sep 2020 16:27:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH v18 06/32] mm/thp: narrow lru locking
-Message-ID: <20200913152703.GI6583@casper.infradead.org>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <1598273705-69124-7-git-send-email-alex.shi@linux.alibaba.com>
- <20200910134923.GR6583@casper.infradead.org>
- <514f6afa-dbf7-11c5-5431-1d558d2c20c9@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <514f6afa-dbf7-11c5-5431-1d558d2c20c9@linux.alibaba.com>
+        id S1725957AbgIMPeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 11:34:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725938AbgIMPeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 11:34:09 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D6EF2078D;
+        Sun, 13 Sep 2020 15:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600011248;
+        bh=U7j8lScFgpuEW/6fVOIsPgZrSsqPIYFR9iMMpABDa4g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0Wtk1MMYl2QoNCwq4dh2Ew5BgyQLdcbHQF5C59Ra2Guz9bP1QpQO2MYOZP+IsmbMk
+         L5p0JedGxSNbbxu3WUzHqsI0gFpP/+cYUFo4a+DCzg93Pt7ScX76ZHJ3bz6w24olTZ
+         ihF2F3PjHpCDytx6DdNfi5pHknqd53YMkAcZtNbw=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHU10-00BSHc-8H; Sun, 13 Sep 2020 16:34:06 +0100
+Date:   Sun, 13 Sep 2020 16:34:05 +0100
+Message-ID: <87mu1tr8r6.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] irqchip/ti-sci-inta: Fix kerneldoc
+In-Reply-To: <20200902174615.24695-2-krzk@kernel.org>
+References: <20200902174615.24695-1-krzk@kernel.org>
+        <20200902174615.24695-2-krzk@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: krzk@kernel.org, nm@ti.com, t-kristo@ti.com, ssantosh@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 11:37:50AM +0800, Alex Shi wrote:
+On Wed, 02 Sep 2020 18:46:15 +0100,
+Krzysztof Kozlowski <krzk@kernel.org> wrote:
 > 
+> Fix kerneldoc W=1 warnings:
 > 
-> 在 2020/9/10 下午9:49, Matthew Wilcox 写道:
-> > On Mon, Aug 24, 2020 at 08:54:39PM +0800, Alex Shi wrote:
-> >> lru_lock and page cache xa_lock have no reason with current sequence,
-> >> put them together isn't necessary. let's narrow the lru locking, but
-> >> left the local_irq_disable to block interrupt re-entry and statistic update.
-> > 
-> > What stats are you talking about here?
+>   drivers/irqchip/irq-ti-sci-inta.c:144: warning: Function parameter or member 'vint_id' not described in 'ti_sci_inta_xlate_irq'
+>   drivers/irqchip/irq-ti-sci-inta.c:144: warning: Excess function parameter 'irq' description in 'ti_sci_inta_xlate_irq'
 > 
-> Hi Matthew,
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/irqchip/irq-ti-sci-inta.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Thanks for comments!
-> 
-> like __dec_node_page_state(head, NR_SHMEM_THPS); will have preemptive warning...
+> diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
+> index bc863ef7998d..84929f3e2003 100644
+> --- a/drivers/irqchip/irq-ti-sci-inta.c
+> +++ b/drivers/irqchip/irq-ti-sci-inta.c
+> @@ -134,7 +134,7 @@ static void ti_sci_inta_irq_handler(struct irq_desc *desc)
+>  /**
+>   * ti_sci_inta_xlate_irq() - Translate hwirq to parent's hwirq.
+>   * @inta:	IRQ domain corresponding to Interrupt Aggregator
+> - * @irq:	Hardware irq corresponding to the above irq domain
+> + * @vint_id:	TISCI vint ID
 
-OK, but those stats are guarded by 'if (mapping)', so this patch doesn't
-produce that warning because we'll have taken the xarray lock and disabled
-interrupts.
+I'm not sure that replacing a flaky variable name with something that
+is essentially unintelligible is a huge improvement.
 
-> > How about this patch instead?  It occurred to me we already have
-> > perfectly good infrastructure to track whether or not interrupts are
-> > already disabled, and so we should use that instead of ensuring that
-> > interrupts are disabled, or tracking that ourselves.
-> 
-> So your proposal looks like;
-> 1, xa_lock_irq(&mapping->i_pages); (optional)
-> 2, spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
-> 3, spin_lock_irqsave(&pgdat->lru_lock, flags);
-> 
-> Is there meaningful for the 2nd and 3rd flags?
+	M.
 
-Yes.  We want to avoid doing:
-
-	if (mapping)
-		spin_lock(&ds_queue->split_queue_lock);
-	else
-		spin_lock_irq(&ds_queue->split_queue_lock);
-...
-	if (mapping)
-		spin_unlock(&ds_queue->split_queue_lock);
-	else
-		spin_unlock_irq(&ds_queue->split_queue_lock);
-
-Just using _irqsave has the same effect and is easier to reason about.
-
-> IIRC, I had a similar proposal as your, the flags used in xa_lock_irqsave(),
-> but objected by Hugh.
-
-I imagine Hugh's objection was that we know it's safe to disable/enable
-interrupts here because we're in a sleepable context.  But for the
-other two locks, we'd rather not track whether we've already disabled
-interrupts or not.
-
-Maybe you could dig up the email from Hugh?  I can't find it.
-
+-- 
+Without deviation from the norm, progress is not possible.
