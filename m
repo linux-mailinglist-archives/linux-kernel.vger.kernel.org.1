@@ -2,168 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1600E268055
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349CD268062
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgIMQxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:53:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42022 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725876AbgIMQxv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:53:51 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08DGWdsa008576;
-        Sun, 13 Sep 2020 12:53:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=0Lhng2sbqsY5JmEA580Ged2Sijf07s/jdsuJDC4FmI4=;
- b=pdSamIuIeuCf8SgcMcJerdHXQKAUrBOC6Z2ges2HPQU7gOVog2qZR4jaeZjv33x9bD1G
- s+RFL6D/KUksp5XxY+gXmjEi+hGRg9nZW9R2EYMWtBb66fp/cK9e2B2uZH8iZOI+y2KF
- 4zn8AphYSvCn3SrjcqKmSjjrLcBU4spMDss4Ahwli5FmZI7utpGSoFMKuA9zaShel35d
- 0XJ6to7LFbWyYsSmoOi4W9xc5AJx0v6SryqVox3cdCSBJGzVFiXICOzbgw/w7VCpw8IW
- 2ntDhODt7VEhnW2BMXWYXInxduuHmmzVnvG8NALu1INE0en/V7wFGKfEUkDfJ8CO+8++ bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33hq1bg8jt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Sep 2020 12:53:30 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08DGZstV015271;
-        Sun, 13 Sep 2020 12:53:30 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33hq1bg8jc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Sep 2020 12:53:29 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08DGr5hp005666;
-        Sun, 13 Sep 2020 16:53:28 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 33hkfag2jm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 13 Sep 2020 16:53:28 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08DGrPvS13107476
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Sep 2020 16:53:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CA320AE045;
-        Sun, 13 Sep 2020 16:53:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B0404AE04D;
-        Sun, 13 Sep 2020 16:53:23 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Sun, 13 Sep 2020 16:53:23 +0000 (GMT)
-Date:   Sun, 13 Sep 2020 22:23:22 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nathan Lynch <nathanl@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
+        id S1725974AbgIMQ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:57:58 -0400
+Received: from mout.gmx.net ([212.227.15.15]:43001 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725936AbgIMQ5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 12:57:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600016191;
+        bh=2UfjObndGtW0Xq6W1Y2m5K5jmrf7PALFEYSIFTj3SRk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Zc6U28KaEBYWrmUQ6T5i0/2G23L9udYWFnuge/OPiC8b9IfDTCU017y3rmUXYVxq0
+         kajCBw4nHacTh623DsBzar7JounEuziC0XpshmEWy8tQ1iRCEChC2G7oJueREwAIff
+         T9MBF+wDx6bYCnRsHxYmSSIbhLAoWxAjlFSktvPQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MG9kM-1kIdsZ0fZU-00Gaaf; Sun, 13
+ Sep 2020 18:56:31 +0200
+Date:   Sun, 13 Sep 2020 18:56:12 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
+Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        John Wood <john.wood@gmx.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v5 05/10] powerpc/smp: Dont assume l2-cache to be
- superset of sibling
-Message-ID: <20200913165322.m24vbwvbw6ah2zzs@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
- <20200810071834.92514-6-srikar@linux.vnet.ibm.com>
- <87y2lgr0ic.fsf@mpe.ellerman.id.au>
- <20200912044603.GA11808@linux.vnet.ibm.com>
- <87imciqwhq.fsf@mpe.ellerman.id.au>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Subject: Re: [RFC PATCH 5/6] security/fbfam: Detect a fork brute force attack
+Message-ID: <20200913152724.GB2873@ubuntu>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <20200910202107.3799376-6-keescook@chromium.org>
+ <202009101634.52ED6751AD@keescook>
+ <CAG48ez2fP7yupg6Th+Hg0tL3o06p2PR1HtQcvy4Ro+Q5T2Nfkw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87imciqwhq.fsf@mpe.ellerman.id.au>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-13_05:2020-09-10,2020-09-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0 suspectscore=1
- clxscore=1015 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009130144
+In-Reply-To: <CAG48ez2fP7yupg6Th+Hg0tL3o06p2PR1HtQcvy4Ro+Q5T2Nfkw@mail.gmail.com>
+X-Provags-ID: V03:K1:fFhuJz0gvsAKhyXIL51o/azcshQRL7L+66gcb+DURq+rQrGIfh5
+ yGkKJ/8c9JYhC2pJjV5T/ERRgDmRmiBJ63C8lyiY2/w7LiCL/JkSkacipHQhE85+cpPDTRO
+ eOmkxxwjRIo00I747W9FNP+lUDa+J7oVW4wVTRoysdyrtRTZaVEE9FcLtrcEYR3PHTyXTF2
+ Z8jrzms0p4mPTKb94KV3A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9JDcq2+UbDI=:GRnECanaZF7QfeOPwoBV1a
+ nO6OdYi+PZexCJ2o7AARPY2a6ebH5Ihvx642+JprXJAnuYC/BRiMMxIqEWoscM2svFEfjNmov
+ +VXn1ahL3Z5KOa5+fnVBALBFGjftZPL4E5AG2s1vp6sLd9yuypx0hR6eyhMCwAh+xUACGpvpw
+ BS8akPEcoTSIAUi01eHLWIcRClbXUssPu8bjkcFxGrrfbA6NX5JOgYDAZGWuTTBT8i36dLPqa
+ a4wTP0EOwFSO8BkipUGkEg1OoyvbTpDUh4ScF/Z1+z738ELqAhWAuZdtT89frCqiB7hYwJH9z
+ kRxGZuLz8ZhqS6bqpR+HgXFAPoR71DS+soH8btkwcbanjrDB5YA+OI/WWnzD5aXEOn08b2qY7
+ BTd7mZyPuhgSmoFQbIQJj3J61nIk7NIgjbRJQBUnuhHSlC6h46hf1KHeZPBedm3XMT77LWXVs
+ i+sZpr1g60OLNAe/6qUmcd4Ck9fryu6kKAR3RjULSmG9OH6ODtRURThaYGsDP0AdDl1NI2Hlk
+ clXGmkEWOjYOJyU9vQsBJNK7XjHwAX/Y2ZFoOueKnk4BknlrNg95gvW3n1/dfHwEMMAVbIBoC
+ s4oERFDoi+yza5XwP4obNOPuXVpkVW5ESDL91QMDAes59k4e6jSsdN8vQbg/KOl42IrVlKxPz
+ PNSBO0dW/HGzHjTpX/uVrNFjinwANOA6TEVMV/jAqoKuK6/KuQjFX/NYHHbXkEjigeIYuKCoQ
+ 7OXQBV8tIwgRuZYhaKcqTMTc7JkWZK8d3SLxv3UO/JsXz2mW6HO/3aZAfQPitSsl7fSo/+X0+
+ bKP8nJsqEZnUcHF3CXy1KK6brIYYTkYX9fLLkFYjP/RWuUg+hvynGlrQnrwMsXY7YhT006b27
+ 3MB3GzxedAdO2eNPyCis8xiOYWP57FbZVChO5YFzv92ShUC95pDdK/Ek0cH+N4TepcIkv/sRR
+ 2kxCqmBpKNUrzmrHiZEAt2hy7yJ6XudokJmOOyBnllDWZE8cw0uVi9V3eHnVR6w5Y2HzLFMLv
+ KeAJFLHhfdAS0HyhaXO2Jh7mP/0ZG2VuvV2AdlYRwsO2u6vfImM1GEmFcTag/snw5vWAZC4ws
+ nu5NXkY07Urkr6RSY4YXryNnkV1Yb12jo4s0qx9LwNeBKqg/gbIdWYDJMinutQSRSLBbAscSb
+ PM2hDJn62xykg+85Qt91p2TXsgTTACadg8BgzUVBPx4XbPiAHtEFSngCyuwIHDf+EZffSbzZ2
+ Ox4mBFjRtTEQhJN8P7RoFK4ho+VRVaYeEHPQYAw==
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Michael Ellerman <mpe@ellerman.id.au> [2020-09-13 11:46:41]:
+Hi,
 
-> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> > * Michael Ellerman <mpe@ellerman.id.au> [2020-09-11 21:55:23]:
+On Fri, Sep 11, 2020 at 02:01:56AM +0200, Jann Horn wrote:
+> On Fri, Sep 11, 2020 at 1:49 AM Kees Cook <keescook@chromium.org> wrote:
+> > On Thu, Sep 10, 2020 at 01:21:06PM -0700, Kees Cook wrote:
+> > > diff --git a/fs/coredump.c b/fs/coredump.c
+> > > index 76e7c10edfc0..d4ba4e1828d5 100644
+> > > --- a/fs/coredump.c
+> > > +++ b/fs/coredump.c
+> > > @@ -51,6 +51,7 @@
+> > >  #include "internal.h"
+> > >
+> > >  #include <trace/events/sched.h>
+> > > +#include <fbfam/fbfam.h>
+> > >
+> > >  int core_uses_pid;
+> > >  unsigned int core_pipe_limit;
+> > > @@ -825,6 +826,7 @@ void do_coredump(const kernel_siginfo_t *siginfo=
+)
+> > >  fail_creds:
+> > >       put_cred(cred);
+> > >  fail:
+> > > +     fbfam_handle_attack(siginfo->si_signo);
 > >
-> >> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
-> >> > Current code assumes that cpumask of cpus sharing a l2-cache mask will
-> >> > always be a superset of cpu_sibling_mask.
-> >> >
-> >> > Lets stop that assumption. cpu_l2_cache_mask is a superset of
-> >> > cpu_sibling_mask if and only if shared_caches is set.
-> >> 
-> >> I'm seeing oopses with this:
-> >> 
-> 
-> The patch fixes qemu, and I don't see the crash on mambo, but I still
-> see:
->   [    0.010536] smp: Bringing up secondary CPUs ...
->   [    0.019189] smp: Brought up 2 nodes, 8 CPUs
->   [    0.019210] numa: Node 0 CPUs: 0-3
->   [    0.019235] numa: Node 1 CPUs: 4-7
->   [    0.024444]      the CACHE domain not a subset of the MC domain
->   [    0.024505] BUG: arch topology borken
->   [    0.024527]      the SMT domain not a subset of the CACHE domain
->   [    0.024563] BUG: arch topology borken
->   [    0.024584]      the CACHE domain not a subset of the MC domain
->   [    0.024645] BUG: arch topology borken
->   [    0.024666]      the SMT domain not a subset of the CACHE domain
->   [    0.024702] BUG: arch topology borken
->   [    0.024723]      the CACHE domain not a subset of the MC domain
-> 
-> That's the p9 mambo model, using skiboot.tcl from skiboot, with CPUS=2,
-> THREADS=4 and MAMBO_NUMA=1.
-> 
+> > I don't think this is the right place for detecting a crash -- isn't
+> > this only for the "dumping core" condition? In other words, don't you
+> > want to do this in get_signal()'s "fatal" block? (i.e. very close to t=
+he
+> > do_coredump, but without the "should I dump?" check?)
+> >
+> > Hmm, but maybe I'm wrong? It looks like you're looking at noticing the
+> > process taking a signal from SIG_KERNEL_COREDUMP_MASK ?
+> >
+> > (Better yet: what are fatal conditions that do NOT match
+> > SIG_KERNEL_COREDUMP_MASK, and should those be covered?)
+> >
+> > Regardless, *this* looks like the only place without an LSM hook. And =
+it
+> > doesn't seem unreasonable to add one here. I assume it would probably
+> > just take the siginfo pointer, which is also what you're checking.
+>
+> Good point, making this an LSM might be a good idea.
+>
+> > e.g. for include/linux/lsm_hook_defs.h:
+> >
+> > LSM_HOOK(int, 0, task_coredump, const kernel_siginfo_t *siginfo);
+>
+> I guess it should probably be an LSM_RET_VOID hook? And since, as you
+> said, it's not really semantically about core dumping, maybe it should
+> be named task_fatal_signal or something like that.
 
-I was able to reproduce with
- qemu-system-ppc64 -nographic -vga none -M pseries -cpu POWER8 \
-   -kernel build~/vmlinux \
-   -m 2G,slots=2,maxmem=4G \
-   -object memory-backend-ram,size=1G,id=m0 \
-   -object memory-backend-ram,size=1G,id=m1 \
-   -numa node,nodeid=0,memdev=m0 \
-   -numa node,nodeid=1,memdev=m1 \
-   -smp 8,threads=4,sockets=2,maxcpus=8  \
+If I understand correctly you propose to add a new LSM hook without return
+value and place it here:
 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index a38b3edc6851..074492d23e98 100644
+=2D-- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2751,6 +2751,8 @@ bool get_signal(struct ksignal *ksig)
+                        do_coredump(&ksig->info);
+                }
 
-If the CPU doesn't have a l2-cache element, then CPU not only has to set
-itself in the cpu_l2_cache but also the siblings. Otherwise it will so
-happen that the Siblings will have 4 Cpus set, and the Cache domain will
-have just one cpu set, leading to this BUG message.
++               // Add the new LSM hook here
++
+                /*
+                 * Death signals, no core dump.
+                 */
 
-Patch follows this mail.
+Thanks,
+John Wood
 
-> Node layout is:
-> 
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   0: [mem 0x0000000000000000-0x00000000ffffffff]
-> [    0.000000]   node   1: [mem 0x0000200000000000-0x00002000ffffffff]
-> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x00000000ffffffff]
-> [    0.000000] On node 0 totalpages: 65536
-> [    0.000000] Initmem setup node 1 [mem 0x0000200000000000-0x00002000ffffffff]
-> [    0.000000] On node 1 totalpages: 65536
-> 
-> 
-> There aren't any l2-cache properties in the device-tree under cpus.
-> 
-> I'll try and have a closer look tonight.
-> 
-> cheers
-
--- 
-Thanks and Regards
-Srikar Dronamraju
