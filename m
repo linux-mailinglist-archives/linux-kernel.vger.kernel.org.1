@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DCE26814A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECDE26814B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgIMVFb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:05:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41689 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726049AbgIMVEz (ORCPT
+        id S1726092AbgIMVFh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:05:37 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36950 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgIMVFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:04:55 -0400
+        Sun, 13 Sep 2020 17:05:01 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-0OO31HHyNqODwkIEtW8-qw-1; Sun, 13 Sep 2020 17:04:49 -0400
-X-MC-Unique: 0OO31HHyNqODwkIEtW8-qw-1
+ us-mta-4-qETf2qFUPxe894uLK0xPGQ-1; Sun, 13 Sep 2020 17:04:54 -0400
+X-MC-Unique: qETf2qFUPxe894uLK0xPGQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E1F91074651;
-        Sun, 13 Sep 2020 21:04:47 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27FE7801AAE;
+        Sun, 13 Sep 2020 21:04:52 +0000 (UTC)
 Received: from krava.redhat.com (ovpn-112-4.ams2.redhat.com [10.36.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B35A10021AA;
-        Sun, 13 Sep 2020 21:04:43 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 831BD1002388;
+        Sun, 13 Sep 2020 21:04:47 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 19/26] perf tools: Add buildid-list support for mmap3
-Date:   Sun, 13 Sep 2020 23:03:06 +0200
-Message-Id: <20200913210313.1985612-20-jolsa@kernel.org>
+Subject: [PATCH 20/26] perf tools: Add build_id_cache__add function
+Date:   Sun, 13 Sep 2020 23:03:07 +0200
+Message-Id: <20200913210313.1985612-21-jolsa@kernel.org>
 In-Reply-To: <20200913210313.1985612-1-jolsa@kernel.org>
 References: <20200913210313.1985612-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -58,46 +58,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add buildid-list support for mmap3 so we can display
-hit dso objects buildid with filename for mmap3 data:
-
-  $ perf buildid-list
-  1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
-  d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
+Adding build_id_cache__add function as core function
+that adds file into build id database. It will be
+sed from another callers in following changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/builtin-buildid-list.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ tools/perf/util/build-id.c | 42 ++++++++++++++++++++++++--------------
+ tools/perf/util/build-id.h |  2 ++
+ 2 files changed, 29 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/builtin-buildid-list.c b/tools/perf/builtin-buildid-list.c
-index e3ef75583514..adcc64478ec1 100644
---- a/tools/perf/builtin-buildid-list.c
-+++ b/tools/perf/builtin-buildid-list.c
-@@ -57,6 +57,7 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
- 		.mode  = PERF_DATA_MODE_READ,
- 		.force = force,
- 	};
-+	bool has_build_id;
+diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+index b281c97894e0..bf044e52ad1f 100644
+--- a/tools/perf/util/build-id.c
++++ b/tools/perf/util/build-id.c
+@@ -668,24 +668,15 @@ static char *build_id_cache__find_debug(const char *sbuild_id,
+ 	return realname;
+ }
  
- 	symbol__elf_init();
- 	/*
-@@ -77,6 +78,15 @@ static int perf_session__list_build_ids(bool force, bool with_hits)
- 	    perf_header__has_feat(&session->header, HEADER_AUXTRACE))
- 		with_hits = false;
+-int build_id_cache__add_s(const char *sbuild_id, const char *name,
+-			  struct nsinfo *nsi, bool is_kallsyms, bool is_vdso)
++int
++build_id_cache__add(const char *sbuild_id, const char *name, const char *realname,
++		    struct nsinfo *nsi, bool is_kallsyms, bool is_vdso)
+ {
+ 	const size_t size = PATH_MAX;
+-	char *realname = NULL, *filename = NULL, *dir_name = NULL,
+-	     *linkname = zalloc(size), *tmp;
++	char *filename = NULL, *dir_name = NULL, *linkname = zalloc(size), *tmp;
+ 	char *debugfile = NULL;
+ 	int err = -1;
  
-+	has_build_id = perf_header__has_feat(&session->header, HEADER_BUILD_ID);
+-	if (!is_kallsyms) {
+-		if (!is_vdso)
+-			realname = nsinfo__realpath(name, nsi);
+-		else
+-			realname = realpath(name, NULL);
+-		if (!realname)
+-			goto out_free;
+-	}
+-
+ 	dir_name = build_id_cache__cachedir(sbuild_id, name, nsi, is_kallsyms,
+ 					    is_vdso);
+ 	if (!dir_name)
+@@ -786,8 +777,6 @@ int build_id_cache__add_s(const char *sbuild_id, const char *name,
+ 		pr_debug4("Failed to update/scan SDT cache for %s\n", realname);
+ 
+ out_free:
+-	if (!is_kallsyms)
+-		free(realname);
+ 	free(filename);
+ 	free(debugfile);
+ 	free(dir_name);
+@@ -795,6 +784,29 @@ int build_id_cache__add_s(const char *sbuild_id, const char *name,
+ 	return err;
+ }
+ 
++int build_id_cache__add_s(const char *sbuild_id, const char *name,
++			  struct nsinfo *nsi, bool is_kallsyms, bool is_vdso)
++{
++	char *realname = NULL;
++	int err = -1;
 +
-+	/*
-+	 * We don't really show non hit dsos, keep that also for mmap3
-+	 * buildid data, we don't care about non hit dsos anyway.
-+	 */
-+	if (!has_build_id)
-+		with_hits = true;
++	if (!is_kallsyms) {
++		if (!is_vdso)
++			realname = nsinfo__realpath(name, nsi);
++		else
++			realname = realpath(name, NULL);
++		if (!realname)
++			goto out_free;
++	}
 +
- 	/*
- 	 * in pipe-mode, the only way to get the buildids is to parse
- 	 * the record stream. Buildids are stored as RECORD_HEADER_BUILD_ID
++	err = build_id_cache__add(sbuild_id, name, realname, nsi, is_kallsyms, is_vdso);
++
++out_free:
++	if (!is_kallsyms)
++		free(realname);
++	return err;
++}
++
+ static int build_id_cache__add_b(const u8 *build_id, size_t build_id_size,
+ 				 const char *name, struct nsinfo *nsi,
+ 				 bool is_kallsyms, bool is_vdso)
+diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
+index 2cf87b7304e2..6d1c7180047b 100644
+--- a/tools/perf/util/build-id.h
++++ b/tools/perf/util/build-id.h
+@@ -50,6 +50,8 @@ char *build_id_cache__complement(const char *incomplete_sbuild_id);
+ int build_id_cache__list_build_ids(const char *pathname, struct nsinfo *nsi,
+ 				   struct strlist **result);
+ bool build_id_cache__cached(const char *sbuild_id);
++int build_id_cache__add(const char *sbuild_id, const char *name, const char *realname,
++			struct nsinfo *nsi, bool is_kallsyms, bool is_vdso);
+ int build_id_cache__add_s(const char *sbuild_id,
+ 			  const char *name, struct nsinfo *nsi,
+ 			  bool is_kallsyms, bool is_vdso);
 -- 
 2.26.2
 
