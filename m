@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36A22680EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C684D2680EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgIMTIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 15:08:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57694 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgIMTIw (ORCPT
+        id S1725946AbgIMTLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 15:11:54 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:48942 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgIMTLx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 15:08:52 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600024130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MOZs2hWl6sjb+PNiSc9jNHa39SNQKuwpkNrnS0nI/1g=;
-        b=l/kgAkiKfyhVWliThcNrKcPiu2FqcGwizbD6S7RYY5nyCbpZsjvjluD2u551vjUVEXXLWd
-        x+gpspOdxYCsgh0tW/c+ltqQEms4cnta5zGCQYgRaQX+XIHuTbJeKlZAjGyn2WLiqTqGnx
-        DnQvZIaQ3YxC4VYj2INPN7lslmC5TPFGe1vTu1YcWtj1qPTg5PFByqMbmZWmnjWbsbnd3O
-        vth6UOq74SrqigeTGh88eGxbnQEF6ZT5ltk/2L0gtzKIJTE6rhysiaWZ9XJcURKPemhqEQ
-        IS3Dj3iCsfrUkQQTqd5q3mN5yzprZKkMMT7Y88JICpc6+9iqozUNTBrFOAkONQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600024130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MOZs2hWl6sjb+PNiSc9jNHa39SNQKuwpkNrnS0nI/1g=;
-        b=1U8zk/F4EUy6NbzfT3hQNfWR5d9M9WPvgUMgRU+Q/biuH0C68fxug/p3uas8dUli3TJXJw
-        h5f/b8hyDiDkmrBQ==
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Bo Gan <ganb@vmware.com>, Sharath George <sharathg@vmware.com>,
-        Srivatsa Bhat <srivatsab@vmware.com>,
-        Him Kalyan Bordoloi <bordoloih@vmware.com>
-Subject: Re: [REGRESSION] Needless shutting down of oneshot timer in nohz mode
-In-Reply-To: <20200911234816.474ad4bd@oasis.local.home>
-References: <20200911234816.474ad4bd@oasis.local.home>
-Date:   Sun, 13 Sep 2020 21:08:49 +0200
-Message-ID: <871rj5qyta.fsf@nanos.tec.linutronix.de>
+        Sun, 13 Sep 2020 15:11:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1600024312; x=1631560312;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=+VgAIgh+Py6mj3na0ijrCwl0Z/NjJ7JtWl8Awedh1FA=;
+  b=MUJf0WxysCxuB7+IlnMt+OjzfenZ2XbASqcIya6BGGbhdtBwdtI8fbQy
+   KOSCDRIbiTXZfSnmc3pRY3/ZyhmGS/+oXjbhmCoIMQIAD2+0Qseytz6T8
+   sov882jWnulzK+8/ZeDcy6RZx67Qq7jOm31BUji581HiJ8IPp7MBOfFy7
+   zUm9xzOxxnIcy9B0QPJXjvv7g5zsZ8DPR5Q9w3RLVFFHSCWIjj+5cB1Mq
+   h+f5TRWME/1oUsAzgqldAcp156QJ/zJGKUZZcl7KFO2EwOkDLkEBUOn+9
+   kmd+r1Rk9QoEN/6+Cn3kTLpE9oqY+Mx+bPIBJN9SGUUiez2P0/fASkIxE
+   g==;
+IronPort-SDR: WhudMxrX8gTYscexf1bBtUECJhaQfGrVZURQ5Z2R7JfYTIOwHxsjpQCYuDhfytqh/f9LMIDB3i
+ N0pCPkevfMA7Idm3l8J7Y6ZtKS/Al0/vF59HJmr5aUfLZlZhkkkLkmvxDloUC//WZkwtbEvRqn
+ KIHVHsz3Z1JCek9S+JDkSm0BF1Og1dQ6DvvBsZgQ9+052zvPc6nAnLMJHmjP8WQR9mwyXvTuzY
+ pSiugo+sD2jKWf2hWdWPZZ87U6BTeXINUOUQBL9bmLkNwRyNhCiZ8H15JSsuN9ciY5HjXhlI67
+ 9M0=
+X-IronPort-AV: E=Sophos;i="5.76,423,1592895600"; 
+   d="scan'208";a="95548931"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Sep 2020 12:11:51 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 13 Sep 2020 12:11:47 -0700
+Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Sun, 13 Sep 2020 12:11:45 -0700
+References: <20200903133528.8595-1-lars.povlsen@microchip.com> <20200903133528.8595-2-lars.povlsen@microchip.com> <CACRpkdZUQG1T_Bx5G275tSjDez0skDKGSc370B57FZ35NA6iEA@mail.gmail.com>
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: pinctrl: Add bindings for pinctrl-mchp-sgpio driver
+In-Reply-To: <CACRpkdZUQG1T_Bx5G275tSjDez0skDKGSc370B57FZ35NA6iEA@mail.gmail.com>
+Date:   Sun, 13 Sep 2020 21:11:48 +0200
+Message-ID: <87r1r5wky3.fsf@soft-dev15.microsemi.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -51,163 +65,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!,
 
-On Fri, Sep 11 2020 at 23:48, Steven Rostedt wrote:
-> The VMware PhotonOS team is evaluating 4.19-rt compared to CentOS
-> 3.10-rt (franken kernel from Red Hat). They found a regression between
-> the two kernels that was found to be introduced by:
->
->  d25408756accb ("clockevents: Stop unused clockevent devices")
->
-> The issue is running this on a guest, and it causes a noticeable wake
-> up latency in cyclictest. The 4.19-rt kernel has two extra apic
-> instructions causing for two extra VMEXITs to occur over the 3.10-rt
-> kernel. I found out the reason why, and this is true for vanilla 5.9-rc
-> as well.
->
-> When running isocpus with NOHZ_FULL, I see the following.
->
->   tick_nohz_idle_stop_tick() {
-> 	hrtimer_start_range_ns() {
-> 		remove_hrtimer(timer)
-> 			/* no more timers on the base */
-> 			expires = KTIME_MAX;
-> 			tick_program_event() {
-> 				clock_switch_state(ONESHOT_STOPPED);
-> 				/* call to apic to shutdown timer */
-> 			}
-> 		}
-> 		[..]
-> 		hrtimer_reprogram(timer) {
-> 			tick_program_event() {
-> 				clock_switch_state(ONESHOT);
-> 				/* call to apic to enable timer again! */
-> 		}
-> 	}
->  }
->
->
-> Thus, we are needlessly shutting down and restarting the apic every
-> time we call tick_nohz_stop_tick() if there is a timer still on the
-> queue.
->
-> I'm not exactly sure how to fix this. Is there a way we can hold off
-> disabling the clock here until we know that it isn't going to be
-> immediately enabled again?
+Linus Walleij writes:
 
-For the hrtimer_start_range_ns() case we can do that. Something like the
-completely untested below.
+> Hi Lars,
+>
+> thanks for your patch!
 
-Thanks,
+You're welcome - thank you for you taking time to review it!
 
-        tglx
----
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 95b6a708b040..9931a7f66e47 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -209,6 +209,9 @@ struct hrtimer_cpu_base *get_target_base(struct hrtimer_cpu_base *base,
- 	return base;
- }
- 
-+static void
-+hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal);
-+
- /*
-  * We switch the timer base to a power-optimized selected CPU target,
-  * if:
-@@ -223,7 +226,7 @@ struct hrtimer_cpu_base *get_target_base(struct hrtimer_cpu_base *base,
-  */
- static inline struct hrtimer_clock_base *
- switch_hrtimer_base(struct hrtimer *timer, struct hrtimer_clock_base *base,
--		    int pinned)
-+		    int pinned, bool *reprogram_old_base)
- {
- 	struct hrtimer_cpu_base *new_cpu_base, *this_cpu_base;
- 	struct hrtimer_clock_base *new_base;
-@@ -247,6 +250,23 @@ switch_hrtimer_base(struct hrtimer *timer, struct hrtimer_clock_base *base,
- 		if (unlikely(hrtimer_callback_running(timer)))
- 			return base;
- 
-+		/*
-+		 * The caller has removed the first expiring timer from
-+		 * @base, but avoided reprogramming the clocksource as it
-+		 * immediately enqueues a timer again. If the base stays
-+		 * the same and the removed timer was the only timer on
-+		 * that CPU base then reprogramming in hrtimer_remove()
-+		 * would shut down the clock event device just to restart
-+		 * it when the timer is enqueued.
-+		 *
-+		 * timer->base->lock is about to be dropped. Check whether
-+		 * the current base needs an update.
-+		 */
-+		if (*reprogram_old_base) {
-+			*reprogram_old_base = false;
-+			hrtimer_force_reprogram(base->cpu_base, 1);
-+		}
-+
- 		/* See the comment in lock_hrtimer_base() */
- 		WRITE_ONCE(timer->base, &migration_base);
- 		raw_spin_unlock(&base->cpu_base->lock);
-@@ -288,7 +308,12 @@ lock_hrtimer_base(const struct hrtimer *timer, unsigned long *flags)
- 	return base;
- }
- 
--# define switch_hrtimer_base(t, b, p)	(b)
-+static inline struct hrtimer_clock_base *
-+switch_hrtimer_base(struct hrtimer *timer, struct hrtimer_clock_base *base,
-+		    int pinned, bool *reprogram_old_base)
-+{
-+	return base;
-+}
- 
- #endif	/* !CONFIG_SMP */
- 
-@@ -1090,9 +1115,20 @@ static int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
- 				    struct hrtimer_clock_base *base)
- {
- 	struct hrtimer_clock_base *new_base;
-+	bool reprogram_old_base;
-+	int ret;
-+
-+	/*
-+	 * If this is the first expiring timer then after removing the
-+	 * timer the clock event needs to be reprogrammed. But if the timer
-+	 * stays on the same base then this might be a pointless exercise
-+	 * because it's immediately enqueued again. Store the state and
-+	 * delay reprogramming. See below.
-+	 */
-+	reprogram_old_base = timer == base->cpu_base->next_timer;
- 
- 	/* Remove an active timer from the queue: */
--	remove_hrtimer(timer, base, true);
-+	remove_hrtimer(timer, base, false);
- 
- 	if (mode & HRTIMER_MODE_REL)
- 		tim = ktime_add_safe(tim, base->get_time());
-@@ -1101,10 +1137,21 @@ static int __hrtimer_start_range_ns(struct hrtimer *timer, ktime_t tim,
- 
- 	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
- 
--	/* Switch the timer base, if necessary: */
--	new_base = switch_hrtimer_base(timer, base, mode & HRTIMER_MODE_PINNED);
-+	/*
-+	 * Switch the timer base, if necessary. It the timer was the first
-+	 * expiring timer and the timer base is switched then the old base
-+	 * is reprogrammed before dropping the cpu base lock. In that case
-+	 * reprogram_old_base is then set to false.
-+	 */
-+	new_base = switch_hrtimer_base(timer, base, mode & HRTIMER_MODE_PINNED,
-+				       &reprogram_old_base);
- 
--	return enqueue_hrtimer(timer, new_base, mode);
-+	ret = enqueue_hrtimer(timer, new_base, mode);
-+	if (reprogram_old_base) {
-+		hrtimer_force_reprogram(base->cpu_base, 1);
-+		ret = 0;
-+	}
-+	return ret;
- }
- 
- /**
+>
+> On Thu, Sep 3, 2020 at 3:35 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>
+>> This adds DT bindings for the Microsemi/Microchip SGPIO controller,
+>
+> What I do not understand is why this GPIO controller is placed in the
+> bindings of the pin controllers? Do you plan to add pin control
+> properties to the bindings in the future?
+
+I have made provisions for some of the generic pinconf parameters, and
+since the controller also has support for some alternate modes like
+(syncronized) blink at various rates, I thought I better add it as
+pinctrl straight away.
+
+>
+>> +description: |
+>> +  By using a serial interface, the SIO controller significantly extend
+>> +  the number of available GPIOs with a minimum number of additional
+>> +  pins on the device. The primary purpose of the SIO controllers is to
+>> +  connect control signals from SFP modules and to act as an LED
+>> +  controller.
+>
+> This doesn't sound like it will ever be pin control?
+
+above.
+
+>
+>> +  gpio-controller: true
+>> +
+>> +  '#gpio-cells':
+>> +    description: GPIO consumers must specify four arguments, first the
+>> +      port number, then the bit number, then a input/output flag and
+>> +      finally the GPIO flags (from include/dt-bindings/gpio/gpio.h).
+>> +      The dt-bindings/gpio/mchp-sgpio.h file define manifest constants
+>> +      PIN_INPUT and PIN_OUTPUT.
+>> +    const: 4
+>
+> I do not follow this new third input/output flag at all.
+>
+
+Its actually a sort of bank address, since the individual "pins" are
+unidirectional.
+
+The PIN_INPUT/PIN_OUTPUT is defined in similar fashion in other pinctrl
+binding header files... I can drop the define and use, but as it will be
+used to address individual pins, I think it adds to readability.
+
+Like this (excerpts from a DT with a switchdev driver using SFP's and
+LED's on sgpio):
+
+/{
+	leds {
+		compatible = "gpio-leds";
+		led@0 {
+			label = "eth60:yellow";
+			gpios = <&sgpio1 28 0 PIN_OUTPUT GPIO_ACTIVE_LOW>;
+			default-state = "off";
+		};
+		...
+	};
+};
+
+&axi {
+	sfp_eth60: sfp-eth60 {
+		compatible	   = "sff,sfp";
+		i2c-bus            = <&i2c152>;
+		tx-disable-gpios   = <&sgpio2 28 0 PIN_OUTPUT GPIO_ACTIVE_LOW>;
+		rate-select0-gpios = <&sgpio2 28 1 PIN_OUTPUT GPIO_ACTIVE_HIGH>;
+		los-gpios          = <&sgpio2 28 0 PIN_INPUT GPIO_ACTIVE_HIGH>;
+		mod-def0-gpios     = <&sgpio2 28 1 PIN_INPUT GPIO_ACTIVE_LOW>;
+		tx-fault-gpios     = <&sgpio2 28 2 PIN_INPUT GPIO_ACTIVE_HIGH>;
+	};
+	...
+};
+                
+> - If it is a property of the hardware, it is something the driver should
+>   handle by determining which hardware it is from the compatible
+>   string.
+>
+> - If it is a configuration it should be turned into something that is generic
+>   and useful for *all* GPIO controllers. If it is pin config it should use
+>   the pinconf bindings rather than shortcuts like this, but I think it is
+>   something the driver can do as an effect of the pin being requested
+>   as input or output in the operating system, depending on who the
+>   consumer is. Linux for example has GPIOD_OUT_LOW,
+>   GPIOD_OUT_HIGH, GPIOD_IN, GPIOD_ASIS...
+>
+> - Is it not just a hog? We have bindings for those.
+
+I hope the above shed some light on this.
+
+>
+>> +  microchip,sgpio-port-ranges:
+>> +    description: This is a sequence of tuples, defining intervals of
+>> +      enabled ports in the serial input stream. The enabled ports must
+>> +      match the hardware configuration in order for signals to be
+>> +      properly written/read to/from the controller holding
+>> +      registers. Being tuples, then number of arguments must be
+>> +      even. The tuples mast be ordered (low, high) and are
+>> +      inclusive. Arguments must be between 0 and 31.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    minItems: 2
+>> +    maxItems: 64
+>
+> And you are *absolutely sure* that you can't just figure this out
+> from the compatible string? Or add a few compatible strings for
+> the existing variants?
+>
+
+Yes, this really needs to be configured for each board individually -
+and cant be probed. It defines how the bitstream to/from the shift
+registers is constructed/demuxed.
+
+>> +  microchip,sgpio-frequency:
+>> +    description: The sgpio controller frequency (Hz). This dictates
+>> +      the serial bitstream speed, which again affects the latency in
+>> +      getting control signals back and forth between external shift
+>> +      registers. The speed must be no larger than half the system
+>> +      clock, and larger than zero.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    minimum: 1
+>> +    default: 12500000
+>
+> I understand why you need this binding now, OK.
+>
+>> +/* mchp-sgpio specific pin type defines */
+>> +#undef PIN_OUTPUT
+>> +#undef PIN_INPUT
+>> +#define PIN_OUTPUT     0
+>> +#define PIN_INPUT      1
+>
+> I'm not a fan of this. It seems like something that should be set in
+> response to the gpiochip callbacks .direction_input and
+> .direction_output callbacks.
+>
+
+As I tried to explain above, its a part of the pin address - aka bank
+selector - whether your are accessing the input or the output side. And
+since the directions have totally different - and concurrent - use, they
+need to be individually addressed, not "configured".
+
+In the example presented, sgpio2-p28b0 IN is loss-of-signal, and the
+OUT is the sfp tx-disable control.
+
+> Yours,
+> Linus Walleij
+
+---Lars
+
+-- 
+Lars Povlsen,
+Microchip
