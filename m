@@ -2,156 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349CD268062
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DFB26805D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgIMQ56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:57:58 -0400
-Received: from mout.gmx.net ([212.227.15.15]:43001 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbgIMQ5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:57:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600016191;
-        bh=2UfjObndGtW0Xq6W1Y2m5K5jmrf7PALFEYSIFTj3SRk=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Zc6U28KaEBYWrmUQ6T5i0/2G23L9udYWFnuge/OPiC8b9IfDTCU017y3rmUXYVxq0
-         kajCBw4nHacTh623DsBzar7JounEuziC0XpshmEWy8tQ1iRCEChC2G7oJueREwAIff
-         T9MBF+wDx6bYCnRsHxYmSSIbhLAoWxAjlFSktvPQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MG9kM-1kIdsZ0fZU-00Gaaf; Sun, 13
- Sep 2020 18:56:31 +0200
-Date:   Sun, 13 Sep 2020 18:56:12 +0200
-From:   John Wood <john.wood@gmx.com>
-To:     Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        John Wood <john.wood@gmx.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Subject: Re: [RFC PATCH 5/6] security/fbfam: Detect a fork brute force attack
-Message-ID: <20200913152724.GB2873@ubuntu>
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-6-keescook@chromium.org>
- <202009101634.52ED6751AD@keescook>
- <CAG48ez2fP7yupg6Th+Hg0tL3o06p2PR1HtQcvy4Ro+Q5T2Nfkw@mail.gmail.com>
+        id S1725970AbgIMQ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbgIMQ4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 12:56:48 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B490C06174A;
+        Sun, 13 Sep 2020 09:56:48 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id v14so2826627pjd.4;
+        Sun, 13 Sep 2020 09:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oABiSeqhfrSrB5GgtUZBeCSmiB7IhFQQoWXbblziWZg=;
+        b=Xdsz6TGTcIj0F7b1MF0L6jzdy3owXK60DvxQX5pxBkpZDoIoinIbGWJsFFYVVfI2mK
+         CXR15il+et/X7AIRjRtdAqEMu4fHaAyvv40gkdgOQes2buHhdc3nIofAmvTpLUmTCP0H
+         5Rh4E8mFWkHKTXc8zQ+PFkpEnywX4VuSHCUPktI6OEM1GeExTt1xhlc6hEfPt+7Ry/S3
+         o0mwkrGQLT8LbHtN8jEANBxP/2gKR4N33RInHUTGfOQqaQkVGefdzdYMVbxV1tKTVy8L
+         MFSwxgRXfnhGnUiy330dxCP/2a60QICW9zoUktkXW17zi5kyKJOpzJjQTK4Na0MFXyZd
+         X3NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oABiSeqhfrSrB5GgtUZBeCSmiB7IhFQQoWXbblziWZg=;
+        b=k4vj5yOySvnv22UsJ18tIFcQWEaQUm9CPNSffSpa+S/A1ZPktXwjnKhu+j0kehtY0T
+         6w9L/rxh0ayejsljwMhrJ4Tz51tes6xRgz2U3PJmcL/IGY6fONDVVy8emmTK6f78rk26
+         xs+D2XrIvS5y5SH4aeevQZ76u94MwI9e+nleQmbfl2MBGJ64X/GJ8OhlvaWcPVlMEUtO
+         ZMReMBpskjPgKY78ALJc7otrOg7fvMxPw+w3pvZr4RSUF/Xcy3RSsR3v267ndQiT3DIf
+         3XwxpmURBwjHCZRRT1TvgWy6cV3pm1Qb/CxNlrFQzcv6gW0MoqEYXWDxjd6xr4no1Yf3
+         iLmA==
+X-Gm-Message-State: AOAM530r3fYdwz15K7Gbera2ZKbkWWHPCSi6evSikXYFvqtAQfID9tOb
+        uV4ddEa1NIbuskQlV09dNYMr0sgS94Y=
+X-Google-Smtp-Source: ABdhPJxrDvd59/VSiIJcQ9eZ4FrQiwKmE1QDEStpD0P7fi55GgWDyTrd8GokAl0V5PQ8gTGZnfFkPg==
+X-Received: by 2002:a17:902:6b01:: with SMTP id o1mr10547602plk.40.1600016207742;
+        Sun, 13 Sep 2020 09:56:47 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id i15sm1330377pfk.145.2020.09.13.09.56.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 09:56:46 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 09:56:44 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiada Wang <jiada_wang@mentor.com>
+Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, digetx@gmail.com,
+        andy.shevchenko@gmail.com, erosca@de.adit-jv.com,
+        Andrew_Gabbasov@mentor.com
+Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
+Message-ID: <20200913165644.GF1665100@dtor-ws>
+References: <20200912005521.26319-1-jiada_wang@mentor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez2fP7yupg6Th+Hg0tL3o06p2PR1HtQcvy4Ro+Q5T2Nfkw@mail.gmail.com>
-X-Provags-ID: V03:K1:fFhuJz0gvsAKhyXIL51o/azcshQRL7L+66gcb+DURq+rQrGIfh5
- yGkKJ/8c9JYhC2pJjV5T/ERRgDmRmiBJ63C8lyiY2/w7LiCL/JkSkacipHQhE85+cpPDTRO
- eOmkxxwjRIo00I747W9FNP+lUDa+J7oVW4wVTRoysdyrtRTZaVEE9FcLtrcEYR3PHTyXTF2
- Z8jrzms0p4mPTKb94KV3A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9JDcq2+UbDI=:GRnECanaZF7QfeOPwoBV1a
- nO6OdYi+PZexCJ2o7AARPY2a6ebH5Ihvx642+JprXJAnuYC/BRiMMxIqEWoscM2svFEfjNmov
- +VXn1ahL3Z5KOa5+fnVBALBFGjftZPL4E5AG2s1vp6sLd9yuypx0hR6eyhMCwAh+xUACGpvpw
- BS8akPEcoTSIAUi01eHLWIcRClbXUssPu8bjkcFxGrrfbA6NX5JOgYDAZGWuTTBT8i36dLPqa
- a4wTP0EOwFSO8BkipUGkEg1OoyvbTpDUh4ScF/Z1+z738ELqAhWAuZdtT89frCqiB7hYwJH9z
- kRxGZuLz8ZhqS6bqpR+HgXFAPoR71DS+soH8btkwcbanjrDB5YA+OI/WWnzD5aXEOn08b2qY7
- BTd7mZyPuhgSmoFQbIQJj3J61nIk7NIgjbRJQBUnuhHSlC6h46hf1KHeZPBedm3XMT77LWXVs
- i+sZpr1g60OLNAe/6qUmcd4Ck9fryu6kKAR3RjULSmG9OH6ODtRURThaYGsDP0AdDl1NI2Hlk
- clXGmkEWOjYOJyU9vQsBJNK7XjHwAX/Y2ZFoOueKnk4BknlrNg95gvW3n1/dfHwEMMAVbIBoC
- s4oERFDoi+yza5XwP4obNOPuXVpkVW5ESDL91QMDAes59k4e6jSsdN8vQbg/KOl42IrVlKxPz
- PNSBO0dW/HGzHjTpX/uVrNFjinwANOA6TEVMV/jAqoKuK6/KuQjFX/NYHHbXkEjigeIYuKCoQ
- 7OXQBV8tIwgRuZYhaKcqTMTc7JkWZK8d3SLxv3UO/JsXz2mW6HO/3aZAfQPitSsl7fSo/+X0+
- bKP8nJsqEZnUcHF3CXy1KK6brIYYTkYX9fLLkFYjP/RWuUg+hvynGlrQnrwMsXY7YhT006b27
- 3MB3GzxedAdO2eNPyCis8xiOYWP57FbZVChO5YFzv92ShUC95pDdK/Ek0cH+N4TepcIkv/sRR
- 2kxCqmBpKNUrzmrHiZEAt2hy7yJ6XudokJmOOyBnllDWZE8cw0uVi9V3eHnVR6w5Y2HzLFMLv
- KeAJFLHhfdAS0HyhaXO2Jh7mP/0ZG2VuvV2AdlYRwsO2u6vfImM1GEmFcTag/snw5vWAZC4ws
- nu5NXkY07Urkr6RSY4YXryNnkV1Yb12jo4s0qx9LwNeBKqg/gbIdWYDJMinutQSRSLBbAscSb
- PM2hDJn62xykg+85Qt91p2TXsgTTACadg8BgzUVBPx4XbPiAHtEFSngCyuwIHDf+EZffSbzZ2
- Ox4mBFjRtTEQhJN8P7RoFK4ho+VRVaYeEHPQYAw==
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200912005521.26319-1-jiada_wang@mentor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Jiada,
 
-On Fri, Sep 11, 2020 at 02:01:56AM +0200, Jann Horn wrote:
-> On Fri, Sep 11, 2020 at 1:49 AM Kees Cook <keescook@chromium.org> wrote:
-> > On Thu, Sep 10, 2020 at 01:21:06PM -0700, Kees Cook wrote:
-> > > diff --git a/fs/coredump.c b/fs/coredump.c
-> > > index 76e7c10edfc0..d4ba4e1828d5 100644
-> > > --- a/fs/coredump.c
-> > > +++ b/fs/coredump.c
-> > > @@ -51,6 +51,7 @@
-> > >  #include "internal.h"
-> > >
-> > >  #include <trace/events/sched.h>
-> > > +#include <fbfam/fbfam.h>
-> > >
-> > >  int core_uses_pid;
-> > >  unsigned int core_pipe_limit;
-> > > @@ -825,6 +826,7 @@ void do_coredump(const kernel_siginfo_t *siginfo=
-)
-> > >  fail_creds:
-> > >       put_cred(cred);
-> > >  fail:
-> > > +     fbfam_handle_attack(siginfo->si_signo);
-> >
-> > I don't think this is the right place for detecting a crash -- isn't
-> > this only for the "dumping core" condition? In other words, don't you
-> > want to do this in get_signal()'s "fatal" block? (i.e. very close to t=
-he
-> > do_coredump, but without the "should I dump?" check?)
-> >
-> > Hmm, but maybe I'm wrong? It looks like you're looking at noticing the
-> > process taking a signal from SIG_KERNEL_COREDUMP_MASK ?
-> >
-> > (Better yet: what are fatal conditions that do NOT match
-> > SIG_KERNEL_COREDUMP_MASK, and should those be covered?)
-> >
-> > Regardless, *this* looks like the only place without an LSM hook. And =
-it
-> > doesn't seem unreasonable to add one here. I assume it would probably
-> > just take the siginfo pointer, which is also what you're checking.
->
-> Good point, making this an LSM might be a good idea.
->
-> > e.g. for include/linux/lsm_hook_defs.h:
-> >
-> > LSM_HOOK(int, 0, task_coredump, const kernel_siginfo_t *siginfo);
->
-> I guess it should probably be an LSM_RET_VOID hook? And since, as you
-> said, it's not really semantically about core dumping, maybe it should
-> be named task_fatal_signal or something like that.
+On Sat, Sep 12, 2020 at 09:55:21AM +0900, Jiada Wang wrote:
+> From: Nick Dyer <nick.dyer@itdev.co.uk>
+> 
+> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
+> when they are in a sleep state. It must be retried after a delay for the
+> chip to wake up.
 
-If I understand correctly you propose to add a new LSM hook without return
-value and place it here:
+Do we know when the chip is in sleep state? Can we do a quick I2C
+transaction in this case instead of adding retry logic to everything? Or
+there is another benefit for having such retry logic?
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index a38b3edc6851..074492d23e98 100644
-=2D-- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2751,6 +2751,8 @@ bool get_signal(struct ksignal *ksig)
-                        do_coredump(&ksig->info);
-                }
+Thanks.
 
-+               // Add the new LSM hook here
-+
-                /*
-                 * Death signals, no core dump.
-                 */
-
-Thanks,
-John Wood
-
+-- 
+Dmitry
