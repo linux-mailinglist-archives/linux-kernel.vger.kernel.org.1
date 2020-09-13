@@ -2,179 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE165267D3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 04:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31301267D43
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 04:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725950AbgIMCab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 22:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgIMCaa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 22:30:30 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2483C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 19:30:29 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id g96so11740929otb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 19:30:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RyfFJ70RkJHTOwuSGlCdMHJ4aUWr+HPEs+MneGweLn0=;
-        b=uTClnRFl+9+ZgioCXvlfQfYpetDGKRgeOfCkc4vQio8mjRr7M+btPQ4dEYUdhURMP9
-         vqHc05e/ATHypAyrFISzZRkiQcbjN5CKUK951AG3CKBNj+FzgIBaHN+4QzasHWFsxV6U
-         pvSCkmF1+v5UIzz7tdBMLNJVm1DDAkcqReRAzMEzKdCeAr7ZEWoJXhoH0vLRs2T0/xf/
-         NsDqStNfnJNbkouHMx/u+3FXfuJLt8bTq+oWWIkgBr663YZDMMQ1L4ESDn5aOkzyF7im
-         nKS8R7zCimbl/Qo9rP7ybQrBQN9Np7NdN5cx50yJ/iNBmmoabmikErhyh738sey9jreb
-         bs3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RyfFJ70RkJHTOwuSGlCdMHJ4aUWr+HPEs+MneGweLn0=;
-        b=soa4VYbZr+7eP4p8yBD332GUHoErqTmnB1Yeyj9thQdAT7/sJAqzDdVEqzfON7qSpG
-         YfoQ5n0Sp9euy1fYT4eswayR49FRB0mowCQ+WJElMbEtMywNMdcnKiguBV281LImwHYP
-         JFWQ/zH3pQeRjRkpr1Ki3+ztQN6EI4B6HHm3LKqrnmVOgJgrXkY9aEjgE1hqr6ZsU5Q5
-         zzRlMQ+3swMSAp8AUUILHpQqZFbyhB6Uzlr3KSkkLzYRk267j8MROcEex9uWo7IbC/Io
-         8jdLMFnWG7wyEvGD1zuDXLHtkYYjFL557xlahyFbV8PPe0frbg+EULnDNN0DOponQgPi
-         S/Qw==
-X-Gm-Message-State: AOAM531ffMrbL40Pbb1FIbj7V8VktQtfnblbRzWmGYmJodW/wxnQFL/K
-        FFtptwWgrb8+TZc2PWEA+CWH1g==
-X-Google-Smtp-Source: ABdhPJwe3Y2+VepqzhmG/T3I/I9H2R9jVyBfe9MN0wYhNUAZLo7SuwtjPVappmkHCr3bRSIHVJVa8g==
-X-Received: by 2002:a9d:5eb:: with SMTP id 98mr5693925otd.317.1599964228964;
-        Sat, 12 Sep 2020 19:30:28 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id a5sm1172516oti.30.2020.09.12.19.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 19:30:28 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 21:30:25 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
-        subashab@codeaurora.org, cpratapa@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 4/7] net: ipa: manage endpoints separate from
- clock
-Message-ID: <20200913023025.GN3715@yoga>
-References: <20200912004532.1386-1-elder@linaro.org>
- <20200912004532.1386-5-elder@linaro.org>
+        id S1725953AbgIMCcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 22:32:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725907AbgIMCcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 22:32:03 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A8C720731;
+        Sun, 13 Sep 2020 02:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599964321;
+        bh=6QjRX2df8XaG6kRVKUKdd183lBDC+CGc81pBPbkOMQk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QD/tNThepmuXKvQkvCRrBMfL8tXd39C2aw4PoHK0s9I6VJEOCSxOeqN0hITpgfh8C
+         vVae/kU7BXjMlz1p7mltgd+RZQWhhtKbM62mK+UA3O83DT/J5LX82BviKgw75IUli3
+         PFqipygVt2ahoOYy0m6PWLbJH91M6Uc9/NGVvGco=
+Date:   Sun, 13 Sep 2020 10:31:53 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Tim Harvey <tharvey@gateworks.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Adam Ford <aford173@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Robin Gong <yibin.gong@nxp.com>,
+        Alifer Moraes <alifer.wsdm@gmail.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 1/8] ARM: dts: imx6qdl: Correct interrupt flags in
+ examples
+Message-ID: <20200913023152.GH25109@dragon>
+References: <20200908150241.5771-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200912004532.1386-5-elder@linaro.org>
+In-Reply-To: <20200908150241.5771-1-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 11 Sep 19:45 CDT 2020, Alex Elder wrote:
+Add Tim who is the board owner.
 
-> Currently, when (before) the last IPA clock reference is dropped,
-> all endpoints are suspended.  And whenever the first IPA clock
-> reference is taken, all endpoints are resumed (or started).
+On Tue, Sep 08, 2020 at 05:02:34PM +0200, Krzysztof Kozlowski wrote:
+> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+> These are simple defines so they could be used in DTS but they will not
+> have the same meaning:
+> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 > 
-> In most cases there's no need to start endpoints when the clock
-> starts.  So move the calls to ipa_endpoint_suspend() and
-> ipa_endpoint_resume() out of ipa_clock_put() and ipa_clock_get(),
-> respectiely.  Instead, only suspend endpoints when handling a system
-> suspend, and only resume endpoints when handling a system resume.
+> Correct the interrupt flags, assuming the author of the code wanted some
+> logical behavior behind the name "ACTIVE_xxx", this is:
+>   ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
 > 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The subject prefix could be a bit more specific, like 'ARM: dts:
+imx6qdl-gw5xxx'.  Also, I do not quite understand meaning of 'in
+examples' in subject.
 
-Regards,
-Bjorn
+Shawn
 
-> Signed-off-by: Alex Elder <elder@linaro.org>
+> 
 > ---
->  drivers/net/ipa/ipa_clock.c | 14 ++++----------
->  drivers/net/ipa/ipa_main.c  |  8 ++++++++
->  2 files changed, 12 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
-> index b703866f2e20b..a2c0fde058199 100644
-> --- a/drivers/net/ipa/ipa_clock.c
-> +++ b/drivers/net/ipa/ipa_clock.c
-> @@ -200,9 +200,8 @@ bool ipa_clock_get_additional(struct ipa *ipa)
+> Not tested on HW.
+> ---
+>  arch/arm/boot/dts/imx6qdl-gw51xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw52xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw53xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw54xx.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw551x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw552x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw553x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw560x.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5903.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5904.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5907.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5910.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5912.dtsi | 3 ++-
+>  arch/arm/boot/dts/imx6qdl-gw5913.dtsi | 3 ++-
+>  14 files changed, 28 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
+> index 4d01c3300b97..3c04b5a4f3cb 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw51xx.dtsi
+> @@ -5,6 +5,7 @@
 >  
->  /* Get an IPA clock reference.  If the reference count is non-zero, it is
->   * incremented and return is immediate.  Otherwise it is checked again
-> - * under protection of the mutex, and if appropriate the clock (and
-> - * interconnects) are enabled suspended endpoints (if any) are resumed
-> - * before returning.
-> + * under protection of the mutex, and if appropriate the IPA clock
-> + * is enabled.
->   *
->   * Incrementing the reference count is intentionally deferred until
->   * after the clock is running and endpoints are resumed.
-> @@ -229,17 +228,14 @@ void ipa_clock_get(struct ipa *ipa)
->  		goto out_mutex_unlock;
->  	}
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
 >  
-> -	ipa_endpoint_resume(ipa);
-> -
->  	refcount_set(&clock->count, 1);
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -152,7 +153,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
+> index f6182a9d201c..736074f1c3ef 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
+> @@ -5,6 +5,7 @@
 >  
->  out_mutex_unlock:
->  	mutex_unlock(&clock->mutex);
->  }
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
 >  
-> -/* Attempt to remove an IPA clock reference.  If this represents the last
-> - * reference, suspend endpoints and disable the clock (and interconnects)
-> - * under protection of a mutex.
-> +/* Attempt to remove an IPA clock reference.  If this represents the
-> + * last reference, disable the IPA clock under protection of the mutex.
->   */
->  void ipa_clock_put(struct ipa *ipa)
->  {
-> @@ -249,8 +245,6 @@ void ipa_clock_put(struct ipa *ipa)
->  	if (!refcount_dec_and_mutex_lock(&clock->count, &clock->mutex))
->  		return;
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -217,7 +218,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
+> index a28e79463d0c..8072ed47c6bb 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw53xx.dtsi
+> @@ -5,6 +5,7 @@
 >  
-> -	ipa_endpoint_suspend(ipa);
-> -
->  	ipa_clock_disable(ipa);
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
 >  
->  	mutex_unlock(&clock->mutex);
-> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-> index cfdf60ded86ca..3b68b53c99015 100644
-> --- a/drivers/net/ipa/ipa_main.c
-> +++ b/drivers/net/ipa/ipa_main.c
-> @@ -913,11 +913,15 @@ static int ipa_remove(struct platform_device *pdev)
->   * Return:	Always returns zero
->   *
->   * Called by the PM framework when a system suspend operation is invoked.
-> + * Suspends endpoints and releases the clock reference held to keep
-> + * the IPA clock running until this point.
->   */
->  static int ipa_suspend(struct device *dev)
->  {
->  	struct ipa *ipa = dev_get_drvdata(dev);
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -210,7 +211,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
+> index 55f368e192c0..8c9bcdd39830 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw54xx.dtsi
+> @@ -5,6 +5,7 @@
 >  
-> +	ipa_endpoint_suspend(ipa);
-> +
->  	ipa_clock_put(ipa);
->  	if (!test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
->  		dev_err(dev, "suspend: missing suspend clock reference\n");
-> @@ -932,6 +936,8 @@ static int ipa_suspend(struct device *dev)
->   * Return:	Always returns 0
->   *
->   * Called by the PM framework when a system resume operation is invoked.
-> + * Takes an IPA clock reference to keep the clock running until suspend,
-> + * and resumes endpoints.
->   */
->  static int ipa_resume(struct device *dev)
->  {
-> @@ -945,6 +951,8 @@ static int ipa_resume(struct device *dev)
->  	else
->  		dev_err(dev, "resume: duplicate suspend clock reference\n");
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/sound/fsl-imx-audmux.h>
 >  
-> +	ipa_endpoint_resume(ipa);
-> +
->  	return 0;
->  }
+>  / {
+> @@ -247,7 +248,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#address-cells = <1>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+> index 1516e2b0bcde..e5d803d023c8 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+> @@ -48,6 +48,7 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/media/tda1997x.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/sound/fsl-imx-audmux.h>
 >  
+>  / {
+> @@ -219,7 +220,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> index 0da6e6f7482b..290a607fede9 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> @@ -5,6 +5,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -144,7 +145,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw553x.dtsi b/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
+> index faf9a3ba61b2..c15b9cc63bf8 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw553x.dtsi
+> @@ -47,6 +47,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -180,7 +181,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
+> index f68f9dada5b0..093a219a77ae 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw560x.dtsi
+> @@ -47,6 +47,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -294,7 +295,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+> index fbe6c32bd756..e1c8dd233cab 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5903.dtsi
+> @@ -47,6 +47,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	chosen {
+> @@ -235,7 +236,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5904.dtsi b/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
+> index 23c6e4047621..3cd2e717c1da 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5904.dtsi
+> @@ -47,6 +47,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -257,7 +258,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5907.dtsi b/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
+> index b1ff7c859c4d..21c68a55bcb9 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5907.dtsi
+> @@ -5,6 +5,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -154,7 +155,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5910.dtsi b/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
+> index 6c943a517ad7..ed4e22259959 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5910.dtsi
+> @@ -5,6 +5,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -163,7 +164,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5912.dtsi b/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
+> index 441d8ce97aa4..797f160249f7 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5912.dtsi
+> @@ -5,6 +5,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -158,7 +159,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#address-cells = <1>;
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw5913.dtsi b/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
+> index d62a8da49367..4cd7d290f5b2 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw5913.dtsi
+> @@ -5,6 +5,7 @@
+>  
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+>  
+>  / {
+>  	/* these are used by bootloader for disabling nodes */
+> @@ -139,7 +140,7 @@
+>  		compatible = "gw,gsc";
+>  		reg = <0x20>;
+>  		interrupt-parent = <&gpio1>;
+> -		interrupts = <4 GPIO_ACTIVE_LOW>;
+> +		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
+>  		interrupt-controller;
+>  		#interrupt-cells = <1>;
+>  		#size-cells = <0>;
 > -- 
-> 2.20.1
+> 2.17.1
 > 
