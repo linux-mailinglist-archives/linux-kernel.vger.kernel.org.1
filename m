@@ -2,185 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD69268029
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A3326802F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbgIMQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:13:14 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56946 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgIMQNG (ORCPT
+        id S1725950AbgIMQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgIMQPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:13:06 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DG9OC8102488;
-        Sun, 13 Sep 2020 16:11:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ug0tMzhluITQTcoGBeWBNqEK3Yug8rBXAC6fgIlchDU=;
- b=SGgTGK+RK3OiyWtYLGQOkQWO6TxPRTZe31NbqbWSTDslO/HSCF4bAjkuVmTsVDmSLt9c
- 7ZmnWCjcRCcYFtBwP+0ELWehwh5qUT+YBCNZY6Kfv7L9j/G3WuLJHmo0EbP5RGc8yNvx
- xC6slVYdm0SaZ2DyWu9zL9rKBfa0/zyD1pRVWX54g3iKKi4sOz3wgStkwJ96zw4dH7yV
- O/FHSxCZgbr9Fe/fALWz6TSCrt5Mkazmbnt7bjKMlEXitqMlnyJmk720xLGNQfKlg2gC
- g9Yh7CTNozWFqcKcvKIP7oiBMlO2dk9J0zHE9Uy6PjR79FCDlbJvcKxlcTRQIAXZCp0j SA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33gp9ku4ds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 13 Sep 2020 16:11:57 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DG5vgQ160957;
-        Sun, 13 Sep 2020 16:11:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 33h7wjtmd7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Sep 2020 16:11:57 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08DGBrTb013868;
-        Sun, 13 Sep 2020 16:11:53 GMT
-Received: from [10.74.86.192] (/10.74.86.192)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 13 Sep 2020 16:11:53 +0000
-Subject: Re: [PATCH v3 02/11] xenbus: add freeze/thaw/restore callbacks
- support
-To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        jgross@suse.com, linux-pm@vger.kernel.org, linux-mm@kvack.org,
-        kamatam@amazon.com, sstabellini@kernel.org, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
-        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
-        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dwmw@amazon.co.uk, benh@kernel.crashing.org
-References: <cover.1598042152.git.anchalag@amazon.com>
- <2d3a7ed32bf38e13e0141a631a453b6e4c7ba5dc.1598042152.git.anchalag@amazon.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <eebc26b8-f1b1-3bea-5366-dd77f063237e@oracle.com>
-Date:   Sun, 13 Sep 2020 12:11:47 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        Sun, 13 Sep 2020 12:15:45 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56837C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 09:15:44 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id s14so296684pju.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 09:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gxRhW0q4qHba4ZEu7vFkAhq6kKTQeSQtKSIqomEo05s=;
+        b=IVb33OPbuWUMxtLqCPROtKsWJGRe3DLaIo11HwC/99jf1H4P6CQyAM/meGhHnXcO4Z
+         SpsJ6luI87yqCMKxCuEbEtOrVCDFJgv4xL0JDzcSMoEp9Gupx3DTbgtiRp7aYm8hoOq+
+         y7Wjz9GP3obFYwrOtjuE4204K1DEsEvY0xDw5sAWOqRSot7thugx95kRLX1oC+dHE468
+         ZB9PTjkktrVq6KJrOXPjYaUQmxXeEUfbzq9ib542IP5sIT4i6TzyLuN/WLtchSUCzxPp
+         U9NHBR1QpqYkqKEkGNQS0nXtpBZA+02qkyWPJrpMd4kWw8h7JkRJ+J5kSDEl334qut6x
+         clfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gxRhW0q4qHba4ZEu7vFkAhq6kKTQeSQtKSIqomEo05s=;
+        b=CddsNJjtIWTqzsm/Vf+iYu+XiA4mT39d+py0ehlMfg21t5Sykja9n1MfOB8O8rzS9s
+         6XH9pCVr1h/wWBCPl1AzIGUq5uxZTlvjS4skehMI2ISU34wEYnIrHtb0YwCrDhlmzgqv
+         meFRruS6omSV1PMg/pBCAeAHbKVQgA+7P5Dg+au0uiK4ht2zCqy6yMgL/X/kERedW8nV
+         nY4PrN8+ZPT6573dgIBXd+g8yhDStG8kFl0dTGOFcyu2766mwAjeSPEWSGyMUokMIWx2
+         q7hznxRlT27NpGV/7F7h0OXCrvhwDzeLjYK+zB5Xhyyijnt7J7m8GCR3XQnlc4kqdXcr
+         eVeQ==
+X-Gm-Message-State: AOAM531k/QlSkPFBb+pXWbPOzt6qUK29q3Kc1hzwkhP5LylyAhSzMdD5
+        8hgqI63AOj/AodiZ/8xRDyg=
+X-Google-Smtp-Source: ABdhPJworav/VebiBiIRtBtZQXgd4+pygu0xh8WhqVaUZ1eVeTVt9Lmr6KCC5X5zwK/XXBPjIYpR1w==
+X-Received: by 2002:a17:902:fe08:: with SMTP id g8mr10563529plj.122.1600013742075;
+        Sun, 13 Sep 2020 09:15:42 -0700 (PDT)
+Received: from Thiru.localdomain ([27.104.143.83])
+        by smtp.gmail.com with ESMTPSA id c202sm7833953pfc.15.2020.09.13.09.15.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 09:15:41 -0700 (PDT)
+From:   Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shivamurthy Shastri <sshivamurthy@micron.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+Subject: [PATCH v4 0/2] Add support for micron SPI NAND MT29F2G01AAAED
+Date:   Mon, 14 Sep 2020 00:15:31 +0800
+Message-Id: <20200913161533.10655-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <2d3a7ed32bf38e13e0141a631a453b6e4c7ba5dc.1598042152.git.anchalag@amazon.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009130145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=2 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009130145
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adding support for Micron SPI NAND MT29F2G01AAAED device and generalised
+the structure & function names as per the review comments
 
-On 8/21/20 6:26 PM, Anchal Agarwal wrote:
-> From: Munehisa Kamata <kamatam@amazon.com> 
->
-> Since commit b3e96c0c7562 ("xen: use freeze/restore/thaw PM events for
-> suspend/resume/chkpt"), xenbus uses PMSG_FREEZE, PMSG_THAW and
-> PMSG_RESTORE events for Xen suspend. However, they're actually assigned
-> to xenbus_dev_suspend(), xenbus_dev_cancel() and xenbus_dev_resume()
-> respectively, and only suspend and resume callbacks are supported at
-> driver level. To support PM suspend and PM hibernation, modify the bus
-> level PM callbacks to invoke not only device driver's suspend/resume but
-> also freeze/thaw/restore.
->
-> Note that we'll use freeze/restore callbacks even for PM suspend whereas
-> suspend/resume callbacks are normally used in the case, becausae the
-> existing xenbus device drivers already have suspend/resume callbacks
-> specifically designed for Xen suspend.
+v4: Split patch into two parts,
+    1. Generalise the oob structure & function names as show in v3
+    2. Add support for MT29F2G01AAAED device
+       a. Add oob generic section check in the function micron_ooblayout_free
+       b. Rename mt29f2g01aaaed_* to generic name micron_4_*
 
+v3: As per the review comments,
+     1. Renamed read_cache_variants as quadio_read_cache_variants,
+write_cache_variants as x4_write_cache_variants/x1_write_cache_variants,
+update_cache_variants as x4_update_cache_variants/x1_update_cache_variants,
+read_cache_variants as x4_read_cache_variants
+     2. Renamed micron_8_ooblayout as micron_grouped_ooblayout &
+mt29f2g01aaaed_ooblayout as micron_interleaved_ooblayout
+     3. Generalized page size based oob section check in
+mt29f2g01aaaed_ooblayout_ecc function
+      and separate case check for two bytes BBM reserved in
+mt29f2g01aaaed_ooblayout_free function
+     4. Removed mt29f2g01aaaed_ecc_get_status function &
+MICRON_STATUS_ECC_1TO4_BITFLIPS
 
-Something is wrong with this sentence. Or with my brain --- I can't
-quite parse this.
+v2: Removed SPINAND_SELECT_TARGET as per the comments & fixed typo
+errors
 
+v1: Add support for Micron SPI Nand device MT29F2G01AAAED
 
-And please be consistent with "PM suspend" vs. "PM hibernation".
+Thirumalesha Narasimhappa (2):
+  mtd: spinand: micron: Generalize the function and structure names
+  mtd: spinand: micron: add support for MT29F2G01AAAED
 
+ drivers/mtd/nand/spi/micron.c | 144 ++++++++++++++++++++++++----------
+ 1 file changed, 104 insertions(+), 40 deletions(-)
 
->  So we can allow the device
-> drivers to keep the existing callbacks wihtout modification.
->
-
-
-> @@ -599,16 +600,33 @@ int xenbus_dev_suspend(struct device *dev)
->  	struct xenbus_driver *drv;
->  	struct xenbus_device *xdev
->  		= container_of(dev, struct xenbus_device, dev);
-> +	bool xen_suspend = is_xen_suspend();
->  
->  	DPRINTK("%s", xdev->nodename);
->  
->  	if (dev->driver == NULL)
->  		return 0;
->  	drv = to_xenbus_driver(dev->driver);
-> -	if (drv->suspend)
-> -		err = drv->suspend(xdev);
-> -	if (err)
-> -		dev_warn(dev, "suspend failed: %i\n", err);
-> +	if (xen_suspend) {
-> +		if (drv->suspend)
-> +			err = drv->suspend(xdev);
-> +	} else {
-> +		if (drv->freeze) {
-
-
-'else if' (to avoid extra indent level).  In xenbus_dev_resume() too.
-
-
-> +			err = drv->freeze(xdev);
-> +			if (!err) {
-> +				free_otherend_watch(xdev);
-> +				free_otherend_details(xdev);
-> +				return 0;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (err) {
-> +		dev_warn(&xdev->dev,
-
-
-Is there a reason why you replaced dev with xdev->dev (here and elsewhere)?
-
-
->  "%s %s failed: %d\n", xen_suspend ?
-> +				"suspend" : "freeze", xdev->nodename, err);
-> +		return err;
-> +	}
-> +
->  	
-
-> @@ -653,8 +683,44 @@ EXPORT_SYMBOL_GPL(xenbus_dev_resume);
->  
->  int xenbus_dev_cancel(struct device *dev)
->  {
-> -	/* Do nothing */
-> -	DPRINTK("cancel");
-> +	int err;
-> +	struct xenbus_driver *drv;
-> +	struct xenbus_device *xendev = to_xenbus_device(dev);
-
-
-xdev for consistency please.
-
-
-> +	bool xen_suspend = is_xen_suspend();
-
-
-No need for this, you use it only once anyway.
-
-
--boris
-
+-- 
+2.25.1
 
