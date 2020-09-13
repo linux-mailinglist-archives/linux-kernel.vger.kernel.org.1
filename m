@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA1C2680BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7616D2680BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbgIMSVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 14:21:50 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:11279 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725936AbgIMSVs (ORCPT
+        id S1725962AbgIMS1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 14:27:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57550 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbgIMS11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 14:21:48 -0400
-X-IronPort-AV: E=Sophos;i="5.76,422,1592838000"; 
-   d="scan'208";a="56924822"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 14 Sep 2020 03:21:46 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 2247940B696E;
-        Mon, 14 Sep 2020 03:21:43 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH v2] media: rcar-vin: Update crop and compose settings for every s_fmt call
-Date:   Sun, 13 Sep 2020 19:21:40 +0100
-Message-Id: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 13 Sep 2020 14:27:27 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600021644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oMJtr2JqN0kiR0GwnxtFMazq99OS4VS1oSm7b6RaJJI=;
+        b=JApFJsFIE09rG1/wKIq7C2ldW8nsOc/YlZnAzu4PoH4i5Vg5OTQ/Qq7BDop274ufYS4FvX
+        KzZmUMcW1rjmi4dXDRQSSD6wD9+Qe+Scdxe5wMKqyxbc1B4jl2xoqT1I+7IhZAXMbANwn2
+        V7hjNH8p84vVU4kWWLqlnZgGoYbktmvS4YSt9O/g+z0JUS+rpyu27zahpqJiaH2w/JYjKX
+        62prwzOJfBS+4DX1bqQtRtcQWFNz5wfBEkZfLl49lHFkWWWCdO18BObk+a+noXUYufIalc
+        r08KwpToXkToo2X+gemB6+YohtIODK7oWoMMiCZ7qXIsqgPRu77CnP3h4jns3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600021644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oMJtr2JqN0kiR0GwnxtFMazq99OS4VS1oSm7b6RaJJI=;
+        b=javeHOqMh8camHOqoHhky7mRCIFcwAQJ4n5f0CfBB7PyTjmoQFv9Qlwb1Za3nHcZjcAdkD
+        0al/trQBmpGRaACw==
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Robert O'Callahan <rocallahan@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer\:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
+        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kyle Huey <me@kylehuey.com>
+Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to change the syscall number at entry via orig_ax
+In-Reply-To: <87d02qqfxy.fsf@mpe.ellerman.id.au>
+References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com> <87blj6ifo8.fsf@nanos.tec.linutronix.de> <87a6xzrr89.fsf@mpe.ellerman.id.au> <202009111609.61E7875B3@keescook> <87d02qqfxy.fsf@mpe.ellerman.id.au>
+Date:   Sun, 13 Sep 2020 20:27:23 +0200
+Message-ID: <87o8m98rck.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The crop and compose settings for VIN in non mc mode werent updated
-in s_fmt call this resulted in captured images being clipped.
+On Sun, Sep 13 2020 at 17:44, Michael Ellerman wrote:
+> Kees Cook <keescook@chromium.org> writes:
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index 18683598edbc..901361e2f8ea 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+>                         return ret;
+>         }
+>  
+> +       syscall = syscall_get_nr(current, regs);
+> +
+>         if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+>                 trace_sys_enter(regs, syscall);
+>  
+>         syscall_enter_audit(regs, syscall);
+>  
+>         /* The above might have changed the syscall number */
+> -       return ret ? : syscall_get_nr(current, regs);
+> +       return ret ? : syscall;
+>  }
 
-With the below sequence on the third capture where size is set to
-640x480 resulted in clipped image of size 320x240.
+Yup, this looks right. Can you please send a proper patch?
 
-high(640x480) -> low (320x240) -> high (640x480)
+Thanks,
 
-This patch makes sure the VIN crop and compose settings are updated.
-
-Fixes: 104464f573d ("media: rcar-vin: Do not reset the crop and compose rectangles in s_fmt")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-Changes for v2:
-* Dropped redundant code mapping crop and compose rects
-
-v1 - https://lkml.org/lkml/2020/7/31/364
----
- drivers/media/platform/rcar-vin/rcar-v4l2.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-index 0e066bba747e..1bd59a8453b4 100644
---- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-+++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-@@ -305,7 +305,7 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
- 			      struct v4l2_format *f)
- {
- 	struct rvin_dev *vin = video_drvdata(file);
--	struct v4l2_rect fmt_rect, src_rect;
-+	struct v4l2_rect src_rect;
- 	int ret;
- 
- 	if (vb2_is_busy(&vin->queue))
-@@ -317,14 +317,11 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
- 		return ret;
- 
- 	vin->format = f->fmt.pix;
--
--	fmt_rect.top = 0;
--	fmt_rect.left = 0;
--	fmt_rect.width = vin->format.width;
--	fmt_rect.height = vin->format.height;
--
--	v4l2_rect_map_inside(&vin->crop, &src_rect);
--	v4l2_rect_map_inside(&vin->compose, &fmt_rect);
-+	vin->crop.top = 0;
-+	vin->crop.left = 0;
-+	vin->crop.width = vin->format.width;
-+	vin->crop.height = vin->format.height;
-+	vin->compose = vin->crop;
- 	vin->src_rect = src_rect;
- 
- 	return 0;
--- 
-2.17.1
-
+        tglx
