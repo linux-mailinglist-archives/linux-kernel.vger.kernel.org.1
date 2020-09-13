@@ -2,111 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6E6268054
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1600E268055
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbgIMQwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:52:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32259 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725876AbgIMQwj (ORCPT
+        id S1725959AbgIMQxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:53:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42022 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725876AbgIMQxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:52:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600015957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=OnOecvlCsmh6JKu+PCBfRD+F9XU63TdFztNbTAcxKzQ=;
-        b=OzU2tnO4VEnHHMXbFhu8aXGTulBd7ffB8pCcXxVVaNXSV0PjwOAewxQoIoiffhxg/7vJiW
-        44mi6uLVZY0uhAmfp8TYhNcy6Hb3Nj1X06ARpngq79TFV468/wSuQVs9m4m+ioJaAQUvXt
-        2E8KHshUvKkW9i5ZNcnsrcoGnvwrkKs=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-zZSFPgb2OcmIF1Ji9XPgaQ-1; Sun, 13 Sep 2020 12:52:36 -0400
-X-MC-Unique: zZSFPgb2OcmIF1Ji9XPgaQ-1
-Received: by mail-qt1-f200.google.com with SMTP id a26so10282520qtb.16
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 09:52:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=OnOecvlCsmh6JKu+PCBfRD+F9XU63TdFztNbTAcxKzQ=;
-        b=fxMo65OnKX5F2jSwgY6H6puXo0kZeyf82f+YS68uW3AZw9UkKiuUhAAmtweuX2IJrO
-         UtJ3aaeEck8nAtXAWl0h1x4XAYYI3spBt/Vx/P/BRrEJ2tCrSsDum/Wn8Va4/AMBYZif
-         3Gbh1JI7Q+L0ZENxvp1nHOzOADu63CBsAOCZLAnM+qb98nDaCz7orTGLeaVn8QmVd1Sb
-         6HoqwNFBRpSy/2I+5dfJSJqO6/xHBTxU4OnNx5qD8mScsHG37Xf6TfabyL/xA7UTDn2e
-         RZjJdj9BUK9PXvM+3S7gxO+eGfno7gsXUxV0ZHlds9sUPArDKQ7e32sweU0ia6GAAClT
-         hsEQ==
-X-Gm-Message-State: AOAM532ne9Ea1/S6E7Sn1jh2HpsO0zcfvgRKlxfA1MmSmf8AVUnAj4XH
-        hPtbC8/3Eqpn+V4SNvG4ffcVEsVPtkNalKFQcLl0Hrp8ZoJRG25N01jQQf4rS1z6iDjmzUdvQuJ
-        WkVbC3Td/Kl/syP0jvzu5TLjl
-X-Received: by 2002:ac8:100c:: with SMTP id z12mr9721955qti.81.1600015955837;
-        Sun, 13 Sep 2020 09:52:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKjF1J+GeKF9ZXkHPfeiFmrEfSqgpwFwO2TqwgCrLbYQUDsHZHFMMJdU6H5SApjSbMKUclEA==
-X-Received: by 2002:ac8:100c:: with SMTP id z12mr9721935qti.81.1600015955583;
-        Sun, 13 Sep 2020 09:52:35 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id g19sm11332392qka.84.2020.09.13.09.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 09:52:35 -0700 (PDT)
-From:   trix@redhat.com
-To:     perex@perex.cz, tiwai@suse.com, natechancellor@gmail.com,
-        ndesaulniers@google.com, eblennerhassett@audioscience.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
-Subject: [PATCH] ALSA: asihpi: fix iounmap in error handler
-Date:   Sun, 13 Sep 2020 09:52:30 -0700
-Message-Id: <20200913165230.17166-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Sun, 13 Sep 2020 12:53:51 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08DGWdsa008576;
+        Sun, 13 Sep 2020 12:53:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=0Lhng2sbqsY5JmEA580Ged2Sijf07s/jdsuJDC4FmI4=;
+ b=pdSamIuIeuCf8SgcMcJerdHXQKAUrBOC6Z2ges2HPQU7gOVog2qZR4jaeZjv33x9bD1G
+ s+RFL6D/KUksp5XxY+gXmjEi+hGRg9nZW9R2EYMWtBb66fp/cK9e2B2uZH8iZOI+y2KF
+ 4zn8AphYSvCn3SrjcqKmSjjrLcBU4spMDss4Ahwli5FmZI7utpGSoFMKuA9zaShel35d
+ 0XJ6to7LFbWyYsSmoOi4W9xc5AJx0v6SryqVox3cdCSBJGzVFiXICOzbgw/w7VCpw8IW
+ 2ntDhODt7VEhnW2BMXWYXInxduuHmmzVnvG8NALu1INE0en/V7wFGKfEUkDfJ8CO+8++ bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33hq1bg8jt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Sep 2020 12:53:30 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08DGZstV015271;
+        Sun, 13 Sep 2020 12:53:30 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33hq1bg8jc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Sep 2020 12:53:29 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08DGr5hp005666;
+        Sun, 13 Sep 2020 16:53:28 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 33hkfag2jm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Sep 2020 16:53:28 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08DGrPvS13107476
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Sep 2020 16:53:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CA320AE045;
+        Sun, 13 Sep 2020 16:53:25 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0404AE04D;
+        Sun, 13 Sep 2020 16:53:23 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Sun, 13 Sep 2020 16:53:23 +0000 (GMT)
+Date:   Sun, 13 Sep 2020 22:23:22 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Nathan Lynch <nathanl@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v5 05/10] powerpc/smp: Dont assume l2-cache to be
+ superset of sibling
+Message-ID: <20200913165322.m24vbwvbw6ah2zzs@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200810071834.92514-1-srikar@linux.vnet.ibm.com>
+ <20200810071834.92514-6-srikar@linux.vnet.ibm.com>
+ <87y2lgr0ic.fsf@mpe.ellerman.id.au>
+ <20200912044603.GA11808@linux.vnet.ibm.com>
+ <87imciqwhq.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <87imciqwhq.fsf@mpe.ellerman.id.au>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-13_05:2020-09-10,2020-09-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0 suspectscore=1
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009130144
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+* Michael Ellerman <mpe@ellerman.id.au> [2020-09-13 11:46:41]:
 
-clang static analysis flags this problem
-hpioctl.c:513:7: warning: Branch condition evaluates to
-  a garbage value
-                if (pci.ap_mem_base[idx]) {
-                    ^~~~~~~~~~~~~~~~~~~~
+> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> > * Michael Ellerman <mpe@ellerman.id.au> [2020-09-11 21:55:23]:
+> >
+> >> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> >> > Current code assumes that cpumask of cpus sharing a l2-cache mask will
+> >> > always be a superset of cpu_sibling_mask.
+> >> >
+> >> > Lets stop that assumption. cpu_l2_cache_mask is a superset of
+> >> > cpu_sibling_mask if and only if shared_caches is set.
+> >> 
+> >> I'm seeing oopses with this:
+> >> 
+> 
+> The patch fixes qemu, and I don't see the crash on mambo, but I still
+> see:
+>   [    0.010536] smp: Bringing up secondary CPUs ...
+>   [    0.019189] smp: Brought up 2 nodes, 8 CPUs
+>   [    0.019210] numa: Node 0 CPUs: 0-3
+>   [    0.019235] numa: Node 1 CPUs: 4-7
+>   [    0.024444]      the CACHE domain not a subset of the MC domain
+>   [    0.024505] BUG: arch topology borken
+>   [    0.024527]      the SMT domain not a subset of the CACHE domain
+>   [    0.024563] BUG: arch topology borken
+>   [    0.024584]      the CACHE domain not a subset of the MC domain
+>   [    0.024645] BUG: arch topology borken
+>   [    0.024666]      the SMT domain not a subset of the CACHE domain
+>   [    0.024702] BUG: arch topology borken
+>   [    0.024723]      the CACHE domain not a subset of the MC domain
+> 
+> That's the p9 mambo model, using skiboot.tcl from skiboot, with CPUS=2,
+> THREADS=4 and MAMBO_NUMA=1.
+> 
 
-If there is a failure in the middle of the memory space loop,
-only some of the memory spaces need to be cleaned up.
+I was able to reproduce with
+ qemu-system-ppc64 -nographic -vga none -M pseries -cpu POWER8 \
+   -kernel build~/vmlinux \
+   -m 2G,slots=2,maxmem=4G \
+   -object memory-backend-ram,size=1G,id=m0 \
+   -object memory-backend-ram,size=1G,id=m1 \
+   -numa node,nodeid=0,memdev=m0 \
+   -numa node,nodeid=1,memdev=m1 \
+   -smp 8,threads=4,sockets=2,maxcpus=8  \
 
-At the error handler, idx holds the number of successful
-memory spaces mapped.  So rework the handler loop to use the
-old idx.
 
-There is a second problem, the memory space loop conditionally
-iomaps()/sets the mem_base so it is necessay to initize pci.
+If the CPU doesn't have a l2-cache element, then CPU not only has to set
+itself in the cpu_l2_cache but also the siblings. Otherwise it will so
+happen that the Siblings will have 4 Cpus set, and the Cache domain will
+have just one cpu set, leading to this BUG message.
 
-Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- sound/pci/asihpi/hpioctl.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Patch follows this mail.
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index 6cc2b6964bb5..bb31b7fe867d 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -352,7 +352,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	struct hpi_message hm;
- 	struct hpi_response hr;
- 	struct hpi_adapter adapter;
--	struct hpi_pci pci;
-+	struct hpi_pci pci = { 0 };
- 
- 	memset(&adapter, 0, sizeof(adapter));
- 
-@@ -509,7 +509,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
- 	return 0;
- 
- err:
--	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
-+	while (--idx >= 0) {
- 		if (pci.ap_mem_base[idx]) {
- 			iounmap(pci.ap_mem_base[idx]);
- 			pci.ap_mem_base[idx] = NULL;
+> Node layout is:
+> 
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000000000000-0x00000000ffffffff]
+> [    0.000000]   node   1: [mem 0x0000200000000000-0x00002000ffffffff]
+> [    0.000000] Initmem setup node 0 [mem 0x0000000000000000-0x00000000ffffffff]
+> [    0.000000] On node 0 totalpages: 65536
+> [    0.000000] Initmem setup node 1 [mem 0x0000200000000000-0x00002000ffffffff]
+> [    0.000000] On node 1 totalpages: 65536
+> 
+> 
+> There aren't any l2-cache properties in the device-tree under cpus.
+> 
+> I'll try and have a closer look tonight.
+> 
+> cheers
+
 -- 
-2.18.1
-
+Thanks and Regards
+Srikar Dronamraju
