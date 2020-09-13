@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D97A268104
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAECF268105
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgIMTmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 15:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        id S1725961AbgIMTov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 15:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgIMTmj (ORCPT
+        with ESMTP id S1725939AbgIMTor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 15:42:39 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3794C061787
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:42:37 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id b12so15503600edz.11
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:42:37 -0700 (PDT)
+        Sun, 13 Sep 2020 15:44:47 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF61C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:44:46 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x69so11143946lff.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:44:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k2cvB0HQArtJknBkltHAoCpwXnIH5D4KwvQqQMifHm4=;
-        b=WWoza80lwFN2cSIWNPpF9RO03s6vxAsB42qYdTC+2typ17TgiQsuQj2R+PaBHA24Mc
-         X0NsWurndtM13ubMmMe7uzPhq1Opu5a170YrnmE2bVIwNwwaVBw83JkdWh7bQPu8fZ2H
-         cqWL+xe6KzHNVp66cZeZTtUrk46ajDsyf3bfaiUDApWx9r90psJVxlx9rPM4vYP5413U
-         cdL5I8USziB8vGrhrakS2Xj1zIJCfCVHB+ScOFXRKYfXvhpePasFd6ficE58V5tXEWFZ
-         oydEoP3ObwzEN7oxrp5I6V0/czFh2JACXJJMwIyObuR1D8K99HglGuojcpq5UnVU4wXN
-         +ccw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=aq/XfMW8CzIHD0D8NNIVhrMDzrr/cgdu5HFrZO0XQbg=;
+        b=NoqYO9tw8S9YAURIihugNmEMVA2scbvl47ayKmmxS7cmHKYIOAbutlPNciiikaSaL4
+         AS2U5Rz2pmDM5GRiZYUZsMqIysv907cg+Bz1t0j+u1ql2emWXrwVOr6Xi4Y5IPVbptov
+         229hmwD3qytTKTCPnCmbHVwcTlUNcZaZgE9v4nvrRqhr5q2n2nAqegbKgLYbqsK6zDyw
+         9mihUaqVvgnU6z5e9afIypBvFjv2C8nYqeFTJjUlv2paeu+TB/ySxghujpQ5nvWHVKXI
+         YGIWy74EO6cGF0IC7JNXOW976ocnLfC+Bdr+wFLMKv+svSmSRTIpGah1l0dZYy4hRHtY
+         MIKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k2cvB0HQArtJknBkltHAoCpwXnIH5D4KwvQqQMifHm4=;
-        b=qbE9gFEZ+bjoMZoQOm39WHC1XvxTvfD5CtQ8r9mM4YHLHkOKRTidVTa8PLYHZCTWlX
-         Eyxp8dkf7KU+jyILAc2e/ymeoFM4uX/M0lbCPy03dkEAZZfViRVAVOlL1XyVU1MJ7G2z
-         OWJoB6NJ9iBzX0P35MMJBViL8Wyy+w42Fwv2MlGo0ZcUeCT8eibPBVfb0SjMEWauBzA4
-         aeZK00+I5C1v/u2seUB6/ovH6AfsIPfHnQ/sz0YRI3sMksH8tZltOqMh9KGqyQg0MAMA
-         t3xOJ65hUKoAy11VqhSaB9GHWBWP3kbrdLc8ikWgFvO2H62VtunYG3oCE0/oIoYm+Zvk
-         AxkA==
-X-Gm-Message-State: AOAM532WjdNChao8N3Du7qf55Pc4TjZtdNOup2xsN/7Sb4gLQ/icqxpZ
-        8h2Jx8HOvyWF/qvyH7bQ5GLpvaP9xgTxrbNncXs=
-X-Google-Smtp-Source: ABdhPJz7OvHoMkyN0c1qJ1xvIg2tXwvkdR2sb0uzsGhQB0HjoTTy1q871OAMdzLfTfJEW5qDmRtJCQ==
-X-Received: by 2002:a05:6402:326:: with SMTP id q6mr14107023edw.216.1600026156541;
-        Sun, 13 Sep 2020 12:42:36 -0700 (PDT)
-Received: from x1 ([2001:16b8:5cf8:e601:5f2:8f03:4748:2bc6])
-        by smtp.gmail.com with ESMTPSA id bf25sm7685811edb.95.2020.09.13.12.42.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 12:42:35 -0700 (PDT)
-Date:   Sun, 13 Sep 2020 21:42:33 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v4 1/2] pinctrl: single: parse #pinctrl-cells = 2
-Message-ID: <20200913194233.GA1955808@x1>
-References: <20200701013320.130441-1-drew@beagleboard.org>
- <20200701013320.130441-2-drew@beagleboard.org>
- <3139716.CMS8C0sQ7x@zen.local>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=aq/XfMW8CzIHD0D8NNIVhrMDzrr/cgdu5HFrZO0XQbg=;
+        b=TpW0tpXzDfl1G8Ivfr8/q+L4B8y9wbnphfbMy3UcqQDdwKU8DLfTbI78ccywmvlROH
+         puTC5KApV7O8ojFL+8+yeeA9ot8tz20il7SdqJ0fxDbvZkT45jSIFypAnurMx+N/Wq6S
+         kgvluES892j6Z62Oryg+d9rmBTbVfH+Od+VqZT8NlqKcEAcEh4Y5PW4u8GY/womqgJYg
+         cmDHKc6j68C+r24rC7GLcjyqDBSUTCeBWA7tBpvggbzBZgSRvrhdlGKFO61CkXN4BRuw
+         /WMVPCFRiYcO6xaklGcXbH0o1jcVRCHldY3m8xV5KcLAqa3gXePIRdamsJXPEerHH3JO
+         ZIhw==
+X-Gm-Message-State: AOAM531twni29OnEzW0unM9N6dTNu0jjWgqf8R+dGvdMU17zocSPXUMf
+        gGNXkNrZD7P/IAVz7kw+i5uqDh5+8DV7D2neQ/k=
+X-Google-Smtp-Source: ABdhPJxpt4jaQq5KubkjA/X8H/pF04BoTJJB/V7mFvGSBGdph+wOnb3r//F087NNRoPvL8POm2m5rRaBwq5cDzqu8os=
+X-Received: by 2002:a19:c645:: with SMTP id w66mr3642943lff.112.1600026284945;
+ Sun, 13 Sep 2020 12:44:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3139716.CMS8C0sQ7x@zen.local>
+Received: by 2002:a19:ac4:0:0:0:0:0 with HTTP; Sun, 13 Sep 2020 12:44:44 -0700 (PDT)
+Reply-To: michelmadi01@gmail.com
+From:   Mr Michel Madi <johngoffey5@gmail.com>
+Date:   Sun, 13 Sep 2020 19:44:44 +0000
+Message-ID: <CADj82T5Xq6Bc1NjGqPBUrSzZZR9hPgrBO0JLaX=Sy8X0s=EYbQ@mail.gmail.com>
+Subject: Attention
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 04:52:58PM -0700, Trent Piepho wrote:
-> On Tuesday, June 30, 2020 6:33:19 PM PDT Drew Fustini wrote:
-> > If "pinctrl-single,pins" has 3 arguments (offset, conf, mux), then
-> > pcs_parse_one_pinctrl_entry() does an OR operation on conf and mux to
-> > get the value to store in the register.
-> 
-> 
-> > -		vals[found].val = pinctrl_spec.args[1];
-> > +
-> > +		switch (pinctrl_spec.args_count) {
-> > +		case 2:
-> > +			vals[found].val = pinctrl_spec.args[1];
-> > +			break;
-> > +		case 3:
-> > +			vals[found].val = (pinctrl_spec.args[1] | 
-> pinctrl_spec.args[2]);
-> > +			break;
-> > +		}
-> > 
-> >  		dev_dbg(pcs->dev, "%pOFn index: 0x%x value: 0x%x\n",
-> >  			pinctrl_spec.np, offset, 
-> pinctrl_spec.args[1]);
-> 
-> If #pinctrl-cells value is greater than 2, nothing will set vals[found].val to 
-> anything other than zero (from when it's calloc'ed) and the pinctrl will 
-> silently be programmed to zero.
+Dear Friend,
 
-If #pinctrl-cells is 3, then it will be:
+Let me start by introducing myself, I am Mr Michel Madi Manager of
+Bank Of Africa Burkina Faso.
 
-	vals[found].val = (pinctrl_spec.args[1] | pinctrl_spec.args[2]);
+I am writing you this letter based on the latest development at my
+Department which I will like to bring to your personal edification.
+(7.5 million U.S Dollars transfer claims).
 
-Do you mean if #pinctrl-cells is great than 3 then it will just have a
-default value of zero?
+This is a legitimate transaction and I agreed to offer you 40% of this
+money as my foreign partner after confirmation of the fund in your
+bank account, if you are interested, get back to me with the following
+details below.
 
-That does appear to be the case and is probably not the behavior we
-want.  Thank you for pointing this out.  Earlier, there is a check to
-make sure there are at least 2 arguments:
+(1)Your age........
 
-	if (pinctrl_spec.args_count < 2) {
-		dev_err(pcs->dev, "invalid args_count for spec: %i\n",
-			pinctrl_spec.args_count); 
-		break;
-	}
+(2)Your occupation.....
 
-I'll submit a patch where the upper bound is also checked:
+(3)Your marital status.....
 
-	if (pinctrl_spec.args_count < 2 || pinctrl_spec.args_count > 3) {
-		dev_err(pcs->dev, "invalid args_count for spec: %i\n",
-			pinctrl_spec.args_count); 
-		break;
-	}
+(4)Your full residential address.......
 
-> The debug printout was not change to print vals[found].val, so it will 
-> continue to print the value of the 2nd cell.
+(5)Your private phone and fax number and your complete name.......
 
-Thank you for pointing this out.  Yes, this is an oversight and I will
-submit a patch.
-
-> The result is that a #pinctrl-cells of 3 will produce no warning or error, 
-> program the pinctrl to zero, whilst at the same time emit debug log messages 
-> that it is programming the expected values.
->
-> The device tree documentation still states that #pinctrl-cells must be 1 when 
-> using pinctrl-single,pins.  This new special case of ORing two values is not 
-> documented.
-
-This is a good point, too.  I will make a patch to update the
-documentation.
+As soon as I receive these data's, I will forward to you the
+application form which you will send to the bank, get back to me
+through this my private email address (michelmadi01@gmail.com)
 
 
--Drew
+Best Regard
+Mr. Michel Madi
