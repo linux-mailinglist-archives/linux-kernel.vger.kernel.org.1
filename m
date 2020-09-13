@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B043026817E
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE0F268180
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgIMVfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 17:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
+        id S1725979AbgIMVjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 17:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgIMVfc (ORCPT
+        with ESMTP id S1725939AbgIMVjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:35:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EC3C06174A;
-        Sun, 13 Sep 2020 14:35:31 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600032929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WWVkyCxypX9NL1JAA4Hx8hx7gQdL9vEJD46ea+6OI18=;
-        b=UlCbduzwFD7qoYvzlYyhNNV680aF4OjmieAYoNyr0QM5QZ+ZiarzrVm0qelPkRT5/iDxlx
-        SOTR7Gz0CjcLIw1dO0TLIpdnmB8iH4smllBoy+I9LddrcF4oZGfTQ+1PSzLpmPzZ/4ltix
-        dkq/RQKkv6sdq+3IyyH4xE8K5doRqSdOXtJNsW22L1uqPOcfWxNuumhH+7314uX8wjN1OW
-        3Qt52K6FFYmmRuU6rldPRyoFFtMRKwFSsjK9x6UIOB3duYhSUaHfchOTw/bVODcdp5+NUK
-        uh99YIhucxW/1BMrQjwsG65vl9jY6BMlXe4pJ/VCzzq0L5rzlsG9AlSmckwXgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600032929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WWVkyCxypX9NL1JAA4Hx8hx7gQdL9vEJD46ea+6OI18=;
-        b=VdGjZPH9VpTTeqKYLNMwIa3mQxbi1My6auql5lzt4VLqpXP7c6Vmk3yMfxZer6gclkY0n6
-        ngRGhpfQc2oXLCBA==
-To:     Tom Hromatka <tom.hromatka@oracle.com>, tom.hromatka@oracle.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        fweisbec@gmail.com, mingo@kernel.org, adobriyan@gmail.com
-Subject: Re: [RESEND PATCH 2/2] /proc/stat: Simplify iowait and idle calculations when cpu is offline
-In-Reply-To: <20200909144122.77210-3-tom.hromatka@oracle.com>
-References: <20200909144122.77210-1-tom.hromatka@oracle.com> <20200909144122.77210-3-tom.hromatka@oracle.com>
-Date:   Sun, 13 Sep 2020 23:35:28 +0200
-Message-ID: <87d02ppdgf.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sun, 13 Sep 2020 17:39:42 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5510AC06174A;
+        Sun, 13 Sep 2020 14:39:42 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id BFEB41281E8CA;
+        Sun, 13 Sep 2020 14:22:53 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 14:39:39 -0700 (PDT)
+Message-Id: <20200913.143939.859765790019703223.davem@davemloft.net>
+To:     anant.thazhemadam@gmail.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: fix uninit value error in __sys_sendmmsg
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200913110313.4239-1-anant.thazhemadam@gmail.com>
+References: <20200913110313.4239-1-anant.thazhemadam@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 13 Sep 2020 14:22:54 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09 2020 at 08:41, Tom Hromatka wrote:
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Date: Sun, 13 Sep 2020 16:33:13 +0530
 
-> A customer reported that when a cpu goes offline, the iowait and idle
-> times reported in /proc/stat will sometimes spike.  This is being
-> caused by a different data source being used for these values when a
-> cpu is offline.
->
-> Prior to this patch:
->
-> put the system under heavy load so that there is little idle time
->
-> 	       user nice system    idle iowait
-> 	cpu  109515   17  32111  220686    607
->
-> take cpu1 offline
->
-> 	       user nice system    idle iowait
-> 	cpu  113742   17  32721  220724    612
->
-> bring cpu1 back online
->
-> 	       user nice system    idle iowait
-> 	cpu  118332   17  33430  220687    607
->
-> To prevent this, let's use the same data source whether a cpu is
-> online or not.
-
-Let's use? Your patch makes it use the same data source.
-
-And again, neither the customer story nor the numbers are helpful to
-understand the underlying problem. Also this lacks a reference to the
-previous change which preserves the times accross a CPU offline/online
-sequence.
-
-> diff --git a/fs/proc/stat.c b/fs/proc/stat.c
-> index 46b3293015fe..35b92539e711 100644
-> --- a/fs/proc/stat.c
-> +++ b/fs/proc/stat.c
-> @@ -47,32 +47,20 @@ static u64 get_iowait_time(struct kernel_cpustat *kcs, int cpu)
+> diff --git a/net/socket.c b/net/socket.c
+> index 0c0144604f81..1e6f9b54982c 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -2398,6 +2398,7 @@ static int ___sys_sendmsg(struct socket *sock, struct user_msghdr __user *msg,
+>  	struct iovec iovstack[UIO_FASTIOV], *iov = iovstack;
+>  	ssize_t err;
 >  
->  static u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
->  {
-> -	u64 idle, idle_usecs = -1ULL;
-> +	u64 idle, idle_usecs;
->  
-> -	if (cpu_online(cpu))
-> -		idle_usecs = get_cpu_idle_time_us(cpu, NULL);
-> -
-> -	if (idle_usecs == -1ULL)
-> -		/* !NO_HZ or cpu offline so we can rely on cpustat.idle */
-> -		idle = kcs->cpustat[CPUTIME_IDLE];
-> -	else
-> -		idle = idle_usecs * NSEC_PER_USEC;
-> +	idle_usecs = get_cpu_idle_time_us(cpu, NULL);
-> +	idle = idle_usecs * NSEC_PER_USEC;
->  
->  	return idle;
+> +	memset(iov, 0, UIO_FASTIOV);
+>  	msg_sys->msg_name = &address;
 
-        return get_cpu_idle_time_us(cpu, NULL) * NSEC_PER_USEC;
+Did you even test this?
 
-perhaps?
+Seriously?
 
-Thanks,
+UIO_FASTIOV is the number of entries in 'iovstack', it's not the
+size with would be "UIO_FASTIOV * sizeof (struct iovec)", or
+even "sizeof(iovstack)"
 
-        tglx
+So could you really explain to me how you tested this patch for
+correctness, and for any functional or performance regressions
+that may occur?
+
+Because, once you correct that size argument to memset() we will now
+have a huge memset() for _EVERY_ _SINGLE_ sendmsg() done by the
+system.  And that will cause severe performance regressions for many
+workloads involving networking.
+
+This patch submission has been extremely careless on so many levels. I
+sincerely wish you would take your time with these changes and not be
+so lacking in the areas of testing and validation.
+
+It is always a reg flag when a submitter doesn't even notice an
+obvious compiler warning that reviewers like Greg and myself can see
+even without trying to build your code changes.
+
