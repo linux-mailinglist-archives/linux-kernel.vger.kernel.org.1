@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BE6268052
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6E6268054
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725953AbgIMQuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:50:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgIMQuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:50:00 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D16622204;
-        Sun, 13 Sep 2020 16:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600015799;
-        bh=L8XEq3jBSI/fRgNLHQoreiMSaRqoRqn+i3vv+wcOYEY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nRtB29+nSDA5SBvFnszAZ08C8r5Gpc02M+j2TvLOK8uLi42rW1qNoWyY+hxgX0s5+
-         QJq+PgrBh+8szwagcE7CwEnstuzAWDTn/z0IaXT1oUqZE25N/ZfStBs3z4PUJeNTso
-         uZFT3gQ/GqmldNwdZT6GRDs+RrGKmf9zQcOGSOq4=
-Date:   Sun, 13 Sep 2020 11:49:57 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Chris Clayton <chris2553@googlemail.com>
-Cc:     ricky_wu@realtek.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        bhelgaas@google.com, vaibhavgupta40@gmail.com,
-        rui_feng@realsil.com.cn, kdlnx@doth.eu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] misc: rtsx: do not setting OC_POWER_DOWN reg in
- rtsx_pci_init_ocp()
-Message-ID: <20200913164957.GA1190742@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c06d7691-01ab-303c-e687-dd8c51a8a9c5@gmail.com>
+        id S1725951AbgIMQwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:52:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32259 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725876AbgIMQwj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 12:52:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600015957;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=OnOecvlCsmh6JKu+PCBfRD+F9XU63TdFztNbTAcxKzQ=;
+        b=OzU2tnO4VEnHHMXbFhu8aXGTulBd7ffB8pCcXxVVaNXSV0PjwOAewxQoIoiffhxg/7vJiW
+        44mi6uLVZY0uhAmfp8TYhNcy6Hb3Nj1X06ARpngq79TFV468/wSuQVs9m4m+ioJaAQUvXt
+        2E8KHshUvKkW9i5ZNcnsrcoGnvwrkKs=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-zZSFPgb2OcmIF1Ji9XPgaQ-1; Sun, 13 Sep 2020 12:52:36 -0400
+X-MC-Unique: zZSFPgb2OcmIF1Ji9XPgaQ-1
+Received: by mail-qt1-f200.google.com with SMTP id a26so10282520qtb.16
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 09:52:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OnOecvlCsmh6JKu+PCBfRD+F9XU63TdFztNbTAcxKzQ=;
+        b=fxMo65OnKX5F2jSwgY6H6puXo0kZeyf82f+YS68uW3AZw9UkKiuUhAAmtweuX2IJrO
+         UtJ3aaeEck8nAtXAWl0h1x4XAYYI3spBt/Vx/P/BRrEJ2tCrSsDum/Wn8Va4/AMBYZif
+         3Gbh1JI7Q+L0ZENxvp1nHOzOADu63CBsAOCZLAnM+qb98nDaCz7orTGLeaVn8QmVd1Sb
+         6HoqwNFBRpSy/2I+5dfJSJqO6/xHBTxU4OnNx5qD8mScsHG37Xf6TfabyL/xA7UTDn2e
+         RZjJdj9BUK9PXvM+3S7gxO+eGfno7gsXUxV0ZHlds9sUPArDKQ7e32sweU0ia6GAAClT
+         hsEQ==
+X-Gm-Message-State: AOAM532ne9Ea1/S6E7Sn1jh2HpsO0zcfvgRKlxfA1MmSmf8AVUnAj4XH
+        hPtbC8/3Eqpn+V4SNvG4ffcVEsVPtkNalKFQcLl0Hrp8ZoJRG25N01jQQf4rS1z6iDjmzUdvQuJ
+        WkVbC3Td/Kl/syP0jvzu5TLjl
+X-Received: by 2002:ac8:100c:: with SMTP id z12mr9721955qti.81.1600015955837;
+        Sun, 13 Sep 2020 09:52:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKjF1J+GeKF9ZXkHPfeiFmrEfSqgpwFwO2TqwgCrLbYQUDsHZHFMMJdU6H5SApjSbMKUclEA==
+X-Received: by 2002:ac8:100c:: with SMTP id z12mr9721935qti.81.1600015955583;
+        Sun, 13 Sep 2020 09:52:35 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id g19sm11332392qka.84.2020.09.13.09.52.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 09:52:35 -0700 (PDT)
+From:   trix@redhat.com
+To:     perex@perex.cz, tiwai@suse.com, natechancellor@gmail.com,
+        ndesaulniers@google.com, eblennerhassett@audioscience.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
+Subject: [PATCH] ALSA: asihpi: fix iounmap in error handler
+Date:   Sun, 13 Sep 2020 09:52:30 -0700
+Message-Id: <20200913165230.17166-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 09:40:56AM +0100, Chris Clayton wrote:
-> Hi Greg and Arnd,
-> 
-> On 24/08/2020 04:00, ricky_wu@realtek.com wrote:
-> > From: Ricky Wu <ricky_wu@realtek.com>
-> > 
-> > this power saving action in rtsx_pci_init_ocp() cause INTEL-NUC6 platform
-> > missing card reader
-> 
-> In his changelog above, Ricky didn't mention that this patch fixes a
-> regression that was introduced (in 5.1) by commit bede03a579b3.
-> 
-> The patch that I posted to LKML contained the appropriate Fixes, etc
-> tags. After discussion, the patch was changed to remove the code
-> that effectively disables the RTS5229 cardreader on (at least some)
-> Intel NUC boxes. I prepared the patch that Ricky submitted but he
-> didn't include my Signed-off-by or the Fixes tag. I think the
-> following needs to be added to the changelog.
-> 
-> Fixes: bede03a579b3 ("misc: rtsx: Enable OCP for rts522a rts524a rts525a rts5260")
-> Link: https://marc.info/?l=linux-kernel&m=159105912832257
+From: Tom Rix <trix@redhat.com>
 
-Better lore link:
+clang static analysis flags this problem
+hpioctl.c:513:7: warning: Branch condition evaluates to
+  a garbage value
+                if (pci.ap_mem_base[idx]) {
+                    ^~~~~~~~~~~~~~~~~~~~
 
-  Link: https://lore.kernel.org/r/CACYmiSer8FA+qjh8NHZJ2maxSd-=RwDdZ2F7_-E4uM1NXuZ8gQ@mail.gmail.com/
+If there is a failure in the middle of the memory space loop,
+only some of the memory spaces need to be cleaned up.
 
-But I'm not sure the above is the most relevant.  Seems like the one
-below is more to the point since it has the exact patch below and is
-part of a thread developing it:
+At the error handler, idx holds the number of successful
+memory spaces mapped.  So rework the handler loop to use the
+old idx.
 
-  Link: https://lore.kernel.org/r/20da8b4b-8426-9568-c0f1-4d1c2006c53f@googlemail.com/
+There is a second problem, the memory space loop conditionally
+iomaps()/sets the mem_base so it is necessay to initize pci.
 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=204003
-> Signed-off-by: Chris Clayton <chris2553@googlemail.com>
-> 
-> bede03a579b3 introduced a bug which leaves the rts5229 PCI Express
-> card reader on the Intel NUC6CAYH box.
-> 
-> My main point, however, is that the patch is also needed in the 5.4
-> (longterm) and 5.8 (stable) series kernels.
+Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ sound/pci/asihpi/hpioctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This would be accomplished by:
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 6cc2b6964bb5..bb31b7fe867d 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -352,7 +352,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	struct hpi_message hm;
+ 	struct hpi_response hr;
+ 	struct hpi_adapter adapter;
+-	struct hpi_pci pci;
++	struct hpi_pci pci = { 0 };
+ 
+ 	memset(&adapter, 0, sizeof(adapter));
+ 
+@@ -509,7 +509,7 @@ int asihpi_adapter_probe(struct pci_dev *pci_dev,
+ 	return 0;
+ 
+ err:
+-	for (idx = 0; idx < HPI_MAX_ADAPTER_MEM_SPACES; idx++) {
++	while (--idx >= 0) {
+ 		if (pci.ap_mem_base[idx]) {
+ 			iounmap(pci.ap_mem_base[idx]);
+ 			pci.ap_mem_base[idx] = NULL;
+-- 
+2.18.1
 
-Cc: stable@vger.kernel.org	# v5.1+
-
-> > Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-> > ---
-> >  drivers/misc/cardreader/rtsx_pcr.c | 4 ----
-> >  1 file changed, 4 deletions(-)
-> > 
-> > diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
-> > index 37ccc67f4914..3a4a7b0cc098 100644
-> > --- a/drivers/misc/cardreader/rtsx_pcr.c
-> > +++ b/drivers/misc/cardreader/rtsx_pcr.c
-> > @@ -1155,10 +1155,6 @@ void rtsx_pci_init_ocp(struct rtsx_pcr *pcr)
-> >  			rtsx_pci_write_register(pcr, REG_OCPGLITCH,
-> >  				SD_OCP_GLITCH_MASK, pcr->hw_param.ocp_glitch);
-> >  			rtsx_pci_enable_ocp(pcr);
-> > -		} else {
-> > -			/* OC power down */
-> > -			rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
-> > -				OC_POWER_DOWN);
-> >  		}
-> >  	}
-> >  }
-> > 
