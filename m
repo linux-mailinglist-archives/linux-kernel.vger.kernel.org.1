@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F759268149
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D80268148
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbgIMVFZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:05:25 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51915 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726041AbgIMVEp (ORCPT
+        id S1726071AbgIMVFV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:05:21 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47660 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725945AbgIMVEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:04:45 -0400
+        Sun, 13 Sep 2020 17:04:49 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-AEloILrnPkKE0o-_c_2Umw-1; Sun, 13 Sep 2020 17:04:41 -0400
-X-MC-Unique: AEloILrnPkKE0o-_c_2Umw-1
+ us-mta-202-08eBv_XMOLyAfeuTlk8vBQ-1; Sun, 13 Sep 2020 17:04:45 -0400
+X-MC-Unique: 08eBv_XMOLyAfeuTlk8vBQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BF1B1882FA1;
-        Sun, 13 Sep 2020 21:04:39 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24F141882FA1;
+        Sun, 13 Sep 2020 21:04:43 +0000 (UTC)
 Received: from krava.redhat.com (ovpn-112-4.ams2.redhat.com [10.36.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 47A0610021AA;
-        Sun, 13 Sep 2020 21:04:33 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 81E311002393;
+        Sun, 13 Sep 2020 21:04:39 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -40,16 +40,14 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 17/26] perf tools: Synthesize kernel with mmap3
-Date:   Sun, 13 Sep 2020 23:03:04 +0200
-Message-Id: <20200913210313.1985612-18-jolsa@kernel.org>
+Subject: [PATCH 18/26] perf tests: Add mmap3 support for perf record test
+Date:   Sun, 13 Sep 2020 23:03:05 +0200
+Message-Id: <20200913210313.1985612-19-jolsa@kernel.org>
 In-Reply-To: <20200913210313.1985612-1-jolsa@kernel.org>
 References: <20200913210313.1985612-1-jolsa@kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Spam-Score: 0.0
 X-Mimecast-Originator: kernel.org
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: 8BIT
@@ -58,57 +56,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Synthesizing kernel with mmap3 events so we can
-get build id data for kernel map as well.
+Adding mmap3 support for perf record test so it can
+pass for kernel with mmap3 support.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/synthetic-events.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ tools/perf/tests/perf-record.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 6bd2423ce2f3..844ca87b6e97 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -1029,7 +1029,7 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
- 	 * available use this, and after it is use this as a fallback for older
- 	 * kernels.
- 	 */
--	event = zalloc((sizeof(event->mmap) + machine->id_hdr_size));
-+	event = zalloc((sizeof(event->mmap3) + machine->id_hdr_size));
- 	if (event == NULL) {
- 		pr_debug("Not enough memory synthesizing mmap event "
- 			 "for kernel modules\n");
-@@ -1046,16 +1046,21 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
- 		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
- 	}
+diff --git a/tools/perf/tests/perf-record.c b/tools/perf/tests/perf-record.c
+index 67d3f5aad016..722c0cc02e57 100644
+--- a/tools/perf/tests/perf-record.c
++++ b/tools/perf/tests/perf-record.c
+@@ -224,6 +224,7 @@ int test__PERF_RECORD(struct test *test __maybe_unused, int subtest __maybe_unus
+ 				if ((type == PERF_RECORD_COMM ||
+ 				     type == PERF_RECORD_MMAP ||
+ 				     type == PERF_RECORD_MMAP2 ||
++				     type == PERF_RECORD_MMAP3 ||
+ 				     type == PERF_RECORD_FORK ||
+ 				     type == PERF_RECORD_EXIT) &&
+ 				     (pid_t)event->comm.pid != evlist->workload.pid) {
+@@ -233,7 +234,8 @@ int test__PERF_RECORD(struct test *test __maybe_unused, int subtest __maybe_unus
  
--	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
-+	size = snprintf(event->mmap3.filename, sizeof(event->mmap3.filename),
- 			"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
- 	size = PERF_ALIGN(size, sizeof(u64));
--	event->mmap.header.type = PERF_RECORD_MMAP;
--	event->mmap.header.size = (sizeof(event->mmap) -
--			(sizeof(event->mmap.filename) - size) + machine->id_hdr_size);
--	event->mmap.pgoff = kmap->ref_reloc_sym->addr;
--	event->mmap.start = map->start;
--	event->mmap.len   = map->end - event->mmap.start;
--	event->mmap.pid   = machine->pid;
-+	event->mmap3.header.type = PERF_RECORD_MMAP3;
-+	event->mmap3.header.size = (sizeof(event->mmap3) -
-+			(sizeof(event->mmap3.filename) - size) + machine->id_hdr_size);
-+	event->mmap3.pgoff = kmap->ref_reloc_sym->addr;
-+	event->mmap3.start = map->start;
-+	event->mmap3.len   = map->end - event->mmap3.start;
-+	event->mmap3.pid   = machine->pid;
-+
-+	err = sysfs__read_build_id("/sys/kernel/notes", event->mmap3.buildid,
-+				   BUILD_ID_SIZE);
-+	if (err)
-+		pr_err("Failed to read kernel build ID\n");
- 
- 	err = perf_tool__process_synth_event(tool, event, machine, process);
- 	free(event);
+ 				if ((type == PERF_RECORD_COMM ||
+ 				     type == PERF_RECORD_MMAP ||
+-				     type == PERF_RECORD_MMAP2) &&
++				     type == PERF_RECORD_MMAP2 ||
++				     type == PERF_RECORD_MMAP3) &&
+ 				     event->comm.pid != event->comm.tid) {
+ 					pr_debug("%s with different pid/tid!\n", name);
+ 					++errs;
+@@ -253,6 +255,9 @@ int test__PERF_RECORD(struct test *test __maybe_unused, int subtest __maybe_unus
+ 					goto check_bname;
+ 				case PERF_RECORD_MMAP2:
+ 					mmap_filename = event->mmap2.filename;
++					goto check_bname;
++				case PERF_RECORD_MMAP3:
++					mmap_filename = event->mmap3.filename;
+ 				check_bname:
+ 					bname = strrchr(mmap_filename, '/');
+ 					if (bname != NULL) {
 -- 
 2.26.2
 
