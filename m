@@ -2,116 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79802680D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06002680DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 20:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgIMSnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 14:43:11 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:58490 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725980AbgIMSnB (ORCPT
+        id S1725943AbgIMSoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 14:44:02 -0400
+Received: from smtprelay0206.hostedemail.com ([216.40.44.206]:60586 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725949AbgIMSnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 14:43:01 -0400
-X-IronPort-AV: E=Sophos;i="5.76,423,1592838000"; 
-   d="scan'208";a="56925270"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 14 Sep 2020 03:43:00 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id B739540078B7;
-        Mon, 14 Sep 2020 03:42:58 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: [PATCH v4 3/3] media: i2c: ov772x: Add test pattern control
-Date:   Sun, 13 Sep 2020 19:42:47 +0100
-Message-Id: <20200913184247.618-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200913184247.618-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200913184247.618-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Sun, 13 Sep 2020 14:43:55 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 39ABE9888;
+        Sun, 13 Sep 2020 18:43:53 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:3138:3139:3140:3141:3142:3622:3653:3866:3870:3873:4250:4321:4605:5007:6117:6119:8660:10004:10400:10848:11026:11232:11658:11914:12043:12297:12438:12683:12740:12895:13019:13069:13148:13230:13311:13357:13894:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: brush59_2c0c5bc27102
+X-Filterd-Recvd-Size: 1946
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 13 Sep 2020 18:43:51 +0000 (UTC)
+Message-ID: <d1dc86f2792d3e64d1281fc2b5fddaca5fa17b5a.camel@perches.com>
+Subject: Re: [PATCH v5 03/10] fs/ntfs3: Add bitmap
+From:   Joe Perches <joe@perches.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, mark@harmstone.com,
+        nborisov@suse.com
+Date:   Sun, 13 Sep 2020 11:43:50 -0700
+In-Reply-To: <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
+References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
+         <20200911141018.2457639-4-almaz.alexandrovich@paragon-software.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for test pattern control supported by the sensor.
+On Fri, 2020-09-11 at 17:10 +0300, Konstantin Komarov wrote:
+> This adds bitmap
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
----
- drivers/media/i2c/ov772x.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+$ make fs/ntfs3/
+  SYNC    include/config/auto.conf.cmd
+  CALL    scripts/checksyscalls.sh
+  CALL    scripts/atomic/check-atomics.sh
+  DESCEND  objtool
+  CC      fs/ntfs3/bitfunc.o
+  CC      fs/ntfs3/bitmap.o
+fs/ntfs3/bitmap.c: In function ‘wnd_rescan’:
+fs/ntfs3/bitmap.c:556:4: error: implicit declaration of function ‘page_cache_readahead_unbounded’; did you mean ‘page_cache_ra_unbounded’? [-Werror=implicit-function-declaration]
+  556 |    page_cache_readahead_unbounded(
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |    page_cache_ra_unbounded
+cc1: some warnings being treated as errors
+make[2]: *** [scripts/Makefile.build:283: fs/ntfs3/bitmap.o] Error 1
+make[1]: *** [scripts/Makefile.build:500: fs/ntfs3] Error 2
+make: *** [Makefile:1792: fs] Error 2
 
-diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-index edd7c4c22225..2eeb11eae5f8 100644
---- a/drivers/media/i2c/ov772x.c
-+++ b/drivers/media/i2c/ov772x.c
-@@ -227,7 +227,7 @@
- 
- /* COM3 */
- #define SWAP_MASK       (SWAP_RGB | SWAP_YUV | SWAP_ML)
--#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG)
-+#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG | SCOLOR_TEST)
- 
- #define VFLIP_IMG       0x80	/* Vertical flip image ON/OFF selection */
- #define HFLIP_IMG       0x40	/* Horizontal mirror image ON/OFF selection */
-@@ -425,6 +425,7 @@ struct ov772x_priv {
- 	const struct ov772x_win_size     *win;
- 	struct v4l2_ctrl		 *vflip_ctrl;
- 	struct v4l2_ctrl		 *hflip_ctrl;
-+	unsigned int			  test_pattern;
- 	/* band_filter = COM8[5] ? 256 - BDBASE : 0 */
- 	struct v4l2_ctrl		 *band_filter_ctrl;
- 	unsigned int			  fps;
-@@ -540,6 +541,11 @@ static const struct ov772x_win_size ov772x_win_sizes[] = {
- 	},
- };
- 
-+static const char * const ov772x_test_pattern_menu[] = {
-+	"Disabled",
-+	"Vertical Color Bar Type 1",
-+};
-+
- /*
-  * frame rate settings lists
-  */
-@@ -809,6 +815,9 @@ static int ov772x_s_ctrl(struct v4l2_ctrl *ctrl)
- 		}
- 
- 		return ret;
-+	case V4L2_CID_TEST_PATTERN:
-+		priv->test_pattern = ctrl->val;
-+		return 0;
- 	}
- 
- 	return -EINVAL;
-@@ -1107,6 +1116,8 @@ static int ov772x_set_params(struct ov772x_priv *priv,
- 		val ^= VFLIP_IMG;
- 	if (priv->hflip_ctrl->val)
- 		val ^= HFLIP_IMG;
-+	if (priv->test_pattern)
-+		val |= SCOLOR_TEST;
- 
- 	ret = regmap_update_bits(priv->regmap, COM3, SWAP_MASK | IMG_MASK, val);
- 	if (ret < 0)
-@@ -1405,6 +1416,10 @@ static int ov772x_probe(struct i2c_client *client)
- 	priv->band_filter_ctrl = v4l2_ctrl_new_std(&priv->hdl, &ov772x_ctrl_ops,
- 						   V4L2_CID_BAND_STOP_FILTER,
- 						   0, 256, 1, 0);
-+	v4l2_ctrl_new_std_menu_items(&priv->hdl, &ov772x_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(ov772x_test_pattern_menu) - 1,
-+				     0, 0, ov772x_test_pattern_menu);
- 	priv->subdev.ctrl_handler = &priv->hdl;
- 	if (priv->hdl.error) {
- 		ret = priv->hdl.error;
--- 
-2.17.1
+
 
