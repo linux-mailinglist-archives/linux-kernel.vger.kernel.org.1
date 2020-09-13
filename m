@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B16F268150
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B264126815E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725982AbgIMVGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 17:06:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58072 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgIMVFZ (ORCPT
+        id S1725974AbgIMVSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 17:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgIMVRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:05:25 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600031122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VEhiUXn6N6V9uHUKnQsZoN0xtPB1QwMr6LhI1ZlNVUA=;
-        b=fjTGGPcfydyheITte0WUIT8uhQq9fthIsbSWUn2iy77NLQtkdgOpqhyaXcLMYR/iN8qEW5
-        6U/kDI0tEG49kb3z4f+NUHRMUL1FmDuHIHIgPII4aSi1fODBaBiGPCxM9SlbqpVLesor7U
-        78X931oH2idS92+LrxSc0iknvslbOIXf20X76Mr7FBUOHfWkeaxKtfTZjiYrh66YnmwiZJ
-        3odLV1K+kLyKucfdWANVErDSADkql6gUJFa0My+nIgk+M0f+B0HnxarUEXHzjmdgOybi7N
-        St0q3ROu1E5xJ/BAYXtspIECFAnT3C0gF1AMa+7gNMlnM1v8lafOr/8f+XWzXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600031122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VEhiUXn6N6V9uHUKnQsZoN0xtPB1QwMr6LhI1ZlNVUA=;
-        b=dMeVQp3H3IWyYHfwUQwhIU9lV12XJNlN+2BR0cHP4jMURx9pymFnpXfGsaLDeE4b+cp6nB
-        gJQ+LMU73lHcf+AA==
-To:     syzbot <syzbot+bc9dbf05dcc151e9b972@syzkaller.appspotmail.com>,
-        alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: WARNING: can't access registers at asm_sysvec_call_function_single
-In-Reply-To: <0000000000002b02cf05aed302f3@google.com>
-References: <0000000000002b02cf05aed302f3@google.com>
-Date:   Sun, 13 Sep 2020 23:05:21 +0200
-Message-ID: <87lfhdpeum.fsf@nanos.tec.linutronix.de>
+        Sun, 13 Sep 2020 17:17:50 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD26C061787
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 14:17:49 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id e23so20404440eja.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 14:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OnBB2DvrjzYcd2Xdjt97x0iAp2/ezTLDUs0RIs9ctY4=;
+        b=anMv6v5bdZAYEnkPr+2lsuP8+5lMUf/p8cStq7v1B4plciXq+6TtFHW8QzpKKOhTCq
+         S/ipULt16qgmNsz82+0Ka6apn7BUvnlyhjPklRW3PpewTvP64wBy4a24YGb3PGZcFY0P
+         bH60+5as3PU1yc1jL1JgKNhVxKD9OdRRQQn+Yowgil3qiQ0i1y0dQafzssROTbpYg02P
+         0Leir4WZOwlRGbDPEY4WEXMlXL021iZtufx+pPPX6lNpZ6W/1i1DYEWUej5BGVbjmPUj
+         9rFD4aBhyUZH9M34lHZSVgsEQb0t4UyDvmZ2f9yJj+1RJ1FwdtYmV2CVaT7eIUuvm2H2
+         m28Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OnBB2DvrjzYcd2Xdjt97x0iAp2/ezTLDUs0RIs9ctY4=;
+        b=Z0vKIAM5i+sdl0CpPLYQbrDJH17vXi0aeufV26CAPvgfodiSyihLT04z/oDaoOqxp/
+         fW5bG7MTysmc6kfl9c5sqlGRY+Eq9R7dfx2pNR+x3lPd5C+egHPexB+vOjbYb4oN5+IK
+         tVaqPbF9106O3R6DFfljZFnPlq950IORGqAWKClLnhlWBmg+vLphOJa2N3kPaogULSm9
+         0saUcJ8FWGg06oyiJl6wx4AzN76deDR9QqWm0Sg17HQ+3/R2FG1VgN3EkUQGo5Rjj1lR
+         cn0sEYZOgUIJv3FZV0y/Ro3yRgfCQ3TYpLiZrLOUUOqw6U8v0nfW0O3r42n7VMEuAdBI
+         CUQw==
+X-Gm-Message-State: AOAM532gLsqA7xvNKiOQW1TSEhYEwpian+nSF7cEdAq8XGvP+qYIiPvH
+        ZOtdYAkCOxgkZgXn5DRbZflqrdX1+ufAZsv6Nk8=
+X-Google-Smtp-Source: ABdhPJx/fPh48IU+8lLHz64Qb1MQH+b7UmWjSssDB+euFBrzvDr8kAd930lroS4LaVAWxXdwq0JsIg==
+X-Received: by 2002:a17:906:5495:: with SMTP id r21mr11285979ejo.33.1600031868331;
+        Sun, 13 Sep 2020 14:17:48 -0700 (PDT)
+Received: from localhost.localdomain ([2001:16b8:5cf8:e601:5f2:8f03:4748:2bc6])
+        by smtp.gmail.com with ESMTPSA id cw9sm7782989edb.13.2020.09.13.14.17.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 14:17:47 -0700 (PDT)
+From:   Drew Fustini <drew@beagleboard.org>
+To:     linux-arm-kernel@lists.infradead.org,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        devicetree@vger.kernel.org, bcousson@baylibre.com,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Trent Piepho <tpiepho@gmail.com>
+Cc:     Drew Fustini <drew@beagleboard.org>
+Subject: [PATCH] pinctrl: single: check if #pinctrl-cells exceeds 3
+Date:   Sun, 13 Sep 2020 23:08:25 +0200
+Message-Id: <20200913210825.2022552-1-drew@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 08 2020 at 13:16, syzbot wrote:
+The property #pinctrl-cells can either be 2 or 3.  There is currently
+only a check to make sure that #pinctrl-cells is 2 or greater.  This
+patch adds a check to make sure it is not greater than 3.
 
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    f4d51dff Linux 5.9-rc4
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1455d4f9900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-> dashboard link: https://syzkaller.appspot.com/bug?extid=bc9dbf05dcc151e9b972
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+bc9dbf05dcc151e9b972@syzkaller.appspotmail.com
->
-> WARNING: can't access registers at asm_sysvec_call_function_single+0x12/0x20 arch/x86/include/asm/idtentry.h:589
+Fixes: a13395418888 ("pinctrl: single: parse #pinctrl-cells = 2")
+Reported-by: Trent Piepho <tpiepho@gmail.com>
+Link: https://lore.kernel.org/linux-omap/3139716.CMS8C0sQ7x@zen.local/
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
+---
+ drivers/pinctrl/pinctrl-single.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's the ORC unwinder complaining, but I have no idea why...
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index efe41abc5d47..5cbf0e55087c 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1014,7 +1014,7 @@ static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
+ 		if (res)
+ 			return res;
+ 
+-		if (pinctrl_spec.args_count < 2) {
++		if (pinctrl_spec.args_count < 2 || pinctrl_spec.args_count > 3) {
+ 			dev_err(pcs->dev, "invalid args_count for spec: %i\n",
+ 				pinctrl_spec.args_count);
+ 			break;
+-- 
+2.25.1
+
