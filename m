@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F90F267F6D
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 14:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EBA267F77
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 14:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgIMMF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 08:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        id S1725943AbgIMM1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 08:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgIMMFy (ORCPT
+        with ESMTP id S1725928AbgIMM06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 08:05:54 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFCEC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 05:05:54 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so9348511pgl.10
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 05:05:54 -0700 (PDT)
+        Sun, 13 Sep 2020 08:26:58 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3B1C061573;
+        Sun, 13 Sep 2020 05:26:57 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id x69so10503826lff.3;
+        Sun, 13 Sep 2020 05:26:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=Vsq2EpPAKnreG44my/rSP6OLukd3irJGMACNHFoXfQY=;
-        b=HYmWTVRAYowkmPtIwoh8IMtZfBpEB+hW13kFz/ZbqJiDanEKc2ukG5aqno/ZP2drHO
-         W6u2eDXPd7pvwPu9exeIuDbvm1V/ECO6BKGxbABqCr5RyexmTO+5IhLYTJYareQcOdd4
-         aJdb7+z6xOcc91CXk9xCPUt04nUPYBKbI9vvRn7BNA5qYd6mFu6F2+GvRyPKL+o7kIkc
-         giPNgHA9ReulRKDx4ZYY3FXR4HBR6axakt6J6ZvlT9/s4uDYetvGFtES1To27ub2FEvx
-         /hk1BV3DrcZzA5GvXRlk2NTqSIFobUExVC2uggr07/pBU2Z1YD/O/QHwLcb6iNC6U25x
-         3v+A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yBwjF+DS+vSXsUN7z560qkjK09dNG/GEjVxLhlS0gsE=;
+        b=mTlVW06LAGcgI3qiF7857wW+C6dzIpggkwGyE1Eti/jeWEuhBhPEQxk3IdJm8L8sWG
+         WCGHdP8CRuvk6ReUGyGdB+DETLyxuOreDRg3I6C0H5gECJcEixTacOjR/KduG9cAALQ4
+         aZ7Wd/ivnotRzTDkhMSb7h49p2ePioDGAF8YI3vbXa3ILYsEUM7s5KOlCHlUSWlnpU/r
+         JzJZZ1jY9PIC2XGJOoKUaSGxRPT01EroSj8TxLJ+JGhEswSuNIW9Ey+tyclOnyJHoeds
+         rQzxtpvrAY4UhNzjmSTQF80JyVtVS0t8eP0wzPza18tqqg932QgK1hjB1R9pjtlikJyJ
+         7IhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Vsq2EpPAKnreG44my/rSP6OLukd3irJGMACNHFoXfQY=;
-        b=lPUTb+3hkMlZadk4ay3QLIbChvLjkiv5cMMZB1uUY6basK4fE7WMP2yHwq57TovADS
-         9E/uOv2APTihW7FYZJPELTQy2UyncjzmjB0RbIxNFcxOFBMJKWF+VECxRzJvIAsLDrtF
-         vbwvOJHWe9y7if3JeHltLSQYHu7zZnAZhja8QJ7c7EvAlIjYGncqj1wHIMA+nL/nx8UF
-         r4t1f9H4d2BfgIGZaxmVBmhvnJ8H1TBu9jzdLDL0z7m3JKQDK6ykmdI7A729RD7ZtNBI
-         FegLeVH/w3JUVpkx0ixu5kRas6dLMBjD/6TQLKEBDhhSO+UZobFU8SPUFVHnIH0uJozz
-         MdNA==
-X-Gm-Message-State: AOAM5325ky/+VUHKcxltQK49HZ9FwctpZpKxK6n1erNV5lAxwaH//WKq
-        tdJb5RJ6ltMw+84w+X5dp5hCYwCiDaP1mg==
-X-Google-Smtp-Source: ABdhPJySzSYm5D7wRb8u9V4+TDj9iFszEPlnd4jXyNMOO7rk4GkoBvylg0Pnr8o5dywo6gWvv3XLlg==
-X-Received: by 2002:a62:864e:: with SMTP id x75mr9419816pfd.60.1599998753546;
-        Sun, 13 Sep 2020 05:05:53 -0700 (PDT)
-Received: from adolin ([49.207.213.41])
-        by smtp.gmail.com with ESMTPSA id x19sm5925722pge.22.2020.09.13.05.05.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yBwjF+DS+vSXsUN7z560qkjK09dNG/GEjVxLhlS0gsE=;
+        b=JFTPRcbQUcecxWjjbZjOtR8QKTzkpqWWbiOzjF3xRBfWMT6b1ZrzgRv3sV8/taR7J8
+         xZrPD/H0NJZoABGUrzTS8ErR72PhBseRPgJyWZah3ZL0h2j1usO02OyhLFBZf1OQCkaV
+         185omysukYS3m4E9wugQSjnLJ2TQpiP/fx2Rup7d42X1MfdocW2cuaO8dDwWIepb9wks
+         qwsK4UNuk7nTvAwAjbg1ehhZo1NEccxVe57C8ECIIDWjvhCqA5ZJcZ+/iS7xogiAkuil
+         EEWej+k793nLcIrUL1soZTED7MUiXauOd3qODMDSnO3wRzv3/nhlwQEabehmpyYxDhkm
+         +6mg==
+X-Gm-Message-State: AOAM5319s/KxWpjstECZG7BL0r3gly5dj+vqkr/nPji7FffsgSpBqyba
+        /1l1RPfyNYK/JyPWr8f0oD8=
+X-Google-Smtp-Source: ABdhPJxZa//874cCWJGwIj3/w+A2g7/MREvzhbfPdEeZfg/yeLdI4rI94JROgavmtDtVgPMdyqxbzQ==
+X-Received: by 2002:a05:6512:20c3:: with SMTP id u3mr2617579lfr.572.1600000016115;
+        Sun, 13 Sep 2020 05:26:56 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
+        by smtp.gmail.com with ESMTPSA id a192sm2638725lfd.51.2020.09.13.05.26.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 05:05:52 -0700 (PDT)
-Date:   Sun, 13 Sep 2020 17:35:48 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
-        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] scripts: coccicheck: Improve error feedback when
- coccicheck fails
-Message-ID: <20200913120548.bwl3elfl7ss66eyh@adolin>
+        Sun, 13 Sep 2020 05:26:55 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Patrice Chotard <patrice.chotard@st.com>,
+        linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] rtc: st-lpc: Constify st_rtc_ops
+Date:   Sun, 13 Sep 2020 14:26:44 +0200
+Message-Id: <20200913122644.35515-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, coccicheck fails with only the message "coccicheck failed"
-and the error code for the failure. To obtain the error logs,
-one needs to specify a debug file using the DEBUG_FILE option.
+The only usage of st_rtc_ops is to assign its address to the ops field
+in the rtc_device struct. which is a const pointer. Make it const to
+allow the compiler to put it in read-only memory.
 
-Modify coccicheck to display error logs when it crashes unless
-DEBUG_FILE is set, in which case, the error logs are stored in
-the specified debug file.
-
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- scripts/coccicheck | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/rtc/rtc-st-lpc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/coccicheck b/scripts/coccicheck
-index e04d328210ac..dbeafa21f359 100755
---- a/scripts/coccicheck
-+++ b/scripts/coccicheck
-@@ -126,8 +126,14 @@ run_cmd_parmap() {
- 	if [ $VERBOSE -ne 0 ] ; then
- 		echo "Running ($NPROC in parallel): $@"
- 	fi
--	echo $@ >>$DEBUG_FILE
--	$@ 2>>$DEBUG_FILE
-+	if [ "$DEBUG_FILE" != "/dev/null" -a "$DEBUG_FILE" != "" ]; then
-+                echo $@>>$DEBUG_FILE
-+                $@ 2>>$DEBUG_FILE
-+        else
-+                echo $@
-+                $@ 2>&1
-+	fi
-+
- 	err=$?
- 	if [[ $err -ne 0 ]]; then
- 		echo "coccicheck failed"
+diff --git a/drivers/rtc/rtc-st-lpc.c b/drivers/rtc/rtc-st-lpc.c
+index 51041dc08af4..0c65448b85ee 100644
+--- a/drivers/rtc/rtc-st-lpc.c
++++ b/drivers/rtc/rtc-st-lpc.c
+@@ -173,7 +173,7 @@ static int st_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *t)
+ 	return 0;
+ }
+ 
+-static struct rtc_class_ops st_rtc_ops = {
++static const struct rtc_class_ops st_rtc_ops = {
+ 	.read_time		= st_rtc_read_time,
+ 	.set_time		= st_rtc_set_time,
+ 	.read_alarm		= st_rtc_read_alarm,
 -- 
-2.25.1
+2.28.0
 
