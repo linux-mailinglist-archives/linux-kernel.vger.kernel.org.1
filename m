@@ -2,103 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2F4267E81
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C59267E83
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgIMILV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 04:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbgIMILQ (ORCPT
+        id S1725950AbgIMILh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 04:11:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28874 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725914AbgIMILc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 04:11:16 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B07EC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:11:15 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id j185so7813136vsc.3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U7YctZGSyKVBhhbXkYSzuib6I1E6a8FCL8qXkSbBCMk=;
-        b=r9F4evLNjk6ew0JA4ZyP3UOrhOsulTgqkmH+ts5VguwGJbPTxi0ZmkRu1YI20AjM6E
-         xj/5DKgISZB3IwPwhxv3rINMNdP9Erd6PDAxq/eJLfL/eht1K/OuQzyUe58sfXcVUGSn
-         XEAzg/cXF9r09DvXat8U4Of22k2I7WQg2YED6adns1IkjBpI5aRtg3QhgqXWfQAQfCrn
-         IkjK2hPvbVR08hY34SB+JOpmm6ztuEM6XzjzTnZKbbzRhCe6xGS2THZSwImfdONGQFwy
-         olGSouxiJkFD5jrGitRRgP6/ckW6Dxe5PjqCKEvFAnI1DMHaDp9c93LikbiFvQUEQd8e
-         C2cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U7YctZGSyKVBhhbXkYSzuib6I1E6a8FCL8qXkSbBCMk=;
-        b=dauWQkzOcl+ZsPTk3KPcuG4Kk7gj/QwI1YbtPxaKN9M2kwz5pRc9bZiXjwXl6DAkq0
-         9SSIkhAcH6SO8wz6bUjs9fBVPYV3Xm43hjL/uQN4aEeDf7iSldHIdCtaP74HiKav1n1g
-         zsfZ+I365v/f9hNFE3u57IDOX+7KKWNsE/c0oiPx0UeFYZIzGxJSkXjrl1I559vCfMO9
-         VDn6ofmlVFlZgjgiqRk7I5C/Hi//5bydKHDQuc7/tpqFULK/QcQzoz304jGOBg/XUZEK
-         +Hf8a1j4VfQNhHNnCNAP841/Vf9bIeYaPE8y4ahTo3GSWAi+LuWWxFtvxwOLmV0QZ8SY
-         ZtgA==
-X-Gm-Message-State: AOAM530+Kx8GHZ3JRdnqUmIuuD0xkijuFP74cne0HrzSALX4iS4y9bhx
-        9mFpyl9o9XDCmmfUVWM3BylOj1ORCeXdZg==
-X-Google-Smtp-Source: ABdhPJzDlpkGUG+aMuZ5l0I7GyIqrKnvjguq3g/1tHvrGQdt6oR8AfqGAglTAyAC45mOx0ykXzbkXQ==
-X-Received: by 2002:a05:6102:204b:: with SMTP id q11mr4925898vsr.40.1599984674014;
-        Sun, 13 Sep 2020 01:11:14 -0700 (PDT)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id g197sm41649vkf.54.2020.09.13.01.11.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Sep 2020 01:11:13 -0700 (PDT)
-Received: by mail-ua1-f45.google.com with SMTP id j12so1771725ual.7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:11:12 -0700 (PDT)
-X-Received: by 2002:ab0:60d7:: with SMTP id g23mr4740563uam.122.1599984672429;
- Sun, 13 Sep 2020 01:11:12 -0700 (PDT)
+        Sun, 13 Sep 2020 04:11:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599984689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gBwOgxziVZ4w/s+1bIafcq1Xhk6ZHMrvZV2mu4yFom8=;
+        b=ebWi4b+cGKTtrTXSMdlv0ZySyyCBDmSFTzGPeHVTnIsxHHkd31O33XJVMAWw7VHdoHKmZp
+        UPwgDgp/lO8ARhM8aoW5UMp7V/g2E/Z26sEHmTb4YmcdbDmOu1PkxnZI25HvMSxcYc+d9m
+        p3jxc1VEcUZH9WFpm0VdeMO8eOvf7jQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-G3EbA4cxNBKxZcJyB-VFeA-1; Sun, 13 Sep 2020 04:11:27 -0400
+X-MC-Unique: G3EbA4cxNBKxZcJyB-VFeA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 307A810059A2;
+        Sun, 13 Sep 2020 08:11:26 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D3B107EB8F;
+        Sun, 13 Sep 2020 08:11:25 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM changes for Linux 5.9-rc5
+Date:   Sun, 13 Sep 2020 04:11:25 -0400
+Message-Id: <20200913081125.28980-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20200911050359.25042-1-xie.he.0141@gmail.com> <CA+FuTSeOUKJYOFamA+fKBxEb22VosOXZRWGf2DungBGRorcyfg@mail.gmail.com>
- <CAJht_EOCZvubQRHuS_4F2vFgQSnhkrZBwLDxoougqKkm2qaCgg@mail.gmail.com>
-In-Reply-To: <CAJht_EOCZvubQRHuS_4F2vFgQSnhkrZBwLDxoougqKkm2qaCgg@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sun, 13 Sep 2020 10:10:35 +0200
-X-Gmail-Original-Message-ID: <CA+FuTScP5x-FG6AHKujvfbLUeSnQfx371Z7a=59BU8QKAm+GGw@mail.gmail.com>
-Message-ID: <CA+FuTScP5x-FG6AHKujvfbLUeSnQfx371Z7a=59BU8QKAm+GGw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net/packet: Fix a comment about hard_header_len
- and add a warning for it
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 1:37 AM Xie He <xie.he.0141@gmail.com> wrote:
->
-> On Fri, Sep 11, 2020 at 7:32 AM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
-> >
-> > From a quick scan, a few device types that might trigger this
-> >
-> > net/atm/clip.c
-> > drivers/net/wan/hdlc_fr.c
-> > drivers/net/appletalk/ipddp.c
-> > drivers/net/ppp/ppp_generic.c
-> > drivers/net/net_failover.c
->
-> I have recently fixed this problem in the "net" tree in hdlc_fr.c.
->
-> Glad to see the number of drivers that have this problem is not very big.
+Linus,
 
-I am concerned about adding a WARN_ON_ONCE that we already expect to
-fire on some platforms.
+The following changes since commit b5331379bc62611d1026173a09c73573384201d9:
 
-Probably better to add the documentation without the warning.
+  KVM: arm64: Only reschedule if MMU_NOTIFIER_RANGE_BLOCKABLE is not set (2020-08-21 18:06:43 -0400)
 
-I know I suggested the check before, sorry for the churn, but I hadn't
-checked the existing state yet.
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 37f66bbef0920429b8cb5eddba849ec4308a9f8e:
+
+  KVM: emulator: more strict rsm checks. (2020-09-12 12:22:55 -0400)
+
+A bit on the bigger side, mostly due to me being on vacation, then busy,
+then on parental leave, but there's nothing worrisome.
+
+----------------------------------------------------------------
+ARM:
+- Multiple stolen time fixes, with a new capability to match x86
+- Fix for hugetlbfs mappings when PUD and PMD are the same level
+- Fix for hugetlbfs mappings when PTE mappings are enforced
+  (dirty logging, for example)
+- Fix tracing output of 64bit values
+
+x86:
+- nSVM state restore fixes
+- Async page fault fixes
+- Lots of small fixes everywhere
+
+----------------------------------------------------------------
+Alexandru Elisei (1):
+      KVM: arm64: Update page shift if stage 2 block mapping not supported
+
+Andrew Jones (6):
+      KVM: arm64: pvtime: steal-time is only supported when configured
+      KVM: arm64: pvtime: Fix potential loss of stolen time
+      KVM: arm64: Drop type input from kvm_put_guest
+      KVM: arm64: pvtime: Fix stolen time accounting across migration
+      KVM: Documentation: Minor fixups
+      arm64/x86: KVM: Introduce steal-time cap
+
+Chenyi Qiang (1):
+      KVM: nVMX: Fix the update value of nested load IA32_PERF_GLOBAL_CTRL control
+
+David Rientjes (1):
+      KVM: SVM: Periodically schedule when unregistering regions on destroy
+
+Haiwei Li (1):
+      KVM: Check the allocation of pv cpu mask
+
+Huacai Chen (1):
+      KVM: MIPS: Change the definition of kvm type
+
+Lai Jiangshan (1):
+      kvm x86/mmu: use KVM_REQ_MMU_SYNC to sync when needed
+
+Marc Zyngier (2):
+      KVM: arm64: Do not try to map PUDs when they are folded into PMD
+      KVM: arm64: Fix address truncation in traces
+
+Maxim Levitsky (4):
+      SVM: nSVM: correctly restore GIF on vmexit from nesting after migration
+      SVM: nSVM: setup nested msr permission bitmap on nested state load
+      KVM: nSVM: more strict SMM checks when returning to nested guest
+      KVM: emulator: more strict rsm checks.
+
+Paolo Bonzini (1):
+      Merge tag 'kvmarm-fixes-5.9-1' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
+
+Peter Shier (1):
+      KVM: nVMX: Update VMCS02 when L2 PAE PDPTE updates detected
+
+Rustam Kovhaev (1):
+      KVM: fix memory leak in kvm_io_bus_unregister_dev()
+
+Vitaly Kuznetsov (3):
+      KVM: x86: always allow writing '0' to MSR_KVM_ASYNC_PF_EN
+      x86/kvm: properly use DEFINE_IDTENTRY_SYSVEC() macro
+      x86/kvm: don't forget to ACK async PF IRQ
+
+Wanpeng Li (2):
+      KVM: SVM: avoid emulation with stale next_rip
+      KVM: VMX: Don't freeze guest when event delivery causes an APIC-access exit
+
+ Documentation/virt/kvm/api.rst     | 22 ++++++++++++++++++----
+ arch/arm64/include/asm/kvm_host.h  |  2 +-
+ arch/arm64/kvm/arm.c               |  3 +++
+ arch/arm64/kvm/mmu.c               |  8 +++++++-
+ arch/arm64/kvm/pvtime.c            | 29 +++++++++++++----------------
+ arch/arm64/kvm/trace_arm.h         | 16 ++++++++--------
+ arch/arm64/kvm/trace_handle_exit.h |  6 +++---
+ arch/mips/kvm/mips.c               |  2 ++
+ arch/x86/kernel/kvm.c              | 26 ++++++++++++++++++++------
+ arch/x86/kvm/emulate.c             | 22 +++++++++++++++++-----
+ arch/x86/kvm/mmu/mmu.c             |  2 +-
+ arch/x86/kvm/svm/nested.c          |  7 ++++++-
+ arch/x86/kvm/svm/sev.c             |  1 +
+ arch/x86/kvm/svm/svm.c             | 36 +++++++++++++++++++++---------------
+ arch/x86/kvm/vmx/nested.c          | 10 +++++++++-
+ arch/x86/kvm/vmx/vmx.c             |  5 +++--
+ arch/x86/kvm/vmx/vmx.h             |  1 +
+ arch/x86/kvm/x86.c                 |  5 ++++-
+ include/linux/kvm_host.h           | 31 ++++++++++++++++++++++++++-----
+ include/uapi/linux/kvm.h           |  6 ++++--
+ virt/kvm/kvm_main.c                | 21 ++++++++++++---------
+ 21 files changed, 180 insertions(+), 81 deletions(-)
+
