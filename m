@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B360267ED1
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E389F267ED3
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgIMIkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 04:40:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725937AbgIMIkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 04:40:23 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95194207C3;
-        Sun, 13 Sep 2020 08:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599986423;
-        bh=nkOkHmUG9ZCpI51sdLBC63sJIZFR7gM0zcVLDsrsFjs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ERGW9DQ6D1XKu5HK78vNiKWhRAj+EgVjnaebVeUFr8hB9EVc0JoBM60dn6Zc9NORo
-         XWmIB9Gw4f3UGTo1n/YYcYyxeMW43+pI5AWeDMid8z3UdPbxGETkciW/fpFJUutHmd
-         0ut7hiOk3In6oT1XaqgvtttxaX1wWxFZS+c51Gfw=
-Date:   Sun, 13 Sep 2020 10:40:24 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB/Thunderbolt fixes for 5.9-rc5
-Message-ID: <20200913084024.GA907010@kroah.com>
+        id S1725982AbgIMIlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 04:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725937AbgIMIlB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 04:41:01 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E93DC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:41:00 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z9so8363261wmk.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:reply-to:subject:to:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tex+uNDYHaejhEtvm138q5mgthApI/sMf1bIvv5O3f4=;
+        b=oEyaYEDZ6CZD6dQhTgs8TxUEDDYrQEak3P2pKJfftye0U5p6GTP5csBYOoGwrB4qkY
+         DwDLxBCuIbP6BqGqW0L05Q6sVNaHtwCyYNrQYmSKCVNdqfZaGQEnOviuRlTnAUKRMxeY
+         JN4eJYJUZNRZx8jbsQdexRNApA9Pm4YgmwACHf58AAMs4vEA4Ls1dLPPEztHMVy0vfZF
+         IYUIv+QVOoKUcif+hpNi5drtiLXFcQlGSj32xMl0H16UikGUx3PP/STx2Kp8VpWiboYB
+         AGQVp/iQEeNyxh4UUyVUy3Cbph23rKsIR8XGiWMiFW/7KlN8qJ5g2WEKjwyTbbm71bEh
+         52+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:reply-to:subject:to:references:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tex+uNDYHaejhEtvm138q5mgthApI/sMf1bIvv5O3f4=;
+        b=MlyO88dgX+T6TR+k3C8mC1/0eXoOxUtpxD+tuC2oHE6Tweo+EqSiffTIQWIZCkYUiY
+         X6nBrZBYk4hMA9SW2OjkmJGsVWAvIVvq/oyxxm8tX+LzzoLtL6yYYw05yGgAKc473Y2N
+         a7fc5iP6JkUC9KCDrisw0ImEhZv92CN9iVmx3RGob7GWJN9OFd8cMNpeoF9Em1fJ+FWg
+         EDm+dai4pCanWGkgqgmkIt0Z4nPTmOV5DQ9xdzvavQLAB/UMyfVpOGBQ0pC5ZGcu7MBe
+         UHMvPtYUfToF/BiTW1qrnR/MLqwVO8kkKuffdUpIrw5gh8ARHQHbiOyoSpvo38w8dVp3
+         Vy0Q==
+X-Gm-Message-State: AOAM5320tIFd8uFbZldHHQbA2Dz2rlMWe0+pj+D6L6V07p4slCv+0fre
+        ezMhelnciGb8ZofXsyn0Fjhiw2+/Hu5ZiQ==
+X-Google-Smtp-Source: ABdhPJz/i+LPSvNIlQpfBQXmfnVszzs6D5MhyOLQjLQg9mgr5Bvvg4AqBIwGAJntDG1B0Xa5kdI7xQ==
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr9801293wml.176.1599986458971;
+        Sun, 13 Sep 2020 01:40:58 -0700 (PDT)
+Received: from [192.168.1.20] (host109-156-254-181.range109-156.btcentralplus.com. [109.156.254.181])
+        by smtp.googlemail.com with ESMTPSA id q18sm13951043wre.78.2020.09.13.01.40.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Sep 2020 01:40:58 -0700 (PDT)
+From:   Chris Clayton <chris2553@googlemail.com>
+X-Google-Original-From: Chris Clayton <chris2553@gmail.com>
+Reply-To: chris2553@googlemail.com
+Subject: Re: [PATCH] misc: rtsx: do not setting OC_POWER_DOWN reg in
+ rtsx_pci_init_ocp()
+To:     ricky_wu@realtek.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        bhelgaas@google.com, vaibhavgupta40@gmail.com,
+        rui_feng@realsil.com.cn, kdlnx@doth.eu,
+        linux-kernel@vger.kernel.org
+References: <20200824030006.30033-1-ricky_wu@realtek.com>
+Message-ID: <c06d7691-01ab-303c-e687-dd8c51a8a9c5@gmail.com>
+Date:   Sun, 13 Sep 2020 09:40:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200824030006.30033-1-ricky_wu@realtek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+Hi Greg and Arnd,
 
-  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+On 24/08/2020 04:00, ricky_wu@realtek.com wrote:
+> From: Ricky Wu <ricky_wu@realtek.com>
+> 
+> this power saving action in rtsx_pci_init_ocp() cause INTEL-NUC6 platform
+> missing card reader
+> 
 
-are available in the Git repository at:
+In his changelog above, Ricky didn't mention that this patch fixes a regression that was introduced (in 5.1) by commit
+bede03a579b3.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.9-rc5
+The patch that I posted to LKML contained the appropriate Fixes, etc tags. After discussion, the patch was changed to
+remove the code that effectively disables the RTS5229 cardreader on (at least some) Intel NUC boxes. I prepared the
+patch that Ricky submitted but he didn't include my Signed-off-by or the Fixes tag. I think the following needs to be
+added to the changelog.
 
-for you to fetch changes up to a29c0adbb688ddee61b731804fb360898412fe7e:
+Fixes: bede03a579b3 ("misc: rtsx: Enable OCP for rts522a rts524a rts525a rts5260")
+Link: https://marc.info/?l=linux-kernel&m=159105912832257
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=204003
+Signed-off-by: Chris Clayton <chris2553@googlemail.com>
 
-  Merge tag 'usb-serial-5.9-rc5' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2020-09-08 17:50:58 +0200)
+bede03a579b3 introduced a bug which leaves the rts5229 PCI Express card reader on the Intel NUC6CAYH box.
 
-----------------------------------------------------------------
-USB/Thunderbolt fixes for 5.9-rc5
+My main point, however, is that the patch is also needed in the 5.4 (longterm) and 5.8 (stable) series kernels.
 
-Here are some small USB and Thunderbolt driver fixes for 5.9-rc5.
+Thanks.
 
-Nothing huge, just a number of bugfixes and new device ids for problems
-reported:
-	- new USB serial driver ids
-	- bug fixes for syzbot reported problems
-	- typec driver fixes
-	- thunderbolt driver fixes
-	- revert of reported broken commit
 
-All of these have been in linux-next with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Aleksander Morgado (1):
-      USB: serial: option: add support for SIM7070/SIM7080/SIM7090 modules
-
-Amjad Ouled-Ameur (1):
-      Revert "usb: dwc3: meson-g12a: fix shared reset control use"
-
-Bjørn Mork (1):
-      USB: serial: option: support dynamic Quectel USB compositions
-
-Greg Kroah-Hartman (2):
-      Merge tag 'thunderbolt-for-v5.9-rc4' of git://git.kernel.org/.../westeri/thunderbolt into usb-linus
-      Merge tag 'usb-serial-5.9-rc5' of https://git.kernel.org/.../johan/usb-serial into usb-linus
-
-Heikki Krogerus (1):
-      usb: typec: ucsi: acpi: Check the _DEP dependencies
-
-Madhusudanarao Amara (1):
-      usb: typec: intel_pmc_mux: Un-register the USB role switch
-
-Mathias Nyman (1):
-      usb: Fix out of sync data toggle if a configured device is reconfigured
-
-Mika Westerberg (1):
-      thunderbolt: Use maximum USB3 link rate when reclaiming if link is not up
-
-Nikunj A. Dadhania (1):
-      thunderbolt: Disable ports that are not implemented
-
-Patrick Riphagen (1):
-      USB: serial: ftdi_sio: add IDs for Xsens Mti USB converter
-
-Utkarsh Patel (2):
-      usb: typec: intel_pmc_mux: Do not configure Altmode HPD High
-      usb: typec: intel_pmc_mux: Do not configure SBU and HSL Orientation in Alternate modes
-
-Zeng Tao (1):
-      usb: core: fix slab-out-of-bounds Read in read_descriptors
-
- drivers/thunderbolt/switch.c          |  1 +
- drivers/thunderbolt/tb.h              |  2 +-
- drivers/thunderbolt/tunnel.c          | 12 ++++-
- drivers/usb/core/message.c            | 91 ++++++++++++++++-------------------
- drivers/usb/core/sysfs.c              |  5 ++
- drivers/usb/dwc3/dwc3-meson-g12a.c    | 15 +++---
- drivers/usb/serial/ftdi_sio.c         |  1 +
- drivers/usb/serial/ftdi_sio_ids.h     |  1 +
- drivers/usb/serial/option.c           | 22 ++++++---
- drivers/usb/typec/mux/intel_pmc_mux.c | 14 +-----
- drivers/usb/typec/ucsi/ucsi_acpi.c    |  4 ++
- 11 files changed, 87 insertions(+), 81 deletions(-)
+> Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+> ---
+>  drivers/misc/cardreader/rtsx_pcr.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+> index 37ccc67f4914..3a4a7b0cc098 100644
+> --- a/drivers/misc/cardreader/rtsx_pcr.c
+> +++ b/drivers/misc/cardreader/rtsx_pcr.c
+> @@ -1155,10 +1155,6 @@ void rtsx_pci_init_ocp(struct rtsx_pcr *pcr)
+>  			rtsx_pci_write_register(pcr, REG_OCPGLITCH,
+>  				SD_OCP_GLITCH_MASK, pcr->hw_param.ocp_glitch);
+>  			rtsx_pci_enable_ocp(pcr);
+> -		} else {
+> -			/* OC power down */
+> -			rtsx_pci_write_register(pcr, FPDCTL, OC_POWER_DOWN,
+> -				OC_POWER_DOWN);
+>  		}
+>  	}
+>  }
+> 
