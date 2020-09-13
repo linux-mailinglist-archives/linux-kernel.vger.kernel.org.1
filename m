@@ -2,264 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F42268026
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD69268029
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgIMQMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:12:35 -0400
-Received: from out28-123.mail.aliyun.com ([115.124.28.123]:36061 "EHLO
-        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbgIMQL3 (ORCPT
+        id S1725980AbgIMQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:13:14 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56946 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725941AbgIMQNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:11:29 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436401|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0204487-0.000512333-0.979039;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03267;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.IWac2C6_1600013452;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IWac2C6_1600013452)
-          by smtp.aliyun-inc.com(10.147.41.187);
-          Mon, 14 Sep 2020 00:11:02 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, hadar.gat@arm.com,
-        geert+renesas@glider.be, krzk@kernel.org, wahrenst@gmx.net,
-        masahiroy@kernel.org, tmaimon77@gmail.com, rdunlap@infradead.org,
-        qianweili@huawei.com, daniel.thompson@linaro.org,
-        xuzaibo@huawei.com, olivier.sobrie@silexinsight.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH 2/2] crypto: Ingenic: Add hardware TRNG for Ingenic X1830.
-Date:   Mon, 14 Sep 2020 00:10:21 +0800
-Message-Id: <20200913161021.120226-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200913161021.120226-1-zhouyanjie@wanyeetech.com>
-References: <20200913161021.120226-1-zhouyanjie@wanyeetech.com>
+        Sun, 13 Sep 2020 12:13:06 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DG9OC8102488;
+        Sun, 13 Sep 2020 16:11:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ug0tMzhluITQTcoGBeWBNqEK3Yug8rBXAC6fgIlchDU=;
+ b=SGgTGK+RK3OiyWtYLGQOkQWO6TxPRTZe31NbqbWSTDslO/HSCF4bAjkuVmTsVDmSLt9c
+ 7ZmnWCjcRCcYFtBwP+0ELWehwh5qUT+YBCNZY6Kfv7L9j/G3WuLJHmo0EbP5RGc8yNvx
+ xC6slVYdm0SaZ2DyWu9zL9rKBfa0/zyD1pRVWX54g3iKKi4sOz3wgStkwJ96zw4dH7yV
+ O/FHSxCZgbr9Fe/fALWz6TSCrt5Mkazmbnt7bjKMlEXitqMlnyJmk720xLGNQfKlg2gC
+ g9Yh7CTNozWFqcKcvKIP7oiBMlO2dk9J0zHE9Uy6PjR79FCDlbJvcKxlcTRQIAXZCp0j SA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 33gp9ku4ds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 13 Sep 2020 16:11:57 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DG5vgQ160957;
+        Sun, 13 Sep 2020 16:11:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 33h7wjtmd7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Sep 2020 16:11:57 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08DGBrTb013868;
+        Sun, 13 Sep 2020 16:11:53 GMT
+Received: from [10.74.86.192] (/10.74.86.192)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Sep 2020 16:11:53 +0000
+Subject: Re: [PATCH v3 02/11] xenbus: add freeze/thaw/restore callbacks
+ support
+To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        jgross@suse.com, linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        kamatam@amazon.com, sstabellini@kernel.org, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
+        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
+        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dwmw@amazon.co.uk, benh@kernel.crashing.org
+References: <cover.1598042152.git.anchalag@amazon.com>
+ <2d3a7ed32bf38e13e0141a631a453b6e4c7ba5dc.1598042152.git.anchalag@amazon.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <eebc26b8-f1b1-3bea-5366-dd77f063237e@oracle.com>
+Date:   Sun, 13 Sep 2020 12:11:47 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <2d3a7ed32bf38e13e0141a631a453b6e4c7ba5dc.1598042152.git.anchalag@amazon.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009130145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=2 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009130145
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add X1830 SoC digital true random number generator driver.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- drivers/char/hw_random/Kconfig        |  14 +++
- drivers/char/hw_random/Makefile       |   1 +
- drivers/char/hw_random/ingenic-trng.c | 161 ++++++++++++++++++++++++++++++++++
- 3 files changed, 176 insertions(+)
- create mode 100644 drivers/char/hw_random/ingenic-trng.c
+On 8/21/20 6:26 PM, Anchal Agarwal wrote:
+> From: Munehisa Kamata <kamatam@amazon.com> 
+>
+> Since commit b3e96c0c7562 ("xen: use freeze/restore/thaw PM events for
+> suspend/resume/chkpt"), xenbus uses PMSG_FREEZE, PMSG_THAW and
+> PMSG_RESTORE events for Xen suspend. However, they're actually assigned
+> to xenbus_dev_suspend(), xenbus_dev_cancel() and xenbus_dev_resume()
+> respectively, and only suspend and resume callbacks are supported at
+> driver level. To support PM suspend and PM hibernation, modify the bus
+> level PM callbacks to invoke not only device driver's suspend/resume but
+> also freeze/thaw/restore.
+>
+> Note that we'll use freeze/restore callbacks even for PM suspend whereas
+> suspend/resume callbacks are normally used in the case, becausae the
+> existing xenbus device drivers already have suspend/resume callbacks
+> specifically designed for Xen suspend.
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index f976a49e1fb5..1232ca9a455c 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -282,6 +282,20 @@ config HW_RANDOM_INGENIC_RNG
- 
- 	  If unsure, say Y.
- 
-+config HW_RANDOM_INGENIC_TRNG
-+	tristate "Ingenic True Random Number Generator support"
-+	depends on HW_RANDOM
-+	depends on MACH_X1830
-+	default HW_RANDOM
-+	help
-+	  This driver provides kernel-side support for the True Random Number Generator
-+	  hardware found in ingenic X1830 SoC. YSH & ATIL CU1830-Neo uses X1830 SoC.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called ingenic-trng.
-+
-+	  If unsure, say Y.
-+
- config HW_RANDOM_NOMADIK
- 	tristate "ST-Ericsson Nomadik Random Number Generator support"
- 	depends on ARCH_NOMADIK
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 26ae06844f09..8821d1c6f415 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_HW_RANDOM_TX4939) += tx4939-rng.o
- obj-$(CONFIG_HW_RANDOM_MXC_RNGA) += mxc-rnga.o
- obj-$(CONFIG_HW_RANDOM_IMX_RNGC) += imx-rngc.o
- obj-$(CONFIG_HW_RANDOM_INGENIC_RNG) += ingenic-rng.o
-+obj-$(CONFIG_HW_RANDOM_INGENIC_TRNG) += ingenic-trng.o
- obj-$(CONFIG_HW_RANDOM_OCTEON) += octeon-rng.o
- obj-$(CONFIG_HW_RANDOM_NOMADIK) += nomadik-rng.o
- obj-$(CONFIG_HW_RANDOM_PSERIES) += pseries-rng.o
-diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
-new file mode 100644
-index 000000000000..954a8411d67d
---- /dev/null
-+++ b/drivers/char/hw_random/ingenic-trng.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ingenic True Random Number Generator driver
-+ * Copyright (c) 2019 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-+ * Copyright (c) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/kernel.h>
-+#include <linux/hw_random.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+/* DTRNG register offsets */
-+#define TRNG_REG_CFG_OFFSET			0x00
-+#define TRNG_REG_RANDOMNUM_OFFSET	0x04
-+#define TRNG_REG_STATUS_OFFSET		0x08
-+
-+/* bits within the CFG register */
-+#define CFG_RDY_CLR					BIT(12)
-+#define CFG_INT_MASK				BIT(11)
-+#define CFG_GEN_EN					BIT(0)
-+
-+/* bits within the STATUS register */
-+#define STATUS_RANDOM_RDY			BIT(0)
-+
-+struct ingenic_trng {
-+	void __iomem *base;
-+	struct clk *clk;
-+	struct hwrng rng;
-+};
-+
-+static int ingenic_trng_init(struct hwrng *rng)
-+{
-+	struct ingenic_trng *trng = container_of(rng, struct ingenic_trng, rng);
-+	unsigned int ctrl;
-+
-+	ctrl = readl(trng->base + TRNG_REG_CFG_OFFSET);
-+	ctrl |= CFG_GEN_EN;
-+	writel(ctrl, trng->base + TRNG_REG_CFG_OFFSET);
-+
-+	return 0;
-+}
-+
-+static void ingenic_trng_cleanup(struct hwrng *rng)
-+{
-+	struct ingenic_trng *trng = container_of(rng, struct ingenic_trng, rng);
-+	unsigned int ctrl;
-+
-+	ctrl = readl(trng->base + TRNG_REG_CFG_OFFSET);
-+	ctrl &= ~CFG_GEN_EN;
-+	writel(ctrl, trng->base + TRNG_REG_CFG_OFFSET);
-+}
-+
-+static int ingenic_trng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-+{
-+	struct ingenic_trng *trng = container_of(rng, struct ingenic_trng, rng);
-+	u32 *data = buf;
-+	u32 status;
-+	int ret;
-+
-+	ret = readl_poll_timeout(trng->base + TRNG_REG_STATUS_OFFSET, status,
-+				 status & STATUS_RANDOM_RDY, 10, 1000);
-+	if (ret == -ETIMEDOUT) {
-+		pr_err("%s: Wait for DTRNG data ready timeout\n", __func__);
-+		return ret;
-+	}
-+
-+	*data = readl(trng->base + TRNG_REG_RANDOMNUM_OFFSET);
-+
-+	return 4;
-+}
-+
-+static int ingenic_trng_probe(struct platform_device *pdev)
-+{
-+	struct ingenic_trng *trng;
-+	int ret;
-+
-+	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
-+	if (!trng)
-+		return -ENOMEM;
-+
-+	trng->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(trng->base)) {
-+		pr_err("%s: Failed to map DTRNG registers\n", __func__);
-+		ret = PTR_ERR(trng->base);
-+		return PTR_ERR(trng->base);
-+	}
-+
-+	trng->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(trng->clk)) {
-+		ret = PTR_ERR(trng->clk);
-+		pr_crit("%s: Cannot get DTRNG clock\n", __func__);
-+		return PTR_ERR(trng->clk);
-+	}
-+
-+	ret = clk_prepare_enable(trng->clk);
-+	if (ret) {
-+		pr_crit("%s: Unable to enable DTRNG clock\n", __func__);
-+		return ret;
-+	}
-+
-+	trng->rng.name = pdev->name;
-+	trng->rng.init = ingenic_trng_init;
-+	trng->rng.cleanup = ingenic_trng_cleanup;
-+	trng->rng.read = ingenic_trng_read;
-+
-+	ret = hwrng_register(&trng->rng);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register hwrng\n");
-+		return ret;
-+	}
-+
-+	platform_set_drvdata(pdev, trng);
-+
-+	dev_info(&pdev->dev, "Ingenic DTRNG driver registered\n");
-+	return 0;
-+}
-+
-+static int ingenic_trng_remove(struct platform_device *pdev)
-+{
-+	struct ingenic_trng *trng = platform_get_drvdata(pdev);
-+	unsigned int ctrl;
-+
-+	hwrng_unregister(&trng->rng);
-+
-+	ctrl = readl(trng->base + TRNG_REG_CFG_OFFSET);
-+	ctrl &= ~CFG_GEN_EN;
-+	writel(ctrl, trng->base + TRNG_REG_CFG_OFFSET);
-+
-+	clk_disable_unprepare(trng->clk);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ingenic_trng_of_match[] = {
-+	{ .compatible = "ingenic,x1830-dtrng" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ingenic_trng_of_match);
-+
-+static struct platform_driver ingenic_trng_driver = {
-+	.probe		= ingenic_trng_probe,
-+	.remove		= ingenic_trng_remove,
-+	.driver		= {
-+		.name	= "ingenic-trng",
-+		.of_match_table = ingenic_trng_of_match,
-+	},
-+};
-+
-+module_platform_driver(ingenic_trng_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>");
-+MODULE_AUTHOR("周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>");
-+MODULE_DESCRIPTION("Ingenic True Random Number Generator driver");
--- 
-2.11.0
+
+Something is wrong with this sentence. Or with my brain --- I can't
+quite parse this.
+
+
+And please be consistent with "PM suspend" vs. "PM hibernation".
+
+
+>  So we can allow the device
+> drivers to keep the existing callbacks wihtout modification.
+>
+
+
+> @@ -599,16 +600,33 @@ int xenbus_dev_suspend(struct device *dev)
+>  	struct xenbus_driver *drv;
+>  	struct xenbus_device *xdev
+>  		= container_of(dev, struct xenbus_device, dev);
+> +	bool xen_suspend = is_xen_suspend();
+>  
+>  	DPRINTK("%s", xdev->nodename);
+>  
+>  	if (dev->driver == NULL)
+>  		return 0;
+>  	drv = to_xenbus_driver(dev->driver);
+> -	if (drv->suspend)
+> -		err = drv->suspend(xdev);
+> -	if (err)
+> -		dev_warn(dev, "suspend failed: %i\n", err);
+> +	if (xen_suspend) {
+> +		if (drv->suspend)
+> +			err = drv->suspend(xdev);
+> +	} else {
+> +		if (drv->freeze) {
+
+
+'else if' (to avoid extra indent level).  In xenbus_dev_resume() too.
+
+
+> +			err = drv->freeze(xdev);
+> +			if (!err) {
+> +				free_otherend_watch(xdev);
+> +				free_otherend_details(xdev);
+> +				return 0;
+> +			}
+> +		}
+> +	}
+> +
+> +	if (err) {
+> +		dev_warn(&xdev->dev,
+
+
+Is there a reason why you replaced dev with xdev->dev (here and elsewhere)?
+
+
+>  "%s %s failed: %d\n", xen_suspend ?
+> +				"suspend" : "freeze", xdev->nodename, err);
+> +		return err;
+> +	}
+> +
+>  	
+
+> @@ -653,8 +683,44 @@ EXPORT_SYMBOL_GPL(xenbus_dev_resume);
+>  
+>  int xenbus_dev_cancel(struct device *dev)
+>  {
+> -	/* Do nothing */
+> -	DPRINTK("cancel");
+> +	int err;
+> +	struct xenbus_driver *drv;
+> +	struct xenbus_device *xendev = to_xenbus_device(dev);
+
+
+xdev for consistency please.
+
+
+> +	bool xen_suspend = is_xen_suspend();
+
+
+No need for this, you use it only once anyway.
+
+
+-boris
+
 
