@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A649268141
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F83268154
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbgIMVEV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:04:21 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:42688 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725991AbgIMVEF (ORCPT
+        id S1726143AbgIMVGi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:06:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46416 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725976AbgIMVGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:04:05 -0400
+        Sun, 13 Sep 2020 17:06:10 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-9OVmYjGAMyuIRCsYvSCWEQ-1; Sun, 13 Sep 2020 17:03:56 -0400
-X-MC-Unique: 9OVmYjGAMyuIRCsYvSCWEQ-1
+ us-mta-310-KA2JWzv0NgWpH6G5-g2nRA-1; Sun, 13 Sep 2020 17:04:00 -0400
+X-MC-Unique: KA2JWzv0NgWpH6G5-g2nRA-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72BA72FD14;
-        Sun, 13 Sep 2020 21:03:54 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37AD91882FBB;
+        Sun, 13 Sep 2020 21:03:58 +0000 (UTC)
 Received: from krava.redhat.com (ovpn-112-4.ams2.redhat.com [10.36.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A78EF1002388;
-        Sun, 13 Sep 2020 21:03:50 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CAF291002393;
+        Sun, 13 Sep 2020 21:03:54 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 07/26] perf tools: Add check for existing link in buildid dir
-Date:   Sun, 13 Sep 2020 23:02:54 +0200
-Message-Id: <20200913210313.1985612-8-jolsa@kernel.org>
+Subject: [PATCH 08/26] perf tools: Use struct extra_kernel_map in machine__process_kernel_mmap_event
+Date:   Sun, 13 Sep 2020 23:02:55 +0200
+Message-Id: <20200913210313.1985612-9-jolsa@kernel.org>
 In-Reply-To: <20200913210313.1985612-1-jolsa@kernel.org>
 References: <20200913210313.1985612-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -58,47 +58,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding new build id link we fail if the link is already
-there. Adding check for existing link and warn/replace the
-link with new target.
+Using struct extra_kernel_map in machine__process_kernel_mmap_event,
+to pass mmap details. This way we can used single function for all 3
+mmap versions.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/build-id.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+ tools/perf/util/machine.c | 62 +++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 29 deletions(-)
 
-diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index bdee4e08e60d..ecdc167aa1a0 100644
---- a/tools/perf/util/build-id.c
-+++ b/tools/perf/util/build-id.c
-@@ -751,8 +751,26 @@ int build_id_cache__add_s(const char *sbuild_id, const char *name,
- 	tmp = dir_name + strlen(buildid_dir) - 5;
- 	memcpy(tmp, "../..", 5);
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 85587de027a5..2805aedc1062 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -1572,32 +1572,25 @@ static bool machine__uses_kcore(struct machine *machine)
+ }
  
--	if (symlink(tmp, linkname) == 0)
-+	if (symlink(tmp, linkname) == 0) {
- 		err = 0;
-+	} else if (errno == EEXIST) {
-+		char path[PATH_MAX];
-+
-+		if (readlink(linkname, path, sizeof(path)) == -1) {
-+			pr_err("Cant read link: %s\n", linkname);
-+			goto out_free;
-+		}
-+		if (strcmp(tmp, path)) {
-+			pr_err("Inconsistent .debug record, updating [%s]\n",
-+				linkname);
-+
-+			unlink(linkname);
-+
-+			if (symlink(tmp, linkname))
-+				goto out_free;
-+		}
-+		err = 0;
-+	}
+ static bool perf_event__is_extra_kernel_mmap(struct machine *machine,
+-					     union perf_event *event)
++					     struct extra_kernel_map *xm)
+ {
+ 	return machine__is(machine, "x86_64") &&
+-	       is_entry_trampoline(event->mmap.filename);
++	       is_entry_trampoline(xm->name);
+ }
  
- 	/* Update SDT cache : error is just warned */
- 	if (realname &&
+ static int machine__process_extra_kernel_map(struct machine *machine,
+-					     union perf_event *event)
++					     struct extra_kernel_map *xm)
+ {
+ 	struct dso *kernel = machine__kernel_dso(machine);
+-	struct extra_kernel_map xm = {
+-		.start = event->mmap.start,
+-		.end   = event->mmap.start + event->mmap.len,
+-		.pgoff = event->mmap.pgoff,
+-	};
+ 
+ 	if (kernel == NULL)
+ 		return -1;
+ 
+-	strlcpy(xm.name, event->mmap.filename, KMAP_NAME_LEN);
+-
+-	return machine__create_extra_kernel_map(machine, kernel, &xm);
++	return machine__create_extra_kernel_map(machine, kernel, xm);
+ }
+ 
+ static int machine__process_kernel_mmap_event(struct machine *machine,
+-					      union perf_event *event)
++					      struct extra_kernel_map *xm)
+ {
+ 	struct map *map;
+ 	enum dso_space_type dso_space;
+@@ -1612,20 +1605,18 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 	else
+ 		dso_space = DSO_SPACE__KERNEL_GUEST;
+ 
+-	is_kernel_mmap = memcmp(event->mmap.filename,
+-				machine->mmap_name,
++	is_kernel_mmap = memcmp(xm->name, machine->mmap_name,
+ 				strlen(machine->mmap_name) - 1) == 0;
+-	if (event->mmap.filename[0] == '/' ||
+-	    (!is_kernel_mmap && event->mmap.filename[0] == '[')) {
+-		map = machine__addnew_module_map(machine, event->mmap.start,
+-						 event->mmap.filename);
++	if (xm->name[0] == '/' ||
++	    (!is_kernel_mmap && xm->name[0] == '[')) {
++		map = machine__addnew_module_map(machine, xm->start,
++						 xm->name);
+ 		if (map == NULL)
+ 			goto out_problem;
+ 
+-		map->end = map->start + event->mmap.len;
++		map->end = map->start + xm->end - xm->start;
+ 	} else if (is_kernel_mmap) {
+-		const char *symbol_name = (event->mmap.filename +
+-				strlen(machine->mmap_name));
++		const char *symbol_name = (xm->name + strlen(machine->mmap_name));
+ 		/*
+ 		 * Should be there already, from the build-id table in
+ 		 * the header.
+@@ -1679,18 +1670,17 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 		if (strstr(kernel->long_name, "vmlinux"))
+ 			dso__set_short_name(kernel, "[kernel.vmlinux]", false);
+ 
+-		machine__update_kernel_mmap(machine, event->mmap.start,
+-					 event->mmap.start + event->mmap.len);
++		machine__update_kernel_mmap(machine, xm->start, xm->end);
+ 
+ 		/*
+ 		 * Avoid using a zero address (kptr_restrict) for the ref reloc
+ 		 * symbol. Effectively having zero here means that at record
+ 		 * time /proc/sys/kernel/kptr_restrict was non zero.
+ 		 */
+-		if (event->mmap.pgoff != 0) {
++		if (xm->pgoff != 0) {
+ 			map__set_kallsyms_ref_reloc_sym(machine->vmlinux_map,
+ 							symbol_name,
+-							event->mmap.pgoff);
++							xm->pgoff);
+ 		}
+ 
+ 		if (machine__is_default_guest(machine)) {
+@@ -1699,8 +1689,8 @@ static int machine__process_kernel_mmap_event(struct machine *machine,
+ 			 */
+ 			dso__load(kernel, machine__kernel_map(machine));
+ 		}
+-	} else if (perf_event__is_extra_kernel_mmap(machine, event)) {
+-		return machine__process_extra_kernel_map(machine, event);
++	} else if (perf_event__is_extra_kernel_mmap(machine, xm)) {
++		return machine__process_extra_kernel_map(machine, xm);
+ 	}
+ 	return 0;
+ out_problem:
+@@ -1726,7 +1716,14 @@ int machine__process_mmap2_event(struct machine *machine,
+ 
+ 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
+ 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
+-		ret = machine__process_kernel_mmap_event(machine, event);
++		struct extra_kernel_map xm = {
++			.start = event->mmap2.start,
++			.end   = event->mmap2.start + event->mmap2.len,
++			.pgoff = event->mmap2.pgoff,
++		};
++
++		strlcpy(xm.name, event->mmap2.filename, KMAP_NAME_LEN);
++		ret = machine__process_kernel_mmap_event(machine, &xm);
+ 		if (ret < 0)
+ 			goto out_problem;
+ 		return 0;
+@@ -1776,7 +1773,14 @@ int machine__process_mmap_event(struct machine *machine, union perf_event *event
+ 
+ 	if (sample->cpumode == PERF_RECORD_MISC_GUEST_KERNEL ||
+ 	    sample->cpumode == PERF_RECORD_MISC_KERNEL) {
+-		ret = machine__process_kernel_mmap_event(machine, event);
++		struct extra_kernel_map xm = {
++			.start = event->mmap.start,
++			.end   = event->mmap.start + event->mmap.len,
++			.pgoff = event->mmap.pgoff,
++		};
++
++		strlcpy(xm.name, event->mmap.filename, KMAP_NAME_LEN);
++		ret = machine__process_kernel_mmap_event(machine, &xm);
+ 		if (ret < 0)
+ 			goto out_problem;
+ 		return 0;
 -- 
 2.26.2
 
