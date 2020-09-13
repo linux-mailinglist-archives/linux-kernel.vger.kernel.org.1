@@ -2,122 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0619267F96
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 14:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB7E267F9F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 15:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgIMM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 08:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgIMM56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 08:57:58 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DF0C061573;
-        Sun, 13 Sep 2020 05:57:57 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r24so16300570ljm.3;
-        Sun, 13 Sep 2020 05:57:57 -0700 (PDT)
+        id S1725952AbgIMNPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 09:15:48 -0400
+Received: from mail-bn8nam08on2120.outbound.protection.outlook.com ([40.107.100.120]:48352
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725919AbgIMNPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 09:15:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S1wKQx14PCQCt1uy7mccOEYlXooz6GQf98QnFGeEoWZfpoVK5HiXotXZB1T4KfwT7TS4HLWIKIl8T+taIUZWMlE4RuWzoBSP3lNEAZZ0ofps1UZu2vBO7lwr9prlxMh+oJkiARV0UIroBGHyl5M5PEOxfcqT//iqWkVGO5XlB3gAsxPy6XxuGqcYHDl+/Y8gwxU0DnYKO71qjybk+2rQKfWz1eiUawbn1/jbh62r2ejLo171JdguthHrvGbOnzpzBfZgpw9mOpAvr+RvbGZbWnIb7lRVE1BgRx/eJatJidaCr+Zf7XT5+atf6yD2ghpm1UTQ7suyTBdDvhRSATWlSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f95mgtcsXCIuKJ3JIfUIAvDmN+zAvLktj65OgufucJ4=;
+ b=mQOk3rKJ7E/0/5sNltRLQyN3/36JFPNWD1OR48ef80VMegYsfv2CYVhGpuDNuTtuCm0nfRog3FiwG9Pi6B5xz9DtA6Su/KGZC8HQ6klA+K8p29Nj8nUhOCfmVZi5RDo5SdOS9AHwM4eivBG7f9DIs0Vrqz0zFhkgzaGlN6fbdThd8KB2qmfB2GVjP2lkXRZjYZmfC/AS260OGPuzyhoRYnKtOgyj0Q+rlMRwaGSf3lOL66mHRQV6Bew4Ux7F4LutIqZWKROFM9UKyaV/xvJihyK8IE8vMyQa6kF6t+dMPgA4cP4ttpWgflZA45sicRceF1QattvE1f2L5UtcSeZvnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=learner.manipal.edu; dmarc=pass action=none
+ header.from=learner.manipal.edu; dkim=pass header.d=learner.manipal.edu;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bUMy3sDLRHc5xhpv5GIiERyZtXBc7NfYeFGM7Ru9W48=;
-        b=hZSyBXE6HILb5jc1ydk4PdIkYMODLSQaYIhygodAxkPZ4c6oZAyJr7N0fLYokLUjUP
-         1ptre9zNyjKOOM7SsIFH37B1Lj3oHFCXMqLjf4JLHqiF8LC9Vbp5/xgL92e/3L3E1jC3
-         UeENZbk7vqhVrxcXhm97j8OGYsYCoWrPs/UwO41r6q88IdKm9acQh4d7FJ47sC84qJcg
-         TNLgtMpNjzfBnw6GYPA6RBN09Tl4oSIoiF/usFKhVG3tcku08PPje6wNn/gChgxQ1MRO
-         H3pbIrCxcXxNC03NCgYgBtf+8Y3UliDjhoKRqE+3+nNMDgzEYcDY+Jsh6Ky7JbqMxBqO
-         Yqfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bUMy3sDLRHc5xhpv5GIiERyZtXBc7NfYeFGM7Ru9W48=;
-        b=eUrcD/0666Ne8K9qWE1D2kIUEgt1Ik3QF/LgFIoHsb7xNW3u6Ir4w177Ex0iShQD60
-         fZYtFvOFgYQ/EfL3CHs4d6dIvb/ppQCFSSyK6IRiuWC3BlXnxYaVXr1X0PFJ5wDf4t6c
-         +EJ+z2tBKg0fMwk0hczjYBPvQ64SDh5LENNxjY0LUXcG3OWVwrUdmK7bBCpI+wIrmzd2
-         JYZxzjDo9UaBbkDZLXt+wO0VziICKO+wyeENEGdTAiYxB+ssm0MBI5+4CnhJAb4/pyGR
-         gtExl4q+sYoYm+V7ybgPL9qO2TvBVtz6EJ8Om3t2uU5rhb9a4ZnpZf7FL/Xn6QtJcT3t
-         h83Q==
-X-Gm-Message-State: AOAM531yJxeV0R/ZwwGG0ooWi6Us3NbAdkDrc6Yvj6dSR6OnyQG9/f3A
-        TRhFJQ52zdhT6JYmylFz22Q=
-X-Google-Smtp-Source: ABdhPJxkYEuLdmwH5Va1oA4z4ACGJo68p+viLEYWHNH+M9Ubg9EFdZWnAdpOl2fgZObE7I279fGP3A==
-X-Received: by 2002:a2e:1444:: with SMTP id 4mr3319101lju.218.1600001875895;
-        Sun, 13 Sep 2020 05:57:55 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id m20sm2868737ljp.132.2020.09.13.05.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Sep 2020 05:57:55 -0700 (PDT)
-Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jiada Wang <jiada_wang@mentor.com>
-Cc:     nick@shmanahar.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Andrew_Gabbasov@mentor.com
-References: <20200912005521.26319-1-jiada_wang@mentor.com>
- <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com>
-Date:   Sun, 13 Sep 2020 15:57:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+ d=learnermanipal.onmicrosoft.com; s=selector2-learnermanipal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f95mgtcsXCIuKJ3JIfUIAvDmN+zAvLktj65OgufucJ4=;
+ b=DL/W075iCgDKYZkRPoZ+l0cxrVozFk2bB6kV18TS0Isfn+1ParvgT/gSzosfRx1qw4NZqxkG8C5ehmlID34zU7EIT+dpsoAcIQpJ12QGHwD0CH+pc/jtlKwJ4XPZ6MedEkf2p3k4XOxYBjaiIUXsH0LD4c43endjCNGNDp7WQ+M=
+Authentication-Results: lwfinger.net; dkim=none (message not signed)
+ header.d=none;lwfinger.net; dmarc=none action=none
+ header.from=learner.manipal.edu;
+Received: from BYAPR01MB4344.prod.exchangelabs.com (2603:10b6:a03:a0::13) by
+ BYAPR01MB5288.prod.exchangelabs.com (2603:10b6:a03:91::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3370.17; Sun, 13 Sep 2020 13:15:34 +0000
+Received: from BYAPR01MB4344.prod.exchangelabs.com
+ ([fe80::e167:aa58:7a0d:dfb7]) by BYAPR01MB4344.prod.exchangelabs.com
+ ([fe80::e167:aa58:7a0d:dfb7%6]) with mapi id 15.20.3370.018; Sun, 13 Sep 2020
+ 13:15:34 +0000
+From:   Sohom <sohom.datta@learner.manipal.edu>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     Sohom <sohom.datta@learner.manipal.edu>
+Subject: [RESEND(2) PATCH] staging: rtl8188eu: Fix else after return WARNING (checkpatch)
+Date:   Sun, 13 Sep 2020 18:24:39 +0530
+Message-Id: <20200913125439.25036-1-sohom.datta@learner.manipal.edu>
+X-Mailer: git-send-email 2.28.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BM1PR01CA0124.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:40::18) To BYAPR01MB4344.prod.exchangelabs.com
+ (2603:10b6:a03:a0::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (223.191.54.47) by BM1PR01CA0124.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:40::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Sun, 13 Sep 2020 13:15:31 +0000
+X-Mailer: git-send-email 2.28.0
+X-Originating-IP: [223.191.54.47]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4ce2e268-fe0c-4bda-0a12-08d857e718af
+X-MS-TrafficTypeDiagnostic: BYAPR01MB5288:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB5288867EA8B7F83E015D377CA7220@BYAPR01MB5288.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d4JBzMFNP6ugno8MzApfSpNS3w2ph43QnNBnDkGCYKgOL+oPPyKH9ofz1fm4fv6j1U4H1QjHd6ltWWW1AO9EfdJxTE0JnxHXhgHGmsLEogHdhESnwkxI7Nc2eD72mOi1SPqNkIuRJL/9YbfWQKVHN6NPzyIrnD85WzSIxZnVKfigkAUKWXnsGr+CyTLFo4WDMy/aI92HNwfiV4vYawZV1/J/6acBae0pm8BkNeaHqOnX5FQ6uPhVAifVWnHjHQ7dBMT+9bNbOVhTqVRSo/PiZJec3XcG7efP+MlU7SuzU5V0YI3dqcw7Y7MbJ33Pl6ZMkFobJr+AjXUcPkU9T23EUIMoYcURTvPdlsjRP7/dOV1BZUWH1ShtyScAMDcnvlOR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4344.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(396003)(39850400004)(366004)(1076003)(26005)(8936002)(83380400001)(16526019)(186003)(2906002)(956004)(6486002)(110136005)(786003)(478600001)(316002)(2616005)(8676002)(5660300002)(52116002)(75432002)(6512007)(4326008)(86362001)(107886003)(66556008)(6506007)(66476007)(66946007)(69590400008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: wKm3fmDkvhADkVOawtM/LbMSnHABAZDYdJhnMu5e49A3TuX+H6zu3LHAPvZBEQMrZn7qBiB8lOPjOQJMnI28qbcNa9vmq2zmpUe8E0WzymfV02Dp68LNDOLpJj6gE5hfB5Nqn2G0G3gfTnz71lUUMGqYj/Z2kcT1/YbiKEJKvZMtpm+cP5O6HXq8qAKNardTfEoQ7qAx36nFOjzqYsKkYlCddz01+ETybntvApp9cRx8G9/F8GWqu/DStBnBH12GIsT5H4UbCtAbP6rR7bI6lUnQ9jisDf3fqWrSeqNadE1tbnhzWc6AWp/J8W0KAapFRGnB0pVp7d9TuDueCfQvM/SToyEdZvAAMv0UQsgvvV2n3LZl3R4D34jw88x/GtEOqnArIWZEr3S+/NliFKaMoTLaUT98tMi9xQvqQRM8VRjJYoxfB2y4nLIpzvCR+dSt1mmUlnA1nUvR1C2qI7VjzhIvvjnn/iTCKtg0BFZYIW5S6f9sEQII52BhPS1p1Zh+zt5GoFVHDGCvG0K0h8Yh3souAVGlCtDMlbOo+M1TNoYMzkEtGz7/8R4w4sgi/wbTYEu3N2KTj4C32Kw5Rt9QsQKCTG7tq9ohvkx0SbSHyMbhVu+/NYBw5/mxz2R4KV7q+fk+i02JmS7cmiw2yQjE6w==
+X-OriginatorOrg: learner.manipal.edu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ce2e268-fe0c-4bda-0a12-08d857e718af
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4344.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2020 13:15:34.1668
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 29bebd42-f1ff-4c3d-9688-067e3460dc1f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bvCQTREoMxr2P8YSaOhGydcLyTYVCaboj8zWGD6t5Px2eHO3RnnEnnIBhhxSpMFPjRW9uTZ0at31mFEx2K/uWp+G3kry1SkDQXZvRmP0snI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5288
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.09.2020 11:43, Andy Shevchenko пишет:
-> ...
-> 
->> +       bool retried = false;
+Fixed:
+WARNING: else is not generally useful after a break or return
+1636: FILE: ./rtw_recv.c:1636:
++           return false;
++       else
 
-> I thought Dmitry wants that to be retry
+Separated the return statement into a separate block since
+it doesn't seem to depend on the SN_LESS explicity being false.
 
-In the comment to v2 you suggested to negate the condition, hence I
-thought it's YOU who wants it to be retried.
+Signed-off-by: Sohom <sohom.datta@learner.manipal.edu>
+---
+ drivers/staging/rtl8188eu/core/rtw_recv.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The "retried" is a very common form among kernel drivers, so it's good
-to me.
+diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
+index 5fe7a0458dd2..5e81134ffb6d 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_recv.c
++++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
+@@ -1629,10 +1629,11 @@ static int enqueue_reorder_recvframe(struct recv_reorder_ctrl *preorder_ctrl,
+ 		hdr = list_entry(plist, struct recv_frame, list);
+ 		pnextattrib = &hdr->attrib;
+ 
++		if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
++			return false;
++
+ 		if (SN_LESS(pnextattrib->seq_num, pattrib->seq_num))
+ 			plist = plist->next;
+-		else if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
+-			return false;
+ 		else
+ 			break;
+ 	}
+-- 
+2.28.0
 
->>         u8 buf[2];
->>         int ret;
-> 
->> -       ret = i2c_transfer(client->adapter, xfer, 2);
->> -       if (ret == 2) {
->> -               ret = 0;
->> -       } else {
->> -               if (ret >= 0)
->> -                       ret = -EIO;
->> +retry_read:
-> 
->> +       ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
->> +       if (ret != ARRAY_SIZE(xfer)) {
-...> Also why switch from positive to negative conditional?
-
-This will make code less readable because of the goto, and thus, there
-will be two branches for handling of the returned value instead of one +
-goto. Hence this part is good to me as-is.
-
->> +               if (!retried) {
->> +                       dev_dbg(&client->dev, "i2c retry\n");
->> +                       msleep(MXT_WAKEUP_TIME);
->> +                       retried = true;
->> +                       goto retry_read;
->> +               }
->> +               ret = ret < 0 ? ret : -EIO;
->>                 dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
->>                         __func__, ret);
->> +               return ret;
->>         }
->>
->> -       return ret;
->> +       return 0;
->>  }
