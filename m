@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B55C268076
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAAC268075
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgIMRJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 13:09:09 -0400
-Received: from mga07.intel.com ([134.134.136.100]:35628 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725938AbgIMRI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725952AbgIMRI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 13 Sep 2020 13:08:56 -0400
-IronPort-SDR: abE1r6BZCNXRHzx4CgNYD5NRHXMBe4PfJIgq2PQ8OoGal1gXHsULn4I9sWxTLryEYgMgeRh7XZ
- eLbmPzGd99dA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="223179816"
+Received: from mga06.intel.com ([134.134.136.31]:60290 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725936AbgIMRIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 13:08:55 -0400
+IronPort-SDR: Sv5N/j5whLKnAXNZmRNCw+Zsww7kPX6FbouA23XQv9eLuN1h75odLm7CNsHWdJq5aFZJSOO71g
+ 4QnEbZ9hllMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="220547310"
 X-IronPort-AV: E=Sophos;i="5.76,422,1592895600"; 
-   d="scan'208";a="223179816"
+   d="scan'208";a="220547310"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 10:08:55 -0700
-IronPort-SDR: NoXuFPBnS5a2jMpq7unQloKdulyVh8nRTWdr7+x0xHvaeaNJm3vryivA/lq0vFtmKVB+0uZ4vW
- AJIwpjzZBrhA==
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 10:08:54 -0700
+IronPort-SDR: tA/ku7jkQSkJTiOTDFXfhZZ/osXJuJHgEXh1jJigngadFNWve0+UogoiEKJ5YJUNpIgK8Lygz6
+ 0m1YQrybH5zQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,422,1592895600"; 
-   d="scan'208";a="330433789"
+   d="scan'208";a="379079244"
 Received: from lkp-server01.sh.intel.com (HELO a75722977aa5) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Sep 2020 10:08:54 -0700
+  by orsmga001.jf.intel.com with ESMTP; 13 Sep 2020 10:08:53 -0700
 Received: from kbuild by a75722977aa5 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kHVUj-0000rg-CQ; Sun, 13 Sep 2020 17:08:53 +0000
-Date:   Mon, 14 Sep 2020 01:08:18 +0800
+        id 1kHVUj-0000rd-7e; Sun, 13 Sep 2020 17:08:53 +0000
+Date:   Mon, 14 Sep 2020 01:08:22 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/test] BUILD SUCCESS
- e21110279bd363fce8356c4e96388a41b4d006ba
-Message-ID: <5f5e5202.wXzhzHvNSD9zsTVB%lkp@intel.com>
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 45faed7569d35a7890e734d9d8d5b5cfe5f4c438
+Message-ID: <5f5e5206.4wth2TdjoethtBj+%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,8 +46,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/test
-branch HEAD: e21110279bd363fce8356c4e96388a41b4d006ba  Merge tag 'v5.9-rc4' into HEAD
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: 45faed7569d35a7890e734d9d8d5b5cfe5f4c438  srcu: Take early exit on memory-allocation failure
 
 elapsed time: 724m
 
