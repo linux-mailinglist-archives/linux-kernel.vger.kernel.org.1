@@ -2,107 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E256F267D08
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 03:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61ECE267D0E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 03:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725914AbgIMBML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 21:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgIMBMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 21:12:08 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12E6C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 18:12:08 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id y194so7552447vsc.4
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 18:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eaUKvG17QDFsiEMAiiN5tAG3XK9xts1CDUuIgPPVkFs=;
-        b=YuUNpl3Ev5lNK/FHlTWko3kIUdAS2yo9gZ2RSb0HXuGs7XMbKulrv9r3668dnQWlso
-         9hsec0djgWmeAdb/9vAOVRAbzm8xMGNwXd53E9szIg4t9nb/mWSASnIyXyGMXEVVDMlD
-         3PAs2Mz1rmK6JGmbaHefYZG1IGQF3uYf4ht0A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eaUKvG17QDFsiEMAiiN5tAG3XK9xts1CDUuIgPPVkFs=;
-        b=HbLlHLdBRorMs2aIdrVI1XeIsC6eW+aKwasPsxbKfyJ+LxzBHb8893KTmtKHh+mmfJ
-         xZkOAvF6azWHgn3ZCmNPMV7OW0QvhVYNUgM+j7O6+oj8pXCdAAu7/8t0Cs/RqdBBGQ7v
-         Fk6+rpgLpj9nZRszP3H5owBTOw5t8JrLtc2xI/hyKtfAgp/EibURt3oy46VjIUJAxkbg
-         ODl41vu9nakBqS1zoyB/j1kvwB19zlZ0yTuDjTm9+4tVqZfyJ2QJspiis3wXRbbZWJEP
-         iBHkqTA6qG+PfVjrNrv7u5Q8EflR/h/yw2bPWTH/mmSmC/kI52oA3Zw8VlggrImZi2QW
-         ffAg==
-X-Gm-Message-State: AOAM53032MebyzJZUjQjvwfm1mVu8MIqhaZiKbAjGrMu/YcflNqr/4R1
-        RS+qf1DA/l9c9nHNTDskuug7fkVqJrNOVA==
-X-Google-Smtp-Source: ABdhPJyzMftuNFEh1r1wQaND/fOqbs29BdNco2kCRo8O8n7RtWfy5Gz9/RIN/+JJr5Zx221iEdEp1w==
-X-Received: by 2002:a05:6102:3d7:: with SMTP id n23mr4698410vsq.29.1599959527576;
-        Sat, 12 Sep 2020 18:12:07 -0700 (PDT)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id 132sm1119277vkz.56.2020.09.12.18.12.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 12 Sep 2020 18:12:07 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id j6so6629609vsg.8
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 18:12:06 -0700 (PDT)
-X-Received: by 2002:a67:ff97:: with SMTP id v23mr4715341vsq.11.1599959526518;
- Sat, 12 Sep 2020 18:12:06 -0700 (PDT)
+        id S1725912AbgIMBTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 21:19:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725889AbgIMBTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 21:19:15 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3EFA8214F1;
+        Sun, 13 Sep 2020 01:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599959955;
+        bh=o2bVdjxpULrUup9iSKagiQwwz7bvCxt8RBPtA41IJI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mLDX/kSAHPstTpQFU0Ub0Jkklpf+ndKjNMoOainVadn5veQZ2o52M6ugwm9ew+9pk
+         3f0SNghnkh0XmyvQLE0LtSRQ8HFsQrQzKURr10CRDTP9XN9yTpzrnSjvhhfVk5MKVr
+         c9wqlv3O/upR0P0VfS6jQUqV5DxvhFbDFKR+kgD0=
+Date:   Sun, 13 Sep 2020 09:19:07 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Li Yang <leoyang.li@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 08/13] arm64: dts: imx8mm-var-som-symphony: Use newer
+ interrupts property
+Message-ID: <20200913011906.GC25109@dragon>
+References: <20200904145312.10960-1-krzk@kernel.org>
+ <20200904145312.10960-9-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20200912140730.1.Ie67fa32009b94702d56232c064f1d89065ee8836@changeid>
- <20200912225302.GA3715@yoga>
-In-Reply-To: <20200912225302.GA3715@yoga>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Sat, 12 Sep 2020 18:11:55 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VT+7RX=vdy0Ba_AB3dyMKVGu9uwP5bS2eew2W49BdcWA@mail.gmail.com>
-Message-ID: <CAD=FV=VT+7RX=vdy0Ba_AB3dyMKVGu9uwP5bS2eew2W49BdcWA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] spi: spi-geni-qcom: Use the FIFO even more
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904145312.10960-9-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 04, 2020 at 04:53:07PM +0200, Krzysztof Kozlowski wrote:
+> The int-gpios was deprecated in favor of generic interrupts property.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-On Sat, Sep 12, 2020 at 3:53 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Sat 12 Sep 16:07 CDT 2020, Douglas Anderson wrote:
->
-> > In commit 902481a78ee4 ("spi: spi-geni-qcom: Actually use our FIFO") I
-> > explained that the maximum size we could program the FIFO was
-> > "mas->tx_fifo_depth - 3" but that I chose "mas->tx_fifo_depth()"
-> > because I was worried about decreased bandwidth.
-> >
-> > Since that time:
-> > * All the interconnect patches have landed, making things run at the
-> >   proper speed.
-> > * I've done more measurements.
-> >
-> > This lets me confirm that there's really no downside of using the FIFO
-> > more.  Specifically I did "flashrom -p ec -r /tmp/foo.bin" on a
-> > Chromebook and averaged over several runs.
->
-> Wouldn't there be a downside in the form of setting the watermark that
-> close to the full FIFO we have less room for being late handling the
-> interrupt? Or is there some mechanism involved that will prevent
-> the FIFO from being overrun?
-
-Yeah, I had that worry too, but, as described in 902481a78ee4 ("spi:
-spi-geni-qcom: Actually use our FIFO"), it doesn't seem to be a
-problem.  From that commit: "We are the SPI master, so it makes sense
-that there would be no problems with overruns, the master should just
-stop clocking."
-
--Doug
+Applied patch #8 ~ #13, thanks.
