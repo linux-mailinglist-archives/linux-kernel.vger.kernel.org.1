@@ -2,128 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E67D26807E
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B55C268076
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgIMRNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 13:13:35 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35484 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgIMRNc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 13:13:32 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DH4iC8191502;
-        Sun, 13 Sep 2020 17:07:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=xVtLGu7xP2YfYZ/5jujoneuZlmPA2+dwH8I7NLyPQ1c=;
- b=Juv1J9ih7aW9VwvSNOXrVn+lQ4/bY66fgMAgys7R6MsdDkbG+kKYFizO9UnPrQdS0FYR
- +ezg0OJOUY1uvU8MGRH551lzfWXsOWSUFz6a4UJGMiDkcNUU5Feup7d9OHIFYenEikuu
- C/UnQWnDb5PRRG4jPJrR+8XnwadKGotc5vHgqrdGPQ1ezckIfBrzqwv9imTfKgbGnvXn
- 711q1eISZIqV86FM0NWO25rot6HkB/h8FGKSy4colpRNegADVYS0TN3neDlC5In0rLOH
- 4wqPX+bPOBhDmiUf4csMsZx6svd9dvWTO8/52NkIc9i8ZFRXwgyhrKnchFHwyCeTi8JS 5A== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9ku66c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 13 Sep 2020 17:07:47 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DH5fF1064033;
-        Sun, 13 Sep 2020 17:07:47 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 33hm2vghh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 13 Sep 2020 17:07:46 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08DH7gN6025265;
-        Sun, 13 Sep 2020 17:07:42 GMT
-Received: from [10.74.86.192] (/10.74.86.192)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 13 Sep 2020 17:07:41 +0000
-Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend
- mode
-To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        jgross@suse.com, linux-pm@vger.kernel.org, linux-mm@kvack.org,
-        kamatam@amazon.com, sstabellini@kernel.org, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
-        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
-        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dwmw@amazon.co.uk, benh@kernel.crashing.org
-References: <cover.1598042152.git.anchalag@amazon.com>
- <9b970e12491107afda0c1d4a6f154b52d90346ac.1598042152.git.anchalag@amazon.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <986e074e-9c9f-ce09-ffb8-ed8f5d528d98@oracle.com>
-Date:   Sun, 13 Sep 2020 13:07:36 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.1
+        id S1725961AbgIMRJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 13:09:09 -0400
+Received: from mga07.intel.com ([134.134.136.100]:35628 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725938AbgIMRI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 13:08:56 -0400
+IronPort-SDR: abE1r6BZCNXRHzx4CgNYD5NRHXMBe4PfJIgq2PQ8OoGal1gXHsULn4I9sWxTLryEYgMgeRh7XZ
+ eLbmPzGd99dA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="223179816"
+X-IronPort-AV: E=Sophos;i="5.76,422,1592895600"; 
+   d="scan'208";a="223179816"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 10:08:55 -0700
+IronPort-SDR: NoXuFPBnS5a2jMpq7unQloKdulyVh8nRTWdr7+x0xHvaeaNJm3vryivA/lq0vFtmKVB+0uZ4vW
+ AJIwpjzZBrhA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,422,1592895600"; 
+   d="scan'208";a="330433789"
+Received: from lkp-server01.sh.intel.com (HELO a75722977aa5) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Sep 2020 10:08:54 -0700
+Received: from kbuild by a75722977aa5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kHVUj-0000rg-CQ; Sun, 13 Sep 2020 17:08:53 +0000
+Date:   Mon, 14 Sep 2020 01:08:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/test] BUILD SUCCESS
+ e21110279bd363fce8356c4e96388a41b4d006ba
+Message-ID: <5f5e5202.wXzhzHvNSD9zsTVB%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <9b970e12491107afda0c1d4a6f154b52d90346ac.1598042152.git.anchalag@amazon.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009130155
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009130155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/test
+branch HEAD: e21110279bd363fce8356c4e96388a41b4d006ba  Merge tag 'v5.9-rc4' into HEAD
 
-On 8/21/20 6:25 PM, Anchal Agarwal wrote:
-> From: Munehisa Kamata <kamatam@amazon.com>  
->
-> Guest hibernation is different from xen suspend/resume/live migration.
-> Xen save/restore does not use pm_ops as is needed by guest hibernation.
-> Hibernation in guest follows ACPI path and is guest inititated , the
-> hibernation image is saved within guest as compared to later modes
-> which are xen toolstack assisted and image creation/storage is in
-> control of hypervisor/host machine.
-> To differentiate between Xen suspend and PM hibernation, keep track
-> of the on-going suspend mode by mainly using a new API to keep track of
-> SHUTDOWN_SUSPEND state.
-> Introduce a simple function that keeps track of on-going suspend mode
-> so that PM hibernation code can behave differently according to the
-> current suspend mode.
-> Since Xen suspend doesn't have corresponding PM event, its main logic
-> is modfied to acquire pm_mutex.
->
-> Though, accquirng pm_mutex is still right thing to do, we may
-> see deadlock if PM hibernation is interrupted by Xen suspend.
-> PM hibernation depends on xenwatch thread to process xenbus state
-> transactions, but the thread will sleep to wait pm_mutex which is
-> already held by PM hibernation context in the scenario. Xen shutdown
-> code may need some changes to avoid the issue.
->
-> [Anchal Agarwal: Changelog]:
->  RFC v1->v2: Code refactoring
->  v1->v2:     Remove unused functions for PM SUSPEND/PM hibernation
->  v2->v3:     Added logic to use existing pm_notifier to detect for ARM
-> 	     and abort hibernation for ARM guests. Also removed different
-> 	     suspend_modes and simplified the code with using existing state
-> 	     variables for tracking Xen suspend. The notifier won't get
-> 	     registered for pvh dom0 either.
->
-> Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
-> Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
+elapsed time: 724m
 
+configs tested: 109
+configs skipped: 2
 
-BTW, just to make sure --- Thomas' comments about commit message format
-(SoB order, no changelog, etc) apply to all patches, not just #5.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+s390                          debug_defconfig
+arm                          gemini_defconfig
+arc                 nsimosci_hs_smp_defconfig
+mips                          malta_defconfig
+arm                         s3c2410_defconfig
+powerpc                      ppc44x_defconfig
+arm                       aspeed_g4_defconfig
+sh                          r7780mp_defconfig
+arm                       netwinder_defconfig
+arm                         lpc32xx_defconfig
+xtensa                              defconfig
+arm                          simpad_defconfig
+arc                          axs101_defconfig
+powerpc                      pasemi_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                           rs90_defconfig
+sparc                       sparc32_defconfig
+arc                                 defconfig
+arm                        shmobile_defconfig
+arm                          tango4_defconfig
+h8300                            alldefconfig
+arc                          axs103_defconfig
+parisc                              defconfig
+arm                          pxa3xx_defconfig
+mips                          rm200_defconfig
+arm                          iop32x_defconfig
+mips                           gcw0_defconfig
+arc                            hsdk_defconfig
+ia64                             allyesconfig
+mips                        vocore2_defconfig
+openrisc                    or1ksim_defconfig
+sh                           se7705_defconfig
+mips                       capcella_defconfig
+mips                malta_kvm_guest_defconfig
+nds32                               defconfig
+powerpc                    amigaone_defconfig
+mips                 pnx8335_stb225_defconfig
+sh                          r7785rp_defconfig
+powerpc                      arches_defconfig
+m68k                          atari_defconfig
+powerpc                        fsp2_defconfig
+arm                        spear3xx_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20200913
+i386                 randconfig-a006-20200913
+i386                 randconfig-a003-20200913
+i386                 randconfig-a001-20200913
+i386                 randconfig-a002-20200913
+i386                 randconfig-a005-20200913
+x86_64               randconfig-a014-20200913
+x86_64               randconfig-a011-20200913
+x86_64               randconfig-a012-20200913
+x86_64               randconfig-a016-20200913
+x86_64               randconfig-a015-20200913
+x86_64               randconfig-a013-20200913
+i386                 randconfig-a015-20200913
+i386                 randconfig-a014-20200913
+i386                 randconfig-a011-20200913
+i386                 randconfig-a013-20200913
+i386                 randconfig-a016-20200913
+i386                 randconfig-a012-20200913
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
--boris
+clang tested configs:
+x86_64               randconfig-a006-20200913
+x86_64               randconfig-a004-20200913
+x86_64               randconfig-a003-20200913
+x86_64               randconfig-a002-20200913
+x86_64               randconfig-a005-20200913
+x86_64               randconfig-a001-20200913
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
