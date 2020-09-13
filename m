@@ -2,69 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23060268074
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E67D26807E
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgIMRHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 13:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725938AbgIMRHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 13:07:22 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C92F6206C3;
-        Sun, 13 Sep 2020 17:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600016841;
-        bh=M/85VTwrOWN6+XcLUiut1LpRMdDhH1DT4crRdQrqqvg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nm1OIuGKbIXj9ZE7Sg6RoBQLL9+UTEBm4/sGjbY0MDJQzwvJHpSocao20P89GCzBR
-         vOjQfKoyHFXHN20eEQZsN9tqT3j6q5BkEicNmJ/wKsbduRBEwW532zmKLfqD3WS7+p
-         XguyLGRtHlpGP9CqYJMugCbZddh1IcOOs6lK7PKU=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kHVTD-00BTTZ-Qm; Sun, 13 Sep 2020 18:07:20 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqchip: Kconfig: Update description for RENESAS_IRQC config
-Date:   Sun, 13 Sep 2020 18:07:16 +0100
-Message-Id: <160001682652.7310.4827295990459252918.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200911100439.19878-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20200911100439.19878-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1725959AbgIMRNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 13:13:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35484 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgIMRNc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 13:13:32 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DH4iC8191502;
+        Sun, 13 Sep 2020 17:07:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xVtLGu7xP2YfYZ/5jujoneuZlmPA2+dwH8I7NLyPQ1c=;
+ b=Juv1J9ih7aW9VwvSNOXrVn+lQ4/bY66fgMAgys7R6MsdDkbG+kKYFizO9UnPrQdS0FYR
+ +ezg0OJOUY1uvU8MGRH551lzfWXsOWSUFz6a4UJGMiDkcNUU5Feup7d9OHIFYenEikuu
+ C/UnQWnDb5PRRG4jPJrR+8XnwadKGotc5vHgqrdGPQ1ezckIfBrzqwv9imTfKgbGnvXn
+ 711q1eISZIqV86FM0NWO25rot6HkB/h8FGKSy4colpRNegADVYS0TN3neDlC5In0rLOH
+ 4wqPX+bPOBhDmiUf4csMsZx6svd9dvWTO8/52NkIc9i8ZFRXwgyhrKnchFHwyCeTi8JS 5A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 33gp9ku66c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 13 Sep 2020 17:07:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DH5fF1064033;
+        Sun, 13 Sep 2020 17:07:47 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 33hm2vghh7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Sep 2020 17:07:46 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08DH7gN6025265;
+        Sun, 13 Sep 2020 17:07:42 GMT
+Received: from [10.74.86.192] (/10.74.86.192)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Sep 2020 17:07:41 +0000
+Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend
+ mode
+To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        jgross@suse.com, linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        kamatam@amazon.com, sstabellini@kernel.org, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
+        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
+        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dwmw@amazon.co.uk, benh@kernel.crashing.org
+References: <cover.1598042152.git.anchalag@amazon.com>
+ <9b970e12491107afda0c1d4a6f154b52d90346ac.1598042152.git.anchalag@amazon.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <986e074e-9c9f-ce09-ffb8-ed8f5d528d98@oracle.com>
+Date:   Sun, 13 Sep 2020 13:07:36 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, jason@lakedaemon.net, geert+renesas@glider.be, prabhakar.mahadev-lad.rj@bp.renesas.com, prabhakar.csengg@gmail.com, linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <9b970e12491107afda0c1d4a6f154b52d90346ac.1598042152.git.anchalag@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009130155
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009130155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 11:04:39 +0100, Lad Prabhakar wrote:
-> irq-renesas-irqc driver is also used on Renesas RZ/G{1,2} SoC's, update
-> the same to reflect the description for RENESAS_IRQC config.
 
-Applied to irq/irqchip-next, thanks!
+On 8/21/20 6:25 PM, Anchal Agarwal wrote:
+> From: Munehisa Kamata <kamatam@amazon.com>  
+>
+> Guest hibernation is different from xen suspend/resume/live migration.
+> Xen save/restore does not use pm_ops as is needed by guest hibernation.
+> Hibernation in guest follows ACPI path and is guest inititated , the
+> hibernation image is saved within guest as compared to later modes
+> which are xen toolstack assisted and image creation/storage is in
+> control of hypervisor/host machine.
+> To differentiate between Xen suspend and PM hibernation, keep track
+> of the on-going suspend mode by mainly using a new API to keep track of
+> SHUTDOWN_SUSPEND state.
+> Introduce a simple function that keeps track of on-going suspend mode
+> so that PM hibernation code can behave differently according to the
+> current suspend mode.
+> Since Xen suspend doesn't have corresponding PM event, its main logic
+> is modfied to acquire pm_mutex.
+>
+> Though, accquirng pm_mutex is still right thing to do, we may
+> see deadlock if PM hibernation is interrupted by Xen suspend.
+> PM hibernation depends on xenwatch thread to process xenbus state
+> transactions, but the thread will sleep to wait pm_mutex which is
+> already held by PM hibernation context in the scenario. Xen shutdown
+> code may need some changes to avoid the issue.
+>
+> [Anchal Agarwal: Changelog]:
+>  RFC v1->v2: Code refactoring
+>  v1->v2:     Remove unused functions for PM SUSPEND/PM hibernation
+>  v2->v3:     Added logic to use existing pm_notifier to detect for ARM
+> 	     and abort hibernation for ARM guests. Also removed different
+> 	     suspend_modes and simplified the code with using existing state
+> 	     variables for tracking Xen suspend. The notifier won't get
+> 	     registered for pvh dom0 either.
+>
+> Signed-off-by: Anchal Agarwal <anchalag@amazon.com>
+> Signed-off-by: Munehisa Kamata <kamatam@amazon.com>
 
-[1/1] irqchip: Kconfig: Update description for RENESAS_IRQC config
-      commit: 72d44c0cbc4369cc028429b85f4697957226282c
 
-Cheers,
+BTW, just to make sure --- Thomas' comments about commit message format
+(SoB order, no changelog, etc) apply to all patches, not just #5.
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
 
+-boris
 
