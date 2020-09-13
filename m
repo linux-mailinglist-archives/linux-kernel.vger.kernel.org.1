@@ -2,63 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EBA267F77
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 14:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFA0267F7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 14:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725943AbgIMM1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 08:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725928AbgIMM06 (ORCPT
+        id S1725950AbgIMMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 08:30:58 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:45031 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725929AbgIMMau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 08:26:58 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3B1C061573;
-        Sun, 13 Sep 2020 05:26:57 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id x69so10503826lff.3;
-        Sun, 13 Sep 2020 05:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yBwjF+DS+vSXsUN7z560qkjK09dNG/GEjVxLhlS0gsE=;
-        b=mTlVW06LAGcgI3qiF7857wW+C6dzIpggkwGyE1Eti/jeWEuhBhPEQxk3IdJm8L8sWG
-         WCGHdP8CRuvk6ReUGyGdB+DETLyxuOreDRg3I6C0H5gECJcEixTacOjR/KduG9cAALQ4
-         aZ7Wd/ivnotRzTDkhMSb7h49p2ePioDGAF8YI3vbXa3ILYsEUM7s5KOlCHlUSWlnpU/r
-         JzJZZ1jY9PIC2XGJOoKUaSGxRPT01EroSj8TxLJ+JGhEswSuNIW9Ey+tyclOnyJHoeds
-         rQzxtpvrAY4UhNzjmSTQF80JyVtVS0t8eP0wzPza18tqqg932QgK1hjB1R9pjtlikJyJ
-         7IhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yBwjF+DS+vSXsUN7z560qkjK09dNG/GEjVxLhlS0gsE=;
-        b=JFTPRcbQUcecxWjjbZjOtR8QKTzkpqWWbiOzjF3xRBfWMT6b1ZrzgRv3sV8/taR7J8
-         xZrPD/H0NJZoABGUrzTS8ErR72PhBseRPgJyWZah3ZL0h2j1usO02OyhLFBZf1OQCkaV
-         185omysukYS3m4E9wugQSjnLJ2TQpiP/fx2Rup7d42X1MfdocW2cuaO8dDwWIepb9wks
-         qwsK4UNuk7nTvAwAjbg1ehhZo1NEccxVe57C8ECIIDWjvhCqA5ZJcZ+/iS7xogiAkuil
-         EEWej+k793nLcIrUL1soZTED7MUiXauOd3qODMDSnO3wRzv3/nhlwQEabehmpyYxDhkm
-         +6mg==
-X-Gm-Message-State: AOAM5319s/KxWpjstECZG7BL0r3gly5dj+vqkr/nPji7FffsgSpBqyba
-        /1l1RPfyNYK/JyPWr8f0oD8=
-X-Google-Smtp-Source: ABdhPJxZa//874cCWJGwIj3/w+A2g7/MREvzhbfPdEeZfg/yeLdI4rI94JROgavmtDtVgPMdyqxbzQ==
-X-Received: by 2002:a05:6512:20c3:: with SMTP id u3mr2617579lfr.572.1600000016115;
-        Sun, 13 Sep 2020 05:26:56 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id a192sm2638725lfd.51.2020.09.13.05.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 05:26:55 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Patrice Chotard <patrice.chotard@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] rtc: st-lpc: Constify st_rtc_ops
-Date:   Sun, 13 Sep 2020 14:26:44 +0200
-Message-Id: <20200913122644.35515-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Sun, 13 Sep 2020 08:30:50 -0400
+Received: from localhost.localdomain ([93.23.14.57])
+        by mwinf5d73 with ME
+        id TQWk2300E1Drbmd03QWlUL; Sun, 13 Sep 2020 14:30:48 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 13 Sep 2020 14:30:48 +0200
+X-ME-IP: 93.23.14.57
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, natechancellor@gmail.com,
+        vaibhavgupta40@gmail.com, leon@kernel.org
+Cc:     linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] tulip: uli526x: switch from 'pci_' to 'dma_' API
+Date:   Sun, 13 Sep 2020 14:30:42 +0200
+Message-Id: <20200913123042.354723-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,28 +36,241 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of st_rtc_ops is to assign its address to the ops field
-in the rtc_device struct. which is a const pointer. Make it const to
-allow the compiler to put it in read-only memory.
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
+
+When memory is allocated in 'uli526x_init_one()' GFP_KERNEL can be used
+because it is a probe function and no lock is taken in the between.
+
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/rtc/rtc-st-lpc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/dec/tulip/uli526x.c | 44 +++++++++++++-----------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/rtc/rtc-st-lpc.c b/drivers/rtc/rtc-st-lpc.c
-index 51041dc08af4..0c65448b85ee 100644
---- a/drivers/rtc/rtc-st-lpc.c
-+++ b/drivers/rtc/rtc-st-lpc.c
-@@ -173,7 +173,7 @@ static int st_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *t)
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/dec/tulip/uli526x.c b/drivers/net/ethernet/dec/tulip/uli526x.c
+index f942399f0f32..13e73ed15ef0 100644
+--- a/drivers/net/ethernet/dec/tulip/uli526x.c
++++ b/drivers/net/ethernet/dec/tulip/uli526x.c
+@@ -282,7 +282,7 @@ static int uli526x_init_one(struct pci_dev *pdev,
+ 		return -ENOMEM;
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
  
--static struct rtc_class_ops st_rtc_ops = {
-+static const struct rtc_class_ops st_rtc_ops = {
- 	.read_time		= st_rtc_read_time,
- 	.set_time		= st_rtc_set_time,
- 	.read_alarm		= st_rtc_read_alarm,
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
++	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32))) {
+ 		pr_warn("32-bit PCI DMA not available\n");
+ 		err = -ENODEV;
+ 		goto err_out_free;
+@@ -317,11 +317,15 @@ static int uli526x_init_one(struct pci_dev *pdev,
+ 	/* Allocate Tx/Rx descriptor memory */
+ 	err = -ENOMEM;
+ 
+-	db->desc_pool_ptr = pci_alloc_consistent(pdev, sizeof(struct tx_desc) * DESC_ALL_CNT + 0x20, &db->desc_pool_dma_ptr);
++	db->desc_pool_ptr = dma_alloc_coherent(&pdev->dev,
++					       sizeof(struct tx_desc) * DESC_ALL_CNT + 0x20,
++					       &db->desc_pool_dma_ptr, GFP_KERNEL);
+ 	if (!db->desc_pool_ptr)
+ 		goto err_out_release;
+ 
+-	db->buf_pool_ptr = pci_alloc_consistent(pdev, TX_BUF_ALLOC * TX_DESC_CNT + 4, &db->buf_pool_dma_ptr);
++	db->buf_pool_ptr = dma_alloc_coherent(&pdev->dev,
++					      TX_BUF_ALLOC * TX_DESC_CNT + 4,
++					      &db->buf_pool_dma_ptr, GFP_KERNEL);
+ 	if (!db->buf_pool_ptr)
+ 		goto err_out_free_tx_desc;
+ 
+@@ -401,11 +405,12 @@ static int uli526x_init_one(struct pci_dev *pdev,
+ err_out_unmap:
+ 	pci_iounmap(pdev, db->ioaddr);
+ err_out_free_tx_buf:
+-	pci_free_consistent(pdev, TX_BUF_ALLOC * TX_DESC_CNT + 4,
+-			    db->buf_pool_ptr, db->buf_pool_dma_ptr);
++	dma_free_coherent(&pdev->dev, TX_BUF_ALLOC * TX_DESC_CNT + 4,
++			  db->buf_pool_ptr, db->buf_pool_dma_ptr);
+ err_out_free_tx_desc:
+-	pci_free_consistent(pdev, sizeof(struct tx_desc) * DESC_ALL_CNT + 0x20,
+-			    db->desc_pool_ptr, db->desc_pool_dma_ptr);
++	dma_free_coherent(&pdev->dev,
++			  sizeof(struct tx_desc) * DESC_ALL_CNT + 0x20,
++			  db->desc_pool_ptr, db->desc_pool_dma_ptr);
+ err_out_release:
+ 	pci_release_regions(pdev);
+ err_out_disable:
+@@ -424,11 +429,11 @@ static void uli526x_remove_one(struct pci_dev *pdev)
+ 
+ 	unregister_netdev(dev);
+ 	pci_iounmap(pdev, db->ioaddr);
+-	pci_free_consistent(db->pdev, sizeof(struct tx_desc) *
+-				DESC_ALL_CNT + 0x20, db->desc_pool_ptr,
+- 				db->desc_pool_dma_ptr);
+-	pci_free_consistent(db->pdev, TX_BUF_ALLOC * TX_DESC_CNT + 4,
+-				db->buf_pool_ptr, db->buf_pool_dma_ptr);
++	dma_free_coherent(&db->pdev->dev,
++			  sizeof(struct tx_desc) * DESC_ALL_CNT + 0x20,
++			  db->desc_pool_ptr, db->desc_pool_dma_ptr);
++	dma_free_coherent(&db->pdev->dev, TX_BUF_ALLOC * TX_DESC_CNT + 4,
++			  db->buf_pool_ptr, db->buf_pool_dma_ptr);
+ 	pci_release_regions(pdev);
+ 	pci_disable_device(pdev);
+ 	free_netdev(dev);
+@@ -810,7 +815,8 @@ static void uli526x_rx_packet(struct net_device *dev, struct uli526x_board_info
+ 		db->rx_avail_cnt--;
+ 		db->interval_rx_cnt++;
+ 
+-		pci_unmap_single(db->pdev, le32_to_cpu(rxptr->rdes2), RX_ALLOC_SIZE, PCI_DMA_FROMDEVICE);
++		dma_unmap_single(&db->pdev->dev, le32_to_cpu(rxptr->rdes2),
++				 RX_ALLOC_SIZE, DMA_FROM_DEVICE);
+ 		if ( (rdes0 & 0x300) != 0x300) {
+ 			/* A packet without First/Last flag */
+ 			/* reuse this SKB */
+@@ -1234,10 +1240,8 @@ static void uli526x_reuse_skb(struct uli526x_board_info *db, struct sk_buff * sk
+ 
+ 	if (!(rxptr->rdes0 & cpu_to_le32(0x80000000))) {
+ 		rxptr->rx_skb_ptr = skb;
+-		rxptr->rdes2 = cpu_to_le32(pci_map_single(db->pdev,
+-							  skb_tail_pointer(skb),
+-							  RX_ALLOC_SIZE,
+-							  PCI_DMA_FROMDEVICE));
++		rxptr->rdes2 = cpu_to_le32(dma_map_single(&db->pdev->dev, skb_tail_pointer(skb),
++							  RX_ALLOC_SIZE, DMA_FROM_DEVICE));
+ 		wmb();
+ 		rxptr->rdes0 = cpu_to_le32(0x80000000);
+ 		db->rx_avail_cnt++;
+@@ -1409,10 +1413,8 @@ static void allocate_rx_buffer(struct net_device *dev)
+ 		if (skb == NULL)
+ 			break;
+ 		rxptr->rx_skb_ptr = skb; /* FIXME (?) */
+-		rxptr->rdes2 = cpu_to_le32(pci_map_single(db->pdev,
+-							  skb_tail_pointer(skb),
+-							  RX_ALLOC_SIZE,
+-							  PCI_DMA_FROMDEVICE));
++		rxptr->rdes2 = cpu_to_le32(dma_map_single(&db->pdev->dev, skb_tail_pointer(skb),
++							  RX_ALLOC_SIZE, DMA_FROM_DEVICE));
+ 		wmb();
+ 		rxptr->rdes0 = cpu_to_le32(0x80000000);
+ 		rxptr = rxptr->next_rx_desc;
 -- 
-2.28.0
+2.25.1
 
