@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBEB267EC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033D7267EBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgIMIi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 04:38:56 -0400
-Received: from ozlabs.org ([203.11.71.1]:56281 "EHLO ozlabs.org"
+        id S1725988AbgIMIio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 04:38:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725960AbgIMIiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 04:38:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1725993AbgIMIib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 04:38:31 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bq2tt3Skwz9sTH;
-        Sun, 13 Sep 2020 18:37:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599986279;
-        bh=TZ/X11rY3fq74UGOWp2hIHD1LZkCa8HXfpcrNfGTFII=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 429AF207C3;
+        Sun, 13 Sep 2020 08:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599986310;
+        bh=XIsK2T6IEfYK6oxzBICpOka54NDByIdBn1LtLGKiv/A=;
         h=Date:From:To:Cc:Subject:From;
-        b=AjZDffxountEa58G+H3yR6/EHoVoMVWnfR8iQVZNUzaW+WIxu3wCmvY6BPIWhRWWX
-         b4JfAu1It0ZBgjxx+70fM6pRF2k9vOJGZzy/Tz1pdeuMFI/qvdNAG1X1YC7+sUXfwj
-         64kf8SRUu106ihqDPArIYvWcyen5cdNYFzNz1Sj+yU2tnzVyEYeboIcryCyshXKZHP
-         ko8OPl1F57lXAvuiXPNW1FRqX1cqWguOmLLkGD622dg6LDGGkaTIbFm0LXa1sp2CTj
-         PACzbb520/uMHUdBMKMHKKQ9cmhD+13hazYjb5uBR0BL7LK8nzJiZUbZGbDSHb5ODG
-         3oVczi8jY/+tw==
-Date:   Sun, 13 Sep 2020 18:37:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Chenyi Qiang <chenyi.qiang@intel.com>
-Subject: linux-next: Fixes tag needs some work in the kvm-fixes tree
-Message-ID: <20200913183757.6059a9ff@canb.auug.org.au>
+        b=QdJ6bhpprt2ao/2TTSetwP/gUWjDBpwGFzhl8/jJnuwDCoSHTk1P1XalAJt54ACbD
+         zKU5NxyGho3MNtGUy0VzD8bnwaGvVXi6Zyui5nKh261WfVvi0Jiv3DX/MZvSRROTdT
+         mY8hE5/drx9hzoR6hDqVv0End0k7TBz2hYKrPquQ=
+Date:   Sun, 13 Sep 2020 10:38:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 5.9-rc5
+Message-ID: <20200913083832.GA906642@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XS8g=j9AUNbSvJkJRwMRGqG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XS8g=j9AUNbSvJkJRwMRGqG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
 
-Hi all,
+  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
 
-In commit
+are available in the Git repository at:
 
-  c6b177a3beb9 ("KVM: nVMX: Fix the update value of nested load IA32_PERF_G=
-LOBAL_CTRL control")
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.9-rc5
 
-Fixes tag
+for you to fetch changes up to 952e934d7f682a961c92eb9bbd521a4876e201fe:
 
-  Fixes: 03a8871add95 ("KVM: nVMX: Expose load IA32_PERF_GLOBAL_CTRL
+  Revert "dyndbg: accept query terms like file=bar and module=foo" (2020-09-10 18:45:03 +0200)
 
-has these problem(s):
+----------------------------------------------------------------
+Char / Misc driver fixes for 5.9-rc5
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
+Here are a number of small driver fixes for 5.9-rc5
 
-Please do not split Fixes tags over more than one line.
+Included in here are:
+	- habanalabs driver fixes
+	- interconnect driver fixes
+	- soundwire driver fixes
+	- dyndbg fixes for reported issues, and then reverts to fix it
+	  all up to a sane state.
+	- phy driver fixes
+Full details of these are in the shortlog.
 
---=20
-Cheers,
-Stephen Rothwell
+All of these have been in linux-next for a while with no reported
+issues.
 
---Sig_/XS8g=j9AUNbSvJkJRwMRGqG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
------BEGIN PGP SIGNATURE-----
+----------------------------------------------------------------
+Greg Kroah-Hartman (6):
+      Merge tag 'misc-habanalabs-fixes-2020-08-31' of git://people.freedesktop.org/~gabbayo/linux into char-misc-nexxt
+      Merge tag 'soundwire-5.9-fixes' of git://git.kernel.org/.../vkoul/soundwire into char-misc-linus
+      Merge tag 'phy-fixes-5.9' of git://git.kernel.org/.../phy/linux-phy into char-misc-linus
+      Merge tag 'icc-5.9-rc4' of https://git.linaro.org/people/georgi.djakov/linux into char-misc-linus
+      Revert "dyndbg: fix problem parsing format="foo bar""
+      Revert "dyndbg: accept query terms like file=bar and module=foo"
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9d2mUACgkQAVBC80lX
-0Gz/Lgf/ed4KrCsI6HW7bQgwIh0l+M9MVLBkMkjQeH2g88chsiuVwYqICcgeLodO
-9Ob0iwIPPv9U/Y5xvbTh/N1TqPrE47G0nT+VYUkz2DRiwNjiVwgVQSbT04X/JCo8
-oy3HjJPMiZmLSC/ejOkbnuEGWEmkdNCjVR6Nk0ZqWU+p14H9ZZbgcT+S4fm/P04D
-FtRWbWwSwX2AiH1cTjQi1MVhIDC3pbo9Ipi65EhIhIxe7DzYhN/Gc6FAU82Zg+2H
-aazSODAnCTWMqo4aeCEX+D2jOGK3t717FuuNddEWaT6RP1SW6Jk/lpQcS7lGnAli
-+8eALEBDyprccfBwBDSUhJvjkmLMbQ==
-=q0MB
------END PGP SIGNATURE-----
+Jim Cromie (3):
+      dyndbg: give %3u width in pr-format, cosmetic only
+      dyndbg: refine export, rename to dynamic_debug_exec_queries()
+      dyndbg: fix problem parsing format="foo bar"
 
---Sig_/XS8g=j9AUNbSvJkJRwMRGqG--
+Matthias Kaehlcke (1):
+      interconnect: Show bandwidth for disabled paths as zero in debugfs
+
+Mike Tipton (1):
+      interconnect: qcom: Fix small BW votes being truncated to zero
+
+Moti Haimovski (1):
+      habanalabs: prevent user buff overflow
+
+Ofir Bitton (1):
+      habanalabs: fix report of RAZWI initiator coordinates
+
+Pierre-Louis Bossart (1):
+      soundwire: bus: fix typo in comment on INTSTAT registers
+
+Roger Quadros (1):
+      phy: omap-usb2-phy: disable PHY charger detect
+
+Rustam Kovhaev (1):
+      scripts/tags.sh: exclude tools directory from tags generation
+
+Sivaprakash Murugesan (1):
+      phy: qcom-qmp: Use correct values for ipq8074 PCIe Gen2 PHY init
+
+Tetsuo Handa (1):
+      video: fbdev: fix OOB read in vga_8planes_imageblit()
+
+Tom Rix (1):
+      soundwire: fix double free of dangling pointer
+
+Wei Yongjun (1):
+      phy: qualcomm: fix return value check in qcom_ipq806x_usb_phy_probe()
+
+YueHaibing (1):
+      phy: qualcomm: fix platform_no_drv_owner.cocci warnings
+
+ Documentation/admin-guide/dynamic-debug-howto.rst  |  1 -
+ drivers/interconnect/core.c                        | 10 ++-
+ drivers/interconnect/qcom/bcm-voter.c              | 27 ++++---
+ drivers/misc/habanalabs/common/debugfs.c           |  2 +-
+ .../misc/habanalabs/include/gaudi/gaudi_masks.h    | 32 ++++-----
+ drivers/phy/qualcomm/phy-qcom-ipq806x-usb.c        |  5 +-
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 16 +++--
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |  2 +
+ drivers/phy/ti/phy-omap-usb2.c                     | 47 +++++++++++--
+ drivers/soundwire/bus.c                            |  2 +-
+ drivers/soundwire/stream.c                         |  8 ++-
+ drivers/video/fbdev/vga16fb.c                      |  2 +-
+ include/linux/dynamic_debug.h                      | 20 ++++--
+ lib/dynamic_debug.c                                | 82 ++++++++++++----------
+ scripts/tags.sh                                    |  8 ++-
+ 15 files changed, 172 insertions(+), 92 deletions(-)
