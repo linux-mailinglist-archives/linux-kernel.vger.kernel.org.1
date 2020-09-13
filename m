@@ -2,159 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82F0267EDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00AA267EE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 11:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgIMIoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 04:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725899AbgIMIn6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 04:43:58 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF98EC061573;
-        Sun, 13 Sep 2020 01:43:57 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id fa1so3888749pjb.0;
-        Sun, 13 Sep 2020 01:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NWPCM95Jy2jcUDCt/7JKciRdRd6ZqKhPdOh02zVP2WY=;
-        b=e9ID21zfyOzkuDF3fBH/KTxyhXXlhaDMc4LSK7ayHMycUkioT/QXADEHbhQHiLO0+S
-         r5QfSR9R6qhaMva2dtcOU3d2je6WczL1zSkQ1mJMR/HIA0E77nj7nLUUACaBSnkMWomd
-         PRbWcdsewzcsrGaGwmvrhu3aGvRUgut+dG0uIGgnhPqsVAO09ehPpQl16I575qTcdde5
-         bV94fL1Ibl04oOCSen93nsCYtXw05R+C9aCWwrfgkuZX5Q0BrTojjpNyAz/P1ueGMjpU
-         2z9S5c5SCVt7zUUZfGzPS9J5ALNHVOPYmYYq87wW2S1XyMamil5qTcLBYbiIwoL5iDzp
-         WoRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NWPCM95Jy2jcUDCt/7JKciRdRd6ZqKhPdOh02zVP2WY=;
-        b=AFH0B47swaMOUcKVwheDV6g4pnGVe1Gz7iMGM83+8/u2U0swpj5Y7NzNrZu4HrQyNK
-         cjPFZk6KjT7IqzwRNWtztGWf0ozLbYBeyF9CKR19mPXpYa/MjguFsfY8HHRBwB/HLQFN
-         jV02dgihQVX8cTTE3tUhoyIdo5bboz3PGv2jotshoVu1XsrLT7Q/ihIT0XiGXA2BzwYM
-         h2zwzLS2W0w/grT73J9Y6EVG3DKUsvTaQCCGpalf9Ta96OKsbyePVOOOszveWvUfSTIP
-         ORng3ikJXxkTeOF4rzZ7f/oEdnkufpdktgKARv8ime0R6Jdt5J7VPp9j9/YcfuLKWstW
-         OJKw==
-X-Gm-Message-State: AOAM531wJ+XVDTPkzM6T2L0WKlj8cso2IZYi9Nz4YEGMlsVGYWANyPng
-        jRN/n9CGBxy0BlloNQsbxfVEWfT6+FhXWCLZ3aE=
-X-Google-Smtp-Source: ABdhPJzoTbwbjwFKbRIYZKGm2TbUhjNVNTLMz9ur5f3kxZgQjIc5fModNGFB3comxXJPGSwkgJlxyHe89t6ENTsbSts=
-X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr9444554pjr.228.1599986637349;
- Sun, 13 Sep 2020 01:43:57 -0700 (PDT)
+        id S1725928AbgIMJIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 05:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725899AbgIMJIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 05:08:47 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BFA6207BB;
+        Sun, 13 Sep 2020 09:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599988126;
+        bh=MRJOeOx2UA9wo/E2Ks+iu5fjJ1am4t2P+rW1mi+Dt04=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EQWcCLhR5F2i/bMKBRc+gCex8KBvwuY857K3mJV/ygSS3aNrbytrZqHec9QHkSp4y
+         4JoBmpg2KvOts06itHaukwUZSIhu15Z0DDlFFKZ+/TcyXBc3XITlhMvQkgO9WskvNE
+         lnh9VVxNXVCGYxRGLf86PkVM1rdtxnBZq4wQXMzk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHO04-00BOju-Mz; Sun, 13 Sep 2020 10:08:44 +0100
 MIME-Version: 1.0
-References: <20200912005521.26319-1-jiada_wang@mentor.com>
-In-Reply-To: <20200912005521.26319-1-jiada_wang@mentor.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 13 Sep 2020 11:43:41 +0300
-Message-ID: <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Jiada Wang <jiada_wang@mentor.com>
-Cc:     nick@shmanahar.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Andrew_Gabbasov@mentor.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 13 Sep 2020 10:08:44 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, jason@lakedaemon.net,
+        catalin.marinas@arm.com, tglx@linutronix.de, will@kernel.org,
+        yuzenghui@huawei.com
+Subject: Re: [PATCH v2 2/2] irqchip/gic-v3: Support pseudo-NMIs when
+ SCR_EL3.FIQ == 0
+In-Reply-To: <ca41885f-1d86-be38-1680-6847079efaf2@arm.com>
+References: <20200819133630.527243-1-alexandru.elisei@arm.com>
+ <20200819133630.527243-3-alexandru.elisei@arm.com>
+ <87k0wzkxvz.wl-maz@kernel.org>
+ <ca41885f-1d86-be38-1680-6847079efaf2@arm.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <f8b805d29096158f83783e1417776d55@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, jason@lakedaemon.net, catalin.marinas@arm.com, tglx@linutronix.de, will@kernel.org, yuzenghui@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 3:55 AM Jiada Wang <jiada_wang@mentor.com> wrote:
->
-> From: Nick Dyer <nick.dyer@itdev.co.uk>
->
-> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
-> when they are in a sleep state. It must be retried after a delay for the
-> chip to wake up.
->
-> Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
-> [gdavis: Forward port and fix conflicts.]
-> Signed-off-by: George G. Davis <george_davis@mentor.com>
-> [jiada: return exact errno when i2c_transfer & i2c_master_send fails
->         rename "retry" to "retried" and keep its order in length
->         set "ret" to correct errno before calling dev_err()
+On 2020-09-12 14:34, Alexandru Elisei wrote:
+> Hi Marc,
 
->         remove reduntant conditional]
+[...]
 
-redundant
+> Have you tested the series using the PMU NMI branch from the cover
+> letter? If so, would you mind giving a Tested-by tag for that series 
+> [1]?
 
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
+I haven't had a chance, but that's next on my list once I've gone
+through some other bits of review that have been lingering in my
+inbox for too long...
 
-
-...
-
-> +       bool retried = false;
-
-I thought Dmitry wants that to be retry
-
->         u8 buf[2];
->         int ret;
-
-> -       ret = i2c_transfer(client->adapter, xfer, 2);
-> -       if (ret == 2) {
-> -               ret = 0;
-> -       } else {
-> -               if (ret >= 0)
-> -                       ret = -EIO;
-> +retry_read:
-
-> +       ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
-> +       if (ret != ARRAY_SIZE(xfer)) {
-
-I'm wondering why you can't leave 2 as is and change it to ARRAY_SIZE
-in a separate patch?
-Also why switch from positive to negative conditional?
-
-> +               if (!retried) {
-> +                       dev_dbg(&client->dev, "i2c retry\n");
-> +                       msleep(MXT_WAKEUP_TIME);
-> +                       retried = true;
-> +                       goto retry_read;
-> +               }
-> +               ret = ret < 0 ? ret : -EIO;
->                 dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
->                         __func__, ret);
-> +               return ret;
->         }
->
-> -       return ret;
-> +       return 0;
->  }
-
-..
-
-> +       bool retried = false;
-
-Same comments here, in this function.
-
-> +retry_write:
->         ret = i2c_master_send(client, buf, count);
-> -       if (ret == count) {
-> -               ret = 0;
-> -       } else {
-> -               if (ret >= 0)
-> -                       ret = -EIO;
-> +       if (ret != count) {
-> +               if (!retried) {
-> +                       dev_dbg(&client->dev, "i2c retry\n");
-> +                       msleep(MXT_WAKEUP_TIME);
-> +                       retried = true;
-> +                       goto retry_write;
-> +               }
-> +               ret = ret < 0 ? ret : -EIO;
->                 dev_err(&client->dev, "%s: i2c send failed (%d)\n",
->                         __func__, ret);
-> +       } else {
-> +               ret = 0;
->         }
-
+         M.
 -- 
-With Best Regards,
-Andy Shevchenko
+Jazz is not dead. It just smells funny...
