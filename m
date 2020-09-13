@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AD7267ED6
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391AA267ED7
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 10:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbgIMImR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 04:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
+        id S1726069AbgIMImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 04:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgIMIlu (ORCPT
+        with ESMTP id S1725966AbgIMIlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 04:41:50 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B83C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:41:50 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id s205so15976356lja.7
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:41:50 -0700 (PDT)
+        Sun, 13 Sep 2020 04:41:52 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297CCC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:41:51 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b22so6637107lfs.13
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 01:41:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sJNFUcUXZRjiFZyjvmURXXoVgPbHFappN/dL/chWE1E=;
-        b=renEE23Do/qBPVPTA2uFx1X+S3Ji6Tqb97DIR1MznWTgu+DksSB6ea8IiPy/C7HDEM
-         pHj1zgRuiNATfkhnE22Hfqh3YxDRm+wzK97M6ueHj3ceaUASvgL3J3BhJSueczURfwOl
-         hSeN/twVzzUD2yJHxud+o8hSU6YR3jYXOgngFC9792c4mQTU/7eYGvycMan8NwLbdEYT
-         qrRrVGYMmkSvMW8xbaVxrhC1nq3vQaJv1V9EvkUF+am0bIl85WtlOnmFgUvDZoIx7Zrh
-         yUy7aX7RceUgjo7f8cIm5XvbpAJI2Ae/cHnMPK23z8ZQ8THPEywvTriX8T4rA95c8cCV
-         yWgQ==
+        bh=4L0xgGGFfM+PVtzTUoJQwaOaibiUkwrpgxA9eehYQ6A=;
+        b=hNVrMqOJf8D11KfcqbFvHUB+7z36kzO+Aq7bint4577gRSVdoVGEoMj8M9weZoC1Xv
+         fH/HeQ9NEp6do2BbEb1+ytvL+28Rf5Pc2uk2isxQp9+sbOjzhuoz3QjIuLszccOvBGDL
+         t2xPXRxYHHVxZRjqYUIBwkEd7F7wUegmB6zt63rLejadaVHKBF/Mn1BCDM7Eab0MfK33
+         kAo1X1lXCswUz6gQR+WiO8VJYw/mciE8dHrocy6cR+Vt/ufl5HnlL8IfBGyazC17alb2
+         NZAqiPOC+0Km3BD0+bpV5rRSSZ/ArEPf3k7mPKfC5Bhkg+zylAJHQom2ZURonP1Z9ruE
+         DjHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sJNFUcUXZRjiFZyjvmURXXoVgPbHFappN/dL/chWE1E=;
-        b=gyexKgIXVnDE9JnWlH79D/2OgQmbLtOpkS5EVXCKyO0rFlPpVjdqizOykDB3uTv2Gd
-         QLZyrT9xmJVxOFxVoGREBz99lKxF+eS67AsDG0u/vGCxmqH6gdUvLp3pzAUzBBePvaGm
-         v5yfIuF4f9azQeTpK9kvIGnyjLIti3FwIEf0oCaO1njS/0nGmtjx89XoonGoiPYka6EG
-         wFAdNRpa26lljqY5iAQ2/uDZgxsFCOAViuDo1v8yqirYsat5rsnXxlVJREnjIAygi2IW
-         b33L/YKpuO4RFEMGjALTqhGZUmO8smi6spR++SQZnSgo8YpNjl3ZTKDprOV7B00J2oML
-         PBQQ==
-X-Gm-Message-State: AOAM531acXlqtW0DGSuPQbuPbwOUoflXXJQmlkCnmPbbL/j5jP5apZID
-        DThWFHPT34ZfSuDRTi2wQs4=
-X-Google-Smtp-Source: ABdhPJxBk3nXRrH3oDOwvaWlL6VDeJ26k7vfEc8tuNowhHJ95aiSvLVCKiVwNLtdRlYK+l1I7gqwSA==
-X-Received: by 2002:a2e:8882:: with SMTP id k2mr3228840lji.202.1599986508665;
-        Sun, 13 Sep 2020 01:41:48 -0700 (PDT)
+        bh=4L0xgGGFfM+PVtzTUoJQwaOaibiUkwrpgxA9eehYQ6A=;
+        b=ZJXOtyGLoTJn4Z+euPmY+KlcHyrEtXMNo4JZSr2YB2BnaT38MVpS7tJaxCwQYkWW3D
+         u/7d7f2v6J8VNl8K0gfJAqFpr6Ja0S0OA/fZXtIK8n0ZL7wwV2ILxUyG5X+2iBKSaWjo
+         ReQnc2CMxLcuPLO9FPQj72YH8iN8wGCom7u94Za8/cXrSqsOkyhMirie+myYtCMvLICE
+         7Bgxl24CGLYHczgUlfnyiZ5O3X1K6iFuDySSK60SaxIwLwcK6mbqDYbC0p36FUHBb98+
+         kNCQzf52i5C/9AqIIxKaCt6CErGsqR2/0nxUIKG8WC1Dvg9aXU7refTziaz8AM8d7pUY
+         KfMQ==
+X-Gm-Message-State: AOAM5314boBu9xYqLlJbI2DA2TPXpB5C0iTzX/Qre81otjdtRaxQuQ7i
+        FX+OFOx+l5WaIu31kEqJ7QU=
+X-Google-Smtp-Source: ABdhPJz4aPXd5yZINYitYZoRQkwfyG/WYx4ZtXco7Jj5WI5ASmnRfQQh6lgckcEvUcabOhfTyVHfmA==
+X-Received: by 2002:ac2:420f:: with SMTP id y15mr2562133lfh.489.1599986509671;
+        Sun, 13 Sep 2020 01:41:49 -0700 (PDT)
 Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id n9sm2081099lfd.215.2020.09.13.01.41.47
+        by smtp.gmail.com with ESMTPSA id n9sm2081099lfd.215.2020.09.13.01.41.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 01:41:47 -0700 (PDT)
+        Sun, 13 Sep 2020 01:41:49 -0700 (PDT)
 From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
         Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/5] regulator: stw481x-vmmc: Constify static structs
-Date:   Sun, 13 Sep 2020 10:41:12 +0200
-Message-Id: <20200913084114.8851-4-rikard.falkeborn@gmail.com>
+Subject: [PATCH 4/5] regulator: pca9450: Constify static regulator_ops
+Date:   Sun, 13 Sep 2020 10:41:13 +0200
+Message-Id: <20200913084114.8851-5-rikard.falkeborn@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200913084114.8851-1-rikard.falkeborn@gmail.com>
 References: <20200913084114.8851-1-rikard.falkeborn@gmail.com>
@@ -65,43 +65,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of stw481x_vmmc_ops is to assign its address to the ops
-field in the regulator_desc struct which is a const pointer.
-
-The only usage of vmmc_regulator is to pass its address to
-of_get_regulator_init_data() and devm_regulator_register(), both which
-take const pointers.
-
-Make both of them const to allow the compiler to put them in read-only
-memory.
+The only usages of these is to assign their address to the ops field in
+the regulator_desc struct, which is a const pointer. Make them const to
+allow the compiler to put them in read-only memory.
 
 Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/regulator/stw481x-vmmc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/regulator/pca9450-regulator.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/stw481x-vmmc.c b/drivers/regulator/stw481x-vmmc.c
-index 6dc2316daad3..127ab43add49 100644
---- a/drivers/regulator/stw481x-vmmc.c
-+++ b/drivers/regulator/stw481x-vmmc.c
-@@ -27,7 +27,7 @@ static const unsigned int stw481x_vmmc_voltages[] = {
- 	3300000,
+diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
+index eb5822bf53e0..cb29421d745a 100644
+--- a/drivers/regulator/pca9450-regulator.c
++++ b/drivers/regulator/pca9450-regulator.c
+@@ -90,7 +90,7 @@ static int pca9450_dvs_set_ramp_delay(struct regulator_dev *rdev,
+ 				  BUCK1_RAMP_MASK, ramp_value << 6);
+ }
+ 
+-static struct regulator_ops pca9450_dvs_buck_regulator_ops = {
++static const struct regulator_ops pca9450_dvs_buck_regulator_ops = {
+ 	.enable = regulator_enable_regmap,
+ 	.disable = regulator_disable_regmap,
+ 	.is_enabled = regulator_is_enabled_regmap,
+@@ -101,7 +101,7 @@ static struct regulator_ops pca9450_dvs_buck_regulator_ops = {
+ 	.set_ramp_delay = pca9450_dvs_set_ramp_delay,
  };
  
--static struct regulator_ops stw481x_vmmc_ops = {
-+static const struct regulator_ops stw481x_vmmc_ops = {
- 	.list_voltage = regulator_list_voltage_table,
- 	.enable      = regulator_enable_regmap,
- 	.disable     = regulator_disable_regmap,
-@@ -36,7 +36,7 @@ static struct regulator_ops stw481x_vmmc_ops = {
- 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+-static struct regulator_ops pca9450_buck_regulator_ops = {
++static const struct regulator_ops pca9450_buck_regulator_ops = {
+ 	.enable = regulator_enable_regmap,
+ 	.disable = regulator_disable_regmap,
+ 	.is_enabled = regulator_is_enabled_regmap,
+@@ -111,7 +111,7 @@ static struct regulator_ops pca9450_buck_regulator_ops = {
+ 	.set_voltage_time_sel = regulator_set_voltage_time_sel,
  };
  
--static struct regulator_desc vmmc_regulator = {
-+static const struct regulator_desc vmmc_regulator = {
- 	.name = "VMMC",
- 	.id   = 0,
- 	.ops  = &stw481x_vmmc_ops,
+-static struct regulator_ops pca9450_ldo_regulator_ops = {
++static const struct regulator_ops pca9450_ldo_regulator_ops = {
+ 	.enable = regulator_enable_regmap,
+ 	.disable = regulator_disable_regmap,
+ 	.is_enabled = regulator_is_enabled_regmap,
 -- 
 2.28.0
 
