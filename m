@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCBF26814C
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2281626814D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgIMVFq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:05:46 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34631 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726063AbgIMVFH (ORCPT
+        id S1725957AbgIMVFy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 17:05:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47796 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726065AbgIMVFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:05:07 -0400
+        Sun, 13 Sep 2020 17:05:14 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-I8B8Bx1vO-SDjVEPXhwciQ-1; Sun, 13 Sep 2020 17:05:02 -0400
-X-MC-Unique: I8B8Bx1vO-SDjVEPXhwciQ-1
+ us-mta-336-Zz0J52RoMGGFghnReHuj4g-1; Sun, 13 Sep 2020 17:05:07 -0400
+X-MC-Unique: Zz0J52RoMGGFghnReHuj4g-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF21B1005E62;
-        Sun, 13 Sep 2020 21:04:59 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 09A281882FA1;
+        Sun, 13 Sep 2020 21:05:05 +0000 (UTC)
 Received: from krava.redhat.com (ovpn-112-4.ams2.redhat.com [10.36.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6683C10021AA;
-        Sun, 13 Sep 2020 21:04:56 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5927F1002388;
+        Sun, 13 Sep 2020 21:05:00 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -40,9 +40,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>
-Subject: [PATCH 22/26] perf tools: Use machine__for_each_dso in perf_session__cache_build_ids
-Date:   Sun, 13 Sep 2020 23:03:09 +0200
-Message-Id: <20200913210313.1985612-23-jolsa@kernel.org>
+Subject: [PATCH 23/26] perf tools: Add __perf_session__cache_build_ids function
+Date:   Sun, 13 Sep 2020 23:03:10 +0200
+Message-Id: <20200913210313.1985612-24-jolsa@kernel.org>
 In-Reply-To: <20200913210313.1985612-1-jolsa@kernel.org>
 References: <20200913210313.1985612-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -58,92 +58,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using machine__for_each_dso in perf_session__cache_build_ids,
-so we can reuse perf_session__cache_build_ids with different
-callback in following changes.
+Adding __perf_session__cache_build_ids function as an
+interface for caching sessions build ids with callback
+function and its data pointer.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/build-id.c | 41 +++++++++++++++-----------------------
- 1 file changed, 16 insertions(+), 25 deletions(-)
+ tools/perf/util/build-id.c | 10 ++++++++--
+ tools/perf/util/build-id.h |  3 +++
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index bf044e52ad1f..22968504c6de 100644
+index 22968504c6de..9335a535e547 100644
 --- a/tools/perf/util/build-id.c
 +++ b/tools/perf/util/build-id.c
-@@ -869,12 +869,16 @@ int build_id_cache__remove_s(const char *sbuild_id)
- 	return err;
+@@ -902,7 +902,8 @@ machines__for_each_dso(struct machines *machines, machine__dso_t fn, void *priv)
+ 	return ret ? -1 : 0;
  }
  
--static int dso__cache_build_id(struct dso *dso, struct machine *machine)
-+static int dso__cache_build_id(struct dso *dso, struct machine *machine,
-+			       void *priv __maybe_unused)
+-int perf_session__cache_build_ids(struct perf_session *session)
++int __perf_session__cache_build_ids(struct perf_session *session,
++				    machine__dso_t fn, void *priv)
  {
- 	bool is_kallsyms = dso__is_kallsyms(dso);
- 	bool is_vdso = dso__is_vdso(dso);
- 	const char *name = dso->long_name;
- 
-+	if (!dso->has_build_id)
-+		return 0;
-+
- 	if (dso__is_kcore(dso)) {
- 		is_kallsyms = true;
- 		name = machine->mmap_name;
-@@ -883,43 +887,30 @@ static int dso__cache_build_id(struct dso *dso, struct machine *machine)
- 				     dso->nsinfo, is_kallsyms, is_vdso);
- }
- 
--static int __dsos__cache_build_ids(struct list_head *head,
--				   struct machine *machine)
-+static int
-+machines__for_each_dso(struct machines *machines, machine__dso_t fn, void *priv)
- {
--	struct dso *pos;
--	int err = 0;
--
--	dsos__for_each_with_build_id(pos, head)
--		if (dso__cache_build_id(pos, machine))
--			err = -1;
-+	int ret = machine__for_each_dso(&machines->host, fn, priv);
-+	struct rb_node *nd;
- 
--	return err;
--}
-+	for (nd = rb_first_cached(&machines->guests); nd;
-+	     nd = rb_next(nd)) {
-+		struct machine *pos = rb_entry(nd, struct machine, rb_node);
- 
--static int machine__cache_build_ids(struct machine *machine)
--{
--	return __dsos__cache_build_ids(&machine->dsos.head, machine);
-+		ret |= machine__for_each_dso(pos, fn, priv);
-+	}
-+	return ret ? -1 : 0;
- }
- 
- int perf_session__cache_build_ids(struct perf_session *session)
- {
--	struct rb_node *nd;
--	int ret;
--
  	if (no_buildid_cache)
  		return 0;
- 
+@@ -910,7 +911,12 @@ int perf_session__cache_build_ids(struct perf_session *session)
  	if (mkdir(buildid_dir, 0755) != 0 && errno != EEXIST)
  		return -1;
  
--	ret = machine__cache_build_ids(&session->machines.host);
--
--	for (nd = rb_first_cached(&session->machines.guests); nd;
--	     nd = rb_next(nd)) {
--		struct machine *pos = rb_entry(nd, struct machine, rb_node);
--		ret |= machine__cache_build_ids(pos);
--	}
--	return ret ? -1 : 0;
-+	return machines__for_each_dso(&session->machines, dso__cache_build_id, NULL) ?  -1 : 0;
+-	return machines__for_each_dso(&session->machines, dso__cache_build_id, NULL) ?  -1 : 0;
++	return machines__for_each_dso(&session->machines, fn, priv) ?  -1 : 0;
++}
++
++int perf_session__cache_build_ids(struct perf_session *session)
++{
++	return __perf_session__cache_build_ids(session, dso__cache_build_id, NULL);
  }
  
  static bool machine__read_build_ids(struct machine *machine, bool with_hits)
+diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
+index 6d1c7180047b..ec128e8f7dd3 100644
+--- a/tools/perf/util/build-id.h
++++ b/tools/perf/util/build-id.h
+@@ -5,6 +5,7 @@
+ #define BUILD_ID_SIZE	20
+ #define SBUILD_ID_SIZE	(BUILD_ID_SIZE * 2 + 1)
+ 
++#include "machine.h"
+ #include "tool.h"
+ #include <linux/types.h>
+ 
+@@ -36,6 +37,8 @@ bool perf_session__read_build_ids(struct perf_session *session, bool with_hits);
+ int perf_session__write_buildid_table(struct perf_session *session,
+ 				      struct feat_fd *fd);
+ int perf_session__cache_build_ids(struct perf_session *session);
++int __perf_session__cache_build_ids(struct perf_session *session,
++				    machine__dso_t fn, void *priv);
+ 
+ char *build_id_cache__origname(const char *sbuild_id);
+ char *build_id_cache__linkname(const char *sbuild_id, char *bf, size_t size);
 -- 
 2.26.2
 
