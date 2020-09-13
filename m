@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34794267EF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 11:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43571267EFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 11:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725930AbgIMJnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 05:43:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12241 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725916AbgIMJmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 05:42:55 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id AB749B5481E1115E4EE8;
-        Sun, 13 Sep 2020 17:42:52 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Sun, 13 Sep 2020
- 17:42:46 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>
-CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] mm: memcontrol: Correct the comment of mem_cgroup_iter()
-Date:   Sun, 13 Sep 2020 05:41:29 -0400
-Message-ID: <20200913094129.44558-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1725946AbgIMJnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 05:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725916AbgIMJnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 05:43:10 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46C0E20796;
+        Sun, 13 Sep 2020 09:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599990190;
+        bh=g2kZ8VU/dV4hxq9fiHOO6AMzPY+3Tn5IM/Mjj2glBIM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iASmzCJGLHNUfneLXBb+sEIIolfZd2PyVYjuMBs4yCvSG+V/+y1kX71aLm45cTMbU
+         Nkgc1gfhFWNujkF2UfKuVuBk6AivGx1Vo8stEVRnxhtcTon5BSRchJZqMZX5plv7sC
+         PckhH6L4C9TwCSPx5JSLR9h/xExVGnmDUz7L3KgE=
+Date:   Sun, 13 Sep 2020 10:43:05 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Christian Eggers <ceggers@arri.de>, kbuild-all@lists.01.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] iio: trigger: Don't use RT priority
+Message-ID: <20200913104240.5c1b98ae@archlinux>
+In-Reply-To: <202009100951.s9xJuuod%lkp@intel.com>
+References: <20200909162216.13765-1-ceggers@arri.de>
+        <202009100951.s9xJuuod%lkp@intel.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit bbec2e15170a ("mm: rename page_counter's count/limit into
-usage/max"), the arg @reclaim has no priority field anymore.
+On Thu, 10 Sep 2020 09:54:06 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/memcontrol.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Hi Christian,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on iio/togreg]
+> [also build test ERROR on v5.9-rc4 next-20200909]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Christian-Eggers/iio-trigger-Don-t-use-RT-priority/20200910-002619
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+> config: i386-randconfig-r026-20200909 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce (this is a W=1 build):
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=i386 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> >> ERROR: modpost: "sched_setscheduler_nocheck" [drivers/iio/industrialio.ko] undefined!
+ 
+Looks like we can't do this unless we have a precusor patch to export that
+function for module use.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 75cd1a1e66c8..a57aa0f42d40 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1138,9 +1138,9 @@ static __always_inline struct mem_cgroup *get_mem_cgroup_from_current(void)
-  * invocations for reference counting, or use mem_cgroup_iter_break()
-  * to cancel a hierarchy walk before the round-trip is complete.
-  *
-- * Reclaimers can specify a node and a priority level in @reclaim to
-- * divide up the memcgs in the hierarchy among all concurrent
-- * reclaimers operating on the same node and priority.
-+ * Reclaimers can specify a node in @reclaim to divide up the memcgs
-+ * in the hierarchy among all concurrent reclaimers operating on the
-+ * same node.
-  */
- struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 				   struct mem_cgroup *prev,
--- 
-2.19.1
+Jonathan
+
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
