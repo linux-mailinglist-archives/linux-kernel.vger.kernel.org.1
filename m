@@ -2,148 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB425267D83
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 05:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4B5267D88
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 06:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgIMDqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 23:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
+        id S1725914AbgIMD75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 23:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbgIMDqJ (ORCPT
+        with ESMTP id S1725883AbgIMD7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 23:46:09 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB8FC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 20:46:08 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id k13so3222894oor.2
-        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 20:46:08 -0700 (PDT)
+        Sat, 12 Sep 2020 23:59:52 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D9CC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 20:59:51 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id c13so13930130oiy.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 20:59:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l97SIHYcVviH6hXnJk1EAiHlHPp1GVZuGyZcGgSd9F8=;
-        b=tW7ibLZS/nv3i49oxdNxKOdTe9/Vo2uRr+Oj9DML7mD5y/lkij63Zc7tKgFKKS3WKe
-         lzywt31TUMAPYLHqgSdjZCoSuE5bE7CSqopkCh1pMGN0bgG13jzadBdxr7NcNk7qX1+M
-         Nm8IvYILyzH+S628pBTTfIVS07hhtN6z+IyNPl0f8GTMkR2YuWJUlQofdwimXlEWE2ow
-         OJ+7GXXdsqpzsKs7VjoGk94E877uMaZsO7sPYydEA2/0/toJRPSj/axeMRjTkO1L1UBv
-         BEuc5GO0aDB+qdZkPN7vGZfa3e4EGRYk1CgSegDrsVRmCIZvov6VDOhoCbJSxZTJX5jU
-         rWOA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Axj7dqz+5SFuOgGcn5J7uk7r49/6rAWVqjS9AY/4xjo=;
+        b=PUsN0kvyna8jAT51+xAbJn+ImY6unubCDQJ13WW3fvrZzoWH8FTPOB4Q72d46Rv5+h
+         fZSkchlIEGLg/yn43axTQ23k344+xpXvubbUCVLfxjysdnHaUrbMgMU6Pbn1LQdppOlo
+         3DTqfyD2la17+RyZDLErU8xi3fQH9Sgl5H2M4kYQaDr6yzodkbb48wAX8UP6Vjnzkyu6
+         rbXjaV/Gm5/P4RxbFEiOYkWqSiVF4RMFCUvNomgdqVk8kjcsov33AMWTOCwYuBYmcBao
+         emK0I7e8Ex+laiuvCOKU0sqTgRuPibFMc6IiVYuCyuOSvnmJpOU+Co8DLkdvAR40JSp1
+         UFuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l97SIHYcVviH6hXnJk1EAiHlHPp1GVZuGyZcGgSd9F8=;
-        b=JTPEwcZmt7ARI3dOub2zdCyT0KCj3UGRSo/HuAJsQPRYK8rB1drtZmn5CF2oiL0jve
-         D/cSrjycE4SRCMeJht7CxoJYEpZw5TOFN7ZNEtiBmHPwevne6j30Gk1gw1x26K4/ZtcV
-         NwsCAlbB0ZP+tVSH8QHtl3SGXsuh8W1boWhIX+1tTJf1KAtqAfwmHAVjCgOAEYn36f6B
-         X6Laj7kfvp13w4cdrpoMTIeoaOHXdwTrN+hODiSINVYDHTgyb+swEApNXRuaXKzhTDHc
-         p1jUNI5zTRjAsGS3V7EN3Sstp6xeyfhV7qzJIgMFUKQp6ZJnvEMztvM0S2F6uq55rhM7
-         /04A==
-X-Gm-Message-State: AOAM5324mdHayIUk1i78YSz+Fjqj/XrjTpdyQRNmJs1XnztCOgGRr6N5
-        Pc3Bg5TnZJ+nA0zmCnN1DoSqQA==
-X-Google-Smtp-Source: ABdhPJxqFt8JItM3PP/MnPVkF9HffiJEM4+BpfKZSqhWRMbyvAsysiGLcjIdD452HRWg5afH3wDQkw==
-X-Received: by 2002:a4a:978a:: with SMTP id w10mr6382019ooi.69.1599968767801;
-        Sat, 12 Sep 2020 20:46:07 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id f11sm1254670oot.4.2020.09.12.20.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Sep 2020 20:46:07 -0700 (PDT)
-Date:   Sat, 12 Sep 2020 22:46:03 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Gross <agross@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-kernel-owner@vger.kernel.org, clew@codeaurora.org
-Subject: Re: [PATCH v2 1/2] PM / Domains: Add GENPD_FLAG_NO_SUSPEND/RESUME
- flags
-Message-ID: <20200913034603.GV3715@yoga>
-References: <20200821204921.32536-1-sibis@codeaurora.org>
- <159804608868.334488.2486130699850456264@swboyd.mtv.corp.google.com>
- <20200824164212.GA3715@yoga>
- <159834001729.334488.11862381163144726708@swboyd.mtv.corp.google.com>
- <20200825175345.GC3715@yoga>
- <0101017476da3906-412a2e35-dc56-43ee-8644-83a998279c2d-000000@us-west-2.amazonses.com>
- <CAPDyKFq=R9_4r+T8V7Fn2PvLr5HicKOTQMAGh4Lg3-Q=KaOiDg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Axj7dqz+5SFuOgGcn5J7uk7r49/6rAWVqjS9AY/4xjo=;
+        b=jpbJj+pEzFtf5njZ0iwllrVl0KSqM3tHOo2ZSz2ge09Gn03+ODi/YwFhVi30gf4CgD
+         IIqvIRajMUxvdZJbuBJjpykTR3i5qQPbjRpLW+OGyxZSSwU2ExY3pi6gwafi7lCbirk9
+         W4xuI2gRVQzQ+fdk36Ubi2CqzgLO5ZqogS/X6rmCnMQm+cLfD/SsWvYe4auJ9Q/gsbDR
+         r+VoNYRD2WbDY4LjZLba05tw+sLvyrGOVbDNSmZdWD59MueG6qAjbcDi8LqHptthOFw6
+         TJVg2d/fiS4akvjSKsw93N46aEI1L/VnjHZRXwKYLegTSWD2P97uqUi9et1WiB2vJvlH
+         JYhg==
+X-Gm-Message-State: AOAM5335aqULxJoEJ94x2oV2N/w3L9oPLVt0jErfm9O1I+LSaVmwHsSL
+        oaLBdhHbL8YAtEO5lt7uKLy8T9gCcWNlbV2BbRQ6Z1K2dNs=
+X-Google-Smtp-Source: ABdhPJwOlCK8A+ESmonarr54/S5G+8vXhxDLWx2CeMiOMYvJLN4Gam/Qqgp6IrYCAsEHsm/FVo5+Jtr4JVQJANhr2vU=
+X-Received: by 2002:aca:aa84:: with SMTP id t126mr5462951oie.5.1599969591226;
+ Sat, 12 Sep 2020 20:59:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFq=R9_4r+T8V7Fn2PvLr5HicKOTQMAGh4Lg3-Q=KaOiDg@mail.gmail.com>
+References: <20200910054203.525420-1-aubrey.li@intel.com> <20200910054203.525420-2-aubrey.li@intel.com>
+In-Reply-To: <20200910054203.525420-2-aubrey.li@intel.com>
+From:   Jiang Biao <benbjiang@gmail.com>
+Date:   Sun, 13 Sep 2020 11:59:40 +0800
+Message-ID: <CAPJCdBm+eyvY3ZUU0sz8WxRhdKquCApTCb1rv8DBDCnG8kS0PA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
+ in sched domain
+To:     Aubrey Li <aubrey.li@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 10 Sep 03:18 CDT 2020, Ulf Hansson wrote:
+Hi, Aubrey
 
-> On Thu, 10 Sep 2020 at 09:23, Sibi Sankar <sibis@codeaurora.org> wrote:
-> >
-> > On 2020-08-25 23:23, Bjorn Andersson wrote:
-> > > On Tue 25 Aug 02:20 CDT 2020, Stephen Boyd wrote:
-> > >> Quoting Bjorn Andersson (2020-08-24 09:42:12)
-> > >> > On Fri 21 Aug 14:41 PDT 2020, Stephen Boyd wrote:
-> > > [..]
-> > >> > > I find it odd that this is modeled as a power domain instead of some
-> > >> > > Qualcomm specific message that the remoteproc driver sends to AOSS. Is
-> > >> > > there some sort of benefit the driver gets from using the power domain
-> > >> > > APIs for this vs. using a custom API?
-> > >> >
-> > >> > We need to send "up" and "down" notifications and this needs to happen
-> > >> > at the same time as other standard resources are enabled/disabled.
-> > >> >
-> > >> > Further more, at the time the all resources handled by the downstream
-> > >> > driver was either power-domains (per above understanding) or clocks, so
-> > >> > it made sense to me not to spin up a custom API.
-> > >> >
-> > >>
-> > >> So the benefit is not spinning up a custom API? I'm not Ulf, but it
-> > >> looks like this is hard to rationalize about as a power domain. It
-> > >> doesn't have any benefit to model it this way besides to make it
-> > >> possible to turn on with other power domains.
-> > >>
-> > >> This modem remoteproc drivers isn't SoC agnostic anyway, it relies on
-> > >> SMEM APIs, so standing up another small qmp_remoteproc_booted() and
-> > >> qmp_remoteproc_shutdown() API would avoid adding a genpd flag here
-> > >> that
-> > >> probably will never be used outside of this corner-case. There is also
-> > >> some get/put EPROBE_DEFER sort of logic to implement, but otherwise it
-> > >> would be possible to do this outside of power domains, and that seems
-> > >> better given that this isn't really a power domain to start with.
-> > >
-> > > In later platforms a few new users of the AOSS communication interface
-> > > is introduced that certainly doesn't fit any existing API/framework in
-> > > the kernel. So the plan was to pretty much expose qmp_send() to these
-> > > drivers.
-> > >
-> > > My worry with using this interface is that we'll probably have to come
-> > > up with some DT binding pieces and probably we'll end up adding yet
-> > > another piece of hard coded information in the remoteproc drivers.
-> > >
-> > > But I'm not against us doing this work in favor of not having to
-> > > introduce a one-off for this corner case.
-> >
-> > Bjorn/Stephen,
-> >
-> > So the consensus is to stop modelling
-> > aoss load_state as pds and expose qmp_send
-> > to drivers?
-> 
-> Would that mean qmp_send would have to be called from generic drivers?
-> Then, please no. We want to keep drivers portable.
-> 
+On Fri, 11 Sep 2020 at 23:48, Aubrey Li <aubrey.li@intel.com> wrote:
+>
+> Added idle cpumask to track idle cpus in sched domain. When a CPU
+> enters idle, its corresponding bit in the idle cpumask will be set,
+> and when the CPU exits idle, its bit will be cleared.
+>
+> When a task wakes up to select an idle cpu, scanning idle cpumask
+> has low cost than scanning all the cpus in last level cache domain,
+> especially when the system is heavily loaded.
+>
+> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+> ---
+>  include/linux/sched/topology.h | 13 +++++++++++++
+>  kernel/sched/fair.c            |  4 +++-
+>  kernel/sched/topology.c        |  2 +-
+>  3 files changed, 17 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index fb11091129b3..43a641d26154 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>         atomic_t        ref;
+>         atomic_t        nr_busy_cpus;
+>         int             has_idle_cores;
+> +       /*
+> +        * Span of all idle CPUs in this domain.
+> +        *
+> +        * NOTE: this field is variable length. (Allocated dynamically
+> +        * by attaching extra space to the end of the structure,
+> +        * depending on how many CPUs the kernel has booted up with)
+> +        */
+> +       unsigned long   idle_cpus_span[];
+>  };
+>
+> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
+> +{
+> +       return to_cpumask(sds->idle_cpus_span);
+> +}
+> +
+>  struct sched_domain {
+>         /* These fields must be setup */
+>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 6b3b59cc51d6..3b6f8a3589be 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6136,7 +6136,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>
+>         time = cpu_clock(this);
+>
+> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+Is the sds_idle_cpus() always empty if nohz=off?
+Do we need to initialize the idle_cpus_span with sched_domain_span(sd)?
 
-No, this is only called from Qualcomm specific drivers. So I'm okay with
-that approach.
+>
+>         for_each_cpu_wrap(cpu, cpus, target) {
+>                 if (!--nr)
+> @@ -10182,6 +10182,7 @@ static void set_cpu_sd_state_busy(int cpu)
+>         sd->nohz_idle = 0;
+>
+>         atomic_inc(&sd->shared->nr_busy_cpus);
+> +       cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
+>  unlock:
+>         rcu_read_unlock();
+>  }
+> @@ -10212,6 +10213,7 @@ static void set_cpu_sd_state_idle(int cpu)
+>         sd->nohz_idle = 1;
+>
+>         atomic_dec(&sd->shared->nr_busy_cpus);
+> +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+This only works when entering/exiting tickless mode? :)
+Why not update idle_cpus_span during tick_nohz_idle_enter()/exit()?
 
+Thx.
 Regards,
-Bjorn
+Jiang
+
+>  unlock:
+>         rcu_read_unlock();
+>  }
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 9079d865a935..92d0aeef86bf 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1769,7 +1769,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+>
+>                         *per_cpu_ptr(sdd->sd, j) = sd;
+>
+> -                       sds = kzalloc_node(sizeof(struct sched_domain_shared),
+> +                       sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
+>                                         GFP_KERNEL, cpu_to_node(j));
+>                         if (!sds)
+>                                 return -ENOMEM;
+> --
+> 2.25.1
+>
