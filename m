@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1179426808F
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5163A268092
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgIMRZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 13:25:13 -0400
-Received: from mail-eopbgr30087.outbound.protection.outlook.com ([40.107.3.87]:43229
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725951AbgIMRZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 13:25:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mWjVp0ipsjKsxAr+yrk1ZIHrx1e0MaiYUqF3DVfinCZE1QAHutd1bg2xFOmZncWZ2IPue3GRGAGmMOIX3rah/fibGCzfXA9IKH3tRJbfy0HfMViCUiw8zUcuFHZuZplMMXN7hnoFsGChkH0KNSaWAz3DZf+P0NSfTROU9WH+BwWAWP9wfT36tbhf3rjHK7QF5059TeOfSI40wxJSTbkxUEwx0X+CwL6WMaHDFGGvIZa6Nqf/bIyEoWk2fPrqrQ8+IK9UUGgX7sg91yYWswp9SPVcRxhYS5JOjVVOczzXfnmKI7AmM2/9LuiORmOieOGydHn9mtyvteyFYiimbqVMtQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OiHjR5R9ujcLLngfGraTqgPiSsHxB3eZRPXfKoqpC1k=;
- b=jq01PnO+PG74S+5d/y4owGydeJ2V2m0DtUx+udUM+BKfT2sZOgZxazbRKyN/OgGjMfn1sWlralvcDbKBMp/lCkY3UM2pDbLnM8/ma+UKEgQlEEsiygjlbur4AlDSDR5H3UgkXRVEGVtfoaef0xS5ZwG53y8O0eSQZxVRFATZt1kyFsIVQSpfy2QWNL86Rtvm4t/fjovcyM3VNQ9rzW8APkEbbWFFRGmVoic3peetnxs1Rt9h4veYvMwVdVEgTIbGNd2TE5+UopHNmcttJ835TkWMUenPNbOiFk17Hvp5p/PVuq4pfl65HOd3/LjrX923H18cAYqSMISlrs/nWu0WKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OiHjR5R9ujcLLngfGraTqgPiSsHxB3eZRPXfKoqpC1k=;
- b=tDDqSlUubg85GL1ruKw6YaC3FMSD2exiIEuqjRelQkUfXRNL14qJaV6g2i2Z3bnzN6DWMR4m9PW+ih7ekGdIvAsk7EV+Cy7Viw0eTsltMbbXXMF68OXsyRxQPpsWkb9qLO9DBFNE+UElA/GOQNi98FV7+1B+w4gA/VaUoK37JUY=
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR0401MB2378.eurprd04.prod.outlook.com (2603:10a6:3:23::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Sun, 13 Sep
- 2020 17:24:58 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3370.018; Sun, 13 Sep 2020
- 17:24:58 +0000
-From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "M.h. Lian" <minghuan.lian@nxp.com>, Leo Li <leoyang.li@nxp.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Roy Zang <roy.zang@nxp.com>,
-        "andrew.murray@arm.com" <andrew.murray@arm.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "kishon@ti.com" <kishon@ti.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCHv7 12/12] misc: pci_endpoint_test: Add driver data for
- Layerscape PCIe controllers
-Thread-Topic: [PATCHv7 12/12] misc: pci_endpoint_test: Add driver data for
- Layerscape PCIe controllers
-Thread-Index: AQHWb8aBRZdiLZ/OOk28uglaOdQ7EqliXdwAgASoBQA=
-Date:   Sun, 13 Sep 2020 17:24:57 +0000
-Message-ID: <HE1PR0402MB337142281BB4864869D374F084220@HE1PR0402MB3371.eurprd04.prod.outlook.com>
-References: <20200811095441.7636-1-Zhiqiang.Hou@nxp.com>
- <20200811095441.7636-13-Zhiqiang.Hou@nxp.com> <20200910181756.GA622331@bogus>
-In-Reply-To: <20200910181756.GA622331@bogus>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 45aa14b1-155a-4ed3-1002-08d85809f037
-x-ms-traffictypediagnostic: HE1PR0401MB2378:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0401MB23784C97663CB852A5D0387C84220@HE1PR0401MB2378.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:595;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rCtoSfh8bT/tJI4u4nJqe/DwJPeYeezebKQlBuXcWwKt1VyYnxSOyTVsIH2PfDqqbV0Uo4ej7hw611y9YZ5kGCdHSANxLifI2QQRe//h8WSzYFiJ0Bl6hUcfeyAD/UEofea/kYhgHtXxEOFpaSBAo23cyvQUIk04CjSDAuJdM5dETEKzsxmUdEncwwqp31NN8PIstf97LSiFArt9R0dRER+ojR+YIN+UJFKaSK1gmGy/wy+Nln64dyQ+bRq4yQTKZ6A5DEBXwJ7v89h6g6wlHRxVAuHGl4NUAqwRNX0lSWVQ3qlfmWijWRk5neX06jlFgwBsrFEEPPOgHYAPNbGi9g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(366004)(396003)(39860400002)(83380400001)(52536014)(7416002)(5660300002)(4326008)(8936002)(8676002)(2906002)(33656002)(86362001)(71200400001)(316002)(6506007)(53546011)(9686003)(55016002)(66946007)(186003)(26005)(64756008)(66446008)(66556008)(76116006)(478600001)(7696005)(6916009)(66476007)(54906003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: GCkmhClWjudxOiow0VRu5C9WDs87Q9GpxoSATiLEChZ93bIuefwYc7BQlyMhW7kR7tnVNF1qYYAzPSRawR+g4Xl0waLKvdnJxc80Mfwo1BQnJ+OHDWNSlaVRHUKuMT0PC/qVSdoohJ/WjSTHhkUxmuPjrj6fxvJiHt4rhp81zyxhw5CnKw/ArLFmATPFuglIWLmqkCDuNRKGTl/GCoaDsqGxZPSEPPKIe3YdGTcCptrjYZShNYaS43uSU7Qces9CJS/IEjI02qHtp2V1iv92DVYvUiICkSJRHAxoXi02rSWpf+6cwqgLAs3dsEczplqOZsCbHyaPbjPYRLh7YaLvoEZ8qh6TxKVS/uUKUg3ruAEO6D4ZFpr3/hlgLOeB6EkoqymVPznOtoCY/WGYW33FF42rua88EjGHoFfQh2/Bx1zfTAkamFzowHxOqAcSrn2EiguX0Uaf97GalBAyQnLOp7/1j+Azxq5d+r4yXkN5BUM6K1LViIPtnJGc8GLHz8QF2NkgjTlg83cBPIN+Mr+omnbkrlHiVh1BGhalJnihwjAsfjJnGERK96COn7/559g6jzqvBunauL4ubr13PCe5+tDtb8ptLegO99MoJ6iHjN5pVoRMX+8EOTtkN9sFNX1Vi77DLaLm2mZugEg23vrFYQ==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1725968AbgIMR0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 13:26:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:42760 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgIMR0J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 13:26:09 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DHOwpg021278;
+        Sun, 13 Sep 2020 17:25:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nyBwxCnbYyUWOK+NiyWEbUqCiK98qGPkeLZjwlqCjKw=;
+ b=ZR5aPxz9gSva9xylW6NOtGWoC1ZFSHh+ZcI/7QD2EhfR2/fz1r6q6DgSMmlx1VFCtjh0
+ c03slDfplrdVWH40rpvHRmf4hqr6smhR5EkrWxypcvmmx1gLB1MkHXT/S8qaFU0OPg74
+ HPD3Uty0sckSmjuqlgWXNIQgCc5u1eM3tE97f5ZdRSJb3FV7Pyq0bvumbC+SpL6J034Q
+ MaAgmskllCrJFVcwFIIytl/7w1dwUzPOwfz3qSGNgHjk22BzhIX5LCZmKnez17An0oOx
+ KHBz13eC6eGb/hK/BfEHoZ0bREzLVEFpa4jYEy2j5emUlnj2Jrnfq+/ZF6Bi0Nnqa49f 6g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33gp9ku6q5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 13 Sep 2020 17:25:32 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08DHPJHh104805;
+        Sun, 13 Sep 2020 17:25:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 33h87xvpq2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Sep 2020 17:25:32 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08DHPTvi030996;
+        Sun, 13 Sep 2020 17:25:30 GMT
+Received: from [10.74.86.192] (/10.74.86.192)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 13 Sep 2020 17:25:29 +0000
+Subject: Re: [PATCH v3 04/11] x86/xen: add system core suspend and resume
+ callbacks
+To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        jgross@suse.com, linux-pm@vger.kernel.org, linux-mm@kvack.org,
+        kamatam@amazon.com, sstabellini@kernel.org, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
+        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
+        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dwmw@amazon.co.uk, benh@kernel.crashing.org
+References: <cover.1598042152.git.anchalag@amazon.com>
+ <6b86a4bf71ee3e3e9b0bb00f594a4edc85da19a9.1598042152.git.anchalag@amazon.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <286ac56d-7fd2-66d5-bfcb-6a329afca3d6@oracle.com>
+Date:   Sun, 13 Sep 2020 13:25:23 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.1
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45aa14b1-155a-4ed3-1002-08d85809f037
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2020 17:24:57.8966
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CPXM8RP/5wg7BWRK6UahVulS+onciLr3JQDtctes/xQiKBxDyrjORLlnhI/nmwB5l65KMTXoD0x0gQzHDuOafw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0401MB2378
+In-Reply-To: <6b86a4bf71ee3e3e9b0bb00f594a4edc85da19a9.1598042152.git.anchalag@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009130158
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9743 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009130158
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUm9iLA0KDQpUaGFua3MgYSBsb3QgZm9yIHlvdXIgcmV2aWV3IGFuZCBhY2shDQoNClJlZ2Fy
-ZHMsDQpaaGlxaWFuZw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJv
-YiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IDIwMjDE6jnUwjExyNUgMjoxOA0K
-PiBUbzogWi5xLiBIb3UgPHpoaXFpYW5nLmhvdUBueHAuY29tPg0KPiBDYzogYmhlbGdhYXNAZ29v
-Z2xlLmNvbTsgc2hhd25ndW9Aa2VybmVsLm9yZzsgTS5oLiBMaWFuDQo+IDxtaW5naHVhbi5saWFu
-QG54cC5jb20+OyBMZW8gTGkgPGxlb3lhbmcubGlAbnhwLmNvbT47DQo+IGxpbnV4cHBjLWRldkBs
-aXN0cy5vemxhYnMub3JnOyByb2JoK2R0QGtlcm5lbC5vcmc7DQo+IGxpbnV4LWFybS1rZXJuZWxA
-bGlzdHMuaW5mcmFkZWFkLm9yZzsgUm95IFphbmcgPHJveS56YW5nQG54cC5jb20+Ow0KPiBhbmRy
-ZXcubXVycmF5QGFybS5jb207IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxvcmVuem8u
-cGllcmFsaXNpQGFybS5jb207IGd1c3Rhdm8ucGltZW50ZWxAc3lub3BzeXMuY29tOyBNaW5na2Fp
-IEh1DQo+IDxtaW5na2FpLmh1QG54cC5jb20+OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-Ow0KPiBqaW5nb29oYW4xQGdtYWlsLmNvbTsga2lzaG9uQHRpLmNvbTsgZGV2aWNldHJlZUB2Z2Vy
-Lmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSHY3IDEyLzEyXSBtaXNjOiBwY2lfZW5k
-cG9pbnRfdGVzdDogQWRkIGRyaXZlciBkYXRhIGZvcg0KPiBMYXllcnNjYXBlIFBDSWUgY29udHJv
-bGxlcnMNCj4gDQo+IE9uIFR1ZSwgMTEgQXVnIDIwMjAgMTc6NTQ6NDEgKzA4MDAsIFpoaXFpYW5n
-IEhvdSB3cm90ZToNCj4gPiBGcm9tOiBIb3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBueHAuY29t
-Pg0KPiA+DQo+ID4gVGhlIGNvbW1pdCAwYTEyMWY5YmMzZjUgKCJtaXNjOiBwY2lfZW5kcG9pbnRf
-dGVzdDogVXNlIHN0cmVhbWluZyBETUENCj4gPiBBUElzIGZvciBidWZmZXIgYWxsb2NhdGlvbiIp
-IGNoYW5nZWQgdG8gdXNlIHN0cmVhbWluZyBETUEgQVBJcywNCj4gPiBob3dldmVyLA0KPiA+IGRt
-YV9tYXBfc2luZ2xlKCkgbWlnaHQgbm90IHJldHVybiBhIDRLQiBhbGlnbmVkIGFkZHJlc3MsIHNv
-IGFkZCB0aGUNCj4gPiBkZWZhdWx0X2RhdGEgYXMgZHJpdmVyIGRhdGEgZm9yIExheWVyc2NhcGUg
-UENJZSBjb250cm9sbGVycyB0byBtYWtlIGl0DQo+ID4gNEtCIGFsaWduZWQuDQo+ID4NCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBueHAuY29tPg0KPiA+IC0t
-LQ0KPiA+IFY3Og0KPiA+ICAtIE5ldyBwYXRjaC4NCj4gPg0KPiA+ICBkcml2ZXJzL21pc2MvcGNp
-X2VuZHBvaW50X3Rlc3QuYyB8IDggKysrKysrLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5z
-ZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gPg0KPiANCj4gQWNrZWQtYnk6IFJvYiBIZXJy
-aW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo=
+
+On 8/21/20 6:27 PM, Anchal Agarwal wrote:
+> From: Munehisa Kamata <kamatam@amazon.com>
+>
+> Add Xen PVHVM specific system core callbacks for PM
+> hibernation support. The callbacks suspend and resume
+> Xen primitives like shared_info, pvclock and grant table.
+> These syscore_ops are specifically for domU hibernation.
+> xen_suspend() calls syscore_suspend() during Xen suspend
+> operation however, during xen suspend lock_system_sleep()
+> lock is taken and thus system cannot trigger hibernation.
+> These system core callbacks will be called only from the
+> hibernation context.
+
+
+Well, they can be called from Xen suspend too, which is why you have the
+checks in the beginning.
+
+
+-boris
+
+
+
