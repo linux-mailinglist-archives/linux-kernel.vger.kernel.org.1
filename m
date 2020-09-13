@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C6F268035
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC28268036
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbgIMQRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:17:32 -0400
-Received: from mail-eopbgr80071.outbound.protection.outlook.com ([40.107.8.71]:9102
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725956AbgIMQRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:17:18 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YQJPaFSbDljBtvWZIiwPSGkY5n+MEWXtoHpYaCUuzaixjE2G3GNZgvq2SArupXS+SlnJefXl6IgDGI7N4gSP6TygXQYoNuZrphs5IXEQjMn0N6LZoZ28SI2eN+r8vcs8kmlP4Bd9VKAoWiVU5TZBWY3Jj4xhs+LewXu288rglMpqXpcHk6S5s84eanMltJ3lFx64qzZ0JVQqBAd9sxSm3ZvHRg2xx25QOrNFYlWuDLeEJszSMRvZ9cQd5l0AB4g1a+3y1LrPisGd7FgoaU4M/rq/nQmy7nJK69LZ41ihmp+/1sUGdUDf7+SPnOzxHE2OELOx6v93nm85n9i/hpIImg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bumO07WZwIfU5Pqvfy0VXIKETyr7sOGuMPim+L62SDk=;
- b=Vckb+RhsUXjuTrKI+Uxh+ocwGzJo0J376l06plIfSBpCG5nVj6sUw498ka146QqCmFkAJfuForKJpsyGgbIOkVubdpS+82lWoNFZ6nXkNctuO0moulRkKjnMJwQgaiO2Cf44DvkgfcnUKlcMQTxGyIN6H7C6BNzJkAW7A6kNUdMXQV/BiStR+SY0cCEJHpMtLMkewnDQfLEDl30U4f3hhQaRYXAk0KhFwx7K/FQsNxS3arDRSFOoeClmeQ5eHVvfVlCFNKMC2VaMleRPzp5t3Etg08xH8VEfT5MAckdgxkVhXTnWu/TPo1O4N2idPaVQqndf5fMUG3M+ARCpLTvtGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bumO07WZwIfU5Pqvfy0VXIKETyr7sOGuMPim+L62SDk=;
- b=VfKVO3HwMr7IvEEtJTlOeBdkf72VYHqtrKyuaP58Kn0IcWzJ+O0jEAuU+/Eid0qeUw07+J5towPW3Jd8//8My+rcNUX26FI6xFkRfNjcpB6er4Njm0eypS7JoEG+k947dG5dFU2+vxUUpdNYT6qY6r4riobxeGwd1O8Fkkflf+I=
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR04MB3307.eurprd04.prod.outlook.com (2603:10a6:7:23::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16; Sun, 13 Sep
- 2020 16:17:12 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3370.018; Sun, 13 Sep 2020
- 16:17:12 +0000
-From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
-To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>
-CC:     "M.h. Lian" <minghuan.lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>
-Subject: RE: [PATCH 1/7] PCI: dwc: Fix a bug of the case dw_pci->ops is NULL
-Thread-Topic: [PATCH 1/7] PCI: dwc: Fix a bug of the case dw_pci->ops is NULL
-Thread-Index: AQHWhNorf38ULZ61u0GuKdLTkLaVfqlgDX0AgAa7LjA=
-Date:   Sun, 13 Sep 2020 16:17:11 +0000
-Message-ID: <HE1PR0402MB337146348130CCCEF5D3888284220@HE1PR0402MB3371.eurprd04.prod.outlook.com>
-References: <20200907053801.22149-1-Zhiqiang.Hou@nxp.com>
- <20200907053801.22149-2-Zhiqiang.Hou@nxp.com>
- <DM5PR12MB1276C5F2E31AC703C3AB67C0DA260@DM5PR12MB1276.namprd12.prod.outlook.com>
-In-Reply-To: <DM5PR12MB1276C5F2E31AC703C3AB67C0DA260@DM5PR12MB1276.namprd12.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: synopsys.com; dkim=none (message not signed)
- header.d=none;synopsys.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: d1bc5d5e-372f-49cd-0c5c-08d8580078a8
-x-ms-traffictypediagnostic: HE1PR04MB3307:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR04MB3307425F119CA3945D8BE0A784220@HE1PR04MB3307.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GWTqHQW+WwEPnSa0S4wMb+4fbL+Fid6ZvpFWaKptQ26Ym4Tjk7Yi886e6pLgq1HX65sbjlW6E9r7znFzrgi0xXumMDbtpv8JTd2b/0LNYu6kwZgzPQOoWi7xzXQ+WTTb9z6iiKtQLaGtuGvNLmDmhaxKzGZmXhi341gjoxhJAxUIp4YUx52knMTNSMmxMhLtrsW3nikKRCHVRLltBQCe0XOjXq8DCwDg90V2aWhCA12jytCGVvCgldkVMdmqSjuGCqXh9GXgGGH8cfym4vFVZkTjDKJzpvL/RLhBuNCWuk3TIlxR+z67R7JJ+GKnZSMw/q34/LGOpN54pM4Y/q3eSA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(66946007)(5660300002)(54906003)(26005)(71200400001)(478600001)(8676002)(55016002)(33656002)(8936002)(110136005)(186003)(6506007)(53546011)(83380400001)(86362001)(52536014)(2906002)(64756008)(66446008)(9686003)(66476007)(316002)(66556008)(76116006)(7696005)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: rqcUHkjlrtmGwJy/nPMR+ARm0Lb2/YfBQH4wlEwBPlOjUg5r5/pEBOw24MuYOUO0E40r9GuJwYHjmULTwD1UxVWfud4QE0KxsEJepOQ769rFXyKnVlM6DhXezF0499/Jdq6FFuP38AIAbDXc6PclIFqKdfIclf48L+JOQUwUULSUMn8nzZve3pTBWy5bK5aaCWlchEmxPxAgba1143wKb1Fu++/BXtfpTSC/Zu7JBDr+MC3wY7Ys9doj9o0qvtTfsmBEV2szw99uvr51rZN1IwMETIBLRB+W+7ofhM28MU+9qqXLFl7OVqirFQFgxyK3BOHhyKkjGX8uFepUJ8QTRKyimhcFqcudYrRf7qNP7YPlR0xuXWVdJ9ryRTwYEnEsltBreMBZ7OqN1L8WQbo5dY533xSAjOk3XG79fScjVFudP9pqa5i4G+lNcwymHSYaMnr7Rv3ERsFLdJYbxtYrvldlUN4CwUd2x+i7lDRW6TmUNy9fZlEpMDzZTpEzN53dOC69JUDut17kEhcSvEgcP6Ec5h0KAVaT34VmFkx8Ac3qB+vUA49zHQUtLT9eJAWR9UX6XXrO/MxFdS2Z0BxzGJ44r82+Xk2jhnZJ7oG/axHIev4xtwkscXue6Owv3vxiozKgKC2xQDHYYp/GsGBTaQ==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1725953AbgIMQTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 12:19:36 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:58072 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgIMQTa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 12:19:30 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kHUih-00514F-NR; Sun, 13 Sep 2020 10:19:15 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:55736 helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kHUig-0008H6-Jy; Sun, 13 Sep 2020 10:19:15 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <christian.brauner@ubuntu.com>, <akpm@linux-foundation.org>,
+        <peterz@infradead.org>, <mingo@kernel.org>, <christian@kellner.me>,
+        <surenb@google.com>, <areber@redhat.com>, <shakeelb@google.com>,
+        <cyphar@cyphar.com>, <tglx@linutronix.de>,
+        <linux-kernel@vger.kernel.org>
+References: <20200913092415.24408-1-linmiaohe@huawei.com>
+Date:   Sun, 13 Sep 2020 11:18:55 -0500
+In-Reply-To: <20200913092415.24408-1-linmiaohe@huawei.com> (Miaohe Lin's
+        message of "Sun, 13 Sep 2020 05:24:15 -0400")
+Message-ID: <87r1r5wsy8.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1bc5d5e-372f-49cd-0c5c-08d8580078a8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2020 16:17:11.8389
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ekYXC3tx7hqfx4FLlH8AEojIEnVYNrgzOmLF1oO+CrPhyQ8zCKdMXhAgoEKCXbjnh475lSeH7IGyntquhbBQIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR04MB3307
+Content-Type: text/plain
+X-XM-SPF: eid=1kHUig-0008H6-Jy;;;mid=<87r1r5wsy8.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/l0hTNb5Jm3CMgXlcvB1n4k4tpgaYsOQo=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4999]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Miaohe Lin <linmiaohe@huawei.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 572 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 13 (2.4%), b_tie_ro: 12 (2.0%), parse: 0.90
+        (0.2%), extract_message_metadata: 12 (2.0%), get_uri_detail_list: 0.82
+        (0.1%), tests_pri_-1000: 5 (0.9%), tests_pri_-950: 1.29 (0.2%),
+        tests_pri_-900: 1.11 (0.2%), tests_pri_-90: 228 (39.9%), check_bayes:
+        225 (39.3%), b_tokenize: 4.4 (0.8%), b_tok_get_all: 114 (19.9%),
+        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 99 (17.4%), b_finish: 1.52
+        (0.3%), tests_pri_0: 296 (51.8%), check_dkim_signature: 0.46 (0.1%),
+        check_dkim_adsp: 157 (27.5%), poll_dns_idle: 145 (25.3%),
+        tests_pri_10: 2.1 (0.4%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00
+        (0.0%)
+Subject: Re: [PATCH] fork: Use helper function mapping_allow_writable() in dup_mmap()
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR3VzdGF2bywNCg0KVGhhbmtzIGEgbG90IGZvciB5b3VyIHJldmlldyBhbmQgYWNrIQ0KDQpS
-ZWdhcmRzLA0KWmhpcWlhbmcNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9t
-OiBHdXN0YXZvIFBpbWVudGVsIDxHdXN0YXZvLlBpbWVudGVsQHN5bm9wc3lzLmNvbT4NCj4gU2Vu
-dDogMjAyMMTqOdTCOcjVIDE3OjI5DQo+IFRvOiBaLnEuIEhvdSA8emhpcWlhbmcuaG91QG54cC5j
-b20+OyBsaW51eC1wY2lAdmdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZnZXIua2VybmVs
-Lm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gYmhlbGdhYXNAZ29vZ2xlLmNv
-bTsgcm9iaCtkdEBrZXJuZWwub3JnOyBzaGF3bmd1b0BrZXJuZWwub3JnOyBMZW8gTGkNCj4gPGxl
-b3lhbmcubGlAbnhwLmNvbT47IGxvcmVuem8ucGllcmFsaXNpQGFybS5jb20NCj4gQ2M6IE0uaC4g
-TGlhbiA8bWluZ2h1YW4ubGlhbkBueHAuY29tPjsgTWluZ2thaSBIdQ0KPiA8bWluZ2thaS5odUBu
-eHAuY29tPjsgUm95IFphbmcgPHJveS56YW5nQG54cC5jb20+DQo+IFN1YmplY3Q6IFJFOiBbUEFU
-Q0ggMS83XSBQQ0k6IGR3YzogRml4IGEgYnVnIG9mIHRoZSBjYXNlIGR3X3BjaS0+b3BzIGlzIE5V
-TEwNCj4gDQo+IEhpIEhvdSwNCj4gDQo+IE9uIE1vbiwgU2VwIDcsIDIwMjAgYXQgNjozNzo1NSwg
-WmhpcWlhbmcgSG91IDxaaGlxaWFuZy5Ib3VAbnhwLmNvbT4NCj4gd3JvdGU6DQo+IA0KPiA+IEZy
-b206IEhvdSBaaGlxaWFuZyA8WmhpcWlhbmcuSG91QG54cC5jb20+DQo+ID4NCj4gPiBUaGUgZHdf
-cGNpLT5vcHMgbWF5IGJlIGEgTlVMTCwgYW5kIGZpeCBpdCBieSBhZGRpbmcgb25lIG1vcmUgY2hl
-Y2suDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBIb3UgWmhpcWlhbmcgPFpoaXFpYW5nLkhvdUBu
-eHAuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9wY2llLWRl
-c2lnbndhcmUuYyB8IDEyICsrKysrKy0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNl
-cnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-cGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS5jDQo+ID4gYi9kcml2ZXJzL3BjaS9j
-b250cm9sbGVyL2R3Yy9wY2llLWRlc2lnbndhcmUuYw0KPiA+IGluZGV4IGI3MjNlMGNjNDFmYi4u
-YmRmODkzOGRhOWNkIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdj
-L3BjaWUtZGVzaWdud2FyZS5jDQo+ID4gKysrIGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9kd2Mv
-cGNpZS1kZXNpZ253YXJlLmMNCj4gPiBAQCAtMTQwLDcgKzE0MCw3IEBAIHUzMiBkd19wY2llX3Jl
-YWRfZGJpKHN0cnVjdCBkd19wY2llICpwY2ksIHUzMg0KPiByZWcsIHNpemVfdCBzaXplKQ0KPiA+
-ICAJaW50IHJldDsNCj4gPiAgCXUzMiB2YWw7DQo+ID4NCj4gPiAtCWlmIChwY2ktPm9wcy0+cmVh
-ZF9kYmkpDQo+ID4gKwlpZiAocGNpLT5vcHMgJiYgcGNpLT5vcHMtPnJlYWRfZGJpKQ0KPiA+ICAJ
-CXJldHVybiBwY2ktPm9wcy0+cmVhZF9kYmkocGNpLCBwY2ktPmRiaV9iYXNlLCByZWcsIHNpemUp
-Ow0KPiA+DQo+ID4gIAlyZXQgPSBkd19wY2llX3JlYWQocGNpLT5kYmlfYmFzZSArIHJlZywgc2l6
-ZSwgJnZhbCk7IEBAIC0xNTUsNw0KPiA+ICsxNTUsNyBAQCB2b2lkIGR3X3BjaWVfd3JpdGVfZGJp
-KHN0cnVjdCBkd19wY2llICpwY2ksIHUzMiByZWcsIHNpemVfdA0KPiA+IHNpemUsIHUzMiB2YWwp
-ICB7DQo+ID4gIAlpbnQgcmV0Ow0KPiA+DQo+ID4gLQlpZiAocGNpLT5vcHMtPndyaXRlX2RiaSkg
-ew0KPiA+ICsJaWYgKHBjaS0+b3BzICYmIHBjaS0+b3BzLT53cml0ZV9kYmkpIHsNCj4gPiAgCQlw
-Y2ktPm9wcy0+d3JpdGVfZGJpKHBjaSwgcGNpLT5kYmlfYmFzZSwgcmVnLCBzaXplLCB2YWwpOw0K
-PiA+ICAJCXJldHVybjsNCj4gPiAgCX0NCj4gPiBAQCAtMjAwLDcgKzIwMCw3IEBAIHUzMiBkd19w
-Y2llX3JlYWRfYXR1KHN0cnVjdCBkd19wY2llICpwY2ksIHUzMg0KPiByZWcsIHNpemVfdCBzaXpl
-KQ0KPiA+ICAJaW50IHJldDsNCj4gPiAgCXUzMiB2YWw7DQo+ID4NCj4gPiAtCWlmIChwY2ktPm9w
-cy0+cmVhZF9kYmkpDQo+ID4gKwlpZiAocGNpLT5vcHMgJiYgcGNpLT5vcHMtPnJlYWRfZGJpKQ0K
-PiA+ICAJCXJldHVybiBwY2ktPm9wcy0+cmVhZF9kYmkocGNpLCBwY2ktPmF0dV9iYXNlLCByZWcs
-IHNpemUpOw0KPiA+DQo+ID4gIAlyZXQgPSBkd19wY2llX3JlYWQocGNpLT5hdHVfYmFzZSArIHJl
-Zywgc2l6ZSwgJnZhbCk7IEBAIC0yMTQsNw0KPiA+ICsyMTQsNyBAQCB2b2lkIGR3X3BjaWVfd3Jp
-dGVfYXR1KHN0cnVjdCBkd19wY2llICpwY2ksIHUzMiByZWcsIHNpemVfdA0KPiA+IHNpemUsIHUz
-MiB2YWwpICB7DQo+ID4gIAlpbnQgcmV0Ow0KPiA+DQo+ID4gLQlpZiAocGNpLT5vcHMtPndyaXRl
-X2RiaSkgew0KPiA+ICsJaWYgKHBjaS0+b3BzICYmIHBjaS0+b3BzLT53cml0ZV9kYmkpIHsNCj4g
-PiAgCQlwY2ktPm9wcy0+d3JpdGVfZGJpKHBjaSwgcGNpLT5hdHVfYmFzZSwgcmVnLCBzaXplLCB2
-YWwpOw0KPiA+ICAJCXJldHVybjsNCj4gPiAgCX0NCj4gPiBAQCAtMjgzLDcgKzI4Myw3IEBAIHZv
-aWQgZHdfcGNpZV9wcm9nX291dGJvdW5kX2F0dShzdHJ1Y3QgZHdfcGNpZQ0KPiA+ICpwY2ksIGlu
-dCBpbmRleCwgaW50IHR5cGUsICB7DQo+ID4gIAl1MzIgcmV0cmllcywgdmFsOw0KPiA+DQo+ID4g
-LQlpZiAocGNpLT5vcHMtPmNwdV9hZGRyX2ZpeHVwKQ0KPiA+ICsJaWYgKHBjaS0+b3BzICYmIHBj
-aS0+b3BzLT5jcHVfYWRkcl9maXh1cCkNCj4gPiAgCQljcHVfYWRkciA9IHBjaS0+b3BzLT5jcHVf
-YWRkcl9maXh1cChwY2ksIGNwdV9hZGRyKTsNCj4gPg0KPiA+ICAJaWYgKHBjaS0+aWF0dV91bnJv
-bGxfZW5hYmxlZCkgew0KPiA+IEBAIC00NzAsNyArNDcwLDcgQEAgaW50IGR3X3BjaWVfbGlua191
-cChzdHJ1Y3QgZHdfcGNpZSAqcGNpKSAgew0KPiA+ICAJdTMyIHZhbDsNCj4gPg0KPiA+IC0JaWYg
-KHBjaS0+b3BzLT5saW5rX3VwKQ0KPiA+ICsJaWYgKHBjaS0+b3BzICYmIHBjaS0+b3BzLT5saW5r
-X3VwKQ0KPiA+ICAJCXJldHVybiBwY2ktPm9wcy0+bGlua191cChwY2kpOw0KPiA+DQo+ID4gIAl2
-YWwgPSByZWFkbChwY2ktPmRiaV9iYXNlICsgUENJRV9QT1JUX0RFQlVHMSk7DQo+ID4gLS0NCj4g
-PiAyLjE3LjENCj4gDQo+IExvb2tzIGdvb2QgdG8gbWUuDQo+IA0KPiBBY2tlZC1ieTogR3VzdGF2
-byBQaW1lbnRlbCA8Z3VzdGF2by5waW1lbnRlbEBzeW5vcHN5cy5jb20+DQo+IA0KPiANCj4gDQoN
-Cg==
+Miaohe Lin <linmiaohe@huawei.com> writes:
+
+> Use helper function mapping_allow_writable() to atomic_inc
+> i_mmap_writable.
+
+Why?
+
+
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  kernel/fork.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 4b328aecabb2..a0586716e327 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -558,7 +558,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
+>  				atomic_dec(&inode->i_writecount);
+>  			i_mmap_lock_write(mapping);
+>  			if (tmp->vm_flags & VM_SHARED)
+> -				atomic_inc(&mapping->i_mmap_writable);
+> +				mapping_allow_writable(mapping);
+>  			flush_dcache_mmap_lock(mapping);
+>  			/* insert tmp into the share list, just after mpnt */
+>  			vma_interval_tree_insert_after(tmp, mpnt,
