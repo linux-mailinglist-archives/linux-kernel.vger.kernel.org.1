@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411C1268175
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C398A26817C
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 23:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgIMV1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 17:27:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58160 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgIMV1Q (ORCPT
+        id S1725964AbgIMVdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 17:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgIMVdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 17:27:16 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600032435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mn+lpAZkUaJqWbxEFRYMZxDOSxcAn/m1i3GxkUhpnHQ=;
-        b=OuFtZfWQCUT2Rb/MT91ILoTnI1YcdasEECYWRc2hmzvOT5434UM6yNuX1+bzEk/tChUjTi
-        vDvBIro4cG9auCpdIQDse2+qekzEleaDcjdC7YTj1DWrRK/cZY21CO+55dCcsbYU/lxLnI
-        UWBMd2hKD0NnAHeXBlqJm3nm0m0XVIAtzXhIqDG3Xi7ELu6mQ4lNpW3/gKgMKRcK8KbG1z
-        l3COZr4cdSPZB9wMfpmvDn4aE8Ok3VUQQzozpamDBQyXKHxmlf8xaejy6j5ENsKQ19Cvma
-        A9XSAaEKpOVpFdO1aoPYdKppjv46Z/XDqJyk7wHKCnEeQBQQjiIEH1jSJTIOUw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600032435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mn+lpAZkUaJqWbxEFRYMZxDOSxcAn/m1i3GxkUhpnHQ=;
-        b=hIXeJozMIkN6E6UsA/OlcA2rnMJ3aYOhXPmnfigXRA9FIJiA9aiJUwcWKNoiff79q7ic8V
-        /+MZYYFL3Q+4RjAQ==
-To:     Tom Hromatka <tom.hromatka@oracle.com>, tom.hromatka@oracle.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        fweisbec@gmail.com, mingo@kernel.org, adobriyan@gmail.com
-Subject: Re: [RESEND PATCH 1/2] tick-sched: Do not clear the iowait and idle times
-In-Reply-To: <20200909144122.77210-2-tom.hromatka@oracle.com>
-References: <20200909144122.77210-1-tom.hromatka@oracle.com> <20200909144122.77210-2-tom.hromatka@oracle.com>
-Date:   Sun, 13 Sep 2020 23:27:14 +0200
-Message-ID: <87ft7lpdu5.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sun, 13 Sep 2020 17:33:12 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334DDC06174A;
+        Sun, 13 Sep 2020 14:33:11 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id C6BBA12814447;
+        Sun, 13 Sep 2020 14:16:22 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 14:33:08 -0700 (PDT)
+Message-Id: <20200913.143308.2042080994542358655.davem@davemloft.net>
+To:     ttoukan.linux@gmail.com
+Cc:     luojiaxing@huawei.com, kuba@kernel.org, idos@mellanox.com,
+        ogerlitz@mellanox.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH net-next] net: ethernet: mlx4: Avoid assigning a value
+ to ring_cons but not used it anymore in mlx4_en_xmit()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <c0987225-0079-617a-bf89-b672b07f298a@gmail.com>
+References: <1599898095-10712-1-git-send-email-luojiaxing@huawei.com>
+        <20200912.182219.1013721666435098048.davem@davemloft.net>
+        <c0987225-0079-617a-bf89-b672b07f298a@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 13 Sep 2020 14:16:23 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tom,
+From: Tariq Toukan <ttoukan.linux@gmail.com>
+Date: Sun, 13 Sep 2020 13:12:05 +0300
 
-On Wed, Sep 09 2020 at 08:41, Tom Hromatka wrote:
-> A customer reported that when a cpu goes offline and then comes back
-> online, the overall cpu idle and iowait data in /proc/stat decreases.
-> This is wreaking havoc with their cpu usage calculations.
+> 
+> 
+> On 9/13/2020 4:22 AM, David Miller wrote:
+>> From: Luo Jiaxing <luojiaxing@huawei.com>
+>> Date: Sat, 12 Sep 2020 16:08:15 +0800
+>> 
+>>> We found a set but not used variable 'ring_cons' in mlx4_en_xmit(), it
+>>> will
+>>> cause a warning when build the kernel. And after checking the commit
+>>> record
+>>> of this function, we found that it was introduced by a previous patch.
+>>>
+>>> So, We delete this redundant assignment code.
+>>>
+>>> Fixes: 488a9b48e398 ("net/mlx4_en: Wake TX queues only when there's
+>>> enough room")
+>>>
+>>> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+>> Looks good, applied, thanks.
+>> 
+> 
+> Hi Luo,
+> 
+> I didn't get a chance to review it during the weekend.
 
-for a changelog it's pretty irrelevant whether a customer reported
-something or not.
+Tariq, what are you even commenting on?  Are you responding to this patch
+which removes a %100 obviously unused variable set, or on the commit
+mentioned in the Fixes: tag?
 
-Fact is that this happens and you fail to explain WHY it happens,
-i.e. because the values are cleared when the CPU goes down and therefore
-the accounting starts over from 0 when the CPU comes online again.
+> The ring_cons local variable is used in line 903:
+> https://elixir.bootlin.com/linux/v5.9-rc4/source/drivers/net/ethernet/mellanox/mlx4/en_tx.c#L903
 
-Describing this is much more useful than showing random numbers before
-and after.
+He is removing an assignment to ring_cons much later in the function
+and therefore has no effect on this line.
 
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -1375,13 +1375,22 @@ void tick_setup_sched_timer(void)
->  void tick_cancel_sched_timer(int cpu)
->  {
->  	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
-> +	ktime_t idle_sleeptime, iowait_sleeptime;
->  
->  # ifdef CONFIG_HIGH_RES_TIMERS
->  	if (ts->sched_timer.base)
->  		hrtimer_cancel(&ts->sched_timer);
->  # endif
->  
-> +	/* save off and restore the idle_sleeptime and the iowait_sleeptime
-> +	 * to avoid discontinuities and ensure that they are monotonically
-> +	 * increasing
-> +	 */
+> 1. Your patch causes a degradation to the case when MLX4_EN_PERF_STAT
+> is defined.
 
-  /*
-   * Please use sane multiline comment style and not the above
-   * abomination.
-   */
-
-Also please explain what this 'monotonically increasing' thing is
-about. Without consulting the changelog it's hard to figure out what
-that means.
-
-Comments are valuable but only when they make actually sense on
-their own. Something like the below perhaps?
-
-  /*
-   * Preserve idle and iowait sleep times accross a CPU offline/online
-   * sequence as they are accumulative.
-   */
-   
-Hmm?
-
-> +	idle_sleeptime = ts->idle_sleeptime;
-> +	iowait_sleeptime = ts->iowait_sleeptime;
->  	memset(ts, 0, sizeof(*ts));
-> +	ts->idle_sleeptime = idle_sleeptime;
-> +	ts->iowait_sleeptime = iowait_sleeptime;
->  }
-
-Thanks,
-
-        tglx
+This is not true, see above.
