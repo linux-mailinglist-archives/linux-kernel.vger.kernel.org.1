@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC8C2680E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1EE2680E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbgIMTCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 15:02:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60349 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725938AbgIMTCN (ORCPT
+        id S1725949AbgIMTGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 15:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbgIMTF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 15:02:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600023731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=F8whIUgMp1lvGf/GWEweUfRdukW6LYYiX1ca+Djnia4=;
-        b=Chlw4glww2F4QoIPR1LPFfxOi61YBDYtpg4L/Ny1+dUgf5mPJky+bb/ZmjufGF0tweO+NS
-        rO8fdPDitjnQL//zxE37vSF2yydFAoPU3tGk1CuvlYyLaQKlrrQXnZGfjojxubmEN0eiJE
-        Ub3xhlQhRr4KoeHl0QPfXb9+g/0grNc=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-_GvuoGE6O5aq6ri0mzRM3A-1; Sun, 13 Sep 2020 15:02:09 -0400
-X-MC-Unique: _GvuoGE6O5aq6ri0mzRM3A-1
-Received: by mail-qv1-f71.google.com with SMTP id w32so3686425qvw.8
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:02:09 -0700 (PDT)
+        Sun, 13 Sep 2020 15:05:56 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F05C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:05:56 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z9so9174932wmk.1
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+MxfKNTuc5VaN6NhuE64EHSS6797wnf2U/mP1kKdFwc=;
+        b=CAV3/VeHI9C7tBfKwJF+Xb1SxPkVApKxSnGc/3niqF3X3bY1MWyHsvU0kNq/2QSBgp
+         t+327+GaFZYInKdrgbiHXyfMOsEbE7wUArcxKlmjR/j6RxTXwO+yHRYmlrUNxMSVTwBq
+         jqqWIgecIWiGoUZUgh+IwFd7rOKc8rzmZT8fUglNTadL9dTkoqDeRVO6oQ+o+1bgi8n8
+         4ASsTBMh0cD3o94wikrmGlJQZ8WNq0nfXsD9K2vjZLsSEE4MVwF/7dn5AiUmJ5XeDwm7
+         tq1QkZU1vlxoRJzFntBehUNxK2kakEKBKpLyMkGZMY/0VtS4qtN8L6TlQCsnMErGfzps
+         E4xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=F8whIUgMp1lvGf/GWEweUfRdukW6LYYiX1ca+Djnia4=;
-        b=SJW3YGIvSJIj6c0ZB7L454KY2YRyisqwVh/CFALkYPTON/NsVjgM1dHczSBPecoqA4
-         yrbYugLoUcsQ3PUeKY5ZX81QtQeaehL1XZh9Q42jvXg1DBkd355QC5NDIrCgAAkIF1yY
-         kT8R2r2mUT16EPo6SF0DfHgVp8tl/jGp0n5Dk+EZOSfqrTfLugiIFcGLzbEcp8LbizRs
-         VdKJ7NIExSt6RCnFPRYUJizwdvhVAuYJWM/CljuY4WSvhGbeJFTK0a1fKuF9wrBaGeq1
-         OHByCeKorIUw8WgBG6dQYUjkBZPPof2N9yuMqnPSkJ4ohAdCO5e+DUrF2LBUB0dQM0HO
-         nD5A==
-X-Gm-Message-State: AOAM533iFDJsLBzKXS3CGChwM9u3tj6CZrOTbGX2H8rJtwIue2FI/M4P
-        HqPmpX0q9ym2qNJVwq1yYXBOJuyO5r8Y8DPNng28XYfSS0FkTO8rAIburbRyyBflJyBHN76Sviy
-        6Uh3WIk4H6hg82+hFJMq/OkL3
-X-Received: by 2002:a37:a712:: with SMTP id q18mr9291037qke.428.1600023729000;
-        Sun, 13 Sep 2020 12:02:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzl3SCpA4CYaZI45tebrp4s5fvkg4CmyqPUIZ9fKX8iY36eLoGjn6Cbp912F6ErRHj9/xwbEA==
-X-Received: by 2002:a37:a712:: with SMTP id q18mr9291014qke.428.1600023728751;
-        Sun, 13 Sep 2020 12:02:08 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id g19sm11583013qka.84.2020.09.13.12.02.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+MxfKNTuc5VaN6NhuE64EHSS6797wnf2U/mP1kKdFwc=;
+        b=G0rpCqtAxU8q/p6WHTbm7K/sexsjjWuhfGe6lPbiXXFNTymtmLDI6n8QHWkYFmruRp
+         k64pLUKkhV6jmpaVbws99xWMN2Y3WVY806jnUEiWFRYVhYZs+LtkbcUVpPrRa8z9XNjd
+         ax9ty2HPfc1DzZp7fdQNnDWc9o3KhJW29HIfxnHV2mnz8TFKLm2yoioLh6OvSJ9HZa8C
+         6yLdfVCQ/5gJ3qhRc8lkCJjgurPyIKf8wo4fqEh0QMc6ah/dV7npPzv8XEztZfUgxbok
+         m/2eJa/EosSxNOOcazRL21AInwkoptRK9MA+hvXjDqivfj2YEgC0zfMalPbC9E7BmO83
+         vSUA==
+X-Gm-Message-State: AOAM531Yj6ve3IEYcUJp/TwWqbFO3IKFpvXBHBpcGbGTmKe5aP+5Jl9U
+        mevb08D/fWTLcGFFYuthgaU=
+X-Google-Smtp-Source: ABdhPJw1qSOkBvhUTpOm91xMXLIJT5GYg4KVIOwW74nnima+ZYwdCFfu7zwykBnPI6ITyj4C1uWi5g==
+X-Received: by 2002:a1c:e904:: with SMTP id q4mr9287528wmc.151.1600023953846;
+        Sun, 13 Sep 2020 12:05:53 -0700 (PDT)
+Received: from localhost.localdomain (188.147.111.252.nat.umts.dynamic.t-mobile.pl. [188.147.111.252])
+        by smtp.gmail.com with ESMTPSA id j14sm17326955wrr.66.2020.09.13.12.05.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 12:02:08 -0700 (PDT)
-From:   trix@redhat.com
-To:     ibm-acpi@hmh.eng.br, dvhart@infradead.org, andy@infradead.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        len.brown@intel.com
-Cc:     ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
-Subject: [PATCH] platform/x86: thinkpad_acpi: initialize tp_nvram_state variable
-Date:   Sun, 13 Sep 2020 12:02:03 -0700
-Message-Id: <20200913190203.22238-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Sun, 13 Sep 2020 12:05:53 -0700 (PDT)
+From:   mateusznosek0@gmail.com
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
+Subject: [PATCH] mm/compaction.c: micro-optimization remove unnecessary branch
+Date:   Sun, 13 Sep 2020 21:04:48 +0200
+Message-Id: <20200913190448.28649-1-mateusznosek0@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Mateusz Nosek <mateusznosek0@gmail.com>
 
-clang static analysis flags this represenative problem
-thinkpad_acpi.c:2523:7: warning: Branch condition evaluates
-  to a garbage value
-                if (!oldn->mute ||
-                    ^~~~~~~~~~~
+The same code can work both for 'zone->compact_considered > defer_limit'
+and 'zone->compact_considered >= defer_limit'. In the latter there is one
+branch less which is more effective considering performance.
 
-In hotkey_kthread() mute is conditionally set by hotkey_read_nvram()
-but unconditionally checked by hotkey_compare_and_issue_event().
-So the tp_nvram_state variable s[2] needs to be initialized.
-
-Fixes: 01e88f25985d ("ACPI: thinkpad-acpi: add CMOS NVRAM polling for hot keys (v9)")
-Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
 ---
- drivers/platform/x86/thinkpad_acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/compaction.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 47925c319d7b..24da8b6872f2 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -2573,7 +2573,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
-  */
- static int hotkey_kthread(void *data)
- {
--	struct tp_nvram_state s[2];
-+	struct tp_nvram_state s[2] = { 0 };
- 	u32 poll_mask, event_mask;
- 	unsigned int si, so;
- 	unsigned long t;
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 176dcded298e..6c63844fc061 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -180,11 +180,10 @@ bool compaction_deferred(struct zone *zone, int order)
+ 		return false;
+ 
+ 	/* Avoid possible overflow */
+-	if (++zone->compact_considered > defer_limit)
++	if (++zone->compact_considered >= defer_limit) {
+ 		zone->compact_considered = defer_limit;
+-
+-	if (zone->compact_considered >= defer_limit)
+ 		return false;
++	}
+ 
+ 	trace_mm_compaction_deferred(zone, order);
+ 
 -- 
-2.18.1
+2.20.1
 
