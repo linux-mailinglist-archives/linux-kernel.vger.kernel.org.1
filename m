@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7688268059
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 18:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2642E268070
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 19:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725965AbgIMQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 12:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgIMQ4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 12:56:07 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1383C06174A;
-        Sun, 13 Sep 2020 09:56:06 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u4so16524738ljd.10;
-        Sun, 13 Sep 2020 09:56:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L0eLqlKO93Q0IXg+okhebgrwXe2Z20iX+sKZ/ZoSewk=;
-        b=S9bBAsVm9Yg8f6RgCk7L0vCuD1Sotan68S1WXkbszzUcrwT9ALGdPhkB3twNnkKLfr
-         g+Lf2n3/bRSMI2Hj0lYCtwYcfA61yqqpLe5CwHjul8xFM8wuYCL0v3pTsCex6XgvRlLD
-         DaknPzEn5EKCMbQOxb0sqNyxvACYXaMZK9m7e8VG5/39kfQ20/YPSfFAuptmzBXdAA5J
-         4LSEjPrDcC596xD/BJRHFn/yPwoVxOUcW0Ptay59b51tikRBtdfR8csE4zqwC3x+9q+C
-         c9c8CX0zHGGRmHfN/Zjjr+OmZ+Jojs4WKf0F+lXnrHDMhOQfD+6P4MIfz7KsH5kCk31p
-         tD7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L0eLqlKO93Q0IXg+okhebgrwXe2Z20iX+sKZ/ZoSewk=;
-        b=toQW/eUL091JpZY0BDWGzeC7elOP5f9xiWyI51bCdRrs3YLCIgznXIS4tuuBV206c4
-         K0dAZxwjvlZa6aZ+RsVoH36/Cn27D0pxk0hae0W1hfFkRi14jxI++n/yH7klTj/NpWHO
-         ba1LCigiO7sUkZgW4Yf5lrHCbDBi1BPe8WSFGScuGjvliaK7hULHJpqq1fdL/6HnuSzS
-         skrjF8rPVrtw86p6Bic3Epir//ZzwJSXGtTV1swtyQ1qg6PO+DaREJFB1Mqcq5IAtb+r
-         EJut2MYARsR45fEq6kkf6GkrF6bYDKOH9TYMEZM7RnQdP9Kpz8eFnMcsbb5arw93hO5w
-         XU8g==
-X-Gm-Message-State: AOAM530/m9kTF8zXLY+k0sa6e7XA7mAUUOg8b5f5cpxFkFsZLyMHMz5t
-        iI6VnCIoCUd4kIUqAEvUbc6FalJ/4KI=
-X-Google-Smtp-Source: ABdhPJz8q9e2x2Z6ZaqegYGVuWB5M0wfkwLWL4Set1izjm4v2if6gZcAhAZFSQL/qsgXuINm0tgJXA==
-X-Received: by 2002:a2e:83c9:: with SMTP id s9mr3745106ljh.168.1600016165021;
-        Sun, 13 Sep 2020 09:56:05 -0700 (PDT)
-Received: from alpha (10.177.smarthome.spb.ru. [109.71.177.10])
-        by smtp.gmail.com with ESMTPSA id f2sm2512685lfd.103.2020.09.13.09.56.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 09:56:04 -0700 (PDT)
-Received: (nullmailer pid 419792 invoked by uid 1000);
-        Sun, 13 Sep 2020 17:00:37 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Yan-Hsuan Chuang <yhchuang@realtek.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] wireless: rtw88: rtw8822c: eliminate code duplication, use native swap() function
-Date:   Sun, 13 Sep 2020 19:59:59 +0300
-Message-Id: <20200913165958.419744-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1725946AbgIMRFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 13:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgIMRFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 13:05:31 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9EAD206C3;
+        Sun, 13 Sep 2020 17:05:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600016731;
+        bh=tWUeEoiDLzjse01SftgPJVDp93ipLBBoG2B3S+yl1U8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2FAaro49hjsaP7m2vX3EgVkgcKTLb9y0uIkvTb+MGolPLpqqKdjx5MLDEZyy42+mm
+         CyicsspgrkDkn3drLqyeRVdUWCGILOSri3JgPVIFGHOANLExFjjGdOQRenUAfQxaqk
+         a94tgzmpTTX983YcdKia3VvLQElJI9yY+/k3Zj1w=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHVRQ-00BTQE-TL; Sun, 13 Sep 2020 18:05:29 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvmarm@lists.cs.columbia.edu,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     will@kernel.org, jason@lakedaemon.net, tglx@linutronix.de,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v3 0/2] irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ == 0
+Date:   Sun, 13 Sep 2020 18:05:15 +0100
+Message-Id: <160001658182.6915.9030793517863303185.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200912153707.667731-1-alexandru.elisei@arm.com>
+References: <20200912153707.667731-1-alexandru.elisei@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kvmarm@lists.cs.columbia.edu, alexandru.elisei@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, will@kernel.org, jason@lakedaemon.net, tglx@linutronix.de, catalin.marinas@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-swap_u32() duplicate native swap(), so replace swap_u32() with swap().
+On Sat, 12 Sep 2020 16:37:05 +0100, Alexandru Elisei wrote:
+> Trusted Firmware-A's default interrupt routing model is to clear
+> SCR_EL3.FIQ, which is the only case that GICv3 doesn't support. This series
+> tries to fix that by detecting it at runtime and using a different priority
+> value for ICC_PMR_EL1 when masking regular interrupts. As a result, we will
+> be able to support pseudo-NMIs on all combinations of GIC security states
+> and firmware configurations.
+> 
+> [...]
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
- drivers/net/wireless/realtek/rtw88/rtw8822c.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+Applied to irq/irqchip-next, thanks!
 
-diff --git a/drivers/net/wireless/realtek/rtw88/rtw8822c.c b/drivers/net/wireless/realtek/rtw88/rtw8822c.c
-index 426808413baa..e196d7939025 100644
---- a/drivers/net/wireless/realtek/rtw88/rtw8822c.c
-+++ b/drivers/net/wireless/realtek/rtw88/rtw8822c.c
-@@ -154,25 +154,16 @@ static void rtw8822c_rf_minmax_cmp(struct rtw_dev *rtwdev, u32 value,
- 	}
- }
- 
--static void swap_u32(u32 *v1, u32 *v2)
--{
--	u32 tmp;
--
--	tmp = *v1;
--	*v1 = *v2;
--	*v2 = tmp;
--}
--
- static void __rtw8822c_dac_iq_sort(struct rtw_dev *rtwdev, u32 *v1, u32 *v2)
- {
- 	if (*v1 >= 0x200 && *v2 >= 0x200) {
- 		if (*v1 > *v2)
--			swap_u32(v1, v2);
-+			swap(*v1, *v2);
- 	} else if (*v1 < 0x200 && *v2 < 0x200) {
- 		if (*v1 > *v2)
--			swap_u32(v1, v2);
-+			swap(*v1, *v2);
- 	} else if (*v1 < 0x200 && *v2 >= 0x200) {
--		swap_u32(v1, v2);
-+		swap(*v1, *v2);
- 	}
- }
- 
+[1/2] irqchip/gic-v3: Spell out when pseudo-NMIs are enabled
+      commit: 4e594ad1068ea1db359d6161f580f03edecf6cb0
+[2/2] irqchip/gic-v3: Support pseudo-NMIs when SCR_EL3.FIQ == 0
+      commit: 336780590990efa69596884114cad3f517b6333b
+
+Cheers,
+
+	M.
 -- 
-2.26.2
+Without deviation from the norm, progress is not possible.
+
 
