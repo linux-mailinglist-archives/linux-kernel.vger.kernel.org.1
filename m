@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA0D267F5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 13:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB4F267F5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 13:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725954AbgIMLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 07:47:33 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:35703 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbgIMLrH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 07:47:07 -0400
-Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MKt3r-1jwsPr2pu1-00LCiW; Sun, 13 Sep 2020 13:47:02 +0200
-Received: by mail-qk1-f179.google.com with SMTP id d20so14326539qka.5;
-        Sun, 13 Sep 2020 04:47:02 -0700 (PDT)
-X-Gm-Message-State: AOAM530Tgy9LzzwR1sraIzeWLKw3Yl4ijSfioPe/KzC2V11xZhyUsarD
-        DZqoJO0O0XCRzcMQ/BlfJYRk5yb8ofjEQ5gMXho=
-X-Google-Smtp-Source: ABdhPJxE1gLkULR9mt3IFGX3UpiQsPfyt43rxUrCYfTZIHEtuZ7BwGOLTbMeYWmx4iitP5zm0y1kK7RzMFUmDs53cZw=
-X-Received: by 2002:a37:5d8:: with SMTP id 207mr8869223qkf.352.1599997621438;
- Sun, 13 Sep 2020 04:47:01 -0700 (PDT)
+        id S1725963AbgIMLtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 07:49:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgIMLtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 07:49:07 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35C002158C;
+        Sun, 13 Sep 2020 11:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599997746;
+        bh=nNNZtKQ9vNpyp0AU2mlHeeJpLKdX3ZCosPfSE/RvRU8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dIEYq1U0ypah+NkLQx6/szK3jNn/P2s5pW8bE/k+RYZmRvX5s4Y+3fpc0Wq5nCEna
+         Ae4d/YEh7AX6GiKlRk9vB5oAno4HWt2fv5+SuQyi8gYgEY9Y5xUw6VfCoUtYUgINuH
+         qJpylynfpOVa6A78zqv2iz+JLb7gNgF/g0+mc6RQ=
+Date:   Sun, 13 Sep 2020 13:49:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Using a pointer and kzalloc in place of a struct directly
+Message-ID: <20200913114908.GA929395@kroah.com>
+References: <000000000000c82fe505aef233c6@google.com>
+ <20200912113804.6465-1-anant.thazhemadam@gmail.com>
+ <20200912114706.GA171774@kroah.com>
+ <09477eb1-bbeb-74e8-eba9-d72cce6104db@gmail.com>
+ <20200912145525.GA769913@kroah.com>
+ <45d9f933-a5c8-ddbd-c014-2bdd5d911e13@gmail.com>
 MIME-Version: 1.0
-References: <20200908213715.3553098-1-arnd@arndb.de> <20200908213715.3553098-3-arnd@arndb.de>
- <20200912074757.GA6688@infradead.org> <CAK8P3a363DxgZnN9x4oNL7W4__kyG1U_34=7Hpqhpc-obAvjWw@mail.gmail.com>
- <20200913065051.GA17932@infradead.org>
-In-Reply-To: <20200913065051.GA17932@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 13 Sep 2020 13:46:45 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3W1EYts=2uL-6kTWwcgBeigLdv-W4mnxBd+En2ZFReLA@mail.gmail.com>
-Message-ID: <CAK8P3a3W1EYts=2uL-6kTWwcgBeigLdv-W4mnxBd+En2ZFReLA@mail.gmail.com>
-Subject: Re: compat_alloc_user_space removal, was Re: [PATCH 3/3] scsi:
- megaraid_sas: simplify compat_ioctl handling
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Anand Lodnoor <anand.lodnoor@broadcom.com>,
-        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
-        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:g+QV2kn+pkrs2ixKHEQ8cZFehVFfFn7YBxb/gT9JxeleY+ZTK4+
- tNP6Qc8Yrb1APP6iNvfpzDx2s6LzjO84vnh3P5qcmhDixyMXn51gakFgNp3+5jTBpfrt37b
- MxbPfza9YF1BtNdFbN0infzA0siupYmNg2Q53ZhG6O3z2g33IYhSygHcFwifs3brNbAtRH7
- n8/g68cfGshoAcrJulVlw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:j+sDjkSteLc=:VlpxX5B7Un0RBBWmU0ae4V
- Kb5bH4zyufTCsOf0nb13v8BjNc6pIr4nqYuVXzLvAcuc6vZ1+TgXkZulFBCowmBpfq4dzphv+
- r5mcMHCWFl4vKMBNwo193/DOqnLqX+RzuvFpVPhl0NIfmRws0fBC4xwVBDHh3ZlwEY6ZmWolR
- EmxkWOx8HTnuyPsDU4whnKVYGynK0yOju9/cRuT9e3i7Gjg5ShDaApmAJjjrmSydwWOBD/ogu
- gjnM/g94dcPQz724yXnr+QIiqL5Ou1MDn218GxDjcPx5N1e8TNjwfYlQGb+giHwZwE+dSel1s
- yK8vNoOwWcjDbjKtPW+l4a6gpRlLPxFNLiMMmnKAhW+GOstvBxd4oaL6OFVOJwMF0kw/ztR9a
- UJCOR0mEplZQcYjFIQNnGL0JEOk6UcdVDLzHkL6qrw7Tgt4blwdCRdwDSK0+6QPdcpZ0jWnkn
- 01UaxNCRA/8Ifmukg7wye0Xa057rKPugKW4pJRrpl4QtfASz1X2/pDpSTR6mR6oLS1a2qG1dM
- /S4bAQV1xu61VzaKTp1jV22hDh9qp+gt3l0sgeqwRxy4yRLWmZ72ULUJ/iVWFHqLtRpYy28AH
- A/BoeeRq3HAq2gCZGXqkdIspHj23YwdDM6B9F+faW6MBKAIFqSU+BC7WydKq78Bl+2riUyzMF
- ZuBfK7BrrnmbuAq7laSqeEymh6ikljjoav7ZUvY3MtgSbm2KvvDdMm4VbIc2ZBII14iFcZrIN
- LxGRd4w8Qs1b9heBhNCodicYM2JX38xGmVVYquqUoLPs08IMVtCQJKJxE/1/iBTkLQAWUEvSN
- +Zq4tKxGJkC4m++DeFcaxnsyqYakX0PrtBV9XO9pvB3614qzp2BM9KUGjzrwzLIRVZh+1yo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45d9f933-a5c8-ddbd-c014-2bdd5d911e13@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 8:50 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Sat, Sep 12, 2020 at 02:49:05PM +0200, Arnd Bergmann wrote:
-> > fs/quota/compat.c: dqblk = compat_alloc_user_space(sizeof(struct if_dqblk));
-> > fs/quota/compat.c: dqblk = compat_alloc_user_space(sizeof(struct if_dqblk));
-> > fs/quota/compat.c: fsqstat = compat_alloc_user_space(sizeof(struct
-> > fs_quota_stat));
->
-> I sent this out a while ago, an Al has it in a branch, but not in
-> linux-next:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/log/?h=work.quota-compat
-
-Nice! Aside from already being queued, your patch is also nicer than
-my version, and it makes it trivial to fix it for arm oabi as well by adding
-
-#ifdef CONFIG_OABI_COMPAT
-#define compat_need_64bit_alignment_fixup in_oabi_syscall
-#endif
-
-to arch/arm/include/asm/compat.h
-
-I had considered fixing that case for arch/arm as well but it ended up being
-harder to do in my version.
-
-> > drivers/staging/media/atomisp/pci/atomisp_compat_ioctl32.c: karg =
-> > compat_alloc_user_space(
+On Sun, Sep 13, 2020 at 01:32:43AM +0530, Anant Thazhemadam wrote:
+> On 12/09/20 8:25 pm, Greg KH wrote:
+> > On Sat, Sep 12, 2020 at 05:43:38PM +0530, Anant Thazhemadam wrote:
+> >> On 12/09/20 5:17 pm, Greg KH wrote:
+> >>> Note, your "To:" line seemed corrupted, and why not cc: the bpf mailing
+> >>> list as well?
+> >> Oh, I'm sorry about that. I pulled the emails of all the people to whom
+> >> this mail was sent off from the header in lkml mail, and just cc-ed
+> >> everyone.
+> >>
+> >>> You leaked memory :(
+> >>>
+> >>> Did you test this patch?  Where do you free this memory, I don't see
+> >>> that happening anywhere in this patch, did I miss it?
+> >> Yes, I did test this patch, which didn't seem to trigger any issues.
+> >> It surprised me so much, that I ended up sending it in, to have
+> >> it checked out.
+> > You might not have noticed the memory leak if you were not looking for
+> > it.
 > >
-> > Had a brief look but did not investigate further, it's complicated.
+> > How did you test this?
+> Ah, that must be it. I tested this using syzbot, which wouldn't have looked
+> for memory leaks, but only the issue that was reported. My apologies.
+> >> I wasn't sure where exactly the memory allocated here was
+> >> supposed to be freed (might be why the current implementation
+> >> isn't exactly using kzalloc). I forgot to mention it in the initial mail,
+> >> and I was hoping that someone would point me in the right direction
+> >> (if this approach was actually going to be considered, that is, which in
+> >> retrospect I now feel might not be the best thing)
+> > It has to be freed somewhere, you wrote the patch  :)
 > >
-> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
-> > compat_alloc_user_space(sizeof(*args));
-> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
-> > compat_alloc_user_space(sizeof(*args) +
-> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
-> > compat_alloc_user_space(sizeof(*args));
-> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
-> > compat_alloc_user_space(sizeof(*args) +
-> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
-> > compat_alloc_user_space(sizeof(*args));
-> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
-> > compat_alloc_user_space(sizeof(*args));
-> >
-> > Should not be too hard, but I have not looked in detail.
->
-> We do not have to care about staging drivers when removing interfaces.
-> But to be nice you probably ping the maintainers to see what they can
-> do.
+> > But back to the original question here, why do you feel this change is
+> > needed?  What does this do better/faster/more correct than the code that
+> > is currently there?  Unless you can provide that, the change should not
+> > be needed, right?
+> I was initially trying to see if allocating memory would be an appropriate
+> heuristic in trying to get a better sense of the bug and crash report, and
+> at that moment, that was my goal, and figured that I'd deal with rest
+> (such as freeing the memory) later on, if this was a something that could work.
+> 
+> I was surprised when the patch (although it caused a memory leak), seemed
+> to pass the test for the bug, without triggering any issues; since this patch
+> basically only allocates memory as compared to locally declaring variables.
+> 
+> I wanted some input or explanation, about how is it that doing this no longer
+> triggers the bug?
 
-Right. As both of these are architecture specific, I also considered moving
-the compat_alloc_user_space() and copy_in_user() definitions for the
-respective architectures into those drivers and adding the removal
-into the TODO files.
+That really is up to you to work out, sorry.
 
-> I also have the mount side handles in this branch which I need to rebase
-> and submit:
->
-> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/mount-cleanups
+Look at what the syzbot is testing, and look at the code change to see
+the difference, and you should notice what memory is now being cleared
+that previously was not.
 
-I think I had done an almost identical patch for sys_mount() last year
-and forgotten about it. Again, yours is slightly better ;-)
+good luck!
 
-       Arnd
+greg k-h
