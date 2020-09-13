@@ -2,62 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2E8267D37
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 04:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0771267D3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 04:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgIMCBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 12 Sep 2020 22:01:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbgIMCA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 12 Sep 2020 22:00:58 -0400
-Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4999A20663;
-        Sun, 13 Sep 2020 02:00:58 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.198-rt96
-Date:   Sun, 13 Sep 2020 02:00:01 -0000
-Message-ID: <159996240150.899875.7800639859078744755@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        id S1725922AbgIMCZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 12 Sep 2020 22:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgIMCZg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 12 Sep 2020 22:25:36 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0C3C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 19:25:34 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id c13so13794854oiy.6
+        for <linux-kernel@vger.kernel.org>; Sat, 12 Sep 2020 19:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p/7BbZO4jP2tfZZY7Neooz0uWfhCr96mkbyx0AZ9AMM=;
+        b=R6EDGGBdM37/qbjNhqIeZ+MasGFt17PBkUrJz08abnUq0UXhYMWyPHOW2fbaVoWP0K
+         h3Rpjidn432/Mgs50C6EgN+GU6XIwDDOaWvUu2aAhqOCq15JYxAJy3m94TvuapNNnHRQ
+         c/HbQq1krrfD/U6U1khIUFhV1W4dXMiZAhKJhy5Pc/jGiKA59cSD6/HaE/vA4Pf/pkz5
+         iSpadrPw5WSAXGWXILI0w6vI3Pvr/BNRsyCyIrr/ouOtWcMieffn8VVz7BCPonfuLLiI
+         a8R9Tb68u7EQjK+3fwZruT/LoGGhc1fdjTOCv/JaRmB6M4g1alGUnAiwp8qAoEni7Rz2
+         CETA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p/7BbZO4jP2tfZZY7Neooz0uWfhCr96mkbyx0AZ9AMM=;
+        b=SUJ+cmoCfnPJBct5UMd5B3gKBSx7myzrr4iBqmNKWXYHdbPGxYh9x1c7oTuizV0fle
+         QabHmuLhhbNVxWDmWV/APZkqi/KKcsUV0tWFhoYG3+uf+qkILEBwtY+rHhL8EkWN05eC
+         3S41qAur3a7FKHdMDdjoDKcw5ZH3uVz+wM8CM2w8dkoX2QGotVRoW4WrMK68Q9lZ7XJN
+         2S/XcRIHjx/aax8zDkaL27eW5MLyOvVqxxf24Dyz/p0frd9OB9cs78WDWyIHemcLYzND
+         /A86SRCGGqU/DCyffzkgLg+e41g3RnQrmuppfB/k8jKVz5g77gvfVG6cwjL7dhTvtGVD
+         /yxg==
+X-Gm-Message-State: AOAM530D7q4uhzkH11LPDp2JUqlScAbnF1PzRODst7EUA9YG2ebZPYPt
+        sS7y74gxdFwHdFOak4riei3shyfKMmMS0+R8
+X-Google-Smtp-Source: ABdhPJyE6OEQZXMizfznLM/APL/Le/LALLu/t3wKay0N627tTEC+YOshL63FZMZUbCyfBchzqIkxOQ==
+X-Received: by 2002:aca:5752:: with SMTP id l79mr4975154oib.86.1599963933759;
+        Sat, 12 Sep 2020 19:25:33 -0700 (PDT)
+Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
+        by smtp.gmail.com with ESMTPSA id i5sm136842otj.19.2020.09.12.19.25.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Sep 2020 19:25:32 -0700 (PDT)
+Date:   Sat, 12 Sep 2020 21:25:30 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
+        subashab@codeaurora.org, cpratapa@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 3/7] net: ipa: verify reference flag values
+Message-ID: <20200913022530.GL3715@yoga>
+References: <20200912004532.1386-1-elder@linaro.org>
+ <20200912004532.1386-4-elder@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912004532.1386-4-elder@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Fri 11 Sep 19:45 CDT 2020, Alex Elder wrote:
 
-I'm pleased to announce the 4.14.198-rt96 stable release.
+> We take a single IPA clock reference to keep the clock running until
+> we get a system suspend operation, and maintain a flag indicating
+> whether that reference has been taken.  When a suspend request
+> arrives, we drop that reference and clear the flag.
+> 
+> In most places we simply set or clear the extra-reference flag.
+> Instead--primarily to catch coding errors--test the previous value
+> of the flag and report an error in the event the previous value is
+> unexpected.  And if the clock reference is already taken, don't take
+> another.
+> 
+> In a couple of cases it's pretty clear atomic access is not
+> necessary and an error should never be reported.  Report these
+> anyway, conveying our surprise with an added exclamation point.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+> v2: Updated to operate on a bitmap bit rather than an atomic_t.
+> 
+>  drivers/net/ipa/ipa_main.c | 23 ++++++++++++++++-------
+>  1 file changed, 16 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+> index 409375b96eb8f..cfdf60ded86ca 100644
+> --- a/drivers/net/ipa/ipa_main.c
+> +++ b/drivers/net/ipa/ipa_main.c
+> @@ -83,6 +83,7 @@ static void ipa_suspend_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
+>  	/* Take a a single clock reference to prevent suspend.  All
+>  	 * endpoints will be resumed as a result.  This reference will
+>  	 * be dropped when we get a power management suspend request.
+> +	 * The first call activates the clock; ignore any others.
+>  	 */
+>  	if (!test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+>  		ipa_clock_get(ipa);
+> @@ -502,14 +503,17 @@ static void ipa_resource_deconfig(struct ipa *ipa)
+>   */
+>  static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
+>  {
+> +	struct device *dev = &ipa->pdev->dev;
+>  	int ret;
+>  
+>  	/* Get a clock reference to allow initialization.  This reference
+>  	 * is held after initialization completes, and won't get dropped
+>  	 * unless/until a system suspend request arrives.
+>  	 */
+> -	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+> -	ipa_clock_get(ipa);
+> +	if (!__test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+> +		ipa_clock_get(ipa);
+> +	else
+> +		dev_err(dev, "suspend clock reference already taken!\n");
+>  
+>  	ipa_hardware_config(ipa);
+>  
+> @@ -544,7 +548,8 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
+>  err_hardware_deconfig:
+>  	ipa_hardware_deconfig(ipa);
+>  	ipa_clock_put(ipa);
+> -	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+> +	if (!__test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+> +		dev_err(dev, "suspend clock reference already dropped!\n");
+>  
+>  	return ret;
+>  }
+> @@ -562,7 +567,8 @@ static void ipa_deconfig(struct ipa *ipa)
+>  	ipa_endpoint_deconfig(ipa);
+>  	ipa_hardware_deconfig(ipa);
+>  	ipa_clock_put(ipa);
+> -	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+> +	if (!test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
 
-You can get this release via the git tree at:
+Doesn't this imply that we ran with the clocks disabled, which
+presumably would have nasty side effects?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+This seems like something that is worthy of more than just a simple
+printout - which no one will actually read.  If you instead use a
+WARN_ON() to highlight this at least some of the test environments out
+there will pick it up and report it...
 
-  branch: v4.14-rt
-  Head SHA1: 8c4828cbd4220fc1c97c0db534fce850b86aa8d4
+Regards,
+Bjorn
 
-Or to build 4.14.198-rt96 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.198.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.198-rt96.patch.xz
-
-
-You can also build from 4.14.197-rt95 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.197-rt95-rt96.patch.xz
-
-Enjoy!
-Clark
+> +		dev_err(&ipa->pdev->dev, "no suspend clock reference\n");
+>  }
+>  
+>  static int ipa_firmware_load(struct device *dev)
+> @@ -913,7 +919,8 @@ static int ipa_suspend(struct device *dev)
+>  	struct ipa *ipa = dev_get_drvdata(dev);
+>  
+>  	ipa_clock_put(ipa);
+> -	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+> +	if (!test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+> +		dev_err(dev, "suspend: missing suspend clock reference\n");
+>  
+>  	return 0;
+>  }
+> @@ -933,8 +940,10 @@ static int ipa_resume(struct device *dev)
+>  	/* This clock reference will keep the IPA out of suspend
+>  	 * until we get a power management suspend request.
+>  	 */
+> -	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+> -	ipa_clock_get(ipa);
+> +	if (!test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+> +		ipa_clock_get(ipa);
+> +	else
+> +		dev_err(dev, "resume: duplicate suspend clock reference\n");
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.20.1
+> 
