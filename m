@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3813267FDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 17:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C93F267FE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 17:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725958AbgIMPQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 11:16:16 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46785 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725938AbgIMPQJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 11:16:09 -0400
-X-UUID: 716c3fe6aa01478f8abaa068543f7d59-20200913
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=tLwz3eUexrO8VmtKUD5bwX6LfX6CNIxcQtdRTSWer2M=;
-        b=jGrWJuUPURVjpcGq8PB1gpwmZGtRNXYjTMzpcIaEfwE9PUn7D38dAWaaLdGYJxc62mSMl7SdFTplv0fO7TxyKp+DvJf/ptD0ygQUzbAGL4SKOxfF/2D4nxOb9w1IN15S4rhiZAgCdmkbd5ZKbdJYYvNhb4eCsJoc6tYDaVnELUE=;
-X-UUID: 716c3fe6aa01478f8abaa068543f7d59-20200913
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <yingjoe.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 131063010; Sun, 13 Sep 2020 23:15:58 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 13 Sep 2020 23:15:54 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 13 Sep 2020 23:15:54 +0800
-Message-ID: <1600010156.3039.5.camel@mtksdaap41>
-Subject: Re: [PATCH] i2c: mediatek: Fix generic definitions for bus
- frequencies
-From:   Yingjoe Chen <yingjoe.chen@mediatek.com>
-To:     <qii.wang@mediatek.com>
-CC:     <wsa@the-dreams.de>, <devicetree@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>
-Date:   Sun, 13 Sep 2020 23:15:56 +0800
-In-Reply-To: <1599890246-21191-1-git-send-email-qii.wang@mediatek.com>
-References: <1599890246-21191-1-git-send-email-qii.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1725958AbgIMPUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 11:20:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725937AbgIMPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 11:20:33 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AE59208DB;
+        Sun, 13 Sep 2020 15:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600010433;
+        bh=T2fiCD9K5tcTC/HBSwbcVL2Os+dbSnIAFdJuYKdQc/4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CKDu1ZVTZX81pwq2/mzTP6+QkoGj7wqWojZAx7zMi8n52vmyWKSZAq2xX6gce67uk
+         bZ1ddqz+/Ez4Mx8M9r6EAsLfWaCwFK7iZq+t5SBEp43s9BuSorr8avTs1EHkKvdl8n
+         6Z1yE6WtsB0sT902TGIwZ5tcAUEKdLPoQMEyz4N8=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHTnr-00BS8M-Rf; Sun, 13 Sep 2020 16:20:32 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Huacai Chen <chenhc@lemote.com>,
+        Thomas Gleixner <tglx@linutronix.de>, lokeshvutla@ti.com,
+        t-kristo@ti.com, nm@ti.com, ssantosh@kernel.org,
+        YueHaibing <yuehaibing@huawei.com>
+Cc:     Huacai Chen <chenhuacai@gmail.com>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH -next] irqchip/ti-sci-inta: Fix unsigned comparison to zero
+Date:   Sun, 13 Sep 2020 16:20:26 +0100
+Message-Id: <160001025578.3778.157174308629076180.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200826035430.21060-1-yuehaibing@huawei.com>
+References: <20200826035430.21060-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tsbogend@alpha.franken.de, jason@lakedaemon.net, chenhc@lemote.com, tglx@linutronix.de, lokeshvutla@ti.com, t-kristo@ti.com, nm@ti.com, ssantosh@kernel.org, yuehaibing@huawei.com, chenhuacai@gmail.com, zhangfx@lemote.com, jiaxun.yang@flygoat.com, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIwLTA5LTEyIGF0IDEzOjU3ICswODAwLCBxaWkud2FuZ0BtZWRpYXRlay5jb20g
-d3JvdGU6DQo+IEZyb206IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRlay5jb20+DQo+IA0KPiBU
-aGUgbWFzdGVyIGNvZGUgbmVlZHMgdG8gYmVpbmcgc2VudCB3aGVuIHRoZSBzcGVlZCBpcyBtb3Jl
-IHRoYW4NCj4gSTJDX01BWF9GQVNUX01PREVfUExVU19GUkVRIGluc3RlYWQgb2YNCj4gSTJDX01B
-WF9ISUdIX1NQRUVEX01PREVfRlJFUS4gRml4IGl0Lg0KDQpUaGlzIHdhcyBpbnRyb2R1Y2VkIGJ5
-ICJpMmM6IGRyaXZlcnM6IFVzZSBnZW5lcmljIGRlZmluaXRpb25zIGZvciBidXMNCmZyZXF1ZW5j
-aWVzIi4gWW91IHNob3VsZCBoYXZlDQpGaXhlczogOTAyMjRlNjQ2OGUxICgiaTJjOiBkcml2ZXJz
-OiBVc2UgZ2VuZXJpYyBkZWZpbml0aW9ucyBmb3IgYnVzDQpmcmVxdWVuY2llcyIpDQoNCllvdSBj
-YW4gaGF2ZSBteSByZXZpZXdlZCBieSBhZnRlciB5b3UgYWRkIGZpeGVzLg0KUmV2aWV3ZWQtYnk6
-IFlpbmdqb2UgQ2hlbiA8eWluZ2pvZS5jaGVuQG1lZGlhdGVrLmNvbT4NCg0KSm9lLkMNCg0KPiAN
-Cj4gU2lnbmVkLW9mZi1ieTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCj4gLS0t
-DQo+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jIHwgNiArKystLS0NCj4gIDEgZmls
-ZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyBiL2RyaXZlcnMvaTJjL2J1c3Nl
-cy9pMmMtbXQ2NXh4LmMNCj4gaW5kZXggZWZjMTQwNC4uMGNiZGZiZSAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiArKysgYi9kcml2ZXJzL2kyYy9idXNz
-ZXMvaTJjLW10NjV4eC5jDQo+IEBAIC02ODEsOCArNjgxLDggQEAgc3RhdGljIGludCBtdGtfaTJj
-X2NhbGN1bGF0ZV9zcGVlZChzdHJ1Y3QgbXRrX2kyYyAqaTJjLCB1bnNpZ25lZCBpbnQgY2xrX3Ny
-YywNCj4gIAl1bnNpZ25lZCBpbnQgY250X211bDsNCj4gIAlpbnQgcmV0ID0gLUVJTlZBTDsNCj4g
-IA0KPiAtCWlmICh0YXJnZXRfc3BlZWQgPiBJMkNfTUFYX0ZBU1RfTU9ERV9QTFVTX0ZSRVEpDQo+
-IC0JCXRhcmdldF9zcGVlZCA9IEkyQ19NQVhfRkFTVF9NT0RFX1BMVVNfRlJFUTsNCj4gKwlpZiAo
-dGFyZ2V0X3NwZWVkID4gSTJDX01BWF9ISUdIX1NQRUVEX01PREVfRlJFUSkNCj4gKwkJdGFyZ2V0
-X3NwZWVkID0gSTJDX01BWF9ISUdIX1NQRUVEX01PREVfRlJFUTsNCj4gIA0KPiAgCW1heF9zdGVw
-X2NudCA9IG10a19pMmNfbWF4X3N0ZXBfY250KHRhcmdldF9zcGVlZCk7DQo+ICAJYmFzZV9zdGVw
-X2NudCA9IG1heF9zdGVwX2NudDsNCj4gQEAgLTc1OSw3ICs3NTksNyBAQCBzdGF0aWMgaW50IG10
-a19pMmNfc2V0X3NwZWVkKHN0cnVjdCBtdGtfaTJjICppMmMsIHVuc2lnbmVkIGludCBwYXJlbnRf
-Y2xrKQ0KPiAgCWZvciAoY2xrX2RpdiA9IDE7IGNsa19kaXYgPD0gbWF4X2Nsa19kaXY7IGNsa19k
-aXYrKykgew0KPiAgCQljbGtfc3JjID0gcGFyZW50X2NsayAvIGNsa19kaXY7DQo+ICANCj4gLQkJ
-aWYgKHRhcmdldF9zcGVlZCA+IEkyQ19NQVhfRkFTVF9NT0RFX0ZSRVEpIHsNCj4gKwkJaWYgKHRh
-cmdldF9zcGVlZCA+IEkyQ19NQVhfRkFTVF9NT0RFX1BMVVNfRlJFUSkgew0KPiAgCQkJLyogU2V0
-IG1hc3RlciBjb2RlIHNwZWVkIHJlZ2lzdGVyICovDQo+ICAJCQlyZXQgPSBtdGtfaTJjX2NhbGN1
-bGF0ZV9zcGVlZChpMmMsIGNsa19zcmMsDQo+ICAJCQkJCQkgICAgICBJMkNfTUFYX0ZBU1RfTU9E
-RV9GUkVRLA0KDQo=
+On Wed, 26 Aug 2020 11:54:30 +0800, YueHaibing wrote:
+> ti_sci_inta_xlate_irq() return -ENOENT on fail, p_hwirq
+> should be int type.
+
+Applied to irq/irqchip-fixes-5.9, thanks!
+
+[1/1] irqchip/ti-sci-inta: Fix unsigned comparison to zero
+      commit: 4c9b1bfaa5039fee650f4de514a8e70ae976fc2f
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
 
