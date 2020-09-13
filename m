@@ -2,141 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B901C267DFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 07:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9390D267E02
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 07:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbgIMFM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 01:12:59 -0400
-Received: from mail-eopbgr30054.outbound.protection.outlook.com ([40.107.3.54]:13294
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        id S1725918AbgIMFVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 01:21:42 -0400
+Received: from mail-vi1eur05on2072.outbound.protection.outlook.com ([40.107.21.72]:29825
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725806AbgIMFM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 01:12:56 -0400
+        id S1725883AbgIMFVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 01:21:37 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IdpH1+OaRvwJklpUZtKAlsRGfX8h3MNuroUNVZJNc1o0VaQur3/aScwKCW1or/DbA/1KWzjqlZqd8JCW39jBV6EKLRfpN3ymKOupOvB+aXGsgpYpBjd1q6ZItZO07heAPoJkjzM/CESPMf6GuMqEZ/0sfSaCtBRLyrjdlfclMXk6WX9Ae8XceIlRaAyDrooCRRvSmv0PvESKQ9vAy+zYWXv0du/0/MQEWJjUYTBCKbpHxOej/ZZsfzkQk52nzsc/2fbBm0jr0SyCfbkVzrwV5Kf23SvZMKMw5cIiTs6sF10qf7Y6i+xdQ5jtFcDTKu4Wj6dCBXD3730zRXLz/UVvXg==
+ b=SMU/Q2m9YAdtuUZDq8II7tAfvnosXE33x639UvHGWdziBBjWbsoZT2DRyFjMkPZlYjYwDwgNbJ98N38GUWmhYcBhDURVSRVQvK/CA7NPOWvxp9vTxbTigSo0uSJ01hdBwIAsFm5AfkyJ002A409pYM35o3i3mcIq4fHf17VKDVBmIUPgCUwGt6nnz5Enrk5r0TtgswWbLXuTya2pHjWWWsf4bVIViTW0B00wZIxNlIbcHDmlMPh19LFQM1vqrgaZz61iBZYWow0kjuglAcgHW1cJiUG6W/rHlBNkOQI5t3alS9ZnuqPhwVhlZHzPUdi0MROTMJtYu6fidOoNLTjlEw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bkxSwcI9U/IDPsfKFKio31quZRSNfmrNK0O9hjMCh20=;
- b=mwxw9KjbSqvMn+C0h5NwqaRHqbwGEHgbc+ItV6gI3536NqmTEBHaLrlmiC2KA6b/1siPYddakKanNX2PtZYI7L0d4VgIF4vQa3pN7Eg2Db8ZlCgpd7LA+THhLgRqvPSvPmYVPLF9LXqVzvdX1XH+1erMWeaDminBVAAL6/6vw3YDeGc+IX0DflyVB+UAN4ZQHYJGf7n0Fu2JpyRfMVYftGNd+Nodd07Nku20GaMrX8T1eflkNxOi2Lk+g6iXtPhc+bC9BAVl81083FxLdWNQ146VXYJMb6WI8AmOd19R6JlcHwAt5ZxrU0ApwXRfSIXw3A/dr/cBVCIhlmI5IlFR4w==
+ bh=SPNEgKzdjydXXJBUb+T7dcwnQ1W/mTFGDZlR48x1/zA=;
+ b=a06ahJHYrCHfSFKDSHgcrtME8y/ckNRQWXdOgJLiP4CXASLShwDhP/VXMh+nrYsWFZFw2aS26BWMe/Q1TZxr2sssE0Okax+wZIaqB8NrY56wexxqvcbtP5XMpQBGthOfyKaX0Ix59KoPgvJ2KRIUSI0j982KZg8OsJJiFUFa95QXqoTSso5scH5V1AsR9GnDtQd60F9xpf8B3wibB98RtBeZKz72u1M7csx59wOUI7A6PHGHdNpEuXe5HbBdWPLvcuTvqRMpDFFXoqJAXcVRuBiDdj/gs43902KZanz7zyR3iq/lmoR+KM/LnYMCdWlx4gKhiBwXbJlwF4bJ5+xq8w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bkxSwcI9U/IDPsfKFKio31quZRSNfmrNK0O9hjMCh20=;
- b=szAd4W6PSZ5Br1h3L07HvqJKIaHsHwYrVEYfKyG7fvN/XNu7cLlrX7eZK757tMIsnve1Nl/+w6YFFyuL+wWITz0gCjuRq9ki4uxzJ/yq5Ruu+7/fpJPs28ETAeTPFaLGBlhDt7q2sjJ6xNdguM5kM2hRXr8P+rbVAoOfn9M0uQA=
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com (2603:10a6:20b:118::20)
- by AM6PR04MB4421.eurprd04.prod.outlook.com (2603:10a6:20b:21::20) with
+ bh=SPNEgKzdjydXXJBUb+T7dcwnQ1W/mTFGDZlR48x1/zA=;
+ b=Li+/N4qXEW5mGiepg185cEtjEoFYA7oZ17tfuRpHnIVUNPq5ITEoyf9Vi7lxOZzPcaJMTZmzM4a74WF4o8rohBT/9jZdlEJFNtr0duOPMiQG0lLfM+JfAAONLsNhX2pl7wiF/ULQTTPlKGmetSGYVO2Wj1ifGtlxVhomxl/I/Jk=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VE1PR04MB6702.eurprd04.prod.outlook.com (2603:10a6:803:123::13)
+ by VI1PR04MB4224.eurprd04.prod.outlook.com (2603:10a6:803:49::28) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Sun, 13 Sep
- 2020 05:12:52 +0000
-Received: from AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::1023:be8d:40c:efe1]) by AM7PR04MB7157.eurprd04.prod.outlook.com
- ([fe80::1023:be8d:40c:efe1%3]) with mapi id 15.20.3370.019; Sun, 13 Sep 2020
- 05:12:52 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Yuti Amonkar <yamonkar@cadence.com>,
-        Sanket Parmar <sparmar@cadence.com>
-Subject: RE: [PATCH 2/3] phy: cadence: salvo: Constify cdns_nxp_sequence_pair
-Thread-Topic: [PATCH 2/3] phy: cadence: salvo: Constify cdns_nxp_sequence_pair
-Thread-Index: AQHWiUYfwDwfM1ZGOUG7bkBOUjQ0SKlmBihg
-Date:   Sun, 13 Sep 2020 05:12:52 +0000
-Message-ID: <AM7PR04MB7157E52665722D732A4581808B220@AM7PR04MB7157.eurprd04.prod.outlook.com>
-References: <20200912204639.501669-1-rikard.falkeborn@gmail.com>
- <20200912204639.501669-3-rikard.falkeborn@gmail.com>
-In-Reply-To: <20200912204639.501669-3-rikard.falkeborn@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [92.121.68.129]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: eae21424-0363-402c-1d9e-08d857a3aab6
-x-ms-traffictypediagnostic: AM6PR04MB4421:
-x-microsoft-antispam-prvs: <AM6PR04MB44214B5E01145FE8704CBFE88B220@AM6PR04MB4421.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5Ga3refY2wOZS71I9vVVVdhRvfz4iJe9KOQWufyNyD4vUyx2qopWIA11oKSUO11xt3m4V00x7I93RyWML8tQoCNdEFzCGrUujd3qOq/OPQKnTWCbehi3krdCpMzaRkQUrpIemDYRFn8z0JrU56CsgX+ViRXPbDHFloLXriwOt08V1tbWSlBV2jOpO46B0FVJLjb1tkDI2Gfh1UWY5tPAiHu5LMAPpltLHPts17sJV4wx12RHUBpLn0Uo6FNzDxKEDKUfK8GH8TjpMnkej55qUYiQtxCVn4N7drdLH5bdsvwIAiPpUD0EYGRDvMaFE3ztfXH47fSrfo694tESYVqUDg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7157.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(8936002)(8676002)(110136005)(44832011)(186003)(86362001)(2906002)(83380400001)(71200400001)(5660300002)(478600001)(4326008)(33656002)(52536014)(316002)(54906003)(55016002)(26005)(66446008)(7696005)(64756008)(66946007)(9686003)(66476007)(76116006)(66556008)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ABXWIwpawqV6Pvd0Csuo4bLx5V5tHx083eXr3vMfYvzy+So5Hb/+byhe3xBTKTj1jFKYNuNX86tcLQKS8Lq4gY7HjeUMrQTEz6AL7buLvIl/uBM9JS/hbOBY8xIRjqbxkn+z/dPUTUC9W6G+UE2CeSpN3f2GreiyngUCaQz3s3/CcJKruznFYd6ckb2pbgpnvdho0fjfb8zcOwZFICqszFYoI3dCYjiU5HcvndG0C83nYtnCpNJ874hEvNwtP0zyJuP1huuwYVBjSHOTgxSbtupIDQGN1ILf2kh9ZxdiTRP2IwE19RvZ5k/vsULU9Biys0Z/hyhN8iK/l8PqXnMPwECU4U2/+fXC+CQqRtbHLlT6jN/nc1n5a+X4OPO5n0Yybz0pYeOnoPg4YZafX55HQi511oo7zBe5xrc47qpcW6zBumkv8maQ+/GyERnmbz9ZA4l5F3dEp4rp3dduiiQv+o7IB8b+ylSQn8s04DufZYi3hvXv3Wdjghm962L5c4QyoVonte/1gcJet0seaj6uF824Iy77F/+kFjFVuIJ3N/cE67tGNMS46YA9O0NYySkjn6ZeGk2UbzlYV1y49dmdlf7VGSS19D4inkft1/jxi3JWUk98yCK3UNh+0lpiKtTbhKNbADBrOoZEV/RmOQN3Pw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2020 05:21:32 +0000
+Received: from VE1PR04MB6702.eurprd04.prod.outlook.com
+ ([fe80::1dce:f6ac:a750:5ed0]) by VE1PR04MB6702.eurprd04.prod.outlook.com
+ ([fe80::1dce:f6ac:a750:5ed0%6]) with mapi id 15.20.3370.017; Sun, 13 Sep 2020
+ 05:21:32 +0000
+From:   Wasim Khan <wasim.khan@oss.nxp.com>
+To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, V.sethi@nxp.com
+Cc:     Wasim Khan <wasim.khan@nxp.com>
+Subject: [PATCH v2] arm64: dts: layerscape: Add label to pcie nodes
+Date:   Sun, 13 Sep 2020 10:51:16 +0530
+Message-Id: <1599974476-10617-1-git-send-email-wasim.khan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0244.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::28) To VE1PR04MB6702.eurprd04.prod.outlook.com
+ (2603:10a6:803:123::13)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03032.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR06CA0244.apcprd06.prod.outlook.com (2603:1096:4:ac::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.16 via Frontend Transport; Sun, 13 Sep 2020 05:21:29 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [14.142.151.118]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 30072c21-45c5-48aa-373c-08d857a4e007
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4224:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB422496005AAFC0771C0F2477D1220@VI1PR04MB4224.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aJFod3F7MdmxG3nmtWTpizPdF5qrbQqY1aB1Kk/ItahM5/KhoVVi8bGaprojdRArGVNTb1qzGKBSOSctMOc4sNgsXLC2NIKkxsCuj4MD51WkzegfIjTzMo/l+G2AQNOUu8gjbmhoYwFHq0SUmD7kBLk+swllnpRv+uFwc9SmM33vEjwk2JgPJ1zWfhhKDCbwXGfsZlWvl9gyyFGXkZVDE0vyh7QAjOzpmjSEhMB5IMlySz8ufUgRCzjr2Qw+Q8iHpVOXqJGUWNYQGdPFv6luVKI1BMgrtmiCe/Lx3eYrN/naf18LhEEVAQu4sNplxpO59hi+3NGzWnm6aP9w+weu/YybVyK5+deyiwPoEu4+PU//HSuymGR21nYvYAq/nMOc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6702.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39860400002)(376002)(346002)(6512007)(52116002)(316002)(55236004)(6486002)(8676002)(6666004)(4326008)(5660300002)(86362001)(1006002)(83380400001)(66946007)(66476007)(66556008)(8936002)(186003)(956004)(2616005)(16526019)(26005)(478600001)(2906002)(6506007)(44832011)(110426005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: cDNKEcCMA8aXn/w3bvixbJk0Gmw/7Q6Z+EwCyrE7SOkkWt76rDL9F4OpWBKOVFpmqLdlA4tA3MYuCnbPrg2Fz5pc9kUYeZQ7oRxPePwvcdNOVmj0N/xfbj0uvFS8OWWnejqT6WSvxXE2DZka/4ByEbZsKQT9uKZcJAhyDbv3wwsHeAvLzv1/9kawmyCraMIO67au/4MT9TAwKptORknMShtVIQOvhrV315zPafREOTWJxRIRxvUGOweAE0cDpidLb0cgssr+87z0+P1xOS8LdbeGw02InQGXYXzlsPiJBdb6+SqniweXdpQD4Kshh44ANBpyKCTgtAX4yepOiMLFZ/XkYXNV48KqTkoP6YvmRG40GUpxT5/1LvhLmslyDUaKHCeWdHzM6hja/9mqka0PBIryiX6O3qAmEacTAv1GZuM+uJTSVbINXmV+0u3MBoVIJF35UCmQON+oOJWfx9Aah5SCmBZyj5YtyIG09TmTCbGTQVvZGN3zMPsUto/OTEejQCAWbbkAKTK/HpRU3UFRbseLVEaRXZPpcAJiZdLiyicBywVG2EmyXkU2U8mR/Bq47tEWn4hhTqjCZAabYU8OavAllFawlZX7RgTWEMBMzY17V1zIF9M9nLaMAPyD5s34k/cqNEudpix8IblPfDEndQ==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30072c21-45c5-48aa-373c-08d857a4e007
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6702.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7157.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eae21424-0363-402c-1d9e-08d857a3aab6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2020 05:12:52.7765
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2020 05:21:32.0236
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NhhwmAzSUQdNE4lGdvm/jiYtrpekYIv76CPVmc67XAvc1a6I0pMPP5ibE0NnrMS9zYjyD+whNTcngTXk6Ratnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4421
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pDp5sVII0Qwiiv+hEjFoLpn5MzLHhCeQnFiRRkCtd30PAUvkc38OqH8dWTu6c9yR5NVmN4j3ZnAnh1t2R1PtjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4224
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
->=20
-> cdns_nxp_sequence_pair[] are never modified and can be made const to allo=
-w
-> the compiler to put them in read-only memory.
->=20
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+From: Wasim Khan <wasim.khan@nxp.com>
 
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Add label to pcie nodes so that they are easy to
+refer.
 
-Peter
-> ---
->  drivers/phy/cadence/phy-cadence-salvo.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/phy/cadence/phy-cadence-salvo.c
-> b/drivers/phy/cadence/phy-cadence-salvo.c
-> index 8c33d3215f2d..88e239adc3b8 100644
-> --- a/drivers/phy/cadence/phy-cadence-salvo.c
-> +++ b/drivers/phy/cadence/phy-cadence-salvo.c
-> @@ -97,7 +97,7 @@ struct cdns_reg_pairs {
->=20
->  struct cdns_salvo_data {
->  	u8 reg_offset_shift;
-> -	struct cdns_reg_pairs *init_sequence_val;
-> +	const struct cdns_reg_pairs *init_sequence_val;
->  	u8 init_sequence_length;
->  };
->=20
-> @@ -126,7 +126,7 @@ static void cdns_salvo_write(struct cdns_salvo_phy
-> *salvo_phy,
->   * Below bringup sequence pair are from Cadence PHY's User Guide
->   * and NXP platform tuning results.
->   */
-> -static struct cdns_reg_pairs cdns_nxp_sequence_pair[] =3D {
-> +static const struct cdns_reg_pairs cdns_nxp_sequence_pair[] =3D {
->  	{0x0830, PHY_PMA_CMN_CTRL1},
->  	{0x0010, TB_ADDR_CMN_DIAG_HSCLK_SEL},
->  	{0x00f0, TB_ADDR_CMN_PLL0_VCOCAL_INIT_TMR},
-> @@ -217,7 +217,7 @@ static int cdns_salvo_phy_init(struct phy *phy)
->  		return ret;
->=20
->  	for (i =3D 0; i < data->init_sequence_length; i++) {
-> -		struct cdns_reg_pairs *reg_pair =3D data->init_sequence_val + i;
-> +		const struct cdns_reg_pairs *reg_pair =3D data->init_sequence_val + i;
->=20
->  		cdns_salvo_write(salvo_phy, reg_pair->off, reg_pair->val);
->  	}
-> --
-> 2.28.0
+Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
+---
+Changes in v2:
+- clubbed separate patches in single patch
+
+ arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts |  2 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi       |  5 +++--
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi       |  6 +++---
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi       | 10 +++++-----
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi       | 16 ++++++++--------
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi       |  8 ++++----
+ arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi       | 12 ++++++------
+ 7 files changed, 30 insertions(+), 29 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts b/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts
+index 9927b09..242f4b0 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a-oxalis.dts
+@@ -87,7 +87,7 @@
+ 	status = "okay";
+ };
+ 
+-&pcie {
++&pcie1 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+index ff19ec4..6a2c091 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1012a.dtsi
+@@ -1,8 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+- * Device Tree Include file for Freescale Layerscape-1012A family SoC.
++ * Device Tree Include file for NXP Layerscape-1012A family SoC.
+  *
+  * Copyright 2016 Freescale Semiconductor, Inc.
++ * Copyright 2019-2020 NXP
+  *
+  */
+ 
+@@ -489,7 +490,7 @@
+ 			interrupts = <0 126 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
+-		pcie: pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,ls1012a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x40 0x00000000 0x0 0x00002000>; /* configuration space */
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 0efeb8f..55b6e72 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -2,7 +2,7 @@
+ /*
+  * Device Tree Include file for NXP Layerscape-1028A family SoC.
+  *
+- * Copyright 2018 NXP
++ * Copyright 2018-2020 NXP
+  *
+  * Harninder Rai <harninder.rai@nxp.com>
+  *
+@@ -553,7 +553,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,ls1028a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x80 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -580,7 +580,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3500000 {
++		pcie2: pcie@3500000 {
+ 			compatible = "fsl,ls1028a-pcie";
+ 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+ 			       0x88 0x00000000 0x0 0x00002000>; /* configuration space */
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+index 5c2e370..0464b8a 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+- * Device Tree Include file for Freescale Layerscape-1043A family SoC.
++ * Device Tree Include file for NXP Layerscape-1043A family SoC.
+  *
+  * Copyright 2014-2015 Freescale Semiconductor, Inc.
+- * Copyright 2018 NXP
++ * Copyright 2018, 2020 NXP
+  *
+  * Mingkai Hu <Mingkai.hu@freescale.com>
+  */
+@@ -814,7 +814,7 @@
+ 			interrupts = <0 160 0x4>;
+ 		};
+ 
+-		pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,ls1043a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x40 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -840,7 +840,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3500000 {
++		pcie2: pcie@3500000 {
+ 			compatible = "fsl,ls1043a-pcie";
+ 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+ 			       0x48 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -866,7 +866,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3600000 {
++		pcie3: pcie@3600000 {
+ 			compatible = "fsl,ls1043a-pcie";
+ 			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+ 			       0x50 0x00000000 0x0 0x00002000>; /* configuration space */
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+index 0246d97..1fa39ba 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+ /*
+- * Device Tree Include file for Freescale Layerscape-1046A family SoC.
++ * Device Tree Include file for NXP Layerscape-1046A family SoC.
+  *
+  * Copyright 2016 Freescale Semiconductor, Inc.
+- * Copyright 2018 NXP
++ * Copyright 2018, 2020 NXP
+  *
+  * Mingkai Hu <mingkai.hu@nxp.com>
+  */
+@@ -718,7 +718,7 @@
+ 				     <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>;
+ 		};
+ 
+-		pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,ls1046a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x40 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -744,7 +744,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie_ep@3400000 {
++		pcie_ep1: pcie_ep@3400000 {
+ 			compatible = "fsl,ls1046a-pcie-ep","fsl,ls-pcie-ep";
+ 			reg = <0x00 0x03400000 0x0 0x00100000
+ 				0x40 0x00000000 0x8 0x00000000>;
+@@ -754,7 +754,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3500000 {
++		pcie2: pcie@3500000 {
+ 			compatible = "fsl,ls1046a-pcie";
+ 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+ 			       0x48 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -780,7 +780,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie_ep@3500000 {
++		pcie_ep2: pcie_ep@3500000 {
+ 			compatible = "fsl,ls1046a-pcie-ep","fsl,ls-pcie-ep";
+ 			reg = <0x00 0x03500000 0x0 0x00100000
+ 				0x48 0x00000000 0x8 0x00000000>;
+@@ -790,7 +790,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3600000 {
++		pcie3: pcie@3600000 {
+ 			compatible = "fsl,ls1046a-pcie";
+ 			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+ 			       0x50 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -816,7 +816,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie_ep@3600000 {
++		pcie_ep3: pcie_ep@3600000 {
+ 			compatible = "fsl,ls1046a-pcie-ep", "fsl,ls-pcie-ep";
+ 			reg = <0x00 0x03600000 0x0 0x00100000
+ 				0x50 0x00000000 0x8 0x00000000>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 169f474..08c0125 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -2,7 +2,7 @@
+ /*
+  * Device Tree Include file for NXP Layerscape-1088A family SoC.
+  *
+- * Copyright 2017 NXP
++ * Copyright 2017-2020 NXP
+  *
+  * Harninder Rai <harninder.rai@nxp.com>
+  *
+@@ -473,7 +473,7 @@
+ 			};
+ 		};
+ 
+-		pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,ls1088a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x20 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -499,7 +499,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3500000 {
++		pcie2: pcie@3500000 {
+ 			compatible = "fsl,ls1088a-pcie";
+ 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+ 			       0x28 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -525,7 +525,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3600000 {
++		pcie3: pcie@3600000 {
+ 			compatible = "fsl,ls1088a-pcie";
+ 			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+ 			       0x30 0x00000000 0x0 0x00002000>; /* configuration space */
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index d247e42..83072da6 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -1011,7 +1011,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3400000 {
++		pcie1: pcie@3400000 {
+ 			compatible = "fsl,lx2160a-pcie";
+ 			reg = <0x00 0x03400000 0x0 0x00100000   /* controller registers */
+ 			       0x80 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -1039,7 +1039,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3500000 {
++		pcie2: pcie@3500000 {
+ 			compatible = "fsl,lx2160a-pcie";
+ 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+ 			       0x88 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -1067,7 +1067,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3600000 {
++		pcie3: pcie@3600000 {
+ 			compatible = "fsl,lx2160a-pcie";
+ 			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+ 			       0x90 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -1095,7 +1095,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3700000 {
++		pcie4: pcie@3700000 {
+ 			compatible = "fsl,lx2160a-pcie";
+ 			reg = <0x00 0x03700000 0x0 0x00100000   /* controller registers */
+ 			       0x98 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -1123,7 +1123,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3800000 {
++		pcie5: pcie@3800000 {
+ 			compatible = "fsl,lx2160a-pcie";
+ 			reg = <0x00 0x03800000 0x0 0x00100000   /* controller registers */
+ 			       0xa0 0x00000000 0x0 0x00002000>; /* configuration space */
+@@ -1151,7 +1151,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		pcie@3900000 {
++		pcie6: pcie@3900000 {
+ 			compatible = "fsl,lx2160a-pcie";
+ 			reg = <0x00 0x03900000 0x0 0x00100000   /* controller registers */
+ 			       0xa8 0x00000000 0x0 0x00002000>; /* configuration space */
+-- 
+2.7.4
 
