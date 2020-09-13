@@ -2,71 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4FD268A0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26409268A31
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgINL2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:28:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726084AbgINL06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:26:58 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BD3C216C4;
-        Mon, 14 Sep 2020 11:26:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600082818;
-        bh=njTD/4eDrE5KS0pb+XkMlaM+vhP7afImNLL0FaUBSZo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ij45fDyAexKQROkxT7mQeyOK4XIc85GsQga+UrjAlkC1uRdGLwBpxOwCT9td2aTw+
-         2fQfNGe4BqtqXAChcbZRxn0iswhSwEgfz2kNo68cbtHljYp0mGUFiya72j+Pz5jSf9
-         OsYd9SVH6fSmjqCoSMFTtUocSrwLDzmUjmtKM6Ng=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Artemy Kovalyov <artemyko@mellanox.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Moni Shoua <monis@mellanox.com>,
-        Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next 0/5] Reorganize mlx5 UMR creation flow
-Date:   Mon, 14 Sep 2020 14:26:48 +0300
-Message-Id: <20200914112653.345244-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726060AbgINLh2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 07:37:28 -0400
+Received: from mail.bnv.gob.ve ([201.249.200.115]:51134 "EHLO
+        correo.bnv.gob.ve" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726119AbgINLfD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:35:03 -0400
+Received: from localhost (localhost.bnv.gob.ve [127.0.0.1])
+        by correo.bnv.gob.ve (Postfix) with ESMTP id 7B37A34C5B6C;
+        Sun, 13 Sep 2020 20:22:39 -0400 (-04)
+Received: from correo.bnv.gob.ve ([127.0.0.1])
+        by localhost (correo.bnv.gob.ve [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Q9tvpOxfqqHR; Sun, 13 Sep 2020 20:22:39 -0400 (-04)
+Received: from localhost (localhost.bnv.gob.ve [127.0.0.1])
+        by correo.bnv.gob.ve (Postfix) with ESMTP id AFB8B336834C;
+        Sun, 13 Sep 2020 20:04:16 -0400 (-04)
+X-Virus-Scanned: amavisd-new at bnv.gob.ve
+Received: from correo.bnv.gob.ve ([127.0.0.1])
+        by localhost (correo.bnv.gob.ve [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id O6u-4vhBQGAQ; Sun, 13 Sep 2020 20:04:16 -0400 (-04)
+Received: from [192.168.8.101] (8ta-229-1-199.telkomadsl.co.za [197.229.1.199])
+        by correo.bnv.gob.ve (Postfix) with ESMTPSA id CB7A134A4850;
+        Sun, 13 Sep 2020 19:14:30 -0400 (-04)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Spende von 2.000.000,00 Euro.
+To:     Recipients <manuelfranco@info.com>
+From:   "manuel franco" <manuelfranco@info.com>
+Date:   Mon, 14 Sep 2020 01:14:20 +0200
+Reply-To: manuelfrancospende11@gmail.com
+Message-Id: <20200913231430.CB7A134A4850@correo.bnv.gob.ve>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+ Sie haben eine Spende von 2.000.000,00 Euro.
 
-This flow has become crufty and confusing. Revise it so that the rules
-on how UMR is used with MRs is much clearer and more correct.
-
-Fixes a few minor bugs in ODP and rereg_mr where disallowed things were
-not properly blocked.
-
-Thanks
-
-Jason Gunthorpe (5):
-  RDMA/mlx5: Remove dead check for EAGAIN after alloc_mr_from_cache()
-  RDMA/mlx5: Use set_mkc_access_pd_addr_fields() in reg_create()
-  RDMA/mlx5: Make mkeys always owned by the kernel's PD when not enabled
-  RDMA/mlx5: Disable IB_DEVICE_MEM_MGT_EXTENSIONS if IB_WR_REG_MR can't
-    work
-  RDMA/mlx5: Clarify what the UMR is for when creating MRs
-
- drivers/infiniband/hw/mlx5/main.c    |   4 +-
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  45 +++++++--
- drivers/infiniband/hw/mlx5/mr.c      | 133 ++++++++++++++-------------
- drivers/infiniband/hw/mlx5/odp.c     |   9 +-
- drivers/infiniband/hw/mlx5/wr.c      |  27 +++---
- 5 files changed, 127 insertions(+), 91 deletions(-)
-
---
-2.26.2
-
+Mein Name ist Manuel Franco aus den USA.
+Ich habe die America-Lotterie im Wert von 768 Millionen US-Dollar gewonnen und spende einen Teil davon an nur 5 glückliche Menschen und einige Waisenhäuser als Wohlwollen für die Menschheit.
