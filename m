@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1EE2680E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4332680EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 21:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725949AbgIMTGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 15:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56770 "EHLO
+        id S1725958AbgIMTIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 15:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbgIMTF4 (ORCPT
+        with ESMTP id S1725938AbgIMTIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 15:05:56 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F05C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:05:56 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id z9so9174932wmk.1
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:05:56 -0700 (PDT)
+        Sun, 13 Sep 2020 15:08:17 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863A9C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:08:17 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id z2so11857906qtv.12
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 12:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+MxfKNTuc5VaN6NhuE64EHSS6797wnf2U/mP1kKdFwc=;
-        b=CAV3/VeHI9C7tBfKwJF+Xb1SxPkVApKxSnGc/3niqF3X3bY1MWyHsvU0kNq/2QSBgp
-         t+327+GaFZYInKdrgbiHXyfMOsEbE7wUArcxKlmjR/j6RxTXwO+yHRYmlrUNxMSVTwBq
-         jqqWIgecIWiGoUZUgh+IwFd7rOKc8rzmZT8fUglNTadL9dTkoqDeRVO6oQ+o+1bgi8n8
-         4ASsTBMh0cD3o94wikrmGlJQZ8WNq0nfXsD9K2vjZLsSEE4MVwF/7dn5AiUmJ5XeDwm7
-         tq1QkZU1vlxoRJzFntBehUNxK2kakEKBKpLyMkGZMY/0VtS4qtN8L6TlQCsnMErGfzps
-         E4xQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/5h/UqJjCjlFG6zN+mmpXGeRd6XKS0E7CMl79QNY5+I=;
+        b=Pf+0f9sD5zuwy2f/CbR8WRLXfQuOC7MkQsYuQ9EVjJp4tImhhFyMsxPKLO2N/hjmF4
+         dLd4p0Dx6/TcsEN0C9gaeWFKbkvEdv8yIILBCM8e9AFAuF3ALtG1c2PpQnJtH4zAq1Vk
+         XZabcjTYtDcbs8r8wu8YU80WJS2EYAgFS2tUWAIrhK+RZU0r5gXKC+5w30LCWCWnKpG8
+         F82m7uISYK6Tk6K/DLGXCWGb0gI08oSjujFBbXBIdGFZc/lV0Lmwz7qutVcaS2aJVkBJ
+         W/lTzD3qfyOjCTh+LW88zF58awXHeeW22EAvKUmI6jDZd6c+2GF+4x9dDf/rjGPhCIww
+         0VOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+MxfKNTuc5VaN6NhuE64EHSS6797wnf2U/mP1kKdFwc=;
-        b=G0rpCqtAxU8q/p6WHTbm7K/sexsjjWuhfGe6lPbiXXFNTymtmLDI6n8QHWkYFmruRp
-         k64pLUKkhV6jmpaVbws99xWMN2Y3WVY806jnUEiWFRYVhYZs+LtkbcUVpPrRa8z9XNjd
-         ax9ty2HPfc1DzZp7fdQNnDWc9o3KhJW29HIfxnHV2mnz8TFKLm2yoioLh6OvSJ9HZa8C
-         6yLdfVCQ/5gJ3qhRc8lkCJjgurPyIKf8wo4fqEh0QMc6ah/dV7npPzv8XEztZfUgxbok
-         m/2eJa/EosSxNOOcazRL21AInwkoptRK9MA+hvXjDqivfj2YEgC0zfMalPbC9E7BmO83
-         vSUA==
-X-Gm-Message-State: AOAM531Yj6ve3IEYcUJp/TwWqbFO3IKFpvXBHBpcGbGTmKe5aP+5Jl9U
-        mevb08D/fWTLcGFFYuthgaU=
-X-Google-Smtp-Source: ABdhPJw1qSOkBvhUTpOm91xMXLIJT5GYg4KVIOwW74nnima+ZYwdCFfu7zwykBnPI6ITyj4C1uWi5g==
-X-Received: by 2002:a1c:e904:: with SMTP id q4mr9287528wmc.151.1600023953846;
-        Sun, 13 Sep 2020 12:05:53 -0700 (PDT)
-Received: from localhost.localdomain (188.147.111.252.nat.umts.dynamic.t-mobile.pl. [188.147.111.252])
-        by smtp.gmail.com with ESMTPSA id j14sm17326955wrr.66.2020.09.13.12.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 12:05:53 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
-Subject: [PATCH] mm/compaction.c: micro-optimization remove unnecessary branch
-Date:   Sun, 13 Sep 2020 21:04:48 +0200
-Message-Id: <20200913190448.28649-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/5h/UqJjCjlFG6zN+mmpXGeRd6XKS0E7CMl79QNY5+I=;
+        b=HIWw6GcofxIy03hH6JQKcZnhTCGegf4Xlbjzp4MkZNKhJCANDnNd7rwH4vsyaVP0NI
+         kg8tp0mFBBjOSRUEOEytq5UMkpVQgww8nDYvkHE6ro7yY8fd6lLtu7bth+pSHbQNkz2G
+         Jli+SgmU4t9+NmlMaixdA2BjV8HbFB1PYl3e1USNRttboSZG/HGmBLnkpELOpEp9s7va
+         SZRH0duDDVmT80dgyYRr4Cyix7Vmc7zaGC8CBicnk/YUsQlxg2jFn9QTkRYUXPRepRmT
+         +15oNdO3Z4hRibQVYJ40r5YVGrLtEHPyaaH/hvKNQmAHVbVPZT23IrlwLGBFQUUn6O5e
+         JC+g==
+X-Gm-Message-State: AOAM531HGyvTvaqmAMJF1EngujWJB8q1tHBQhlnVBeNUWnWdrdbDb5s6
+        NYkraCZDcaWdNvX4lhPQNTxfjMGNsu/qIYu4hTE=
+X-Google-Smtp-Source: ABdhPJzMTauxCQUYokReYXoy/ykjdVeZEniEuEt1D5WE6euJ3kdIyTE80ICdIX4DKl2m7peR5X21kjm6iy6go1/qzsA=
+X-Received: by 2002:aed:3b7a:: with SMTP id q55mr10320667qte.78.1600024093865;
+ Sun, 13 Sep 2020 12:08:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200601091037.3794172-1-chengzhihao1@huawei.com>
+In-Reply-To: <20200601091037.3794172-1-chengzhihao1@huawei.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Sun, 13 Sep 2020 21:08:02 +0200
+Message-ID: <CAFLxGvxA9pw8D6Q8GbBD0SUP+EHhOsZmRMSPxrW4sq0gYi9N9Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ubifs: xattr: Fix some potential memory leaks while
+ iterating entries
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+On Mon, Jun 1, 2020 at 11:11 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+>
+> Fix some potential memory leaks in error handling branches while
+> iterating xattr entries. For example, function ubifs_tnc_remove_ino()
+> forgets to free pxent if it exists. Similar problems also exist in
+> ubifs_purge_xattrs(), ubifs_add_orphan() and ubifs_jnl_write_inode().
+>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Cc: <Stable@vger.kernel.org>
+> Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
 
-The same code can work both for 'zone->compact_considered > defer_limit'
-and 'zone->compact_considered >= defer_limit'. In the latter there is one
-branch less which is more effective considering performance.
+I agree that this needs fixing. Did you also look into getting rid of pxent?
+UBIFS uses the pxent pattern over and over and the same error got copy pasted
+a lot. :-(
 
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- mm/compaction.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 176dcded298e..6c63844fc061 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -180,11 +180,10 @@ bool compaction_deferred(struct zone *zone, int order)
- 		return false;
- 
- 	/* Avoid possible overflow */
--	if (++zone->compact_considered > defer_limit)
-+	if (++zone->compact_considered >= defer_limit) {
- 		zone->compact_considered = defer_limit;
--
--	if (zone->compact_considered >= defer_limit)
- 		return false;
-+	}
- 
- 	trace_mm_compaction_deferred(zone, order);
- 
 -- 
-2.20.1
-
+Thanks,
+//richard
