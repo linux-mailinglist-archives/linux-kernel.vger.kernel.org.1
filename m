@@ -2,41 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4802267FA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 15:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327D2267FB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 15:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbgIMNUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 09:20:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:54540 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725927AbgIMNUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 09:20:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A40A106F;
-        Sun, 13 Sep 2020 06:20:16 -0700 (PDT)
-Received: from [192.168.0.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A22523F68F;
-        Sun, 13 Sep 2020 06:20:12 -0700 (PDT)
-Subject: Re: [PATCH v10 14/24] coresight: allow funnel driver to be built as
- module
-To:     tingwei@codeaurora.org, mathieu.poirier@linaro.org,
-        alexander.shishkin@linux.intel.com, mike.leach@linaro.org
-Cc:     kim.phillips@arm.com, gregkh@linuxfoundation.org,
-        leo.yan@linaro.org, rdunlap@infradead.org, linux@armlinux.org.uk,
-        ykaukab@suse.de, tsoni@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, jinlmao@codeaurora.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, lkp@intel.com
-References: <20200821034445.967-1-tingwei@codeaurora.org>
- <20200821034445.967-15-tingwei@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <3d4bf829-abca-3f5f-fa2f-282305a9dc7a@arm.com>
-Date:   Sun, 13 Sep 2020 14:24:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1725938AbgIMNjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 09:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgIMNgf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 09:36:35 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C07C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 06:36:27 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id r9so15894515ioa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 06:36:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EV2DOP0ScNAYJC3DlvwyXv8gFVS0LLmJt4XZBhvSGBQ=;
+        b=nsjWFSDNwgPGY5JxV8N7Ki9ye5VlofZ1n4AVHoRjpGIpr9gEqV5VNCXNkIersSZVeB
+         l5weCnNPTO3i/Oby7KwZeslhVvX8QepIJgeTw1Cz3kpVAkTeCsdqdi+YVzMT1Fxlly3F
+         xZH7vg6MYuYOFby9rjl4quFwIg24WJaNWcVxv1Ifx7H6ZHICiwdlNjEBg1cteJ5daWNF
+         O1FhIEypUSnGMoAVtMbafcK6JQz2jPnn1QPrhmj4csh+ayAHzey4GRTSzVjJhd/udDSB
+         fQemPtTx43/cK1Q3ZCtJGSxQ35tsdHeseBCvUxjwvRz1vAG/HrLEneAu+jkL8sCR/4nx
+         kEJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EV2DOP0ScNAYJC3DlvwyXv8gFVS0LLmJt4XZBhvSGBQ=;
+        b=EMXIVhTHcRyRL8B4vGbtZxdttQq/PnRWl6WVPsD61P/cwjFsmrwX0e3blTCtnvSvYu
+         UkWjNRZ95DlO+OSWqRldJqB4aqbB+zP27/v/CrZ76uW8DS8C1DXm2CWck07ManWZOH1A
+         O34ClDksB16FWX5WHPRJYN9HFE+bhkaUfdL2sngzOFBONmmAmmEgBmpzHB0rtxPkvHzc
+         ZX2CJG0welQievU8T5/w4YPnFWSS7BmTsmCekrlsyswYjrnXl6TEkzpW1ZYt5WMlTjsT
+         jAxHNcFDApkcj1M4NE7GspexkVS5Tz7KcxZpjM/43psjbIcm4blhRgyh3l+MC0nqwJxY
+         +1SQ==
+X-Gm-Message-State: AOAM531lKnGWVbz5EpmIUTrUZWkuJjir3u/JBlN4MYYqQ2IiS2juErCH
+        yRBgnQrM4jT3+yX3cGs/zoPD7U4tmyW3Sg==
+X-Google-Smtp-Source: ABdhPJzU6azNfjiNzMhCR+ggeCl7F2nNB7bt8ZalTWnmZag7Ph76Amz+u5EWMZn9e4ytsKvLs7jDVA==
+X-Received: by 2002:a5e:8e0a:: with SMTP id a10mr8117820ion.200.1600004186245;
+        Sun, 13 Sep 2020 06:36:26 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id k16sm4321857ioc.15.2020.09.13.06.36.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Sep 2020 06:36:25 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 3/7] net: ipa: verify reference flag values
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
+        subashab@codeaurora.org, cpratapa@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200912004532.1386-1-elder@linaro.org>
+ <20200912004532.1386-4-elder@linaro.org> <20200913022530.GL3715@yoga>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <9ff8f11c-c7d8-d0cc-1b7d-97778bfab7b5@linaro.org>
+Date:   Sun, 13 Sep 2020 08:36:25 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200821034445.967-15-tingwei@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200913022530.GL3715@yoga>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,88 +71,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/21/2020 04:44 AM, Tingwei Zhang wrote:
-> From: Kim Phillips <kim.phillips@arm.com>
+On 9/12/20 9:25 PM, Bjorn Andersson wrote:
+> On Fri 11 Sep 19:45 CDT 2020, Alex Elder wrote:
 > 
-> Allow to build coresight-funnel as module, for ease of development.
+>> We take a single IPA clock reference to keep the clock running until
+>> we get a system suspend operation, and maintain a flag indicating
+>> whether that reference has been taken.  When a suspend request
+>> arrives, we drop that reference and clear the flag.
+>>
+>> In most places we simply set or clear the extra-reference flag.
+>> Instead--primarily to catch coding errors--test the previous value
+>> of the flag and report an error in the event the previous value is
+>> unexpected.  And if the clock reference is already taken, don't take
+>> another.
+>>
+>> In a couple of cases it's pretty clear atomic access is not
+>> necessary and an error should never be reported.  Report these
+>> anyway, conveying our surprise with an added exclamation point.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>> v2: Updated to operate on a bitmap bit rather than an atomic_t.
+>>
+>>  drivers/net/ipa/ipa_main.c | 23 ++++++++++++++++-------
+>>  1 file changed, 16 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+>> index 409375b96eb8f..cfdf60ded86ca 100644
+>> --- a/drivers/net/ipa/ipa_main.c
+>> +++ b/drivers/net/ipa/ipa_main.c
+>> @@ -83,6 +83,7 @@ static void ipa_suspend_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
+>>  	/* Take a a single clock reference to prevent suspend.  All
+>>  	 * endpoints will be resumed as a result.  This reference will
+>>  	 * be dropped when we get a power management suspend request.
+>> +	 * The first call activates the clock; ignore any others.
+>>  	 */
+>>  	if (!test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+>>  		ipa_clock_get(ipa);
+>> @@ -502,14 +503,17 @@ static void ipa_resource_deconfig(struct ipa *ipa)
+>>   */
+>>  static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
+>>  {
+>> +	struct device *dev = &ipa->pdev->dev;
+>>  	int ret;
+>>  
+>>  	/* Get a clock reference to allow initialization.  This reference
+>>  	 * is held after initialization completes, and won't get dropped
+>>  	 * unless/until a system suspend request arrives.
+>>  	 */
+>> -	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+>> -	ipa_clock_get(ipa);
+>> +	if (!__test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+>> +		ipa_clock_get(ipa);
+>> +	else
+>> +		dev_err(dev, "suspend clock reference already taken!\n");
+>>  
+>>  	ipa_hardware_config(ipa);
+>>  
+>> @@ -544,7 +548,8 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
+>>  err_hardware_deconfig:
+>>  	ipa_hardware_deconfig(ipa);
+>>  	ipa_clock_put(ipa);
+>> -	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+>> +	if (!__test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+>> +		dev_err(dev, "suspend clock reference already dropped!\n");
+>>  
+>>  	return ret;
+>>  }
+>> @@ -562,7 +567,8 @@ static void ipa_deconfig(struct ipa *ipa)
+>>  	ipa_endpoint_deconfig(ipa);
+>>  	ipa_hardware_deconfig(ipa);
+>>  	ipa_clock_put(ipa);
+>> -	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+>> +	if (!test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
 > 
-> - combine static and dynamic funnel init into single
->    module_init/exit call
-> - add funnel_remove functions, for module unload
-> - add a MODULE_DEVICE_TABLE for autoloading on boot
-> 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Co-developed-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-> Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-> Signed-off-by: Kim Phillips <kim.phillips@arm.com>
-> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Tested-by: Mike Leach <mike.leach@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->   .../hwtracing/coresight/coresight-funnel.c    | 64 ++++++++++++++++++-
->   1 file changed, 62 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-> index 900690a9f7f0..07bc20391fac 100644
-> --- a/drivers/hwtracing/coresight/coresight-funnel.c
-> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
-> @@ -274,6 +274,15 @@ static int funnel_probe(struct device *dev, struct resource *res)
->   	return ret;
->   }
->   
-> +static int __exit funnel_remove(struct device *dev)
-> +{
-> +	struct funnel_drvdata *drvdata = dev_get_drvdata(dev);
-> +
-> +	coresight_unregister(drvdata->csdev);
-> +
-> +	return 0;
-> +}
-> +
->   #ifdef CONFIG_PM
->   static int funnel_runtime_suspend(struct device *dev)
->   {
-> @@ -319,20 +328,32 @@ static int static_funnel_probe(struct platform_device *pdev)
->   	return ret;
->   }
->   
-> +static int __exit static_funnel_remove(struct platform_device *pdev)
-> +{
-> +	funnel_remove(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
-> +	return 0;
-> +}
-> +
->   static const struct of_device_id static_funnel_match[] = {
->   	{.compatible = "arm,coresight-static-funnel"},
->   	{}
->   };
->   
-> +MODULE_DEVICE_TABLE(of, static_funnel_match);
-> +
->   #ifdef CONFIG_ACPI
->   static const struct acpi_device_id static_funnel_ids[] = {
->   	{"ARMHC9FE", 0},
->   	{},
->   };
-> +
-> +MODULE_DEVICE_TABLE(acpi, static_funnel_ids);
->   #endif
->   
->   static struct platform_driver static_funnel_driver = {
->   	.probe          = static_funnel_probe,
-> +	.remove          = static_funnel_remove,
->   	.driver         = {
->   		.name   = "coresight-static-funnel",
->   		.of_match_table = static_funnel_match,
+> Doesn't this imply that we ran with the clocks disabled, which
+> presumably would have nasty side effects?
 
-Sorry missed this. Please set the owner field here. With that :
+Yes.  This is one of those that I mentioned "can't happen"
+but I added the check anyway.
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+We call ipa_config() as the last step of ipa_probe().  The inverse
+of ipa_config() is ipa_deconfig(), and that is called in two cases:
+- If the AP is loading firmware, it does so *after* ipa_config()
+  has been called and returned success.  If firmware loading fails,
+  ipa_deconfig() is called in the error path to clean up.  If we
+  never reached ipa_config() in the probe function, we will never
+  call ipa_deconfig() in the error path.
+- If ipa_config() fails when called in ipa_probe(), it will clean
+  up all changed state and return an error value.  I *assume* that
+  if the ->probe function returns an error, the ->remove function
+  will never be called.  So again, we will never call ipa_deconfig()
+  unless ipa_config() has been called.
+
+That's the reasoning anyway.  That being said, you make a very
+good point, in that the whole purpose of checking this at all
+is to catch coding errors, and a WARN() call would provide much
+better information than just an error message would.
+
+So I will plan to update this in a new version of this patch
+(and series).  I'll wait until tonight or tomorrow to see if
+there is any other feedback before preparing that.
+
+Thanks a lot.
+
+					-Alex
+
+> This seems like something that is worthy of more than just a simple
+> printout - which no one will actually read.  If you instead use a
+> WARN_ON() to highlight this at least some of the test environments out
+> there will pick it up and report it...
+> 
+> Regards,
+> Bjorn
+> 
+>> +		dev_err(&ipa->pdev->dev, "no suspend clock reference\n");
+>>  }
+>>  
+>>  static int ipa_firmware_load(struct device *dev)
+>> @@ -913,7 +919,8 @@ static int ipa_suspend(struct device *dev)
+>>  	struct ipa *ipa = dev_get_drvdata(dev);
+>>  
+>>  	ipa_clock_put(ipa);
+>> -	__clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+>> +	if (!test_and_clear_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+>> +		dev_err(dev, "suspend: missing suspend clock reference\n");
+>>  
+>>  	return 0;
+>>  }
+>> @@ -933,8 +940,10 @@ static int ipa_resume(struct device *dev)
+>>  	/* This clock reference will keep the IPA out of suspend
+>>  	 * until we get a power management suspend request.
+>>  	 */
+>> -	__set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags);
+>> -	ipa_clock_get(ipa);
+>> +	if (!test_and_set_bit(IPA_FLAG_CLOCK_HELD, ipa->flags))
+>> +		ipa_clock_get(ipa);
+>> +	else
+>> +		dev_err(dev, "resume: duplicate suspend clock reference\n");
+>>  
+>>  	return 0;
+>>  }
+>> -- 
+>> 2.20.1
+>>
+
