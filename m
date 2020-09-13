@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6953B267F5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 13:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA0D267F5D
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 13:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725935AbgIMLp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 07:45:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42720 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725944AbgIMLpj (ORCPT
+        id S1725954AbgIMLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 07:47:33 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:35703 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbgIMLrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 07:45:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599997480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=W9BE3+QupnrIGk+K+XKNwB1A5ivau0ppvVu7A4eBwWQ=;
-        b=PvtMakq3tRTcD4e5X2OqzhX/TXPUbgPDDNJlq3i0CxgoKgY1atTVvPE87Sh/yJ7WToPo9A
-        0r+YrVSFNgOZvHrampuH+8Yv+lkwXUw56U9eqXWL7k/HK6xTNNbL2ROAX1uS3zFHiVPIa+
-        kWRMtb9aG+MOoDQi/lNb3NO8P8KAlYs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-37-OWN78MUaOfiAbs3pEXztRw-1; Sun, 13 Sep 2020 07:44:38 -0400
-X-MC-Unique: OWN78MUaOfiAbs3pEXztRw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E925425CB;
-        Sun, 13 Sep 2020 11:44:36 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-46.bne.redhat.com [10.64.54.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 291FB75121;
-        Sun, 13 Sep 2020 11:44:33 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        anshuman.khandual@arm.com, mark.rutland@arm.com, will@kernel.org,
-        shan.gavin@gmail.com
-Subject: [PATCH] arm64/mm: Refactor {pgd, pud, pmd, pte}_ERROR()
-Date:   Sun, 13 Sep 2020 21:44:30 +1000
-Message-Id: <20200913114430.16102-1-gshan@redhat.com>
+        Sun, 13 Sep 2020 07:47:07 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MKt3r-1jwsPr2pu1-00LCiW; Sun, 13 Sep 2020 13:47:02 +0200
+Received: by mail-qk1-f179.google.com with SMTP id d20so14326539qka.5;
+        Sun, 13 Sep 2020 04:47:02 -0700 (PDT)
+X-Gm-Message-State: AOAM530Tgy9LzzwR1sraIzeWLKw3Yl4ijSfioPe/KzC2V11xZhyUsarD
+        DZqoJO0O0XCRzcMQ/BlfJYRk5yb8ofjEQ5gMXho=
+X-Google-Smtp-Source: ABdhPJxE1gLkULR9mt3IFGX3UpiQsPfyt43rxUrCYfTZIHEtuZ7BwGOLTbMeYWmx4iitP5zm0y1kK7RzMFUmDs53cZw=
+X-Received: by 2002:a37:5d8:: with SMTP id 207mr8869223qkf.352.1599997621438;
+ Sun, 13 Sep 2020 04:47:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200908213715.3553098-1-arnd@arndb.de> <20200908213715.3553098-3-arnd@arndb.de>
+ <20200912074757.GA6688@infradead.org> <CAK8P3a363DxgZnN9x4oNL7W4__kyG1U_34=7Hpqhpc-obAvjWw@mail.gmail.com>
+ <20200913065051.GA17932@infradead.org>
+In-Reply-To: <20200913065051.GA17932@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sun, 13 Sep 2020 13:46:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3W1EYts=2uL-6kTWwcgBeigLdv-W4mnxBd+En2ZFReLA@mail.gmail.com>
+Message-ID: <CAK8P3a3W1EYts=2uL-6kTWwcgBeigLdv-W4mnxBd+En2ZFReLA@mail.gmail.com>
+Subject: Re: compat_alloc_user_space removal, was Re: [PATCH 3/3] scsi:
+ megaraid_sas: simplify compat_ioctl handling
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Anand Lodnoor <anand.lodnoor@broadcom.com>,
+        Chandrakanth Patil <chandrakanth.patil@broadcom.com>,
+        Hannes Reinecke <hare@suse.de>, megaraidlinux.pdl@broadcom.com,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:g+QV2kn+pkrs2ixKHEQ8cZFehVFfFn7YBxb/gT9JxeleY+ZTK4+
+ tNP6Qc8Yrb1APP6iNvfpzDx2s6LzjO84vnh3P5qcmhDixyMXn51gakFgNp3+5jTBpfrt37b
+ MxbPfza9YF1BtNdFbN0infzA0siupYmNg2Q53ZhG6O3z2g33IYhSygHcFwifs3brNbAtRH7
+ n8/g68cfGshoAcrJulVlw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:j+sDjkSteLc=:VlpxX5B7Un0RBBWmU0ae4V
+ Kb5bH4zyufTCsOf0nb13v8BjNc6pIr4nqYuVXzLvAcuc6vZ1+TgXkZulFBCowmBpfq4dzphv+
+ r5mcMHCWFl4vKMBNwo193/DOqnLqX+RzuvFpVPhl0NIfmRws0fBC4xwVBDHh3ZlwEY6ZmWolR
+ EmxkWOx8HTnuyPsDU4whnKVYGynK0yOju9/cRuT9e3i7Gjg5ShDaApmAJjjrmSydwWOBD/ogu
+ gjnM/g94dcPQz724yXnr+QIiqL5Ou1MDn218GxDjcPx5N1e8TNjwfYlQGb+giHwZwE+dSel1s
+ yK8vNoOwWcjDbjKtPW+l4a6gpRlLPxFNLiMMmnKAhW+GOstvBxd4oaL6OFVOJwMF0kw/ztR9a
+ UJCOR0mEplZQcYjFIQNnGL0JEOk6UcdVDLzHkL6qrw7Tgt4blwdCRdwDSK0+6QPdcpZ0jWnkn
+ 01UaxNCRA/8Ifmukg7wye0Xa057rKPugKW4pJRrpl4QtfASz1X2/pDpSTR6mR6oLS1a2qG1dM
+ /S4bAQV1xu61VzaKTp1jV22hDh9qp+gt3l0sgeqwRxy4yRLWmZ72ULUJ/iVWFHqLtRpYy28AH
+ A/BoeeRq3HAq2gCZGXqkdIspHj23YwdDM6B9F+faW6MBKAIFqSU+BC7WydKq78Bl+2riUyzMF
+ ZuBfK7BrrnmbuAq7laSqeEymh6ikljjoav7ZUvY3MtgSbm2KvvDdMm4VbIc2ZBII14iFcZrIN
+ LxGRd4w8Qs1b9heBhNCodicYM2JX38xGmVVYquqUoLPs08IMVtCQJKJxE/1/iBTkLQAWUEvSN
+ +Zq4tKxGJkC4m++DeFcaxnsyqYakX0PrtBV9XO9pvB3614qzp2BM9KUGjzrwzLIRVZh+1yo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function __{pgd, pud, pmd, pte}_error() are introduced so that
-they can be called by {pgd, pud, pmd, pte}_ERROR(). However, some
-of the functions could never be called when the corresponding page
-table level isn't enabled. For example, __{pud, pmd}_error() are
-unused when PUD and PMD are folded to PGD.
+On Sun, Sep 13, 2020 at 8:50 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Sat, Sep 12, 2020 at 02:49:05PM +0200, Arnd Bergmann wrote:
+> > fs/quota/compat.c: dqblk = compat_alloc_user_space(sizeof(struct if_dqblk));
+> > fs/quota/compat.c: dqblk = compat_alloc_user_space(sizeof(struct if_dqblk));
+> > fs/quota/compat.c: fsqstat = compat_alloc_user_space(sizeof(struct
+> > fs_quota_stat));
+>
+> I sent this out a while ago, an Al has it in a branch, but not in
+> linux-next:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/log/?h=work.quota-compat
 
-This removes __{pgd, pud, pmd, pte}_error() and call pr_err() from
-{pgd, pud, pmd, pte}_ERROR() directly, similar to what x86/powerpc
-are doing. With this, the code looks a bit simplified either.
+Nice! Aside from already being queued, your patch is also nicer than
+my version, and it makes it trivial to fix it for arm oabi as well by adding
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- arch/arm64/include/asm/pgtable.h | 17 ++++++++---------
- arch/arm64/kernel/traps.c        | 20 --------------------
- 2 files changed, 8 insertions(+), 29 deletions(-)
+#ifdef CONFIG_OABI_COMPAT
+#define compat_need_64bit_alignment_fixup in_oabi_syscall
+#endif
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index d5d3fbe73953..8d037615a392 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -35,11 +35,6 @@
- 
- extern struct page *vmemmap;
- 
--extern void __pte_error(const char *file, int line, unsigned long val);
--extern void __pmd_error(const char *file, int line, unsigned long val);
--extern void __pud_error(const char *file, int line, unsigned long val);
--extern void __pgd_error(const char *file, int line, unsigned long val);
--
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
- 
-@@ -57,7 +52,8 @@ extern void __pgd_error(const char *file, int line, unsigned long val);
- extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
- #define ZERO_PAGE(vaddr)	phys_to_page(__pa_symbol(empty_zero_page))
- 
--#define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
-+#define pte_ERROR(e)	\
-+	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
- 
- /*
-  * Macros to convert between a physical address and its placement in a
-@@ -541,7 +537,8 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- 
- #if CONFIG_PGTABLE_LEVELS > 2
- 
--#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
-+#define pmd_ERROR(e)	\
-+	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
- 
- #define pud_none(pud)		(!pud_val(pud))
- #define pud_bad(pud)		(!(pud_val(pud) & PUD_TABLE_BIT))
-@@ -608,7 +605,8 @@ static inline unsigned long pud_page_vaddr(pud_t pud)
- 
- #if CONFIG_PGTABLE_LEVELS > 3
- 
--#define pud_ERROR(pud)		__pud_error(__FILE__, __LINE__, pud_val(pud))
-+#define pud_ERROR(e)	\
-+	pr_err("%s:%d: bad pud %016lx.\n", __FILE__, __LINE__, pud_val(e))
- 
- #define p4d_none(p4d)		(!p4d_val(p4d))
- #define p4d_bad(p4d)		(!(p4d_val(p4d) & 2))
-@@ -667,7 +665,8 @@ static inline unsigned long p4d_page_vaddr(p4d_t p4d)
- 
- #endif  /* CONFIG_PGTABLE_LEVELS > 3 */
- 
--#define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
-+#define pgd_ERROR(e)	\
-+	pr_err("%s:%d: bad pgd %016lx.\n", __FILE__, __LINE__, pgd_val(e))
- 
- #define pgd_set_fixmap(addr)	((pgd_t *)set_fixmap_offset(FIX_PGD, addr))
- #define pgd_clear_fixmap()	clear_fixmap(FIX_PGD)
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 13ebd5ca2070..12fba7136dbd 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -935,26 +935,6 @@ asmlinkage void enter_from_user_mode(void)
- }
- NOKPROBE_SYMBOL(enter_from_user_mode);
- 
--void __pte_error(const char *file, int line, unsigned long val)
--{
--	pr_err("%s:%d: bad pte %016lx.\n", file, line, val);
--}
--
--void __pmd_error(const char *file, int line, unsigned long val)
--{
--	pr_err("%s:%d: bad pmd %016lx.\n", file, line, val);
--}
--
--void __pud_error(const char *file, int line, unsigned long val)
--{
--	pr_err("%s:%d: bad pud %016lx.\n", file, line, val);
--}
--
--void __pgd_error(const char *file, int line, unsigned long val)
--{
--	pr_err("%s:%d: bad pgd %016lx.\n", file, line, val);
--}
--
- /* GENERIC_BUG traps */
- 
- int is_valid_bugaddr(unsigned long addr)
--- 
-2.23.0
+to arch/arm/include/asm/compat.h
 
+I had considered fixing that case for arch/arm as well but it ended up being
+harder to do in my version.
+
+> > drivers/staging/media/atomisp/pci/atomisp_compat_ioctl32.c: karg =
+> > compat_alloc_user_space(
+> >
+> > Had a brief look but did not investigate further, it's complicated.
+> >
+> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
+> > compat_alloc_user_space(sizeof(*args));
+> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
+> > compat_alloc_user_space(sizeof(*args) +
+> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
+> > compat_alloc_user_space(sizeof(*args));
+> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
+> > compat_alloc_user_space(sizeof(*args) +
+> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
+> > compat_alloc_user_space(sizeof(*args));
+> > drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c: args =
+> > compat_alloc_user_space(sizeof(*args));
+> >
+> > Should not be too hard, but I have not looked in detail.
+>
+> We do not have to care about staging drivers when removing interfaces.
+> But to be nice you probably ping the maintainers to see what they can
+> do.
+
+Right. As both of these are architecture specific, I also considered moving
+the compat_alloc_user_space() and copy_in_user() definitions for the
+respective architectures into those drivers and adding the removal
+into the TODO files.
+
+> I also have the mount side handles in this branch which I need to rebase
+> and submit:
+>
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/mount-cleanups
+
+I think I had done an almost identical patch for sys_mount() last year
+and forgotten about it. Again, yours is slightly better ;-)
+
+       Arnd
