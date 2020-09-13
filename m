@@ -2,106 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA8E267F4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 13:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6953B267F5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 13 Sep 2020 13:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725961AbgIMLDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 07:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbgIMLDi (ORCPT
+        id S1725935AbgIMLp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 07:45:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42720 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725944AbgIMLpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 07:03:38 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018D7C061573;
-        Sun, 13 Sep 2020 04:03:37 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id z19so10238828pfn.8;
-        Sun, 13 Sep 2020 04:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D5zxQJ9/bBNYxcKz8x5u3JOFZbRfXW/8iPbkH3tADRk=;
-        b=WwzVDfwfq5k/cz21r4yOwQr0MPeyuymAI3rmT9bpZzWw94dlc5EpMg0KXVqTyTxVLS
-         Zp1gNxVXWyE3tddvm1ErkTdno02A0+1vvoCCLt7y6bgd0sxJXXTp+WINElVkf2YdtRBM
-         CMqJC/EeXszT7ySApINm94SZlyTTM0hFM9EIkJpQnUEPDxWzIuZhoxT/PRtqTOTRZdGu
-         2NkWKAe1HGg/oSFOuA3MvUyrJGZEIu4hKWgs4NrJ5VbLxy0m6in5iVF5tQnT1wKL+mwR
-         41/2M5a7llz7NvvEjXswhWW6nEDsUeRNnoekqukdL1jmI8KClj3jGvvclOHaz6n/0XSX
-         DyAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D5zxQJ9/bBNYxcKz8x5u3JOFZbRfXW/8iPbkH3tADRk=;
-        b=gHmlRLKzIjWBPODvHLVI11HeddU19qMv69JnrCRpI+yQa+8Tm7V8+5bWM757dJLhbr
-         QcyXxQfKMDn7l5icpSLTpQ8t+/WgP9AuG1V4DqCPaeAU3F6wwI9fHJaH+X/rNsZcmJxO
-         uV1GfNPMpo+fQ6C9wkLvPVfa0vJnpD+p+S/6KwhfMD/pAZbc7f5O5O6T+7lL4M1q7C/n
-         idI54TqBKKLY/PngT/Bskj9SBy2JruRzykZbcdTlZzYKhYvyEhDAM7FBTbSfzRCzX7QX
-         WN7uHU8KQyuHGdo3cFX6qr1sWBv96fiMikB3bUsCe+CM0P4yYt1MMzH2iXSrnRBnhlT6
-         X+8A==
-X-Gm-Message-State: AOAM5317Pqtce/x0RFaD3enlhizUvfy6JLCKwgcL8v84qTW5kzRZUBAs
-        QlthwuVVg2fxO1SPQxoEwwY=
-X-Google-Smtp-Source: ABdhPJzgyMnyi1zmfqskqELOP69Zjnz6hMotwDpxSOh/rRa4Mw/GuOyrcKpz38L52Hfnhptq4wvIfg==
-X-Received: by 2002:a63:2063:: with SMTP id r35mr7627594pgm.320.1599995017178;
-        Sun, 13 Sep 2020 04:03:37 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.209.61])
-        by smtp.gmail.com with ESMTPSA id i17sm7319199pfa.29.2020.09.13.04.03.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 04:03:36 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: fix uninit value error in __sys_sendmmsg
-Date:   Sun, 13 Sep 2020 16:33:13 +0530
-Message-Id: <20200913110313.4239-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 13 Sep 2020 07:45:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599997480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W9BE3+QupnrIGk+K+XKNwB1A5ivau0ppvVu7A4eBwWQ=;
+        b=PvtMakq3tRTcD4e5X2OqzhX/TXPUbgPDDNJlq3i0CxgoKgY1atTVvPE87Sh/yJ7WToPo9A
+        0r+YrVSFNgOZvHrampuH+8Yv+lkwXUw56U9eqXWL7k/HK6xTNNbL2ROAX1uS3zFHiVPIa+
+        kWRMtb9aG+MOoDQi/lNb3NO8P8KAlYs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-OWN78MUaOfiAbs3pEXztRw-1; Sun, 13 Sep 2020 07:44:38 -0400
+X-MC-Unique: OWN78MUaOfiAbs3pEXztRw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E925425CB;
+        Sun, 13 Sep 2020 11:44:36 +0000 (UTC)
+Received: from gshan.redhat.com (vpn2-54-46.bne.redhat.com [10.64.54.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 291FB75121;
+        Sun, 13 Sep 2020 11:44:33 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        anshuman.khandual@arm.com, mark.rutland@arm.com, will@kernel.org,
+        shan.gavin@gmail.com
+Subject: [PATCH] arm64/mm: Refactor {pgd, pud, pmd, pte}_ERROR()
+Date:   Sun, 13 Sep 2020 21:44:30 +1000
+Message-Id: <20200913114430.16102-1-gshan@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The crash report indicated that there was a local variable;
-----iovstack.i@__sys_sendmmsg created at:
- ___sys_sendmsg net/socket.c:2388 [inline]
- __sys_sendmmsg+0x6db/0xc90 net/socket.c:2480
+The function __{pgd, pud, pmd, pte}_error() are introduced so that
+they can be called by {pgd, pud, pmd, pte}_ERROR(). However, some
+of the functions could never be called when the corresponding page
+table level isn't enabled. For example, __{pud, pmd}_error() are
+unused when PUD and PMD are folded to PGD.
 
- that was left uninitialized.
+This removes __{pgd, pud, pmd, pte}_error() and call pr_err() from
+{pgd, pud, pmd, pte}_ERROR() directly, similar to what x86/powerpc
+are doing. With this, the code looks a bit simplified either.
 
-Initializing this stack to 0s prevents this bug from happening.
-Since the memory pointed to by *iov is freed at the end of the function
-call, memory leaks are not likely to be an issue.
-
-syzbot seems to have triggered this error by passing an array of 0's as
-a parameter while making the system call.
-
-Reported-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
-Tested-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
-Changes from v1:
-	* Fixed the build warning that v1 had introduced
- net/socket.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/include/asm/pgtable.h | 17 ++++++++---------
+ arch/arm64/kernel/traps.c        | 20 --------------------
+ 2 files changed, 8 insertions(+), 29 deletions(-)
 
-diff --git a/net/socket.c b/net/socket.c
-index 0c0144604f81..1e6f9b54982c 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2398,6 +2398,7 @@ static int ___sys_sendmsg(struct socket *sock, struct user_msghdr __user *msg,
- 	struct iovec iovstack[UIO_FASTIOV], *iov = iovstack;
- 	ssize_t err;
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index d5d3fbe73953..8d037615a392 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -35,11 +35,6 @@
  
-+	memset(iov, 0, UIO_FASTIOV);
- 	msg_sys->msg_name = &address;
+ extern struct page *vmemmap;
  
- 	err = sendmsg_copy_msghdr(msg_sys, msg, flags, &iov);
+-extern void __pte_error(const char *file, int line, unsigned long val);
+-extern void __pmd_error(const char *file, int line, unsigned long val);
+-extern void __pud_error(const char *file, int line, unsigned long val);
+-extern void __pgd_error(const char *file, int line, unsigned long val);
+-
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
+ 
+@@ -57,7 +52,8 @@ extern void __pgd_error(const char *file, int line, unsigned long val);
+ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+ #define ZERO_PAGE(vaddr)	phys_to_page(__pa_symbol(empty_zero_page))
+ 
+-#define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
++#define pte_ERROR(e)	\
++	pr_err("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
+ 
+ /*
+  * Macros to convert between a physical address and its placement in a
+@@ -541,7 +537,8 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+ 
+ #if CONFIG_PGTABLE_LEVELS > 2
+ 
+-#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
++#define pmd_ERROR(e)	\
++	pr_err("%s:%d: bad pmd %016lx.\n", __FILE__, __LINE__, pmd_val(e))
+ 
+ #define pud_none(pud)		(!pud_val(pud))
+ #define pud_bad(pud)		(!(pud_val(pud) & PUD_TABLE_BIT))
+@@ -608,7 +605,8 @@ static inline unsigned long pud_page_vaddr(pud_t pud)
+ 
+ #if CONFIG_PGTABLE_LEVELS > 3
+ 
+-#define pud_ERROR(pud)		__pud_error(__FILE__, __LINE__, pud_val(pud))
++#define pud_ERROR(e)	\
++	pr_err("%s:%d: bad pud %016lx.\n", __FILE__, __LINE__, pud_val(e))
+ 
+ #define p4d_none(p4d)		(!p4d_val(p4d))
+ #define p4d_bad(p4d)		(!(p4d_val(p4d) & 2))
+@@ -667,7 +665,8 @@ static inline unsigned long p4d_page_vaddr(p4d_t p4d)
+ 
+ #endif  /* CONFIG_PGTABLE_LEVELS > 3 */
+ 
+-#define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
++#define pgd_ERROR(e)	\
++	pr_err("%s:%d: bad pgd %016lx.\n", __FILE__, __LINE__, pgd_val(e))
+ 
+ #define pgd_set_fixmap(addr)	((pgd_t *)set_fixmap_offset(FIX_PGD, addr))
+ #define pgd_clear_fixmap()	clear_fixmap(FIX_PGD)
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 13ebd5ca2070..12fba7136dbd 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -935,26 +935,6 @@ asmlinkage void enter_from_user_mode(void)
+ }
+ NOKPROBE_SYMBOL(enter_from_user_mode);
+ 
+-void __pte_error(const char *file, int line, unsigned long val)
+-{
+-	pr_err("%s:%d: bad pte %016lx.\n", file, line, val);
+-}
+-
+-void __pmd_error(const char *file, int line, unsigned long val)
+-{
+-	pr_err("%s:%d: bad pmd %016lx.\n", file, line, val);
+-}
+-
+-void __pud_error(const char *file, int line, unsigned long val)
+-{
+-	pr_err("%s:%d: bad pud %016lx.\n", file, line, val);
+-}
+-
+-void __pgd_error(const char *file, int line, unsigned long val)
+-{
+-	pr_err("%s:%d: bad pgd %016lx.\n", file, line, val);
+-}
+-
+ /* GENERIC_BUG traps */
+ 
+ int is_valid_bugaddr(unsigned long addr)
 -- 
-2.25.1
+2.23.0
 
