@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FACA26916E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78C1269185
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgINQYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:24:47 -0400
-Received: from mail-am6eur05on2050.outbound.protection.outlook.com ([40.107.22.50]:9953
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726310AbgINQYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:24:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mR3C5PQhATCsmdONy+cC0XEaMZ26D8j+5n5gX4OJhqmCUnnBZbDWwXJCy+twKlEKRzAQyvrAZH1/pAXCIe9t2JImn2O4b1PpkupMPJoqPcBbweOyfrV/ShquJnVFtRoIFRX8AYMI268goq6NhiWLYRJEfrRlN52Ju76pKvVSqXkxdReOTcKpTqZxXvZoD/S7MNWn89U4hSdl1jgxkXwVznqDnygXH3CIaRu7WDzfRem9YjQHum3R59+eKApEd1wEoGSNshCROGuGP8TDDerBC7DB7ND3EmhzPqVZaqO5NccCW6eO1PTfvSHq117myu9r3sh+Z4+sHk4Qr+f+edEdtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oMrcNaoRj9zGHVJ/B3mAde/4Isqj0p+xMMBeDwv7iUI=;
- b=bDLPAm9UGGn/GpmC23SU/EQW/+CNX8GBKUSY2sdRdueN81X0Za2d55B4wSKxCGd8qQQK3oHtAxJW6mtkem44xMEBkEQlm3VYfofyHPa9B1Rd5CTkWvXwPVxyh6zTxyX0dtjjkzAsaXiPDRx+yNlnr22cNACYa69+hgU5WhQR+pvVnJ+3kZ/r7Rpc2eVNTS4l06+cK8c12lEmiGS1uTPOcFNKhhNOMBQX6flwtAG6CT/QtejJ9uSLD/B/365Gl1fuhXwbRZsFaUl2vKm6q46/tWTmU8twLBPlrjtmHS2epENwNC74NkcRZqf0a8NH1GM/QgyUMmbFvpYquUjt67VReQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oMrcNaoRj9zGHVJ/B3mAde/4Isqj0p+xMMBeDwv7iUI=;
- b=OGF2Tszh3cZiXEvfpKDI2eu9TtPmYDpCswM+qGiEEq0PnCDtE3wbO4GVCsFiRDhbeeXkEnl8XTt2KRjw4T8ih976aGH7tSXBFEi7u1QT2EVJ5fCSGhyC+HMPi2Ch2MjLF7NCMFbAXua8fKU/vAojTbCEIAO5E51zAABUYWhtq0U=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
- by VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
- 2020 16:24:01 +0000
-Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::847a:fcdb:3b92:7a7d]) by VI1PR04MB4046.eurprd04.prod.outlook.com
- ([fe80::847a:fcdb:3b92:7a7d%5]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
- 16:24:01 +0000
-Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
- more than 8B IV
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
- <20200806163551.14395-2-andrei.botila@oss.nxp.com>
- <20200821034651.GA25442@gondor.apana.org.au>
- <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com>
- <20200908221019.GA23497@gondor.apana.org.au>
-From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
-Message-ID: <67159207-1082-48be-d085-971a84b525e0@nxp.com>
-Date:   Mon, 14 Sep 2020 19:23:57 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-In-Reply-To: <20200908221019.GA23497@gondor.apana.org.au>
+        id S1726416AbgINQaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgINQ2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:28:43 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EED9C06174A;
+        Mon, 14 Sep 2020 09:28:42 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b19so180704lji.11;
+        Mon, 14 Sep 2020 09:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ygRt9agcEbo7q8JCBAqrcVsrFofDa5xMd4dVLOvJgBA=;
+        b=TafnvzwFrP555qzfqGI06/4AwjXq1KQmawiM8R+0iJdbibFqRtCWUZTrcmTXqbIV3I
+         g0YUdQqyvlIyqudX2hn5IoIf5K67G4P3NsalvsVbhkYpYj37aiZ00JFJK/WeKVdUTUPM
+         3LYxOMYimT4swp+kGHwT6jMyd5X4vKXtvPuTw+1oJ32nF1oNhmWbVawL2yT+vbg4MkQ/
+         Uv1ui0AhOgCMkXm6/jf5j/zbjrF3mVUx/BUcD35d+/dbA8jii6Abl/rX1EzWqbZfV6u6
+         G5GhBW6zbD+PyCpDtMPVnHUlGVrc6MoJcB9chOJ5tljWIp6HhpqrJQGPgwDm6/tcLkxX
+         TGjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ygRt9agcEbo7q8JCBAqrcVsrFofDa5xMd4dVLOvJgBA=;
+        b=qXL4Ya6AggsoO1BbkF41eRmssnJMm/vYiKM6U9p2O2zcTq7IJnFbhBd0NPOhyUzR/T
+         vnXCJUDGDpUv/Pqhkr86JUWJjW1y4PUjBTceX1Kg9YhLDItSwnR4QH4AYfTWwgZH2BhT
+         +fe8dOLJ2ROsaSC/5sRY3DXVJPEDj2guPHdcUTFFiu3PzzSHh1uW82HS8jsmWiNjFOc8
+         H5YgK9kLDWOHfvb5/sEQm5EwEmliwcmnLthFpPz99GAevcuGU2gF6F2AG4qSucPdr7Ra
+         JUWKF9KyOBAF6YOLqFPk7zHkq0c1N8XN/DCFmRaRNQ2gqIKVnnCNgaoixaVdxfA2Fbo0
+         kyoA==
+X-Gm-Message-State: AOAM530LqJrtIIBHJUEkKRELSIlqJiUi94hzYFC10u0mnXumN49BERGU
+        vzzPV0eC6uMW2j8bGq5G3q4=
+X-Google-Smtp-Source: ABdhPJxkpXgg0sG6PdRnz/SglpJdWPRZ84qJISKehhFhwZJ+cAeQLVMcL/+xEA5pQXDMQy+r83ZSKw==
+X-Received: by 2002:a2e:5357:: with SMTP id t23mr5210648ljd.394.1600100920559;
+        Mon, 14 Sep 2020 09:28:40 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id u10sm3765945lfr.33.2020.09.14.09.28.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 09:28:39 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Andrew_Gabbasov@mentor.com
+References: <20200912005521.26319-1-jiada_wang@mentor.com>
+ <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
+ <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com>
+ <CAHp75VdTv-uCQue3VU=czZJd4iTG+XBVe2kFtnP+fZ1XQuFbzA@mail.gmail.com>
+ <137be969-f99a-66e0-ebe4-b86f4be2b5d3@gmail.com>
+ <CAHp75Vfg6=5u1fthsub3xw3dxAKTGPUHfamjK_A2b5hcyw25PA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <e116e162-763a-ff0f-5b33-35024d0f57c2@gmail.com>
+Date:   Mon, 14 Sep 2020 19:28:38 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75Vfg6=5u1fthsub3xw3dxAKTGPUHfamjK_A2b5hcyw25PA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM4PR0501CA0055.eurprd05.prod.outlook.com
- (2603:10a6:200:68::23) To VI1PR04MB4046.eurprd04.prod.outlook.com
- (2603:10a6:803:4d::29)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.129] (78.97.206.147) by AM4PR0501CA0055.eurprd05.prod.outlook.com (2603:10a6:200:68::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Mon, 14 Sep 2020 16:24:00 +0000
-X-Originating-IP: [78.97.206.147]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2b550fd8-b8df-4179-f023-08d858ca96d5
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4046:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB404673AA430DCBE7A38F141698230@VI1PR04MB4046.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BWGC2ZbbUtskszYJANqw+rzghdDV5VsryAj2kwC4BnXaVBF8adEKs60lVQ8cwX0yLTaoMVwBN3+LqrrJqVW+luNDsWr+QdTZhLBP8UGt7MCDJntmqpZkAPAaM0EZD8vHN39OctAzXaQIW0sbVuUkzM6dlRvsSU39wrqZipdr3bX/gx0Tf9qYTi4+oVWWcZm79vgeRitDmJNdVG+lg1Gtr8mSvMkR2XWTYX5fSK4K6ZlaT8uX4KOruJMlBTsHI9U41cnX1h6VNsp5W9WhOYdvqJgFKyFJBKyTvAibXOSAbo/zBetSADldFHvZyDPej/SoF+We5ORTbJUuZKCxuSUcIL9Gwbl1hPhAG98ywEZFH9UaLq8Sp3UVtYV74XQkqKXb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(366004)(136003)(36756003)(83380400001)(4744005)(6486002)(16576012)(316002)(8936002)(6666004)(66946007)(66476007)(66556008)(54906003)(186003)(26005)(16526019)(52116002)(2906002)(31696002)(6916009)(8676002)(478600001)(956004)(53546011)(31686004)(5660300002)(2616005)(86362001)(4326008)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: WZTZoyOJjF/kIg/SAGs+3xV6vdtaalxHzmSXOVYU9OAqwoe9vvvKx5uk2rg8OSPY9xRDg3S8NHTJUXee+PAL168XbfLrzfpn5OhBnhw9uAwL7LhDc1cuOZoN3wumbSS0h6NZ1UVYNbRlCv/bBRbWOum6Az8yRYobM2Z6FkVG1JtX6MszbmWlMSamo7WbbWG1isYMecvJrUmyGKApaNmGKpeUabYDJDXi8/twQi4mAWU2jnEjCtHWYiJ00X35oV8EdI9BDBUKBaS4LfV1ybmeoKmtniE5n5tT0tLs4ebtoU6kVwicPI36pbNXvo6HQMEtsIlr1q0IVBYQQrNW5v9WMc/y2mioTltCCFX8T6bWF9RpK6NxkKpAgF8/tvCtvA0giyXD2zT34xn+JRWYXm/WKRBO4Gasga6vy5CYD2TW6c7s3GN69r29DKwvJWlFHM/qLp8b3fVcsyxOcTMrQdLcvjHzPo8NHJV7yMvYMlaPY51Wr26oXSTLIkTnujSIA/AGAwORqvnj6/KXdPv/N+YBcyE9pd+7CiFXXyHIGkWAz2B9b6ABf/Qjm10PO8+vV0j0LJcndWE2/l/WRQT7iDQ0r3JSxoxECdOnqacYVzGH3u9a8xtTZdHfoHVNkS7YBoO0UmqvCds8A3IytKCXmClHsw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b550fd8-b8df-4179-f023-08d858ca96d5
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 16:24:01.2604
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vCLp2MyblmVteqrBIHWjS99pH+vWHz+IJUhMM1AhuLq4N09FmJdtI1PpJjuP5uYw1dZhv3kvMnLqtqt5S/E2nw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4046
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/2020 1:10 AM, Herbert Xu wrote:
-> On Tue, Sep 08, 2020 at 01:35:04PM +0300, Horia Geantă wrote:
->>
->>> Just go with the get_unaligned unconditionally.
->>
->> Won't this lead to sub-optimal code for ARMv7
->> in case the IV is aligned?
+14.09.2020 18:50, Andy Shevchenko пишет:
+...
+>> It's more preferred
+>> to accept patch as-is if it does right thing and then maintainer could
+>> modify the patch, making cosmetic changes.
 > 
-> If this should be optimised in ARMv7 then that should be done
-> in get_unaligned itself and not open-coded.
-> 
-I am not sure what's wrong with avoiding using the unaligned accessors
-in case data is aligned.
+> It depends on the maintainer's workflow (which may be different from
+> maintainer to maintainer).
 
-Documentation/core-api/unaligned-memory-access.rst clearly states:
-These macros work for memory accesses of any length (not just 32 bits as
-in the examples above). Be aware that when compared to standard access of
-aligned memory, using these macros to access unaligned memory can be costly in
-terms of performance.
+Sure!
 
-So IMO it makes sense to use get_unaligned() only when needed.
-There are several cases of users doing this, e.g. siphash.
+It's awesome that you're pointing out it all in the reviews because it's
+important to have such things explained and definitely should help to
+improve quality of further of patches! But it shouldn't be necessary to
+demand a very minor changes, IMO.
 
-Thanks,
-Horia
+In particular Jiada was submitting this and lots of other atmel_mxt_ts
+patches for about a year now without much progress yet, and you probably
+should know how a frustrating experience this could be for a contributor
+since you're a longtime kernel developer.
