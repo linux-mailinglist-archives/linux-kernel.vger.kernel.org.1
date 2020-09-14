@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF34E26952F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3CE269534
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgINStR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
+        id S1726007AbgINSxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgINStI (ORCPT
+        with ESMTP id S1725914AbgINSw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:49:08 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF470C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:49:07 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gr14so1480605ejb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:49:07 -0700 (PDT)
+        Mon, 14 Sep 2020 14:52:56 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0CDC06174A;
+        Mon, 14 Sep 2020 11:52:55 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id k25so860186qtu.4;
+        Mon, 14 Sep 2020 11:52:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XNLJ+xjVvOMpCmSdVCa36PkRJx42dV1m6nWMcfy3Glo=;
-        b=wFfqFtYMOLI+0jTr1Ju46hgUfEjxynPRcCieujDSTYPQLO3Wz7Cb0Rs9Vah5e73rtv
-         XQdQtmK3qvGtjdCiQgNDRhEGZJiwtxY/J6R/WOTGNCGSqzCFmjiRgxR1O4kB7OvkyrAC
-         z/Rr65zwnnGTVClj/Rd/Z9od9eQfOhs/onK9rH0bn9BVvfYYrv5/KAb6715waA5HOXX+
-         //dfl/hE0zs+XivvUe+jX8QEzv0w3JgunUKQuhaAVeXg8ff5i1geWCXNByBWz58oJygN
-         gvZriXMB6vq6+0pbrUsGxpTMwQOvHE3EV6tI4fiJv00lR+xO3ti/beabAFmq2hzcyrnL
-         Di0A==
+        bh=cRuE7ghYmX/MnQQcJBt4NDc6WttGR8e1vIUwI+1gPGA=;
+        b=UkRrlE0m1+WF9msVPr5gid8roJaZt1r/OaDQRSyARhhE2uG/LpFzV4A8O2BgFe9IPV
+         s/YYuXXzYjOA3bwgt09LzqgiryW058mZ9M6MLiucyIRnfOm88EEn+a8byN4gdrQGKsmY
+         Be3s2tamJOxHcVFHpaamPWM5+tfrwYeKrz/lkszY7r+8ifHgRJ6WT6RRXfQuPLz5Hheo
+         tRj5diMAy/AmHvYFGYQQ5CNF+T7P86ExaIUB/fG0TiYfTXjbWqU9Km8WIZUn+x1pOpr4
+         s6MDO2GzC631it4Y5UlFJziZ67zBVHiqY8hcvQj6GREu6JNTf5npc33KFXPB1XL9XjZz
+         4Vig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XNLJ+xjVvOMpCmSdVCa36PkRJx42dV1m6nWMcfy3Glo=;
-        b=PGG2c9c/zETr++fj8d/Uzg4hW4xynDlGqo9/uSw3weXQ4CB7k9GqN0mQD7R3Quf+dW
-         kWjsNjAAU2rQF/LGb20iYTOx4sK9U/RfKHGO2qnMG6JOCZe56w2lIYrQ06BV/OUxqnKN
-         N7i+PmuOFEzLYDUKyG0jsKFwAPw4FF/SYT43NXVsMpBbhGsJBK8Cvi2vD+RDkNiHadkw
-         dy1EIVNa95OS4J8RfwfcrOx/GLAo4L2Rud0eWhAUdRzP8TXRA7lTTQXq6fm7SM5t2nqO
-         UFLqyske0iFlyjKf++B09ejavvi6yH8pioi3SNuq7yrRMIoxwegWidk6rSzC/MI2E6fG
-         WSug==
-X-Gm-Message-State: AOAM530BeI+QZ2cZjZPypzlEQM7q3CeIirHbkijPw8iIACja5pZJXNzl
-        /p5I7/k+DF0d3pLsGEqts3T3xmJEaDU3zGN/s2nf0PWJ9ro=
-X-Google-Smtp-Source: ABdhPJyQc42CNpKB/uvcBWCzbEhFPJVjqubuleFZPmg0KttJXoHjk6uL8u2I35aisclmSe/0Gr6qtMTDuYA+Ch/b2JY=
-X-Received: by 2002:a17:906:8143:: with SMTP id z3mr15831636ejw.323.1600109346470;
- Mon, 14 Sep 2020 11:49:06 -0700 (PDT)
+        bh=cRuE7ghYmX/MnQQcJBt4NDc6WttGR8e1vIUwI+1gPGA=;
+        b=TRHWDDcKX17GIBWIC2DpPM95S5tLCtTJtiy0WbzDAsGSSkI3FhrNqzJ2m26YIcWLoC
+         IVJCHdv+hn+aGShafRNCUn+iB9nZubhWH2ID3lmuf8hTfIwomn5/Ma0+aXTTWQ+MrVzS
+         YSPuZIukp0xRAWI5ZKYsI3u91uN9/ToUxlPJiQwdAvy/ESgobgfYpN6AGChHw8G6//lL
+         VMMR7oYMPpj4bxn89dty705atTrlcnDuCIbJrpgRvrddkZF4bRghALJGrIbrTmHWG74c
+         ldJu8nYQA5KG3lN2aW6ZjBf+I1E32GINz4lhm8A0Tk9pV28HxpIAXququJxSUAaKFWeD
+         Cq8g==
+X-Gm-Message-State: AOAM532E0mvgWI0fHQzn9smLcVa2CHyvLGUlaxKYamCbG/memdLI5Sap
+        ZVmvT54H4KEsvXcYOGnOTJGskuO6lEVJqq+j3UU=
+X-Google-Smtp-Source: ABdhPJxhDixSFUwxkAnEUQeXy07ajAOQms0ZLcAVN9gFyyOzsMsuLpLHTuY8o7iLRBRsA5g/KT7lYKHt6LTXZh1bHxo=
+X-Received: by 2002:ac8:660a:: with SMTP id c10mr2319819qtp.300.1600109572562;
+ Mon, 14 Sep 2020 11:52:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
- <20200914175604.GF680@zn.tnic>
-In-Reply-To: <20200914175604.GF680@zn.tnic>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 14 Sep 2020 11:48:55 -0700
-Message-ID: <CAPcyv4hqxs1zuXb5jkA-6Fm72Vu0ZDCfqeWJKSePM+zFyY9kzg@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess speculation
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
+ <20200914122042.GA24441@willie-the-truck> <20200914123504.GA124316@apalos.home>
+ <20200914132350.GA126552@apalos.home> <20200914140114.GG24441@willie-the-truck>
+ <20200914181234.0f1df8ba@carbon> <20200914170205.GA20549@apalos.home>
+ <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
+ <20200914175516.GA21832@apalos.home> <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
+ <20200914182756.GA22294@apalos.home>
+In-Reply-To: <20200914182756.GA22294@apalos.home>
+From:   Xi Wang <xi.wang@gmail.com>
+Date:   Mon, 14 Sep 2020 11:52:16 -0700
+Message-ID: <CAKU6vyYhG20qaA1iKwD=-pZHWjZYEZvX6Qmjs=aA-uJ-uwCw7w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Rutland <mark.rutland@arm.com>
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:56 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Thu, Sep 10, 2020 at 12:22:53PM -0500, Josh Poimboeuf wrote:
-> > +/*
-> > + * Sanitize a user pointer such that it becomes NULL if it's not a valid user
-> > + * pointer.  This prevents speculative dereferences of user-controlled pointers
-> > + * to kernel space when access_ok() speculatively returns true.  This should be
-> > + * done *after* access_ok(), to avoid affecting error handling behavior.
->
-> Err, stupid question: can this macro then be folded into access_ok() so
-> that you don't have to touch so many places and the check can happen
-> automatically?
+On Mon, Sep 14, 2020 at 11:28 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+> Even if that's true, is any reason at all why we should skip the first element
+> of the array, that's now needed since 7c2e988f400 to jump back to the first
+> instruction?
+> Introducing 2 extra if conditions and hotfix the array on the fly (and for
+> every future invocation of that), seems better to you?
 
-I think that ends up with more changes because it changes the flow of
-access_ok() from returning a boolean to returning a modified user
-address that can be used in the speculative path.
+My point was that there's no inherently correct/wrong way to construct
+offsets.  As Luke explained in his email, 1) there are two different
+strategies used by the JITs and 2) there are likely similar bugs
+beyond arm64.
+
+Each strategy has pros and cons, and I'm fine with either.  I like the
+strategy used in your patch because it's more intuitive (offset[i] is
+the start of the emitted instructions for BPF instruction i, rather
+than the end), though the changes to the construction process are
+trickier.
+
+If we decide to patch the arm64 JIT the way you proposed, we should
+consider whether to change other JITs consistently.
