@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85271269352
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B062269354
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgINR3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        id S1726198AbgINRaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726276AbgINR2Y (ORCPT
+        with ESMTP id S1726285AbgINR2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:28:24 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0252EC061356
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k18so840080wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:14 -0700 (PDT)
+        Mon, 14 Sep 2020 13:28:32 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F6BC06121E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:18 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so799926wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ev8PHeG2wBS2zSKo7R1VQ4GKo6oUzjZvdtqCLwJ3pDs=;
-        b=Ihcd/I42/8bqTmauvPs6wDsvnxOAZx+wYOevPiQvp+xJchPV5GVJkIShVJHhNU2FjO
-         Zf1FpuxhmFlq6/3mUCs6IS98Ps2pku3dV/3fh5ECJ4gDZPm9+Ct13ppA30R3IhTtGzSd
-         KyjRpOxXeBwr5vS+ttAyiOJy1txvnpeI7w+7wvzy7JfFhvY/m6Hyiw0ksxJxvBH1TKmw
-         CpSNjsUVu0fP6g5CeuWF6cI5+zgTBD8gSJA/WEILjUZoiAXavXc7DnpojnXNHupGQsvG
-         s7eZ41WyrXa0IMZ4lhH1LzLbNKcQgdbq0M8s5dYCdEOag6uxg2zPjBYciaEkq0N6363O
-         Svhw==
+        bh=/EjNih3r7ygkjYASNBWp7YtEX1KLL1OovUvtOR4yQ8E=;
+        b=LDOJW73/Nx4NRSF62nukRv0fkeOiLGfPXVP1aJhDKCMUKmk3HmHAf6NWlyYj1Fc30H
+         4ctb86ijJJ+PMUx7pA1+2eEIf+G0cmjOvbtE9oBe55C3Cvn1qkgI3USj0yAzKEsPU9q0
+         Kg6zWbX13Nvf35fM5FUm0vCKYp5AV89AlTGoxiq/9SNtkV9H5JeJZSjohjU7p9UCPTCc
+         AFzF0SLwziqh80xl5uTlhqNQPcFqdMho3+ObPMEgdgw7XZugj3HlUg9gMeuZ9Wl5vn3G
+         sEIZ2338YOSdEnkx35Dj1zujfiD6uqhHIIRpeBrFBUJeHIahNLU31ZLtfIcNVZWFj6tG
+         ir0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ev8PHeG2wBS2zSKo7R1VQ4GKo6oUzjZvdtqCLwJ3pDs=;
-        b=S1b50g0UOFKENUUC2dNwlfprLjOWS4sB+iDPoBxJgY7doSs9ZuV6crABIcLE/ey6hS
-         dNUybwB64Sablo345Sejr+wPgpxCaf/eGHJDjJa0Teu+orKaKDPEmw6paxjD2JKHXC8q
-         EfyzpKR2C2Pmd2xZ0iE7zPibAnOY8VX3gD3nB+eENPpOn3U3nS7ir2/EXL5/Vfn0R64M
-         d0TiWMvNOlF0pLejhbdk3DmaHGwUpGX/P4p1xP+YpknQ2K6nSZYTFGSxNVmPfBwShBv6
-         szLQ9roRNhMZodZc/KI0i1tBgKETHDSFXkm9v5SWBWc+nhWkYJ1fMm/NWXEfIlhlpFcJ
-         aY1Q==
-X-Gm-Message-State: AOAM532RKGwRmdkEt89bCradx1637hU614GLcpwQLbkg1GjqJ89RBfLV
-        W1eXkCqmkXnYMv7ZNpz6SXdyRw==
-X-Google-Smtp-Source: ABdhPJwtapIR59wfa+PjunnI9DEEbaEmNaoIsHmxwFfZkq+7/rS32R8lqozJpnsFIN4Urr9dofZ6Kw==
-X-Received: by 2002:a1c:f619:: with SMTP id w25mr459880wmc.62.1600104493518;
-        Mon, 14 Sep 2020 10:28:13 -0700 (PDT)
+        bh=/EjNih3r7ygkjYASNBWp7YtEX1KLL1OovUvtOR4yQ8E=;
+        b=ssyEu3icJ+EHCDglqRYEsKgZCgTm65xCa2XMPSNOYcDNkbmIOq+CJb16nn/VNolx4y
+         ACdAGUMJEghELCBK8OLVXCIOZgRZ65O/Q65m52wIZMAr2Cyfil6e42CK3x8F1b24MgnH
+         UC5k6nmI4RLg3mT+PZ+pow65qER1/aof8CvqGDYbsCRjyNgecEsbkkUbcXfMjUchFpDq
+         SPaqEYxMHtxw17QzRaw5Kc1qoOWGk5UMIuhW6ru2TU/MTnoP7Lb+DEblyv6obZ09OnGV
+         BdfbDFmTVWL33GdRwlnxLDWRBFD/XYRk8JSkPJXd7TpKN2lOZWyA3Y67V+h5djOaTnnr
+         VmlQ==
+X-Gm-Message-State: AOAM5303nkB/OEJqB0PvYTNb/qgmARG1QZoKJEpzYJxQFhokihObR7rp
+        ATk1Lukdt/W+XLGA8zl5NpjkxA==
+X-Google-Smtp-Source: ABdhPJz7n/8ZzKopjoksEbonJHe8/t/B9RylxHy4LiUHqu75FJ9ZhVdcDVjP7yVogd6IknutagEtqw==
+X-Received: by 2002:a1c:a551:: with SMTP id o78mr486952wme.4.1600104497464;
+        Mon, 14 Sep 2020 10:28:17 -0700 (PDT)
 Received: from localhost (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
-        by smtp.gmail.com with ESMTPSA id s12sm13377783wmd.20.2020.09.14.10.28.12
+        by smtp.gmail.com with ESMTPSA id a17sm22898300wra.24.2020.09.14.10.28.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 10:28:12 -0700 (PDT)
+        Mon, 14 Sep 2020 10:28:16 -0700 (PDT)
 From:   George-Aurelian Popescu <georgepope@google.com>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
         masahiroy@kernel.org, michal.lkml@markovi.net
@@ -61,9 +61,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         akpm@linux-foundation.org, dvyukov@google.com, elver@google.com,
         tglx@linutronix.de, arnd@arndb.de,
         George Popescu <georgepope@google.com>
-Subject: [PATCH 06/14] Fix CFLAGS for UBSAN_BOUNDS on Clang
-Date:   Mon, 14 Sep 2020 17:27:42 +0000
-Message-Id: <20200914172750.852684-7-georgepope@google.com>
+Subject: [PATCH 08/14] KVM: arm64: Enable UBsan check for unreachable code inside hyp/nVHE code
+Date:   Mon, 14 Sep 2020 17:27:44 +0000
+Message-Id: <20200914172750.852684-9-georgepope@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 In-Reply-To: <20200914172750.852684-1-georgepope@google.com>
 References: <20200914172750.852684-1-georgepope@google.com>
@@ -76,38 +76,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: George Popescu <georgepope@google.com>
 
-When the kernel is compiled with Clang, UBSAN_BOUNDS inserts a brk after
-the handler call, preventing it from printing any information processed
-inside the buffer.
-For Clang -fsanitize=bounds expands to -fsanitize=array-bounds and
--fsanitize=local-bounds, and the latter adds a brk after the handler
-call
+The data from __ubsan_handle_builtin_unreachable is passed to the buffer
+and printed inside the kernel by its symmetric handler.
 
 Signed-off-by: George Popescu <georgepope@google.com>
 ---
- scripts/Makefile.ubsan | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/kvm_ubsan.h |  5 ++++-
+ arch/arm64/kvm/hyp/nvhe/ubsan.c    | 12 +++++++++++-
+ arch/arm64/kvm/kvm_ubsan_buffer.c  |  3 +++
+ 3 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/Makefile.ubsan b/scripts/Makefile.ubsan
-index 27348029b2b8..3d15ac346c97 100644
---- a/scripts/Makefile.ubsan
-+++ b/scripts/Makefile.ubsan
-@@ -4,7 +4,14 @@ ifdef CONFIG_UBSAN_ALIGNMENT
- endif
+diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
+index 575881e0bd5f..7fd0d0dfbd82 100644
+--- a/arch/arm64/include/asm/kvm_ubsan.h
++++ b/arch/arm64/include/asm/kvm_ubsan.h
+@@ -20,10 +20,12 @@ struct ubsan_values {
+ struct kvm_ubsan_info {
+ 	enum {
+ 		UBSAN_NONE,
+-		UBSAN_OUT_OF_BOUNDS
++		UBSAN_OUT_OF_BOUNDS,
++		UBSAN_UNREACHABLE_DATA
+ 	} type;
+ 	union {
+ 		struct out_of_bounds_data out_of_bounds_data;
++		struct unreachable_data unreachable_data;
+ 	};
+ 	union {
+ 		struct ubsan_values u_val;
+@@ -32,3 +34,4 @@ struct kvm_ubsan_info {
+ #endif
  
- ifdef CONFIG_UBSAN_BOUNDS
--      CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
-+      # For Clang -fsanitize=bounds translates to -fsanitize=array-bounds and
-+      # -fsanitize=local-bounds; the latter adds a brk right after the
-+      # handler is called.
-+      ifdef CONFIG_CC_IS_CLANG
-+            CFLAGS_UBSAN += $(call cc-option, -fsanitize=array-bounds)
-+      else
-+            CFLAGS_UBSAN += $(call cc-option, -fsanitize=bounds)
-+      endif
- endif
+ void __ubsan_handle_out_of_bounds(void *_data, void *index);
++void __ubsan_handle_builtin_unreachable(void *_data);
+diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+index b2d3404f6215..9497e7f7f397 100644
+--- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
++++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+@@ -58,6 +58,16 @@ void __ubsan_handle_out_of_bounds(void *_data, void *index)
  
- ifdef CONFIG_UBSAN_MISC
+ void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs) {}
+ 
+-void __ubsan_handle_builtin_unreachable(void *_data) {}
++void __ubsan_handle_builtin_unreachable(void *_data)
++{
++	struct kvm_ubsan_info *slot;
++	struct unreachable_data *data = _data;
++
++	slot = kvm_ubsan_buffer_next_slot();
++	if (slot) {
++		slot->type = UBSAN_UNREACHABLE_DATA;
++		slot->unreachable_data = *data;
++	}
++}
+ 
+ void __ubsan_handle_load_invalid_value(void *_data, void *val) {}
+diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
+index ce796bdd027e..f66cc5f7878e 100644
+--- a/arch/arm64/kvm/kvm_ubsan_buffer.c
++++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
+@@ -25,6 +25,9 @@ void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
+ 		__ubsan_handle_out_of_bounds(&slot->out_of_bounds_data,
+ 				slot->u_val.lval);
+ 		break;
++	case UBSAN_UNREACHABLE_DATA:
++		__ubsan_handle_builtin_unreachable(&slot->unreachable_data);
++		break;
+ 	}
+ }
+ 
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
