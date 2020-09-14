@@ -2,275 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFEB2693CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D6D26939D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgINRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
+        id S1726280AbgINRhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbgINMX2 (ORCPT
+        with ESMTP id S1726418AbgINM1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:23:28 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C54BC0698C2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:18:40 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id h126so11657839ybg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:18:40 -0700 (PDT)
+        Mon, 14 Sep 2020 08:27:17 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF1EC035430
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:23:14 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id e7so13202593qtj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=95MkvjALtD+pWjI9L+dX9jS5l3VsX/dwVwk6PdF2H90=;
-        b=BUvMIK5XM9/nSld70H/GBdIBvh2rIH9jwVh7E1IIo3gf+O+eVnOdStAbg+NveSxK7z
-         e/XTV+vzv/3uHTlycyTHZ6NAP3kzlg0reNW4YWL71VPf1wB8oGisMQBQgAgMNPIx3cnN
-         Vvdt2NZHPLkg9yIAdHfj9DXEGJdPO7P5XqRo7dAiPsBeZhDsOwN1CtuCy4G+Msha0XO0
-         JslegxXzxikldWKnjhEcEWvtQKwuSqXWQJRSm0llo1ZOmwPqN/v29jLjAWYhfeJHfWgq
-         FcK3c/fpRNXSvH2lCrn/2KY4t2uEbmR4g5XA1l31V2d0hsN7k0jwLeisbZ0ZByI78EPU
-         CfCw==
+         :cc;
+        bh=Ss/SJTzMTJ6NYsdm+9+ea3ztoCizcQb7pDEcNQl4ncE=;
+        b=uBVbEj6Cdt5Xpcoc/QjsSCWjRuOYPppGUAMQswNE6iEFdkkPE7hYc7MVjS0Jt6LzKQ
+         B4jEtW8FBqlKL5wlwDGAj0hO7YwPyaxny0w52rRjrC157LQncmTgyYMLZQ8L1h1Ndc0e
+         LAAo3MLRN2X1sxX84qh1DMTZLlRqY0+F0peD43rp+jW6hOXX4HuUB/uqZZxoBOwjgFQ3
+         5fymYQbfDFpyOVqsn8Bc7EhFVZlQtDotvB00B9Ao5X4qYV6Qsehr4PWxwpVNo6No2RtC
+         /31kJ118bZF91QlPr+WDPOM61Oaa4RLlZ8kvIGMxyQTYYXEd3KAk3yi2esRX5WXiqlIo
+         1I5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=95MkvjALtD+pWjI9L+dX9jS5l3VsX/dwVwk6PdF2H90=;
-        b=SjG+aboNeR1Wks5TVRzq9aoICGV4LRdCxBzslaUdHbKFr7jJLDscyfKkV5L82EXP0R
-         ctpSfRdpueqRyFQnsAAHnx2wUzNrqiP8WH2OqdKtgbBUaP5SNCy5RG3rfQR2aXgqPwCr
-         UZXZpwaDjaPgrnqUm4U3ji5JFK8H96Y6BFlYY7oCdipDIO4ys8yiuV+PLbasYFL/c1/5
-         1R/2JeTnRV8kz+aMEdJnrjM1TyL9FX0DtzflkAh7L/VIGXm771wvlzINVFtPCE1J71fw
-         EPYmQOXs25GUWOHKYHZrDnI6KK+N5TwYOJGMoBlx/YG2U6JDctbZeJM1BHBhrehni1Dc
-         m3xQ==
-X-Gm-Message-State: AOAM530wzH3WeulbH9Y5DhMFc6OvO6H/rZj+Lmi/peHbdoHw+oc1YDvk
-        7ShtENV6szqJNiKDYz/DXFt1f1LyEX5rafggwwoVzw==
-X-Google-Smtp-Source: ABdhPJxjgaCTkVcsuVGglaPfAZXtOAa3ztmw6wM6ggRMFf1DI4xOOd4Bkak99KEX4rW77bs7qnBN4tc79sW8Wyszurk=
-X-Received: by 2002:a25:db88:: with SMTP id g130mr20706294ybf.193.1600085919205;
- Mon, 14 Sep 2020 05:18:39 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Ss/SJTzMTJ6NYsdm+9+ea3ztoCizcQb7pDEcNQl4ncE=;
+        b=hOJZ1Rsg82JA8iNTQQhvB4OsjsEAGbu+8Boh5POZRDAoGAu6DSONkvfiISeF1rjQLT
+         4lUKUXqe04mI34FYZjqxNEWIysuRxg2E3Oveak/62F2ebH7S23PAF2MJzx0jG2nGXC/W
+         GUdS/7TLESeJA0q/csxNu7OoPGtmueHUHNMiTgK9elGTWYJhrSjLZrnfySyYgjzUxrMf
+         uJyIp50av66pmsGttZyhZ5pWjrN7n+I2LbWpLIS5eI6RliB9tlPXHmG9uBahml7q0MUZ
+         mxKBGv0EpJ7BPnYZm++MC86/uixphJeUWobPy5TUqXPtK6XPGzDJNodGWotwCoTKKs4F
+         7MLA==
+X-Gm-Message-State: AOAM533uN9z0JC1vG2H0v5DzPvmU+EYuwPPeH01ercuc22y1JKc2jmxb
+        Dccbb0/NmtS71B3g5oZoILZx/gZ5zpNbXHCPq8bMZg==
+X-Google-Smtp-Source: ABdhPJxyjqA5/R/K1Ry2BRSKLbc2E5dnKKVFUC6+i55LxxvnYq/h93UjdlUviTAEWQYcvD5A4YkOQyPSGwYZekqeE2U=
+X-Received: by 2002:ac8:bc9:: with SMTP id p9mr474696qti.50.1600086193654;
+ Mon, 14 Sep 2020 05:23:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200910060403.144524-1-josephsih@chromium.org>
- <20200910140342.v3.1.I56de28ec171134cb9f97062e2c304a72822ca38b@changeid> <20200910081842.yunymr2l4fnle5nl@pali>
-In-Reply-To: <20200910081842.yunymr2l4fnle5nl@pali>
-From:   Joseph Hwang <josephsih@google.com>
-Date:   Mon, 14 Sep 2020 20:18:27 +0800
-Message-ID: <CAHFy418Ln9ONHGVhg513g0v+GxUZMDtLpe5NFONO3HuAZz=r7g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] Bluetooth: btusb: define HCI packet sizes of USB Alts
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <00000000000005f0b605af42ab4e@google.com> <87zh5stv04.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87zh5stv04.fsf@x220.int.ebiederm.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 14 Sep 2020 14:23:01 +0200
+Message-ID: <CACT4Y+ZcrHFS45-NFxZKWdoesCdLwk-_1YvMJr01FRL1sG-ZeQ@mail.gmail.com>
+Subject: Re: KASAN: unknown-crash Read in do_exit
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian@brauner.io>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 4:18 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
+On Mon, Sep 14, 2020 at 2:15 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
 >
-> On Thursday 10 September 2020 14:04:01 Joseph Hwang wrote:
-> > It is desirable to define the HCI packet payload sizes of
-> > USB alternate settings so that they can be exposed to user
-> > space.
+> syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com> writes:
+>
+> > Hello,
 > >
-> > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> > syzbot found the following issue on:
+>
+> Skimming the code it appears this is a feature not a bug.
+>
+> The stack_not_used code deliberately reads the unused/unitiailized
+> portion of the stack, to see if that part of the stack was used.
+>
+> Perhaps someone wants to make this play nice with KASAN?
+>
+> KASAN should be able to provide better information than reading the
+> stack to see if it is still zeroed out.
+>
+> Eric
+
+Hi Eric,
+
+Thanks for looking into this.
+
+There may be something else in play here. Unused parts of the stack
+are supposed to have zero shadow. The stack instrumentation code
+assumes that. If there is some garbage left in the shadow (like these
+"70 07 00 00 77" in this case), then it will lead to very obscure
+false positives later (e.g. some out-of-bounds on stack which can't be
+explained easily).
+If some code does something like "jongjmp", then we should clear the
+stack at the point of longjmp. I think we did something similar for
+something called jprobles, but jprobes were removed at some point.
+
+Oh, wait, the reproducer uses /dev/fb. And as far as I understand
+/dev/fd smashes kernel memory left and right. So most likely it's some
+wild out of bounds write in /dev/fb.
+
+> > HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=170a7cf1900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=d9ae84069cff753e94bf
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10642545900000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141f2bed900000
+> >
+> > Bisection is inconclusive: the issue happens on the oldest tested release.
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b9ffcd900000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=1479ffcd900000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1079ffcd900000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KASAN: unknown-crash in stack_not_used include/linux/sched/task_stack.h:101 [inline]
+> > BUG: KASAN: unknown-crash in check_stack_usage kernel/exit.c:692 [inline]
+> > BUG: KASAN: unknown-crash in do_exit+0x24a6/0x29f0 kernel/exit.c:849
+> > Read of size 8 at addr ffffc9000cf30130 by task syz-executor624/10359
+> >
+> > CPU: 1 PID: 10359 Comm: syz-executor624 Not tainted 5.9.0-rc4-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+> >  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
+> >  __kasan_report mm/kasan/report.c:513 [inline]
+> >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+> >  stack_not_used include/linux/sched/task_stack.h:101 [inline]
+> >  check_stack_usage kernel/exit.c:692 [inline]
+> >  do_exit+0x24a6/0x29f0 kernel/exit.c:849
+> >  do_group_exit+0x125/0x310 kernel/exit.c:903
+> >  get_signal+0x428/0x1f00 kernel/signal.c:2757
+> >  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+> >  exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
+> >  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
+> >  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x446b99
+> > Code: Bad RIP value.
+> > RSP: 002b:00007f70f5ed9d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+> > RAX: 0000000000002878 RBX: 00000000006dbc58 RCX: 0000000000446b99
+> > RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000020002004ffc
+> > RBP: 00000000006dbc50 R08: ffffffffffffffff R09: 0000000000000000
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc5c
+> > R13: 00007f70f5ed9d20 R14: 00007f70f5ed9d20 R15: 000000000000002d
+> >
+> >
+> > Memory state around the buggy address:
+> >  ffffc9000cf30000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >  ffffc9000cf30080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> >>ffffc9000cf30100: 00 00 00 00 00 00 70 07 00 00 77 00 00 00 00 00
+> >                                      ^
+> >  ffffc9000cf30180: 00 00 70 07 00 00 70 07 00 00 00 00 77 00 70 07
+> >  ffffc9000cf30200: 00 70 07 00 77 00 00 00 00 00 70 07 00 00 00 00
+> > ==================================================================
+> >
+> >
 > > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
 > >
-> > Changes in v3:
-> > - Set hdev->sco_mtu to rp->sco_mtu if the latter is smaller.
-> >
-> > Changes in v2:
-> > - Used sco_mtu instead of a new sco_pkt_len member in hdev.
-> > - Do not overwrite hdev->sco_mtu in hci_cc_read_buffer_size
-> >   if it has been set in the USB interface.
-> >
-> >  drivers/bluetooth/btusb.c | 45 +++++++++++++++++++++++++++++----------
-> >  net/bluetooth/hci_event.c | 14 +++++++++++-
-> >  2 files changed, 47 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> > index fe80588c7bd3a8..651d5731a6c6cf 100644
-> > --- a/drivers/bluetooth/btusb.c
-> > +++ b/drivers/bluetooth/btusb.c
-> > @@ -459,6 +459,24 @@ static const struct dmi_system_id btusb_needs_rese=
-t_resume_table[] =3D {
-> >  #define BTUSB_WAKEUP_DISABLE 14
-> >  #define BTUSB_USE_ALT1_FOR_WBS       15
-> >
-> > +/* Per core spec 5, vol 4, part B, table 2.1,
-> > + * list the hci packet payload sizes for various ALT settings.
-> > + * This is used to set the packet length for the wideband speech.
-> > + * If a controller does not probe its usb alt setting, the default
-> > + * value will be 0. Any clients at upper layers should interpret it
-> > + * as a default value and set a proper packet length accordingly.
-> > + *
-> > + * To calculate the HCI packet payload length:
-> > + *   for alternate settings 1 - 5:
-> > + *     hci_packet_size =3D suggested_max_packet_size * 3 (packets) -
-> > + *                       3 (HCI header octets)
-> > + *   for alternate setting 6:
-> > + *     hci_packet_size =3D suggested_max_packet_size - 3 (HCI header o=
-ctets)
-> > + *   where suggested_max_packet_size is {9, 17, 25, 33, 49, 63}
-> > + *   for alt settings 1 - 6.
->
-> Thank you for update, now I see what you mean!
->
-> > + */
-> > +static const int hci_packet_size_usb_alt[] =3D { 0, 24, 48, 72, 96, 14=
-4, 60 };
->
-> Now the another question, why you are using hci_packet_size_usb_alt[1]
-> and hci_packet_size_usb_alt[6] values from this array?
-
-Will answer it per the spec in the next patch series.
-
->
-> > +
-> >  struct btusb_data {
-> >       struct hci_dev       *hdev;
-> >       struct usb_device    *udev;
-> > @@ -3959,6 +3977,15 @@ static int btusb_probe(struct usb_interface *int=
-f,
-> >       hdev->notify =3D btusb_notify;
-> >       hdev->prevent_wake =3D btusb_prevent_wake;
-> >
-> > +     if (id->driver_info & BTUSB_AMP) {
-> > +             /* AMP controllers do not support SCO packets */
-> > +             data->isoc =3D NULL;
-> > +     } else {
-> > +             /* Interface orders are hardcoded in the specification */
-> > +             data->isoc =3D usb_ifnum_to_if(data->udev, ifnum_base + 1=
-);
-> > +             data->isoc_ifnum =3D ifnum_base + 1;
-> > +     }
-> > +
-> >  #ifdef CONFIG_PM
-> >       err =3D btusb_config_oob_wake(hdev);
-> >       if (err)
-> > @@ -4022,6 +4049,10 @@ static int btusb_probe(struct usb_interface *int=
-f,
-> >               hdev->set_diag =3D btintel_set_diag;
-> >               hdev->set_bdaddr =3D btintel_set_bdaddr;
-> >               hdev->cmd_timeout =3D btusb_intel_cmd_timeout;
-> > +
-> > +             if (btusb_find_altsetting(data, 6))
-> > +                     hdev->sco_mtu =3D hci_packet_size_usb_alt[6];
->
-> Why you are setting this sco_mtu only for Intel adapter? Is not this
-> whole code generic to USB?
-
-Please refer to the answer to the Realtek adapter below. Thanks.
-
->
-> > +
-> >               set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks)=
-;
-> >               set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
-> >               set_bit(HCI_QUIRK_NON_PERSISTENT_DIAG, &hdev->quirks);
-> > @@ -4063,15 +4094,6 @@ static int btusb_probe(struct usb_interface *int=
-f,
-> >               btusb_check_needs_reset_resume(intf);
-> >       }
-> >
-> > -     if (id->driver_info & BTUSB_AMP) {
-> > -             /* AMP controllers do not support SCO packets */
-> > -             data->isoc =3D NULL;
-> > -     } else {
-> > -             /* Interface orders are hardcoded in the specification */
-> > -             data->isoc =3D usb_ifnum_to_if(data->udev, ifnum_base + 1=
-);
-> > -             data->isoc_ifnum =3D ifnum_base + 1;
-> > -     }
-> > -
-> >       if (IS_ENABLED(CONFIG_BT_HCIBTUSB_RTL) &&
-> >           (id->driver_info & BTUSB_REALTEK)) {
-> >               hdev->setup =3D btrtl_setup_realtek;
-> > @@ -4083,9 +4105,10 @@ static int btusb_probe(struct usb_interface *int=
-f,
-> >                * (DEVICE_REMOTE_WAKEUP)
-> >                */
-> >               set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
-> > -             if (btusb_find_altsetting(data, 1))
-> > +             if (btusb_find_altsetting(data, 1)) {
-> >                       set_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags);
-> > -             else
-> > +                     hdev->sco_mtu =3D hci_packet_size_usb_alt[1];
->
-> And this part of code which you write is Realtek specific.
-
-We currently only have Intel and Realtek platforms to test with. If
-making it generic without proper testing platforms is fine, I will
-make it generic. Or do you think it might be better to make it
-customized with particular vendors for now; and make it generic later
-when it works well with sufficient vendors?
-
->
-> I thought that this is something generic to bluetooth usb as you pointed
-> to bluetooth documentation "core spec 5, vol 4, part B, table 2.1".
->
-> > +             } else
-> >                       bt_dev_err(hdev, "Device does not support ALT set=
-ting 1");
-> >       }
->
-> Also this patch seems to be for me incomplete or not fully correct as
-> USB altsetting is chosen in function btusb_work() and it depends on
-> selected AIR mode (which is configured by another setsockopt).
->
-> So despite what is written in commit message, this patch looks for me
-> like some hack for Intel and Realtek bluetooth adapters and does not
-> solve problems in vendor independent manner.
-
-You are right that sco_mtu should be changed according to the air
-mode. Here are some issues to handle and what I plan to do. I would
-like to solicit your comments before I submit the next series.
-
-[Issue 1] The air mode is determined in btusb_work() which is
-triggered by hci_sync_conn_complete_evt(). So =E2=80=9Cconn->mtu =3D
-hdev->sco_mtu=E2=80=9D should not be done in  sco_conn_add() in the early
-connecting stage. Instead, it will be moved to near the end of
-hci_sync_conn_complete_evt().
-
-[Issue 2] The btusb_work() is performed by a worker. There would be a
-timing issue here if we let btusb_work() to do =E2=80=9Chdev->sco_mtu =3D
-hci_packet_size_usb_alt[i]=E2=80=9D because there is no guarantee how soon =
-the
-btusb_work() can be finished and get =E2=80=9Chdev->sco_mtu=E2=80=9D value =
-set
-correctly. In order to avoid the potential race condition, I suggest
-to determine air_mode in btusb_notify() before
-schedule_work(&data->work) is executed so that =E2=80=9Chdev->sco_mtu =3D
-hci_packet_size_usb_alt[i]=E2=80=9D is guaranteed to be performed when
-btusb_notify() finished. In this way, hci_sync_conn_complete_evt() can
-set conn->mtu correctly as described in [Issue 1] above.
-
-[Issue 3] Concerning CVSD: The above flow is good when the transparent
-mode is selected. When it is the CVSD mode, we should set
-hdev->sco_mtu and conn->mtu back to the original mtu size returned by
-hci_cc_read_buffer_size(). This is because we do not have a reliable
-way to determine what size is used with CVSD. AFAIK, controllers
-connected through USB use 48 bytes; and controllers connected through
-UART use 60 bytes. It seems to me that these numbers are not recorded
-in the kernel(?). It seems beyond the scope of this patch to set the
-proper value for CVSD. So we will let hdev->sco_mtu and conn->mtu go
-back to their original values and are not affected by this patch.
-
-I am wondering if such directions of fixing this patch look good to you?
-
-Thanks and regards!
-Joseph
-
-
-
---=20
-
-Joseph Shyh-In Hwang
-Email: josephsih@google.com
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > syzbot can test patches for this issue, for details see:
+> > https://goo.gl/tpsmEJ#testing-patches
