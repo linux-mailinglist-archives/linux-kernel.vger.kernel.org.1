@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96842695C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08E12695C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgINTnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S1726013AbgINTnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgINTnG (ORCPT
+        with ESMTP id S1725914AbgINTm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:43:06 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C6DC06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:43:05 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id j2so738619eds.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B26ZPwSMQkEgl0FLKfBn1bcFzAEPMlr/0cRYgdbCJm4=;
-        b=MvgJXiZx2nV1v+RFwDa0Ew2gpF/YMUm1Qzl9uP0JoeTwPkWschjlATZudFOjyAIymN
-         jJB7CAfq+BpdKpEqeroG5Y7ueTlhTlgM+6LKj7M/TcVdvxK4rdi9pYpCVGasFgNnIweT
-         66+OK8SAHXNYBvklweFjzvmaa+Q7pxQDrOuyV4OSavfjbUh/GTOB0/dTGHcXB5og63fs
-         hvyUH+1dQT5+qQQyzqRC8vgQa2klF9z87EZ56xelz5zRMKd7xRTRJDyE/7GPPA7Gsper
-         vQGtuke/Cs2S3Z/KC4HPmMFtSHp3XPc5cMLPQw2vv+ytvQBW4AUOUbR1dxtFSHQYUW0E
-         xajw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B26ZPwSMQkEgl0FLKfBn1bcFzAEPMlr/0cRYgdbCJm4=;
-        b=Q/GlNFiKtE0+cMSKg991n1I/3jC0z29JZ5fTVrOykPljqff9lGsEnZ9y1escoWUaMh
-         x3+gA/qOKwe8GicJMHJ8L4EJ29CgjXZZEJtFRbWJlq+inImHdf1KK3ujgo6iFUGv07B1
-         WLr7S16ThFI6iLjnlzlsvjU4LmWrsCnHWv5STXb9EkWhp4VugeMyUaWtvTzrLtLnapID
-         x+cw0QVEFpZrLxQhXm1Z2Pve9Dual78MkpUL8rRLVClZ4+EWsZOyj4bCwDiorbTbjsMz
-         0A+yMVZIn87n3TYkT2Vt3YfFQqfH6b7nobMmTlzCcu1zLaWo4NLNUqWHFsPDusbj1Gmb
-         BCtA==
-X-Gm-Message-State: AOAM532DXNkxrzaIjRgasXbnBxQh+KwRRDSNrwo2EKFKls12eHJjeLo5
-        yMW/vShCP9eAhPIW3NCqu1wD4ZXE67sF3CTfbdoP5A==
-X-Google-Smtp-Source: ABdhPJwIyj+9kqnlMOpAnTl++v/tLI6DikXxNqu6vECzgkcVLWCncCazo3lOF4hNj+FGq7wU79q5bP4k/TU5T/il6ac=
-X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr19288248edb.386.1600112583753;
- Mon, 14 Sep 2020 12:43:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-6-keescook@chromium.org> <CAG48ez1gbu+eBA_PthLemcVVR+AU7Xa1zzbJ8tLMLBDCe_a+fQ@mail.gmail.com>
- <20200913172415.GA2880@ubuntu>
-In-Reply-To: <20200913172415.GA2880@ubuntu>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 14 Sep 2020 21:42:37 +0200
-Message-ID: <CAG48ez0BcSY0is2LzdkizcOQYkaOJwfa=5ZSwjKb+faRwG9QCA@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/6] security/fbfam: Detect a fork brute force attack
-To:     John Wood <john.wood@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
+        Mon, 14 Sep 2020 15:42:59 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0E4C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:42:59 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f09260089ebb5f4b84dd95c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2600:89eb:b5f4:b84d:d95c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B68301EC0593;
+        Mon, 14 Sep 2020 21:42:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600112577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7+il9ewnFZ2ENEAK6uzc623uGpDq5p/EzxFKHkMAKSY=;
+        b=mV2MRCsEd1YXoM8ckud4LXcoK95PfB2mpHDsuuvR1/6ljTMqPoMTP6kYj7/itWBSt4obNz
+        hlaolnb0Syae9c22mY0OmKPClpclZB8WoOp6LC74qy3ci9eWXX0zF8Pe60uJ3kl8YXdEqq
+        Y+3WWfumnUQUcOYBjnsz57Sy7/M12w4=
+Date:   Mon, 14 Sep 2020 21:42:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20200914194252.GI680@zn.tnic>
+References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 7:55 PM John Wood <john.wood@gmx.com> wrote:
-> On Thu, Sep 10, 2020 at 11:10:38PM +0200, Jann Horn wrote:
-> > On Thu, Sep 10, 2020 at 10:22 PM Kees Cook <keescook@chromium.org> wrote:
-> > > To detect a fork brute force attack it is necessary to compute the
-> > > crashing rate of the application. This calculation is performed in each
-> > > fatal fail of a task, or in other words, when a core dump is triggered.
-> > > If this rate shows that the application is crashing quickly, there is a
-> > > clear signal that an attack is happening.
-> > >
-> > > Since the crashing rate is computed in milliseconds per fault, if this
-> > > rate goes under a certain threshold a warning is triggered.
-[...]
-> > > +       delta_jiffies = get_jiffies_64() - stats->jiffies;
-> > > +       delta_time = jiffies64_to_msecs(delta_jiffies);
-> > > +       crashing_rate = delta_time / (u64)stats->faults;
-> >
-> > Do I see this correctly, is this computing the total runtime of this
-> > process hierarchy divided by the total number of faults seen in this
-> > process hierarchy? If so, you may want to reconsider whether that's
-> > really the behavior you want. For example, if I configure the minimum
-> > period between crashes to be 30s (as is the default in the sysctl
-> > patch), and I try to attack a server that has been running without any
-> > crashes for a month, I'd instantly be able to crash around
-> > 30*24*60*60/30 = 86400 times before the detection kicks in. That seems
-> > suboptimal.
->
-> You are right. This is not the behaviour we want. So, for the next
-> version it would be better to compute the crashing period as the time
-> between two faults, or the time between the execve call and the first
-> fault (first fault case).
->
-> However, I am afraid of a premature detection if a child process fails
-> twice in a short period.
->
-> So, I think it would be a good idea add a new sysctl to setup a
-> minimum number of faults before the time between faults starts to be
-> computed. And so, the attack detection only will be triggered if the
-> application crashes quickly but after a number of crashes.
->
-> What do you think?
+On Thu, Sep 10, 2020 at 12:22:53PM -0500, Josh Poimboeuf wrote:
+> The x86 uaccess code uses barrier_nospec() in various places to prevent
+> speculative dereferencing of user-controlled pointers (which might be
+> combined with further gadgets or CPU bugs to leak data).
+> 
+> There are some issues with the current implementation:
+> 
+> - The barrier_nospec() in copy_from_user() was inadvertently removed
+>   with: 4b842e4e25b1 ("x86: get rid of small constant size cases in
+>   raw_copy_{to,from}_user()")
+> 
+> - copy_to_user() and friends should also have a speculation barrier,
+>   because a speculative write to a user-controlled address can still
+>   populate the cache line with the original data.
+> 
+> - The LFENCE in barrier_nospec() is overkill, when more lightweight user
+>   pointer masking can be used instead.
+> 
+> Remove all existing barrier_nospec() usage, and instead do user pointer
+> masking, throughout the x86 uaccess code.  This is similar to what arm64
+> is already doing with uaccess_mask_ptr().
+> 
+> barrier_nospec() is now unused, and can be removed.
+> 
+> Fixes: 4b842e4e25b1 ("x86: get rid of small constant size cases in raw_copy_{to,from}_user()")
+> Suggested-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+> v3:
+> 
+> - Rebased on vfs#for-next, using TASK_SIZE_MAX now that set_fs() is
+>   gone.  I considered just clearing the most significant bit, but that
+>   only works for 64-bit, so in the interest of common code I went with
+>   the more straightforward enforcement of the TASK_SIZE_MAX limit.
+> 
+> - Rename the macro to force_user_ptr(), which is more descriptive, and
+>   also more distinguishable from a planned future macro for sanitizing
+>   __user pointers on syscall entry.
+> 
+>  Documentation/admin-guide/hw-vuln/spectre.rst |  6 ++--
+>  arch/x86/include/asm/barrier.h                |  3 --
+>  arch/x86/include/asm/checksum_32.h            |  6 ++--
+>  arch/x86/include/asm/futex.h                  |  5 +++
+>  arch/x86/include/asm/uaccess.h                | 35 ++++++++++++-------
+>  arch/x86/include/asm/uaccess_64.h             | 16 ++++-----
+>  arch/x86/lib/csum-wrappers_64.c               |  5 +--
+>  arch/x86/lib/getuser.S                        | 10 +++---
+>  arch/x86/lib/putuser.S                        |  8 +++++
+>  arch/x86/lib/usercopy_32.c                    |  6 ++--
+>  arch/x86/lib/usercopy_64.c                    |  7 ++--
+>  lib/iov_iter.c                                |  2 +-
+>  12 files changed, 65 insertions(+), 44 deletions(-)
 
-You could keep a list of the timestamps of the last five crashes or
-so, and then take action if the last five crashes happened within
-(5-1)*crash_period_limit time.
+After clarifying some stuff on IRC:
+
+Acked-by: Borislav Petkov <bp@suse.de>
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
