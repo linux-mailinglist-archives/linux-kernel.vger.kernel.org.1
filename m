@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B4526994E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39009269952
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgINW6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:58:12 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:43006 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgINW6J (ORCPT
+        id S1726079AbgINW6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:58:50 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:36975 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgINW6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:58:09 -0400
-Received: by mail-il1-f195.google.com with SMTP id t13so1178955ile.9;
-        Mon, 14 Sep 2020 15:58:08 -0700 (PDT)
+        Mon, 14 Sep 2020 18:58:46 -0400
+Received: by mail-il1-f196.google.com with SMTP id q4so1213248ils.4;
+        Mon, 14 Sep 2020 15:58:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=kq6qlG5VJYZXUU2sGGyka4Jem/75zC6Wn5AvRmVlrlc=;
-        b=NDB42gVLREaFd+W0A/uAsmv7H34J60SrKrcxinvqRJHcMWsbQ93rhWrgXcdSrs/Opl
-         i9FMzTVDrI2B4wkoqNA7mvrKpHBQZwQrVZRdNTTKP9EKeB8TPrmaPAbrPjKyDTksa9Wf
-         c55OQIcvhypjd0ZEDpB1rqWPtcVTu4pB28yvRSCFmWT7ieHBNpkq0lzCDVrd4Jibkrhb
-         VEe+mC+VFDs5HBV3mTW8pfaF8Q+zk8O0Wx0J5NDL7/c0gLD77v57jVP0yX3gGyZEvbUz
-         AHwytPt1Pnv+KBzpV8QJsJQ6hpRleeyImjx+AsImyYRHYvw8pvfZn63pUPm7KEcmffR0
-         +W7A==
-X-Gm-Message-State: AOAM530D8TK4OE4BjGuVXBNBGcJ81DElndkOyiCv3sEjruX59MZqFWkn
-        YTIFte6GeuEarrZBvuVZkPzj8UoB70gP
-X-Google-Smtp-Source: ABdhPJzjV3LJ6Z9bth40387EREf7eFPmbglblttVdwLb5FiWraVR0VU+a+NG+uwN+G/NZGfVF0l6zQ==
-X-Received: by 2002:a05:6e02:be6:: with SMTP id d6mr13897302ilu.76.1600124288223;
-        Mon, 14 Sep 2020 15:58:08 -0700 (PDT)
+        bh=RKxn9ltTeGk0IfBnG8P7vO3oM47OWQ2uxYOxzfrKlsA=;
+        b=dRsUUUUGr6zb4mP9aUzMmg9hlgnOHw7avHiswIIX8x9/e7fc+nvZ5TrRrVUkMjnST9
+         0h6CYDhrBERR8qV3vAkJPl7cqeTclUMGe3/ZVq6sKDKFn0ZlW84sxGXGa36l/eMYFfgm
+         YWlFLj5rCOi8ZtBgZHxI4B8j9rbPqI1BSNaTqaTukQjNzeSi7DyRfHoGfy5/iPNvSprL
+         WNNYXv8Z8+CY0AgKrZSM0hQRr3d825CUIn+tyvxpzgyPlxCeCMo3pOUuR9JYK1EeINw4
+         IKKQwlZ/xV1hEYdZkCmRpGymVNGZ/JOP5hogL3pTzae0jmQRajklr3mq2wGdYF5siq/U
+         StqQ==
+X-Gm-Message-State: AOAM532tRthX4kPVeqMP9nPNcNf6BFgWITPHPkQGK1l573xwtHs+m/Mi
+        k8QYK5dR3rD52J1OiGqqAg==
+X-Google-Smtp-Source: ABdhPJz6RwllSQxsqBRALQYuJie5kN26/ggu2+F6pAUHNple19DCIa7Sh1W/ch2mMtZYqjGoDexgKA==
+X-Received: by 2002:a92:d08a:: with SMTP id h10mr9933338ilh.109.1600124325487;
+        Mon, 14 Sep 2020 15:58:45 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id u14sm7196498ilj.7.2020.09.14.15.58.07
+        by smtp.gmail.com with ESMTPSA id u9sm6367518iow.26.2020.09.14.15.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 15:58:07 -0700 (PDT)
-Received: (nullmailer pid 427460 invoked by uid 1000);
-        Mon, 14 Sep 2020 22:58:06 -0000
-Date:   Mon, 14 Sep 2020 16:58:06 -0600
+        Mon, 14 Sep 2020 15:58:44 -0700 (PDT)
+Received: (nullmailer pid 428538 invoked by uid 1000);
+        Mon, 14 Sep 2020 22:58:43 -0000
+Date:   Mon, 14 Sep 2020 16:58:43 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, khilman@baylibre.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH RESEND 1/2] dt-bindings: power: amlogic, meson-ee-pwrc:
- add Amlogic AXG power controller bindings
-Message-ID: <20200914225806.GA427430@bogus>
-References: <20200904161654.24141-1-narmstrong@baylibre.com>
- <20200904161654.24141-2-narmstrong@baylibre.com>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-amarula@amarulasolutions.com,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add Yes Optoelectronics
+Message-ID: <20200914225843.GA428486@bogus>
+References: <20200904180821.302194-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904161654.24141-2-narmstrong@baylibre.com>
+In-Reply-To: <20200904180821.302194-1-jagan@amarulasolutions.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Sep 2020 18:16:53 +0200, Neil Armstrong wrote:
-> This adds the bindings of the Power Controller found in the Amlogic AXG SoCs.
+On Fri, 04 Sep 2020 23:38:19 +0530, Jagan Teki wrote:
+> Add vendor dt-bindings for Yes Optoelectronics Co.,Ltd.
 > 
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 > ---
->  .../bindings/power/amlogic,meson-ee-pwrc.yaml | 23 +++++++++++++++++--
->  include/dt-bindings/power/meson-axg-power.h   | 14 +++++++++++
->  2 files changed, 35 insertions(+), 2 deletions(-)
->  create mode 100644 include/dt-bindings/power/meson-axg-power.h
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
