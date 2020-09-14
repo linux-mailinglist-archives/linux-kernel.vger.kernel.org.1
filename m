@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27547269715
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59546269716
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726156AbgINUwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        id S1726169AbgINUwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbgINUvz (ORCPT
+        with ESMTP id S1726120AbgINUv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:51:55 -0400
+        Mon, 14 Sep 2020 16:51:59 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4839C06174A;
-        Mon, 14 Sep 2020 13:51:54 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 20:51:51 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F2EC061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:51:58 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600116713;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020; t=1600116716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ydzS4LjDHHuUQo7y+TMVzF9Spgu4/8ruP1ZAuxKKJ4U=;
-        b=GMztMAEAMqlzffkpCTI2elIHG6Egg7omz1FDsK4r684ySHnti5IvuGKTOZeaI4VnH024GB
-        oC3bMMskdVBAgb3ZbQ39H2YU+cBhYiEz5GOMMKtupLCucHL/faE8Vy7XvL/YIUxS+jECQz
-        twWZUbypVX+SthCi55jpKhWg1Zp+SYG3PyzKb1sA+YPAy2yrxb9rU2HG5bGdqB6GhgTtYv
-        UiXlhgy/dx1KheyeIDa7pwI0a0APJIsY1ykGpUdGl3KDpQSYVuaodQ/Lhi/UGg8OSourAA
-        5NLTBuTOBi3m/wruVXHU11ztOFGmtrYqYvwFGobqPe9llXWkSQ1oNI4JjXdAeA==
+        bh=aDiPSzZTn9VZOgWHTza0B6Xq/ARyn+pdBM1nVtKC6oU=;
+        b=32A5zbE18lOTSAlbzsrHu7jkmGQbH0a/kGsnBli5tZQ9xlnz9kvE5EjBkd0SNa9M1Ke6Lk
+        c/ZGk2IK8T+Pnl7tLnOP4zCtjiOAlRiEL6mBO9ixx7fm5VjafED9vAZnjITWxxrjD5ONLP
+        +3aryQVETV9Dph2wXKa88xhaF9/zBVkz8n41CxiSVQKMQ3bX1ByFL09l7hYOIR/T79IqQF
+        a6uNJ7UC7rjtLjtpzXyCb+6rHxyMa1UkO01G8iuIJ9qhH+TzXzW9HNUSDVoNTrqViPWcNf
+        zb6KspRL1eXMYCJdyxecIkbskkhb0U/q7Ad4RwG6b/57ZF963yWh7vGraiYs/Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600116713;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        s=2020e; t=1600116716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ydzS4LjDHHuUQo7y+TMVzF9Spgu4/8ruP1ZAuxKKJ4U=;
-        b=I1W2F+DThpQRC7FJcwSbAgVZu+7A+giwZtiXR9K/u/vLAbC4ed1jAGOgXPUIe/Np5OJTuU
-        BSCNSQNX1YkEkZAg==
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/urgent] core/entry: Report syscall correctly for trace and audit
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200912005826.586171-1-keescook@chromium.org>
-References: <20200912005826.586171-1-keescook@chromium.org>
+        bh=aDiPSzZTn9VZOgWHTza0B6Xq/ARyn+pdBM1nVtKC6oU=;
+        b=lS+dygw7Bu6tTKSgjeG33hsJOu7VPkl8naz4rp9u58R8+gDAWipqZH7fXcv3wuW3UOS9Hf
+        UiWeuPAIFCadLlAQ==
+To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess speculation
+In-Reply-To: <20200914195354.yghlqlwtqz7mqteb@treble>
+References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com> <20200914195354.yghlqlwtqz7mqteb@treble>
+Date:   Mon, 14 Sep 2020 22:51:56 +0200
+Message-ID: <877dswozdf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Message-ID: <160011671176.15536.7429378178023419747.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/urgent branch of tip:
+On Mon, Sep 14 2020 at 14:53, Josh Poimboeuf wrote:
+> Al,
+>
+> This depends on Christoph's set_fs() removal patches.  Would you be
+> willing to take this in your tree?
 
-Commit-ID:     b6ec413461034d49f9e586845825adb35ba308f6
-Gitweb:        https://git.kernel.org/tip/b6ec413461034d49f9e586845825adb35ba308f6
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 11 Sep 2020 17:58:26 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 14 Sep 2020 22:49:51 +02:00
+Ack.
 
-core/entry: Report syscall correctly for trace and audit
+> On Thu, Sep 10, 2020 at 12:22:53PM -0500, Josh Poimboeuf wrote:
+>> The x86 uaccess code uses barrier_nospec() in various places to prevent
+>> speculative dereferencing of user-controlled pointers (which might be
+>> combined with further gadgets or CPU bugs to leak data).
+>> 
+>> There are some issues with the current implementation:
+>> 
+>> - The barrier_nospec() in copy_from_user() was inadvertently removed
+>>   with: 4b842e4e25b1 ("x86: get rid of small constant size cases in
+>>   raw_copy_{to,from}_user()")
+>> 
+>> - copy_to_user() and friends should also have a speculation barrier,
+>>   because a speculative write to a user-controlled address can still
+>>   populate the cache line with the original data.
+>> 
+>> - The LFENCE in barrier_nospec() is overkill, when more lightweight user
+>>   pointer masking can be used instead.
+>> 
+>> Remove all existing barrier_nospec() usage, and instead do user pointer
+>> masking, throughout the x86 uaccess code.  This is similar to what arm64
+>> is already doing with uaccess_mask_ptr().
+>> 
+>> barrier_nospec() is now unused, and can be removed.
+>> 
+>> Fixes: 4b842e4e25b1 ("x86: get rid of small constant size cases in raw_copy_{to,from}_user()")
+>> Suggested-by: Will Deacon <will@kernel.org>
+>> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-On v5.8 when doing seccomp syscall rewrites (e.g. getpid into getppid
-as seen in the seccomp selftests), trace (and audit) correctly see the
-rewritten syscall on entry and exit:
-
-	seccomp_bpf-1307  [000] .... 22974.874393: sys_enter: NR 110 (...
-	seccomp_bpf-1307  [000] .N.. 22974.874401: sys_exit: NR 110 = 1304
-
-With mainline we see a mismatched enter and exit (the original syscall
-is incorrectly visible on entry):
-
-	seccomp_bpf-1030  [000] ....    21.806766: sys_enter: NR 39 (...
-	seccomp_bpf-1030  [000] ....    21.806767: sys_exit: NR 110 = 1027
-
-When ptrace or seccomp change the syscall, this needs to be visible to
-trace and audit at that time as well. Update the syscall earlier so they
-see the correct value.
-
-Fixes: d88d59b64ca3 ("core/entry: Respect syscall number rewrites")
-Reported-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20200912005826.586171-1-keescook@chromium.org
-
----
- kernel/entry/common.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 1868359..6fdb610 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
- 			return ret;
- 	}
- 
-+	/* Either of the above might have changed the syscall number */
-+	syscall = syscall_get_nr(current, regs);
-+
- 	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
- 		trace_sys_enter(regs, syscall);
- 
- 	syscall_enter_audit(regs, syscall);
- 
--	/* The above might have changed the syscall number */
--	return ret ? : syscall_get_nr(current, regs);
-+	return ret ? : syscall;
- }
- 
- static __always_inline long
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
