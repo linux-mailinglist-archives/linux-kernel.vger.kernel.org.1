@@ -2,252 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889A12695AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1E52695AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgINTdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
+        id S1726019AbgINTds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgINTcz (ORCPT
+        with ESMTP id S1725951AbgINTdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:32:55 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B854CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:32:53 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so882423wrm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:32:53 -0700 (PDT)
+        Mon, 14 Sep 2020 15:33:44 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB3FC06174A;
+        Mon, 14 Sep 2020 12:33:43 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t14so614033pgl.10;
+        Mon, 14 Sep 2020 12:33:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Us7lcvMi6/juANI567+eDOv0NC7aDZ1rCBImYBzCjjY=;
-        b=RMhLNj4hwDp/sij+u7Xt0WzbDyZJ7KkwOKYMFTc+T6IDeM4seqg4eQ8D32XXFeiVU4
-         fIgCy7kd2vK5cILMkAwq5hkdhEJb/3AtJ3lPC31s0bREHNpT/LWAnpoZMC+tQ56W7iaV
-         YTTBPkqZ3PG79DD8M/+ks+qCnZgtGpPhTpb1Y=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KkqW6KbGxh/KSzD5Wn3+KsznoNndYdFD3MoHDu0yS4o=;
+        b=HfYCcZI99+eKdPn+gu+0tW1l9EDS6ETq2rWjaKfMje5mzce1L5EtvJ5iBfwX3DyrkZ
+         z4WOxdPJNDR/MPnkHostr5TaHikU5kDP/tZxpn0McXQJOb/VmdYYBJvvNrfKToknN5MA
+         EkunW0nK5eLh3doETfKpGaco1W+8jQWnXHQL8nNLdF6ElipJIn7BeQOcj0jzUDTQKkas
+         mQmQ023eo8lEkg20TmX0dEyj10LZbv8MalsiT+3pBcJTNFg35OEAGcV+Oaxc5Qtc2oVl
+         NnsmTbV3nVO6Yx1eghtKDnIEPWSjt870ra9wlkD8X7W4Gps5XmUgIgHR/az3mdyEgr8f
+         SnWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Us7lcvMi6/juANI567+eDOv0NC7aDZ1rCBImYBzCjjY=;
-        b=lhn0b2+nE0pZr6a7Tk3iwJJAh++k5IbhgDEhKyiSUs8mDLP/f3SgLhw8wj397crBs4
-         z6ysJ9ABxv+u3x3ZoWYyKir3WKamRP1TZJkI4Dw7sTdBZbxAhGlBKrPYIVey7hV3WgKp
-         zoAr6a+6x55r9rarrrSGU0U0f4yafQx1/z76AuWwZqH93YxzYhDh5juqxz1AV+8TMgyf
-         jcBFPuNGi5l6U5bQvpzHFFMq1fZUxIJ52sclPCiOOdXEHrAlNzN8CIal24ff6jz95QVs
-         AU0WTr41AbmpBU7hYUvgwdSArMgmZP/SK0Ft+3yx9ihQHwI/s2bmh75bf3+sM15N5Emh
-         eBkA==
-X-Gm-Message-State: AOAM533FQ+BdpU7WjnS1bi3yAf2fMNxxOEEbRsfWumbnCFfPcekwWTZQ
-        x9T6pSzTTpo8U07yCZ83hjkzwhSGXwWIshTldjlD
-X-Google-Smtp-Source: ABdhPJwr2e01SFAfRKittjeu8Yn4CtQYGSBGeU9WwDQLbg3IArfSGvyE9PL+h3E8H8MOGruD0+/Q607ecqEl1/UDI6M=
-X-Received: by 2002:a5d:4bcf:: with SMTP id l15mr17380744wrt.384.1600111972296;
- Mon, 14 Sep 2020 12:32:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KkqW6KbGxh/KSzD5Wn3+KsznoNndYdFD3MoHDu0yS4o=;
+        b=IRn5JQA2O+jNk0X5gxcoWNJG7UfkQWx2IoSAVGs2G9Ez4MMv85M1Lgv8C6NAZfq7od
+         dbzV/IfD1P7QlJxf2RYsKVx9YbjXZ9tP+RSKCMPVjHlhFtxTPBP74g3Ii8yseBnwCYxx
+         SBZ6z6tLJcvKSOUQStINDL6L9ilp1i342Xyx/q2CdTnKxuhGIoSt59BkeX8cy4mmFGNQ
+         HRBZjzClFTwwCpJ+t7ec+17icuEdCoS3qz3yH5zIWmbtBtKqV8Dqd3Jatx1NYzpT9VaU
+         JcIm5bVsd68Znra3W97j+y17Pvbikqgsq9lkAMjmWjvkJCcHr/WISxcGlJ92GRrAD41k
+         KDIQ==
+X-Gm-Message-State: AOAM532AOrs+fWpM49WwOqmhL03x38zMA39QXJfv7vlIwvvb/sJRbHOO
+        ptzWJtJS15sGWo7qVx0NE+w=
+X-Google-Smtp-Source: ABdhPJyZp3Qip8dp9EXEb3DBw2NbThgWauPBUnNuJ9bhig+2ViBSnYR9uE0t11+Mk7kGE9cJ/LB9NA==
+X-Received: by 2002:a63:7f50:: with SMTP id p16mr11972543pgn.451.1600112023115;
+        Mon, 14 Sep 2020 12:33:43 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id a2sm10835024pfr.104.2020.09.14.12.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 12:33:42 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:33:40 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com, erosca@de.adit-jv.com,
+        Andrew_Gabbasov@mentor.com
+Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
+Message-ID: <20200914193340.GV1665100@dtor-ws>
+References: <20200912005521.26319-1-jiada_wang@mentor.com>
+ <20200913165644.GF1665100@dtor-ws>
+ <65d1b9f2-a8e3-6398-712d-41d8067d06a1@gmail.com>
 MIME-Version: 1.0
-References: <20200912013441.9730-1-atish.patra@wdc.com> <20200912013441.9730-3-atish.patra@wdc.com>
- <20200914153048.000038ed@Huawei.com>
-In-Reply-To: <20200914153048.000038ed@Huawei.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 14 Sep 2020 12:32:41 -0700
-Message-ID: <CAOnJCUJDk0LnLNwzq5DBogEsO9Ai1Rh10hqbrJjiqJXu0B+Hmw@mail.gmail.com>
-Subject: Re: [RFC/RFT PATCH v2 2/5] arm64, numa: Change the numa init function
- name to be generic
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Zong Li <zong.li@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65d1b9f2-a8e3-6398-712d-41d8067d06a1@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 7:32 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Fri, 11 Sep 2020 18:34:38 -0700
-> Atish Patra <atish.patra@wdc.com> wrote:
->
-> > As we are using generic numa implementation code, modify the init function
-> > name to indicate that generic implementation.
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
->
-> A few comments inline but more about which layer we do the build protections
-> at than anything important.
->
-> Thanks,
->
-> Jonathan
->
-> > ---
-> >  arch/arm64/kernel/acpi_numa.c | 13 -------------
-> >  arch/arm64/mm/init.c          |  4 ++--
-> >  drivers/base/arch_numa.c      | 29 ++++++++++++++++++++++++++---
-> >  include/asm-generic/numa.h    |  4 ++--
-> >  4 files changed, 30 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
-> > index 7ff800045434..96502ff92af5 100644
-> > --- a/arch/arm64/kernel/acpi_numa.c
-> > +++ b/arch/arm64/kernel/acpi_numa.c
-> > @@ -117,16 +117,3 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
-> >
-> >       node_set(node, numa_nodes_parsed);
-> >  }
-> > -
-> > -int __init arm64_acpi_numa_init(void)
-> > -{
-> > -     int ret;
-> > -
-> > -     ret = acpi_numa_init();
-> > -     if (ret) {
-> > -             pr_info("Failed to initialise from firmware\n");
-> > -             return ret;
-> > -     }
-> > -
-> > -     return srat_disabled() ? -EINVAL : 0;
-> > -}
-> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > index 481d22c32a2e..93b660229e1d 100644
-> > --- a/arch/arm64/mm/init.c
-> > +++ b/arch/arm64/mm/init.c
-> > @@ -418,10 +418,10 @@ void __init bootmem_init(void)
-> >       max_pfn = max_low_pfn = max;
-> >       min_low_pfn = min;
-> >
-> > -     arm64_numa_init();
-> > +     arch_numa_init();
-> >
-> >       /*
-> > -      * must be done after arm64_numa_init() which calls numa_init() to
-> > +      * must be done after arch_numa_init() which calls numa_init() to
-> >        * initialize node_online_map that gets used in hugetlb_cma_reserve()
-> >        * while allocating required CMA size across online nodes.
-> >        */
-> > diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-> > index 73f8b49d485c..a4039dcabd3e 100644
-> > --- a/drivers/base/arch_numa.c
-> > +++ b/drivers/base/arch_numa.c
-> > @@ -13,7 +13,9 @@
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> >
-> > +#ifdef CONFIG_ACPI_NUMA
-> >  #include <asm/acpi.h>
-> > +#endif
->
-> Could include linux/acpi.h which I think gets you everything you need in here
-> and has protections against building for non ACPI cases.
+On Mon, Sep 14, 2020 at 08:29:44PM +0300, Dmitry Osipenko wrote:
+> 13.09.2020 19:56, Dmitry Torokhov пишет:
+> > Hi Jiada,
+> > 
+> > On Sat, Sep 12, 2020 at 09:55:21AM +0900, Jiada Wang wrote:
+> >> From: Nick Dyer <nick.dyer@itdev.co.uk>
+> >>
+> >> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
+> >> when they are in a sleep state. It must be retried after a delay for the
+> >> chip to wake up.
+> > 
+> > Do we know when the chip is in sleep state? Can we do a quick I2C
+> > transaction in this case instead of adding retry logic to everything? Or
+> > there is another benefit for having such retry logic?
+> 
+> Hello!
+> 
+> Please take a look at page 29 of:
+> 
+> https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
+> 
+> It says that the retry is needed after waking up from a deep-sleep mode.
+> 
+> There are at least two examples when it's needed:
+> 
+> 1. Driver probe. Controller could be in a deep-sleep mode at the probe
+> time, and then first __mxt_read_reg() returns I2C NACK on reading out TS
+> hardware info.
+> 
+> 2. Touchscreen input device is opened. The touchscreen is in a
+> deep-sleep mode at the time when input device is opened, hence first
+> __mxt_write_reg() invoked from mxt_start() returns I2C NACK.
+> 
+> I think placing the retries within __mxt_read() / write_reg() should be
+> the most universal option.
+> 
+> Perhaps it should be possible to add mxt_wake() that will read out some
+> generic register
+
+I do not think we need to read a particular register, just doing a quick
+read:
+
+	i2c_smbus_xfer(client->adapter, client->addr,
+			0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &dummy)
+
+should suffice.
+
+> and then this helper should be invoked after HW
+> resetting (before mxt_read_info_block()) and from mxt_start() (before
+> mxt_set_t7_power_cfg()). But this approach feels a bit fragile to me.
 >
 
-Sure. will do that.
+Actually, reading the spec, it all depends on how the WAKE pin is wired
+up on a given board. In certain setups retrying transaction is the right
+approach, while in others explicit control is needed. So indeed, we need
+a "wake" helper that we should call in probe and resume paths.
 
-> >  #include <asm/sections.h>
-> >
-> >  struct pglist_data *node_data[MAX_NUMNODES] __read_mostly;
-> > @@ -444,16 +446,37 @@ static int __init dummy_numa_init(void)
-> >       return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_ACPI_NUMA
-> > +int __init arch_acpi_numa_init(void)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = acpi_numa_init();
->
-> I wonder if this is the correct level at which to stub this out
-> as opposed to providing a stub for acpi_numa_init()
-> and srat_disabled()
->
-
-I guess you mean adding a stub in acpi.h and acpi_numa.h ?
-As it would touch x86 related code as well, I think it is better to do
-it as a followup
-series when we try to unify x86 numa code as well (at least some part of it) ?
-
-> At this stage I'm not sure I care too strongly though.
->
-> > +     if (ret) {
-> > +             pr_info("Failed to initialise from firmware\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     return srat_disabled() ? -EINVAL : 0;
-> > +}
-> > +#else
-> > +int __init arch_acpi_numa_init(void)
-> > +{
-> > +     return -EOPNOTSUPP;
-> > +}
-> > +
-> > +#endif
-> > +
-> >  /**
-> > - * arm64_numa_init() - Initialize NUMA
-> > + * arch_numa_init() - Initialize NUMA
-> >   *
-> >   * Try each configured NUMA initialization method until one succeeds. The
-> >   * last fallback is dummy single node config encomapssing whole memory.
-> >   */
-> > -void __init arm64_numa_init(void)
-> > +void __init arch_numa_init(void)
-> >  {
-> >       if (!numa_off) {
-> > -             if (!acpi_disabled && !numa_init(arm64_acpi_numa_init))
-> > +             if (!acpi_disabled && !numa_init(arch_acpi_numa_init))
-> >                       return;
-> >               if (acpi_disabled && !numa_init(of_numa_init))
-> >                       return;
-> > diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
-> > index 2718d5a6ff03..e7962db4ba44 100644
-> > --- a/include/asm-generic/numa.h
-> > +++ b/include/asm-generic/numa.h
-> > @@ -27,7 +27,7 @@ static inline const struct cpumask *cpumask_of_node(int node)
-> >  }
-> >  #endif
-> >
-> > -void __init arm64_numa_init(void);
-> > +void __init arch_numa_init(void);
-> >  int __init numa_add_memblk(int nodeid, u64 start, u64 end);
-> >  void __init numa_set_distance(int from, int to, int distance);
-> >  void __init numa_free_distance(void);
-> > @@ -41,7 +41,7 @@ void numa_remove_cpu(unsigned int cpu);
-> >  static inline void numa_store_cpu_info(unsigned int cpu) { }
-> >  static inline void numa_add_cpu(unsigned int cpu) { }
-> >  static inline void numa_remove_cpu(unsigned int cpu) { }
-> > -static inline void arm64_numa_init(void) { }
-> > +static inline void arch_numa_init(void) { }
-> >  static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
-> >
-> >  #endif       /* CONFIG_NUMA */
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
+Thanks.
 
 -- 
-Regards,
-Atish
+Dmitry
