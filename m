@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383A526991D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83388269922
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgINWnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:43:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgINWnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:43:12 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B108C20732;
-        Mon, 14 Sep 2020 22:43:10 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 18:43:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tingwei Zhang <tingweiz@codeaurora.org>
-Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
-Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
-Message-ID: <20200914184309.7a9de53a@gandalf.local.home>
-In-Reply-To: <20200901232839.GB13346@codeaurora.org>
-References: <20200813014552.23539-1-tingwei@codeaurora.org>
-        <20200901232839.GB13346@codeaurora.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726050AbgINWoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:44:14 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:42401 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgINWoM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:44:12 -0400
+Received: by mail-io1-f65.google.com with SMTP id u6so1925288iow.9;
+        Mon, 14 Sep 2020 15:44:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ylUrEEmYi1EaiuhHEqxtgMvlCDH6vw+JSMpMqyXXaxw=;
+        b=UexcQBz+unBFQ7HEOgOb9kUTivjWHGFMtZx1Gs88cNxTXXbWlpkR/TzBmK7xb8qo03
+         K4w81eVK0DjW1DMOE8bQbSP8r1T0ysy7FgghZTvtUzNAkf/IR/e6W9Y0O58Ew8avGzxI
+         FkobXcQo6+Bqm6tEteykqvNl1yEIUn+Td9v/xyfJC0yA2sG/uK9yyMp53SFh1JRGZc1v
+         MzTX2WQVnvU2imjKYVWN89Nez+QiXj0yNWY7kIMqjquwnj261gM4XSloDrJ4Ij6OcwD7
+         oCnC4sjrrzoUdDkL2CO/CFsLt+0Irr1yez/JtkX9Fq9BovfUosRYQEpCh93qw3ALE5WZ
+         4wjQ==
+X-Gm-Message-State: AOAM531bc2pjE/FvWXtmSBM5/Am5jaK6YQnxZMxQvxWFjQ6up0kpeFXR
+        mhbnAKIuyhTubWfW6zqmgw==
+X-Google-Smtp-Source: ABdhPJy0EiT7MplPn0+3By2fzZNnP/u2zfQZ44vJh5JI0TZD6SDZoEgp/wP3JFumGKjEqcEvAf3tFA==
+X-Received: by 2002:a02:11c2:: with SMTP id 185mr14783901jaf.35.1600123451958;
+        Mon, 14 Sep 2020 15:44:11 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w15sm7629263ilq.46.2020.09.14.15.44.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 15:44:11 -0700 (PDT)
+Received: (nullmailer pid 404103 invoked by uid 1000);
+        Mon, 14 Sep 2020 22:44:07 -0000
+Date:   Mon, 14 Sep 2020 16:44:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Li Yang <leoyang.li@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 06/13] dt-bindings: mfd: rohm,bd71837-pmic: Add common
+ properties
+Message-ID: <20200914224407.GA388924@bogus>
+References: <20200904145312.10960-1-krzk@kernel.org>
+ <20200904145312.10960-7-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904145312.10960-7-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 07:28:39 +0800
-Tingwei Zhang <tingweiz@codeaurora.org> wrote:
-
-> Hi Alexander,
+On Fri, Sep 04, 2020 at 04:53:05PM +0200, Krzysztof Kozlowski wrote:
+> Add common properties appearing in DTSes (clock-names,
+> clock-output-names) to fix dtbs_check warnings like:
 > 
-> May I know your comments for this patch set?
-
-I ran your patch set against get_maintainers.pl and it came up with this:
-
-Alexander Shishkin <alexander.shishkin@linux.intel.com> (maintainer:SYSTEM TRACE MODULE CLASS)
-Maxime Coquelin <mcoquelin.stm32@gmail.com> (maintainer:ARM/STM32 ARCHITECTURE)
-Alexandre Torgue <alexandre.torgue@st.com> (maintainer:ARM/STM32 ARCHITECTURE)
-Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
-Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
-linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32 ARCHITECTURE)
-linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32 ARCHITECTURE)
-linux-kernel@vger.kernel.org (open list)
-
-I would use that to know who to send to.
-
-You have Alexander, myself, Ingo and LKML, but you should add the others in
-that list for this series, and then it may get noticed. Please use
-get_maintainers.pl for future patches if you don't know who to send them to.
-
--- Steve
-
+>   arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml:
+>     pmic@4b: 'clock-names', 'clock-output-names', do not match any of the regexes: 'pinctrl-[0-9]+'
 > 
-> Thanks,
-> Tingwei
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml          | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> On Thu, Aug 13, 2020 at 09:45:46AM +0800, Tingwei Zhang wrote:
-> > Ftrace has ability to export trace packets to other destination.
-> > Currently, only function trace can be exported. This series extends the
-> > support to event trace and trace_maker. STM is one possible destination to
-> > export ftrace. Use separate channel for each CPU to avoid mixing up
-> > packets
-> > from different CPUs together.
-> > 
-> > Change from v2:
-> > Change flag definition to BIT(). (Steven)
-> > Add comment in stm_ftrace_write() to clarify it's safe to use 
-> > smp_processor_id() here since preempt is disabled. (Steven) 
-> > 
-> > Change from v1:
-> > All changes are suggested by Steven Rostedt.
-> > User separate flag to control function trace, event trace and trace mark.
-> > Allocate channels according to num_possible_cpu() dynamically.
-> > Move ftrace_exports routines up so all ftrace can use them.
-> > 
-> > Tingwei Zhang (6):
-> >   stm class: ftrace: change dependency to TRACING
-> >   tracing: add flag to control different traces
-> >   tracing: add trace_export support for event trace
-> >   tracing: add trace_export support for trace_marker
-> >   stm class: ftrace: enable supported trace export flag
-> >   stm class: ftrace: use different channel accroding to CPU
-> > 
-> >  drivers/hwtracing/stm/Kconfig  |   2 +-
-> >  drivers/hwtracing/stm/ftrace.c |   7 +-
-> >  include/linux/trace.h          |   7 +
-> >  kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
-> >  4 files changed, 159 insertions(+), 127 deletions(-)
-> > 
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> >   
+> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
+> index 65018a019e1d..ecce0d5e3a95 100644
+> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
+> @@ -32,9 +32,15 @@ properties:
+>    clocks:
+>      maxItems: 1
+>  
+> +  clock-names:
+> +    maxItems: 1
 
+Needs to define what the name is.
+
+> +
+>    "#clock-cells":
+>      const: 0
+>  
+> +  clock-output-names:
+> +    maxItems: 1
+
+Ideally this one too, but we've been more flexible on it.
+
+> +
+>  # The BD718x7 supports two different HW states as reset target states. States
+>  # are called as SNVS and READY. At READY state all the PMIC power outputs go
+>  # down and OTP is reload. At the SNVS state all other logic and external
+> -- 
+> 2.17.1
+> 
