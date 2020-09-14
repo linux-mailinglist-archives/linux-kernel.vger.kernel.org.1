@@ -2,105 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E46268F34
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 482B4268F3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgINPKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:10:32 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45503 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726039AbgINPJv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:09:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600096190;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=6+JqwjvDWrEa3i/FAJIeAH613qFKBYUmXeFNszVZCpA=;
-        b=ZFG7Q4czu8S8EgavPdWBYpc8cHNMNA1DuOS2Abjp6aKlovdY0cuzfE/KBm4Odg098zDVS6
-        A6HlnoLmZPdVMPKZdc+4iPOKGM+yQHoprP3O5dMbAmQtELfo074KAKJ32+va0bgJuQfNhv
-        RF/wVcQyC6IopHnPrpj8AoiEr5/enlU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-ld3toLdkPHSfv9Ugq9g3GQ-1; Mon, 14 Sep 2020 11:09:46 -0400
-X-MC-Unique: ld3toLdkPHSfv9Ugq9g3GQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61ABD91313E;
-        Mon, 14 Sep 2020 15:09:44 +0000 (UTC)
-Received: from llong.com (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D111260DA0;
-        Mon, 14 Sep 2020 15:09:37 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-Date:   Mon, 14 Sep 2020 11:09:28 -0400
-Message-Id: <20200914150928.7841-1-longman@redhat.com>
-In-Reply-To: <20200914024452.19167-1-longman@redhat.com>
-References: <20200914024452.19167-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S1726357AbgINPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:11:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:39566 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgINPKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:10:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF34B1FB;
+        Mon, 14 Sep 2020 08:10:34 -0700 (PDT)
+Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC77D3F718;
+        Mon, 14 Sep 2020 08:10:33 -0700 (PDT)
+From:   Oliver Swede <oli.swede@arm.com>
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.indradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 00/14] Optimise and update memcpy, user copy and string routines 
+Date:   Mon, 14 Sep 2020 15:09:44 +0000
+Message-Id: <20200914150958.2200-1-oli.swede@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mem_cgroup_get_max() function used to get memory+swap max from
-both the v1 memsw and v2 memory+swap page counters & return the maximum
-of these 2 values. This is redundant and it is more efficient to just
-get either the v1 or the v2 values depending on which one is currently
-in use.
+Hi all,
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/memcontrol.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+In this version the backtracking fixups are replaced with a two-stage
+approach that maintains the accuracy in v4 and still uses the fault address,
+but provides a copy-routine-independent mechanism for determining the fault
+address.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8c74f1200261..cad1ac4551ad 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
-  */
- unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
- {
--	unsigned long max;
--
--	max = READ_ONCE(memcg->memory.max);
--	if (mem_cgroup_swappiness(memcg)) {
--		unsigned long memsw_max;
--		unsigned long swap_max;
--
--		memsw_max = memcg->memsw.max;
--		swap_max = READ_ONCE(memcg->swap.max);
--		swap_max = min(swap_max, (unsigned long)total_swap_pages);
--		max = min(max + swap_max, memsw_max);
-+	unsigned long max = READ_ONCE(memcg->memory.max);
-+
-+	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-+		if (mem_cgroup_swappiness(memcg))
-+			max += min(READ_ONCE(memcg->swap.max),
-+				   (unsigned long)total_swap_pages);
-+	} else { /* v1 */
-+		if (mem_cgroup_swappiness(memcg)) {
-+			/* Calculate swap excess capacity from memsw limit */
-+			unsigned long swap = READ_ONCE(memcg->memsw.max) - max;
-+
-+			max += min(swap, (unsigned long)total_swap_pages);
-+		}
- 	}
- 	return max;
- }
+The same constraints on the fixup routine (the available information being
+src,dst,count,faddr) are used here, but in a more straightforward way that
+could allow the copy template to be re-used with the new optimized copy
+routines, and for the fixups to also apply to future copy routines.
+
+There is a secondary in-order copy invoked which is expected to fault, and
+this is byte-wise to provide the second fixup with the exact fault address,
+which helps to avoid the need to special-case fixups for unprivileged
+load/store accesses.
+
+This alternative came about shortly after posting v4 and builds on a
+discussion between Robin and I regarding a new idea for a cleaner approach
+to the fixup routines, and I found some time to prototype it a couple of
+weeks ago (previously been busy with moving teams internally and also wanted
+to wait for further feedback before re-submitting to avoid excessive
+revisions). A solution akin to this was incidentally one of my initial
+thoughts but took a different direction as had previously assumed there
+would be problems faulting from within a fixup routine (please point out
+any issues with this that I may be unaware of - so far it has only been
+tested internally on a couple of machines under basic workloads).
+
+In order to provide additional information to the fixup that could reduce
+the overhead of the secondary copy for large copy sizes, we also discussed
+a potential magnitude N to jump back by from the first fault rather than
+initiate from the beginning, on the basis that this is a basic property to
+identify in the algorithm and one that could apply to future copy routines
+simply by increasing this value. It holds for long copies due to the
+cortex-strings implementation effectively copying in an in-order manner in
+chunks of 64B (but out-of-order within each chunk). However, I have included
+this as a standalone patch as this is based on an assumption about the
+algorithm.
+
+I thought that you might consequently like to have a look at v5 in deciding
+whether or not to use separate algorithms for in-kernel/uaccess copy routines
+(re feedback from v4).
+
+Comments welcome,
+
+Many thanks,
+Oli
+
+Changes since v4:
+* Replaces the fixup routines in v4, which would require an understanding of
+and be subject to change with newer optimizations, with another approach that
+provides the same level of accuracy;
+* Introduces an intermediate fixup routine that initiates an in-order copy;
+* Configures a value to jump back from the fault address by before starting
+the copy;
+* Adds the additional macros to the copy template to account for the second
+fixup, and reduces the total number of new macros initially added;
+* Removes the special-case for UAO in the fixup (please see patch 14 in v4)
+as this is now handled by the copy template substituting in the unprivileged
+variants for the in-order copy, so the same fixups should apply to those
+systems without modification;
+* Repurpose commit 11 to exclusively check for overlapping buffers in
+copy_in_user() calls and return the full width for these cases as it may result
+in unusual behaviour, due implementations invoking memmov routines for which the
+fixup wouldn't be applicable;
+* In the process of rebasing to v5.9-rc4, moves Sam's fixup-offset
+implementation in eatable.h to occur after bpf-related checks
+* Rephrases commit messages in patches 9-14 for clarity and to reflect the
+new changes.
+
+This revision was tested on two machines (UAO & non-UAO) internally using a
+custom test module (planning on posting this shortly).
+
+v4: https://lore.kernel.org/linux-arm-kernel/f52401d9-787c-667b-c1ec-8b91106d6d14@arm.com/
+
+Oliver Swede (5):
+  arm64: usercopy: Store the arguments on stack
+  arm64: usercopy: Check for overlapping buffers in fixup
+  arm64: usercopy: Add intermediate fixup routine
+  arm64: usercopy: Add conclusive fixup routine
+  arm64: usercopy: Reduce overhead in fixup
+
+Robin Murphy (2):
+  arm64: kprobes: Drop open-coded exception fixup
+  arm64: Tidy up _asm_extable_faultaddr usage
+
+Sam Tebbs (7):
+  arm64: Allow passing fault address to fixup handlers
+  arm64: Import latest version of Cortex Strings' memcmp
+  arm64: Import latest version of Cortex Strings' memmove
+  arm64: Import latest version of Cortex Strings' strcmp
+  arm64: Import latest version of Cortex Strings' strlen
+  arm64: Import latest version of Cortex Strings' strncmp
+  arm64: Import latest optimization of memcpy
+
+ arch/arm64/include/asm/alternative.h |  36 ---
+ arch/arm64/include/asm/assembler.h   |  13 +
+ arch/arm64/include/asm/extable.h     |  11 +-
+ arch/arm64/kernel/probes/kprobes.c   |   7 -
+ arch/arm64/lib/copy_from_user.S      | 117 +++++++--
+ arch/arm64/lib/copy_in_user.S        | 122 +++++++--
+ arch/arm64/lib/copy_template.S       | 375 +++++++++++++++------------
+ arch/arm64/lib/copy_template_user.S  |  32 +++
+ arch/arm64/lib/copy_to_user.S        | 118 +++++++--
+ arch/arm64/lib/copy_user_fixup.S     |  94 +++++++
+ arch/arm64/lib/memcmp.S              | 333 +++++++++---------------
+ arch/arm64/lib/memcpy.S              |  47 ++--
+ arch/arm64/lib/memmove.S             | 232 ++++++-----------
+ arch/arm64/lib/strcmp.S              | 272 ++++++++-----------
+ arch/arm64/lib/strlen.S              | 247 ++++++++++++------
+ arch/arm64/lib/strncmp.S             | 363 ++++++++++++--------------
+ arch/arm64/mm/extable.c              |  27 +-
+ arch/arm64/mm/fault.c                |   2 +-
+ 18 files changed, 1323 insertions(+), 1125 deletions(-)
+ create mode 100644 arch/arm64/lib/copy_template_user.S
+ create mode 100644 arch/arm64/lib/copy_user_fixup.S
+
 -- 
-2.18.1
+2.17.1
 
