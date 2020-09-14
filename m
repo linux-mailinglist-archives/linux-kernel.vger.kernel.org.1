@@ -2,140 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284312695B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49D42695BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbgINTgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgINTgH (ORCPT
+        id S1726013AbgINTij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:38:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42115 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725914AbgINTii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:36:07 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1A5C06174A;
-        Mon, 14 Sep 2020 12:36:06 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id d13so638024pgl.6;
-        Mon, 14 Sep 2020 12:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qVnJKH3CPIkJPym1H8GxbjdS84vOKq9LnBGIKyldV0E=;
-        b=hHSo9D+upUu6BJPwbulUJjURy4nenkwIljeO1SZ0elW7zCWkEDVhjmv0vd8gq5/OMU
-         XuKiTnXUtIP7guor9eeTTg1imTV3WzAUnOgtkhFDgLyYj+dZPRJUGfwG7FfpVm7dRB5i
-         nS3WQZXzAvVt+v6vP0qVYUnD5w614rVxdQ7XFv2/ue0JAopkC4qWXqeIJB1ACDGav0vd
-         fcXW58if8yP7imbvXf6UPGnzdaH2+bv7I7uwKG2wAzhboKKwXUvorjE49UNlHQuT1j90
-         NNGv3aGoyiH1XP1EqxvzancMSN/3n8+t+KGwf6/aBiV7oJ0fYMlISwrysTLDl7Erp/BD
-         +I2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qVnJKH3CPIkJPym1H8GxbjdS84vOKq9LnBGIKyldV0E=;
-        b=UWRu83vIOXd/z0h2ByCAOXqSXE2qZamsujSGGpwch7tNoZTbvQ6UWJ2OhgkcfwvK8u
-         5jP2FUa0yhBU8Sc261+OwiDpu6KoGqxg81HmgIfl/GbYNhmOz5V8bw+X57xxPH1672oR
-         I9LyS9qM+lvCTPrvXgcCrY1M2knxYHBlUqrdJulO9wDfc5c0mREtLQG+cLhdlM3Z15Fp
-         1MxV7hK8CSGPuj7at0j91qOI7dQGstjrFZsU5lrVx5LIKGN12fHrSgckcGEDCc+CNrKg
-         ir/DApIPjDqpmWizHctuVFY5L5G3+GzL+KeYQRH196GDhzZnyqABsS2DOERvxC3K7LZm
-         NDSA==
-X-Gm-Message-State: AOAM531whCLRW/0s+QikRCiHCrgtswwfT9TnjYqyINq1JAMPZL9n3HBm
-        2qE8TOjpYNenPnuPsEFD2Lw=
-X-Google-Smtp-Source: ABdhPJyVeGdl8jb8rdq+ykbubQcK9hcytSIlltn/hbUIo/8phDmGco1eh46ez/znPdQjI5ZRM3Dq6Q==
-X-Received: by 2002:a63:4902:: with SMTP id w2mr12153812pga.311.1600112166309;
-        Mon, 14 Sep 2020 12:36:06 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id d17sm11173299pfq.157.2020.09.14.12.36.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 12:36:05 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:36:03 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andy.shevchenko@gmail.com, erosca@de.adit-jv.com,
-        Andrew_Gabbasov@mentor.com
-Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-Message-ID: <20200914193603.GW1665100@dtor-ws>
-References: <20200912005521.26319-1-jiada_wang@mentor.com>
- <20200913165644.GF1665100@dtor-ws>
- <65d1b9f2-a8e3-6398-712d-41d8067d06a1@gmail.com>
- <20200914193340.GV1665100@dtor-ws>
+        Mon, 14 Sep 2020 15:38:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600112316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2rX44fORneLTrsGw8dMUWqFurvE6jUJfJ/7J84+5FHc=;
+        b=GoQjXQAmWhGdQTioYVPpReyo59XV7os8cXkFCN8DCsp8KoVAS4Fct/VRZIIdNhw52fOKBH
+        8RDYEdp2M5gH/7iPXkPpx4j2wLfgzLbrYwvsPPKKsJhcL+dn1vYovHoWfhQAJKb5IF9alI
+        LgoiiLgIw97kkrA5xw6Royw5kKAIPyQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-422-quM1a3E8OWmgGo6w2YOn6g-1; Mon, 14 Sep 2020 15:38:32 -0400
+X-MC-Unique: quM1a3E8OWmgGo6w2YOn6g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D7D8800683;
+        Mon, 14 Sep 2020 19:38:30 +0000 (UTC)
+Received: from krava (unknown [10.40.192.180])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 34D6510013BD;
+        Mon, 14 Sep 2020 19:38:26 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 21:38:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     peterz@infradead.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+Message-ID: <20200914193825.GL1714160@krava>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-3-jolsa@kernel.org>
+ <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+ <20200914152841.GC160517@kernel.org>
+ <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200914193340.GV1665100@dtor-ws>
+In-Reply-To: <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:33:40PM -0700, Dmitry Torokhov wrote:
-> On Mon, Sep 14, 2020 at 08:29:44PM +0300, Dmitry Osipenko wrote:
-> > 13.09.2020 19:56, Dmitry Torokhov пишет:
-> > > Hi Jiada,
-> > > 
-> > > On Sat, Sep 12, 2020 at 09:55:21AM +0900, Jiada Wang wrote:
-> > >> From: Nick Dyer <nick.dyer@itdev.co.uk>
-> > >>
-> > >> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
-> > >> when they are in a sleep state. It must be retried after a delay for the
-> > >> chip to wake up.
-> > > 
-> > > Do we know when the chip is in sleep state? Can we do a quick I2C
-> > > transaction in this case instead of adding retry logic to everything? Or
-> > > there is another benefit for having such retry logic?
-> > 
-> > Hello!
-> > 
-> > Please take a look at page 29 of:
-> > 
-> > https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
-> > 
-> > It says that the retry is needed after waking up from a deep-sleep mode.
-> > 
-> > There are at least two examples when it's needed:
-> > 
-> > 1. Driver probe. Controller could be in a deep-sleep mode at the probe
-> > time, and then first __mxt_read_reg() returns I2C NACK on reading out TS
-> > hardware info.
-> > 
-> > 2. Touchscreen input device is opened. The touchscreen is in a
-> > deep-sleep mode at the time when input device is opened, hence first
-> > __mxt_write_reg() invoked from mxt_start() returns I2C NACK.
-> > 
-> > I think placing the retries within __mxt_read() / write_reg() should be
-> > the most universal option.
-> > 
-> > Perhaps it should be possible to add mxt_wake() that will read out some
-> > generic register
+On Mon, Sep 14, 2020 at 06:35:34PM +0200, peterz@infradead.org wrote:
+> On Mon, Sep 14, 2020 at 12:28:41PM -0300, Arnaldo Carvalho de Melo wrote:
 > 
-> I do not think we need to read a particular register, just doing a quick
-> read:
+> > > >   struct {
+> > > >     struct perf_event_header header;
+> > 
+> > > >     u32                      pid, tid;
+> > > >     u64                      addr;
+> > > >     u64                      len;
+> > > >     u64                      pgoff;
+> > > >     u32                      maj;
+> > > >     u32                      min;
+> > > >     u64                      ino;
+> > > >     u64                      ino_generation;
+> > > >     u32                      prot, flags;
+> > > >     u32                      reserved;
+> > 
+> > What for this reserved? its all nicely aligned already, u64 followed by
+> > two u32 (prot, flags).
 > 
-> 	i2c_smbus_xfer(client->adapter, client->addr,
-> 			0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &dummy)
+> I suspect it is so that sizeof(reserve+buildid) is a multiple of 8. But
+> yes, that's a wee bit daft, since the next field is a variable length
+> character array.
 > 
-> should suffice.
+> > > >     u8                       buildid[20];
+> >  
+> > > Do we need maj, min, ino, ino_generation for mmap3 event?
+> > > I think they are to compare binaries, then we can do it with
+> > > build-id (and I think it'd be better)..
+> > 
+> > Humm, I thought MMAP2 would be a superset of MMAP and MMAP3 would be a
+> > superset of MMAP2.
 > 
-> > and then this helper should be invoked after HW
-> > resetting (before mxt_read_info_block()) and from mxt_start() (before
-> > mxt_set_t7_power_cfg()). But this approach feels a bit fragile to me.
-> >
-> 
-> Actually, reading the spec, it all depends on how the WAKE pin is wired
-> up on a given board. In certain setups retrying transaction is the right
-> approach, while in others explicit control is needed. So indeed, we need
-> a "wake" helper that we should call in probe and resume paths.
+> Well, the 'funny' thing is that if you do use buildid, then
+> {maj,min,ino,ino_generation} are indeed superfluous, but are combined
+> also large enough to contain buildid.
 
-By the way, I would like to avoid the unnecessary retries in probe paths
-if possible. I.e. on Chrome OS we really keep an eye on boot times and
-in case of multi-sourced touchscreens we may legitimately not have
-device at given address.
+yay! nice
 
-Thanks.
+> 
+> > If we want to ditch useless stuff, then trow away pid, tid too, as we
+> > can select those via sample_type.
+> 
+> Correct.
 
--- 
-Dmitry
+can we? I think you could disable sample_id then
+you won't have pid/tid in mmap event
+
+> 
+> So something like:
+> 
+> struct {
+>   struct perf_event_header header;
+> 
+>   u64                      addr;
+>   u64                      len;
+>   u64                      pgoff;
+>   union {
+>     struct {
+>       u32                  maj;
+>       u32                  min;
+>       u64                  ino;
+>       u64                  ino_generation;
+>     };
+>     u8                     buildid[20];
+>   };
+>   u32                      prot, flags;
+>   char			   filename[];
+>   struct sample_id         sample_id;
+> };
+> 
+> Using one of the MISC bits to resolve the union. Might actually bring
+> benefit to everyone. Us normal people get to have a smaller MMAP record,
+> while the buildid folks can have it too.
+> 
+> Even more extreme would be using 2 MISC bits and allowing the union to
+> be 0 sized for anon.
+
+I like that idea, I'll check on it
+
+thanks,
+jirka
+
