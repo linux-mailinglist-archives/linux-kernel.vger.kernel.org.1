@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6761126912C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AA5269102
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbgINQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        id S1726119AbgINQCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgINPq2 (ORCPT
+        with ESMTP id S1726506AbgINPq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:46:28 -0400
+        Mon, 14 Sep 2020 11:46:29 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655EDC06121C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:10 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c18so146842wrm.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F7AC06121E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:11 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so199222wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FWCrXT3ic7H+Af6cTpxRpL0fw/Z0w8+0CYapT6XgXZU=;
-        b=eh1+Yea2XxQSbKFYRW0h2lj8RW7m3xsGJw5fPiRKTwSRZKDJfKYZUReq2wFEJ8hREp
-         9j6lgmNVXYZecYDsLI+0SsccB+5LMlUp5tCO0WceGQGlLQvhX+zZp5ZQNMbf6GbCi8z4
-         IK8tUKbJhwVW+pGG/P2PTIVJvAfVWL/9G8qEFGs/yfLb/lm66PuRlSa9h7rHUoP/6rKr
-         QLu2fS7bhJeaCVxOyOuYg1LIAgw+gZPrBT62XYLudh77+u2HFMRZohkLQHJht3jlKsLp
-         I+DUgisc766PIwuQ9YCWJsSoHGMYDp5REek+vbL9Z52I9Fyww/KFrsCldjDLAUM/3dnm
-         61PA==
+        bh=2NiDdLKfaF45Hmo8b72rTpZ47d6NVsfNNivwKidUBtY=;
+        b=R3EXKcUJOlRaMpzLSR4tcuRS4mPAhzgADhqB7JocX7xSzM2Qhes7SeI9L3pvcapwfK
+         7ge4xAjKl3lAIGJP4QmvDEn573f4iqiLrTFkjnDy18hA4zoioxgiy6RvUQ++Q+wt7g0s
+         UPS1tm2GibuMpKirb4tl1O+5T/whMFJiSJUwRaODp14CBIhbLQpVP00cDcAL0LbSnace
+         BpNul7cR3rfoxtsKCDi5f6U0d9EFaMPlKfHgeWSHQOPag0+u5XCXPsr7rS9I4OmoA7hz
+         wvtMmOyDtdSi2onZLvRRRt14B1X9mFTEYHWoCSN7Z3sdR/O3CBIu31yA3lCWkALCikVO
+         gGZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FWCrXT3ic7H+Af6cTpxRpL0fw/Z0w8+0CYapT6XgXZU=;
-        b=pCszXUEdizqM6BReibV5ERU1FYRL8cs9N6hfQfuEZ5YhQ9z8X6uld1id2lhdoynkzb
-         /j8ec66L2RBT9ORbZsxeuW4NZVfAnjpHrRQAcaEiwfNwrfGvkSUQRuXg/+EJ0/AWO5uw
-         B6ADGG7NDO85/1Z3GHkFTdc5lOpDEGwPKHG0pjYXF5ksgCfNMdMb4toyhBKTtruynGHf
-         6olhgGGg0VfsG6d6rngVyGBPGvyaCzHn71/dUoY8FpQVgH+K0Zwz6+jgv+UMohFJbDLX
-         jWZVMuLMBSHuJjURb9SNRtmi+7BOk/KIXA5sg+Jo9bdph/xgFmt4kCZB1vbmbQnsgVzy
-         FIwA==
-X-Gm-Message-State: AOAM532E0lYZQtD0rOmii7zAPQwdZc17gKBiOezyOlBvPbAH88s8fcXd
-        kuOh19GABuf26mhT26Qcw6SWYg==
-X-Google-Smtp-Source: ABdhPJy+HZ7AVqx1LVJRdx0N+IrTlRkl15KXkCMfRbI0MTq5mfEHn0fthqXdQhxP39k8TPWH3fWtLQ==
-X-Received: by 2002:a5d:4591:: with SMTP id p17mr16427572wrq.408.1600098369081;
-        Mon, 14 Sep 2020 08:46:09 -0700 (PDT)
+        bh=2NiDdLKfaF45Hmo8b72rTpZ47d6NVsfNNivwKidUBtY=;
+        b=a+qxH8X9Ef1jY4WeplzW2JjdT31aEcsOepBsVlBa2TrxUWX4paoR9hOYcOYFEznAcw
+         1yYBfSDOzDcZzvaHjpjpSB/S47bV7qtxhHUlOkFcRCnksb4MMfFbvFmNNfMYYCBg3Vw1
+         n8l4Am/SzThQNqDLv66QrsZn+O1gVIs/qLOzMYpOSg3hJYeNFOHEK5XlDEzRM31H/uDQ
+         Fmu+UmGpi0gUv+HKGj1mrelkXjQ0WeMFhE8vmH6iy1mykDzZC87xEJXHtivzegYutuv/
+         9wtL+Kq9refBIIR8Q+gYT6fJ/0zj+Arb+JIJbz7fFanfhAxLiE5xlmXWhvBLVNSuUmxw
+         yfLA==
+X-Gm-Message-State: AOAM530Qx43nP2ylaX0JKBWAz3LMVUJqQlessXy1ppchtYiIWudR4w2+
+        9robV7BOCkvWAmn8XxpUt03BIA==
+X-Google-Smtp-Source: ABdhPJybqLeVfhiCAnRX6k8T2rF0xEq3Cis/6p7YWj8k8PlJC/W6rXNqTA03F2S5SqrmntM7Cpu0Gw==
+X-Received: by 2002:a5d:40c4:: with SMTP id b4mr13464346wrq.151.1600098370074;
+        Mon, 14 Sep 2020 08:46:10 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.08
+        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
+        Mon, 14 Sep 2020 08:46:09 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 05/14] rtc: rx8010: use tabs instead of spaces for code formatting
-Date:   Mon, 14 Sep 2020 17:45:52 +0200
-Message-Id: <20200914154601.32245-6-brgl@bgdev.pl>
+Subject: [PATCH v3 06/14] rtc: rx8010: rename ret to err in rx8010_set_time()
+Date:   Mon, 14 Sep 2020 17:45:53 +0200
+Message-Id: <20200914154601.32245-7-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
 References: <20200914154601.32245-1-brgl@bgdev.pl>
@@ -68,88 +68,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-The define values in this driver are close to their names and they are
-separated by spaces. Use tabs instead and align all defines.
+All other functions in this driver use 'err' for integer return values.
+Do the same in rx8010_set_time() for consistency.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-rx8010.c | 58 ++++++++++++++++++++--------------------
- 1 file changed, 29 insertions(+), 29 deletions(-)
+ drivers/rtc/rtc-rx8010.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index 153fa58f0365..51ac4fac8f19 100644
+index 51ac4fac8f19..300314ab7b6d 100644
 --- a/drivers/rtc/rtc-rx8010.c
 +++ b/drivers/rtc/rtc-rx8010.c
-@@ -13,40 +13,40 @@
- #include <linux/module.h>
- #include <linux/rtc.h>
+@@ -140,7 +140,7 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ {
+ 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
+ 	u8 date[7];
+-	int ctrl, flagreg, ret;
++	int ctrl, flagreg, err;
  
--#define RX8010_SEC     0x10
--#define RX8010_MIN     0x11
--#define RX8010_HOUR    0x12
--#define RX8010_WDAY    0x13
--#define RX8010_MDAY    0x14
--#define RX8010_MONTH   0x15
--#define RX8010_YEAR    0x16
--#define RX8010_RESV17  0x17
--#define RX8010_ALMIN   0x18
--#define RX8010_ALHOUR  0x19
--#define RX8010_ALWDAY  0x1A
--#define RX8010_TCOUNT0 0x1B
--#define RX8010_TCOUNT1 0x1C
--#define RX8010_EXT     0x1D
--#define RX8010_FLAG    0x1E
--#define RX8010_CTRL    0x1F
-+#define RX8010_SEC		0x10
-+#define RX8010_MIN		0x11
-+#define RX8010_HOUR		0x12
-+#define RX8010_WDAY		0x13
-+#define RX8010_MDAY		0x14
-+#define RX8010_MONTH		0x15
-+#define RX8010_YEAR		0x16
-+#define RX8010_RESV17		0x17
-+#define RX8010_ALMIN		0x18
-+#define RX8010_ALHOUR		0x19
-+#define RX8010_ALWDAY		0x1A
-+#define RX8010_TCOUNT0		0x1B
-+#define RX8010_TCOUNT1		0x1C
-+#define RX8010_EXT		0x1D
-+#define RX8010_FLAG		0x1E
-+#define RX8010_CTRL		0x1F
- /* 0x20 to 0x2F are user registers */
--#define RX8010_RESV30  0x30
--#define RX8010_RESV31  0x31
--#define RX8010_IRQ     0x32
-+#define RX8010_RESV30		0x30
-+#define RX8010_RESV31		0x31
-+#define RX8010_IRQ		0x32
+ 	if ((dt->tm_year < 100) || (dt->tm_year > 199))
+ 		return -EINVAL;
+@@ -150,10 +150,10 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ 	if (ctrl < 0)
+ 		return ctrl;
+ 	rx8010->ctrlreg = ctrl | RX8010_CTRL_STOP;
+-	ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
++	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
+ 					rx8010->ctrlreg);
+-	if (ret < 0)
+-		return ret;
++	if (err < 0)
++		return err;
  
--#define RX8010_EXT_WADA  BIT(3)
-+#define RX8010_EXT_WADA		BIT(3)
+ 	date[RX8010_SEC - RX8010_SEC] = bin2bcd(dt->tm_sec);
+ 	date[RX8010_MIN - RX8010_SEC] = bin2bcd(dt->tm_min);
+@@ -163,27 +163,27 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ 	date[RX8010_YEAR - RX8010_SEC] = bin2bcd(dt->tm_year - 100);
+ 	date[RX8010_WDAY - RX8010_SEC] = bin2bcd(1 << dt->tm_wday);
  
--#define RX8010_FLAG_VLF  BIT(1)
--#define RX8010_FLAG_AF   BIT(3)
--#define RX8010_FLAG_TF   BIT(4)
--#define RX8010_FLAG_UF   BIT(5)
-+#define RX8010_FLAG_VLF		BIT(1)
-+#define RX8010_FLAG_AF		BIT(3)
-+#define RX8010_FLAG_TF		BIT(4)
-+#define RX8010_FLAG_UF		BIT(5)
+-	ret = i2c_smbus_write_i2c_block_data(rx8010->client,
++	err = i2c_smbus_write_i2c_block_data(rx8010->client,
+ 					     RX8010_SEC, 7, date);
+-	if (ret < 0)
+-		return ret;
++	if (err < 0)
++		return err;
  
--#define RX8010_CTRL_AIE  BIT(3)
--#define RX8010_CTRL_UIE  BIT(5)
--#define RX8010_CTRL_STOP BIT(6)
--#define RX8010_CTRL_TEST BIT(7)
-+#define RX8010_CTRL_AIE		BIT(3)
-+#define RX8010_CTRL_UIE		BIT(5)
-+#define RX8010_CTRL_STOP	BIT(6)
-+#define RX8010_CTRL_TEST	BIT(7)
+ 	/* clear STOP bit after changing clock/calendar */
+ 	ctrl = i2c_smbus_read_byte_data(rx8010->client, RX8010_CTRL);
+ 	if (ctrl < 0)
+ 		return ctrl;
+ 	rx8010->ctrlreg = ctrl & ~RX8010_CTRL_STOP;
+-	ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
++	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
+ 					rx8010->ctrlreg);
+-	if (ret < 0)
+-		return ret;
++	if (err < 0)
++		return err;
  
--#define RX8010_ALARM_AE  BIT(7)
-+#define RX8010_ALARM_AE		BIT(7)
+ 	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
+ 	if (flagreg < 0)
+ 		return flagreg;
  
- static const struct i2c_device_id rx8010_id[] = {
- 	{ "rx8010", 0 },
+ 	if (flagreg & RX8010_FLAG_VLF)
+-		ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
++		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
+ 						flagreg & ~RX8010_FLAG_VLF);
+ 
+ 	return 0;
 -- 
 2.26.1
 
