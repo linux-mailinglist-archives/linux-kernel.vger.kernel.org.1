@@ -2,220 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877A626895B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D4126895C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726478AbgINKde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
+        id S1726485AbgINKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726472AbgINKd0 (ORCPT
+        with ESMTP id S1726474AbgINKdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:33:26 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C84EC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:33:25 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id o68so12402250pfg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=antmicro.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UrmuUltF9h1wduRxzXusgQVOENqaHZyFRHTcJom8cGE=;
-        b=fZ+crlcyyGFSpUt6Evj12OiQCKtFgP1RXE/IdjznGEu25ETYptqXPS3qeYFhxKkofv
-         SsjptqfuJBQIaFe0K+hCcxK9fbgdUoKM6jEZYQRCyjo4eb85NXY9gvzSrrgo/QeQZfzo
-         dJsgPUEDbGIvYRHRdi35KxR6bEpkmR6/c6Pg8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UrmuUltF9h1wduRxzXusgQVOENqaHZyFRHTcJom8cGE=;
-        b=owjLRWvfOH6lJebUKMqf6DsCakgJITQdPyrAfLwYln8XeUFkmaWHu3TfdKSRcp/6IT
-         m9BcL+NkOCy2tEccTyjyZblxcwV5gzxaLPe3DfJFp7/ToBe4qoM5phXkiA01N4qQfFI4
-         S962T1ekjrgYWC40Vvn50bH/HpICEDgi6AKe3urk1AOh2wSv6JTx50AkumExBG7VBKW5
-         Ge9kBYi2vL3FXJzKxbJWhJqRnK1e5Y+g6ZMP9YPhkJiLfr4ffo3opZF6DoYG6Txbll8b
-         0SYHgJn+KN4hwN7vyRPEWN2ebP/OcoZgrWJu6vlF65uTqO9Tx04tJYEkvfTSNKlVfQi9
-         DLJQ==
-X-Gm-Message-State: AOAM531XP5Le4Z3LWXLORsocsxoZufCObc2RVikY4DGHLx8xloq8+aRM
-        emxGhZiFXR5Ki6gYzFAxlCEwkgXNhRickQM9fjp2hg==
-X-Google-Smtp-Source: ABdhPJxyndpwi+ymDmZJ5igPTP5mS4RnYa9l/xUnIZ4zJ3ttCGxOve1JfG0eDClKex/fOhfnpnH+LJY2hgOq/jpHDAE=
-X-Received: by 2002:a17:902:988f:b029:d0:4c09:c1 with SMTP id
- s15-20020a170902988fb02900d04c0900c1mr13651699plp.3.1600079604372; Mon, 14
- Sep 2020 03:33:24 -0700 (PDT)
+        Mon, 14 Sep 2020 06:33:31 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D8CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:33:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TU5zZhB8fC42cKDJtk6qME9CpbP+U36jT8Vx/ygRImA=; b=c6FCZBFf9bSk5qpIPRLLRLbtIn
+        xMEnduPrvKln+UHp+1ejW/kTvqy6I4NGkbTbMW6AbRJ4zIw7n6oVTWDDLR9ieK1V2fao+ec9py9mH
+        WB0o9X0uLp3EVZguHnK2csqLtCOYm5+tDeFwpeKY97SEaY1rHwWBtutMf8oEoZImTQPdBfml7lpbK
+        FkMK1/0VZtDH48zO7LmzJxmTo66yNN5d4fLuiEi8oVbfgIZTnapuKqzZL3WFy0p5zvNFdu4LC8Hkm
+        c0856BolDMR+TyNm9ojdreUivM3L8c8VjoC3auLluzXiwfCFqCe1wyF7RN+Oj81KBfnVO1vNWIkmP
+        EB1ZiEig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHlnV-0007Yt-8N; Mon, 14 Sep 2020 10:33:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36F463050F0;
+        Mon, 14 Sep 2020 12:33:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1B49B2C47815F; Mon, 14 Sep 2020 12:33:19 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 12:33:19 +0200
+From:   peterz@infradead.org
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     luto@kernel.org, tglx@linutronix.de, hpa@zytor.com, bp@alien8.de,
+        rric@kernel.org, mingo@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH 1/6] x86: events: Avoid TIF_IA32 when checking 64bit mode
+Message-ID: <20200914103319.GO1362448@hirez.programming.kicks-ass.net>
+References: <20200912070553.330622-1-krisman@collabora.com>
+ <20200912070553.330622-2-krisman@collabora.com>
 MIME-Version: 1.0
-References: <20200812143324.2394375-0-mholenko@antmicro.com>
- <20200812143324.2394375-3-mholenko@antmicro.com> <20200911005740.GN3562056@lianli.shorne-pla.net>
-In-Reply-To: <20200911005740.GN3562056@lianli.shorne-pla.net>
-From:   Mateusz Holenko <mholenko@antmicro.com>
-Date:   Mon, 14 Sep 2020 12:33:11 +0200
-Message-ID: <CAPk366Tvb9g960e3ZLv3+_H8FZJRRe0Jqa4q7tejE+svMcQvLA@mail.gmail.com>
-Subject: Re: [PATCH v10 3/5] drivers/soc/litex: add LiteX SoC Controller driver
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gabriel L. Somlo" <gsomlo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912070553.330622-2-krisman@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 2:57 AM Stafford Horne <shorne@gmail.com> wrote:
->
-> On Wed, Aug 12, 2020 at 02:34:34PM +0200, Mateusz Holenko wrote:
-> > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> >
-> > This commit adds driver for the FPGA-based LiteX SoC
-> > Controller from LiteX SoC builder.
-> >
-> > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
-> > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > ---
-> ...
-> > +static int litex_check_csr_access(void __iomem *reg_addr)
-> > +{
-> > +     unsigned long reg;
-> > +
-> > +     reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
-> > +
-> > +     if (reg != SCRATCH_REG_VALUE) {
-> > +             panic("Scratch register read error! Expected: 0x%x but got: 0x%lx",
-> > +                     SCRATCH_REG_VALUE, reg);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     litex_set_reg(reg_addr + SCRATCH_REG_OFF,
-> > +             SCRATCH_REG_SIZE, SCRATCH_TEST_VALUE);
-> > +     reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
-> > +
-> > +     if (reg != SCRATCH_TEST_VALUE) {
-> > +             panic("Scratch register write error! Expected: 0x%x but got: 0x%lx",
-> > +                     SCRATCH_TEST_VALUE, reg);
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     /* restore original value of the SCRATCH register */
-> > +     litex_set_reg(reg_addr + SCRATCH_REG_OFF,
-> > +             SCRATCH_REG_SIZE, SCRATCH_REG_VALUE);
-> > +
-> > +     /* Set flag for other drivers */
-> What does this comment mean?
+On Sat, Sep 12, 2020 at 03:05:48AM -0400, Gabriel Krisman Bertazi wrote:
+> In preparation to remove TIF_IA32, stop using it in perf events code.
+> 
+> Tested by running perf on 32-bit, 64-bit and x32 applications.
+> 
+> Suggested-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-This is a leftover from the previous version of the patch
-and shouldn't be there - sorry for that.
-I'll remove it.
-
-> > +     pr_info("LiteX SoC Controller driver initialized");
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +struct litex_soc_ctrl_device {
-> > +     void __iomem *base;
-> > +};
-> > +
-> > +static const struct of_device_id litex_soc_ctrl_of_match[] = {
-> > +     {.compatible = "litex,soc-controller"},
-> > +     {},
-> > +};
-> > +
-> > +MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
-> > +
-> > +static int litex_soc_ctrl_probe(struct platform_device *pdev)
-> > +{
-> > +     int result;
-> > +     struct device *dev;
-> > +     struct device_node *node;
-> > +     struct litex_soc_ctrl_device *soc_ctrl_dev;
-> > +
-> > +     dev = &pdev->dev;
-> > +     node = dev->of_node;
-> > +     if (!node)
-> > +             return -ENODEV;
-> > +
-> > +     soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
-> > +     if (!soc_ctrl_dev)
-> > +             return -ENOMEM;
-> > +
-> > +     soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
-> > +     if (IS_ERR(soc_ctrl_dev->base))
-> > +             return PTR_ERR(soc_ctrl_dev->base);
-> > +
-> > +     result = litex_check_csr_access(soc_ctrl_dev->base);
-> > +     if (result) {
-> > +             // LiteX CSRs access is broken which means that
-> > +             // none of LiteX drivers will most probably
-> > +             // operate correctly
-> The comment format here with // is not usually used in the kernel, but its not
-> forbidded.  Could you use the /* */ multiline style?
-
-Sure, I'll change the commenting style here.
-
->
-> > +             BUG();
-> Instead of stopping the system with BUG, could we just do:
->
->         return litex_check_csr_access(soc_ctrl_dev->base);
->
-> We already have failure for NODEV/NOMEM so might as well not call BUG() here
-> too.
-
-It's true that litex_check_csr_accessors() already generates error
-codes that could be
-returned directly.
-The point of using BUG() macro here, however, is to stop booting the
-system so that it's visible
-(and impossible to miss for the user) that an unresolvable HW issue
-was encountered.
-
-CSR-accessors - the litex_{g,s}et_reg() functions - are intended to be
-used by other LiteX drivers
-and it's very unlikely that those drivers would work properly after
-the fail of litex_check_csr_accessors().
-Since in such case the UART driver will be affected too (no boot logs
-and error messages visible to the user),
-I thought it'll be easier to spot and debug the problem if the system
-stopped in the BUG loop.
-Perhaps there are other, more linux-friendly, ways of achieving a
-similar goal - I'm open for suggestions.
-
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
->
-> Other than that it looks ok to me.
->
-> -Stafford
-
-Thanks for the review!
-
-Best,
-Mateusz
-
-
---
-Mateusz Holenko
-Antmicro Ltd | www.antmicro.com
-Roosevelta 22, 60-829 Poznan, Poland
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
