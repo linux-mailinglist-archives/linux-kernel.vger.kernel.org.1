@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20F52687C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3D92687CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgINJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:00:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60302 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgINI7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:59:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3C5D9AC46;
-        Mon, 14 Sep 2020 09:00:09 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 10:59:53 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mm: replace memmap_context by memplug_context
-Message-ID: <20200914085953.GD16999@dhcp22.suse.cz>
-References: <20200911134831.53258-1-ldufour@linux.ibm.com>
- <20200911134831.53258-2-ldufour@linux.ibm.com>
- <20200914084904.GA16999@dhcp22.suse.cz>
- <d3843235-2e02-a4ad-494c-20222a7e3b45@linux.ibm.com>
+        id S1726198AbgINJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:03:05 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43052 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgINJDD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:03:03 -0400
+Received: by mail-wr1-f65.google.com with SMTP id k15so17784931wrn.10;
+        Mon, 14 Sep 2020 02:03:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BA59uvNwWeLbW3/gARBLS+3iLS+i0V5L1/WrQ9lOZOQ=;
+        b=e5q7gbZmjmh2u6wBI6hRIkqvTbxyYVnmDCGT2JyhtL3YPmrzjhcq+EZGpiQy+FMxhB
+         IqGUk10LeL8AuQTiDmeeZMvlzY/hom0ua+aEHtDANGA/MHKW3iCuUCzcR4RbfihUvam6
+         Uf30g5ZDyTlD5ssMRrFX43yWUCThgnBJ+gEV7EbjoOAVl3ly2xLmvEdNBX7K/Spt+OEO
+         a6rVjnEkuG+GxNUSjRmVOoO0LThcA2MD6+BSZesqCmmgSEzSmr5CuMagkuzTolDBhBSe
+         UclGsbIWDNgjTT/rF54lOm9aB5kIhGL0SkZhkcj8SK2XJdk4FpoAusdTHGlwDJT5PvTI
+         5/wQ==
+X-Gm-Message-State: AOAM532rWqfnc59hQjdaL2umZOysukWOoRSTi7SMUPVlfCQSJNGR0iX8
+        KxsP1EsND0ph0+dXrnVy87s=
+X-Google-Smtp-Source: ABdhPJwi1ig8O5wYHnAsy2M2D55tuMDqr8YWBOnn7K2hiVEAbPGdiGu4gUcpIwsJ7NIBBtanJBA2dg==
+X-Received: by 2002:a5d:6406:: with SMTP id z6mr14264256wru.133.1600074181226;
+        Mon, 14 Sep 2020 02:03:01 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t6sm22308511wre.30.2020.09.14.02.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 02:03:00 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 09:02:59 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH 1/1] Drivers: hv: vmbus: Add timeout to
+ vmbus_wait_for_unload
+Message-ID: <20200914090259.nhxxezpljbrvq3xo@liuwe-devbox-debian-v2>
+References: <1600026449-23651-1-git-send-email-mikelley@microsoft.com>
+ <KU1P153MB01202778DC760ED16AD687F4BF220@KU1P153MB0120.APCP153.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3843235-2e02-a4ad-494c-20222a7e3b45@linux.ibm.com>
+In-Reply-To: <KU1P153MB01202778DC760ED16AD687F4BF220@KU1P153MB0120.APCP153.PROD.OUTLOOK.COM>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-09-20 10:51:06, Laurent Dufour wrote:
-> Le 14/09/2020 à 10:49, Michal Hocko a écrit :
-[...]
-> > /*
-> >   * Memory initialization context, use to differentiate memory added by
-> >   * the platform statically or via memory hotplug interface.
-> >   */
-> > enum meminit_context {
-> > 	MEMINIT_EARLY,
-> > 	MEMINIT_HOTPLUG
-> > }
+On Sun, Sep 13, 2020 at 07:56:30PM +0000, Dexuan Cui wrote:
+> > From: linux-hyperv-owner@vger.kernel.org
+> > <linux-hyperv-owner@vger.kernel.org> On Behalf Of Michael Kelley
+> > Sent: Sunday, September 13, 2020 12:47 PM
 > > 
+> > vmbus_wait_for_unload() looks for a CHANNELMSG_UNLOAD_RESPONSE
+> > message
+> > coming from Hyper-V.  But if the message isn't found for some reason,
+> > the panic path gets hung forever.  Add a timeout of 10 seconds to prevent
+> > this.
+> > 
+> > Fixes: 415719160de3 ("Drivers: hv: vmbus: avoid scheduling in interrupt
+> > context in vmbus_initiate_unload()")
+> > Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 > 
-> Sounds good too.
-> What about its definition's place, in include/mm/zone.h as David suggested ?
+> Reviewed-by: Dexuan Cui <decui@microsoft.com>
 
-Yes. This shouldn't be in the hotplug proper.
+LGTM.
 
--- 
-Michal Hocko
-SUSE Labs
+Applied to hyperv-fixes. Thanks.
+
+Wei.
