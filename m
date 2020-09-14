@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC50A2697C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676472697C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbgINVd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:33:58 -0400
-Received: from mga09.intel.com ([134.134.136.24]:25021 "EHLO mga09.intel.com"
+        id S1726035AbgINVgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:36:24 -0400
+Received: from smtp.infotech.no ([82.134.31.41]:55713 "EHLO smtp.infotech.no"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgINVd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:33:57 -0400
-IronPort-SDR: yvfDdULCMdIBRs9KnitROdwEcGY1BoLY1WugX7+jU5UmMI8Kvkn2OMzlsIDg6N6KDejCbbq2DV
- 6saoYPVod32A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="160099522"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="160099522"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:33:55 -0700
-IronPort-SDR: nGTbaMpiU4wZHuj2i6cMB45vT3BMsCKDALY7iak+RYD4SiLbB/+G66lwRLfjIfiJbMPmw7n0kE
- YP1Ev94o0aAQ==
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="507296327"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:33:55 -0700
-Date:   Mon, 14 Sep 2020 14:33:53 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 09/35] KVM: SVM: Do not emulate MMIO under SEV-ES
-Message-ID: <20200914213352.GB7192@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <c4ccb48b41f3996bc9000730309455e449cb1136.1600114548.git.thomas.lendacky@amd.com>
+        id S1725953AbgINVgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:36:24 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id B8EF52041CB;
+        Mon, 14 Sep 2020 23:36:19 +0200 (CEST)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3vys0KX8cFqd; Mon, 14 Sep 2020 23:36:12 +0200 (CEST)
+Received: from xtwo70.bingwo.ca (host-45-78-251-166.dyn.295.ca [45.78.251.166])
+        by smtp.infotech.no (Postfix) with ESMTPA id 1DE0220417A;
+        Mon, 14 Sep 2020 23:36:11 +0200 (CEST)
+From:   Douglas Gilbert <dgilbert@interlog.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-block@vger.kernel.org, axboe@kernel.dk
+Subject: [PATCH] tools/io_uring: fix compile breakage
+Date:   Mon, 14 Sep 2020 17:36:09 -0400
+Message-Id: <20200914213609.141577-1-dgilbert@interlog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4ccb48b41f3996bc9000730309455e449cb1136.1600114548.git.thomas.lendacky@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:15:23PM -0500, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> When a guest is running as an SEV-ES guest, it is not possible to emulate
-> MMIO. Add support to prevent trying to perform MMIO emulation.
-> 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index a5d0207e7189..2e1b8b876286 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5485,6 +5485,13 @@ int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
->  	if (!mmio_info_in_cache(vcpu, cr2_or_gpa, direct) && !is_guest_mode(vcpu))
->  		emulation_type |= EMULTYPE_ALLOW_RETRY_PF;
->  emulate:
-> +	/*
-> +	 * When the guest is an SEV-ES guest, emulation is not possible.  Allow
-> +	 * the guest to handle the MMIO emulation.
-> +	 */
-> +	if (vcpu->arch.vmsa_encrypted)
-> +		return 1;
+It would seem none of the kernel continuous integration does this:
+    $ cd tools/io_uring
+    $ make
 
-A better approach is to refactor need_emulation_on_page_fault() (the hook
-that's just out of sight in this patch) into a more generic
-kvm_x86_ops.is_emulatable() so that the latter can be used to kill emulation
-everywhere, and for other reasons.  E.g. TDX obviously shares very similar
-logic, but SGX also adds a case where KVM can theoretically end up in an
-emulator path without the ability to access the necessary guest state.
+Otherwise it may have noticed:
+   cc -Wall -Wextra -g -D_GNU_SOURCE   -c -o io_uring-bench.o
+	 io_uring-bench.c
+io_uring-bench.c:133:12: error: static declaration of ‘gettid’
+	 follows non-static declaration
+  133 | static int gettid(void)
+      |            ^~~~~~
+In file included from /usr/include/unistd.h:1170,
+                 from io_uring-bench.c:27:
+/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:34:16: note:
+	 previous declaration of ‘gettid’ was here
+   34 | extern __pid_t gettid (void) __THROW;
+      |                ^~~~~~
+make: *** [<builtin>: io_uring-bench.o] Error 1
 
-I have exactly such a prep patch (because SGX and TDX...), I'll get it posted
-in the next day or two.
+The problem on Ubuntu 20.04 (with lk 5.9.0-rc5) is that unistd.h
+already defines gettid(). So prefix the local definition with
+"lk_".
 
-> +
->  	/*
->  	 * On AMD platforms, under certain conditions insn_len may be zero on #NPF.
->  	 * This can happen if a guest gets a page-fault on data access but the HW
-> -- 
-> 2.28.0
-> 
+Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+---
+ tools/io_uring/io_uring-bench.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/io_uring/io_uring-bench.c b/tools/io_uring/io_uring-bench.c
+index 0f257139b003..7703f0118385 100644
+--- a/tools/io_uring/io_uring-bench.c
++++ b/tools/io_uring/io_uring-bench.c
+@@ -130,7 +130,7 @@ static int io_uring_register_files(struct submitter *s)
+ 					s->nr_files);
+ }
+ 
+-static int gettid(void)
++static int lk_gettid(void)
+ {
+ 	return syscall(__NR_gettid);
+ }
+@@ -281,7 +281,7 @@ static void *submitter_fn(void *data)
+ 	struct io_sq_ring *ring = &s->sq_ring;
+ 	int ret, prepped;
+ 
+-	printf("submitter=%d\n", gettid());
++	printf("submitter=%d\n", lk_gettid());
+ 
+ 	srand48_r(pthread_self(), &s->rand);
+ 
+-- 
+2.25.1
+
