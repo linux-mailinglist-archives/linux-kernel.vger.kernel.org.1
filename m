@@ -2,183 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B428926938B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968D326938A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbgINR0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgINM1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:27:49 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2884C061223
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:26:31 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y11so13210614lfl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:26:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DAQrm5WJ2a3VMZBwhDL5oCbVPyFCBtJJYc3y7efawdM=;
-        b=Qc9UIf5PuWxJre4k0QjlrxldJYrjBvJtj5GHe3b0axTFTGIXDW9CZwK06qsCJ6c4RN
-         fJTCqzOsidn3eN8WZV8Wl7kK9zIzjJ+RJdGQ/aBZvB5osAVcTfpH20Y6RhASro25TKn1
-         UpuykK9qp8RTA31TRF4MySWmBXWbPsMYX82Knoi+TDn2w6NG48W4lcDuB27HoyUre3VF
-         sWuC8/4kjUszYEqmcXWwm0IafP0dmdRA1WVHnOZkq9EikdYsYkqAMW+PUQ3Acs4mhSII
-         KQCla86xXURB4A4Whpe/rL9Q399QAF8V/PZPIEuuZQVWm/l+1hH9wsjljPAErHTjZpAS
-         TVQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DAQrm5WJ2a3VMZBwhDL5oCbVPyFCBtJJYc3y7efawdM=;
-        b=hKL3ducd04rS7XIPHasGAPbZGIsFC8NZJ5V/sLut7VN/lsDnz+Y4W9M+vVX2+YoDGH
-         JcwKbJTe23y87cZkzRlPrr64Jygt+IO4yd5oSVI/keyp/lAjnIpHj3F4ReTN0x9wwKE9
-         /GmPwAe+5m5fI/hFcMsv6hTzJ+5HP86fGFlLCDEStMi0QxsBVPwt843wE4caAF9cDVSX
-         RFieYYxAFR9Vlk+/mDPLhH52k+FdgMw9cl/nsqvZJPmxzYFm7v+BD6JWZXJ4MeewrKw9
-         76qmKLv116bHWfYidGlMX3A/yIt9PAIu7CnnU6AwMqEaUXs6CPpukFp945O5dyIxH9ob
-         0QvQ==
-X-Gm-Message-State: AOAM532hVBEPeP7U3d0IUpI9CgVpqzeSPrc9iEXUGjy5fDDUzybA84un
-        oXzhPM0XwmC4p22S8tddF9PX+CsWaDSmrV5ITdqJzg==
-X-Google-Smtp-Source: ABdhPJwn+pYaNfT/vcj1Fu74dgLLzSOH84xpl+hKWdoETIQkNHe4cUyVUU/8W6zhHF+T4g3tG3dy/IGcqIegEkxm//I=
-X-Received: by 2002:ac2:43c2:: with SMTP id u2mr4179527lfl.573.1600086389160;
- Mon, 14 Sep 2020 05:26:29 -0700 (PDT)
+        id S1725957AbgINRfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:35:07 -0400
+Received: from mga09.intel.com ([134.134.136.24]:60769 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgINR0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:26:41 -0400
+IronPort-SDR: mEJgPqSdaZHrDn9e+UsUq0JURUmEH00ZPPYibaKhAiEkQmjn7kvtlOiRFC6iwxgpd+MnFfwM9n
+ gsj8/29Ou5jA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="160055266"
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="160055266"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 10:26:40 -0700
+IronPort-SDR: EXUArbWF6MqzxQVzC9rRVE2IA6NQYNT/XVBpbxMnmAssoFi6iFw2p5l2uddSLDCmYby6YzuDUo
+ k6epqzo8iOFw==
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="482431915"
+Received: from mgorski-mobl.ger.corp.intel.com (HELO localhost) ([10.249.43.120])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 10:26:33 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v37 09/24] x86/sgx: Add __sgx_alloc_epc_page() and sgx_free_epc_page()
+Date:   Mon, 14 Sep 2020 20:26:27 +0300
+Message-Id: <20200914172627.7693-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200910054203.525420-1-aubrey.li@intel.com> <20200910054203.525420-2-aubrey.li@intel.com>
- <CAPJCdBm+eyvY3ZUU0sz8WxRhdKquCApTCb1rv8DBDCnG8kS0PA@mail.gmail.com>
-In-Reply-To: <CAPJCdBm+eyvY3ZUU0sz8WxRhdKquCApTCb1rv8DBDCnG8kS0PA@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 14 Sep 2020 14:26:18 +0200
-Message-ID: <CAKfTPtBXxFC_FJHbnRafN3-6Fs=kJxMvGaStiKtp8T06p5Xr4A@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Aubrey Li <aubrey.li@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Sep 2020 at 05:59, Jiang Biao <benbjiang@gmail.com> wrote:
->
-> Hi, Aubrey
->
-> On Fri, 11 Sep 2020 at 23:48, Aubrey Li <aubrey.li@intel.com> wrote:
-> >
-> > Added idle cpumask to track idle cpus in sched domain. When a CPU
-> > enters idle, its corresponding bit in the idle cpumask will be set,
-> > and when the CPU exits idle, its bit will be cleared.
-> >
-> > When a task wakes up to select an idle cpu, scanning idle cpumask
-> > has low cost than scanning all the cpus in last level cache domain,
-> > especially when the system is heavily loaded.
-> >
-> > Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> > ---
-> >  include/linux/sched/topology.h | 13 +++++++++++++
-> >  kernel/sched/fair.c            |  4 +++-
-> >  kernel/sched/topology.c        |  2 +-
-> >  3 files changed, 17 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-> > index fb11091129b3..43a641d26154 100644
-> > --- a/include/linux/sched/topology.h
-> > +++ b/include/linux/sched/topology.h
-> > @@ -65,8 +65,21 @@ struct sched_domain_shared {
-> >         atomic_t        ref;
-> >         atomic_t        nr_busy_cpus;
-> >         int             has_idle_cores;
-> > +       /*
-> > +        * Span of all idle CPUs in this domain.
-> > +        *
-> > +        * NOTE: this field is variable length. (Allocated dynamically
-> > +        * by attaching extra space to the end of the structure,
-> > +        * depending on how many CPUs the kernel has booted up with)
-> > +        */
-> > +       unsigned long   idle_cpus_span[];
-> >  };
-> >
-> > +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
-> > +{
-> > +       return to_cpumask(sds->idle_cpus_span);
-> > +}
-> > +
-> >  struct sched_domain {
-> >         /* These fields must be setup */
-> >         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 6b3b59cc51d6..3b6f8a3589be 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6136,7 +6136,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
-> >
-> >         time = cpu_clock(this);
-> >
-> > -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> > +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
-> Is the sds_idle_cpus() always empty if nohz=off?
+Add __sgx_alloc_epc_page(), which iterates through EPC sections and borrows
+a page structure that is not used by anyone else. When a page is no longer
+needed it must be released with sgx_free_epc_page(). This function
+implicitly calls ENCLS[EREMOVE], which will return the page to the
+uninitialized state (i.e. not required from caller part).
 
-Good point
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/x86/kernel/cpu/sgx/main.c | 62 ++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
+ 2 files changed, 65 insertions(+)
 
-> Do we need to initialize the idle_cpus_span with sched_domain_span(sd)?
->
-> >
-> >         for_each_cpu_wrap(cpu, cpus, target) {
-> >                 if (!--nr)
-> > @@ -10182,6 +10182,7 @@ static void set_cpu_sd_state_busy(int cpu)
-> >         sd->nohz_idle = 0;
-> >
-> >         atomic_inc(&sd->shared->nr_busy_cpus);
-> > +       cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-> >  unlock:
-> >         rcu_read_unlock();
-> >  }
-> > @@ -10212,6 +10213,7 @@ static void set_cpu_sd_state_idle(int cpu)
-> >         sd->nohz_idle = 1;
-> >
-> >         atomic_dec(&sd->shared->nr_busy_cpus);
-> > +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-> This only works when entering/exiting tickless mode? :)
-> Why not update idle_cpus_span during tick_nohz_idle_enter()/exit()?
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index c5831e3db14a..97c6895fb6c9 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -83,6 +83,68 @@ static bool __init sgx_page_reclaimer_init(void)
+ 	return true;
+ }
+ 
++static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
++{
++	struct sgx_epc_page *page;
++
++	if (list_empty(&section->page_list))
++		return NULL;
++
++	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
++	list_del_init(&page->list);
++
++	return page;
++}
++
++/**
++ * __sgx_alloc_epc_page() - Allocate an EPC page
++ *
++ * Iterate through EPC sections and borrow a free EPC page to the caller. When a
++ * page is no longer needed it must be released with sgx_free_epc_page().
++ *
++ * Return:
++ *   an EPC page,
++ *   -errno on error
++ */
++struct sgx_epc_page *__sgx_alloc_epc_page(void)
++{
++	struct sgx_epc_section *section;
++	struct sgx_epc_page *page;
++	int i;
++
++	for (i = 0; i < sgx_nr_epc_sections; i++) {
++		section = &sgx_epc_sections[i];
++		spin_lock(&section->lock);
++		page = __sgx_alloc_epc_page_from_section(section);
++		spin_unlock(&section->lock);
++
++		if (page)
++			return page;
++	}
++
++	return ERR_PTR(-ENOMEM);
++}
++
++/**
++ * sgx_free_epc_page() - Free an EPC page
++ * @page:	an EPC page
++ *
++ * Call EREMOVE for an EPC page and insert it back to the list of free pages.
++ */
++void sgx_free_epc_page(struct sgx_epc_page *page)
++{
++	struct sgx_epc_section *section = sgx_get_epc_section(page);
++	int ret;
++
++	ret = __eremove(sgx_get_epc_addr(page));
++	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
++		return;
++
++	spin_lock(&section->lock);
++	list_add_tail(&page->list, &section->page_list);
++	spin_unlock(&section->lock);
++}
++
+ static void __init sgx_free_epc_section(struct sgx_epc_section *section)
+ {
+ 	struct sgx_epc_page *page;
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index dff4f5f16d09..fce756c3434b 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -49,4 +49,7 @@ static inline void *sgx_get_epc_addr(struct sgx_epc_page *page)
+ 	return section->va + (page->desc & PAGE_MASK) - section->pa;
+ }
+ 
++struct sgx_epc_page *__sgx_alloc_epc_page(void);
++void sgx_free_epc_page(struct sgx_epc_page *page);
++
+ #endif /* _X86_SGX_H */
+-- 
+2.25.1
 
-set_cpu_sd_state_busy is only called during a tick in order to limit
-the rate of the update to once per tick per cpu at most and prevents
-any kind of storm of update if short running tasks wake/sleep all the
-time. We don't want to update a cpumask at each and every enter/leave
-idle.
-
->
-> Thx.
-> Regards,
-> Jiang
->
-> >  unlock:
-> >         rcu_read_unlock();
-> >  }
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 9079d865a935..92d0aeef86bf 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -1769,7 +1769,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
-> >
-> >                         *per_cpu_ptr(sdd->sd, j) = sd;
-> >
-> > -                       sds = kzalloc_node(sizeof(struct sched_domain_shared),
-> > +                       sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
-> >                                         GFP_KERNEL, cpu_to_node(j));
-> >                         if (!sds)
-> >                                 return -ENOMEM;
-> > --
-> > 2.25.1
-> >
