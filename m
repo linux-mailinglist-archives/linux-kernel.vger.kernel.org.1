@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41060269458
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA3526945B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgINSF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:05:27 -0400
-Received: from mga07.intel.com ([134.134.136.100]:36714 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725964AbgINSFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:05:25 -0400
-IronPort-SDR: DZ85E3HONqaWybxfsFhe1xm5uLWaRWGgcFe2FACthqL9U4glNacopZ5wgml63T9gjnFpb+KqM2
- WMHB6aHFPAtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="223315675"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="223315675"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 11:05:20 -0700
-IronPort-SDR: ITGKirPXRtC4MiTsUGWfq/qZkKTcPmNColBPFib9Mc/8RuAbTEjc0Mu18/Oc+Hz3Z0jxEFZ0Nu
- DRCFBaaZ8tow==
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="330842744"
-Received: from mgorski-mobl.ger.corp.intel.com (HELO localhost) ([10.249.43.120])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 11:05:15 -0700
-Date:   Mon, 14 Sep 2020 21:05:10 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Denis Efremov <efremov@linux.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] security: keys: Use kvfree_sensitive in a few places
-Message-ID: <20200914180510.GC9369@linux.intel.com>
-References: <20200911114400.82207-1-alex.dewar90@gmail.com>
- <f97076d2-de8a-4600-ee81-4cf4fcdc3ec1@linux.com>
+        id S1726104AbgINSG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:06:28 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:55569 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725970AbgINSGR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:06:17 -0400
+Received: (qmail 972913 invoked by uid 1000); 14 Sep 2020 14:06:16 -0400
+Date:   Mon, 14 Sep 2020 14:06:16 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        stern@rowland.harvard.ed, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 04/11] USB: core: hub.c: use usb_control_msg_send() in
+ a few places
+Message-ID: <20200914180616.GB972479@rowland.harvard.edu>
+References: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+ <20200914153756.3412156-5-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f97076d2-de8a-4600-ee81-4cf4fcdc3ec1@linux.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200914153756.3412156-5-gregkh@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 07:05:16PM +0300, Denis Efremov wrote:
-> Hi,
+On Mon, Sep 14, 2020 at 05:37:49PM +0200, Greg Kroah-Hartman wrote:
+> There are a few calls to usb_control_msg() that can be converted to use
+> usb_control_msg_send() instead, so do that in order to make the error
+> checking a bit simpler and the code smaller.
 > 
-> same patch
+> Cc: Alan Stern <stern@rowland.harvard.edu>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> v3:
+>  - drop change in usb_enable_link_state() as it was not needed now
+>    thanks to review from Alan
+>  - minor changes requested by checkpatch.pl
 > 
-> https://lkml.org/lkml/2020/8/27/168
+> v2:
+>  - dropped changes to usb_req_set_sel() thanks to review from Alan
 > 
-> Thanks,
-> Denis
+>  drivers/usb/core/hub.c | 99 +++++++++++++++++-------------------------
+>  1 file changed, 40 insertions(+), 59 deletions(-)
 
-David, can you pick this up?
-
-/Jarkko
+Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
