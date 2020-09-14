@@ -2,178 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8501326892F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B899E26893C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgINKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgINKWu (ORCPT
+        id S1726442AbgINKZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:25:32 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:27909 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726383AbgINKZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:22:50 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D96C06174A;
-        Mon, 14 Sep 2020 03:22:49 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e23so22443378eja.3;
-        Mon, 14 Sep 2020 03:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JcgkykQbCEEzXPOIKLN/riEHEv6JbaxpqPU0ln50usE=;
-        b=hzM7MOO9Rq9mUDA18kNMYt8jvZNAg4cOM75HXB9rzSkA2PdvarrESSKauS0rt7oIFS
-         8tys67UrARZuybnkT31wATqbBVQ6dyGGnlrQxxcgxCstmOLdLpB74ALzBk5C57e+YiXm
-         0FTJMvrZdzQGX64u2FUkKEDzlqP5mVpqkHGo49yz5CtmjgOlAw0/8WidBJLCKr7JuuOy
-         AB01U/psleIcCbsplAvTLkTKDXj0kkXZL3G8NBM8RG5dD8xww8xxmed1ya/ClqHOS0Wf
-         uOwSd1bDDSpWfQEB5J/qrtVECPePwCkr5Bg+Bf7/x1Y7mgTuoh1MBJI9kzEsWLcVwz/d
-         OcIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JcgkykQbCEEzXPOIKLN/riEHEv6JbaxpqPU0ln50usE=;
-        b=KMuq67NlS+HRF7pasuyg+r/SSyzjzOWlNkFureCJfnDyeoxpmNUSg2IoIL4ECaOKlf
-         AOmF+dbxNxQSc4uDo4lAwy0J3IWl3rff3VQF/TrPSNlYvOa51qUwIYHZuSzn5PpH762N
-         UJIBuyGL4cxHA0dO8+xTXdqBr51FvaYTBYBt5tzNl/PFk8+0v42mU3q1l4j3ab1unn2t
-         y0RaGX4Tw7wzsZf985F5OA3hni/O7EF5aKPzw/4HTIfQm7ETLJN77/RXi4nBLKMg7n2C
-         71G0vcIHbbPp1PJeqeGV2Xo8NpA2T7zN8qYQ4FXVR5syW+owOUNmVDsV7gsi0bR/BXE7
-         E1/Q==
-X-Gm-Message-State: AOAM532Z1pEMpWfSN/erR1KTSCt15EJ3SnwVeL4ieAP3ACn+xHD/Qrhz
-        96Se9lgonfRW6Od4wz66C3o=
-X-Google-Smtp-Source: ABdhPJwpMgR1QyKRF+Kx+/hv2hcRWvEASyyAo3WtCvNRWY08dtRJDCvsuH3otupJYgT7EZUdcIIYKQ==
-X-Received: by 2002:a17:906:4b4a:: with SMTP id j10mr13903598ejv.498.1600078967703;
-        Mon, 14 Sep 2020 03:22:47 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id e15sm8827333eds.5.2020.09.14.03.22.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Sep 2020 03:22:46 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 01B2027C0054;
-        Mon, 14 Sep 2020 06:22:43 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 14 Sep 2020 06:22:43 -0400
-X-ME-Sender: <xms:cURfX-NqGW-l0nzsMMf9SBHOJ4BR-riZQvV2i6qhqpTBM1n42ck86A>
-    <xme:cURfX8-QFM8aa_0TAPAqgJKYNpFSzXdJanLqbLIaCkoneIIzdevUun9tXvnu02Zq0
-    p_Pmvt-F8aBtu1-rQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeiiedgvdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecukfhppeehvddrudehhedrudduuddrjedunecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhphgv
-    rhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdrfh
-    gvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:cURfX1T6D57hu7t5BUnlV0l8BZgxvpp-gb7ZsHu4j4JvlLpoMwlMIQ>
-    <xmx:cURfX-t5CIr1HQbqC6DxHCylZ4AeCGuRTWjUk9Yb39pfPwxHWfjh9Q>
-    <xmx:cURfX2fPDM7ZbuInfgNAx6PoZgxiINQQBXUQ5EpyGEQvh4YzWEuIew>
-    <xmx:ckRfX6OyRJZcGmIW0NC4Nv53MQh6BYUo6bKgv50VxeE-UwleIdCKZnmh4Q8>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 76F87306467E;
-        Mon, 14 Sep 2020 06:22:40 -0400 (EDT)
-Date:   Mon, 14 Sep 2020 18:22:39 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
-        ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        mark.rutland@arm.com, maz@kernel.org
-Subject: Re: [PATCH v3 08/11] Input: hyperv-keyboard: Make ringbuffer at
- least take two pages
-Message-ID: <20200914102239.GB45838@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200910143455.109293-1-boqun.feng@gmail.com>
- <20200910143455.109293-9-boqun.feng@gmail.com>
- <20200914084600.GA45838@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
- <20200914093016.lsfrfk4c7kyj6tn3@liuwe-devbox-debian-v2>
+        Mon, 14 Sep 2020 06:25:24 -0400
+X-UUID: aa63b43d134b45bd9b8c4ed090a3263b-20200914
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=xEzcpucgYacwPxI4zW8BRzU1nv7ljitEBf6N+fXDGNU=;
+        b=HAuDh/ofVwcimDuhbMuCnCSNwRW31PaagkQpu1VUjWA+8YN6A+ZwhJK3ToQg1vm5rW4uqHW1/qmQwx/MkFXSy3LgIudrN+dm4kpuRxDHMDTJZ/v+7UhcuTDw4Jx9Yzci9bKOdRT0iMBc6c8NBY2DDscV6NmERq5Ky0Ge5jUusxc=;
+X-UUID: aa63b43d134b45bd9b8c4ed090a3263b-20200914
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 275340207; Mon, 14 Sep 2020 18:25:18 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs08n2.mediatek.inc
+ (172.21.101.56) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 14 Sep
+ 2020 18:25:14 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Sep 2020 18:25:13 +0800
+Message-ID: <1600078992.2521.27.camel@mhfsdcap03>
+Subject: Re: [v2,1/3] dt-bindings: PCI: mediatek: Add YAML schema
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>
+Date:   Mon, 14 Sep 2020 18:23:12 +0800
+In-Reply-To: <20200911224554.GB2905744@bogus>
+References: <20200910034536.30860-1-jianjun.wang@mediatek.com>
+         <20200910034536.30860-2-jianjun.wang@mediatek.com>
+         <20200911224554.GB2905744@bogus>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914093016.lsfrfk4c7kyj6tn3@liuwe-devbox-debian-v2>
+X-TM-SNTS-SMTP: 9CF3AAFAF8100D953018214FE70B22C96AE44896732AEC350BE3FCE945D1000F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:30:16AM +0000, Wei Liu wrote:
-> On Mon, Sep 14, 2020 at 04:46:00PM +0800, Boqun Feng wrote:
-> > On Thu, Sep 10, 2020 at 10:34:52PM +0800, Boqun Feng wrote:
-> > > When PAGE_SIZE > HV_HYP_PAGE_SIZE, we need the ringbuffer size to be at
-> > > least 2 * PAGE_SIZE: one page for the header and at least one page of
-> > > the data part (because of the alignment requirement for double mapping).
-> > > 
-> > > So make sure the ringbuffer sizes to be at least 2 * PAGE_SIZE when
-> > > using vmbus_open() to establish the vmbus connection.
-> > > 
-> > > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > > ---
-> > >  drivers/input/serio/hyperv-keyboard.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/input/serio/hyperv-keyboard.c b/drivers/input/serio/hyperv-keyboard.c
-> > > index df4e9f6f4529..6ebc61e2db3f 100644
-> > > --- a/drivers/input/serio/hyperv-keyboard.c
-> > > +++ b/drivers/input/serio/hyperv-keyboard.c
-> > > @@ -75,8 +75,8 @@ struct synth_kbd_keystroke {
-> > >  
-> > >  #define HK_MAXIMUM_MESSAGE_SIZE 256
-> > >  
-> > > -#define KBD_VSC_SEND_RING_BUFFER_SIZE		(40 * 1024)
-> > > -#define KBD_VSC_RECV_RING_BUFFER_SIZE		(40 * 1024)
-> > > +#define KBD_VSC_SEND_RING_BUFFER_SIZE	max(40 * 1024, (int)(2 * PAGE_SIZE))
-> > > +#define KBD_VSC_RECV_RING_BUFFER_SIZE	max(40 * 1024, (int)(2 * PAGE_SIZE))
-> > >  
-> > 
-> > Hmm.. just realized there is a problem here, if PAGE_SIZE = 16k, then
-> > 40 * 1024 > 2 * PAGE_SIZE, however in the ring buffer size should also
-> > be page aligned, otherwise vmbus_open() will fail.
-> > 
-> > I plan to modify this as
-> > 
-> > in linux/hyperv.h:
-> > 
-> > #define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + (playload_sz))
-> > 
-> > and here:
-> > 
-> > #define KBD_VSC_SEND_RING_BUFFER_SIZE VMBUS_RING_SIZE(36 * 1024)
-> > #define KBD_VSC_RECV_RING_BUFFER_SIZE VMBUS_RING_SIZE(36 * 1024)
-> > 
-> > and the similar change for patch #9.
-> 
-> OOI why do you reduce the size by 4k here?
-> 
+T24gRnJpLCAyMDIwLTA5LTExIGF0IDE2OjQ1IC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gVGh1LCBTZXAgMTAsIDIwMjAgYXQgMTE6NDU6MzRBTSArMDgwMCwgSmlhbmp1biBXYW5nIHdy
+b3RlOg0KPiA+IEFkZCBZQU1MIHNjaGVtYXMgZG9jdW1lbnRhdGlvbiBmb3IgR2VuMyBQQ0llIGNv
+bnRyb2xsZXIgb24NCj4gPiBNZWRpYVRlayBTb0NzLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6
+IEppYW5qdW4gV2FuZyA8amlhbmp1bi53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiBBY2tlZC1ieTog
+UnlkZXIgTGVlIDxyeWRlci5sZWVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vYmlu
+ZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sICAgICAgfCAxMzAgKysrKysrKysrKysr
+KysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxMzAgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVh
+dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRp
+YXRlay1wY2llLWdlbjMueWFtbA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sIGIvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0K
+PiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi5hMmRmYzBk
+MTVkMmUNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0KPiA+IEBAIC0wLDAgKzEs
+MTMwIEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0y
+LUNsYXVzZSkNCj4gPiArJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZp
+Y2V0cmVlLm9yZy9zY2hlbWFzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbCMNCj4gPiArJHNj
+aGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4g
+Kw0KPiA+ICt0aXRsZTogR2VuMyBQQ0llIGNvbnRyb2xsZXIgb24gTWVkaWFUZWsgU29Dcw0KPiA+
+ICsNCj4gPiArbWFpbnRhaW5lcnM6DQo+ID4gKyAgLSBKaWFuanVuIFdhbmcgPGppYW5qdW4ud2Fu
+Z0BtZWRpYXRlay5jb20+DQo+ID4gKw0KPiA+ICthbGxPZjoNCj4gPiArICAtICRyZWY6IC9zY2hl
+bWFzL3BjaS9wY2ktYnVzLnlhbWwjDQo+ID4gKw0KPiA+ICtwcm9wZXJ0aWVzOg0KPiA+ICsgIGNv
+bXBhdGlibGU6DQo+ID4gKyAgICBvbmVPZjoNCj4gPiArICAgICAgLSBjb25zdDogbWVkaWF0ZWss
+Z2VuMy1wY2llDQo+IA0KPiBHZW5lcmljIGNvbXBhdGlibGVzIGxpa2UgdGhpcyBzaG91bGQgb25s
+eSBiZSBhIGZhbGxiYWNrIHN0cmluZywgbm90IG9uIA0KPiBpdHMgb3duLg0KPiANCj4gPiArICAg
+ICAgLSBjb25zdDogbWVkaWF0ZWssbXQ4MTkyLXBjaWUNCj4gPiArDQo+ID4gKyAgcmVnOg0KPiA+
+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgaW50ZXJydXB0czoNCj4gPiArICAgIG1h
+eEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGJ1cy1yYW5nZToNCj4gPiArICAgIGRlc2NyaXB0aW9u
+OiBSYW5nZSBvZiBidXMgbnVtYmVycyBhc3NvY2lhdGVkIHdpdGggdGhpcyBjb250cm9sbGVyLg0K
+PiANCj4gRHJvcCB0aGlzLiBTdGFuZGFyZCBwcm9wZXJ0eS4NCg0KVGhhbmtzIGZvciB5b3VyIHJl
+dmlldywgSSB3aWxsIGRyb3AgaXQgaW4gdGhlIG5leHQgdmVyc2lvbi4NCj4gDQo+ID4gKw0KPiA+
+ICsgIHJhbmdlczoNCj4gPiArICAgIG1pbkl0ZW1zOiAxDQo+ID4gKyAgICBtYXhJdGVtczogOA0K
+PiA+ICsNCj4gPiArICByZXNldHM6DQo+ID4gKyAgICBtaW5JdGVtczogMQ0KPiA+ICsgICAgbWF4
+SXRlbXM6IDINCj4gPiArDQo+ID4gKyAgcmVzZXQtbmFtZXM6DQo+ID4gKyAgICBhbnlPZjoNCj4g
+PiArICAgICAgLSBjb25zdDogbWFjLXJzdA0KPiA+ICsgICAgICAtIGNvbnN0OiBwaHktcnN0DQo+
+ID4gKw0KPiA+ICsgIGNsb2NrczoNCj4gPiArICAgIG1heEl0ZW1zOiA1DQo+ID4gKw0KPiA+ICsg
+IGFzc2lnbmVkLWNsb2NrczoNCj4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4gKw0KPiA+ICsgIGFz
+c2lnbmVkLWNsb2NrLXBhcmVudHM6DQo+ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiAr
+ICBwaHlzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgJyNpbnRlcnJ1cHQt
+Y2VsbHMnOg0KPiA+ICsgICAgY29uc3Q6IDENCj4gPiArDQo+ID4gKyAgaW50ZXJydXB0LWNvbnRy
+b2xsZXI6DQo+ID4gKyAgICBkZXNjcmlwdGlvbjogSW50ZXJydXB0IGNvbnRyb2xsZXIgbm9kZSBm
+b3IgaGFuZGxpbmcgbGVnYWN5IFBDSSBpbnRlcnJ1cHRzLg0KPiA+ICsgICAgdHlwZTogb2JqZWN0
+DQo+ID4gKyAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAnI2FkZHJlc3MtY2VsbHMnOg0KPiA+
+ICsgICAgICAgIGNvbnN0OiAwDQo+ID4gKyAgICAgICcjaW50ZXJydXB0LWNlbGxzJzoNCj4gPiAr
+ICAgICAgICBjb25zdDogMQ0KPiA+ICsgICAgICBpbnRlcnJ1cHQtY29udHJvbGxlcjogdHJ1ZQ0K
+PiA+ICsNCj4gPiArICAgIHJlcXVpcmVkOg0KPiA+ICsgICAgICAtICcjYWRkcmVzcy1jZWxscycN
+Cj4gPiArICAgICAgLSAnI2ludGVycnVwdC1jZWxscycNCj4gPiArICAgICAgLSBpbnRlcnJ1cHQt
+Y29udHJvbGxlcg0KPiA+ICsNCj4gPiArICAgIGFkZGl0aW9uYWxQcm9wZXJ0aWVzOiBmYWxzZQ0K
+PiA+ICsNCj4gPiArcmVxdWlyZWQ6DQo+ID4gKyAgLSBjb21wYXRpYmxlDQo+ID4gKyAgLSByZWcN
+Cj4gPiArICAtIGludGVycnVwdHMNCj4gPiArICAtIHJhbmdlcw0KPiA+ICsgIC0gY2xvY2tzDQo+
+ID4gKyAgLSAnI2ludGVycnVwdC1jZWxscycNCj4gPiArICAtIGludGVycnVwdC1jb250cm9sbGVy
+DQo+ID4gKw0KPiA+ICt1bmV2YWx1YXRlZFByb3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICtl
+eGFtcGxlczoNCj4gPiArICAtIHwNCj4gPiArICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9pbnRl
+cnJ1cHQtY29udHJvbGxlci9hcm0tZ2ljLmg+DQo+ID4gKyAgICAjaW5jbHVkZSA8ZHQtYmluZGlu
+Z3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvaXJxLmg+DQo+ID4gKw0KPiA+ICsgICAgYnVzIHsNCj4g
+PiArICAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwyPjsNCj4gPiArICAgICAgICAjc2l6ZS1jZWxs
+cyA9IDwyPjsNCj4gPiArDQo+ID4gKyAgICAgICAgcGNpZTogcGNpZUAxMTIzMDAwMCB7DQo+ID4g
+KyAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyLXBjaWUiOw0KPiA+ICsg
+ICAgICAgICAgICBkZXZpY2VfdHlwZSA9ICJwY2kiOw0KPiA+ICsgICAgICAgICAgICAjYWRkcmVz
+cy1jZWxscyA9IDwzPjsNCj4gPiArICAgICAgICAgICAgI3NpemUtY2VsbHMgPSA8Mj47DQo+ID4g
+KyAgICAgICAgICAgIHJlZyA9IDwweDAwIDB4MTEyMzAwMDAgMHgwMCAweDQwMDA+Ow0KPiA+ICsg
+ICAgICAgICAgICByZWctbmFtZXMgPSAicGNpZS1tYWMiOw0KPiA+ICsgICAgICAgICAgICBpbnRl
+cnJ1cHRzID0gPEdJQ19TUEkgMjUxIElSUV9UWVBFX0xFVkVMX0hJR0ggMD47DQo+ID4gKyAgICAg
+ICAgICAgIGJ1cy1yYW5nZSA9IDwweDAwIDB4ZmY+Ow0KPiA+ICsgICAgICAgICAgICByYW5nZXMg
+PSA8MHg4MjAwMDAwMCAweDAwIDB4MTIwMDAwMDAgMHgwMCAweDEyMDAwMDAwIDB4MDAgMHgxMDAw
+MDAwPjsNCj4gPiArICAgICAgICAgICAgY2xvY2tzID0gPCZpbmZyYWNmZyA0MD4sDQo+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgIDwmaW5mcmFjZmcgNDM+LA0KPiA+ICsgICAgICAgICAgICAgICAg
+ICAgICA8JmluZnJhY2ZnIDk3PiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgPCZpbmZyYWNm
+ZyA5OT4sDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgIDwmaW5mcmFjZmcgMTExPjsNCj4gPiAr
+ICAgICAgICAgICAgYXNzaWduZWQtY2xvY2tzID0gPCZ0b3Bja2dlbiA1MD47DQo+ID4gKyAgICAg
+ICAgICAgIGFzc2lnbmVkLWNsb2NrLXBhcmVudHMgPSA8JnRvcGNrZ2VuIDkxPjsNCj4gPiArDQo+
+ID4gKyAgICAgICAgICAgIHBoeXMgPSA8JnBjaWVwaHk+Ow0KPiA+ICsgICAgICAgICAgICBwaHkt
+bmFtZXMgPSAicGNpZS1waHkiOw0KPiA+ICsgICAgICAgICAgICByZXNldHMgPSA8JmluZnJhY2Zn
+X3JzdCAwPjsNCj4gPiArICAgICAgICAgICAgcmVzZXQtbmFtZXMgPSAicGh5LXJzdCI7DQo+ID4g
+Kw0KPiA+ICsgICAgICAgICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAg
+ICAgICBpbnRlcnJ1cHQtbWFwLW1hc2sgPSA8MCAwIDAgMHg3PjsNCj4gPiArICAgICAgICAgICAg
+aW50ZXJydXB0LW1hcCA9IDwwIDAgMCAxICZwY2llX2ludGMgMD4sDQo+ID4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICA8MCAwIDAgMiAmcGNpZV9pbnRjIDE+LA0KPiA+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgPDAgMCAwIDMgJnBjaWVfaW50YyAyPiwNCj4gPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIDwwIDAgMCA0ICZwY2llX2ludGMgMz47DQo+ID4gKyAgICAgICAg
+ICAgIHBjaWVfaW50YzogaW50ZXJydXB0LWNvbnRyb2xsZXIgew0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
+ICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgaW50
+ZXJydXB0LWNvbnRyb2xsZXI7DQo+ID4gKyAgICAgICAgICAgIH07DQo+ID4gKyAgICAgICAgfTsN
+Cj4gPiArICAgIH07DQo+ID4gLS0gDQo+ID4gMi4yNS4xDQoNCg==
 
-To keep the total ring buffer size unchanged (still 40k) when
-PAGE_SIZE=4k. Because in VMBUS_RING_SIZE() (which I plan to rename as
-HV_RING_SIZE()), the hv_ring_buffer size is already added.
-
-Regards,
-Boqun
-
-> Wei.
-> 
-> > 
-> > Thoughts?
-> > 
-> > Regards,
-> > Boqun
-> > 
-> > >  #define XTKBD_EMUL0     0xe0
-> > >  #define XTKBD_EMUL1     0xe1
-> > > -- 
-> > > 2.28.0
-> > > 
