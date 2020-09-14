@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126E62693EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA142693FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgINRpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
+        id S1726102AbgINRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726145AbgINMFj (ORCPT
+        with ESMTP id S1726095AbgINMDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:05:39 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3134C061353
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:16 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t14so11335621pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:16 -0700 (PDT)
+        Mon, 14 Sep 2020 08:03:52 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8170DC061354
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:29 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o20so12402872pfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
-        b=kuCmwrQrg7GJ9HX906/sSdZbuErryyJ0Dz8Oj+NGbspBGEYAznqdQWVNoTE8TLZLH0
-         LuVLq2yO5Nk7H0eV+WdsjLsaNVOTQA3NNMYVFaUDJvMTik77DB/mWAsrYZyn96N/RvOL
-         97A7M+Y5Iuf5kKiFE36DrcKO0zB8g/ThDLYh3DlkkzANowb1UvV9g4ZASIEDVcQ7+O4n
-         3B2qz+E/JdDK+66qcmmo3+q/BWRCVwF7spBQwZW+sPdR0yHRx9cwrdc4AO3kHjr+MCZ4
-         tKsrlEHOIi31ZJ2NuIRE/A8kTzIBs/PE2ct0OpmbJ9wAWbkII6g/0c6ShMt2WSge4JlB
-         7pzw==
+        bh=xSOVJj4da1tYC6z/DHA41bMoIW3TylIOsXwZcMYjIwM=;
+        b=onU8Na4NQzsCjz1LdUqLJrE8OJCGofjylUiz2cNQ7o3o7sX3hOjQ/1wsX753/HwF6Z
+         N+GDj/Q3M7N4vyAhOM83oW75+L4n3+6/3PINbSS+t2xfoByvhdbaPCmeXbubyOBT2ZYh
+         af+ehDjGSxH5twfoUeND5K/STAO+iWETgv5ciaZT+JpYLbuNgi5bTK8dohZhGSnOEIZ4
+         7gnMOAOpVDevGnxA2ZpCMm6Zgvr9AY6rk7qlZXcll561RsDNrVJcdKYLmdCiEmh757eb
+         Y5kFltQoLnYL3OM615QGzGtgGKv3G2f69HASbgbCftZFuXa8fOv2vZ1w7324lbPOq1X/
+         iHfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
-        b=LfxgHeWZ3kfXfA+gb8s/69sEwmx4iOE8JvZJ8jVnGGXB2RK6Chb3CK8dnpBFNer0s3
-         5K3Q+henVZIJYxmgv7LTPvyJEF3ylm9DvEo4PBjcFhbEZQstsRE49wM+t7iG/gR0Db+p
-         4cBeA0rUBR8en41iegWSCdeUMDw/nReU5JwAM3ADpvs9rGOkhIxF1iqoc6tMF4qPWrso
-         f8MNO2YPVMWMXh1itaqtR94fNzKZxyE+1l+LgjkQsyXvn6/opj94oaW+3xwaZHEAzsbC
-         bzsYMFePlEbxDXHF5wWJJSgUIFR9S+ueYW61xC/jzG4N4dAWktuiAEX6HJp54DOEzwqF
-         K3zg==
-X-Gm-Message-State: AOAM532Wy++JnQVtRkv4ouIjmH/V58ZUso5+JVC0gL1vCtOfVG7y/c/z
-        La22DnC2YVbOBKKdKLzy5Vwm8w==
-X-Google-Smtp-Source: ABdhPJwMivTpJYi6MvYsaIi8RtkLmeWPRGs92dGue7CU8k3cf5rOcu1bj0SIUEFoRHy99vDQn47Vgg==
-X-Received: by 2002:a17:902:ac83:b029:d1:920c:c022 with SMTP id h3-20020a170902ac83b02900d1920cc022mr14302606plr.38.1600084516188;
-        Mon, 14 Sep 2020 04:55:16 -0700 (PDT)
+        bh=xSOVJj4da1tYC6z/DHA41bMoIW3TylIOsXwZcMYjIwM=;
+        b=PsXQkbKO8VN0qGW1YUR+ECXf4yTDooBjV5GfVW9vTsgF+W+yh7HLnog9TaX8sLG6DK
+         z2Ir0vB51mThmmV/qYQsUp8n1GbWAOYmysIkoWUMCMmX+uoV+9ygrmTvcA0t9d+ep8LF
+         OwCqSM36uj4+N9Lkn5G1LNawQHwE/aGdRDVVPM86HURxP0xIgGmg9r4mPz+LCk/O6stD
+         xrjhsybyvmH6JkksJFcVDuTgbnfwXhF9ITKSe3WvaSXr/lzb7hTnXTUIUXozRqqEds0s
+         KwksniRNVTv+aoi23kLiQGSBEroVNHc5a6GOwJa2VNp3lqv9S1h83e/T6IF7w8J+1Dav
+         w1Ag==
+X-Gm-Message-State: AOAM5332lUzitGDYNg5AN5ln63V8PZC15WWRex16OTtwADjIwFgO3ZS1
+        Y6rKD/BhYGPgpAZYrJvabdkxUw==
+X-Google-Smtp-Source: ABdhPJw2OSvlqzGVUzejMKvUgrbZ8/qbT/xYRowKcqOQk7FgKYewgBRxBguBZxrEvtodbEfeLHCjAw==
+X-Received: by 2002:a17:902:a715:b029:d0:89f3:28cf with SMTP id w21-20020a170902a715b02900d089f328cfmr14060884plq.11.1600084529030;
+        Mon, 14 Sep 2020 04:55:29 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id v13sm9068714pjr.12.2020.09.14.04.55.14
+        by smtp.gmail.com with ESMTPSA id 137sm10620313pfu.149.2020.09.14.04.55.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Sep 2020 04:55:15 -0700 (PDT)
+        Mon, 14 Sep 2020 04:55:28 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -69,9 +69,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 3/6] perf tsc: Calculate timestamp with cap_user_time_short
-Date:   Mon, 14 Sep 2020 19:53:08 +0800
-Message-Id: <20200914115311.2201-4-leo.yan@linaro.org>
+Subject: [PATCH v4 4/6] perf tsc: Support cap_user_time_short for event TIME_CONV
+Date:   Mon, 14 Sep 2020 19:53:09 +0800
+Message-Id: <20200914115311.2201-5-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200914115311.2201-1-leo.yan@linaro.org>
 References: <20200914115311.2201-1-leo.yan@linaro.org>
@@ -80,81 +80,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The perf mmap'ed buffer contains the flag 'cap_user_time_short' and two
-extra fields 'time_cycles' and 'time_mask', perf tool needs to know
-them for handling the counter wrapping case.
+The synthesized event TIME_CONV doesn't contain the complete parameters
+for counters, this will lead to wrong conversion between counter cycles
+and timestamp.
 
-This patch is to reads out the relevant parameters from the head of the
-first mmap'ed page and stores into the structure 'perf_tsc_conversion',
-if the flag 'cap_user_time_short' has been set, it will firstly
-calibrate cycle value for timestamp calculation.
+This patch extends event TIME_CONV to record flags 'cap_user_time_zero'
+which is used to indicate the counter parameters are valid or not, if
+not will directly return 0 for timestamp calculation.  And record the
+flag 'cap_user_time_short' and its relevant fields 'time_cycles' and
+'time_mask' for cycle calibration.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/tsc.c | 12 +++++++++---
- tools/perf/util/tsc.h |  5 +++++
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ tools/lib/perf/include/perf/event.h |  4 ++++
+ tools/perf/util/jitdump.c           | 14 +++++++++-----
+ tools/perf/util/tsc.c               |  4 ++++
+ 3 files changed, 17 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
-index 9e3f04ddddf8..c0ca40204649 100644
---- a/tools/perf/util/tsc.c
-+++ b/tools/perf/util/tsc.c
-@@ -28,6 +28,10 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
- {
- 	u64 quot, rem;
- 
-+	if (tc->cap_user_time_short)
-+		cyc = tc->time_cycles +
-+			((cyc - tc->time_cycles) & tc->time_mask);
-+
- 	quot = cyc >> tc->time_shift;
- 	rem  = cyc & (((u64)1 << tc->time_shift) - 1);
- 	return tc->time_zero + quot * tc->time_mult +
-@@ -37,7 +41,6 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
- int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
- 			     struct perf_tsc_conversion *tc)
- {
--	bool cap_user_time_zero;
- 	u32 seq;
- 	int i = 0;
- 
-@@ -47,7 +50,10 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
- 		tc->time_mult = pc->time_mult;
- 		tc->time_shift = pc->time_shift;
- 		tc->time_zero = pc->time_zero;
--		cap_user_time_zero = pc->cap_user_time_zero;
-+		tc->time_cycles = pc->time_cycles;
-+		tc->time_mask = pc->time_mask;
-+		tc->cap_user_time_zero = pc->cap_user_time_zero;
-+		tc->cap_user_time_short	= pc->cap_user_time_short;
- 		rmb();
- 		if (pc->lock == seq && !(seq & 1))
- 			break;
-@@ -57,7 +63,7 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
- 		}
- 	}
- 
--	if (!cap_user_time_zero)
-+	if (!tc->cap_user_time_zero)
- 		return -EOPNOTSUPP;
- 
- 	return 0;
-diff --git a/tools/perf/util/tsc.h b/tools/perf/util/tsc.h
-index 3c5a632ee57c..72a15419f3b3 100644
---- a/tools/perf/util/tsc.h
-+++ b/tools/perf/util/tsc.h
-@@ -8,6 +8,11 @@ struct perf_tsc_conversion {
- 	u16 time_shift;
- 	u32 time_mult;
- 	u64 time_zero;
-+	u64 time_cycles;
-+	u64 time_mask;
-+
-+	bool cap_user_time_zero;
-+	bool cap_user_time_short;
+diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
+index 842028858d66..a6dbba6b9073 100644
+--- a/tools/lib/perf/include/perf/event.h
++++ b/tools/lib/perf/include/perf/event.h
+@@ -324,6 +324,10 @@ struct perf_record_time_conv {
+ 	__u64			 time_shift;
+ 	__u64			 time_mult;
+ 	__u64			 time_zero;
++	__u64			 time_cycles;
++	__u64			 time_mask;
++	bool			 cap_user_time_zero;
++	bool			 cap_user_time_short;
  };
  
- struct perf_event_mmap_page;
+ struct perf_record_header_feature {
+diff --git a/tools/perf/util/jitdump.c b/tools/perf/util/jitdump.c
+index 0804308ef285..055bab7a92b3 100644
+--- a/tools/perf/util/jitdump.c
++++ b/tools/perf/util/jitdump.c
+@@ -374,11 +374,15 @@ static uint64_t convert_timestamp(struct jit_buf_desc *jd, uint64_t timestamp)
+ 	if (!jd->use_arch_timestamp)
+ 		return timestamp;
+ 
+-	tc.time_shift = jd->session->time_conv.time_shift;
+-	tc.time_mult  = jd->session->time_conv.time_mult;
+-	tc.time_zero  = jd->session->time_conv.time_zero;
+-
+-	if (!tc.time_mult)
++	tc.time_shift	       = jd->session->time_conv.time_shift;
++	tc.time_mult	       = jd->session->time_conv.time_mult;
++	tc.time_zero	       = jd->session->time_conv.time_zero;
++	tc.time_cycles	       = jd->session->time_conv.time_cycles;
++	tc.time_mask	       = jd->session->time_conv.time_mask;
++	tc.cap_user_time_zero  = jd->session->time_conv.cap_user_time_zero;
++	tc.cap_user_time_short = jd->session->time_conv.cap_user_time_short;
++
++	if (!tc.cap_user_time_zero)
+ 		return 0;
+ 
+ 	return tsc_to_perf_time(timestamp, &tc);
+diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
+index c0ca40204649..62b4c75c966c 100644
+--- a/tools/perf/util/tsc.c
++++ b/tools/perf/util/tsc.c
+@@ -98,6 +98,10 @@ int perf_event__synth_time_conv(const struct perf_event_mmap_page *pc,
+ 	event.time_conv.time_mult  = tc.time_mult;
+ 	event.time_conv.time_shift = tc.time_shift;
+ 	event.time_conv.time_zero  = tc.time_zero;
++	event.time_conv.time_cycles = tc.time_cycles;
++	event.time_conv.time_mask = tc.time_mask;
++	event.time_conv.cap_user_time_zero = tc.cap_user_time_zero;
++	event.time_conv.cap_user_time_short = tc.cap_user_time_short;
+ 
+ 	return process(tool, &event, NULL, machine);
+ }
 -- 
 2.17.1
 
