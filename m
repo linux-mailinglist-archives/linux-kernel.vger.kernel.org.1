@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0B0268BF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6187268BF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgINNPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:15:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60272 "EHLO mail.kernel.org"
+        id S1726724AbgINNOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:14:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726586AbgINNEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726364AbgINNEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 09:04:49 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E58A021D41;
-        Mon, 14 Sep 2020 13:04:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F75E21D80;
+        Mon, 14 Sep 2020 13:04:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600088649;
-        bh=+hTCQXSoThcQFiyF2kREjmsvdzzXC//BrwpSRW/S5Bo=;
+        s=default; t=1600088650;
+        bh=AV4Eaj7jrOJ68D6Rsb5R/SK1Yx16OhK4Q+b+JiZaeQA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWTP7vzVof5O6qmfZZyDPs6gWjgDTi4Lq3ryo7InHfmyKGwHOgKkjUdFOVj69atv2
-         ZNHXl1Aqn0U4iQCVNXsNePop0GpCKgkKUFoyD9Wb10GY2oaaRZTN5Dr2R3xzFdy4Hv
-         Y7FIpAmadmb0RSERda4LURy6hZYm4PjeWdH28drE=
+        b=oMrC+Cxd+ZATKqav0QY/Qfn9qBjPE2YKZ2Pn/0tEyadQzPmUa1635hkGSjO18pdNa
+         dck26uvygEvg6SgB7JwViIXlj5p0ywPonbE8uxsf+wh+aIX1vse2zMzpbSKiQVfW/A
+         xIAEoorrITW902st+1nphwgrt9zVbsf1sMj6TTx4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 09/29] scsi: lpfc: Extend the RDF FPIN Registration descriptor for additional events
-Date:   Mon, 14 Sep 2020 09:03:38 -0400
-Message-Id: <20200914130358.1804194-9-sashal@kernel.org>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 10/29] regulator: pwm: Fix machine constraints application
+Date:   Mon, 14 Sep 2020 09:03:39 -0400
+Message-Id: <20200914130358.1804194-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200914130358.1804194-1-sashal@kernel.org>
 References: <20200914130358.1804194-1-sashal@kernel.org>
@@ -44,56 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <james.smart@broadcom.com>
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-[ Upstream commit 441f6b5b097d74a8aa72ec0d8992ef820e2b3773 ]
+[ Upstream commit 59ae97a7a9e1499c2070e29841d1c4be4ae2994a ]
 
-Currently the driver registers for Link Integrity events only.
+If the zero duty cycle doesn't correspond to any voltage in the voltage
+table, the PWM regulator returns an -EINVAL from get_voltage_sel() which
+results in the core erroring out with a "failed to get the current
+voltage" and ending up not applying the machine constraints.
 
-This patch adds registration for the following FPIN types:
+Instead, return -ENOTRECOVERABLE which makes the core set the voltage
+since it's at an unknown value.
 
- - Delivery Notifications
- - Congestion Notification
- - Peer Congestion Notification
+For example, with this device tree:
 
-Link: https://lore.kernel.org/r/20200828175332.130300-4-james.smart@broadcom.com
-Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+	fooregulator {
+		compatible = "pwm-regulator";
+		pwms = <&foopwm 0 100000>;
+		regulator-min-microvolt = <2250000>;
+		regulator-max-microvolt = <2250000>;
+		regulator-name = "fooregulator";
+		regulator-always-on;
+		regulator-boot-on;
+		voltage-table = <2250000 30>;
+	};
+
+Before this patch:
+
+  fooregulator: failed to get the current voltage(-22)
+
+After this patch:
+
+  fooregulator: Setting 2250000-2250000uV
+  fooregulator: 2250 mV
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Link: https://lore.kernel.org/r/20200902130952.24880-1-vincent.whitchurch@axis.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_els.c | 3 +++
- drivers/scsi/lpfc/lpfc_hw4.h | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/regulator/pwm-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
-index 7b6a210825677..519c7be404e75 100644
---- a/drivers/scsi/lpfc/lpfc_els.c
-+++ b/drivers/scsi/lpfc/lpfc_els.c
-@@ -3512,6 +3512,9 @@ lpfc_issue_els_rdf(struct lpfc_vport *vport, uint8_t retry)
- 				FC_TLV_DESC_LENGTH_FROM_SZ(prdf->reg_d1));
- 	prdf->reg_d1.reg_desc.count = cpu_to_be32(ELS_RDF_REG_TAG_CNT);
- 	prdf->reg_d1.desc_tags[0] = cpu_to_be32(ELS_DTAG_LNK_INTEGRITY);
-+	prdf->reg_d1.desc_tags[1] = cpu_to_be32(ELS_DTAG_DELIVERY);
-+	prdf->reg_d1.desc_tags[2] = cpu_to_be32(ELS_DTAG_PEER_CONGEST);
-+	prdf->reg_d1.desc_tags[3] = cpu_to_be32(ELS_DTAG_CONGESTION);
+diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
+index 638329bd0745e..62ad7c4e7e7c8 100644
+--- a/drivers/regulator/pwm-regulator.c
++++ b/drivers/regulator/pwm-regulator.c
+@@ -279,7 +279,7 @@ static int pwm_regulator_init_table(struct platform_device *pdev,
+ 		return ret;
+ 	}
  
- 	lpfc_debugfs_disc_trc(vport, LPFC_DISC_TRC_ELS_CMD,
- 			      "Issue RDF:       did:x%x",
-diff --git a/drivers/scsi/lpfc/lpfc_hw4.h b/drivers/scsi/lpfc/lpfc_hw4.h
-index 6dfff03765471..c7085769170d7 100644
---- a/drivers/scsi/lpfc/lpfc_hw4.h
-+++ b/drivers/scsi/lpfc/lpfc_hw4.h
-@@ -4797,7 +4797,7 @@ struct send_frame_wqe {
- 	uint32_t fc_hdr_wd5;           /* word 15 */
- };
- 
--#define ELS_RDF_REG_TAG_CNT		1
-+#define ELS_RDF_REG_TAG_CNT		4
- struct lpfc_els_rdf_reg_desc {
- 	struct fc_df_desc_fpin_reg	reg_desc;	/* descriptor header */
- 	__be32				desc_tags[ELS_RDF_REG_TAG_CNT];
+-	drvdata->state			= -EINVAL;
++	drvdata->state			= -ENOTRECOVERABLE;
+ 	drvdata->duty_cycle_table	= duty_cycle_table;
+ 	drvdata->desc.ops = &pwm_regulator_voltage_table_ops;
+ 	drvdata->desc.n_voltages	= length / sizeof(*duty_cycle_table);
 -- 
 2.25.1
 
