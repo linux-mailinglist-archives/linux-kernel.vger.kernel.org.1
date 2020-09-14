@@ -2,217 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F548268FFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499C6268FFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgINPbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgINPad (ORCPT
+        id S1726024AbgINPcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:32:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21045 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726019AbgINPbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:30:33 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A52FC061788;
-        Mon, 14 Sep 2020 08:30:32 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f09260028f4716b73cc78b7.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2600:28f4:716b:73cc:78b7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4FF221EC058B;
-        Mon, 14 Sep 2020 17:30:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600097430;
+        Mon, 14 Sep 2020 11:31:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600097472;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IO3nJCxiAaLTozpIMPP+zcFAu5QWr1+m3yLnakXhZ/c=;
-        b=qdH3yHi18x7LvT7GDCEl2cq+OXEBSOlCfo/k+7Z4tyANVhlIri1j9CGyFZM/8Kl4GAlqY0
-        uhVStXSphAV1KQPDcmFuYz/SFHRMoZ1zmSJMlbrsqc5j2iSTmwu18Kzfz67/9DAFSk2M9f
-        W6viYl3K2oRHuas9qQ8EqtgGAMzJa9Y=
-Date:   Mon, 14 Sep 2020 17:30:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v3 1/2] cper, apei, mce: Pass x86 CPER through the MCA
- handling chain
-Message-ID: <20200914153024.GC680@zn.tnic>
-References: <20200903234531.162484-1-Smita.KoralahalliChannabasappa@amd.com>
- <20200903234531.162484-2-Smita.KoralahalliChannabasappa@amd.com>
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dMweHEZbFa5g/pRD+e4Ve63LcmOnunvsiH2Q7fDvBJM=;
+        b=CPrdH5V7UW3XCPTxyEnAK7CX3DjrpXz8A2DVOVkPP7wwRzvAN23vpn5qToO1YERIEd2gcZ
+        WxXzJ2MSmnfnHIGMqHHeL1Irdb99Gryx/JbcrZ0cbyTpfPrnWnk9dZHLLALr6wXYziiO51
+        sXlG/SxMPkuMOIBPzImBmVVWH808nVI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-Co38hbDPNs6TxDuuVECk7g-1; Mon, 14 Sep 2020 11:31:08 -0400
+X-MC-Unique: Co38hbDPNs6TxDuuVECk7g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60FC81007B0B;
+        Mon, 14 Sep 2020 15:30:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-113-6.rdu2.redhat.com [10.10.113.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 896F37512A;
+        Mon, 14 Sep 2020 15:30:46 +0000 (UTC)
+Subject: [PATCH net-next 0/5] rxrpc: Fixes for the connection manager rewrite
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 14 Sep 2020 16:30:46 +0100
+Message-ID: <160009744625.1014072.11957943055200732444.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200903234531.162484-2-Smita.KoralahalliChannabasappa@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 06:45:30PM -0500, Smita Koralahalli wrote:
-> Linux Kernel uses ACPI Boot Error Record Table (BERT) to report fatal
-> errors that occurred in a previous boot. The MCA errors in the BERT are
-> reported using the x86 Processor Error Common Platform Error Record (CPER)
-> format. Currently, the record prints out the raw MSR values and AMD relies
-> on the raw record to provide MCA information.
-> 
-> Extract the raw MSR values of MCA registers from the BERT and feed it into
-> the standard mce_log() function through the existing x86/MCA RAS
-> infrastructure. This will result in better decoding from the EDAC MCE
-> decoder or the default notifier.
-> 
-> The implementation is SMCA specific as the raw MCA register values are
-> given in the register offset order of the MCAX address space.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
 
-What's that Reported-by for?
+Here are some fixes for the connection manager rewrite:
 
-Pls put in [] brackets over it what the 0day robot has reported.
+ (1) Fix a goto to the wrong place in error handling.
 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
-> Link:
-> https://lkml.kernel.org/r/20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com
-> 
-> v3:
-> 	Moved arch specific declarations from generic header file to arch
-> 	specific header file.
-> 	Cleaned additional declarations which are unnecessary.
-> 	Included the check for context type.
-> 	Added a check to verify for the first MSR address in the register
-> 	layout.
-> v2:
-> 	Fixed build error reported by kernel test robot.
-> 	Passed struct variable as function argument instead of entire struct
-> ---
->  arch/x86/include/asm/acpi.h     | 11 +++++++++
->  arch/x86/include/asm/mce.h      |  3 +++
->  arch/x86/kernel/acpi/apei.c     |  9 +++++++
->  arch/x86/kernel/cpu/mce/apei.c  | 42 +++++++++++++++++++++++++++++++++
->  drivers/firmware/efi/cper-x86.c | 10 +++++---
->  5 files changed, 72 insertions(+), 3 deletions(-)
+ (2) Fix a missing NULL pointer check.
 
-...
+ (3) The stored allocation error needs to be stored signed.
 
-> diff --git a/arch/x86/kernel/acpi/apei.c b/arch/x86/kernel/acpi/apei.c
-> index c22fb55abcfd..13d60a91eaa0 100644
-> --- a/arch/x86/kernel/acpi/apei.c
-> +++ b/arch/x86/kernel/acpi/apei.c
-> @@ -43,3 +43,12 @@ void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
->  	apei_mce_report_mem_error(sev, mem_err);
->  #endif
->  }
-> +
-> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
-> +{
-> +	int err = -EINVAL;
-> +#ifdef CONFIG_X86_MCE
-> +	err = apei_mce_report_x86_error(ctx_info, lapic_id);
-> +#endif
-> +	return err;
-> +}
+ (4) Fix a leak of connection bundle when clearing connections due to
+     net namespace exit.
 
-Add a stub for apei_mce_report_x86_error() in
-arch/x86/include/asm/mce.h, in one of the !CONFIG_X86_MCE ifdeffery
-which returns -EINVAL and get rid of this ifdeffery and simply do:
+ (5) Fix an overget of the bundle when setting up a new client conn.
 
-	return apei_mce_report_x86_error(ctx_info, lapic_id);
+The patches are tagged here:
 
-here.
+	git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+	rxrpc-next-20200914
 
-If you wanna fix the above apei_mce_report_mem_error() too, you can do
-that in a separate patch.
+and can also be found on this branch:
 
-> diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-> index af8d37962586..65001d342302 100644
-> --- a/arch/x86/kernel/cpu/mce/apei.c
-> +++ b/arch/x86/kernel/cpu/mce/apei.c
-> @@ -26,6 +26,8 @@
->  
->  #include "internal.h"
->  
-> +#define MASK_MCA_STATUS 0xC0002001
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=rxrpc-next
 
-What does that mask mean? Either here or where it is used needs a
-comment.
+David
+---
+David Howells (5):
+      rxrpc: Fix an error goto in rxrpc_connect_call()
+      rxrpc: Fix a missing NULL-pointer check in a trace
+      rxrpc: Fix rxrpc_bundle::alloc_error to be signed
+      rxrpc: Fix conn bundle leak in net-namespace exit
+      rxrpc: Fix an overget of the conn bundle when setting up a client conn
 
->  void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
->  {
->  	struct mce m;
-> @@ -51,6 +53,46 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
->  }
->  EXPORT_SYMBOL_GPL(apei_mce_report_mem_error);
->  
-> +int apei_mce_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
-> +{
-> +	const u64 *i_mce = ((const void *) (ctx_info + 1));
-> +	unsigned int cpu;
-> +	struct mce m;
-> +
-> +	if (!boot_cpu_has(X86_FEATURE_SMCA))
 
-If this function you're adding is SMCA-specific, then its name cannot be
-as generic as it is now.
+ include/trace/events/rxrpc.h | 2 +-
+ net/rxrpc/ar-internal.h      | 2 +-
+ net/rxrpc/conn_client.c      | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-> +		return -EINVAL;
-> +
-> +	if ((ctx_info->msr_addr & MASK_MCA_STATUS) != MASK_MCA_STATUS)
-> +		return -EINVAL;
-> +
-> +	mce_setup(&m);
-> +
-> +	m.extcpu = -1;
-> +	m.socketid = -1;
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		if (cpu_data(cpu).initial_apicid == lapic_id) {
 
-I don't like that but I don't think we have a reverse mapping from LAPIC
-ID to logical CPU numbers in the kernel...
-
-> +			m.extcpu = cpu;
-> +			m.socketid = cpu_data(m.extcpu).phys_proc_id;
-
-			m.socketid = cpu_data(cpu).phys_proc_id;
-
-> +			break;
-> +		}
-> +	}
-> +
-> +	m.apicid = lapic_id;
-> +	m.bank = (ctx_info->msr_addr >> 4) & 0xFF;
-> +	m.status = *i_mce;
-> +	m.addr = *(i_mce + 1);
-> +	m.misc = *(i_mce + 2);
-> +	/* Skipping MCA_CONFIG */
-> +	m.ipid = *(i_mce + 4);
-> +	m.synd = *(i_mce + 5);
-
-Is that structure after cper_ia_proc_ctx defined somewhere in the UEFI
-spec so that you can cast to it directly instead of doing this ugly
-pointer arithmetic?
-
-> +
-> +	mce_log(&m);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(apei_mce_report_x86_error);
-
-Why is this function exported?
-
-If "no reason", you can fix the above one too, with a separate commit.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
