@@ -2,165 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11822684D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036C52684DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgINGZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:25:53 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:36280 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgINGZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:25:53 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z1so17312826wrt.3
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:25:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w4YrKCb/S3dilvuEzkM/D0tKbwmjr/FYtuihp4D7ajc=;
-        b=OeYl9xXel8DSOgVPtLNnV5kAhggq+tuVOmqsy94KJBqkbB3xvMrKvNx5jksLaO0Mwc
-         FUXjSxr45nkPL52pCfjNPumaGbdqqjqEdXQNemXzkphuXyzycHNi0vuWEIgSH3GLDJ/d
-         tg+Ii/wJg4qsfLD6SxG5M+h3tpsCN5504Q6IXeDLbyrmnuqwPyc+lf870r1ROAfWFn3M
-         Mn5hjYOXnagnQuRufgwnahbwtTxJzS+YFpysaf1XL7gNNq+S8GfCn/iyjUPar+7Zr1Fc
-         /ryENI6WE+Sc4IHAuw2/J+MuiPQcx0res3/RdtboBOtKtr0FZHVysCyX4d2uefvqZImR
-         rznw==
-X-Gm-Message-State: AOAM531xmlksiwZxOYs7fHzLjKzncWesQPV3DwCuEgDGE572XeZ7G/b4
-        PT/oRPRs0MvRJBTvxeQsn8w8O5aYMtOdfqB41Tk=
-X-Google-Smtp-Source: ABdhPJzPUg7P3mbyP7iMK6nGH/mBxa8S7+E/MjUeV7OtX2CMuZYzrrWJO1OwnJaMHP4eI39gDoAh3MRttyJtcjPgEDE=
-X-Received: by 2002:adf:e481:: with SMTP id i1mr14069408wrm.391.1600064750965;
- Sun, 13 Sep 2020 23:25:50 -0700 (PDT)
+        id S1726048AbgINGay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:30:54 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:50928 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726003AbgINGax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:30:53 -0400
+Received: from [10.130.0.155] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL94FDl9feh8VAA--.5389S3;
+        Mon, 14 Sep 2020 14:30:30 +0800 (CST)
+Subject: Re: [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec
+ reboot and connected PCI devices
+To:     Lukas Wunner <lukas@wunner.de>
+References: <1600028950-10644-1-git-send-email-yangtiezhu@loongson.cn>
+ <20200914040625.GA20033@wunner.de>
+ <43683243-f8e2-c555-447a-f108740c70e8@loongson.cn>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Konstantin Khlebnikov <khlebnikov@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>, oohall@gmail.com,
+        rafael.j.wysocki@intel.com, Xuefeng Li <lixuefeng@loongson.cn>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <00acf33c-b69f-061b-cac0-6dc7abd018f9@loongson.cn>
+Date:   Mon, 14 Sep 2020 14:30:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-10-jolsa@kernel.org>
-In-Reply-To: <20200913210313.1985612-10-jolsa@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 14 Sep 2020 15:25:39 +0900
-Message-ID: <CAM9d7ch7TqHr8dwCQ3_OZjpvp4yv+u=ipdDJR=AcCdUb2zSw2Q@mail.gmail.com>
-Subject: Re: [PATCH 09/26] perf tools: Try load vmlinux from buildid database
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <43683243-f8e2-c555-447a-f108740c70e8@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxL94FDl9feh8VAA--.5389S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw48Cr17JF4DKw4rCw1fXrb_yoW8Kr1fpF
+        WDKa92yFy0gF17Wr17XFWxXF15JwsIy34Fkr18C3y3Wrsayas3trWrtF909a1kXrWvyFW7
+        Ar95tr97CFW3JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+        Y4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjkpnJUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 6:04 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On 09/14/2020 02:13 PM, Tiezhu Yang wrote:
+> On 09/14/2020 12:06 PM, Lukas Wunner wrote:
+>> On Mon, Sep 14, 2020 at 04:29:10AM +0800, Tiezhu Yang wrote:
+>>> --- a/drivers/pci/pcie/portdrv_pci.c
+>>> +++ b/drivers/pci/pcie/portdrv_pci.c
+>>> @@ -143,6 +144,28 @@ static void pcie_portdrv_remove(struct pci_dev 
+>>> *dev)
+>>>       }
+>>>         pcie_port_device_remove(dev);
+>>> +    pci_disable_device(dev);
+>>> +}
+>>> +
+>>> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
+>>> +{
+>>> +    if (pci_bridge_d3_possible(dev)) {
+>>> +        pm_runtime_forbid(&dev->dev);
+>>> +        pm_runtime_get_noresume(&dev->dev);
+>>> +        pm_runtime_dont_use_autosuspend(&dev->dev);
+>>> +    }
+>>> +
+>>> +    pcie_port_device_remove(dev);
+>>> +
+>>> +    /*
+>>> +     * If this is a kexec reboot, turn off Bus Master bit on the
+>>> +     * device to tell it to not continue to do DMA. Don't touch
+>>> +     * devices in D3cold or unknown states.
+>>> +     * If it is not a kexec reboot, firmware will hit the PCI
+>>> +     * devices with big hammer and stop their DMA any way.
+>>> +     */
+>>> +    if (kexec_in_progress && (dev->current_state <= PCI_D3hot))
+>>> +        pci_disable_device(dev);
+>> The last portion of this function is already executed afterwards by
+>> pci_device_shutdown().  You don't need to duplicate it here:
+>>
+>> device_shutdown()
+>>    dev->bus->shutdown() == pci_device_shutdown()
+>>      drv->shutdown() == pcie_portdrv_shutdown()
+>>        pci_disable_device()
+>>      pci_disable_device()
 >
-> Currently we don't check on kernel's vmlinux the same way as
-> we do for normal binaries, but we either look for kallsyms
-> file in build id database or check on known vmlinux locations
-> (plus some other optional paths).
->
-> This patch adds the check for standard build id binary location,
-> so we are ready once we start to store it there from debuginfod
-> in following changes.
+> pcie_port_device_remove() deletes pci_disable_device(dev)  at the 
+> beginning of this patch.
 
-But dso__load_vmlinux_path() already has the logic.
-Also you should check symbol_conf.ignore_vmlinux_buildid.
-
-Thanks
-Namhyung
-
+Sorry, I misunderstood your meaning, you are right.
 
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/build-id.c | 13 ++++++++++---
->  tools/perf/util/build-id.h |  2 ++
->  tools/perf/util/symbol.c   | 14 ++++++++++++++
->  3 files changed, 26 insertions(+), 3 deletions(-)
 >
-> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> index ecdc167aa1a0..6165f9d1d941 100644
-> --- a/tools/perf/util/build-id.c
-> +++ b/tools/perf/util/build-id.c
-> @@ -259,10 +259,9 @@ static const char *build_id_cache__basename(bool is_kallsyms, bool is_vdso,
->             "debug" : "elf"));
->  }
+> diff 
+> <https://lore.kernel.org/linux-pci/CAAhV-H5-X9OcBe3iRxF8PnKW-0j_10FVqm8cbiqW2-Lv4mTTdQ@mail.gmail.com/T/#iZ2e.:..:1600028950-10644-1-git-send-email-yangtiezhu::40loongson.cn:0drivers:pci:pcie:portdrv_core.c> 
+> --git a/drivers/pci/pcie/portdrv_core.c 
+> b/drivers/pci/pcie/portdrv_core.c index 50a9522..1991aca 100644 --- 
+> a/drivers/pci/pcie/portdrv_core.c +++ 
+> b/drivers/pci/pcie/portdrv_core.c @@ -491,7 +491,6 @@ void 
+> pcie_port_device_remove(struct pci_dev *dev)   {
+>      device_for_each_child(&dev->dev, NULL, remove_iter);
+>      pci_free_irq_vectors(dev);
+> - pci_disable_device(dev);   }
 >
-> -char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
-> -                            bool is_debug)
-> +char *__dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
-> +                              bool is_debug, bool is_kallsyms)
->  {
-> -       bool is_kallsyms = dso__is_kallsyms((struct dso *)dso);
->         bool is_vdso = dso__is_vdso((struct dso *)dso);
->         char sbuild_id[SBUILD_ID_SIZE];
->         char *linkname;
-> @@ -291,6 +290,14 @@ char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
->         return bf;
->  }
->
-> +char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
-> +                            bool is_debug)
-> +{
-> +       bool is_kallsyms = dso__is_kallsyms((struct dso *)dso);
-> +
-> +       return __dso__build_id_filename(dso, bf, size, is_debug, is_kallsyms);
-> +}
-> +
->  #define dsos__for_each_with_build_id(pos, head)        \
->         list_for_each_entry(pos, head, node)    \
->                 if (!pos->has_build_id)         \
-> diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
-> index 1ceede45c231..2cf87b7304e2 100644
-> --- a/tools/perf/util/build-id.h
-> +++ b/tools/perf/util/build-id.h
-> @@ -23,6 +23,8 @@ char *build_id_cache__kallsyms_path(const char *sbuild_id, char *bf,
->
->  char *dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
->                              bool is_debug);
-> +char *__dso__build_id_filename(const struct dso *dso, char *bf, size_t size,
-> +                              bool is_debug, bool is_kallsyms);
->
->  int build_id__mark_dso_hit(struct perf_tool *tool, union perf_event *event,
->                            struct perf_sample *sample, struct evsel *evsel,
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index 5ddf76fb691c..7e1aac4931e1 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -2183,6 +2183,8 @@ static int dso__load_kernel_sym(struct dso *dso, struct map *map)
->         int err;
->         const char *kallsyms_filename = NULL;
->         char *kallsyms_allocated_filename = NULL;
-> +       char *filename;
-> +
->         /*
->          * Step 1: if the user specified a kallsyms or vmlinux filename, use
->          * it and only it, reporting errors to the user if it cannot be used.
-> @@ -2207,6 +2209,18 @@ static int dso__load_kernel_sym(struct dso *dso, struct map *map)
->                 return dso__load_vmlinux(dso, map, symbol_conf.vmlinux_name, false);
->         }
->
-> +       /*
-> +        * Before checking on common vmlinux locations, check if it's
-> +        * stored as standard build id binary under .debug tree.
-> +        */
-> +       filename = __dso__build_id_filename(dso, NULL, 0, false, false);
-> +       if (filename != NULL) {
-> +               err = dso__load_vmlinux(dso, map, filename, true);
-> +               if (err > 0)
-> +                       return err;
-> +               free(filename);
-> +       }
-> +
->         if (!symbol_conf.ignore_vmlinux && vmlinux_path != NULL) {
->                 err = dso__load_vmlinux_path(dso, map);
->                 if (err > 0)
-> --
-> 2.26.2
->
+>>
+>> Thanks,
+>>
+>> Lukas
+
