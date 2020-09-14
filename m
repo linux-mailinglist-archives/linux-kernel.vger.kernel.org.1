@@ -2,132 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9283226857F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02087268582
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbgINHIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:08:38 -0400
-Received: from mail-eopbgr20047.outbound.protection.outlook.com ([40.107.2.47]:5282
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726064AbgINHIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:08:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LTyPYwNVE8PQ1HRWjDfAg0YatYBDV11mVVbj7RdME/FX4yBB7kCN35YwLNWhFhMpeyj+p4YjAcJhO0kogVKD3UwAQhNnLL2OdyUoMTISJBjX7yTHLY5U27E8ElQeocLwM+sbVabuvkhAuCdlxyQnQeAoDCUXS+qE4B/dIBC5DHmPGA6w8J8AW05ySrb9rDGIw9Caf4XeyvNYwIrL+iimbZJGCfTYmB1qkNMN4SGF89lVMZ85EPWM956++Lm1Z+6YSu4yBuozdsqt7xUuWFyI3CWpBaJ5lBKYQvkKI3P07vQPZMdxnMl/6BGIOZ61hSSmBhIQmEZM0mSalldXC4mG4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dPLFOc4dBN3VxvTcS7W/fzXikW8GuPal+OKiItKzbpI=;
- b=lY4FfpPhb3Gj/ISonuLy5vP45W8Sv93FYxlcDn44xRaLpmALgKTO7aj4+fkZWtx4WhEXOBZTrCOrwFCHAPgud6XUablwSdB6SoA2SqzosBxTNYbcA4WY1Wpy2hG9iWDLh3lotTsEKrtovhLE6EBtujnEVbUJPgo9rp0ppQ5c6BQ2FnbW/65THcGCYk7G38y+DOsptwP5l5Shk3RRyLSXPkNaubbJjMLR6EIvsbvHmHYX0TohixzFOMnUu19qqeCI3WomzfFsSKbJqW8nDUMwL0+pwvkLCooLjJ0zYSL5yYyaZwjnQvVhm0cNav0pQ45zJ+V1xzVqlhlehJol6vA50w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dPLFOc4dBN3VxvTcS7W/fzXikW8GuPal+OKiItKzbpI=;
- b=rP4GPJbUPCgXzgCV8vtn9ktRc+RyVmsHumIBEGDm+CKHC22P9mQsNqe5JMPu5AAGtJASloVwjILK8cCITQ92MTh/N4qKJWvtsKFALPqkpEZlNbVSGDtYI0aw9Cnmz0cH3J7cC8sq2c3NxHePqR8nR0kbRnb6M+tuPZ5HTLleGg8=
-Received: from VE1PR04MB6768.eurprd04.prod.outlook.com (2603:10a6:803:129::26)
- by VI1PR04MB5822.eurprd04.prod.outlook.com (2603:10a6:803:de::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
- 2020 07:08:23 +0000
-Received: from VE1PR04MB6768.eurprd04.prod.outlook.com
- ([fe80::f16e:a79:2203:5d35]) by VE1PR04MB6768.eurprd04.prod.outlook.com
- ([fe80::f16e:a79:2203:5d35%6]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
- 07:08:23 +0000
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/3] dt-bindings: rtc-2127: Add bindings for
- nxp,rtc-2127.txt
-Thread-Topic: [PATCH 1/3] dt-bindings: rtc-2127: Add bindings for
- nxp,rtc-2127.txt
-Thread-Index: AQHWfFOV2mqT9X+P3UaXnJvGvvBfp6lg1ekAgAByYLCAAkefAIAEQfJw
-Date:   Mon, 14 Sep 2020 07:08:22 +0000
-Message-ID: <VE1PR04MB6768F9352B510CB6E873515A91230@VE1PR04MB6768.eurprd04.prod.outlook.com>
-References: <20200827091441.12972-1-qiang.zhao@nxp.com>
- <20200909202456.GA3019412@bogus>
- <VE1PR04MB676899EEA79D59061FE91BF691270@VE1PR04MB6768.eurprd04.prod.outlook.com>
- <CAL_JsqJx=7npNYNe4MybNvdNRxBj_XjvEOJsSm+gNGEkvbh2VA@mail.gmail.com>
-In-Reply-To: <CAL_JsqJx=7npNYNe4MybNvdNRxBj_XjvEOJsSm+gNGEkvbh2VA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: e1a9e59c-8361-45ce-dc14-08d8587cf7d7
-x-ms-traffictypediagnostic: VI1PR04MB5822:
-x-microsoft-antispam-prvs: <VI1PR04MB582255CE2CE77F9FB773813791230@VI1PR04MB5822.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OY0YhzcdmwP6cagRDlvosQ5UHLrKiCev6Lw93OwPevipJ0w5n0TKtlu4KCueh9/rGPWTtOrEsHbeYvzfoHk7AakRqSMs1aihubhFVoAla3+OGy7fohqGhBciIh7Rk5nL0UGp1nLvkhBC+cEf9soqxn+hUlGzDCmh1+3qJV9qfIP7ae7FtcIvR6Br93EnEr6gQ2ujDjRKs1fe/PJKrZNesc053cbu8r+6QmxsfUNUzUm2+w70Pe47FLvK81NKBxXWMINx3oKQ62RTtu5FC1UtZRTwylXaj6g/TlyDQRrgzAnjJnlPALDXkBqqO8/AXRFpkZYE76kBykkJ55umrzOrULspAsjn5ke4wTOaanYmIpnLfL4aaUA40U1l9256Wa4mno9GFcvCG8jUU/q58RLL/JAsAake3P0UUI8IHTVf6TZL09Pz7gMl/hAQ6e7Hb7vge0H8pTbngE8xaE5YJctDsA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6768.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(396003)(136003)(39860400002)(86362001)(7696005)(71200400001)(55016002)(966005)(44832011)(53546011)(26005)(8936002)(6506007)(4326008)(83380400001)(9686003)(6916009)(186003)(478600001)(33656002)(54906003)(8676002)(5660300002)(76116006)(52536014)(2906002)(66946007)(316002)(64756008)(66556008)(66476007)(66446008)(142933001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: zy2DHRb84BE4o7a24CGx22uQcOtnb44go/bHMcZs7Q6GvgP0O85zoN8SoW4UaoBo16GEHrBacT8RHNWnK6TR580V0o0hiweyIkZrJeo70x9GqTWszpdYpEMXZKCzQaTxk1+8ILonS6utPRsUJzD1G1r57y/BNVlUcT1udK1sCLDYmKJf2fl5I404cfS08iQUGDc24O5UFkhCxjLzc6Ljdw4yTw6dsLl1ug6mFUgScOGKfayT3sePyQhrIg1dpLVKHjJoQqOrXJt1YYF1qg7i0RSnQIHFqFJ0GJbRLownpxfNLwf8vTtsQKYkTlLRM6gsArfPT58zswPm4da0gh1qDXJvU0JksR5g54GPYswKSW7b3peTu39OLPsgrLGAFmS6doK+7ooFOMKWlym7LbJowoSyhBfiiKqpRV5TKj51Q2CTYS6aAUUIzoUg/RV4NJnZVxrMREc2qiNLeyMS/Q9rkm1fHpow+JQx3PfwqFgUrFLLNNnbfbHyjO3JLm3t7Dhsrswm5igvtf3fBdo6uvm2g6iYZlXMUtMvUSOV5ysLH/YyL8VpHEf8YSr9jHfDA+htDQKUTPGKA5ZFWdfxOn7p81gBr1D78wai/p4WtLZQHIuEC83pZMMz1DrFpVdASHgvO1j7Kvko8sWeO5u1qH4VeQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726147AbgINHIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726094AbgINHIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 03:08:39 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C020C06174A;
+        Mon, 14 Sep 2020 00:08:36 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id z23so21604102ejr.13;
+        Mon, 14 Sep 2020 00:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=3BwV3eqQxR2q+pjhckPY9e2FGa7fDKgyPbhSIosiRac=;
+        b=RWzwor+bVqWYRQlIlKtz9Im9rt+ctVgfNYz/qvojMqE5WP3pVKL8rNSceBnNmu89no
+         ik6VpaY1n6IWLNSGepwca8jQgNv/iEYcNQDqhqpDzaI+EhTCnZ1D0UuMmuXeBc+DoQpb
+         8bBIa/65W8UqBXTVZY1NdjldRuZgRHGMZA1/X9sbY6rk/EakGdDpzBsF0C/iHolVtU3k
+         sTKQ5AJZcaa2a5Li8Ph/FL2Wu/miW5+//3nS6ngwF5oCGk0Gwx/84Q8BwJpkL1xAaFkO
+         RFGl5VKKtXzeDlAB0yTZtR98s8so0zW+DloncaKcdM68bogbLyRExtUomWjT1gwvULzR
+         bilQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=3BwV3eqQxR2q+pjhckPY9e2FGa7fDKgyPbhSIosiRac=;
+        b=JV3hSPZ4qCgTPPTWGiG6/LI7QQKUbrokyNKFbktR+P4fMyTvzjH9z658P8nPT0ArHj
+         sqZxm0NgHqiWLxr0OihbLjmygsh/RiIYyuMdaH3x/WSYbxZluOP7fjJBAXpX8TYnTnVl
+         HhbSDrNvWfLWjtyZ40YJc70kS3OHaleRetIF/btr7r3KvwcKVUmyiBfWGold9vj2I0Uv
+         DQRldsEGr8O/NlU1O3QWDmEh8NWTTHBHkaS7X6nocI+QKMu+uVclU4krdY4Z8VLPVveK
+         Xbybz2t8O4PF62RmPP6mQsn1TGL5djNwQlTdph56QYACKqkQLRhEiXI+Ue/XozJxljvQ
+         l4SA==
+X-Gm-Message-State: AOAM531OycZz5XcEw4h7Q1vD6JFkK1GexanFgIYR8Z8Ang2LiIUUmMw/
+        gytgfopzjG8F38oRbVDLzJ1qq0jfxmmls7Ef
+X-Google-Smtp-Source: ABdhPJzyF0wH7O+BzLyXZXC7DAnv404JgSq4TUAfNNmUQx2qdz7opyv/dSEdSQhJN0ddtOAWkab1Sg==
+X-Received: by 2002:a17:906:4154:: with SMTP id l20mr14138366ejk.68.1600067314823;
+        Mon, 14 Sep 2020 00:08:34 -0700 (PDT)
+Received: from felia ([2001:16b8:2ddc:3000:7936:d9d0:986e:cca5])
+        by smtp.gmail.com with ESMTPSA id i3sm8745206edn.55.2020.09.14.00.08.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 00:08:34 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Mon, 14 Sep 2020 09:08:32 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Joe Perches <joe@perches.com>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: make linux-usb list remarks consistent
+In-Reply-To: <da6f30896a8fd78635b3ca454d77a5292a9aa76d.camel@perches.com>
+Message-ID: <alpine.DEB.2.21.2009140834010.17999@felia>
+References: <20200912121346.2796-1-lukas.bulwahn@gmail.com> <alpine.DEB.2.21.2009121416500.3770@felia> <20200912124025.GA174230@kroah.com> <da6f30896a8fd78635b3ca454d77a5292a9aa76d.camel@perches.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6768.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1a9e59c-8361-45ce-dc14-08d8587cf7d7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 07:08:22.9113
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IFVI5eePGkWqlX43P0GEo7Y4LXmj7UrgLrIsUGd6l7wEdBcNCFpyMpQcJfydm4+OkR872gZvkedR/KA7OUydmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5822
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCBTZXAgMTEsIDIwMjAgYXQgMjI6MDMsIFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5v
-cmc+IHdyb3RlOg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFJvYiBI
-ZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IDIwMjDlubQ55pyIMTHml6UgMjI6MDMN
-Cj4gVG86IFFpYW5nIFpoYW8gPHFpYW5nLnpoYW9AbnhwLmNvbT4NCj4gQ2M6IGEuenVtbW9AdG93
-ZXJ0ZWNoLml0OyBhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNvbTsNCj4gbGludXgtcnRjQHZn
-ZXIua2VybmVsLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5l
-bEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzNdIGR0LWJpbmRpbmdz
-OiBydGMtMjEyNzogQWRkIGJpbmRpbmdzIGZvcg0KPiBueHAscnRjLTIxMjcudHh0DQo+IA0KPiBP
-biBXZWQsIFNlcCA5LCAyMDIwIGF0IDk6MTYgUE0gUWlhbmcgWmhhbyA8cWlhbmcuemhhb0BueHAu
-Y29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIFRodSwgU2VwIDEwLCAyMDIwIGF0IDA0OjI1QU0sIFJv
-YiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+IHdyb3RlOg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBN
-ZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+DQo+
-ID4gPiBTZW50OiAyMDIw5bm0OeaciDEw5pelIDQ6MjUNCj4gPiA+IFRvOiBRaWFuZyBaaGFvIDxx
-aWFuZy56aGFvQG54cC5jb20+DQo+ID4gPiBDYzogYS56dW1tb0B0b3dlcnRlY2guaXQ7IGFsZXhh
-bmRyZS5iZWxsb25pQGJvb3RsaW4uY29tOw0KPiA+ID4gbGludXgtcnRjQHZnZXIua2VybmVsLm9y
-ZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiBsaW51eC1rZXJuZWxAdmdlci5r
-ZXJuZWwub3JnDQo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvM10gZHQtYmluZGluZ3M6IHJ0
-Yy0yMTI3OiBBZGQgYmluZGluZ3MgZm9yDQo+ID4gPiBueHAscnRjLTIxMjcudHh0DQo+ID4gPg0K
-PiA+ID4gT24gVGh1LCBBdWcgMjcsIDIwMjAgYXQgMDU6MTQ6MzlQTSArMDgwMCwgUWlhbmcgWmhh
-byB3cm90ZToNCj4gPiA+ID4gRnJvbTogWmhhbyBRaWFuZyA8cWlhbmcuemhhb0BueHAuY29tPg0K
-PiA+ID4gPg0KDQpQbGVhc2UgaGVscCB0byByZXZpZXcgYXMgYmVsb3csIGlmIGl0IGlzIG9rLCBJ
-IHdpbGwgc2VuZCB0aGUgbmV3IHZlcnNpb24gcGF0Y2guIFRoYW5rIHlvdSENCg0KZGlmZiAtLWdp
-dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9ydGMvbnhwLHBjZjIxMjcueWFt
-bCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9ydGMvbnhwLHBjZjIxMjcueWFt
-bA0KbmV3IGZpbGUgbW9kZSAxMDA2NDQNCmluZGV4IDAwMDAwMDAuLjgwOWRkNTkNCi0tLSAvZGV2
-L251bGwNCisrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9ydGMvbnhwLHBj
-ZjIxMjcueWFtbA0KQEAgLTAsMCArMSwzOCBAQA0KKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6
-IEdQTC0yLjANCislWUFNTCAxLjINCistLS0NCiskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9z
-Y2hlbWFzL3J0Yy9ueHAscGNmMjEyNy55YW1sIw0KKyRzY2hlbWE6IGh0dHA6Ly9kZXZpY2V0cmVl
-Lm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KKw0KK3RpdGxlOiBQQ0YgUlRDcw0KKw0KK21h
-aW50YWluZXJzOg0KKyAgLSBRaWFuZyBaaGFvIDxxaWFuZy56aGFvQG54cC5jb20+DQorDQorYWxs
-T2Y6DQorICAtICRyZWY6ICJydGMueWFtbCMiDQorDQorcHJvcGVydGllczoNCisgIGNvbXBhdGli
-bGU6DQorICAgIGVudW06DQorICAgICAgLSBueHAscGNmMjEyNw0KKyAgICAgIC0gbnhwLHBjZjIx
-MjkNCisNCisgIHJlZzoNCisgICAgbWF4SXRlbXM6IDENCisNCisgIGludGVycnVwdHM6DQorICAg
-IG1heEl0ZW1zOiAxDQorDQorICBuby13YXRjaGRvZzoNCisgICAgbWF4SXRlbXM6IDENCisNCisg
-IHN0YXJ0LXllYXI6IHRydWUNCisNCityZXF1aXJlZDoNCisgIC0gY29tcGF0aWJsZQ0KKyAgLSBy
-ZWcNCisNCithZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCisNCisuLi4NCg0KPiANCj4gRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL3dyaXRpbmctc2NoZW1hLnJzdCBhbmQgYWJvdXQgMTAwMCBl
-eGFtcGxlcyBpbiB0aGUNCj4ga2VybmVsIHRyZWUuDQo+IA0KPiBSb2INCg==
+
+
+On Sat, 12 Sep 2020, Joe Perches wrote:
+
+> On Sat, 2020-09-12 at 14:40 +0200, Greg Kroah-Hartman wrote:
+> > On Sat, Sep 12, 2020 at 02:19:02PM +0200, Lukas Bulwahn wrote:
+> > > 
+> > > On Sat, 12 Sep 2020, Lukas Bulwahn wrote:
+> > > 
+> > > > This patch submission will also show me if linux-usb is moderated or not.
+> > > > I have not subscribed to linux-usb and if it shows up quickly in the
+> > > > archive, the list is probably not moderated, and hence, validating the
+> > > > patch.
+> > > > 
+> > > 
+> > > The patch showed up in the archives within seconds:
+> > > 
+> > > https://lore.kernel.org/linux-usb/20200912121346.2796-1-lukas.bulwahn@gmail.com/
+> > > 
+> > > So, the linux-usb list is most likely not moderated. Patch validated.
+> > 
+> > Yes, it is not moderated, and never has been, no idea where that idea came from.
+> 
+> There's also linux-samsung-soc@vger.kernel.org
+> that is listed as moderated
+> 
+> Are any of the vger lists actually moderated?
+>  
+
+
+Joe, I found these five list entries with inconsistent remarks:
+
+- linux-usb@vger.kernel.org:
+  - Patch: https://lore.kernel.org/lkml/20200912121346.2796-1-lukas.bulwahn@gmail.com/  (the patch here)
+
+- linux-aspeed@lists.ozlabs.org:
+  - Patch: https://lore.kernel.org/lkml/20200912183334.22683-1-lukas.bulwahn@gmail.com/
+
+- linux-mediatek@lists.infradead.org:
+  - Patch: https://lore.kernel.org/lkml/20200914053110.23286-1-lukas.bulwahn@gmail.com/
+    - initial patch here was wrong.
+    - waiting for somebody to confirm that it is not moderated to then 
+send the correct patch.
+
+- linux-samsung-soc@vger.kernel.org:
+  - Patch: https://lore.kernel.org/lkml/20200914061353.17535-1-lukas.bulwahn@gmail.com/
+
+- linux-arm-kernel@lists.infradead.org:
+  - by 'majority vote' (131 vs. 27), it is probably moderated.
+  - no patch sent yet; patch will follow once the others are accepted.
+
+Then, more patches on adding 'exploders for non-subscribers' remarks will 
+follow.
+
+
+Lukas
