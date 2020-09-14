@@ -2,131 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044212697A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175D82697A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgINVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S1726092AbgINVW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:22:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgINVV1 (ORCPT
+        with ESMTP id S1725961AbgINVW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:21:27 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786B1C06174A;
-        Mon, 14 Sep 2020 14:21:26 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f142so1852184qke.13;
-        Mon, 14 Sep 2020 14:21:26 -0700 (PDT)
+        Mon, 14 Sep 2020 17:22:58 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1303C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:22:55 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id q8so828631lfb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:22:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GiOBvH13WvdSWhELrU2Dx+x+3G1sac0Kq9zW3R8hwho=;
-        b=HnELad8YKNRNHTJSFzXMAznwqWJeZMiT7DzWwq1p0kCJFncXjUo1TwUrIILdvbe5I8
-         1hWX6svpSKqFW1hFn2bfanvvQUqfAyKtSSNJIRlHdG9oEItoeF3gvq1YLmLfJqQMv/nN
-         7s8/5xKSnBko5289iuSxIDzKE48l9idRroUc/CWr8mrdJeFNELzq8TZ1psToDKDwOEZW
-         EebMPwBlHIaqSI2Po3HpkDU/lGhYdsijkvDxfHMxk8rcph08kf4Ck3hblKVDy+8ivteg
-         dJrCh8Lh0DOABiaQqWCMTun71PJLlpJQPQtOSs5FQ3Iqc/KfyGfiBfSMno/Wwo9iIyE/
-         iF3g==
+        bh=B3Raf4UC9rPf9/2GIe2y0keKdeGhWb4NBqALKLPqApw=;
+        b=XlZnKz9G6ag4oJchL/qYdMihrdnCJSGrMK2k4uKNZUz8h2Ur50bvs3KAXwwzSCfsWu
+         5hK1CEXx20iItEGnGjkEIW/UEbebefnBx9aDPjsYIAhRTILgxN6xlQ3L8K039YxjzGrp
+         m72maCaoZZwAoKcyd0QXUvLrcrs5GjaiEiweQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GiOBvH13WvdSWhELrU2Dx+x+3G1sac0Kq9zW3R8hwho=;
-        b=NcRRhZQTT6BcxESRkHRDa/HUDwXwekbc2aW0ZDcPPRGcodr2b9hCiRpgO+QvVpy0XI
-         jhli1K5mID0JahtkHBeqKAaLCMg/cXDE6KXuBjGoG9UDgKe2/vONz/Ut/7mTe8a6k2dW
-         vS3dF8E1u602H85Sq9BY2s59gU5TRIdmGOWQb2g9aarPqSZ/h7ErUdXDUfudeSI4q+3r
-         6j+MSryYhYuGzDdWCEqe26+xuFfltYukeD76mCimlskU2a5F+pxD0XJQ75GhbAVMQXmH
-         ExS1iE+dH/qO5a7bh9BAOOOyoKEMY0g6dhwI3sd/fF/JqnO7AKqfzKhgPfTwuq/UpYXb
-         DpYA==
-X-Gm-Message-State: AOAM531jfO9ZDXlxiHgZbQ5mWzjlk1+htAdSqZEcv7F7yuy4zptIwdZ7
-        wh1sMxFPxWjbIoInvHarDRdIUB08NpnP2U6g4C8=
-X-Google-Smtp-Source: ABdhPJypIYZMEGtvZp161L+fs5vHYN/Nvc0OHCXGLfPgXmFxHbFQLkkodTTFk+wzu5ctkXpr0+Peip+zhIZEdDdJG9c=
-X-Received: by 2002:a37:9d8:: with SMTP id 207mr14254489qkj.465.1600118485597;
- Mon, 14 Sep 2020 14:21:25 -0700 (PDT)
+        bh=B3Raf4UC9rPf9/2GIe2y0keKdeGhWb4NBqALKLPqApw=;
+        b=LrYA+6R7n1q//eihNjOaQgnvCvSBfBfxdkPe51Pt1YwSjFIki7iiN75+9qnBaxOIkT
+         O+xKQ2/85jlyYjPZ71FhD3xhFv7hNp0SgznK4v/MRzn29jh5HrrbJja9rBghmtxTOrQi
+         iRK4v+pmBnlO6QALrXQjVBy3DXZI+Lvmf5EhGbyAIatLl8ycE+WZJV83odi+pmk1aKmf
+         ZvPPPiOs5F51xreB0Runl3pcMPKYzLlTuTjvM/Li0LYowXgjktWkEB4N0/uanT78njzd
+         bGyit6UZIP3+4OM4lW8hKcMf9VQadeuNxUdbhqGrZf2V2+wAoiX1TEs5LVeM4Z9ccDva
+         g0bw==
+X-Gm-Message-State: AOAM531nCE07eq6PxlZ/hAJRW0QAFMvB8J0ptPRq0Faj9oCK+VDTDA5j
+        /9MAvAgs0VKmzrOAZv2VmDMgLjlAclBliA==
+X-Google-Smtp-Source: ABdhPJzHtOyTRStXiKGq3eRGIL/CfRxvvEj9rRAVtTAHRWi9yR+ZaPHLWyceSGLgsKJ4KjWKtIu+Ow==
+X-Received: by 2002:a19:6418:: with SMTP id y24mr4631670lfb.388.1600118573028;
+        Mon, 14 Sep 2020 14:22:53 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id e8sm4248861lja.93.2020.09.14.14.22.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 14:22:52 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id y4so921050ljk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:22:52 -0700 (PDT)
+X-Received: by 2002:a2e:9497:: with SMTP id c23mr5361525ljh.124.1600118571616;
+ Mon, 14 Sep 2020 14:22:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
- <20200914195634.12881-2-sean.j.christopherson@intel.com> <20200914204024.w3rpjon64d3fesys@treble>
- <20200914210719.GB7084@sjchrist-ice>
-In-Reply-To: <20200914210719.GB7084@sjchrist-ice>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Mon, 14 Sep 2020 23:21:14 +0200
-Message-ID: <CAFULd4Z9-Btyqo+i=w5Zyr=vJ46FBXzN7ovWGFxpnLiU2JE6eg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+References: <20200914182112.513981-1-swboyd@chromium.org>
+In-Reply-To: <20200914182112.513981-1-swboyd@chromium.org>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Mon, 14 Sep 2020 14:22:15 -0700
+X-Gmail-Original-Message-ID: <CAE=gft6=XxMs0z=oB3CyHETcg9Ahhrjw220JPfbhVWpA7aBZzA@mail.gmail.com>
+Message-ID: <CAE=gft6=XxMs0z=oB3CyHETcg9Ahhrjw220JPfbhVWpA7aBZzA@mail.gmail.com>
+Subject: Re: [PATCH] interconnect: qcom: osm-l3: Mark more structures const
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-pm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:07 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
+On Mon, Sep 14, 2020 at 11:21 AM Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> On Mon, Sep 14, 2020 at 03:40:24PM -0500, Josh Poimboeuf wrote:
-> > On Mon, Sep 14, 2020 at 12:56:33PM -0700, Sean Christopherson wrote:
-> > > Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
-> > > into a proper subroutine.  Slightly rework the blob so that it plays
-> > > nice with objtool without any additional hints (existing hints aren't
-> > > able to handle returning with a seemingly modified stack size).
-> > >
-> > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > Cc: Uros Bizjak <ubizjak@gmail.com>
-> > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > ---
-> > >  arch/x86/kvm/vmx/vmenter.S | 28 ++++++++++++++++++++++++++++
-> > >  arch/x86/kvm/vmx/vmx.c     | 33 +++------------------------------
-> > >  2 files changed, 31 insertions(+), 30 deletions(-)
-> > >
-> > > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-> > > index 799db084a336..baec1e0fefc5 100644
-> > > --- a/arch/x86/kvm/vmx/vmenter.S
-> > > +++ b/arch/x86/kvm/vmx/vmenter.S
-> > > @@ -4,6 +4,7 @@
-> > >  #include <asm/bitsperlong.h>
-> > >  #include <asm/kvm_vcpu_regs.h>
-> > >  #include <asm/nospec-branch.h>
-> > > +#include <asm/segment.h>
-> > >
-> > >  #define WORD_SIZE (BITS_PER_LONG / 8)
-> > >
-> > > @@ -294,3 +295,30 @@ SYM_FUNC_START(vmread_error_trampoline)
-> > >
-> > >     ret
-> > >  SYM_FUNC_END(vmread_error_trampoline)
-> > > +
-> > > +SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-> > > +   /*
-> > > +    * Unconditionally create a stack frame.  RSP needs to be aligned for
-> > > +    * x86-64, getting the correct RSP on the stack (for x86-64) would take
-> > > +    * two instructions anyways, and it helps make objtool happy (see below).
-> > > +    */
-> > > +   push %_ASM_BP
-> > > +   mov %rsp, %_ASM_BP
-> >
-> > RSP needs to be aligned to what?  How would this align the stack, other
-> > than by accident?
+> These structures aren't modified at runtime. Mark them const so they get
+> moved to read-only memory. We have to cast away const in one place when
+> we store into the data member of struct icc_node. This is paired with a
+> re-const of the data member when it is extracted in qcom_icc_set().
 >
-> Ah, yeah, that's lacking info.
->
-> 16-byte aligned to correctly mimic CPU behavior when vectoring an IRQ/NMI.
-> When not changing stack, the CPU aligns RSP before pushing the frame.
->
-> The above shenanigans work because the x86-64 ABI also requires RSP to be
-> 16-byte aligned prior to CALL.  RSP is thus 8-byte aligned due to CALL
-> pushing the return IP, and so creating the stack frame by pushing RBP makes
-> it 16-byte aliagned again.
+> Cc: Sibi Sankar <sibis@codeaurora.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 
-IIRC, the kernel violates x86_64 ABI and aligns RSP to 8 bytes prior
-to CALL. Please note -mpreferred-stack-boundary=3 in the compile
-flags.
-
-Uros.
+Reviewed-by: Evan Green <evgreen@chromium.org>
