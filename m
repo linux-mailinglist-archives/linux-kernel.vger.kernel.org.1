@@ -2,235 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42AB0268FEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF107269077
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbgINP3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42004 "EHLO mail.kernel.org"
+        id S1726525AbgINPoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:44:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:49561 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726349AbgINP2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:28:46 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 897042076C;
-        Mon, 14 Sep 2020 15:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600097324;
-        bh=KUx9v7VrfGPDPhRZ5dko3SCtGBsguc8cUCdytZ9AShc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSzvELn2EwSjaWPuf1bfkUNg96c32aOwkNPmKRKVFatvT8h+ASMG8VVhFJfkcmJNY
-         2Ms9HZ6L8PSaLEBd6li/HkRQNxNlbWZqIEQfMtVQ6clvWPUquQgHqzvn63fVgIfe1T
-         0ZxDjq9k6ysdlbePm2m437Fjc64z3GuAY9o5+YnQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6C46440D3D; Mon, 14 Sep 2020 12:28:41 -0300 (-03)
-Date:   Mon, 14 Sep 2020 12:28:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-Message-ID: <20200914152841.GC160517@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-3-jolsa@kernel.org>
- <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+        id S1726498AbgINPm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:42:58 -0400
+IronPort-SDR: hbB1R4quZqJ1wKfP4ISqcLcDIZoMU78AVupRDVb0lrniwspfYk7a2x7fne/9DmIJe85Guk6kp+
+ TdriESj4sGyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156537031"
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="156537031"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 08:42:55 -0700
+IronPort-SDR: PJW7bs0i3dSNhSmViT/GRcRHTeCds7hgHgmSdl79tx4Vm+dJyhAgL6TAup0YjwMj2y7H2M/cMX
+ jOPyLp9mBI5Q==
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="330788739"
+Received: from flaurent-mobl3.amr.corp.intel.com (HELO [10.212.243.224]) ([10.212.243.224])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 08:42:54 -0700
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        gregkh@linuxfoundation.org,
+        Bard liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
+ <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
+ <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+ <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+ <20200910062223.GQ77521@vkoul-mobl>
+ <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
+ <20200911070649.GU77521@vkoul-mobl>
+ <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
+ <20200914050825.GA2968@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <11feabb2-dc8b-7acc-6e4d-0903fc435b00@linux.intel.com>
+Date:   Mon, 14 Sep 2020 09:44:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200914050825.GA2968@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 14, 2020 at 02:38:27PM +0900, Namhyung Kim escreveu:
-> On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > Add new version of mmap event. The MMAP3 record is an
-> > augmented version of MMAP2, it adds build id value to
-> > identify the exact binary object behind memory map:
 
-> >   struct {
-> >     struct perf_event_header header;
 
-> >     u32                      pid, tid;
-> >     u64                      addr;
-> >     u64                      len;
-> >     u64                      pgoff;
-> >     u32                      maj;
-> >     u32                      min;
-> >     u64                      ino;
-> >     u64                      ino_generation;
-> >     u32                      prot, flags;
-> >     u32                      reserved;
 
-What for this reserved? its all nicely aligned already, u64 followed by
-two u32 (prot, flags).
-
-> >     u8                       buildid[20];
- 
-> Do we need maj, min, ino, ino_generation for mmap3 event?
-> I think they are to compare binaries, then we can do it with
-> build-id (and I think it'd be better)..
-
-Humm, I thought MMAP2 would be a superset of MMAP and MMAP3 would be a
-superset of MMAP2.
-
-If we want to ditch useless stuff, then trow away pid, tid too, as we
-can select those via sample_type.
-
-Having said that, at this point I don't even know if adding new
-PERF_RECORD_ that are an update for a preexisting one is the right way
-to proceed.
-
-Perhaps we should attach a BPF program to point where a mmap/munmap is
-being done (perf_event_mmap()) and allow userspace to ask for whatever
-it wants?  With a kprobes there right now we can implement this MMAP3
-easily, no?
-
-Start with a kprobes and all this would be already available in kernels
-with BPF, no need to reboot with a PERF_RECORD_MMAP3 enabled kernel,
-when we get a tracepoint there, then use it, as its more efficient.
-
-sample_id stuff would be done as with other records, etc, just the
-things that are MMAP3 specific would be in the payload, perf.data has
-the struct layout description, etc.
-
-Then use a BPF_TRACE_ITER to generate preexisting MMAP records instead
-of going thru /proc/ doing tons of syscalls, instead injecting directly
-into the perf ring buffer the MMAP3 (or MMAP2 or MMAP or something else
-according to the tools needs).
-
-- Arnaldo
- 
+> For LSB bits, I dont think this is an issue. I expect it to work, for example:
+> #define CONTROL_LSB_MASK  GENMASK(2, 0)
+>          foo |= u32_encode_bits(control, CONTROL_LSB_MASK);
 > 
-> >     char                     filename[];
-> >     struct sample_id         sample_id;
-> >   };
-> >
-> > Adding 4 bytes reserved field to align buildid data to 8 bytes,
-> > so sample_id data is properly aligned.
-> >
-> > The mmap3 event is enabled by new mmap3 bit in perf_event_attr
-> > struct.  When set for an event, it enables the build id retrieval
-> > and will use mmap3 format for the event.
-> >
-> > Keeping track of mmap3 events and calling build_id_parse
-> > in perf_event_mmap_event only if we have any defined.
-> >
-> > Having build id attached directly to the mmap event will help
-> > tool like perf to skip final search through perf data for
-> > binaries that are needed in the report time. Also it prevents
-> > possible race when the binary could be removed or replaced
-> > during profiling.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/perf_event.h | 27 ++++++++++++++++++++++-
-> >  kernel/events/core.c            | 38 +++++++++++++++++++++++++++------
-> >  2 files changed, 57 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > index 077e7ee69e3d..facfc3c673ed 100644
-> > --- a/include/uapi/linux/perf_event.h
-> > +++ b/include/uapi/linux/perf_event.h
-> > @@ -384,7 +384,8 @@ struct perf_event_attr {
-> >                                 aux_output     :  1, /* generate AUX records instead of events */
-> >                                 cgroup         :  1, /* include cgroup events */
-> >                                 text_poke      :  1, /* include text poke events */
-> > -                               __reserved_1   : 30;
-> > +                               mmap3          :  1, /* include bpf events */
+> would mask the control value and program that in specific bitfeild.
 > 
-> ???
+> But for MSB bits, I am not sure above will work so, you may need to extract
+> the bits and then use, for example:
+> #define CONTROL_MSB_BITS        GENMASK(5, 3)
+> #define CONTROL_MSB_MASK        GENMASK(17, 15)
 > 
-> > +                               __reserved_1   : 29;
-> >
-> >         union {
-> >                 __u32           wakeup_events;    /* wakeup every n events */
-> > @@ -1060,6 +1061,30 @@ enum perf_event_type {
-> >          */
-> >         PERF_RECORD_TEXT_POKE                   = 20,
-> >
-> > +       /*
-> > +        * The MMAP3 records are an augmented version of MMAP2, they add
-> > +        * build id value to identify the exact binary behind map
-> > +        *
-> > +        * struct {
-> > +        *      struct perf_event_header        header;
-> > +        *
-> > +        *      u32                             pid, tid;
-> > +        *      u64                             addr;
-> > +        *      u64                             len;
-> > +        *      u64                             pgoff;
-> > +        *      u32                             maj;
-> > +        *      u32                             min;
-> > +        *      u64                             ino;
-> > +        *      u64                             ino_generation;
-> > +        *      u32                             prot, flags;
-> > +        *      u32                             reserved;
-> > +        *      u8                              buildid[20];
-> > +        *      char                            filename[];
-> > +        *      struct sample_id                sample_id;
-> > +        * };
-> > +        */
-> > +       PERF_RECORD_MMAP3                       = 21,
-> > +
-> >         PERF_RECORD_MAX,                        /* non-ABI */
-> >  };
-> >
-> [SNIP]
-> > @@ -8098,6 +8116,9 @@ static void perf_event_mmap_event(struct perf_mmap_event *mmap_event)
-> >         mmap_event->prot = prot;
-> >         mmap_event->flags = flags;
-> >
-> > +       if (atomic_read(&nr_mmap3_events))
-> > +               build_id_parse(vma, mmap_event->buildid);
+>          control = FIELD_GET(CONTROL_MSB_BITS, control);
+>          foo |= u32_encode_bits(control, CONTROL_MSB_MASK);
 > 
-> What about if it failed?  We should zero out the build-id..
+>> If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am all
+>> ears. At the end of the day, the mapping is pre-defined and we don't have
+>> any degree of freedom. What I do want is that this macro/inline function is
+>> shared by all codec drivers so that we don't have different interpretations
+>> of how the address is constructed.
 > 
-> Thanks
-> Namhyung
-> 
-> > +
-> >         if (!(vma->vm_flags & VM_EXEC))
-> >                 mmap_event->event_id.header.misc |= PERF_RECORD_MISC_MMAP_DATA;
-> >
-> > @@ -8241,6 +8262,7 @@ void perf_event_mmap(struct vm_area_struct *vma)
-> >                 /* .ino_generation (attr_mmap2 only) */
-> >                 /* .prot (attr_mmap2 only) */
-> >                 /* .flags (attr_mmap2 only) */
-> > +               /* .buildid (attr_mmap3 only) */
-> >         };
-> >
-> >         perf_addr_filters_adjust(vma);
-> > @@ -11040,6 +11062,8 @@ static void account_event(struct perf_event *event)
-> >                 inc = true;
-> >         if (event->attr.mmap || event->attr.mmap_data)
-> >                 atomic_inc(&nr_mmap_events);
-> > +       if (event->attr.mmap3)
-> > +               atomic_inc(&nr_mmap3_events);
-> >         if (event->attr.comm)
-> >                 atomic_inc(&nr_comm_events);
-> >         if (event->attr.namespaces)
-> > --
-> > 2.26.2
-> >
+> Absolutely, this need to be defined here and used by everyone else.
 
--- 
+Compare:
 
-- Arnaldo
+#define SDCA_CONTROL_MSB_BITS        GENMASK(5, 3)
+#define SDCA_CONTROL_MSB_MASK        GENMASK(17, 15)
+#define SDCA_CONTROL_LSB_MASK        GENMASK(2, 0)
+
+foo |= u32_encode_bits(control, SDCA_CONTROL_LSB_MASK);
+control = FIELD_GET(SDCA_CONTROL_MSB_BITS, control);
+foo |= u32_encode_bits(control, SDCA_CONTROL_MSB_MASK);
+
+with the original proposal:
+
+foo |= FIELD_GET(GENMASK(2, 0), control))	
+foo |= FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), control))	
+
+it gets worse when the LSB positions don't match, you need another 
+variable and an additional mask.
+
+I don't see how this improves readability? I get that hard-coding magic 
+numbers is a bad thing in general, but in this case there are limited 
+benefits to the use of additional defines.
