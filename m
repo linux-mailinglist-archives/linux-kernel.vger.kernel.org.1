@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839A3268256
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 03:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E2A26825B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 03:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725982AbgINBqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 21:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
+        id S1725993AbgINBtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 21:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgINBp5 (ORCPT
+        with ESMTP id S1725965AbgINBt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 21:45:57 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD556C06174A;
-        Sun, 13 Sep 2020 18:45:56 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqThx5XJJz9sTK;
-        Mon, 14 Sep 2020 11:45:53 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600047953;
-        bh=HE7+phsgdIrkOpl961/KbwrL4E/mYEgCy604Q/N5JCM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZA6LcdXVWGSfOM+WElt6wP6E/H0ooPlugamLaYD1XLxXn+Bm+RHARjuty68UwYZnq
-         WrXlvRD1DKLljm6qMp4G+EkKpjONuPvWyOVBner95igWRp21NFzfI0HBlNRAyzFQuN
-         /7RoQLCqsPZcoh4ZhDopwJSd+SdjRc+i2fUumQIY7PfvkwMx2wGYGxTZ5RZFPrYblM
-         mkGRN2AptniR3NKuDaUaGRkbXgJPaqtkKGYONp2nXlCv8b2AaDwIczztaL0AUr04Iq
-         gXKy0JBfuyzSxWU1OKeoU3K5CtrawzLM1JMtrMfzBrP7iAVYgUrWGP0+kkNP4eMdvC
-         zyMeQR+ZnD/Bg==
-Date:   Mon, 14 Sep 2020 11:45:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the nand tree
-Message-ID: <20200914114552.5030ef1e@canb.auug.org.au>
+        Sun, 13 Sep 2020 21:49:29 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44621C06174A;
+        Sun, 13 Sep 2020 18:49:29 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id f2so8220967pgd.3;
+        Sun, 13 Sep 2020 18:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=0YS1663L1LzUAznqusfmielYY5IT6EGMpzPyhkJQ7Pg=;
+        b=aS3VNXRCtipQcZRfa7a6tudxDiYKqA3Gz4zlK0itlhG5MYkd7dKfMhgG66FijWEGr9
+         3UlITHtVnMKV0DVKAbn6lIlDUqudRyx4IyO56SZIMUzWc2aBS1/BEmV2V+xiaj2cQR+O
+         ukFK6q0B5Jy8GpBSiwxjCHtLienaCXw1ZM6QdSSeapYEqDGArJPsmGRm4paHAOwmwHUy
+         WGXG/VdqDl8MttghiU9rPXRPkVc8zjklfrg6xPU53bhCj3ncH9dWLybh6zGby3JL5wvy
+         QYYyB/Iuvsr9oYWqhSeIBYsvbDI6rJJAhy+Gn2i8V0fxU7hvQ1F0OPQLMSamcylcGJbz
+         kfkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=0YS1663L1LzUAznqusfmielYY5IT6EGMpzPyhkJQ7Pg=;
+        b=HcGhsQXl7k++CRp5kQIZSs9DQeEcdNtWE28b2T9j3KtB01PHtU0eDrDtCPoezBcN88
+         3OvzWdq6ZSDqIBKEbr7KL+SrMjbh40LmvraRxNUuLxmK5hkxbzKybVgzLxh1613UYOnM
+         N5olGNrfxuHr3+BLqxe/nVJBCSHVC28vAuLPI5DfyBIYlIkxEMnRFQD9BWhbwpZpSEYF
+         HQvrzEqNyaJ/+qdyYSdXx4kpn+PATWIDP++LCYoEIY4botDvOVQRgFcRf2VRYqScPmsR
+         7rvkssoq3g4qzGqmfhW5TrA8lj3Taj/qBqmbQ12pMawqEHGZYQ3M/1ZlQOscqiSIPGCK
+         Mb6g==
+X-Gm-Message-State: AOAM5320w9NcFhPdMf4Ufr42pEujfgpSzPF5JSCOUQ61tJqICQBb5pnZ
+        qmWdjxHEZrBcXHu12j3ZEEE=
+X-Google-Smtp-Source: ABdhPJyubYTjN2Pj9IUYo2h8nl7y9PDk3yWqMleRixdLIZRvEKOz9/fk4Z+JpCcJeQBq5RQaO2aFhA==
+X-Received: by 2002:a63:1016:: with SMTP id f22mr9291708pgl.226.1600048168254;
+        Sun, 13 Sep 2020 18:49:28 -0700 (PDT)
+Received: from localhost ([203.185.249.227])
+        by smtp.gmail.com with ESMTPSA id u14sm8442698pfm.80.2020.09.13.18.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 18:49:27 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 11:49:22 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v7 05/12] mm: HUGE_VMAP arch support cleanup
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Tang Yizhou <tangyizhou@huawei.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Christoph Hellwig <hch@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Zefan Li <lizefan@huawei.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>
+References: <20200825145753.529284-1-npiggin@gmail.com>
+        <20200825145753.529284-6-npiggin@gmail.com>
+        <534a0d5e-3a6f-c8e5-38f9-7e24662acb31@huawei.com>
+In-Reply-To: <534a0d5e-3a6f-c8e5-38f9-7e24662acb31@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/epc+0kP530EpO2lFcNv869s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-Id: <1600048125.6soarrvq20.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/epc+0kP530EpO2lFcNv869s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Excerpts from Tang Yizhou's message of September 11, 2020 8:36 pm:
+> On 2020/8/25 22:57, Nicholas Piggin wrote:
+>> -int __init arch_ioremap_pud_supported(void)
+>> +bool arch_vmap_pud_supported(pgprot_t prot);
+>>  {
+>>  	/*
+>>  	 * Only 4k granule supports level 1 block mappings.
+>> @@ -1319,9 +1319,9 @@ int __init arch_ioremap_pud_supported(void)
+>>  	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
+>>  }
+>=20
+> There is a compilation error because of the redundant semicolon at arch_v=
+map_pud_supported().
 
-Hi all,
+Huh thanks, I didn't see that for some reason.
 
-After merging the nand tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+I'll fix it up and re-send.
 
-drivers/mtd/nand/onenand/onenand_omap2.c:27:10: fatal error: asm/mach/flash=
-.h: No such file or directory
-   27 | #include <asm/mach/flash.h>
-      |          ^~~~~~~~~~~~~~~~~~
+Thanks,
+Nick
 
-Caused by commit
-
-  26e1a8efc63d ("mtd: onenand: omap2: Allow for compile-testing on !ARM")
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/epc+0kP530EpO2lFcNv869s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9ey1AACgkQAVBC80lX
-0Gx7AAf9E5/xUA15H8Q2AalqUUHzLyLXCrRsyLoqk04x+VByxgOn81w0iS+qzNTT
-aYH10MTuPp/T4xxgpUiem6dRnppMhCDm7FK2APLzxgxPFoMOxhF8UqwCm7adHbVR
-iWdi4zI82uLaXOLMxQgytEK3drZYVWMgUp+3hRY90DBJuBDJp9CYFVcl9e3sIidf
-RFNF4j9fPxWEB55/BXMCuxMqBat0REYF+jPJrWp4aYNaDG+a9HbRQSkY5Ftb1iFL
-4nBrENWYAN6uveiEJYYDQpzENu/8ne6Yb2ekdzulnS0k7+fwua6MNWSgTGcCKxxe
-K03kRYzo+Bcp8gk5jGUy7QvfyVy4dQ==
-=MH47
------END PGP SIGNATURE-----
-
---Sig_/epc+0kP530EpO2lFcNv869s--
