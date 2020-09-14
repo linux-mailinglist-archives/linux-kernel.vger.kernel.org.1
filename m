@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0B2268FDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF14C268FD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgINP21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        id S1726022AbgINP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725992AbgINP0o (ORCPT
+        with ESMTP id S1725976AbgINP0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:26:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE965C06174A;
-        Mon, 14 Sep 2020 08:26:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7O2Rc307Jq8KkaDn7zbVItvtt/ecHc/too3yP9zxMNw=; b=M80c+D3BqJySppi+H3eNYCcnH/
-        gkfi1LX5tkOxqiYr7vGlDhimfScWmyFoD4H7IZc29yxj59fxiZw4CTf73qE/Frs6kv2D1VP9Z0cDk
-        mxHwC6y23VXZp0GWVeuCJj/TuYsYfRbshYeLxTfn4NkxNbZt/mCYZDG48aAzhZnPSD26Tjx+8/mwu
-        2BX9yzKsoQKr11uV/Bwnigc9od3UdV8s2rG69+T+l2QU+9l3XPVzWYgBbLqR3TeV+3H8nv+hHYZRQ
-        AbZDHlAxP767K2OWIVLYATsG32mlziFsc93sPs4pmGxH1oa7RFwa/hq19KGZWcLA7yuKXtQ9v35Ul
-        oAwe3FdQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHqN0-0004bK-27; Mon, 14 Sep 2020 15:26:18 +0000
-Date:   Mon, 14 Sep 2020 16:26:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: Re: a saner API for allocating DMA addressable pages v2
-Message-ID: <20200914152617.GR6583@casper.infradead.org>
-References: <20200914144433.1622958-1-hch@lst.de>
+        Mon, 14 Sep 2020 11:26:35 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F922C061788;
+        Mon, 14 Sep 2020 08:26:28 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id z19so13897293lfr.4;
+        Mon, 14 Sep 2020 08:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VTPsLW0+iZl+i1mp/rzyEpz05jiz9NlTzkY82SUke6I=;
+        b=Bc4H4IN163/VqP3IR0+XQoY77UvNMwR3H4gdXPUTefa4oZ2ALD3VRwXfxTpn64AiBB
+         00U8431esUNOE6sWmyDVS9Ur66r9kj7aLx7zL9z1maTm5FouMFnyU5sM6CuW7yLKZtmV
+         vn1rXutOZ+iM7e5t3AX+l1McxD57m5V+J4VNhhbeL+gI9H/C34HA9LrRKAw3a7khq75x
+         JVincmGoevQImC3c2zGS/SHYeHmVQp7H/TnTrt1kFAKsdhRhZbXXwHuNGvH71u3NB+KX
+         D3gRrUbiSKGCw6dslTmut+Zz2R9hvERGIhMuM/s73f4Qwpo7C48cFwKYTkwvEs7Wn1Cl
+         ON1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VTPsLW0+iZl+i1mp/rzyEpz05jiz9NlTzkY82SUke6I=;
+        b=M4hgHWYFM89L86V8KTDNCw5ONjrSfxX1BF+7RzxmpZSGJQFxtYDvs936bqpXUICMus
+         4kFfQ0NnN2tNPpMXyZCM38wd7ArpoKq2QQznmfFAnrDwuQOaO1qyl1egVhzHogbkb5pz
+         /8y804AnKWuSCN2Mw1bIzaYo2GoHtP87ZhJmWMqWizI8yu45PdhAHISCe1MVx/EoUB9o
+         6akWtdDKsVp1AUB30+geS0dPqKvA3HJMTKz/CEhdSPt+43fF2prgMhDk/DKpF/VaUA0n
+         AUoiaPu2Ztv18wDrlJx+4p/hRVuHgI2WDedh0sq3/LLNqTlK+JynlTW4xB0bKu6PISgE
+         1fsQ==
+X-Gm-Message-State: AOAM533ENB1/MOLEh1JdX4uaKPUr6IvO2Q3kokVHkKWPRqC33SST1uxr
+        vHEXvZ+xfQ8vo1KzXsJVvtc=
+X-Google-Smtp-Source: ABdhPJzVTQ/QrzbOX/Qk7OQuyVj/r7/vkJQLRUbCZlGbJxq3UgxnVdinFjXQMeNxAWeXe4GUJjHF4Q==
+X-Received: by 2002:a19:b97:: with SMTP id 145mr4883827lfl.269.1600097186798;
+        Mon, 14 Sep 2020 08:26:26 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id z7sm3423208lfb.221.2020.09.14.08.26.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 08:26:26 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Andrew_Gabbasov@mentor.com
+References: <20200912005521.26319-1-jiada_wang@mentor.com>
+ <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
+ <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com>
+ <CAHp75VdTv-uCQue3VU=czZJd4iTG+XBVe2kFtnP+fZ1XQuFbzA@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <137be969-f99a-66e0-ebe4-b86f4be2b5d3@gmail.com>
+Date:   Mon, 14 Sep 2020 18:26:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
+In-Reply-To: <CAHp75VdTv-uCQue3VU=czZJd4iTG+XBVe2kFtnP+fZ1XQuFbzA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 04:44:16PM +0200, Christoph Hellwig wrote:
-> I'm still a little unsure about the API naming, as alloc_pages sort of
-> implies a struct page return value, but we return a kernel virtual
-> address.
+14.09.2020 16:49, Andy Shevchenko пишет:
+> On Sun, Sep 13, 2020 at 3:57 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 13.09.2020 11:43, Andy Shevchenko пишет:
+>>> ...
+>>>
+>>>> +       bool retried = false;
+>>
+>>> I thought Dmitry wants that to be retry
+>>
+>> In the comment to v2 you suggested to negate the condition,
+> 
+> Where? I just checked a few messages before and I found that I asked
+> the same question: why is negative conditional used instead of
+> positive.
 
-Erm ... dma_alloc_pages() returns a struct page, so is this sentence
-stale?
+I'm reading this as imperative "make it positive", and thus, assumed
+that you asked to do so because the "retry" implies a positive
+condition, while "retried" implies the negative.
 
-From patch 14:
+If you've added "Could you please explain why", then I'd read it as a
+question.
 
-+struct page *dma_alloc_pages(struct device *dev, size_t size,
-+               dma_addr_t *dma_handle, enum dma_data_direction dir, gfp_t gfp);
+>> hence I
+>> thought it's YOU who wants it to be retried.
+> 
+> I see. Let's see how it goes with positive conditionals first.
+> 
+> 
+>> The "retried" is a very common form among kernel drivers, so it's good
+>> to me.
+>>
+>>>>         u8 buf[2];
+>>>>         int ret;
+>>>
+>>>> -       ret = i2c_transfer(client->adapter, xfer, 2);
+>>>> -       if (ret == 2) {
+>>>> -               ret = 0;
+>>>> -       } else {
+>>>> -               if (ret >= 0)
+>>>> -                       ret = -EIO;
+>>>> +retry_read:
+>>>
+>>>> +       ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
+>>>> +       if (ret != ARRAY_SIZE(xfer)) {
+>> ...> Also why switch from positive to negative conditional?
+>>
+>> This will make code less readable because of the goto, and thus, there
+>> will be two branches for handling of the returned value instead of one +
+>> goto. Hence this part is good to me as-is.
+> 
+> But it's not the purpose of this patch, right?
+> Style changes should be really separated from the fix.
 
-> The other alternative would be to name the API
-> dma_alloc_noncoherent, but the whole non-coherent naming seems to put
-> people off.
+This should be up to a particular maintainer to decide. Usually nobody
+requires patches to be overly pedantic, this may turn away contributors
+because it feels like an unnecessary bikeshedding. It's more preferred
+to accept patch as-is if it does right thing and then maintainer could
+modify the patch, making cosmetic changes.
 
-You say that like it's a bad thing.  I think the problem is more that
-people don't understand what non-coherent means and think they're
-supporting it when they're not.
+> And since it's a fix it should have a Fixes tag.
 
-dma_alloc_manual_flushing()?
-
-> As a follow up I plan to move the implementation of the
-> DMA_ATTR_NO_KERNEL_MAPPING flag over to this framework as well, given
-> that is also is a fundamentally non coherent allocation.  The replacement
-> for that flag would then return a struct page, as it is allowed to
-> actually return pages without a kernel mapping as the name suggested
-> (although most of the time they will actually have a kernel mapping..)
-
-If the page doesn't have a kernel mapping, shouldn't it return a PFN
-or a phys_addr?
-
+It shouldn't be a fix, but a new feature because apparently the 1386
+controller wasn't ever intended to be properly supported before this patch.
