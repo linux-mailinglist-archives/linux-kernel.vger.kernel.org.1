@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9E5268F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553D3268F59
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgINPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:13:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:39642 "EHLO foss.arm.com"
+        id S1726400AbgINPOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:14:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:39644 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726327AbgINPKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:10:53 -0400
+        id S1726119AbgINPKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:10:52 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 180181FB;
-        Mon, 14 Sep 2020 08:10:48 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 452DA1595;
+        Mon, 14 Sep 2020 08:10:49 -0700 (PDT)
 Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 197423F718;
-        Mon, 14 Sep 2020 08:10:46 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4ECD33F718;
+        Mon, 14 Sep 2020 08:10:48 -0700 (PDT)
 From:   Oliver Swede <oli.swede@arm.com>
 To:     catalin.marinas@arm.com, will@kernel.org
 Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.indradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 11/14] arm64: usercopy: Check for overlapping buffers in fixup
-Date:   Mon, 14 Sep 2020 15:09:55 +0000
-Message-Id: <20200914150958.2200-12-oli.swede@arm.com>
+Subject: [PATCH v5 12/14] arm64: usercopy: Add intermediate fixup routine
+Date:   Mon, 14 Sep 2020 15:09:56 +0000
+Message-Id: <20200914150958.2200-13-oli.swede@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200914150958.2200-1-oli.swede@arm.com>
 References: <20200914150958.2200-1-oli.swede@arm.com>
@@ -32,392 +32,179 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for overlapping source and destination buffers in the usercopy
-fixup before proceeding, and if this is the case then return from
-the fixup with the full copy size in x0.
+This adds an intermediate fixup routine that initiates an in-order
+byte-wise copy that is expected to fault for a second time, and then
+be redirected to the final fixup where the precise number of bytes
+remaining is obtained. As well as compatibility with the latest
+optimized copy routine, these fixups should also be applicable to
+future copy algorithms that utilize out-of-order copying.
 
-Imported optimized copy routines may contain the implementation of
-both memcpy() and memmov(), where the latter code path is very
-different and may result in behaviour that is incompatible with
-memcopy in the context of constructing a non-exhaustive fixup
-recovery routine. For instance, the current memmov() implementation
-copies in reverse.
-
-As this is likely to be an edge case across multiple copy routines
-(checked for explicitly from within the routines themselves), and
-independent of any specific implementation, it should be suitable
-to return the full copy width back to the kernel code path calling
-the usercopy function.
+The copy template is extended to add the relevant macros for the
+second-stage fixup to each of the usercopy functions, where the
+exception table entries are inserted to redirect the PC to the
+conclusive fixup from the second instruction fault.
 
 Signed-off-by: Oliver Swede <oli.swede@arm.com>
 ---
- arch/arm64/lib/copy_from_user.S  | 24 ++++++++--------
- arch/arm64/lib/copy_in_user.S    | 48 ++++++++++++++++----------------
- arch/arm64/lib/copy_to_user.S    | 24 ++++++++--------
- arch/arm64/lib/copy_user_fixup.S | 36 +++++++++++++++++++-----
- 4 files changed, 77 insertions(+), 55 deletions(-)
+ arch/arm64/lib/copy_from_user.S     | 18 ++++++++++++++-
+ arch/arm64/lib/copy_in_user.S       | 16 ++++++++++++++
+ arch/arm64/lib/copy_template_user.S |  2 ++
+ arch/arm64/lib/copy_to_user.S       | 16 ++++++++++++++
+ arch/arm64/lib/copy_user_fixup.S    | 34 ++++++++++++++++++++++++++++-
+ 5 files changed, 84 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/lib/copy_from_user.S b/arch/arm64/lib/copy_from_user.S
-index cd3042e98394..745fbbfc23bb 100644
+index 745fbbfc23bb..7d3b7a790091 100644
 --- a/arch/arm64/lib/copy_from_user.S
 +++ b/arch/arm64/lib/copy_from_user.S
 @@ -20,7 +20,7 @@
   *	x0 - bytes not copied
   */
  	.macro ldrb1 reg, ptr, offset=0
--	USER_F(9998f, ldtrb \reg, [\ptr, \offset])
-+	USER_F(9996f, ldtrb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro strb1 reg, ptr, offset=0
-@@ -29,7 +29,7 @@
- 
- 	.macro ldrb1_reg reg, ptr, offset
- 	add \ptr, \ptr, \offset
--	USER_F(9998f, ldtrb \reg, [\ptr])
-+	USER_F(9997f, ldtrb \reg, [\ptr])
- 	sub \ptr, \ptr, \offset
- 	.endm
- 
-@@ -38,7 +38,7 @@
- 	.endm
- 
- 	.macro ldr1 reg, ptr, offset=0
--	USER_F(9998f, ldtr \reg, [\ptr, \offset])
-+	USER_F(9997f, ldtr \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro str1 reg, ptr, offset=0
-@@ -46,8 +46,8 @@
- 	.endm
- 
- 	.macro ldp1 regA, regB, ptr, offset=0
--	USER_F(9998f, ldtr \regA, [\ptr, \offset])
--	USER_F(9998f, ldtr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, ldtr \regA, [\ptr, \offset])
-+	USER_F(9997f, ldtr \regB, [\ptr, \offset + 8])
- 	.endm
- 
- 	.macro stp1 regA, regB, ptr, offset=0
-@@ -55,8 +55,8 @@
- 	.endm
- 
- 	.macro ldp1_pre regA, regB, ptr, offset
--	USER_F(9998f, ldtr \regA, [\ptr, \offset])
--	USER_F(9998f, ldtr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, ldtr \regA, [\ptr, \offset])
-+	USER_F(9997f, ldtr \regB, [\ptr, \offset + 8])
- 	add \ptr, \ptr, \offset
- 	.endm
- 
-@@ -65,7 +65,7 @@
- 	.endm
- 
- 	.macro ldrb1_nuao reg, ptr, offset=0
--	USER_F(9998f, ldrb \reg, [\ptr, \offset])
-+	USER_F(9997f, ldrb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro strb1_nuao reg, ptr, offset=0
-@@ -73,7 +73,7 @@
- 	.endm
- 
- 	.macro ldrb1_nuao_reg reg, ptr, offset=0
--	USER_F(9998f, ldrb \reg, [\ptr, \offset])
-+	USER_F(9997f, ldrb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro strb1_nuao_reg reg, ptr, offset=0
-@@ -81,7 +81,7 @@
- 	.endm
- 
- 	.macro ldr1_nuao reg, ptr, offset=0
--	USER_F(9998f, ldr \reg, [\ptr, \offset])
-+	USER_F(9997f, ldr \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro str1_nuao reg, ptr, offset=0
-@@ -89,7 +89,7 @@
- 	.endm
- 
- 	.macro ldp1_nuao  regA, regB, ptr, offset=0
--	USER_F(9998f, ldp \regA, \regB, [\ptr, \offset])
-+	USER_F(9997f, ldp \regA, \regB, [\ptr, \offset])
- 	.endm
- 
- 	.macro stp1_nuao regA, regB, ptr, offset=0
-@@ -97,7 +97,7 @@
- 	.endm
- 
- 	.macro ldp1_pre_nuao regA, regB, ptr, offset
--	USER_F(9998f, ldp \regA, \regB, [\ptr, \offset]!)
-+	USER_F(9997f, ldp \regA, \regB, [\ptr, \offset]!)
- 	.endm
- 
- 	.macro stp1_pre_nuao regA, regB, ptr, offset
-diff --git a/arch/arm64/lib/copy_in_user.S b/arch/arm64/lib/copy_in_user.S
-index fe035e513b34..34389d16c338 100644
---- a/arch/arm64/lib/copy_in_user.S
-+++ b/arch/arm64/lib/copy_in_user.S
-@@ -22,93 +22,93 @@
-  *	x0 - bytes not copied
-  */
- 	.macro ldrb1 reg, ptr, offset=0
--	USER_F(9998f, ldtrb \reg, [\ptr, \offset])
+-	USER_F(9996f, ldtrb \reg, [\ptr, \offset])
 +	USER_F(9997f, ldtrb \reg, [\ptr, \offset])
  	.endm
  
  	.macro strb1 reg, ptr, offset=0
--	USER_F(9998f, sttrb \reg, [\ptr, \offset])
-+	USER_F(9997f, sttrb \reg, [\ptr, \offset])
+@@ -104,6 +104,22 @@
+ 	stp \regA, \regB, [\ptr, \offset]!
  	.endm
  
- 	.macro ldrb1_reg reg, ptr, offset
- 	add \ptr, \ptr, \offset
--	USER_F(9998f, ldtrb \reg, [\ptr])
-+	USER_F(9997f, ldtrb \reg, [\ptr])
- 	sub \ptr, \ptr, \offset
- 	.endm
- 
- 	.macro strb1_reg reg, ptr, offset
- 	add \ptr, \ptr, \offset
--	USER_F(9998f, sttrb \reg, [\ptr])
-+	USER_F(9997f, sttrb \reg, [\ptr])
- 	sub \ptr, \ptr, \offset
- 	.endm
- 
- 	.macro ldr1 reg, ptr, offset=0
--	USER_F(9998f, ldtr \reg, [\ptr, \offset])
-+	USER_F(9997f, ldtr \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro str1 reg, ptr, offset=0
--	USER_F(9998f, sttr \reg, [\ptr, \offset])
-+	USER_F(9997f, sttr \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldp1 regA, regB, ptr, offset=0
--	USER_F(9998f, ldtr \regA, [\ptr, \offset])
--	USER_F(9998f, ldtr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, ldtr \regA, [\ptr, \offset])
-+	USER_F(9997f, ldtr \regB, [\ptr, \offset + 8])
- 	.endm
- 
- 	.macro stp1 regA, regB, ptr, offset=0
--	USER_F(9998f, sttr \regA, [\ptr, \offset])
--	USER_F(9998f, sttr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, sttr \regA, [\ptr, \offset])
-+	USER_F(9997f, sttr \regB, [\ptr, \offset + 8])
- 	.endm
- 
- 	.macro ldp1_pre regA, regB, ptr, offset
--	USER_F(9998f, ldtr \regA, [\ptr, \offset])
--	USER_F(9998f, ldtr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, ldtr \regA, [\ptr, \offset])
-+	USER_F(9997f, ldtr \regB, [\ptr, \offset + 8])
- 	add \ptr, \ptr, \offset
- 	.endm
- 
- 	.macro stp1_pre regA, regB, ptr, offset
--	USER_F(9998f, sttr \regA, [\ptr, \offset])
--	USER_F(9998f, sttr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, sttr \regA, [\ptr, \offset])
-+	USER_F(9997f, sttr \regB, [\ptr, \offset + 8])
- 	add \ptr, \ptr, \offset
- 	.endm
- 
- 	.macro ldrb1_nuao reg, ptr, offset=0
--	USER_F(9998f, ldrb \reg, [\ptr, \offset])
-+	USER_F(9997f, ldrb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro strb1_nuao reg, ptr, offset=0
--	USER_F(9998f, strb \reg, [\ptr, \offset])
-+	USER_F(9997f, strb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldrb1_nuao_reg reg, ptr, offset=0
--	USER_F(9998f, ldrb \reg, [\ptr, \offset])
-+	USER_F(9997f, ldrb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro strb1_nuao_reg reg, ptr, offset=0
--	USER_F(9998f, strb \reg, [\ptr, \offset])
-+	USER_F(9997f, strb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldr1_nuao reg, ptr, offset=0
--	USER_F(9998f, ldr \reg, [\ptr, \offset])
-+	USER_F(9997f, ldr \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro str1_nuao reg, ptr, offset=0
--	USER_F(9998f, str \reg, [\ptr, \offset])
-+	USER_F(9997f, str \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldp1_nuao  regA, regB, ptr, offset=0
--	USER_F(9998f, ldp \regA, \regB, [\ptr, \offset])
-+	USER_F(9997f, ldp \regA, \regB, [\ptr, \offset])
- 	.endm
- 
- 	.macro stp1_nuao regA, regB, ptr, offset=0
--	USER_F(9998f, stp \regA, \regB, [\ptr, \offset])
-+	USER_F(9997f, stp \regA, \regB, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldp1_pre_nuao regA, regB, ptr, offset
--	USER_F(9998f, ldp \regA, \regB, [\ptr, \offset]!)
-+	USER_F(9997f, ldp \regA, \regB, [\ptr, \offset]!)
- 	.endm
- 
- 	.macro stp1_pre_nuao regA, regB, ptr, offset
--	USER_F(9998f, stp \regA, \regB, [\ptr, \offset]!)
-+	USER_F(9997f, stp \regA, \regB, [\ptr, \offset]!)
- 	.endm
- 
++	.macro ldrb2_post reg, ptr, offset=0
++	USER_F(9998f, ldtrb \reg, [\ptr], \offset)
++	.endm
++
++	.macro strb2_post reg, ptr, offset=0
++	strb \reg, [\ptr], \offset
++	.endm
++
++	.macro ldrb2_post_nuao reg, ptr, offset=0
++	USER_F(9998f, ldrb \reg, [\ptr], \offset)
++	.endm
++
++	.macro strb2_post_nuao reg, ptr, offset=0
++	strb \reg, [\ptr], \offset
++	.endm
++
  	.macro copy_exit
+ 	b	.Luaccess_finish
+ 	.endm
+diff --git a/arch/arm64/lib/copy_in_user.S b/arch/arm64/lib/copy_in_user.S
+index 34389d16c338..ded937129270 100644
+--- a/arch/arm64/lib/copy_in_user.S
++++ b/arch/arm64/lib/copy_in_user.S
+@@ -111,6 +111,22 @@
+ 	USER_F(9997f, stp \regA, \regB, [\ptr, \offset]!)
+ 	.endm
+ 
++	.macro ldrb2_post reg, ptr, offset=0
++	USER_F(9998f, ldtrb \reg, [\ptr], \offset)
++	.endm
++
++	.macro strb2_post reg, ptr, offset=0
++	USER_F(9998f, sttrb \reg, [\ptr], \offset)
++	.endm
++
++	.macro ldrb2_post_nuao reg, ptr, offset=0
++	USER_F(9998f, ldrb \reg, [\ptr], \offset)
++	.endm
++
++	.macro strb2_post_nuao reg, ptr, offset=0
++	USER_F(9998f, strb \reg, [\ptr], \offset)
++	.endm
++
+ 	.macro copy_exit
+ 	b	.Luaccess_finish
+ 	.endm
+diff --git a/arch/arm64/lib/copy_template_user.S b/arch/arm64/lib/copy_template_user.S
+index 1d13daf314b0..e94911e4df0f 100644
+--- a/arch/arm64/lib/copy_template_user.S
++++ b/arch/arm64/lib/copy_template_user.S
+@@ -17,6 +17,8 @@
+ #define strb1 strb1_nuao
+ #define ldrb1_reg ldrb1_nuao_reg
+ #define strb1_reg strb1_nuao_reg
++#define ldrb2_post ldrb2_post_nuao
++#define strb2_post strb2_post_nuao
+ 
+ L(copy_non_uao):
+ #undef L
 diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
-index de0af211b3ba..cbb4cdfc7ad3 100644
+index cbb4cdfc7ad3..05a87ebe3ddc 100644
 --- a/arch/arm64/lib/copy_to_user.S
 +++ b/arch/arm64/lib/copy_to_user.S
-@@ -24,7 +24,7 @@
+@@ -104,6 +104,22 @@
+ 	USER_F(9997f, stp \regA, \regB, [\ptr, \offset]!)
  	.endm
  
- 	.macro strb1 reg, ptr, offset=0
--	USER_F(9998f, sttrb \reg, [\ptr, \offset])
-+	USER_F(9997f, sttrb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldrb1_reg reg, ptr, offset
-@@ -33,7 +33,7 @@
- 
- 	.macro strb1_reg reg, ptr, offset
- 	add \ptr, \ptr, \offset
--	USER_F(9998f, sttrb \reg, [\ptr])
-+	USER_F(9997f, sttrb \reg, [\ptr])
- 	sub \ptr, \ptr, \offset
- 	.endm
- 
-@@ -42,7 +42,7 @@
- 	.endm
- 
- 	.macro str1 reg, ptr, offset=0
--	USER_F(9998f, sttr \reg, [\ptr, \offset])
-+	USER_F(9997f, sttr \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldp1 regA, regB, ptr, offset=0
-@@ -50,8 +50,8 @@
- 	.endm
- 
- 	.macro stp1 regA, regB, ptr, offset=0
--	USER_F(9998f, sttr \regA, [\ptr, \offset])
--	USER_F(9998f, sttr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, sttr \regA, [\ptr, \offset])
-+	USER_F(9997f, sttr \regB, [\ptr, \offset + 8])
- 	.endm
- 
- 	.macro ldp1_pre regA, regB, ptr, offset
-@@ -59,8 +59,8 @@
- 	.endm
- 
- 	.macro stp1_pre regA, regB, ptr, offset
--	USER_F(9998f, sttr \regA, [\ptr, \offset])
--	USER_F(9998f, sttr \regB, [\ptr, \offset + 8])
-+	USER_F(9997f, sttr \regA, [\ptr, \offset])
-+	USER_F(9997f, sttr \regB, [\ptr, \offset + 8])
- 	add \ptr, \ptr, \offset
- 	.endm
- 
-@@ -69,7 +69,7 @@
- 	.endm
- 
- 	.macro strb1_nuao reg, ptr, offset=0
--	USER_F(9998f, strb \reg, [\ptr, \offset])
-+	USER_F(9997f, strb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldrb1_nuao_reg reg, ptr, offset=0
-@@ -77,7 +77,7 @@
- 	.endm
- 
- 	.macro strb1_nuao_reg reg, ptr, offset=0
--	strb \reg, [\ptr, \offset]
-+	USER_F(9997f, strb \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldr1_nuao reg, ptr, offset=0
-@@ -85,7 +85,7 @@
- 	.endm
- 
- 	.macro str1_nuao reg, ptr, offset=0
--	USER_F(9998f, str \reg, [\ptr, \offset])
-+	USER_F(9997f, str \reg, [\ptr, \offset])
- 	.endm
- 
- 	.macro ldp1_nuao  regA, regB, ptr, offset=0
-@@ -97,11 +97,11 @@
- 	.endm
- 
- 	.macro stp1_nuao regA, regB, ptr, offset=0
--	USER_F(9998f, stp \regA, \regB, [\ptr, \offset])
-+	USER_F(9997f, stp \regA, \regB, [\ptr, \offset])
- 	.endm
- 
- 	.macro stp1_pre_nuao regA, regB, ptr, offset
--	USER_F(9998f, stp \regA, \regB, [\ptr, \offset]!)
-+	USER_F(9997f, stp \regA, \regB, [\ptr, \offset]!)
- 	.endm
- 
++	.macro ldrb2_post reg, ptr, offset=0
++	ldrb \reg, [\ptr], \offset
++	.endm
++
++	.macro strb2_post reg, ptr, offset=0
++	USER_F(9998f, sttrb \reg, [\ptr], \offset)
++	.endm
++
++	.macro ldrb2_post_nuao reg, ptr, offset=0
++	ldrb \reg, [\ptr], \offset
++	.endm
++
++	.macro strb2_post_nuao reg, ptr, offset=0
++	USER_F(9998f, strb \reg, [\ptr], \offset)
++	.endm
++
  	.macro copy_exit
+ 	b	.Luaccess_finish
+ 	.endm
 diff --git a/arch/arm64/lib/copy_user_fixup.S b/arch/arm64/lib/copy_user_fixup.S
-index a528b7d7d1bd..01e5c34461d7 100644
+index 01e5c34461d7..6a7b2406d948 100644
 --- a/arch/arm64/lib/copy_user_fixup.S
 +++ b/arch/arm64/lib/copy_user_fixup.S
-@@ -3,13 +3,35 @@
- addr	.req	x15
- .section .fixup,"ax"
- .align	2
-+9997:
-+	ldp	x0, x1, [sp], #16 // x0 (dst), x1 (src)
-+	ldr	x2, [sp], #16 // x2 (count)
-+	add	x3, x0, x2 // x3: dstend
-+	add	x4, x1, x2 // x4: srcend
-+	/*
-+	 * Overlapping buffers:
-+	 * (src <= dst && dst < srcend)
-+	 *  || (dst <= src && src < dstend)
-+	 */
-+	cmp	x1, x0 // src (x1), dst (x0)
-+	ccmp	x0, x4, #0, le // dst (x0), srcend (x4)
-+	b.lt	L(none_copied)
-+	cmp	x0, x1 // dst (x0), src (x1)
-+	ccmp	x1, x3, #0, le // src (x1), dstend (x3)
-+	b.lt	L(none_copied)
-+	/*
-+	 * Direct to subroutine based on location of fault
-+	 */
-+	cmp	addr, x1 // addr (x15), src (x1)
-+	ccmp	addr, x4, #0x0, ge // addr, x4, #0, ge
-+	b.lt	L(src_fault)
-+	b	L(dst_fault)
-+
-+L(src_fault):
-+L(dst_fault):
-+
- 9998:
--	// If it falls in the src range then it was a load that failed,
--	// otherwise it was a store
--	cmp addr, src
--	ccmp addr, srcend, #0x0, ge
--	csel x0, srcend, dstend, lt
--	sub x0, x0, addr
--	add sp, sp, 32
-+L(none_copied):
-+	mov	x0, x2 // count (x2)
- 	ret
+@@ -27,11 +27,43 @@ addr	.req	x15
+ 	b.lt	L(src_fault)
+ 	b	L(dst_fault)
  
++/*
++ * Reached here from load instruction during
++ * copy_{from/in}_user(dst, __user src, count)
++ */
+ L(src_fault):
++	mov	x3, x1 // x3: initial target (user) load address
++	mov	x4, x0 // x4: initial target store address
++	add	x5, x1, x2 // x5: srcend
++
++L(src_buf_scan):
++	ldrb2_post	w6, x3, #1
++	strb2_post	w6, x4, #1
++	cmp		x3, x5
++	b.lt		L(src_buf_scan)
++	b		L(all_copied)
++
++/*
++ * Reached here from store instruction during
++ * copy_{to/in}_user(__user dst, src, count)
++ */
+ L(dst_fault):
++	mov	x3, x0 // x3: initial target (user) store address
++	mov	x4, x1 // x4: initial target load address
++	add	x5, x0, x2 // x5: dstend
++
++L(dst_buf_scan):
++	ldrb2_post	w6, x4, #1
++	strb2_post	w6, x3, #1
++	cmp		x3, x5
++	b.lt		L(dst_buf_scan)
++
++L(all_copied):
++	mov	x0, #0 // reached the end of buffer
++	ret
+ 
+ 9998:
++// TODO: add accurate fixup
+ L(none_copied):
+ 	mov	x0, x2 // count (x2)
+ 	ret
+-
 -- 
 2.17.1
 
