@@ -2,115 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E5D269141
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AA81269147
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726349AbgINQRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:17:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbgINQKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:10:39 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726396AbgINQS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:18:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726420AbgINQM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:12:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600099976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NMcjuPLsban/s/KhGcm7R6jbGaWdBO7FK18RrhrF4m4=;
+        b=Uw76qssjW53IjbMUVcCOwWfrpUSmO9DZ8FS/mCRkJFIgZtsno7Bd662BSPhHvaS+kVIAnw
+        plmiwyA74NQbDsTnduu0+oWwc1O3vqobOHPhf3qGBs5XO8NcqPs8uuwy0giXXbSevBw5SH
+        4ibLawDSALGDEFnc3jY62PIsTOdOaA4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-lmWKx1gVNNS1mWTiGcUWJw-1; Mon, 14 Sep 2020 12:12:52 -0400
+X-MC-Unique: lmWKx1gVNNS1mWTiGcUWJw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 071E120759;
-        Mon, 14 Sep 2020 16:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600099839;
-        bh=WZ3JO5Gd7EBYVjMMbhMOeo4vejDSPos4qMJKMNgdJhQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=L2cp9WOY8OMlxcWyMB6/2Xux4VfzP5E1xNev/ZN7trDJc3NSgtgugN4ERhnPz05Bq
-         7xo0thR5WiEtxEFW2LlpkSuEPJwkjKOesdACNGrP2lO71Rq2ZD4a2swKN2rK8Ctog5
-         7ykEHXgRIsc7jFSMyyJpnhLobJO4MHfex73CmSnU=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kHr3s-00Bjzy-Vu; Mon, 14 Sep 2020 17:10:37 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 17:10:36 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7981D425FD;
+        Mon, 14 Sep 2020 16:12:49 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BA4B7EEC9;
+        Mon, 14 Sep 2020 16:12:35 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 18:12:34 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 10/16] irqchip/bcm2836: Configure mailbox interrupts as
- standard interrupts
-In-Reply-To: <3e52be78-1725-a3a2-c97c-625d46017a4b@samsung.com>
-References: <20200901144324.1071694-1-maz@kernel.org>
- <20200901144324.1071694-11-maz@kernel.org>
- <CGME20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4@eucas1p1.samsung.com>
- <3e52be78-1725-a3a2-c97c-625d46017a4b@samsung.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <e99cc81b24475c54e173e6dd0d9d827b@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-rpi-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200914181234.0f1df8ba@carbon>
+In-Reply-To: <20200914140114.GG24441@willie-the-truck>
+References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
+        <20200914122042.GA24441@willie-the-truck>
+        <20200914123504.GA124316@apalos.home>
+        <20200914132350.GA126552@apalos.home>
+        <20200914140114.GG24441@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
 
-On 2020-09-14 15:32, Marek Szyprowski wrote:
-> Hi Marc,
+On Mon, 14 Sep 2020 15:01:15 +0100 Will Deacon <will@kernel.org> wrote:
+
+> Hi Ilias,
 > 
-> On 01.09.2020 16:43, Marc Zyngier wrote:
->> In order to switch the bcm2836 driver to privide standard interrupts
->> for IPIs, it first needs to stop lying about the way things work.
->> 
->> The mailbox interrupt is actually a multiplexer, with enough
->> bits to store 32 pending interrupts per CPU. So let's turn it
->> into a chained irqchip.
->> 
->> Once this is done, we can instanciate the corresponding IPIs,
->> and pass them to the architecture code.
->> 
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> On Mon, Sep 14, 2020 at 04:23:50PM +0300, Ilias Apalodimas wrote:
+> > On Mon, Sep 14, 2020 at 03:35:04PM +0300, Ilias Apalodimas wrote:  
+> > > On Mon, Sep 14, 2020 at 01:20:43PM +0100, Will Deacon wrote:  
+> > > > On Mon, Sep 14, 2020 at 11:36:21AM +0300, Ilias Apalodimas wrote:  
+> > > > > Running the eBPF test_verifier leads to random errors looking like this:  
 > 
-> This one also fails. It breaks booting of Raspberry Pi 3b boards (both
-> in ARM and ARM64 mode):
+> [...]
+> > >   
+> > Any suggestion on any Fixes I should apply? The original code was 'correct' and
+> > broke only when bounded loops and their self-tests were introduced.  
+> 
+> Ouch, that's pretty bad as it means nobody is regression testing BPF on
+> arm64 with mainline. Damn.
 
-Damn. This used to work. Looks like I was eager to delete stuff at
-some point. Can you give this a go and let me know if that works
-for you (only tested in QEMU with the raspi2 model):
+Yes, it unfortunately seems that upstream is lacking BPF regression
+testing for ARM64 :-(
 
-diff --git a/drivers/irqchip/irq-bcm2836.c 
-b/drivers/irqchip/irq-bcm2836.c
-index 85df6ddad9be..97838eb705f9 100644
---- a/drivers/irqchip/irq-bcm2836.c
-+++ b/drivers/irqchip/irq-bcm2836.c
-@@ -193,6 +193,8 @@ static void bcm2836_arm_irqchip_ipi_send_mask(struct 
-irq_data *d,
+This bug surfaced when Red Hat QA tested our kernel backports, on
+different archs.
 
-  static struct irq_chip bcm2836_arm_irqchip_ipi = {
-  	.name		= "IPI",
-+	.irq_mask	= bcm2836_arm_irqchip_dummy_op,
-+	.irq_unmask	= bcm2836_arm_irqchip_dummy_op,
-  	.irq_eoi	= bcm2836_arm_irqchip_ipi_eoi,
-  	.ipi_send_mask	= bcm2836_arm_irqchip_ipi_send_mask,
-  };
-
-
-Thanks again,
-
-         M.
 -- 
-Jazz is not dead. It just smells funny...
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
