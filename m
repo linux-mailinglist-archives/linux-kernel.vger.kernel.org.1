@@ -2,163 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D0226841B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCEA268419
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726090AbgINFcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:32:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:58734 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726010AbgINFcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:32:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29D3AD6E;
-        Sun, 13 Sep 2020 22:32:29 -0700 (PDT)
-Received: from [10.163.73.47] (unknown [10.163.73.47])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A895B3F73B;
-        Sun, 13 Sep 2020 22:32:26 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64/mm: Refactor {pgd, pud, pmd, pte}_ERROR()
-To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
-References: <20200913234730.23145-1-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <fe0747b3-fca9-12e0-37ae-cf3cb9efbe9e@arm.com>
-Date:   Mon, 14 Sep 2020 11:01:48 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726084AbgINFcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:32:04 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:51727 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726010AbgINFcE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 01:32:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U8psLXS_1600061520;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U8psLXS_1600061520)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 14 Sep 2020 13:32:00 +0800
+Date:   Mon, 14 Sep 2020 13:32:00 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     baolin.wang7@gmail.com, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Some improvements for blk-throttle
+Message-ID: <20200914053200.GA128318@VM20190228-100.tbsite.net>
+Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
+References: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20200913234730.23145-1-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tejun and Jens,
 
+On Mon, Sep 07, 2020 at 04:10:12PM +0800, Baolin Wang wrote:
+> Hi All,
+> 
+> This patch set did some clean-ups, as well as removing some unnecessary
+> bps/iops limitation calculation when checking if can dispatch a bio or
+> not for a tg. Please help to review. Thanks.
 
-On 09/14/2020 05:17 AM, Gavin Shan wrote:
-> The function __{pgd, pud, pmd, pte}_error() are introduced so that
-> they can be called by {pgd, pud, pmd, pte}_ERROR(). However, some
-> of the functions could never be called when the corresponding page
-> table level isn't enabled. For example, __{pud, pmd}_error() are
-> unused when PUD and PMD are folded to PGD.
-
-Right, it makes sense not to have these helpers generally available.
-Given pxx_ERROR() is enabled only when required page table level is
-available, with a CONFIG_PGTABLE_LEVEL check.
+Any comments for this patch set?
 
 > 
-> This removes __{pgd, pud, pmd, pte}_error() and call pr_err() from
-> {pgd, pud, pmd, pte}_ERROR() directly, similar to what x86/powerpc
-> are doing. With this, the code looks a bit simplified either.
-
-Do we need p4d_ERROR() here as well !
-
+> Baolin Wang (5):
+>   blk-throttle: Fix some comments' typos
+>   blk-throttle: Use readable READ/WRITE macros
+>   blk-throttle: Define readable macros instead of static variables
+>   blk-throttle: Avoid calculating bps/iops limitation repeatedly
+>   blk-throttle: Avoid checking bps/iops limitation if bps or iops is    
+>     unlimited
 > 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
-> v2: Fix build warning caused by wrong printk format
-> ---
->  arch/arm64/include/asm/pgtable.h | 17 ++++++++---------
->  arch/arm64/kernel/traps.c        | 20 --------------------
->  2 files changed, 8 insertions(+), 29 deletions(-)
+>  block/blk-throttle.c | 59 ++++++++++++++++++++++++++++++++--------------------
+>  1 file changed, 36 insertions(+), 23 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index d5d3fbe73953..e0ab81923c30 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -35,11 +35,6 @@
->  
->  extern struct page *vmemmap;
->  
-> -extern void __pte_error(const char *file, int line, unsigned long val);
-> -extern void __pmd_error(const char *file, int line, unsigned long val);
-> -extern void __pud_error(const char *file, int line, unsigned long val);
-> -extern void __pgd_error(const char *file, int line, unsigned long val);
-> -
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
->  
-> @@ -57,7 +52,8 @@ extern void __pgd_error(const char *file, int line, unsigned long val);
->  extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
->  #define ZERO_PAGE(vaddr)	phys_to_page(__pa_symbol(empty_zero_page))
->  
-> -#define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
-> +#define pte_ERROR(e)	\
-> +	pr_err("%s:%d: bad pte %016llx.\n", __FILE__, __LINE__, pte_val(e))
->  
->  /*
->   * Macros to convert between a physical address and its placement in a
-> @@ -541,7 +537,8 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->  
->  #if CONFIG_PGTABLE_LEVELS > 2
->  
-> -#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
-> +#define pmd_ERROR(e)	\
-> +	pr_err("%s:%d: bad pmd %016llx.\n", __FILE__, __LINE__, pmd_val(e))
->  
->  #define pud_none(pud)		(!pud_val(pud))
->  #define pud_bad(pud)		(!(pud_val(pud) & PUD_TABLE_BIT))
-> @@ -608,7 +605,8 @@ static inline unsigned long pud_page_vaddr(pud_t pud)
->  
->  #if CONFIG_PGTABLE_LEVELS > 3
->  
-> -#define pud_ERROR(pud)		__pud_error(__FILE__, __LINE__, pud_val(pud))
-> +#define pud_ERROR(e)	\
-> +	pr_err("%s:%d: bad pud %016llx.\n", __FILE__, __LINE__, pud_val(e))
->  
->  #define p4d_none(p4d)		(!p4d_val(p4d))
->  #define p4d_bad(p4d)		(!(p4d_val(p4d) & 2))
-> @@ -667,7 +665,8 @@ static inline unsigned long p4d_page_vaddr(p4d_t p4d)
->  
->  #endif  /* CONFIG_PGTABLE_LEVELS > 3 */
->  
-> -#define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
-> +#define pgd_ERROR(e)	\
-> +	pr_err("%s:%d: bad pgd %016llx.\n", __FILE__, __LINE__, pgd_val(e))
-
-A line break in these macros might not be required any more, as checkpatch.pl
-now accepts bit longer lines.
-
->  
->  #define pgd_set_fixmap(addr)	((pgd_t *)set_fixmap_offset(FIX_PGD, addr))
->  #define pgd_clear_fixmap()	clear_fixmap(FIX_PGD)
-> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> index 13ebd5ca2070..12fba7136dbd 100644
-> --- a/arch/arm64/kernel/traps.c
-> +++ b/arch/arm64/kernel/traps.c
-> @@ -935,26 +935,6 @@ asmlinkage void enter_from_user_mode(void)
->  }
->  NOKPROBE_SYMBOL(enter_from_user_mode);
->  
-> -void __pte_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pte %016lx.\n", file, line, val);
-> -}
-> -
-> -void __pmd_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pmd %016lx.\n", file, line, val);
-> -}
-> -
-> -void __pud_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pud %016lx.\n", file, line, val);
-> -}
-> -
-> -void __pgd_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pgd %016lx.\n", file, line, val);
-> -}
-
-While moving %016lx now becomes %016llx. I guess this should be okay.
-Looks much cleaner to have removed these helpers from trap.c
-
-> -
->  /* GENERIC_BUG traps */
->  
->  int is_valid_bugaddr(unsigned long addr)
-> 
+> -- 
+> 1.8.3.1
