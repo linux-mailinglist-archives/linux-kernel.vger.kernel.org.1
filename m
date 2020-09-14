@@ -2,220 +2,849 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA677268C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68A4268C66
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgINNhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:37:09 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54134 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgINN1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:27:47 -0400
-IronPort-SDR: l2+IC1XfVAzz320HxqxY8hxxMF1kJI73AxGsWkOTH7OeCfUkust5BCV76v6c9yGQV9oD0j+mKC
- fivsNvm9qc8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="146815434"
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="146815434"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 06:26:59 -0700
-IronPort-SDR: Coufpi7BKil6teQ3eUgwl2BdeMHwb0hbcvboIuIb6ZoX/kZzLg8MnxlSzvwR+yFcKGM0vJ7Qmg
- Or+8tLCb4qbA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="330740311"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Sep 2020 06:26:58 -0700
-Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 14 Sep 2020 06:26:58 -0700
-Received: from orsmsx153.amr.corp.intel.com (10.22.226.247) by
- orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 14 Sep 2020 06:26:58 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- ORSMSX153.amr.corp.intel.com (10.22.226.247) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 14 Sep 2020 06:26:58 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.45) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Mon, 14 Sep 2020 06:26:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YgoeZW/HDCjgr/zQz/8JCQlq66P+cYbIWV+GG7IQQXSGgTURdtamnypOnPkXv5W8JhHzWrcgMkVUeKbZmQ5Ttyi+TRlhKaN01ZPLpS05byJ/HxfZYqFpZJ7JPAqY25TIM9i4J4CokJR2yuYlyRKBAq9wsmVvdydV2mdVDya/jFe0uQYO7vfoLsdBBP/+Ld1fwfkgVfHYC2kUqhCHVVfE0lw9/09x1HhoXQY/WPR0bcn+mGMUEEO6Feo0jpUcRSdckUFqieTjb5W9oZdNfCVgqorMggFLBDeS/GkL2J37lqAFJ8cNQsspM3EilsycLrJ0qg9aKmyfYxR9l74v//9T8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RDoN6W5GJTr/pplnS+tsiUeAoFOMvtnJCXxcFvp+dGs=;
- b=VoWOOJg+myhkSFEvZ3ZIgRyw8y/Nufw1fTj/Q5EMdRhfG03lThCEMktF3xglmVlcP0DgvgD0sJpyJQoZKdtKmhbAK1ewlfdPnrvYrT9VmCmnMMX0Kin3YHztQAy6X+IdOMR5LJtMW94J/v2afZCc8V7k0YqyaFtyPoxjOZ1D6IiAhxXg5lsvdAXor2NljESA9de7CSfHZbVOL1Rv8bdo/GiNAEs6ktQBxwjhVbY9Od4z4si/OZdGFavjCGomg+o4us6nTy8bseGjsVnC4w0BN6b30Dh8l8ERT25F1s2N/vaMso2EAu/w4gyDre17IgVBi2Vaz83KAaR1eNS2lffoDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RDoN6W5GJTr/pplnS+tsiUeAoFOMvtnJCXxcFvp+dGs=;
- b=GW/Or7tC8NVaWeP/o6RRBwtKz7fSDyj9VKLUogi4L+NQBYdKlMZmQZwet6wyQOkvYUcRoIhgZpq6o043XPuddJ0Wzmbkba5FXpSEczCQ2ARPxpuxvd+/GTF/ecGH69XGLWoQWBU4mA3+3TCZuvZ9inc/wDy3WtPlvG8qkhaitxA=
-Received: from BYAPR11MB3015.namprd11.prod.outlook.com (2603:10b6:a03:86::14)
- by BYAPR11MB3285.namprd11.prod.outlook.com (2603:10b6:a03:7b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
- 2020 13:26:56 +0000
-Received: from BYAPR11MB3015.namprd11.prod.outlook.com
- ([fe80::c409:25f2:a182:5105]) by BYAPR11MB3015.namprd11.prod.outlook.com
- ([fe80::c409:25f2:a182:5105%6]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
- 13:26:56 +0000
-From:   "Zulkifli, Muhammad Husaini" <muhammad.husaini.zulkifli@intel.com>
-To:     Michal Simek <michal.simek@xilinx.com>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-CC:     "Raja Subramanian, Lakshmi Bai" 
-        <lakshmi.bai.raja.subramanian@intel.com>,
-        "Wan Mohamad, Wan Ahmad Zainie" 
-        <wan.ahmad.zainie.wan.mohamad@intel.com>
-Subject: RE: [PATCH v1 1/1] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-Thread-Topic: [PATCH v1 1/1] mmc: sdhci-of-arasan: Enable UHS-1 support for
- Keem Bay SOC
-Thread-Index: AQHWimLCf5qN36I7DEm2Cbc0P5ffRKloHlGg
-Date:   Mon, 14 Sep 2020 13:26:56 +0000
-Message-ID: <BYAPR11MB3015FF6503F4FBB4A184FA57B8230@BYAPR11MB3015.namprd11.prod.outlook.com>
-References: <20200914051214.13918-1-muhammad.husaini.zulkifli@intel.com>
- <20200914051214.13918-2-muhammad.husaini.zulkifli@intel.com>
- <21d34b75-5947-e115-7c9a-6d068375bbdd@xilinx.com>
-In-Reply-To: <21d34b75-5947-e115-7c9a-6d068375bbdd@xilinx.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: xilinx.com; dkim=none (message not signed)
- header.d=none;xilinx.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [42.189.182.175]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1d6ba796-5df9-4133-5ebd-08d858b1da30
-x-ms-traffictypediagnostic: BYAPR11MB3285:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB328519008AC3C71BCC0DB0A4B8230@BYAPR11MB3285.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5JtbHfgDkOre/8EcSKibOPZQhehh1jVPgkpd7VkdXBr9vt3Ps21SX0Kb0oCfWjhB/hnVYOA5wIVNKbN4bQ8RlvjBg3bKMlXZ1Dkm86Re8KYg/PP1XNWEZfB2YKU3PBcWF7ibV20JnzK3cJIRn2ZhK8jRr5IRYBUUnygaPS4PArDuk61QsP1MAOSiqhVPyXalgJRA+XWNM9hXlA/7xF57kgaXQ6fP/skD5gZogU95rhZpWXbgDUI2qvxtydsaPDtSkeCz0QBPyFdBjcqcNEL5BRDP2DFejR1HQQzLj3xFXBQgsYT1BEI6o/F6ntKnjZ46C+B2vAHf9h/MjrynrUkhdQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3015.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(8936002)(52536014)(71200400001)(55016002)(76116006)(2906002)(110136005)(9686003)(33656002)(186003)(26005)(86362001)(478600001)(6506007)(83380400001)(53546011)(66476007)(4326008)(316002)(54906003)(7696005)(66446008)(64756008)(8676002)(107886003)(66556008)(66946007)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: FbojBKv6ytG3pRWmXRRd1e+cjBgxVIGgwPXLxsW5O0aIn/E92MOsFmoTd2qP4F6sTB2kAaNPiwNg1Mccz+aBvDP+anQbvI8hDU7OsWDjMJzCzs9XrjblofDOpYD0+6ixeeiKGaFx8j6vG4hwbMv7C61LTO/Nf2L0XGsEyQlUuHcJp86CgTPSs1BfHHpoi5ak0HUme5Pa+qQM7bTaEcLwgTheDc0M32L9+OJVUBCk9hCgPSUDr6AIN2fBJffcaK5auJifyR0+syH2vSrF0Rp0ccuRAVVrEYS90mPyjLFeUz3MMfdhRP5mJf3FCweq75hqM5HdUI7wBf5dY3puM+oUkmlaAVy5L/mwr0+VxJhBc2XtzZxbse5+5SJhBJWh+gDPky4sNNDTE4a9m5vhLI82E4GrKBSnmtqAaKZefK9kEufjExZfJJwZSdEirK6nE8DbrGHFG4qkU5YlUgjSXQ8v0Jrpp+TeTat11d2Z/ukUtuuYB9gV/f0bU7j0D6VFMzhcATnn6nLZOTonbt8Gf32Cue+K7EamCSZX3wQNXucPBjXK7hhnSdJ7BK6gd90nPI/vc12+FEJmmqbuiWfP64JThbE7YmSdh7x10o0lSLNAvoZBpZne0I8Lb/CIXuZk36LciHhcakOhD81AxnqlON/oWA==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726570AbgINNli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:41:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21290 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726560AbgINN2h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:28:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600090094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MiKix775mTYO5U26GuNI0OcN+XpFB53mHKQB9wZvP48=;
+        b=czwmDeNZ/efFVneuw1QslQRtqcNCjBii87cGkR0N6wlS18h52OpwBKbwUo184m/PwIp/Mg
+        9sbkDsk5Z1CrdeWGQM23Rf6ekXOj+x7HVeLehGmxqUgc9SNtrF7VhJz09DF6ibT4HjUeFk
+        fm5+8Z6uX1Gu15OivNzjF3clYgvhzG8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-v22qg495NkidZw7oXWOjLw-1; Mon, 14 Sep 2020 09:28:13 -0400
+X-MC-Unique: v22qg495NkidZw7oXWOjLw-1
+Received: by mail-ej1-f72.google.com with SMTP id i14so8079473ejc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:28:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MiKix775mTYO5U26GuNI0OcN+XpFB53mHKQB9wZvP48=;
+        b=uP3Z3JbjTXSGYbIjDexn3IOfzJNtwkR0L0YTy9n+GdhwEXzHzorbujgdxK0YbCGBm6
+         KxSbaS4XHcsh8K9vgNfkXU+qA7sVMoHfhgo6LmC6sXfKl0z6SsYyohSRlgDPT544uGSX
+         CkKN0TPfwu3eRoEmIUQ2ecRcG1l5Bp56K868bWcZt4oPy9mk6cDwcaDREU0WplTTWUrm
+         6JP/BLiWsk/eaDAebrLXwxgw9E3f3P6X1LA/9+fCWw0/zAp+z2zZuH+g13hSNYtFJnox
+         cEZN0zH1MpLQi2oBCKKNl6W03jdTXRrNiBPT/tkQgR9ITrIzabPpbF13ihmKPF4W1JSZ
+         xTjQ==
+X-Gm-Message-State: AOAM5339OqMVrgbT9gFVVxwEG864ykyOGCDcp/NGYgePQjbJS4ORNYjg
+        YLgoAWnG7yOc1mXO8q085+EYBFw1A2ZvbBtSQkQeSNs/KKfBiggGG/ngDMFSGYokFxb/fR6nEWA
+        EyBK/2mjiZ1U7Y32O9M3C9LUv
+X-Received: by 2002:a17:907:9ed:: with SMTP id ce13mr14201683ejc.180.1600090088488;
+        Mon, 14 Sep 2020 06:28:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzYJNpdxdP8WmjoDcexFhZ2V7t4N4VRMrDunHUZRPP+Ptv7uTu61EVa8CJ0101bmmqchaMxA==
+X-Received: by 2002:a17:907:9ed:: with SMTP id ce13mr14201656ejc.180.1600090088086;
+        Mon, 14 Sep 2020 06:28:08 -0700 (PDT)
+Received: from x1.localdomain ([78.108.130.193])
+        by smtp.gmail.com with ESMTPSA id z21sm7790860eja.72.2020.09.14.06.28.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 06:28:07 -0700 (PDT)
+Subject: Re: [PATCH 3/3] platform/x86: Intel PMT Crashlog capability driver
+To:     "David E. Box" <david.e.box@linux.intel.com>, lee.jones@linaro.org,
+        dvhart@infradead.org, andy@infradead.org,
+        alexander.h.duyck@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20200911194549.12780-1-david.e.box@linux.intel.com>
+ <20200911194549.12780-4-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <6e3738db-bfff-7fd2-65e6-bd0d126f9eaa@redhat.com>
+Date:   Mon, 14 Sep 2020 15:28:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3015.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d6ba796-5df9-4133-5ebd-08d858b1da30
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 13:26:56.4284
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fbAfXcUih1Zn2xCBHr/hAd3RON7moD6DduTI7c8Fu1KmBYzCn3ziTVY0avUz00+hOA/anByrM+L/pqKT2S66T77SaBZ7GoqlDJuPFvL8QKdGYRi+9liFOwyEYG61Jq98
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3285
-X-OriginatorOrg: intel.com
+In-Reply-To: <20200911194549.12780-4-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEkgTWljaGFsLA0KDQpUaGFua3MgZm9yIHRoZSBjb21tZW50cy4NCkkgcmVwbGllZCBpbmxpbmUN
-Cg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IE1pY2hhbCBTaW1layA8bWljaGFs
-LnNpbWVrQHhpbGlueC5jb20+IA0KU2VudDogTW9uZGF5LCBTZXB0ZW1iZXIgMTQsIDIwMjAgMjo0
-NiBQTQ0KVG86IFp1bGtpZmxpLCBNdWhhbW1hZCBIdXNhaW5pIDxtdWhhbW1hZC5odXNhaW5pLnp1
-bGtpZmxpQGludGVsLmNvbT47IEh1bnRlciwgQWRyaWFuIDxhZHJpYW4uaHVudGVyQGludGVsLmNv
-bT47IG1pY2hhbC5zaW1la0B4aWxpbnguY29tOyB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnOyBsaW51
-eC1tbWNAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5v
-cmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEFybmQgQmVyZ21hbm4gPGFybmRAYXJu
-ZGIuZGU+DQpDYzogUmFqYSBTdWJyYW1hbmlhbiwgTGFrc2htaSBCYWkgPGxha3NobWkuYmFpLnJh
-amEuc3VicmFtYW5pYW5AaW50ZWwuY29tPg0KU3ViamVjdDogUmU6IFtQQVRDSCB2MSAxLzFdIG1t
-Yzogc2RoY2ktb2YtYXJhc2FuOiBFbmFibGUgVUhTLTEgc3VwcG9ydCBmb3IgS2VlbSBCYXkgU09D
-DQoNCkhpLCArQXJuZCwNCg0KT24gMTQuIDA5LiAyMCA3OjEyLCBtdWhhbW1hZC5odXNhaW5pLnp1
-bGtpZmxpQGludGVsLmNvbSB3cm90ZToNCj4gRnJvbTogTXVoYW1tYWQgSHVzYWluaSBadWxraWZs
-aSA8bXVoYW1tYWQuaHVzYWluaS56dWxraWZsaUBpbnRlbC5jb20+DQo+IA0KPiBWb2x0YWdlIHN3
-aXRjaGluZyBzZXF1ZW5jZSBpcyBuZWVkZWQgdG8gc3VwcG9ydCBVSFMtMSBpbnRlcmZhY2UgYXMg
-DQo+IEtlZW0gQmF5IEVWTSBpcyB1c2luZyBleHRlcm5hbCB2b2x0YWdlIHJlZ3VsYXRvciB0byBz
-d2l0Y2ggYmV0d2VlbiANCj4gMS44ViBhbmQgMy4zVi4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE11
-aGFtbWFkIEh1c2FpbmkgWnVsa2lmbGkgDQo+IDxtdWhhbW1hZC5odXNhaW5pLnp1bGtpZmxpQGlu
-dGVsLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVu
-a29AaW50ZWwuY29tPg0KPiBSZXZpZXdlZC1ieTogQWRyaWFuIEh1bnRlciA8YWRyaWFuLmh1bnRl
-ckBpbnRlbC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9tbWMvaG9zdC9zZGhjaS1vZi1hcmFzYW4u
-YyB8IDE0MCANCj4gKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAxNDAgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbW1jL2hv
-c3Qvc2RoY2ktb2YtYXJhc2FuLmMgDQo+IGIvZHJpdmVycy9tbWMvaG9zdC9zZGhjaS1vZi1hcmFz
-YW4uYw0KPiBpbmRleCBmMTg2ZmJkMDE2YjEuLmMxMzM0MDhkMGM3NCAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9tbWMvaG9zdC9zZGhjaS1vZi1hcmFzYW4uYw0KPiArKysgYi9kcml2ZXJzL21tYy9o
-b3N0L3NkaGNpLW9mLWFyYXNhbi5jDQo+IEBAIC0xNiw3ICsxNiw5IEBADQo+ICAgKi8NCj4gIA0K
-PiAgI2luY2x1ZGUgPGxpbnV4L2Nsay1wcm92aWRlci5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2dw
-aW8vY29uc3VtZXIuaD4NCj4gICNpbmNsdWRlIDxsaW51eC9tZmQvc3lzY29uLmg+DQo+ICsjaW5j
-bHVkZSA8bGludXgvYXJtLXNtY2NjLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+
-ICAjaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+ICAjaW5jbHVkZSA8bGludXgvcGh5L3Bo
-eS5oPg0KPiBAQCAtNDEsNiArNDMsMTEgQEANCj4gICNkZWZpbmUgU0RIQ0lfSVRBUERMWV9FTkFC
-TEUJCTB4MTAwDQo+ICAjZGVmaW5lIFNESENJX09UQVBETFlfRU5BQkxFCQkweDQwDQo+ICANCj4g
-Ky8qIFNldHRpbmcgZm9yIEtlZW0gQmF5IElPIFBhZCAxLjggVm9sdGFnZSBTZWxlY3Rpb24gKi8N
-Cj4gKyNkZWZpbmUgS0VFTUJBWV9BT05fU0lQX0ZVTkNfSUQJCTB4ODIwMGZmMjYNCj4gKyNkZWZp
-bmUgS0VFTUJBWV9BT05fU0VUXzFWOF9WT0xUCTB4MDENCj4gKyNkZWZpbmUgS0VFTUJBWV9BT05f
-U0VUXzNWM19WT0xUCTB4MDANCj4gKw0KPiAgLyogRGVmYXVsdCBzZXR0aW5ncyBmb3IgWnlucU1Q
-IENsb2NrIFBoYXNlcyAqLw0KPiAgI2RlZmluZSBaWU5RTVBfSUNMS19QSEFTRSB7MCwgNjMsIDYz
-LCAwLCA2MywgIDAsICAgMCwgMTgzLCA1NCwgIDAsIDB9DQo+ICAjZGVmaW5lIFpZTlFNUF9PQ0xL
-X1BIQVNFIHswLCA3MiwgNjAsIDAsIDYwLCA3MiwgMTM1LCA0OCwgNzIsIDEzNSwgMH0gDQo+IEBA
-IC0xNTAsNiArMTU3LDcgQEAgc3RydWN0IHNkaGNpX2FyYXNhbl9kYXRhIHsNCj4gIAlzdHJ1Y3Qg
-cmVnbWFwCSpzb2NfY3RsX2Jhc2U7DQo+ICAJY29uc3Qgc3RydWN0IHNkaGNpX2FyYXNhbl9zb2Nf
-Y3RsX21hcCAqc29jX2N0bF9tYXA7DQo+ICAJdW5zaWduZWQgaW50CXF1aXJrczsNCj4gKwlzdHJ1
-Y3QgZ3Bpb19kZXNjICp1aHNfZ3BpbzsNCj4gIA0KPiAgLyogQ29udHJvbGxlciBkb2VzIG5vdCBo
-YXZlIENEIHdpcmVkIGFuZCB3aWxsIG5vdCBmdW5jdGlvbiBub3JtYWxseSB3aXRob3V0ICovDQo+
-ICAjZGVmaW5lIFNESENJX0FSQVNBTl9RVUlSS19GT1JDRV9DRFRFU1QJQklUKDApDQo+IEBAIC0z
-NjEsNiArMzY5LDEyMSBAQCBzdGF0aWMgaW50IHNkaGNpX2FyYXNhbl92b2x0YWdlX3N3aXRjaChz
-dHJ1Y3QgbW1jX2hvc3QgKm1tYywNCj4gIAlyZXR1cm4gLUVJTlZBTDsNCj4gIH0NCj4gIA0KPiAr
-c3RhdGljIGludCBzZGhjaV9hcmFzYW5fa2VlbWJheV9zZXRfdm9sdGFnZShpbnQgdm9sdCkgeyAj
-aWYgDQo+ICtJU19FTkFCTEVEKENPTkZJR19IQVZFX0FSTV9TTUNDQykNCj4gKwlzdHJ1Y3QgYXJt
-X3NtY2NjX3JlcyByZXM7DQo+ICsNCj4gKwlhcm1fc21jY2Nfc21jKEtFRU1CQVlfQU9OX1NJUF9G
-VU5DX0lELCB2b2x0LCAwLCAwLCAwLCAwLCAwLCAwLCAmcmVzKTsNCj4gKwlpZiAocmVzLmEwKQ0K
-PiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwlyZXR1cm4gMDsNCg0KSSBhbSBqdXN0IGN1cmlvdXMg
-YWJvdXQgY2FsbGluZyB0aGlzIHNtYyBkaXJlY3RseSBmcm9tIGRldmljZSBkcml2ZXIuIEkgc2Vl
-IHRoYXQgc2V2ZXJhbCBkcml2ZXJzIGFyZSBkb2luZyB0aGlzIGJ1dCBpc24ndCBpdCBiZXR0ZXIg
-dG8gaGlkZSB0aGVzZSBpbiBmaXJtd2FyZSBkcml2ZXI/DQpbSHVzYWluaV0gSW4gb3JkZXIgdG8g
-Y2hhbmdlIHRoZSB2b2x0YWdlIHNlbGVjdGlvbiBmb3IgSU8gUGFkcyB2b2x0YWdlIHN3aXRjaGlu
-ZyBsZXZlbCBjb250cm9sLCBJIG5lZWQgdG8gYWNjZXNzL3dyaXRlIHRvIEFPTiByZWdpc3Rlci4g
-DQpEdWUgdG8gc2VjdXJpdHkgY29uY2VybiwgVS1Cb290IFRlYW0gcHJvdmlkZWQgYW4gaW50ZXJm
-YWNlIHVzaW5nIHRoaXMgU0lQIFNlcnZpY2UgZm9yIG1lIHRvIGNhbGwgZHVyaW5nIGtlcm5lbCBk
-cml2ZXIgdm9sdGFnZSBzd2l0Y2hpbmcgb3BlcmF0aW9uLiANCg0KQWxzbyB0aGUgcGFydCBvZiBG
-VU5DX0lEIGlzIHNtYzMyLCBzaXAgc2VydmljZSBjYWxsICgweDgyMDAwMDAwKSBmdW5jdGlvbiBp
-ZGVudGlmaWVyIHdoaWNoIGlzIGxpa2VseSBzb21ldGhpbmcgd2hhdCBzaG91bGQgYmUgdXNlZCBh
-cyBtYWNybyBpbiBzaGFyZWQgbG9jYXRpb24gdGhhdCBvdGhlcnMgY2FuIHVzZSBpdCB0b28uDQpb
-SHVzYWluaV0gVGhlIG9ubHkgdGhpbmcgcHJvdmlkZWQgd2FzIHRoZSBGVU5DX0lEIHZhbHVlIGFu
-ZCBhcmd1bWVudC4NCg0KQW5vdGhlciBwYXJ0IGlzIHRoYXQgYmFzZWQgb24gZGVzY3JpcHRpb24g
-eW91IGFyZSB0YWxraW5nIHRvIGV4dGVybmFsIHZvbHRhZ2UgcmVndWxhdG9yIHdpdGhvdXQgdXNp
-bmcgcmVndWxhdG9yIGZyYW1ld29yayBhdCBhbGwuIElzbid0IGl0IGJldHRlciBqdXN0IHRvIGNy
-ZWF0ZSBmaXJtd2FyZSBiYXNlZCByZWd1bGF0b3IgZm9yIHRoaXMgcHVycG9zZT8NCltIdXNhaW5p
-XSBUaGlzIGlzIGZvciBLZWVtYmF5IHNwZWNpZmljIGFuZCB3ZSBkaWQgbm90IHVzZSByZWd1bGF0
-b3IgZnJhbWV3b3JrLiANCkR1cmluZyB0aGUgdm9sdGFnZSBzd2l0Y2hpbmcsIHRoaXMgU0lQIGZ1
-bmN0aW9uIG5lZWQgdG8gYmUgZXhlY3V0ZWQgdG8gY2hhbmdlIHRoZSBLZWVtIEJheSBJTyBQYWQg
-U3dpdGNoaW5nIExldmVsIENvbnRyb2wgdG8gMS44ViBmb3IgVUhTIG9yIDMuM3YgZm9yIGRlZmF1
-bHQgbW9kZS4NClRvIGJlIHNwZWNpZmljLCBiZWxvdyBsaW5lIG9mIGNvZGUgbXVzdCBjb21lIHRv
-Z2V0aGVyIGR1cmluZyB0aGUgdm9sdGFnZSBzd2l0Y2hpbmcgb3BlcmF0aW9uLg0KDQpGb3IgMS44
-Vg0KKwkJLyogU2V0IFZERElPX0Igdm9sdGFnZSB0byBMb3cgZm9yIDEuOFYgKi8NCisJCWdwaW9k
-X3NldF92YWx1ZV9jYW5zbGVlcChzZGhjaV9hcmFzYW4tPnVoc19ncGlvLCAwKTsNCisNCisJCXJl
-dCA9IHNkaGNpX2FyYXNhbl9rZWVtYmF5X3NldF92b2x0YWdlKEtFRU1CQVlfQU9OX1NFVF8xVjhf
-Vk9MVCk7DQorCQlpZiAocmV0KQ0KKwkJCXJldHVybiByZXQ7DQoNCkZvciAzLjNWDQoJCS8qIFNl
-dCBWRERJT19CIHZvbHRhZ2UgdG8gSGlnaCBmb3IgMy4zViAqLw0KKwkJZ3Bpb2Rfc2V0X3ZhbHVl
-X2NhbnNsZWVwKHNkaGNpX2FyYXNhbi0+dWhzX2dwaW8sIDEpOw0KKw0KKwkJcmV0ID0gc2RoY2lf
-YXJhc2FuX2tlZW1iYXlfc2V0X3ZvbHRhZ2UoS0VFTUJBWV9BT05fU0VUXzNWM19WT0xUKTsNCisJ
-CWlmIChyZXQpDQorCQkJcmV0dXJuIHJldDsNCg0KT3Igd2FzIHRoZXJlIGFueSBhZ3JlZW1lbnQg
-dG8gcHV0IHRoZXNlIHN0dWZmIGRpcmVjdGx5IHRvIHRoZSBkcml2ZXI/DQpbSHVzYWluaV0gVGhl
-cmUgaXMgYW4gYWdyZWVtZW50IGJldHdlZW4gSU8gVGVhbSBhbmQgVS1ib290IHRlYW0gdG8gdXNl
-IHRoaXMga2luZCBvZiBpbXBsZW1lbnRhdGlvbiB0byBzdXBwb3J0IHRoaXMgVUhTLTEgTW9kZSBm
-ZWF0dXJlcyBmb3Iga2VlbSBiYXkgDQpmb3Igdm9sdGFnZSBzd2l0Y2hpbmcgc2VxdWVuY2UuDQoN
-ClRoYW5rcywNCk1pY2hhbA0KDQo=
+Hi,
+
+On 9/11/20 9:45 PM, David E. Box wrote:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> 
+> Add support for the Intel Platform Monitoring Technology crashlog
+> interface.  This interface provides a few sysfs values to allow for
+> controlling the crashlog telemetry interface as well as a character driver
+> to allow for mapping the crashlog memory region so that it can be accessed
+> after a crashlog has been recorded.
+> 
+> This driver is meant to only support the server version of the crashlog
+> which is identified as crash_type 1 with a version of zero. Currently no
+> other types are supported.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>   .../ABI/testing/sysfs-class-pmt_crashlog      |  66 ++
+>   drivers/platform/x86/Kconfig                  |  10 +
+>   drivers/platform/x86/Makefile                 |   1 +
+>   drivers/platform/x86/intel_pmt_crashlog.c     | 588 ++++++++++++++++++
+>   4 files changed, 665 insertions(+)
+>   create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_crashlog
+>   create mode 100644 drivers/platform/x86/intel_pmt_crashlog.c
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-pmt_crashlog b/Documentation/ABI/testing/sysfs-class-pmt_crashlog
+> new file mode 100644
+> index 000000000000..40fb4ff437a6
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-pmt_crashlog
+> @@ -0,0 +1,66 @@
+> +What:		/sys/class/pmt_crashlog/
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		The pmt_crashlog/ class directory contains information
+> +		for devices that expose crashlog capabilities using the Intel
+> +		Platform Monitoring Technology (PTM).
+> +
+> +What:		/sys/class/pmt_crashlog/crashlogX
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		The crashlogX directory contains files for configuring an
+> +		instance of a PMT crashlog device that can perform crash data
+> +		recoring. Each crashlogX device has an associated
+> +		/dev/crashlogX device node. This node can be opened and mapped
+> +		to access the resulting crashlog data. The register layout for
+> +		the log can be determined from an XML file of specified guid
+> +		for the parent device.
+> +
+> +What:		/sys/class/pmt_crashlog/crashlogX/guid
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		(RO) The guid for this crashlog device. The guid identifies the
+> +		version of the XML file for the parent device that should be
+> +		used to determine the register layout.
+> +
+> +What:		/sys/class/pmt_crashlog/crashlogX/size
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		(RO) The length of the result buffer in bytes that corresponds
+> +		to the mapping size for the /dev/crashlogX device node.
+> +
+> +What:		/sys/class/pmt_crashlog/crashlogX/offset
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		(RO) The offset of the buffer in bytes that corresponds
+> +		to the mapping for the /dev/crashlogX device node.
+> +
+> +What:		/sys/class/pmt_crashlog/crashlogX/enable
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		(RW) Boolean value controlling if the crashlog functionality
+> +		is enabled for the /dev/crashlogX device node.
+> +
+> +What:		/sys/class/pmt_crashlog/crashlogX/trigger
+> +Date:		September 2020
+> +KernelVersion:	5.10
+> +Contact:	Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> +Description:
+> +		(RW) Boolean value controlling  the triggering of the
+> +		/dev/crashlogX device node. When read it provides data on if
+> +		the crashlog has been triggered. When written to it can be
+> +		used to either clear the current trigger by writing false, or
+> +		to trigger a new event if the trigger is not currently set.
+> +
+
+Both the pmt_crashlog and the attributes suggest that this is highly
+Intel PMT specific. /sys/class/foo interfaces are generally speaking
+meant to be generic interfaces.
+
+If this was defining a generic, vendor and implementation agnostic interface for
+configuring / accessing crashlogs, then using a class would be fine, but that
+is not the case, so I believe that this should not implement / register a class.
+
+Since the devices are instantiated through MFD there already is a
+static sysfs-path which can be used to find the device in sysfs:
+/sys/bus/platform/device/pmt_crashlog
+
+So you can register the sysfs attributes directly under the platform_device
+and then userspace can easily find them, so there really is no need to
+use a class here.
+
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 48335b02014f..50c3234e4f72 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1360,6 +1360,16 @@ config INTEL_PMC_CORE
+>   		- LTR Ignore
+>   		- MPHY/PLL gating status (Sunrisepoint PCH only)
+>   
+> +config INTEL_PMT_CRASHLOG
+> +	tristate "Intel Platform Monitoring Technology (PMT) Crashlog driver"
+> +	help
+> +	 The Intel Platform Monitoring Technology (PMT) crashlog driver provides
+> +	 access to hardware crashlog capabilities on devices that support the
+> +	 feature.
+> +
+> +	 For more information, see
+> +	 <file:Documentation/ABI/testing/sysfs-class-intel_pmt_crashlog>
+> +
+>   config INTEL_PMT_TELEMETRY
+>   	tristate "Intel Platform Monitoring Technology (PMT) Telemetry driver"
+>   	help
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index ca942e70de8d..1b8b2502d460 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -140,6 +140,7 @@ obj-$(CONFIG_INTEL_MFLD_THERMAL)	+= intel_mid_thermal.o
+>   obj-$(CONFIG_INTEL_MID_POWER_BUTTON)	+= intel_mid_powerbtn.o
+>   obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
+>   obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
+> +obj-$(CONFIG_INTEL_PMT_CRASHLOG)	+= intel_pmt_crashlog.o
+>   obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
+>   obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
+>   obj-$(CONFIG_INTEL_SCU_IPC)		+= intel_scu_ipc.o
+> diff --git a/drivers/platform/x86/intel_pmt_crashlog.c b/drivers/platform/x86/intel_pmt_crashlog.c
+> new file mode 100644
+> index 000000000000..31d43708055c
+> --- /dev/null
+> +++ b/drivers/platform/x86/intel_pmt_crashlog.c
+> @@ -0,0 +1,588 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Intel Platform Monitoring Technology Crashlog driver
+> + *
+> + * Copyright (c) 2020, Intel Corporation.
+> + * All Rights Reserved.
+> + *
+> + * Authors: "Alexander Duyck" <alexander.h.duyck@linux.intel.com>
+> + */
+> +
+> +#include <linux/cdev.h>
+> +#include <linux/idr.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/uaccess.h>
+> +
+> +#define DRV_NAME		"pmt_crashlog"
+> +
+> +/* Crashlog access types */
+> +#define ACCESS_FUTURE		1
+> +#define ACCESS_BARID		2
+> +#define ACCESS_LOCAL		3
+> +
+> +/* Crashlog discovery header types */
+> +#define CRASH_TYPE_OOBMSM	1
+> +
+> +/* Control Flags */
+> +#define CRASHLOG_FLAG_DISABLE	BIT(27)
+> +#define CRASHLOG_FLAG_CLEAR	BIT(28)
+> +#define CRASHLOG_FLAG_EXECUTE	BIT(29)
+> +#define CRASHLOG_FLAG_COMPLETE	BIT(31)
+> +#define CRASHLOG_FLAG_MASK	GENMASK(31, 28)
+> +
+> +/* Common Header */
+> +#define CONTROL_OFFSET		0x0
+> +#define GUID_OFFSET		0x4
+> +#define BASE_OFFSET		0x8
+> +#define SIZE_OFFSET		0xC
+> +#define GET_ACCESS(v)		((v) & GENMASK(3, 0))
+> +#define GET_TYPE(v)		(((v) & GENMASK(7, 4)) >> 4)
+> +#define GET_VERSION(v)		(((v) & GENMASK(19, 16)) >> 16)
+> +
+> +#define GET_ADDRESS(v)		((v) & GENMASK(31, 3))
+> +#define GET_BIR(v)		((v) & GENMASK(2, 0))
+> +
+> +static DEFINE_IDA(crashlog_devid_ida);
+> +
+> +struct crashlog_header {
+> +	u32	base_offset;
+> +	u32	size;
+> +	u32	guid;
+> +	u8	bir;
+> +	u8	access_type;
+> +	u8	crash_type;
+> +	u8	version;
+> +};
+> +
+> +struct pmt_crashlog_priv;
+> +
+> +struct crashlog_entry {
+> +	struct pmt_crashlog_priv	*priv;
+> +	struct crashlog_header		header;
+> +	struct resource			*header_res;
+> +	void __iomem			*disc_table;
+> +	unsigned long			crashlog_data;
+> +	size_t				crashlog_data_size;
+> +	struct cdev			cdev;
+> +	dev_t				devt;
+> +	int				devid;
+> +	struct ida			*ida;
+> +};
+> +
+> +struct pmt_crashlog_priv {
+> +	struct device		*dev;
+> +	struct pci_dev		*parent;
+> +	struct crashlog_entry	*entry;
+> +	int			num_entries;
+> +};
+> +
+> +/*
+> + * I/O
+> + */
+> +static bool pmt_crashlog_complete(struct crashlog_entry *entry)
+> +{
+> +	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
+> +
+> +	/* return current value of the crashlog complete flag */
+> +	return !!(control & CRASHLOG_FLAG_COMPLETE);
+> +}
+> +
+> +static bool pmt_crashlog_disabled(struct crashlog_entry *entry)
+> +{
+> +	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
+> +
+> +	/* return current value of the crashlog disabled flag */
+> +	return !!(control & CRASHLOG_FLAG_DISABLE);
+> +}
+> +
+> +static void pmt_crashlog_set_disable(struct crashlog_entry *entry, bool disable)
+> +{
+> +	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
+> +
+> +	/* clear control bits */
+> +	control &= ~(CRASHLOG_FLAG_MASK | CRASHLOG_FLAG_DISABLE);
+> +	if (disable)
+> +		control |= CRASHLOG_FLAG_DISABLE;
+> +
+> +	writel(control, entry->disc_table + CONTROL_OFFSET);
+> +}
+> +
+> +static void pmt_crashlog_set_clear(struct crashlog_entry *entry)
+> +{
+> +	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
+> +
+> +	/* clear control bits */
+> +	control &= ~CRASHLOG_FLAG_MASK;
+> +	control |= CRASHLOG_FLAG_CLEAR;
+> +
+> +	writel(control, entry->disc_table + CONTROL_OFFSET);
+> +}
+> +
+> +static void pmt_crashlog_set_execute(struct crashlog_entry *entry)
+> +{
+> +	u32 control = readl(entry->disc_table + CONTROL_OFFSET);
+> +
+> +	/* clear control bits */
+> +	control &= ~CRASHLOG_FLAG_MASK;
+> +	control |= CRASHLOG_FLAG_EXECUTE;
+> +
+> +	writel(control, entry->disc_table + CONTROL_OFFSET);
+> +}
+
+These 3 pmt_crashlog_set_* functions are all triggered through
+sysfs writes and they all do read-modify-write of the control-register,
+so this is racy. You need to add a mutex to protect the r-m-w sequences.
+
+
+> +
+> +/*
+> + * devfs
+> + */
+> +static int pmt_crashlog_open(struct inode *inode, struct file *filp)
+> +{
+> +	struct crashlog_entry *entry;
+> +	struct pci_driver *pci_drv;
+> +	struct pmt_crashlog_priv *priv;
+> +
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+> +
+> +	entry = container_of(inode->i_cdev, struct crashlog_entry, cdev);
+> +	priv = entry->priv;
+> +	pci_drv = pci_dev_driver(priv->parent);
+> +
+> +	if (!pci_drv)
+> +		return -ENODEV;
+> +
+> +	filp->private_data = entry;
+> +	get_device(&priv->parent->dev);
+> +
+> +	if (!try_module_get(pci_drv->driver.owner)) {
+> +		put_device(&priv->parent->dev);
+> +		return -ENODEV;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int pmt_crashlog_release(struct inode *inode, struct file *filp)
+> +{
+> +	struct crashlog_entry *entry = filp->private_data;
+> +	struct pmt_crashlog_priv *priv;
+> +	struct pci_driver *pci_drv;
+> +
+> +	priv = entry->priv;
+> +	pci_drv = pci_dev_driver(priv->parent);
+> +
+> +	put_device(&priv->parent->dev);
+> +	module_put(pci_drv->driver.owner);
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +pmt_crashlog_mmap(struct file *filp, struct vm_area_struct *vma)
+> +{
+> +	struct crashlog_entry *entry = filp->private_data;
+> +	struct pmt_crashlog_priv *priv;
+> +	unsigned long phys = entry->crashlog_data;
+> +	unsigned long pfn = PFN_DOWN(phys);
+> +	unsigned long vsize = vma->vm_end - vma->vm_start;
+> +	unsigned long psize;
+> +
+> +	if ((vma->vm_flags & VM_WRITE) ||
+> +	    (vma->vm_flags & VM_MAYWRITE))
+> +		return -EPERM;
+> +
+> +	priv = entry->priv;
+> +
+> +	if (!entry->crashlog_data_size) {
+> +		dev_err(priv->dev, "Crashlog data not accessible\n");
+> +		return -EAGAIN;
+> +	}
+> +
+> +	psize = (PFN_UP(entry->crashlog_data + entry->crashlog_data_size) - pfn) *
+> +		PAGE_SIZE;
+> +	if (vsize > psize) {
+> +		dev_err(priv->dev, "Requested mmap size is too large\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+> +	if (io_remap_pfn_range(vma, vma->vm_start, pfn,
+> +		vsize, vma->vm_page_prot))
+> +		return -EAGAIN;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct file_operations pmt_crashlog_fops = {
+> +	.owner =	THIS_MODULE,
+> +	.open =		pmt_crashlog_open,
+> +	.mmap =		pmt_crashlog_mmap,
+
+mmap but no read, I guess read may be emulated through mmap,
+is that the case ?
+
+I can see sysadmins wanting to be able to do a simple cat
+on this file to get the logs (including headers), so if
+the kernel-core does not emulate read in this case, you
+should really add read support I guess.
+
+Also how big are these files ?  sysfs also supports binary
+files, so unless these files are huge / this is really
+performance critical it may make more sense to just add
+a binary sysfs attr for this and get rid of the whole chardev
+all together.
+
+
+> +	.release =	pmt_crashlog_release,
+> +};
+> +
+> +/*
+> + * sysfs
+> + */
+> +static ssize_t
+> +guid_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct crashlog_entry *entry;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +
+> +	return sprintf(buf, "0x%x\n", entry->header.guid);
+> +}
+> +static DEVICE_ATTR_RO(guid);
+> +
+> +static ssize_t size_show(struct device *dev, struct device_attribute *attr,
+> +			 char *buf)
+> +{
+> +	struct crashlog_entry *entry;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +
+> +	return sprintf(buf, "%lu\n", entry->crashlog_data_size);
+> +}
+> +static DEVICE_ATTR_RO(size);
+> +
+> +static ssize_t
+> +offset_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct crashlog_entry *entry;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +
+> +	return sprintf(buf, "%lu\n", offset_in_page(entry->crashlog_data));
+> +}
+> +static DEVICE_ATTR_RO(offset);
+> +
+> +static ssize_t
+> +enable_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct crashlog_entry *entry;
+> +	int enabled;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +	enabled = !pmt_crashlog_disabled(entry);
+> +
+> +	return sprintf(buf, "%d\n", enabled);
+> +}
+> +
+> +static ssize_t
+> +enable_store(struct device *dev, struct device_attribute *attr,
+> +	    const char *buf, size_t count)
+> +{
+> +	struct crashlog_entry *entry;
+> +	bool enabled;
+> +	int result;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +
+> +	result = kstrtobool(buf, &enabled);
+> +	if (result)
+> +		return result;
+> +
+> +	pmt_crashlog_set_disable(entry, !enabled);
+> +
+> +	return strnlen(buf, count);
+> +}
+> +static DEVICE_ATTR_RW(enable);
+> +
+> +static ssize_t
+> +trigger_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct crashlog_entry *entry;
+> +	int trigger;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +	trigger = pmt_crashlog_complete(entry);
+> +
+> +	return sprintf(buf, "%d\n", trigger);
+> +}
+> +
+> +static ssize_t
+> +trigger_store(struct device *dev, struct device_attribute *attr,
+> +	    const char *buf, size_t count)
+> +{
+> +	struct crashlog_entry *entry;
+> +	bool trigger;
+> +	int result;
+> +
+> +	entry = dev_get_drvdata(dev);
+> +
+> +	result = kstrtobool(buf, &trigger);
+> +	if (result)
+> +		return result;
+> +
+> +	if (trigger) {
+> +		/* we cannot trigger a new crash if one is still pending */
+> +		if (pmt_crashlog_complete(entry))
+> +			return -EEXIST;
+> +
+> +		/* if device is currently disabled, return busy */
+> +		if (pmt_crashlog_disabled(entry))
+> +			return -EBUSY;
+> +
+> +		pmt_crashlog_set_execute(entry);
+> +	} else {
+> +		pmt_crashlog_set_clear(entry);
+> +	}
+> +
+> +	return strnlen(buf, count);
+> +}
+> +static DEVICE_ATTR_RW(trigger);
+> +
+> +static struct attribute *pmt_crashlog_attrs[] = {
+> +	&dev_attr_guid.attr,
+> +	&dev_attr_size.attr,
+> +	&dev_attr_offset.attr,
+> +	&dev_attr_enable.attr,
+> +	&dev_attr_trigger.attr,
+> +	NULL
+> +};
+> +ATTRIBUTE_GROUPS(pmt_crashlog);
+> +
+> +static struct class pmt_crashlog_class = {
+> +	.name = "pmt_crashlog",
+> +	.owner = THIS_MODULE,
+> +	.dev_groups = pmt_crashlog_groups,
+> +};
+> +
+> +/*
+> + * initialization
+> + */
+> +static int pmt_crashlog_make_dev(struct pmt_crashlog_priv *priv,
+> +				 struct crashlog_entry *entry)
+> +{
+> +	struct device *dev;
+> +	int ret;
+> +
+> +	ret = alloc_chrdev_region(&entry->devt, 0, 1, DRV_NAME);
+> +	if (ret < 0) {
+> +		dev_err(priv->dev, "alloc_chrdev_region err: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* Create a character device for Samplers */
+> +	cdev_init(&entry->cdev, &pmt_crashlog_fops);
+> +
+> +	ret = cdev_add(&entry->cdev, entry->devt, 1);
+> +	if (ret) {
+> +		dev_err(priv->dev, "Could not add char dev\n");
+> +		return ret;
+> +	}
+> +
+> +	dev = device_create(&pmt_crashlog_class, &priv->parent->dev, entry->devt,
+> +			    entry, "%s%d", "crashlog", entry->devid);
+> +
+> +	if (IS_ERR(dev)) {
+> +		dev_err(priv->dev, "Could not create device node\n");
+> +		cdev_del(&entry->cdev);
+> +	}
+> +
+> +	return PTR_ERR_OR_ZERO(dev);
+> +}
+> +
+> +static void
+> +pmt_crashlog_populate_header(void __iomem *disc_offset,
+> +			     struct crashlog_header *header)
+> +{
+> +	u32 discovery_header = readl(disc_offset);
+> +
+> +	header->access_type = GET_ACCESS(discovery_header);
+> +	header->crash_type = GET_TYPE(discovery_header);
+> +	header->version = GET_VERSION(discovery_header);
+> +	header->guid = readl(disc_offset + GUID_OFFSET);
+> +	header->base_offset = readl(disc_offset + BASE_OFFSET);
+> +
+> +	/*
+> +	 * For non-local access types the lower 3 bits of base offset
+> +	 * contains the index of the base address register where the
+> +	 * crashlogetry can be found.
+> +	 */
+> +	header->bir = GET_BIR(header->base_offset);
+> +	header->base_offset ^= header->bir;
+> +
+> +	/* Size is measured in DWORDs */
+> +	header->size = readl(disc_offset + SIZE_OFFSET);
+> +}
+> +
+> +static int pmt_crashlog_add_entry(struct pmt_crashlog_priv *priv,
+> +				  struct crashlog_entry *entry)
+> +{
+> +	struct resource *res = entry->header_res;
+> +	int ret;
+> +
+> +	pmt_crashlog_populate_header(entry->disc_table, &entry->header);
+> +
+> +	/* Local access and BARID only for now */
+> +	switch (entry->header.access_type) {
+> +	case ACCESS_LOCAL:
+> +		dev_info(priv->dev, "access_type: LOCAL\n");
+> +		if (entry->header.bir) {
+> +			dev_err(priv->dev,
+> +				"Unsupported BAR index %d for access type %d\n",
+> +				entry->header.bir, entry->header.access_type);
+> +			return -EINVAL;
+> +		}
+> +
+> +		entry->crashlog_data = res->start + resource_size(res) +
+> +				       entry->header.base_offset;
+> +		break;
+> +
+> +	case ACCESS_BARID:
+> +		dev_info(priv->dev, "access_type: BARID\n");
+> +		entry->crashlog_data =
+> +			priv->parent->resource[entry->header.bir].start +
+> +			entry->header.base_offset;
+> +		break;
+> +
+> +	default:
+> +		dev_err(priv->dev, "Unsupported access type %d\n",
+> +			entry->header.access_type);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_info(priv->dev, "crashlod_data address: 0x%lx\n", entry->crashlog_data);
+> +
+> +	entry->crashlog_data_size = entry->header.size * 4;
+> +
+> +	if (entry->header.crash_type != CRASH_TYPE_OOBMSM) {
+> +		dev_err(priv->dev, "Unsupported crashlog header type %d\n",
+> +			entry->header.crash_type);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (entry->header.version != 0) {
+> +		dev_err(priv->dev, "Unsupported version value %d\n",
+> +			entry->header.version);
+> +		return -EINVAL;
+> +	}
+> +
+> +	entry->ida = &crashlog_devid_ida;
+> +
+> +	entry->devid = ida_simple_get(entry->ida, 0, 0, GFP_KERNEL);
+> +	if (entry->devid < 0)
+> +		return entry->devid;
+> +
+> +	ret = pmt_crashlog_make_dev(priv, entry);
+> +	if (ret) {
+> +		ida_simple_remove(entry->ida, entry->devid);
+> +		return ret;
+> +	}
+
+Hmm wait, you are making one chardev per log entry ? Then just using
+binary sysfs attributes seems to make even more sense to me.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static void pmt_crashlog_remove_entries(struct pmt_crashlog_priv *priv)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < priv->num_entries; i++) {
+> +		device_destroy(&pmt_crashlog_class, priv->entry[i].devt);
+> +		cdev_del(&priv->entry[i].cdev);
+> +
+> +		unregister_chrdev_region(priv->entry[i].devt, 1);
+> +		ida_simple_remove(priv->entry[i].ida, priv->entry[i].devid);
+> +	}
+> +}
+> +static int pmt_crashlog_probe(struct platform_device *pdev)
+> +{
+> +	struct pmt_crashlog_priv *priv;
+> +	struct crashlog_entry *entry;
+> +	int i;
+> +
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, priv);
+> +	priv->dev = &pdev->dev;
+> +	priv->parent  = to_pci_dev(priv->dev->parent);
+> +
+> +	priv->entry = devm_kcalloc(&pdev->dev, pdev->num_resources,
+> +				   sizeof(*(priv->entry)), GFP_KERNEL);
+> +
+> +	for (i = 0, entry = priv->entry; i < pdev->num_resources;
+> +	     i++, entry++) {
+> +		int ret;
+> +
+> +		entry->header_res = platform_get_resource(pdev, IORESOURCE_MEM,
+> +							  i);
+> +		if (!entry->header_res) {
+> +			pmt_crashlog_remove_entries(priv);
+> +			return -ENODEV;
+> +		}
+> +
+> +		dev_info(&pdev->dev, "%d res start: 0x%llx, end 0x%llx\n", i,
+> +			 entry->header_res->start, entry->header_res->end);
+> +
+> +		entry->disc_table = devm_platform_ioremap_resource(pdev, i);
+> +		if (IS_ERR(entry->disc_table)) {
+> +			pmt_crashlog_remove_entries(priv);
+> +			return PTR_ERR(entry->disc_table);
+> +		}
+> +
+> +		ret = pmt_crashlog_add_entry(priv, entry);
+> +		if (ret) {
+> +			pmt_crashlog_remove_entries(priv);
+> +			return ret;
+> +		}
+> +
+> +		entry->priv = priv;
+> +		priv->num_entries++;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int pmt_crashlog_remove(struct platform_device *pdev)
+> +{
+> +	struct pmt_crashlog_priv *priv;
+> +
+> +	priv = (struct pmt_crashlog_priv *)platform_get_drvdata(pdev);
+> +
+> +	pmt_crashlog_remove_entries(priv);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver pmt_crashlog_driver = {
+> +	.driver = {
+> +		.name   = DRV_NAME,
+> +	},
+> +	.probe  = pmt_crashlog_probe,
+> +	.remove = pmt_crashlog_remove,
+> +};
+> +
+> +static int __init pmt_crashlog_init(void)
+> +{
+> +	int ret = class_register(&pmt_crashlog_class);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = platform_driver_register(&pmt_crashlog_driver);
+> +	if (ret) {
+> +		class_unregister(&pmt_crashlog_class);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void __exit pmt_crashlog_exit(void)
+> +{
+> +	platform_driver_unregister(&pmt_crashlog_driver);
+> +	class_unregister(&pmt_crashlog_class);
+> +	ida_destroy(&crashlog_devid_ida);
+> +}
+> +
+> +module_init(pmt_crashlog_init);
+> +module_exit(pmt_crashlog_exit);
+> +
+> +MODULE_AUTHOR("Alexander Duyck <alexander.h.duyck@linux.intel.com>");
+> +MODULE_DESCRIPTION("Intel PMT Crashlog driver");
+> +MODULE_ALIAS("platform:" DRV_NAME);
+> +MODULE_LICENSE("GPL v2");
+> 
+
+Regards,
+
+Hans
+
