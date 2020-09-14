@@ -2,187 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F692692C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE092692CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgINROs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:14:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58326 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726055AbgINRNP (ORCPT
+        id S1726160AbgINRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:16:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21998 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725987AbgINRPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:13:15 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08EH41Ox015270;
-        Mon, 14 Sep 2020 13:13:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=/1vfwABSnmtOZ4CtBNzW+dx7wqU5W4NhKkEHRm7FVhk=;
- b=jtDYDlloAGl78nnKrvd8o5kHB5jZEq9r/ImbctiqGDLvJUabksCUzlvqDR2M4hnE5zQa
- E84LGVGKIbr1T8OlBT7paAdmdmHM8FMs64vEUJJNxDTafDa/jbK/aY4Y3tXMU8elR4W7
- eMg9KUYUdML34opsEStl/o6Uzb2EtwRBmSkPlu+CmBI28P9eqcDx1UDYTzUomrvx8aWK
- 5MSTAAyXGUEbW1s5WNx6/LM6R08dgZ9Qbnord1vjo3A2VJR9+O35iZi48Z8m6+kTbjvd
- ViNsb8nHbVXH9O8NhzUjSGIg8JsnYbT7DrL/34D1rYnYesOjBUvQNdMAEVgWDHXJPxlN lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33ja70d3p9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 13:13:07 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08EH4YpH017398;
-        Mon, 14 Sep 2020 13:13:06 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33ja70d3nv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 13:13:06 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08EHCVuV032226;
-        Mon, 14 Sep 2020 17:13:05 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 33gny95qjx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 17:13:05 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08EHD0tg33292616
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Sep 2020 17:13:01 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6F2596A051;
-        Mon, 14 Sep 2020 17:13:04 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDF126A04F;
-        Mon, 14 Sep 2020 17:13:03 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.73.235])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Sep 2020 17:13:03 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 163712E3885; Mon, 14 Sep 2020 22:43:00 +0530 (IST)
-Date:   Mon, 14 Sep 2020 22:43:00 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     rjw@rjwysocki.net, daniel.lezcano@linaro.org,
-        srivatsa@csail.mit.edu, shuah@kernel.org, npiggin@gmail.com,
-        ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com
-Subject: Re: [RFC v4 0/1] Selftest for cpuidle latency measurement
-Message-ID: <20200914171259.GA25628@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200902114506.45809-1-psampat@linux.ibm.com>
+        Mon, 14 Sep 2020 13:15:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600103710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=HzTW20ZKs/inGf15Jbec1gHB6oz2+QU3swiUkNg053E=;
+        b=DdTo93LttrVAijj5ByANAv2ViTcWbuBaIzovFAdPm5/82BEVwaxJ1ToneyltqeTumuUQ9E
+        8/ajz0SsP+gTiINqUKzkTNa5gAILZs3zGasDL85nm3KuM5iLHSYgOQx5A+aNWBEGFhL5a6
+        uo/Q/hY3AzozqSno7Z6sHVlmsrH4+NY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-100-cCp3waOIOXisWoEJqP5Tqw-1; Mon, 14 Sep 2020 13:15:06 -0400
+X-MC-Unique: cCp3waOIOXisWoEJqP5Tqw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF30A10066FF;
+        Mon, 14 Sep 2020 17:15:04 +0000 (UTC)
+Received: from [10.36.112.147] (ovpn-112-147.ams2.redhat.com [10.36.112.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4C8D5DA8F;
+        Mon, 14 Sep 2020 17:15:01 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] mm: don't rely on system state to detect hot-plug
+ operations
+To:     Laurent Dufour <ldufour@linux.ibm.com>, akpm@linux-foundation.org,
+        Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Michal Hocko <mhocko@suse.com>
+References: <20200914165042.96218-1-ldufour@linux.ibm.com>
+ <20200914165042.96218-3-ldufour@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <c378a52b-ab7b-0cb9-cd34-68e20a9d02b0@redhat.com>
+Date:   Mon, 14 Sep 2020 19:15:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902114506.45809-1-psampat@linux.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-14_06:2020-09-14,2020-09-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- clxscore=1011 suspectscore=0 phishscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009140133
+In-Reply-To: <20200914165042.96218-3-ldufour@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 05:15:05PM +0530, Pratik Rajesh Sampat wrote:
-> Changelog v3-->v4:
-> 1. Overhaul in implementation from kernel module to a userspace selftest 
-> ---
+>  arch/ia64/mm/init.c  |  4 +--
+>  drivers/base/node.c  | 86 ++++++++++++++++++++++++++++----------------
+>  include/linux/node.h | 11 +++---
+>  mm/memory_hotplug.c  |  5 +--
+>  4 files changed, 68 insertions(+), 38 deletions(-)
 > 
-> The patch series introduces a mechanism to measure wakeup latency for
-> IPI and timer based interrupts
-> The motivation behind this series is to find significant deviations
-> behind advertised latency and residency values
-> 
-> To achieve this in the userspace, IPI latencies are calculated by
-> sending information through pipes and inducing a wakeup, similarly
-> alarm events are setup for calculate timer based wakeup latencies.
+> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+> index b5054b5e77c8..8e7b8c6c576e 100644
+> --- a/arch/ia64/mm/init.c
+> +++ b/arch/ia64/mm/init.c
+> @@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
+>  	if (map_start < map_end)
+>  		memmap_init_zone((unsigned long)(map_end - map_start),
+>  				 args->nid, args->zone, page_to_pfn(map_start),
+> -				 MEMPLUG_EARLY, NULL);
+> +				 MEMINIT_EARLY, NULL);
 
-> 
-> To account for delays from kernel-userspace interactions baseline
-> observations are taken on a 100% busy CPU and subsequent obervations
-> must be considered relative to that.
-> 
-> In theory, wakeups induced by IPI and Timers should have similar
-> wakeup latencies, however in practice there may be deviations which may
-> need to be captured.
-> 
-> One downside of the userspace approach in contrast to the kernel
-> implementation is that the run to run variance can turn out to be high
-> in the order of ms; which is the scope of the experiments at times.
-> 
-> Another downside of the userspace approach is that it takes much longer
-> to run and hence a command-line option quick and full are added to make
-> sure quick 1 CPU tests can be carried out when needed and otherwise it
-> can carry out a full system comprehensive test.
-> 
-> Usage
-> ---
-> ./cpuidle --mode <full / quick / num_cpus> --output <output location> 
-> full: runs on all CPUS
-> quick: run on a random CPU
-> num_cpus: Limit the number of CPUS to run on
-> 
-> Sample output snippet
-> ---------------------
-> --IPI Latency Test---
-> SRC_CPU   DEST_CPU IPI_Latency(ns)
-> ...
->   0          5       256178
->   0          6       478161
->   0          7       285445
->   0          8       273553
-> Expected IPI latency(ns): 100000
-> Observed Average IPI latency(ns): 248334
+Patch #1.
 
-I suppose by run-to-run variance you are referring to the outliers in
-the above sequence (like 478161) ? Or is it that each time you run
-your test program you observe completely different series of values ?
+>  	return 0;
+>  }
+>  
+> @@ -548,7 +548,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
+>  {
+>  	if (!vmem_map) {
+>  		memmap_init_zone(size, nid, zone, start_pfn,
+> -				 MEMPLUG_EARLY, NULL);
+> +				 MEMINIT_EARLY, NULL);
+>  	} else {
+>  		struct page *start;
+>  		struct memmap_init_callback_data args;
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 508b80f6329b..01ee73c9d675 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -761,14 +761,36 @@ static int __ref get_nid_for_pfn(unsigned long pfn)
+>  	return pfn_to_nid(pfn);
+>  }
+>  
+> +static int do_register_memory_block_under_node(int nid,
+> +					       struct memory_block *mem_blk)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * If this memory block spans multiple nodes, we only indicate
+> +	 * the last processed node.
+> +	 */
+> +	mem_blk->nid = nid;
+> +
+> +	ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
+> +				       &mem_blk->dev.kobj,
+> +				       kobject_name(&mem_blk->dev.kobj));
+> +	if (ret)
+> +		return ret;
+> +
+> +	return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
+> +				&node_devices[nid]->dev.kobj,
+> +				kobject_name(&node_devices[nid]->dev.kobj));
+> +}
+> +
+>  /* register memory section under specified node if it spans that node */
+> -static int register_mem_sect_under_node(struct memory_block *mem_blk,
+> -					 void *arg)
+> +static int register_mem_block_under_node_early(struct memory_block *mem_blk,
+> +					       void *arg)
+>  {
+>  	unsigned long memory_block_pfns = memory_block_size_bytes() / PAGE_SIZE;
+>  	unsigned long start_pfn = section_nr_to_pfn(mem_blk->start_section_nr);
+>  	unsigned long end_pfn = start_pfn + memory_block_pfns - 1;
+> -	int ret, nid = *(int *)arg;
+> +	int nid = *(int *)arg;
+>  	unsigned long pfn;
+>  
+>  	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
+> @@ -785,38 +807,34 @@ static int register_mem_sect_under_node(struct memory_block *mem_blk,
+>  		}
+>  
+>  		/*
+> -		 * We need to check if page belongs to nid only for the boot
+> -		 * case, during hotplug we know that all pages in the memory
+> -		 * block belong to the same node.
+> -		 */
+> -		if (system_state == SYSTEM_BOOTING) {
+> -			page_nid = get_nid_for_pfn(pfn);
+> -			if (page_nid < 0)
+> -				continue;
+> -			if (page_nid != nid)
+> -				continue;
+> -		}
+> -
+> -		/*
+> -		 * If this memory block spans multiple nodes, we only indicate
+> -		 * the last processed node.
+> +		 * We need to check if page belongs to nid only at the boot
+> +		 * case because node's ranges can be interleaved.
+>  		 */
+> -		mem_blk->nid = nid;
+> -
+> -		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
+> -					&mem_blk->dev.kobj,
+> -					kobject_name(&mem_blk->dev.kobj));
+> -		if (ret)
+> -			return ret;
+> +		page_nid = get_nid_for_pfn(pfn);
+> +		if (page_nid < 0)
+> +			continue;
+> +		if (page_nid != nid)
+> +			continue;
+>  
+> -		return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
+> -				&node_devices[nid]->dev.kobj,
+> -				kobject_name(&node_devices[nid]->dev.kobj));
+> +		/* The memory block is registered to the first matching node */
 
-If it is the former, then perhaps we could discard the outliers for
-the purpose of average latency computation and print the max, min and
-the corrected-average values above.
+That comment is misleading in that context.
 
+A memory block is registered if there is at least a page that belongs to
+the nid. It's perfectly fine to have a single memory block belong to
+multiple NUMA nodes (when the split is within a memory block). I'd just
+drop it.
 
+[...]
 
-> 
-> --Timeout Latency Test--
-> --Baseline Timeout Latency measurement: CPU Busy--
-> Wakeup_src Baseline_delay(ns)
-> ...
->  32          972405
->  33         1004287
->  34          986663
->  35          994022
-> Expected timeout(ns): 10000000
-> Observed Average timeout diff(ns): 991844
->
+-- 
+Thanks,
 
-It would be good to see a complete sample output, perhaps for the
---mode=10 so that it is easy to discern if there are cases when the
-observed timeouts/IPI latencies for the busy case are larger than the
-idle-case.
+David / dhildenb
 
-
-
-> Pratik Rajesh Sampat (1):
->   selftests/cpuidle: Add support for cpuidle latency measurement
-> 
->  tools/testing/selftests/Makefile          |   1 +
->  tools/testing/selftests/cpuidle/Makefile  |   7 +
->  tools/testing/selftests/cpuidle/cpuidle.c | 616 ++++++++++++++++++++++
->  tools/testing/selftests/cpuidle/settings  |   1 +
->  4 files changed, 625 insertions(+)
->  create mode 100644 tools/testing/selftests/cpuidle/Makefile
->  create mode 100644 tools/testing/selftests/cpuidle/cpuidle.c
->  create mode 100644 tools/testing/selftests/cpuidle/settings
-> 
-> -- 
-> 2.26.2
-> 
-
---
-Thanks and Regards
-gautham.
