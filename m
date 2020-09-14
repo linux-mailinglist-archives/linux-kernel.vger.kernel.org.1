@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03013268DA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8A8268D9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgINOaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:30:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60804 "EHLO mail.kernel.org"
+        id S1726351AbgINO2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:28:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgINNGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:06:03 -0400
+        id S1726660AbgINNGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:06:04 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 531D822262;
-        Mon, 14 Sep 2020 13:05:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06DCD22265;
+        Mon, 14 Sep 2020 13:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600088715;
-        bh=5VjjZjn7IDHSD+pHCCMmV5MP4ZgYmLZKLYomeCYNuAc=;
+        s=default; t=1600088719;
+        bh=TUEjtj204vy7wOWygtH9ZCPsqUQ8InzxMlOiYMlgGDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jyajp+nvuQyTJfVanEdosFhxxMLaCQYqy+OHApdGncv8O7cPdyZzSAftrjScCiFE+
-         KTt/HekTo9lorraxhnYBIfUNr8wnjzv1ZGhXHKM+t34MIU54lFHbGIYqUEkKk7gqBf
-         DMeDcGgjGwbLSPvlhEgvfd89/8nTikeOoLq9mLHA=
+        b=OMAwVF1MGfbKhwmJBkDxcpyiu9t96M7cLOZOO/m2CTaiajfNqH1Y14dfevVlLxpQK
+         iNUnXvmuSSYH+FxEJznEzmp6d3E/TgLxu9KIrH8H7ektVZkMsSqWc0TAFSACyAQjDz
+         8qn2e7BJQMgzaqXwk/Y83VJoPfUHMCX4rW1GMogw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 10/19] kobject: Drop unneeded conditional in __kobject_del()
-Date:   Mon, 14 Sep 2020 09:04:53 -0400
-Message-Id: <20200914130502.1804708-10-sashal@kernel.org>
+Cc:     Sahitya Tummala <stummala@codeaurora.org>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 4.19 14/19] f2fs: fix indefinite loop scanning for free nid
+Date:   Mon, 14 Sep 2020 09:04:57 -0400
+Message-Id: <20200914130502.1804708-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200914130502.1804708-1-sashal@kernel.org>
 References: <20200914130502.1804708-1-sashal@kernel.org>
@@ -44,37 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Sahitya Tummala <stummala@codeaurora.org>
 
-[ Upstream commit 07ecc6693f9157cf293da5d165c73fb28fd69bf4 ]
+[ Upstream commit e2cab031ba7b5003cd12185b3ef38f1a75e3dae8 ]
 
-__kobject_del() is called from two places, in one where kobj is dereferenced
-before and thus can't be NULL, and in the other the NULL check is done before
-call. Drop unneeded conditional in __kobject_del().
+If the sbi->ckpt->next_free_nid is not NAT block aligned and if there
+are free nids in that NAT block between the start of the block and
+next_free_nid, then those free nids will not be scanned in scan_nat_page().
+This results into mismatch between nm_i->available_nids and the sum of
+nm_i->free_nid_count of all NAT blocks scanned. And nm_i->available_nids
+will always be greater than the sum of free nids in all the blocks.
+Under this condition, if we use all the currently scanned free nids,
+then it will loop forever in f2fs_alloc_nid() as nm_i->available_nids
+is still not zero but nm_i->free_nid_count of that partially scanned
+NAT block is zero.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Link: https://lore.kernel.org/r/20200803083520.5460-1-andriy.shevchenko@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this to align the nm_i->next_scan_nid to the first nid of the
+corresponding NAT block.
+
+Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/kobject.c | 3 ---
- 1 file changed, 3 deletions(-)
+ fs/f2fs/node.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/lib/kobject.c b/lib/kobject.c
-index 97d86dc17c42b..6483c11e2e74f 100644
---- a/lib/kobject.c
-+++ b/lib/kobject.c
-@@ -585,9 +585,6 @@ void kobject_del(struct kobject *kobj)
- {
- 	struct kernfs_node *sd;
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 2ff02541c53d5..1934dc6ad1ccd 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -2257,6 +2257,9 @@ static int __f2fs_build_free_nids(struct f2fs_sb_info *sbi,
+ 	if (unlikely(nid >= nm_i->max_nid))
+ 		nid = 0;
  
--	if (!kobj)
--		return;
--
- 	sd = kobj->sd;
- 	sysfs_remove_dir(kobj);
- 	sysfs_put(sd);
++	if (unlikely(nid % NAT_ENTRY_PER_BLOCK))
++		nid = NAT_BLOCK_OFFSET(nid) * NAT_ENTRY_PER_BLOCK;
++
+ 	/* Enough entries */
+ 	if (nm_i->nid_cnt[FREE_NID] >= NAT_ENTRY_PER_BLOCK)
+ 		return 0;
 -- 
 2.25.1
 
