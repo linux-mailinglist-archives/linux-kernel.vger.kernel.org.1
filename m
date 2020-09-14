@@ -2,115 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A959268A21
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0012F268A2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgINLdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:33:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:34868 "EHLO foss.arm.com"
+        id S1726118AbgINLhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:37:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49880 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726111AbgINLbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:31:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 199C6106F;
-        Mon, 14 Sep 2020 04:31:17 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66C333F68F;
-        Mon, 14 Sep 2020 04:31:15 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:31:13 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Aubrey Li <aubrey.li@intel.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-Message-ID: <20200914113112.rmwsgjkudejestmc@e107158-lin.cambridge.arm.com>
-References: <20200910054203.525420-1-aubrey.li@intel.com>
- <20200910054203.525420-2-aubrey.li@intel.com>
- <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
- <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
- <jhjmu1s644x.mognet@arm.com>
- <20200914110809.2nu7vt2s3lzlvxoz@e107158-lin.cambridge.arm.com>
- <jhjk0ww61l4.mognet@arm.com>
+        id S1726012AbgINLfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:35:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 350BAB10B;
+        Mon, 14 Sep 2020 11:35:33 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id ED0131E12EF; Mon, 14 Sep 2020 13:35:16 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 13:35:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>, Jan Kara <jack@suse.cz>,
+        Theodore Tso <tytso@mit.edu>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Qiuyang Sun <sunqiuyang@huawei.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around
+ filemap_map_pages())
+Message-ID: <20200914113516.GE4863@quack2.suse.cz>
+References: <20200623052059.1893966-1-david@fromorbit.com>
+ <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <jhjk0ww61l4.mognet@arm.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/14/20 12:26, Valentin Schneider wrote:
-> 
-> On 14/09/20 12:08, Qais Yousef wrote:
-> > On 09/14/20 11:31, Valentin Schneider wrote:
-> >>
-> >> On 12/09/20 00:04, Li, Aubrey wrote:
-> >> >>> +++ b/include/linux/sched/topology.h
-> >> >>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
-> >> >>>     atomic_t	ref;
-> >> >>>     atomic_t	nr_busy_cpus;
-> >> >>>     int		has_idle_cores;
-> >> >>> +	/*
-> >> >>> +	 * Span of all idle CPUs in this domain.
-> >> >>> +	 *
-> >> >>> +	 * NOTE: this field is variable length. (Allocated dynamically
-> >> >>> +	 * by attaching extra space to the end of the structure,
-> >> >>> +	 * depending on how many CPUs the kernel has booted up with)
-> >> >>> +	 */
-> >> >>> +	unsigned long	idle_cpus_span[];
-> >> >>
-> >> >> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
-> >> >
-> >> > I can use the existing free code. Do we have a problem of this?
-> >> >
-> >>
-> >> Nah, flexible array members are the preferred approach here; this also
+On Sat 12-09-20 09:19:11, Amir Goldstein wrote:
+> On Tue, Jun 23, 2020 at 8:21 AM Dave Chinner <david@fromorbit.com> wrote:
 > >
-> > Is this your opinion or a rule written somewhere I missed?
+> > From: Dave Chinner <dchinner@redhat.com>
+> >
+> > The page faultround path ->map_pages is implemented in XFS via
+> > filemap_map_pages(). This function checks that pages found in page
+> > cache lookups have not raced with truncate based invalidation by
+> > checking page->mapping is correct and page->index is within EOF.
+> >
+> > However, we've known for a long time that this is not sufficient to
+> > protect against races with invalidations done by operations that do
+> > not change EOF. e.g. hole punching and other fallocate() based
+> > direct extent manipulations. The way we protect against these
+> > races is we wrap the page fault operations in a XFS_MMAPLOCK_SHARED
+> > lock so they serialise against fallocate and truncate before calling
+> > into the filemap function that processes the fault.
+> >
+> > Do the same for XFS's ->map_pages implementation to close this
+> > potential data corruption issue.
+> >
+> > Signed-off-by: Dave Chinner <dchinner@redhat.com>
+> > ---
+> >  fs/xfs/xfs_file.c | 15 ++++++++++++++-
+> >  1 file changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> > index 7b05f8fd7b3d..4b185a907432 100644
+> > --- a/fs/xfs/xfs_file.c
+> > +++ b/fs/xfs/xfs_file.c
+> > @@ -1266,10 +1266,23 @@ xfs_filemap_pfn_mkwrite(
+> >         return __xfs_filemap_fault(vmf, PE_SIZE_PTE, true);
+> >  }
+> >
+> > +static void
+> > +xfs_filemap_map_pages(
+> > +       struct vm_fault         *vmf,
+> > +       pgoff_t                 start_pgoff,
+> > +       pgoff_t                 end_pgoff)
+> > +{
+> > +       struct inode            *inode = file_inode(vmf->vma->vm_file);
+> > +
+> > +       xfs_ilock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> > +       filemap_map_pages(vmf, start_pgoff, end_pgoff);
+> > +       xfs_iunlock(XFS_I(inode), XFS_MMAPLOCK_SHARED);
+> > +}
+> > +
+> >  static const struct vm_operations_struct xfs_file_vm_ops = {
+> >         .fault          = xfs_filemap_fault,
+> >         .huge_fault     = xfs_filemap_huge_fault,
+> > -       .map_pages      = filemap_map_pages,
+> > +       .map_pages      = xfs_filemap_map_pages,
+> >         .page_mkwrite   = xfs_filemap_page_mkwrite,
+> >         .pfn_mkwrite    = xfs_filemap_pfn_mkwrite,
+> >  };
+> > --
+> > 2.26.2.761.g0e0b3e54be
+> >
 > 
-> I don't think there's a written rule, but AIUI it is preferred by at
-> least Peter:
+> It appears that ext4, f2fs, gfs2, orangefs, zonefs also need this fix
 > 
-> https://lore.kernel.org/linux-pm/20180612125930.GP12217@hirez.programming.kicks-ass.net/
-> https://lore.kernel.org/lkml/20180619110734.GO2458@hirez.programming.kicks-ass.net/
+> zonefs does not support hole punching, so it may not need to use
+> mmap_sem at all.
 > 
-> And my opinion is that, if you can, having fewer separate allocation is better.
+> It is interesting to look at how this bug came to be duplicated in so
+> many filesystems, because there are lessons to be learned.
+> 
+> Commit f1820361f83d ("mm: implement ->map_pages for page cache")
+> added to ->map_pages() operation and its commit message said:
+> 
+> "...It should be safe to use filemap_map_pages() for ->map_pages() if
+>     filesystem use filemap_fault() for ->fault()."
+> 
+> At the time, all of the aforementioned filesystems used filemap_fault()
+> for ->fault().
+> 
+> But since then, ext4, xfs, f2fs and just recently gfs2 have added a
+> filesystem ->fault() operation.
+> 
+> orangefs has added vm_operations since and zonefs was added since,
+> probably copying the mmap_sem handling from ext4. Both have a filesystem
+> ->fault() operation.
 
-+1
+A standard pattern of copying bug from one place into many. Sadly it's
+happening all the time for stuff that's complex enough that only a few
+people (if anybody) are carrying all the details in their head.
 
-> 
-> >
-> >> means we don't let CONFIG_CPUMASK_OFFSTACK dictate where this gets
-> >> allocated.
-> >>
-> >> See struct numa_group, struct sched_group, struct sched_domain, struct
-> >> em_perf_domain...
-> >
-> > struct root_domain, struct cpupri_vec, struct generic_pm_domain,
-> > struct irq_common_data..
-> >
-> > Use cpumask_var_t.
-> >
-> > Both approach look correct to me, so no objection in principle. cpumask_var_t
-> > looks neater IMO and will be necessary once more than one cpumask are required
-> > in a struct.
-> >
-> 
-> You're right in that cpumask_var_t becomes necessary when you need more
-> than one mask. For those that use it despite requiring only one mask
-> (cpupri stuff, struct nohz too), I'm not sure.
+> It was surprising for me to see that some of the filesystem developers
+> signed on the added ->fault() operations are not strangers to mm. The
+> recent gfs2 change was even reviewed by an established mm developer
+> [1].
 
-I don't have a strong opinoin. cpumask_var_t is more readable and maintainble
-IMO. But it's not a big deal. Any form can be easily changed.
+Well, people do miss things... And this stuff is twisted maze so it is easy
+to miss something even for an experienced developer.
 
-Thanks
+> So what can we learn from this case study? How could we fix the interface to
+> avoid repeating the same mistake in the future?
 
---
-Qais Yousef
+IMO the serialization between page cache and various fs operations is just
+too complex with too many special corner cases. But that's difficult to
+change while keeping all the features and performance. So the best
+realistic answer I have (and this is not meant to discourage anybody from
+trying to implement a simpler scheme of page-cache - filesystem interaction
+:) is that we should have added a fstest when XFS fix landed which would
+then hopefully catch attention of other fs maintainers (at least those that
+do run fstest).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
