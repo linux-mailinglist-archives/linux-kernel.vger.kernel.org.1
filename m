@@ -2,137 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BCA269470
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F361269489
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgINSIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgINSIJ (ORCPT
+        id S1726212AbgINSMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:12:02 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:33682 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgINSLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:08:09 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA49C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:08:08 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id j34so428032pgi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HiLz1RcLzusQXgfz36ooDNe/17JxLFBNTfE6VhS7a/0=;
-        b=vJxbTWUocKX1FfLqSSVE7HKpizU2MWTMXsREQ2ChXEtrFCqDRhITBkAWu4HmDSFMxl
-         O88TRzaUjISbqIb0paYVueJyG2N1gLmfwTWvi76PBn28KSd+Un42/vnZ6KrckS9SgBR5
-         rcvKGCxaXEmFpcSYlMyK9vss1dBeiHjeWrd3X0uh+DcutEDaL4owZJ9hlEZYreETLcR7
-         kAAKc693Ig1qejFLE2FFyyLxXbwrDg5UMfnfbDedEzNZayKTrzrTLIyPfm+mqLc+ulWL
-         M4bHGwOpYFtnzkymQ8EMeNRsIdafzU75yc35/szbUXEVnJR6wvSvwly5kB6kZB5+fa+e
-         b7Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HiLz1RcLzusQXgfz36ooDNe/17JxLFBNTfE6VhS7a/0=;
-        b=qA4uJdB7IYmzguVt+zxWA5rVb3sULTwFwyPn0uExLiVeskbHekLU8cBrlnMjQJvDFa
-         hMBgqNWQEoRjNlCK0rV+0tPQ5SdTlOAX7C9uhORjVaS60PcEACuxxkt6mVd+Rs6DbQer
-         Ovy2rsKflD8GPs26XkATaJ6hx42YuFpU6fhLbqKVnLATfWpYPvPROjfyy7BnadutQ0Ax
-         oEruk0ZVY6jiqYx6stnzQa1Yc5cJxCKVmbqbsPt5Kdrd8uXL3a5XvAw0iB7yPtrDBGRp
-         vOR89j0e8v+KJ4qMzifGZtW2VFAdpn2YqGvyINgyH1Xk6T13INAxrbvzKUF2KSESXQqL
-         vd7A==
-X-Gm-Message-State: AOAM533da1OoxyomCntvaymt3IlWFzpcWz+jGwK6f1BqIfFLHsadz3Yd
-        XwIJ7hoQ84V5ZFE5ALlxci21UA==
-X-Google-Smtp-Source: ABdhPJwUskmYuzX/7PmB2Mv7QAdxGmL0bmHu5FbDXd984uW2TNPzmWobyxIfbcqU1vQzbjC0zKh12g==
-X-Received: by 2002:aa7:9f04:0:b029:13e:d13d:a13b with SMTP id g4-20020aa79f040000b029013ed13da13bmr13543279pfr.35.1600106888120;
-        Mon, 14 Sep 2020 11:08:08 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id j20sm10938084pfh.146.2020.09.14.11.08.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 11:08:07 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:08:05 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tingwei Zhang <tingwei@codeaurora.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Kim Phillips <kim.phillips@arm.com>,
-        Mian Yousaf Kaukab <ykaukab@suse.de>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 20/24] coresight: cti: increase reference count when
- enabling cti
-Message-ID: <20200914180805.GC3238264@xps15>
-References: <20200821034445.967-1-tingwei@codeaurora.org>
- <20200821034445.967-21-tingwei@codeaurora.org>
+        Mon, 14 Sep 2020 14:11:33 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 08EIBMfk012981
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Mon, 14 Sep 2020 11:11:22 -0700 (PDT)
+Received: from pek-lwang1-u1404.wrs.com (128.224.162.178) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 14 Sep 2020 11:11:21 -0700
+From:   Li Wang <li.wang@windriver.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] vhost: reduce stack usage in log_used
+Date:   Tue, 15 Sep 2020 02:08:09 +0800
+Message-ID: <1600106889-25013-1-git-send-email-li.wang@windriver.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1199326218.16921082.1600051335160.JavaMail.zimbra@redhat.com>
+References: <1199326218.16921082.1600051335160.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821034445.967-21-tingwei@codeaurora.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 11:44:41AM +0800, Tingwei Zhang wrote:
-> CTI device is enabled when associated coresight device is enabled.
-> Increase the module and device reference count for CTI device
-> when it's enabled. This can prevent CTI device be removed or
-> module be unloaded when CTI device is enabled by an active trace
-> session.
-> 
-> Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> ---
+Fix the warning: [-Werror=-Wframe-larger-than=]
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+drivers/vhost/vhost.c: In function log_used:
+drivers/vhost/vhost.c:1906:1:
+warning: the frame size of 1040 bytes is larger than 1024 bytes
 
->  drivers/hwtracing/coresight/coresight.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight.c b/drivers/hwtracing/coresight/coresight.c
-> index d354fd57474e..6c9f6930b8b8 100644
-> --- a/drivers/hwtracing/coresight/coresight.c
-> +++ b/drivers/hwtracing/coresight/coresight.c
-> @@ -241,19 +241,30 @@ coresight_control_assoc_ectdev(struct coresight_device *csdev, bool enable)
->  {
->  	int ect_ret = 0;
->  	struct coresight_device *ect_csdev = csdev->ect_dev;
-> +	struct module *mod;
->  
->  	if (!ect_csdev)
->  		return 0;
->  	if ((!ect_ops(ect_csdev)->enable) || (!ect_ops(ect_csdev)->disable))
->  		return 0;
->  
-> +	mod = ect_csdev->dev.parent->driver->owner;
->  	if (enable) {
-> -		ect_ret = ect_ops(ect_csdev)->enable(ect_csdev);
-> -		if (!ect_ret)
-> -			csdev->ect_enabled = true;
-> +		if (try_module_get(mod)) {
-> +			ect_ret = ect_ops(ect_csdev)->enable(ect_csdev);
-> +			if (ect_ret) {
-> +				module_put(mod);
-> +			} else {
-> +				get_device(ect_csdev->dev.parent);
-> +				csdev->ect_enabled = true;
-> +			}
-> +		} else
-> +			ect_ret = -ENODEV;
->  	} else {
->  		if (csdev->ect_enabled) {
->  			ect_ret = ect_ops(ect_csdev)->disable(ect_csdev);
-> +			put_device(ect_csdev->dev.parent);
-> +			module_put(mod);
->  			csdev->ect_enabled = false;
->  		}
->  	}
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Signed-off-by: Li Wang <li.wang@windriver.com>
+---
+ drivers/vhost/vhost.c | 2 +-
+ drivers/vhost/vhost.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index b45519c..31837a5
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -1884,7 +1884,7 @@ static int log_write_hva(struct vhost_virtqueue *vq, u64 hva, u64 len)
+ 
+ static int log_used(struct vhost_virtqueue *vq, u64 used_offset, u64 len)
+ {
+-	struct iovec iov[64];
++	struct iovec *iov = vq->log_iov;
+ 	int i, ret;
+ 
+ 	if (!vq->iotlb)
+diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+index 9032d3c..5fe4b47
+--- a/drivers/vhost/vhost.h
++++ b/drivers/vhost/vhost.h
+@@ -123,6 +123,7 @@ struct vhost_virtqueue {
+ 	/* Log write descriptors */
+ 	void __user *log_base;
+ 	struct vhost_log *log;
++	struct iovec log_iov[64];
+ 
+ 	/* Ring endianness. Defaults to legacy native endianness.
+ 	 * Set to true when starting a modern virtio device. */
+-- 
+2.7.4
+
