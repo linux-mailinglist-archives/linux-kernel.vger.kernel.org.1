@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8BE26831C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3E626831E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgIND2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgIND2r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:28:47 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8E5C061788
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f18so11392016pfa.10
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4kHmejXTIo1BBSLRENZgyqFfGzb/ylHsGPtQU3ORsGY=;
-        b=qSowdt5PMPNIuUtYyjjVxXOB007fAprML0D9RLG01hggiBoUvwOyNQT+CB+AUUb69C
-         Pc6o7Mnk2vhKMTjLgNpanvxjhxy12n3MbsrZ/gqVlxBp2pO+LF73GR00DawWKvKDEQsv
-         INJmnpgtznXFsTnRJ8tPl4m3KAttaAVb/5EBaSasg3mXATRb/qHyV5IFUeU2QrDAOVbu
-         QZNs8r67pQqpSQsotruFc6agNZUIRsmSIkmzxe1hrZWD8YD0gAfCg7B+Hp3gnZqSNQg8
-         1wR3DvI5i/2fNqtA75uiMcFkcXEoRE0qzVYmtLhPvo7zAXgkliZi0O7BUNBe2LhOOGEn
-         U0lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4kHmejXTIo1BBSLRENZgyqFfGzb/ylHsGPtQU3ORsGY=;
-        b=ZmQP6xzWLIap/poEyjdpcl8awhfV2EzOGp2OGpx9pCRjZ27k9FaDlXupIoc07tzSB5
-         /emS5gq7BNmdHeTiVyaiCteUe6SJpMB+sOPGUl62HpriTCPp0CDdZ6n9Ag4BJr04pEMW
-         Y0QMtbB4/vlJwc0GkE+hIe41KUrp3bAyowuEhKK840qoOENUVH5Wm0Zx2/xVWqvEoKRW
-         OKukgRAKwdDl1cPoT4but9eQm2B/yT8lqlNXnp6n45mqJ3Dk36sl31osIZU/e3TxjTKU
-         A59UNEBWs+w5cQqE8ZLbiqJQlv901aaycd9yBDwYZ4sKg1dxevN2CdldXVckkwbT/yIP
-         ECkA==
-X-Gm-Message-State: AOAM530yWXAvUPOcF0yWH4StZTTBrEQ+cpbfixlwpwyOZ66ga9jd5QBe
-        JNwU9C1g7dHNk1AOw6y28boiVx1iecqb/IaQIlOjhQ==
-X-Google-Smtp-Source: ABdhPJyYRwniJbcpH5xKTfN/gYBasufM4x3VEAlZv0zuWL45LjZLH0gCwfNtbKPcwb9oAoUfGRtNjqlf+aJkB1XhvT8=
-X-Received: by 2002:a63:5515:: with SMTP id j21mr9223604pgb.31.1600054125347;
- Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200913070010.44053-1-songmuchun@bytedance.com>
- <20200913170913.GB2239582@chrisdown.name> <CAMZfGtVBFCodKuNKzG8TxKjeuC1_hF_YKdqMTmX5ENE_FfDmzw@mail.gmail.com>
- <91184891-6a12-87a2-5a82-099a637b072f@huawei.com>
-In-Reply-To: <91184891-6a12-87a2-5a82-099a637b072f@huawei.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 11:28:09 +0800
-Message-ID: <CAMZfGtVGRDCNm0oOpco+-uPjsx6+VyVrCwVRS4dKV2ZTbY-e+w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3] mm: memcontrol: Add the missing
- numa_stat interface for cgroup v2
-To:     Zefan Li <lizefan@huawei.com>
-Cc:     Chris Down <chris@chrisdown.name>, tj@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>, corbet@lwn.net,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726025AbgINDaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725993AbgINDaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:30:04 -0400
+Received: from X1 (unknown [209.33.215.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC401208E4;
+        Mon, 14 Sep 2020 03:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600054203;
+        bh=DGwweu43/njL3LpV4klh5m/GnEyyp3xKZ/SaT3e4Ar8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ul7X1DJkQ2mHtCjDAyKaHbsrLvx9QsZ5unplMQAgQAYdj182YvU1s5lKCGvf27E5h
+         4FSvcsTScs1Vh0phky7sY44ySIyiIKGvlMMM1+G9eASOKDf43wwiJcrf8WLkam0DLc
+         2X+CNpmT1xOejERYJ3ks/o1ZSgFLtMJRkqBThxZo=
+Date:   Sun, 13 Sep 2020 20:30:02 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/string.c: Clarify kerndoc for stpcpy()
+Message-Id: <20200913203002.332df6c673d4ca365a5d8f76@linux-foundation.org>
+In-Reply-To: <202009061325.8B4A75057@keescook>
+References: <202009060302.4574D8D0E0@keescook>
+        <20200906160809.GA1620946@rani.riverdale.lan>
+        <202009061325.8B4A75057@keescook>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:19 AM Zefan Li <lizefan@huawei.com> wrote:
->
-> On 2020/9/14 11:10, Muchun Song wrote:
-> > On Mon, Sep 14, 2020 at 1:09 AM Chris Down <chris@chrisdown.name> wrote:
-> >>
-> >> Muchun Song writes:
-> >>> In the cgroup v1, we have a numa_stat interface. This is useful for
-> >>> providing visibility into the numa locality information within an
-> >>> memcg since the pages are allowed to be allocated from any physical
-> >>> node. One of the use cases is evaluating application performance by
-> >>> combining this information with the application's CPU allocation.
-> >>> But the cgroup v2 does not. So this patch adds the missing information.
-> >>>
-> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> >>> Reported-by: kernel test robot <lkp@intel.com>
-> >>
-> >> This is a feature patch, why does this have LKP's Reported-by?
-> >
-> > In the v2 version, the kernel test robot reported a compiler error
-> > on the powerpc architecture. So I added that. Thanks.
-> >
->
-> You should remove this reported-by, and then add v2->v3 changelog:
+On Sun, 6 Sep 2020 13:26:32 -0700 Kees Cook <keescook@chromium.org> wrote:
 
-Got it. I see Andrew has done it for me, thank him very much for
-his work. He also added this patch to the -mm tree.
+> On Sun, Sep 06, 2020 at 12:08:09PM -0400, Arvind Sankar wrote:
+> > On Sun, Sep 06, 2020 at 03:06:29AM -0700, Kees Cook wrote:
+> > > Fix the language around return values to indicate destination instead of
+> > > source.
+> > > 
+> > > Reported-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > Link: https://lore.kernel.org/lkml/CAK7LNAQvQBhjYgSkvm-dVyNz2Jd2C2qAtfyRk-rngEDfjkc38g
+> > > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > > This is a fix for lib-stringc-implement-stpcpy.patch in -mm.
+> > > 
+> > > Andrew, please note that it would be nice to get this into -rc6
+> > > to unbreak the clang builds.
+> > > 
+> > > Thanks!
+> > > ---
+> > >  lib/string.c | 12 ++++++------
+> > >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/lib/string.c b/lib/string.c
+> > > index 6bd0cf0fb009..32a56436c7eb 100644
+> > > --- a/lib/string.c
+> > > +++ b/lib/string.c
+> > > @@ -280,12 +280,12 @@ EXPORT_SYMBOL(strscpy_pad);
+> > >   * @src: pointer to the beginning of string being copied from. Must not overlap
+> > >   *       dest.
+> > >   *
+> > > - * stpcpy differs from strcpy in a key way: the return value is the new
+> > > - * %NUL-terminated character. (for strcpy, the return value is a pointer to
+> > > - * src. This interface is considered unsafe as it doesn't perform bounds
+> > > - * checking of the inputs. As such it's not recommended for usage. Instead,
+> > > - * its definition is provided in case the compiler lowers other libcalls to
+> > > - * stpcpy.
+> > > + * stpcpy differs from strcpy in a key way: the return value is a pointer
+> > > + * to the new %NUL-terminated character in @dest. (For strcpy, the return
+> > > + * value is a pointer to the start of @dest. This interface is considered
+> > 					      ^ need closing parenthesis
+> > 
+> > Thanks.
+> 
+> *face in hands* Yup. Andrew, do you want to poke that yourself or should
+> I send a fix-fix? :)
 
->
-> ...original changelog...
->
-> v3:
-> - fixed something reported by test rebot
-
-I already added that in the changelog. Thanks.
-
-
---
-Yours,
-Muchun
+I haven't got onto the stpcpy() base patch yet, so a full resend of
+a v4 would be nice please.
