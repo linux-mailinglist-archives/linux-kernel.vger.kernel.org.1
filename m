@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1F5269356
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD9F269359
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbgINRaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S1726366AbgINRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgINR2i (ORCPT
+        with ESMTP id S1726011AbgINR2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:28:38 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3555C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:22 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e17so828668wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:22 -0700 (PDT)
+        Mon, 14 Sep 2020 13:28:40 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67881C061223
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so499550wrx.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oxR4q2exhcBC90vTFTNwz9/4eynAbLxOPQRAqHe9Mw8=;
-        b=iEFv1oxODcKOHWza+NvTccTL3/wQordMg3U1eoRfqFg8wT2ZdgAAKIR5TqyBMDSz7j
-         p6Two6b4VjgeiaRHbB/+ioQrmadcmqQvnY2N2R59qUqGWhKvSFcPBbecWZMmsRSOU+b8
-         KasiVBhlOh+RhMOjN/LwusWdi6h9O0xedIEU1Db+QSOrCrPoo9U0qsW40Nrzrbp0EX3n
-         +kIWWdPuoVXtvUJpO3w/+q3szInGmWzwUlyfDpMM1RV0gzMMrgepqVoqPV5Re2h4Id55
-         72djWWoXs5+9bVxRyrIlmei/6++TYwru7YoKIBE4OfzDSAe/C622EhPn8E3Mn02ok9ma
-         srOA==
+        bh=iB4T9kLFB3iIR2Z+tST4GCiUmTN46viq6Nw4qtcThCM=;
+        b=tHkFPa0pnHNp4OB1KzhooQ3KuORDrIJ7EGWt10+yQOe8MMQgNYmjvEghP0/sEQoSOw
+         NrHpSaLPFtOEbdIH9+QT2zFtdAdtVSJMZUXbmMtmY3dpj/pbWw+n7CeJaMiwconli2u0
+         Aq9SPNQjoF5YaSNdG2pKHO6K6yXVQYc/hqdvdq04SyAuqS5OMA9RdpqN6bK/vjgH1P2E
+         nEuQNt3dBI+O7bKCdwYE9d4NGSUX4o8hKfj56xPAkb3QSVu8+VbwpCHLiLB43E6Mmk0x
+         T2fPnr0nxh+nP7t5TwBiUIkBB9Mp91pQ3RSH/8TvQJaByVAfUODo3KhhmSbUoNInEg47
+         59PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oxR4q2exhcBC90vTFTNwz9/4eynAbLxOPQRAqHe9Mw8=;
-        b=jNrEKdBmmNoMaGXlfxOkjDsTlOffERib6Yx4DtCIkowijOzLrdaDbRWNFlfkRiRQxU
-         3WDApTzO4VdS38aPI/Ah7km9+igE/Qi8TGJM948LjufzRBTkqaHHxPnZLiPCHed26ieG
-         UXth+qunz+S9cYPj7isbzDCgjw4Xqrz7nSivnvs6xkxHVNftf/ZMkZeOFLBIQOvRveLy
-         52nImRTtwmYILeMEllCTBdF4I36tNYGB+QUodTfTBzOLbeB95FNRibw2QpiHkZMnZNWb
-         7PoUrVuXNZcqWngXsu1w6OZOoJQ3VIwW3h57Ihmb6F9fPEaWMFhUOcbBA7d4hq0K+SAv
-         GBrA==
-X-Gm-Message-State: AOAM532jSDi1FZGOxOytShLYzceJvFzu5r6QGXMfRPh6H+zSz9lH2od4
-        mHx+niRtLr1EGDAw+CsBuEGAKg==
-X-Google-Smtp-Source: ABdhPJziHq0hb99caNbhZ6ZpDc46fHJPvgXN25hJZzyvPSDfDyF5i1/XYuIsmSM1xvZxBc9ptSKANw==
-X-Received: by 2002:a1c:6145:: with SMTP id v66mr426746wmb.171.1600104501282;
-        Mon, 14 Sep 2020 10:28:21 -0700 (PDT)
+        bh=iB4T9kLFB3iIR2Z+tST4GCiUmTN46viq6Nw4qtcThCM=;
+        b=WTWCkTY3QuE6nvxoOGsaebJC5rznlvbSKNeVNnH9Vc1NW8FiKVYjz5r84Kqc5BPnCt
+         CgTc9DS0//vGouXRvH2k58xcXWquxEV6Fm2XG3NmscK7rKqpmcLitgsjfyXLgH2dIgKZ
+         Cil/az/g5h8gslUIO8HifhuHtIPPWHxRSh8/wfRPa3kW0aHHOP3e9hcjw5XzyNoFBG+c
+         OAewhmabW7qTHSZzwrW2pJMJlXc5hBXf2yOdav2pDb7PGXwvueJs/T7fEcnpJiNBwCiI
+         C2wBT1gIopqBhuXLECyN2WhN0KLipmrdfu+07T9BRkGKi46kok/tQ2Di4p4Lx7tDf7aS
+         6zWg==
+X-Gm-Message-State: AOAM5310BZmYfozR1ZQLzrXFgU3K4T51crHZ9Z4+XIiouKiSP5L3m5z9
+        amRnMZKu2B12fCDgx7KOFLrSOA==
+X-Google-Smtp-Source: ABdhPJxsgUHbqteuZSLV5s7MMDzWKj4bHGqYYGxCbtmcUOFgjTdJjebJk3JjekSIihnZSCM+KQlc3w==
+X-Received: by 2002:adf:cf0b:: with SMTP id o11mr16218454wrj.94.1600104504963;
+        Mon, 14 Sep 2020 10:28:24 -0700 (PDT)
 Received: from localhost (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
-        by smtp.gmail.com with ESMTPSA id m1sm20204287wmc.28.2020.09.14.10.28.20
+        by smtp.gmail.com with ESMTPSA id l126sm20422503wmf.39.2020.09.14.10.28.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 10:28:20 -0700 (PDT)
+        Mon, 14 Sep 2020 10:28:24 -0700 (PDT)
 From:   George-Aurelian Popescu <georgepope@google.com>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
         masahiroy@kernel.org, michal.lkml@markovi.net
@@ -61,9 +61,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         akpm@linux-foundation.org, dvyukov@google.com, elver@google.com,
         tglx@linutronix.de, arnd@arndb.de,
         George Popescu <georgepope@google.com>
-Subject: [PATCH 10/14] KVM: arm64: __ubsan_handle_load_invalid_value hyp/nVHE implementation.
-Date:   Mon, 14 Sep 2020 17:27:46 +0000
-Message-Id: <20200914172750.852684-11-georgepope@google.com>
+Subject: [PATCH 12/14] KVM: arm64: Detect arithmetic overflow is inside hyp/nVHE.
+Date:   Mon, 14 Sep 2020 17:27:48 +0000
+Message-Id: <20200914172750.852684-13-georgepope@google.com>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 In-Reply-To: <20200914172750.852684-1-georgepope@google.com>
 References: <20200914172750.852684-1-georgepope@google.com>
@@ -76,77 +76,137 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: George Popescu <georgepope@google.com>
 
-The handler for the load invalid value undefined behaviour is
-implemented for hyp/nVHE. The handler's parameters are stored inside
-the buffer.
+Whenever an arithmetic overflow: addition, subtraction, multiplication,
+division or negating happens inside the hyp/nVHE code,
+an __ubsan_handle_*_overflow is called.
 
-They are used by the symmetric handler from the kernel.
+All the overflow handlers are sharing the same structure called
+overflow_data and they use the write_overflow_data(*) function to store
+the data to the buffer.
+
+When decapsulating the data inside the kernel, the right handler is
+called by checking the "op" field, which stores the arithmetic
+opperator.
 
 Signed-off-by: George Popescu <georgepope@google.com>
 ---
- arch/arm64/include/asm/kvm_ubsan.h |  5 ++++-
- arch/arm64/kvm/hyp/nvhe/ubsan.c    | 14 +++++++++++++-
- arch/arm64/kvm/kvm_ubsan_buffer.c  |  4 ++++
- 3 files changed, 21 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/kvm_ubsan.h | 10 ++++++--
+ arch/arm64/kvm/hyp/nvhe/ubsan.c    | 40 ++++++++++++++++++++++++++----
+ arch/arm64/kvm/kvm_ubsan_buffer.c  | 18 ++++++++++++++
+ 3 files changed, 61 insertions(+), 7 deletions(-)
 
 diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
-index 3130a80cd8b2..b643ac9a4090 100644
+index a9f499f4ef6d..4abdbff38f79 100644
 --- a/arch/arm64/include/asm/kvm_ubsan.h
 +++ b/arch/arm64/include/asm/kvm_ubsan.h
-@@ -22,12 +22,14 @@ struct kvm_ubsan_info {
- 		UBSAN_NONE,
- 		UBSAN_OUT_OF_BOUNDS,
+@@ -24,7 +24,8 @@ struct kvm_ubsan_info {
  		UBSAN_UNREACHABLE_DATA,
--		UBSAN_SHIFT_OUT_OF_BOUNDS
-+		UBSAN_SHIFT_OUT_OF_BOUNDS,
-+		UBSAN_INVALID_DATA
+ 		UBSAN_SHIFT_OUT_OF_BOUNDS,
+ 		UBSAN_INVALID_DATA,
+-		UBSAN_TYPE_MISMATCH
++		UBSAN_TYPE_MISMATCH,
++		UBSAN_OVERFLOW_DATA
  	} type;
  	union {
  		struct out_of_bounds_data out_of_bounds_data;
- 		struct unreachable_data unreachable_data;
+@@ -32,6 +33,7 @@ struct kvm_ubsan_info {
  		struct shift_out_of_bounds_data shift_out_of_bounds_data;
-+		struct invalid_value_data invalid_value_data;
+ 		struct invalid_value_data invalid_value_data;
+ 		struct type_mismatch_data type_mismatch_data;
++		struct overflow_data overflow_data;
  	};
  	union {
  		struct ubsan_values u_val;
-@@ -38,3 +40,4 @@ struct kvm_ubsan_info {
- void __ubsan_handle_out_of_bounds(void *_data, void *index);
- void __ubsan_handle_builtin_unreachable(void *_data);
+@@ -44,4 +46,8 @@ void __ubsan_handle_builtin_unreachable(void *_data);
  void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
-+void __ubsan_handle_load_invalid_value(void *_data, void *val);
+ void __ubsan_handle_load_invalid_value(void *_data, void *val);
+ void __ubsan_handle_type_mismatch(struct type_mismatch_data  *_data, void *ptr);
+-
++void __ubsan_handle_add_overflow(void *data, void *lhs, void *rhs);
++void __ubsan_handle_sub_overflow(void *data, void *lhs, void *rhs);
++void __ubsan_handle_mul_overflow(void *data, void *lhs, void *rhs);
++void __ubsan_handle_negate_overflow(void *_data, void *old_val);
++void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs);
 diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-index 40b82143e57f..1888a1f51724 100644
+index c99d919105aa..dd2dae60864f 100644
 --- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
 +++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-@@ -82,4 +82,16 @@ void __ubsan_handle_builtin_unreachable(void *_data)
+@@ -47,15 +47,45 @@ static void write_type_mismatch_data(struct type_mismatch_data_common *data, voi
  	}
  }
  
--void __ubsan_handle_load_invalid_value(void *_data, void *val) {}
-+void __ubsan_handle_load_invalid_value(void *_data, void *val)
+-void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs) {}
++static void write_overflow_data(struct overflow_data *data, void *lval, void *rval, char op)
 +{
-+	struct kvm_ubsan_info *slot;
-+	struct invalid_value_data *data = _data;
++	struct kvm_ubsan_info *slot = kvm_ubsan_buffer_next_slot();
 +
-+	slot = kvm_ubsan_buffer_next_slot();
 +	if (slot) {
-+		slot->type = UBSAN_INVALID_DATA;
-+		slot->invalid_value_data = *data;
-+		slot->u_val.lval = val;
++		slot->type = UBSAN_OVERFLOW_DATA;
++		slot->overflow_data = *data;
++		slot->u_val.op = op;
++		slot->u_val.lval = lval;
++		if (op != '!')
++			slot->u_val.rval = rval;
 +	}
-+
 +}
++
++void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs)
++{
++	write_overflow_data(_data, lhs, rhs, '+');
++}
+ 
+-void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs) {}
++void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs)
++{
++	write_overflow_data(_data, lhs, rhs, '-');
++}
+ 
+-void __ubsan_handle_mul_overflow(void *_data, void *lhs, void *rhs) {}
++void __ubsan_handle_mul_overflow(void *_data, void *lhs, void *rhs)
++{
++	write_overflow_data(_data, lhs, rhs, '*');
++}
+ 
+-void __ubsan_handle_negate_overflow(void *_data, void *old_val) {}
++void __ubsan_handle_negate_overflow(void *_data, void *old_val)
++{
++	write_overflow_data(_data, old_val, NULL, '!');
++}
++
++void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
++{
++	write_overflow_data(_data, lhs, rhs, '/');
++}
+ 
+-void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs) {}
+ 
+ void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr)
+ {
 diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
-index b4a282bec91d..01bf2171af9e 100644
+index 21c242c92f0a..bd847ac1321e 100644
 --- a/arch/arm64/kvm/kvm_ubsan_buffer.c
 +++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
-@@ -32,6 +32,10 @@ void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
- 		__ubsan_handle_shift_out_of_bounds(&slot->shift_out_of_bounds_data,
- 				slot->u_val.lval, slot->u_val.rval);
+@@ -40,6 +40,24 @@ void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
+ 		__ubsan_handle_type_mismatch(&slot->type_mismatch_data,
+ 				slot->u_val.lval);
  		break;
-+	case UBSAN_INVALID_DATA:
-+		__ubsan_handle_load_invalid_value(&slot->invalid_value_data,
-+				slot->u_val.lval);
++	case UBSAN_OVERFLOW_DATA:
++		if (slot->u_val.op == '/') {
++			__ubsan_handle_divrem_overflow(&slot->overflow_data,
++					slot->u_val.lval, slot->u_val.rval);
++		} else if (slot->u_val.op == '!') {
++			__ubsan_handle_negate_overflow(&slot->overflow_data,
++					slot->u_val.lval);
++		} else if (slot->u_val.op == '+') {
++			__ubsan_handle_add_overflow(&slot->overflow_data,
++					slot->u_val.lval, slot->u_val.rval);
++		} else if (slot->u_val.op == '-') {
++			__ubsan_handle_sub_overflow(&slot->overflow_data,
++					slot->u_val.lval, slot->u_val.rval);
++		} else if (slot->u_val.op == '*') {
++			__ubsan_handle_mul_overflow(&slot->overflow_data,
++					slot->u_val.lval, slot->u_val.rval);
++		}
 +		break;
  	}
  }
