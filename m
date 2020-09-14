@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A8D268B4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65643268B48
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgINMmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S1726510AbgINMln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgINMhM (ORCPT
+        with ESMTP id S1726520AbgINMl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:37:12 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BF8C061352
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:37:12 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a12so17364563eds.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:37:12 -0700 (PDT)
+        Mon, 14 Sep 2020 08:41:26 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ADFC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:41:25 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so11114202wmi.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w96GNiyWqug9hy/q6WUukVDjU2hTwIhreDsYM9bYsO4=;
-        b=XF6MpACCNZ8VeLazppUefQsSFQQx21vZiHlOr8qLLvNfvxafRU/C4srGv6aw5vuu4+
-         MjDDrEMMVv+1xLqcBLR1MvnD2mTT7YP+YR/bUTGRf0AkfKE0LFgQUNkwKV3HS5jtslzC
-         Dinb/CJFYQXrAufFqsU3JHWTxQtOOTY1A4vYC8U65+zP3v+M2jn5oF7R7ef2UD/H6yDJ
-         PTEykxDEJ6c/wavCPyeamUB3aN8rjXg4ItCDkxWHVRNgwkoNCka15myMFzwBsXYdbrhh
-         EHusW0PVtMEdNMDrCHaURAjRaRwuBnlMxPk/ZH9sUhj0H3CWDgcxM23PrzOEjB52Ugwf
-         +C+A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xAHen39CQ6AAGevlcveD0dIrAIrRnYrxYh3e1ejsVDU=;
+        b=rtSk9ZshogvpaEs0mHfToSKgzkce7qjV1PwKg3iSKKuLk7yj3GomwXS/Iyy/2IgGG2
+         D6Yrnx/31csGg51aBdQQ5DTmu8OMbJwOUsRkAD8+OBY4McYywfIsnw2Wyt1KQHOXAZYk
+         ak2N5tCnJT1rPx2xlvNwZw70FPctxWhnzdInpXp8q/lLILASsKbmQDfAWQmTalIvStoW
+         OmDTGRRlEfRmxI6GXGA1RpDB8CaVQVR2WFFYp+7thIelUrFCTOYyAixKze4Tf2mDmT9X
+         B9matKi5Q1V9owRePi9hrWPobxVTQaoUKAy7N/G3JJKnwhsizAy5W1qDQE4tXeR9EiPI
+         ElhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=w96GNiyWqug9hy/q6WUukVDjU2hTwIhreDsYM9bYsO4=;
-        b=AHVHJWzzqATnv01haHmMqS8k+7idXXCFY9HTeau+/M4lciJ1u5pTBd5ifSACTN/dZy
-         OfonyW62e7P/GFkX6CPpSh0YwzqY3kY/Q6yQLextx+xGLc0+Ih3ab4k2sq6QzhsbayxC
-         7mTBHjOgSyIrG4SjzrYMyYMvo9flGBKrOxeqdU2dM+TZPXAwEcEwyg93WGlH6IrpGp+I
-         TrmTSKPh6qeq1IIwdy5JexTGESYuXEm/L+kRivVGk5nQzvey6vXsE8d+qHJb8wqnQS0s
-         EGNW4bQCJB541uIswNV5k4AXDEEnrgU66yaxe/THk+kNbG5GQP8mB6zBJ7pAe8QPp8Wm
-         +Vbg==
-X-Gm-Message-State: AOAM532t9sY3pjgyvIQDRHKPtB5hbwHUsQ2ImhrSKVug/yrUMmrhp40o
-        jZ05RGbLUJ+KcdC5KMOK1jLZ3Brjvcs=
-X-Google-Smtp-Source: ABdhPJwcXhdxeYD/WOSgpvYilAfrsyXX/sMKZD8EmdymNIRN4jXJaVAdNXpcdjSUxGjCTxmKYZaFuA==
-X-Received: by 2002:aa7:d606:: with SMTP id c6mr17287894edr.370.1600087030727;
-        Mon, 14 Sep 2020 05:37:10 -0700 (PDT)
-Received: from gmail.com (5400A980.dsl.pool.telekom.hu. [84.0.169.128])
-        by smtp.gmail.com with ESMTPSA id q23sm3432898edw.41.2020.09.14.05.37.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xAHen39CQ6AAGevlcveD0dIrAIrRnYrxYh3e1ejsVDU=;
+        b=XDhaYJhGzTxhoYarTcSVL1Pd493aDxbgyafBRfd1Oo6X0xdgq+E4w+p+Q+QLRUupDn
+         4wP5gISNgUhbVWp+82N/KZjhlwAFNGxX2zk8gZS4e5wBatQiuxbN/Yfl9T2/24CqVbYs
+         FGPvLdpe/uKYVOfGP72uFYmRIJzlSK/TcAojbV1swUAKOIYYoKqrpb4DNRg6TUzEXaw/
+         ehKpi77IZ1U1LxVy4rJ1Uf9qt/MX8N+Q5ukYNnLmEeIQcVCk/vTkuA5wtvP0j3kgkkAF
+         t8OkcX160+z/5rhCaq8JUyvmeI1AxtIca98eA7DjDs1M/VhEVfSJo5Zgac71hm6QlgV+
+         WRNA==
+X-Gm-Message-State: AOAM530TzSZ4f7x4GgwSmn8lrQFSq65pJdkGM4uY4dJU2DX4eKN5y+hX
+        jt37AyvywbICnmh0O+ysEu4=
+X-Google-Smtp-Source: ABdhPJyafkncBQDohv0ffJuFFm/BWhBjv4BZS+Wt9MZm4g0m6Ii4HKzzPvfFsqaQL3/E8IZO0mDhVg==
+X-Received: by 2002:a1c:9893:: with SMTP id a141mr3595787wme.188.1600087284458;
+        Mon, 14 Sep 2020 05:41:24 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id q4sm22239232wru.65.2020.09.14.05.41.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 05:37:10 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 14:37:08 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH] kbuild: Run syncconfig with -s
-Message-ID: <20200914123708.GA603584@gmail.com>
-References: <20200820063526.GA3278096@gmail.com>
- <CAK7LNATs3qEjTE-=FWP9Srf3Ys30T7h+PL6MLgHoBPxJLSx4VA@mail.gmail.com>
+        Mon, 14 Sep 2020 05:41:23 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     nsekhar@ti.com
+Cc:     bgolaszewski@baylibre.com, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] ARM: davinci: fix kconfig dependency warning when !PINCTRL
+Date:   Mon, 14 Sep 2020 15:38:50 +0300
+Message-Id: <20200914123848.307406-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNATs3qEjTE-=FWP9Srf3Ys30T7h+PL6MLgHoBPxJLSx4VA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When ARCH_DAVINCI is enabled and PINCTRL is disabled, it results
+in the following Kbuild warning:
 
-* Masahiro Yamada <masahiroy@kernel.org> wrote:
+WARNING: unmet direct dependencies detected for PINCTRL_SINGLE
+  Depends on [n]: PINCTRL [=n] && OF [=y] && HAS_IOMEM [=y]
+  Selected by [y]:
+  - ARCH_DAVINCI [=y] && ARCH_MULTI_V5 [=y]
 
-> On Thu, Aug 20, 2020 at 3:35 PM Ingo Molnar <mingo@kernel.org> wrote:
-> >
-> > On every kernel build that runs --syncconfig, there's an output of the following line:
-> >
-> >   scripts/kconfig/conf  --syncconfig Kconfig
-> >
-> > This is the only non-platform build message the kbuild system emits that isn't
-> > prefixed by at least a space, or is a build warning.
-> >
-> > Run it under -s - if there's any problem it will emit messages anyway.
-> >
-> > With this change the following simple grep filter will show all build warnings
-> > and errors of a kernel build:
-> >
-> >    make | grep -v '^ '
-> 
-> 
-> 
-> I do want to see something when syncconfig is invoked.
-> 
-> I will apply this instead:
-> https://patchwork.kernel.org/patch/11727445/
+The reason is that ARCH_DAVINCI selects PINCTRL_SINGLE without depending on
+or selecting PINCTRL while PINCTRL_SINGLE is subordinate to PINCTRL.
 
-BTW., there's another, rather spurious bug I recently triggered in kbuild.
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-Occasionally when I Ctrl-C a kernel build on a system with a lot of CPUs, 
-the .o.cmd file gets corrupted:
+Fixes: f962396ce292 ("ARM: davinci: support multiplatform build for ARM v5")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ arch/arm/mach-davinci/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-  mm/.pgtable-generic.o.cmd:5: *** unterminated call to function 'wildcard': missing ')'.  Stop.
-  make: *** [Makefile:1788: mm] Error 2
-  make: *** Waiting for unfinished jobs....
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index f56ff8c24043..e0cbcda6f087 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -11,6 +11,7 @@ menuconfig ARCH_DAVINCI
+ 	select REGMAP_MMIO
+ 	select RESET_CONTROLLER
+ 	select HAVE_IDE
++	select PINCTRL
+ 	select PINCTRL_SINGLE
+ 
+ if ARCH_DAVINCI
+-- 
+2.25.1
 
-The .o.cmd file is half-finished:
-
-    $(wildcard include/config/shmem.h) \
-    $(wildcard include/config/hugetlb/page.h) \
-    $(wildcard include/config/zone/device.h) \
-    $(wildcard include/config/dev/pagemap/ops.h) \
-    $(wildcard include/config/device/private.h) \
-    $(wildcard include/config/pci/p2pdma.h) \
-    $(wildcard include/config/sparsemem.h) \
-    $(wildcard include/config/sparsemem/vmemmap.h) \
-    $(wildcard include/config/numa/balancing.h) \
-    $(wildcard i
-    [premature EOF]
-
-Instead of the regular rules that end in:
-
-    $(wildcard include/config/memory/hotplug/sparse.h) \
-
-    mm/pgtable-generic.o: $(deps_mm/pgtable-generic.o)
-
-    $(deps_mm/pgtable-generic.o):
-    [regular EOF]
-
-Manually removing the corrupted .o.cmd dot file solves the bug.
-
-There's no reproducer other than Ctrl-C-ing large build jobs a couple of times.
-
-Thanks,
-
-	Ingo
