@@ -2,766 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31F626991B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383A526991D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgINWli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:41:38 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:40488 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726093AbgINWlg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:41:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600123294; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=/fCw5entm9M6pmDtEexVARYNYQ6eMP+0Az68QpI3EQ0=; b=ejsaR5+fcOj/IfV+mfwK16bEfEqapgksy5fbiwm0dWwFzaZvNzH8WBGmktch8KYd8vgVOjFt
- 4QhcIraYR8CH4NNwiD0EoKwFUPD8h4RuV5It3FB6eZaP26zyWPFIlDUiJo+iHCTULEFfx0vl
- cutvTP73gDRrdKOllHpN/iwHCdA=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f5ff16cba408b30ce2d3576 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 22:40:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 07201C43382; Mon, 14 Sep 2020 22:40:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726061AbgINWnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:43:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbgINWnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:43:12 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D705C433C8;
-        Mon, 14 Sep 2020 22:40:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D705C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Eric Anholt <eric@anholt.net>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/msm: Get rid of the REG_ADRENO offsets
-Date:   Mon, 14 Sep 2020 16:40:23 -0600
-Message-Id: <20200914224023.1495082-4-jcrouse@codeaurora.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200914224023.1495082-1-jcrouse@codeaurora.org>
-References: <20200914224023.1495082-1-jcrouse@codeaurora.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id B108C20732;
+        Mon, 14 Sep 2020 22:43:10 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 18:43:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tingwei Zhang <tingweiz@codeaurora.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Message-ID: <20200914184309.7a9de53a@gandalf.local.home>
+In-Reply-To: <20200901232839.GB13346@codeaurora.org>
+References: <20200813014552.23539-1-tingwei@codeaurora.org>
+        <20200901232839.GB13346@codeaurora.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As newer GPU families are added it makes less sense to maintain a
-"generic" version functions for older families. Move adreno_submit()
-and get_rptr() into the target specific code for a2xx, a3xx and a4xx.
-Add a parameter to adreno_flush to pass the target specific WPTR register
-instead of relying on the generic register.
+On Wed, 2 Sep 2020 07:28:39 +0800
+Tingwei Zhang <tingweiz@codeaurora.org> wrote:
 
-All of this gets rid of the last of the REG_ADRENO offsets so remove all
-all the register definitions and infrastructure.
+> Hi Alexander,
+> 
+> May I know your comments for this patch set?
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
----
+I ran your patch set against get_maintainers.pl and it came up with this:
 
- drivers/gpu/drm/msm/adreno/a2xx_gpu.c   | 65 +++++++++++++++-----
- drivers/gpu/drm/msm/adreno/a3xx_gpu.c   | 77 ++++++++++++++++++-----
- drivers/gpu/drm/msm/adreno/a4xx_gpu.c   | 82 ++++++++++++++++++-------
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c   | 12 ----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 13 ----
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 82 +------------------------
- drivers/gpu/drm/msm/adreno/adreno_gpu.h | 81 +-----------------------
- 7 files changed, 178 insertions(+), 234 deletions(-)
+Alexander Shishkin <alexander.shishkin@linux.intel.com> (maintainer:SYSTEM TRACE MODULE CLASS)
+Maxime Coquelin <mcoquelin.stm32@gmail.com> (maintainer:ARM/STM32 ARCHITECTURE)
+Alexandre Torgue <alexandre.torgue@st.com> (maintainer:ARM/STM32 ARCHITECTURE)
+Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
+Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
+linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32 ARCHITECTURE)
+linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32 ARCHITECTURE)
+linux-kernel@vger.kernel.org (open list)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-index 48fa49f69d6d..7e82c41a85f1 100644
---- a/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a2xx_gpu.c
-@@ -10,6 +10,48 @@ extern bool hang_debug;
- static void a2xx_dump(struct msm_gpu *gpu);
- static bool a2xx_idle(struct msm_gpu *gpu);
- 
-+static void a2xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-+{
-+	struct msm_drm_private *priv = gpu->dev->dev_private;
-+	struct msm_ringbuffer *ring = submit->ring;
-+	unsigned int i;
-+
-+	for (i = 0; i < submit->nr_cmds; i++) {
-+		switch (submit->cmd[i].type) {
-+		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
-+			/* ignore IB-targets */
-+			break;
-+		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
-+			/* ignore if there has not been a ctx switch: */
-+			if (priv->lastctx == submit->queue->ctx)
-+				break;
-+			fallthrough;
-+		case MSM_SUBMIT_CMD_BUF:
-+			OUT_PKT3(ring, CP_INDIRECT_BUFFER_PFD, 2);
-+			OUT_RING(ring, lower_32_bits(submit->cmd[i].iova));
-+			OUT_RING(ring, submit->cmd[i].size);
-+			OUT_PKT2(ring);
-+			break;
-+		}
-+	}
-+
-+	OUT_PKT0(ring, REG_AXXX_CP_SCRATCH_REG2, 1);
-+	OUT_RING(ring, submit->seqno);
-+
-+	/* wait for idle before cache flush/interrupt */
-+	OUT_PKT3(ring, CP_WAIT_FOR_IDLE, 1);
-+	OUT_RING(ring, 0x00000000);
-+
-+	OUT_PKT3(ring, CP_EVENT_WRITE, 3);
-+	OUT_RING(ring, CACHE_FLUSH_TS);
-+	OUT_RING(ring, rbmemptr(ring, fence));
-+	OUT_RING(ring, submit->seqno);
-+	OUT_PKT3(ring, CP_INTERRUPT, 1);
-+	OUT_RING(ring, 0x80000000);
-+
-+	adreno_flush(gpu, ring, REG_AXXX_CP_RB_WPTR);
-+}
-+
- static bool a2xx_me_init(struct msm_gpu *gpu)
- {
- 	struct msm_ringbuffer *ring = gpu->rb[0];
-@@ -53,7 +95,7 @@ static bool a2xx_me_init(struct msm_gpu *gpu)
- 	OUT_PKT3(ring, CP_SET_PROTECTED_MODE, 1);
- 	OUT_RING(ring, 1);
- 
--	gpu->funcs->flush(gpu, ring);
-+	adreno_flush(gpu, ring, REG_AXXX_CP_RB_WPTR);
- 	return a2xx_idle(gpu);
- }
- 
-@@ -421,16 +463,11 @@ a2xx_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev)
- 	return aspace;
- }
- 
--/* Register offset defines for A2XX - copy of A3XX */
--static const unsigned int a2xx_register_offsets[REG_ADRENO_REGISTER_MAX] = {
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE, REG_AXXX_CP_RB_BASE),
--	REG_ADRENO_SKIP(REG_ADRENO_CP_RB_BASE_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR, REG_AXXX_CP_RB_RPTR_ADDR),
--	REG_ADRENO_SKIP(REG_ADRENO_CP_RB_RPTR_ADDR_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR, REG_AXXX_CP_RB_RPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_WPTR, REG_AXXX_CP_RB_WPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_CNTL, REG_AXXX_CP_RB_CNTL),
--};
-+static u32 a2xx_get_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
-+{
-+	ring->memptrs->rptr = gpu_read(gpu, REG_AXXX_CP_RB_RPTR);
-+	return ring->memptrs->rptr;
-+}
- 
- static const struct adreno_gpu_funcs funcs = {
- 	.base = {
-@@ -439,8 +476,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.pm_suspend = msm_gpu_pm_suspend,
- 		.pm_resume = msm_gpu_pm_resume,
- 		.recover = a2xx_recover,
--		.submit = adreno_submit,
--		.flush = adreno_flush,
-+		.submit = a2xx_submit,
- 		.active_ring = adreno_active_ring,
- 		.irq = a2xx_irq,
- 		.destroy = a2xx_destroy,
-@@ -450,6 +486,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.gpu_state_get = a2xx_gpu_state_get,
- 		.gpu_state_put = adreno_gpu_state_put,
- 		.create_address_space = a2xx_create_address_space,
-+		.get_rptr = a2xx_get_rptr,
- 	},
- };
- 
-@@ -491,8 +528,6 @@ struct msm_gpu *a2xx_gpu_init(struct drm_device *dev)
- 	else
- 		adreno_gpu->registers = a220_registers;
- 
--	adreno_gpu->reg_offsets = a2xx_register_offsets;
--
- 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
- 	if (ret)
- 		goto fail;
-diff --git a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-index f6471145a7a6..f29c77d9cd42 100644
---- a/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-@@ -28,6 +28,61 @@ extern bool hang_debug;
- static void a3xx_dump(struct msm_gpu *gpu);
- static bool a3xx_idle(struct msm_gpu *gpu);
- 
-+static void a3xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-+{
-+	struct msm_drm_private *priv = gpu->dev->dev_private;
-+	struct msm_ringbuffer *ring = submit->ring;
-+	unsigned int i;
-+
-+	for (i = 0; i < submit->nr_cmds; i++) {
-+		switch (submit->cmd[i].type) {
-+		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
-+			/* ignore IB-targets */
-+			break;
-+		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
-+			/* ignore if there has not been a ctx switch: */
-+			if (priv->lastctx == submit->queue->ctx)
-+				break;
-+			fallthrough;
-+		case MSM_SUBMIT_CMD_BUF:
-+			OUT_PKT3(ring, CP_INDIRECT_BUFFER_PFD, 2);
-+			OUT_RING(ring, lower_32_bits(submit->cmd[i].iova));
-+			OUT_RING(ring, submit->cmd[i].size);
-+			OUT_PKT2(ring);
-+			break;
-+		}
-+	}
-+
-+	OUT_PKT0(ring, REG_AXXX_CP_SCRATCH_REG2, 1);
-+	OUT_RING(ring, submit->seqno);
-+
-+	/* Flush HLSQ lazy updates to make sure there is nothing
-+	 * pending for indirect loads after the timestamp has
-+	 * passed:
-+	 */
-+	OUT_PKT3(ring, CP_EVENT_WRITE, 1);
-+	OUT_RING(ring, HLSQ_FLUSH);
-+
-+	/* wait for idle before cache flush/interrupt */
-+	OUT_PKT3(ring, CP_WAIT_FOR_IDLE, 1);
-+	OUT_RING(ring, 0x00000000);
-+
-+	/* BIT(31) of CACHE_FLUSH_TS triggers CACHE_FLUSH_TS IRQ from GPU */
-+	OUT_PKT3(ring, CP_EVENT_WRITE, 3);
-+	OUT_RING(ring, CACHE_FLUSH_TS | BIT(31));
-+	OUT_RING(ring, rbmemptr(ring, fence));
-+	OUT_RING(ring, submit->seqno);
-+
-+#if 0
-+	/* Dummy set-constant to trigger context rollover */
-+	OUT_PKT3(ring, CP_SET_CONSTANT, 2);
-+	OUT_RING(ring, CP_REG(REG_A3XX_HLSQ_CL_KERNEL_GROUP_X_REG));
-+	OUT_RING(ring, 0x00000000);
-+#endif
-+
-+	adreno_flush(gpu, ring, REG_AXXX_CP_RB_WPTR);
-+}
-+
- static bool a3xx_me_init(struct msm_gpu *gpu)
- {
- 	struct msm_ringbuffer *ring = gpu->rb[0];
-@@ -51,7 +106,7 @@ static bool a3xx_me_init(struct msm_gpu *gpu)
- 	OUT_RING(ring, 0x00000000);
- 	OUT_RING(ring, 0x00000000);
- 
--	gpu->funcs->flush(gpu, ring);
-+	adreno_flush(gpu, ring, REG_AXXX_CP_RB_WPTR);
- 	return a3xx_idle(gpu);
- }
- 
-@@ -423,16 +478,11 @@ static struct msm_gpu_state *a3xx_gpu_state_get(struct msm_gpu *gpu)
- 	return state;
- }
- 
--/* Register offset defines for A3XX */
--static const unsigned int a3xx_register_offsets[REG_ADRENO_REGISTER_MAX] = {
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE, REG_AXXX_CP_RB_BASE),
--	REG_ADRENO_SKIP(REG_ADRENO_CP_RB_BASE_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR, REG_AXXX_CP_RB_RPTR_ADDR),
--	REG_ADRENO_SKIP(REG_ADRENO_CP_RB_RPTR_ADDR_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR, REG_AXXX_CP_RB_RPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_WPTR, REG_AXXX_CP_RB_WPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_CNTL, REG_AXXX_CP_RB_CNTL),
--};
-+static u32 a3xx_get_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
-+{
-+	ring->memptrs->rptr = gpu_read(gpu, REG_AXXX_CP_RB_RPTR);
-+	return ring->memptrs->rptr;
-+}
- 
- static const struct adreno_gpu_funcs funcs = {
- 	.base = {
-@@ -441,8 +491,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.pm_suspend = msm_gpu_pm_suspend,
- 		.pm_resume = msm_gpu_pm_resume,
- 		.recover = a3xx_recover,
--		.submit = adreno_submit,
--		.flush = adreno_flush,
-+		.submit = a3xx_submit,
- 		.active_ring = adreno_active_ring,
- 		.irq = a3xx_irq,
- 		.destroy = a3xx_destroy,
-@@ -452,6 +501,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.gpu_state_get = a3xx_gpu_state_get,
- 		.gpu_state_put = adreno_gpu_state_put,
- 		.create_address_space = adreno_iommu_create_address_space,
-+		.get_rptr = a3xx_get_rptr,
- 	},
- };
- 
-@@ -490,7 +540,6 @@ struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
- 	gpu->num_perfcntrs = ARRAY_SIZE(perfcntrs);
- 
- 	adreno_gpu->registers = a3xx_registers;
--	adreno_gpu->reg_offsets = a3xx_register_offsets;
- 
- 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
- 	if (ret)
-diff --git a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-index 954753600625..2b93b33b05e4 100644
---- a/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a4xx_gpu.c
-@@ -22,6 +22,54 @@ extern bool hang_debug;
- static void a4xx_dump(struct msm_gpu *gpu);
- static bool a4xx_idle(struct msm_gpu *gpu);
- 
-+static void a4xx_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-+{
-+	struct msm_drm_private *priv = gpu->dev->dev_private;
-+	struct msm_ringbuffer *ring = submit->ring;
-+	unsigned int i;
-+
-+	for (i = 0; i < submit->nr_cmds; i++) {
-+		switch (submit->cmd[i].type) {
-+		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
-+			/* ignore IB-targets */
-+			break;
-+		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
-+			/* ignore if there has not been a ctx switch: */
-+			if (priv->lastctx == submit->queue->ctx)
-+				break;
-+			fallthrough;
-+		case MSM_SUBMIT_CMD_BUF:
-+			OUT_PKT3(ring, CP_INDIRECT_BUFFER_PFE, 2);
-+			OUT_RING(ring, lower_32_bits(submit->cmd[i].iova));
-+			OUT_RING(ring, submit->cmd[i].size);
-+			OUT_PKT2(ring);
-+			break;
-+		}
-+	}
-+
-+	OUT_PKT0(ring, REG_AXXX_CP_SCRATCH_REG2, 1);
-+	OUT_RING(ring, submit->seqno);
-+
-+	/* Flush HLSQ lazy updates to make sure there is nothing
-+	 * pending for indirect loads after the timestamp has
-+	 * passed:
-+	 */
-+	OUT_PKT3(ring, CP_EVENT_WRITE, 1);
-+	OUT_RING(ring, HLSQ_FLUSH);
-+
-+	/* wait for idle before cache flush/interrupt */
-+	OUT_PKT3(ring, CP_WAIT_FOR_IDLE, 1);
-+	OUT_RING(ring, 0x00000000);
-+
-+	/* BIT(31) of CACHE_FLUSH_TS triggers CACHE_FLUSH_TS IRQ from GPU */
-+	OUT_PKT3(ring, CP_EVENT_WRITE, 3);
-+	OUT_RING(ring, CACHE_FLUSH_TS | BIT(31));
-+	OUT_RING(ring, rbmemptr(ring, fence));
-+	OUT_RING(ring, submit->seqno);
-+
-+	adreno_flush(gpu, ring, REG_A4XX_CP_RB_WPTR);
-+}
-+
- /*
-  * a4xx_enable_hwcg() - Program the clock control registers
-  * @device: The adreno device pointer
-@@ -129,7 +177,7 @@ static bool a4xx_me_init(struct msm_gpu *gpu)
- 	OUT_RING(ring, 0x00000000);
- 	OUT_RING(ring, 0x00000000);
- 
--	gpu->funcs->flush(gpu, ring);
-+	adreno_flush(gpu, ring, REG_A4XX_CP_RB_WPTR);
- 	return a4xx_idle(gpu);
- }
- 
-@@ -515,17 +563,6 @@ static struct msm_gpu_state *a4xx_gpu_state_get(struct msm_gpu *gpu)
- 	return state;
- }
- 
--/* Register offset defines for A4XX, in order of enum adreno_regs */
--static const unsigned int a4xx_register_offsets[REG_ADRENO_REGISTER_MAX] = {
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE, REG_A4XX_CP_RB_BASE),
--	REG_ADRENO_SKIP(REG_ADRENO_CP_RB_BASE_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR, REG_A4XX_CP_RB_RPTR_ADDR),
--	REG_ADRENO_SKIP(REG_ADRENO_CP_RB_RPTR_ADDR_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR, REG_A4XX_CP_RB_RPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_WPTR, REG_A4XX_CP_RB_WPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_CNTL, REG_A4XX_CP_RB_CNTL),
--};
--
- static void a4xx_dump(struct msm_gpu *gpu)
- {
- 	printk("status:   %08x\n",
-@@ -576,6 +613,12 @@ static int a4xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
- 	return 0;
- }
- 
-+static u32 a4xx_get_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
-+{
-+	ring->memptrs->rptr = gpu_read(gpu, REG_A4XX_CP_RB_RPTR);
-+	return ring->memptrs->rptr;
-+}
-+
- static const struct adreno_gpu_funcs funcs = {
- 	.base = {
- 		.get_param = adreno_get_param,
-@@ -583,8 +626,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.pm_suspend = a4xx_pm_suspend,
- 		.pm_resume = a4xx_pm_resume,
- 		.recover = a4xx_recover,
--		.submit = adreno_submit,
--		.flush = adreno_flush,
-+		.submit = a4xx_submit,
- 		.active_ring = adreno_active_ring,
- 		.irq = a4xx_irq,
- 		.destroy = a4xx_destroy,
-@@ -594,6 +636,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.gpu_state_get = a4xx_gpu_state_get,
- 		.gpu_state_put = adreno_gpu_state_put,
- 		.create_address_space = adreno_iommu_create_address_space,
-+		.get_rptr = a4xx_get_rptr,
- 	},
- 	.get_timestamp = a4xx_get_timestamp,
- };
-@@ -631,15 +674,12 @@ struct msm_gpu *a4xx_gpu_init(struct drm_device *dev)
- 
- 	adreno_gpu->registers = adreno_is_a405(adreno_gpu) ? a405_registers :
- 							     a4xx_registers;
--	adreno_gpu->reg_offsets = a4xx_register_offsets;
- 
- 	/* if needed, allocate gmem: */
--	if (adreno_is_a4xx(adreno_gpu)) {
--		ret = adreno_gpu_ocmem_init(dev->dev, adreno_gpu,
--					    &a4xx_gpu->ocmem);
--		if (ret)
--			goto fail;
--	}
-+	ret = adreno_gpu_ocmem_init(dev->dev, adreno_gpu,
-+				    &a4xx_gpu->ocmem);
-+	if (ret)
-+		goto fail;
- 
- 	if (!gpu->aspace) {
- 		/* TODO we think it is possible to configure the GPU to
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index 835aaef72b00..c941c8138f25 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -1121,17 +1121,6 @@ static irqreturn_t a5xx_irq(struct msm_gpu *gpu)
- 	return IRQ_HANDLED;
- }
- 
--static const u32 a5xx_register_offsets[REG_ADRENO_REGISTER_MAX] = {
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE, REG_A5XX_CP_RB_BASE),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE_HI, REG_A5XX_CP_RB_BASE_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR, REG_A5XX_CP_RB_RPTR_ADDR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR_HI,
--		REG_A5XX_CP_RB_RPTR_ADDR_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR, REG_A5XX_CP_RB_RPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_WPTR, REG_A5XX_CP_RB_WPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_CNTL, REG_A5XX_CP_RB_CNTL),
--};
--
- static const u32 a5xx_registers[] = {
- 	0x0000, 0x0002, 0x0004, 0x0020, 0x0022, 0x0026, 0x0029, 0x002B,
- 	0x002E, 0x0035, 0x0038, 0x0042, 0x0044, 0x0044, 0x0047, 0x0095,
-@@ -1587,7 +1576,6 @@ struct msm_gpu *a5xx_gpu_init(struct drm_device *dev)
- 	gpu = &adreno_gpu->base;
- 
- 	adreno_gpu->registers = a5xx_registers;
--	adreno_gpu->reg_offsets = a5xx_register_offsets;
- 
- 	a5xx_gpu->lm_leakage = 0x4E001A;
- 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 9cce2b01b1a7..3248c89aa001 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1022,18 +1022,6 @@ static irqreturn_t a6xx_irq(struct msm_gpu *gpu)
- 	return IRQ_HANDLED;
- }
- 
--static const u32 a6xx_register_offsets[REG_ADRENO_REGISTER_MAX] = {
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE, REG_A6XX_CP_RB_BASE),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_BASE_HI, REG_A6XX_CP_RB_BASE_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR,
--		REG_A6XX_CP_RB_RPTR_ADDR_LO),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR_ADDR_HI,
--		REG_A6XX_CP_RB_RPTR_ADDR_HI),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_RPTR, REG_A6XX_CP_RB_RPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_WPTR, REG_A6XX_CP_RB_WPTR),
--	REG_ADRENO_DEFINE(REG_ADRENO_CP_RB_CNTL, REG_A6XX_CP_RB_CNTL),
--};
--
- static int a6xx_pm_resume(struct msm_gpu *gpu)
- {
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-@@ -1208,7 +1196,6 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
- 	gpu = &adreno_gpu->base;
- 
- 	adreno_gpu->registers = NULL;
--	adreno_gpu->reg_offsets = a6xx_register_offsets;
- 
- 	if (adreno_is_a650(adreno_gpu))
- 		adreno_gpu->base.hw_apriv = true;
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 11635e39ca19..fd8f491f2e48 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -424,11 +424,7 @@ static uint32_t get_rptr(struct adreno_gpu *adreno_gpu,
- {
- 	struct msm_gpu *gpu = &adreno_gpu->base;
- 
--	if (gpu->funcs->get_rptr)
--		return gpu->funcs->get_rptr(gpu, ring);
--
--	return ring->memptrs->rptr = adreno_gpu_read(
--		adreno_gpu, REG_ADRENO_CP_RB_RPTR);
-+	return gpu->funcs->get_rptr(gpu, ring);
- }
- 
- struct msm_ringbuffer *adreno_active_ring(struct msm_gpu *gpu)
-@@ -454,80 +450,8 @@ void adreno_recover(struct msm_gpu *gpu)
- 	}
- }
- 
--void adreno_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
-+void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring, u32 reg)
- {
--	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
--	struct msm_drm_private *priv = gpu->dev->dev_private;
--	struct msm_ringbuffer *ring = submit->ring;
--	unsigned i;
--
--	for (i = 0; i < submit->nr_cmds; i++) {
--		switch (submit->cmd[i].type) {
--		case MSM_SUBMIT_CMD_IB_TARGET_BUF:
--			/* ignore IB-targets */
--			break;
--		case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
--			/* ignore if there has not been a ctx switch: */
--			if (priv->lastctx == submit->queue->ctx)
--				break;
--			/* fall-thru */
--		case MSM_SUBMIT_CMD_BUF:
--			OUT_PKT3(ring, adreno_is_a4xx(adreno_gpu) ?
--				CP_INDIRECT_BUFFER_PFE : CP_INDIRECT_BUFFER_PFD, 2);
--			OUT_RING(ring, lower_32_bits(submit->cmd[i].iova));
--			OUT_RING(ring, submit->cmd[i].size);
--			OUT_PKT2(ring);
--			break;
--		}
--	}
--
--	OUT_PKT0(ring, REG_AXXX_CP_SCRATCH_REG2, 1);
--	OUT_RING(ring, submit->seqno);
--
--	if (adreno_is_a3xx(adreno_gpu) || adreno_is_a4xx(adreno_gpu)) {
--		/* Flush HLSQ lazy updates to make sure there is nothing
--		 * pending for indirect loads after the timestamp has
--		 * passed:
--		 */
--		OUT_PKT3(ring, CP_EVENT_WRITE, 1);
--		OUT_RING(ring, HLSQ_FLUSH);
--	}
--
--	/* wait for idle before cache flush/interrupt */
--	OUT_PKT3(ring, CP_WAIT_FOR_IDLE, 1);
--	OUT_RING(ring, 0x00000000);
--
--	if (!adreno_is_a2xx(adreno_gpu)) {
--		/* BIT(31) of CACHE_FLUSH_TS triggers CACHE_FLUSH_TS IRQ from GPU */
--		OUT_PKT3(ring, CP_EVENT_WRITE, 3);
--		OUT_RING(ring, CACHE_FLUSH_TS | BIT(31));
--		OUT_RING(ring, rbmemptr(ring, fence));
--		OUT_RING(ring, submit->seqno);
--	} else {
--		/* BIT(31) means something else on a2xx */
--		OUT_PKT3(ring, CP_EVENT_WRITE, 3);
--		OUT_RING(ring, CACHE_FLUSH_TS);
--		OUT_RING(ring, rbmemptr(ring, fence));
--		OUT_RING(ring, submit->seqno);
--		OUT_PKT3(ring, CP_INTERRUPT, 1);
--		OUT_RING(ring, 0x80000000);
--	}
--
--#if 0
--	if (adreno_is_a3xx(adreno_gpu)) {
--		/* Dummy set-constant to trigger context rollover */
--		OUT_PKT3(ring, CP_SET_CONSTANT, 2);
--		OUT_RING(ring, CP_REG(REG_A3XX_HLSQ_CL_KERNEL_GROUP_X_REG));
--		OUT_RING(ring, 0x00000000);
--	}
--#endif
--
--	gpu->funcs->flush(gpu, ring);
--}
--
--void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
--{
--	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
- 	uint32_t wptr;
- 
- 	/* Copy the shadow to the actual register */
-@@ -543,7 +467,7 @@ void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
- 	/* ensure writes to ringbuffer have hit system memory: */
- 	mb();
- 
--	adreno_gpu_write(adreno_gpu, REG_ADRENO_CP_RB_WPTR, wptr);
-+	gpu_write(gpu, reg, wptr);
- }
- 
- bool adreno_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-index 848632758450..c3775f79525a 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-@@ -17,29 +17,8 @@
- #include "adreno_common.xml.h"
- #include "adreno_pm4.xml.h"
- 
--#define REG_ADRENO_DEFINE(_offset, _reg) [_offset] = (_reg) + 1
--#define REG_SKIP ~0
--#define REG_ADRENO_SKIP(_offset) [_offset] = REG_SKIP
--
- extern bool snapshot_debugbus;
- 
--/**
-- * adreno_regs: List of registers that are used in across all
-- * 3D devices. Each device type has different offset value for the same
-- * register, so an array of register offsets are declared for every device
-- * and are indexed by the enumeration values defined in this enum
-- */
--enum adreno_regs {
--	REG_ADRENO_CP_RB_BASE,
--	REG_ADRENO_CP_RB_BASE_HI,
--	REG_ADRENO_CP_RB_RPTR_ADDR,
--	REG_ADRENO_CP_RB_RPTR_ADDR_HI,
--	REG_ADRENO_CP_RB_RPTR,
--	REG_ADRENO_CP_RB_WPTR,
--	REG_ADRENO_CP_RB_CNTL,
--	REG_ADRENO_REGISTER_MAX,
--};
--
- enum {
- 	ADRENO_FW_PM4 = 0,
- 	ADRENO_FW_SQE = 0, /* a6xx */
-@@ -176,11 +155,6 @@ static inline bool adreno_is_a225(struct adreno_gpu *gpu)
- 	return gpu->revn == 225;
- }
- 
--static inline bool adreno_is_a3xx(struct adreno_gpu *gpu)
--{
--	return (gpu->revn >= 300) && (gpu->revn < 400);
--}
--
- static inline bool adreno_is_a305(struct adreno_gpu *gpu)
- {
- 	return gpu->revn == 305;
-@@ -207,11 +181,6 @@ static inline bool adreno_is_a330v2(struct adreno_gpu *gpu)
- 	return adreno_is_a330(gpu) && (gpu->rev.patchid > 0);
- }
- 
--static inline bool adreno_is_a4xx(struct adreno_gpu *gpu)
--{
--	return (gpu->revn >= 400) && (gpu->revn < 500);
--}
--
- static inline int adreno_is_a405(struct adreno_gpu *gpu)
- {
- 	return gpu->revn == 405;
-@@ -269,8 +238,7 @@ struct drm_gem_object *adreno_fw_create_bo(struct msm_gpu *gpu,
- 		const struct firmware *fw, u64 *iova);
- int adreno_hw_init(struct msm_gpu *gpu);
- void adreno_recover(struct msm_gpu *gpu);
--void adreno_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit);
--void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring);
-+void adreno_flush(struct msm_gpu *gpu, struct msm_ringbuffer *ring, u32 reg);
- bool adreno_idle(struct msm_gpu *gpu, struct msm_ringbuffer *ring);
- #if defined(CONFIG_DEBUG_FS) || defined(CONFIG_DEV_COREDUMP)
- void adreno_show(struct msm_gpu *gpu, struct msm_gpu_state *state,
-@@ -364,59 +332,12 @@ OUT_PKT7(struct msm_ringbuffer *ring, uint8_t opcode, uint16_t cnt)
- 		((opcode & 0x7F) << 16) | (PM4_PARITY(opcode) << 23));
- }
- 
--/*
-- * adreno_reg_check() - Checks the validity of a register enum
-- * @gpu:		Pointer to struct adreno_gpu
-- * @offset_name:	The register enum that is checked
-- */
--static inline bool adreno_reg_check(struct adreno_gpu *gpu,
--		enum adreno_regs offset_name)
--{
--	BUG_ON(offset_name >= REG_ADRENO_REGISTER_MAX || !gpu->reg_offsets[offset_name]);
--
--	/*
--	 * REG_SKIP is a special value that tell us that the register in
--	 * question isn't implemented on target but don't trigger a BUG(). This
--	 * is used to cleanly implement adreno_gpu_write64() and
--	 * adreno_gpu_read64() in a generic fashion
--	 */
--	if (gpu->reg_offsets[offset_name] == REG_SKIP)
--		return false;
--
--	return true;
--}
--
--static inline u32 adreno_gpu_read(struct adreno_gpu *gpu,
--		enum adreno_regs offset_name)
--{
--	u32 reg = gpu->reg_offsets[offset_name];
--	u32 val = 0;
--	if(adreno_reg_check(gpu,offset_name))
--		val = gpu_read(&gpu->base, reg - 1);
--	return val;
--}
--
--static inline void adreno_gpu_write(struct adreno_gpu *gpu,
--		enum adreno_regs offset_name, u32 data)
--{
--	u32 reg = gpu->reg_offsets[offset_name];
--	if(adreno_reg_check(gpu, offset_name))
--		gpu_write(&gpu->base, reg - 1, data);
--}
--
- struct msm_gpu *a2xx_gpu_init(struct drm_device *dev);
- struct msm_gpu *a3xx_gpu_init(struct drm_device *dev);
- struct msm_gpu *a4xx_gpu_init(struct drm_device *dev);
- struct msm_gpu *a5xx_gpu_init(struct drm_device *dev);
- struct msm_gpu *a6xx_gpu_init(struct drm_device *dev);
- 
--static inline void adreno_gpu_write64(struct adreno_gpu *gpu,
--		enum adreno_regs lo, enum adreno_regs hi, u64 data)
--{
--	adreno_gpu_write(gpu, lo, lower_32_bits(data));
--	adreno_gpu_write(gpu, hi, upper_32_bits(data));
--}
--
- static inline uint32_t get_wptr(struct msm_ringbuffer *ring)
- {
- 	return (ring->cur - ring->start) % (MSM_GPU_RINGBUFFER_SZ >> 2);
--- 
-2.25.1
+I would use that to know who to send to.
+
+You have Alexander, myself, Ingo and LKML, but you should add the others in
+that list for this series, and then it may get noticed. Please use
+get_maintainers.pl for future patches if you don't know who to send them to.
+
+-- Steve
+
+> 
+> Thanks,
+> Tingwei
+> 
+> On Thu, Aug 13, 2020 at 09:45:46AM +0800, Tingwei Zhang wrote:
+> > Ftrace has ability to export trace packets to other destination.
+> > Currently, only function trace can be exported. This series extends the
+> > support to event trace and trace_maker. STM is one possible destination to
+> > export ftrace. Use separate channel for each CPU to avoid mixing up
+> > packets
+> > from different CPUs together.
+> > 
+> > Change from v2:
+> > Change flag definition to BIT(). (Steven)
+> > Add comment in stm_ftrace_write() to clarify it's safe to use 
+> > smp_processor_id() here since preempt is disabled. (Steven) 
+> > 
+> > Change from v1:
+> > All changes are suggested by Steven Rostedt.
+> > User separate flag to control function trace, event trace and trace mark.
+> > Allocate channels according to num_possible_cpu() dynamically.
+> > Move ftrace_exports routines up so all ftrace can use them.
+> > 
+> > Tingwei Zhang (6):
+> >   stm class: ftrace: change dependency to TRACING
+> >   tracing: add flag to control different traces
+> >   tracing: add trace_export support for event trace
+> >   tracing: add trace_export support for trace_marker
+> >   stm class: ftrace: enable supported trace export flag
+> >   stm class: ftrace: use different channel accroding to CPU
+> > 
+> >  drivers/hwtracing/stm/Kconfig  |   2 +-
+> >  drivers/hwtracing/stm/ftrace.c |   7 +-
+> >  include/linux/trace.h          |   7 +
+> >  kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
+> >  4 files changed, 159 insertions(+), 127 deletions(-)
+> > 
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> >   
 
