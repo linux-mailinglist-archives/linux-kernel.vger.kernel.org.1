@@ -2,129 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBDB2683E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6728C2683F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgINFBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:01:13 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:13937 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725974AbgINFBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:01:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600059667; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=incIykKufp2vCbdHmRPdZFVE3aFFHufJedlCIBpyTrM=;
- b=PEvt8YrkOAayKIreCBDAaP0M6gPbrVassSb4G9TmJrgwnd7NujbUpGKp2Q5kS6RFKs0PxC6k
- qo6rnwT4ygBgMIRzemHqlVSOhThd8SlcoOD8mawQxDq0b3WuF1QuUu5oQWsis3LUayQaljgL
- EnrKW8BV9//puSzF4+XudZHHNHc=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f5ef8efcc683673f92bc9d1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 05:00:31
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EE400C433FF; Mon, 14 Sep 2020 05:00:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C38FC433C6;
-        Mon, 14 Sep 2020 05:00:30 +0000 (UTC)
+        id S1726030AbgINFH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:07:27 -0400
+Received: from mga05.intel.com ([192.55.52.43]:35136 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725981AbgINFH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 01:07:26 -0400
+IronPort-SDR: M6RpdmtLaJNiZ/azQsoU+BtcFDLYWoCp/fod+oYRLfkfLTtp53Nbca+plpsLccwizGC6n7Zyxe
+ FBwVXSC/m2Jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="243856108"
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="243856108"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 22:07:20 -0700
+IronPort-SDR: ZvRF2QjnvV0NLOwP+i5EthsmuoK18RpWKyWZYNLez5Vtiafbr8tV5cPsB2ij7c1kqKezq9oCnn
+ /H0zr3Zjh5CA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="408752246"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2020 22:07:16 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v4 5/5] iommu/vt-d: Add is_aux_domain support
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20200901033422.22249-1-baolu.lu@linux.intel.com>
+ <20200901033422.22249-6-baolu.lu@linux.intel.com>
+ <20200910160556.15fe7acd@w520.home>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <5c6a3e0e-f328-9b89-ff83-101cae920aef@linux.intel.com>
+Date:   Mon, 14 Sep 2020 13:01:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200910160556.15fe7acd@w520.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 13:00:30 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v2 1/2] scsi: ufs: Abort tasks before clear them from
- doorbell
-In-Reply-To: <d151d6a2b53cfbd7bf3f9c9313b49c4c404c4c5a.camel@gmail.com>
-References: <1599099873-32579-1-git-send-email-cang@codeaurora.org>
- <1599099873-32579-2-git-send-email-cang@codeaurora.org>
- <1599627906.10803.65.camel@linux.ibm.com>
- <yq14ko62wn5.fsf@ca-mkp.ca.oracle.com>
- <1599706080.10649.30.camel@mtkswgap22>
- <1599718697.3851.3.camel@HansenPartnership.com>
- <1599725880.10649.35.camel@mtkswgap22>
- <1599754148.3575.4.camel@HansenPartnership.com>
- <010101747af387e9-f68ac6fa-1bc6-461d-92ec-dc0ee4486728-000000@us-west-2.amazonses.com>
- <d151d6a2b53cfbd7bf3f9c9313b49c4c404c4c5a.camel@gmail.com>
-Message-ID: <030cecc931ef5d210c89d4541c2adea2@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-11 17:09, Bean Huo wrote:
-> On Fri, 2020-09-11 at 02:16 +0000, Can Guo wrote:
->> > >
->> > > So your resolution looks good to me.
->> > >
->> > > Thanks so much : )
->> >
->> > You're welcome ... but just remember I have to explain this to
->> > Linus
->> > when the merge window opens.  It would be a lot easier if this
->> > hadn't
->> > happened so please don't make it any worse ...
->> >
->> > James
->> 
->> Sorry that my changes got you confused and thank you for help
->> resolve
->> the
->> conflicts. My change ("scsi: ufs: Abort tasks before clearing them
->> from
->> doorbell") is to serve my fixes to ufs error recovery which only got
->> picked
->> up on scsi-queue-5.10. So I checked out to scsi-queue-5.10 and made
->> my
->> changes on the tip of scsi-queue-5.10, below 2 changes were not even
->> present in scsi-queue-5.10 back that time.
-> 
-> I mentioned here https://patchwork.kernel.org/patch/11734713/
-> 
-> this change (scsi: ufs: Abort tasks before clearing them from doorbell)
-> has conflicts with the scsi-fixes branch. I don't know which branch is
-> the main branch we should focus on.
-> 
-> 
-> Bean
+Hi Alex,
 
-Yeah, I know that one, but I was not even working on scsi-fixes branch
-at that time. Now I have two more fixes to ufshcd_abort(), not sure
-which branch I should work on, so asking the same here.
+On 9/11/20 6:05 AM, Alex Williamson wrote:
+> On Tue,  1 Sep 2020 11:34:22 +0800
+> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> 
+>> With subdevice information opt-in through iommu_ops.aux_at(de)tach_dev()
+>> interfaces, the vendor iommu driver is able to learn the knowledge about
+>> the relationships between the subdevices and the aux-domains. Implement
+>> is_aux_domain() support based on the relationship knowledges.
+>>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c | 125 ++++++++++++++++++++++++++----------
+>>   include/linux/intel-iommu.h |  17 +++--
+>>   2 files changed, 103 insertions(+), 39 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index 3c12fd06856c..50431c7b2e71 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -334,6 +334,8 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
+>>   				     struct device *dev);
+>>   static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
+>>   					    dma_addr_t iova);
+>> +static bool intel_iommu_dev_feat_enabled(struct device *dev,
+>> +					 enum iommu_dev_features feat);
+>>   
+>>   #ifdef CONFIG_INTEL_IOMMU_DEFAULT_ON
+>>   int dmar_disabled = 0;
+>> @@ -1832,6 +1834,7 @@ static struct dmar_domain *alloc_domain(int flags)
+>>   		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
+>>   	domain->has_iotlb_device = false;
+>>   	INIT_LIST_HEAD(&domain->devices);
+>> +	INIT_LIST_HEAD(&domain->subdevices);
+>>   
+>>   	return domain;
+>>   }
+>> @@ -2580,7 +2583,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
+>>   	info->iommu = iommu;
+>>   	info->pasid_table = NULL;
+>>   	info->auxd_enabled = 0;
+>> -	INIT_LIST_HEAD(&info->auxiliary_domains);
+>> +	INIT_LIST_HEAD(&info->subdevices);
+>>   
+>>   	if (dev && dev_is_pci(dev)) {
+>>   		struct pci_dev *pdev = to_pci_dev(info->dev);
+>> @@ -5137,21 +5140,28 @@ static void intel_iommu_domain_free(struct iommu_domain *domain)
+>>   		domain_exit(to_dmar_domain(domain));
+>>   }
+>>   
+>> -/*
+>> - * Check whether a @domain could be attached to the @dev through the
+>> - * aux-domain attach/detach APIs.
+>> - */
+>> -static inline bool
+>> -is_aux_domain(struct device *dev, struct iommu_domain *domain)
+>> +/* Lookup subdev_info in the domain's subdevice siblings. */
+>> +static struct subdev_info *
+>> +subdev_lookup_domain(struct dmar_domain *domain, struct device *dev,
+>> +		     struct device *subdev)
+>>   {
+>> -	struct device_domain_info *info = get_domain_info(dev);
+>> +	struct subdev_info *sinfo = NULL, *tmp;
+>>   
+>> -	return info && info->auxd_enabled &&
+>> -			domain->type == IOMMU_DOMAIN_UNMANAGED;
+>> +	assert_spin_locked(&device_domain_lock);
+>> +
+>> +	list_for_each_entry(tmp, &domain->subdevices, link_domain) {
+>> +		if ((!dev || tmp->pdev == dev) && tmp->dev == subdev) {
+>> +			sinfo = tmp;
+>> +			break;
+>> +		}
+>> +	}
+>> +
+>> +	return sinfo;
+>>   }
+>>   
+>> -static void auxiliary_link_device(struct dmar_domain *domain,
+>> -				  struct device *dev)
+>> +static void
+>> +subdev_link_device(struct dmar_domain *domain, struct device *dev,
+>> +		   struct subdev_info *sinfo)
+>>   {
+>>   	struct device_domain_info *info = get_domain_info(dev);
+>>   
+>> @@ -5159,12 +5169,13 @@ static void auxiliary_link_device(struct dmar_domain *domain,
+>>   	if (WARN_ON(!info))
+>>   		return;
+>>   
+>> -	domain->auxd_refcnt++;
+>> -	list_add(&domain->auxd, &info->auxiliary_domains);
+>> +	list_add(&info->subdevices, &sinfo->link_phys);
+>> +	list_add(&domain->subdevices, &sinfo->link_domain);
+>>   }
+>>   
+>> -static void auxiliary_unlink_device(struct dmar_domain *domain,
+>> -				    struct device *dev)
+>> +static void
+>> +subdev_unlink_device(struct dmar_domain *domain, struct device *dev,
+>> +		     struct subdev_info *sinfo)
+>>   {
+>>   	struct device_domain_info *info = get_domain_info(dev);
+>>   
+>> @@ -5172,24 +5183,30 @@ static void auxiliary_unlink_device(struct dmar_domain *domain,
+>>   	if (WARN_ON(!info))
+>>   		return;
+>>   
+>> -	list_del(&domain->auxd);
+>> -	domain->auxd_refcnt--;
+>> +	list_del(&sinfo->link_phys);
+>> +	list_del(&sinfo->link_domain);
+>> +	kfree(sinfo);
+>>   
+>> -	if (!domain->auxd_refcnt && domain->default_pasid > 0)
+>> +	if (list_empty(&domain->subdevices) && domain->default_pasid > 0)
+>>   		ioasid_free(domain->default_pasid);
+>>   }
+>>   
+>> -static int aux_domain_add_dev(struct dmar_domain *domain,
+>> -			      struct device *dev)
+>> +static int aux_domain_add_dev(struct dmar_domain *domain, struct device *dev,
+>> +			      struct device *subdev)
+>>   {
+>>   	int ret;
+>>   	unsigned long flags;
+>>   	struct intel_iommu *iommu;
+>> +	struct subdev_info *sinfo;
+>>   
+>>   	iommu = device_to_iommu(dev, NULL, NULL);
+>>   	if (!iommu)
+>>   		return -ENODEV;
+>>   
+>> +	sinfo = kzalloc(sizeof(*sinfo), GFP_KERNEL);
+>> +	if (!sinfo)
+>> +		return -ENOMEM;
+>> +
+>>   	if (domain->default_pasid <= 0) {
+>>   		int pasid;
+>>   
+>> @@ -5199,7 +5216,8 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
+>>   				     NULL);
+>>   		if (pasid == INVALID_IOASID) {
+>>   			pr_err("Can't allocate default pasid\n");
+>> -			return -ENODEV;
+>> +			ret = -ENODEV;
+>> +			goto pasid_failed;
+>>   		}
+>>   		domain->default_pasid = pasid;
+>>   	}
+>> @@ -5225,7 +5243,10 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
+>>   		goto table_failed;
+>>   	spin_unlock(&iommu->lock);
+>>   
+>> -	auxiliary_link_device(domain, dev);
+>> +	sinfo->dev = subdev;
+>> +	sinfo->domain = domain;
+>> +	sinfo->pdev = dev;
+>> +	subdev_link_device(domain, dev, sinfo);
+> 
+> 
+> The unlink path frees sinfo, would it make more sense to pass subdev,
+> domain, and dev to the link function and let it allocate the sinfo
+> struct and return it on success?  I'm not sure if you're pre-allocating
+> it to avoid something hard to unwind, but it feels asymmetric between
+> the link and unlink semantics.  Thanks,
 
-Regards,
+You are right. I should make the link and unlink helpers symmetric. I
+will move free() out to the caller.
 
-Can Guo.
+Best regards,
+baolu
+
+> 
+> Alex
+> 
+> 
+>>   
+>>   	spin_unlock_irqrestore(&device_domain_lock, flags);
+>>   
+>> @@ -5236,27 +5257,36 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
+>>   attach_failed:
+>>   	spin_unlock(&iommu->lock);
+>>   	spin_unlock_irqrestore(&device_domain_lock, flags);
+>> -	if (!domain->auxd_refcnt && domain->default_pasid > 0)
+>> +	if (list_empty(&domain->subdevices) && domain->default_pasid > 0)
+>>   		ioasid_free(domain->default_pasid);
+>> +pasid_failed:
+>> +	kfree(sinfo);
+>>   
+>>   	return ret;
+>>   }
+>>   
+>> -static void aux_domain_remove_dev(struct dmar_domain *domain,
+>> -				  struct device *dev)
+>> +static void
+>> +aux_domain_remove_dev(struct dmar_domain *domain, struct device *dev,
+>> +		      struct device *subdev)
+>>   {
+>>   	struct device_domain_info *info;
+>>   	struct intel_iommu *iommu;
+>> +	struct subdev_info *sinfo;
+>>   	unsigned long flags;
+>>   
+>> -	if (!is_aux_domain(dev, &domain->domain))
+>> +	if (!intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) ||
+>> +	    domain->domain.type != IOMMU_DOMAIN_UNMANAGED)
+>>   		return;
+>>   
+>>   	spin_lock_irqsave(&device_domain_lock, flags);
+>>   	info = get_domain_info(dev);
+>>   	iommu = info->iommu;
+>> -
+>> -	auxiliary_unlink_device(domain, dev);
+>> +	sinfo = subdev_lookup_domain(domain, dev, subdev);
+>> +	if (!sinfo) {
+>> +		spin_unlock_irqrestore(&device_domain_lock, flags);
+>> +		return;
+>> +	}
+>> +	subdev_unlink_device(domain, dev, sinfo);
+>>   
+>>   	spin_lock(&iommu->lock);
+>>   	intel_pasid_tear_down_entry(iommu, dev, domain->default_pasid, false);
+>> @@ -5319,7 +5349,8 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
+>>   		return -EPERM;
+>>   	}
+>>   
+>> -	if (is_aux_domain(dev, domain))
+>> +	if (intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) &&
+>> +	    domain->type == IOMMU_DOMAIN_UNMANAGED)
+>>   		return -EPERM;
+>>   
+>>   	/* normally dev is not mapped */
+>> @@ -5344,14 +5375,15 @@ intel_iommu_aux_attach_device(struct iommu_domain *domain,
+>>   {
+>>   	int ret;
+>>   
+>> -	if (!is_aux_domain(dev, domain))
+>> +	if (!intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) ||
+>> +	    domain->type != IOMMU_DOMAIN_UNMANAGED)
+>>   		return -EPERM;
+>>   
+>>   	ret = prepare_domain_attach_device(domain, dev);
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> -	return aux_domain_add_dev(to_dmar_domain(domain), dev);
+>> +	return aux_domain_add_dev(to_dmar_domain(domain), dev, subdev);
+>>   }
+>>   
+>>   static void intel_iommu_detach_device(struct iommu_domain *domain,
+>> @@ -5364,7 +5396,7 @@ static void
+>>   intel_iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev,
+>>   			      struct device *subdev)
+>>   {
+>> -	aux_domain_remove_dev(to_dmar_domain(domain), dev);
+>> +	aux_domain_remove_dev(to_dmar_domain(domain), dev, subdev);
+>>   }
+>>   
+>>   /*
+>> @@ -6020,6 +6052,32 @@ static bool intel_iommu_is_attach_deferred(struct iommu_domain *domain,
+>>   	return attach_deferred(dev);
+>>   }
+>>   
+>> +static int
+>> +intel_iommu_domain_get_attr(struct iommu_domain *domain,
+>> +			    enum iommu_attr attr, void *data)
+>> +{
+>> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+>> +	unsigned long flags;
+>> +	int ret;
+>> +
+>> +	if (domain->type != IOMMU_DOMAIN_UNMANAGED)
+>> +		return -EINVAL;
+>> +
+>> +	switch (attr) {
+>> +	case DOMAIN_ATTR_IS_AUX:
+>> +		spin_lock_irqsave(&device_domain_lock, flags);
+>> +		ret = !IS_ERR_OR_NULL(subdev_lookup_domain(dmar_domain,
+>> +							   NULL, data));
+>> +		spin_unlock_irqrestore(&device_domain_lock, flags);
+>> +		break;
+>> +	default:
+>> +		ret = -EINVAL;
+>> +		break;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>   static int
+>>   intel_iommu_domain_set_attr(struct iommu_domain *domain,
+>>   			    enum iommu_attr attr, void *data)
+>> @@ -6073,6 +6131,7 @@ const struct iommu_ops intel_iommu_ops = {
+>>   	.domain_alloc		= intel_iommu_domain_alloc,
+>>   	.domain_free		= intel_iommu_domain_free,
+>>   	.domain_set_attr	= intel_iommu_domain_set_attr,
+>> +	.domain_get_attr	= intel_iommu_domain_get_attr,
+>>   	.attach_dev		= intel_iommu_attach_device,
+>>   	.detach_dev		= intel_iommu_detach_device,
+>>   	.aux_attach_dev		= intel_iommu_aux_attach_device,
+>> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+>> index b1ed2f25f7c0..47ba1904c691 100644
+>> --- a/include/linux/intel-iommu.h
+>> +++ b/include/linux/intel-iommu.h
+>> @@ -526,11 +526,9 @@ struct dmar_domain {
+>>   					/* Domain ids per IOMMU. Use u16 since
+>>   					 * domain ids are 16 bit wide according
+>>   					 * to VT-d spec, section 9.3 */
+>> -	unsigned int	auxd_refcnt;	/* Refcount of auxiliary attaching */
+>> -
+>>   	bool has_iotlb_device;
+>>   	struct list_head devices;	/* all devices' list */
+>> -	struct list_head auxd;		/* link to device's auxiliary list */
+>> +	struct list_head subdevices;	/* all subdevices' list */
+>>   	struct iova_domain iovad;	/* iova's that belong to this domain */
+>>   
+>>   	struct dma_pte	*pgd;		/* virtual address */
+>> @@ -603,14 +601,21 @@ struct intel_iommu {
+>>   	struct dmar_drhd_unit *drhd;
+>>   };
+>>   
+>> +/* Per subdevice private data */
+>> +struct subdev_info {
+>> +	struct list_head link_phys;	/* link to phys device siblings */
+>> +	struct list_head link_domain;	/* link to domain siblings */
+>> +	struct device *pdev;		/* physical device derived from */
+>> +	struct device *dev;		/* subdevice node */
+>> +	struct dmar_domain *domain;	/* aux-domain */
+>> +};
+>> +
+>>   /* PCI domain-device relationship */
+>>   struct device_domain_info {
+>>   	struct list_head link;	/* link to domain siblings */
+>>   	struct list_head global; /* link to global list */
+>>   	struct list_head table;	/* link to pasid table */
+>> -	struct list_head auxiliary_domains; /* auxiliary domains
+>> -					     * attached to this device
+>> -					     */
+>> +	struct list_head subdevices; /* subdevices sibling */
+>>   	u32 segment;		/* PCI segment number */
+>>   	u8 bus;			/* PCI bus number */
+>>   	u8 devfn;		/* PCI devfn number */
+> 
