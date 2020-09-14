@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0282697A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669342697AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgINVXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgINVXT (ORCPT
+        id S1726039AbgINVYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:24:05 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:39996 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725926AbgINVYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:23:19 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD45C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:23:19 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id q13so699495vsj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S1iEr7G6wXs1gVmA5M2ldmVwlSdVZgRm+7L2KYQ7HRw=;
-        b=alnS3OCcQ7S+2yaltkJEro5kLzD+B4We6wykhISZjxbRtVRPt+9/3eIPB2RDHXb040
-         K9CaGXcxD/SI1gMz374lRVAsDEgiu3D+VY9c9l4xH6Jn6FfxCNKbosw/SqkSVOwToYQ9
-         nPgKbRkLeoHpMCMP23KEscI0rwdTbtg9xjUjE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S1iEr7G6wXs1gVmA5M2ldmVwlSdVZgRm+7L2KYQ7HRw=;
-        b=TDw3nJjAIJb5gcSaIm/R9uLsB9DT5q7R22fjQFrKjL5lhYy7Vy2w65y1aLfz4KuT7D
-         eznhNfKGNYgY0zW5r80DWxZ+Al2z8kkuk91LRniiSbCHn5CjkqkFQn3ERdm8q9O4+2UY
-         OD4GwKaHdnT/lxcrtpfBRGuCg+OeL5lklOyw9lY5LGHx56WFgTNXLrNLn1Yz3Xe8ETHH
-         l9Pv7KgLIC/Yd2xgjSzdtwFIME3jrxTAWb6Tl4e6oYFYtqZ9CW/6aaE3ZvR7G7VQI0nf
-         aGW+FpKkuEh84IzLuvNHACImM2wab3i4CjU3r/fwbDAe418EhelzbAB+13AKNngCplSW
-         jScQ==
-X-Gm-Message-State: AOAM530fou9BLAyGvlo8VgFZbM/uU+7w8D4ke54pMzDBbXOm1Std9wnQ
-        ZYYYdhxGSMvbvT0dCj3crxENmi4drfu46w==
-X-Google-Smtp-Source: ABdhPJxYJaaKa+PXx+HKzCVsQ6YGVqnEap7gW5zAuZ7VZj5+ejqX4Rz9iqSsip/m7KWnOrnP+zMm5Q==
-X-Received: by 2002:a67:dd85:: with SMTP id i5mr5868537vsk.28.1600118597747;
-        Mon, 14 Sep 2020 14:23:17 -0700 (PDT)
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com. [209.85.222.42])
-        by smtp.gmail.com with ESMTPSA id l8sm1934344vsb.1.2020.09.14.14.23.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 14:23:16 -0700 (PDT)
-Received: by mail-ua1-f42.google.com with SMTP id 77so343815uaj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:23:16 -0700 (PDT)
-X-Received: by 2002:ab0:29d7:: with SMTP id i23mr8338345uaq.121.1600118596353;
- Mon, 14 Sep 2020 14:23:16 -0700 (PDT)
+        Mon, 14 Sep 2020 17:24:04 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id uk-mta-8-UaEi5kBnO_e_VhHpOiWrkQ-1;
+ Mon, 14 Sep 2020 22:24:00 +0100
+X-MC-Unique: UaEi5kBnO_e_VhHpOiWrkQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 14 Sep 2020 22:23:59 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 14 Sep 2020 22:23:59 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Borislav Petkov' <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Waiman Long" <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Mark Rutland" <mark.rutland@arm.com>
+Subject: RE: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Thread-Topic: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Thread-Index: AQHWisBV61WRef5OMEyULIupnNS1CKloouig
+Date:   Mon, 14 Sep 2020 21:23:59 +0000
+Message-ID: <2e6a4d75b38248f1b8b3b874d36065f1@AcuMS.aculab.com>
+References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
+ <20200914175604.GF680@zn.tnic>
+In-Reply-To: <20200914175604.GF680@zn.tnic>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <1600091917-7464-1-git-send-email-skakit@codeaurora.org> <1600091917-7464-4-git-send-email-skakit@codeaurora.org>
-In-Reply-To: <1600091917-7464-4-git-send-email-skakit@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 14 Sep 2020 14:23:04 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VLLPjntF9oxF2_=Jd3UssRbbaRm=H5SKO--JFUe+_11w@mail.gmail.com>
-Message-ID: <CAD=FV=VLLPjntF9oxF2_=Jd3UssRbbaRm=H5SKO--JFUe+_11w@mail.gmail.com>
-Subject: Re: [PATCH V6 3/4] arm64: dts: qcom: sc7180-trogdor: Add wakeup
- support for BT UART
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        msavaliy@qti.qualcomm.com
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogQm9yaXNsYXYgUGV0a292DQo+IFNlbnQ6IDE0IFNlcHRlbWJlciAyMDIwIDE4OjU2DQo+
+IA0KPiBPbiBUaHUsIFNlcCAxMCwgMjAyMCBhdCAxMjoyMjo1M1BNIC0wNTAwLCBKb3NoIFBvaW1i
+b2V1ZiB3cm90ZToNCj4gPiArLyoNCj4gPiArICogU2FuaXRpemUgYSB1c2VyIHBvaW50ZXIgc3Vj
+aCB0aGF0IGl0IGJlY29tZXMgTlVMTCBpZiBpdCdzIG5vdCBhIHZhbGlkIHVzZXINCj4gPiArICog
+cG9pbnRlci4gIFRoaXMgcHJldmVudHMgc3BlY3VsYXRpdmUgZGVyZWZlcmVuY2VzIG9mIHVzZXIt
+Y29udHJvbGxlZCBwb2ludGVycw0KPiA+ICsgKiB0byBrZXJuZWwgc3BhY2Ugd2hlbiBhY2Nlc3Nf
+b2soKSBzcGVjdWxhdGl2ZWx5IHJldHVybnMgdHJ1ZS4gIFRoaXMgc2hvdWxkIGJlDQo+ID4gKyAq
+IGRvbmUgKmFmdGVyKiBhY2Nlc3Nfb2soKSwgdG8gYXZvaWQgYWZmZWN0aW5nIGVycm9yIGhhbmRs
+aW5nIGJlaGF2aW9yLg0KPiANCj4gRXJyLCBzdHVwaWQgcXVlc3Rpb246IGNhbiB0aGlzIG1hY3Jv
+IHRoZW4gYmUgZm9sZGVkIGludG8gYWNjZXNzX29rKCkgc28NCj4gdGhhdCB5b3UgZG9uJ3QgaGF2
+ZSB0byB0b3VjaCBzbyBtYW55IHBsYWNlcyBhbmQgdGhlIGNoZWNrIGNhbiBoYXBwZW4NCj4gYXV0
+b21hdGljYWxseT8NCg0KTXkgdGhvdWdodHMgYXJlIHRoYXQgYWNjZXNzX29rKCkgY291bGQgcmV0
+dXJuIDAgZm9yIGZhaWwgYW5kIH4wdQ0KZm9yIHN1Y2Nlc3MuDQpZb3UgY291bGQgdGhlbiBkbyAo
+d2l0aCBhIGZldyBjYXN0cyk6DQoJbWFzayA9IGFjY2Vzc19vayhwdHIsIHNpemUpOw0KCS8qIFN0
+b3AgZ2NjIHRyYWNraW5nIHRoZSB2YWx1ZSBvZiBtYXNrLiAqLw0KCWFzbSB2b2xhdGlsZSggIiIg
+OiAiK3IiIChtYXNrKSk7DQoJYWRkciA9IHB0ciAmIG1hc2s7DQoJaWYgKCFhZGRyICYmIHB0cikg
+IC8vIExldCBOVUxMIHRocm91Z2g/Pw0KCQlyZXR1cm4gLUVGQVVMVDsNCg0KSSB0aGluayB0aGVy
+ZSBhcmUgb3RoZXIgY2hhbmdlcyBpbiB0aGUgcGlwZWxpbmUgdG8gcmVtb3ZlDQptb3N0IG9mIHRo
+ZSBhY2Nlc3Nfb2soKSBhcGFydCBmcm9tIHRob3NlIGluc2lkZSBwdXQvZ2V0X3VzZXIoKQ0KYW5k
+IGNvcHlfdG8vZnJvbV91c2VyKCkuDQpTbyB0aGUgY2hhbmdlcyBzaG91bGQgYmUgbW9yZSBsaW1p
+dGVkIHRoYW4geW91IG1pZ2h0IHRoaW5rLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
+ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
+MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On Mon, Sep 14, 2020 at 6:59 AM satya priya <skakit@codeaurora.org> wrote:
->
-> Add the necessary pinctrl, interrupt property and a suitable sleep config
-> to support Bluetooth wakeup feature.
->
-> GPIO mode is configured in sleep state to drive the RTS/RFR line low.
-> If QUP function is selected in sleep state, UART RTS/RFR is pulled high
-> during suspend and BT SoC not able to send wakeup bytes.
->
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
-> Changes in V5:
->  - Newly added in V5. This patch adds wakeup support for trogdor board files.
->
-> Changes in V6:
->  - As per Doug's comment deleted interrupts property and sorted the qup sleep
->    state before trackpad.
->  - As per Bjorn's comment canged the commit text, rationale for RTS, TX, RX.
->
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 54 ++++++++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
