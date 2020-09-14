@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F19268299
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160F92682A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgINC2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgINC2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:28:40 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F1FC06174A;
-        Sun, 13 Sep 2020 19:28:40 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gf14so4549865pjb.5;
-        Sun, 13 Sep 2020 19:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=tBnOPAiQAmuM/zw7OunepnMvNhW7KRIsJ8xiVhAMSfY=;
-        b=Gie2ZEAyK8kU612WNHDufwN5+26XZWkfn8BPHvSMCJYgtuOJLzL4MZZT5+QnCNLiyZ
-         mPVjLzY+99864U40wBb7tGfwiFDQtea35YXWYVvFGrKWUebubAt4YyYgxdOFaPr4DXwO
-         QSxExkHuAw+Y/f23CeXVqmfYXI8+8o2KBaEhAjlaH0kRow6SiL0bLe95d1GUxGRlWLa6
-         15MNR/xoz+d6ptPGcmOlJi+f2Zl7mtIILDP8DQYSjKW2cWJJ7p5TbCkVT0gKMm7UqiKZ
-         W5Ax7RqOAqrUGw80Z0J9eDWYNh0OX6sa3AF4zhp25ToMlafA+wkrguAopIauOLknYWik
-         TEBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=tBnOPAiQAmuM/zw7OunepnMvNhW7KRIsJ8xiVhAMSfY=;
-        b=E7uciPfg1YUM7fZRj7/Opd7XrKzeOdRwXzYqi3GM84rkdn3wKrsvWAzHyk6MDixjz4
-         gdN4xYhaM5On7TnoZyVWdrAYeQcNGlD0Rz8ZJnY0R2U7wx1SM/UmfS6ZHx7oU5PFlPlf
-         fteFm6V2kgdgyg11/fDOLm3wgeWabWxH/vB8ohdAc+Se3SV58sgnHrjQPPvxSHx6HU/c
-         LgxNveP8FSflzFj4S/1uxaoQmJIYQDgawZc0LdjUApJgXcmk2ePPaBw+0XsIO+9xURhC
-         4eWBdL76lkd8mZqY5/Ug3h74pUXrv3gJEH/0VDk1u32PqRdU5pm1/pu+aApqGgxVroCS
-         Oa+Q==
-X-Gm-Message-State: AOAM531Wjo/A20NC0sBZ0rjABWmGRBqROe/GFB9C0I6j09fWEkHgdnH/
-        M9itMSC2Y2m9nxnNzu4rBoxyI3zw7DM=
-X-Google-Smtp-Source: ABdhPJwWpH0s9rwvXAYAPU7hBSiPDm5noXNGFxGop+M8aV0zknJAhjVngYlbq5Y81skHhxIyeyZYSw==
-X-Received: by 2002:a17:90a:71c7:: with SMTP id m7mr12651457pjs.190.1600050519548;
-        Sun, 13 Sep 2020 19:28:39 -0700 (PDT)
-Received: from localhost ([203.185.249.227])
-        by smtp.gmail.com with ESMTPSA id z11sm8724267pfc.181.2020.09.13.19.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 19:28:39 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:28:34 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] spi: fsl-espi: Only process interrupts for expected
- events
-To:     "broonie@kernel.org" <broonie@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
-        <ecedc71d-100a-7d7a-ff7f-ef1a3086dd74@alliedtelesis.co.nz>
-In-Reply-To: <ecedc71d-100a-7d7a-ff7f-ef1a3086dd74@alliedtelesis.co.nz>
+        id S1726044AbgINCae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:30:34 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56516 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725969AbgINCab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 22:30:31 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 101E3F8A209C5E9FFA08;
+        Mon, 14 Sep 2020 10:30:28 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 14 Sep 2020 10:30:19 +0800
+From:   Kai Ye <yekai13@huawei.com>
+To:     <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangfei.gao@linaro.org>
+CC:     Kai Ye <yekai13@huawei.com>
+Subject: [PATCH] uacce: fix some coding styles
+Date:   Mon, 14 Sep 2020 10:29:07 +0800
+Message-ID: <1600050547-32577-1-git-send-email-yekai13@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Message-Id: <1600050281.5iiy8pkb7z.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Chris Packham's message of September 14, 2020 8:03 am:
-> Hi All,
->=20
-> On 4/09/20 12:28 pm, Chris Packham wrote:
->> The SPIE register contains counts for the TX FIFO so any time the irq
->> handler was invoked we would attempt to process the RX/TX fifos. Use the
->> SPIM value to mask the events so that we only process interrupts that
->> were expected.
->>
->> This was a latent issue exposed by commit 3282a3da25bd ("powerpc/64:
->> Implement soft interrupt replay in C").
->>
->> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
->> Cc: stable@vger.kernel.org
->> ---
-> ping?
+1. delete some redundant code.
+2. modify the module author information.
 
-I don't know the code/hardware but thanks for tracking this down.
+Signed-off-by: Kai Ye <yekai13@huawei.com>
+Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
+Acked-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+---
+Changes in V2:
+	deleted extra NULL pointer check in uacce_fops.
 
-Was there anything more to be done with Jocke's observations, or would=20
-that be a follow-up patch if anything?
+ drivers/misc/uacce/uacce.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-If this patch fixes your problem it should probably go in, unless there=20
-are any objections.
+diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+index 107028e..1d09707 100644
+--- a/drivers/misc/uacce/uacce.c
++++ b/drivers/misc/uacce/uacce.c
+@@ -239,17 +239,6 @@ static int uacce_fops_mmap(struct file *filep, struct vm_area_struct *vma)
+ 
+ 	switch (type) {
+ 	case UACCE_QFRT_MMIO:
+-		if (!uacce->ops->mmap) {
+-			ret = -EINVAL;
+-			goto out_with_lock;
+-		}
+-
+-		ret = uacce->ops->mmap(q, vma, qfr);
+-		if (ret)
+-			goto out_with_lock;
+-
+-		break;
+-
+ 	case UACCE_QFRT_DUS:
+ 		if (!uacce->ops->mmap) {
+ 			ret = -EINVAL;
+@@ -541,5 +530,5 @@ subsys_initcall(uacce_init);
+ module_exit(uacce_exit);
+ 
+ MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Hisilicon Tech. Co., Ltd.");
++MODULE_AUTHOR("HiSilicon Tech. Co., Ltd.");
+ MODULE_DESCRIPTION("Accelerator interface for Userland applications");
+-- 
+2.8.1
 
-Thanks,
-Nick
-
->>
->> Notes:
->>      I've tested this on a T2080RDB and a custom board using the T2081 S=
-oC. With
->>      this change I don't see any spurious instances of the "Transfer don=
-e but
->>      SPIE_DON isn't set!" or "Transfer done but rx/tx fifo's aren't empt=
-y!" messages
->>      and the updates to spi flash are successful.
->>     =20
->>      I think this should go into the stable trees that contain 3282a3da2=
-5bd but I
->>      haven't added a Fixes: tag because I think 3282a3da25bd exposed the=
- issue as
->>      opposed to causing it.
->>
->>   drivers/spi/spi-fsl-espi.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/spi/spi-fsl-espi.c b/drivers/spi/spi-fsl-espi.c
->> index 7e7c92cafdbb..cb120b68c0e2 100644
->> --- a/drivers/spi/spi-fsl-espi.c
->> +++ b/drivers/spi/spi-fsl-espi.c
->> @@ -574,13 +574,14 @@ static void fsl_espi_cpu_irq(struct fsl_espi *espi=
-, u32 events)
->>   static irqreturn_t fsl_espi_irq(s32 irq, void *context_data)
->>   {
->>   	struct fsl_espi *espi =3D context_data;
->> -	u32 events;
->> +	u32 events, mask;
->>  =20
->>   	spin_lock(&espi->lock);
->>  =20
->>   	/* Get interrupt events(tx/rx) */
->>   	events =3D fsl_espi_read_reg(espi, ESPI_SPIE);
->> -	if (!events) {
->> +	mask =3D fsl_espi_read_reg(espi, ESPI_SPIM);
->> +	if (!(events & mask)) {
->>   		spin_unlock(&espi->lock);
->>   		return IRQ_NONE;
->>   	}
