@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586702697CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD782697CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgINViH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:38:07 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14783 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgINViF (ORCPT
+        id S1726094AbgINVi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:38:27 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57235 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726079AbgINViZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:38:05 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5fe2300000>; Mon, 14 Sep 2020 14:35:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 14 Sep 2020 14:38:04 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 14 Sep 2020 14:38:04 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Sep
- 2020 21:38:04 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 14 Sep 2020 21:38:04 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f5fe2bc0001>; Mon, 14 Sep 2020 14:38:04 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH] hmm/test: remove unused dmirror_zero_page
-Date:   Mon, 14 Sep 2020 14:38:01 -0700
-Message-ID: <20200914213801.16520-1-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 14 Sep 2020 17:38:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600119501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/v1wwDAFZE/oB9w58Q8ZV7TM6ldOPRAWCKUXh0ELQS4=;
+        b=LTctz8C0VWaHnIQIlVce6dsfw2/7gLhVLa3HX/LTTQHryEDkHR26LUMykwusWva5s8PYca
+        gLugnY6uj6tpRMNxz5fOlLDoREigvJ121Z4wJI9J1TEMwM3f60s/V9KLxdsVyhN1wkJxC8
+        c48F5Qtob8xERY2AqcQr4MBmtgstwgE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-ZvBjN7b6OOaJemwRKH6PiQ-1; Mon, 14 Sep 2020 17:38:18 -0400
+X-MC-Unique: ZvBjN7b6OOaJemwRKH6PiQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0EEB420E9;
+        Mon, 14 Sep 2020 21:38:16 +0000 (UTC)
+Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 39EFC19C4F;
+        Mon, 14 Sep 2020 21:38:15 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 16:38:13 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
+Message-ID: <20200914213813.zfxlffphcp5czvof@treble>
+References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
+ <20200914195634.12881-2-sean.j.christopherson@intel.com>
+ <20200914204024.w3rpjon64d3fesys@treble>
+ <20200914210719.GB7084@sjchrist-ice>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600119344; bh=/ehxgyAd0to++qcy0nw+lw74+CJwaK3eELXvYHOH04U=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
-         Content-Type;
-        b=BNGhvkUhGaPzR2Su8Yf85FP0WTC4Ex3+dP1SQBuUhsLIlziIr7iW6XmP7QQAaV33C
-         OVeibN5Dc2drX1yhsalabrjJhDd9R5EiriPw5QnueLqqGQm+b+KZ19LycAdNhNbMm6
-         eLyzD6uFxQSLToXH2zIqn5EIUrQ6HAJDPwicKbQR6GC5rnBwgx+4aos7f9+G2yJ5nI
-         DKJrJjZKt0nkyvNne0INe3ZI3vdnJffT/tWkrHhgb7pqDsOozWCDSRaRvN5ll5hI3v
-         VELlwhMC6y9A3iOyHdI8XcEXUDpPwjY9N01v6Ju/6f4OY/ejtFbpWmPYq+Rqxee+dy
-         OOdt1cfd6+tww==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200914210719.GB7084@sjchrist-ice>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable dmirror_zero_page is unused in the HMM self test driver
-which was probably intended to demonstrate how a driver could use
-migrate_vma_setup() to share a single read-only device private zero page
-similar to how the CPU does. However, this isn't needed for the self tests
-so remove it.
+On Mon, Sep 14, 2020 at 02:07:19PM -0700, Sean Christopherson wrote:
+> > RSP needs to be aligned to what?  How would this align the stack, other
+> > than by accident?
+> 
+> Ah, yeah, that's lacking info.
+> 
+> 16-byte aligned to correctly mimic CPU behavior when vectoring an IRQ/NMI.
+> When not changing stack, the CPU aligns RSP before pushing the frame.
+> 
+> The above shenanigans work because the x86-64 ABI also requires RSP to be
+> 16-byte aligned prior to CALL.  RSP is thus 8-byte aligned due to CALL
+> pushing the return IP, and so creating the stack frame by pushing RBP makes
+> it 16-byte aliagned again.
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
+As Uros mentioned, the kernel doesn't do this.
 
-This applies to linux-mm and is intended for Andrew Morton's git tree.
+> > > +
+> > > +#ifdef CONFIG_X86_64
+> > > +	push $__KERNEL_DS
+> > > +	push %_ASM_BP
+> > > +#endif
+> > > +	pushf
+> > > +	push $__KERNEL_CS
+> > > +	CALL_NOSPEC _ASM_ARG1
+> > > +
+> > > +	/*
+> > > +	 * "Restore" RSP from RBP, even though IRET has already unwound RSP to
+> > > +	 * the correct value.  objtool doesn't know the target will IRET and so
+> > > +	 * thinks the stack is getting walloped (without the explicit restore).
+> > > +	 */
+> > > +	mov %_ASM_BP, %rsp
+> > > +	pop %_ASM_BP
+> > > +	ret
+> > 
+> > BTW, there *is* actually an unwind hint for this situation:
+> > UNWIND_HINT_RET_OFFSET.
+> 
+> I played with that one, but for the life of me couldn't figure out how to
+> satisfy both the "stack size" and "cfa.offset" checks.  In the code below,
+> cfa.offset will be 8, stack_size will be 40 and initial_func_cfi.cfa.offset
+> will be 8.  But rereading this, I assume I missed something that would allow
+> maniuplating cfa.offset?  Or maybe I botched my debugging?
+> 
+> static bool has_modified_stack_frame(struct instruction *insn, struct insn_state *state)
+> {
+> 	...
+> 
+>         if (cfi->cfa.offset != initial_func_cfi.cfa.offset + ret_offset)
+>                 return true;
+> 
+>         if (cfi->stack_size != initial_func_cfi.cfa.offset + ret_offset)
+>                 return true;
+> 
+> 	...
+> }
 
- lib/test_hmm.c | 14 --------------
- 1 file changed, 14 deletions(-)
+It only works without the frame pointer, in which case stack size and
+cfa.offset will be the same (see below code).  With the frame pointer,
+it probably wouldn't work.
 
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index e3065d6123f0..c8133f50160b 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -36,7 +36,6 @@
- static const struct dev_pagemap_ops dmirror_devmem_ops;
- static const struct mmu_interval_notifier_ops dmirror_min_ops;
- static dev_t dmirror_dev;
--static struct page *dmirror_zero_page;
-=20
- struct dmirror_device;
-=20
-@@ -1127,17 +1126,6 @@ static int __init hmm_dmirror_init(void)
- 			goto err_chrdev;
- 	}
-=20
--	/*
--	 * Allocate a zero page to simulate a reserved page of device private
--	 * memory which is always zero. The zero_pfn page isn't used just to
--	 * make the code here simpler (i.e., we need a struct page for it).
--	 */
--	dmirror_zero_page =3D alloc_page(GFP_HIGHUSER | __GFP_ZERO);
--	if (!dmirror_zero_page) {
--		ret =3D -ENOMEM;
--		goto err_chrdev;
--	}
--
- 	pr_info("HMM test module loaded. This is only for testing HMM.\n");
- 	return 0;
-=20
-@@ -1153,8 +1141,6 @@ static void __exit hmm_dmirror_exit(void)
- {
- 	int id;
-=20
--	if (dmirror_zero_page)
--		__free_page(dmirror_zero_page);
- 	for (id =3D 0; id < DMIRROR_NDEVICES; id++)
- 		dmirror_device_remove(dmirror_devices + id);
- 	unregister_chrdev_region(dmirror_dev, DMIRROR_NDEVICES);
---=20
-2.20.1
+But if you're going to be aligning the stack in the next patch version,
+your frame pointer approach works better anyway, because the stack size
+will be variable depending on the stack alignment of the callee.  So
+forget I said anything :-)
+
+> > So you might be able to do something like the following (depending on
+> > what your alignment requirements actually are):
+> > 
+> > SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
+> > #ifdef CONFIG_X86_64
+> > 	push $__KERNEL_DS
+> > 	push %_ASM_BP
+> > #endif
+> > 	pushf
+> > 	push $__KERNEL_CS
+> > 	CALL_NOSPEC _ASM_ARG1
+> > 
+> > 	/* The call popped the pushes */
+> > 	UNWIND_HINT_RET_OFFSET sp_offset=32
+> > 
+> > 	ret
+> > SYM_FUNC_END(vmx_do_interrupt_nmi_irqoff)
+
+-- 
+Josh
 
