@@ -2,114 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F103426920F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D5F26923A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbgINQsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:48:53 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26284 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726196AbgINQrp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:47:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600102055;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=83hSG57S8ARdg4I7deJU3gjqEand93evAvlu89oYvEQ=;
-        b=MGAfa1Beid9zZg2d96S4uQzMcmTCZoTa9dNSQbE9LTvxddz5Ga9wlPlrYTM7+TisitkdTK
-        xvFPtnk6BODcqZO725ULcsWAXwT/oeghWCFtYXnd4peh1zWRZOAEIIocxxsxeR6OVQxf/3
-        E7l7a0btd/7wrWE1LVmiVBAc26fidGU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-ADpwFPEOOFG6k2QZRmEMDw-1; Mon, 14 Sep 2020 12:47:30 -0400
-X-MC-Unique: ADpwFPEOOFG6k2QZRmEMDw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CE8010BBEC2;
-        Mon, 14 Sep 2020 16:47:28 +0000 (UTC)
-Received: from ovpn-113-249.rdu2.redhat.com (ovpn-113-249.rdu2.redhat.com [10.10.113.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF6DD19C4F;
-        Mon, 14 Sep 2020 16:47:26 +0000 (UTC)
-Message-ID: <54766b04a5bc21b8573666b0c4b50b3e982ed5e5.camel@redhat.com>
-Subject: Re: [PATCH v2 3/8] mm: Optimise madvise WILLNEED
-From:   Qian Cai <cai@redhat.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org
-Cc:     intel-gfx@lists.freedesktop.org, Huang Ying <ying.huang@intel.com>,
-        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Matthew Auld <matthew.auld@intel.com>
-Date:   Mon, 14 Sep 2020 12:47:26 -0400
-In-Reply-To: <c48c5eaa09d1ea5b78b12b545c034d1e937c49ba.camel@redhat.com>
-References: <20200910183318.20139-1-willy@infradead.org>
-         <20200910183318.20139-4-willy@infradead.org>
-         <c48c5eaa09d1ea5b78b12b545c034d1e937c49ba.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1726162AbgINQ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:56:22 -0400
+Received: from mga09.intel.com ([134.134.136.24]:56663 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbgINQsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:48:41 -0400
+IronPort-SDR: 08k3SYL/WK59UR63CrI02biJImv7W0OwbVQ7ekpfBJrOrPHWTW/9bOV3Xyu8RzXfPcKAlr8wQA
+ V8xpVf0DQXEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="160042313"
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="160042313"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:48:16 -0700
+IronPort-SDR: XdL0NgjpLuufygeHgWNjWxVEI9Ld4lKwibNbZn7UJirEi6s6XRp0No/DC038c6d4t5Ig2Dgo1H
+ XbhlFDoOOoIQ==
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="287677312"
+Received: from daser-mobl.ger.corp.intel.com (HELO localhost) ([10.252.38.230])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:48:09 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v37 01/24] x86/cpufeatures: x86/msr: Add Intel SGX hardware bits
+Date:   Mon, 14 Sep 2020 19:48:05 +0300
+Message-Id: <20200914164805.6167-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-14 at 12:17 -0400, Qian Cai wrote:
-> On Thu, 2020-09-10 at 19:33 +0100, Matthew Wilcox (Oracle) wrote:
-> > Instead of calling find_get_entry() for every page index, use an XArray
-> > iterator to skip over NULL entries, and avoid calling get_page(),
-> > because we only want the swap entries.
-> > 
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Reverting the "Return head pages from find_*_entry" patchset [1] up to this
-> patch fixed the issue that LTP madvise06 test [2] would trigger endless soft-
-> lockups below. It does not help after applied patches fixed other separate
-> issues in the patchset [3][4].
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Forgot to send this piece of RCU stall traces as well which might help
-debugging.
+Add X86_FEATURE_SGX from CPUID.(EAX=7, ECX=1), which informs whether the
+CPU has SGX.
 
-00: [ 2852.137748] madvise06 (62712): drop_caches: 3                            
-01: [ 2928.208367] rcu: INFO: rcu_sched self-detected stall on CPU              
-01: [ 2928.210083] rcu:     1-....: (6499 ticks this GP) idle=036/1/0x4000000000
-01: 000002 softirq=1741392/1741392 fqs=3161                                     
-01: [ 2928.210610]  (t=6500 jiffies g=610849 q=12529)                           
-01: [ 2928.210620] Task dump for CPU 1:                                         
-01: [ 2928.210630] task:madvise06       state:R  running task     stack:53320 pi
-01: d:62712 ppid: 62711 flags:0x00000004                                        
-01: [ 2928.210676] Call Trace:                                                  
-01: [ 2928.210693]  [<00000000af57ec88>] show_stack+0x158/0x1f0                 
-01: [ 2928.210703]  [<00000000ae55b692>] sched_show_task+0x3d2/0x4c8            
-01: [ 2928.210710]  [<00000000af5846aa>] rcu_dump_cpu_stacks+0x26a/0x2a8        
-01: [ 2928.210718]  [<00000000ae64fa62>] rcu_sched_clock_irq+0x1c92/0x2188      
-01: [ 2928.210726]  [<00000000ae6662ee>] update_process_times+0x4e/0x148        
-01: [ 2928.210734]  [<00000000ae690c26>] tick_sched_timer+0x86/0x188            
-01: [ 2928.210741]  [<00000000ae66989c>] __hrtimer_run_queues+0x84c/0x10b8      
-01: [ 2928.210748]  [<00000000ae66c80a>] hrtimer_interrupt+0x38a/0x860          
-01: [ 2928.210758]  [<00000000ae48dbf2>] do_IRQ+0x152/0x1c8                     
-01: [ 2928.210767]  [<00000000af5b00ea>] ext_int_handler+0x18e/0x194            
-01: [ 2928.210774]  [<00000000ae5e332e>] arch_local_irq_restore+0x86/0xa0       
-01: [ 2928.210782]  [<00000000af58da04>] lock_is_held_type+0xe4/0x130           
-01: [ 2928.210791]  [<00000000ae63355a>] rcu_read_lock_held+0xba/0xd8           
-01: [ 2928.210799]  [<00000000af0125fc>] xas_descend+0x244/0x2c8                
-01: [ 2928.210806]  [<00000000af012754>] xas_load+0xd4/0x148                    
-01: [ 2928.210812]  [<00000000af014490>] xas_find+0x5d0/0x818                   
-01: [ 2928.210822]  [<00000000ae97e644>] do_madvise+0xd5c/0x1600                
-01: [ 2928.210828]  [<00000000ae97f2d2>] __s390x_sys_madvise+0x72/0x98          
-01: [ 2928.210835]  [<00000000af5af844>] system_call+0xdc/0x278                 
-01: [ 2928.210841] 3 locks held by madvise06/62712:                             
-01: [ 2928.216406]  #0: 00000001437fca18 (&mm->mmap_lock){++++}-{3:3}, at: do_m 
-01: dvise+0x18c/0x1600                                                          
-01: [ 2928.216430]  #1: 00000000afbdd3e0 (rcu_read_lock){....}-{1:2}, at: do_mad
-01: vise+0xe72/0x1600                                                           
-01: [ 2928.216449]  #2: 00000000afbe0818 (rcu_node_1){-.-.}-{2:2}, at: rcu_dump_
-01: cpu_stacks+0xb2/0x2a8
+Add X86_FEATURE_SGX1 and X86_FEATURE_SGX2 from CPUID.(EAX=12H, ECX=0),
+which describe the level of SGX support available [1].
+
+Add IA32_FEATURE_CONTROL.SGX_ENABLE. BIOS can use this bit to opt-in SGX
+before locking the feature control MSR [2].
+
+[1] Intel SDM: 36.7.2 Intel® SGX Resource Enumeration Leaves
+[2] Intel SDM: 36.7.1 Intel® SGX Opt-In Configuration
+
+Reviewed-by: Borislav Petkov <bp@alien8.de>
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/x86/include/asm/cpufeature.h        |  5 +++--
+ arch/x86/include/asm/cpufeatures.h       |  7 ++++++-
+ arch/x86/include/asm/disabled-features.h | 18 +++++++++++++++---
+ arch/x86/include/asm/msr-index.h         |  1 +
+ arch/x86/include/asm/required-features.h |  2 +-
+ arch/x86/kernel/cpu/common.c             |  4 ++++
+ 6 files changed, 30 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 59bf91c57aa8..efbdba5170a3 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -30,6 +30,7 @@ enum cpuid_leafs
+ 	CPUID_7_ECX,
+ 	CPUID_8000_0007_EBX,
+ 	CPUID_7_EDX,
++	CPUID_12_EAX,
+ };
+ 
+ #ifdef CONFIG_X86_FEATURE_NAMES
+@@ -89,7 +90,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 17, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 18, feature_bit) ||	\
+ 	   REQUIRED_MASK_CHECK					  ||	\
+-	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
++	   BUILD_BUG_ON_ZERO(NCAPINTS != 20))
+ 
+ #define DISABLED_MASK_BIT_SET(feature_bit)				\
+ 	 ( CHECK_BIT_IN_MASK_WORD(DISABLED_MASK,  0, feature_bit) ||	\
+@@ -112,7 +113,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 17, feature_bit) ||	\
+ 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 18, feature_bit) ||	\
+ 	   DISABLED_MASK_CHECK					  ||	\
+-	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
++	   BUILD_BUG_ON_ZERO(NCAPINTS != 20))
+ 
+ #define cpu_has(c, bit)							\
+ 	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 2901d5df4366..159b635159c0 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -13,7 +13,7 @@
+ /*
+  * Defines x86 CPU feature bits
+  */
+-#define NCAPINTS			19	   /* N 32-bit words worth of info */
++#define NCAPINTS			20	   /* N 32-bit words worth of info */
+ #define NBUGINTS			1	   /* N 32-bit bug flags */
+ 
+ /*
+@@ -240,6 +240,7 @@
+ /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
+ #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
+ #define X86_FEATURE_TSC_ADJUST		( 9*32+ 1) /* TSC adjustment MSR 0x3B */
++#define X86_FEATURE_SGX			( 9*32+ 2) /* Software Guard Extensions */
+ #define X86_FEATURE_BMI1		( 9*32+ 3) /* 1st group bit manipulation extensions */
+ #define X86_FEATURE_HLE			( 9*32+ 4) /* Hardware Lock Elision */
+ #define X86_FEATURE_AVX2		( 9*32+ 5) /* AVX2 instructions */
+@@ -377,6 +378,10 @@
+ #define X86_FEATURE_CORE_CAPABILITIES	(18*32+30) /* "" IA32_CORE_CAPABILITIES MSR */
+ #define X86_FEATURE_SPEC_CTRL_SSBD	(18*32+31) /* "" Speculative Store Bypass Disable */
+ 
++/* Intel-defined SGX features, CPUID level 0x00000012:0 (EAX), word 19 */
++#define X86_FEATURE_SGX1		(19*32+ 0) /* SGX1 leaf functions */
++#define X86_FEATURE_SGX2		(19*32+ 1) /* SGX2 leaf functions */
++
+ /*
+  * BUG word(s)
+  */
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index 4ea8584682f9..dbe534d5153f 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -28,13 +28,18 @@
+ # define DISABLE_CYRIX_ARR	(1<<(X86_FEATURE_CYRIX_ARR & 31))
+ # define DISABLE_CENTAUR_MCR	(1<<(X86_FEATURE_CENTAUR_MCR & 31))
+ # define DISABLE_PCID		0
++# define DISABLE_SGX1		0
++# define DISABLE_SGX2		0
+ #else
+ # define DISABLE_VME		0
+ # define DISABLE_K6_MTRR	0
+ # define DISABLE_CYRIX_ARR	0
+ # define DISABLE_CENTAUR_MCR	0
+ # define DISABLE_PCID		(1<<(X86_FEATURE_PCID & 31))
+-#endif /* CONFIG_X86_64 */
++# define DISABLE_SGX1		(1<<(X86_FEATURE_SGX1 & 31))
++# define DISABLE_SGX2		(1<<(X86_FEATURE_SGX2 & 31))
++ #endif /* CONFIG_X86_64 */
++
+ 
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+ # define DISABLE_PKU		0
+@@ -56,6 +61,12 @@
+ # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
+ #endif
+ 
++#ifdef CONFIG_INTEL_SGX
++# define DISABLE_SGX	0
++#else
++# define DISABLE_SGX	(1 << (X86_FEATURE_SGX & 31))
++#endif
++
+ /*
+  * Make sure to add features to the correct mask
+  */
+@@ -68,7 +79,7 @@
+ #define DISABLED_MASK6	0
+ #define DISABLED_MASK7	(DISABLE_PTI)
+ #define DISABLED_MASK8	0
+-#define DISABLED_MASK9	(DISABLE_SMAP)
++#define DISABLED_MASK9	(DISABLE_SMAP|DISABLE_SGX)
+ #define DISABLED_MASK10	0
+ #define DISABLED_MASK11	0
+ #define DISABLED_MASK12	0
+@@ -78,6 +89,7 @@
+ #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP)
+ #define DISABLED_MASK17	0
+ #define DISABLED_MASK18	0
+-#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define DISABLED_MASK19	(DISABLE_SGX1|DISABLE_SGX2)
++#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_DISABLED_FEATURES_H */
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 2859ee4f39a8..c0b04f020162 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -602,6 +602,7 @@
+ #define FEAT_CTL_LOCKED				BIT(0)
+ #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
+ #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
++#define FEAT_CTL_SGX_ENABLED			BIT(18)
+ #define FEAT_CTL_LMCE_ENABLED			BIT(20)
+ 
+ #define MSR_IA32_TSC_ADJUST             0x0000003b
+diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
+index 6847d85400a8..039e58be2fe6 100644
+--- a/arch/x86/include/asm/required-features.h
++++ b/arch/x86/include/asm/required-features.h
+@@ -101,6 +101,6 @@
+ #define REQUIRED_MASK16	0
+ #define REQUIRED_MASK17	0
+ #define REQUIRED_MASK18	0
+-#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
++#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
+ 
+ #endif /* _ASM_X86_REQUIRED_FEATURES_H */
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index c5d6f17d9b9d..ccd9a11d5d1a 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -931,6 +931,10 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+ 		c->x86_capability[CPUID_D_1_EAX] = eax;
+ 	}
+ 
++	/* Additional Intel-defined SGX flags: level 0x00000012 */
++	if (c->cpuid_level >= 0x00000012)
++		c->x86_capability[CPUID_12_EAX] = cpuid_eax(0x00000012);
++
+ 	/* AMD-defined flags: level 0x80000001 */
+ 	eax = cpuid_eax(0x80000000);
+ 	c->extended_cpuid_level = eax;
+-- 
+2.25.1
 
