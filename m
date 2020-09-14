@@ -2,470 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7904D26951A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B722694E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgINSmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725990AbgINSmB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:42:01 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890F1C06178C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:42:00 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b124so287443pfg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UZtzJKOmcRqr1EVmUilZSEprXwugBU/kWXmN9ZUg4oo=;
-        b=iGIJiRKLdm5vl7BMNOta7ZDTbPTjhNyjUSTYbYiuwasLWEjYOEnp4PMScoDZ+tShp0
-         uaipp7qn0TCNOklC2HkozkFCCfh9C0Bxg2q5hibjF8wfzVJvXOf5+OUhgExkdwj3YZH0
-         Shvji0H/0PLTJ66reak04gLH2Hti7dXSdM4tY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UZtzJKOmcRqr1EVmUilZSEprXwugBU/kWXmN9ZUg4oo=;
-        b=Mun3pnPX2kOnrhtufd7jq2nNR+4snfkXcq1IGMmQ7vA2t3GR1szQ6vsgXVWC6xVG0u
-         NS0/+FUCeYmx/TqebJyfgHO/orQXskq+PgdcbLzBIXdYovMCkwO+0pYqd22E03m8r8PD
-         nx4PrPZLOImdcvUWpV1Nr+uHF3i3xEkD/XLNC8uK1T32ZadsfCoC8P0DmsZWQC3itWFm
-         Uu2HvstlUa/oOXhnQr9D4ug5UiAkr/hilBx7/w4EVnHIR3jvRt18Y44SyzOZ4Gr0SQD6
-         74/T0d+Cu7dMGCigtVtdLPmJ47mpXOiPQV7/ykTqGFrHi7JK1nBJ9hd4rQEqKFCl9gT9
-         5wYQ==
-X-Gm-Message-State: AOAM533VH5yu7MV9nuSjVxmZCpH7FyqdL5gLjQzq8FN0m2KfZanTVgjb
-        m4eMJdUfsDvl+FTkBYUULKKwVg==
-X-Google-Smtp-Source: ABdhPJxP8Hb5Z2o+CWXU5aVMtBhFPKN5lM/+6HzL7QtVZl4LiAOba5xI5L9oe5qjoJnHKdZv/pd/jA==
-X-Received: by 2002:a62:7ecb:0:b029:13e:d13d:a04c with SMTP id z194-20020a627ecb0000b029013ed13da04cmr13963994pfc.18.1600108919992;
-        Mon, 14 Sep 2020 11:41:59 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id k3sm11285930pfp.41.2020.09.14.11.41.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 11:41:59 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        linux-usb@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 2/2] USB: misc: Add onboard_usb_hub driver
-Date:   Mon, 14 Sep 2020 11:27:49 -0700
-Message-Id: <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+        id S1726057AbgINSbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:31:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726019AbgINSbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:31:15 -0400
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 720A82193E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 18:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600108274;
+        bh=TWMzqZoZNralDEd5I14l94VOUCKWS0bUz/b6Q4OWmsg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=D4P7AEngB+S1f31yQcalYo1zCNFyveknGKD9Hj70JfD4ABuAiXlotcEedmXFm7ic5
+         hyF+FdjUZ/Pv8vmvFKWoUUv8UKd7aD5CEBujLlrbWQz6oxj49Y/+V5ZJ8vRVNdjlUU
+         Hf9ohxCwkyBAIRMBxwyvi8S9wNjMHJEHhe3JffZo=
+Received: by mail-wr1-f47.google.com with SMTP id x14so638986wrl.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:31:14 -0700 (PDT)
+X-Gm-Message-State: AOAM5302FwML59CUw14sf00HRad7Bd5z3jzceN9Kc9QdChNOJqeCdybE
+        Q/m8LXG5j4iVp7Vui/JqdDfPW4oaGsl8MAR4vgkpjA==
+X-Google-Smtp-Source: ABdhPJzMOb3y0FnJul9OcJh57QbJ0oJTgC7Zp8nhwEEKBKBm7cEIBddAZgePqa+NXgC52VXRnjm9D5o/WjTt/jkVxNo=
+X-Received: by 2002:a5d:5111:: with SMTP id s17mr17179124wrt.70.1600108272961;
+ Mon, 14 Sep 2020 11:31:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
+ <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com> <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
+ <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
+ <20200901102758.GY6642@arm.com> <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
+ <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
+ <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com> <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
+ <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com> <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
+ <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com> <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
+ <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com> <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
+ <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com> <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
+ <a1efc4330a3beff10671949eddbba96f8cde96da.camel@intel.com> <41aa5e8f-ad88-2934-6d10-6a78fcbe019b@intel.com>
+In-Reply-To: <41aa5e8f-ad88-2934-6d10-6a78fcbe019b@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 14 Sep 2020 11:31:01 -0700
+X-Gmail-Original-Message-ID: <CALCETrX5qJAZBe9sHL6+HFvre-bbo+us1==q9KHNCyRrzaUsjw@mail.gmail.com>
+Message-ID: <CALCETrX5qJAZBe9sHL6+HFvre-bbo+us1==q9KHNCyRrzaUsjw@mail.gmail.com>
+Subject: Re: [NEEDS-REVIEW] Re: [PATCH v11 25/25] x86/cet/shstk: Add
+ arch_prctl functions for shadow stack
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The main issue this driver addresses is that a USB hub needs to be
-powered before it can be discovered. For onboard hubs this is often
-solved by supplying the hub with an 'always-on' regulator, which is
-kind of a hack. Some onboard hubs may require further initialization
-steps, like changing the state of a GPIO or enabling a clock, which
-requires further hacks. This driver creates a platform device
-representing the hub which performs the necessary initialization.
-Currently it only supports switching on a single regulator, support
-for multiple regulators or other actions can be added as needed.
-Different initialization sequences can be supported based on the
-compatible string.
+> On Sep 14, 2020, at 7:50 AM, Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> =EF=BB=BFOn 9/11/20 3:59 PM, Yu-cheng Yu wrote:
+> ...
+>> Here are the changes if we take the mprotect(PROT_SHSTK) approach.
+>> Any comments/suggestions?
+>
+> I still don't like it. :)
+>
+> I'll also be much happier when there's a proper changelog to accompany
+> this which also spells out the alternatives any why they suck so much.
+>
 
-Besides performing the initialization the driver can be configured
-to power the hub off during system suspend. This can help to extend
-battery life on battery powered devices, which have no requirements
-to keep the hub powered during suspend. The driver can also be
-configured to leave the hub powered when a wakeup capable USB device
-is connected when suspending, and keeping it powered otherwise.
+Let=E2=80=99s take a step back here. Ignoring the precise API, what exactly=
+ is
+a shadow stack from the perspective of a Linux user program?
 
-Technically the driver consists of two drivers, the platform driver
-described above and a very thin USB driver that subclasses the
-generic hub driver. The purpose of this driver is to provide the
-platform driver with the USB devices corresponding to the hub(s)
-(a hub controller may provide multiple 'logical' hubs, e.g. one
-to support USB 2.0 and another for USB 3.x).
+The simplest answer is that it=E2=80=99s just memory that happens to have
+certain protections.  This enables all kinds of shenanigans.  A
+program could map a memfd twice, once as shadow stack and once as
+non-shadow-stack, and change its control flow.  Similarly, a program
+could mprotect its shadow stack, modify it, and mprotect it back.  In
+some threat models, though could be seen as a WRSS bypass.  (Although
+if an attacker can coerce a process to call mprotect(), the game is
+likely mostly over anyway.)
 
-Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
-This is an evolution of '[RFC] USB: misc: Add usb_hub_pwr driver'
-(https://lore.kernel.org/patchwork/patch/1299239/).
+But we could be more restrictive, or perhaps we could allow user code
+to opt into more restrictions.  For example, we could have shadow
+stacks be special memory that cannot be written from usermode by any
+means other than ptrace() and friends, WRSS, and actual shadow stack
+usage.
 
-Changes in v1:
-- renamed the driver to 'onboard_usb_hub'
-- single file for platform and USB driver
-- USB hub devices register with the platform device
-  - the DT includes a phandle of the platform device
-- the platform device now controls when power is turned off
-- the USB driver became a very thin subclass of the generic hub
-  driver
-- enabled autosuspend support
+What is the goal?
 
- drivers/usb/misc/Kconfig           |  15 ++
- drivers/usb/misc/Makefile          |   1 +
- drivers/usb/misc/onboard_usb_hub.c | 306 +++++++++++++++++++++++++++++
- 3 files changed, 322 insertions(+)
- create mode 100644 drivers/usb/misc/onboard_usb_hub.c
-
-diff --git a/drivers/usb/misc/Kconfig b/drivers/usb/misc/Kconfig
-index 6818ea689cd9..e941244e24e5 100644
---- a/drivers/usb/misc/Kconfig
-+++ b/drivers/usb/misc/Kconfig
-@@ -275,3 +275,18 @@ config USB_CHAOSKEY
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called chaoskey.
-+
-+config USB_ONBOARD_HUB
-+	tristate "Onboard USB hub support"
-+	depends on OF
-+	help
-+	  Say Y here if you want to support onboard USB hubs. The driver
-+	  powers supported hubs on and may perform other initialization
-+	  steps.
-+
-+	  The driver can also switch off the power of the hub during
-+	  system suspend if it is configured accordingly. This may
-+	  reduce power consumption while the system is suspended.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called onboard_usb_hub.
-diff --git a/drivers/usb/misc/Makefile b/drivers/usb/misc/Makefile
-index da39bddb0604..6f10a1c6f7e9 100644
---- a/drivers/usb/misc/Makefile
-+++ b/drivers/usb/misc/Makefile
-@@ -31,3 +31,4 @@ obj-$(CONFIG_USB_CHAOSKEY)		+= chaoskey.o
- 
- obj-$(CONFIG_USB_SISUSBVGA)		+= sisusbvga/
- obj-$(CONFIG_USB_LINK_LAYER_TEST)	+= lvstest.o
-+obj-$(CONFIG_USB_ONBOARD_HUB)		+= onboard_usb_hub.o
-diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
-new file mode 100644
-index 000000000000..e5a816d0b124
---- /dev/null
-+++ b/drivers/usb/misc/onboard_usb_hub.c
-@@ -0,0 +1,306 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Driver for onboard USB hubs
-+ *
-+ * Copyright (c) 2020, Google LLC
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/suspend.h>
-+#include <linux/usb.h>
-+#include <linux/usb/hcd.h>
-+#include "../core/usb.h"
-+
-+/************************** Platform driver **************************/
-+
-+struct udev_node {
-+	struct usb_device *udev;
-+	struct list_head list;
-+};
-+
-+struct onboard_hub {
-+	struct regulator *vdd;
-+	struct device *dev;
-+	struct {
-+		bool power_off_in_suspend;
-+		bool wakeup_source;
-+	} cfg;
-+	struct list_head udev_list;
-+	struct mutex lock;
-+	bool has_wakeup_capable_descendants;
-+};
-+
-+static int onboard_hub_power_on(struct onboard_hub *hub)
-+{
-+	int err;
-+
-+	err = regulator_enable(hub->vdd);
-+	if (err) {
-+		dev_err(hub->dev, "failed to enable regulator: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int onboard_hub_power_off(struct onboard_hub *hub)
-+{
-+	int err;
-+
-+	err = regulator_disable(hub->vdd);
-+	if (err) {
-+		dev_err(hub->dev, "failed to enable regulator: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+
-+static int onboard_hub_suspend(struct platform_device *pdev, pm_message_t msg)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
-+	int rc = 0;
-+
-+	if (!hub->cfg.power_off_in_suspend)
-+		return 0;
-+
-+	hub->has_wakeup_capable_descendants = false;
-+
-+	if (hub->cfg.wakeup_source) {
-+		struct udev_node *node;
-+
-+		mutex_lock(&hub->lock);
-+
-+		list_for_each_entry(node, &hub->udev_list, list) {
-+			if (usb_wakeup_enabled_descendants(node->udev)) {
-+				hub->has_wakeup_capable_descendants = true;
-+				break;
-+		}
-+
-+		mutex_unlock(&hub->lock);
-+	}
-+
-+	if (!hub->has_wakeup_capable_descendants)
-+		rc = onboard_hub_power_off(hub);
-+
-+	return rc;
-+}
-+
-+static int onboard_hub_resume(struct platform_device *pdev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
-+	int rc = 0;
-+
-+	if (hub->cfg.power_off_in_suspend && !hub->has_wakeup_capable_descendants)
-+		rc = onboard_hub_power_on(hub);
-+
-+	return rc;
-+}
-+
-+#endif
-+
-+static int onboard_hub_add_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-+{
-+	struct udev_node *node;
-+
-+	node = devm_kzalloc(hub->dev, sizeof(*node), GFP_KERNEL);
-+	if (!node)
-+		return -ENOMEM;
-+
-+	node->udev = udev;
-+
-+	mutex_lock(&hub->lock);
-+	list_add(&node->list, &hub->udev_list);
-+	mutex_unlock(&hub->lock);
-+
-+	return 0;
-+}
-+
-+static int onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
-+{
-+	struct udev_node *node;
-+
-+	mutex_lock(&hub->lock);
-+
-+	list_for_each_entry(node, &hub->udev_list, list) {
-+		if (node->udev == udev) {
-+			list_del(&node->list);
-+			devm_kfree(hub->dev, node);
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&hub->lock);
-+
-+	if (node == NULL)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int onboard_hub_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct onboard_hub *hub;
-+
-+	hub = devm_kzalloc(dev, sizeof(*hub), GFP_KERNEL);
-+	if (!hub)
-+		return -ENOMEM;
-+
-+	hub->vdd = devm_regulator_get(dev, "vdd");
-+	if (IS_ERR(hub->vdd))
-+		return PTR_ERR(hub->vdd);
-+
-+	hub->dev = dev;
-+	mutex_init(&hub->lock);
-+	INIT_LIST_HEAD(&hub->udev_list);
-+
-+	hub->cfg.power_off_in_suspend = of_property_read_bool(dev->of_node, "power-off-in-suspend");
-+	hub->cfg.wakeup_source = of_property_read_bool(dev->of_node, "wakeup-source");
-+
-+	dev_set_drvdata(dev, hub);
-+
-+	return onboard_hub_power_on(hub);
-+}
-+
-+static int onboard_hub_remove(struct platform_device *pdev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
-+
-+	return onboard_hub_power_off(hub);
-+}
-+
-+static const struct of_device_id onboard_hub_match[] = {
-+	{ .compatible = "onboard-usb-hub" },
-+	{ .compatible = "realtek,rts5411" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, onboard_hub_match);
-+
-+static struct platform_driver onboard_hub_driver = {
-+	.probe = onboard_hub_probe,
-+	.remove = onboard_hub_remove,
-+#ifdef CONFIG_PM
-+	.suspend = onboard_hub_suspend,
-+	.resume = onboard_hub_resume,
-+#endif
-+	.driver = {
-+		.name = "onboard-usb-hub",
-+		.of_match_table = onboard_hub_match,
-+	},
-+};
-+
-+/************************** USB driver **************************/
-+
-+#define VENDOR_ID_REALTEK	0x0bda
-+
-+static struct onboard_hub *_find_onboard_hub(struct device *dev)
-+{
-+	const phandle *ph;
-+	struct device_node *np;
-+	struct platform_device *pdev;
-+
-+	ph = of_get_property(dev->of_node, "hub", NULL);
-+	if (!ph) {
-+		dev_err(dev, "failed to read 'hub' property\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	np = of_find_node_by_phandle(be32_to_cpu(*ph));
-+	if (!np) {
-+		dev_err(dev, "failed find device node for onboard hub\n");
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	pdev = of_find_device_by_node(np);
-+	of_node_put(np);
-+	if (!pdev)
-+		return ERR_PTR(-EPROBE_DEFER);
-+
-+	return dev_get_drvdata(&pdev->dev);
-+}
-+
-+static int onboard_hub_usbdev_probe(struct usb_device *udev)
-+{
-+	struct device *dev = &udev->dev;
-+	struct onboard_hub *hub;
-+
-+	/* ignore supported hubs without device tree node */
-+	if (!dev->of_node)
-+		return -ENODEV;
-+
-+	hub = _find_onboard_hub(dev);
-+	if (IS_ERR(hub))
-+		return PTR_ERR(dev);
-+
-+	dev_set_drvdata(dev, hub);
-+
-+	onboard_hub_add_usbdev(hub, udev);
-+
-+	return 0;
-+}
-+
-+static void onboard_hub_usbdev_disconnect(struct usb_device *udev)
-+{
-+	struct onboard_hub *hub = dev_get_drvdata(&udev->dev);
-+
-+	onboard_hub_remove_usbdev(hub, udev);
-+
-+	put_device(hub->dev);
-+}
-+
-+static const struct usb_device_id onboard_hub_id_table[] = {
-+	{ .idVendor = VENDOR_ID_REALTEK,
-+	  .idProduct = 0x0411, /* RTS5411 USB 3.0 */
-+	  .match_flags = USB_DEVICE_ID_MATCH_DEVICE },
-+	{ .idVendor = VENDOR_ID_REALTEK,
-+	  .idProduct = 0x5411, /* RTS5411 USB 2.0 */
-+	  .match_flags = USB_DEVICE_ID_MATCH_DEVICE },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(usb, onboard_hub_id_table);
-+
-+static struct usb_device_driver onboard_hub_usbdev_driver = {
-+
-+	.name = "onboard-usb-hub",
-+	.probe = onboard_hub_usbdev_probe,
-+	.disconnect = onboard_hub_usbdev_disconnect,
-+	.generic_subclass = 1,
-+	.supports_autosuspend =	1,
-+	.id_table = onboard_hub_id_table,
-+};
-+
-+/************************** Driver (de)registration **************************/
-+
-+static int __init onboard_hub_init(void)
-+{
-+	int rc;
-+
-+	rc = platform_driver_register(&onboard_hub_driver);
-+	if (rc)
-+		return rc;
-+
-+	return usb_register_device_driver(&onboard_hub_usbdev_driver, THIS_MODULE);
-+}
-+device_initcall(onboard_hub_init);
-+
-+static void __exit onboard_hub_exit(void)
-+{
-+	usb_deregister_device_driver(&onboard_hub_usbdev_driver);
-+	platform_driver_unregister(&onboard_hub_driver);
-+}
-+module_exit(onboard_hub_exit);
-+
-+MODULE_AUTHOR("Matthias Kaehlcke <mka@chromium.org>");
-+MODULE_DESCRIPTION("Onboard USB Hub driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+No matter what we do, the effects of calling vfork() are going to be a
+bit odd with SHSTK enabled.  I suppose we could disallow this, but
+that seems likely to cause its own issues.
