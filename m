@@ -2,143 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1972696D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BD62696D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgINUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:40:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbgINUkf (ORCPT
+        id S1726091AbgINUld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726061AbgINUla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:40:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600116033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UBsIQsnyUT0RduIlv4tBtHoJIFfT0hnAJ3Ijxqz8sck=;
-        b=e0yxQfhUcrRarf/94y1lnJZYsvQqlcTRN+F7amxIFsAXbfnJQVZ0eGjJ9GgUd7WHCmDi5e
-        6n9+AzD6EcQB8ydoxcT2yvjQ2gh2t3ZcRByS+nEd7ey24bYYoVxt7fMmMeimEu7BGb9wvp
-        3cubajz3+Fc/uE6NtwSjK39cRnVEO9I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-117-AghiDWkqO1CS4_cGkY_2TQ-1; Mon, 14 Sep 2020 16:40:32 -0400
-X-MC-Unique: AghiDWkqO1CS4_cGkY_2TQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64EEC1017DC3;
-        Mon, 14 Sep 2020 20:40:29 +0000 (UTC)
-Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFF195DC06;
-        Mon, 14 Sep 2020 20:40:27 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 15:40:24 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Uros Bizjak <ubizjak@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
-Message-ID: <20200914204024.w3rpjon64d3fesys@treble>
-References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
- <20200914195634.12881-2-sean.j.christopherson@intel.com>
+        Mon, 14 Sep 2020 16:41:30 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC36C06174A;
+        Mon, 14 Sep 2020 13:41:30 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id g29so761916pgl.2;
+        Mon, 14 Sep 2020 13:41:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SnLXhSeq/01CpKCN4DhWTVGLtMtNE5gQHMAycyDmEQo=;
+        b=UJ7isTzrhdJj+tcHZEHaeTTXB9eM5/sLTRQGCcjU05DfzbPXCIRZEB9FBzeUUXb36k
+         zXD66hDu4HVREmxSwOtgv64MgK/wGUnd+/MyQpQfpJ0B2VUlY5jnhPKmgnZbO5nLngtR
+         PBEoNCjTfbnOKnQJu/8PZGdOScHMMd6FG2CaVXrbzXnEkY1NLC2/+aJyCP3o5dFxKwIA
+         9Yvd1hG4W3X51CRHwRLJOOyq2QAcX2KWsexVGPPQafnvRdQ0EyEuW9n60K109Hcm6NTr
+         mj/Y07HGxAIcbGMpVOmnf7Qlfn5qxK1ZOqMUhHOaLB+2v1ysaNReNNyusV5Iucd3vwh4
+         bq9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SnLXhSeq/01CpKCN4DhWTVGLtMtNE5gQHMAycyDmEQo=;
+        b=jVk9oxZOcIuK22cMzCdVmgdlTTTUMb/gQWNZRGrow2jzfJxp2607EJBTlRUzDJ/8hr
+         228c0UaN0ZKtZWnZVxeY9C7qe9FXQjx0/3vAg9mBchhq6hPMmesTyNRq+u72C+ek1W9h
+         Fg/jHjYp21MVVlBouNkGxYJ1lqScNmiRgXA3Bl8mfk+sqt8ad+MHKwAFSpIxoe6J40/Q
+         Ue3S+69A0EvRUnO6Nfi9E1ssyooQwPQ9nRUpFl8Uq5y/Xz1p4tRtysHTTcbs+bvrtHR9
+         +kC8FrMkel4bqubOXQIgZYFAiVc6z2VPCHadvBgCnNoyerDwzpD7+oKZFQQgZUHbuSBk
+         cefw==
+X-Gm-Message-State: AOAM5337qcUN6SAmcWgpaY3dHpyP0HDBmdJ6CLfh7E4FvhXo1w1GlLT+
+        UJrRUhXq9nJIOi9YRGTT8c0=
+X-Google-Smtp-Source: ABdhPJzRyCGDsECBb9M9dKUm6CuMQPZWvoiVoEVyVq5dnkJ4bBQ5GvO13wNIyDpV4apj03pDHwajuw==
+X-Received: by 2002:a62:8c86:: with SMTP id m128mr14875222pfd.111.1600116089903;
+        Mon, 14 Sep 2020 13:41:29 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id a24sm10184756pju.25.2020.09.14.13.41.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 13:41:29 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 13:41:26 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Artur Rojek <contact@artur-rojek.eu>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] input: joystick: Add ADC attached joystick driver.
+Message-ID: <20200914204126.GB1681290@dtor-ws>
+References: <20200905163403.64390-1-contact@artur-rojek.eu>
+ <20200905163403.64390-2-contact@artur-rojek.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914195634.12881-2-sean.j.christopherson@intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200905163403.64390-2-contact@artur-rojek.eu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:56:33PM -0700, Sean Christopherson wrote:
-> Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
-> into a proper subroutine.  Slightly rework the blob so that it plays
-> nice with objtool without any additional hints (existing hints aren't
-> able to handle returning with a seemingly modified stack size).
+Hi Artur,
+
+On Sat, Sep 05, 2020 at 06:34:03PM +0200, Artur Rojek wrote:
+> Add a driver for joystick devices connected to ADC controllers
+> supporting the Industrial I/O subsystem.
 > 
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Uros Bizjak <ubizjak@gmail.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+> Tested-by: Paul Cercueil <paul@crapouillou.net>
+> Tested-by: Heiko Stuebner <heiko@sntech.de>
 > ---
->  arch/x86/kvm/vmx/vmenter.S | 28 ++++++++++++++++++++++++++++
->  arch/x86/kvm/vmx/vmx.c     | 33 +++------------------------------
->  2 files changed, 31 insertions(+), 30 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-> index 799db084a336..baec1e0fefc5 100644
-> --- a/arch/x86/kvm/vmx/vmenter.S
-> +++ b/arch/x86/kvm/vmx/vmenter.S
-> @@ -4,6 +4,7 @@
->  #include <asm/bitsperlong.h>
->  #include <asm/kvm_vcpu_regs.h>
->  #include <asm/nospec-branch.h>
-> +#include <asm/segment.h>
->  
->  #define WORD_SIZE (BITS_PER_LONG / 8)
->  
-> @@ -294,3 +295,30 @@ SYM_FUNC_START(vmread_error_trampoline)
->  
->  	ret
->  SYM_FUNC_END(vmread_error_trampoline)
-> +
-> +SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-> +	/*
-> +	 * Unconditionally create a stack frame.  RSP needs to be aligned for
-> +	 * x86-64, getting the correct RSP on the stack (for x86-64) would take
-> +	 * two instructions anyways, and it helps make objtool happy (see below).
-> +	 */
-> +	push %_ASM_BP
-> +	mov %rsp, %_ASM_BP
+> Changes:
+>     v8: - respect scan index when reading channel data,
+>         - solve sparse warnings related to *_to_cpu calls,
+>         - simplify channel count logic,
+>         - drop the redundant comma from adc_joystick_of_match[]
+>     
+>     v9: - use `dev_err_probe`,
+>         - add missing CR to error messages,
+>         - remove unnecessary line breaks in `adc_joystick_set_axes`,
+>         - remove redundant error code print from `adc_joystick_probe`,
+>         - no need to pass `dev.parent` to `dev_err` in `adc_joystick_open`,
+>         - print error code in `adc_joystick_open`
+> 
+> Notes:
+> 	Dmitry, Jonathan, because of the above changes, I dropped your
+>         Acked-by.
 
-RSP needs to be aligned to what?  How would this align the stack, other
-than by accident?
+So I am still happy with the driver, just a bit of bikeshedding since it
+looks like it can go through my tree now:
 
 > +
-> +#ifdef CONFIG_X86_64
-> +	push $__KERNEL_DS
-> +	push %_ASM_BP
-> +#endif
-> +	pushf
-> +	push $__KERNEL_CS
-> +	CALL_NOSPEC _ASM_ARG1
+> +	device_for_each_child_node(dev, child) {
+> +		ret = fwnode_property_read_u32(child, "reg", &i);
+> +		if (ret) {
+
+Call this "error"?
+
+> +			dev_err(dev, "reg invalid or missing\n");
+> +			goto err;
+> +		}
 > +
-> +	/*
-> +	 * "Restore" RSP from RBP, even though IRET has already unwound RSP to
-> +	 * the correct value.  objtool doesn't know the target will IRET and so
-> +	 * thinks the stack is getting walloped (without the explicit restore).
-> +	 */
-> +	mov %_ASM_BP, %rsp
-> +	pop %_ASM_BP
-> +	ret
+> +		if (i >= num_axes) {
+> +			ret = -EINVAL;
+> +			dev_err(dev, "No matching axis for reg %d\n", i);
+> +			goto err;
+> +		}
+> +
+> +		ret = fwnode_property_read_u32(child, "linux,code",
+> +					     &axes[i].code);
+> +		if (ret) {
+> +			dev_err(dev, "linux,code invalid or missing\n");
+> +			goto err;
+> +		}
+> +
+> +		ret = fwnode_property_read_u32_array(child, "abs-range",
+> +						   axes[i].range, 2);
+> +		if (ret) {
+> +			dev_err(dev, "abs-range invalid or missing\n");
+> +			goto err;
+> +		}
+> +
+> +		fwnode_property_read_u32(child, "abs-fuzz", &axes[i].fuzz);
+> +		fwnode_property_read_u32(child, "abs-flat", &axes[i].flat);
+> +
+> +		input_set_abs_params(joy->input, axes[i].code,
+> +				     axes[i].range[0], axes[i].range[1],
+> +				     axes[i].fuzz, axes[i].flat);
+> +		input_set_capability(joy->input, EV_ABS, axes[i].code);
+> +	}
+> +
+> +	joy->axes = axes;
+> +
+> +	return 0;
+> +
+> +err:
+> +	fwnode_handle_put(child);
+> +	return ret;
 
-BTW, there *is* actually an unwind hint for this situation:
-UNWIND_HINT_RET_OFFSET.
+"return error;"
 
-So you might be able to do something like the following (depending on
-what your alignment requirements actually are):
+In general, I prefer "error" for the variable name when it returned in
+error paths only, and "ret", "retval", etc. when it is used in both
+error and success paths.
 
-SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-#ifdef CONFIG_X86_64
-	push $__KERNEL_DS
-	push %_ASM_BP
-#endif
-	pushf
-	push $__KERNEL_CS
-	CALL_NOSPEC _ASM_ARG1
+> +}
+> +
+> +static int adc_joystick_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct adc_joystick *joy;
+> +	struct input_dev *input;
+> +	int bits, ret, i;
+> +
+> +	joy = devm_kzalloc(dev, sizeof(*joy), GFP_KERNEL);
+> +	if (!joy)
+> +		return -ENOMEM;
+> +
+> +	joy->chans = devm_iio_channel_get_all(dev);
+> +	if (IS_ERR(joy->chans)) {
+> +		return dev_err_probe(dev, PTR_ERR(joy->chans),
+> +				     "Unable to get IIO channels\n");
 
-	/* The call popped the pushes */
-	UNWIND_HINT_RET_OFFSET sp_offset=32
+I am not a fan of this API (dev_err_probe), so can we not use it just
+yet? I believe Rob is looking into pushing this into resources
+providers, at least when they have device for which resources are being
+acquired.
 
-	ret
-SYM_FUNC_END(vmx_do_interrupt_nmi_irqoff)
+> +	}
+> +
+> +	/* Count how many channels we got. NULL terminated. */
+> +	for (i = 0; joy->chans[i].indio_dev; ++i) {
+> +		bits = joy->chans[i].channel->scan_type.storagebits;
+> +		if (!bits || (bits > 16)) {
+
+I do not think we need parenthesis around second part of the condition.
+
+Hmm, why don't we have "is_in_range(val, lower, upper)" yet?
+
+Thanks.
 
 -- 
-Josh
-
+Dmitry
