@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D24426824D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 03:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E22526824E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 03:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbgINBhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 21:37:41 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60488 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgINBhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 21:37:38 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kHdR1-00EXEE-HF; Mon, 14 Sep 2020 03:37:35 +0200
-Date:   Mon, 14 Sep 2020 03:37:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        SW_Drivers@habana.ai, gregkh@linuxfoundation.org,
-        davem@davemloft.net, kuba@kernel.org, f.fainelli@gmail.com,
-        Omer Shpigelman <oshpigelman@habana.ai>
-Subject: Re: [PATCH v2 12/14] habanalabs/gaudi: Add ethtool support using
- coresight
-Message-ID: <20200914013735.GC3463198@lunn.ch>
-References: <20200912144106.11799-1-oded.gabbay@gmail.com>
- <20200912144106.11799-13-oded.gabbay@gmail.com>
+        id S1726000AbgINBi2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 13 Sep 2020 21:38:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3096 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725963AbgINBi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 21:38:26 -0400
+Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 17F3DFFA6804FE5AFE9E;
+        Mon, 14 Sep 2020 09:38:25 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 14 Sep 2020 09:38:24 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Mon, 14 Sep 2020 09:38:24 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+CC:     "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "christian@kellner.me" <christian@kellner.me>,
+        "surenb@google.com" <surenb@google.com>,
+        "areber@redhat.com" <areber@redhat.com>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "cyphar@cyphar.com" <cyphar@cyphar.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fork: Use helper function mapping_allow_writable() in
+ dup_mmap()
+Thread-Topic: [PATCH] fork: Use helper function mapping_allow_writable() in
+ dup_mmap()
+Thread-Index: AdaKN2L/7QxoEIqgoESUKoVD51FRKg==
+Date:   Mon, 14 Sep 2020 01:38:24 +0000
+Message-ID: <23352bc3a9914e79a0aa29bc63f830bd@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.109]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200912144106.11799-13-oded.gabbay@gmail.com>
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int gaudi_nic_get_module_eeprom(struct net_device *netdev,
-> +					struct ethtool_eeprom *ee, u8 *data)
-> +{
-> +	struct gaudi_nic_device **ptr = netdev_priv(netdev);
-> +	struct gaudi_nic_device *gaudi_nic = *ptr;
-> +	struct hl_device *hdev = gaudi_nic->hdev;
-> +
-> +	if (!ee->len)
-> +		return -EINVAL;
-> +
-> +	memset(data, 0, ee->len);
-> +	memcpy(data, hdev->asic_prop.cpucp_nic_info.qsfp_eeprom, ee->len);
-> +
+Eric W. Biederman <ebiederm@xmission.com> wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+>
+>> Use helper function mapping_allow_writable() to atomic_inc 
+>> i_mmap_writable.
+>
+>Why?
+>
 
-You memset and then memcpy the same number of bytes?
+Because I think it's better to use the wrapper function instead of the open hard code.
+Thanks.
 
-You also need to validate ee->offset, and ee->len. Otherwise this is a
-vector for user space to read kernel memory after
-hdev->asic_prop.cpucp_nic_info.qsfp_eeprom. See drivers/net/phy/sfp.c:
-sfp_module_eeprom() as a good example of this validation.
-
-    Andrew
