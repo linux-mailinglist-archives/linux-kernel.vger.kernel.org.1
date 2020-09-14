@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0751269757
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92D926975A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbgINVDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:03:49 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:35780 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgINVDr (ORCPT
+        id S1726123AbgINVEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgINVE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:03:47 -0400
-Received: by mail-io1-f65.google.com with SMTP id r9so1711022ioa.2;
-        Mon, 14 Sep 2020 14:03:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=42ZSJB4zkHMkV3UxCc9fM8A45SS/gLb4mhmx7e2GiHE=;
-        b=sVlMm+WvtjaH5oEIIaf0/DqQYljdb+pRDyKmag05uAbdXWbzidkyoEsLSRqsMHfYmT
-         SiF8aOw/Wp5W6/bkwMlJ0GAorcy2VTlqiB42mtCpACqakmHH9wdVnZTKiDAyZA2VFrGu
-         B+wRQKbrybSGIJO+PHo+TXfesxPWpDyX9QagpGLwQOJ8vnwTLtzhADlDPB67JptD5/QG
-         FHIG6xGsuCNyfH55d0iuigJ6a0eTyig89BqmbpOkaB/WvGMMMbFm4EifxZoiqEn8KiV2
-         725GMl+tuDyJnskndkhrfEKQSu3cx1Zx7C9D6sez32bna/PPG5EtlQyln/ulhHKdYyh5
-         1FAQ==
-X-Gm-Message-State: AOAM5326Jey7ZYtxu2flcKxtl3OGGcz3G8OS4Ig8PdL/uIBIvMyzIRSR
-        5N2LnAt69FilEG4BVAYHBQ==
-X-Google-Smtp-Source: ABdhPJwjzg08mCm6nZ/yIMnBAmdWCJqdM7CkVBuBB3YWHvxiOIZIJWp6J2ptG5APTZVJw7I+fKcWGA==
-X-Received: by 2002:a6b:d908:: with SMTP id r8mr12833249ioc.21.1600117422535;
-        Mon, 14 Sep 2020 14:03:42 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id y90sm7811685ilk.48.2020.09.14.14.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 14:03:42 -0700 (PDT)
-Received: (nullmailer pid 244291 invoked by uid 1000);
-        Mon, 14 Sep 2020 21:03:39 -0000
-Date:   Mon, 14 Sep 2020 15:03:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>, linux-clk@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v2 3/5] dt-bindings: clock: add SM8250 QCOM video clock
- bindings
-Message-ID: <20200914210339.GA244232@bogus>
-References: <20200904030958.13325-1-jonathan@marek.ca>
- <20200904030958.13325-4-jonathan@marek.ca>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904030958.13325-4-jonathan@marek.ca>
+        Mon, 14 Sep 2020 17:04:27 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4953C06174A;
+        Mon, 14 Sep 2020 14:04:26 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id AD4A3127DD440;
+        Mon, 14 Sep 2020 13:47:36 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 14:04:22 -0700 (PDT)
+Message-Id: <20200914.140422.1249552994072814160.davem@davemloft.net>
+To:     dhowells@redhat.com
+Cc:     netdev@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/5] rxrpc: Fixes for the connection manager
+ rewrite
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <160009744625.1014072.11957943055200732444.stgit@warthog.procyon.org.uk>
+References: <160009744625.1014072.11957943055200732444.stgit@warthog.procyon.org.uk>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 14 Sep 2020 13:47:36 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Sep 2020 23:09:52 -0400, Jonathan Marek wrote:
-> Add device tree bindings for video clock controller for SM8250 SoCs.
-> 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  .../bindings/clock/qcom,videocc.yaml          |  8 +++-
->  .../dt-bindings/clock/qcom,videocc-sm8250.h   | 42 +++++++++++++++++++
->  2 files changed, 49 insertions(+), 1 deletion(-)
->  create mode 100644 include/dt-bindings/clock/qcom,videocc-sm8250.h
-> 
+From: David Howells <dhowells@redhat.com>
+Date: Mon, 14 Sep 2020 16:30:46 +0100
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> 
+> Here are some fixes for the connection manager rewrite:
+> 
+>  (1) Fix a goto to the wrong place in error handling.
+> 
+>  (2) Fix a missing NULL pointer check.
+> 
+>  (3) The stored allocation error needs to be stored signed.
+> 
+>  (4) Fix a leak of connection bundle when clearing connections due to
+>      net namespace exit.
+> 
+>  (5) Fix an overget of the bundle when setting up a new client conn.
+> 
+> The patches are tagged here:
+> 
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+> 	rxrpc-next-20200914
+
+Pulled, thanks David.
