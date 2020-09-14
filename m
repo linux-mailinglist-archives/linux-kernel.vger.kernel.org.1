@@ -2,193 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAFE268C5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B63268C63
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgINNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:39:12 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:33322 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbgINNeV (ORCPT
+        id S1726683AbgINNkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726749AbgINNgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:34:21 -0400
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 08EDX3O9012871
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:33:03 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 08EDX3O9012871
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1600090384;
-        bh=xWftbWFvEeTv++1lO4mLb7Bfqvhd3CwG/NSYhB9uc54=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=px8asxT9zwIUTNG4Q7M/yBIJBffaXrrajjojhqTTuWqzcK6tWCN6SPJ3mT06BMNIe
-         DUKgYohaV6rIkYZdbSWzCI4nOpEj8K4Bdjyi0ZhsOIEvQ5ZCGuBC7SSnJ4FbAFwVN9
-         L0X/rAXkSNfbxQkVdT4AiSygeH19iBZCcPCjX/Bvccd+ByQAL/mLoayD43EzSWyQin
-         nYKA1RNToNn/aI/te/DDyw8fPzSwJX+LlDfydXOZJRtI++UF6hqS8fJwq8+1j1C7Bf
-         eu4E6F6ialSPRdyyTIsJXujNBRiiXePz8AN+4QGXrceqgIbXzkN91RWoJ6FWrmmNda
-         chaU7CFQKGLOQ==
-X-Nifty-SrcIP: [209.85.215.172]
-Received: by mail-pg1-f172.google.com with SMTP id y1so5252390pgk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:33:03 -0700 (PDT)
-X-Gm-Message-State: AOAM533Wv6/RRrva4ig+c1VWdsjTa59P+fVVhkBE+7ULaSY4Hm9h3gRM
-        nYZ8MODBwgAUNXQ39m4uHj268Ak9JTtLbKxqpvk=
-X-Google-Smtp-Source: ABdhPJx5ISxGS/94EcoPNT45NxFJNoc9jngKBPveBfJ64Z+x8bwWXOFoeNvbPOXjLafIY0AbT99vAUWYGTY3OceCh80=
-X-Received: by 2002:a17:902:9f86:: with SMTP id g6mr13782978plq.32.1600090382908;
- Mon, 14 Sep 2020 06:33:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200820063526.GA3278096@gmail.com> <CAK7LNATs3qEjTE-=FWP9Srf3Ys30T7h+PL6MLgHoBPxJLSx4VA@mail.gmail.com>
- <20200914123708.GA603584@gmail.com>
-In-Reply-To: <20200914123708.GA603584@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 14 Sep 2020 22:32:25 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT4nRBkc1Cg5tJCCo=pmfLpXiAehv8tdh-KUK66JAPbxQ@mail.gmail.com>
-Message-ID: <CAK7LNAT4nRBkc1Cg5tJCCo=pmfLpXiAehv8tdh-KUK66JAPbxQ@mail.gmail.com>
+        Mon, 14 Sep 2020 09:36:08 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E426C06174A;
+        Mon, 14 Sep 2020 06:36:03 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e17so71526wme.0;
+        Mon, 14 Sep 2020 06:36:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=gdhmugLqW7kZFrfvX3M00eU7dg8wTThNgVclxlTgViM=;
+        b=e7fyEFcEndcJpteBlRD60kFt98Z69+lfT6bkXtZoa9qDJV0+gtG/vOmS/JdZXXtZiM
+         F9dc885pna3iqyCzQqaMQ0H2voJeG90Oh3b+FjP9MNfPxmieGThCAB2Ztwt5kN5iF8U3
+         LNbvu0RVEffgIJuCTQ7eyH+xWLrTnHVkaGAU2ihK9aqi0fyfwlqKLUePA6L90ERXWbU7
+         9tXhjFJ1sqN2/+vsj+rSTkAvVM+gedJENBOloau/bjczRAz7ia158ClEjnkce+9K9Vp/
+         3Pc4qd702VNQL9kwQo+COLOy4AdxVgo00MTgX3N9GUshFA55ZGnln3A9DhNKLhuosNVj
+         p44g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=gdhmugLqW7kZFrfvX3M00eU7dg8wTThNgVclxlTgViM=;
+        b=ACGP96OCNvz3uQMWIvZa6sTBKwQ9TkSx5XtVLvODeLfeOQeyfWYZvCgpFlM2tDnie4
+         zR7OLHcDKICMUrOyo/9vmlRHtk1ZJRcN48tq42Gkcw+HdOQ2vRz7F1829d60GVdDumnT
+         Lg9SInZFw4GPTvYngtPiKFm/qhFk5J1HIlvfppwBGaXZPDVNcYep2n+5aWEdjW8iH7iv
+         LPIO+toEHTH4Gg13CMhRvF/oXuot1F1K88OjFUFFGDIspSvd8l6yGKZKnwYKfBR52sCJ
+         RNpb5lxOO4pDttFCnJC4lDr/uKqzaunkLQVLa3Kg8BVG0qmtDmtQHn1uytLz3r5doGCY
+         5MJw==
+X-Gm-Message-State: AOAM5300tB5bGtGJAbhDBIVuJAuo9+IZmnMX+sPimgDkHp1YSKSvp7MW
+        GyRg2LEHylBZM1SDv2yEbQ==
+X-Google-Smtp-Source: ABdhPJwKhNPs4paL/6g5fIc2dooU8YJ4hKIr6kqKv3iHeuW0Wc0X/Qgkl2E9ARAKZ5Xu5tIlNcpJDQ==
+X-Received: by 2002:a1c:4c0d:: with SMTP id z13mr14408941wmf.113.1600090562397;
+        Mon, 14 Sep 2020 06:36:02 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.251.238])
+        by smtp.gmail.com with ESMTPSA id s67sm20034759wmf.38.2020.09.14.06.36.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 06:36:01 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 16:35:59 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        masahiroy@kernel.org
 Subject: Re: [PATCH] kbuild: Run syncconfig with -s
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20200914133559.GA126210@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 9:37 PM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> > On Thu, Aug 20, 2020 at 3:35 PM Ingo Molnar <mingo@kernel.org> wrote:
-> > >
-> > > On every kernel build that runs --syncconfig, there's an output of the following line:
-> > >
-> > >   scripts/kconfig/conf  --syncconfig Kconfig
-> > >
-> > > This is the only non-platform build message the kbuild system emits that isn't
-> > > prefixed by at least a space, or is a build warning.
-> > >
-> > > Run it under -s - if there's any problem it will emit messages anyway.
-> > >
-> > > With this change the following simple grep filter will show all build warnings
-> > > and errors of a kernel build:
-> > >
-> > >    make | grep -v '^ '
-> >
-> >
-> >
-> > I do want to see something when syncconfig is invoked.
-> >
-> > I will apply this instead:
-> > https://patchwork.kernel.org/patch/11727445/
->
 > BTW., there's another, rather spurious bug I recently triggered in kbuild.
->
-> Occasionally when I Ctrl-C a kernel build on a system with a lot of CPUs,
+> 
+> Occasionally when I Ctrl-C a kernel build on a system with a lot of CPUs, 
 > the .o.cmd file gets corrupted:
->
->   mm/.pgtable-generic.o.cmd:5: *** unterminated call to function 'wildcard': missing ')'.  Stop.
->   make: *** [Makefile:1788: mm] Error 2
->   make: *** Waiting for unfinished jobs....
->
-> The .o.cmd file is half-finished:
->
->     $(wildcard include/config/shmem.h) \
->     $(wildcard include/config/hugetlb/page.h) \
->     $(wildcard include/config/zone/device.h) \
->     $(wildcard include/config/dev/pagemap/ops.h) \
->     $(wildcard include/config/device/private.h) \
->     $(wildcard include/config/pci/p2pdma.h) \
->     $(wildcard include/config/sparsemem.h) \
->     $(wildcard include/config/sparsemem/vmemmap.h) \
->     $(wildcard include/config/numa/balancing.h) \
->     $(wildcard i
->     [premature EOF]
 
+Those are temporary files, truncated at page boundary.
 
-Hmm, previously fixdep was not robust against
-errors or interruption.
-So, I occasionally observed the same problem as you saw.
+	$ stat -c %s XXX.pata_sil680.mod.o.cmd
+	12288
 
+I tried to fix this by inserting shell 'trap' directive but it failed
+somewhere else.
 
-I fixed it in
-6f9ac9f4427ec0470ccffbf852cfaf326677cc21
-
-
-Since then, I have not seen
-the broken .cmd file issue.
-
-
-I repeated 'make -j256' and Ctrl-C,
-but I could not reproduce it...
-
-
-
-If GNU Make was interrupted during the build rule
-of mm/pgtable-generic.o, GNU Make should automatically
-have deleted mm/pgtable-generic.o because
-partially updated (i.e. corrupted) files are
-the source of all the troubles.
-
-Isn't this the case for you?
-
-
-If I interrupt Kbuild, I see several
-Deleting file '.....'
-messages, like follows:
-
-
-
-  CC      fs/seq_file.o
-  CC      drivers/acpi/dock.o
-  CC      drivers/scsi/scsi_devinfo.o
-  CC      fs/xattr.o
-^Cmake[1]: *** [scripts/Makefile.build:283: fs/seq_file.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: net/ipv6/af_inet6.o] Interrupt
-make[3]: *** [scripts/Makefile.build:283:
-drivers/net/phy/mdio-boardinfo.o] Interrupt
-make[4]: *** [scripts/Makefile.build:283:
-drivers/tty/serial/8250/8250_pnp.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: security/selinux/status.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: arch/x86/kernel/dumpstack.o] Interrupt
-make[2]: *** Deleting file 'drivers/acpi/resource.o'
-make[2]: *** [scripts/Makefile.build:500: drivers/net/phy] Interrupt
-make[2]: *** [scripts/Makefile.build:283: net/sched/act_api.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: drivers/scsi/scsi_devinfo.o] Interrupt
-make[1]: *** Deleting file 'arch/x86/pci/mmconfig_64.o'
-make[1]: *** [scripts/Makefile.build:500: net/ipv6] Interrupt
-make[2]: *** [scripts/Makefile.build:283: net/ethtool/wol.o] Interrupt
-make[1]: *** Deleting file 'arch/x86/pci/init.o'
-make[1]: *** [scripts/Makefile.build:283: arch/x86/pci/mmconfig_64.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: net/sunrpc/socklib.o] Interrupt
-make[1]: *** [scripts/Makefile.build:283: fs/xattr.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: sound/hda/hdac_sysfs.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: net/mac80211/main.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: drivers/input/input-mt.o] Interrupt
-make[2]: *** [scripts/Makefile.build:283: net/rfkill/core.o] Interrupt
-make[1]: *** [scripts/Makefile.build:283: lib/bug.o] Interrupt
-make: *** [Makefile:1792: lib] Interrupt
-make[2]: *** Deleting file 'drivers/rtc/systohc.o'
-
-
-
-
-> Instead of the regular rules that end in:
->
->     $(wildcard include/config/memory/hotplug/sparse.h) \
->
->     mm/pgtable-generic.o: $(deps_mm/pgtable-generic.o)
->
->     $(deps_mm/pgtable-generic.o):
->     [regular EOF]
->
-> Manually removing the corrupted .o.cmd dot file solves the bug.
->
-> There's no reproducer other than Ctrl-C-ing large build jobs a couple of times.
->
-> Thanks,
->
->         Ingo
-
-
---
-Best Regards
-Masahiro Yamada
+	cmd_and_fixdep =                                                     \
+        $(cmd);                                                              \
+        scripts/basic/fixdep $(depfile) $@ '$(make-cmd)' > $(dot-target).cmd;\
+        rm -f $(depfile)
