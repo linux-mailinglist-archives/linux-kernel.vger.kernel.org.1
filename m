@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863912689D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9102689DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgINLSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:18:46 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29124 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgINLSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:18:06 -0400
-IronPort-SDR: 2NkFgbBfy8rKkJwd4fKXBxQLVz41BNObE7gt6UfegTXMaCrEnRB7NcixOFDDLKAZCAOvIkKvcL
- Ulw2ziiGdueQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="138566675"
-X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
-   d="scan'208";a="138566675"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 04:17:29 -0700
-IronPort-SDR: sCI5IayTyHjzoT06TBi1gKBFO5gTH5170cYJUaTsjLbGKkSXY9zzjQI07hwSpAx3AzIPMQlNRT
- vaVwRFPJ/glg==
-X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
-   d="scan'208";a="506320521"
-Received: from lhawrylk-desk.ger.corp.intel.com ([10.213.21.171])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 04:17:27 -0700
-Message-ID: <02e1fa1f1622ac7a28ad8009a505218416cbb569.camel@linux.intel.com>
-Subject: Re: [PATCH] MAINTAINERS: Update Intel TXT maintainer
-From:   Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>
-To:     "Sun, Ning" <ning.sun@intel.com>, tglx@linutronix.de,
-        mingo@kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 14 Sep 2020 13:17:24 +0200
-In-Reply-To: <BYAPR11MB3096662DD25482E46C8F3C0987560@BYAPR11MB3096.namprd11.prod.outlook.com>
-References: <20200812122401.1751885-1-lukasz.hawrylko@linux.intel.com>
-         <BYAPR11MB3096662DD25482E46C8F3C0987560@BYAPR11MB3096.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1726023AbgINLVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725980AbgINLUm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:20:42 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85798C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:20:41 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t10so18306575wrv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kLfSmpZKw0IcWAbxwnk8PLqM8595LR3Odif7KTgUXZk=;
+        b=NrVooSirCkC89uwDGsSlSp0zG/q+C1jxdMRgf5vGubOWhuYbiNfYYdydkZ3JndP3vc
+         6j1Zt4R+v3/omPJt4fTsTB0b5IQG7u4qoZ9UkGKoveS0XQF9k1VBJIsF5vwqHnYw5nbh
+         MlxJi+tdMfm8TSZbWKWyyv0HVCHtRKJeEg0u8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kLfSmpZKw0IcWAbxwnk8PLqM8595LR3Odif7KTgUXZk=;
+        b=nHfvs+FQchrjbnBu6a7uuDOc2EtZIyM07p0/EAovWleCZxreLv8nm6zodBRm/KEoP/
+         UL8z/DKsVwREjcjZw0eocUoI2Pl0wBlyNzUcsiijSHRP6O4G/OQho8XdqyXwKjFS117G
+         rNQv5YAiynbhC+bCDDA3YrZ7o0wBnQTc9mYsapL7ssrH0gvrRN0q1fL08EpducXrMHrn
+         ut0ukhEz97BBXf0Dbyf1wCV4vkHidPi2flTJ7EH8WS/8vh+0/V+7Ii6IwnASITYQROvl
+         TBjIyHH26y/Dby7O+zd0+vzv71PGrRU0uXIyAxp0jMjiPNLyq2R6BUGT38XzINCY0gEx
+         JWXg==
+X-Gm-Message-State: AOAM5319pOIPoM6ZRdvWuHjqUML+AydKpkgy5PbhDsQtnOJH32NaH4jm
+        nP0kShJ/a+ewi4Tkh0c/snG1rg==
+X-Google-Smtp-Source: ABdhPJwBJtsZXWlo/8DZ9/96K7Ym7PgHSobyj/KV5SR5J+lZjhcTVzvshIGxo/oQce5aFlYqWEXtuA==
+X-Received: by 2002:a5d:674c:: with SMTP id l12mr15342266wrw.325.1600082438340;
+        Mon, 14 Sep 2020 04:20:38 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id m185sm19699575wmf.5.2020.09.14.04.20.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 04:20:37 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:20:37 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
+ buf returned by memory_stat_format
+Message-ID: <20200914112037.GA2417148@chrisdown.name>
+References: <20200912155100.25578-1-songmuchun@bytedance.com>
+ <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
+ <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
+ <20200914091844.GE16999@dhcp22.suse.cz>
+ <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
+ <20200914103205.GI16999@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200914103205.GI16999@dhcp22.suse.cz>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas and Ingo
+Michal Hocko writes:
+>> > > Yeah, I think we should cc:stable.
+>> >
+>> > Is this a real problem? The buffer should contain 36 lines which makes
+>> > it more than 100B per line. I strongly suspect we are not able to use
+>> > that storage up.
+>>
+>> Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
+>> Otherwise, the return buf string has no trailing null('\0'). But users treat buf
+>> as a string(and read the string oob). It is wrong. Thanks.
+>
+>I am not sure I follow you. vsnprintf which is used by seq_printf will
+>add \0 if there is a room for that. And I argue there is a lot of room
+>in the buffer so a corner case where the buffer gets full doesn't happen
+>with the current code.
 
-May I ask you to merge this patch? I got an acknowledgement from
-previous owner, I hope that this is enough for that change.
+I don't feel very strongly either way, but in general I agree with Michal. As 
+it is this feels quite perfunctory.
 
-Thanks,
-Lukasz
+If you can demonstrate reading the string out of bounds in a 
+userspace-exploitable way -- that is, you can demonstrate one can coerce 
+memory.stat to a format where you would read out of bounds -- then we should 
+obviously cc stable and keep the Fixes tag, but you have not come close to 
+demonstrating this yet.
 
-On Mon, 2020-08-24 at 15:08 +0000, Sun, Ning wrote:
-> Acknowledged.
-> 
-> -Ning 
-> 
-> -----Original Message-----
-> From: Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com> 
-> Sent: Wednesday, August 12, 2020 5:24 AM
-> To: Sun, Ning <ning.sun@intel.com>
-> Cc: Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>; Mauro Carvalho Chehab <mchehab+huawei@kernel.org>; David S. Miller <davem@davemloft.net>; Rob Herring <robh@kernel.org>; linux-kernel@vger.kernel.org
-> Subject: [PATCH] MAINTAINERS: Update Intel TXT maintainer
-> 
-> As an effect of changes in Intel, I took resposibility for supporting
-> Intel TXT in Linux from Ning Sun. This patch also replaces link to
-> repository, as previous one became outdated.
-> 
-> Signed-off-by: Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>
-> ---
->  MAINTAINERS | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e627ed60d75a..cc70a40bba20 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9039,11 +9039,11 @@ F:	drivers/hwtracing/intel_th/
->  F:	include/linux/intel_th.h
->  
->  INTEL(R) TRUSTED EXECUTION TECHNOLOGY (TXT)
-> -M:	Ning Sun <ning.sun@intel.com>
-> +M:	Lukasz Hawrylko <lukasz.hawrylko@linux.intel.com>
->  L:	tboot-devel@lists.sourceforge.net
->  S:	Supported
->  W:	http://tboot.sourceforge.net
-> -T:	hg http://tboot.hg.sourceforge.net:8000/hgroot/tboot/tboot
-> +T:	hg http://hg.code.sf.net/p/tboot/code
->  F:	Documentation/x86/intel_txt.rst
->  F:	arch/x86/kernel/tboot.c
->  F:	include/linux/tboot.h
-> --
-> 2.25.4
-> 
+Otherwise, if you cannot provide any way to read the string out of bounds, 
+because the buffer is simply way too big for this to ever happen, this is just 
+a code cleanup, and neither Fixes nor stable are appropriate.
 
+So, the question is, which is it? :-)
