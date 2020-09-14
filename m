@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C37269988
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 859D726998C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgINXOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgINXOK (ORCPT
+        id S1726066AbgINXPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:15:38 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:37764 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgINXPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:14:10 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6107EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:14:10 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id r78so358467vke.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:14:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=di2Va6QiS0ibtKbu5o8+rvmL8yOxtQOTJvAeGXIj49A=;
-        b=DIwwhM/aJ2/PXaNDwnC/Yt+HFlzhdpcLFKwKxZ/QSEH/2qfSfXNpHg292gjgaxV3G6
-         18NtSkXh2GpKANCtwpIaeCYueZ6/lPrCqp1JAOiel9y0wygzuGlgXA+9fvrX2raPaYp+
-         5yDY71OQi41U8VwFHpGqHi+uQdJvXsxDlhFZ8=
+        Mon, 14 Sep 2020 19:15:36 -0400
+Received: by mail-il1-f196.google.com with SMTP id q4so1247161ils.4;
+        Mon, 14 Sep 2020 16:15:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=di2Va6QiS0ibtKbu5o8+rvmL8yOxtQOTJvAeGXIj49A=;
-        b=bXFOR2DLnDH9K/zPrywi2ULBSAaMj3dknZU4L7VwOu6Gybb5wr9V5+TwNSPgTYn/le
-         KWYQcS3vcrVvEPD/MczTt0exmaNtwahs+kVfEdM5s5yNgWMzK38ttM4yIikUKp52GrHV
-         iZrqdpypWhXeJhxbSGL/lwiM5hYiBWvMzeRsGFn4DAgV0QRchN1BI5m/FLLjRmBoHkPh
-         mjEvAYsSObIkUZ0oNyqhJhn2ZJCB3MXe1nmavbp269reKioQcWR+cQq9AX2shMp7Ti30
-         6j0vm05BEcYHwvkcptdJ5M6EGOi8ajemlxKTOx+NyH7njAM1aCa7Pj8KbFQEwkoNXWoW
-         7X2w==
-X-Gm-Message-State: AOAM533+Vgy0OswGUbpoK01EzaOn/bs/1849zc0jMqVJsN1qAt+yJ4/9
-        BGIF3kHfnC9ZUckye+oc2AI2xKjTz9x44Q==
-X-Google-Smtp-Source: ABdhPJxvcRA8lnSFRiUNvxAkdd2Gu6M1b/JAGvIFbOPiq/lEyyy2Qs2EHqhoeLRJy0tUxqeFztBoNg==
-X-Received: by 2002:ac5:c297:: with SMTP id h23mr8429658vkk.38.1600125249220;
-        Mon, 14 Sep 2020 16:14:09 -0700 (PDT)
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com. [209.85.221.175])
-        by smtp.gmail.com with ESMTPSA id v76sm2040133vke.2.2020.09.14.16.14.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 16:14:08 -0700 (PDT)
-Received: by mail-vk1-f175.google.com with SMTP id h23so373343vkn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:14:08 -0700 (PDT)
-X-Received: by 2002:a1f:26cd:: with SMTP id m196mr8715666vkm.7.1600125248289;
- Mon, 14 Sep 2020 16:14:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=v8esb+U9dWPq/cRSlE6zwoQk2BH/Rhe+bmOHdQwvImw=;
+        b=f0nBvhg1DJApot4ujbH20/s8mWSHH/m0tHFtlBaIYAnrTSO/M6IrDxk4SZT9T9jGji
+         RaslzreL68R2eKby+cCnogQgjzCWp+674KKDYbtat4v/So2NGCk9LyZsnoL5ESgHJENA
+         RgSAJ1ExhNJmVC1jj6ZoA8PITUa0DOcUoAPXIYXFKDcPmi50yMZ/b4FoWVdaZ9CHU7pl
+         B0ph82mPyqW18H+D4QSn3sJ7GnqMJldJj5kfUD9v+rregMmY4jYtkmYy28hQqlXvbbzv
+         gCZQ/EXXAgEhZ09WhYiuErFaFIKz7/1mBTEzphtbzz3r55xazmPCuOXBvabwczZtBcRK
+         Utlw==
+X-Gm-Message-State: AOAM533IqtmE226aMAJsUjCg0T0F0odQzzdGgyG4hY7d0QzrvYGJw5/W
+        g3qb18DpowabSFKu3wvIRbwDSCsqRkMe
+X-Google-Smtp-Source: ABdhPJxmGewziD3/8IyRxlPkrNIGmiUU5Ubq9us7DBOM/69WSVUyR6yNFe+3kSS6P4ldYsFNYqyFTQ==
+X-Received: by 2002:a92:9fcc:: with SMTP id z73mr7524173ilk.234.1600125334943;
+        Mon, 14 Sep 2020 16:15:34 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z2sm3248133ilz.37.2020.09.14.16.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 16:15:34 -0700 (PDT)
+Received: (nullmailer pid 454832 invoked by uid 1000);
+        Mon, 14 Sep 2020 23:15:33 -0000
+Date:   Mon, 14 Sep 2020 17:15:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tom Cubie <tom@radxa.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com
+Subject: Re: [PATCH 0/3] extcon: Add Type-C Virtual PD
+Message-ID: <20200914231533.GA429337@bogus>
+References: <20200904191830.387296-1-jagan@amarulasolutions.com>
+ <6955091.ERBjKZ0CLf@diego>
 MIME-Version: 1.0
-References: <20200909141708.338273-1-daniel.thompson@linaro.org>
-In-Reply-To: <20200909141708.338273-1-daniel.thompson@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 14 Sep 2020 16:13:56 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WqDpBj5YeQ6G+QeBbxwNDsn7HMAZJA297ATc26FTA_=A@mail.gmail.com>
-Message-ID: <CAD=FV=WqDpBj5YeQ6G+QeBbxwNDsn7HMAZJA297ATc26FTA_=A@mail.gmail.com>
-Subject: Re: [PATCH] kdb: Fix pager search for multi-line strings
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Patch Tracking <patches@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6955091.ERBjKZ0CLf@diego>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 04, 2020 at 11:23:21PM +0200, Heiko Stübner wrote:
+> Hi Jagan,
+> 
+> Am Freitag, 4. September 2020, 21:18:27 CEST schrieb Jagan Teki:
+> > USB Type-C protocol supports various modes of operations
+> > includes PD, USB3, and Altmode. If the platform design
+> > supports a Type-C connector then configuring these modes
+> > can be done via enumeration.
+> > 
+> > However, there are some platforms that design these modes
+> > of operations as separate protocol connectors like design
+> > Display Port from on-chip USB3 controller. So accessing
+> > Type-C Altmode Display Port via onboard Display Port 
+> > connector instead of a Type-C connector.
+> >  
+> > These kinds of platforms require an explicit extcon driver
+> > in order to handle Power Delivery and Port Detection.
+> > 
+> > This series support this Type-C Virtual PD and enable the
+> > same in ROCK Pi 4C SBC.
+> > 
+> > Any inputs?
+> 
+> I tend to disagree on the design via an extcon.
 
-On Wed, Sep 9, 2020 at 7:18 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> Currently using forward search doesn't handle multi-line strings correctly.
-> The search routine replaces line breaks with \0 during the search and, for
-> regular searches ("help | grep Common\n"), there is code after the line
-> has been discarded or printed to replace the break character.
->
-> However during a pager search ("help\n" followed by "/Common\n") when the
-> string is matched we will immediately return to normal output and the code
-> that should restore the \n becomes unreachable. Fix this by restoring the
-> replaced character when we disable the search mode and update the comment
-> acordingly.
->
-> Fixes: fb6daa7520f9d ("kdb: Provide forward search at more prompt")
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> ---
->
-> Notes:
->     In the long term the kdb pager code would probably benefit from a
->     bigger rewrite since the way it handles newlines is still quirky
->     and confusing. However this fix is easy to backport so I decided
->     not to hold it back whilst we wait for code that is not yet
->     written.
->
->  kernel/debug/kdb/kdb_io.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+I don't accept new extcon bindings or users of it either. It's a 
+poorly thought out collection of Linux driver properties. Use the usb 
+connector binding.
 
-Wow, more kdb functionality that I never knew anything about!  Seems
-like a reasonable fix to me even if I agree that the code could use a
-bigger cleanup.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> 
+> That the Rockchip rk3399 currently carries that extcon thingy is unfortunate
+> and only works for ChromeOS devices based on the rk3399.
+> 
+> The kernel now has a real type-c framework so we should not extend this
+> extcon hack any further, because that will make it even harder to roll back
+> later. Also simply because other Rockchip boards currently can't really make
+> use of type-c due to this, as they use the fsusb302 phys directly connected.
+> 
+> ChromeOS actually spend some time to make the cros-ec pd part of the type-c
+> framework if I remember correctly, so a viable battle plan would be to:
+> 
+> (1) move the Rockchip type-c phy driver to actually be part of the type-c
+>     framework, with the extcon being a deprecated fallback for old DTs.
+> (2) implement your gpio-altmode as part of the type-c framework
+>     (which may even already exist)
+> 
+> 
+> In short, please don't extend the rk3399 type-c extcon hack.
+> 
+> Thanks
+> Heiko
+> 
+> 
+> 
+> 
