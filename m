@@ -2,153 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3172693E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9022693FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgINRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:44:29 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:34167 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgINMFm (ORCPT
+        id S1726025AbgINRrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:47:20 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:41740 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgINMD5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:05:42 -0400
-Received: by mail-ed1-f65.google.com with SMTP id k14so1378055edo.1;
-        Mon, 14 Sep 2020 05:04:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lt7oJ0RYkp7GOEh6jTuKHSPMhemyBNu8hytTPWvgNCo=;
-        b=lqeoMTZYZ4zIeHG8LVZcFF9rMMzJLajFDX7zt6SNPOIo55+obfbLOsqILmJHc/pSGm
-         I6PxSRY9SuodV/AvUap2WTqwdP5iEgtPXFLAWEyDwwzQjuldrE1oNusSfI+p3XCubgUI
-         v430O/zIWSQX6nQoDPB8vT4Rima0g648FUHFo98W+3z/A7I1HQj8TUlDP3F190A2rhEG
-         ngPeh3he24uGSE1Jy/ofwmpyK7cXoez7UwfZX8qvfs3RVsQOEDm64CFG2MEv4tALqrhN
-         3Tdcgq44H52WDJ9RcqqRaB3sBD5jWTIs3Tw/iSIczEI116KobX1+jNH6/Fc0IKE3y9GV
-         lGyQ==
-X-Gm-Message-State: AOAM532jOQaAZYN/JELkdntk4lP7tH1kAHxxBEyMtnzmf5vMsQlQEMD3
-        iyDTZJdnOCPYzwnosjQq7FMDM617SVk=
-X-Google-Smtp-Source: ABdhPJzbvIbAfLdh+pFghaYzDSsWI0Hfx/m0A44A95Dhb1oNGzFvSLAWCzgQL/qblUPvk8qT4FL0Xw==
-X-Received: by 2002:adf:ed12:: with SMTP id a18mr16432588wro.178.1600084778613;
-        Mon, 14 Sep 2020 04:59:38 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id c205sm18764809wmd.33.2020.09.14.04.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:59:38 -0700 (PDT)
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-pci@vger.kernel.org (open list:PCI NATIVE HOST BRIDGE AND
-        ENDPOINT DRIVERS),
-        linux-arch@vger.kernel.org (open list:GENERIC INCLUDE/ASM HEADER FILES)
-Subject: [PATCH RFC v1 12/18] asm-generic/hyperv: update hv_interrupt_entry
-Date:   Mon, 14 Sep 2020 11:59:21 +0000
-Message-Id: <20200914115928.83184-4-wei.liu@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200914112802.80611-1-wei.liu@kernel.org>
-References: <20200914112802.80611-1-wei.liu@kernel.org>
+        Mon, 14 Sep 2020 08:03:57 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kHnCe-006GOo-TE; Mon, 14 Sep 2020 06:03:24 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kHnCd-0004kn-Vt; Mon, 14 Sep 2020 06:03:24 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     linmiaohe <linmiaohe@huawei.com>
+Cc:     "christian.brauner\@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "christian\@kellner.me" <christian@kellner.me>,
+        "surenb\@google.com" <surenb@google.com>,
+        "areber\@redhat.com" <areber@redhat.com>,
+        "shakeelb\@google.com" <shakeelb@google.com>,
+        "cyphar\@cyphar.com" <cyphar@cyphar.com>,
+        "tglx\@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <23352bc3a9914e79a0aa29bc63f830bd@huawei.com>
+Date:   Mon, 14 Sep 2020 07:03:03 -0500
+In-Reply-To: <23352bc3a9914e79a0aa29bc63f830bd@huawei.com> (linmiaohe's
+        message of "Mon, 14 Sep 2020 01:38:24 +0000")
+Message-ID: <87h7s0va4o.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1kHnCd-0004kn-Vt;;;mid=<87h7s0va4o.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19DUNV8SW3I069vNxB+YtPgPAYKB1GiTRI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4464]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;linmiaohe <linmiaohe@huawei.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 473 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 10 (2.1%), b_tie_ro: 9 (1.9%), parse: 0.75 (0.2%),
+         extract_message_metadata: 12 (2.5%), get_uri_detail_list: 0.76 (0.2%),
+         tests_pri_-1000: 13 (2.7%), tests_pri_-950: 1.06 (0.2%),
+        tests_pri_-900: 0.80 (0.2%), tests_pri_-90: 109 (23.0%), check_bayes:
+        107 (22.6%), b_tokenize: 4.9 (1.0%), b_tok_get_all: 4.2 (0.9%),
+        b_comp_prob: 1.37 (0.3%), b_tok_touch_all: 93 (19.7%), b_finish: 0.95
+        (0.2%), tests_pri_0: 310 (65.6%), check_dkim_signature: 0.68 (0.1%),
+        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.71 (0.1%), tests_pri_10:
+        3.8 (0.8%), tests_pri_500: 10 (2.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] fork: Use helper function mapping_allow_writable() in dup_mmap()
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We will soon use the same structure to handle IO-APIC interrupts as
-well. Introduce an enum to identify the source and a data structure for
-IO-APIC RTE.
+linmiaohe <linmiaohe@huawei.com> writes:
 
-While at it, update pci-hyperv.c to use the enum.
+> Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>
+>>> Use helper function mapping_allow_writable() to atomic_inc 
+>>> i_mmap_writable.
+>>
+>>Why?
+>>
+>
+> Because I think it's better to use the wrapper function instead of the
+> open hard code.
 
-No functional change.
+My point is there is no context in this commit message.
 
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
- drivers/pci/controller/pci-hyperv.c |  2 +-
- include/asm-generic/hyperv-tlfs.h   | 36 +++++++++++++++++++++++++++--
- 2 files changed, 35 insertions(+), 3 deletions(-)
+What makes it better to use the wrapper function?
+What makes the wrapper function the appropriate function to use?
+Why just this location?
+Why wasn't this change made when the wrapper function was introduced?
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index bf40ff09c99d..b38faa04234b 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -1215,7 +1215,7 @@ static void hv_irq_unmask(struct irq_data *data)
- 	params = &hbus->retarget_msi_interrupt_params;
- 	memset(params, 0, sizeof(*params));
- 	params->partition_id = HV_PARTITION_ID_SELF;
--	params->int_entry.source = 1; /* MSI(-X) */
-+	params->int_entry.source = HV_INTERRUPT_SOURCE_MSI;
- 	hv_set_msi_entry_from_desc(&params->int_entry.msi_entry, msi_desc);
- 	params->device_id = (hbus->hdev->dev_instance.b[5] << 24) |
- 			   (hbus->hdev->dev_instance.b[4] << 16) |
-diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-index e7e80a27777b..83945ada5a50 100644
---- a/include/asm-generic/hyperv-tlfs.h
-+++ b/include/asm-generic/hyperv-tlfs.h
-@@ -469,6 +469,11 @@ struct hv_create_vp {
- 	u64 flags;
- };
- 
-+enum hv_interrupt_source {
-+	HV_INTERRUPT_SOURCE_MSI = 1, /* MSI and MSI-X */
-+	HV_INTERRUPT_SOURCE_IOAPIC,
-+};
-+
- union hv_msi_address_register {
- 	u32 as_uint32;
- 	struct {
-@@ -502,10 +507,37 @@ union hv_msi_entry {
- 	} __packed;
- };
- 
-+union hv_ioapic_rte {
-+	u64 as_uint64;
-+
-+	struct {
-+		u32 vector:8;
-+		u32 delivery_mode:3;
-+		u32 destination_mode:1;
-+		u32 delivery_status:1;
-+		u32 interrupt_polarity:1;
-+		u32 remote_irr:1;
-+		u32 trigger_mode:1;
-+		u32 interrupt_mask:1;
-+		u32 reserved1:15;
-+
-+		u32 reserved2:24;
-+		u32 destination_id:8;
-+	};
-+
-+	struct {
-+		u32 low_uint32;
-+		u32 high_uint32;
-+	};
-+} __packed;
-+
- struct hv_interrupt_entry {
--	u32 source;			/* 1 for MSI(-X) */
-+	u32 source;
- 	u32 reserved1;
--	union hv_msi_entry msi_entry;
-+	union {
-+		union hv_msi_entry msi_entry;
-+		union hv_ioapic_rte ioapic_rte;
-+	};
- } __packed;
- 
- /*
--- 
-2.20.1
+I could probably read through the code and figure these things out
+but the description of the change should really include these things.
 
+Eric
