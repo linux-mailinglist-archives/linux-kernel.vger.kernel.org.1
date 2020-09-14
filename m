@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16925268EB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECAE268F2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgINPAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgINO7Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:59:16 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AB4C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:59:15 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id h6so81901qtd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TI5UfO8CrhKlxSTB0fizVNNuJljGKxUe27eUOJYXQoA=;
-        b=sr6LAD6B25leq62gmbiDCVsb2Vy+TsneobGpZ3/FszDIr9j20hCmO7B/S3Hs+2EQ98
-         Rfb4eFP8MeWQJLG74ckXsXbR3dxP2fDKJJi5uZMjxXwDwvG0EETtramH1ibOBF7jhgfz
-         61mce+LvufkYZynzEbEuGlYadfQpcsA5sunof0rCFfMS205sRw1np8xG7qRhHDwwCBBI
-         EjYnHxMdR5ml0TMUNtCMFNXNPlb4gIyT3g0b9D6TAva7QaC64gEceI3VSiy81P6thUIB
-         Cm+EeQyqAOOxrphSsTLMe/T6Cw2tLSd4WgHBDUAXg1mwO1udm0CyBmiNjfgEHqJHXq2v
-         TZZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TI5UfO8CrhKlxSTB0fizVNNuJljGKxUe27eUOJYXQoA=;
-        b=MgLSpQa2fMRIz73A8rf5FYexDOPJrErjF0ri9FGAn7qENHwSbf4i60GsHonaccCTZV
-         UWctHWj8FLCiVuob4AUtjRlkiYHXLaJU3dK26zw1cq93s6YRGBuQbYLVDiUsrlmuAoKk
-         b4mesUh73q6RWtAId+YabwfKzkhWiBZxKCpkHBSgFLRdT1ZOEEXqxFz0Cx59YZMf7pUQ
-         cmzIMNhrOqEEpbhtWpq43GQHW0fCZgSLEZbY8hcTVVMfIy5Lg1t9RFkMU81QlpPSkyju
-         28L+1Gm+F4b0xjrEbfNwmUEO9BB1iKiFW3HqFe22ntX40fbc4wQ4lQuKfGjQ0ozDhcus
-         bSdQ==
-X-Gm-Message-State: AOAM533L5opTlazWw7a602ZlYexbZo67CyRHbMTQw+wBTj/bsi7BFd0s
-        k0I6aQJIFYiyuhWUFLtzmX2AQWGjr0ZVuu1M1xHScA==
-X-Google-Smtp-Source: ABdhPJzE1Q0xqknRdRoK8U7HNFZKzLHcd3U+p+aKDmfcmkAnNREsFT1MH9lvooSs/7x/6zC3vSbp+glWuGc4ZBbbnCw=
-X-Received: by 2002:ac8:6ec2:: with SMTP id f2mr13983987qtv.159.1600095554884;
- Mon, 14 Sep 2020 07:59:14 -0700 (PDT)
+        id S1726055AbgINPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726617AbgINNF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:05:29 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36B9722228;
+        Mon, 14 Sep 2020 13:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600088676;
+        bh=ebo5BxbbeEfCkSIYFkB6GEE4cewRZ0XayVh101BgQLE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ocwuBjU72IHk9CX8v5BKYKnYIAgpA55iVja9pzniwaSySZwXNq3HvDdN5Hxy1/E3A
+         n7Ib591sdniKbmOLt+OXTGDC7V7GNPaYKSgp/ZNs1Kx+q5YD3CuyQGfMOUu/sRWzp3
+         hAS/GFz64EOkbWl9yBwyu8LobY68gCL78dTmHq9Q=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Olga Kornievskaia <kolga@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 01/22] NFSv4.1 handle ERR_DELAY error reclaiming locking state on delegation recall
+Date:   Mon, 14 Sep 2020 09:04:13 -0400
+Message-Id: <20200914130434.1804478-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1598886558-16546-1-git-send-email-grzegorz.jaszczyk@linaro.org>
- <1598886558-16546-5-git-send-email-grzegorz.jaszczyk@linaro.org> <87lfhfl3yv.wl-maz@kernel.org>
-In-Reply-To: <87lfhfl3yv.wl-maz@kernel.org>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Mon, 14 Sep 2020 16:59:03 +0200
-Message-ID: <CAMxfBF7cPwPSbNuNqohy3BJGMqtiPk22_5hxrrSpvKUAVB4epA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 4/5] irqchip/irq-pruss-intc: Implement
- irq_{get,set}_irqchip_state ops
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, jason@lakedaemon.net,
-        "Anna, Suman" <s-anna@ti.com>, robh+dt@kernel.org,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        David Lechner <david@lechnology.com>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Sep 2020 at 11:49, Marc Zyngier <maz@kernel.org> wrote:
->
-> On Mon, 31 Aug 2020 16:09:17 +0100,
-> Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org> wrote:
-> >
-> > From: David Lechner <david@lechnology.com>
-> >
-> > This implements the irq_get_irqchip_state and irq_set_irqchip_state
-> > callbacks for the TI PRUSS INTC driver. The set callback can be used
-> > by drivers to "kick" a PRU by injecting a PRU system event.
-> >
-> > Example:
-> >      irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
-> >
->
-> Please drop this "example", it brings nothing without the full
-> context. This patch just implements a standard callback.
->
+From: Olga Kornievskaia <kolga@netapp.com>
 
-Ok. Thank you for your review,
-Grzegorz
+[ Upstream commit 3d7a9520f0c3e6a68b6de8c5812fc8b6d7a52626 ]
+
+A client should be able to handle getting an ERR_DELAY error
+while doing a LOCK call to reclaim state due to delegation being
+recalled. This is a transient error that can happen due to server
+moving its volumes and invalidating its file location cache and
+upon reference to it during the LOCK call needing to do an
+expensive lookup (leading to an ERR_DELAY error on a PUTFH).
+
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/nfs/nfs4proc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index d0cb827b72cfa..16414ae02c089 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -7232,7 +7232,12 @@ int nfs4_lock_delegation_recall(struct file_lock *fl, struct nfs4_state *state,
+ 	err = nfs4_set_lock_state(state, fl);
+ 	if (err != 0)
+ 		return err;
+-	err = _nfs4_do_setlk(state, F_SETLK, fl, NFS_LOCK_NEW);
++	do {
++		err = _nfs4_do_setlk(state, F_SETLK, fl, NFS_LOCK_NEW);
++		if (err != -NFS4ERR_DELAY)
++			break;
++		ssleep(1);
++	} while (err == -NFS4ERR_DELAY);
+ 	return nfs4_handle_delegation_recall_error(server, state, stateid, fl, err);
+ }
+ 
+-- 
+2.25.1
+
