@@ -2,99 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78C1269185
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239AF2691E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgINQaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
+        id S1726174AbgINQmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgINQ2n (ORCPT
+        with ESMTP id S1726172AbgINPNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:28:43 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EED9C06174A;
-        Mon, 14 Sep 2020 09:28:42 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id b19so180704lji.11;
-        Mon, 14 Sep 2020 09:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ygRt9agcEbo7q8JCBAqrcVsrFofDa5xMd4dVLOvJgBA=;
-        b=TafnvzwFrP555qzfqGI06/4AwjXq1KQmawiM8R+0iJdbibFqRtCWUZTrcmTXqbIV3I
-         g0YUdQqyvlIyqudX2hn5IoIf5K67G4P3NsalvsVbhkYpYj37aiZ00JFJK/WeKVdUTUPM
-         3LYxOMYimT4swp+kGHwT6jMyd5X4vKXtvPuTw+1oJ32nF1oNhmWbVawL2yT+vbg4MkQ/
-         Uv1ui0AhOgCMkXm6/jf5j/zbjrF3mVUx/BUcD35d+/dbA8jii6Abl/rX1EzWqbZfV6u6
-         G5GhBW6zbD+PyCpDtMPVnHUlGVrc6MoJcB9chOJ5tljWIp6HhpqrJQGPgwDm6/tcLkxX
-         TGjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ygRt9agcEbo7q8JCBAqrcVsrFofDa5xMd4dVLOvJgBA=;
-        b=qXL4Ya6AggsoO1BbkF41eRmssnJMm/vYiKM6U9p2O2zcTq7IJnFbhBd0NPOhyUzR/T
-         vnXCJUDGDpUv/Pqhkr86JUWJjW1y4PUjBTceX1Kg9YhLDItSwnR4QH4AYfTWwgZH2BhT
-         +fe8dOLJ2ROsaSC/5sRY3DXVJPEDj2guPHdcUTFFiu3PzzSHh1uW82HS8jsmWiNjFOc8
-         H5YgK9kLDWOHfvb5/sEQm5EwEmliwcmnLthFpPz99GAevcuGU2gF6F2AG4qSucPdr7Ra
-         JUWKF9KyOBAF6YOLqFPk7zHkq0c1N8XN/DCFmRaRNQ2gqIKVnnCNgaoixaVdxfA2Fbo0
-         kyoA==
-X-Gm-Message-State: AOAM530LqJrtIIBHJUEkKRELSIlqJiUi94hzYFC10u0mnXumN49BERGU
-        vzzPV0eC6uMW2j8bGq5G3q4=
-X-Google-Smtp-Source: ABdhPJxkpXgg0sG6PdRnz/SglpJdWPRZ84qJISKehhFhwZJ+cAeQLVMcL/+xEA5pQXDMQy+r83ZSKw==
-X-Received: by 2002:a2e:5357:: with SMTP id t23mr5210648ljd.394.1600100920559;
-        Mon, 14 Sep 2020 09:28:40 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id u10sm3765945lfr.33.2020.09.14.09.28.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 09:28:39 -0700 (PDT)
-Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Andrew_Gabbasov@mentor.com
-References: <20200912005521.26319-1-jiada_wang@mentor.com>
- <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
- <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com>
- <CAHp75VdTv-uCQue3VU=czZJd4iTG+XBVe2kFtnP+fZ1XQuFbzA@mail.gmail.com>
- <137be969-f99a-66e0-ebe4-b86f4be2b5d3@gmail.com>
- <CAHp75Vfg6=5u1fthsub3xw3dxAKTGPUHfamjK_A2b5hcyw25PA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e116e162-763a-ff0f-5b33-35024d0f57c2@gmail.com>
-Date:   Mon, 14 Sep 2020 19:28:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 14 Sep 2020 11:13:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226CBC06174A;
+        Mon, 14 Sep 2020 08:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=RqQGv7rUrofRqLyMSzfEtcHVgVUslC8cDoNR577KrIg=; b=dP3pKRmpC+I0E+dOSbraRXJ35X
+        3haQwB40uPuLpGR5zn67wQbMCYeYUDIDCnlsB5tNCLi9vaoDWIjbKg2ty0ncKAbUYHiAWQ1Gwe4T2
+        /L1d3ii2rUMCke8WZymWHb2tl/HocPOnGFPqgOwVy0kntsQ5+2r+a5DBRhRIc7Qwt5AhJHft+rUwc
+        cUuL4BH3aNOU3nrCkiiuv/cztMGgjnYHVBqE36sUV2hPE4iUig7eK9l316jWvenjHMhEIQ2Nevj2v
+        NzaWOE2Dnmj9Uqr/OYUKSLadMvLX2JkZjrKxFODSeBkgfvxBjLKXD/2ClVZgj/x7V7GdULKR4vyHX
+        B3N9jL+g==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHqAB-0003UL-04; Mon, 14 Sep 2020 15:13:03 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org
+Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Subject: [PATCH 12/17] 53c700: convert to dma_alloc_noncoherent
+Date:   Mon, 14 Sep 2020 16:44:28 +0200
+Message-Id: <20200914144433.1622958-13-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
+References: <20200914144433.1622958-1-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfg6=5u1fthsub3xw3dxAKTGPUHfamjK_A2b5hcyw25PA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.09.2020 18:50, Andy Shevchenko пишет:
-...
->> It's more preferred
->> to accept patch as-is if it does right thing and then maintainer could
->> modify the patch, making cosmetic changes.
-> 
-> It depends on the maintainer's workflow (which may be different from
-> maintainer to maintainer).
+Use the new non-coherent DMA API including proper ownership transfers.
 
-Sure!
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/scsi/53c700.c | 11 +++++++++--
+ drivers/scsi/53c700.h | 16 ++++++++--------
+ 2 files changed, 17 insertions(+), 10 deletions(-)
 
-It's awesome that you're pointing out it all in the reviews because it's
-important to have such things explained and definitely should help to
-improve quality of further of patches! But it shouldn't be necessary to
-demand a very minor changes, IMO.
+diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
+index 9a343f8ecb6c3e..5117d90ccd9edf 100644
+--- a/drivers/scsi/53c700.c
++++ b/drivers/scsi/53c700.c
+@@ -269,18 +269,25 @@ NCR_700_get_SXFER(struct scsi_device *SDp)
+ 					      spi_period(SDp->sdev_target));
+ }
+ 
++static inline dma_addr_t virt_to_dma(struct NCR_700_Host_Parameters *h, void *p)
++{
++	return h->pScript + ((uintptr_t)p - (uintptr_t)h->script);
++}
++
+ static inline void dma_sync_to_dev(struct NCR_700_Host_Parameters *h,
+ 		void *addr, size_t size)
+ {
+ 	if (h->noncoherent)
+-		dma_cache_sync(h->dev, addr, size, DMA_TO_DEVICE);
++		dma_sync_single_for_device(h->dev, virt_to_dma(h, addr),
++					   size, DMA_BIDIRECTIONAL);
+ }
+ 
+ static inline void dma_sync_from_dev(struct NCR_700_Host_Parameters *h,
+ 		void *addr, size_t size)
+ {
+ 	if (h->noncoherent)
+-		dma_cache_sync(h->dev, addr, size, DMA_FROM_DEVICE);
++		dma_sync_single_for_device(h->dev, virt_to_dma(h, addr), size,
++					   DMA_BIDIRECTIONAL);
+ }
+ 
+ struct Scsi_Host *
+diff --git a/drivers/scsi/53c700.h b/drivers/scsi/53c700.h
+index 0f545b05fe611d..c9f8c497babb3d 100644
+--- a/drivers/scsi/53c700.h
++++ b/drivers/scsi/53c700.h
+@@ -423,33 +423,33 @@ struct NCR_700_Host_Parameters {
+ #define NCR_710_MIN_XFERP	0
+ #define NCR_700_MIN_PERIOD	25 /* for SDTR message, 100ns */
+ 
+-#define script_patch_32(dev, script, symbol, value) \
++#define script_patch_32(h, script, symbol, value) \
+ { \
+ 	int i; \
+ 	dma_addr_t da = value; \
+ 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
+ 		__u32 val = bS_to_cpu((script)[A_##symbol##_used[i]]) + da; \
+ 		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
+-		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
++		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
+ 		DEBUG((" script, patching %s at %d to %pad\n", \
+ 		       #symbol, A_##symbol##_used[i], &da)); \
+ 	} \
+ }
+ 
+-#define script_patch_32_abs(dev, script, symbol, value) \
++#define script_patch_32_abs(h, script, symbol, value) \
+ { \
+ 	int i; \
+ 	dma_addr_t da = value; \
+ 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
+ 		(script)[A_##symbol##_used[i]] = bS_to_host(da); \
+-		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
++		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
+ 		DEBUG((" script, patching %s at %d to %pad\n", \
+ 		       #symbol, A_##symbol##_used[i], &da)); \
+ 	} \
+ }
+ 
+ /* Used for patching the SCSI ID in the SELECT instruction */
+-#define script_patch_ID(dev, script, symbol, value) \
++#define script_patch_ID(h, script, symbol, value) \
+ { \
+ 	int i; \
+ 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
+@@ -457,13 +457,13 @@ struct NCR_700_Host_Parameters {
+ 		val &= 0xff00ffff; \
+ 		val |= ((value) & 0xff) << 16; \
+ 		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
+-		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
++		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
+ 		DEBUG((" script, patching ID field %s at %d to 0x%x\n", \
+ 		       #symbol, A_##symbol##_used[i], val)); \
+ 	} \
+ }
+ 
+-#define script_patch_16(dev, script, symbol, value) \
++#define script_patch_16(h, script, symbol, value) \
+ { \
+ 	int i; \
+ 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
+@@ -471,7 +471,7 @@ struct NCR_700_Host_Parameters {
+ 		val &= 0xffff0000; \
+ 		val |= ((value) & 0xffff); \
+ 		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
+-		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
++		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
+ 		DEBUG((" script, patching short field %s at %d to 0x%x\n", \
+ 		       #symbol, A_##symbol##_used[i], val)); \
+ 	} \
+-- 
+2.28.0
 
-In particular Jiada was submitting this and lots of other atmel_mxt_ts
-patches for about a year now without much progress yet, and you probably
-should know how a frustrating experience this could be for a contributor
-since you're a longtime kernel developer.
