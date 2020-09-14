@@ -2,333 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146F5268317
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B2E268318
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbgINDXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:23:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:46637 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgINDXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:23:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqWs20pq6z9sTR;
-        Mon, 14 Sep 2020 13:23:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600053783;
-        bh=Sv0YKuYUl7NDKVLQVoIcSLvO6+V38WnqXhWkfR3XTls=;
-        h=Date:From:To:Cc:Subject:From;
-        b=G+yVmA4seQPm1hm6ZH9Dz0ikVRUSH/FrUoxkz51WNk0unO7UXbuqwkTWsPpiqdtq2
-         UsnNgAbDjiDjo3H3p9I7u8yFjA3FwhzHifsiVUAt/b0GNkgGcYzYXWHrSBjG7DCVv5
-         ZnzavFuOvtkzsd6KBgvVVEk77Yuxnh6aqQlHYJBASTly0YaU1oGoaOg86x81wDZRiH
-         WB7NhGA8k3WklD09IDolhXoPoRJJxU67MoWR5/TUBe0rxXM4v5ZUF48xB1zfWyNWBP
-         GTMu970DRCGYZgEfxoib1u9vlS7vKRERP2pzHbu/GV1dKlS1zlLur5DK7QcIlk/D3A
-         3Ym9KG4LtmRfg==
-Date:   Mon, 14 Sep 2020 13:22:49 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20200914132249.40c88461@canb.auug.org.au>
+        id S1725996AbgINDZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:25:05 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11825 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725972AbgINDZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:25:04 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 09D43150C717E0C64E0F;
+        Mon, 14 Sep 2020 11:25:02 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.214) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
+ 11:24:55 +0800
+Subject: Re: [PATCH 1/2] ubifs: xattr: Fix some potential memory leaks while
+ iterating entries
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+CC:     <linux-mtd@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "zhangyi (F)" <yi.zhang@huawei.com>
+References: <20200601091037.3794172-1-chengzhihao1@huawei.com>
+ <CAFLxGvxA9pw8D6Q8GbBD0SUP+EHhOsZmRMSPxrW4sq0gYi9N9Q@mail.gmail.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <b82cd435-437d-e384-c95e-a7e031559c7e@huawei.com>
+Date:   Mon, 14 Sep 2020 11:24:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4sJkOs7QUaj=qx3tE_D6AhX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAFLxGvxA9pw8D6Q8GbBD0SUP+EHhOsZmRMSPxrW4sq0gYi9N9Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.214]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4sJkOs7QUaj=qx3tE_D6AhX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+在 2020/9/14 3:08, Richard Weinberger 写道:
+> On Mon, Jun 1, 2020 at 11:11 AM Zhihao Cheng <chengzhihao1@huawei.com> wrote:
+>>
 
-Hi all,
+> I agree that this needs fixing. Did you also look into getting rid of pxent?
+> UBIFS uses the pxent pattern over and over and the same error got copy pasted
+> a lot. :-(
+> 
+I thought about it. I'm not sure whether it is good to drop 'pxent'. 
+Maybe you mean doing changes looks like following(Takes 
+ubifs_jnl_write_inode() for example):
 
-After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
-produced this warning:
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 4a5b06f8d812..fcd5ac047b34 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -879,13 +879,19 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, 
+const struct inode *inode)
+  		union ubifs_key key;
+  		struct fscrypt_name nm = {0};
+  		struct inode *xino;
+-		struct ubifs_dent_node *xent, *pxent = NULL;
++		struct ubifs_dent_node *xent;
 
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_selftest_dynamic.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kprobe_selftest.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_clock.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/ftrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/ring_buffer.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_output.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_seq.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_stat.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_printk.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/tracing_map.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_sched_switch.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_functions.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_preemptirq.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_irqsoff.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_sched_wakeup.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_hwlat.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_nop.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_stack.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_mmiotrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_functions_graph.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/blktrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/fgraph.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_export.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_syscalls.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_event_perf.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_filter.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_trigger.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_inject.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_synth.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_hist.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/bpf_trace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kprobe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/power-traces.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/rpm-traces.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kdb.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_dynevent.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_probe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_uprobe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_boot.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_benchmark.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_selftest_dynamic.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kprobe_selftest.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_clock.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/ftrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/ring_buffer.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_output.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_seq.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_stat.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_printk.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/tracing_map.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_sched_switch.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_functions.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_preemptirq.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_irqsoff.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_sched_wakeup.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_hwlat.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_nop.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_stack.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_mmiotrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_functions_graph.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/blktrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/fgraph.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_export.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_syscalls.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_event_perf.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_filter.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_trigger.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_inject.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_synth.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_hist.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/bpf_trace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kprobe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/power-traces.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/rpm-traces.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kdb.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_dynevent.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_probe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_uprobe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_boot.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_benchmark.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_selftest_dynamic.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kprobe_selftest.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_clock.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/ftrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/ring_buffer.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_output.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_seq.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_stat.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_printk.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/tracing_map.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_sched_switch.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_functions.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_preemptirq.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_irqsoff.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_sched_wakeup.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_hwlat.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_nop.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_stack.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_mmiotrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_functions_graph.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/blktrace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/fgraph.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_export.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_syscalls.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_event_perf.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_filter.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_trigger.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_inject.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_synth.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_events_hist.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/bpf_trace.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kprobe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/power-traces.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/rpm-traces.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_kdb.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_dynevent.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_probe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_uprobe.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_boot.o' being placed in section `.ctors.65435'
-x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/tr=
-ace/trace_benchmark.o' being placed in section `.ctors.65435'
+  		if (ui->xattr_cnt >= ubifs_xattr_max_cnt(c)) {
+  			ubifs_err(c, "Cannot delete inode, it has too much xattrs!");
+  			goto out_release;
+  		}
 
-Probably exposed by commit
++		fname_name(&nm) = kmalloc(UBIFS_MAX_NLEN, GFP_NOFS);
++		if (!fname_name(&nm)) {
++			err = -ENOMEM;
++			goto out_release;
++		}
++
+  		lowest_xent_key(c, &key, inode->i_ino);
+  		while (1) {
+  			xent = ubifs_tnc_next_ent(c, &key, &nm);
+@@ -894,11 +900,12 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, 
+const struct inode *inode)
+  				if (err == -ENOENT)
+  					break;
 
-  83109d5d5fba ("x86/build: Warn on orphan section placement")
++				kfree(fname_name(&nm));
+  				goto out_release;
+  			}
 
---=20
-Cheers,
-Stephen Rothwell
+-			fname_name(&nm) = xent->name;
+  			fname_len(&nm) = le16_to_cpu(xent->nlen);
++			strncpy(fname_name(&nm), xent->name, fname_len(&nm));
 
---Sig_/4sJkOs7QUaj=qx3tE_D6AhX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+  			xino = ubifs_iget(c->vfs_sb, le64_to_cpu(xent->inum));
+  			if (IS_ERR(xino)) {
+@@ -907,6 +914,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, 
+const struct inode *inode)
+  					  xent->name, err);
+  				ubifs_ro_mode(c, err);
+  				kfree(xent);
++				kfree(fname_name(&nm));
+  				goto out_release;
+  			}
+  			ubifs_assert(c, ubifs_inode(xino)->xattr);
+@@ -916,11 +924,10 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, 
+const struct inode *inode)
+  			ino = (void *)ino + UBIFS_INO_NODE_SZ;
+  			iput(xino);
 
------BEGIN PGP SIGNATURE-----
+-			kfree(pxent);
+-			pxent = xent;
+  			key_read(c, &xent->key, &key);
++			kfree(xent);
+  		}
+-		kfree(pxent);
++		kfree(fname_name(&nm));
+  	}
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9e4gkACgkQAVBC80lX
-0GzlPQf/SkTDzBnp994bf+duWs0MqhdnCqWOoWb8jiO03zrdbd28zWIAlsI2ZUWo
-iweyodCi0WllXcM7mtbEO7GSqCOerd9XwwwTb6rd8BpVfeJkZmAQYep3bnq6v4Uv
-xJJwIoxIPK6uvwmUXwpl8Hf139IHulQNDqlwSIskVAFiBp1OYa/mNtaSZ29GziPO
-cywEjAHjyBzT78Tbi0m4zDn3E2ObIeAlWlrQDgdf1PoPWtDep4XIg53opuZBp8g8
-E5bzL+PHhJC6bjiEAg+fSyxe8cZ4sXLHeLEjVrNFDUP9Kf/aTjxP8XA1E5GXEIQa
-S5SvZC2Z2Jis+kIdkHFegEyenrRFyg==
-=MME2
------END PGP SIGNATURE-----
+  	pack_inode(c, ino, inode, 1);
 
---Sig_/4sJkOs7QUaj=qx3tE_D6AhX--
+The kill_xattrs process is more intuitive without the pxent. However, 
+the release process for the memory (stores xent->name) is similar to 
+'pxent'. If you think it's better than v1, I will send v2.
+
