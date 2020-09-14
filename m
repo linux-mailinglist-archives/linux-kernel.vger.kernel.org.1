@@ -2,106 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364D8269879
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F333269883
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgINWA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:00:57 -0400
-Received: from mga06.intel.com ([134.134.136.31]:58509 "EHLO mga06.intel.com"
+        id S1726086AbgINWCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:02:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgINWAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:00:55 -0400
-IronPort-SDR: 4pd/+N26yteZUk+NtgfB9AdjUfp13Qcjr2staSZqFGG3SBSrfTcEefIqoOgr+Hn/5t8iIaJKs5
- aZkUxffv7VBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="220722842"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="220722842"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 15:00:54 -0700
-IronPort-SDR: OAgPPJjpbuWZNBiA0wgpAdDIOIlAb5wp4CY5BsSZ5p8M48RTIc+ApgUIh8dSD8fBSEjlFEApl1
- 5yXtzLAqfcpA==
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="482511319"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 15:00:54 -0700
-Date:   Mon, 14 Sep 2020 15:00:52 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 20/35] KVM: SVM: Add SEV/SEV-ES support for
- intercepting INVD
-Message-ID: <20200914220052.GH7192@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <cc70b4ac7119dda48a76b0d3ab6ba99ace3c4b5b.1600114548.git.thomas.lendacky@amd.com>
+        id S1725986AbgINWCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:02:50 -0400
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 988FE208DB
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:02:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600120969;
+        bh=XAslvacbUzC0jcklVTRhtBa27JtLd3Yu9RjUUQFAxeY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=F3PGCqglopVCcoPAybBIzOObvzSuUo3fXsVZJZuVqyXBqFhWfWhrQ5eySmqOe7Dla
+         IaLVHXb5xfoOsV+aHHCHI4frpWVNd+aOUoL6eAjkiqt3jV7nl9p/EEocNYEg/64aTJ
+         gDZ++0b4UuhHLSEWeIvx3VpmPFBa5MWsxwnNuJaU=
+Received: by mail-wm1-f53.google.com with SMTP id e11so9756026wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 15:02:49 -0700 (PDT)
+X-Gm-Message-State: AOAM531+VLM5xbaw9AFiGf76vNht+8WYq0OglFcUaGgG4CLbjmJhX5uc
+        m8MSszFeEp62WdFHCDvWS05ZGywCitzFcO6+y0x3mQ==
+X-Google-Smtp-Source: ABdhPJw9ZC8Je3Hl6su4UpojUc1cqIUj4V18PSSHgyji/jgmcyT7OdlDU3S7jDGL0FCmMVTp5rn1YCK4G94RPgBAceA=
+X-Received: by 2002:a05:600c:4104:: with SMTP id j4mr1361681wmi.36.1600120968132;
+ Mon, 14 Sep 2020 15:02:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc70b4ac7119dda48a76b0d3ab6ba99ace3c4b5b.1600114548.git.thomas.lendacky@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200903011054.2282115-1-morbo@google.com> <20200903073435.GU1362448@hirez.programming.kicks-ass.net>
+ <CAGG=3QX4wKcoPWw+5=tOqz3Y7g8ELGZuav3kdWjXRQae=ue9Mg@mail.gmail.com>
+ <CALCETrW7B3HkF5iY=qgt0KeN1fXZLVaPZcELYGRm9bOgbirbww@mail.gmail.com> <CAKwvOdkKqkP1qT0002xQnDrByXr_ygvqCmnzZ50vJLDsg6XWXg@mail.gmail.com>
+In-Reply-To: <CAKwvOdkKqkP1qT0002xQnDrByXr_ygvqCmnzZ50vJLDsg6XWXg@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 14 Sep 2020 15:02:36 -0700
+X-Gmail-Original-Message-ID: <CALCETrXUaeNUbkQSeMPpPKWDBCEpqX1gLgkv2G9zLeeYMjK8VQ@mail.gmail.com>
+Message-ID: <CALCETrXUaeNUbkQSeMPpPKWDBCEpqX1gLgkv2G9zLeeYMjK8VQ@mail.gmail.com>
+Subject: Re: [PATCH] x86: use clang builtins to read and write eflags
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:15:34PM -0500, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> The INVD instruction intercept performs emulation. Emulation can't be done
-> on an SEV or SEV-ES guest because the guest memory is encrypted.
-> 
-> Provide a specific intercept routine for the INVD intercept. Within this
-> intercept routine, skip the instruction for an SEV or SEV-ES guest since
-> it is emulated as a NOP anyway.
-> 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 37c98e85aa62..ac64a5b128b2 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2275,6 +2275,17 @@ static int iret_interception(struct vcpu_svm *svm)
->  	return 1;
->  }
->  
-> +static int invd_interception(struct vcpu_svm *svm)
-> +{
-> +	/*
-> +	 * Can't do emulation on any type of SEV guest and INVD is emulated
-> +	 * as a NOP, so just skip it.
-> +	 */
-> +	return (sev_guest(svm->vcpu.kvm))
+On Mon, Sep 14, 2020 at 2:05 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> (Bill, please use `./scripts/get_maintainer.pl <patchfile>` to get the
+> appropriate list of folks and mailing lists to CC)
+>
+> On Thu, Sep 3, 2020 at 8:06 AM Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > So with my selftests hat on, the inline asm utterly sucks.  Trying to
+> > use pushfq / popfq violates the redzone and requires a gross hack to
+> > work around.  It also messes up the DWARF annotations.  The kernel
+> > gets a free pass on both of these because we don't use a redzone and
+> > we don't use DWARF.
+>
+> Sorry, I don't fully understand:
+> 1. What's the redzone?
 
-Should this be a standalone/backported fix for SEV?
+Userspace ABI.  x86_64 userspace is allowed to use 128 bytes below RSP.
 
-> +		? kvm_skip_emulated_instruction(&svm->vcpu)
-> +		: kvm_emulate_instruction(&svm->vcpu, 0);
-> +}
-> +
->  static int invlpg_interception(struct vcpu_svm *svm)
->  {
->  	if (!static_cpu_has(X86_FEATURE_DECODEASSISTS))
-> @@ -2912,7 +2923,7 @@ static int (*const svm_exit_handlers[])(struct vcpu_svm *svm) = {
->  	[SVM_EXIT_RDPMC]			= rdpmc_interception,
->  	[SVM_EXIT_CPUID]			= cpuid_interception,
->  	[SVM_EXIT_IRET]                         = iret_interception,
-> -	[SVM_EXIT_INVD]                         = emulate_on_interception,
-> +	[SVM_EXIT_INVD]                         = invd_interception,
->  	[SVM_EXIT_PAUSE]			= pause_interception,
->  	[SVM_EXIT_HLT]				= halt_interception,
->  	[SVM_EXIT_INVLPG]			= invlpg_interception,
-> -- 
-> 2.28.0
-> 
+> 2. How does pushfq/popfq violate it?
+
+It clobbers a stack slot owned by the compiler.
+
+> 3. What is the "gross hack"/"workaround?" (So that we might consider
+> removing it if these builtins help).
+
+Look in tools/testing/selftests/x86/helpers.h.  I have a patch to
+switch to the builtins.
+
+> 4. The kernel does use DWARF, based on configs, right?
+
+Indeed, but user code in the kernel tree (e.g. selftests) does.
+
+> #ifdef CONFIG_X86_64
+> #define __read_eflags __builtin_ia32_readeflags_u64
+> #define __write_eflags __builtin_i32_writeeflags_u64
+> #else
+> #define __read_eflags __builtin_ia32_readeflags_u32
+> #define __write_eflags __builtin_i32_writeeflags_u32
+> #endif
+
+Looks reasonable to me.
+
+>
+> Which would be concise.  For smap_save() we can use clac() and stac()
+> which might be nicer than `asm goto` (kudos for using `asm goto`, but
+> plz no more).  :^P Also, we can probably cleanup the note about GCC <
+> 4.9 now. :)
+
+I find it a bit implausible that popfq is faster than a branch, so the
+smap_restore() code seems suboptimal.  For smap_save(), I'm not sure
+what's ideal, but the current code seems fine other than the bogus
+constraint.
+
+> > > Clang chooses the most general constraint when multiple constraints
+> > > are specified. So it will use the stack when retrieving the flags.
+> >
+> > I haven't looked at clang's generated code to see if it's sensible
+> > from an optimization perspective, but surely the kernel code right now
+> > is genuinely wrong.  GCC is free to omit the frame pointer and
+> > generate a stack-relative access for the pop, in which case it will
+> > malfunction.
+>
+> Sorry, this is another case I don't precisely follow, would you mind
+> explaining it further to me please?
+
+The compiler is permitted (and expected!) to instantiate an m
+constraint as something like offset(%rsp).  For example, this:
+
+unsigned long bogus_read_flags(void)
+{
+        unsigned long ret;
+        asm volatile ("pushfq\n\tpopq %0" : "=m" (ret));
+        return ret;
+}
+
+compiles to:
+
+        pushfq
+        popq -8(%rsp)
+        movq    -8(%rsp), %rax
+        ret
+
+which is straight-up wrong.  Changing it to "=rm" gives:
+
+        pushfq
+        popq %rax
+        ret
+
+which is correct, but this only works because gcc politely chose the r
+option instead of the m option.  clang chooses poorly and gives:
+
+read_flags:
+        pushfq
+        popq    -8(%rsp)
+        movq    -8(%rsp), %rax
+        retq
+
+which is wrong.  I filed a clang bug:
+
+https://bugs.llvm.org/show_bug.cgi?id=47530
+
+but the kernel is buggy here -- clang is within its rights to generate
+the bogus sequence above.  Bill's email was IMO rather obfuscated, and
+I assume this is what he meant.
+
+Of course, clang unhelpfully generates poor code for the builtin, too:
+
+nice_read_eflags:
+        pushq   %rbp
+        movq    %rsp, %rbp
+        pushfq
+        popq    %rax
+        popq    %rbp
+        retq
+
+I filed a bug for that, too:
+
+https://bugs.llvm.org/show_bug.cgi?id=47531
+
+So we at least need to fix the bogus "=rm", and we should seriously
+consider using the builtin.
