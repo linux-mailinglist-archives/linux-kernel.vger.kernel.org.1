@@ -2,62 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404EF26926E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29683269273
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgINREm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgINRDS (ORCPT
+        id S1726020AbgINRFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:05:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39907 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726131AbgINREy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:03:18 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58EBC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:03:17 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id p81so387003ybc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=1MR7w5pXZSiUaRJ6XXYmBVR/BBCArAfXUnOrJ4PHyTw=;
-        b=e5nYVZXu4RmUg6Q/WSVeBxpZ4Q7zjCD4Oahv4ZsBYKnXIID+u4fB1RTBtM8HLo3Vza
-         tnmNv+KRziVxdmy9B6gLyQOdQHwt5RDmuDFg5pVqmZr3/2p9V6r7v9z8rxOo27SJXqIz
-         7Yc1UTDZ9dq8TKl/kOLuKgfNhpGbJygdysDyk7NcW2Oh/RGYbvyBUYs5NMz7SthExzTV
-         aDysA+r8SY8J80KNIcOGfCjlVQ30b373A1LmxRUJLTCRjbaP9DtzsTb4EafPz1SYEslr
-         iZlW7DNJsq9hWV+5FImGZdokWxQnxFZnClRRwb9o9wkm6MAnNjcXjHq7hvTX+gifJIIa
-         DqBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=1MR7w5pXZSiUaRJ6XXYmBVR/BBCArAfXUnOrJ4PHyTw=;
-        b=hWrEL+Skb9mxf6tNqloG1fvvyiLwMT8g4p/EpKDRqNCGdleO9OlvHqGqMHMuxmlfD7
-         ynORb+V94bn7eJCBnAk8SIyRlS44DzHHeDK5S6r6TRjnahBOCy/yxEyVaJ3Trwc/rxdD
-         MkX9+Fxfsd3mfYIUT5TxNIMSXL+xzpjljJSjQ1XonA8x2BnGNAaUGL/nZIn0M6DdqnkJ
-         5Sv7vU82fs9D/Rb2Rd3Xfw+1k15etc26dAZtH8EyZrMr0iKEfxufn1LzEly4CrVB18+i
-         NrvoiwXJHtF7NEEfzqQxILJ9gxClIA+mxyYDQKUkhlNzdL7tfDIuH1o5UlKmpp80lgg7
-         Xvbg==
-X-Gm-Message-State: AOAM531c5cEqGyUUKDiHw3Z+j9uBeVmVYOrJegUgocZG5tD7ViM7jY/O
-        ig/U5FxWCjv4RDnUMC9e837GfO0xsxvT66cYCO8=
-X-Google-Smtp-Source: ABdhPJxU559s4yQbeztDud0TuW/BzkM9ohF0fsqU6oc6R+JUvyGxQ9JYAmpNqS8nGlagK4i8S8uxSGXlYYxEGEVCmf4=
-X-Received: by 2002:a05:6902:4cf:: with SMTP id v15mr21678622ybs.373.1600102997006;
- Mon, 14 Sep 2020 10:03:17 -0700 (PDT)
+        Mon, 14 Sep 2020 13:04:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600103092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ipaNxMrceKkLR5kkwD8SmYi9G7UY5vra0U19CTPpw2U=;
+        b=V05WbzHusWAZu8yxwlbHF6tJgZK8N/LNlbRABdfuNlI8V8DYQA+7XXJ+vGbQwnLVYklBXn
+        LJWqQmm59oxgsWny84zm2D40sJTV9ZG7RG5s2+8mbC1id7fjqhcnynqyCFkijhvwXgAH4e
+        v5Wcr+GOp5nvA3ZChHz6GbZd7X/QZq0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-yDaeeV2ANfCTfvtYaOKjxw-1; Mon, 14 Sep 2020 13:04:45 -0400
+X-MC-Unique: yDaeeV2ANfCTfvtYaOKjxw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A65C310054FF;
+        Mon, 14 Sep 2020 17:04:43 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B56EE19C4F;
+        Mon, 14 Sep 2020 17:04:36 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Logan Gunthorpe <logang@deltatee.com>
+Subject: [PATCH] x86/unwind/fp: Fix FP unwinding in ret_from_fork
+Date:   Mon, 14 Sep 2020 12:04:22 -0500
+Message-Id: <f366bbf5a8d02e2318ee312f738112d0af74d16f.1600103007.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a26:110d:0:0:0:0:0 with HTTP; Mon, 14 Sep 2020 10:03:16
- -0700 (PDT)
-From:   Tricia Smith <triciatricia841@gmail.com>
-Date:   Mon, 14 Sep 2020 21:33:16 +0430
-X-Google-Sender-Auth: r8K-x0rSYBH9UZiNLn6mpMU2kaY
-Message-ID: <CAHwxfserDnKRr0_m6B=5BcH5-5Xg7tte_Thr2y0652y0DO_u7A@mail.gmail.com>
-Subject: Re:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dear, I am Miss Tricia Smith the only Daughter/Child of late Mr and
-Mrs William Smith. I am 18 years old. Please i have something very
-important and confidential to discuss with you.
+There have been some reports of "bad bp value" warnings printed by the
+frame pointer unwinder:
+
+  WARNING: kernel stack regs at 000000005bac7112 in sh:1014 has bad 'bp' value 0000000000000000
+
+This warning happens when unwinding from an interrupt in
+ret_from_fork().  If entry code gets interrupted, the state of the frame
+pointer (rbp) may be undefined, which can confuse the unwinder,
+resulting in warnings like the above.
+
+There's an in_entry_code() check which normally silences such warnings
+for entry code.  But in this case, ret_from_fork() is getting
+interrupted.  It recently got moved out of .entry.text, so the
+in_entry_code() check no longer works.
+
+We could move it back into .entry.text, but that would break the noinstr
+validation because of the call to schedule_tail().
+
+Instead, initialize each new task's RBP to point to the task's entry
+regs via an encoded frame pointer.  That will allow the unwinder to
+reach the end of the stack gracefully.
+
+Fixes: b9f6976bfb94 ("x86/entry/64: Move non entry code into .text section")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Reported-by: Logan Gunthorpe <logang@deltatee.com>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ arch/x86/include/asm/frame.h | 19 +++++++++++++++++++
+ arch/x86/kernel/process.c    |  3 ++-
+ 2 files changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/frame.h b/arch/x86/include/asm/frame.h
+index 296b346184b2..fb42659f6e98 100644
+--- a/arch/x86/include/asm/frame.h
++++ b/arch/x86/include/asm/frame.h
+@@ -60,12 +60,26 @@
+ #define FRAME_END "pop %" _ASM_BP "\n"
+ 
+ #ifdef CONFIG_X86_64
++
+ #define ENCODE_FRAME_POINTER			\
+ 	"lea 1(%rsp), %rbp\n\t"
++
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return (unsigned long)regs + 1;
++}
++
+ #else /* !CONFIG_X86_64 */
++
+ #define ENCODE_FRAME_POINTER			\
+ 	"movl %esp, %ebp\n\t"			\
+ 	"andl $0x7fffffff, %ebp\n\t"
++
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return (unsigned long)regs & 0x7fffffff;
++}
++
+ #endif /* CONFIG_X86_64 */
+ 
+ #endif /* __ASSEMBLY__ */
+@@ -83,6 +97,11 @@
+ 
+ #define ENCODE_FRAME_POINTER
+ 
++static inline unsigned long encode_frame_pointer(struct pt_regs *regs)
++{
++	return 0;
++}
++
+ #endif
+ 
+ #define FRAME_BEGIN
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 13ce616cc7af..ba4593a913fa 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -42,6 +42,7 @@
+ #include <asm/spec-ctrl.h>
+ #include <asm/io_bitmap.h>
+ #include <asm/proto.h>
++#include <asm/frame.h>
+ 
+ #include "process.h"
+ 
+@@ -133,7 +134,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	fork_frame = container_of(childregs, struct fork_frame, regs);
+ 	frame = &fork_frame->frame;
+ 
+-	frame->bp = 0;
++	frame->bp = encode_frame_pointer(childregs);
+ 	frame->ret_addr = (unsigned long) ret_from_fork;
+ 	p->thread.sp = (unsigned long) fork_frame;
+ 	p->thread.io_bitmap = NULL;
+-- 
+2.25.4
+
