@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A1F2685A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD2D2685B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgINHTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:19:49 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:44463 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgINHTq (ORCPT
+        id S1725997AbgINHXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbgINHXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:19:46 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 14 Sep 2020 00:19:44 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 14 Sep 2020 00:19:43 -0700
-Received: from parashar-linux.qualcomm.com ([10.206.13.63])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 14 Sep 2020 12:49:28 +0530
-Received: by parashar-linux.qualcomm.com (Postfix, from userid 2363307)
-        id 8AA7D215D8; Mon, 14 Sep 2020 12:49:27 +0530 (IST)
-From:   Paras Sharma <parashar@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akashast@codeaurora.org, Paras Sharma <parashar@codeaurora.org>
-Subject: [PATCH V4] serial: qcom_geni_serial: To correct QUP Version detection logic
-Date:   Mon, 14 Sep 2020 12:49:17 +0530
-Message-Id: <1600067957-8216-1-git-send-email-parashar@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 14 Sep 2020 03:23:46 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22CDC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 00:23:45 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id o20so11832257pfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 00:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=FgYJJ59Xq6gP9NQOhQuV3NPG4SMshHnKOvl37XR57Lg=;
+        b=ALCuuDTCtnPChypI77VManpug+BEsagYoWT+KEAHORA/1P+QrrUxiNNAJFMdfgEnEr
+         zqpmfXqDzDMhYJwyeyhWYi8cQCJbRyKNErkealPqobOMABvkZFzfrNSmPMCOCo+WyUIG
+         dFkLXiDMDbcAd3zJQ5BE4OZr/nc7CM4s0ZMks=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FgYJJ59Xq6gP9NQOhQuV3NPG4SMshHnKOvl37XR57Lg=;
+        b=agLJEgA7ICSQ1GvjGRJygNfmTVTl8eHxb8qF5qYZ6WtGcWBgvWCS7pow91raAY7bJv
+         5eUdKGvPy6ecHBughH023W2UyrBm6MyETn++Kk5S/IGmOqZOjzuy/T+Bt3CfKYZREFXt
+         7ncfnJjjHXSYTuN/mI4RSTeshbekSENnJTlJCbj8RPBT3wXIViWPiSrp9OnnLWnwYFO6
+         3lzX6UUe2+azxWifB8FGz5jHtHLZuCMNAhWwYtAATCMouJdMSM5XQn7LpXUiuZXNq3SK
+         IDvuE/aoqBTUsUw2NpsYrFpOylKKCbnD3iBnIUNGy571pXvRCObiTYVvWkM1yUAPHvXn
+         E+tw==
+X-Gm-Message-State: AOAM530UEwLGNm+pvCcGpn1gWlIheG3cYUHFj9w7oEiRw+6l43uPCfh0
+        GwPtKwHdpXpyjEZs3ikDoAENJw==
+X-Google-Smtp-Source: ABdhPJzwO0XCFMYQ+LPRxhAGL7kKJAYluHoXtdQmAfZmBI5GxErXjKfeazcrGKA97FK2ZccycGRY1A==
+X-Received: by 2002:aa7:9484:: with SMTP id z4mr12319563pfk.32.1600068225293;
+        Mon, 14 Sep 2020 00:23:45 -0700 (PDT)
+Received: from mannams-OptiPlex-7010.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id z11sm9573077pfc.181.2020.09.14.00.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 00:23:44 -0700 (PDT)
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, poza@codeaurora.org
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Srinath Mannam <srinath.mannam@broadcom.com>
+Subject: [PATCH v3] iommu/dma: Fix IOVA reserve dma ranges
+Date:   Mon, 14 Sep 2020 12:53:19 +0530
+Message-Id: <20200914072319.6091-1-srinath.mannam@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation reduces the sampling rate by half
-if qup HW version is  greater is than 2.5 by checking if the
-geni SE major version is greater than 2 and geni SE minor version
-is greater than 5.This implementation fails when the version is
-greater than or equal to 3.
+Fix IOVA reserve failure in the case when address of first memory region
+listed in dma-ranges is equal to 0x0.
 
-Hence, a new macro QUP_SE_VERSION_2_5 is defined having value
-for major number 2 and minor number 5 as 0x20050000.Hence,if 
-ver is greater than this value,sampling rate is halved. 
-This logic would work for any future qup version.
-
-Fixes: ce734600545f ("tty: serial: qcom_geni_serial: Update the oversampling rate")
-Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+Fixes: aadad097cd46f ("iommu/dma: Reserve IOVA for PCIe inaccessible DMA address")
+Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
 ---
-Changes in V4:
-Created a new macro QUP_SE_VERSION_2_5 for Qup se version 2.5
+Changes from v2:
+   Modify error message with useful information based on Bjorn's comments.
 
- drivers/tty/serial/qcom_geni_serial.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Changes from v1:
+   Removed unnecessary changes based on Robin's review comments.
 
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index f0b1b47..9b74b1e 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -106,6 +106,9 @@
- /* We always configure 4 bytes per FIFO word */
- #define BYTES_PER_FIFO_WORD		4
+ drivers/iommu/dma-iommu.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 5141d49a046b..5b9791f35c5e 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -217,9 +217,11 @@ static int iova_reserve_pci_windows(struct pci_dev *dev,
+ 			lo = iova_pfn(iovad, start);
+ 			hi = iova_pfn(iovad, end);
+ 			reserve_iova(iovad, lo, hi);
+-		} else {
++		} else if (end < start) {
+ 			/* dma_ranges list should be sorted */
+-			dev_err(&dev->dev, "Failed to reserve IOVA\n");
++			dev_err(&dev->dev,
++				"Failed to reserve IOVA [%#010llx-%#010llx]\n",
++				start, end);
+ 			return -EINVAL;
+ 		}
  
-+/* QUP SE VERSION value for major number 2 and minor number 5 */
-+#define QUP_SE_VERSION_2_5                  0x20050000
-+
- struct qcom_geni_private_data {
- 	/* NOTE: earlycon port will have NULL here */
- 	struct uart_driver *drv;
-@@ -1000,7 +1003,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
- 	sampling_rate = UART_OVERSAMPLING;
- 	/* Sampling rate is halved for IP versions >= 2.5 */
- 	ver = geni_se_get_qup_hw_version(&port->se);
--	if (GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
-+	if (ver >= QUP_SE_VERSION_2_5)
- 		sampling_rate /= 2;
- 
- 	clk_rate = get_clk_div_rate(baud, sampling_rate, &clk_div);
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
 
