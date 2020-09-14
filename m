@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA80269492
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C287B26949A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgINSNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:13:36 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:42804 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgINSNN (ORCPT
+        id S1726057AbgINSPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:15:15 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:41045 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgINSPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:13:13 -0400
-Received: from vennila-Virtual-Machine.redmond.corp.microsoft.com (unknown [131.107.159.190])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 39C22209F32A;
-        Mon, 14 Sep 2020 11:13:13 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 39C22209F32A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1600107193;
-        bh=O7GLupHZ3pFPFMY1HucftGastWnLX6zwmGrMq8vy3/Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FvzLRbDDDQ0e3o8Xv8DroMUwzD8FyDiLQjkhEkuxRsYaSBRXGwAfzHH5QdmnCSie4
-         ZzB52f1Zlpq3WImYIGvfufg8G674cmHPUwl8gavyQUVYyBvacLyU2yrO21Ry+w2zmV
-         2fjoh1StkSTJX0WStYOVObcYo75weOlRNY9Fhkog=
-From:   Vennila Megavannan <vemegava@linux.microsoft.com>
-To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org
-Cc:     srinath.mannam@broadcom.com, jean-philippe@linaro.org,
-        eric.auger@redhat.com, shameerali.kolothum.thodi@huawei.com,
-        tyhicks@linux.microsoft.com, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: [PATCH v2] iommu/arm: Add module parameter to set msi iova address
-Date:   Mon, 14 Sep 2020 11:13:07 -0700
-Message-Id: <20200914181307.117792-1-vemegava@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 14 Sep 2020 14:15:05 -0400
+Received: by mail-io1-f65.google.com with SMTP id z13so1108123iom.8;
+        Mon, 14 Sep 2020 11:15:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kU/2sZrLzC+Bk/ABMelZP0JnISX9KWlKhr4rvY79f84=;
+        b=OXGybTMsTuVvqSRl1W5Tfn7hk4wTODLNpj2K+WynHo1/JllC2/VEHuB9ZUcJ7yadum
+         MYOlesfHPuLSsJbBDvVv8VY6/WQL84Jv6wzV26fTU94FLGnD+Pd+PGrU25Hka5IPRFDj
+         nNC9Ezld0WMjKMKz5hOkKh1eDizgUMHvMKsnby7pQ5LwX7rIX0rXdJXS8E9hm7AN/G10
+         AKz6L0geztwpqcAxzg9Yn9vYjbymp9g02Rt4OOfkNi2DzTIbqV5C2A+Xfgt+Y10rZG+m
+         ESk9smAdzf8o8EejcdFm7g5q342doxY0AXu2wOUwuK++psu/19fSWEeNPA7iMsfyh8P1
+         ogbQ==
+X-Gm-Message-State: AOAM531rOSGsSRG9zUVdmF47EhNFxtMiO+SOJglnrFPfGEv3rKj0Auqx
+        d362S9/BTsO726V9XpEOQw==
+X-Google-Smtp-Source: ABdhPJwVe+zJQsdM1ytThZGYPxVPTrJFjBf/Wy4kmefHouTjymFTaisrIJZzO8Pc2eYtbsGGwf8edQ==
+X-Received: by 2002:a02:605c:: with SMTP id d28mr14120122jaf.12.1600107304504;
+        Mon, 14 Sep 2020 11:15:04 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m12sm7331781ilg.55.2020.09.14.11.15.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 11:15:03 -0700 (PDT)
+Received: (nullmailer pid 4169787 invoked by uid 1000);
+        Mon, 14 Sep 2020 18:15:02 -0000
+Date:   Mon, 14 Sep 2020 12:15:02 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Sangbeom Kim <sbkim73@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        Inki Dae <inki.dae@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Kukjin Kim <kgene@kernel.org>,
+        alsa-devel@alsa-project.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] dt-bindings: connector: Convert Samsung 11-pin USB
+ bindings to dtschema
+Message-ID: <20200914181502.GA4169708@bogus>
+References: <20200829142501.31478-1-krzk@kernel.org>
+ <20200829142501.31478-5-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829142501.31478-5-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinath Mannam <srinath.mannam@broadcom.com>
+On Sat, 29 Aug 2020 16:24:56 +0200, Krzysztof Kozlowski wrote:
+> Add Samsung 11-pin USB-C connector into standard dtschema bindings file.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../connector/samsung,usb-connector-11pin.txt | 49 -------------------
+>  .../bindings/connector/usb-connector.yaml     | 44 +++++++++++++++++
+>  2 files changed, 44 insertions(+), 49 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/connector/samsung,usb-connector-11pin.txt
+> 
 
-Add provision to change default value of MSI IOVA base to platform's
-suitable IOVA using module parameter. The present hardcoded MSI IOVA base
-may not be the accessible IOVA ranges of platform.
-
-If any platform has the limitaion to access default MSI IOVA, then it can
-be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
-
-Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
-Co-developed-by: Vennila Megavannan <vemegava@linux.microsoft.com>
-Signed-off-by: Vennila Megavannan <vemegava@linux.microsoft.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 ++++-
- drivers/iommu/arm/arm-smmu/arm-smmu.c       | 5 ++++-
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index c192544e874b..dfef0df66c19 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -417,6 +417,9 @@ static bool disable_bypass = 1;
- module_param_named(disable_bypass, disable_bypass, bool, S_IRUGO);
- MODULE_PARM_DESC(disable_bypass,
- 	"Disable bypass streams such that incoming transactions from devices that are not attached to an iommu domain will report an abort back to the device and will not be allowed to pass through the SMMU.");
-+static unsigned long msi_iova_base = MSI_IOVA_BASE;
-+module_param(msi_iova_base, ulong, S_IRUGO);
-+MODULE_PARM_DESC(msi_iova_base, "set MSI IOVA base address if default (0x8000000) does not work for your platform.");
- 
- enum pri_resp {
- 	PRI_RESP_DENY = 0,
-@@ -3102,7 +3105,7 @@ static void arm_smmu_get_resv_regions(struct device *dev,
- 	struct iommu_resv_region *region;
- 	int prot = IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
- 
--	region = iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
-+	region = iommu_alloc_resv_region(msi_iova_base, MSI_IOVA_LENGTH,
- 					 prot, IOMMU_RESV_SW_MSI);
- 	if (!region)
- 		return;
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 09c42af9f31e..9d46a2628dd5 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -64,6 +64,9 @@ static bool disable_bypass =
- module_param(disable_bypass, bool, S_IRUGO);
- MODULE_PARM_DESC(disable_bypass,
- 	"Disable bypass streams such that incoming transactions from devices that are not attached to an iommu domain will report an abort back to the device and will not be allowed to pass through the SMMU.");
-+static unsigned long msi_iova_base = MSI_IOVA_BASE;
-+module_param(msi_iova_base, ulong, S_IRUGO);
-+MODULE_PARM_DESC(msi_iova_base, "set MSI IOVA base address if default (0x8000000) does not work for your platform.");
- 
- struct arm_smmu_s2cr {
- 	struct iommu_group		*group;
-@@ -1603,7 +1606,7 @@ static void arm_smmu_get_resv_regions(struct device *dev,
- 	struct iommu_resv_region *region;
- 	int prot = IOMMU_WRITE | IOMMU_NOEXEC | IOMMU_MMIO;
- 
--	region = iommu_alloc_resv_region(MSI_IOVA_BASE, MSI_IOVA_LENGTH,
-+	region = iommu_alloc_resv_region(msi_iova_base, MSI_IOVA_LENGTH,
- 					 prot, IOMMU_RESV_SW_MSI);
- 	if (!region)
- 		return;
--- 
-2.17.1
-
+Applied, thanks!
