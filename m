@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30369269150
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73223269157
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgINQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbgINQP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:15:28 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 551822193E;
-        Mon, 14 Sep 2020 16:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600100112;
-        bh=gPbSbGy4lm8KvPqNHKfz7UVHDY/Zl4DSgvGAOQyQCKo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cas+BpRQ+wt+1A0MeJeN14TH2LqTFfI73ofe5bl0ROHTBpkcv5IXj475BbdogR25Y
-         yOpVw1ssCF4zEh5HX4R+9x7/HxysC1fyUmYo6Q/OK5zoRKZQBsoiRZF1MKlNijfkDi
-         YCnUlt2SM9cQOj+c/uapn9an9fKVRCwiX8wWt/+w=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6A12740D3D; Mon, 14 Sep 2020 13:15:10 -0300 (-03)
-Date:   Mon, 14 Sep 2020 13:15:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 21/26] perf tools: Add machine__for_each_dso function
-Message-ID: <20200914161510.GN160517@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-22-jolsa@kernel.org>
+        id S1726396AbgINQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgINQRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:17:00 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF029C06178A;
+        Mon, 14 Sep 2020 09:16:52 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id c13so453762oiy.6;
+        Mon, 14 Sep 2020 09:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=ZaZZqacCDA7oXtm//wcKDDOo/3GMN+o9Qri31drCCNY=;
+        b=KDPADuN7sgN/H3qQhT8j9VnWJODEPaZsmTPIcGxPaBo6rYW0M8NvhKwJ5MAs/3V+SS
+         aINw+7oVh2lqilrsOaj3DUq883Gf+0koNWpY6VRJi1GI31oIL+QkVBpCqs12ssFD+j/D
+         zgW+1aROsUUIgtHyCf2nFByMV/syL9pyQ/TlcCq1R3lm21S88e9PHDQxB9dzZvBwZI2V
+         uxgaKsEAz7ggMkvM0tGLLLqAT6/fVl7nNQ3120h18qyrvDxYYXcPBivgjPIv8cgp818y
+         qfva7as4FDH1guCOFqYfCk0HmlLHFNXdMqaQ+sEadFnndjNT4gjh5Dyg1u94poMxWOFW
+         REDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=ZaZZqacCDA7oXtm//wcKDDOo/3GMN+o9Qri31drCCNY=;
+        b=FoxOLYYKyCReZmtWH0W2qAg7FCtDhg/jCjYJzUA4SDI8QHTxKdOjSYHNUIeFVXsI+V
+         KyyhEM6H7oldaVYUZ8RtYjeP29TQblFKH8A4aKDdxTehxjL/trq9voXY0VUGyWE0qo1v
+         bbTLh1r7Ux24o6oSYGHIkEL1F6om+CW5IR7jd4zQdwPpIMSiTJt1vAYbaoGO6XlEuip5
+         oBwALD+e+2NCRZuBqFhVPXjc1aWUNEd5/xazoLbGJj4PmH3fSOcitmUPVm1Bk/8noPdD
+         4a+ejSsl2DRW+j7WZetZ5pA48MMiO81SIeLSDSfCkrWlkEf5vULgtC2haj+Fbh2QhkrL
+         IUcA==
+X-Gm-Message-State: AOAM5334RyVkQH9OdTPMsY5k4K9nWqpBru2xDhoil2MHPLMmGZWEHvgC
+        tXraCSALB6DaOeJSRzEyLKEDJDrBwBPOdCOEpPA=
+X-Google-Smtp-Source: ABdhPJw0AH9qtuaPrhz2Yb6lSzCjGlx3LPzihJTQ+wosCraP/j9VN3J50rwZNcsB1cM9u+eHfC2fe+D09//UnMjiZ/E=
+X-Received: by 2002:aca:ec50:: with SMTP id k77mr92502oih.35.1600100212390;
+ Mon, 14 Sep 2020 09:16:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200913210313.1985612-22-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20200901064302.849-1-w@1wt.eu> <20200901064302.849-2-w@1wt.eu>
+ <b460c51a3fa1473b8289d6030a46abdb@AcuMS.aculab.com> <20200901131623.GB1059@1wt.eu>
+ <CANEQ_+Kuw6cxWRBE6NyXkr=8p3W-1f=o1q91ZESeueEnna9fvw@mail.gmail.com>
+In-Reply-To: <CANEQ_+Kuw6cxWRBE6NyXkr=8p3W-1f=o1q91ZESeueEnna9fvw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 14 Sep 2020 18:16:40 +0200
+Message-ID: <CA+icZUUmQeww+94dVOe1JFFQRkvUYVZP3g2GP+gOsdX4kP4x+A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] random32: make prandom_u32() output unpredictable
+To:     Amit Klein <aksecurity@gmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>, David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        George Spelvin <lkml@sdf.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "tytso@mit.edu" <tytso@mit.edu>, Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Sep 13, 2020 at 11:03:08PM +0200, Jiri Olsa escreveu:
-> Adding machine__for_each_dso to iterate over all dso
-> objects defined for the within the machine. It will
-> be used in following changes.
+On Mon, Sep 14, 2020 at 4:53 PM Amit Klein <aksecurity@gmail.com> wrote:
+>
+> Hi
+>
+> Is this patch being pushed to any branch? I don't see it deployed anywhere (unless I'm missing something...).
+>
 
-prep work, applying.
+It's here:
 
-- Arnaldo
- 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/machine.c | 12 ++++++++++++
->  tools/perf/util/machine.h |  4 ++++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 863d949ef967..f8e8d0d80847 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -3181,3 +3181,15 @@ char *machine__resolve_kernel_addr(void *vmachine, unsigned long long *addrp, ch
->  	*addrp = map->unmap_ip(map, sym->start);
->  	return sym->name;
->  }
-> +
-> +int machine__for_each_dso(struct machine *machine, machine__dso_t fn, void *priv)
-> +{
-> +	struct dso *pos;
-> +	int err = 0;
-> +
-> +	list_for_each_entry(pos, &machine->dsos.head, node) {
-> +		if (fn(pos, machine, priv))
-> +			err = -1;
-> +	}
-> +	return err;
-> +}
-> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
-> index a3c1d0bf89e5..504c707f22bb 100644
-> --- a/tools/perf/util/machine.h
-> +++ b/tools/perf/util/machine.h
-> @@ -252,6 +252,10 @@ void machines__destroy_kernel_maps(struct machines *machines);
->  
->  size_t machine__fprintf_vmlinux_path(struct machine *machine, FILE *fp);
->  
-> +typedef int (*machine__dso_t)(struct dso *dso, struct machine *machine, void *priv);
-> +
-> +int machine__for_each_dso(struct machine *machine, machine__dso_t fn,
-> +			  void *priv);
->  int machine__for_each_thread(struct machine *machine,
->  			     int (*fn)(struct thread *thread, void *p),
->  			     void *priv);
-> -- 
-> 2.26.2
-> 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git/log/?h=20200901-siphash-noise
 
--- 
-
-- Arnaldo
+> Best,
+> -Amit
+>
+>
+>
+> On Tue, Sep 1, 2020 at 4:16 PM Willy Tarreau <w@1wt.eu> wrote:
+>>
+>> On Tue, Sep 01, 2020 at 01:10:18PM +0000, David Laight wrote:
+>> > From: Willy Tarreau
+>> > > Sent: 01 September 2020 07:43
+>> > ...
+>> > > +/*
+>> > > + * Generate some initially weak seeding values to allow
+>> > > + * the prandom_u32() engine to be started.
+>> > > + */
+>> > > +static int __init prandom_init_early(void)
+>> > > +{
+>> > > +   int i;
+>> > > +   unsigned long v0, v1, v2, v3;
+>> > > +
+>> > > +   if (!arch_get_random_long(&v0))
+>> > > +           v0 = jiffies;
+>> >
+>> > Isn't jiffies likely to be zero here?
+>>
+>> I don't know. But do we really care ? I'd personally have been fine
+>> with not even assigning it in this case and leaving whatever was in
+>> the stack in this case, though it could make some static code analyzer
+>> unhappy.
+>>
+>> Willy
