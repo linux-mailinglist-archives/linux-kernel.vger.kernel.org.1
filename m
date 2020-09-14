@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97580268A4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83731268A4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgINLql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51214 "EHLO mail.kernel.org"
+        id S1726123AbgINLpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:45:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:35062 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726133AbgINLlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726066AbgINLlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 07:41:20 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CA7A21741;
-        Mon, 14 Sep 2020 11:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600083595;
-        bh=jfYDZi4DW4IOpzXJuohR3BO8aZlZ4pA6gWH4B3GTn5U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gSIGuE3g1O06P/z1/XCMSefnqo/QtiYAaTwMUxaMsxFeLqfLrWuN8cX+7XBkq+MnA
-         UAuGJWZjNXdYDaAIPFR0Nejsp3uIM4JWWJR9/PJAWAz23xqDMeqJsZt9DZW9Ywi+1y
-         MzNdtkdxKyykwrjiiazJGYU2em1l+FqYTiKU1XAo=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>
-Subject: [PATCH rdma-next 0/4] Improve ODP by using HMM API
-Date:   Mon, 14 Sep 2020 14:39:45 +0300
-Message-Id: <20200914113949.346562-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE8AF106F;
+        Mon, 14 Sep 2020 04:41:14 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5361C3F68F;
+        Mon, 14 Sep 2020 04:41:13 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:41:11 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     John Dias <joaodias@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, qianjun.kernel@gmail.com,
+        tglx@linutronix.de, will@kernel.org, luto@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, laoar.shao@gmail.com,
+        urezki@gmail.com, Wei Wang <wvw@google.com>,
+        Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH V6 1/1] Softirq:avoid large sched delay from the pending
+ softirqs
+Message-ID: <20200914114110.esjlzcukfx5emkke@e107158-lin.cambridge.arm.com>
+References: <20200909090931.8836-1-qianjun.kernel@gmail.com>
+ <20200911164644.eqjqjucvqfvrmr67@e107158-lin.cambridge.arm.com>
+ <20200911182832.GL1362448@hirez.programming.kicks-ass.net>
+ <CA+njcd3HFV5Gqtt9qzTAzpnA4-4ngPBQ7T0gwgc0Fm9_VoJLcQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+njcd3HFV5Gqtt9qzTAzpnA4-4ngPBQ7T0gwgc0Fm9_VoJLcQ@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On 09/11/20 12:14, John Dias wrote:
+> I agree that the rt-softirq interaction patches are a gross hack (and I
+> wrote the original versions, so it's my grossness). The problem is that
+> even a 1ms delay in executing those low-latency audio threads is enough to
+> cause obvious glitching in audio under very real circumstances, which is
+> not an acceptable user experience -- and some softirq handlers run for >1ms
+> on their own. (And 1ms is a high upper bound, not a median target.)
 
-Based on:
-https://lore.kernel.org/lkml/20200914112653.345244-1-leon@kernel.org/
+AFAIK professional audio apps have the toughest limit of sub 10ms. 120MHz
+screens impose a stricter limit on display pipeline too to finish its frame in
+8ms.
 
----------------------------------------------------------------------------------------
-From Yishai:
+1ms is too short and approaches PREEMPT_RT realm.
 
-This series improves ODP performance by moving to use the HMM API as of below.
-
-The get_user_pages_remote() functionality was replaced by HMM:
-- No need anymore to allocate and free memory to hold its output per call.
-- No need anymore to use the put_page() to unpin the pages.
-- The logic to detect contiguous pages is done based on the returned order
-  from HMM, no need to run per page, and evaluate.
-
-Moving to use the HMM enables to reduce page faults in the system by using the
-snapshot mode. This mode allows existing pages in the CPU to become presented
-to the device without faulting.
-
-This non-faulting mode may be used explicitly by an application with some new
-option of advice MR (i.e. PREFETCH_NO_FAULT) and is used upon ODP MR
-registration internally as part of initiating the device page table.
-
-To achieve the above, internal changes in the ODP data structures were done
-and some flows were cleaned-up/adapted accordingly.
+Is it possible to expand on the use case here? What application requires this
+constraint?
 
 Thanks
 
-Yishai Hadas (4):
-  IB/core: Improve ODP to use hmm_range_fault()
-  IB/core: Enable ODP sync without faulting
-  RDMA/mlx5: Extend advice MR to support non faulting mode
-  RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
-
- drivers/infiniband/Kconfig              |   1 +
- drivers/infiniband/core/umem_odp.c      | 286 ++++++++++--------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h    |   6 +
- drivers/infiniband/hw/mlx5/mr.c         |  14 +-
- drivers/infiniband/hw/mlx5/odp.c        |  50 +++--
- include/rdma/ib_umem_odp.h              |  21 +-
- include/uapi/rdma/ib_user_ioctl_verbs.h |   1 +
- 7 files changed, 178 insertions(+), 201 deletions(-)
-
 --
-2.26.2
-
+Qais Yousef
