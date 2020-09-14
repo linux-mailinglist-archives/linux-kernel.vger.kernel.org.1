@@ -2,255 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF1D268824
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320B7268822
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgINJT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:19:27 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24385 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726184AbgINJTW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726236AbgINJTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 14 Sep 2020 05:19:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600075161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=d/VHcnD9+iyee8hVCb0cdHMMI41k5WsqaJSVgsRT7Lo=;
-        b=RBqNUf9ONv+PYghXBZJLcKWKep5iXhpR3sqw9TXxJrXSr8E0+25+rMpnp95kQ5ZuMdRphl
-        z7fkwafW99KxkNeOBnBp7BOkp2G5YQUsXW+oyh9b+F09q/L2tEGzvc0az6WFcyUmzxgJHK
-        lRylld36M7rbg7AWKwoDHo3Wn40D668=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-461-c2cIyhRdMLK9h6jSH6fkRg-1; Mon, 14 Sep 2020 05:19:17 -0400
-X-MC-Unique: c2cIyhRdMLK9h6jSH6fkRg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA037104D3E0;
-        Mon, 14 Sep 2020 09:19:14 +0000 (UTC)
-Received: from [10.36.114.162] (ovpn-114-162.ams2.redhat.com [10.36.114.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 795CA60CD1;
-        Mon, 14 Sep 2020 09:19:06 +0000 (UTC)
-Subject: Re: [PATCH 2/3] mm: don't rely on system state to detect hot-plug
- operations
-To:     Laurent Dufour <ldufour@linux.ibm.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>
-References: <20200911134831.53258-1-ldufour@linux.ibm.com>
- <20200911134831.53258-3-ldufour@linux.ibm.com>
- <f50fe4ae-faf0-6e03-b87e-45ca8c53960d@redhat.com>
- <20200914081921.GA15113@linux>
- <96736256-a0a6-3126-3810-3380532b9621@redhat.com>
- <9990141a-a4e7-6166-c7aa-e0c1199afa38@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <c7fba55b-8f26-771c-2c23-ae88d1630b91@redhat.com>
-Date:   Mon, 14 Sep 2020 11:19:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+Received: from mail-io1-f79.google.com ([209.85.166.79]:36576 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726259AbgINJTU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:19:20 -0400
+Received: by mail-io1-f79.google.com with SMTP id h8so10647486ioa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:19:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=PopK2tlLDApo/coeVBR5hxOMNG+Fyhkdx0BjdaxPuXg=;
+        b=cnwKAss8GZDu+iaWBe9fh0Y1n8cqW+Fxl25WylxTGJiJH5McEGJEYbojv3S4/hcv5u
+         yT+VOiK3hXTxR5gMRANlfOravUL/Y9w+sgiZIpF1U5QNIf3rDm0HCxRAdpei4rvz+AK5
+         svQw7KAmVOoPqcClXGXdW1vhTggk7UUg11G3baKYh0Buz4Bhl8VQHF9Upxy1S3aJik9z
+         g4Piy4uQybKMQFQCTaUOuhPfBkOvjgdufxHNfv1Nl0YVF3MMcaZud6D6MO1ubtvf4u/M
+         rpOBvktqfnN8itccNFil4AcMGIbDVv2oJ8ITA8RQYHN1HGZ1Cka7kPVKndHm0Rh3CMWs
+         HqFQ==
+X-Gm-Message-State: AOAM531l3EZWclOkm0+LG+OobZYOuXK/LBl9AFDFjnUl9hxtkWPdZuG3
+        ODjcejQLaJdasiHkzAZ2WgUspC0FJ+1uyc6rgqnELx/cYT4y
+X-Google-Smtp-Source: ABdhPJyfAVpGu+Ap2ZipojX71v/uVILYtXP1eQDZ7okPmqpE5TLsKyaXV4LC/jLyDrgDuXfR80TtB4kX8ZpQdEVt95N51tsXLwSn
 MIME-Version: 1.0
-In-Reply-To: <9990141a-a4e7-6166-c7aa-e0c1199afa38@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Received: by 2002:a02:c8c6:: with SMTP id q6mr12316526jao.76.1600075159144;
+ Mon, 14 Sep 2020 02:19:19 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 02:19:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000799c1c05af42878b@google.com>
+Subject: WARNING in taprio_change
+From:   syzbot <syzbot+d50710fd0873a9c6b40c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.20 11:16, Laurent Dufour wrote:
-> Le 14/09/2020 à 10:31, David Hildenbrand a écrit :
->>>> static int register_mem_sect_under_node_hotplug(struct memory_block *mem_blk,
->>>> 						void *arg)
->>>> {
->>>> 	const int nid = *(int *)arg;
->>>> 	int ret;
->>>>
->>>> 	/* Hotplugged memory has no holes and belongs to a single node. */
->>>> 	mem_blk->nid = nid;
->>>> 	ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
->>>> 				       &mem_blk->dev.kobj,
->>>> 				       kobject_name(&mem_blk->dev.kobj));
->>>> 	if (ret)
->>>> 		returnr et;
->>>> 	return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
->>>> 					&node_devices[nid]->dev.kobj,
->>>> 					kobject_name(&node_devices[nid]->dev.kobj));
->>>>
->>>> }
->>>>
->>>> Cleaner, right? :) No unnecessary checks.
->>>
->>> I tend to agree here, I like more a simplistic version for hotplug.
->>>
->>
->> ... and while we're at it, we should rename register_mem_sect_under_node
->> to something like "register_memory_block_under_node" - "section" is a
->> legacy leftover here.
->>
->> We could factor out both sysfs_create_link_nowarn() calls into something
->> like "do_register_memory_block_under_node" or similar, to minimize code
->> duplication.
->>
->>>> One could argue if link_mem_section_hotplug() would be better than passing around the context.
->>>
->>> I am not sure if I would duplicate the code there.
->>> We could just pass the pointer of the function we want to call to
->>> link_mem_sections? either register_mem_sect_under_node_hotplug or
->>> register_mem_sect_under_node_early?
->>> Would not that be clean and clear enough?
->>
->> I don't particularly like passing around function pointers where it can
->> be avoided (e.g., here exporting 3 functions now instead 1). Makes the
->> interface harder to get IMHO. But I don't really care about that
->> interface, easy to change later on.
->>
-> 
-> This would lead to the following.
-> 
-> Do everyone agree?
-> 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 508b80f6329b..444808a7c9b6 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -761,9 +761,32 @@ static int __ref get_nid_for_pfn(unsigned long pfn)
->   	return pfn_to_nid(pfn);
->   }
-> 
-> +static int do_register_memory_block_under_node(int nid,
-> +					       struct memory_block *mem_blk)
-> +{
-> +	int ret;
-> +
-> +	/*
-> +	 * If this memory block spans multiple nodes, we only indicate
-> +	 * the last processed node.
-> +	 */
-> +	mem_blk->nid = nid;
-> +
-> +	ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
-> +				       &mem_blk->dev.kobj,
-> +				       kobject_name(&mem_blk->dev.kobj));
-> +	if (ret)
-> +		return ret;
-> +
-> +	return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
-> +				&node_devices[nid]->dev.kobj,
-> +				kobject_name(&node_devices[nid]->dev.kobj));
-> +
-> +}
-> +
->   /* register memory section under specified node if it spans that node */
-> -static int register_mem_sect_under_node(struct memory_block *mem_blk,
-> -					 void *arg)
-> +static int register_mem_block_under_node_early(struct memory_block *mem_blk,
-> +					       void *arg)
->   {
->   	unsigned long memory_block_pfns = memory_block_size_bytes() / PAGE_SIZE;
->   	unsigned long start_pfn = section_nr_to_pfn(mem_blk->start_section_nr);
-> @@ -785,38 +808,35 @@ static int register_mem_sect_under_node(struct 
-> memory_block *mem_blk,
->   		}
-> 
->   		/*
-> -		 * We need to check if page belongs to nid only for the boot
-> -		 * case, during hotplug we know that all pages in the memory
-> -		 * block belong to the same node.
-> +		 * We need to check if page belongs to nid only at the boot
-> +		 * case because node's ranges can be interleaved.
->   		 */
-> -		if (system_state == SYSTEM_BOOTING) {
-> -			page_nid = get_nid_for_pfn(pfn);
-> -			if (page_nid < 0)
-> -				continue;
-> -			if (page_nid != nid)
-> -				continue;
-> -		}
-> -
-> -		/*
-> -		 * If this memory block spans multiple nodes, we only indicate
-> -		 * the last processed node.
-> -		 */
-> -		mem_blk->nid = nid;
-> +		page_nid = get_nid_for_pfn(pfn);
-> +		if (page_nid < 0)
-> +			continue;
-> +		if (page_nid != nid)
-> +			continue;
-> 
-> -		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
-> -					&mem_blk->dev.kobj,
-> -					kobject_name(&mem_blk->dev.kobj));
-> +		ret = do_register_memory_block_under_node(nid, mem_blk);
->   		if (ret)
->   			return ret;
+Hello,
 
-You have to do an unconditional
+syzbot found the following issue on:
 
-return ret;
+HEAD commit:    5760d9ac net: ethernet: ti: cpsw_new: fix suspend/resume
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=14c4e053900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd46548257448703
+dashboard link: https://syzkaller.appspot.com/bug?extid=d50710fd0873a9c6b40c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=123345a5900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15727cf1900000
 
-here AFAIKS. For me this looks much better.
+The issue was bisected to:
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+commit b5b73b26b3ca34574124ed7ae9c5ba8391a7f176
+Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Date:   Thu Sep 10 00:03:11 2020 +0000
 
--- 
-Thanks,
+    taprio: Fix allowing too small intervals
 
-David / dhildenb
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14cf2d59900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16cf2d59900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12cf2d59900000
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d50710fd0873a9c6b40c@syzkaller.appspotmail.com
+Fixes: b5b73b26b3ca ("taprio: Fix allowing too small intervals")
+
+netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
+netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 6841 at net/sched/sch_taprio.c:998 taprio_get_start_time net/sched/sch_taprio.c:998 [inline]
+WARNING: CPU: 1 PID: 6841 at net/sched/sch_taprio.c:998 taprio_change+0x1e12/0x2b60 net/sched/sch_taprio.c:1549
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 6841 Comm: syz-executor809 Not tainted 5.9.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x347/0x7c0 kernel/panic.c:231
+ __warn.cold+0x20/0x46 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:taprio_get_start_time net/sched/sch_taprio.c:998 [inline]
+RIP: 0010:taprio_change+0x1e12/0x2b60 net/sched/sch_taprio.c:1549
+Code: 8b 44 24 08 41 bf ea ff ff ff 48 c7 00 c0 af 03 89 e8 52 9b 06 fb 48 8b 7c 24 10 e8 28 63 89 01 e9 6b eb ff ff e8 3e 9b 06 fb <0f> 0b 48 83 7c 24 08 00 74 2e e8 2f 9b 06 fb 48 8b 54 24 08 48 b8
+RSP: 0018:ffffc9000515f2b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff866dab09
+RDX: ffff8880a643a240 RSI: ffffffff866dafc2 RDI: 0000000000000007
+RBP: 16341fa0ca8d0652 R08: 0000000000000001 R09: ffffffff8c5f4aa7
+R10: 0000000000000000 R11: 0000000000086848 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000002 R15: 0000000000000000
+ taprio_init+0x52e/0x670 net/sched/sch_taprio.c:1693
+ qdisc_create+0x4b6/0x12e0 net/sched/sch_api.c:1246
+ tc_modify_qdisc+0x4c8/0x1990 net/sched/sch_api.c:1662
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:671
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x443839
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb 0f fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe06fb51e8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443839
+RDX: 0000000000000000 RSI: 00000000200007c0 RDI: 0000000000000004
+RBP: 00007ffe06fb51f0 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
+R10: 0000000001bbbbbb R11: 0000000000000246 R12: 00007ffe06fb5200
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
