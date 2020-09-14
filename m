@@ -2,79 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40A1268408
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA25426840A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726056AbgINFZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:25:39 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52707 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgINFZi (ORCPT
+        id S1726081AbgINF0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgINF0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:25:38 -0400
-Received: by mail-wm1-f65.google.com with SMTP id q9so9353321wmj.2
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:25:36 -0700 (PDT)
+        Mon, 14 Sep 2020 01:26:06 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B7BC06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:26:05 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id t16so16262233edw.7
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:date:message-id:in-reply-to:references:user-agent
+         :subject:mime-version;
+        bh=leSbG58sf9SaLms4k6bjPk6+XhV7tKkxrn3q+fl7s08=;
+        b=Sxm5Mbpn5puk0C8OIromG/ScL54NTYtX1VLX/QvYy3/9iXo7KKP0ZAIESKm9G8kUI5
+         uGbS3NJYBl4kPWyJ5fjMwOBI9wjolXkbnhXeMi8/NA456Bp3JyI14d/wGcgdi9URNisu
+         5ya3pbTK2/P+yQ+ZeXb3CVUWJwk5TrFpIeDLA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v7HOZbUgNHvFsPMQU6cZ31wrCEcVN9PuSG2phiaTblo=;
-        b=spHkyiogNZffnKsCNN3z8OwumSHRiklSfrwS0q9rces2sSCStKUxRx7JZevV4Q4/bN
-         b4nAESBgq8+ehr5XSmatMTUYy8+B5heshmetM4cyCXhTGws5xilLRV1MB4euivQxopt3
-         9m5RoGO/J2ElzMfKWSgcZtGUUvAO2QQWnskcXeaN7METYwOGX4HZA6ILtjswynwmLrmI
-         +ZLIlFC0CYzo6r4ITga5pFlS94TBMjCPeSjKajKmjiBs13Mtw0AcTJtzGK9VtkL02Wft
-         H5zW3SuGcKVZgYPGAFIRdeZxYYkQ/QmD13dyaWL79s/MlWg3dIFBGqvGzwP7+41YIURH
-         OsfA==
-X-Gm-Message-State: AOAM531smWJ+zg36SV38j+O0bR+22iOFARDr7PfyFv8cytIpDkU50uvc
-        kdFmlnLXZcMaH9gfMpwJpFmMes23HHcCaXBB3dk=
-X-Google-Smtp-Source: ABdhPJznlOyo84iHMphhoyjTr+9VWsIClljEwUtiLoffMica6HBBfOzB6JQIkVXO5hQemUSi+/M5YUwcjQ/NbOhCD9Q=
-X-Received: by 2002:a05:600c:4142:: with SMTP id h2mr13084064wmm.128.1600061136206;
- Sun, 13 Sep 2020 22:25:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:date:message-id:in-reply-to
+         :references:user-agent:subject:mime-version;
+        bh=leSbG58sf9SaLms4k6bjPk6+XhV7tKkxrn3q+fl7s08=;
+        b=HkHRo9sJLth3tETejC/4kH6ZXllKdBRtlUwkkSamNG12Ea1Fr40bbj2/H+s6HQ/fTA
+         UhQARngXfoG9B5wRee8gAp7qjy6LEdB0vy66Lgz1kG6hLl2Bj6EG79KBse0djDeTmfPD
+         l7FhTqZe4mz37HS+M128gmRxkB5htNS9c6VOoaMSbsvuqYRM7PSbKQXQkWa8z0QnyDMF
+         ZbgjkZvRFEVf64x7OXNzneZdcUzo6ZqyOZBAml11gX5x6phaeUNb8ncs/4FLb89Xu4s+
+         OkfNdYz2cg0BeZ9nTYfQ2vPrEmJQBSL3MUnSvEUA0QWG/kOAs+jFXGHCFDU0/Sz5iXA3
+         tLKA==
+X-Gm-Message-State: AOAM531uCRcDafZyFeD4+bqv9OGPbujRmYuFfbIJDskuPRI7SYpzHpIC
+        PxvC+pjz6XwzzG+oIK0UBsIXkA==
+X-Google-Smtp-Source: ABdhPJzCOrmHtgWCxIA5saJc82OlVhjvjKzGU/JDu+V6znC3BBnFbUpfxZYsjcr5U0gFC764EYFpew==
+X-Received: by 2002:a50:d802:: with SMTP id o2mr15737575edj.152.1600061164453;
+        Sun, 13 Sep 2020 22:26:04 -0700 (PDT)
+Received: from [192.168.178.38] (f140230.upc-f.chello.nl. [80.56.140.230])
+        by smtp.gmail.com with ESMTPSA id m10sm3464633ejx.123.2020.09.13.22.26.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 13 Sep 2020 22:26:03 -0700 (PDT)
+From:   Arend Van Spriel <arend.vanspriel@broadcom.com>
+To:     <trix@redhat.com>, <franky.lin@broadcom.com>,
+        <hante.meuleman@broadcom.com>, <chi-hsien.lin@cypress.com>,
+        <wright.feng@cypress.com>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <natechancellor@gmail.com>, <ndesaulniers@google.com>,
+        <smoch@web.de>, <dan.carpenter@oracle.com>,
+        <double.lo@cypress.com>, <digetx@gmail.com>,
+        <frank.kao@cypress.com>, <amsr@cypress.com>,
+        <stanley.hsu@cypress.com>, <saravanan.shanmugham@cypress.com>,
+        <jean-philippe@linaro.org>, <linville@tuxdriver.com>
+CC:     <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <brcm80211-dev-list@cypress.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <clang-built-linux@googlegroups.com>
+Date:   Mon, 14 Sep 2020 07:26:02 +0200
+Message-ID: <1748b13c210.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+In-Reply-To: <20200913143522.20390-1-trix@redhat.com>
+References: <20200913143522.20390-1-trix@redhat.com>
+User-Agent: AquaMail/1.26.0-1689 (build: 102600004)
+Subject: Re: [PATCH] brcmfmac: initialize variable
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org>
-In-Reply-To: <20200913210313.1985612-1-jolsa@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 14 Sep 2020 14:25:25 +0900
-Message-ID: <CAM9d7ci4VUuAguynK76Zd7YSnNoAErsgabucUjb3qcuXj5m7Pg@mail.gmail.com>
-Subject: Re: [RFC 00/26] perf: Add mmap3 support
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000058ae3f05af3f4563"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+--00000000000058ae3f05af3f4563
+Content-Type: text/plain; format=flowed; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 
-On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On September 13, 2020 4:35:44 PM trix@redhat.com wrote:
+
+> From: Tom Rix <trix@redhat.com>
 >
-> hi,
-> while playing with perf daemon support I realized I need
-> the build id data in mmap events, so we don't need to care
-> about removed/updated binaries during long perf runs.
+> clang static analysis flags this problem
+> sdio.c:3265:13: warning: Branch condition evaluates to
+>  a garbage value
+>        } else if (pending) {
+>                   ^~~~~~~
 >
-> This RFC patchset adds new mmap3 events that copies mmap2
-> event and adds build id in it. It makes mmap3 the default
-> mmap event for synthesizing kernel/modules/tasks and adds
-> some tooling enhancements to enable the workflow below.
+> brcmf_sdio_dcmd_resp_wait() only sets pending to true.
+> So pending needs to be initialized to false.
 
-Cool! It's nice that we can skip the final build-id collection stage
-with this while data size will be bigger.
+True. However, I prefer to fix it in brcmf_sdio_dcmd_resp_wait() and say:
 
-Thanks
-Namhyung
+*pending = signal_pending(current);
+
+Regards,
+Arend
+
+> Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+
+
+
+
+--00000000000058ae3f05af3f4563
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+pra5sIx/TR6gNtLG9MpND9zQt5j42hInkP81vqu9DG8lovoPMuR0JVpFRbPjHZ07cLqqbFMVS/8z
+53iSewIDAQABo4IB0zCCAc8wDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggr
+BgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNp
+Z24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNv
+bS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYB
+BQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAw
+RAYDVR0fBD0wOzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2ln
+bjJzaGEyZzMuY3JsMCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYD
+VR0lBAwwCgYIKwYBBQUHAwQwHwYDVR0jBBgwFoAUaXKCYjFnlUSFd5GAxAQ2SZ17C2EwHQYDVR0O
+BBYEFHAaaA+cRo3vYiA6aKVu1bOs4YAYMA0GCSqGSIb3DQEBCwUAA4IBAQCYLdyC8SuyQV6oa5uH
+kGtqz9FCJC/9gSclQLM8dZLHF3FYX8LlcQg/3Ct5I29YLK3T/r35B2zGljtXqVOIeSEz7sDXfGNy
+3dnLIafB1y04e7aR+thVn5Rp1YTF01FUWYbZrixlVuKvjn8vtKC+HhAoDCxvqnqEuA/8Usn7B0/N
+uOA46oQTLe3kjdIgXWJ29JWVqFUavYdcK0+0zyfeMBCTO6heYABeMP3wzYHfcuFDhqldTCpumqhZ
+WwHVQUbAn+xLMIQpycIQFoJIGJX4MeaTSMfLNP2w7nP2uLNgIeleF284vS0XVkBXSCgIGylP4SN+
+HQYrv7fVCbtp+c7nFvP7MYICbzCCAmsCAQEwbTBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xv
+YmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNI
+QTI1NiAtIEczAgxR3m7Pj6LvQiWjJy0wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
+IFjfz38J4ft3KTVjvYexEeRqwYn05w3hqViaCI3/hG6rMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
+BwEwHAYJKoZIhvcNAQkFMQ8XDTIwMDkxNDA1MjYwNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
+ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
+CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCEw0aVrmYr/kNR2nrm
+wpArOrRFTvt4j+z/oVag2X4kQIe7N3bIDj+Bn/Et1Wac24jPYL2WHnA0Sc4e6djcIuR8ySl7pjLM
+S6xwvSvOci0Ct3RW/UTg+bZwKLYHIJP+cKVXMje8+R65Eg5vnk2JI6u5McgmaDqAayHPqkym+Q5t
+ENmIoZCUxren+jVtKaS4x0tOuGoc0+mFpZsoBmgrU2vuzal6SMAocfxUshWI+QszDTVbGDwsGm7R
+GHuiIL2loy5a9hjgifpgYbvQ9SCSILew7N+dDKVI160ZVF4u1yTvmv6nmlA8Td2ASLUOSfLCs8eO
+eTOUxAnR1MiwaavZ9Ke1
+--00000000000058ae3f05af3f4563--
