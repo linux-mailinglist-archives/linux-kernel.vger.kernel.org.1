@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC1A268666
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFDA268667
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgINHqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:46:48 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57852 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725999AbgINHq1 (ORCPT
+        id S1726126AbgINHra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:47:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42147 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726116AbgINHqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:46:27 -0400
+        Mon, 14 Sep 2020 03:46:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600069585;
+        s=mimecast20190719; t=1600069593;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=e6k7XbhwdQtgb74dvxk7XbvmLz5THf14xQW0aloCpus=;
-        b=PnV8nKs1vnxwC1Qq6rU/DqhlM8jb+qebrUlLLHQgSRQPQwG5eRIydmR1cicSc1H0+wr7QE
-        CUxNSJFw1WbH+T/qg3c/aAuOSRFyZRAh0+2NWo/4mWnjZW/xNDr7ZywJH+e/WvSWfwXq7S
-        Yu4u3mZM0WwzwJrhgOXx8ZoQmnVgk3k=
+        bh=x4q1Kg957EaUmlrHhnBnw9zN/QKDNH3OGzlPbFbEpaI=;
+        b=QaYi+cfI5Ky4kqpxIRpLXK4lFL8at8j5tyJ3SOhzTQrbPAedue6novBTRan52frvqZoArB
+        k4SS7NiTLArc10icN/chGgiC8uz0jkmacyxa+tT44WI/bOdifLEsGF4aAAiFrhpsOQC9D9
+        sj+zWUtYr8suKXHy7KlQgeIQ566QUbY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-225-th3x1RIONkqPN2TQzPRypg-1; Mon, 14 Sep 2020 03:46:23 -0400
-X-MC-Unique: th3x1RIONkqPN2TQzPRypg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-270-6aqibrxeNE2MY6AYmUywEg-1; Mon, 14 Sep 2020 03:46:31 -0400
+X-MC-Unique: 6aqibrxeNE2MY6AYmUywEg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85A92100559C;
-        Mon, 14 Sep 2020 07:46:22 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3832518BA287;
+        Mon, 14 Sep 2020 07:46:30 +0000 (UTC)
 Received: from [10.36.114.162] (ovpn-114-162.ams2.redhat.com [10.36.114.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7390C5D98C;
-        Mon, 14 Sep 2020 07:46:11 +0000 (UTC)
-Subject: Re: [PATCH 1/3] virtio-balloon: Constify id_table
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8CDEE614F5;
+        Mon, 14 Sep 2020 07:46:16 +0000 (UTC)
+Subject: Re: [PATCH 2/3] virtio_input: Constify id_table
 To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
         virtualization@lists.linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -42,7 +42,7 @@ Cc:     linux-kernel@vger.kernel.org,
         Jason Wang <jasowang@redhat.com>,
         Gerd Hoffmann <kraxel@redhat.com>
 References: <20200911203509.26505-1-rikard.falkeborn@gmail.com>
- <20200911203509.26505-2-rikard.falkeborn@gmail.com>
+ <20200911203509.26505-3-rikard.falkeborn@gmail.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -89,16 +89,16 @@ Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat GmbH
-Message-ID: <84eec652-68f6-f0de-ce9f-1e05c55ad7ab@redhat.com>
-Date:   Mon, 14 Sep 2020 09:46:10 +0200
+Message-ID: <ebb535d0-5cf2-7f5d-3781-a3f68fb77cce@redhat.com>
+Date:   Mon, 14 Sep 2020 09:46:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200911203509.26505-2-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200911203509.26505-3-rikard.falkeborn@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -110,25 +110,25 @@ On 11.09.20 22:35, Rikard Falkeborn wrote:
 > 
 > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 > ---
->  drivers/virtio/virtio_balloon.c | 2 +-
+>  drivers/virtio/virtio_input.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 31cc97f2f515..481611c09dae 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -128,7 +128,7 @@ struct virtio_balloon {
->  	struct page_reporting_dev_info pr_dev_info;
+> diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+> index 877b2ea3ed05..f1f6208edcf5 100644
+> --- a/drivers/virtio/virtio_input.c
+> +++ b/drivers/virtio/virtio_input.c
+> @@ -363,7 +363,7 @@ static int virtinput_restore(struct virtio_device *vdev)
+>  static unsigned int features[] = {
+>  	/* none */
 >  };
->  
 > -static struct virtio_device_id id_table[] = {
 > +static const struct virtio_device_id id_table[] = {
->  	{ VIRTIO_ID_BALLOON, VIRTIO_DEV_ANY_ID },
+>  	{ VIRTIO_ID_INPUT, VIRTIO_DEV_ANY_ID },
 >  	{ 0 },
 >  };
 > 
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Thanks,
