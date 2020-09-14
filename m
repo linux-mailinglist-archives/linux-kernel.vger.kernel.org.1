@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5616E268423
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EF8268425
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgINFjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:39:31 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39773 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgINFj3 (ORCPT
+        id S1726090AbgINFjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgINFjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:39:29 -0400
-Received: by mail-wr1-f67.google.com with SMTP id a17so17215511wrn.6
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:39:45 -0700 (PDT)
+        Mon, 14 Sep 2020 01:39:32 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4520DC06174A;
+        Sun, 13 Sep 2020 22:39:48 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id nw23so21369894ejb.4;
+        Sun, 13 Sep 2020 22:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=0ftNeFkIdq9io+RywVag+/vyB7FE8lzg55s4F7kUuI0=;
+        b=SnE+7oOa5bqFRiQs4WAusSe6Hmnjw/2MoE3kNjWOVoqjIkYOCaa6soNFn+qIClrrUd
+         CYYchI+hUPm/RH2nBzIwgwXZ3+uS4jicw+FWXAv57JbpBM7qzK9x2taUVABBNHV1HqBZ
+         LCV0jYAFXId2pR3Ycwg3czyks3GOiF6L88Gz86PKRNMbNpdVQ0x6EuRcZ+pSTvFQA1xN
+         qkM8Aa4nMna5conpbmUosbDDaEU9KsBdA+552ockHTd0Ob4eh3b/IuheouFFYvWui9Bi
+         pffDCxDf9wCMPVyNZo0NxEfY2eEY33P67m+2P2l0lralMpdFPv21s9DOPfLcnSHTSMEI
+         1VyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vAkzaOWL4Nu8JZqwZ6SJPpCKL9x+DfRKOfCjWFPwixM=;
-        b=LNEy7nSL1csqmQkKo4xbs+uepo9przZZTzvkaTNFvlhOXkOzKGZpddByD0feaz+QsA
-         jx8Z1S34nsDP9eSBjY3meAQ86Twdfd4tyZAT2Pp1KfE7jUuOrw5bN7/L4PsdEjMlOflE
-         GonWbjwYLye+z9jFgdPXPLAayHb5UYtLMUYUf9LyfbEsxMuEYEUtSUoNqp4fxO/Naqij
-         Moe8cRfJLpVq63BekmSiCorbiUz+7Zk6DIYv+coA6p5Dwi1ozct5U5xWvoLarKl4MXkb
-         chFDxM7HnBj+olLxZI05e+PZgRP+Vcn8l4i8kgHVVWgPplDnZOjaf1DXHc0ZqdghOq9c
-         KcoQ==
-X-Gm-Message-State: AOAM532HSjVZgey84pGv55F5efmfcY8wdgVa1Jjx4sCqTdKqNROFnVL1
-        aeNx8ZdfKdWeQl0zs5iUq/4z7edIDvFvq6w1V+g=
-X-Google-Smtp-Source: ABdhPJx6kMLQl16pDPk60EVPC6sFWUbDYV331GMTw8XJLeNBDUj37LS7L07V7TtrRbJjTpeL4Py0YAvBLQerGSDCmb4=
-X-Received: by 2002:adf:e481:: with SMTP id i1mr13900480wrm.391.1600061985048;
- Sun, 13 Sep 2020 22:39:45 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=0ftNeFkIdq9io+RywVag+/vyB7FE8lzg55s4F7kUuI0=;
+        b=m37IYUwxcCpqG/2+gpi7wEPEEcBEgOdp9nmLYUmJOVnGYA1nuud/ZWANan2Sr55AFq
+         DdxUD8N1172n+RTm7kCv4Ll0Xpvrka6TZGsWe5jF45bnPKGhtoX/dup6nb283oLCArtp
+         +N2OaNlVWqlyKmuQGB/GkMhwcUz/Y9vR4Yv/XOHmFEYtBng5uX2mc4C6XHmUnIlDw3Gn
+         3flfo9lSnLrENI9zu3JlUiOXiV6qTMzzSY/3PCLb43p4UhcnF4f0suvNZL3aK8QOMHz3
+         RduB7vvrkJpA2oX/VXBoRk852zxg8xG50XGVhA/cLFbV9/em4O/T2vbBOAs8Wa+IWzXc
+         cy5Q==
+X-Gm-Message-State: AOAM531chb9u+d+7lnB7aiZpx8xamgkiL//zb1nug+pHxCrt2dlKXvwE
+        tFxBvuxPsBVVQeC/Fv2mqo8=
+X-Google-Smtp-Source: ABdhPJwYE0wstxgC6zfi9o0oOP+ME0JkQsXu3OIXAIXkBT3aQiHB87ndT7jRCyc625JJFYlGFM4S4g==
+X-Received: by 2002:a17:906:1185:: with SMTP id n5mr13091694eja.495.1600061986990;
+        Sun, 13 Sep 2020 22:39:46 -0700 (PDT)
+Received: from felia ([2001:16b8:2ddc:3000:7936:d9d0:986e:cca5])
+        by smtp.gmail.com with ESMTPSA id w8sm6899298ejo.117.2020.09.13.22.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 22:39:46 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
+Date:   Mon, 14 Sep 2020 07:39:40 +0200 (CEST)
+X-X-Sender: lukas@felia
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+cc:     Ryder Lee <ryder.lee@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: make linux-mediatek list remarks
+ consistent
+In-Reply-To: <20200914053110.23286-1-lukas.bulwahn@gmail.com>
+Message-ID: <alpine.DEB.2.21.2009140738570.24617@felia>
+References: <20200914053110.23286-1-lukas.bulwahn@gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-4-jolsa@kernel.org>
-In-Reply-To: <20200913210313.1985612-4-jolsa@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 14 Sep 2020 14:39:34 +0900
-Message-ID: <CAM9d7cizs+vbxD9QG8N5YQZDHRyh_NPGzPEKeGMj+63MuXmSGQ@mail.gmail.com>
-Subject: Re: [PATCH 03/26] tools headers uapi: Sync tools/include/uapi/linux/perf_event.h
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Sync uapi header with kernel version for mmap3 support.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+
+
+On Mon, 14 Sep 2020, Lukas Bulwahn wrote:
+
+> Commit 637cfacae96f ("PCI: mediatek: Add MediaTek PCIe host controller
+> support") does not mention that linux-mediatek@lists.infradead.org is
+> moderated for non-subscribers, but the other eight entries for
+> linux-mediatek@lists.infradead.org do.
+> 
+> Adjust this entry to be consistent with all others.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  tools/include/uapi/linux/perf_event.h | 27 ++++++++++++++++++++++++++-
->  1 file changed, 26 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-> index 3e5dcdd48a49..84a0cbdab1ef 100644
-> --- a/tools/include/uapi/linux/perf_event.h
-> +++ b/tools/include/uapi/linux/perf_event.h
-> @@ -384,7 +384,8 @@ struct perf_event_attr {
->                                 aux_output     :  1, /* generate AUX records instead of events */
->                                 cgroup         :  1, /* include cgroup events */
->                                 text_poke      :  1, /* include text poke events */
-> -                               __reserved_1   : 30;
-> +                               mmap3          :  1, /* include bpf events */
+> applies cleanly on v5.9-rc5 and next-20200911
+> 
+> Ryder, please ack.
+> 
+> Bjorn, Matthias, please pick this minor non-urgent clean-up patch.
+> 
+> This patch submission will also show me if linux-mediatek is moderated or
+> not. I have not subscribed to linux-mediatek and if it shows up quickly in
+> the archive, the list is probably not moderated; and if it takes longer, it
+> is moderated, and hence, validating the patch.
+> 
 
-Same here..
+Okay, my patch showed up within seconds in the archive:
 
-Thanks
-Namhyung
+https://lore.kernel.org/linux-mediatek/20200914053110.23286-1-lukas.bulwahn@gmail.com/
 
 
-> +                               __reserved_1   : 29;
->
->         union {
->                 __u32           wakeup_events;    /* wakeup every n events */
-> @@ -1060,6 +1061,30 @@ enum perf_event_type {
->          */
->         PERF_RECORD_TEXT_POKE                   = 20,
->
-> +       /*
-> +        * The MMAP3 records are an augmented version of MMAP2, they add
-> +        * build id value to identify the exact binary behind map
-> +        *
-> +        * struct {
-> +        *      struct perf_event_header        header;
-> +        *
-> +        *      u32                             pid, tid;
-> +        *      u64                             addr;
-> +        *      u64                             len;
-> +        *      u64                             pgoff;
-> +        *      u32                             maj;
-> +        *      u32                             min;
-> +        *      u64                             ino;
-> +        *      u64                             ino_generation;
-> +        *      u32                             prot, flags;
-> +        *      u32                             reserved;
-> +        *      u8                              buildid[20];
-> +        *      char                            filename[];
-> +        *      struct sample_id                sample_id;
-> +        * };
-> +        */
-> +       PERF_RECORD_MMAP3                       = 21,
-> +
->         PERF_RECORD_MAX,                        /* non-ABI */
->  };
->
-> --
-> 2.26.2
->
+I think the linux-mediatek list is actually NOT _moderated for 
+non-subscribers_.
+
+Please IGNORE this patch until someone can confirm if it is moderated or 
+not. I will then send the patch that reflects the actual state.
+
+Thanks, Lukas
