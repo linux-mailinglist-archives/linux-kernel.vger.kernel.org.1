@@ -2,94 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4256C2682CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D972682CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgINC4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:56:35 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58376 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725973AbgINC4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:56:34 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B7ADABA9B79046030BEE;
-        Mon, 14 Sep 2020 10:56:30 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 14 Sep 2020 10:56:20 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <bp@alien8.de>, <mchehab@kernel.org>, <tony.luck@intel.com>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangxiongfeng2@huawei.com>
-Subject: [PATCH v2] EDAC/mc_sysfs: Add missing newlines when printing {max,dimm}_location
-Date:   Mon, 14 Sep 2020 10:48:54 +0800
-Message-ID: <1600051734-8993-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1726010AbgINC6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:58:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:52278 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgINC6X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 22:58:23 -0400
+IronPort-SDR: WdaufW36xhTT6IPdlA4rhfBE1797fDWts78a0cvstnId1pTOi/uCkMXm1zTpWbX2NvQWvhXRO8
+ LBSVExqNeDfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="146711122"
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="146711122"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 19:58:23 -0700
+IronPort-SDR: ZvIZFL/bHVCv8UvIZS+Iob+W9lvFpmkTusX/l6h9f93ONO1KiEMq4AuK9wv8/ddLA0f+1AAAzx
+ 7cJzFJflrOpA==
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="482166211"
+Received: from hhuan26-mobl1.amr.corp.intel.com (HELO mqcpg7oapc828.gar.corp.intel.com) ([10.255.35.58])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 13 Sep 2020 19:58:19 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Jethro Beekman" <jethro@fortanix.com>,
+        "Chunyang Hui" <sanqian.hcy@antfin.com>,
+        "Jordan Hand" <jorhand@linux.microsoft.com>,
+        "Nathaniel McCallum" <npmccallum@redhat.com>,
+        "Seth Moore" <sethmo@google.com>,
+        "Darren Kenny" <darren.kenny@oracle.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        "Suresh Siddha" <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-14-jarkko.sakkinen@linux.intel.com>
+Date:   Sun, 13 Sep 2020 21:56:03 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0qwyftihwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+In-Reply-To: <20200911124019.42178-14-jarkko.sakkinen@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading those sysfs entries gives:
 
-  [root@localhost /]# cat /sys/devices/system/edac/mc/mc0/max_location
-  memory 3 [root@localhost /]# cat /sys/devices/system/edac/mc/mc0/dimm0/dimm_location
-  memory 0 [root@localhost /]#
+On Fri, 11 Sep 2020 07:40:08 -0500, Jarkko Sakkinen  
+<jarkko.sakkinen@linux.intel.com> wrote:
+...
 
-Add newlines after the value it prints for better readability.
+> +/**
+> + * sgx_ioc_enclave_add_pages() - The handler for  
+> %SGX_IOC_ENCLAVE_ADD_PAGES
+> + * @encl:       an enclave pointer
+> + * @arg:	a user pointer to a struct sgx_enclave_add_pages instance
+> + *
+> + * Add one or more pages to an uninitialized enclave, and optionally  
+> extend the
+> + * measurement with the contents of the page. The SECINFO and  
+> measurement mask
+> + * are applied to all pages.
+> + *
+> + * A SECINFO for a TCS is required to always contain zero permissions  
+> because
+> + * CPU silently zeros them. Allowing anything else would cause a  
+> mismatch in
+> + * the measurement.
+> + *
+> + * mmap()'s protection bits are capped by the page permissions. For  
+> each page
+> + * address, the maximum protection bits are computed with the following
+> + * heuristics:
+> + *
+> + * 1. A regular page: PROT_R, PROT_W and PROT_X match the SECINFO  
+> permissions.
+> + * 2. A TCS page: PROT_R | PROT_W.
+> + *
+> + * mmap() is not allowed to surpass the minimum of the maximum  
+> protection bits
+> + * within the given address range.
+> + *
+> + * If ENCLS opcode fails, that effectively means that EPC has been  
+> invalidated.
+> + * When this happens the enclave is destroyed and -EIO is returned to  
+> the
+> + * caller.
+> + *
+> + * Return:
+> + *   length of the data processed on success,
+> + *   -EACCES if an executable source page is located in a noexec  
+> partition,
+> + *   -EIO if either ENCLS[EADD] or ENCLS[EEXTEND] fails
+> + *   -errno otherwise
+> + */
+> +static long sgx_ioc_enclave_add_pages(struct sgx_encl *encl, void  
+> __user *arg)
+> +{
+> +	struct sgx_enclave_add_pages addp;
+> +	struct sgx_secinfo secinfo;
+> +	unsigned long c;
+> +	int ret;
+> +
+> +	if ((atomic_read(&encl->flags) & SGX_ENCL_INITIALIZED) ||
+> +	    !(atomic_read(&encl->flags) & SGX_ENCL_CREATED))
+> +		return -EINVAL;
+> +
+> +	if (copy_from_user(&addp, arg, sizeof(addp)))
+> +		return -EFAULT;
+> +
+> +	if (!IS_ALIGNED(addp.offset, PAGE_SIZE) ||
+> +	    !IS_ALIGNED(addp.src, PAGE_SIZE))
+> +		return -EINVAL;
+> +
+> +	if (!(access_ok(addp.src, PAGE_SIZE)))
+> +		return -EFAULT;
+> +
+> +	if (addp.length & (PAGE_SIZE - 1))
+> +		return -EINVAL;
+> +
+> +	if (addp.offset + addp.length - PAGE_SIZE >= encl->size)
+> +		return -EINVAL;
+> +
+> +	if (copy_from_user(&secinfo, (void __user *)addp.secinfo,
+> +			   sizeof(secinfo)))
+> +		return -EFAULT;
+> +
+> +	if (sgx_validate_secinfo(&secinfo))
+> +		return -EINVAL;
+> +
+> +	for (c = 0 ; c < addp.length; c += PAGE_SIZE) {
+> +		if (c == SGX_MAX_ADD_PAGES_LENGTH || signal_pending(current)) {
+> +			ret = c;
+> +			break;
+> +		}
+> +
+> +		if (need_resched())
+> +			cond_resched();
+> +
+> +		ret = sgx_encl_add_page(encl, addp.src + c, addp.offset + c,
+> +					addp.length - c, &secinfo, addp.flags);
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/edac/edac_mc_sysfs.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+no need passing addp.length - c?
 
-diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
-index 4e6aca5..bf0e075 100644
---- a/drivers/edac/edac_mc_sysfs.c
-+++ b/drivers/edac/edac_mc_sysfs.c
-@@ -474,8 +474,12 @@ static ssize_t dimmdev_location_show(struct device *dev,
- 				     struct device_attribute *mattr, char *data)
- {
- 	struct dimm_info *dimm = to_dimm(dev);
-+	ssize_t count;
- 
--	return edac_dimm_info_location(dimm, data, PAGE_SIZE);
-+	count = edac_dimm_info_location(dimm, data, PAGE_SIZE);
-+	count += snprintf(data + count, PAGE_SIZE - count, "\n");
-+
-+	return count;
- }
- 
- static ssize_t dimmdev_label_show(struct device *dev,
-@@ -813,15 +817,21 @@ static ssize_t mci_max_location_show(struct device *dev,
- 				     char *data)
- {
- 	struct mem_ctl_info *mci = to_mci(dev);
--	int i;
-+	int i, n;
- 	char *p = data;
-+	unsigned int len = PAGE_SIZE;
- 
- 	for (i = 0; i < mci->n_layers; i++) {
--		p += sprintf(p, "%s %d ",
-+		n = snprintf(p, len, "%s %d ",
- 			     edac_layer_name[mci->layers[i].type],
- 			     mci->layers[i].size - 1);
-+		p += n;
-+		len -= n;
-+		if (!len)
-+			goto out;
- 	}
--
-+	p += snprintf(p, len, "\n");
-+out:
- 	return p - data;
- }
- 
--- 
-1.7.12.4
+> +		if (ret)
+> +			break;
 
+Some error cases here are fatal and should be passed back to user space so  
+that it would not retry.
+
+> +	}
+> +
+> +	if (copy_to_user(arg, &addp, sizeof(addp)))
+> +		return -EFAULT;
+
+This copy no longer needed?
+
+> +	return c;
+> +}
+> +
+
+Thanks
+Haitao
