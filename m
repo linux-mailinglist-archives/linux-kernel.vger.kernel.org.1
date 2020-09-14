@@ -2,67 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C84269774
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BE826977D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINVLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:11:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39466 "EHLO mail.kernel.org"
+        id S1726069AbgINVNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:13:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:64762 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbgINVLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:11:47 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725926AbgINVNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:13:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600118028; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=eP5pSacehjP1wjfJ5o8gJEuMAiQZyIXNv/QS66PVllQ=;
+ b=PqFWq9PIfhfmwh9dQ/KVceg3qYwSlYWAzN3xFxm6VIyan5I1yu5XD/LIfqsJ/Z/WDhp6ZZFp
+ 6dEy0avV9KWMdj60LbxnZMHJWGJL8tiLGTK0ZIcDTAXx613tryvhkXu0m6oYzWwE6avbCkMl
+ MeeW8uo2SMZiTqVNEuCGEV1Pbls=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f5fdd0b9f3347551f59ab99 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 21:13:47
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AD721C433CA; Mon, 14 Sep 2020 21:13:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F19D4218AC;
-        Mon, 14 Sep 2020 21:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600117907;
-        bh=aROn/zSUcmVHeUa7RPdBtBXlg7l/7wS6mQyZeUH+vmE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R+TvKYeBJuWK3XiEJ9pwaEaa6LfDHiNyhHQKrtYKCRpjCmdNn+6cCpiCOcMA8wE/8
-         R7uWzrB6exXyIXhxmSFAvJQHScYCM9Zs6kF7hBtreWfUve+9u7Lw0hYKdWxT6oKJxk
-         WMGPn6/2Tf2TRPpvgzfkKXhO3MxFD+p86lenQAxs=
-Received: by mail-oo1-f47.google.com with SMTP id h9so212804ooo.10;
-        Mon, 14 Sep 2020 14:11:46 -0700 (PDT)
-X-Gm-Message-State: AOAM532aby+ncdIhPWi5+vI+xicMsHaaQd0DPY0dmJraA/tZ9uhHiZus
-        P1qMYUCpZL6/Ev32zbsIZsiu3J36TG0hIEKrFg==
-X-Google-Smtp-Source: ABdhPJzxlwm9lNaA8nMCSGFjApvtHLzHVXT7vei2Tc7G6fHN2n/+MkdTLPt2LoyoIPbsGcQAfPgYd8tNJnQ4VjdMVXA=
-X-Received: by 2002:a4a:9d48:: with SMTP id f8mr11349912ook.50.1600117906336;
- Mon, 14 Sep 2020 14:11:46 -0700 (PDT)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 12EFFC433CA;
+        Mon, 14 Sep 2020 21:13:44 +0000 (UTC)
 MIME-Version: 1.0
-References: <cover.1599826421.git.mchehab+huawei@kernel.org> <7964c39084de5d2fd3dca30bf5abb5973eeec42b.1599826421.git.mchehab+huawei@kernel.org>
-In-Reply-To: <7964c39084de5d2fd3dca30bf5abb5973eeec42b.1599826421.git.mchehab+huawei@kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 14 Sep 2020 15:11:35 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLjh15Gk7kuB_YhY7NL8ctMSe9oFP0ehRMNrBfZSdFbBw@mail.gmail.com>
-Message-ID: <CAL_JsqLjh15Gk7kuB_YhY7NL8ctMSe9oFP0ehRMNrBfZSdFbBw@mail.gmail.com>
-Subject: Re: [PATCH v3 RESEND 7/8] dt-bindings: phy: convert
- phy-kirin970-usb3.txt to yaml
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 14:13:44 -0700
+From:   rishabhb@codeaurora.org
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sidgup@codeaurora.org, stable@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: pdr: Fixup array type of get_domain_list_resp
+ message
+In-Reply-To: <20200914145807.1224-1-sibis@codeaurora.org>
+References: <20200914145807.1224-1-sibis@codeaurora.org>
+Message-ID: <cac99ba16fc3e8f84ea2770e63988770@codeaurora.org>
+X-Sender: rishabhb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 6:16 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Use the new YAML for this physical layer.
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On 2020-09-14 07:58, Sibi Sankar wrote:
+> The array type of get_domain_list_resp is incorrectly marked as 
+> NO_ARRAY.
+> Due to which the following error was observed when using pdr helpers 
+> with
+> the downstream proprietary pd-mapper. Fix this up by marking it as
+> VAR_LEN_ARRAY instead.
+> 
+> Err logs:
+> qmi_decode_struct_elem: Fault in decoding: dl(2), db(27), tl(160), 
+> i(1), el(1)
+> failed to decode incoming message
+> PDR: tms/servreg get domain list txn wait failed: -14
+> PDR: service lookup for tms/servreg failed: -14
+> 
+> Fixes: fbe639b44a82 ("soc: qcom: Introduce Protection Domain Restart 
+> helpers")
+> Reported-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  .../bindings/phy/hisilicon,hi3670-usb3.yaml   | 72 +++++++++++++++++++
->  .../bindings/phy/phy-hi3670-usb3.txt          | 25 -------
->  2 files changed, 72 insertions(+), 25 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml
->  delete mode 100644 Documentation/devicetree/bindings/phy/phy-hi3670-usb3.txt
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+>  drivers/soc/qcom/pdr_internal.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/pdr_internal.h 
+> b/drivers/soc/qcom/pdr_internal.h
+> index 15b5002e4127b..ab9ae8cdfa54c 100644
+> --- a/drivers/soc/qcom/pdr_internal.h
+> +++ b/drivers/soc/qcom/pdr_internal.h
+> @@ -185,7 +185,7 @@ struct qmi_elem_info 
+> servreg_get_domain_list_resp_ei[] = {
+>  		.data_type      = QMI_STRUCT,
+>  		.elem_len       = SERVREG_DOMAIN_LIST_LENGTH,
+>  		.elem_size      = sizeof(struct servreg_location_entry),
+> -		.array_type	= NO_ARRAY,
+> +		.array_type	= VAR_LEN_ARRAY,
+>  		.tlv_type       = 0x12,
+>  		.offset         = offsetof(struct servreg_get_domain_list_resp,
+>  					   domain_list),
+Tested-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
