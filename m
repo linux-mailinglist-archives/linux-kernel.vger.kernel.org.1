@@ -2,110 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF107269077
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3178268FFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgINPoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:44:14 -0400
-Received: from mga11.intel.com ([192.55.52.93]:49561 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726498AbgINPm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:42:58 -0400
-IronPort-SDR: hbB1R4quZqJ1wKfP4ISqcLcDIZoMU78AVupRDVb0lrniwspfYk7a2x7fne/9DmIJe85Guk6kp+
- TdriESj4sGyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156537031"
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="156537031"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 08:42:55 -0700
-IronPort-SDR: PJW7bs0i3dSNhSmViT/GRcRHTeCds7hgHgmSdl79tx4Vm+dJyhAgL6TAup0YjwMj2y7H2M/cMX
- jOPyLp9mBI5Q==
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="330788739"
-Received: from flaurent-mobl3.amr.corp.intel.com (HELO [10.212.243.224]) ([10.212.243.224])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 08:42:54 -0700
-Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
- controls
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
-        gregkh@linuxfoundation.org,
-        Bard liao <yung-chuan.liao@linux.intel.com>,
-        Rander Wang <rander.wang@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
- <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
- <20200904050244.GT2639@vkoul-mobl>
- <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
- <20200909075555.GK77521@vkoul-mobl>
- <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
- <20200910062223.GQ77521@vkoul-mobl>
- <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
- <20200911070649.GU77521@vkoul-mobl>
- <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
- <20200914050825.GA2968@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <11feabb2-dc8b-7acc-6e4d-0903fc435b00@linux.intel.com>
-Date:   Mon, 14 Sep 2020 09:44:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726166AbgINPcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:32:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32592 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725997AbgINPaO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:30:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600097410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AsQvpIFhmm7rdxQQSEFycj3eA12Y+/biDDpofX0AblY=;
+        b=VPwFT7w1JM2GaHc7c+MI9rRGXU9BVLUuH0RnxZOEprXRgi74qMcGQeIw2nOQeEJ421aoh5
+        nzWlBBIeCnafbjcuFCeukuvlhuLmQym3GcYe48DeRUfGYkCgej8X33EyLsXS9fPlAXl+Ue
+        FRhNTxEo8IAIU/5epvd33zsiXnuS2YM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-DCdC4BPTMJ6m8a83aCuvBw-1; Mon, 14 Sep 2020 11:30:08 -0400
+X-MC-Unique: DCdC4BPTMJ6m8a83aCuvBw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F080801AC2;
+        Mon, 14 Sep 2020 15:30:06 +0000 (UTC)
+Received: from gondolin (ovpn-112-214.ams2.redhat.com [10.36.112.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1029060BE2;
+        Mon, 14 Sep 2020 15:29:49 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 17:29:47 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v10 04/16] s390/zcrypt: driver callback to indicate
+ resource in use
+Message-ID: <20200914172947.533ddf56.cohuck@redhat.com>
+In-Reply-To: <20200821195616.13554-5-akrowiak@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-5-akrowiak@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-In-Reply-To: <20200914050825.GA2968@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 21 Aug 2020 15:56:04 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-
-
-> For LSB bits, I dont think this is an issue. I expect it to work, for example:
-> #define CONTROL_LSB_MASK  GENMASK(2, 0)
->          foo |= u32_encode_bits(control, CONTROL_LSB_MASK);
+> Introduces a new driver callback to prevent a root user from unbinding
+> an AP queue from its device driver if the queue is in use. The intent of
+> this callback is to provide a driver with the means to prevent a root user
+> from inadvertently taking a queue away from a matrix mdev and giving it to
+> the host while it is assigned to the matrix mdev. The callback will
+> be invoked whenever a change to the AP bus's sysfs apmask or aqmask
+> attributes would result in one or more AP queues being removed from its
+> driver. If the callback responds in the affirmative for any driver
+> queried, the change to the apmask or aqmask will be rejected with a device
+> in use error.
 > 
-> would mask the control value and program that in specific bitfeild.
+> For this patch, only non-default drivers will be queried. Currently,
+> there is only one non-default driver, the vfio_ap device driver. The
+> vfio_ap device driver facilitates pass-through of an AP queue to a
+> guest. The idea here is that a guest may be administered by a different
+> sysadmin than the host and we don't want AP resources to unexpectedly
+> disappear from a guest's AP configuration (i.e., adapters, domains and
+> control domains assigned to the matrix mdev). This will enforce the proper
+> procedure for removing AP resources intended for guest usage which is to
+> first unassign them from the matrix mdev, then unbind them from the
+> vfio_ap device driver.
 > 
-> But for MSB bits, I am not sure above will work so, you may need to extract
-> the bits and then use, for example:
-> #define CONTROL_MSB_BITS        GENMASK(5, 3)
-> #define CONTROL_MSB_MASK        GENMASK(17, 15)
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+
+This looks a bit odd...
+
+> ---
+>  drivers/s390/crypto/ap_bus.c | 148 ++++++++++++++++++++++++++++++++---
+>  drivers/s390/crypto/ap_bus.h |   4 +
+>  2 files changed, 142 insertions(+), 10 deletions(-)
 > 
->          control = FIELD_GET(CONTROL_MSB_BITS, control);
->          foo |= u32_encode_bits(control, CONTROL_MSB_MASK);
-> 
->> If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am all
->> ears. At the end of the day, the mapping is pre-defined and we don't have
->> any degree of freedom. What I do want is that this macro/inline function is
->> shared by all codec drivers so that we don't have different interpretations
->> of how the address is constructed.
-> 
-> Absolutely, this need to be defined here and used by everyone else.
 
-Compare:
+(...)
 
-#define SDCA_CONTROL_MSB_BITS        GENMASK(5, 3)
-#define SDCA_CONTROL_MSB_MASK        GENMASK(17, 15)
-#define SDCA_CONTROL_LSB_MASK        GENMASK(2, 0)
+> @@ -1107,12 +1118,70 @@ static ssize_t apmask_show(struct bus_type *bus, char *buf)
+>  	return rc;
+>  }
+>  
+> +static int __verify_card_reservations(struct device_driver *drv, void *data)
+> +{
+> +	int rc = 0;
+> +	struct ap_driver *ap_drv = to_ap_drv(drv);
+> +	unsigned long *newapm = (unsigned long *)data;
+> +
+> +	/*
+> +	 * No need to verify whether the driver is using the queues if it is the
+> +	 * default driver.
+> +	 */
+> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
+> +		return 0;
+> +
+> +	/* The non-default driver's module must be loaded */
+> +	if (!try_module_get(drv->owner))
+> +		return 0;
+> +
+> +	if (ap_drv->in_use)
+> +		if (ap_drv->in_use(newapm, ap_perms.aqm))
+> +			rc = -EADDRINUSE;
 
-foo |= u32_encode_bits(control, SDCA_CONTROL_LSB_MASK);
-control = FIELD_GET(SDCA_CONTROL_MSB_BITS, control);
-foo |= u32_encode_bits(control, SDCA_CONTROL_MSB_MASK);
+ISTR that Christian suggested -EBUSY in a past revision of this series?
+I think that would be more appropriate.
 
-with the original proposal:
+Also, I know we have discussed this before, but it is very hard to
+figure out the offending device(s) if the sysfs manipulation failed. Can
+we at least drop something into the syslog? That would be far from
+perfect, but it gives an admin at least a chance to figure out why they
+got an error. Some more structured way that would be usable from tools
+can still be added later.
 
-foo |= FIELD_GET(GENMASK(2, 0), control))	
-foo |= FIELD_PREP(GENMASK(17, 15), FIELD_GET(GENMASK(5, 3), control))	
+> +
+> +	module_put(drv->owner);
+> +
+> +	return rc;
+> +}
 
-it gets worse when the LSB positions don't match, you need another 
-variable and an additional mask.
-
-I don't see how this improves readability? I get that hard-coding magic 
-numbers is a bad thing in general, but in this case there are limited 
-benefits to the use of additional defines.
