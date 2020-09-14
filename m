@@ -2,88 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AECC26869A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C20926869B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgINH4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:56:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25016 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726125AbgINHz4 (ORCPT
+        id S1726141AbgINH4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgINHzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:55:56 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08E7VhQE069780;
-        Mon, 14 Sep 2020 03:55:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=paEL0PaoPgSc9IEP40AlUAUmQ6zab0AuVqqu/4/YaCI=;
- b=jgGN0BrMLz5wPrdbx/zx8UHL5qqk9FN5pS2vevbhM0KSz8a5Uz1IpQjLhHKaIgel+xWq
- uokUpk/P8YnzZj+1bZ38f0mHNxJcZ607wfioLJiKLFE+hBMyvnlmNJ56lDSRjh3V+QZO
- rhC2wbgGMLgSO6jUNmRt75DeOcjHQAOJG7RMx/R7QLxD4nuFbhRlglcEGU0Jkf0378JO
- r4C2/wmec2qYxXI61gId4A4IB+wKXfRy05kOoD62wZhbJjUBDJubr/N8D3YK18+Ttd39
- MOSLTKY/VLTRsEtiajakR4bj2XyG6rQL90xUYd6lGmajDGPdtOXxz9kNRapTYcVFD1qC Xw== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33j44qrpks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 03:55:52 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08E7r0PO024889;
-        Mon, 14 Sep 2020 07:55:51 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 33hjgdrcjy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 07:55:50 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08E7sEDt21954918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Sep 2020 07:54:14 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F027742042;
-        Mon, 14 Sep 2020 07:55:47 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ABED54203F;
-        Mon, 14 Sep 2020 07:55:47 +0000 (GMT)
-Received: from osiris (unknown [9.171.3.188])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 14 Sep 2020 07:55:47 +0000 (GMT)
-Date:   Mon, 14 Sep 2020 09:55:46 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Harald Freudenberger <freude@linux.ibm.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, gor@linux.ibm.com,
-        borntraeger@de.ibm.com
-Subject: Re: [PATCH] s390/zcrypt: remove set_fs() invocation in zcrypt device
- driver
-Message-ID: <20200914075546.GA11573@osiris>
-References: <20200910102838.28887-1-freude@linux.ibm.com>
- <20200911062134.GB21597@lst.de>
- <e367fef4-1634-7b8e-0ef5-4cdc108edadd@linux.ibm.com>
+        Mon, 14 Sep 2020 03:55:54 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2132C06174A;
+        Mon, 14 Sep 2020 00:55:53 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id c2so17754171ljj.12;
+        Mon, 14 Sep 2020 00:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OLKPHbtOt8z8JIW1cBDEqkvkofIIPjEN7iRAGXlScGQ=;
+        b=UNTubtzZLEL8oapWyD53tB8szukUP0AsmWl7SbBE//kxC0c5XMcjBS6sLBATSDVR0L
+         IuE5QOsKg8Z7ySquYugpz11Rnpjcczw6WLt23YwjdbPhYhE+s8AtwAKd0lmVypuaKUAm
+         WnDbCLuYROjkokJMWl5HQTzaEkHHorc236gPnmWlDu89LOHv4fdV47LNV35Eh/7MHzch
+         GkB/RCzN7Df7uAt3kYFACzQ4EXUcvAGS9JkEOzpuYFOo+ClyR4eO8b2SWveMCzIPTS4t
+         XSGpah8zxJIgzICSppIZO7ur7/HHngsoldfPVNV2D/LXWaQBtOVIiv05AjerqOXxiZ5N
+         paKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=OLKPHbtOt8z8JIW1cBDEqkvkofIIPjEN7iRAGXlScGQ=;
+        b=lAAWy+dWcKcACWSDGUafjQ3FVLOvcF9uEpKyMpvfcvjW1omlx74sKZz62Kwm+9wXKm
+         ty9nWizsl8yukUQ+pbGH0nwWtfolZRoYE5zQrKwwortS04gq/7nJuXhnF9gHIlNYuQfu
+         l9R1sJoX0i79vYWIVsqGAqGrI5gyJ1PYft8uN18XiAL5EaGISYfghcP1RWOOtImvP0Qy
+         y4Y4jEH2rlEUBy0wGebqi5YcudIqGvmjmo7iiXd/Eogbm9dNh6OrsbrfNX04o7Ou4KNI
+         6vtmygbQEJP0zZ1/yUxeVa6s2qZYnFwfsqH2/eQNhW/9lb/VvmpnNc2HYBFS9SDPEl91
+         mlaQ==
+X-Gm-Message-State: AOAM533EpOUyU2WbEOMAE/WioWA6lJpf0Wp7LUip66EUtHGUlzOQY/of
+        1wzqPubIBtoRdDYH40N6a1f2i6OJ8gE7mw==
+X-Google-Smtp-Source: ABdhPJw1Eycx1S/HY2dEZIfzRDk6BOovCZSHzkBaMT4r1idgXaFwjQ+i7sxIZUsbExhYOCgFKvCMjg==
+X-Received: by 2002:a2e:92cd:: with SMTP id k13mr4455424ljh.138.1600070152066;
+        Mon, 14 Sep 2020 00:55:52 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:239:d1e4:b56b:9cf2:d12e:444? ([2a00:1fa0:239:d1e4:b56b:9cf2:d12e:444])
+        by smtp.gmail.com with ESMTPSA id h16sm3577107lfc.63.2020.09.14.00.55.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 00:55:51 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] media: i2c: ov772x: Add support for BT656 mode
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+References: <20200913184247.618-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200913184247.618-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <bb9fcd11-21d9-1ce0-4247-a5f80d836da7@gmail.com>
+Date:   Mon, 14 Sep 2020 10:55:48 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e367fef4-1634-7b8e-0ef5-4cdc108edadd@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-13_09:2020-09-10,2020-09-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=986 clxscore=1015 phishscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 adultscore=0 impostorscore=0 bulkscore=0 suspectscore=2
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009140058
+In-Reply-To: <20200913184247.618-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:36:07AM +0200, Harald Freudenberger wrote:
-> Otherwise how to we provide this fix then ? My recommendation would
-> be to go the 'usual' way: Commit this s390 internal and then let
-> this go out with the next kernel merge window when next time Linus
-> is pulling patches from the s390 subsystem for the 5.10 kernel
-> development cycle.
+Hello!
 
-I will create a "set_fs" topic branch on kernel.org based on
-vfs.git/base.set_fs and add your patch there and also the rest of
-s390 set_fs related patches on top of that as soon as things are
-ready.
+On 13.09.2020 21:42, Lad Prabhakar wrote:
+
+> Add support to read the bus-type for V4L2_MBUS_BT656 and
+> enable BT656 mode in the sensor if needed.
+
+    Isn't it called BT.656?
+
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+>   drivers/media/i2c/ov772x.c | 27 +++++++++++++++++++++------
+>   1 file changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> index 551082aa7026..edd7c4c22225 100644
+> --- a/drivers/media/i2c/ov772x.c
+> +++ b/drivers/media/i2c/ov772x.c
+[...]
+> @@ -1427,16 +1434,24 @@ static int ov772x_probe(struct i2c_client *client)
+>   		goto error_clk_put;
+>   	}
+>   
+> -	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+> +	bus_cfg = (struct v4l2_fwnode_endpoint)
+> +		  { .bus_type = V4L2_MBUS_BT656 };
+>   	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+>   	priv->bus_type = bus_cfg.bus_type;
+>   	v4l2_fwnode_endpoint_free(&bus_cfg);
+>   	if (ret) {
+> -		/* For backward compatibility with the existing DT where
+> -		 * bus-type isnt specified fallback to V4L2_MBUS_PARALLEL
+> -		 */
+> -		priv->bus_type = V4L2_MBUS_PARALLEL;
+> -		dev_notice(&client->dev, "Falling back to V4L2_MBUS_PARALLEL mode\n");
+> +		bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+> +		ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+> +		priv->bus_type = bus_cfg.bus_type;
+> +		v4l2_fwnode_endpoint_free(&bus_cfg);
+> +		if (ret) {
+> +			/* For backward compatibility with the existing DT where
+> +			 * bus-type isnt specified fallback to V4L2_MBUS_PARALLEL
+                                     ^^^^ isn't
+    Could be fixed, while at it?
+
+> +			 */
+> +			priv->bus_type = V4L2_MBUS_PARALLEL;
+> +			dev_notice(&client->dev,
+> +				   "Falling back to V4L2_MBUS_PARALLEL mode\n");
+> +		}
+>   	}
+>   
+>   	ret = ov772x_video_probe(priv);
+
+MBR, Sergei
