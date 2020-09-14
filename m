@@ -2,130 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5E926975F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754D6269762
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgINVEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
+        id S1726074AbgINVFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgINVEg (ORCPT
+        with ESMTP id S1725953AbgINVFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:04:36 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B273C06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:04:36 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id bg9so123880plb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:04:36 -0700 (PDT)
+        Mon, 14 Sep 2020 17:05:18 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD72C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:05:17 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id fa1so562727pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=B+yZcshbsoNrjw9/GyoZ6sfB8u3DeY+uiG54+fPG2CA=;
-        b=QIZLLxWuhPfcEVva2nJ767qbObasCjM9V8Jb31/dgJYJjdusHNi8YJsv5gLnNFQ7Yc
-         rLHu37Wddk1sIpLHa0uP3I2h9zA71vHPOqj0TBgvBDuJtNcIpUFN3mpmixq4QM8rTCJd
-         5RQ6lPaeIlVGNC4K+e1WheYhHnFTvAshW+15lTv/zvbez9g3zYXzhh8MmXmOP/82L8EE
-         Kf9PqYHd0cb8gb3Y/GDOZ4tGCV6XOqLSlkPmMblYk+Rl4KQkPGqxbCFqXTzaLci5PVLj
-         WJx4XXmmmHz8fepTSyu12BiVF7duEd/kPijfysMl56mAUi9m8XaYBKLjFDMSCx0duFR3
-         9e9A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E0F8AkfKQCaaK7RpO105WDYCBVLdgClr8aQ6v9XdgcE=;
+        b=sulaPXBL4qLc5uHAvrju2/esv+SzgXVyrb/idGYZs8e+XPAu5dVlGcX39v4gWnq6Yx
+         6DionPNXUXnoCqwz0bn1c9PguYfmioKn1mwdNtzEl5Ltj7OwpaPYBfwzy7VVx3K7d2s7
+         4rRmLoqBEoQyJ+QAYdV3qCPeYReHJttm/pXCQkoq9QRaCV1Qyqz93NLFK5gYxwjjWW2c
+         hB2mqEaifjYUCYlgg6YFL4gso5o2jspKeOBLepuyvCz3yW/4mq65YZx1XA7+FVnjSfyQ
+         FmA1Jk095e04Ml6QceKq+gaisgDT1Ayz8cd+rLANTD+bhxdv19xD+m5hL8QqrW7IVaxe
+         zQDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=B+yZcshbsoNrjw9/GyoZ6sfB8u3DeY+uiG54+fPG2CA=;
-        b=JnW/A/vacM45NrrX7KxL96XIA4vkTunen2Ep5sGEHzvzaQbNmHhTccbThaBKLBGD/d
-         La7F57b0sPeUalxUtjIOo271DoUXVtmU+JFGU9T+x9PVXqRjPGI4PJv9Rrlk1f+vO9WH
-         EMUaT9pbb41o571KOPbcegA0+mU13vfa0n8EJi9RrlMXKEr8T1Uj66nfp/JiMB3lhlCT
-         5pTreBxj5xRSRtGtaP5NgZkcF0VwlmEN5u0gv6aaiOZ5FzJQ7CcjdZWFswpAjFh1pbLZ
-         8LZBUXeXynNYi8PQc/JkEhm89IQ67x+BdpTntsuAkLAOAnzZZyON7DYkuzpTYzt3CwzH
-         xS/Q==
-X-Gm-Message-State: AOAM530UNY5+oDbmwYgvEg4iJOEaTcNC7Q74i17uPZx0nfB7WLeEUOJF
-        Zjx6tOkkDcsjEqopjV+kts0128hHrRlRuw==
-X-Google-Smtp-Source: ABdhPJw4meDLhT1GWDTqYGlWuh5s5sZygb+syXL21fk3JYEchsaLbg8+bnuLLk7x6vlu2XvHtk24cQ==
-X-Received: by 2002:a17:90a:e513:: with SMTP id t19mr1080297pjy.137.1600117475340;
-        Mon, 14 Sep 2020 14:04:35 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id n9sm11222480pfu.163.2020.09.14.14.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 14:04:34 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E0F8AkfKQCaaK7RpO105WDYCBVLdgClr8aQ6v9XdgcE=;
+        b=q1uK6y8M0QoAbF4hj34svSbW+fP0zKhJmtgP/D5itlBgm9+j5pK8Rmh30HDo3l2jYZ
+         ZuxrcyHzonCQGgO7cG9oKo2thoYOl4FtrBiJnAN7tAj+Y1AaQpQX5nAcI7EPsQFYpdKj
+         9koOASjtL379oEnVEdpMoPqQmzI6+U72LK2H82NY3EnkAqs6yz8+QBsNv/FVSILKTQyP
+         LPynRODiTBiplxCBiYrHHXUSowqAAyVc5MHWASYjuEM18XO74ndODYDoZIl3+BQ04Mhq
+         jWzWu8bPfrl+PMbXNAgsftIerW7yIJk8jwk5E6SAWsoHaXVNzC9ol/yQcOUcvrhHCnzT
+         VDpA==
+X-Gm-Message-State: AOAM531uBztMr/FuodnGV8p5hpHMjDlCbJMfciz3mwUeH7HBxZOB91P9
+        XwMBQJru8Qs5P6FHg3P+fRhA1Ftkbiib8Ryvh8pBgQ==
+X-Google-Smtp-Source: ABdhPJwX3PmHnk3aBrcEgrSXd+/nbZXSlMCdao5antzJ75d2bymDEzFZ/K19JxIfcADHXmp+rl7GG88WXmlaGvToHLY=
+X-Received: by 2002:a17:90a:e517:: with SMTP id t23mr1054592pjy.25.1600117516539;
+ Mon, 14 Sep 2020 14:05:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200903011054.2282115-1-morbo@google.com> <20200903073435.GU1362448@hirez.programming.kicks-ass.net>
+ <CAGG=3QX4wKcoPWw+5=tOqz3Y7g8ELGZuav3kdWjXRQae=ue9Mg@mail.gmail.com> <CALCETrW7B3HkF5iY=qgt0KeN1fXZLVaPZcELYGRm9bOgbirbww@mail.gmail.com>
+In-Reply-To: <CALCETrW7B3HkF5iY=qgt0KeN1fXZLVaPZcELYGRm9bOgbirbww@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 14 Sep 2020 14:05:04 -0700
+Message-ID: <CAKwvOdkKqkP1qT0002xQnDrByXr_ygvqCmnzZ50vJLDsg6XWXg@mail.gmail.com>
+Subject: Re: [PATCH] x86: use clang builtins to read and write eflags
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Bill Wendling <morbo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH] irqchip/qcom-pdc: Allow QCOM_PDC to be loadable as a permanent module
-Date:   Mon, 14 Sep 2020 21:04:23 +0000
-Message-Id: <20200914210423.67579-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200912125148.1271481-7-maz@kernel.org>
-References: <20200912125148.1271481-7-maz@kernel.org>
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        John Sperbeck <jsperbeck@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allows qcom-pdc driver to be loaded as a permanent module.
+(Bill, please use `./scripts/get_maintainer.pl <patchfile>` to get the
+appropriate list of folks and mailing lists to CC)
 
-An earlier version of this patch was merged in a larger patchset
-but was reverted entirely when issues were found with other
-drivers, so now that Marc has provided a better solution in his
-Hybrid probing patch set, I wanted to re-submit this change.
+On Thu, Sep 3, 2020 at 8:06 AM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> So with my selftests hat on, the inline asm utterly sucks.  Trying to
+> use pushfq / popfq violates the redzone and requires a gross hack to
+> work around.  It also messes up the DWARF annotations.  The kernel
+> gets a free pass on both of these because we don't use a redzone and
+> we don't use DWARF.
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Maulik Shah <mkshah@codeaurora.org>
-Cc: Lina Iyer <ilina@codeaurora.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: Todd Kjos <tkjos@google.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: iommu@lists.linux-foundation.org
-Cc: linux-gpio@vger.kernel.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/irqchip/Kconfig    | 2 +-
- drivers/irqchip/qcom-pdc.c | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+Sorry, I don't fully understand:
+1. What's the redzone?
+2. How does pushfq/popfq violate it?
+3. What is the "gross hack"/"workaround?" (So that we might consider
+removing it if these builtins help).
+4. The kernel does use DWARF, based on configs, right?
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index bfc9719dbcdc..bb70b7177f94 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -425,7 +425,7 @@ config GOLDFISH_PIC
-          for Goldfish based virtual platforms.
- 
- config QCOM_PDC
--	bool "QCOM PDC"
-+	tristate "QCOM PDC"
- 	depends on ARCH_QCOM
- 	select IRQ_DOMAIN_HIERARCHY
- 	help
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index 8543fa23da10..59eb3c8473b0 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -433,3 +433,5 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
- IRQCHIP_HYBRID_DRIVER_BEGIN(qcom_pdc)
- IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
- IRQCHIP_HYBRID_DRIVER_END(qcom_pdc)
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
-+MODULE_LICENSE("GPL v2");
+>
+> Now GCC and clang's builtins are also ugly.  But perhaps we could have
+> a little wrapper that is less ugly?
+>
+> static __always_inline unsigned long __read_eflags(void)
+> {
+> #ifdef CONFIG_X86_64
+>     return __builtin_ia32_readeflags_u64();
+> #else
+>     return __builtin_ia32_readeflags_u32();
+> }
+
+It looks like __builtin_ia32_readeflags_u32,
+__builtin_ia32_readeflags_u64, __builtin_ia32_writeeflags_u64, and
+__builtin_ia32_writeeflags_u32 were first available in GCC 4.9; they
+weren't in GCC 4.8 or older, so we can make use of them
+unconditionally.  I think it would be nice to use the above.  Could
+even be:
+
+#ifdef CONFIG_X86_64
+#define __read_eflags __builtin_ia32_readeflags_u64
+#define __write_eflags __builtin_i32_writeeflags_u64
+#else
+#define __read_eflags __builtin_ia32_readeflags_u32
+#define __write_eflags __builtin_i32_writeeflags_u32
+#endif
+
+Which would be concise.  For smap_save() we can use clac() and stac()
+which might be nicer than `asm goto` (kudos for using `asm goto`, but
+plz no more).  :^P Also, we can probably cleanup the note about GCC <
+4.9 now. :)
+
+>
+> >
+> > > Why can't clang use the inline asm version?
+> >
+> > Clang chooses the most general constraint when multiple constraints
+> > are specified. So it will use the stack when retrieving the flags.
+>
+> I haven't looked at clang's generated code to see if it's sensible
+> from an optimization perspective, but surely the kernel code right now
+> is genuinely wrong.  GCC is free to omit the frame pointer and
+> generate a stack-relative access for the pop, in which case it will
+> malfunction.
+
+Sorry, this is another case I don't precisely follow, would you mind
+explaining it further to me please?
+
+Bill, it looks like Clang is forcibly emitting a frame pointer for
+these: https://godbolt.org/z/GPMeKc, is that right/needed?  I thought
+-O2 implied -fomit-frame-pointer, in fact I think I fixed that in
+Clang for x86 most recently...
+
+>
+> IOW, we appear to have an actual bug, and clang just happens to be
+> triggering it, no?
+
+We've seen bugs in the past where "m" constraints were used with
+inline asm that modified the stack pointer (commit 428b8f1d9f92 "KVM:
+VMX: don't allow memory operands for inline asm that modifies SP"),
+though I thought only leaving the stack imbalanced (not restoring it
+to its previous value before the end of the inline asm) was
+problematic.  Though commit d0a8d9378d16 ("x86/paravirt: Make
+native_save_fl() extern inline") is what I'm reminded of with this
+patch.  (Stack protectors continue to wind up in places that cause
+trouble.  GCC folks have patches to disable them on a per function
+basis via function attribute like Clang does, though they've been
+sitting in code review for a long time.  Recently, they've caused some
+headaches with LTO as well.  Once we have those, I plan on adding that
+to compiler_attributes.h.)  I would sleep better at night if I
+undid/reverted d0a8d9378d16.
+
 -- 
-2.17.1
-
+Thanks,
+~Nick Desaulniers
