@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5D32694AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F07C2694AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgINSU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:20:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgINSUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726040AbgINSUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:20:22 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:33216 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgINSUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 14:20:13 -0400
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39306214F1;
-        Mon, 14 Sep 2020 18:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600107613;
-        bh=IiWBHF7Kq1gGCefdLYFTYRZidx/gNkc82SqKKeeSLrE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mWz2BdugR29K6X0Xu8C6SlkOLSe2pjJNYMFlbO+5ax3K2AVcWjnRt44zquff6bMPR
-         2Q38a3C4gXui8Qjs0kMiRNMPXSsHXx4rfFjWie+6XEumnVmhP7B1CbuwD1H30pdahk
-         2IUwLt/RWlJeeCqbfJUqZJ6R5pdUEYHjy7i+m0o4=
-Received: by mail-oi1-f174.google.com with SMTP id w16so896688oia.2;
-        Mon, 14 Sep 2020 11:20:13 -0700 (PDT)
-X-Gm-Message-State: AOAM532fHsbJzXkpa1rmTpF8S8bRfsBi1mNeXTVTDx5mb5+X5t66lm43
-        MGwQVQUE0ynDEBJYQhLTfICIh8uxnOE5BgUP0zk=
-X-Google-Smtp-Source: ABdhPJwMTJZEt44jiTicdoE04xOArfMKobGqfvMji4Aedg/dvKLfvk9HfmWAwwB9fGTLAYElkuMXqQAzYNd1iX8bbyk=
-X-Received: by 2002:aca:d845:: with SMTP id p66mr400667oig.47.1600107612611;
- Mon, 14 Sep 2020 11:20:12 -0700 (PDT)
+Received: by mail-il1-f195.google.com with SMTP id x2so531230ilm.0;
+        Mon, 14 Sep 2020 11:20:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fdtDbq+D2wXO2AxeziDQlx8lKWQCn+eKp58GeSBc8HI=;
+        b=Ftl6V+Cq0t6FXqm5i0EIFs+5gdCQGXTrQawphpIBkzNemEOpp0efTfyyTU0YFN73Dd
+         fyWadD8cD1vKQ6jkbJTOStMFJwa87YJznkx9/NaoEbkfByYPpZlrYmI2nz02982bJUjL
+         H+fBOQAddAT92doesxaJf5VJ8731JLCC1LP0M0MARCkDTX43mR+2YnAvnH8lf2zbBxkX
+         uIwXNPreNiCXCNGwI/1lJ+bhKYfigUVMgVCM0ANiHxYM2WFrraW9I3FPYkcozlpGZqnp
+         IkymxpYsNpwwRFZLyETlDN2KBy7epBfmj85mqTCYrXesyTWNU+Yqf+1IDEbWjIuE5LwV
+         XEcw==
+X-Gm-Message-State: AOAM530qyPwW8tx0ZWVM2JaDp7SP9fya31fE8bXnEJTfetJeI8Hz0JRf
+        F+uSVj0WZRNdlgM8FOmxlq+Vi2PZjwt0
+X-Google-Smtp-Source: ABdhPJyaLnrvBR1GirLP6z7PnAvaEZSPl/7FkU07rnTPTggjjrfaUZoZ9Dtaxv533+HXIQmc4RkcFg==
+X-Received: by 2002:a92:7984:: with SMTP id u126mr13816635ilc.139.1600107611878;
+        Mon, 14 Sep 2020 11:20:11 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id v20sm7265643ile.42.2020.09.14.11.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 11:20:11 -0700 (PDT)
+Received: (nullmailer pid 4178218 invoked by uid 1000);
+        Mon, 14 Sep 2020 18:20:10 -0000
+Date:   Mon, 14 Sep 2020 12:20:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: leds: common: Add mmc0 as default trigger
+Message-ID: <20200914182010.GA4172388@bogus>
+References: <20200830111115.32623-1-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
- <20200806163551.14395-2-andrei.botila@oss.nxp.com> <20200821034651.GA25442@gondor.apana.org.au>
- <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com> <20200908221019.GA23497@gondor.apana.org.au>
- <67159207-1082-48be-d085-971a84b525e0@nxp.com> <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
- <38f9904b-5bf7-ea99-ed8a-27cb49f405bd@nxp.com>
-In-Reply-To: <38f9904b-5bf7-ea99-ed8a-27cb49f405bd@nxp.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 14 Sep 2020 21:20:00 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXH0jOQms9y1MywORywoKjxQ2p8ttv+Xf9KTOkfORX5XWw@mail.gmail.com>
-Message-ID: <CAMj1kXH0jOQms9y1MywORywoKjxQ2p8ttv+Xf9KTOkfORX5XWw@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
- more than 8B IV
-To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200830111115.32623-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 at 20:12, Horia Geant=C4=83 <horia.geanta@nxp.com> wrot=
-e:
->
-> On 9/14/2020 7:28 PM, Ard Biesheuvel wrote:
-> > On Mon, 14 Sep 2020 at 19:24, Horia Geant=C4=83 <horia.geanta@nxp.com> =
-wrote:
-> >>
-> >> On 9/9/2020 1:10 AM, Herbert Xu wrote:
-> >>> On Tue, Sep 08, 2020 at 01:35:04PM +0300, Horia Geant=C4=83 wrote:
-> >>>>
-> >>>>> Just go with the get_unaligned unconditionally.
-> >>>>
-> >>>> Won't this lead to sub-optimal code for ARMv7
-> >>>> in case the IV is aligned?
-> >>>
-> >>> If this should be optimised in ARMv7 then that should be done
-> >>> in get_unaligned itself and not open-coded.
-> >>>
-> >> I am not sure what's wrong with avoiding using the unaligned accessors
-> >> in case data is aligned.
-> >>
-> >> Documentation/core-api/unaligned-memory-access.rst clearly states:
-> >> These macros work for memory accesses of any length (not just 32 bits =
-as
-> >> in the examples above). Be aware that when compared to standard access=
- of
-> >> aligned memory, using these macros to access unaligned memory can be c=
-ostly in
-> >> terms of performance.
-> >>
-> >> So IMO it makes sense to use get_unaligned() only when needed.
-> >> There are several cases of users doing this, e.g. siphash.
-> >>
-> >
-> > For ARMv7 code, using the unaligned accessors unconditionally is fine,
-> > and it will not affect performance.
-> >
-> > In general, when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is defined,
-> > you can use the unaligned accessors. If it is not, it helps to have
-> > different code paths.
-> >
-> arch/arm/include/asm/unaligned.h doesn't make use of
-> linux/unaligned/access_ok.h, even if CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCE=
-SS
-> is set.
->
-> I understand the comment in the file, however using get_unaligned()
-> unconditionally takes away the opportunity to generate optimized code
-> (using ldrd/ldm) when data is aligned.
->
+On Sun, Aug 30, 2020 at 01:11:15PM +0200, Krzysztof Kozlowski wrote:
+> MMC could be a default trigger so add a pattern to match it and fix
+> dtbs_check warnings like:
+> 
+>   arch/arm/boot/dts/exynos4412-odroidx.dt.yaml: leds: led2:linux,default-trigger:0:
+>     'mmc0' is not one of ['backlight', 'default-on', 'heartbeat', 'disk-activity', 'ide-disk', 'timer', 'pattern']
+>     From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
 
-But the minimal optimization that is possible here (one ldrd/ldm
-instruction vs two ldr instructions) is defeated by the fact that you
-are using a conditional branch to select between the two. And this is
-not even a hot path to begin with,
+The preference is to move from 'linux,default-trigger' to 'function' 
+with some standardization of the names or use the trigger-source binding.
 
-> > This is a bit murky, and through the years, the interpretation of
-> > unaligned-memory-access.rst has shifted a bit, but in this case, it
-> > makes no sense to make the distinction.
-> >
->
-> Thanks,
-> Horia
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/leds/common.yaml      | 39 ++++++++++---------
+>  1 file changed, 20 insertions(+), 19 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+> index a2a541bca73c..6b38f9f3792c 100644
+> --- a/Documentation/devicetree/bindings/leds/common.yaml
+> +++ b/Documentation/devicetree/bindings/leds/common.yaml
+> @@ -78,25 +78,26 @@ properties:
+>        This parameter, if present, is a string defining the trigger assigned to
+>        the LED.
+>      $ref: /schemas/types.yaml#definitions/string
+> -
+> -    enum:
+> -        # LED will act as a back-light, controlled by the framebuffer system
+> -      - backlight
+> -        # LED will turn on (but for leds-gpio see "default-state" property in
+> -        # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+> -      - default-on
+> -        # LED "double" flashes at a load average based rate
+> -      - heartbeat
+> -        # LED indicates disk activity
+> -      - disk-activity
+> -        # LED indicates IDE disk activity (deprecated), in new implementations
+> -        # use "disk-activity"
+> -      - ide-disk
+> -        # LED flashes at a fixed, configurable rate
+> -      - timer
+> -        # LED alters the brightness for the specified duration with one software
+> -        # timer (requires "led-pattern" property)
+> -      - pattern
+> +    oneOf:
+> +      - enum:
+> +            # LED will act as a back-light, controlled by the framebuffer system
+> +          - backlight
+> +            # LED will turn on (but for leds-gpio see "default-state" property in
+> +            # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
+> +          - default-on
+> +            # LED "double" flashes at a load average based rate
+> +          - heartbeat
+> +            # LED indicates disk activity
+> +          - disk-activity
+> +            # LED indicates IDE disk activity (deprecated), in new implementations
+> +            # use "disk-activity"
+> +          - ide-disk
+> +            # LED flashes at a fixed, configurable rate
+> +          - timer
+> +            # LED alters the brightness for the specified duration with one software
+> +            # timer (requires "led-pattern" property)
+> +          - pattern
+> +      - pattern: "^mmc[0-9]+$"
+>  
+>    led-pattern:
+>      description: |
+> -- 
+> 2.17.1
+> 
