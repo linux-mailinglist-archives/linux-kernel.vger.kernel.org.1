@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F1D2688C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BBC2688CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgINJur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
+        id S1726316AbgINJvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgINJuq (ORCPT
+        with ESMTP id S1726239AbgINJvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:50:46 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911F3C06174A;
-        Mon, 14 Sep 2020 02:50:45 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d4so4617159wmd.5;
-        Mon, 14 Sep 2020 02:50:45 -0700 (PDT)
+        Mon, 14 Sep 2020 05:51:39 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D82C06174A;
+        Mon, 14 Sep 2020 02:51:38 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id z4so18005042wrr.4;
+        Mon, 14 Sep 2020 02:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=39+aLqzsKe9E8WUELDyvU1HZQFoPFaHNV9XTWYnYyTs=;
-        b=QsPFWXjgQY0T+rZY1hKi8oqJxeAsgVc4z3lyyGzqMaz5Du5tbJpAC6IvmZFJ1fQd3x
-         5GEO9lco51vWzirwtFfGKs7JsM8w9USWgfcfZug0lRx9kalabPTXrdNU6/MhSZB0+hyJ
-         IJEmElaNC7UCWPlAJ0jsxJ38F1zB7j638ncUMnSuSfOKLkm2cp7Be0D26nJXKcBvjj0N
-         s+7Xn2O7J5TZmB3kCba6PxvzhMneMy5NEY8V20mqpwPk6+Cd+HiJqBUgw6GR5q8Eiz0d
-         AaQ2RNERvf5x8DRlWFobit1W6kfv+9nL3+lvTd0BBNfY2C993557u+pQFPfJcmLHjnnq
-         zJMg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OdPU8Glfgir5UGsLoaaR7zgD8ovaCIilI+lFeo550Mc=;
+        b=b49weJcH6PKR2Z53mJBlxpDIYL0sIIAyGxhNIHuIupgPHXDkqT8WMNvBLi67Wg/Vtu
+         X8t87+drB2WSh86N7yG0ae2zRb5sG5KacfLS1XkMOk10lfNTRy0RMBoEdflqx8DCBlvL
+         gSQ4+oJTH8D3wPdNxMEr6v//fJDbzLebLUhaJq0BwCl8xx+EY3ODoaSXyIU78Tqsd4Yj
+         UCiqqjKxd7OSve+LgMMsnz+gGV3iy0SFX82X0evk2OeSRvO4s3HmXqDZ5on9Hdb0X1dm
+         W3N9TAUoEQckxOIS3+kmTR2FZEakukP8wDfni8PPPYSmquQqAmQ6iNOTMc53aKG+h0kX
+         mq9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=39+aLqzsKe9E8WUELDyvU1HZQFoPFaHNV9XTWYnYyTs=;
-        b=fcdH9GnVeO8hSqJq1gUjdgi346Dv7Iqv3+/B6kW/YIJ+ugH4acRFjcY8QZ56S9NjGZ
-         aEYy9gkfPCT9hS2+J5/fQk1uhX1VH8a2atcVCNYVlE8HS/WWA24AZHDN9xlg8eTpErpw
-         qmKuwOLmfJLN1Kdb9dNz6XMPQfl/95KJrF0M5E0xVr0I5XRf0HhRa0KH08oDEYIJM9EZ
-         5wbcvgO90Abnh03DaIXpBeBX1M261L1VqeX23SZml3YWDWvu4IDA5rhHq3OBJS8D4psp
-         e12Qgf0nVggqxXLnoKe4sWAGdfxiwY5d5i5cLI3nxlrWeAxP/UJTtVLgz70ooSwTh2HG
-         WFPw==
-X-Gm-Message-State: AOAM531l1Vbplr+wMnMQeQAKVy/xGEpZoM5vA4UBcwqbBzzZtFECMggc
-        5FZh+sFHqhhctxo1kiRGXWc=
-X-Google-Smtp-Source: ABdhPJz95OKEtf3KC3Kt1pnNr2PEtBzz2R34KFO0+4dV2b/km0LkmM4pZD1xnFRnQtYnmMxNGs29Sg==
-X-Received: by 2002:a1c:9697:: with SMTP id y145mr13982629wmd.174.1600077044331;
-        Mon, 14 Sep 2020 02:50:44 -0700 (PDT)
-Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id m185sm19291307wmf.5.2020.09.14.02.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 02:50:43 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Mon, 14 Sep 2020 10:50:41 +0100
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the nand tree
-Message-ID: <20200914095041.phuv6q7rl4nsdxnw@medion>
-References: <20200914114552.5030ef1e@canb.auug.org.au>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OdPU8Glfgir5UGsLoaaR7zgD8ovaCIilI+lFeo550Mc=;
+        b=JWc01H9jpIG+01ycA1U2QS9Lp4hwtswVdx4fdFp/A04+D90dQQF0Sj3OUgSvQZKgCh
+         WgWdq0giJ1LzOwafidzPOrYh3kKxWA+uvOhRbv2Hm/mKhGtTgwbq0n5vcf3vi1pecSd0
+         HfTJUTzHI7fEEaBI/NjI2MqaMgQsprwvet455UlKKnJQHz7LkNq3R9PGlhRKjGtNWXkJ
+         qj/lshZiB493UGv14x40e9EUYA3sKgZuB8QAISg/bhGO/ouvJR3598gTA2vj3+mKBHKU
+         ZERNnGxwb7mqYBj1KxOr5Oofq1tw6wX40wFgrIA3CTgi4PibBYRJWxXGGbeEIWqfV5vu
+         sJTw==
+X-Gm-Message-State: AOAM531hcRJviQVCADb6AwSVIYxUpxNGaPSGlWayJT8GrKOjDnmVc24x
+        t7NVBKXuZkHj+0J5H0TpNXKodaF/IGFQVA==
+X-Google-Smtp-Source: ABdhPJzRQXKi/lmZeJMsqxP+fAP2yo3FHSbrArpnL1NVhxPOVWpLcHeZ/t+tmjw0nMe4HoHpmYG6Sw==
+X-Received: by 2002:a5d:518b:: with SMTP id k11mr14712742wrv.369.1600077095401;
+        Mon, 14 Sep 2020 02:51:35 -0700 (PDT)
+Received: from [192.168.0.160] ([93.115.133.118])
+        by smtp.gmail.com with ESMTPSA id o4sm19620709wru.55.2020.09.14.02.51.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 02:51:34 -0700 (PDT)
+Subject: Re: AW: AW: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer
+ size (instead of hardcoding macro name)
+To:     Walter Harms <wharms@bfs.de>,
+        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
+Cc:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
+ <20200910211344.3562-13-colomar.6.4.3@gmail.com>
+ <00ae0174f35241efa962286b9247c590@bfs.de>
+ <c2b43a9c-ae80-fae6-16a4-09c9aab73ac1@gmail.com>
+ <67f68125677e4e17aa1742b88267e05f@bfs.de>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <fe9ea5de-d09e-2013-22ee-3fff8f3f1c0e@gmail.com>
+Date:   Mon, 14 Sep 2020 11:51:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914114552.5030ef1e@canb.auug.org.au>
+In-Reply-To: <67f68125677e4e17aa1742b88267e05f@bfs.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:45:52AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the nand tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> drivers/mtd/nand/onenand/onenand_omap2.c:27:10: fatal error: asm/mach/flash.h: No such file or directory
->    27 | #include <asm/mach/flash.h>
->       |          ^~~~~~~~~~~~~~~~~~
-> 
-> Caused by commit
-> 
->   26e1a8efc63d ("mtd: onenand: omap2: Allow for compile-testing on !ARM")
-> 
-> I have reverted that commit for today.
+Hi Walter,
 
-Gah, sorry :(. I definitely *tried* to build test it, but I must have
-messed up and built the wrong tree or something.
+On 9/14/20 11:24 AM, Walter Harms wrote:
+> missunderstanding,
+> i do not want to discuss sizeof() vs define
 
-Apologies,
+I did understand, that was point (3).
+
+> 
+> in this example you do:
+> #define BUFLEN 4096
+>  char buf[BUFLEN];
+> getgrent_r(&grp, buf, sizeof(buf), &grpp);
+> 
+> so there is no real need for BUFLEN anymore
+> so donig
+>  char buf[BUFLEN]; -> char buf[4096];
+> would remove BUFLEN
+> 
+
+
+However, I think that might be better as a separate patch.
+
+I really don't have many arguments for nor against it.
+
+Thanks,
+
 Alex
-
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
