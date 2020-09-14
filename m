@@ -2,127 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E2626882B
+	by mail.lfdr.de (Postfix) with ESMTP id 09F9426882A
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgINJTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgINJTb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:19:31 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E206BC06174A;
-        Mon, 14 Sep 2020 02:19:29 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z4so17888006wrr.4;
-        Mon, 14 Sep 2020 02:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wcF550GwyqliSCSyHw0Z/IDzm3K/ogaNto0zdoWfp60=;
-        b=tiMPrN36G6dUn/kEUQVays/uU94aZcWuAZpt/Nvk7qqLpik+PvXRFUsv/Eiw4v+VXi
-         nUPyrmVyWgm2X5NAZTkS2bjtga25N+GcOlP/8rgU3wlJRPFvOt6CD0D3XpoZb4zO7MJR
-         RTb5xROBppfNI3+h3yXQO02cMDQH+vUyMhy7m2/bsQuWqO43t/T652wnp3ccQACIrruE
-         w2NSQCEmAac+MPdWfdJqp47I7AkqnuRFn2K3zg5av1CmCkKi4fbhquKHLsLpy7oWEmTq
-         1gCex1T5rtmEO45QL7sRyL/mFyhdzteRX3EgBCk5kCAKR8O3mBNDIkkYoFl359gSPulx
-         sMIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wcF550GwyqliSCSyHw0Z/IDzm3K/ogaNto0zdoWfp60=;
-        b=BHVN6Dlw3KHHh6rgV+5YF3L93wfE1h4tmFEhoIp0gBY70K1DuS+utKj59SYe7Y9eN6
-         sdAn8CCh/UHKVwtcIY9FF2QwwqHoGmdgWQWmPQio0vf6XxECNa1D8QRLnCgr6JDZEzCE
-         k5hnl59Bna9/3ETWmTLIz6AoIqvIBoLiitGPOcfNc8+59bUi2Ati7bKxPLWx5txCEIeA
-         maDSa1ynurYjZoSZTKdxNnabP2YUNzXWA2D+oKJIrDZb9Wi3rznuA/zmaVoPVJEfKZIv
-         cnU8YgKBQiXWAp/MfAxkm52zo3dcUGbbWh8qRtRtDKZ/+PKp8QUjH96iUzn9rE+l5osg
-         +uRg==
-X-Gm-Message-State: AOAM531LXZu7qvaAm4vNPAdVY1s4Uwrb++5Ra7cFNyjOUeEjhfiKssUN
-        7GMd0dkJsG5NcqitqpGClQA=
-X-Google-Smtp-Source: ABdhPJyiYN1HRm7fTUbCjsDnDAsfhonS+0cIoWKodJ2jQ+pGXmfjQNFD7P4TdRoi2iJM10fiR86oOA==
-X-Received: by 2002:a5d:4c52:: with SMTP id n18mr14605256wrt.267.1600075168623;
-        Mon, 14 Sep 2020 02:19:28 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.113.201])
-        by smtp.gmail.com with ESMTPSA id j7sm19884886wrs.11.2020.09.14.02.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 02:19:27 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] iommu/mediatek: add flag for legacy ivrp paddr
-To:     Fabien Parent <fparent@baylibre.com>,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     joro@8bytes.org, robh+dt@kernel.org, yong.wu@mediatek.com,
-        miles.chen@mediatek.com
-References: <20200907101649.1573134-1-fparent@baylibre.com>
- <20200907101649.1573134-2-fparent@baylibre.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <cac92e0d-0789-64a4-729c-80ff5f34b6bb@gmail.com>
-Date:   Mon, 14 Sep 2020 11:19:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726312AbgINJTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726258AbgINJTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:19:34 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3C66206B2;
+        Mon, 14 Sep 2020 09:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600075173;
+        bh=QIiumx2JgDWAeVENHTZwWAcYfrAyrHP97J76nujl4Lc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fRBlYh4vlRVBxg8PRKUd/4YOW0n7fYV9AuR4UAgsGazkfmNcWwk9nQDXnAa5SD4iO
+         HzzxQYroptknH8L0QELBuvP6jCjkeTS8G3f48aUV5AeGddMFtRFZySqoruOjxW66zz
+         bFMjdStegwim2MQCJcvSyhiCK8T7MC59RjoWvdp0=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHke3-00BdhW-OV; Mon, 14 Sep 2020 10:19:31 +0100
 MIME-Version: 1.0
-In-Reply-To: <20200907101649.1573134-2-fparent@baylibre.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 10:19:31 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        parthiban@linumiz.com, Saravanan Sekar <sravanhome@gmail.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org,
+        Parthiban Nallathambi <pn@denx.de>
+Subject: Re: [PATCH v6 2/3] irqchip: Add Actions Semi Owl SIRQ controller
+In-Reply-To: <20200914085154.GA8474@BV030612LT>
+References: <cover.1599552438.git.cristian.ciocaltea@gmail.com>
+ <1167b847f6fe1da3834aeaadf5710ddac54f06a0.1599552438.git.cristian.ciocaltea@gmail.com>
+ <c5115d27739e1664f808ff5f1fc315e8@kernel.org>
+ <20200914070227.GA4491@BV030612LT>
+ <b9053e939dea2b67ba9804aec1a110f5@kernel.org>
+ <20200914085154.GA8474@BV030612LT>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <0cdd2fd4e09c7e51b8b48be914c6846f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: cristian.ciocaltea@gmail.com, robh+dt@kernel.org, manivannan.sadhasivam@linaro.org, tglx@linutronix.de, jason@lakedaemon.net, afaerber@suse.de, parthiban@linumiz.com, sravanhome@gmail.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-actions@lists.infradead.org, pn@denx.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-09-14 09:51, Cristian Ciocaltea wrote:
+> On Mon, Sep 14, 2020 at 09:07:18AM +0100, Marc Zyngier wrote:
+>> Cristian,
+>> 
+>> On 2020-09-14 08:02, Cristian Ciocaltea wrote:
+>> > Hi Marc,
+>> >
+>> > On Fri, Sep 11, 2020 at 05:22:41PM +0100, Marc Zyngier wrote:
+>> > > On 2020-09-08 09:20, Cristian Ciocaltea wrote:
+>> > > > This interrupt controller is found in the Actions Semi Owl SoCs (S500,
+>> > > > S700 and S900) and provides support for handling up to 3 external
+>> > > > interrupt lines.
+>> > > >
+>> > > > Each line can be independently configured as interrupt and triggers on
+>> > > > either of the edges or either of the levels. Additionally, each line
+>> > > > can also be masked individually.
+>> > > >
+>> > > > The patch is based on the work started by Parthiban Nallathambi:
+>> > > > https://lore.kernel.org/lkml/20181126100356.2840578-1-pn@denx.de/
+>> > > >
+>> > > > Signed-off-by: Parthiban Nallathambi <pn@denx.de>
+>> > > > Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+>> > > > [cristi: optimized DT, various fixes/cleanups/improvements]
+>> > > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+>> > >
+>> > > Who is the author of these patches? If this is a co-development,
+>> > > please
+>> > > use the relevant tags. Otherwise, the author of the patch must come as
+>> > > the first SoB.
+>> >
+>> > I took the authorship for the driver patch, as mentioned in the cover
+>> > letter. So, if I understand correctly, my SoB should be moved on top and
+>> > I assume I also need to drop the related comment line.
+>> 
+>> Not quite. Please look at 
+>> Documentation/process/submitting-patches.rst.
+> 
+> Yes, I have read it, but most probably I missed the information that
+> clarifies this authorship change handling.
+> 
+>> If Parthiban and Saravanan haven't authored anything in this patch,
+>> then drop them from the SoB list.
+> 
+> Sorry I haven't properly explained this before!
+> 
+> Their contributions to the driver code stopped in 2018, when v3 of the
+> patch series has been submitted.
+> 
+>> If they have contributed to the
+>> patch (which I expect), then their SoB must be preceded by their own
+>> Co-developed-by: tag.
+> 
+> Starting with v4, the work has been done exclusively by myself.
+> 
+>> To sum it up, it probably should look like:
+>> 
+>> Co-developed-by: Parthiban Nallathambi <pn@denx.de>
+>> Signed-off-by: Parthiban Nallathambi <pn@denx.de>
+>> Co-developed-by: Saravanan Sekar <sravanhome@gmail.com>
+>> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+>> 
+>> This is of course an assumption, and you should check it with the
+>> individuals above.
+> 
+> I have recently contacted Parthiban and he agreed that I can take the
+> authorship. So I should proceed with the 1st approach?
 
+The authorship of the patch is one thing, acknowledging the work done
+by others is another. As you said above, you started by contributing to
+an existing series, instead of writing it from scratch. You changed it
+to a degree where it makes sense for you to be the author of the 
+patches,
+but it doesn't invalidate the contributions made by others before you.
 
-On 07/09/2020 12:16, Fabien Parent wrote:
-> Add a new flag in order to select which IVRP_PADDR format is used
-> by an SoC.
-> 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> Reviewed-by: Yong Wu <yong.wu@mediatek.com>
+Unless the two other contributors explicitly say they'd rather not be
+named, I don't see how you can avoid mentioning them.
 
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+Thanks,
 
-> ---
-> 
-> v4: no change
-> v3: set LEGACY_IVRP_PADDR as a flag instead of platform data
-> v2: new patch
-> 
-> ---
->   drivers/iommu/mtk_iommu.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-> index 785b228d39a6..b1f85a7e9346 100644
-> --- a/drivers/iommu/mtk_iommu.c
-> +++ b/drivers/iommu/mtk_iommu.c
-> @@ -116,6 +116,7 @@
->   #define OUT_ORDER_WR_EN			BIT(4)
->   #define HAS_SUB_COMM			BIT(5)
->   #define WR_THROT_EN			BIT(6)
-> +#define HAS_LEGACY_IVRP_PADDR		BIT(7)
->   
->   #define MTK_IOMMU_HAS_FLAG(pdata, _x) \
->   		((((pdata)->flags) & (_x)) == (_x))
-> @@ -582,7 +583,7 @@ static int mtk_iommu_hw_init(const struct mtk_iommu_data *data)
->   		F_INT_PRETETCH_TRANSATION_FIFO_FAULT;
->   	writel_relaxed(regval, data->base + REG_MMU_INT_MAIN_CONTROL);
->   
-> -	if (data->plat_data->m4u_plat == M4U_MT8173)
-> +	if (MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_LEGACY_IVRP_PADDR))
->   		regval = (data->protect_base >> 1) | (data->enable_4GB << 31);
->   	else
->   		regval = lower_32_bits(data->protect_base) |
-> @@ -818,7 +819,8 @@ static const struct mtk_iommu_plat_data mt6779_data = {
->   
->   static const struct mtk_iommu_plat_data mt8173_data = {
->   	.m4u_plat     = M4U_MT8173,
-> -	.flags	      = HAS_4GB_MODE | HAS_BCLK | RESET_AXI,
-> +	.flags	      = HAS_4GB_MODE | HAS_BCLK | RESET_AXI |
-> +			HAS_LEGACY_IVRP_PADDR,
->   	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
->   	.larbid_remap = {{0}, {1}, {2}, {3}, {4}, {5}}, /* Linear mapping. */
->   };
-> 
+       M.
+-- 
+Jazz is not dead. It just smells funny...
