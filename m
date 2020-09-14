@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7E92695C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96842695C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725994AbgINTmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
+        id S1726044AbgINTnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgINTmM (ORCPT
+        with ESMTP id S1726023AbgINTnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:42:12 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99897C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:42:10 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id v54so1034530qtj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:42:10 -0700 (PDT)
+        Mon, 14 Sep 2020 15:43:06 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C6DC06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:43:05 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id j2so738619eds.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:43:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bV57W/EOWURMleEzGNWcf5dyMu6bebp1Bh//1ts4NWM=;
-        b=ycFv4BvlBYEkf4hQQlNujtn6QNIE5wc63ULQhK/2rdi3VgfJU/q02dwetcIo2piGTH
-         rh/aYu1xqMcmOyvTuxx+ofXk9NejE5iYqXBRPCZv1yZGAewKXIe8FTxOdG7k/J6M1sxE
-         7G4lDmw6QFHiyI5TTTVyysspAIwYVgx7l5jrE=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B26ZPwSMQkEgl0FLKfBn1bcFzAEPMlr/0cRYgdbCJm4=;
+        b=MvgJXiZx2nV1v+RFwDa0Ew2gpF/YMUm1Qzl9uP0JoeTwPkWschjlATZudFOjyAIymN
+         jJB7CAfq+BpdKpEqeroG5Y7ueTlhTlgM+6LKj7M/TcVdvxK4rdi9pYpCVGasFgNnIweT
+         66+OK8SAHXNYBvklweFjzvmaa+Q7pxQDrOuyV4OSavfjbUh/GTOB0/dTGHcXB5og63fs
+         hvyUH+1dQT5+qQQyzqRC8vgQa2klF9z87EZ56xelz5zRMKd7xRTRJDyE/7GPPA7Gsper
+         vQGtuke/Cs2S3Z/KC4HPmMFtSHp3XPc5cMLPQw2vv+ytvQBW4AUOUbR1dxtFSHQYUW0E
+         xajw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bV57W/EOWURMleEzGNWcf5dyMu6bebp1Bh//1ts4NWM=;
-        b=HFCdX52RxCW2SDV3A+X1WtC1YlGFNCOwKeN6njn0fM3+dxv15xtG1AyYvnkGKArp1I
-         8+TQG8Aobb2W6U7ygFBJbWm26nmEc/JU3vwCjwSBDemco83VpA9OA1e7hpxTcbnTxnIe
-         xO5n5YU+l7P79+ubxOev7GJlE1QNdhx6FwWKN8UhW35kG5VrXAm1g0mKfuTT7OfKV3gz
-         frQJd2Hpv+I8sW+VfUgvch4IJTVxwtBYAaJGnUkTB8gjFuA171fR0gM0ZDV/D4BXWAGR
-         BdRwtyGZ1d2pLONDni8Dkj9dvgCZSH5DiFr8yZIGQrFAK5sap0AP93j8yWnaRAvMWVhT
-         Acmg==
-X-Gm-Message-State: AOAM532gP3qmMnlbY0GLsV2MaFNrrzMzq5Awsfl7SC4uAyxQntwchFpI
-        zRrxh++vczsbKZOPJ1M/WfDyS0YrRhj31A==
-X-Google-Smtp-Source: ABdhPJxbhI7ln6hIC6I1YHJZhDkQq9/+B5olyYYdwWGSbKtZqDX4OuVuBiAuMqDC7ZA4iMYVUGfbAQ==
-X-Received: by 2002:aed:38c9:: with SMTP id k67mr2489411qte.6.1600112529305;
-        Mon, 14 Sep 2020 12:42:09 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id k68sm13520108qkc.33.2020.09.14.12.42.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 12:42:08 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 15:42:08 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        "josh@joshtriplett.org" <josh@joshtriplett.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: RCU: Question on force_qs_rnp
-Message-ID: <20200914194208.GA2579423@google.com>
-References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B26ZPwSMQkEgl0FLKfBn1bcFzAEPMlr/0cRYgdbCJm4=;
+        b=Q/GlNFiKtE0+cMSKg991n1I/3jC0z29JZ5fTVrOykPljqff9lGsEnZ9y1escoWUaMh
+         x3+gA/qOKwe8GicJMHJ8L4EJ29CgjXZZEJtFRbWJlq+inImHdf1KK3ujgo6iFUGv07B1
+         WLr7S16ThFI6iLjnlzlsvjU4LmWrsCnHWv5STXb9EkWhp4VugeMyUaWtvTzrLtLnapID
+         x+cw0QVEFpZrLxQhXm1Z2Pve9Dual78MkpUL8rRLVClZ4+EWsZOyj4bCwDiorbTbjsMz
+         0A+yMVZIn87n3TYkT2Vt3YfFQqfH6b7nobMmTlzCcu1zLaWo4NLNUqWHFsPDusbj1Gmb
+         BCtA==
+X-Gm-Message-State: AOAM532DXNkxrzaIjRgasXbnBxQh+KwRRDSNrwo2EKFKls12eHJjeLo5
+        yMW/vShCP9eAhPIW3NCqu1wD4ZXE67sF3CTfbdoP5A==
+X-Google-Smtp-Source: ABdhPJwIyj+9kqnlMOpAnTl++v/tLI6DikXxNqu6vECzgkcVLWCncCazo3lOF4hNj+FGq7wU79q5bP4k/TU5T/il6ac=
+X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr19288248edb.386.1600112583753;
+ Mon, 14 Sep 2020 12:43:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20200910202107.3799376-1-keescook@chromium.org>
+ <20200910202107.3799376-6-keescook@chromium.org> <CAG48ez1gbu+eBA_PthLemcVVR+AU7Xa1zzbJ8tLMLBDCe_a+fQ@mail.gmail.com>
+ <20200913172415.GA2880@ubuntu>
+In-Reply-To: <20200913172415.GA2880@ubuntu>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 14 Sep 2020 21:42:37 +0200
+Message-ID: <CAG48ez0BcSY0is2LzdkizcOQYkaOJwfa=5ZSwjKb+faRwG9QCA@mail.gmail.com>
+Subject: Re: [RFC PATCH 5/6] security/fbfam: Detect a fork brute force attack
+To:     John Wood <john.wood@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
-> Hello Paul
-> 
-> I have some questions for you .
-> in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
-> report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
-> after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0, 
-> we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
+On Sun, Sep 13, 2020 at 7:55 PM John Wood <john.wood@gmx.com> wrote:
+> On Thu, Sep 10, 2020 at 11:10:38PM +0200, Jann Horn wrote:
+> > On Thu, Sep 10, 2020 at 10:22 PM Kees Cook <keescook@chromium.org> wrote:
+> > > To detect a fork brute force attack it is necessary to compute the
+> > > crashing rate of the application. This calculation is performed in each
+> > > fatal fail of a task, or in other words, when a core dump is triggered.
+> > > If this rate shows that the application is crashing quickly, there is a
+> > > clear signal that an attack is happening.
+> > >
+> > > Since the crashing rate is computed in milliseconds per fault, if this
+> > > rate goes under a certain threshold a warning is triggered.
+[...]
+> > > +       delta_jiffies = get_jiffies_64() - stats->jiffies;
+> > > +       delta_time = jiffies64_to_msecs(delta_jiffies);
+> > > +       crashing_rate = delta_time / (u64)stats->faults;
+> >
+> > Do I see this correctly, is this computing the total runtime of this
+> > process hierarchy divided by the total number of faults seen in this
+> > process hierarchy? If so, you may want to reconsider whether that's
+> > really the behavior you want. For example, if I configure the minimum
+> > period between crashes to be 30s (as is the default in the sysctl
+> > patch), and I try to attack a server that has been running without any
+> > crashes for a month, I'd instantly be able to crash around
+> > 30*24*60*60/30 = 86400 times before the detection kicks in. That seems
+> > suboptimal.
+>
+> You are right. This is not the behaviour we want. So, for the next
+> version it would be better to compute the crashing period as the time
+> between two faults, or the time between the execve call and the first
+> fault (first fault case).
+>
+> However, I am afraid of a premature detection if a child process fails
+> twice in a short period.
+>
+> So, I think it would be a good idea add a new sysctl to setup a
+> minimum number of faults before the time between faults starts to be
+> computed. And so, the attack detection only will be triggered if the
+> application crashes quickly but after a number of crashes.
+>
+> What do you think?
 
-Could you clarify what good is this going to do? What problem are you trying to
-address?
-
-You could have a task that is blocked in an RCU leaf node, but the
-force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
-CPU could be dyntick-idle and a quiescent state is reported. However, the GP
-must not end and the rcu leaf node should still be present in its parent
-intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
-any relevance.
-
-Or am I missing the point of the question?
-
-thanks,
-
- - Joel
-
+You could keep a list of the timestamps of the last five crashes or
+so, and then take action if the last five crashes happened within
+(5-1)*crash_period_limit time.
