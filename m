@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18119268C46
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E06268C4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgINNef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:34:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45094 "EHLO mail.kernel.org"
+        id S1726750AbgINNgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:36:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726764AbgINNUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:20:09 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1726452AbgINNXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:23:19 -0400
+Received: from mail.kernel.org (unknown [95.90.213.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B3E2208E4;
-        Mon, 14 Sep 2020 13:20:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E30E206DB;
+        Mon, 14 Sep 2020 13:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600089609;
-        bh=eDXyTgSyZLA07KG4y8gzUYxM2EcFms0du2447Fr3REE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0E0FBaqI2gVjLsCgTWWbEBhicvx/8W8sKEoRPU4RcXqIdRwDkJrB8XSxXcKvIaj/N
-         lpijuoNzUsujtevr9e30J2njr/A6unC5wIUNSXne1GPReBrcBPhMaeTJLy+5xGktxr
-         ikf6iqCBcXXe2b5t20bkCsnFRNPvQtxFtVYVLQB0=
-Date:   Mon, 14 Sep 2020 14:20:03 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] kbuild: remove cc-option test of -fno-strict-overflow
-Message-ID: <20200914132003.GE24441@willie-the-truck>
-References: <20200910135120.3527468-1-masahiroy@kernel.org>
- <20200911152225.GB20374@willie-the-truck>
- <CAK7LNASijUXVmZ+AfuGOnAFnbfUpr3S2ncSxABt4bGF+agxg+A@mail.gmail.com>
+        s=default; t=1600089794;
+        bh=dXrEI8jV4unTdYHFAX+Gpr/qoPq01Has+DYPOYKtm2w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1PxDyUkrzS6ZADUEulO7FrbACopN2SNXZFxv7PItrTzycvktYk59+s6rxe4ETwJ7P
+         2gQkNbljnk6tkVEFQECgw1W/hyfI8t5qp62AnNmGCf095def+zw4mzTDCLSXLqnH2q
+         8vxTbHk/z3P+tl6/Trfuc/2NinF1gWmYPENj2auc=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kHoRs-003DeD-0P; Mon, 14 Sep 2020 15:23:12 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH] media: vidtv: adjust signal strength range
+Date:   Mon, 14 Sep 2020 15:23:10 +0200
+Message-Id: <c824a8b556280747c2a278864920baf8f78089ab.1600089788.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNASijUXVmZ+AfuGOnAFnbfUpr3S2ncSxABt4bGF+agxg+A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:51:31PM +0900, Masahiro Yamada wrote:
-> On Sat, Sep 12, 2020 at 12:22 AM Will Deacon <will@kernel.org> wrote:
-> > On Thu, Sep 10, 2020 at 10:51:17PM +0900, Masahiro Yamada wrote:
-> > > The minimal compiler versions, GCC 4.9 and Clang 10 support this flag.
-> > >
-> > > Here is the godbolt:
-> > > https://godbolt.org/z/odq8h9
-> > >
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > ---
-> > >
-> > >  Makefile                          | 2 +-
-> > >  arch/arm64/kernel/vdso32/Makefile | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > This, and the other patch (4/4 -- I didn't see 2 or 3), look good to me.
-> > Are you taking them via the kbuild tree, or shall I queue them in the arm64
-> > tree? Please just let me know what you prefer.
-> 
-> I will apply all to the kbuild tree.
-> Your Ack is appreciated.
+On real devices, signal strength is always a negative
+number when represented in dBm. A more interesting
+range is to use dBmV (which is what Kaffeine does,
+for example). The conversion from the two units are
+simple:
 
-For both:
+	dBmV = dBm - 108
 
-Acked-by: Will Deacon <will@kernel.org>
+Usually, signal strength ranges up to 100dBmV. Adjust the
+maximum value to be around 74 dBmV, when there's no
+frequency shift, which represents a good signal.
 
-Will
+With that, Kaffeine displays it a lot better.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/test-drivers/vidtv/vidtv_demod.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/test-drivers/vidtv/vidtv_demod.c b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+index c54c88cac84f..c825842758f0 100644
+--- a/drivers/media/test-drivers/vidtv/vidtv_demod.c
++++ b/drivers/media/test-drivers/vidtv/vidtv_demod.c
+@@ -181,12 +181,18 @@ static void vidtv_demod_update_stats(struct dvb_frontend *fe)
+ 	c->block_count.stat[0].scale = scale;
+ 
+ 	/*
+-	 * Add a 0.5% of randomness at the signal streangth and CNR,
++	 * Add a 0.5% of randomness at the signal strength and CNR,
+ 	 * and make them different, as we want to have something closer
+ 	 * to a real case scenario.
++	 *
++	 * Also, usually, signal strength is a negative number in dBm.
+ 	 */
+-	c->strength.stat[0].svalue = state->tuner_cnr + prandom_u32_max(state->tuner_cnr / 50);
+-	c->cnr.stat[0].svalue = state->tuner_cnr - prandom_u32_max(state->tuner_cnr / 50);
++	c->strength.stat[0].svalue = state->tuner_cnr;
++	c->strength.stat[0].svalue -= prandom_u32_max(state->tuner_cnr / 50);
++	c->strength.stat[0].svalue -= 68000; /* Adjust to a better range */
++
++	c->cnr.stat[0].svalue = state->tuner_cnr;
++	c->cnr.stat[0].svalue -= prandom_u32_max(state->tuner_cnr / 50);
+ 
+ }
+ 
+-- 
+2.26.2
+
