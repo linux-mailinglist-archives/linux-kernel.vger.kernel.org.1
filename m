@@ -2,126 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83569268337
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC31826833E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgINDju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:39:50 -0400
-Received: from emcscan.emc.com.tw ([192.72.220.5]:22763 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgINDjs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:39:48 -0400
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="37297016"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 14 Sep 2020 11:39:44 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(47158:0:AUTH_RELAY)
-        (envelope-from <johnny.chuang@emc.com.tw>); Mon, 14 Sep 2020 11:39:42 +0800 (CST)
-Received: from 192.168.55.71
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2482:1:AUTH_LOGIN)
-        (envelope-from <johnny.chuang@emc.com.tw>); Mon, 14 Sep 2020 11:39:40 +0800 (CST)
-From:   "Johnny.Chuang" <johnny.chuang@emc.com.tw>
-To:     "'Harry Cutts'" <hcutts@chromium.org>,
-        "'Johnny Chuang'" <johnny.chuang.emc@gmail.com>
-Cc:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>,
-        "'Benjamin Tissoires'" <benjamin.tissoires@redhat.com>,
-        "'Peter Hutterer'" <peter.hutterer@who-t.net>,
-        "'lkml'" <linux-kernel@vger.kernel.org>,
-        "'linux-input'" <linux-input@vger.kernel.org>,
-        "'James Chen'" <james.chen@emc.com.tw>,
-        "'Jennifer Tsai'" <jennifer.tsai@emc.com.tw>,
-        "'Paul Liang'" <paul.liang@emc.com.tw>,
-        "'Jeff Chuang'" <jeff.chuang@emc.com.tw>
-References: <1598581195-9874-1-git-send-email-johnny.chuang.emc@gmail.com> <CA+jURcs2tLsVihoiXLsvLzdJZ4LKv0sQTu7FAqqT6r+pCi0wsA@mail.gmail.com>
-In-Reply-To: <CA+jURcs2tLsVihoiXLsvLzdJZ4LKv0sQTu7FAqqT6r+pCi0wsA@mail.gmail.com>
-Subject: RE: [PATCH v3] Input: elants_i2c - Report resolution of ABS_MT_TOUCH_MAJOR by FW information.
-Date:   Mon, 14 Sep 2020 11:39:39 +0800
-Message-ID: <002a01d68a48$ad112a30$07337e90$@emc.com.tw>
+        id S1725994AbgINDnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:43:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:54548 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgINDnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:43:31 -0400
+IronPort-SDR: /A7Z9X7uB64Xe+pNS3qXXWLNT1cUtu37m6j7V2mHz2P6xP2MAzjCPq7KLJEst2tE/NUOMBGGnn
+ npHGnVe5xEnQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="138529071"
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="138529071"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 20:43:28 -0700
+IronPort-SDR: lGgbCcMEZ4sdx2FC0HRh5wiQW5m18WKxyFO3dMxM1/hhtLs19Vrgz/VTij1piExuLa8iDKFOb3
+ WQXBdxBkXZIg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="330567584"
+Received: from unknown (HELO [10.239.154.46]) ([10.239.154.46])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Sep 2020 20:43:24 -0700
+Subject: Re: [PATCH v2] i2c: virtio: add a virtio i2c frontend driver
+To:     Jason Wang <jasowang@redhat.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
+References: <c4bd4fd56df36864ed34d3572f00b2b838fd833a.1599795029.git.jie.deng@intel.com>
+ <ce6b55d9-dfda-4387-0e04-0d50437355f0@redhat.com>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <9b18d14b-af69-eb12-34a3-83feb124083f@intel.com>
+Date:   Mon, 14 Sep 2020 11:43:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 14.0
-Thread-Index: AQI77ytWzSZun9942hZafipM5V6HSAGb0KaPqI/UJFA=
-Content-Language: zh-tw
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDUwMTBcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1lYThjZjEwZS1mNjNiLTExZWEtOGZkOC03YzVjZjg3NDk0NzhcYW1lLXRlc3RcZWE4Y2YxMTAtZjYzYi0xMWVhLThmZDgtN2M1Y2Y4NzQ5NDc4Ym9keS50eHQiIHN6PSIyODA3IiB0PSIxMzI0NDUyODM3OTc2ODAxNzkiIGg9IkNOa084QUpoeElCTEFzRi9aTEpsbTcxelJwOD0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
-x-dg-rorf: true
+In-Reply-To: <ce6b55d9-dfda-4387-0e04-0d50437355f0@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, 27 Aug 2020 at 19:20, Johnny Chuang
-> <johnny.chuang.emc@gmail.com> wrote:
-> >
-> > This patch adds a new behavior to report touch major resolution based
-> > on information provided by firmware.
-> >
-> > In initial process, driver acquires touch information from touch ic.
-> > It contains one byte about the resolution value of ABS_MT_TOUCH_MAJOR.
-> > Touch driver will report touch major resolution by this information.
-> >
-> > Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
-> 
-> Thanks Johnny!
-> 
-> Reviewed-by: Harry Cutts <hcutts@chromium.org>
-> 
-> Harry Cutts
-> Chrome OS Touch/Input team
-> 
 
-Hi Sirs,
-Can you help to review this patch?
+On 2020/9/14 10:46, Jason Wang wrote:
+>
+>> +
+>> +#define VIRTIO_I2C_MSG_OK    0
+>> +#define VIRTIO_I2C_MSG_ERR    1
+>> +
+>> +/**
+>> + * struct virtio_i2c_hdr - the virtio I2C message header structure
+>> + * @addr: i2c_msg addr, the slave address
+>> + * @flags: i2c_msg flags
+>> + * @len: i2c_msg len
+>> + */
+>> +struct virtio_i2c_hdr {
+>> +    __le16 addr;
+>> +    __le16 flags;
+>> +    __le16 len;
+>> +};
+>
+>
+> As said in v1, this should belong to uapi.
+>
+That's right. I missed this.
+I will move these things to uapi. Thanks.
 
-> > ---
-> > Changes in v2:
-> >   - register a real resolution value from firmware,
-> >         instead of hardcoding resolution value as 1 by flag.
-> > Changes in v3:
-> >   - modify git log message from flag to real value.
-> >   - modify driver comment from flag to real value.
-> > ---
-> >  drivers/input/touchscreen/elants_i2c.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/input/touchscreen/elants_i2c.c
-> > b/drivers/input/touchscreen/elants_i2c.c
-> > index b0bd5bb..661a3ee 100644
-> > --- a/drivers/input/touchscreen/elants_i2c.c
-> > +++ b/drivers/input/touchscreen/elants_i2c.c
-> > @@ -151,6 +151,7 @@ struct elants_data {
-> >
-> >         bool wake_irq_enabled;
-> >         bool keep_power_in_suspend;
-> > +       u8 report_major_resolution;
-> >
-> >         /* Must be last to be used for DMA operations */
-> >         u8 buf[MAX_PACKET_SIZE] ____cacheline_aligned; @@ -459,6
-> > +460,9 @@ static int elants_i2c_query_ts_info(struct elants_data *ts)
-> >         rows = resp[2] + resp[6] + resp[10];
-> >         cols = resp[3] + resp[7] + resp[11];
-> >
-> > +       /* get report resolution value of ABS_MT_TOUCH_MAJOR */
-> > +       ts->report_major_resolution = resp[16];
-> > +
-> >         /* Process mm_to_pixel information */
-> >         error = elants_i2c_execute_command(client,
-> >                                            get_osr_cmd,
-> > sizeof(get_osr_cmd), @@ -1325,6 +1329,8 @@ static int
-> elants_i2c_probe(struct i2c_client *client,
-> >                              0, MT_TOOL_PALM, 0, 0);
-> >         input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
-> >         input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
-> > +       if (ts->report_major_resolution > 0)
-> > +               input_abs_set_res(ts->input, ABS_MT_TOUCH_MAJOR,
-> > + ts->report_major_resolution);
-> >
-> >         touchscreen_parse_properties(ts->input, true, &ts->prop);
-> >
-> > --
-> > 2.7.4
-> >
+
+>
+>> +
+>> +/**
+>> + * struct virtio_i2c_msg - the virtio I2C message structure
+>> + * @hdr: the virtio I2C message header
+>> + * @buf: virtio I2C message data buffer
+>> + * @status: the processing result from the backend
+>> + */
+>> +struct virtio_i2c_msg {
+>> +    struct virtio_i2c_hdr hdr;
+>> +    u8 *buf;
+>> +    u8 status;
+>> +};
+>
+>
+> I'm not quite sure this is the best layout.
+>
+> E.g virtio scsi differ in buffer out of out one:
+>
+> structvirtio_scsi_req_cmd{
+> ...
+> u8 dataout[];
+> ...
+> u8 datain[];
+>
+> }
+>
+> And I would like to have a look at the spec patch.
+>
+> Thanks
+>
+Sure. I will send the v3 along with the spec patch.
+Thanks.
+
 
