@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C546A269680
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F25269683
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgINU07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:26:59 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:43602 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgINU01 (ORCPT
+        id S1726205AbgINU1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:27:15 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:40878 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgINU0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:26:27 -0400
-Received: by mail-io1-f45.google.com with SMTP id z25so1539256iol.10;
-        Mon, 14 Sep 2020 13:26:26 -0700 (PDT)
+        Mon, 14 Sep 2020 16:26:46 -0400
+Received: by mail-io1-f66.google.com with SMTP id j2so1560924ioj.7;
+        Mon, 14 Sep 2020 13:26:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pBnFBkWoZFvBeLIVMIY+de1Tgg4+VMrP2i4DNdIGX9U=;
-        b=kWa8ehsWlAtLnVB4/59Ys0+l5KpQUH+USeUyPfrzjhCOawIrKeubr0LlTeDJH7YZgj
-         liD0ume+SDIXyIgQ1XLZ56LlJVZtOoXVKJhrMVVFrGtXNFyGTwdssVI4fwdN8j1WgdIR
-         XslxeEnwRkFLumXqXejW476v0Au4Nihr16jLnp0jswhNJ9OU9c6qb7oZD5XGpAPEn8Th
-         oEfZOEzF5h/xYMdO/qfERu/B/bQ0fuPhA4EiUsLGAghSESJ9mE31pNNqlz3teaWPmk1o
-         Uh47bxZdoXTe/VHvvP9rtWuYyJx3Fziki7f1pmYY8g1YyCVQj+hmBrFV05o+25I7Wymq
-         voIQ==
-X-Gm-Message-State: AOAM530TtFv+95HAG9VE1z9PoWdHMJBN9woDlR0N2Tdj+Qs60yltfSlx
-        FraqR/X1dHvfUm6Ik/Uyuw==
-X-Google-Smtp-Source: ABdhPJzG7fU1g8IWiJZlne66hAGC8Dn0qryW6T3XCfP9dBS3ABXnxukUIIwe8+M6m34CHZdHTDe2uQ==
-X-Received: by 2002:a02:9f0d:: with SMTP id z13mr14871940jal.60.1600115186421;
-        Mon, 14 Sep 2020 13:26:26 -0700 (PDT)
+        bh=7ipIPJe2L/N1mSae8aZjf9G0XjVWalEqSXPCFWqO68s=;
+        b=lzg/LN2ZULjVBqY23wJmPY03fW5WlEJQNQtOu7zDaJPQFbCF0NIKd1XzgCwNmbDkD/
+         Nmkgny3Z1QuZITtuSjj3SZAYT0hFCWYUWADLprRiLNiUab54F/unuJkft/vT+rOGeZOu
+         HlQUa37D73SCiIAyLLk8DdBuo5R1ToEupJ+4ExPyetcst6RSYniZmDwrlhPglNBkv52B
+         p2qQVdD5Vi/WZe2gL7s6KZ2ijfjcXtYlG4CBq24VS7exMid3w8GQ28ZdLd+wf1Ruih9o
+         GGuEiVBUArTAAo2e8Xqo2S04bEpnQ/c8MXRJ+gxWfm9S5QPatjJBCA9OO5fHhLdvRSwc
+         8ZxQ==
+X-Gm-Message-State: AOAM531a0/RMkASF1viqE8qhFru7PAvx2vSxGv/AlwmtNCdF02wMcPqz
+        ps563SZaYh6IVwl3A/HVXCcTVoBdX02W
+X-Google-Smtp-Source: ABdhPJz3q27/HgUYvYMDzZ9LdXeisjOQqJBGsOR1ICGmVHQRJ1jvhha/ip4X8aXDn9NmBic8aiDUUQ==
+X-Received: by 2002:a05:6602:2a4b:: with SMTP id k11mr12472990iov.85.1600115204493;
+        Mon, 14 Sep 2020 13:26:44 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id i14sm7679165ilb.28.2020.09.14.13.26.24
+        by smtp.gmail.com with ESMTPSA id y19sm7277736ili.47.2020.09.14.13.26.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 13:26:25 -0700 (PDT)
-Received: (nullmailer pid 183633 invoked by uid 1000);
-        Mon, 14 Sep 2020 20:26:23 -0000
-Date:   Mon, 14 Sep 2020 14:26:23 -0600
+        Mon, 14 Sep 2020 13:26:43 -0700 (PDT)
+Received: (nullmailer pid 184240 invoked by uid 1000);
+        Mon, 14 Sep 2020 20:26:42 -0000
+Date:   Mon, 14 Sep 2020 14:26:42 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     lindsey.stanpoor@gmail.com
-Cc:     devicetree@vger.kernel.org, cnemo@tutanota.com, balbi@kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        linux-rockchip@lists.infradead.org, heiko@sntech.de,
-        robh+dt@kernel.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 1/4] dt-bindings: usb: add rk3328 dwc3 docs
-Message-ID: <20200914202623.GA183582@bogus>
-References: <20200902181234.13955-1-lindsey.stanpoor@gmail.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, darfur_liu@gcoreinc.com,
+        linux-kernel@vger.kernel.org, sj.huang@mediatek.com,
+        Xingyu Wu <wuxy@bitland.com.cn>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        devicetree@vger.kernel.org, hao.he7@gmail.com,
+        drinkcat@chromium.org, linux-media@vger.kernel.org,
+        Hao He <hao.he@bitland.com.cn>, dongchun.zhu@mediatek.com
+Subject: Re: [PATCH v4 1/4] dt-bindings: Add a vendor prefix for Galaxycore
+ Inc.
+Message-ID: <20200914202642.GA184185@bogus>
+References: <20200902224813.14283-1-tfiga@chromium.org>
+ <20200902224813.14283-2-tfiga@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200902181234.13955-1-lindsey.stanpoor@gmail.com>
+In-Reply-To: <20200902224813.14283-2-tfiga@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Sep 2020 11:12:31 -0700, lindsey.stanpoor@gmail.com wrote:
-> From: Cameron Nemo <cnemo@tutanota.com>
+On Wed, 02 Sep 2020 22:48:10 +0000, Tomasz Figa wrote:
+> From: Hao He <hao.he@bitland.com.cn>
 > 
-> Document compatible for dwc3 on the Rockchip rk3328 platform.
+> Add a vendor prefix for Galaxycore Inc. as a prerequisite for adding
+> bindings for a new imaging sensor.
 > 
-> Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
+> Signed-off-by: Hao He <hao.he@bitland.com.cn>
+> Signed-off-by: Xingyu Wu <wuxy@bitland.com.cn>
+> Signed-off-by: Tomasz Figa <tfiga@chromium.org>
 > ---
->  Documentation/devicetree/bindings/usb/dwc3.txt          | 1 +
->  Documentation/devicetree/bindings/usb/rockchip,dwc3.txt | 3 ++-
->  2 files changed, 3 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
