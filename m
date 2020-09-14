@@ -2,151 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DE92697B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0F02697C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726085AbgINVbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        id S1726125AbgINVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgINVbj (ORCPT
+        with ESMTP id S1726068AbgINVdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:31:39 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F997C06174A;
-        Mon, 14 Sep 2020 14:31:38 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id t138so1993003qka.0;
-        Mon, 14 Sep 2020 14:31:38 -0700 (PDT)
+        Mon, 14 Sep 2020 17:33:24 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0F0C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:33:24 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id e7so1389897qtj.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:33:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mbVYbUwuAgj0gZUzhMIQHhBdT+m+c8C6wWNEnv4NlZs=;
-        b=YD9sRm5yT9owz3HKM14xky8JKTJx+V/EU9RqYee67PL2MQzDF+DC0DdZ1pRB9rONt+
-         5DH5fiypxF2Ip2K1rW4qRMZkDTJxgw3hN8AoSolqiibS/7bHKjZEEHWftNJHwFHSsIun
-         35a0rYoZ1IAxXNmcKzjQA9fLe3D7UGOrwSQnxrAEse4mstg3V1JhBTdzcTl720pPAP/e
-         //AbavDIpMzrt7UO+Gx4JGERovmeTGefEBwlw3xbfasfMi+kQuWtxlbk4BaarGbliWNj
-         rPCGOswv29fhlulzS2w3o0dgvkr5jSAuxQxpwJXHuLu9J28MLkqlBXuYdkSTMcyRCulj
-         VHFQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=M6GRxBpT2cC25wV82DuNi9J3pqiD8OWCE31gUld/UhE=;
+        b=rwyLUxhptQJc4HOqwpHP2HBqm700/ViMyS+157/Rz8Xv6Kt/qW1SS8hfob3t+geEaN
+         jgum4YbUdr9Z/zipYDu1H+ZK7te0x5IIz2kR1YJOnnYec34roru9spTQuD3GhyqhJY7E
+         wn6kotmIL/HBuARMoYXTBU3L5Is9LfKgxWv9elRtM1XilCShSVzx3Ee6PqpwV6evdyUI
+         5R0Pbsb0l9+ce6wHYdnl+Rg3xvN1fh/T6OtQePz+hvQMJgIBut1tgGPjsxnwwtaxvPnl
+         5v3i2B/3e9WAQVVQIaAWihJ0Sv6vxWISBtn5UOkRsG58l7XOP20RC+5xHSPvcaET7Uoe
+         hfqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mbVYbUwuAgj0gZUzhMIQHhBdT+m+c8C6wWNEnv4NlZs=;
-        b=B+XSXpQnbFSZSp+tKm++fm+IqHKq8MSGicw0/c5Mbu55IyhcDJk0d3uEB5JTrtjZ29
-         +msJL6IHx74AnUi+1U1PE8zJdu84n06mcY01czkqQegXAw1cL4sHPVMO9NjKryW3cC+N
-         YAi9PVL+4Cup7RDNMAnV+xFCHU2TTadgh1X/vXr2AYLF+Ni+QGgtt0Fai6rrc73bj2Im
-         NoS64D2rcOgy/6BUfvug1P8agPfrGTPZhsf+rJ87u4SpbhBEOwquU1t4KZ3CuTbVZs0k
-         XffBNsIlIJMBFPlLYmrpUJ4DymFinU2N0LZg6Rz0/7LFpENHlOzdCnj2hOH82pZySLlu
-         fUtQ==
-X-Gm-Message-State: AOAM532x6GHEj57bxDTUB2jWuckATo7oqRTHIro67EtX7VaDyoDFPXUP
-        4ZX6za7odiAgjmvHG/6oNfukU57w+A+cx+iQskg=
-X-Google-Smtp-Source: ABdhPJwRyAgl+QzcCijWEtni3+p0D9s2SnrN8uISflLGy6Y5Dvyux1wcPbi/mnd3XTTAAJikaARQVmqQAfEik4Gz/bU=
-X-Received: by 2002:a37:9c8:: with SMTP id 191mr14533038qkj.292.1600119097641;
- Mon, 14 Sep 2020 14:31:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=M6GRxBpT2cC25wV82DuNi9J3pqiD8OWCE31gUld/UhE=;
+        b=hVX0Hc6Au8isDXIbDaGW5Am5l3SfXwTNh2uvgUH9asVp1iDli0gCsX0MvLiNiJxSwC
+         6goE9vQqgd2MpSkaBBZnXjh4v9ve0JZCAsCLFj5Ltc07K+X9oqVuhjROBif2SQOlYeJO
+         prJtrMmuORWBeAG5mTHacZHyXcdk60yo9KcRu3RSu/Z+O3Dh8pTwsHxzmmtjv/JA//ot
+         naXv9++pXx17v06hcN3IKuJZFa0BX7iA9GN6mCgpoUgqgOBz1uMyAW4SydUsW94zPQ7k
+         m8cb48oKAawMmbMyISs1Jac9T0QP+YP3320mYqXmFMxq2UDLgHe6rUanlVIG5m5op+ma
+         lxtQ==
+X-Gm-Message-State: AOAM531UHltkU2YGGa561OAt1Xq1S2PZLtlzodnszoQFo28jFVfiULRX
+        QeZf0ny3PSDSQOrwiBpUPnsWMw==
+X-Google-Smtp-Source: ABdhPJxl25SSqbEom8UNjHbcdzIzm36yZ81zxV71gBF1hYZVcVt4BpQ808OQZYcMcR2vsN2uySCkVA==
+X-Received: by 2002:ac8:76c7:: with SMTP id q7mr15059779qtr.293.1600119203260;
+        Mon, 14 Sep 2020 14:33:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3700])
+        by smtp.gmail.com with ESMTPSA id f3sm14633329qtg.71.2020.09.14.14.33.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 14:33:22 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 17:32:00 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+Message-ID: <20200914213200.GC175618@cmpxchg.org>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914024452.19167-3-longman@redhat.com>
+ <20200914114825.GM16999@dhcp22.suse.cz>
+ <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
+ <20200914212904.GB175618@cmpxchg.org>
 MIME-Version: 1.0
-References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
- <20200914195634.12881-2-sean.j.christopherson@intel.com> <20200914204024.w3rpjon64d3fesys@treble>
- <20200914210719.GB7084@sjchrist-ice> <CAFULd4Z9-Btyqo+i=w5Zyr=vJ46FBXzN7ovWGFxpnLiU2JE6eg@mail.gmail.com>
-In-Reply-To: <CAFULd4Z9-Btyqo+i=w5Zyr=vJ46FBXzN7ovWGFxpnLiU2JE6eg@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Mon, 14 Sep 2020 23:31:26 +0200
-Message-ID: <CAFULd4YrhpPp+MvX5jeSfF54eEeQocs_Z5iY_N3rMGXMzx3RjQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200914212904.GB175618@cmpxchg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:21 PM Uros Bizjak <ubizjak@gmail.com> wrote:
->
-> On Mon, Sep 14, 2020 at 11:07 PM Sean Christopherson
-> <sean.j.christopherson@intel.com> wrote:
-> >
-> > On Mon, Sep 14, 2020 at 03:40:24PM -0500, Josh Poimboeuf wrote:
-> > > On Mon, Sep 14, 2020 at 12:56:33PM -0700, Sean Christopherson wrote:
-> > > > Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
-> > > > into a proper subroutine.  Slightly rework the blob so that it plays
-> > > > nice with objtool without any additional hints (existing hints aren't
-> > > > able to handle returning with a seemingly modified stack size).
-> > > >
-> > > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > Cc: Uros Bizjak <ubizjak@gmail.com>
-> > > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+On Mon, Sep 14, 2020 at 05:29:06PM -0400, Johannes Weiner wrote:
+> On Mon, Sep 14, 2020 at 09:51:26AM -0400, Waiman Long wrote:
+> > On 9/14/20 7:48 AM, Michal Hocko wrote:
+> > > On Sun 13-09-20 22:44:51, Waiman Long wrote:
+> > > > The mem_cgroup_get_max() function used to get memory+swap max from
+> > > > both the v1 memsw and v2 memory+swap page counters & return the maximum
+> > > > of these 2 values. This is redundant and it is more efficient to just
+> > > > get either the v1 or the v2 values depending on which one is currently
+> > > > in use.
+> > > > 
+> > > > Signed-off-by: Waiman Long <longman@redhat.com>
 > > > > ---
-> > > >  arch/x86/kvm/vmx/vmenter.S | 28 ++++++++++++++++++++++++++++
-> > > >  arch/x86/kvm/vmx/vmx.c     | 33 +++------------------------------
-> > > >  2 files changed, 31 insertions(+), 30 deletions(-)
-> > > >
-> > > > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-> > > > index 799db084a336..baec1e0fefc5 100644
-> > > > --- a/arch/x86/kvm/vmx/vmenter.S
-> > > > +++ b/arch/x86/kvm/vmx/vmenter.S
-> > > > @@ -4,6 +4,7 @@
-> > > >  #include <asm/bitsperlong.h>
-> > > >  #include <asm/kvm_vcpu_regs.h>
-> > > >  #include <asm/nospec-branch.h>
-> > > > +#include <asm/segment.h>
-> > > >
-> > > >  #define WORD_SIZE (BITS_PER_LONG / 8)
-> > > >
-> > > > @@ -294,3 +295,30 @@ SYM_FUNC_START(vmread_error_trampoline)
-> > > >
-> > > >     ret
-> > > >  SYM_FUNC_END(vmread_error_trampoline)
+> > > >   mm/memcontrol.c | 20 +++++++++-----------
+> > > >   1 file changed, 9 insertions(+), 11 deletions(-)
+> > > > 
+> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > index 8c74f1200261..ca36bed588d1 100644
+> > > > --- a/mm/memcontrol.c
+> > > > +++ b/mm/memcontrol.c
+> > > > @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+> > > >    */
+> > > >   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+> > > >   {
+> > > > -	unsigned long max;
+> > > > -
+> > > > -	max = READ_ONCE(memcg->memory.max);
+> > > > -	if (mem_cgroup_swappiness(memcg)) {
+> > > > -		unsigned long memsw_max;
+> > > > -		unsigned long swap_max;
+> > > > -
+> > > > -		memsw_max = memcg->memsw.max;
+> > > > -		swap_max = READ_ONCE(memcg->swap.max);
+> > > > -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+> > > > -		max = min(max + swap_max, memsw_max);
+> > > > +	unsigned long max = READ_ONCE(memcg->memory.max);
 > > > > +
-> > > > +SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-> > > > +   /*
-> > > > +    * Unconditionally create a stack frame.  RSP needs to be aligned for
-> > > > +    * x86-64, getting the correct RSP on the stack (for x86-64) would take
-> > > > +    * two instructions anyways, and it helps make objtool happy (see below).
-> > > > +    */
-> > > > +   push %_ASM_BP
-> > > > +   mov %rsp, %_ASM_BP
-> > >
-> > > RSP needs to be aligned to what?  How would this align the stack, other
-> > > than by accident?
-> >
-> > Ah, yeah, that's lacking info.
-> >
-> > 16-byte aligned to correctly mimic CPU behavior when vectoring an IRQ/NMI.
-> > When not changing stack, the CPU aligns RSP before pushing the frame.
-> >
-> > The above shenanigans work because the x86-64 ABI also requires RSP to be
-> > 16-byte aligned prior to CALL.  RSP is thus 8-byte aligned due to CALL
-> > pushing the return IP, and so creating the stack frame by pushing RBP makes
-> > it 16-byte aliagned again.
->
-> IIRC, the kernel violates x86_64 ABI and aligns RSP to 8 bytes prior
-> to CALL. Please note -mpreferred-stack-boundary=3 in the compile
-> flags.
+> > > > +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+> > > > +		if (mem_cgroup_swappiness(memcg))
+> > > > +			max += min(READ_ONCE(memcg->swap.max),
+> > > > +				   (unsigned long)total_swap_pages);
+> > > > +	} else { /* v1 */
+> > > > +		if (mem_cgroup_swappiness(memcg))
+> > > > +			max = memcg->memsw.max;
+> > > I agree that making v1 vs. v2 distinction here makes the code more
+> > > obvious. But I do not think your code is correct for v1. In a default
+> > > state it would lead to max = PAGE_COUNTER_MAX which is not something
+> > > we want, right?
+> > > 
+> > > instead you want
+> > > 		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
+> > > 
+> > You are right, it is a bit tricky for v1.
+> > 
+> > I will change it to
+> > 
+> >     max += min(READ_ONCE(memcg->memsw.max) - max, total_swap_pages):
+> 
+> memsw.max can be smaller than max.
+> 
+> max = min3(max, READ_ONCE(memcg->memsw.max), total_swap_pages)?
 
-+       push %_ASM_BP
-+       mov %_ASM_SP, %_ASM_BP
-+
-+#ifdef CONFIG_X86_64
-+       and $-16, %rsp"
-+       push $__KERNEL_DS
-+       push %rbp
-+#endif
-+       pushf
-+       push $__KERNEL_CS
-+       CALL_NOSPEC _ASM_ARG1
-...
-+       mov %_ASM_BP, %_ASM_SP
-+       pop %_ASM_BP
-+       ret
-
-should work.
-
-Uros.
+Nevermind, I saw the follow-up below, and it's indeed not allowed to
+configure it like that.
