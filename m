@@ -2,124 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01B1268CA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FE2268C9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgINN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:58:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34454 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726758AbgINNwV (ORCPT
+        id S1726800AbgINNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726726AbgINNwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:52:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600091494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fu/1GHUDf4AcKJWnq4PI0AJl4nVdBvz984mVLLa8XWI=;
-        b=FXur+oHttylqzUUIdyCox9+t9no2W5Hg02/O1KZXBXsILmO/f8dvL+me4gbOKYXRLPA6S0
-        FNC7RyrknDa9olelUdO6SZObUVpBpT1Wp9XKxhKTYssqyHzU+b62i9HrETu+pM1fux/Xzk
-        qzc4SLOTz7r/GR3xXBRWzEJyrmlNE00=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-FShcX2-SMQ2YvK_dh2FRxA-1; Mon, 14 Sep 2020 09:51:30 -0400
-X-MC-Unique: FShcX2-SMQ2YvK_dh2FRxA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 479C884F227;
-        Mon, 14 Sep 2020 13:51:28 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A85011002D60;
-        Mon, 14 Sep 2020 13:51:26 +0000 (UTC)
-Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200914024452.19167-1-longman@redhat.com>
- <20200914024452.19167-3-longman@redhat.com>
- <20200914114825.GM16999@dhcp22.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
-Date:   Mon, 14 Sep 2020 09:51:26 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Mon, 14 Sep 2020 09:52:55 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FED7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:52:54 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o8so17356ejb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vy3zS5ckw3qgteGgOT5HlzdZTgNhnjBC8zB+vHqo/V8=;
+        b=lPZW37da1Ez9SH6vXPC4+Yxp3qDqbi7S3RTjXe643ybGPJrqIDLUGB2J7M8uEZ5Qbc
+         RNRi+ztNag+EqmWRLN9rSgEK3d0PkIACNKCOy86gXko78Weg6NaQCp9gQKq7YEuLXa6R
+         miwHX6Pl0+4e6JvgnNuhRxQcML1RlZ7uZkCBddg7aLnYUP4pZp920vW1nH9Y7MVJzqpe
+         XXyFjBk2azuKPf0WBL5vTIdR04g+42eumCP9hmjsjBWWfPvVvaAcWpk66/gqx24uSxiB
+         FvzMtTcljn0QWTpMevfZk7aAPDukPBwvMsHqaEUVzOOJs5BadaJsef1EkGiqLiHH1zh7
+         1p+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vy3zS5ckw3qgteGgOT5HlzdZTgNhnjBC8zB+vHqo/V8=;
+        b=DSKrtPMNnzk/u2EPuxqdSFhP9lQzjqTkeKQDHblsNpkuO93rpnJeWMvSMwe0C+mgvs
+         huaLsj6uhuOOYGowMvR3fPGPPCpJFPsyT+TN+gC2VnSlkKsnUASEcxcObKtSCz35buxL
+         N6zU7djUo0kEqzQ8STSVVTa2lIHfAXeAjIUeC4o+qxlqoVb1f43Y5teHiq+BQaztzBHs
+         9aKhPze8M3uquVo+yJAqozGJiX3cvlXuwMgFOrXXrpPc8XvcJoImVhTOkIVQam26YQFV
+         0mPW/GjzPp01J7djpFTpFehZ42vtD6ieTtR7Da9aYDKyOsYEqpLXjnD2d4LoGMTqFqR/
+         kEAA==
+X-Gm-Message-State: AOAM533Zn39u6z461XsFeGxHVMXDP1IZ7EN+mP19epOmIxXE9GnxSQFx
+        dYoczgNYP3c0g+xRxPfOwfI9RQ==
+X-Google-Smtp-Source: ABdhPJzL8JmSk8x6oVRR+Z3fZIvMnZUXmVunxXHWXzn3oD1UB/hpST1DbbKV4U+1a7ikXm0MAIUX2w==
+X-Received: by 2002:a17:906:e88:: with SMTP id p8mr15606401ejf.134.1600091572945;
+        Mon, 14 Sep 2020 06:52:52 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id n27sm1889507ejg.91.2020.09.14.06.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 06:52:52 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 15:52:51 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 10/15] net/mlx5: Add support for devlink
+ reload action fw activate
+Message-ID: <20200914135251.GI2236@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-11-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-In-Reply-To: <20200914114825.GM16999@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600063682-17313-11-git-send-email-moshe@mellanox.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 7:48 AM, Michal Hocko wrote:
-> On Sun 13-09-20 22:44:51, Waiman Long wrote:
->> The mem_cgroup_get_max() function used to get memory+swap max from
->> both the v1 memsw and v2 memory+swap page counters & return the maximum
->> of these 2 values. This is redundant and it is more efficient to just
->> get either the v1 or the v2 values depending on which one is currently
->> in use.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   mm/memcontrol.c | 20 +++++++++-----------
->>   1 file changed, 9 insertions(+), 11 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 8c74f1200261..ca36bed588d1 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->>    */
->>   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
->>   {
->> -	unsigned long max;
->> -
->> -	max = READ_ONCE(memcg->memory.max);
->> -	if (mem_cgroup_swappiness(memcg)) {
->> -		unsigned long memsw_max;
->> -		unsigned long swap_max;
->> -
->> -		memsw_max = memcg->memsw.max;
->> -		swap_max = READ_ONCE(memcg->swap.max);
->> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
->> -		max = min(max + swap_max, memsw_max);
->> +	unsigned long max = READ_ONCE(memcg->memory.max);
->> +
->> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
->> +		if (mem_cgroup_swappiness(memcg))
->> +			max += min(READ_ONCE(memcg->swap.max),
->> +				   (unsigned long)total_swap_pages);
->> +	} else { /* v1 */
->> +		if (mem_cgroup_swappiness(memcg))
->> +			max = memcg->memsw.max;
-> I agree that making v1 vs. v2 distinction here makes the code more
-> obvious. But I do not think your code is correct for v1. In a default
-> state it would lead to max = PAGE_COUNTER_MAX which is not something
-> we want, right?
+Mon, Sep 14, 2020 at 08:07:57AM CEST, moshe@mellanox.com wrote:
+>Add support for devlink reload action fw_activate. To activate firmware
+>image the mlx5 driver resets the firmware and reloads it from flash. If
+>a new image was stored on flash it will be loaded. Once this reload
+>command is executed the driver initiates fw sync reset flow, where the
+>firmware synchronizes all PFs on coming reset and driver reload.
 >
-> instead you want
-> 		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>---
+>v3 -> v4:
+>- Renamed actions_done to actions_performed
+>v2 -> v3:
+>- Return the reload actions done
+>- Update reload action counters if reset initiated by remote host
+>v1 -> v2:
+>- Have fw_activate action instead of fw_reset level
+>---
+> .../net/ethernet/mellanox/mlx5/core/devlink.c | 62 ++++++++++++++++---
+> .../ethernet/mellanox/mlx5/core/fw_reset.c    | 60 ++++++++++++++++--
+> .../ethernet/mellanox/mlx5/core/fw_reset.h    |  1 +
+> 3 files changed, 109 insertions(+), 14 deletions(-)
 >
-You are right, it is a bit tricky for v1.
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+>index f6b29deaf02e..fa8f6abbea4e 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+>@@ -4,6 +4,7 @@
+> #include <devlink.h>
+> 
+> #include "mlx5_core.h"
+>+#include "fw_reset.h"
+> #include "fs_core.h"
+> #include "eswitch.h"
+> 
+>@@ -88,6 +89,32 @@ mlx5_devlink_info_get(struct devlink *devlink, struct devlink_info_req *req,
+> 	return 0;
+> }
+> 
+>+static int mlx5_devlink_reload_fw_activate(struct devlink *devlink, struct netlink_ext_ack *extack)
+>+{
+>+	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>+	u8 reset_level, reset_type, net_port_alive;
+>+	int err;
+>+
+>+	err = mlx5_reg_mfrl_query(dev, &reset_level, &reset_type);
+>+	if (err)
+>+		return err;
+>+	if (!(reset_level & MLX5_MFRL_REG_RESET_LEVEL3)) {
+>+		NL_SET_ERR_MSG_MOD(extack, "FW activate requires reboot");
+>+		return -EINVAL;
+>+	}
+>+
+>+	net_port_alive = !!(reset_type & MLX5_MFRL_REG_RESET_TYPE_NET_PORT_ALIVE);
+>+	err = mlx5_fw_set_reset_sync(dev, net_port_alive);
+>+	if (err)
+>+		goto out;
+>+
+>+	err = mlx5_fw_wait_fw_reset_done(dev);
+>+out:
+>+	if (err)
+>+		NL_SET_ERR_MSG_MOD(extack, "FW activate command failed");
+>+	return err;
+>+}
+>+
+> static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
+> 				    enum devlink_reload_action action,
+> 				    enum devlink_reload_action_limit_level limit_level,
+>@@ -95,8 +122,17 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
+> {
+> 	struct mlx5_core_dev *dev = devlink_priv(devlink);
+> 
+>-	mlx5_unload_one(dev, false);
+>-	return 0;
+>+	switch (action) {
+>+	case DEVLINK_RELOAD_ACTION_DRIVER_REINIT:
+>+		mlx5_unload_one(dev, false);
+>+		return 0;
+>+	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
+>+		return mlx5_devlink_reload_fw_activate(devlink, extack);
+>+	default:
+>+		/* Unsupported action should not get to this function */
+>+		WARN_ON(1);
+>+		return -EOPNOTSUPP;
+>+	}
+> }
+> 
+> static int mlx5_devlink_reload_up(struct devlink *devlink, enum devlink_reload_action action,
+>@@ -104,13 +140,22 @@ static int mlx5_devlink_reload_up(struct devlink *devlink, enum devlink_reload_a
+> 				  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+> {
+> 	struct mlx5_core_dev *dev = devlink_priv(devlink);
+>-	int err;
+> 
+>-	err = mlx5_load_one(dev, false);
+>-	if (err)
+>-		return err;
+> 	if (actions_performed)
+>-		*actions_performed = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
+>+		*actions_performed = BIT(action);
+>+
+>+	switch (action) {
+>+	case DEVLINK_RELOAD_ACTION_DRIVER_REINIT:
+>+	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
+>+		/* On fw_activate action, also driver is reloaded and reinit performed */
+>+		if (actions_performed)
+>+			*actions_performed |= BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
 
-I will change it to
+You should set DEVLINK_RELOAD_ACTION_FW_ACTIVATE bit in actions_performed
+upon activation.
 
-     max += min(READ_ONCE(memcg->memsw.max) - max, total_swap_pages):
 
-Thanks,
-Longman
-
+>+		return mlx5_load_one(dev, false);
+>+	default:
+>+		/* Unsupported action should not get to this function */
+>+		WARN_ON(1);
+>+		return -EOPNOTSUPP;
+>+	}
+> 
+> 	return 0;
+> }
+>@@ -128,7 +173,8 @@ static const struct devlink_ops mlx5_devlink_ops = {
+> #endif
+> 	.flash_update = mlx5_devlink_flash_update,
+> 	.info_get = mlx5_devlink_info_get,
+>-	.supported_reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT),
+>+	.supported_reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+>+				    BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE),
+> 	.supported_reload_action_limit_levels = BIT(DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE),
+> 	.reload_down = mlx5_devlink_reload_down,
+> 	.reload_up = mlx5_devlink_reload_up,
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+>index 61237f4836cc..550f67b00473 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+>@@ -5,6 +5,7 @@
+> 
+> enum {
+> 	MLX5_FW_RESET_FLAGS_RESET_REQUESTED,
+>+	MLX5_FW_RESET_FLAGS_PENDING_COMP
+> };
+> 
+> struct mlx5_fw_reset {
+>@@ -17,6 +18,8 @@ struct mlx5_fw_reset {
+> 	struct work_struct reset_abort_work;
+> 	unsigned long reset_flags;
+> 	struct timer_list timer;
+>+	struct completion done;
+>+	int ret;
+> };
+> 
+> static int mlx5_reg_mfrl_set(struct mlx5_core_dev *dev, u8 reset_level,
+>@@ -53,7 +56,14 @@ int mlx5_reg_mfrl_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_ty
+> 
+> int mlx5_fw_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel)
+> {
+>-	return mlx5_reg_mfrl_set(dev, MLX5_MFRL_REG_RESET_LEVEL3, reset_type_sel, 0, true);
+>+	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
+>+	int err;
+>+
+>+	set_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags);
+>+	err =  mlx5_reg_mfrl_set(dev, MLX5_MFRL_REG_RESET_LEVEL3, reset_type_sel, 0, true);
+>+	if (err)
+>+		clear_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags);
+>+	return err;
+> }
+> 
+> int mlx5_fw_set_live_patch(struct mlx5_core_dev *dev)
+>@@ -66,19 +76,36 @@ static int mlx5_fw_set_reset_sync_ack(struct mlx5_core_dev *dev)
+> 	return mlx5_reg_mfrl_set(dev, MLX5_MFRL_REG_RESET_LEVEL3, 0, 1, false);
+> }
+> 
+>+static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
+>+{
+>+	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
+>+
+>+	/* if this is the driver that initiated the fw reset, devlink completed the reload */
+>+	if (test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags)) {
+>+		complete(&fw_reset->done);
+>+	} else {
+>+		mlx5_load_one(dev, false);
+>+		devlink_reload_implicit_actions_performed(priv_to_devlink(dev),
+>+							  DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE,
+>+							  BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+>+							  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
+>+	}
+>+}
+>+
+> static void mlx5_sync_reset_reload_work(struct work_struct *work)
+> {
+> 	struct mlx5_fw_reset *fw_reset = container_of(work, struct mlx5_fw_reset,
+> 						      reset_reload_work);
+> 	struct mlx5_core_dev *dev = fw_reset->dev;
+>+	int err;
+> 
+> 	mlx5_enter_error_state(dev, true);
+> 	mlx5_unload_one(dev, false);
+>-	if (mlx5_health_wait_pci_up(dev)) {
+>+	err = mlx5_health_wait_pci_up(dev);
+>+	if (err)
+> 		mlx5_core_err(dev, "reset reload flow aborted, PCI reads still not working\n");
+>-		return;
+>-	}
+>-	mlx5_load_one(dev, false);
+>+	fw_reset->ret = err;
+>+	mlx5_fw_reset_complete_reload(dev);
+> }
+> 
+> static void mlx5_stop_sync_reset_poll(struct mlx5_core_dev *dev)
+>@@ -264,7 +291,8 @@ static void mlx5_sync_reset_now_event(struct work_struct *work)
+> done:
+> 	if (err)
+> 		mlx5_start_health_poll(dev);
+>-	mlx5_load_one(dev, false);
+>+	fw_reset->ret = err;
+>+	mlx5_fw_reset_complete_reload(dev);
+> }
+> 
+> static void mlx5_sync_reset_abort_event(struct work_struct *work)
+>@@ -313,6 +341,25 @@ static int fw_reset_event_notifier(struct notifier_block *nb, unsigned long acti
+> 	return NOTIFY_OK;
+> }
+> 
+>+#define MLX5_FW_RESET_TIMEOUT_MSEC 5000
+>+int mlx5_fw_wait_fw_reset_done(struct mlx5_core_dev *dev)
+>+{
+>+	unsigned long timeout = msecs_to_jiffies(MLX5_FW_RESET_TIMEOUT_MSEC);
+>+	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
+>+	int err;
+>+
+>+	if (!wait_for_completion_timeout(&fw_reset->done, timeout)) {
+>+		mlx5_core_warn(dev, "FW sync reset timeout after %d seconds\n",
+>+			       MLX5_FW_RESET_TIMEOUT_MSEC / 1000);
+>+		err = -ETIMEDOUT;
+>+		goto out;
+>+	}
+>+	err = fw_reset->ret;
+>+out:
+>+	clear_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags);
+>+	return err;
+>+}
+>+
+> int mlx5_fw_reset_events_init(struct mlx5_core_dev *dev)
+> {
+> 	struct mlx5_fw_reset *fw_reset = kzalloc(sizeof(*fw_reset), GFP_KERNEL);
+>@@ -336,6 +383,7 @@ int mlx5_fw_reset_events_init(struct mlx5_core_dev *dev)
+> 	MLX5_NB_INIT(&fw_reset->nb, fw_reset_event_notifier, GENERAL_EVENT);
+> 	mlx5_eq_notifier_register(dev, &fw_reset->nb);
+> 
+>+	init_completion(&fw_reset->done);
+> 	return 0;
+> }
+> 
+>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
+>index 278f538ea92a..d7ee951a2258 100644
+>--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
+>+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
+>@@ -10,6 +10,7 @@ int mlx5_reg_mfrl_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_ty
+> int mlx5_fw_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel);
+> int mlx5_fw_set_live_patch(struct mlx5_core_dev *dev);
+> 
+>+int mlx5_fw_wait_fw_reset_done(struct mlx5_core_dev *dev);
+> int mlx5_fw_reset_events_init(struct mlx5_core_dev *dev);
+> void mlx5_fw_reset_events_cleanup(struct mlx5_core_dev *dev);
+> 
+>-- 
+>2.17.1
+>
