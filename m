@@ -2,97 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5BB268C5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAFE268C5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgINNjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726529AbgINNbD (ORCPT
+        id S1726770AbgINNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:39:12 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:33322 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbgINNeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:31:03 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFB2C06174A;
-        Mon, 14 Sep 2020 06:30:50 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id c8so17618037edv.5;
-        Mon, 14 Sep 2020 06:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=MJZms6QlGOYEjnVyjgzH8924ZUFCbrOAjhB8S+SOw0Q=;
-        b=AZo4Zrph06jSQFMyghqg1VeH/uJOLm2FTxlr/lwLz7LcGc0dGWMtJGTGfIa56pfqRD
-         SfHBHsrbfH2iLoCUhK/MZHqrDpM/JA26F/AGyypmlC8llez2CWnSY5tQ3e2HcDw2L9BQ
-         Idd41N3fpgLMR5/YftegmeplJ+0U4knjuLatzRauZq3iLjrWvmUDIVY8+gM3rBhrXqyO
-         5fAQ4JfxeJMiJ3yLE4UMugQzETfzbzi9LiAlrW8D3PaHaUUg0XX1Gb8R/XnjddNgeN8y
-         hPH3z3PjWYW7jYaLwy++Ij502YqCHABMpErfK7GUyDUDXbvFsj5PDRunJeTmU9KmumUU
-         4vjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=MJZms6QlGOYEjnVyjgzH8924ZUFCbrOAjhB8S+SOw0Q=;
-        b=tQmopRIchFop1uP8VbwCaVFZ38Ji6uyJg5aChIM+up+wbszWk8dnt+SY4Vc1l82zda
-         MKSpF0bFvC5sFZOSoAnRKEhjLtqKB0ZzgEUyndwMRxsZIefEIN+QgPt6OVdzhnYFtlsD
-         a9+TwJNejZk1/TCcOuzlo8rkGWXi2APaKhKIW7eBCgqCoJ9JknG7NDNov2VLq1WiXdFz
-         PuhHpAtl/yFVi5ytb+3i6l8HP4tx8P7ECSfEiCcAB68cxI5/nehF+HquiZZILzAvHeAW
-         8mm1iQ9Juy9tIuopYVrTZBTibaiC2P598q9OCGrMG29tlY4VNmj5mDppHA/LyvUaw/Oe
-         oXpA==
-X-Gm-Message-State: AOAM530obYZ4wywoWW6KVjRUXb2i4847/L/dNp3H8xoPrpwFlkNo47+T
-        h/EtiiPRi1iTgT827CFU6BNAKs8x3fY=
-X-Google-Smtp-Source: ABdhPJwM5ZL8+pefIM8N8Pp/HAs1Da9AhS9+TCqXwmw1+Bfwc5H4UJw/fibBFv4vSEBRyYvPybunNQ==
-X-Received: by 2002:a50:fb15:: with SMTP id d21mr17942730edq.150.1600090249097;
-        Mon, 14 Sep 2020 06:30:49 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id nh1sm7646664ejb.21.2020.09.14.06.30.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 06:30:48 -0700 (PDT)
-Subject: Re: Changing vma->vm_file in dma_buf_mmap()
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20200914132920.59183-1-christian.koenig@amd.com>
-Message-ID: <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com>
-Date:   Mon, 14 Sep 2020 15:30:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 14 Sep 2020 09:34:21 -0400
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 08EDX3O9012871
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:33:03 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 08EDX3O9012871
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600090384;
+        bh=xWftbWFvEeTv++1lO4mLb7Bfqvhd3CwG/NSYhB9uc54=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=px8asxT9zwIUTNG4Q7M/yBIJBffaXrrajjojhqTTuWqzcK6tWCN6SPJ3mT06BMNIe
+         DUKgYohaV6rIkYZdbSWzCI4nOpEj8K4Bdjyi0ZhsOIEvQ5ZCGuBC7SSnJ4FbAFwVN9
+         L0X/rAXkSNfbxQkVdT4AiSygeH19iBZCcPCjX/Bvccd+ByQAL/mLoayD43EzSWyQin
+         nYKA1RNToNn/aI/te/DDyw8fPzSwJX+LlDfydXOZJRtI++UF6hqS8fJwq8+1j1C7Bf
+         eu4E6F6ialSPRdyyTIsJXujNBRiiXePz8AN+4QGXrceqgIbXzkN91RWoJ6FWrmmNda
+         chaU7CFQKGLOQ==
+X-Nifty-SrcIP: [209.85.215.172]
+Received: by mail-pg1-f172.google.com with SMTP id y1so5252390pgk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:33:03 -0700 (PDT)
+X-Gm-Message-State: AOAM533Wv6/RRrva4ig+c1VWdsjTa59P+fVVhkBE+7ULaSY4Hm9h3gRM
+        nYZ8MODBwgAUNXQ39m4uHj268Ak9JTtLbKxqpvk=
+X-Google-Smtp-Source: ABdhPJx5ISxGS/94EcoPNT45NxFJNoc9jngKBPveBfJ64Z+x8bwWXOFoeNvbPOXjLafIY0AbT99vAUWYGTY3OceCh80=
+X-Received: by 2002:a17:902:9f86:: with SMTP id g6mr13782978plq.32.1600090382908;
+ Mon, 14 Sep 2020 06:33:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200914132920.59183-1-christian.koenig@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200820063526.GA3278096@gmail.com> <CAK7LNATs3qEjTE-=FWP9Srf3Ys30T7h+PL6MLgHoBPxJLSx4VA@mail.gmail.com>
+ <20200914123708.GA603584@gmail.com>
+In-Reply-To: <20200914123708.GA603584@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 14 Sep 2020 22:32:25 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT4nRBkc1Cg5tJCCo=pmfLpXiAehv8tdh-KUK66JAPbxQ@mail.gmail.com>
+Message-ID: <CAK7LNAT4nRBkc1Cg5tJCCo=pmfLpXiAehv8tdh-KUK66JAPbxQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Run syncconfig with -s
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 14.09.20 um 15:29 schrieb Christian König:
-> Hi Andrew,
+On Mon, Sep 14, 2020 at 9:37 PM Ingo Molnar <mingo@kernel.org> wrote:
+>
+>
+> * Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> > On Thu, Aug 20, 2020 at 3:35 PM Ingo Molnar <mingo@kernel.org> wrote:
+> > >
+> > > On every kernel build that runs --syncconfig, there's an output of the following line:
+> > >
+> > >   scripts/kconfig/conf  --syncconfig Kconfig
+> > >
+> > > This is the only non-platform build message the kbuild system emits that isn't
+> > > prefixed by at least a space, or is a build warning.
+> > >
+> > > Run it under -s - if there's any problem it will emit messages anyway.
+> > >
+> > > With this change the following simple grep filter will show all build warnings
+> > > and errors of a kernel build:
+> > >
+> > >    make | grep -v '^ '
+> >
+> >
+> >
+> > I do want to see something when syncconfig is invoked.
+> >
+> > I will apply this instead:
+> > https://patchwork.kernel.org/patch/11727445/
+>
+> BTW., there's another, rather spurious bug I recently triggered in kbuild.
+>
+> Occasionally when I Ctrl-C a kernel build on a system with a lot of CPUs,
+> the .o.cmd file gets corrupted:
+>
+>   mm/.pgtable-generic.o.cmd:5: *** unterminated call to function 'wildcard': missing ')'.  Stop.
+>   make: *** [Makefile:1788: mm] Error 2
+>   make: *** Waiting for unfinished jobs....
+>
+> The .o.cmd file is half-finished:
+>
+>     $(wildcard include/config/shmem.h) \
+>     $(wildcard include/config/hugetlb/page.h) \
+>     $(wildcard include/config/zone/device.h) \
+>     $(wildcard include/config/dev/pagemap/ops.h) \
+>     $(wildcard include/config/device/private.h) \
+>     $(wildcard include/config/pci/p2pdma.h) \
+>     $(wildcard include/config/sparsemem.h) \
+>     $(wildcard include/config/sparsemem/vmemmap.h) \
+>     $(wildcard include/config/numa/balancing.h) \
+>     $(wildcard i
+>     [premature EOF]
 
-Sorry forgot to add Daniel as well.
 
->
-> I'm the new DMA-buf maintainer and Daniel and others came up with patches extending the use of the dma_buf_mmap() function.
->
-> Now this function is doing something a bit odd by changing the vma->vm_file while installing a VMA in the mmap() system call
->
-> The background here is that DMA-buf allows device drivers to export buffer which are then imported into another device driver. The mmap() handler of the importing device driver then find that the pgoff belongs to the exporting device and so redirects the mmap() call there.
->
-> In other words user space calls mmap() on one file descriptor, but get a different one mapped into your virtual address space.
->
-> My question is now: Is that legal or can you think of something which breaks here?
->
-> If it's not legal we should probably block any new users of the dma_buf_mmap() function and consider what should happen with the two existing ones.
->
-> If that is legal I would like to document this by adding a new vma_set_file() function which does the necessary reference count dance.
->
-> Thanks in advance,
-> Christian.
->
->
+Hmm, previously fixdep was not robust against
+errors or interruption.
+So, I occasionally observed the same problem as you saw.
 
+
+I fixed it in
+6f9ac9f4427ec0470ccffbf852cfaf326677cc21
+
+
+Since then, I have not seen
+the broken .cmd file issue.
+
+
+I repeated 'make -j256' and Ctrl-C,
+but I could not reproduce it...
+
+
+
+If GNU Make was interrupted during the build rule
+of mm/pgtable-generic.o, GNU Make should automatically
+have deleted mm/pgtable-generic.o because
+partially updated (i.e. corrupted) files are
+the source of all the troubles.
+
+Isn't this the case for you?
+
+
+If I interrupt Kbuild, I see several
+Deleting file '.....'
+messages, like follows:
+
+
+
+  CC      fs/seq_file.o
+  CC      drivers/acpi/dock.o
+  CC      drivers/scsi/scsi_devinfo.o
+  CC      fs/xattr.o
+^Cmake[1]: *** [scripts/Makefile.build:283: fs/seq_file.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: net/ipv6/af_inet6.o] Interrupt
+make[3]: *** [scripts/Makefile.build:283:
+drivers/net/phy/mdio-boardinfo.o] Interrupt
+make[4]: *** [scripts/Makefile.build:283:
+drivers/tty/serial/8250/8250_pnp.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: security/selinux/status.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: arch/x86/kernel/dumpstack.o] Interrupt
+make[2]: *** Deleting file 'drivers/acpi/resource.o'
+make[2]: *** [scripts/Makefile.build:500: drivers/net/phy] Interrupt
+make[2]: *** [scripts/Makefile.build:283: net/sched/act_api.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: drivers/scsi/scsi_devinfo.o] Interrupt
+make[1]: *** Deleting file 'arch/x86/pci/mmconfig_64.o'
+make[1]: *** [scripts/Makefile.build:500: net/ipv6] Interrupt
+make[2]: *** [scripts/Makefile.build:283: net/ethtool/wol.o] Interrupt
+make[1]: *** Deleting file 'arch/x86/pci/init.o'
+make[1]: *** [scripts/Makefile.build:283: arch/x86/pci/mmconfig_64.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: net/sunrpc/socklib.o] Interrupt
+make[1]: *** [scripts/Makefile.build:283: fs/xattr.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: sound/hda/hdac_sysfs.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: net/mac80211/main.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: drivers/input/input-mt.o] Interrupt
+make[2]: *** [scripts/Makefile.build:283: net/rfkill/core.o] Interrupt
+make[1]: *** [scripts/Makefile.build:283: lib/bug.o] Interrupt
+make: *** [Makefile:1792: lib] Interrupt
+make[2]: *** Deleting file 'drivers/rtc/systohc.o'
+
+
+
+
+> Instead of the regular rules that end in:
+>
+>     $(wildcard include/config/memory/hotplug/sparse.h) \
+>
+>     mm/pgtable-generic.o: $(deps_mm/pgtable-generic.o)
+>
+>     $(deps_mm/pgtable-generic.o):
+>     [regular EOF]
+>
+> Manually removing the corrupted .o.cmd dot file solves the bug.
+>
+> There's no reproducer other than Ctrl-C-ing large build jobs a couple of times.
+>
+> Thanks,
+>
+>         Ingo
+
+
+--
+Best Regards
+Masahiro Yamada
