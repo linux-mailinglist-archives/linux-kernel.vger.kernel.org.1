@@ -2,172 +2,486 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF1E2688A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE672688A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgINJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726123AbgINJk2 (ORCPT
+        id S1726327AbgINJkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:40:55 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:41527 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgINJkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:40:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E99C06174A;
-        Mon, 14 Sep 2020 02:40:28 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l9so10529898wme.3;
-        Mon, 14 Sep 2020 02:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Oa/d3xtFztG+1F7w19dQiVtlu9Ybx4E8vqCz+GkkWv0=;
-        b=AGEBogUO2qjGXPbZL1EyaiB+BBFdsiMZWEuO1LtyMcB/4AwV2jHRX/lx/vkvFTCu6S
-         quL/QSsqfW7UgmZaDc+s4XoJcrVFOUJXNZwCBJ5KF/3a9DTZo3RdxFVm616Jhn5/+DbW
-         3ZH0279gI7YaGB03iQA5ug9qCvEeWVNrk8cNmdwNiL1AaUFzCo/OWlCgxUIH6T4D22oc
-         jOYa6I4oWrVTYQ6PYtum9T8Hd9kXrCtdjWiv+wjzKcv7mzn3KbYsYHUIqOWT5duJFnAO
-         JSTkurAw3D8DUKteYEqHtAvh9YMTk653PtUL6rzmKvPT2lbeU3hUN9ocdWo31K6P4BZP
-         78xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Oa/d3xtFztG+1F7w19dQiVtlu9Ybx4E8vqCz+GkkWv0=;
-        b=LmwtGBoVQ0bhaYz42c2+GE3nDGY/wCCFMg68jElF+C6sRgscEHCMh5L+3RAmoOhKjV
-         HukSmnIMN6PXUIONFSs5BHkfU2pVCeNBI6EVGlW3UmXaEHFmK29iu1RU4EdBENwXB817
-         Ex/vXspUnm8Hptfpr25RJdu5nd8w8znd36UFxlhGMhaGqVub/ghqlCCv44LpUnjECnCV
-         Mtzg8GTVtNERxS5/0c3dxa0u8Q/A4hvGmni2lIlPapE50wZvHNoQkJxREXDLdM4q57ol
-         jHB8PJHbiycMCtM6sb6IMRRZ/wzpQHSjREGYHPMhyase1K7BHXqO8k2K2LifHwtirTfD
-         8M9g==
-X-Gm-Message-State: AOAM5336b5QmUGRUltvrlDkPELv6ZRWWbK6QPoERKl6mQJFLY1PA3zSd
-        tkPTJ7YQdXQUb17qlbWHXuI=
-X-Google-Smtp-Source: ABdhPJx3EnwiLrRH4iajYzlGQZXDgrJVsN38lzsgiKh9dSdXDiV118y36fEPOvkrSFv+GaJ0WV5JbQ==
-X-Received: by 2002:a05:600c:2207:: with SMTP id z7mr14294699wml.42.1600076426625;
-        Mon, 14 Sep 2020 02:40:26 -0700 (PDT)
-Received: from BV030612LT (oi48z9.static.otenet.gr. [79.129.51.141])
-        by smtp.gmail.com with ESMTPSA id u13sm19261555wrm.77.2020.09.14.02.40.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 02:40:25 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:40:22 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        parthiban@linumiz.com, Saravanan Sekar <sravanhome@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org,
-        Parthiban Nallathambi <pn@denx.de>
-Subject: Re: [PATCH v6 2/3] irqchip: Add Actions Semi Owl SIRQ controller
-Message-ID: <20200914094022.GA12167@BV030612LT>
-References: <cover.1599552438.git.cristian.ciocaltea@gmail.com>
- <1167b847f6fe1da3834aeaadf5710ddac54f06a0.1599552438.git.cristian.ciocaltea@gmail.com>
- <c5115d27739e1664f808ff5f1fc315e8@kernel.org>
- <20200914070227.GA4491@BV030612LT>
- <b9053e939dea2b67ba9804aec1a110f5@kernel.org>
- <20200914085154.GA8474@BV030612LT>
- <0cdd2fd4e09c7e51b8b48be914c6846f@kernel.org>
+        Mon, 14 Sep 2020 05:40:53 -0400
+X-Originating-IP: 103.82.80.9
+Received: from localhost (unknown [103.82.80.9])
+        (Authenticated sender: me@yadavpratyush.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 6539C20002;
+        Mon, 14 Sep 2020 09:40:47 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 15:10:46 +0530
+From:   Pratyush Yadav <me@yadavpratyush.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Jungseung Lee <js07.lee@samsung.com>
+Subject: Re: [PATCH v2 1/4] mtd: spi-nor: cleanup common code
+Message-ID: <20200914094046.tccoc54n7e36zzyr@yadavpratyush.com>
+References: <20200911222634.31804-1-michael@walle.cc>
+ <20200911222634.31804-2-michael@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0cdd2fd4e09c7e51b8b48be914c6846f@kernel.org>
+In-Reply-To: <20200911222634.31804-2-michael@walle.cc>
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:19:31AM +0100, Marc Zyngier wrote:
-> On 2020-09-14 09:51, Cristian Ciocaltea wrote:
-> > On Mon, Sep 14, 2020 at 09:07:18AM +0100, Marc Zyngier wrote:
-> > > Cristian,
-> > > 
-> > > On 2020-09-14 08:02, Cristian Ciocaltea wrote:
-> > > > Hi Marc,
-> > > >
-> > > > On Fri, Sep 11, 2020 at 05:22:41PM +0100, Marc Zyngier wrote:
-> > > > > On 2020-09-08 09:20, Cristian Ciocaltea wrote:
-> > > > > > This interrupt controller is found in the Actions Semi Owl SoCs (S500,
-> > > > > > S700 and S900) and provides support for handling up to 3 external
-> > > > > > interrupt lines.
-> > > > > >
-> > > > > > Each line can be independently configured as interrupt and triggers on
-> > > > > > either of the edges or either of the levels. Additionally, each line
-> > > > > > can also be masked individually.
-> > > > > >
-> > > > > > The patch is based on the work started by Parthiban Nallathambi:
-> > > > > > https://lore.kernel.org/lkml/20181126100356.2840578-1-pn@denx.de/
-> > > > > >
-> > > > > > Signed-off-by: Parthiban Nallathambi <pn@denx.de>
-> > > > > > Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> > > > > > [cristi: optimized DT, various fixes/cleanups/improvements]
-> > > > > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > > >
-> > > > > Who is the author of these patches? If this is a co-development,
-> > > > > please
-> > > > > use the relevant tags. Otherwise, the author of the patch must come as
-> > > > > the first SoB.
-> > > >
-> > > > I took the authorship for the driver patch, as mentioned in the cover
-> > > > letter. So, if I understand correctly, my SoB should be moved on top and
-> > > > I assume I also need to drop the related comment line.
-> > > 
-> > > Not quite. Please look at
-> > > Documentation/process/submitting-patches.rst.
-> > 
-> > Yes, I have read it, but most probably I missed the information that
-> > clarifies this authorship change handling.
-> > 
-> > > If Parthiban and Saravanan haven't authored anything in this patch,
-> > > then drop them from the SoB list.
-> > 
-> > Sorry I haven't properly explained this before!
-> > 
-> > Their contributions to the driver code stopped in 2018, when v3 of the
-> > patch series has been submitted.
-> > 
-> > > If they have contributed to the
-> > > patch (which I expect), then their SoB must be preceded by their own
-> > > Co-developed-by: tag.
-> > 
-> > Starting with v4, the work has been done exclusively by myself.
-> > 
-> > > To sum it up, it probably should look like:
-> > > 
-> > > Co-developed-by: Parthiban Nallathambi <pn@denx.de>
-> > > Signed-off-by: Parthiban Nallathambi <pn@denx.de>
-> > > Co-developed-by: Saravanan Sekar <sravanhome@gmail.com>
-> > > Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > 
-> > > This is of course an assumption, and you should check it with the
-> > > individuals above.
-> > 
-> > I have recently contacted Parthiban and he agreed that I can take the
-> > authorship. So I should proceed with the 1st approach?
-> 
-> The authorship of the patch is one thing, acknowledging the work done
-> by others is another. As you said above, you started by contributing to
-> an existing series, instead of writing it from scratch. You changed it
-> to a degree where it makes sense for you to be the author of the patches,
-> but it doesn't invalidate the contributions made by others before you.
-> 
-> Unless the two other contributors explicitly say they'd rather not be
-> named, I don't see how you can avoid mentioning them.
- 
-I just want to do the right thing and follow the recommended procedure.
-That's why I initially kept all the SoBs, but obviously I still missed
-some bits and pieces, as you have pointed out.
+Hi Michael,
 
-So I will add the indicated Co-developed-by tags and resend the series.
+*sigh* This patch will cause a _lot_ of conflicts with my series [0]. It 
+should hopefully go in the next merge window so maybe you can rebase on 
+top of it? Dunno.
 
-> Thanks,
+On 12/09/20 12:26AM, Michael Walle wrote:
+> Introduce a spi_nor_simple_cmd() function which executes a SPI command
+> with no additional argument bits. This function is then used to simplify
+> many other functions.
 > 
->       M.
-> -- 
-> Jazz is not dead. It just smells funny...
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+>  drivers/mtd/spi-nor/core.c | 295 +++++++++++--------------------------
+>  1 file changed, 84 insertions(+), 211 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 3f76eb391719..b06b160a5c9c 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -210,6 +210,72 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+>  	return nor->controller_ops->write(nor, to, len, buf);
+>  }
+>  
 
-Thanks a lot for all the clarifications,
-Cristi
+Comments on the spi_nor_simple_cmd* functions are assuming my series 
+lands before yours.
+
+> +/**
+> + * spi_nor_simple_cmd() - send command byte
+> + * @nor:	pointer to 'struct spi_nor'.
+> + * @cmd:	command code
+> + *
+> + * Return: 0 on success, -errno otherwise
+> + */
+> +static int spi_nor_simple_cmd(struct spi_nor *nor, u8 cmd)
+> +{
+> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(cmd, 1),
+> +					  SPI_MEM_OP_NO_ADDR,
+> +					  SPI_MEM_OP_NO_DUMMY,
+> +					  SPI_MEM_OP_NO_DATA);
+
+You need to add a call to spi_nor_spimem_setup_op() here. See [1].
+
+> +
+> +	if (nor->spimem)
+> +		return spi_mem_exec_op(nor->spimem, &op);
+> +	else
+> +		return nor->controller_ops->write_reg(nor, cmd, NULL, 0);
+
+Use spi_nor_write_reg(). See [2].
+
+> +}
+> +
+> +/**
+> + * spi_nor_simple_cmd_dout() - send command byte and data
+> + * @nor:	pointer to 'struct spi_nor'.
+> + * @cmd:	command code
+> + * @data:	pointer to the data to be send, must be DMA-capable
+> + * @len:	length of the data
+> + *
+> + * Return: 0 on success, -errno otherwise
+> + */
+> +static int spi_nor_simple_cmd_dout(struct spi_nor *nor, u8 cmd, const u8 *data,
+> +				   size_t len)
+> +{
+> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(cmd, 1),
+> +					  SPI_MEM_OP_NO_ADDR,
+> +					  SPI_MEM_OP_NO_DUMMY,
+> +					  SPI_MEM_OP_DATA_OUT(len, data, 1));
+
+You need to add a call to spi_nor_spimem_setup_op() here. See [1].
+
+> +
+> +	if (nor->spimem)
+> +		return spi_mem_exec_op(nor->spimem, &op);
+> +	else
+> +		return nor->controller_ops->write_reg(nor, cmd, data, len);
+
+Use spi_nor_write_reg(). See [2].
+
+> +}
+> +
+> +/**
+> + * spi_nor_simple_cmd_din() - send command byte and receive data
+> + * @nor:	pointer to 'struct spi_nor'.
+> + * @cmd:	command code
+> + * @data:	pointer to the receive buffer, must be DMA-capable
+> + * @len:	length of the data to be received
+> + *
+> + * Return: 0 on success, -errno otherwise
+> + */
+> +static int spi_nor_simple_cmd_din(struct spi_nor *nor, u8 cmd, u8 *data,
+> +				  size_t len)
+> +{
+> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(cmd, 1),
+> +					  SPI_MEM_OP_NO_ADDR,
+> +					  SPI_MEM_OP_NO_DUMMY,
+> +					  SPI_MEM_OP_DATA_IN(len, data, 1));
+> +
+
+You need to add a call to spi_nor_spimem_setup_op() here. See [1].
+
+> +	if (nor->spimem)
+> +		return spi_mem_exec_op(nor->spimem, &op);
+> +	else
+> +		return nor->controller_ops->read_reg(nor, cmd, data, len);
+
+Use spi_nor_read_reg(). See [2].
+
+> +}
+> +
+>  /**
+>   * spi_nor_write_enable() - Set write enable latch with Write Enable command.
+>   * @nor:	pointer to 'struct spi_nor'.
+
+> @@ -280,19 +322,7 @@ static int spi_nor_read_sr(struct spi_nor *nor, 
+> u8 *sr)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, sr, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
+> -						    sr, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_RDSR, sr, 1);
+
+NACK! xSPI compliant flashes like Cypress S28HS512T can use address and 
+dummy bytes for Read SR/SR2 (and I don't have an example in mind but 
+likely FSR too) commands in 8D-8D-8D mode. See [3].
+
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d reading SR\n", ret);
+>  
+> @@ -311,19 +341,7 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDFSR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, fsr, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDFSR,
+> -						    fsr, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_RDFSR, fsr, 1);
+
+Same.
+
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d reading FSR\n", ret);
+>  
+> @@ -343,18 +361,7 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDCR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, cr, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR, cr, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_RDCR, cr, 1);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d reading CR\n", ret);
+>  
+> @@ -371,26 +378,10 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
+>   */
+>  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  {
+> +	u8 cmd = enable ? SPINOR_OP_EN4B : SPINOR_OP_EX4B;
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(enable ?
+> -						  SPINOR_OP_EN4B :
+> -						  SPINOR_OP_EX4B,
+> -						  1),
+> -				  SPI_MEM_OP_NO_ADDR,
+> -				  SPI_MEM_OP_NO_DUMMY,
+> -				  SPI_MEM_OP_NO_DATA);
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor,
+> -						     enable ? SPINOR_OP_EN4B :
+> -							      SPINOR_OP_EX4B,
+> -						     NULL, 0);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd(nor, cmd);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
+>  
+> @@ -412,19 +403,7 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  
+>  	nor->bouncebuf[0] = enable << 7;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_BRWR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_BRWR,
+> -						     nor->bouncebuf, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_dout(nor, SPINOR_OP_BRWR, nor->bouncebuf, 1);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
+>  
+> @@ -444,19 +423,7 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
+>  
+>  	nor->bouncebuf[0] = ear;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WREAR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREAR,
+> -						     nor->bouncebuf, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_dout(nor, SPINOR_OP_WREAR, nor->bouncebuf, 1);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
+>  
+> @@ -475,19 +442,7 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_XRDSR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, sr, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_XRDSR,
+> -						    sr, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_XRDSR, sr, 1);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
+>  
+> @@ -520,19 +475,7 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLSR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLSR,
+> -						     NULL, 0);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd(nor, SPINOR_OP_CLSR);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
+>  }
+> @@ -584,19 +527,7 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CLFSR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLFSR,
+> -						     NULL, 0);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd(nor, SPINOR_OP_CLFSR);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d clearing FSR\n", ret);
+>  }
+> @@ -728,19 +659,7 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(len, sr, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
+> -						     sr, len);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_dout(nor, SPINOR_OP_WRSR, sr, len);
+>  	if (ret) {
+>  		dev_dbg(nor->dev, "error %d writing SR\n", ret);
+>  		return ret;
+> @@ -930,19 +849,7 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_WRSR2, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_OUT(1, sr2, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR2,
+> -						     sr2, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_dout(nor, SPINOR_OP_WRSR2, sr2, 1);
+>  	if (ret) {
+>  		dev_dbg(nor->dev, "error %d writing SR2\n", ret);
+>  		return ret;
+> @@ -964,19 +871,7 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
+>  {
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDSR2, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(1, sr2, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR2,
+> -						    sr2, 1);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_RDSR2, sr2, 1);
+
+Same.
+
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d reading SR2\n", ret);
+>  
+> @@ -995,19 +890,7 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
+>  
+>  	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd.size >> 10));
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_CHIP_ERASE, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_NO_DATA);
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CHIP_ERASE,
+> -						     NULL, 0);
+> -	}
+> -
+> +	ret = spi_nor_simple_cmd(nor, SPINOR_OP_CHIP_ERASE);
+>  	if (ret)
+>  		dev_dbg(nor->dev, "error %d erasing chip\n", ret);
+>  
+> @@ -2064,18 +1947,8 @@ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+>  	unsigned int i;
+>  	int ret;
+>  
+> -	if (nor->spimem) {
+> -		struct spi_mem_op op =
+> -			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_RDID, 1),
+> -				   SPI_MEM_OP_NO_ADDR,
+> -				   SPI_MEM_OP_NO_DUMMY,
+> -				   SPI_MEM_OP_DATA_IN(SPI_NOR_MAX_ID_LEN, id, 1));
+> -
+> -		ret = spi_mem_exec_op(nor->spimem, &op);
+> -	} else {
+> -		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDID, id,
+> -						    SPI_NOR_MAX_ID_LEN);
+> -	}
+> +	ret = spi_nor_simple_cmd_din(nor, SPINOR_OP_RDID, id,
+> +				     SPI_NOR_MAX_ID_LEN);
+
+Same here but as of now SPI NOR does not read flash ID in 8D mode so 
+this is OK for now I think.
+
+>  	if (ret) {
+>  		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", ret);
+>  		return ERR_PTR(ret);
+
+[0] https://lore.kernel.org/linux-mtd/20200903171313.18741-1-p.yadav@ti.com/
+[1] https://lore.kernel.org/linux-mtd/20200903171313.18741-4-p.yadav@ti.com/
+[2] https://lore.kernel.org/linux-mtd/20200903171313.18741-2-p.yadav@ti.com/
+[3] https://lore.kernel.org/linux-mtd/20200903171313.18741-7-p.yadav@ti.com/
+
+-- 
+Regards,
+Pratyush Yadav
