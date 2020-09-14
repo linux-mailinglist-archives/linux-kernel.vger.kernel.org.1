@@ -2,112 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CE6268513
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 909AC268514
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgINGmj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 02:42:39 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3097 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726033AbgINGmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:42:38 -0400
-Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id AAD4F3BF067353C133EB;
-        Mon, 14 Sep 2020 14:42:35 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 14 Sep 2020 14:42:35 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Mon, 14 Sep 2020 14:42:35 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
-CC:     Hillf Danton <hdanton@sina.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-Subject: Re: general protection fault in unlink_file_vma
-Thread-Topic: general protection fault in unlink_file_vma
-Thread-Index: AdaKYYsoZHV5jjgSQ2GCPR6aoXlAWw==
-Date:   Mon, 14 Sep 2020 06:42:35 +0000
-Message-ID: <c18bd0f194854077bbab3c50bab98c92@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726120AbgINGnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:43:14 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:52451 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726048AbgINGnJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:43:09 -0400
+Received: by mail-wm1-f68.google.com with SMTP id q9so9480540wmj.2
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:43:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0wqaP0tdnhnrGCUcokXX6ommGqTHWwKvvJsNWJ3jmcg=;
+        b=OIEuXMbztZI4tltc84OW6c+Xe2SMqcetlHwzkLgS+rVUpcmoWG84k0n9oM+7LigaDK
+         HPrqAKHXMeFu4VB72I+nqYLq9jHG96jEYi4UtRI4PtHWiASi3IbUlCbfVoB+7ZedglS0
+         GNY7LXNAID9iEgviVj/J5h7KLFPv6pGZ//qIlhNgBELlFwhufAaKYqgD+lwTsOsa1pEM
+         hlucSrNRvJcPrqCY0yFODARZp0nTZ7vEnwn5aMAakKCWSDjr0cQCXEFuGpgS2TUn44Dd
+         cqUZPM257DAp0zB+/RA7Z08IBR99/zclQU7luL+sNWDRsuavtbX/HwxJEnZNpJ2PgCP8
+         rkTQ==
+X-Gm-Message-State: AOAM531FCMU/HxLemBjfh0uvL//l4wmWnXt9/yc2itmC3l6V8d/mHeYd
+        OMafGbHHwaE5E8DSVl4P8CvSyd9laB1+Yd5iKr8=
+X-Google-Smtp-Source: ABdhPJxeO4GxH7Eg6naaJX8CmUrhr2f4j+5mo4HzCxkxfSSFny4DayYTZSyDj9S/3I7ZSU+ABZ54oxEcbGPpdVZz5sQ=
+X-Received: by 2002:a05:600c:4142:: with SMTP id h2mr13328985wmm.128.1600065786341;
+ Sun, 13 Sep 2020 23:43:06 -0700 (PDT)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-25-jolsa@kernel.org>
+In-Reply-To: <20200913210313.1985612-25-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 14 Sep 2020 15:42:55 +0900
+Message-ID: <CAM9d7ch5Od3Pz6GORmkW6RfUQL6ON0DVJ+dndA9mGCv6ppLsbA@mail.gmail.com>
+Subject: Re: [PATCH 24/26] perf tools: Add buildid-list --store option
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, 08 Sep 2020 17:19:17 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    59126901 Merge tag 'perf-tools-fixes-for-v5.9-2020-09-03' ..
-> git tree:       upstream
-> console output: 
-> https://syzkaller.appspot.com/x/log.txt?x=1166cb5d900000
-> kernel config:  
-> https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c5d5a51dcbb558ca0cb5
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11901e95900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f56195900000
-> 
-> Bisection is inconclusive: the issue happens on the oldest tested release.
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1205faed900000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1105faed900000
-> console output: 
-> https://syzkaller.appspot.com/x/log.txt?x=1605faed900000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com
-> 
-> general protection fault, probably for non-canonical address 
-> 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: maybe wild-memory-access in range 
-> [0x00777770000001d8-0x00777770000001df]
-> CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 
-> 5.9.0-rc3-syzkaller #0 Hardware name: Google Google Compute 
-> Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
-> Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24 
-> d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 
-> 02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
-> RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
-> RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
-> RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
-> RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
-> R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
-> R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) 
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400 Call 
-> Trace:
->  free_pgtables+0x1b3/0x2f0 mm/memory.c:415
->  exit_mmap+0x2c0/0x530 mm/mmap.c:3184
->  __mmput+0x122/0x470 kernel/fork.c:1076
->  mmput+0x53/0x60 kernel/fork.c:1097
->  exit_mm kernel/exit.c:483 [inline]
->  do_exit+0xa8b/0x29f0 kernel/exit.c:793
->  do_group_exit+0x125/0x310 kernel/exit.c:903
->  get_signal+0x428/0x1f00 kernel/signal.c:2757
->  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811  
-> exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
->  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
->  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+On Mon, Sep 14, 2020 at 6:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding buildid-list --store option to populate
+> .debug data with build id files.
 
-#syz test: https://github.com/Linmiaohe/linux/ 796cd8f497d5b62b00667229375326381c32bdb3
+Hmm.. isn't it better to add it to the buildid-cache command?
 
+>
+>   $ rm -rf ~/.debug/
+>
+>   $ perf buildid-list
+>   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
+>   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
+>
+>   $ perf buildid-list --store
+>
+>   $ find ~/.debug/
+>   .../.debug/
+>   .../.debug/usr
+>   .../.debug/usr/lib64
+>   .../.debug/usr/lib64/ld-2.31.so
+>   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b
+>   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b/elf
+>   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b/debug
+>   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b/probes
+>   .../.debug/usr/lib64/libc-2.31.so
+>   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2
+>   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2/elf
+>   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2/debug
+>   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2/probes
+>   .../.debug/.build-id
+>   .../.debug/.build-id/18
+>   .../.debug/.build-id/18/05c738c8f3ec0f47b7ea09080c28f34d18a82b
+>   .../.debug/.build-id/d2
+>   .../.debug/.build-id/d2/78249792061c6b74d1693ca59513be1def13f2
+>
+> It's possible to query debuginfod daemon for binaries by defining
+> DEBUGINFOD_URLS variable with server URL, like:
+>
+>   $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-list --store
+>   OK   439fe9bdeaed66af2bb8b8de5e650d5ecc3d8d46 .../.debug/.build-id/43/9fe9bdeaed66af2bb8b8de5e650d5ecc3d8d46/elf
+>   FAIL 23b87f5b0560481043257e82be670bc97786a171 /lib/modules/5.9.0-0.rc3.1.mmap3.fc34.x86_64/kernel/net/ipv4/netfilter/ip_tables.ko.xz
+>   FAIL d2b3be372bcdd4ebc15e479d2ff803657de0fd1e /lib/modules/5.9.0-0.rc3.1.mmap3.fc34.x86_64/kernel/drivers/block/virtio_blk.ko.xz
+>   FAIL 1466a71bcd0ff5c975ee79b72752137c0143d225 /lib/modules/5.9.0-0.rc3.1.mmap3.fc34.x86_64/kernel/fs/xfs/xfs.ko.xz
+>   OK   ad60d10b38c93bd8738d5aa594e240f01bb328cd /usr/lib/systemd/systemd
+>   OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
+>   OK   3b9b2ef537520303411ad5038b596d5d18e7c2b8 /usr/lib64/libpcre2-8.so.0.10.0
+>
+> Increasing debug level in util/probe-event.c to get rid
+> of the sdt probes messages on single verbose level (-v).
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+[SNIP]
+> +static int dso__store(struct dso *dso, struct machine *machine __maybe_unused, void *priv)
+> +{
+> +       struct dso_store_data *data = priv;
+> +       char sbuild_id[SBUILD_ID_SIZE];
+> +       u8 bid[BUILD_ID_SIZE];
+> +       char *path = NULL;
+> +       bool is_kallsyms;
+> +       int err = -1;
+> +
+> +       if (!dso->has_build_id ||
+> +           !build_id__is_defined(dso->build_id))
+> +               return 0;
+> +
+> +       if (data->with_hits && !dso->hit)
+> +               return 0;
+> +
+> +       /*
+> +        * The storing process is:
+> +        *   - get build id of the dso
+> +        *   - check if it matches provided build id from mmap3 event
+> +        *   - if not, try debuginfod to download the binary
+> +        *   - store binary to build id database
+> +        */
+> +       is_kallsyms = !strcmp(machine->mmap_name, dso->short_name);
+> +       build_id__sprintf(dso->build_id, sizeof(dso->build_id), sbuild_id);
+> +
+> +       if (is_kallsyms) {
+> +               /*
+> +                * Find out if we are on the same kernel as perf.data
+> +                * and keel kallsyms in that case.
+> +                */
+> +               path = strdup(dso->long_name);
+> +               if (!path)
+> +                       goto out_err;
+> +
+> +               err = sysfs__read_build_id("/sys/kernel/notes", &bid, sizeof(bid));
+> +               if (err < 0)
+> +                       goto out_err;
+> +       } else {
+> +               struct stat st;
+> +
+> +               /*
+> +                * Does the file exists in the first place, if it does,
+> +                * resolve path and read the build id.
+> +                */
+> +               if (stat(dso->long_name, &st)) {
+> +                       zfree(&path);
+> +                       goto try_download;
+> +               }
+> +
+> +               path = nsinfo__realpath(dso->long_name, dso->nsinfo);
+> +               if (!path)
+> +                       goto out_err;
+> +
+> +               err = filename__read_build_id(path, &bid, sizeof(bid));
+
+Is it ok to read the file out of the namespace?
+
+Thanks
+Namhyung
+
+
+> +               if (err != sizeof(bid))
+> +                       goto out_err;
+> +       }
+> +
+> +       /*
+> +        * If we match then we want in mmap3 event,
+> +        * is what we got in the binary, so we're happy.
+> +        */
+> +       if (memcmp(&bid, dso->build_id, BUILD_ID_SIZE)) {
+> +               char sbid[SBUILD_ID_SIZE];
+> +
+> +               build_id__sprintf(bid, sizeof(bid), sbid);
+> +               pr_debug("mmap build id <%s> does not match for %s <%s>\n",
+> +                        sbuild_id, path, sbid);
+> +               zfree(&path);
+> +       }
+> +
+> +try_download:
+> +       /*
+> +        * We did not match build id or did not find the
+> +        * binary - try debuginfod as last resort.
+> +        */
+> +       if (!path) {
+> +               char *tmp = NULL;
+> +
+> +               /*
+> +                * The debuginfo retrieval is handled within
+> +                * build_id_cache__add function.
+> +                */
+> +               if (get_executable(sbuild_id, &tmp)) {
+> +                       err = -1;
+> +                       goto out_err;
+> +               }
+> +
+> +               path = tmp;
+> +
+> +               /*
+> +                * The kernel dso is now elf binary, so disable is_kallsyms
+> +                * so build_id_cache__add can prepare proper file names.
+> +                */
+> +               is_kallsyms = false;
+> +       }
+> +
+> +       pr_debug("linking %s %s <%s>\n", dso->short_name, path, sbuild_id);
+> +
+> +       err = build_id_cache__add(sbuild_id, path, path,
+> +                                 dso->nsinfo, is_kallsyms, false);
+> +out_err:
+> +       free(path);
+> +       fprintf(stderr, "%s %s %s\n", err ? "FAIL" : "OK  ", sbuild_id, dso->long_name);
+> +       return 0;
+> +}
