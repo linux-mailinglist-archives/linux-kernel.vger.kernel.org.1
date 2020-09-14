@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A3E268336
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83569268337
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgINDit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:38:49 -0400
-Received: from ozlabs.org ([203.11.71.1]:55859 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726008AbgINDir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:38:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqXC775j3z9sTR;
-        Mon, 14 Sep 2020 13:38:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600054725;
-        bh=WSYInpRYBtYDkZHBmQQDThkXjUE9NyRyhjskGzBOWfs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ldhHUItJlbckAFthBQwfzljIGVNGGy6y4M98azT/BZOxPnqEu0BODf5RZB5v+neFy
-         rfYyn3r+eDg/2K1P9lS394q3hoLl37t06b0X9b35e8/dI9bVMYm23lPi05FGhQ7z9C
-         Isa7kMcyiKZXGtsXQ8iCTg4dFgEdseOX0NKSmqPPjBKZuU2R0y5THdXI4kFcpeqqCG
-         d9HLOXJ7zYr60UdwFJbiXw5lvWWrzrQgPTwdbH6YQwaaS6Mj0MToJ89PrdSwxf2pYI
-         6G4p4fDMIRyX/oc9cmZAn2VP0PLlNIKOCMcSOPWOgPdN+35V1iqo6AYk3qv4Wct9/l
-         Uga4UjBME7XXQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 12/15] selftests/seccomp: powerpc: Fix seccomp return value testing
-In-Reply-To: <20200912110820.597135-13-keescook@chromium.org>
-References: <20200912110820.597135-1-keescook@chromium.org> <20200912110820.597135-13-keescook@chromium.org>
-Date:   Mon, 14 Sep 2020 13:38:40 +1000
-Message-ID: <87363lqb7j.fsf@mpe.ellerman.id.au>
+        id S1726025AbgINDju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:39:50 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:22763 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbgINDjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:39:48 -0400
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="37297016"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 14 Sep 2020 11:39:44 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(47158:0:AUTH_RELAY)
+        (envelope-from <johnny.chuang@emc.com.tw>); Mon, 14 Sep 2020 11:39:42 +0800 (CST)
+Received: from 192.168.55.71
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2482:1:AUTH_LOGIN)
+        (envelope-from <johnny.chuang@emc.com.tw>); Mon, 14 Sep 2020 11:39:40 +0800 (CST)
+From:   "Johnny.Chuang" <johnny.chuang@emc.com.tw>
+To:     "'Harry Cutts'" <hcutts@chromium.org>,
+        "'Johnny Chuang'" <johnny.chuang.emc@gmail.com>
+Cc:     "'Dmitry Torokhov'" <dmitry.torokhov@gmail.com>,
+        "'Benjamin Tissoires'" <benjamin.tissoires@redhat.com>,
+        "'Peter Hutterer'" <peter.hutterer@who-t.net>,
+        "'lkml'" <linux-kernel@vger.kernel.org>,
+        "'linux-input'" <linux-input@vger.kernel.org>,
+        "'James Chen'" <james.chen@emc.com.tw>,
+        "'Jennifer Tsai'" <jennifer.tsai@emc.com.tw>,
+        "'Paul Liang'" <paul.liang@emc.com.tw>,
+        "'Jeff Chuang'" <jeff.chuang@emc.com.tw>
+References: <1598581195-9874-1-git-send-email-johnny.chuang.emc@gmail.com> <CA+jURcs2tLsVihoiXLsvLzdJZ4LKv0sQTu7FAqqT6r+pCi0wsA@mail.gmail.com>
+In-Reply-To: <CA+jURcs2tLsVihoiXLsvLzdJZ4LKv0sQTu7FAqqT6r+pCi0wsA@mail.gmail.com>
+Subject: RE: [PATCH v3] Input: elants_i2c - Report resolution of ABS_MT_TOUCH_MAJOR by FW information.
+Date:   Mon, 14 Sep 2020 11:39:39 +0800
+Message-ID: <002a01d68a48$ad112a30$07337e90$@emc.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 14.0
+Thread-Index: AQI77ytWzSZun9942hZafipM5V6HSAGb0KaPqI/UJFA=
+Content-Language: zh-tw
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcMDUwMTBcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy1lYThjZjEwZS1mNjNiLTExZWEtOGZkOC03YzVjZjg3NDk0NzhcYW1lLXRlc3RcZWE4Y2YxMTAtZjYzYi0xMWVhLThmZDgtN2M1Y2Y4NzQ5NDc4Ym9keS50eHQiIHN6PSIyODA3IiB0PSIxMzI0NDUyODM3OTc2ODAxNzkiIGg9IkNOa084QUpoeElCTEFzRi9aTEpsbTcxelJwOD0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> On powerpc, the errno is not inverted, and depends on ccr.so being
-> set. Add this to a powerpc definition of SYSCALL_RET_SET().
->
-> Co-developed-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> Link: https://lore.kernel.org/linux-kselftest/20200911181012.171027-1-cascardo@canonical.com/
-> Fixes: 5d83c2b37d43 ("selftests/seccomp: Add powerpc support")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+> On Thu, 27 Aug 2020 at 19:20, Johnny Chuang
+> <johnny.chuang.emc@gmail.com> wrote:
+> >
+> > This patch adds a new behavior to report touch major resolution based
+> > on information provided by firmware.
+> >
+> > In initial process, driver acquires touch information from touch ic.
+> > It contains one byte about the resolution value of ABS_MT_TOUCH_MAJOR.
+> > Touch driver will report touch major resolution by this information.
+> >
+> > Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
+> 
+> Thanks Johnny!
+> 
+> Reviewed-by: Harry Cutts <hcutts@chromium.org>
+> 
+> Harry Cutts
+> Chrome OS Touch/Input team
+> 
 
-This looks right to me, and matches what strace does AFAICS.
+Hi Sirs,
+Can you help to review this patch?
 
-Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
+> > ---
+> > Changes in v2:
+> >   - register a real resolution value from firmware,
+> >         instead of hardcoding resolution value as 1 by flag.
+> > Changes in v3:
+> >   - modify git log message from flag to real value.
+> >   - modify driver comment from flag to real value.
+> > ---
+> >  drivers/input/touchscreen/elants_i2c.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/input/touchscreen/elants_i2c.c
+> > b/drivers/input/touchscreen/elants_i2c.c
+> > index b0bd5bb..661a3ee 100644
+> > --- a/drivers/input/touchscreen/elants_i2c.c
+> > +++ b/drivers/input/touchscreen/elants_i2c.c
+> > @@ -151,6 +151,7 @@ struct elants_data {
+> >
+> >         bool wake_irq_enabled;
+> >         bool keep_power_in_suspend;
+> > +       u8 report_major_resolution;
+> >
+> >         /* Must be last to be used for DMA operations */
+> >         u8 buf[MAX_PACKET_SIZE] ____cacheline_aligned; @@ -459,6
+> > +460,9 @@ static int elants_i2c_query_ts_info(struct elants_data *ts)
+> >         rows = resp[2] + resp[6] + resp[10];
+> >         cols = resp[3] + resp[7] + resp[11];
+> >
+> > +       /* get report resolution value of ABS_MT_TOUCH_MAJOR */
+> > +       ts->report_major_resolution = resp[16];
+> > +
+> >         /* Process mm_to_pixel information */
+> >         error = elants_i2c_execute_command(client,
+> >                                            get_osr_cmd,
+> > sizeof(get_osr_cmd), @@ -1325,6 +1329,8 @@ static int
+> elants_i2c_probe(struct i2c_client *client,
+> >                              0, MT_TOOL_PALM, 0, 0);
+> >         input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
+> >         input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
+> > +       if (ts->report_major_resolution > 0)
+> > +               input_abs_set_res(ts->input, ABS_MT_TOUCH_MAJOR,
+> > + ts->report_major_resolution);
+> >
+> >         touchscreen_parse_properties(ts->input, true, &ts->prop);
+> >
+> > --
+> > 2.7.4
+> >
 
-cheers
-
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 623953a53032..bbab2420d708 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -1750,6 +1750,21 @@ TEST_F(TRACE_poke, getpid_runs_normally)
->  # define ARCH_REGS		struct pt_regs
->  # define SYSCALL_NUM(_regs)	(_regs).gpr[0]
->  # define SYSCALL_RET(_regs)	(_regs).gpr[3]
-> +# define SYSCALL_RET_SET(_regs, _val)				\
-> +	do {							\
-> +		typeof(_val) _result = (_val);			\
-> +		/*						\
-> +		 * A syscall error is signaled by CR0 SO bit	\
-> +		 * and the code is stored as a positive value.	\
-> +		 */						\
-> +		if (_result < 0) {				\
-> +			SYSCALL_RET(_regs) = -result;		\
-> +			(_regs).ccr |= 0x10000000;		\
-> +		} else {					\
-> +			SYSCALL_RET(_regs) = result;		\
-> +			(_regs).ccr &= ~0x10000000;		\
-> +		}						\
-> +	} while (0)
->  #elif defined(__s390__)
->  # define ARCH_REGS		s390_regs
->  # define SYSCALL_NUM(_regs)	(_regs).gprs[2]
-> -- 
-> 2.25.1
