@@ -2,123 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AAE268EB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16925268EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgINO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:59:27 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41793 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726864AbgINO64 (ORCPT
+        id S1726799AbgINPAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgINO7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:58:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600095531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p4EylP6DiiMU0xDyOAgmGkadg42XWec7eelWwk0KDc0=;
-        b=bgr9QGacO+rrT8VwtKAUTbJ/z4GDHTDFdxMq62qBPJIcOt+deZ1Xwi960jmvG+K1dYXGjI
-        beoZ11jQOQxEQTmiK/M8uKzgCpffDYUDN5vQMk84BpuXytKTCiICsv7tNcqc7uvwTK7rOq
-        wUeQDJ9dmB2thGFCU+e4ZwMCtOGQzSU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-kbpRmOvBMeOFddDEB9xAAg-1; Mon, 14 Sep 2020 10:58:49 -0400
-X-MC-Unique: kbpRmOvBMeOFddDEB9xAAg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A848189E62E;
-        Mon, 14 Sep 2020 14:58:47 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF18C5DA60;
-        Mon, 14 Sep 2020 14:58:45 +0000 (UTC)
-Subject: Re: [PATCH v3 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200914024452.19167-1-longman@redhat.com>
- <20200914141955.2145-1-longman@redhat.com>
- <20200914144739.GV16999@dhcp22.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <24d1cfe4-845e-0944-4187-217d345d59a5@redhat.com>
-Date:   Mon, 14 Sep 2020 10:58:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Mon, 14 Sep 2020 10:59:16 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AB4C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:59:15 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id h6so81901qtd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:59:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TI5UfO8CrhKlxSTB0fizVNNuJljGKxUe27eUOJYXQoA=;
+        b=sr6LAD6B25leq62gmbiDCVsb2Vy+TsneobGpZ3/FszDIr9j20hCmO7B/S3Hs+2EQ98
+         Rfb4eFP8MeWQJLG74ckXsXbR3dxP2fDKJJi5uZMjxXwDwvG0EETtramH1ibOBF7jhgfz
+         61mce+LvufkYZynzEbEuGlYadfQpcsA5sunof0rCFfMS205sRw1np8xG7qRhHDwwCBBI
+         EjYnHxMdR5ml0TMUNtCMFNXNPlb4gIyT3g0b9D6TAva7QaC64gEceI3VSiy81P6thUIB
+         Cm+EeQyqAOOxrphSsTLMe/T6Cw2tLSd4WgHBDUAXg1mwO1udm0CyBmiNjfgEHqJHXq2v
+         TZZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TI5UfO8CrhKlxSTB0fizVNNuJljGKxUe27eUOJYXQoA=;
+        b=MgLSpQa2fMRIz73A8rf5FYexDOPJrErjF0ri9FGAn7qENHwSbf4i60GsHonaccCTZV
+         UWctHWj8FLCiVuob4AUtjRlkiYHXLaJU3dK26zw1cq93s6YRGBuQbYLVDiUsrlmuAoKk
+         b4mesUh73q6RWtAId+YabwfKzkhWiBZxKCpkHBSgFLRdT1ZOEEXqxFz0Cx59YZMf7pUQ
+         cmzIMNhrOqEEpbhtWpq43GQHW0fCZgSLEZbY8hcTVVMfIy5Lg1t9RFkMU81QlpPSkyju
+         28L+1Gm+F4b0xjrEbfNwmUEO9BB1iKiFW3HqFe22ntX40fbc4wQ4lQuKfGjQ0ozDhcus
+         bSdQ==
+X-Gm-Message-State: AOAM533L5opTlazWw7a602ZlYexbZo67CyRHbMTQw+wBTj/bsi7BFd0s
+        k0I6aQJIFYiyuhWUFLtzmX2AQWGjr0ZVuu1M1xHScA==
+X-Google-Smtp-Source: ABdhPJzE1Q0xqknRdRoK8U7HNFZKzLHcd3U+p+aKDmfcmkAnNREsFT1MH9lvooSs/7x/6zC3vSbp+glWuGc4ZBbbnCw=
+X-Received: by 2002:ac8:6ec2:: with SMTP id f2mr13983987qtv.159.1600095554884;
+ Mon, 14 Sep 2020 07:59:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200914144739.GV16999@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1598886558-16546-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+ <1598886558-16546-5-git-send-email-grzegorz.jaszczyk@linaro.org> <87lfhfl3yv.wl-maz@kernel.org>
+In-Reply-To: <87lfhfl3yv.wl-maz@kernel.org>
+From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Date:   Mon, 14 Sep 2020 16:59:03 +0200
+Message-ID: <CAMxfBF7cPwPSbNuNqohy3BJGMqtiPk22_5hxrrSpvKUAVB4epA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 4/5] irqchip/irq-pruss-intc: Implement
+ irq_{get,set}_irqchip_state ops
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     tglx@linutronix.de, jason@lakedaemon.net,
+        "Anna, Suman" <s-anna@ti.com>, robh+dt@kernel.org,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        David Lechner <david@lechnology.com>,
+        "Bajjuri, Praneeth" <praneeth@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 10:47 AM, Michal Hocko wrote:
-> On Mon 14-09-20 10:19:55, Waiman Long wrote:
->> The mem_cgroup_get_max() function used to get memory+swap max from
->> both the v1 memsw and v2 memory+swap page counters & return the maximum
->> of these 2 values. This is redundant and it is more efficient to just
->> get either the v1 or the v2 values depending on which one is currently
->> in use.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   mm/memcontrol.c | 24 +++++++++++++-----------
->>   1 file changed, 13 insertions(+), 11 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 8c74f1200261..2331d4bc7c4d 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->>    */
->>   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
->>   {
->> -	unsigned long max;
->> -
->> -	max = READ_ONCE(memcg->memory.max);
->> -	if (mem_cgroup_swappiness(memcg)) {
->> -		unsigned long memsw_max;
->> -		unsigned long swap_max;
->> -
->> -		memsw_max = memcg->memsw.max;
->> -		swap_max = READ_ONCE(memcg->swap.max);
->> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
->> -		max = min(max + swap_max, memsw_max);
->> +	unsigned long max = READ_ONCE(memcg->memory.max);
->> +
->> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
->> +		if (mem_cgroup_swappiness(memcg))
->> +			max += min(READ_ONCE(memcg->swap.max),
->> +				   (unsigned long)total_swap_pages);
->> +	} else { /* v1 */
->> +		if (mem_cgroup_swappiness(memcg)) {
->> +			unsigned long memsw = READ_ONCE(memcg->memsw.max);
->> +
->> +			if (memsw > max)
->> +				max += min(memsw - max, (unsigned long)total_swap_pages);
-> Yes this looks better. But, memsw can never be smaller than the hard
-> limit (mem_cgroup_resize_max). I would find it slightly easier to
-> understand if you did
-> 	/* calculate swap excess capacity from memsw limit*/
-> 	unsigned long memsw = READ_ONCE(memcg->memsw.max) - max;
-> 	max += min (memsw, total_swap_pages);
+On Sat, 12 Sep 2020 at 11:49, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Mon, 31 Aug 2020 16:09:17 +0100,
+> Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org> wrote:
+> >
+> > From: David Lechner <david@lechnology.com>
+> >
+> > This implements the irq_get_irqchip_state and irq_set_irqchip_state
+> > callbacks for the TI PRUSS INTC driver. The set callback can be used
+> > by drivers to "kick" a PRU by injecting a PRU system event.
+> >
+> > Example:
+> >      irq_set_irqchip_state(irq, IRQCHIP_STATE_PENDING, true);
+> >
+>
+> Please drop this "example", it brings nothing without the full
+> context. This patch just implements a standard callback.
+>
 
-Right, I thought it was possible to set memsw lower than mem. It was not 
-allowed. So the extra check is unnecessary. Will fix that.
-
-Cheers,
-Longman
-
+Ok. Thank you for your review,
+Grzegorz
