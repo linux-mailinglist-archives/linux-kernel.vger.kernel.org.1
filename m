@@ -2,203 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93BA2681FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E1226821C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbgINADX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 20:03:23 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:23934 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbgINADP (ORCPT
+        id S1725996AbgINAPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 20:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbgINAPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:03:15 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200914000312epoutp03c44a440384fc4b50a0ef7616d6820f82~0fYhoOIUM1482414824epoutp036
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 00:03:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200914000312epoutp03c44a440384fc4b50a0ef7616d6820f82~0fYhoOIUM1482414824epoutp036
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600041792;
-        bh=zD3gLmTYhnddHFCsa6cntVi8nNSLykR1usqvZQp7WT4=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=GTH0kISh5tNImTuIi0ev2fgwM3JBJ930Ud4Ec6uBCJk0JriB1Xd3VG3TVhyAMWhtW
-         vQdSS84lzjsOmv6henCE/Ru/4oBadYK5LQPmDbfA3eiZgO5aKfoYjllaRA3hubo4ct
-         Rkn1nK3E+WTbmzb/Y+caDpOz5ZZzTM7Th6T6YpBc=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200914000311epcas1p43fc273c362e0cb8d2ba842ed6c90fceb~0fYhH53Qa0935009350epcas1p4W;
-        Mon, 14 Sep 2020 00:03:11 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BqRQP5MdczMqYkh; Mon, 14 Sep
-        2020 00:03:09 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A8.A5.18978.B33BE5F5; Mon, 14 Sep 2020 09:03:07 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200914000306epcas1p424ad2c28e76185e55b8db51d7f987027~0fYcM7Oym0935409354epcas1p4n;
-        Mon, 14 Sep 2020 00:03:06 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200914000306epsmtrp19b22c3cae49db1ab8432c8adc6837908~0fYcMDcGk0656106561epsmtrp1m;
-        Mon, 14 Sep 2020 00:03:06 +0000 (GMT)
-X-AuditID: b6c32a35-b8298a8000004a22-8d-5f5eb33b8dc7
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        14.4E.08303.A33BE5F5; Mon, 14 Sep 2020 09:03:06 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200914000306epsmtip1ee2f606f3184bc53cccecb14dfa8fe3e~0fYb-A76V2589225892epsmtip1Q;
-        Mon, 14 Sep 2020 00:03:06 +0000 (GMT)
-Subject: Re: [PATCH] PM / devfreq: Add timer type to devfreq_summary debugfs
-To:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        lukasz.luba@arm.com, b.zolnierkie@samsung.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <a992b7cb-ef57-f4d9-b53b-9195d1073d2a@samsung.com>
-Date:   Mon, 14 Sep 2020 09:15:18 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Sun, 13 Sep 2020 20:15:44 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4132C06174A;
+        Sun, 13 Sep 2020 17:15:43 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id v14so3113186pjd.4;
+        Sun, 13 Sep 2020 17:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RWr9NKSEdcY2u7gqd/E6b74UvynPcFslVkt4rQ7Xars=;
+        b=hDOHeSS4Cz3MCmYNC7KleUqw2t+ui/KcZgykzgopjOTy/2HfgYlvCQ/X0c8QSfGjAT
+         s8kxuuwa67gAJ6siyUti8z9wJdkHrMAOi2xLyBRR1Qi2BzVGTLx/QtWnZMgQotgA1YlX
+         eTn5E2Va5/HDS2ljxW0Hiy7UcekqtsS78L8ONEwQ+3u0eX8c+I0G2/1FTS/TPL2cuHDQ
+         f5Goyp5xMEkC4r+gwv0V43wV/Ejjc+o6M0g37shH2OqWYCA2bJtIwaK9E/BX+guoKc8a
+         ckmU9VM40hubpFlsEEvU4x52/9QFsswT7DZem4YDcu8Ywg3ZGQHRKy8turWKOlZHzDwK
+         QL+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=RWr9NKSEdcY2u7gqd/E6b74UvynPcFslVkt4rQ7Xars=;
+        b=E0bQ5aWpL5NgBZ/597aW/mh3HfM5kkIloVh3H+RooiFcQW+/rFBrDhVGlwpnsGpk5M
+         QDXXQSSLWtbLGVvQfJX7NeVN7u4JMcR1Hm/a+I0St191/NfbepQzm/1Yf1SFt62tXv9C
+         1UgSZrHTGVvdMoXfwfCxGFcjBVtjft4is1lPn3BNX/6hZjGLKvpboyW8c5fakjtk4y4X
+         ZZMck5sRxa5/8bNM9JbudS19cQZI+5vLJoOUcrBLMtALIRW9+EQoJQv9uOEwW2I2pnwr
+         kVllS/z/FC6dbc4hiszvsACBcJzvddg0TtU6oA9QDLzczCfkZwNJCQl9EbYpdSHP7jxC
+         xDNA==
+X-Gm-Message-State: AOAM531Rs5dDkisPgKvCJPUWXsJKCLc1EoW+XKhGGNTu/D3Y/8hHiGNB
+        q5W1GTPY8GeBOV2ip+4Ehxo=
+X-Google-Smtp-Source: ABdhPJxjUnnxV2H37svHRIcVFf1kghaizfA7oGNU9nSd/ECWa/O8IbzjHubwxqScv9rZ8Pad0k9ZbA==
+X-Received: by 2002:a17:90a:3e4f:: with SMTP id t15mr11744827pjm.19.1600042543106;
+        Sun, 13 Sep 2020 17:15:43 -0700 (PDT)
+Received: from sultan-book.localdomain ([104.200.129.212])
+        by smtp.gmail.com with ESMTPSA id c5sm7159500pgj.0.2020.09.13.17.15.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 17:15:42 -0700 (PDT)
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+X-Google-Original-From: Sultan Alsawaf
+To:     jarkko.nikula@linux.intel.com
+Cc:     aaron.ma@canonical.com, admin@kryma.net,
+        andriy.shevchenko@linux.intel.com, benjamin.tissoires@redhat.com,
+        hdegoede@redhat.com, hn.chen@weidahitech.com, jikos@kernel.org,
+        kai.heng.feng@canonical.com, linux-i2c@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mika.westerberg@linux.intel.com, sultan@kerneltoast.com,
+        vicamo.yang@canonical.com, wsa@kernel.org
+Subject: [PATCH v3] i2c: Squash of SMBus block read patchset to save power
+Date:   Sun, 13 Sep 2020 17:15:23 -0700
+Message-Id: <20200914001523.3878-1-sultan@kerneltoast.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <b3b751fc-668d-91e2-220b-0d7edd231e01@linux.intel.com>
+References: <b3b751fc-668d-91e2-220b-0d7edd231e01@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200908110853.19277-1-cw00.choi@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupik+LIzCtJLcpLzFFi42LZdlhTX9d6c1y8wbJHqhYbZ6xntTjb9Ibd
-        4vKuOWwWn3uPMFosbGpht7jduILNgc1jzbw1jB59W1YxenzeJBfAHJVtk5GamJJapJCal5yf
-        kpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQO0V0mhLDGnFCgUkFhcrKRvZ1OU
-        X1qSqpCRX1xiq5RakJJTYFmgV5yYW1yal66XnJ9rZWhgYGQKVJiQnbHy7Ha2gjcaFZtn32Jr
-        YFwo1cXIySEhYCJxZflFli5GLg4hgR2MEt+WHGWFcD4xSnz9uAYq85lRYmXzKUaYlnUTnkEl
-        djFKdPe1s0E47xklLp9vZwWpEhbwkfj35iYTiC0ikCGx9NoxMJtZwEri9cdudhCbTUBLYv+L
-        G2wgNr+AosTVH4/BNvAK2Ems3PocrJ5FQFVi9+WnYPWiAmESJ7e1QNUISpyc+YQFxOYUsJbY
-        1tLIAjFfXOLWk/lQu+Qltr+dwwxynIRAK4fE8r/nWSBecJH49mQTO4QtLPHq+BYoW0riZX8b
-        lF0tsfLkETaI5g5GiS37L7BCJIwl9i+dDLSBA2iDpsT6XfoQYUWJnb/nMkIs5pN497WHFaRE
-        QoBXoqNNCKJEWeLyg7tMELakxOL2TrYJjEqzkLwzC8kLs5C8MAth2QJGllWMYqkFxbnpqcWG
-        BYbI0b2JEZwotUx3ME58+0HvECMTB+MhRgkOZiURXteU2Hgh3pTEyqrUovz4otKc1OJDjKbA
-        AJ7ILCWanA9M1Xkl8YamRsbGxhYmhmamhoZK4rwPbynECwmkJ5akZqemFqQWwfQxcXBKNTBp
-        6Ulych8wtpxrMN90+vGr2yQWFV7Y13bnZvDHJDuZJSaKh9naLdLYA/gs/KX4vK2mbXMtvMHM
-        plblkmwbadHk/fxzWXJPeKH47FLZH38MvIMEq3+5RnOyfn6uc9fkSM7ss6v6itvN/m42mF5z
-        W/TUHqaJMn2RB7kv7L2guPfxvDmfu29bZFXscpda+/fWxDnr+jQv35lu1mNdE7/0gGz4/PqS
-        LvFuFe3klYJHHMuqzC5vFNV9eed1u4+rw14GM1v7y6fvv5rS9lfx9Y/+NiVnVfEpJmJma8/0
-        OE0q/qAbNl1w/6FnT2rmVVvekGh0M3xj3j9lae3hmmlXHE8XlyzdsaXk2PdpvEefffNb5K3E
-        UpyRaKjFXFScCAAcbb3hHQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCLMWRmVeSWpSXmKPExsWy7bCSnK7V5rh4g7sz5S02zljPanG26Q27
-        xeVdc9gsPvceYbRY2NTCbnG7cQWbA5vHmnlrGD36tqxi9Pi8SS6AOYrLJiU1J7MstUjfLoEr
-        Y+XZ7WwFbzQqNs++xdbAuFCqi5GTQ0LARGLdhGcsXYxcHEICOxgltu3/xAyRkJSYdvEokM0B
-        ZAtLHD5cDFHzllHi/c1d7CA1wgI+Ev/e3GQCsUUEMiS+d/5iA7GZBawkXn/sZodo6GOUeP3j
-        HlgDm4CWxP4XN8CK+AUUJa7+eMwIYvMK2Ems3PocbBCLgKrE7stPwepFBcIkdi55zARRIyhx
-        cuYTFhCbU8BaYltLIwvEMnWJP/MuMUPY4hK3nsxngrDlJba/ncM8gVF4FpL2WUhaZiFpmYWk
-        ZQEjyypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxNjOCI0dLawbhn1Qe9Q4xMHIyHGCU4
-        mJVEeF1TYuOFeFMSK6tSi/Lji0pzUosPMUpzsCiJ836dtTBOSCA9sSQ1OzW1ILUIJsvEwSnV
-        wOSvstp8lmVqiNLswqwipatS/Q1l4c9Y/6dcOvRL4njGpTk8r5QOSIUs06q4pvb/8bszC1Pk
-        Zn8RnHCjwdCzODjIs37ylyX390187fkyz5QpfVp+3EK5XubPi14+MFkjHmhQe2VLTFaihkPy
-        r0kzD1n3fX5xwP/b9qtTkhr9jNlsJlz6E/zL+NklkyXv9FtyNxv26Af/LsvbffHkJEN3/9VS
-        MvMvH1r80/gcV+vfShvvj3pLOw6861IyWXno0qt3YtHyGzrm7bXynuXIJ8+xacUl2aO+QvKS
-        T5aLWe/+cTFQf/dymbe1rMI7+PZVPbuxXFqRifF7HG9tqtX92X+XTeh1t+y/H3DoUfnsyjCf
-        rl1KLMUZiYZazEXFiQD0zW3uBwMAAA==
-X-CMS-MailID: 20200914000306epcas1p424ad2c28e76185e55b8db51d7f987027
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200908105636epcas1p20ca5e07616e942c3b2a47fc5716c14ed
-References: <CGME20200908105636epcas1p20ca5e07616e942c3b2a47fc5716c14ed@epcas1p2.samsung.com>
-        <20200908110853.19277-1-cw00.choi@samsung.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/20 8:08 PM, Chanwoo Choi wrote:
-> The commit 4dc3bab8687f ("PM / devfreq: Add support delayed timer for
-> polling mode") supports the delayed timer but this commit missed
-> the adding the timer type to devfreq_summary debugfs node.
-> Add the timer type to devfreq_summary debugfs.
-> 
-> Fixes: 4dc3bab8687f ("PM / devfreq: Add support delayed timer for polling mode")
-> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-> ---
->  drivers/devfreq/devfreq.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> Example after adding 'timer' information to debugfs_summary debugfs node
-> on Odroid-XU3 board as following:
-> root@localhost:~# cat /sys/kernel/debug/devfreq/devfreq_summary
-> dev                            parent_dev                     governor        timer      polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
-> ------------------------------ ------------------------------ --------------- ---------- ---------- ------------ ------------ ------------
-> 10c20000.memory-controller     null                           simple_ondemand delayed           100    825000000    165000000    825000000
-> 11800000.gpu                   null                           simple_ondemand deferrable         50    420000000    177000000    600000000
-> soc:bus_wcore                  null                           simple_ondemand deferrable         50    532000000     88700000    532000000
-> soc:bus_noc                    soc:bus_wcore                  passive         null                0    111000000     66600000    111000000
-> soc:bus_fsys_apb               soc:bus_wcore                  passive         null                0    222000000    111000000    222000000
-> soc:bus_fsys2                  soc:bus_wcore                  passive         null                0    200000000     75000000    200000000
-> soc:bus_mfc                    soc:bus_wcore                  passive         null                0    333000000     83250000    333000000
-> soc:bus_gen                    soc:bus_wcore                  passive         null                0    266000000     88700000    266000000
-> soc:bus_peri                   soc:bus_wcore                  passive         null                0     66600000     66600000     66600000
-> soc:bus_g2d                    soc:bus_wcore                  passive         null                0    333000000     83250000    333000000
-> soc:bus_g2d_acp                soc:bus_wcore                  passive         null                0    266000000     66500000    266000000
-> soc:bus_jpeg                   soc:bus_wcore                  passive         null                0    300000000     75000000    300000000
-> soc:bus_jpeg_apb               soc:bus_wcore                  passive         null                0    166500000     83250000    166500000
-> soc:bus_disp1_fimd             soc:bus_wcore                  passive         null                0    200000000    120000000    200000000
-> soc:bus_disp1                  soc:bus_wcore                  passive         null                0    300000000    120000000    300000000
-> soc:bus_gscl_scaler            soc:bus_wcore                  passive         null                0    300000000    150000000    300000000
-> soc:bus_mscl                   soc:bus_wcore                  passive         null                0    666000000     84000000    666000000
->  
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index b9b27fb3291e..d4424b5d8306 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -1790,20 +1790,23 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
->  	struct devfreq *p_devfreq = NULL;
->  	unsigned long cur_freq, min_freq, max_freq;
->  	unsigned int polling_ms;
-> +	unsigned int timer;
->  
-> -	seq_printf(s, "%-30s %-30s %-15s %10s %12s %12s %12s\n",
-> +	seq_printf(s, "%-30s %-30s %-15s %-10s %10s %12s %12s %12s\n",
->  			"dev",
->  			"parent_dev",
->  			"governor",
-> +			"timer",
->  			"polling_ms",
->  			"cur_freq_Hz",
->  			"min_freq_Hz",
->  			"max_freq_Hz");
-> -	seq_printf(s, "%30s %30s %15s %10s %12s %12s %12s\n",
-> +	seq_printf(s, "%30s %30s %15s %10s %10s %12s %12s %12s\n",
->  			"------------------------------",
->  			"------------------------------",
->  			"---------------",
->  			"----------",
-> +			"----------",
->  			"------------",
->  			"------------",
->  			"------------");
-> @@ -1827,13 +1830,15 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
->  		cur_freq = devfreq->previous_freq;
->  		get_freq_range(devfreq, &min_freq, &max_freq);
->  		polling_ms = devfreq->profile->polling_ms;
-> +		timer = devfreq->profile->timer;
->  		mutex_unlock(&devfreq->lock);
->  
->  		seq_printf(s,
-> -			"%-30s %-30s %-15s %10d %12ld %12ld %12ld\n",
-> +			"%-30s %-30s %-15s %-10s %10d %12ld %12ld %12ld\n",
->  			dev_name(&devfreq->dev),
->  			p_devfreq ? dev_name(&p_devfreq->dev) : "null",
->  			devfreq->governor_name,
-> +			polling_ms ? timer_name[timer] : "null",
->  			polling_ms,
->  			cur_freq,
->  			min_freq,
->
+From: Sultan Alsawaf <sultan@kerneltoast.com>
 
-Applied it.
+This is a squash of the following:
 
+i2c: designware: Fix transfer failures for invalid SMBus block reads
 
+SMBus block reads can be broken because the read function will just skip
+over bytes it doesn't like until reaching a byte that conforms to the
+length restrictions for block reads. This is problematic when it isn't
+known if the incoming payload is indeed a conforming block read.
+
+According to the SMBus specification, block reads will only send the
+payload length in the first byte, so we can fix this by only considering
+the first byte in a sequence for block read length purposes.
+
+In addition, when the length byte is invalid, the original transfer
+length still needs to be adjusted to avoid a controller timeout.
+
+Fixes: c3ae106050b9 ("i2c: designware: Implement support for SMBus block read and write")
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+
+i2c: designware: Ensure tx_buf_len is nonzero for SMBus block reads
+
+The point of adding a byte to len in i2c_dw_recv_len() is to make sure
+that tx_buf_len is nonzero, so that i2c_dw_xfer_msg() can let the i2c
+controller know that the i2c transaction can end. Otherwise, the i2c
+controller will think that the transaction can never end for block
+reads, which results in the stop-detection bit never being set and thus
+the transaction timing out.
+
+Adding a byte to len is not a reliable way to do this though; sometimes
+it lets tx_buf_len become zero, which results in the scenario described
+above. Therefore, just directly ensure tx_buf_len cannot be zero to fix
+the issue.
+
+Fixes: c3ae106050b9 ("i2c: designware: Implement support for SMBus block read and write")
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+
+i2c: designware: Allow SMBus block reads up to 255 bytes in length
+
+According to the SMBus 3.0 protocol specification, block transfer limits
+were increased from 32 bytes to 255 bytes. Remove the obsolete 32-byte
+limitation.
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+
+HID: i2c-hid: Use block reads when possible to save power
+
+We have no way of knowing how large an incoming payload is going to be,
+so the only strategy available up until now has been to always retrieve
+the maximum possible report length over i2c, which can be quite
+inefficient. For devices that send reports in block read format, the i2c
+controller driver can read the payload length on the fly and terminate
+the i2c transaction early, resulting in considerable power savings.
+
+On a Dell Precision 15 5540 with an i9-9880H, resting my finger on the
+touchpad causes psys power readings to go up by about 4W and hover there
+until I remove my finger. With this patch, my psys readings go from 4.7W
+down to 3.1W, yielding about 1.6W in savings. This is because my
+touchpad's max report length is 60 bytes, but all of the regular reports
+it sends for touch events are only 32 bytes, so the i2c transfer is
+roughly halved for the common case.
+
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+---
+Hi Jarkko,
+
+Sorry for the delayed response. Life gets in the way of the things that really
+matter, like kernel hacking ;)
+
+I fixed the issue with the i2c block reads on 5.8. I've squashed all 4 of my i2c
+commits into this email for simplicity; please apply this patch on either 5.8 or
+5.9 (it applies cleanly to both) and let me know if it works with your i2c-hid
+touchscreen. If all is well, I will resubmit these patches individually in one
+patchset, in a new thread.
+
+Thanks,
+Sultan
+ drivers/hid/i2c-hid/i2c-hid-core.c         |  5 ++++-
+ drivers/i2c/busses/i2c-designware-master.c | 15 +++++++++------
+ 2 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index dbd04492825d..66950f472122 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -476,11 +476,14 @@ static void i2c_hid_get_input(struct i2c_hid *ihid)
+ 	int ret;
+ 	u32 ret_size;
+ 	int size = le16_to_cpu(ihid->hdesc.wMaxInputLength);
++	u16 flags;
+ 
+ 	if (size > ihid->bufsize)
+ 		size = ihid->bufsize;
+ 
+-	ret = i2c_master_recv(ihid->client, ihid->inbuf, size);
++	/* Try to do a block read if the size fits in one byte */
++	flags = size > 255 ? I2C_M_RD : I2C_M_RD | I2C_M_RECV_LEN;
++	ret = i2c_transfer_buffer_flags(ihid->client, ihid->inbuf, size, flags);
+ 	if (ret != size) {
+ 		if (ret < 0)
+ 			return;
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index d6425ad6e6a3..5bd64bd17d94 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -395,8 +395,9 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+ 	 * Adjust the buffer length and mask the flag
+ 	 * after receiving the first byte.
+ 	 */
+-	len += (flags & I2C_CLIENT_PEC) ? 2 : 1;
+-	dev->tx_buf_len = len - min_t(u8, len, dev->rx_outstanding);
++	if (flags & I2C_CLIENT_PEC)
++		len++;
++	dev->tx_buf_len = len - min_t(u8, len - 1, dev->rx_outstanding);
+ 	msgs[dev->msg_read_idx].len = len;
+ 	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
+ 
+@@ -430,10 +431,12 @@ i2c_dw_read(struct dw_i2c_dev *dev)
+ 			u32 flags = msgs[dev->msg_read_idx].flags;
+ 
+ 			regmap_read(dev->map, DW_IC_DATA_CMD, &tmp);
+-			/* Ensure length byte is a valid value */
+-			if (flags & I2C_M_RECV_LEN &&
+-			    tmp <= I2C_SMBUS_BLOCK_MAX && tmp > 0) {
+-				len = i2c_dw_recv_len(dev, tmp);
++			if (flags & I2C_M_RECV_LEN) {
++				/* Ensure length byte is a valid value */
++				if (tmp > 0)
++					len = i2c_dw_recv_len(dev, tmp);
++				else
++					len = i2c_dw_recv_len(dev, len);
+ 			}
+ 			*buf++ = tmp;
+ 			dev->rx_outstanding--;
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.28.0
+
