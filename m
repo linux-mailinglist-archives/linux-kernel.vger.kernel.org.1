@@ -2,226 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFBD269429
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A2F269430
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINRwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:52:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22679 "EHLO m43-7.mailgun.net"
+        id S1726057AbgINRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:52:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726153AbgINRvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:51:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600105873; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=9QmHcWXvGdFKIBQeux89IG8cd2AqI9c4ill+N7aDvAU=;
- b=aaDWo5TQtP6JR3IhZqMnf49I0H01EUIIlxYCFgA4F4r59u3kW9T5tNP6cHBD7lfgjp00pBPd
- W10W8qAjvX1BwnyT3Om2zDWQstuIisirvskRYKlbW7gCmMvJHesczsfh1o7gw1wAGk6YReac
- Ju9sIAAKvUvDlDWwv4KgZfWISW4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f5fad9132925f96e1d16e18 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 17:51:12
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CCBE1C433C8; Mon, 14 Sep 2020 17:51:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S1726155AbgINRve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:51:34 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: tanmay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53261C433C8;
-        Mon, 14 Sep 2020 17:51:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D412D20EDD;
+        Mon, 14 Sep 2020 17:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600105893;
+        bh=+W154uhJfcW+3dGlx8nbYvFm09M/SqFlf9nyb6yidk0=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=1AE29D7GV8Mh9ynwf9JgkqD4N6MDy5L0l9ovl3XrpC+RWx15isRlxZLRj9r5vr1RZ
+         yHpWTfQpsw5IL2Q/1Wt+UtgFd2XFTZeeKqC9LvtrAbP2/sfNvjOXxCXxRuvWf4j8G0
+         Vneq8zUzSBqG2p0mkwQR38U6CVtiGSiWBJG6dWuk=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 9C58F3522BA0; Mon, 14 Sep 2020 10:51:33 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 10:51:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kernel-team@fb.com, elver@google.com
+Subject: [GIT PULL kcsan] KCSAN commits for v5.10
+Message-ID: <20200914175133.GA14094@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 10:51:10 -0700
-From:   Tanmay Shah <tanmay@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, aravindh@codeaurora.org,
-        Abhinav Kumar <abhinavk@codeaurora.org>, khsieh@codeaurora.org
-Subject: Re: [PATCH v12 0/5] Add support for DisplayPort driver on SnapDragon
-In-Reply-To: <CAF6AEGttutrtxntAeRDtb3Hf_0i4z+9+rWMuShTrPVwTUHKTdg@mail.gmail.com>
-References: <20200827211658.27479-1-tanmay@codeaurora.org>
- <CAF6AEGttutrtxntAeRDtb3Hf_0i4z+9+rWMuShTrPVwTUHKTdg@mail.gmail.com>
-Message-ID: <9dba5799c9569d0b7abb460cc983f559@codeaurora.org>
-X-Sender: tanmay@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-12 11:25, Rob Clark wrote:
-> Fyi, I've pushed this series and the dp-compliance bits to 
-> msm-next-dp[1]
-> 
-> I didn't include the dp audio series yet, which seems to need some
-> minor rebasing.  (And a small request, when resending, cc
-> freedreno@lists.freedesktop.org, so it shows up in the patchwork
-> instance[2] I use)
-> 
-> You might want to double check that I got the correct versions of the
-> series, etc.  And that nothing else (other than audio) is missing.
-> 
+Hello, Ingo!
 
-Thanks Rob for pulling changes in msm-next-dp branch.
-I confirm that changes you pointed above are latest
-changes and nothing else is missing in driver.
-Sure, we will make sure to send changes in freedreno list as well.
+This pull request contains KCSAN updates for v5.10.  These have been
+subjected to LKML review, most recently here:
 
-Thanks.
+	https://lore.kernel.org/lkml/20200831181715.GA1530@paulmck-ThinkPad-P72
 
-> BR,
-> -R
-> 
-> [1] https://gitlab.freedesktop.org/drm/msm/-/commits/msm-next-dp
-> [2] https://patchwork.freedesktop.org/project/freedreno
-> 
-> On Thu, Aug 27, 2020 at 2:17 PM Tanmay Shah <tanmay@codeaurora.org> 
-> wrote:
->> 
->> These patches add Display-Port driver on SnapDragon/msm hardware.
->> This series also contains device-tree bindings for msm DP driver.
->> It also contains Makefile and Kconfig changes to compile msm DP 
->> driver.
->> 
->> The block diagram of DP driver is shown below:
->> 
->> 
->>                  +-------------+
->>                  |DRM FRAMEWORK|
->>                  +------+------+
->>                         |
->>                    +----v----+
->>                    | DP DRM  |
->>                    +----+----+
->>                         |
->>                    +----v----+
->>      +------------+|   DP    +----------++------+
->>      +        +---+| DISPLAY |+---+      |      |
->>      |        +    +-+-----+-+    |      |      |
->>      |        |      |     |      |      |      |
->>      |        |      |     |      |      |      |
->>      |        |      |     |      |      |      |
->>      v        v      v     v      v      v      v
->>  +------+ +------+ +---+ +----+ +----+ +---+ +-----+
->>  |  DP  | |  DP  | |DP | | DP | | DP | |DP | | DP  |
->>  |PARSER| | HPD  | |AUX| |LINK| |CTRL| |PHY| |POWER|
->>  +--+---+ +---+--+ +---+ +----+ +--+-+ +-+-+ +-----+
->>     |                              |     |
->>  +--v---+                         +v-----v+
->>  |DEVICE|                         |  DP   |
->>  | TREE |                         |CATALOG|
->>  +------+                         +---+---+
->>                                       |
->>                                   +---v----+
->>                                   |CTRL/PHY|
->>                                   |   HW   |
->>                                   +--------+
->> 
->> Changes in v12:
->> 
->> -- Add support of pm ops in display port driver
->> -- Clear bpp depth bits before writing to MISC register
->> -- Fix edid read
->> 
->> Previous change log:
->> https://lkml.kernel.org/lkml/20200818051137.21478-1-tanmay@codeaurora.org/
->> 
->> Chandan Uddaraju (4):
->>   dt-bindings: msm/dp: add bindings of DP/DP-PLL driver for Snapdragon
->>   drm: add constant N value in helper file
->>   drm/msm/dp: add displayPort driver support
->>   drm/msm/dp: add support for DP PLL driver
->> 
->> Jeykumar Sankaran (1):
->>   drm/msm/dpu: add display port support in DPU
->> 
->> Tanmay Shah (1):
->>   drm/msm/dp: Add Display Port HPD feature
->> 
->>  drivers/gpu/drm/i915/display/intel_display.c  |    2 +-
->>  drivers/gpu/drm/msm/Kconfig                   |    9 +
->>  drivers/gpu/drm/msm/Makefile                  |   14 +
->>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   |   27 +-
->>  .../drm/msm/disp/dpu1/dpu_encoder_phys_vid.c  |    8 +
->>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |   83 +-
->>  drivers/gpu/drm/msm/dp/dp_aux.c               |  535 ++++++
->>  drivers/gpu/drm/msm/dp/dp_aux.h               |   30 +
->>  drivers/gpu/drm/msm/dp/dp_catalog.c           | 1045 ++++++++++
->>  drivers/gpu/drm/msm/dp/dp_catalog.h           |  105 +
->>  drivers/gpu/drm/msm/dp/dp_ctrl.c              | 1693 
->> +++++++++++++++++
->>  drivers/gpu/drm/msm/dp/dp_ctrl.h              |   35 +
->>  drivers/gpu/drm/msm/dp/dp_display.c           | 1046 ++++++++++
->>  drivers/gpu/drm/msm/dp/dp_display.h           |   31 +
->>  drivers/gpu/drm/msm/dp/dp_drm.c               |  168 ++
->>  drivers/gpu/drm/msm/dp/dp_drm.h               |   18 +
->>  drivers/gpu/drm/msm/dp/dp_hpd.c               |   69 +
->>  drivers/gpu/drm/msm/dp/dp_hpd.h               |   79 +
->>  drivers/gpu/drm/msm/dp/dp_link.c              | 1214 ++++++++++++
->>  drivers/gpu/drm/msm/dp/dp_link.h              |  132 ++
->>  drivers/gpu/drm/msm/dp/dp_panel.c             |  486 +++++
->>  drivers/gpu/drm/msm/dp/dp_panel.h             |   95 +
->>  drivers/gpu/drm/msm/dp/dp_parser.c            |  267 +++
->>  drivers/gpu/drm/msm/dp/dp_parser.h            |  138 ++
->>  drivers/gpu/drm/msm/dp/dp_pll.c               |   99 +
->>  drivers/gpu/drm/msm/dp/dp_pll.h               |   61 +
->>  drivers/gpu/drm/msm/dp/dp_pll_10nm.c          |  930 +++++++++
->>  drivers/gpu/drm/msm/dp/dp_pll_private.h       |   89 +
->>  drivers/gpu/drm/msm/dp/dp_power.c             |  373 ++++
->>  drivers/gpu/drm/msm/dp/dp_power.h             |  103 +
->>  drivers/gpu/drm/msm/dp/dp_reg.h               |  518 +++++
->>  drivers/gpu/drm/msm/msm_drv.c                 |    2 +
->>  drivers/gpu/drm/msm/msm_drv.h                 |   59 +-
->>  include/drm/drm_dp_helper.h                   |    1 +
->>  34 files changed, 9545 insertions(+), 19 deletions(-)
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_aux.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_catalog.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_ctrl.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_display.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_display.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_drm.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_hpd.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_link.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_link.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_panel.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_parser.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_10nm.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_pll_private.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_power.c
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_power.h
->>  create mode 100644 drivers/gpu/drm/msm/dp/dp_reg.h
->> 
->> 
->> base-commit: d012a7190fc1fd72ed48911e77ca97ba4521bccd
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+All of these have also been subjected to the kbuild test robot and
+-next testing.  The following changes since v5.9-rc1 are available in
+the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git kcsan
+
+for you to fetch changes up to cd290ec24633f51029dab0d25505fae7da0e1eda:
+
+  kcsan: Use tracing-safe version of prandom (2020-08-30 21:50:13 -0700)
+
+----------------------------------------------------------------
+Marco Elver (19):
+      kcsan: Add support for atomic builtins
+      objtool: Add atomic builtin TSAN instrumentation to uaccess whitelist
+      kcsan: Add atomic builtin test case
+      kcsan: Support compounded read-write instrumentation
+      objtool, kcsan: Add __tsan_read_write to uaccess whitelist
+      kcsan: Skew delay to be longer for certain access types
+      kcsan: Add missing CONFIG_KCSAN_IGNORE_ATOMICS checks
+      kcsan: Test support for compound instrumentation
+      instrumented.h: Introduce read-write instrumentation hooks
+      asm-generic/bitops: Use instrument_read_write() where appropriate
+      locking/atomics: Use read-write instrumentation for atomic RMWs
+      kcsan: Simplify debugfs counter to name mapping
+      kcsan: Simplify constant string handling
+      kcsan: Remove debugfs test command
+      kcsan: Show message if enabled early
+      kcsan: Use pr_fmt for consistency
+      kcsan: Optimize debugfs stats counters
+      bitops, kcsan: Partially revert instrumentation for non-atomic bitops
+      kcsan: Use tracing-safe version of prandom
+
+ include/asm-generic/atomic-instrumented.h          | 330 ++++++++++-----------
+ include/asm-generic/bitops/instrumented-atomic.h   |   6 +-
+ include/asm-generic/bitops/instrumented-lock.h     |   2 +-
+ .../asm-generic/bitops/instrumented-non-atomic.h   |  30 +-
+ include/linux/instrumented.h                       |  30 ++
+ include/linux/kcsan-checks.h                       |  45 ++-
+ kernel/kcsan/core.c                                | 210 +++++++++++--
+ kernel/kcsan/debugfs.c                             | 130 ++------
+ kernel/kcsan/kcsan-test.c                          | 128 +++++++-
+ kernel/kcsan/kcsan.h                               |  12 +-
+ kernel/kcsan/report.c                              |  10 +-
+ kernel/kcsan/selftest.c                            |   8 +-
+ lib/Kconfig.kcsan                                  |   5 +
+ scripts/Makefile.kcsan                             |   2 +-
+ scripts/atomic/gen-atomic-instrumented.sh          |  21 +-
+ tools/objtool/check.c                              |  55 ++++
+ 16 files changed, 677 insertions(+), 347 deletions(-)
