@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06426858D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E51F268594
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgINHON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:14:13 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:53394
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726063AbgINHOL (ORCPT
+        id S1726100AbgINHRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:17:21 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:49210 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726064AbgINHRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:14:11 -0400
-X-IronPort-AV: E=Sophos;i="5.76,359,1592863200"; 
-   d="scan'208";a="358868903"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:14:10 +0200
-Date:   Mon, 14 Sep 2020 09:14:09 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        Coccinelle <cocci@systeme.lip6.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Cocci] [RFC PATCH] scripts: coccicheck: Improve error feedback
- when coccicheck fails
-In-Reply-To: <287a8c82-6359-9a7e-c2ca-d26aa5be9650@web.de>
-Message-ID: <alpine.DEB.2.22.394.2009140913480.2357@hadrien>
-References: <44ab7442-1473-f267-4487-af98631a9338@web.de> <alpine.DEB.2.22.394.2009140821041.2357@hadrien> <287a8c82-6359-9a7e-c2ca-d26aa5be9650@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 14 Sep 2020 03:17:19 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600067838; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=q3NHfVQox0Gssw/guI7kH+XAHIVL6NQIujBdCqW0jbo=; b=MlQ3Z4Q0BLHFsIzyDSeT5ywF7wpKjlJmNZ9TeLsuIBbLzuzFqz1UPFEua3baNKEXq/lD8zyh
+ soR4Wl0gfy4ii3xrT1jCOwK7LEHwt/efaQGLsBdZj+wzRuof4VOVF4PLgoOmkBJGiw+rjI2t
+ TsCVnIeAoF93lJ08IdWf0v7Tgjk=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f5f18fe9bdf68cc039f5275 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 07:17:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2E044C433FF; Mon, 14 Sep 2020 07:17:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80081C433CA;
+        Mon, 14 Sep 2020 07:17:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 80081C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Tony Chuang <yhchuang@realtek.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Kevin Yang <kevin_yang@realtek.com>,
+        "kbuild-all\@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org
+Subject: Re: drivers/net/wireless/realtek/rtw88/pci.c:1477:5: warning: no previous prototype for 'rtw_pci_probe'
+References: <202009132352.cN4c9rTC%lkp@intel.com>
+        <6463246c14a24bc989ea56d9c4443784@realtek.com>
+Date:   Mon, 14 Sep 2020 10:17:13 +0300
+In-Reply-To: <6463246c14a24bc989ea56d9c4443784@realtek.com> (Tony Chuang's
+        message of "Mon, 14 Sep 2020 05:16:59 +0000")
+Message-ID: <874ko0rfnq.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tony Chuang <yhchuang@realtek.com> writes:
 
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   ef2e9a563b0cd7965e2a1263125dcbb1c86aa6cc
+>> commit: ba0fbe236fb8a7b992e82d6eafb03a600f5eba43 rtw88: extract: make
+>> 8822c an individual kernel module
+>> date:   4 months ago
+>> config: i386-randconfig-r034-20200913 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>> reproduce (this is a W=1 build):
+>>         git checkout ba0fbe236fb8a7b992e82d6eafb03a600f5eba43
+>>         # save the attached .config to linux build tree
+>>         make W=1 ARCH=i386
+>> 
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> 
+>> All warnings (new ones prefixed by >>):
+>> 
+>> >> drivers/net/wireless/realtek/rtw88/pci.c:1477:5: warning: no previous
+>> >> prototype for 'rtw_pci_probe' [-Wmissing-prototypes]
+>>     1477 | int rtw_pci_probe(struct pci_dev *pdev,
+>>          |     ^~~~~~~~~~~~~
+>> >> drivers/net/wireless/realtek/rtw88/pci.c:1557:6: warning: no previous
+>> >> prototype for 'rtw_pci_remove' [-Wmissing-prototypes]
+>>     1557 | void rtw_pci_remove(struct pci_dev *pdev)
+>>          |      ^~~~~~~~~~~~~~
+>> >> drivers/net/wireless/realtek/rtw88/pci.c:1579:6: warning: no previous
+>> >> prototype for 'rtw_pci_shutdown' [-Wmissing-prototypes]
+>>     1579 | void rtw_pci_shutdown(struct pci_dev *pdev)
+>>          |      ^~~~~~~~~~~~~~~~
+>> 
 
-On Mon, 14 Sep 2020, Markus Elfring wrote:
+[...]
 
-> >> How do you think about to use the following check variant?
-> >>
-> >> +	if [ "${DEBUG_FILE}" != '/dev/null' -a "${DEBUG_FILE}" != '' ]; then
-> >
-> > What difference does it make?
+> Hi Kalle,
 >
-> I propose two implementation details for further development considerations.
->
-> 1. Do you care if any variable names should be enclosed by curly brackets
->    in such script code?
->
-> 2. A changeable value should be compared to two string literals here.
->    Varying contents should be enclosed by double quotes.
->    Constant values can be enclosed by single quotes, can't they?
+> The exported function is used by the following patchset.
+> So this is a false alarm.
 
-I have no idea.  Why can't they be nclosed by double quotes as well?
+Good, thanks for checking.
 
-julia
+-- 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
