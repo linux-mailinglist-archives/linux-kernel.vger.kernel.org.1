@@ -2,255 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C1B268C1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A9D268C18
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgINNTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S1726759AbgINNUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgINNKK (ORCPT
+        with ESMTP id S1726299AbgINNLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:10:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3035EC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:10:03 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id u21so23168377eja.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:10:03 -0700 (PDT)
+        Mon, 14 Sep 2020 09:11:25 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5810C06174A;
+        Mon, 14 Sep 2020 06:11:24 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x14so18638390wrl.12;
+        Mon, 14 Sep 2020 06:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KXJemS6gUd2VCQJZx24w6S0gEN32dmmcaw1hB8Y1Gkk=;
-        b=Ilz4J8qCbNqVwPAErH7xIsChZupedpJQyuGNhuJRGm/VYsbwgYUyFGsu2IdLv8NkGR
-         paXCm+/NBoLDWQjivCtRmOWjfLQNpX/m9bY9yY/jZr2wxLM+z0yNS0+S0j+IhGuVmxdJ
-         B3L1hyPU9RVxriMJ/5q8PqtJYLPeCdO5DIAMMLjFGeir+6z3hsDCZwxBGgUbCWB921TI
-         fY2i/ecLZD180fc6ZS4nVduNiSaIHeJSPk3nHDISco11WLnOe8Zsdzcu+bcDnYg+DQNE
-         cPqQtVVWKmZeRivzPuWMMoFpIXL4hV0jiwswcoZo2xNxyBPEYu4PPfl2pp7GY9dGSagj
-         Fa9g==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9w3sxxj8pSXMWFjqFI11OsxhpoFFNgS3AccbtAl9K1M=;
+        b=lBT/TEIoVFDPRE5LwTVY/VpAg2giTJNs4JR7ctTfRE1fCQmUZXODK+A2klNxsJhbwR
+         m9NC+xn8xfAqF4J5rMCWADG08i1mY7wpdcnPMLMKEBuTVZF4dAzSMkG40HYKngprFpSs
+         fDBHbBw4eiddbMeHOZX9207boj7dTc0D5ErsiWBslRM7+JMaFOxmksFe/phZI072dX29
+         2pZZLE1jUyORQkqa6pEfBwjtA2xpfN6ouZqbgA3S9VJlbrcyBvW/YZVLwWcDc0YWZaV9
+         vo8Ox5rSwCDom5JJX69nSnfMH6vNRGWGUheLbCbnyESqoz/rOOyuKmg4xZ4sPULfrWNI
+         ALVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KXJemS6gUd2VCQJZx24w6S0gEN32dmmcaw1hB8Y1Gkk=;
-        b=GNX33zdx/VZGbyR1NGneyVqsPFDIpED/SZvbRm1dO5AUJVp4OcXfgLTQl0Zmozvyr5
-         t1JIM4krCGl1TXi40t+F87Yp4b07aBZQVTWSTwdXgNEe8tQ0gQPfjW11KADKkAUe4avg
-         t+D1SAOvM77ybOYECGLoknY+7oA1yoFPnPtjFUeuQg7NchXV/ENrD2C5HdeKva+D/odi
-         v8ly6AcILQWhliiih2QbECkCrAYCdp6ECfiVVLHid9Pl6Y6CbcUmV4VhfTB4njeQwl+B
-         ILh2loiDpI2uhem0uUynL+IEQtlTmZrq4AoYW01ERGnII7iA5sAdWXsrQRDfgJs/mH+7
-         T1yg==
-X-Gm-Message-State: AOAM532u+JtJ/iDxMFVrvphph8Tw8jPG3oruhhAFA4XX6YXeP89kEw9Q
-        Wv3whQjz048R/TufnjN6F8MuPA==
-X-Google-Smtp-Source: ABdhPJynCHdL3rzDjaFyqT5j1E8FdxI7Avt70OG5/ShmxT7RgAhLnwhG+v1JFKLhs59wpVbwr0DYdg==
-X-Received: by 2002:a17:906:d14e:: with SMTP id br14mr13650774ejb.299.1600089001854;
-        Mon, 14 Sep 2020 06:10:01 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id i17sm7711099ejy.79.2020.09.14.06.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 06:10:01 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 15:10:00 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9w3sxxj8pSXMWFjqFI11OsxhpoFFNgS3AccbtAl9K1M=;
+        b=DS/sZ/76+RPDC7iEhzZFM2W8RFQvhhyusxYvg8ry6VVlk66N/WfAGiuNIR2xlKE9WV
+         /JLXiMsUvM3GWJcbDSz3xAL2AAxor+zrp/3KPaU60VJBGyr1lPbVVzqV5d08r583oBCv
+         Yz4Wz4lPKeRXaiT0tK68aN8/+ndZ/HJVJzCbXY5imDa0LV5VBLCZd3rmXH1EwXMeoHZx
+         K2PXagMzMfzqHgVx5NsX3Opm/tkJRlt9IUSZMZdRO79iPTYk5xvn4KxzrazU2xGKJ7JR
+         qiLHxTsR2D2olDN0JibYWC3NW0va4rFXBv5tSv3HQiCdr+ZIqXHLuzf4B4tnl4ezcoRD
+         4shw==
+X-Gm-Message-State: AOAM531ZgpcVgNr4LQT1KphqeQ5iX20lcRFAk5bB+bRrOojbwLCLtx/S
+        wF6ySv7DxTNYHj6BeL56Iwj+/l5wcBgVHQ==
+X-Google-Smtp-Source: ABdhPJzSLIDDoxmjCP7UlhRP0PsUbCmacVeAoUB2b/QALbpC2eIxxdOx01zPUhBWyQo8GwEN91CDPA==
+X-Received: by 2002:a05:6000:11cd:: with SMTP id i13mr15276243wrx.140.1600089083213;
+        Mon, 14 Sep 2020 06:11:23 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id i16sm20417229wrq.73.2020.09.14.06.11.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 06:11:22 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: make linux-mediatek list remarks consistent
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Ryder Lee <ryder.lee@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4 02/15] devlink: Add reload action limit
- level
-Message-ID: <20200914131000.GF2236@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-3-git-send-email-moshe@mellanox.com>
+References: <20200914053110.23286-1-lukas.bulwahn@gmail.com>
+ <f6bc41d3-5ce4-b9ea-e2bb-e0cee4de3179@gmail.com>
+ <alpine.DEB.2.21.2009141208200.17999@felia>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <9c5aaa15-bdd8-ae4f-0642-092566ab08ba@gmail.com>
+Date:   Mon, 14 Sep 2020 15:11:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600063682-17313-3-git-send-email-moshe@mellanox.com>
+In-Reply-To: <alpine.DEB.2.21.2009141208200.17999@felia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Sep 14, 2020 at 08:07:49AM CEST, moshe@mellanox.com wrote:
-		
-[..]
-
-	 
->diff --git a/include/net/devlink.h b/include/net/devlink.h
->index b09db891db04..dddd9ee5b8a9 100644
->--- a/include/net/devlink.h
->+++ b/include/net/devlink.h
->@@ -1012,9 +1012,13 @@ enum devlink_trap_group_generic_id {
-> 
-> struct devlink_ops {
-> 	unsigned long supported_reload_actions;
->+	unsigned long supported_reload_action_limit_levels;
-> 	int (*reload_down)(struct devlink *devlink, bool netns_change,
->-			   enum devlink_reload_action action, struct netlink_ext_ack *extack);
->+			   enum devlink_reload_action action,
->+			   enum devlink_reload_action_limit_level limit_level,
->+			   struct netlink_ext_ack *extack);
-> 	int (*reload_up)(struct devlink *devlink, enum devlink_reload_action action,
->+			 enum devlink_reload_action_limit_level limit_level,
-> 			 struct netlink_ext_ack *extack, unsigned long *actions_performed);
-> 	int (*port_type_set)(struct devlink_port *devlink_port,
-> 			     enum devlink_port_type port_type);
->diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
->index a6f64db0bdf3..b19686fd80ff 100644
->--- a/include/uapi/linux/devlink.h
->+++ b/include/uapi/linux/devlink.h
->@@ -287,6 +287,22 @@ enum devlink_reload_action {
-> 	DEVLINK_RELOAD_ACTION_MAX = __DEVLINK_RELOAD_ACTION_MAX - 1
-> };
-> 
->+/**
->+ * enum devlink_reload_action_limit_level - Reload action limit level.
->+ * @DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE: No constrains on action. Action may include
->+ *                                          reset or downtime as needed.
->+ * @DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NO_RESET: No reset allowed, no down time allowed,
->+ *                                              no link flap and no configuration is lost.
->+ */
->+enum devlink_reload_action_limit_level {
->+	DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE,
->+	DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NO_RESET,
->+
->+	/* Add new reload actions limit level above */
->+	__DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX,
->+	DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX = __DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX - 1
->+};
->+
-> enum devlink_attr {
-> 	/* don't change the order or add anything between, this is ABI! */
-> 	DEVLINK_ATTR_UNSPEC,
->@@ -478,6 +494,7 @@ enum devlink_attr {
-> 
-> 	DEVLINK_ATTR_RELOAD_ACTION,		/* u8 */
-> 	DEVLINK_ATTR_RELOAD_ACTIONS_PERFORMED,	/* nested */
->+	DEVLINK_ATTR_RELOAD_ACTION_LIMIT_LEVEL,	/* u8 */
-> 
-> 	/* add new attributes above here, update the policy in devlink.c */
-> 
->diff --git a/net/core/devlink.c b/net/core/devlink.c
->index f4be1e1bf864..60aa0c4a3726 100644
->--- a/net/core/devlink.c
->+++ b/net/core/devlink.c
->@@ -468,6 +468,13 @@ devlink_reload_action_is_supported(struct devlink *devlink, enum devlink_reload_
-> 	return test_bit(action, &devlink->ops->supported_reload_actions);
-> }
-> 
->+static bool
->+devlink_reload_action_limit_level_is_supported(struct devlink *devlink,
->+					       enum devlink_reload_action_limit_level limit_level)
->+{
->+	return test_bit(limit_level, &devlink->ops->supported_reload_action_limit_levels);
->+}
->+
-> static int devlink_nl_fill(struct sk_buff *msg, struct devlink *devlink,
-> 			   enum devlink_command cmd, u32 portid,
-> 			   u32 seq, int flags)
->@@ -2975,22 +2982,23 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
-> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
-> 
-> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
->-			  enum devlink_reload_action action, struct netlink_ext_ack *extack,
->-			  unsigned long *actions_performed)
->+			  enum devlink_reload_action action,
->+			  enum devlink_reload_action_limit_level limit_level,
->+			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
-> {
-> 	int err;
-> 
-> 	if (!devlink->reload_enabled)
-> 		return -EOPNOTSUPP;
-> 
->-	err = devlink->ops->reload_down(devlink, !!dest_net, action, extack);
->+	err = devlink->ops->reload_down(devlink, !!dest_net, action, limit_level, extack);
-> 	if (err)
-> 		return err;
-> 
-> 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
-> 		devlink_reload_netns_change(devlink, dest_net);
-> 
->-	err = devlink->ops->reload_up(devlink, action, extack, actions_performed);
->+	err = devlink->ops->reload_up(devlink, action, limit_level, extack, actions_performed);
-> 	devlink_reload_failed_set(devlink, !!err);
-> 	return err;
-> }
->@@ -3036,6 +3044,7 @@ devlink_nl_reload_actions_performed_fill(struct sk_buff *msg,
-> 
-> static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
-> {
->+	enum devlink_reload_action_limit_level limit_level;
-> 	struct devlink *devlink = info->user_ptr[0];
-> 	enum devlink_reload_action action;
-> 	unsigned long actions_performed;
->@@ -3073,7 +3082,20 @@ static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
-> 		return -EOPNOTSUPP;
-> 	}
-> 
->-	err = devlink_reload(devlink, dest_net, action, info->extack, &actions_performed);
->+	if (info->attrs[DEVLINK_ATTR_RELOAD_ACTION_LIMIT_LEVEL])
->+		limit_level = nla_get_u8(info->attrs[DEVLINK_ATTR_RELOAD_ACTION_LIMIT_LEVEL]);
->+	else
->+		limit_level = DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE;
->+
->+	if (limit_level > DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX) {
-
-Again, not needed, devlink_reload_action_limit_level_is_supported() will
-take case of it.
-
->+		NL_SET_ERR_MSG_MOD(info->extack, "Invalid limit level");
->+		return -EINVAL;
->+	} else if (!devlink_reload_action_limit_level_is_supported(devlink, limit_level)) {
->+		NL_SET_ERR_MSG_MOD(info->extack, "Requested limit level is not supported");
-
-"..by the driver"?
 
 
->+		return -EOPNOTSUPP;
->+	}
->+	err = devlink_reload(devlink, dest_net, action, limit_level, info->extack,
->+			     &actions_performed);
+On 14/09/2020 12:20, Lukas Bulwahn wrote:
 > 
-> 	if (dest_net)
-> 		put_net(dest_net);
->@@ -7126,6 +7148,7 @@ static const struct nla_policy devlink_nl_policy[DEVLINK_ATTR_MAX + 1] = {
-> 	[DEVLINK_ATTR_TRAP_POLICER_BURST] = { .type = NLA_U64 },
-> 	[DEVLINK_ATTR_PORT_FUNCTION] = { .type = NLA_NESTED },
-> 	[DEVLINK_ATTR_RELOAD_ACTION] = { .type = NLA_U8 },
->+	[DEVLINK_ATTR_RELOAD_ACTION_LIMIT_LEVEL] = { .type = NLA_U8 },
-> };
 > 
-> static const struct genl_ops devlink_nl_ops[] = {
->@@ -7462,6 +7485,10 @@ static int devlink_reload_actions_verify(struct devlink *devlink)
-> 	if (WARN_ON(ops->supported_reload_actions >= BIT(__DEVLINK_RELOAD_ACTION_MAX) ||
-> 		    ops->supported_reload_actions <= BIT(DEVLINK_RELOAD_ACTION_UNSPEC)))
-> 		return -EINVAL;
->+	if (WARN_ON(!ops->supported_reload_action_limit_levels ||
->+		    ops->supported_reload_action_limit_levels >=
->+		    BIT(__DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX)))
->+		return -EINVAL;
-
-I think that you can check some insane driver combinations like:
-supports only driver-reinit, supports LEVEL_NO_RESET - that is
-impossible and should be refused here.
-
-Same goes to the actual user command call. If the user calls for
-driver-reinit with LEVEL_NO_RESET, devlink should refuse with proper
-extack
-
-
-> 	return 0;
-> }
+> On Mon, 14 Sep 2020, Matthias Brugger wrote:
 > 
->@@ -9756,7 +9783,8 @@ static void __net_exit devlink_pernet_pre_exit(struct net *net)
-> 			if (WARN_ON(!devlink_reload_supported(devlink)))
-> 				continue;
-> 			err = devlink_reload(devlink, &init_net,
->-					     DEVLINK_RELOAD_ACTION_DRIVER_REINIT, NULL, NULL);
->+					     DEVLINK_RELOAD_ACTION_DRIVER_REINIT,
->+					     DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_NONE, NULL, NULL);
-> 			if (err && err != -EOPNOTSUPP)
-> 				pr_warn("Failed to reload devlink instance into init_net\n");
-> 		}
->-- 
->2.17.1
->
+>>
+>>
+>> On 14/09/2020 07:31, Lukas Bulwahn wrote:
+>>> Commit 637cfacae96f ("PCI: mediatek: Add MediaTek PCIe host controller
+>>> support") does not mention that linux-mediatek@lists.infradead.org is
+>>> moderated for non-subscribers, but the other eight entries for
+>>> linux-mediatek@lists.infradead.org do.
+>>>
+>>> Adjust this entry to be consistent with all others.
+>>>
+>>> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+>>
+>> Maybe rephrase the commit message to something like:
+>> "Mark linux-mediatek@lists.infraded.org as moderated for the MediaTek PCIe
+>> host controller entry, as the list actually is moderated."
+>>
+>> Anyway:
+>> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+>>
+>>> ---
+>>> applies cleanly on v5.9-rc5 and next-20200911
+>>>
+>>> Ryder, please ack.
+>>>
+>>> Bjorn, Matthias, please pick this minor non-urgent clean-up patch.
+>>>
+>>> This patch submission will also show me if linux-mediatek is moderated or
+>>> not. I have not subscribed to linux-mediatek and if it shows up quickly in
+>>> the archive, the list is probably not moderated; and if it takes longer, it
+>>> is moderated, and hence, validating the patch.
+>>
+>> I can affirm the list is moderated :)
+>>
+> 
+> Hmm, do we mean the same "moderation" here?
+> 
+> I believe a mailing list with the remark "moderated for non-subscribers"
+> means that a mail from an address that has not subscribed to the mailing
+> list is put on hold and needs to be manually permitted to be seen on the
+> mailing list.
+> 
+> Matthias, is that also your understanding of "moderated for
+> non-subscribers" for your Reviewed-by tag?
+
+Yes.
+
+> 
+> I am not subscribed to linux-mediatek. When I sent an email to the list,
+> it showed up really seconds later in the lore.kernel.org of the
+> linux-mediatek public-inbox repository. So, either it was delivered
+> quickly as it is not moderated or my check with lore.kernel.org is wrong,
+> e.g., mails show up in the lore.kernel.org archive, even they were not
+> yet permitted on the actual list.
+> 
+
+I'm the moderator and I get requests to moderate emails. I suppose I added you 
+to the accepted list because of earlier emails you send.
+
+Regards,
+Matthias
