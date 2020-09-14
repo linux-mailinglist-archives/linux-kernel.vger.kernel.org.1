@@ -2,166 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E672683B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575382683C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbgINEvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:51:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:20593 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbgINEvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:51:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600059090; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=pW+Ut9Zia1ZlZP3+tsXiEvt/uS9zUsT0H9WdOEbhF5I=; b=wSBgGWFePoARp82Yf+n6uhp2E2we0b5YemO5LKv0EYDac18P0CLTWFcQynzH3hvTPmB+eN/i
- PE/zc/Cr1jW0MMX85MSJ4Jy5FYfieBDeLHyNKaiZX2bOanPtQDFnp4GFsq6ykIhlxRmlx92W
- 36m+pNWusV2ryedQwiOP+7iIWy4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f5ef6bd9bdf68cc037938b4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 04:51:09
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AE0B3C433FF; Mon, 14 Sep 2020 04:51:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.106] (unknown [103.248.210.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E862CC433CA;
-        Mon, 14 Sep 2020 04:51:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E862CC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-Subject: Re: [PATCH v2 1/2] iommu/iova: Retry from last rb tree node if iova
- search fails
-From:   Vijayanand Jitta <vjitta@codeaurora.org>
-To:     joro@8bytes.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, kernel-team@android.com,
-        robin.murphy@arm.com
-References: <1597927761-24441-1-git-send-email-vjitta@codeaurora.org>
- <782f5dae-4ebc-02c8-5c83-4f7efda65c9d@codeaurora.org>
-Message-ID: <ef272a26-b1c2-f445-4e34-c87f1ce27a01@codeaurora.org>
-Date:   Mon, 14 Sep 2020 10:20:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726029AbgINEwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbgINEwg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 00:52:36 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF83EC06174A;
+        Sun, 13 Sep 2020 21:52:36 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id z19so11540741pfn.8;
+        Sun, 13 Sep 2020 21:52:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Q2Ibfk+nQZOW1cqQJ9txIYMhLv+gj4Sy6xqSd9DmWA=;
+        b=ejUmrq8Iadf/nWh/k76D9SUjpOWREHXHs/sYszqAIcXvWn01J7LU9SavyNRh5tf3We
+         lVdoabqUUuvksTLGvX+nfyOWpdUmbRFmMexlOsIelNCjlPaujuQQhoklVQMjIPZ2LN4U
+         lmOAFYsu0p+t6RtwKv1lQhr5H2D9f3RXh/oZkyYldfDPLBwQ3N9LYwG76Y0w6emjqbaR
+         THE69ZZ8qCk8byO69uE5yMU8a9cFyS6mbn5LAa5BGhVTRy0r/GDvtIr0lxOhOul8+7dI
+         LwlWZgqot0gPmX0nHiFVt7KvA+rW4IJBUkcEAGNxRIrWg734wU3s8k22KSwfcP6FP16q
+         5PUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Q2Ibfk+nQZOW1cqQJ9txIYMhLv+gj4Sy6xqSd9DmWA=;
+        b=ZqFvrTJNu6uKc8AHei1dxBB5N4UHqrq8xpygM4wgKj5pK+1UMK5BHroO7u406G42ES
+         clS/N1UuP2trAAM4Uk1kR4z3uy20unWn57ckJB/1SBMthd8uavCNt9pJBCcbrGm+VJb1
+         cUM94oWDv7UmND0u8aJq+KlKekVWlmQreOeK1eNlQGt1uSq7nyjk9NTSGyvGnR2pkEPt
+         aLWZ1TJhZ0TMhXYisiLVWrO9gVCHQlCkbFUGQejgNQ3Uu7LH05oxrYLQYx/kxq0S6hm6
+         Yu3ocQwbVLjMQlP8zrafg2KqJTaWhl0BsNC18BjFR2567h5/h38qSIn5j47XV30/1tF7
+         qTyA==
+X-Gm-Message-State: AOAM533H5M3BUUWWoyLNpz8MstcLPlbh8uZKPrWSFys5zVrhcpn28usx
+        GeSgWiwWCWiu3kUPRRH0xhM=
+X-Google-Smtp-Source: ABdhPJzFrz8mmf96fURpM3KuwwEgUYQJyVtYlAsIcvS5cLVagsaDZEbOGwmLwgd4u8HXatYEzUDalg==
+X-Received: by 2002:a63:524a:: with SMTP id s10mr3316432pgl.40.1600059156171;
+        Sun, 13 Sep 2020 21:52:36 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com ([203.185.249.227])
+        by smtp.gmail.com with ESMTPSA id a13sm6945312pgq.41.2020.09.13.21.52.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 21:52:35 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     "linux-mm @ kvack . org" <linux-mm@kvack.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v2 0/4] more mm switching vs TLB shootdown and lazy tlb fixes
+Date:   Mon, 14 Sep 2020 14:52:15 +1000
+Message-Id: <20200914045219.3736466-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <782f5dae-4ebc-02c8-5c83-4f7efda65c9d@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an attempt to fix a few different related issues around
+switching mm, TLB flushing, and lazy tlb mm handling.
 
+This will require all architectures to eventually move to disabling
+irqs over activate_mm, but it's possible we could add another arch
+call after irqs are re-enabled for those few which can't do their
+entire activation with irqs disabled.
 
-On 8/28/2020 1:01 PM, Vijayanand Jitta wrote:
-> 
-> 
-> On 8/20/2020 6:19 PM, vjitta@codeaurora.org wrote:
->> From: Vijayanand Jitta <vjitta@codeaurora.org>
->>
->> When ever a new iova alloc request comes iova is always searched
->> from the cached node and the nodes which are previous to cached
->> node. So, even if there is free iova space available in the nodes
->> which are next to the cached node iova allocation can still fail
->> because of this approach.
->>
->> Consider the following sequence of iova alloc and frees on
->> 1GB of iova space
->>
->> 1) alloc - 500MB
->> 2) alloc - 12MB
->> 3) alloc - 499MB
->> 4) free -  12MB which was allocated in step 2
->> 5) alloc - 13MB
->>
->> After the above sequence we will have 12MB of free iova space and
->> cached node will be pointing to the iova pfn of last alloc of 13MB
->> which will be the lowest iova pfn of that iova space. Now if we get an
->> alloc request of 2MB we just search from cached node and then look
->> for lower iova pfn's for free iova and as they aren't any, iova alloc
->> fails though there is 12MB of free iova space.
->>
->> To avoid such iova search failures do a retry from the last rb tree node
->> when iova search fails, this will search the entire tree and get an iova
->> if its available.
->>
->> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
->> ---
->>  drivers/iommu/iova.c | 23 +++++++++++++++++------
->>  1 file changed, 17 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
->> index 49fc01f..4e77116 100644
->> --- a/drivers/iommu/iova.c
->> +++ b/drivers/iommu/iova.c
->> @@ -184,8 +184,9 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
->>  	struct rb_node *curr, *prev;
->>  	struct iova *curr_iova;
->>  	unsigned long flags;
->> -	unsigned long new_pfn;
->> +	unsigned long new_pfn, low_pfn_new;
->>  	unsigned long align_mask = ~0UL;
->> +	unsigned long high_pfn = limit_pfn, low_pfn = iovad->start_pfn;
->>  
->>  	if (size_aligned)
->>  		align_mask <<= fls_long(size - 1);
->> @@ -198,15 +199,25 @@ static int __alloc_and_insert_iova_range(struct iova_domain *iovad,
->>  
->>  	curr = __get_cached_rbnode(iovad, limit_pfn);
->>  	curr_iova = rb_entry(curr, struct iova, node);
->> +	low_pfn_new = curr_iova->pfn_hi + 1;
->> +
->> +retry:
->>  	do {
->> -		limit_pfn = min(limit_pfn, curr_iova->pfn_lo);
->> -		new_pfn = (limit_pfn - size) & align_mask;
->> +		high_pfn = min(high_pfn, curr_iova->pfn_lo);
->> +		new_pfn = (high_pfn - size) & align_mask;
->>  		prev = curr;
->>  		curr = rb_prev(curr);
->>  		curr_iova = rb_entry(curr, struct iova, node);
->> -	} while (curr && new_pfn <= curr_iova->pfn_hi);
->> -
->> -	if (limit_pfn < size || new_pfn < iovad->start_pfn) {
->> +	} while (curr && new_pfn <= curr_iova->pfn_hi && new_pfn >= low_pfn);
->> +
->> +	if (high_pfn < size || new_pfn < low_pfn) {
->> +		if (low_pfn == iovad->start_pfn && low_pfn_new < limit_pfn) {
->> +			high_pfn = limit_pfn;
->> +			low_pfn = low_pfn_new;
->> +			curr = &iovad->anchor.node;
->> +			curr_iova = rb_entry(curr, struct iova, node);
->> +			goto retry;
->> +		}
->>  		iovad->max32_alloc_size = size;
->>  		goto iova32_full;
->>  	}
->>
-> 
-> ping ?
-> 
-> Thanks,
-> Vijay
-> 
+Testing so far indicates this has fixed a mm refcounting bug that
+powerpc was running into (via distro report and backport). I haven't
+had any real feedback on this series outside powerpc (and it doesn't
+really affect other archs), so I propose patches 1,2,4 go via the
+powerpc tree.
 
-ping ?
+There is no dependency between them and patch 3, I put it there only
+because it follows the history of the code (powerpc code was written
+using the sparc64 logic), but I guess they have to go via different arch
+trees. Dave, I'll leave patch 3 with you.
 
 Thanks,
-Vijay
+Nick
+
+Since v1:
+- Updates from Michael Ellerman's review comments.
+
+Nicholas Piggin (4):
+  mm: fix exec activate_mm vs TLB shootdown and lazy tlb switching race
+  powerpc: select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+  sparc64: remove mm_cpumask clearing to fix kthread_use_mm race
+  powerpc/64s/radix: Fix mm_cpumask trimming race vs kthread_use_mm
+
+ arch/Kconfig                           |  7 +++
+ arch/powerpc/Kconfig                   |  1 +
+ arch/powerpc/include/asm/mmu_context.h |  2 +-
+ arch/powerpc/include/asm/tlb.h         | 13 ------
+ arch/powerpc/mm/book3s64/radix_tlb.c   | 23 ++++++---
+ arch/sparc/kernel/smp_64.c             | 65 ++++++--------------------
+ fs/exec.c                              | 17 ++++++-
+ 7 files changed, 54 insertions(+), 74 deletions(-)
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of Code Aurora Forum, hosted by The Linux Foundation
+2.23.0
+
