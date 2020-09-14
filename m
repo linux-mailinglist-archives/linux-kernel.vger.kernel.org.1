@@ -2,109 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27262688C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0BA2688C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgINJtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgINJt2 (ORCPT
+        id S1726398AbgINJtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:49:12 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35026 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgINJtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:49:28 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C994C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:49:28 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id q13so9219866vsj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:49:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZI9hWs9di1kI2Awll+JevFT5wlTin0rF6zp9GvGxF9A=;
-        b=Xc0rm+KsVi2+td2U7W+TciA3zrMCHvT1844h3a+1lSMscTiGMENuRgteAD8/oZZtoY
-         XKzB1ROyjE2CEHo0x7D1jYVsL8+/lj9eTpbPf0jjUXi2OiVFxb3N1mPN8LbpsK4gy6Pb
-         d2qIaN0qDRbhwk4DpqogvavJnkckvG54cnQ3UnJUSHhAr8GGctQ8DbiZApw4IdbSLocu
-         NVgGBMibLpCzYjf1rQ14W8LkrrwS/c2/62BjFHmQKMa/KfcIY4Aolc3BGMt98b/9wHl6
-         wy3PUB1V3wXpj2PMJRkF/zIzjJ/VaRKfnjQo16/cct63jTxToHR+n0EOjyWT9HCLv61J
-         MWVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZI9hWs9di1kI2Awll+JevFT5wlTin0rF6zp9GvGxF9A=;
-        b=PiX+agSWgcvj3ey5JuuY4WZF6rRKkPuwcod4cplWbsL8dysjfae3Ur/Xa3xCPXdpb1
-         vKqgkmiHI0rNdsS6dG8WSNPLPTrXrpQs9apb5vmIm5lFnGSFkvkbF6zMVTODVcpOyvYI
-         OTXnEBCM7X5nYqbEj9CzizXP4VZZXdW1B21X8+2VHN/jko79zVMoqtkn9NK+4p1F9I8b
-         Wmt+cSq/oqdHWnnthLeg3d4MnhJ0jTfQF1tYEjoXo7wlgihHJWqI2Clzpr/Ss5JGqvyk
-         b2iFg2uQesByCiVTgp8+WNhSD3gJ4g6zj7DsUdttKCFdH1n6Sv4wvwaHLcbI0q5bCoZl
-         LYpQ==
-X-Gm-Message-State: AOAM533csxCqoafo/tK0d+Li1Ct2Rhk8NzdTSK7C2Kodr2v/XBBn0LYL
-        8mCW4GK6IF/dmSXdgIp3U9dfMTePk6hg/5Wp2g++6hzEJ2Un+g==
-X-Google-Smtp-Source: ABdhPJxMkp7gENPAvak1I3oKE+Q3eWPr9M9QVxG1ASm7GjKPnle3ZMAvGkHmOFvy9Wprr9nAyKTNIOEdb1gjWex5SK4=
-X-Received: by 2002:a05:6102:2085:: with SMTP id h5mr7077307vsr.26.1600076966162;
- Mon, 14 Sep 2020 02:49:26 -0700 (PDT)
+        Mon, 14 Sep 2020 05:49:12 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 10169298604
+Subject: Re: [PATCH 01/12] dt-bindings: power: Add bindings for the Mediatek
+ SCPSYS power domains controller
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        fparent@baylibre.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        weiyi.lu@mediatek.com, Matthias Brugger <mbrugger@suse.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <20200910172826.3074357-2-enric.balletbo@collabora.com>
+ <20200911230255.GA2972120@bogus>
+ <7a1c89b6-f483-5d57-f154-b80b72964077@gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <afa8d779-1965-f01c-3cd2-f57ebb3f7b60@collabora.com>
+Date:   Mon, 14 Sep 2020 11:49:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200914094243.3912-1-geert@linux-m68k.org>
-In-Reply-To: <20200914094243.3912-1-geert@linux-m68k.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 14 Sep 2020 11:48:49 +0200
-Message-ID: <CAPDyKFon7ymJ2LR-fraAujdY4PW4HsZyZfRZAm7LDFRX_t27bg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: mmc_spi: Fix mmc_spi_dma_alloc() return type for !HAS_DMA
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <7a1c89b6-f483-5d57-f154-b80b72964077@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 at 11:42, Geert Uytterhoeven <geert@linux-m68k.org> wro=
-te:
->
-> If CONFIG_NO_DMA=3Dy (e.g. Sun-3 allmodconfig):
->
->     drivers/mmc/host/mmc_spi.c:1323:15: warning: return type defaults to =
-=E2=80=98int=E2=80=99 [-Wreturn-type]
->      static inline mmc_spi_dma_alloc(struct mmc_spi_host *host) { return =
-0; }
->                    ^~~~~~~~~~~~~~~~~
->
-> Fix this by adding the missing return type.
->
-> Fixes: a395acf0f6dc6409 ("mmc: mmc_spi: Allow the driver to be built when=
- CONFIG_HAS_DMA is unset")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Geert, my mistake, thanks for helping out and fixing it!
 
-Applied for fixes, thanks!
+On 14/9/20 10:59, Matthias Brugger wrote:
+> 
+> 
+> On 12/09/2020 01:02, Rob Herring wrote:
+>> On Thu, Sep 10, 2020 at 07:28:15PM +0200, Enric Balletbo i Serra wrote:
+>>> The System Control Processor System (SCPSYS) has several power management
+>>> related tasks in the system. Add the bindings to define the power
+>>> domains for the SCPSYS power controller.
+>>>
+>>> Co-developed-by: Matthias Brugger <mbrugger@suse.com>
+>>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>> ---
+>>> Dear Rob,
+>>>
+>>> I am awasre that this binding is not ready, but I prefered to send because I'm
+>>> kind of blocked. Compiling this binding triggers the following error:
+>>>
+>>>      mediatek,power-controller.example.dt.yaml: syscon@10006000: mfg_async@7:
+>>>      '#address-cells', '#size-cells', 'mfg_2d@8'
+>>>      do not match any of the regexes: 'pinctrl-[0-9]+'
+>>>
+>>> This happens when a definition of a power-domain (parent) contains
+>>> another power-domain (child), like the example. I am not sure how to
+>>> specify this in the yaml and deal with this, so any clue is welcome.
+>>
+>> You just have to keep nesting schemas all the way down. Define a
+>> grandchild node under the child node and then all of its properties.
+>>
+>>>
+>>> Thanks,
+>>>    Enric
+>>>
+>>>   .../power/mediatek,power-controller.yaml      | 171 ++++++++++++++++++
+>>>   1 file changed, 171 insertions(+)
+>>>   create mode 100644
+>>> Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+>>>
+>>> diff --git
+>>> a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+>>> b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+>>> new file mode 100644
+>>> index 000000000000..8be9244ad160
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+>>> @@ -0,0 +1,171 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/power/mediatek,power-controller.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Mediatek Power Domains Controller
+>>> +
+>>> +maintainers:
+>>> +  - Weiyi Lu <weiyi.lu@mediatek.com>
+>>> +  - Matthias Brugger <mbrugger@suse.com>
+>>> +
+>>> +description: |
+>>> +  Mediatek processors include support for multiple power domains which can be
+>>> +  powered up/down by software based on different application scenes to save
+>>> power.
+>>> +
+>>> +  IP cores belonging to a power domain should contain a 'power-domains'
+>>> +  property that is a phandle for SCPSYS node representing the domain.
+>>> +
+>>> +properties:
+>>> +  $nodename:
+>>> +    pattern: "^syscon@[0-9a-f]+$"
+>>> +
+>>> +  compatible:
+>>> +    items:
+>>> +      - enum:
+>>> +        - mediatek,mt8173-power-controller
+>>> +      - const: syscon
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +patternProperties:
+>>> +  "^.*@[0-9]$":
+>>
+>> Node names should be generic:
+>>
+>> power-domain@
+>>
+> 
+> Enric correct me if I'm wrong, if we want to see the power domains in debugfs,
+> they are listed by their name. If all are called power-domain then the listing
+> is pretty much useless.
+> 
 
-Kind regards
-Uffe
+cc'ing Dafna who might be interested in this discussion.
 
-> ---
->  drivers/mmc/host/mmc_spi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-> index 5055a7eb134ac13f..18a850f37ddce27e 100644
-> --- a/drivers/mmc/host/mmc_spi.c
-> +++ b/drivers/mmc/host/mmc_spi.c
-> @@ -1320,7 +1320,7 @@ static void mmc_spi_dma_free(struct mmc_spi_host *h=
-ost)
->                          DMA_BIDIRECTIONAL);
->  }
->  #else
-> -static inline mmc_spi_dma_alloc(struct mmc_spi_host *host) { return 0; }
-> +static inline int mmc_spi_dma_alloc(struct mmc_spi_host *host) { return =
-0; }
->  static inline void mmc_spi_dma_free(struct mmc_spi_host *host) {}
->  #endif
->
-> --
-> 2.17.1
->
+Yes, It'd be difficult to clearly identify which domain is without looking at
+the DT. Now we have
+
+# ls /sys/kernel/debug/pm_genpd
+audio  mfg     mfg_async  pm_genpd_summary  vdec  venc_lt
+isp    mfg_2d  mm         usb
+
+
+Actually, I see two "problems" on using a generic name. The first one is that
+debugfs uses that name and doesn't allow duplicate names, so we will get a bunch
+of errors like this:
+
+debugfs: Directory 'power-domain' with parent 'pm_gendpd' already present!
+debugfs: Directory 'power-domain' with parent 'pm_gendpd' already present!
+debugfs: Directory 'power-domain' with parent 'pm_gendpd' already present!
+...
+
+And we will lost the debug information. However, that's not probably a DT
+problem as maybe debugfs should create different names in the form
+power-domain@0, power-domain@1, etc.
+
+The second one is what Matthias said, the name exported to the debugfs is
+useless. Again, maybe is not a DT problem and the debugfs infra should handle
+this cases in a better way, but that's not the case right now.
+
+
+>>> +    type: object
+>>> +    description: |
+>>> +      Represents the power domains within the power controller node as
+>>> documented
+>>> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
+>>> +
+>>> +    properties:
+>>> +      reg:
+>>> +        description: |
+>>> +          Power domain index. Valid values are defined in:
+>>> +              "include/dt-bindings/power/mt8173-power.h" - for MT8173 type
+>>> power domain.
+>>> +        maxItems: 1
+>>> +
+>>> +      '#power-domain-cells':
+>>> +        description:
+>>> +          Documented by the generic PM Domain bindings in
+>>> +          Documentation/devicetree/bindings/power/power-domain.yaml.
+>>
+>> No need to redefine a common property. This should define valid values
+>> for it.
+>>
+>>> +
+>>> +      clocks:
+>>> +        description: |
+>>> +          A number of phandles to clocks that need to be enabled during domain
+>>> +          power-up sequencing.
+>>
+>> No need to redefine 'clocks'. You need to define how many, what each one
+>> is, and the order.
+>>
+> 
+> Do you mean we have to define each clock for each power domain of each SoC?
+> 
+>>> +
+>>> +      clock-names:
+>>> +        description: |
+>>> +          List of names of clocks, in order to match the power-up sequencing
+>>> +          for each power domain we need to group the clocks by name. BASIC
+>>> +          clocks need to be enabled before enabling the corresponding power
+>>> +          domain, and should not have a '-' in their name (i.e mm, mfg, venc).
+>>> +          SUSBYS clocks need to be enabled before releasing the bus protection,
+>>> +          and should contain a '-' in their name (i.e mm-0, isp-0, cam-0).
+>>> +
+>>> +          In order to follow properly the power-up sequencing, the clocks must
+>>> +          be specified by order, adding first the BASIC clocks followed by the
+>>> +          SUSBSYS clocks.
+>>
+>> You need to define the names.
+>>
+>>> +
+>>> +      mediatek,infracfg:
+>>> +        $ref: /schemas/types.yaml#definitions/phandle
+>>> +        description: phandle to the device containing the INFRACFG register
+>>> range.
+>>> +
+>>> +      mediatek,smi:
+>>> +        $ref: /schemas/types.yaml#definitions/phandle
+>>> +        description: phandle to the device containing the SMI register range.
+>>> +
+>>> +    required:
+>>> +      - reg
+>>> +      - '#power-domain-cells'
+>>> +
+>>> +    additionalProperties: false
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    #include <dt-bindings/clock/mt8173-clk.h>
+>>> +    #include <dt-bindings/power/mt8173-power.h>
+>>> +
+>>> +    soc {
+>>> +        #address-cells = <2>;
+>>> +        #size-cells = <2>;
+>>> +
+>>> +        scpsys: syscon@10006000 {
+>>> +            compatible = "mediatek,mt8173-power-controller", "syscon";
+> 
+> The power domain controller is just one funcionality the SCPSYS block can
+> provide. I think it should be child of the SCPSYS.
+> 
+> Regards,
+> Matthias
+> 
