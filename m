@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1326269108
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6761126912C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgINQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        id S1726297AbgINQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgINPq2 (ORCPT
+        with ESMTP id S1726479AbgINPq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 11:46:28 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBCDC061354
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z4so190044wrr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655EDC06121C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:10 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so146842wrm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AzEpLYmbKmiQH23cwCt0zuNgJwoYOVOuAiMHB8Xci9c=;
-        b=fGe90BwUL9T/sVeFm8B8qjEDsbV7N1Fc0qp1Yn5hDUJkwKQIS4qyv0txAkGyG02TwZ
-         S/EOD9gJYHnj5vGJISv78CjFbkvzKYJNm1VNxL0rxnlQNfqI2SEsCj7+cQaE4vKG1dZm
-         YRwZRKUJj0vx+U88dcWCJl8dv6MDJ+ygddYPQjUAXHUAymD4whxbFh+JbnEjUd84dDm2
-         FAFNKRhEVkRDw3d7N7iVmVwKFu7mq3MLMeBOM8vj4YEq+V5ITixlz0ir3No1MUhgPMhO
-         gWGUrKfEzI3nRFDtUsdF7MJ8JbF3aAw/YYcRfIZLvxLqyHnWyMRzrctjjX0kBJXEG5Ey
-         riVQ==
+        bh=FWCrXT3ic7H+Af6cTpxRpL0fw/Z0w8+0CYapT6XgXZU=;
+        b=eh1+Yea2XxQSbKFYRW0h2lj8RW7m3xsGJw5fPiRKTwSRZKDJfKYZUReq2wFEJ8hREp
+         9j6lgmNVXYZecYDsLI+0SsccB+5LMlUp5tCO0WceGQGlLQvhX+zZp5ZQNMbf6GbCi8z4
+         IK8tUKbJhwVW+pGG/P2PTIVJvAfVWL/9G8qEFGs/yfLb/lm66PuRlSa9h7rHUoP/6rKr
+         QLu2fS7bhJeaCVxOyOuYg1LIAgw+gZPrBT62XYLudh77+u2HFMRZohkLQHJht3jlKsLp
+         I+DUgisc766PIwuQ9YCWJsSoHGMYDp5REek+vbL9Z52I9Fyww/KFrsCldjDLAUM/3dnm
+         61PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AzEpLYmbKmiQH23cwCt0zuNgJwoYOVOuAiMHB8Xci9c=;
-        b=iFZ1Mg6uX7SlpiwwmhIWOGAsLqxSp/J4LHR3Df4cSakcuGNBmrB/iJE4HrrgJnvKpZ
-         LLGskCpYDJ3sT9++QVYzMnwrIILXWwqanIZzgVYFS808xMGwudqSci6MnWi//BouP/Bo
-         uJIYXcCTIeC6TdhZBeDdl8B1oDaoqLzACeJfg8FYcKjdVvUD2KrwZIsqyS9sZHneMqFU
-         HN6r8ZeE9V5hiZoHNxd80FK0nS+UjtyTNpX6whxrapQdLlp2hyZtcFU5VGONxg1El3cF
-         Q7bv3CxmvPR/KmLQ5hhCAlxkZb272SaeCpdwddlRjdeA13I1a6XSaoeCr37N+CvBhlSS
-         9BTA==
-X-Gm-Message-State: AOAM531asmeb6YbG+ylBtb6q+93UOMKgB0kZ2r1EQnZR1Ex4StAmtkCu
-        Y0SpoSnnrQm+dItHsRvIB0lMcQ==
-X-Google-Smtp-Source: ABdhPJxvTqzsOYQKy+ApiwvZXKRhb5S5X2RREAKmVMVu9Qx3kT15m1tgR+R1ozwQL9VQTHk88NYFww==
-X-Received: by 2002:a05:6000:83:: with SMTP id m3mr16497440wrx.165.1600098367011;
-        Mon, 14 Sep 2020 08:46:07 -0700 (PDT)
+        bh=FWCrXT3ic7H+Af6cTpxRpL0fw/Z0w8+0CYapT6XgXZU=;
+        b=pCszXUEdizqM6BReibV5ERU1FYRL8cs9N6hfQfuEZ5YhQ9z8X6uld1id2lhdoynkzb
+         /j8ec66L2RBT9ORbZsxeuW4NZVfAnjpHrRQAcaEiwfNwrfGvkSUQRuXg/+EJ0/AWO5uw
+         B6ADGG7NDO85/1Z3GHkFTdc5lOpDEGwPKHG0pjYXF5ksgCfNMdMb4toyhBKTtruynGHf
+         6olhgGGg0VfsG6d6rngVyGBPGvyaCzHn71/dUoY8FpQVgH+K0Zwz6+jgv+UMohFJbDLX
+         jWZVMuLMBSHuJjURb9SNRtmi+7BOk/KIXA5sg+Jo9bdph/xgFmt4kCZB1vbmbQnsgVzy
+         FIwA==
+X-Gm-Message-State: AOAM532E0lYZQtD0rOmii7zAPQwdZc17gKBiOezyOlBvPbAH88s8fcXd
+        kuOh19GABuf26mhT26Qcw6SWYg==
+X-Google-Smtp-Source: ABdhPJy+HZ7AVqx1LVJRdx0N+IrTlRkl15KXkCMfRbI0MTq5mfEHn0fthqXdQhxP39k8TPWH3fWtLQ==
+X-Received: by 2002:a5d:4591:: with SMTP id p17mr16427572wrq.408.1600098369081;
+        Mon, 14 Sep 2020 08:46:09 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.06
+        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:46:06 -0700 (PDT)
+        Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 03/14] rtc: rx8010: remove unnecessary brackets
-Date:   Mon, 14 Sep 2020 17:45:50 +0200
-Message-Id: <20200914154601.32245-4-brgl@bgdev.pl>
+Subject: [PATCH v3 05/14] rtc: rx8010: use tabs instead of spaces for code formatting
+Date:   Mon, 14 Sep 2020 17:45:52 +0200
+Message-Id: <20200914154601.32245-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
 References: <20200914154601.32245-1-brgl@bgdev.pl>
@@ -68,48 +68,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Remove brackets wherever they guard a single line.
+The define values in this driver are close to their names and they are
+separated by spaces. Use tabs instead and align all defines.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-rx8010.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/rtc/rtc-rx8010.c | 58 ++++++++++++++++++++--------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index c6797ec0aba1..79a3d90d2c43 100644
+index 153fa58f0365..51ac4fac8f19 100644
 --- a/drivers/rtc/rtc-rx8010.c
 +++ b/drivers/rtc/rtc-rx8010.c
-@@ -181,9 +181,8 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- 		return ret;
+@@ -13,40 +13,40 @@
+ #include <linux/module.h>
+ #include <linux/rtc.h>
  
- 	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
--	if (flagreg < 0) {
-+	if (flagreg < 0)
- 		return flagreg;
--	}
+-#define RX8010_SEC     0x10
+-#define RX8010_MIN     0x11
+-#define RX8010_HOUR    0x12
+-#define RX8010_WDAY    0x13
+-#define RX8010_MDAY    0x14
+-#define RX8010_MONTH   0x15
+-#define RX8010_YEAR    0x16
+-#define RX8010_RESV17  0x17
+-#define RX8010_ALMIN   0x18
+-#define RX8010_ALHOUR  0x19
+-#define RX8010_ALWDAY  0x1A
+-#define RX8010_TCOUNT0 0x1B
+-#define RX8010_TCOUNT1 0x1C
+-#define RX8010_EXT     0x1D
+-#define RX8010_FLAG    0x1E
+-#define RX8010_CTRL    0x1F
++#define RX8010_SEC		0x10
++#define RX8010_MIN		0x11
++#define RX8010_HOUR		0x12
++#define RX8010_WDAY		0x13
++#define RX8010_MDAY		0x14
++#define RX8010_MONTH		0x15
++#define RX8010_YEAR		0x16
++#define RX8010_RESV17		0x17
++#define RX8010_ALMIN		0x18
++#define RX8010_ALHOUR		0x19
++#define RX8010_ALWDAY		0x1A
++#define RX8010_TCOUNT0		0x1B
++#define RX8010_TCOUNT1		0x1C
++#define RX8010_EXT		0x1D
++#define RX8010_FLAG		0x1E
++#define RX8010_CTRL		0x1F
+ /* 0x20 to 0x2F are user registers */
+-#define RX8010_RESV30  0x30
+-#define RX8010_RESV31  0x31
+-#define RX8010_IRQ     0x32
++#define RX8010_RESV30		0x30
++#define RX8010_RESV31		0x31
++#define RX8010_IRQ		0x32
  
- 	if (flagreg & RX8010_FLAG_VLF)
- 		ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
-@@ -284,17 +283,15 @@ static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
- 	int err;
+-#define RX8010_EXT_WADA  BIT(3)
++#define RX8010_EXT_WADA		BIT(3)
  
- 	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
--	if (flagreg < 0) {
-+	if (flagreg < 0)
- 		return flagreg;
--	}
+-#define RX8010_FLAG_VLF  BIT(1)
+-#define RX8010_FLAG_AF   BIT(3)
+-#define RX8010_FLAG_TF   BIT(4)
+-#define RX8010_FLAG_UF   BIT(5)
++#define RX8010_FLAG_VLF		BIT(1)
++#define RX8010_FLAG_AF		BIT(3)
++#define RX8010_FLAG_TF		BIT(4)
++#define RX8010_FLAG_UF		BIT(5)
  
- 	if (rx8010->ctrlreg & (RX8010_CTRL_AIE | RX8010_CTRL_UIE)) {
- 		rx8010->ctrlreg &= ~(RX8010_CTRL_AIE | RX8010_CTRL_UIE);
- 		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
- 						rx8010->ctrlreg);
--		if (err < 0) {
-+		if (err < 0)
- 			return err;
--		}
- 	}
+-#define RX8010_CTRL_AIE  BIT(3)
+-#define RX8010_CTRL_UIE  BIT(5)
+-#define RX8010_CTRL_STOP BIT(6)
+-#define RX8010_CTRL_TEST BIT(7)
++#define RX8010_CTRL_AIE		BIT(3)
++#define RX8010_CTRL_UIE		BIT(5)
++#define RX8010_CTRL_STOP	BIT(6)
++#define RX8010_CTRL_TEST	BIT(7)
  
- 	flagreg &= ~RX8010_FLAG_AF;
+-#define RX8010_ALARM_AE  BIT(7)
++#define RX8010_ALARM_AE		BIT(7)
+ 
+ static const struct i2c_device_id rx8010_id[] = {
+ 	{ "rx8010", 0 },
 -- 
 2.26.1
 
