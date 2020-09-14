@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099D9268937
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D3426894F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbgINKYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbgINKYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:24:12 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2B9C06174A;
-        Mon, 14 Sep 2020 03:24:10 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i26so22427038ejb.12;
-        Mon, 14 Sep 2020 03:24:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jV6D5Ck9gFOE7DCBMEmlAIDMaEEB8asrxDS/Nejj/VY=;
-        b=Qgm2P8lXIs/sG42zI4dGYqmeeuImWwBegT9scXex3DjQYg1D+hgZGKMOWRoRqEz7pG
-         sKvAKulF8YZPx5MXiU36nO2A3H4ku9B/rhHbVwUfkvSpDM+uI5dcOxb6LayzQNPQYgan
-         3tcVCl2wWyb5oi7dKZCXHgEA6/7NUpBPDy4Jqn0xwqgbA89WLx2ZEj3tOqWlW7ZFIHeH
-         Xn5Z30tBlNIhPn25AniCkxw14DjW2HuyYnzctb8L3gzPIG5eL7HfKhPIk3ZQzAQnoVaM
-         J55P0EW3ru9M5Et00VM31+OUnYbvxshnaLd76jTJvDAFe8XgK4WpedOIPCc8v9hRrqBg
-         78QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jV6D5Ck9gFOE7DCBMEmlAIDMaEEB8asrxDS/Nejj/VY=;
-        b=NiAWZk3jy5cO9dLYIA/wW5KvdU1bGHmZczgJnYBRLFP/B6owg884zez2N4SYQD1sOX
-         7r936oVovNsCwAClif8ukLsg4I+8aFKerLNRpPzCWTHKcuB+72jKCBkiKjsHBjWAyhI2
-         R6NnsLUswuKzGiKYm16cBpFBf1/6LDyDXtrUgOY9jKPfEUxta9kGtCyNmce8ztD8FpVd
-         hCoatU7WX4jCf/TYnJisZRd04TLo87B0KV7fDjW99seTlY73bMmlZmXGXE3i1bWVqOUI
-         nHc8kG7lJ1gMt43v+kSBlxRMnR28YOMnrC8/kAQiwwa0cIjFPHh8vsPI0roQhnIAmuwp
-         IE9A==
-X-Gm-Message-State: AOAM530r6Kjj6XwPwffAlLQqP1K9zyINwIkrj4qXjBxqA3OfxIkataRj
-        qrnswBhodTHQUBaeSNb8yZj6E4AynVsLfq42YGE=
-X-Google-Smtp-Source: ABdhPJxnBtRjr7WvcpNx4smmkuTpFTtnmeqe15JlsLaG07UR+6yM4//MyNOvunJKChDZKrrrN1vT1OGpv807OJjacRI=
-X-Received: by 2002:a17:906:54e:: with SMTP id k14mr13918816eja.59.1600079049351;
- Mon, 14 Sep 2020 03:24:09 -0700 (PDT)
+        id S1726446AbgINKbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:31:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:34070 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726428AbgINKbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:31:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1DDD1FB;
+        Mon, 14 Sep 2020 03:31:48 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 400583F68F;
+        Mon, 14 Sep 2020 03:31:47 -0700 (PDT)
+References: <20200910054203.525420-1-aubrey.li@intel.com> <20200910054203.525420-2-aubrey.li@intel.com> <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com> <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     "Li\, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Qais Yousef <qais.yousef@arm.com>, Aubrey Li <aubrey.li@intel.com>,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask in sched domain
+In-reply-to: <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
+Date:   Mon, 14 Sep 2020 11:31:42 +0100
+Message-ID: <jhjmu1s644x.mognet@arm.com>
 MIME-Version: 1.0
-References: <20200914045219.3736466-1-npiggin@gmail.com> <20200914045219.3736466-4-npiggin@gmail.com>
- <1600066040.vnmz9nxhwt.astroid@bobo.none>
-In-Reply-To: <1600066040.vnmz9nxhwt.astroid@bobo.none>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Mon, 14 Sep 2020 13:23:58 +0300
-Message-ID: <CADxRZqxkB9tzO+nf56vFfvdYBooo1rqEbst=QGZQJA3jWhKLYw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] sparc64: remove mm_cpumask clearing to fix
- kthread_use_mm race
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-arch@vger.kernel.org,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:00 AM Nicholas Piggin <npiggin@gmail.com> wrote:
->
-> Excerpts from Nicholas Piggin's message of September 14, 2020 2:52 pm:
->
-> [...]
->
-> > The basic fix for sparc64 is to remove its mm_cpumask clearing code. The
-> > optimisation could be effectively restored by sending IPIs to mm_cpumask
-> > members and having them remove themselves from mm_cpumask. This is more
-> > tricky so I leave it as an exercise for someone with a sparc64 SMP.
-> > powerpc has a (currently similarly broken) example.
->
-> So this compiles and boots on qemu, but qemu does not support any
-> sparc64 machines with SMP. Attempting some simple hacks doesn't get
-> me far because openbios isn't populating an SMP device tree, which
-> blows up everywhere.
->
-> The patch is _relatively_ simple, hopefully it shouldn't explode, so
-> it's probably ready for testing on real SMP hardware, if someone has
-> a few cycles.
 
-Nick,
+On 12/09/20 00:04, Li, Aubrey wrote:
+>>> +++ b/include/linux/sched/topology.h
+>>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>>>     atomic_t	ref;
+>>>     atomic_t	nr_busy_cpus;
+>>>     int		has_idle_cores;
+>>> +	/*
+>>> +	 * Span of all idle CPUs in this domain.
+>>> +	 *
+>>> +	 * NOTE: this field is variable length. (Allocated dynamically
+>>> +	 * by attaching extra space to the end of the structure,
+>>> +	 * depending on how many CPUs the kernel has booted up with)
+>>> +	 */
+>>> +	unsigned long	idle_cpus_span[];
+>>
+>> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
+>
+> I can use the existing free code. Do we have a problem of this?
+>
 
-applied this patch to over 'v5.9-rc5' tag , used my test VM (ldom)
-with 32 vcpus.
-Machine boot, stress-ng test ( run as
-"stress-ng --cpu 8 --io 8 --vm 8 --vm-bytes 2G --fork 8 --timeout 15m" )
-finishes without errors.
+Nah, flexible array members are the preferred approach here; this also
+means we don't let CONFIG_CPUMASK_OFFSTACK dictate where this gets
+allocated.
+
+See struct numa_group, struct sched_group, struct sched_domain, struct
+em_perf_domain...
+
+>>
+>> The patch looks useful. Did it help you with any particular workload? It'd be
+>> good to expand on that in the commit message.
+>>
+> Odd, that included in patch v1 0/1, did you receive it?
+>
+> Thanks,
+> -Aubrey
