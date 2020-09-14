@@ -2,83 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C68268536
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43DC26853D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgING5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:57:38 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43653 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726075AbgING5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:57:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bqccb2fSSz9sT6;
-        Mon, 14 Sep 2020 16:57:35 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600066655;
-        bh=rDnCRXiY1rl+EAVPPMlFEXpH38K3TViG+peSFJd1iGc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=G5yjSd6MPqjrv0AqKvsT3PAXgkEiMG3MsgTUuZv+F40qDN2LXYQTKiAfqDFmxTUQk
-         1JiR+Y2RV/4ejRYrJ6mbX4lhRdpEKArNXe1ORT+L+G+NdWSgfVNpGvM9FoEI0ct3Tk
-         CHiQ3mWqnSuYkJDWV0K6Vdlx935x/51cyHeaNYL9s4VKuCxRk0xV5zAUgiUAEMGhnk
-         NUx0Fm9IvAITpk7fPRJBr0/IvURa7y/lMjPi9z2swVPHTMatFRgaIFeKRUSBvgZgGv
-         fOStnYATx1i+tVhynp34l1Jf5UQMbZ3rKzcEdBMVp7M4+O5DuJ7m+L+ptu+MDWpBg+
-         U41mpmXGAon1Q==
-Date:   Mon, 14 Sep 2020 16:57:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the akpm-current tree
-Message-ID: <20200914165734.6a14ea6f@canb.auug.org.au>
+        id S1726086AbgINHAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726042AbgINHAh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 03:00:37 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F786C06174A;
+        Mon, 14 Sep 2020 00:00:36 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b17so4853516pji.1;
+        Mon, 14 Sep 2020 00:00:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=Y2wlAqtXNyefQseZpanYLfJq3N5RvjaF5iCZEQXKmek=;
+        b=SPsvJsoOJGWCNz0MqiQxw/0yRCr5888lfA3TYTSv87ufnSkUZYEsSA86+seIOVYE/Y
+         sEsXwdezlw4T7/8lmU7BopeUocyx8Wa6xwC9agje45+MBpLMpwWv97C8P//JYAbRAGs3
+         RMmdIo20tOL6WZzNu7HBBNTUuknLwntruhux56ilu09Rfw4I8shyVWz/6m63EEJ+2snF
+         +epCklQ4IYAAnNg7MixSMBYM1fXZ+nXjSTYll1bQtE6q+nwWRrZrh+whLeyFq0aW0EYf
+         K1k/F/sraohhvQlS7WMZtC4lA8lFxZZTPqySYZ/mADZFg1s3OkMfGyw5Am2EyNN2yrYJ
+         NFdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=Y2wlAqtXNyefQseZpanYLfJq3N5RvjaF5iCZEQXKmek=;
+        b=pQYGZlElBZyNJe7PM6OlSVr/43w06P1EHrA1s52ZgtWAwK75z3d6eabKdNIyI7BIpg
+         HTiAyXE8dIL1HZofbiMA/bOq2LI1HpNqhDNVEUVKpbScqG3kBv9HOPzj6t1RkpsbXsrD
+         ySu+Y4HXPF+X0C36mbptPa3t48y2y2848RYrbagPB0apJ4QwAS28agr6D7ElzmIHUpcN
+         3YrMjlsrI23enXLIBXnFd0U2J/010AZorQ3m9C1OX4EjmTcIm3+nUaOGdGw3kCPpK2QD
+         WC72bNFFTdTPhujTqbLmSXwDPQiNH/ky+PnfPC0ZG3rqHd/nYbn325qhas77Az0lmVMg
+         PuJQ==
+X-Gm-Message-State: AOAM533mwkQ7Qy/q3iTtBodKG8ZVSp6Vb2EMv/49F2VgMWhRZjQLkAcT
+        OGgyUsZyimvsiKmKVh/3Rl0=
+X-Google-Smtp-Source: ABdhPJxSdvNhMAY02DXO75GE5ykb8GoCQd5VlSAXulERBIog4wwB9uSCtbBQFfL7CZp4YQqpVBmMZw==
+X-Received: by 2002:a17:90a:930e:: with SMTP id p14mr13005911pjo.49.1600066835157;
+        Mon, 14 Sep 2020 00:00:35 -0700 (PDT)
+Received: from localhost ([203.185.249.227])
+        by smtp.gmail.com with ESMTPSA id e2sm7536325pgl.38.2020.09.14.00.00.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 00:00:34 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 17:00:29 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2 3/4] sparc64: remove mm_cpumask clearing to fix
+ kthread_use_mm race
+To:     linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        sparclinux@vger.kernel.org
+References: <20200914045219.3736466-1-npiggin@gmail.com>
+        <20200914045219.3736466-4-npiggin@gmail.com>
+In-Reply-To: <20200914045219.3736466-4-npiggin@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sjP88y0SobRewhOES/A7V53";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-Id: <1600066040.vnmz9nxhwt.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sjP88y0SobRewhOES/A7V53
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Excerpts from Nicholas Piggin's message of September 14, 2020 2:52 pm:
 
-Hi all,
+[...]
 
-After merging the akpm-current tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+> The basic fix for sparc64 is to remove its mm_cpumask clearing code. The
+> optimisation could be effectively restored by sending IPIs to mm_cpumask
+> members and having them remove themselves from mm_cpumask. This is more
+> tricky so I leave it as an exercise for someone with a sparc64 SMP.
+> powerpc has a (currently similarly broken) example.
 
-mm/madvise.c: In function 'madvise_inject_error':
-mm/madvise.c:875:15: warning: unused variable 'zone' [-Wunused-variable]
-  875 |  struct zone *zone;
-      |               ^~~~
+So this compiles and boots on qemu, but qemu does not support any
+sparc64 machines with SMP. Attempting some simple hacks doesn't get
+me far because openbios isn't populating an SMP device tree, which
+blows up everywhere.
 
-Introduced by commit
+The patch is _relatively_ simple, hopefully it shouldn't explode, so
+it's probably ready for testing on real SMP hardware, if someone has
+a few cycles.
 
-  51fe27319785 ("mm,hwpoison: drop unneeded pcplist draining")
+Thanks,
+Nick
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sjP88y0SobRewhOES/A7V53
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9fFF4ACgkQAVBC80lX
-0GwxBQf/fDDd2LKTSBNYj44NccliTobjg29x0VtjoKKraKrFhAWu10soUypytvKz
-mtfrQuZw1oA/8gaGf3F8MF0KOnHIBdeZKQTZhYZ+ZNuHd6s9JSGQXLSnlJwTusJH
-Bm3lvHk2EFBI2UOmUEaE/nPxEqRkdm9uWoCFFO7C8tSXJrtd+aZD5mtOl/rLs2g2
-yJx2Dg1W6KXQ/ICdGpgMZufqthqBJ3nuEKs28ruIVUur0o2WD6/RsxKDA8khDS9+
-7cE2E5j/tvfEo7BRpeFMbQz8tMK+2s6E4JpdF7OsUA25KFsd/GSV1c3biE19LIyI
-ud2vZTjbB8cH/FbS5TJHcgNT8/df4Q==
-=1Oj8
------END PGP SIGNATURE-----
-
---Sig_/sjP88y0SobRewhOES/A7V53--
+>=20
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>  arch/sparc/kernel/smp_64.c | 65 ++++++++------------------------------
+>  1 file changed, 14 insertions(+), 51 deletions(-)
+>=20
+> diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
+> index e286e2badc8a..e38d8bf454e8 100644
+> --- a/arch/sparc/kernel/smp_64.c
+> +++ b/arch/sparc/kernel/smp_64.c
+> @@ -1039,38 +1039,9 @@ void smp_fetch_global_pmu(void)
+>   * are flush_tlb_*() routines, and these run after flush_cache_*()
+>   * which performs the flushw.
+>   *
+> - * The SMP TLB coherency scheme we use works as follows:
+> - *
+> - * 1) mm->cpu_vm_mask is a bit mask of which cpus an address
+> - *    space has (potentially) executed on, this is the heuristic
+> - *    we use to avoid doing cross calls.
+> - *
+> - *    Also, for flushing from kswapd and also for clones, we
+> - *    use cpu_vm_mask as the list of cpus to make run the TLB.
+> - *
+> - * 2) TLB context numbers are shared globally across all processors
+> - *    in the system, this allows us to play several games to avoid
+> - *    cross calls.
+> - *
+> - *    One invariant is that when a cpu switches to a process, and
+> - *    that processes tsk->active_mm->cpu_vm_mask does not have the
+> - *    current cpu's bit set, that tlb context is flushed locally.
+> - *
+> - *    If the address space is non-shared (ie. mm->count =3D=3D 1) we avo=
+id
+> - *    cross calls when we want to flush the currently running process's
+> - *    tlb state.  This is done by clearing all cpu bits except the curre=
+nt
+> - *    processor's in current->mm->cpu_vm_mask and performing the
+> - *    flush locally only.  This will force any subsequent cpus which run
+> - *    this task to flush the context from the local tlb if the process
+> - *    migrates to another cpu (again).
+> - *
+> - * 3) For shared address spaces (threads) and swapping we bite the
+> - *    bullet for most cases and perform the cross call (but only to
+> - *    the cpus listed in cpu_vm_mask).
+> - *
+> - *    The performance gain from "optimizing" away the cross call for thr=
+eads is
+> - *    questionable (in theory the big win for threads is the massive sha=
+ring of
+> - *    address space state across processors).
+> + * mm->cpu_vm_mask is a bit mask of which cpus an address
+> + * space has (potentially) executed on, this is the heuristic
+> + * we use to limit cross calls.
+>   */
+> =20
+>  /* This currently is only used by the hugetlb arch pre-fault
+> @@ -1080,18 +1051,13 @@ void smp_fetch_global_pmu(void)
+>  void smp_flush_tlb_mm(struct mm_struct *mm)
+>  {
+>  	u32 ctx =3D CTX_HWBITS(mm->context);
+> -	int cpu =3D get_cpu();
+> =20
+> -	if (atomic_read(&mm->mm_users) =3D=3D 1) {
+> -		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
+> -		goto local_flush_and_out;
+> -	}
+> +	get_cpu();
+> =20
+>  	smp_cross_call_masked(&xcall_flush_tlb_mm,
+>  			      ctx, 0, 0,
+>  			      mm_cpumask(mm));
+> =20
+> -local_flush_and_out:
+>  	__flush_tlb_mm(ctx, SECONDARY_CONTEXT);
+> =20
+>  	put_cpu();
+> @@ -1114,17 +1080,15 @@ void smp_flush_tlb_pending(struct mm_struct *mm, =
+unsigned long nr, unsigned long
+>  {
+>  	u32 ctx =3D CTX_HWBITS(mm->context);
+>  	struct tlb_pending_info info;
+> -	int cpu =3D get_cpu();
+> +
+> +	get_cpu();
+> =20
+>  	info.ctx =3D ctx;
+>  	info.nr =3D nr;
+>  	info.vaddrs =3D vaddrs;
+> =20
+> -	if (mm =3D=3D current->mm && atomic_read(&mm->mm_users) =3D=3D 1)
+> -		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
+> -	else
+> -		smp_call_function_many(mm_cpumask(mm), tlb_pending_func,
+> -				       &info, 1);
+> +	smp_call_function_many(mm_cpumask(mm), tlb_pending_func,
+> +			       &info, 1);
+> =20
+>  	__flush_tlb_pending(ctx, nr, vaddrs);
+> =20
+> @@ -1134,14 +1098,13 @@ void smp_flush_tlb_pending(struct mm_struct *mm, =
+unsigned long nr, unsigned long
+>  void smp_flush_tlb_page(struct mm_struct *mm, unsigned long vaddr)
+>  {
+>  	unsigned long context =3D CTX_HWBITS(mm->context);
+> -	int cpu =3D get_cpu();
+> =20
+> -	if (mm =3D=3D current->mm && atomic_read(&mm->mm_users) =3D=3D 1)
+> -		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
+> -	else
+> -		smp_cross_call_masked(&xcall_flush_tlb_page,
+> -				      context, vaddr, 0,
+> -				      mm_cpumask(mm));
+> +	get_cpu();
+> +
+> +	smp_cross_call_masked(&xcall_flush_tlb_page,
+> +			      context, vaddr, 0,
+> +			      mm_cpumask(mm));
+> +
+>  	__flush_tlb_page(context, vaddr);
+> =20
+>  	put_cpu();
+> --=20
+> 2.23.0
+>=20
+>=20
