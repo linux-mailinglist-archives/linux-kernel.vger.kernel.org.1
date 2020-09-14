@@ -2,99 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A2F269430
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CD2269434
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgINRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:52:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgINRve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:51:34 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D412D20EDD;
-        Mon, 14 Sep 2020 17:51:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600105893;
-        bh=+W154uhJfcW+3dGlx8nbYvFm09M/SqFlf9nyb6yidk0=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=1AE29D7GV8Mh9ynwf9JgkqD4N6MDy5L0l9ovl3XrpC+RWx15isRlxZLRj9r5vr1RZ
-         yHpWTfQpsw5IL2Q/1Wt+UtgFd2XFTZeeKqC9LvtrAbP2/sfNvjOXxCXxRuvWf4j8G0
-         Vneq8zUzSBqG2p0mkwQR38U6CVtiGSiWBJG6dWuk=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9C58F3522BA0; Mon, 14 Sep 2020 10:51:33 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 10:51:33 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel-team@fb.com, elver@google.com
-Subject: [GIT PULL kcsan] KCSAN commits for v5.10
-Message-ID: <20200914175133.GA14094@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1726107AbgINRxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgINRxO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:53:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACBBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:53:13 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q9so879219wmj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZKhv5rTCRwwZYJ4fJZiFA0QJHdmQ369d7Ye56iqS39I=;
+        b=LSYBezCbF3qD2J1/hnvedLtI3NNJxjkCI3H7K3OpFvBX9JZU0AhCfLK8/EptPQIA1x
+         AzWCI/TnXymeOP930uBLk0o6wdCrYsuqj1ik1lCEEVx3QSZI4XJkHJ61lRT4e5wbGq9z
+         hlCIWs01gU+mS+7JoC9yORjrjQkPCTlgo2oho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZKhv5rTCRwwZYJ4fJZiFA0QJHdmQ369d7Ye56iqS39I=;
+        b=oq4lbHsgm8cq32u/wZF0v0a/mBn9LxvDebQi31+ZU0HLvs9y0SlWaf6xpVk4t+XvwR
+         SKa8YTMtgsQIANud7tP8AmGMzPN1wv2eiNp0GOjaIhYKnU1MLMlv3iJTmJ12VDv3DsPF
+         DvC/TF2yVhKGSOwsZtLBHIx7q1pCdfGyMQA8szECEkGfgKNn8cIYmMdr9INpbSEtxFlH
+         ZjENjzBG0oiPQiqdbzxip/imXEhB9FYZfuHp/ORKKx4DGArUHRsbnvyHvpLrQcZM7C4s
+         PyBAhhvn49VVm3QXy9mdxMuywzmTR0fC/nREPTH2z1MGtGnu+LP4dma2+ve2qB9HVKeg
+         fD3Q==
+X-Gm-Message-State: AOAM531ctUZ46Hv8FnTKc6tD2t8BmWgmtY5iWFN7PMrjlo2xJSket+jy
+        9EkGlcNKf3zCmWi3kN2vOhj9ekXpXSYU+HV9IGp+
+X-Google-Smtp-Source: ABdhPJxw1Qpj5A7GWHWLHZ09ZPMi/B/UvNz/rjGtLMnwaH4Nhx+vHKTB51J5Q9V4CbzLicMUN+/4uZ5UPpaX2uHHBfE=
+X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr531634wml.176.1600105992277;
+ Mon, 14 Sep 2020 10:53:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200912002341.4869-1-atish.patra@wdc.com> <20200912104502.GF2142832@kernel.org>
+ <CAOnJCU+yK8uxFU-zv5BPTzmtxwiVpiPxGsNkVEtnTQ+64UU-ug@mail.gmail.com> <CAAhSdy0cudvf4Lc3YaSc7MH5oGH1V60C3rToMUZU01LPxRWLKQ@mail.gmail.com>
+In-Reply-To: <CAAhSdy0cudvf4Lc3YaSc7MH5oGH1V60C3rToMUZU01LPxRWLKQ@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 14 Sep 2020 10:53:00 -0700
+Message-ID: <CAOnJCUKqUZVTKzgjK0=Kj_WCZU+hP27SX8V0mvT+2AVk_MMC5w@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Consider sparse memory while removing unusable memory
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Mike Rapoport <rppt@kernel.org>, Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Ingo!
+On Mon, Sep 14, 2020 at 4:52 AM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Mon, Sep 14, 2020 at 5:18 AM Atish Patra <atishp@atishpatra.org> wrote:
+> >
+> > On Sat, Sep 12, 2020 at 3:45 AM Mike Rapoport <rppt@kernel.org> wrote:
+> > >
+> > > Hello Atish,
+> > >
+> > > On Fri, Sep 11, 2020 at 05:23:41PM -0700, Atish Patra wrote:
+> > > > Currently, any usable memory area beyond page_offset is removed by adding the
+> > > > memory sizes from each memblock. That may not work for sparse memory
+> > > > as memory regions can be very far apart resulting incorrect removal of some
+> > > > usable memory.
+> > >
+> > > If I understand correctly, the memory with physical addresses larger
+> > > than (-PAGE_OFFSET) cannot be used. Since it was aready
+> > > memblock_add()'ed during device tree parsing, you need to remove it from
+> > > memblock.
+> > >
+> >
+> > IIRC, the original intention was to fix MAXPHYSMEM_2GB option for RV64
+> > for the medlow model.
+> > That's why the patch removed any memory beyond -PAGE_OFFSET.
+> >
+> > > For that you can use memblock_enforce_memory_limit(-PAGE_OFFSET).
+> > >
+> > Thanks. I think we can just call memblock_enforce_memory_limit without
+> > tracking the total memory size
+> > and whether maximum memory described in DT is greater than  -PAGE_OFFSET.
+> >
+> > @Anup Patel Was there any other reason for this change originally?
+>
+> No other reason. We just wanted to ensure that amount of memory addressable
+> by kernel (i.e. -PAGE_OFFSET) is also considered when removing memblock.
+>
 
-This pull request contains KCSAN updates for v5.10.  These have been
-subjected to LKML review, most recently here:
+It looks like we have an agreement here then. I will update the patch
+to directly call
+memblock_enforce_memory_limit as suggested by Mike.
 
-	https://lore.kernel.org/lkml/20200831181715.GA1530@paulmck-ThinkPad-P72
+> Regards,
+> Anup
+>
+> >
+> > > > Just use the start of the first memory block and the end of the last memory
+> > > > block to compute the size of the total memory that can be used.
+> > > >
+> > > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > > > ---
+> > > >  arch/riscv/mm/init.c | 6 ++----
+> > > >  1 file changed, 2 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > > index 787c75f751a5..188281fc2816 100644
+> > > > --- a/arch/riscv/mm/init.c
+> > > > +++ b/arch/riscv/mm/init.c
+> > > > @@ -147,7 +147,6 @@ void __init setup_bootmem(void)
+> > > >  {
+> > > >       struct memblock_region *reg;
+> > > >       phys_addr_t mem_size = 0;
+> > > > -     phys_addr_t total_mem = 0;
+> > > >       phys_addr_t mem_start, end = 0;
+> > > >       phys_addr_t vmlinux_end = __pa_symbol(&_end);
+> > > >       phys_addr_t vmlinux_start = __pa_symbol(&_start);
+> > > > @@ -155,18 +154,17 @@ void __init setup_bootmem(void)
+> > > >       /* Find the memory region containing the kernel */
+> > > >       for_each_memblock(memory, reg) {
+> > > >               end = reg->base + reg->size;
+> > > > -             if (!total_mem)
+> > > > +             if (!mem_start)
+> > > >                       mem_start = reg->base;
+> > > >               if (reg->base <= vmlinux_start && vmlinux_end <= end)
+> > > >                       BUG_ON(reg->size == 0);
+> > > > -             total_mem = total_mem + reg->size;
+> > > >       }
+> > > >
+> > > >       /*
+> > > >        * Remove memblock from the end of usable area to the
+> > > >        * end of region
+> > > >        */
+> > > > -     mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
+> > > > +     mem_size = min(end - mem_start, (phys_addr_t)-PAGE_OFFSET);
+> > > >       if (mem_start + mem_size < end)
+> > > >               memblock_remove(mem_start + mem_size,
+> > > >                               end - mem_start - mem_size);
+> > > > --
+> > > > 2.24.0
+> > > >
+> > >
+> > > --
+> > > Sincerely yours,
+> > > Mike.
+> > >
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Atish
 
-All of these have also been subjected to the kbuild test robot and
--next testing.  The following changes since v5.9-rc1 are available in
-the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git kcsan
 
-for you to fetch changes up to cd290ec24633f51029dab0d25505fae7da0e1eda:
-
-  kcsan: Use tracing-safe version of prandom (2020-08-30 21:50:13 -0700)
-
-----------------------------------------------------------------
-Marco Elver (19):
-      kcsan: Add support for atomic builtins
-      objtool: Add atomic builtin TSAN instrumentation to uaccess whitelist
-      kcsan: Add atomic builtin test case
-      kcsan: Support compounded read-write instrumentation
-      objtool, kcsan: Add __tsan_read_write to uaccess whitelist
-      kcsan: Skew delay to be longer for certain access types
-      kcsan: Add missing CONFIG_KCSAN_IGNORE_ATOMICS checks
-      kcsan: Test support for compound instrumentation
-      instrumented.h: Introduce read-write instrumentation hooks
-      asm-generic/bitops: Use instrument_read_write() where appropriate
-      locking/atomics: Use read-write instrumentation for atomic RMWs
-      kcsan: Simplify debugfs counter to name mapping
-      kcsan: Simplify constant string handling
-      kcsan: Remove debugfs test command
-      kcsan: Show message if enabled early
-      kcsan: Use pr_fmt for consistency
-      kcsan: Optimize debugfs stats counters
-      bitops, kcsan: Partially revert instrumentation for non-atomic bitops
-      kcsan: Use tracing-safe version of prandom
-
- include/asm-generic/atomic-instrumented.h          | 330 ++++++++++-----------
- include/asm-generic/bitops/instrumented-atomic.h   |   6 +-
- include/asm-generic/bitops/instrumented-lock.h     |   2 +-
- .../asm-generic/bitops/instrumented-non-atomic.h   |  30 +-
- include/linux/instrumented.h                       |  30 ++
- include/linux/kcsan-checks.h                       |  45 ++-
- kernel/kcsan/core.c                                | 210 +++++++++++--
- kernel/kcsan/debugfs.c                             | 130 ++------
- kernel/kcsan/kcsan-test.c                          | 128 +++++++-
- kernel/kcsan/kcsan.h                               |  12 +-
- kernel/kcsan/report.c                              |  10 +-
- kernel/kcsan/selftest.c                            |   8 +-
- lib/Kconfig.kcsan                                  |   5 +
- scripts/Makefile.kcsan                             |   2 +-
- scripts/atomic/gen-atomic-instrumented.sh          |  21 +-
- tools/objtool/check.c                              |  55 ++++
- 16 files changed, 677 insertions(+), 347 deletions(-)
+-- 
+Regards,
+Atish
