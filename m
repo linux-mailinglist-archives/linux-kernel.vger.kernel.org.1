@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214E0269609
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05C526960A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgINUHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:07:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29709 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726040AbgINUHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:07:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600114043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kRlln9V1GvO5+NGpvkV2buBDGuKlOmRWgBQoF1uRx3c=;
-        b=HW8Rt1Bl+0c+N0fxDnTy9OFmd7I0X9GNY/ISVo64cvpzHLdzWZP539o/YDPywxOQYlzH/A
-        re5tKAJORFLv8QX7XP2gCV/4qetVDvcjIDUxVLdxBtgLYKc5aUEkWgYV+Op/P4rT3yTjpA
-        jVGzFwyaXSXJq33Vm3oGtFwpaiKlVQE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-IFp-zbWpOIiZ13MOUbmYrQ-1; Mon, 14 Sep 2020 16:07:21 -0400
-X-MC-Unique: IFp-zbWpOIiZ13MOUbmYrQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86C8D1084C92;
-        Mon, 14 Sep 2020 20:07:18 +0000 (UTC)
-Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 03F1D19C4F;
-        Mon, 14 Sep 2020 20:07:12 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 22:07:11 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-Message-ID: <20200914200711.GS1714160@krava>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-3-jolsa@kernel.org>
- <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
- <20200914152841.GC160517@kernel.org>
- <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
- <CAP-5=fUansxK_as61teHsLyRQu3Zu5UE-+SDqWVYGhSz36uCzQ@mail.gmail.com>
+        id S1726086AbgINUHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:07:35 -0400
+Received: from mail-dm6nam10on2051.outbound.protection.outlook.com ([40.107.93.51]:10369
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726043AbgINUH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 16:07:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dfQ3ZlNK57KcX7IMk1UFbI2WJLj6QemYl5nXNjfevnmDCAcve8ZxT3ZAsIkHSyUWe8XLHftCAyF61ge4Oyodb1F9kwGQLbUC1m2KMhl9Yx2dFbp/fpk/W7YPzY7lSJTYqjgzIun5ghM+cGdnHX23FaSTgyPH+NCo50MykdFMJlz6aw8B+YLP6CwzwEYUO9hYn3IaU//2kxiEb0oaebers/tBNu5r4vZfFgbWrJHrdzg7WYWIzPmH5gDrijEtiAYUY5ZbULqDfo7752AUYCeovkEf1eYtWKhk3auQYXr/sOFdde4yV2dOSzxfdfPghhQmbSJ4RaqkN6f3jFxqwsuZjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pT68a0tB5Mgosyuh3j2uymPxA/LZrENiFw5Du0OLcXg=;
+ b=Nyo03ACLEdo2lhGyudnQ7jq3VqFZKIaXgzjl+yRyY+ojxZ5CEslEIUh/AUSjQXELU4hbznFJSj+Yf0u7Scx4Ci5G/Zuzh3RauFdBRvj+/hL7t+fdU1xEKf7y6QTKvj3uqUJH1QD6ukUJ78ZJdYoYQhX6M4leJYiX9l3Vni8wCoYnpDhrdujmJrzmdv4iyB+uXSNMArvHFGd5kWYmj4XyEp594j3iyYpFXyFj80BjYIx9hOIimKivvZPHNP6u3q6YxozSGpRs2qjgo2FJEfVbEP08TPXDHm6Mi7yH0SALkgrjJIuOmEh1m5iXyASyRRbqwd3S3wPOhMdf5OBEb61jzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pT68a0tB5Mgosyuh3j2uymPxA/LZrENiFw5Du0OLcXg=;
+ b=TTKilA3N1cMSORpreI5Wp8t8aB9WE8pioQE9wXLmVJhtPdGZGrmAIE3EKPLuoUv0ipCPN52sCfesPKjxNMo1CqCoMM/an0XmjtiAZpIFFZETODHvsdGNCv/AaGfalhy1Wg3zUOYIkSv6mk0PTTWaytMpK6XfvGWI4HH+w7OEVS0=
+Authentication-Results: roeck-us.net; dkim=none (message not signed)
+ header.d=none;roeck-us.net; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com (2603:10b6:910:f::22)
+ by CY4PR1201MB0168.namprd12.prod.outlook.com (2603:10b6:910:1d::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
+ 2020 20:07:23 +0000
+Received: from CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::9067:e60d:5698:51d8]) by CY4PR12MB1494.namprd12.prod.outlook.com
+ ([fe80::9067:e60d:5698:51d8%12]) with mapi id 15.20.3370.019; Mon, 14 Sep
+ 2020 20:07:23 +0000
+From:   Wei Huang <wei.huang2@amd.com>
+To:     linux@roeck-us.net
+Cc:     jdelvare@suse.com, clemens@ladisch.de, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wei.huang2@amd.com
+Subject: [PATCH 1/1] hwmon: (k10temp) Add support for Zen3 CPUs
+Date:   Mon, 14 Sep 2020 15:07:15 -0500
+Message-Id: <20200914200715.1997757-1-wei.huang2@amd.com>
+X-Mailer: git-send-email 2.24.1
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ClientProxiedBy: DM6PR08CA0041.namprd08.prod.outlook.com
+ (2603:10b6:5:1e0::15) To CY4PR12MB1494.namprd12.prod.outlook.com
+ (2603:10b6:910:f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUansxK_as61teHsLyRQu3Zu5UE-+SDqWVYGhSz36uCzQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from weiserver.amd.com (165.204.77.1) by DM6PR08CA0041.namprd08.prod.outlook.com (2603:10b6:5:1e0::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Mon, 14 Sep 2020 20:07:21 +0000
+X-Mailer: git-send-email 2.24.1
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 717dbf1e-4541-482c-c76e-08d858e9cab9
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0168:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0168678C60907EF1DE08107DCF230@CY4PR1201MB0168.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jF7ligxqpVnZgO4EhLCMXfMHh7OmR0pEW38tVOmEGPAOG5eU7XV27GV6pPXqREirLb3tl30IfkkR8yx2B6bxl/6Ws8/3sAgRbPVT5Fxq5ZSzrTC3pEo9HZAizUVmVmMAmqAE6cQcIZDsI8UZcZ4pULTd09qc7g7j6QJ5R3rzI82S4A+G8lrHozz+u4IEqItqoJgN+cAvy3wuQc79pAG+Q3dusL1kruLJvi9+4CfnNqlJEwtIBFEcwTHjaWmY+u9iMiaqQOWtWKqW/FXCPYYt3cZVaTktr7E/cMul65wB4W8sTQvJ5gCvukCjsNWGupD4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1494.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(136003)(376002)(346002)(8676002)(36756003)(316002)(2906002)(4326008)(8936002)(6666004)(5660300002)(186003)(66946007)(7696005)(52116002)(2616005)(86362001)(6486002)(16526019)(66476007)(956004)(66556008)(26005)(478600001)(1076003)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: bsRoUwOPAdhC3Zdp/oGeAU8TF+MbY6nE2xRFQTgxUaFIau8rfEM5tLq70HijWd7wH1RLN1RxNf4Sl8xWYsouhn8FstNAkAhppVm0YXfYvE17Dx2d2qHwas5Cm453ANQq9D1tF1PNSctb0fCcOGftigWw6mjn5+iQwG6TkPnLpp2aVIaZObjq3mmPhMXtc8Nu3iqrSyV/QoUHsF1AC37Ya3jUyidfrM37xhg1fmLN1OtH/IPJD4Nile5WEIJtiKGUliOznXUGCl3Ejx/nrFMD2zZWi+MRds9UFYZH2O3/w8oWv4YyFRVF+ujqZFWHvDRD23AIlaMQfmVSjl5YLCzM1HvVwUqT1YwVfv6kmxVsTpTzTuntyGJnP+nxh1F+603WNoKwldflRykJ6vIzpyDP04kutF0WOX93m5ETpLVOgEpWLdrpND0PU1H1N5Rbt+fAq03u5PV4Z3c77qXoClpB9+JGGED6L/PamSZXZPa8yJWwlakR/oymUCSaRFJMxXgQ3wtg3l1d2W+/nT+fsrGykbQmLzp7qHNGtFHKxa/9hGQVsw1kqkhBS+V1c1jdoVs42GhaDQ6iOSoFjjSL/Q4BcbN0pcgNLsblybn8gGkwocoorDTWtkpTrta0IIt1Iu5zkkgZWzK9sHW38181QVkYVQ==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 717dbf1e-4541-482c-c76e-08d858e9cab9
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1494.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 20:07:23.0494
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PycXT7UjGyYNrqHZ2E4HFq8RHU+DKWLgXP7eN2RNZ1OjS3jkmWa6KkllkJ4d6hd6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0168
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:08:01AM -0700, Ian Rogers wrote:
+Zen3 thermal info is supported via a new PCI device ID. Also the voltage
+telemetry registers and the current factors need to be defined. k10temp
+driver then searches for CPU family 0x19 and configures k10temp_data
+accordingly.
 
-SNIP
+Signed-off-by: Wei Huang <wei.huang2@amd.com>
+---
+ drivers/hwmon/k10temp.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-> >
-> > Using one of the MISC bits to resolve the union. Might actually bring
-> > benefit to everyone. Us normal people get to have a smaller MMAP record,
-> > while the buildid folks can have it too.
-> >
-> > Even more extreme would be using 2 MISC bits and allowing the union to
-> > be 0 sized for anon.
-> >
-> > That said; I have the nagging feeling there were unresolved issues with
-> > mmap2, but I can't seem to find any relevant emails on it :/ My
-> > google-fu is weak today.
-> 
-> Firstly, thanks Jiri for this really useful patch set for our
-> use-cases! Some thoughts:
-> 
-> One issue with mmap2 events at the moment is that they happen "after"
-> the mmap is performed. This allows the mapped address to be known but
-> has the unfortunate problem of causing mmap events to get "extended"
-> due to adjacent vmas being merged. There are some workarounds like
-> commit c8f6ae1fb28d (perf inject jit: Remove //anon mmap events).
-> Perhaps these events can switch to reporting the length the mmap
-> requested rather than the length of the vma?
-
-seems like separate feature, perhaps we could use another MISC bit for that?
-
-> 
-> I could imagine that changes here could be interesting to folks doing
-> CHERI or hypervisors, for example, they may want more address bits.
-> 
-> BPF has stack traces with elements of buildid + offset. Using these in
-> perf samples would avoid the need for mmap events, synthesis, etc. but
-> at the cost of larger and possibly slower stack traces. Perhaps we
-> should just remove the idea of mmap events altogether?
-
-hm, we also need mmap events to resolve PERF_SAMPLE_IP, right?
-also not sure how would we do that for dwarf unwind, and perhaps
-there are some other places.. c2c data address resolving?
-
-thanks,
-jirka
+diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
+index 49e8ebf8da32..a250481b5a97 100644
+--- a/drivers/hwmon/k10temp.c
++++ b/drivers/hwmon/k10temp.c
+@@ -95,6 +95,13 @@ static DEFINE_MUTEX(nb_smu_ind_mutex);
+ #define F17H_M31H_CFACTOR_ICORE			1000000	/* 1A / LSB	*/
+ #define F17H_M31H_CFACTOR_ISOC			310000	/* 0.31A / LSB	*/
+ 
++/* F19h thermal registers through SMN */
++#define F19H_M01_SVI_TEL_PLANE0			(ZEN_SVI_BASE + 0x14)
++#define F19H_M01_SVI_TEL_PLANE1			(ZEN_SVI_BASE + 0x10)
++
++#define F19H_M01H_CFACTOR_ICORE			1000000	/* 1A / LSB	*/
++#define F19H_M01H_CFACTOR_ISOC			310000	/* 0.31A / LSB	*/
++
+ struct k10temp_data {
+ 	struct pci_dev *pdev;
+ 	void (*read_htcreg)(struct pci_dev *pdev, u32 *regval);
+@@ -527,6 +534,22 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 			k10temp_get_ccd_support(pdev, data, 8);
+ 			break;
+ 		}
++	} else if (boot_cpu_data.x86 == 0x19) {
++		data->temp_adjust_mask = ZEN_CUR_TEMP_RANGE_SEL_MASK;
++		data->read_tempreg = read_tempreg_nb_zen;
++		data->show_temp |= BIT(TDIE_BIT);
++		data->is_zen = true;
++
++		switch (boot_cpu_data.x86_model) {
++		case 0x0 ... 0x1:	/* Zen3 */
++			data->show_current = true;
++			data->svi_addr[0] = F19H_M01_SVI_TEL_PLANE0;
++			data->svi_addr[1] = F19H_M01_SVI_TEL_PLANE1;
++			data->cfactor[0] = F19H_M01H_CFACTOR_ICORE;
++			data->cfactor[1] = F19H_M01H_CFACTOR_ISOC;
++			k10temp_get_ccd_support(pdev, data, 8);
++			break;
++		}
+ 	} else {
+ 		data->read_htcreg = read_htcreg_pci;
+ 		data->read_tempreg = read_tempreg_pci;
+@@ -564,6 +587,7 @@ static const struct pci_device_id k10temp_id_table[] = {
+ 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_17H_M30H_DF_F3) },
+ 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_17H_M60H_DF_F3) },
+ 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F3) },
++	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_19H_DF_F3) },
+ 	{ PCI_VDEVICE(HYGON, PCI_DEVICE_ID_AMD_17H_DF_F3) },
+ 	{}
+ };
+-- 
+2.24.1
 
