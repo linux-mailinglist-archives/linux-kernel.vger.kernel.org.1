@@ -2,95 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E90442691DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB122691D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgINQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgINPOn (ORCPT
+        id S1726047AbgINQlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:41:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53673 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726354AbgINPb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:14:43 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FA5C061788;
-        Mon, 14 Sep 2020 08:14:43 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q5so454175qkc.2;
-        Mon, 14 Sep 2020 08:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding:content-disposition;
-        bh=OD2XGGa27niJ7TfndrV66ShmAkg6komZ0A4btIli5fk=;
-        b=P+nQWL2MURjqda1ZVX9DJ8IR0t30mmzUNd4HNxEXyrVN8l+fLbRK2ltS8ggA4172Sd
-         7kOFn1UWubddBYc7hjQ5HXMdXNP+AXSJd9/pG2huzfkohjpqik9rbxG00tLpbgm5n7eg
-         mEOWwpZ/ROC/vClWjwd5l/C3CPWKrut4Ns4MTofEMyDY0b3ZbiMEIhBsQnfpY/uyq7lH
-         S9EZMDfsjmdZfUsUqPeLSAFE3oU1HIchpxRUlkX6lAxEs9ZoZQPeQkzxTK6JqXyR9CfB
-         UdXZUdCJneZ/6FeZFu0GmCF/TjHkVyYpXjxwzOg3utLMQDn017sgCnPKHg8jTjiXKcha
-         5udg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding
-         :content-disposition;
-        bh=OD2XGGa27niJ7TfndrV66ShmAkg6komZ0A4btIli5fk=;
-        b=b5UZ3vDM74NcU7dEeGw0Sz9pIT3l5yYi9T/p6ZB7CXC9rd2fjjyBmo4c1/CL210Jyv
-         UYXlrsBHEqDVPPGsplTaN/G1JhZo3kqpmtDh+gvqbjsOXQ/61u0sc2AHoADhiPGYcpVt
-         fa/wN/LqSMhBUSMlZpdoiJf5R4O+1Jo1CnfcOJZWMP5mKg+fEdIfIOY9WAewDDMOYOdR
-         oXlAbX3MY4zjetaSexL+tkwPjyWD9q0depG9AyqPIN6gCG65ZYZPelG6tBJK7wZbu9T3
-         2sE8dfWTHjGNBePuSgdJ/YWY4X4nSfAS7ukf6HMOHWNS3WXCmxyNhhy91MBV+qQcxoSc
-         pwgw==
-X-Gm-Message-State: AOAM5326zhKSrAqe6Bx9c82+NS5YqbQbo1M4UTmXYODH2s/oxVUsWQcA
-        RCaukm+VEqVwhzJPYgrXW96/ph+eOqUxgw==
-X-Google-Smtp-Source: ABdhPJwrXM+XaygDRbo/q8a5SAU2SNgQC2MoeRECyx1qlERfPCeS15qH8dENP0qXFobAjBK8J+Btqw==
-X-Received: by 2002:a05:620a:1125:: with SMTP id p5mr13033953qkk.328.1600096482105;
-        Mon, 14 Sep 2020 08:14:42 -0700 (PDT)
-Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
-        by smtp.gmail.com with ESMTPSA id 2sm9293971qtg.20.2020.09.14.08.14.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Sep 2020 08:14:41 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:14:38 -0300
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
-        <linux-kernel@vger.kernel.org>,
-        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
-        <linux-media@vger.kernel.org>
-Message-ID: <68DDA2DD-4341-45A9-99CF-BF41573C9AED@getmailspring.com>
-In-Reply-To: <47ccbcbd23e44159bbb11274b540d7c2bb66be7c.1600073975.git.mchehab+huawei@kernel.org>
-References: <47ccbcbd23e44159bbb11274b540d7c2bb66be7c.1600073975.git.mchehab+huawei@kernel.org>
-Subject: Re: [PATCH RFC 06/11] media: vidtv: get rid of some endiannes
- nonsense
-X-Mailer: Mailspring
+        Mon, 14 Sep 2020 11:31:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600097479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m+vcjl/WYR9TpPPDjmjqr4nMFYYTY/IojylAMQI9KPE=;
+        b=USvDyn3RGrEbEvxFzvQ3sohebVP6rhq2hQuncvVn16/en39HeES00x2BSZ5pfK230Lomui
+        WpkVFEq4P9E48Ek8eOapGEAyX8g+vAMvCFhjphuYOcIn/tME0qEv06RthUvI3NnHPXxc9u
+        Ok2TnviMiz6tnfzeAbkvy7/kkhjvUGo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-4ptu5WxUNUin7KvMma181w-1; Mon, 14 Sep 2020 11:31:15 -0400
+X-MC-Unique: 4ptu5WxUNUin7KvMma181w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A75B89CCFF;
+        Mon, 14 Sep 2020 15:30:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-113-6.rdu2.redhat.com [10.10.113.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 823921002D46;
+        Mon, 14 Sep 2020 15:30:54 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH net-next 1/5] rxrpc: Fix an error goto in rxrpc_connect_call()
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 14 Sep 2020 16:30:53 +0100
+Message-ID: <160009745364.1014072.15669282566191320805.stgit@warthog.procyon.org.uk>
+In-Reply-To: <160009744625.1014072.11957943055200732444.stgit@warthog.procyon.org.uk>
+References: <160009744625.1014072.11957943055200732444.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+Fix an error-handling goto in rxrpc_connect_call() whereby it will jump to
+free the bundle it failed to allocate.
 
-> Genmask is always highest order to low order. It doesn't make
-> any sense to make it depends on endiannes.
-> 
+Fixes: 245500d853e9 ("rxrpc: Rewrite the client connection manager")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-I added these #ifdefs due to this:
+ net/rxrpc/conn_client.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-https://lwn.net/Articles/741762/
+diff --git a/net/rxrpc/conn_client.c b/net/rxrpc/conn_client.c
+index 0e4e1879c24d..180be4da8d26 100644
+--- a/net/rxrpc/conn_client.c
++++ b/net/rxrpc/conn_client.c
+@@ -724,8 +724,9 @@ int rxrpc_connect_call(struct rxrpc_sock *rx,
+ 	/* Paired with the write barrier in rxrpc_activate_one_channel(). */
+ 	smp_rmb();
+ 
+-out:
++out_put_bundle:
+ 	rxrpc_put_bundle(bundle);
++out:
+ 	_leave(" = %d", ret);
+ 	return ret;
+ 
+@@ -742,7 +743,7 @@ int rxrpc_connect_call(struct rxrpc_sock *rx,
+ 	trace_rxrpc_client(call->conn, ret, rxrpc_client_chan_wait_failed);
+ 	rxrpc_set_call_completion(call, RXRPC_CALL_LOCAL_ERROR, 0, ret);
+ 	rxrpc_disconnect_client_call(bundle, call);
+-	goto out;
++	goto out_put_bundle;
+ }
+ 
+ /*
 
-i.e.
-
-Fields to access are specified as GENMASK() values - an N-bit field
-starting at bit #M is encoded as GENMASK(M + N - 1, N).  Note that
-bit numbers refer to endianness of the object we are working with -
-e.g. GENMASK(11, 0) in __be16 refers to the second byte and the lower
-4 bits of the first byte.  In __le16 it would refer to the first byte
-and the lower 4 bits of the second byte, etc.
-
-I am not 100% sure, but maybe we actually need them? 
-
-- Daniel
 
