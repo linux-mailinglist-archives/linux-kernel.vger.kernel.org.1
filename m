@@ -2,124 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204B82687B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B4E2687BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgINI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:58:06 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22979 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726199AbgINI57 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:57:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600073877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WEum23t+svlghEHDrkfiWQI1PF+qJnq2D7g9bZsVKfA=;
-        b=UkmgSxsCZb6Ki7ISCkuXZtS+55Owd8FkoyN4VQncaslfSzS4escwp7cb0J5lgPVcW2BD/d
-        liGURXz84Flfi43a5C/bnfRv6c5kIhSFp2D5y2ffhfFLLsNqWxqdPg4awU3fa+9zP9Dkwu
-        FDq64pjMbb272QwO9rHKS4k+dGAMv6Y=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-g477LoYpMtCAZu6i5V2WCw-1; Mon, 14 Sep 2020 04:57:56 -0400
-X-MC-Unique: g477LoYpMtCAZu6i5V2WCw-1
-Received: by mail-ed1-f70.google.com with SMTP id i23so1021513edr.14
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:57:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WEum23t+svlghEHDrkfiWQI1PF+qJnq2D7g9bZsVKfA=;
-        b=BByYXFpCOuvCmaRtxrLMv9VbZHwP9xvN03HftIKolC+tjLJxCQmWqTKGibUE/lR4wF
-         xODTZStlByydoSl8VWwJnn3tOUtYTbSpK71GUKknIO1x5QwUGfTYSsSfyTPp4k+Ok2py
-         qpH2c8rxNyBmGJWMRkz+kJEuIPiSVGBx29IAIilUn/VUe4/nQZSQPvY9mwixdRrusGQU
-         9yp77OzOp0viRfnOaWPRd3Zl3FH0OQqQfY9ZjzAMfEqT/Qb7WXuyJw+Q8Xhe4vi4hqCD
-         37ogZo0zD5vdAfCJvv8GY2sNxSgikzOeihaqhhuC2hyLmjSzWiR1V5qbysR4NYdeKQyq
-         1iDw==
-X-Gm-Message-State: AOAM530emvzvYn5J4mALlEOLy5AGY2DZRRQvhXOMHgSMwnPd1jINWMrg
-        DnqGCJ2dX6EndukdOZsYf6tuHvqN0GRm5YmPCo8+MiYRmXn52kVTqs0PxcBkIjRfAkHG4IkbxD8
-        UIBczl71GspBPquVd0uX+MkQO
-X-Received: by 2002:a50:fc08:: with SMTP id i8mr16508805edr.257.1600073875044;
-        Mon, 14 Sep 2020 01:57:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzng0e3crIM0MRmKRuvBPIqhmdf3VOfEgrWBfiTtfm3AqYj3npyUr1SsG6ROGW4UluC5pO7Ug==
-X-Received: by 2002:a50:fc08:: with SMTP id i8mr16508791edr.257.1600073874850;
-        Mon, 14 Sep 2020 01:57:54 -0700 (PDT)
-Received: from x1.localdomain ([78.108.130.193])
-        by smtp.gmail.com with ESMTPSA id d6sm8987645edm.31.2020.09.14.01.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 01:57:54 -0700 (PDT)
-Subject: Re: [PATCH] Introduce support for Systems Management Driver over WMI
- for Dell Systems
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Divya Bharathi <divya27392@gmail.com>,
-        "dvhart@infradead.org" <dvhart@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
-References: <20200730143122.10237-1-divya_bharathi@dell.com>
- <aa23d8b8-6c6b-b6f2-e916-1defff8a9b26@redhat.com>
- <DM6PR19MB26362B2A2CDFE73BE167FD34FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
- <c5a6e340-66ec-e03b-a9a8-9c61b9f388d5@redhat.com>
-Message-ID: <25c9e901-ed28-eb87-bd89-652c3710b62b@redhat.com>
-Date:   Mon, 14 Sep 2020 10:57:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726199AbgINI7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:59:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59926 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726112AbgINI7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:59:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1B2F9AC46;
+        Mon, 14 Sep 2020 08:59:27 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 10:59:11 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Laurent Dufour <ldufour@linux.ibm.com>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mm: don't panic when links can't be created in sysfs
+Message-ID: <20200914085911.GC16999@dhcp22.suse.cz>
+References: <20200911134831.53258-1-ldufour@linux.ibm.com>
+ <20200911134831.53258-4-ldufour@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <c5a6e340-66ec-e03b-a9a8-9c61b9f388d5@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911134831.53258-4-ldufour@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri 11-09-20 15:48:31, Laurent Dufour wrote:
+> At boot time, or when doing memory hot-add operations, if the links in
+> sysfs can't be created, the system is still able to run, so just report the
+> error in the kernel log.
 
-On 9/14/20 10:45 AM, Hans de Goede wrote:
+.. rather than BUG_ON and potentially make system unusable because the
+callpath can be called with locks held etc...
 
-<snip>
-
->>>> +           lower_bound:    A file that can be read to obtain the lower
->>>> +           bound value of the <attr>
->>>> +
->>>> +           modifier:       A file that can be read to obtain attribute-level
->>>> +           dependency rule which has to be met to configure <attr>
->>>> +
->>>> +           scalar_increment:       A file that can be read to obtain the
->>>> +           resolution of the incremental value this attribute accepts.
->>>> +
->>>> +           upper_bound:    A file that can be read to obtain the upper
->>>> +           bound value of the <attr>
->>>
->>> Are these integers or also possibly floats? I guess possibly also floats, right?
->>> Then at a minimum this should specify which decimal-separator is used (I assume
->>> we will go with the usual '.' as decimal separator).
->>
->> In practice they're integers, but I don't see why they couldn't be floats.
+> Since the number of memory blocks managed could be high, the messages are
+> rate limited.
 > 
-> Hmm, that is a bit hand-wavy, for an userspace ABI we really need to define
-> this clearly. Either it is integers (which is fine), or it is floats and we need
-> to define a decimal-separator as part of the ABI.
+> As a consequence, link_mem_sections() has no status to report anymore.
 > 
-> Note the reason why I started wondering about this in the first place is the
-> scalar_increment attribute. I think that can use some clarification too.
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
 
-p.s.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-I just realized that the lower_ / upper_bound attributes would be
-better if they were renamed to min_value and max_value then everyone
-will immediately understand what they are without even needing to
-consult the docs.
+Thanks!
 
-Regards,
+> ---
+>  drivers/base/node.c  | 25 +++++++++++++++++--------
+>  include/linux/node.h | 17 ++++++++---------
+>  mm/memory_hotplug.c  |  5 ++---
+>  3 files changed, 27 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 862516c5a5ae..749a1c8ea992 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -811,12 +811,21 @@ static int register_mem_sect_under_node(struct memory_block *mem_blk,
+>  		ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
+>  					&mem_blk->dev.kobj,
+>  					kobject_name(&mem_blk->dev.kobj));
+> -		if (ret)
+> -			return ret;
+> +		if (ret && ret != -EEXIST)
+> +			pr_err_ratelimited(
+> +				"can't create %s to %s link in sysfs (%d)\n",
+> +				kobject_name(&node_devices[nid]->dev.kobj),
+> +				kobject_name(&mem_blk->dev.kobj), ret);
+>  
+> -		return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
+> +		ret = sysfs_create_link_nowarn(&mem_blk->dev.kobj,
+>  				&node_devices[nid]->dev.kobj,
+>  				kobject_name(&node_devices[nid]->dev.kobj));
+> +		if (ret && ret != -EEXIST)
+> +			pr_err_ratelimited(
+> +				"can't create %s to %s link in sysfs (%d)\n",
+> +				kobject_name(&mem_blk->dev.kobj),
+> +				kobject_name(&node_devices[nid]->dev.kobj),
+> +				ret);
+>  	}
+>  	/* mem section does not span the specified node */
+>  	return 0;
+> @@ -837,17 +846,17 @@ void unregister_memory_block_under_nodes(struct memory_block *mem_blk)
+>  			  kobject_name(&node_devices[mem_blk->nid]->dev.kobj));
+>  }
+>  
+> -int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
+> -		      enum memplug_context context)
+> +void link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
+> +		       enum memplug_context context)
+>  {
+>  	struct rmsun_args args = {
+>  		.nid = nid,
+>  		.context = context,
+>  	};
+>  
+> -	return walk_memory_blocks(PFN_PHYS(start_pfn),
+> -				  PFN_PHYS(end_pfn - start_pfn), (void *)&args,
+> -				  register_mem_sect_under_node);
+> +	walk_memory_blocks(PFN_PHYS(start_pfn),
+> +			   PFN_PHYS(end_pfn - start_pfn), (void *)&args,
+> +			   register_mem_sect_under_node);
+>  }
+>  
+>  #ifdef CONFIG_HUGETLBFS
+> diff --git a/include/linux/node.h b/include/linux/node.h
+> index 8ff08520488c..6bdd6f3ed3aa 100644
+> --- a/include/linux/node.h
+> +++ b/include/linux/node.h
+> @@ -99,15 +99,14 @@ extern struct node *node_devices[];
+>  typedef  void (*node_registration_func_t)(struct node *);
+>  
+>  #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_NUMA)
+> -extern int link_mem_sections(int nid, unsigned long start_pfn,
+> -			     unsigned long end_pfn,
+> -			     enum memplug_context context);
+> +void link_mem_sections(int nid, unsigned long start_pfn,
+> +		       unsigned long end_pfn,
+> +		       enum memplug_context context);
+>  #else
+> -static inline int link_mem_sections(int nid, unsigned long start_pfn,
+> -				    unsigned long end_pfn,
+> -				    enum memplug_context context)
+> +static inline void link_mem_sections(int nid, unsigned long start_pfn,
+> +				     unsigned long end_pfn,
+> +				     enum memplug_context context)
+>  {
+> -	return 0;
+>  }
+>  #endif
+>  
+> @@ -130,8 +129,8 @@ static inline int register_one_node(int nid)
+>  		if (error)
+>  			return error;
+>  		/* link memory sections under this node */
+> -		error = link_mem_sections(nid, start_pfn, end_pfn,
+> -					  MEMPLUG_EARLY);
+> +		link_mem_sections(nid, start_pfn, end_pfn,
+> +				  MEMPLUG_EARLY);
+>  	}
+>  
+>  	return error;
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 912d355ca446..668418071a49 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1080,9 +1080,8 @@ int __ref add_memory_resource(int nid, struct resource *res)
+>  	}
+>  
+>  	/* link memory sections under this node.*/
+> -	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
+> -				MEMPLUG_HOTPLUG);
+> -	BUG_ON(ret);
+> +	link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
+> +			  MEMPLUG_HOTPLUG);
+>  
+>  	/* create new memmap entry */
+>  	if (!strcmp(res->name, "System RAM"))
+> -- 
+> 2.28.0
 
-Hans
-
+-- 
+Michal Hocko
+SUSE Labs
