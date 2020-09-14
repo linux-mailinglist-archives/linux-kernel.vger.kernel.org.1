@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1487B26970A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD1926970F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgINUvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:51:23 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:40983 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726040AbgINUvV (ORCPT
+        id S1726191AbgINUvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:51:39 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:37434 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgINUva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:51:21 -0400
-Received: by mail-io1-f66.google.com with SMTP id z13so1627651iom.8;
-        Mon, 14 Sep 2020 13:51:20 -0700 (PDT)
+        Mon, 14 Sep 2020 16:51:30 -0400
+Received: by mail-il1-f194.google.com with SMTP id q4so930096ils.4;
+        Mon, 14 Sep 2020 13:51:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=q5BuFwXqgWUyM2oW2u+tt0CE/M323vwAM6Qm21hju84=;
-        b=kjQiN0zD/XSckDJcxZ8XYqrYK4X5OAt+DAfEuDUHbbtKGqOR+sIziDc0UUCHnu/28W
-         DBYIv0FkZi8XDPGJhm0FB5zF3FQbIkTOh9TY1aAN6INOiQeP5ZHXp97Hidm4jpscHvg1
-         //iCk/eqVRXuC6wXDuE2C1IzU5qvmEIefX7FmMr/xlg6MEkgwdphJrsqapTspjIw1akn
-         Tpc6LqikYtjGW0Ie9QJpx+LVIllahaO/D6UUysAFxVxsHbX5KRBA7ag9nlQIjbeUVvGs
-         keowR6S3HPPB+TfQza2DyjQlyHtsZWoLBrv7risHtAki09SCdtUPG1ACUaEgQlpGfMts
-         0g3Q==
-X-Gm-Message-State: AOAM531QHmW8bI+3NXC9dQqBh7XFdPwDNptiAguEWCoCt7gV1IpAw8IH
-        z80jFg4l4xnStEoZK//tvQ==
-X-Google-Smtp-Source: ABdhPJxE2UxbjL3QpfM0FOA4k43+/+Tgm72pSVHJj60Dn1909MAmkzZSXMCLRYo9mu9sX4x7/Aw5ZQ==
-X-Received: by 2002:a05:6638:1381:: with SMTP id w1mr15242941jad.34.1600116680100;
-        Mon, 14 Sep 2020 13:51:20 -0700 (PDT)
+        bh=/nkoIQBB8aeAjFrAyH3N5nJASsyTVOS6e3/91uOJWL0=;
+        b=dF0GNDObWGgoQA8xvrXzLsZFFhS2cs693Tqph95/VX6htiMKb/BN8Ew+UMqggBjVg+
+         wjoTUURHwgcu4gMYE/yqaHIG++sZk6UzgovkMFhY4mxWyPZn0juhnnv7kfqa/8ogXi8+
+         /YcZ538OYwCSmCy6wdk4Fbp+Whj+u1hW4b9kPdfUyHYCcGXHfdQDIAU6tMvvoy7844hD
+         h10/yv1cVNE5vvvGkWKPPp3pskGvW5hldp86fRGtekluRVikqfBAbUHTtVj7GWCMMP/M
+         N865pJVTdX55tCOLbVgwv2y6sVWdMnU+VGD7Uv79BnL+FJxDmVE0R/C3okT8TxGjjgxI
+         skqw==
+X-Gm-Message-State: AOAM533tt9QDw5L5aIgLdcoV34HMfGBwRG2WnDnbnDjUNf6kj5kim/33
+        oKaKWsjhYQmhJKXWO+bmfQ==
+X-Google-Smtp-Source: ABdhPJySW4fP7h19hziwUa7lpqPD35KoCpqwbLWwpSzQ2G6BsEECfMvDt20Nm11mQDnWHmGgEX0ZXQ==
+X-Received: by 2002:a92:cc83:: with SMTP id x3mr12988306ilo.232.1600116687680;
+        Mon, 14 Sep 2020 13:51:27 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id r17sm7702364ilj.72.2020.09.14.13.51.17
+        by smtp.gmail.com with ESMTPSA id h15sm7389741ils.74.2020.09.14.13.51.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 13:51:19 -0700 (PDT)
-Received: (nullmailer pid 223842 invoked by uid 1000);
-        Mon, 14 Sep 2020 20:51:17 -0000
-Date:   Mon, 14 Sep 2020 14:51:17 -0600
+        Mon, 14 Sep 2020 13:51:27 -0700 (PDT)
+Received: (nullmailer pid 224256 invoked by uid 1000);
+        Mon, 14 Sep 2020 20:51:25 -0000
+Date:   Mon, 14 Sep 2020 14:51:25 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
+Cc:     linux-samsung-soc@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
         Maxime Ripard <mripard@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        David Airlie <airlied@linux.ie>,
         linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: gpu: arm, mali-midgard: Add missing
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Kukjin Kim <kgene@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [PATCH v2 2/6] dt-bindings: gpu: arm, mali-utgard: Add missing
  properties
-Message-ID: <20200914205117.GA223785@bogus>
+Message-ID: <20200914205125.GA224203@bogus>
 References: <20200903191438.12781-1-krzk@kernel.org>
+ <20200903191438.12781-2-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200903191438.12781-1-krzk@kernel.org>
+In-Reply-To: <20200903191438.12781-2-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 03 Sep 2020 21:14:33 +0200, Krzysztof Kozlowski wrote:
+On Thu, 03 Sep 2020 21:14:34 +0200, Krzysztof Kozlowski wrote:
 > Add common properties appearing in DTSes (opp-table) to fix dtbs_check
 > warnings like:
 > 
->   arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml: gpu@14ac0000:
+>   arch/arm/boot/dts/exynos4210-i9100.dt.yaml: gpu@13000000:
 >     'opp-table' does not match any of the regexes: 'pinctrl-[0-9]+'
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
@@ -75,8 +76,8 @@ On Thu, 03 Sep 2020 21:14:33 +0200, Krzysztof Kozlowski wrote:
 > Changes since v1:
 > 1. Add properties instead of using unevaluated
 > ---
->  Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  Documentation/devicetree/bindings/gpu/arm,mali-utgard.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 
 Applied, thanks!
