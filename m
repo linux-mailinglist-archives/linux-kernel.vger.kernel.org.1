@@ -2,175 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB256269297
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386342692A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbgINRKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgINRI0 (ORCPT
+        id S1726354AbgINRLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:11:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39057 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726348AbgINRK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:08:26 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AF7C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:08:23 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z9so812127wmk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+EOCx9ftlXj9r5hUVYs4UrtJe1lnrNygcuxr0i6YY/o=;
-        b=W/PkP+J+A5uVeI0t9NwdGy9u6SXPvioNMmJApM0IhvCdhGeeVQ/0sSLzpbtV6fHxOO
-         TQA7URqIQXMcFyhPnkZL00bGwjQYlVfd8ZGP7Tr9U0URP6LIWwhW5cI3DpcdnZziCe3A
-         rkMi/fX2tRSMb8AXgS6ZJqc/Z7MkbC669iHpSYUfE/yNyKjXLon5Y84ptPDd3LxckRTM
-         /89hO7enXbpddOyQjfLUgGQOtu5ucvyfMwXRa5f7+BSLzE5I/s5e+SmOwb/9FPwXEWic
-         SMSmbELfgqNO3BovNsBFDowXf74LKxlzY7G6f6FTP1uTuMEFOSE2TgL0P+gRZ6rLfQBM
-         1Skw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+EOCx9ftlXj9r5hUVYs4UrtJe1lnrNygcuxr0i6YY/o=;
-        b=P9k62QWx9qG7MD3nRt02Og6wPaIRFPlMYHAmiVPU+bubvQvQ7H5azombvc2vD3REUZ
-         chSmZ/dfB1Pe40NW+DrFEeuVG7CCP5znuT3KRnDE4EUpEmF2P/D4kp+6xkS2XivcYJhJ
-         wIj/5X8G4ieTRoirXybUhfb31Rmu7oBGAIgMQneKCeDlxK3aBa9gsPSkSa6rUpGkZ9yp
-         EJYdE42pg3rKoAHGmh35ixfVV6g/Xw9gfrrnbq/qwgh4DLHJ8/p68gEKPX4XAl/YC/0u
-         eYZFBhd7xvcfEoqrugBu+tURJVo/c1H6QTQL5j+l/D4sH2lQrvL+ovmfNIhXE3qgDKan
-         8tKw==
-X-Gm-Message-State: AOAM530y5KbcTRGB2ByvaVsTgeWFk4nbUS2dkS1B2F1x/SDq/GG3b1+0
-        lh/2uDw82zrs0hs194L3/yqqhFlsjfYbBLJvxqUu1Q==
-X-Google-Smtp-Source: ABdhPJzo42d282HlrCe/sGhZUIISKzPkZFivLUB/pih0RIrPmUgtJYd+qrAqGWY+WFJH55OaaFgv6Fas7g//h4N8X4c=
-X-Received: by 2002:a1c:f402:: with SMTP id z2mr335531wma.87.1600103301802;
- Mon, 14 Sep 2020 10:08:21 -0700 (PDT)
+        Mon, 14 Sep 2020 13:10:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600103457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=I5P62Hiq3MDE/ITWq+Gs4wWfI0W/ONirmBfvBCwTwE8=;
+        b=B+lqCnQhhkBjB8zUMBYuu2vmoClQKaLruMYwl6zVv92waI8gISeYMKOpmTshU4EG59PYKR
+        qAVgkXfmobFmZBlNdmxuUKPUI/jSYBR6EE2WMszIu+6RN8201+pfx2s4CGrKU6eeH/up2v
+        AJ+T2DGWcBB85k6r3uNL0iM1AQQXXX0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-iiWMN5bxMbevuEST_91L9A-1; Mon, 14 Sep 2020 13:10:53 -0400
+X-MC-Unique: iiWMN5bxMbevuEST_91L9A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ADA35801FDD;
+        Mon, 14 Sep 2020 17:10:50 +0000 (UTC)
+Received: from [10.36.112.147] (ovpn-112-147.ams2.redhat.com [10.36.112.147])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C17EC60C0F;
+        Mon, 14 Sep 2020 17:10:47 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] mm: replace memmap_context by memplug_context
+To:     Laurent Dufour <ldufour@linux.ibm.com>, akpm@linux-foundation.org,
+        Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20200914165042.96218-1-ldufour@linux.ibm.com>
+ <20200914165042.96218-2-ldufour@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <d6ade681-2fb1-a1df-5673-bceacd1dfc55@redhat.com>
+Date:   Mon, 14 Sep 2020 19:10:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-3-jolsa@kernel.org>
- <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
- <20200914152841.GC160517@kernel.org> <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 14 Sep 2020 10:08:01 -0700
-Message-ID: <CAP-5=fUansxK_as61teHsLyRQu3Zu5UE-+SDqWVYGhSz36uCzQ@mail.gmail.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200914165042.96218-2-ldufour@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 9:35 AM <peterz@infradead.org> wrote:
->
-> On Mon, Sep 14, 2020 at 12:28:41PM -0300, Arnaldo Carvalho de Melo wrote:
->
-> > > >   struct {
-> > > >     struct perf_event_header header;
-> >
-> > > >     u32                      pid, tid;
-> > > >     u64                      addr;
-> > > >     u64                      len;
-> > > >     u64                      pgoff;
-> > > >     u32                      maj;
-> > > >     u32                      min;
-> > > >     u64                      ino;
-> > > >     u64                      ino_generation;
-> > > >     u32                      prot, flags;
-> > > >     u32                      reserved;
-> >
-> > What for this reserved? its all nicely aligned already, u64 followed by
-> > two u32 (prot, flags).
->
-> I suspect it is so that sizeof(reserve+buildid) is a multiple of 8. But
-> yes, that's a wee bit daft, since the next field is a variable length
-> character array.
->
-> > > >     u8                       buildid[20];
-> >
-> > > Do we need maj, min, ino, ino_generation for mmap3 event?
-> > > I think they are to compare binaries, then we can do it with
-> > > build-id (and I think it'd be better)..
-> >
-> > Humm, I thought MMAP2 would be a superset of MMAP and MMAP3 would be a
-> > superset of MMAP2.
->
-> Well, the 'funny' thing is that if you do use buildid, then
-> {maj,min,ino,ino_generation} are indeed superfluous, but are combined
-> also large enough to contain buildid.
->
-> > If we want to ditch useless stuff, then trow away pid, tid too, as we
-> > can select those via sample_type.
->
-> Correct.
->
-> So something like:
->
-> struct {
->   struct perf_event_header header;
->
->   u64                      addr;
->   u64                      len;
->   u64                      pgoff;
->   union {
->     struct {
->       u32                  maj;
->       u32                  min;
->       u64                  ino;
->       u64                  ino_generation;
->     };
->     u8                     buildid[20];
->   };
->   u32                      prot, flags;
->   char                     filename[];
->   struct sample_id         sample_id;
-> };
->
-> Using one of the MISC bits to resolve the union. Might actually bring
-> benefit to everyone. Us normal people get to have a smaller MMAP record,
-> while the buildid folks can have it too.
->
-> Even more extreme would be using 2 MISC bits and allowing the union to
-> be 0 sized for anon.
->
-> That said; I have the nagging feeling there were unresolved issues with
-> mmap2, but I can't seem to find any relevant emails on it :/ My
-> google-fu is weak today.
+On 14.09.20 18:50, Laurent Dufour wrote:
+> The memmap_context is used to detect whether a memory operation is due to a
+> hot-add operation or happening at boot time.
+> 
+> Make it general to the hotplug operation and rename it at memplug_context.
+> 
+> There is no functional change introduced by this patch
+> 
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> ---
+>  arch/ia64/mm/init.c    |  6 +++---
+>  include/linux/mm.h     |  2 +-
+>  include/linux/mmzone.h | 11 ++++++++---
+>  mm/memory_hotplug.c    |  2 +-
+>  mm/page_alloc.c        | 10 +++++-----
+>  5 files changed, 18 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
+> index 0b3fb4c7af29..b5054b5e77c8 100644
+> --- a/arch/ia64/mm/init.c
+> +++ b/arch/ia64/mm/init.c
+> @@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
+>  	if (map_start < map_end)
+>  		memmap_init_zone((unsigned long)(map_end - map_start),
+>  				 args->nid, args->zone, page_to_pfn(map_start),
+> -				 MEMMAP_EARLY, NULL);
+> +				 MEMPLUG_EARLY, NULL);
 
-Firstly, thanks Jiri for this really useful patch set for our
-use-cases! Some thoughts:
+I am pretty sure that won't compile (MEMINIT_EARLY).
 
-One issue with mmap2 events at the moment is that they happen "after"
-the mmap is performed. This allows the mapped address to be known but
-has the unfortunate problem of causing mmap events to get "extended"
-due to adjacent vmas being merged. There are some workarounds like
-commit c8f6ae1fb28d (perf inject jit: Remove //anon mmap events).
-Perhaps these events can switch to reporting the length the mmap
-requested rather than the length of the vma?
+(same at other places)
 
-I could imagine that changes here could be interesting to folks doing
-CHERI or hypervisors, for example, they may want more address bits.
 
-BPF has stack traces with elements of buildid + offset. Using these in
-perf samples would avoid the need for mmap events, synthesis, etc. but
-at the cost of larger and possibly slower stack traces. Perhaps we
-should just remove the idea of mmap events altogether?
-
+-- 
 Thanks,
-Ian
+
+David / dhildenb
+
