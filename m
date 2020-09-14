@@ -2,133 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1E52695AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE142695B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgINTds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S1726033AbgINTeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgINTdo (ORCPT
+        with ESMTP id S1726022AbgINTeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:33:44 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB3FC06174A;
-        Mon, 14 Sep 2020 12:33:43 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t14so614033pgl.10;
-        Mon, 14 Sep 2020 12:33:43 -0700 (PDT)
+        Mon, 14 Sep 2020 15:34:12 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4785CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:34:12 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id c18so826802wrm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KkqW6KbGxh/KSzD5Wn3+KsznoNndYdFD3MoHDu0yS4o=;
-        b=HfYCcZI99+eKdPn+gu+0tW1l9EDS6ETq2rWjaKfMje5mzce1L5EtvJ5iBfwX3DyrkZ
-         z4WOxdPJNDR/MPnkHostr5TaHikU5kDP/tZxpn0McXQJOb/VmdYYBJvvNrfKToknN5MA
-         EkunW0nK5eLh3doETfKpGaco1W+8jQWnXHQL8nNLdF6ElipJIn7BeQOcj0jzUDTQKkas
-         mQmQ023eo8lEkg20TmX0dEyj10LZbv8MalsiT+3pBcJTNFg35OEAGcV+Oaxc5Qtc2oVl
-         NnsmTbV3nVO6Yx1eghtKDnIEPWSjt870ra9wlkD8X7W4Gps5XmUgIgHR/az3mdyEgr8f
-         SnWQ==
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6ZfPOOIwny+SOWWvDFrp9jH/Hf5AY76Y31ECLzz/08s=;
+        b=gsdcsC0Gc5RLhkew2L2+Fxf3KeQILEy4nktJHEr+6Hi/lqt644KELt8WBFyJk81t3b
+         zZBUM5i0EiZDNNjPJgitM6iBqDe4SL765QTJ61syEWXwDDSOBjCoQB3iRbUlVuZuZeQj
+         u6jwnVwV7aQ3mVQ00vDiqCnitWIVibSy9sQ74=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KkqW6KbGxh/KSzD5Wn3+KsznoNndYdFD3MoHDu0yS4o=;
-        b=IRn5JQA2O+jNk0X5gxcoWNJG7UfkQWx2IoSAVGs2G9Ez4MMv85M1Lgv8C6NAZfq7od
-         dbzV/IfD1P7QlJxf2RYsKVx9YbjXZ9tP+RSKCMPVjHlhFtxTPBP74g3Ii8yseBnwCYxx
-         SBZ6z6tLJcvKSOUQStINDL6L9ilp1i342Xyx/q2CdTnKxuhGIoSt59BkeX8cy4mmFGNQ
-         HRBZjzClFTwwCpJ+t7ec+17icuEdCoS3qz3yH5zIWmbtBtKqV8Dqd3Jatx1NYzpT9VaU
-         JcIm5bVsd68Znra3W97j+y17Pvbikqgsq9lkAMjmWjvkJCcHr/WISxcGlJ92GRrAD41k
-         KDIQ==
-X-Gm-Message-State: AOAM532AOrs+fWpM49WwOqmhL03x38zMA39QXJfv7vlIwvvb/sJRbHOO
-        ptzWJtJS15sGWo7qVx0NE+w=
-X-Google-Smtp-Source: ABdhPJyZp3Qip8dp9EXEb3DBw2NbThgWauPBUnNuJ9bhig+2ViBSnYR9uE0t11+Mk7kGE9cJ/LB9NA==
-X-Received: by 2002:a63:7f50:: with SMTP id p16mr11972543pgn.451.1600112023115;
-        Mon, 14 Sep 2020 12:33:43 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id a2sm10835024pfr.104.2020.09.14.12.33.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 12:33:42 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:33:40 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andy.shevchenko@gmail.com, erosca@de.adit-jv.com,
-        Andrew_Gabbasov@mentor.com
-Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-Message-ID: <20200914193340.GV1665100@dtor-ws>
-References: <20200912005521.26319-1-jiada_wang@mentor.com>
- <20200913165644.GF1665100@dtor-ws>
- <65d1b9f2-a8e3-6398-712d-41d8067d06a1@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ZfPOOIwny+SOWWvDFrp9jH/Hf5AY76Y31ECLzz/08s=;
+        b=Q2Z65QH09a+80VTWBybDU+DiOEW5gYu73EA9wT48qZT7tpZEgbmp3LYgKB/LsX64UR
+         ZzLq7jkCeY6VC7gTz/1nWYxbgfBwqyqXY+rTB7rm9zIUBqCYOKrfOZFowYgbj6HrfMhH
+         llpJuWr4M7PPWMJWOy8t2AdLgEGJ0iqPncHIH2O2FCJZGKBxnFarx3ARCaLVvd/rSOjQ
+         RPYyJjiodf389dgeP8mzO17mlixH5HOd7bQ84RxxOC/hhM17aOvNmoAv6jjYwyT3d3Eg
+         2OJgzqA9ItuYNGXXx1DD4yV5N2KtTIEZgAUGo2oBbAH4jP/mIkybS/QnOFn9EDoUuMOM
+         FHvQ==
+X-Gm-Message-State: AOAM533PB78kktB0PaGbyryXX9ad+QBr74ZI2v+gDwusO8tKsrMHlKh0
+        gDypLz3bozEO4vUvD+u49GweYEQkCw/sFMsi038f
+X-Google-Smtp-Source: ABdhPJxO8sy09RxWNj1AjBznbgrobV4hffaMobd39GuEuxn3nTS7FxA3HpPz0FvbuXlUjGa6ydfJfvMA8DRm3lEGOGw=
+X-Received: by 2002:a5d:4bcf:: with SMTP id l15mr17385037wrt.384.1600112050950;
+ Mon, 14 Sep 2020 12:34:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <65d1b9f2-a8e3-6398-712d-41d8067d06a1@gmail.com>
+References: <20200912013441.9730-1-atish.patra@wdc.com> <20200914090448.00001f7f@Huawei.com>
+In-Reply-To: <20200914090448.00001f7f@Huawei.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 14 Sep 2020 12:33:59 -0700
+Message-ID: <CAOnJCULGNha6aZaWZDn8zX3MZHn1H=uCrnNjpiqE11meRQz5eQ@mail.gmail.com>
+Subject: Re: [RFC/RFT PATCH v2 0/5] Unify NUMA implementation between ARM64 & RISC-V
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Zong Li <zong.li@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
+        Jia He <justin.he@arm.com>, Anup Patel <anup@brainfault.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 08:29:44PM +0300, Dmitry Osipenko wrote:
-> 13.09.2020 19:56, Dmitry Torokhov пишет:
-> > Hi Jiada,
-> > 
-> > On Sat, Sep 12, 2020 at 09:55:21AM +0900, Jiada Wang wrote:
-> >> From: Nick Dyer <nick.dyer@itdev.co.uk>
-> >>
-> >> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
-> >> when they are in a sleep state. It must be retried after a delay for the
-> >> chip to wake up.
-> > 
-> > Do we know when the chip is in sleep state? Can we do a quick I2C
-> > transaction in this case instead of adding retry logic to everything? Or
-> > there is another benefit for having such retry logic?
-> 
-> Hello!
-> 
-> Please take a look at page 29 of:
-> 
-> https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
-> 
-> It says that the retry is needed after waking up from a deep-sleep mode.
-> 
-> There are at least two examples when it's needed:
-> 
-> 1. Driver probe. Controller could be in a deep-sleep mode at the probe
-> time, and then first __mxt_read_reg() returns I2C NACK on reading out TS
-> hardware info.
-> 
-> 2. Touchscreen input device is opened. The touchscreen is in a
-> deep-sleep mode at the time when input device is opened, hence first
-> __mxt_write_reg() invoked from mxt_start() returns I2C NACK.
-> 
-> I think placing the retries within __mxt_read() / write_reg() should be
-> the most universal option.
-> 
-> Perhaps it should be possible to add mxt_wake() that will read out some
-> generic register
-
-I do not think we need to read a particular register, just doing a quick
-read:
-
-	i2c_smbus_xfer(client->adapter, client->addr,
-			0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &dummy)
-
-should suffice.
-
-> and then this helper should be invoked after HW
-> resetting (before mxt_read_info_block()) and from mxt_start() (before
-> mxt_set_t7_power_cfg()). But this approach feels a bit fragile to me.
+On Mon, Sep 14, 2020 at 1:07 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Fri, 11 Sep 2020 18:34:36 -0700
+> Atish Patra <atish.patra@wdc.com> wrote:
+>
+>
+> Hi Atish,
+>
+> I'm not seeing a change log from v1.  Putting one in makes it easier
+> for people who reviewed v1 to remember what to look for when looking
+> at v2.
 >
 
-Actually, reading the spec, it all depends on how the WAKE pin is wired
-up on a given board. In certain setups retrying transaction is the right
-approach, while in others explicit control is needed. So indeed, we need
-a "wake" helper that we should call in probe and resume paths.
+My bad. I usually add a change log in the header patch but forgot this time.
+I will send out a v3 soon and update those.
 
-Thanks.
+Thanks for reviewing the patches.
+> Either here, or individual patches after the --- is fine.
+>
+> Thanks,
+>
+> Jonathan
+>
+>
+> > This series attempts to move the ARM64 numa implementation to common
+> > code so that RISC-V can leverage that as well instead of reimplementing
+> > it again.
+> >
+> > RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+> > modified to reuse the common implementation to avoid duplication.
+> >
+> > [1] https://lkml.org/lkml/2020/1/10/233
+> >
+> > This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+> > It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+> > This patch series doesn't modify the maintainers list for the common code (arch_numa)
+> > as I am not sure if somebody from ARM64 community or Greg should take up the
+> > maintainership. Ganapatrao was the original author of the arm64 version.
+> > I would be happy to update that in the next revision once it is decided.
+> >
+> > # numactl --hardware
+> > available: 2 nodes (0-1)
+> > node 0 cpus: 0 1 2 3
+> > node 0 size: 486 MB
+> > node 0 free: 470 MB
+> > node 1 cpus: 4 5 6 7
+> > node 1 size: 424 MB
+> > node 1 free: 408 MB
+> > node distances:
+> > node   0   1
+> >   0:  10  20
+> >   1:  20  10
+> > # numactl -show
+> > policy: default
+> > preferred node: current
+> > physcpubind: 0 1 2 3 4 5 6 7
+> > cpubind: 0 1
+> > nodebind: 0 1
+> > membind: 0 1
+> >
+> > For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+> > to test the patches in Qemu and 2 socket OmniXtend FPGA.
+> >
+> > https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+> >
+> > The patches are also available at
+> >
+> > https://github.com/atishp04/linux/tree/5.10_numa_unified_v2
+> >
+> > There may be some minor conflicts with Mike's cleanup series [2] depending on the
+> > order in which these two series are being accepted. I can rebase on top his series
+> > if required.
+> >
+> > [2] https://lkml.org/lkml/2020/8/18/754
+> >
+> > Atish Patra (4):
+> > numa: Move numa implementation to common code
+> > arm64, numa: Change the numa init function name to be generic
+> > riscv: Separate memory init from paging init
+> > riscv: Add numa support for riscv64 platform
+> >
+> > Greentime Hu (1):
+> > riscv: Add support pte_protnone and pmd_protnone if
+> > CONFIG_NUMA_BALANCING
+> >
+> > arch/arm64/Kconfig                            |  1 +
+> > arch/arm64/include/asm/numa.h                 | 45 +----------------
+> > arch/arm64/kernel/acpi_numa.c                 | 13 -----
+> > arch/arm64/mm/Makefile                        |  1 -
+> > arch/arm64/mm/init.c                          |  4 +-
+> > arch/riscv/Kconfig                            | 31 +++++++++++-
+> > arch/riscv/include/asm/mmzone.h               | 13 +++++
+> > arch/riscv/include/asm/numa.h                 |  8 +++
+> > arch/riscv/include/asm/pci.h                  | 14 ++++++
+> > arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+> > arch/riscv/kernel/setup.c                     | 11 ++++-
+> > arch/riscv/kernel/smpboot.c                   | 12 ++++-
+> > arch/riscv/mm/init.c                          | 10 +++-
+> > drivers/base/Kconfig                          |  6 +++
+> > drivers/base/Makefile                         |  1 +
+> > .../mm/numa.c => drivers/base/arch_numa.c     | 29 +++++++++--
+> > include/asm-generic/numa.h                    | 49 +++++++++++++++++++
+> > 17 files changed, 200 insertions(+), 69 deletions(-)
+> > create mode 100644 arch/riscv/include/asm/mmzone.h
+> > create mode 100644 arch/riscv/include/asm/numa.h
+> > rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (95%)
+> > create mode 100644 include/asm-generic/numa.h
+> >
+> > --
+> > 2.24.0
+> >
+>
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
 
 -- 
-Dmitry
+Regards,
+Atish
