@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4672690B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579D32690B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgINPy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbgINPvH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726327AbgINPyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:54:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56438 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726583AbgINPvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 11:51:07 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E03CC06174A;
-        Mon, 14 Sep 2020 08:50:56 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k15so12966843pfc.12;
-        Mon, 14 Sep 2020 08:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NeEIdkUfiAAP9K0el+EdAG4xvlSnbHSg0aEKW4bMslI=;
-        b=Lr9oqe/AHxcqpa3/s/uqXOxrKyk1aW7EudKoYxXKorf6b9d0JWkPYC07WQPYCVbwtH
-         OMiPMTaw8YqGKmZVSsydJmB/ES/CjemiZFaqcu3E9FcfVOJfVsoof7ebusmb/0nNbuar
-         glRVsu4Pa6H8NTrT2hStu6n7Xu6pWMfewapuYXafZTXO+PRdYHzYK4xsyytSYM12o40a
-         bBS4VQXEmxY+XyYbcKmkJZIU3E5cEKmY+jkzHA0MoUlidBxOuWZLllzgwMkwTuhuWDPk
-         NIw0eaWQY2+BOwsSmiqh3PVSo0XAdLULwsngE8DYCSavZtp8rAyc+CkxePJ0CXdI8N1Y
-         FJIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NeEIdkUfiAAP9K0el+EdAG4xvlSnbHSg0aEKW4bMslI=;
-        b=phZhXPiJaHz4PCelhsqr7OrIsL+nHLuUseiHXF3338wfSxTG454oJwsifFDNMV3mFu
-         En0oesFMl67UprNtyNFYkFBvQdAV95wZhDzRrVppXs5jugZdU3GB9SV1XD1AmVhCkX5A
-         PURNHLsp7fTCVQrt2/Lh41bQQ1VbX7wVapddrxOZm16uiZN5URC0lnCO0MsH7XvqTTl+
-         B0JwdntLKJgI78XE3M4pwwrnplBGG96h+qloytdyUkw/6wSbnMbwrSkjAzCAGANW0jTt
-         LtQzyM6GO1L7b5K01T3JThbz4ttf1C9bLcPS0fiA2ZKfxVeqJSHpFplHeyXcGIn/pNO/
-         GZyQ==
-X-Gm-Message-State: AOAM53119DEhTqwPNDKrIMEiAA1AU7dQgT3+HdLxpOlHsYn9N34Nq6QT
-        2zNI4aXUZ0/ZI1o6aG3nyt0FmJcbDjNdWwDnekU=
-X-Google-Smtp-Source: ABdhPJyeeqEszby9QyEvsXRu1OdcYUpb9XfNAMGPe89vc12cixaKuFukdfJvJYSCD5MqRtBGHn61qu/a1A1NnB9pJF4=
-X-Received: by 2002:a17:902:6bc1:b029:d0:cbe1:e76e with SMTP id
- m1-20020a1709026bc1b02900d0cbe1e76emr15559440plt.21.1600098655867; Mon, 14
- Sep 2020 08:50:55 -0700 (PDT)
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 867E7ADC2;
+        Mon, 14 Sep 2020 15:51:17 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 16:50:59 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     peterz@infradead.org
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com,
+        pauld@redhat.com
+Subject: Re: [PATCH 0/4] sched/fair: Improve fairness between cfs tasks
+Message-ID: <20200914155059.GF3117@suse.de>
+References: <20200914100340.17608-1-vincent.guittot@linaro.org>
+ <20200914114202.GQ1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200912005521.26319-1-jiada_wang@mentor.com> <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
- <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com> <CAHp75VdTv-uCQue3VU=czZJd4iTG+XBVe2kFtnP+fZ1XQuFbzA@mail.gmail.com>
- <137be969-f99a-66e0-ebe4-b86f4be2b5d3@gmail.com>
-In-Reply-To: <137be969-f99a-66e0-ebe4-b86f4be2b5d3@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 14 Sep 2020 18:50:38 +0300
-Message-ID: <CAHp75Vfg6=5u1fthsub3xw3dxAKTGPUHfamjK_A2b5hcyw25PA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Andrew_Gabbasov@mentor.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20200914114202.GQ1362448@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 6:26 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> 14.09.2020 16:49, Andy Shevchenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Sun, Sep 13, 2020 at 3:57 PM Dmitry Osipenko <digetx@gmail.com> wrot=
-e:
+On Mon, Sep 14, 2020 at 01:42:02PM +0200, peterz@infradead.org wrote:
+> On Mon, Sep 14, 2020 at 12:03:36PM +0200, Vincent Guittot wrote:
+> > Vincent Guittot (4):
+> >   sched/fair: relax constraint on task's load during load balance
+> >   sched/fair: reduce minimal imbalance threshold
+> >   sched/fair: minimize concurrent LBs between domain level
+> >   sched/fair: reduce busy load balance interval
+> 
+> I see nothing objectionable there, a little more testing can't hurt, but
+> I'm tempted to apply them.
+> 
+> Phil, Mel, any chance you can run them through your respective setups?
 
-...
+They're queued but the test grid is backlogged at the moment. It'll be
+a few days before the tests complete.
 
-> >>>> +       ret =3D i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer)=
-);
-> >>>> +       if (ret !=3D ARRAY_SIZE(xfer)) {
-> >> ...> Also why switch from positive to negative conditional?
-> >>
-> >> This will make code less readable because of the goto, and thus, there
-> >> will be two branches for handling of the returned value instead of one=
- +
-> >> goto. Hence this part is good to me as-is.
-> >
-> > But it's not the purpose of this patch, right?
-> > Style changes should be really separated from the fix.
->
-> This should be up to a particular maintainer to decide. Usually nobody
-> requires patches to be overly pedantic, this may turn away contributors
-> because it feels like an unnecessary bikeshedding.
-
-Let's see what Wolfram thinks about this.
-
-> It's more preferred
-> to accept patch as-is if it does right thing and then maintainer could
-> modify the patch, making cosmetic changes.
-
-It depends on the maintainer's workflow (which may be different from
-maintainer to maintainer).
-
-> > And since it's a fix it should have a Fixes tag.
->
-> It shouldn't be a fix, but a new feature because apparently the 1386
-> controller wasn't ever intended to be properly supported before this patc=
-h.
-
-Thanks for clarification. Indeed in this case no tag is needed.
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Mel Gorman
+SUSE Labs
