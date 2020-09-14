@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B2926903B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C9A269039
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgINPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:41:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49316 "EHLO mail.kernel.org"
+        id S1726306AbgINPlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726463AbgINPjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726028AbgINPjx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 11:39:53 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB3DF208DB;
-        Mon, 14 Sep 2020 15:39:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69386217BA;
+        Mon, 14 Sep 2020 15:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600097990;
-        bh=SgOM55p0k1/T+yeBiB4qb7JwUjrpGSf4tqi5wfIJ0E0=;
+        s=default; t=1600097993;
+        bh=6M1OqRToiUTgnMl/vPaO+DwRv+FUZXkQrwMS6mXs/VE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mpFtY6DTMsxzn9etyJssFVa+DFZJQsHXBcX7oNgeAbIU56rfr/9MaiFs/YLxfAVc0
-         p37yX9E3SBq5vorQ0iEx9edBNaJ8Ad9SK3T3cyMtOVnpgUyDG9vdC8f4c45byxLFAB
-         8sYXdW85QISTg6B72dJ7nnjmvtZIm6aWbQ4KZE8A=
+        b=Z6apreYpZ7cth9nEtb/BMxH3V07tNTMp3Jo5Iv7jRTWllncpv71FKeWzAvab4263P
+         MwTJGbZnl04jSRe24D5hJwMxa6Y//dlq5XU+M0aXtWx424GAopVEDqwKM8dYJFi6om
+         aGNzL3V2yd0k5k9xAKn1BhmHuE4FJqcaUAXvZmDs=
 From:   Mark Brown <broonie@kernel.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
@@ -38,9 +38,9 @@ Cc:     Mark Rutland <mark.rutland@arm.com>,
         Miroslav Benes <mbenes@suse.cz>, x86@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH v3 2/3] arm64: stacktrace: Make stack walk callback consistent with generic code
-Date:   Mon, 14 Sep 2020 16:34:08 +0100
-Message-Id: <20200914153409.25097-3-broonie@kernel.org>
+Subject: [PATCH v3 3/3] arm64: stacktrace: Convert to ARCH_STACKWALK
+Date:   Mon, 14 Sep 2020 16:34:09 +0100
+Message-Id: <20200914153409.25097-4-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200914153409.25097-1-broonie@kernel.org>
 References: <20200914153409.25097-1-broonie@kernel.org>
@@ -51,123 +51,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As with the generic arch_stack_walk() code the arm64 stack walk code takes
-a callback that is called per stack frame. Currently the arm64 code always
-passes a struct stackframe to the callback and the generic code just passes
-the pc, however none of the users ever reference anything in the struct
-other than the pc value. The arm64 code also uses a return type of int
-while the generic code uses a return type of bool though in both cases the
-return value is a boolean value and the sense is inverted between the two.
-
-In order to reduce code duplication when arm64 is converted to use
-arch_stack_walk() change the signature and return sense of the arm64
-specific callback to match that of the generic code.
+Historically architectures have had duplicated code in their stack trace
+implementations for filtering what gets traced. In order to avoid this
+duplication some generic code has been provided using a new interface
+arch_stack_walk(), enabled by selecting ARCH_STACKWALK in Kconfig, which
+factors all this out into the generic stack trace code. Convert arm64
+to use this common infrastructure.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm64/include/asm/stacktrace.h |  2 +-
- arch/arm64/kernel/perf_callchain.c  |  6 +++---
- arch/arm64/kernel/return_address.c  |  8 ++++----
- arch/arm64/kernel/stacktrace.c      | 11 +++++------
- 4 files changed, 13 insertions(+), 14 deletions(-)
+ arch/arm64/Kconfig             |  1 +
+ arch/arm64/kernel/stacktrace.c | 79 +++++-----------------------------
+ 2 files changed, 11 insertions(+), 69 deletions(-)
 
-diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
-index fc7613023c19..eb29b1fe8255 100644
---- a/arch/arm64/include/asm/stacktrace.h
-+++ b/arch/arm64/include/asm/stacktrace.h
-@@ -63,7 +63,7 @@ struct stackframe {
- 
- extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
- extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
--			    int (*fn)(struct stackframe *, void *), void *data);
-+			    bool (*fn)(void *, unsigned long), void *data);
- extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
- 			   const char *loglvl);
- 
-diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
-index b0e03e052dd1..88ff471b0bce 100644
---- a/arch/arm64/kernel/perf_callchain.c
-+++ b/arch/arm64/kernel/perf_callchain.c
-@@ -137,11 +137,11 @@ void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
-  * whist unwinding the stackframe and is like a subroutine return so we use
-  * the PC.
-  */
--static int callchain_trace(struct stackframe *frame, void *data)
-+static bool callchain_trace(void *data, unsigned long pc)
- {
- 	struct perf_callchain_entry_ctx *entry = data;
--	perf_callchain_store(entry, frame->pc);
--	return 0;
-+	perf_callchain_store(entry, pc);
-+	return true;
- }
- 
- void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
-diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
-index a5e8b3b9d798..a6d18755652f 100644
---- a/arch/arm64/kernel/return_address.c
-+++ b/arch/arm64/kernel/return_address.c
-@@ -18,16 +18,16 @@ struct return_address_data {
- 	void *addr;
- };
- 
--static int save_return_addr(struct stackframe *frame, void *d)
-+static bool save_return_addr(void *d, unsigned long pc)
- {
- 	struct return_address_data *data = d;
- 
- 	if (!data->level) {
--		data->addr = (void *)frame->pc;
--		return 1;
-+		data->addr = (void *)pc;
-+		return false;
- 	} else {
- 		--data->level;
--		return 0;
-+		return true;
- 	}
- }
- NOKPROBE_SYMBOL(save_return_addr);
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 6d232837cbee..d1ba52e4b976 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -29,6 +29,7 @@ config ARM64
+ 	select ARCH_HAS_SETUP_DMA_OPS
+ 	select ARCH_HAS_SET_DIRECT_MAP
+ 	select ARCH_HAS_SET_MEMORY
++	select ARCH_STACKWALK
+ 	select ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_HAS_STRICT_MODULE_RWX
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
 diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index 2dd8e3b8b94b..05eaba21fd46 100644
+index 05eaba21fd46..804d076b02cb 100644
 --- a/arch/arm64/kernel/stacktrace.c
 +++ b/arch/arm64/kernel/stacktrace.c
-@@ -118,12 +118,12 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- NOKPROBE_SYMBOL(unwind_frame);
+@@ -133,82 +133,23 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+ NOKPROBE_SYMBOL(walk_stackframe);
  
- void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
--		     int (*fn)(struct stackframe *, void *), void *data)
-+			     bool (*fn)(void *, unsigned long), void *data)
+ #ifdef CONFIG_STACKTRACE
+-struct stack_trace_data {
+-	struct stack_trace *trace;
+-	unsigned int no_sched_functions;
+-	unsigned int skip;
+-};
+ 
+-static bool save_trace(void *d, unsigned long addr)
++void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
++		     struct task_struct *task, struct pt_regs *regs)
  {
- 	while (1) {
- 		int ret;
+-	struct stack_trace_data *data = d;
+-	struct stack_trace *trace = data->trace;
+-
+-	if (data->no_sched_functions && in_sched_functions(addr))
+-		return false;
+-	if (data->skip) {
+-		data->skip--;
+-		return false;
+-	}
+-
+-	trace->entries[trace->nr_entries++] = addr;
+-
+-	return trace->nr_entries >= trace->max_entries;
+-}
+-
+-void save_stack_trace_regs(struct pt_regs *regs, struct stack_trace *trace)
+-{
+-	struct stack_trace_data data;
+-	struct stackframe frame;
+-
+-	data.trace = trace;
+-	data.skip = trace->skip;
+-	data.no_sched_functions = 0;
+-
+-	start_backtrace(&frame, regs->regs[29], regs->pc);
+-	walk_stackframe(current, &frame, save_trace, &data);
+-}
+-EXPORT_SYMBOL_GPL(save_stack_trace_regs);
+-
+-static noinline void __save_stack_trace(struct task_struct *tsk,
+-	struct stack_trace *trace, unsigned int nosched)
+-{
+-	struct stack_trace_data data;
+ 	struct stackframe frame;
  
--		if (fn(frame, data))
-+		if (!fn(data, frame->pc))
- 			break;
- 		ret = unwind_frame(tsk, frame);
- 		if (ret < 0)
-@@ -139,17 +139,16 @@ struct stack_trace_data {
- 	unsigned int skip;
- };
+-	if (!try_get_task_stack(tsk))
+-		return;
+-
+-	data.trace = trace;
+-	data.skip = trace->skip;
+-	data.no_sched_functions = nosched;
+-
+-	if (tsk != current) {
+-		start_backtrace(&frame, thread_saved_fp(tsk),
+-				thread_saved_pc(tsk));
+-	} else {
+-		/* We don't want this function nor the caller */
+-		data.skip += 2;
++	if (regs)
++		start_backtrace(&frame, regs->regs[29], regs->pc);
++	else if (task == current)
+ 		start_backtrace(&frame,
+ 				(unsigned long)__builtin_frame_address(0),
+-				(unsigned long)__save_stack_trace);
+-	}
+-
+-	walk_stackframe(tsk, &frame, save_trace, &data);
++				(unsigned long)arch_stack_walk);
++	else
++		start_backtrace(&frame, thread_saved_fp(task),
++				thread_saved_pc(task));
  
--static int save_trace(struct stackframe *frame, void *d)
-+static bool save_trace(void *d, unsigned long addr)
- {
- 	struct stack_trace_data *data = d;
- 	struct stack_trace *trace = data->trace;
--	unsigned long addr = frame->pc;
+-	put_task_stack(tsk);
+-}
+-
+-void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+-{
+-	__save_stack_trace(tsk, trace, 1);
+-}
+-EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+-
+-void save_stack_trace(struct stack_trace *trace)
+-{
+-	__save_stack_trace(current, trace, 0);
++	walk_stackframe(task, &frame, consume_entry, cookie);
+ }
  
- 	if (data->no_sched_functions && in_sched_functions(addr))
--		return 0;
-+		return false;
- 	if (data->skip) {
- 		data->skip--;
--		return 0;
-+		return false;
- 	}
- 
- 	trace->entries[trace->nr_entries++] = addr;
+-EXPORT_SYMBOL_GPL(save_stack_trace);
+ #endif
 -- 
 2.20.1
 
