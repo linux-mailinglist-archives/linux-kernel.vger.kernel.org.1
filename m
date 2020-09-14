@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D516269957
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DBC269959
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbgINW7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:59:11 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:34895 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbgINW7F (ORCPT
+        id S1726082AbgINW7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgINW7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:59:05 -0400
-Received: by mail-io1-f65.google.com with SMTP id r9so2008687ioa.2;
-        Mon, 14 Sep 2020 15:59:05 -0700 (PDT)
+        Mon, 14 Sep 2020 18:59:52 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121CDC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 15:59:52 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id b12so1015591lfp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 15:59:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2G/hRodaEbdwMTJFpgACQrYpQlQOkpSJnW9fYCTn//U=;
+        b=P2zwY7nDqwbuhESYBJOt1I5qmdHytgOKwp422wQetkvqkPjEYwKyETCI9Liciynnql
+         +LRT09+Z5sFr23gNmEfkesJnuBCjjAx188+w1PEfPjFqavBZzukRtc2pwBD4XSgKnVbq
+         U11bfkaeAq7pNwAN2Dbw8dBEQ22pJBXPQNi4I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LCh2smZwgKVHCxnQ9DcuXiZIOWVUKlrP/EzDl1tNmTM=;
-        b=Mtnyws66kdSG88TSZRsA7MvGXFnXNCbq7v0J8XhNPfRsP313+ugfPFMGeyOB1rYJ/C
-         dPPzVvT8otRvHLIEA4BvG/L0LMqi/iw3MI1Bn/Xu0SkYo63PmT3qspFbAhtQojGXtPui
-         zYbNTjBGAodHMU0Us2RpEl3CPSkmxMYQyd0p3XxE18b9eYK9dD8qescm5zdOoSkJSTJq
-         HzVw9h4eQC0x6Vydgx4wE0gkpE3U0qMkZKo42vbq0DftKf65qRYRSq9OxgaGOpwxzQED
-         ieiVZFBOf7gFc0Lhq4nss8zqK8eY4r54x4IKe1FV2wkmcIDyICZ6Kmn+niQmLfM6uWjS
-         12VA==
-X-Gm-Message-State: AOAM531rcCbndbBFdJrDla22cEzWG6kzIOzBY0SmsQYCc9qsCWXl5Nnu
-        lgO14kceJBKhbvM+W4cKHA==
-X-Google-Smtp-Source: ABdhPJwg9SXVtlfD7QKMD3JxTDGoE5iHv83Jvob/8jF4NnmwXRVyMr0Wg3gJ9u9qA/pV61mBnJaPcw==
-X-Received: by 2002:a5d:984f:: with SMTP id p15mr13234469ios.70.1600124345336;
-        Mon, 14 Sep 2020 15:59:05 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id z72sm6739578iof.29.2020.09.14.15.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 15:59:04 -0700 (PDT)
-Received: (nullmailer pid 429138 invoked by uid 1000);
-        Mon, 14 Sep 2020 22:59:02 -0000
-Date:   Mon, 14 Sep 2020 16:59:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        linux-amarula@amarulasolutions.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: display: simple: Add YTC700TLAG-05-201C
-Message-ID: <20200914225902.GA429086@bogus>
-References: <20200904180821.302194-1-jagan@amarulasolutions.com>
- <20200904180821.302194-2-jagan@amarulasolutions.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2G/hRodaEbdwMTJFpgACQrYpQlQOkpSJnW9fYCTn//U=;
+        b=SqhETzHHkOxyFy4ErYa/lHsrBOt07iP3tCqa9EUpSksR3wZIDaTwhRt/ouhBtV5qMj
+         zvCDfFzG5m9y4imdh+LP0E0lY5tg0VIe9MHU6EOUdftn/ptQ8MIoQ+aQU2GDYiDttcmQ
+         aWE3RYPiayt1zi8c5lHnvwpOj69G7gE/MKCjurFPUuHxlBmN8w8+AHyvtxNsaBfcvASO
+         F6kQFaPf3JGiIZLrJLRk1zjtnT6+v6LQHpv9QrZm2VkBXOEiTHDcDrLLQ0VjDIQCB2Hx
+         zIffsM9Wbc5tLjh64MyAxK3PkGNJCQgo17TEQvYYg0EKSjnDkqUWE7jmR9eako/e0b/y
+         It3w==
+X-Gm-Message-State: AOAM530+w/zJEMsKs1ATw3Y1RLm97vUiLzx8BtDJwgW0U98UlGbP5x2e
+        bNodIG/Hoh05Hu2H1c7Z+/Ky+9KtA1Shtg==
+X-Google-Smtp-Source: ABdhPJzK8X+QNYp9TY4JMc4gQTHpTHTrzgHQpdpaeh0Lpdk2n7JeKDIuvVxD3N+lknY00xB2v0GiOQ==
+X-Received: by 2002:a19:604e:: with SMTP id p14mr4820448lfk.385.1600124389959;
+        Mon, 14 Sep 2020 15:59:49 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id o3sm3570319lfb.168.2020.09.14.15.59.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 15:59:48 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id m5so1031879lfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 15:59:47 -0700 (PDT)
+X-Received: by 2002:ac2:4ec7:: with SMTP id p7mr4498792lfr.352.1600124387573;
+ Mon, 14 Sep 2020 15:59:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904180821.302194-2-jagan@amarulasolutions.com>
+References: <20200821234958.7896-1-peterx@redhat.com> <20200821234958.7896-2-peterx@redhat.com>
+ <20200914143829.GA1424636@nvidia.com> <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
+ <20200914183436.GD30881@xz-x1> <20200914211515.GA5901@xz-x1> <20200914225542.GO904879@nvidia.com>
+In-Reply-To: <20200914225542.GO904879@nvidia.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 14 Sep 2020 15:59:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+Message-ID: <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Sep 2020 23:38:20 +0530, Jagan Teki wrote:
-> Add dt-bindings for YTC700TLAG-05-201C 7" TFT LCD panel from
-> Yes Optoelectronics Co.,Ltd.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Mon, Sep 14, 2020 at 3:55 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> Just as an aside, the RDMA stuff is also supposed to set MADV_DONTFORK
+> on these regions, so I'm a bit puzzled what is happening here.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Did the fork perhaps happen _before_ , so the pages are shared when
+you do the pin?
+
+MADV_DONTFORK doesn't mean COW doesn't happen. It just means that the
+next fork() won't be copying that memory area.
+
+That said, it's possible that the test cases do something invalid - or
+maybe we've broken MADV_DONTFORK - and it all just happened to work
+before.
+
+So it's possible the breakage is exposing some other bug..
+
+             Linus
