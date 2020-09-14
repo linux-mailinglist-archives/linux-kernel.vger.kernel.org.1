@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D757F269131
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E5D269141
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725970AbgINQNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:13:48 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:35744 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgINQKW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:10:22 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08EGAGDa083367;
-        Mon, 14 Sep 2020 11:10:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600099816;
-        bh=hl2eOVK57eOjyraDEfcXSk1M76Td+1h4RO8wxJAZPWU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=uwsWAjMG2pPTYrZdQCNPFXAjbhp6RWw3jwCSlOvZl5YDQLyLQcob3CZLWHUwc8NkI
-         tXhu6eClooLmCHxlyHDdEVjd9L0JsBANo5hQtptFpfcBGCdE/aMzJfJ5Y0q67/BtTf
-         WdP4ZToISd1sQQdj+oLf4IgjBNjEIRJWaGAoCouY=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08EGAGbI012881
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Sep 2020 11:10:16 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Sep 2020 11:10:16 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Sep 2020 11:10:16 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08EGAGZp036526;
-        Mon, 14 Sep 2020 11:10:16 -0500
-Date:   Mon, 14 Sep 2020 11:10:16 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Tero Kristo <t-kristo@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/2] Add DT to get PCIe working in J721E SoC
-Message-ID: <20200914161016.bil575y3ig5oz5dn@akan>
-References: <20200914152115.1788-1-kishon@ti.com>
+        id S1726349AbgINQRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:17:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726514AbgINQKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:10:39 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 071E120759;
+        Mon, 14 Sep 2020 16:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600099839;
+        bh=WZ3JO5Gd7EBYVjMMbhMOeo4vejDSPos4qMJKMNgdJhQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=L2cp9WOY8OMlxcWyMB6/2Xux4VfzP5E1xNev/ZN7trDJc3NSgtgugN4ERhnPz05Bq
+         7xo0thR5WiEtxEFW2LlpkSuEPJwkjKOesdACNGrP2lO71Rq2ZD4a2swKN2rK8Ctog5
+         7ykEHXgRIsc7jFSMyyJpnhLobJO4MHfex73CmSnU=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHr3s-00Bjzy-Vu; Mon, 14 Sep 2020 17:10:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200914152115.1788-1-kishon@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 17:10:36 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
+Subject: Re: [PATCH v3 10/16] irqchip/bcm2836: Configure mailbox interrupts as
+ standard interrupts
+In-Reply-To: <3e52be78-1725-a3a2-c97c-625d46017a4b@samsung.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-11-maz@kernel.org>
+ <CGME20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4@eucas1p1.samsung.com>
+ <3e52be78-1725-a3a2-c97c-625d46017a4b@samsung.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <e99cc81b24475c54e173e6dd0d9d827b@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, sumit.garg@linaro.org, kernel-team@android.com, f.fainelli@gmail.com, linux@arm.linux.org.uk, jason@lakedaemon.net, saravanak@google.com, andrew@lunn.ch, catalin.marinas@arm.com, gregory.clement@bootlin.com, tglx@linutronix.de, will@kernel.org, Valentin.Schneider@arm.com, linux-rpi-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20:51-20200914, Kishon Vijay Abraham I wrote:
-> Now that J721E PCIe support is merged (including the YAML bindings),
-> add PCIe device tree nodes to get PCIe working in J721E SoC both in
-> RC mode and EP mode.
-> 
-> Series has been rebased to:
-> git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux ti-k3-dts-next 
-> 
-> Changes from v1:
-> 1) Renamed all syscon dt-nodes to "syscon" instead of pcieX-ctrl.
-> 2) Add TI specific compatible for "syscon" DT nodes
-> 3) Add information about appending "ranges" property to access all PCIe
->    instances in commit log.
-> 
-> Kishon Vijay Abraham I (2):
->   arm64: dts: ti: k3-j721e-main: Add PCIe device tree nodes
->   arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe
->     instances
-> 
->  .../dts/ti/k3-j721e-common-proc-board.dts     |  80 ++++++
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 232 +++++++++++++++++-
->  arch/arm64/boot/dts/ti/k3-j721e.dtsi          |   5 +-
->  3 files changed, 315 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+Hi Marek,
 
-Thanks, yeah - the series is clean. If no one adds a tag in the next
-couple of days or so, I can pick it up.
+On 2020-09-14 15:32, Marek Szyprowski wrote:
+> Hi Marc,
+> 
+> On 01.09.2020 16:43, Marc Zyngier wrote:
+>> In order to switch the bcm2836 driver to privide standard interrupts
+>> for IPIs, it first needs to stop lying about the way things work.
+>> 
+>> The mailbox interrupt is actually a multiplexer, with enough
+>> bits to store 32 pending interrupts per CPU. So let's turn it
+>> into a chained irqchip.
+>> 
+>> Once this is done, we can instanciate the corresponding IPIs,
+>> and pass them to the architecture code.
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> This one also fails. It breaks booting of Raspberry Pi 3b boards (both
+> in ARM and ARM64 mode):
 
+Damn. This used to work. Looks like I was eager to delete stuff at
+some point. Can you give this a go and let me know if that works
+for you (only tested in QEMU with the raspi2 model):
+
+diff --git a/drivers/irqchip/irq-bcm2836.c 
+b/drivers/irqchip/irq-bcm2836.c
+index 85df6ddad9be..97838eb705f9 100644
+--- a/drivers/irqchip/irq-bcm2836.c
++++ b/drivers/irqchip/irq-bcm2836.c
+@@ -193,6 +193,8 @@ static void bcm2836_arm_irqchip_ipi_send_mask(struct 
+irq_data *d,
+
+  static struct irq_chip bcm2836_arm_irqchip_ipi = {
+  	.name		= "IPI",
++	.irq_mask	= bcm2836_arm_irqchip_dummy_op,
++	.irq_unmask	= bcm2836_arm_irqchip_dummy_op,
+  	.irq_eoi	= bcm2836_arm_irqchip_ipi_eoi,
+  	.ipi_send_mask	= bcm2836_arm_irqchip_ipi_send_mask,
+  };
+
+
+Thanks again,
+
+         M.
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Jazz is not dead. It just smells funny...
