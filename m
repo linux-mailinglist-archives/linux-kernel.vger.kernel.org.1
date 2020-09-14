@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F07C2694AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225612694AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgINSUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:20:22 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:33216 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgINSUN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:20:13 -0400
-Received: by mail-il1-f195.google.com with SMTP id x2so531230ilm.0;
-        Mon, 14 Sep 2020 11:20:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fdtDbq+D2wXO2AxeziDQlx8lKWQCn+eKp58GeSBc8HI=;
-        b=Ftl6V+Cq0t6FXqm5i0EIFs+5gdCQGXTrQawphpIBkzNemEOpp0efTfyyTU0YFN73Dd
-         fyWadD8cD1vKQ6jkbJTOStMFJwa87YJznkx9/NaoEbkfByYPpZlrYmI2nz02982bJUjL
-         H+fBOQAddAT92doesxaJf5VJ8731JLCC1LP0M0MARCkDTX43mR+2YnAvnH8lf2zbBxkX
-         uIwXNPreNiCXCNGwI/1lJ+bhKYfigUVMgVCM0ANiHxYM2WFrraW9I3FPYkcozlpGZqnp
-         IkymxpYsNpwwRFZLyETlDN2KBy7epBfmj85mqTCYrXesyTWNU+Yqf+1IDEbWjIuE5LwV
-         XEcw==
-X-Gm-Message-State: AOAM530qyPwW8tx0ZWVM2JaDp7SP9fya31fE8bXnEJTfetJeI8Hz0JRf
-        F+uSVj0WZRNdlgM8FOmxlq+Vi2PZjwt0
-X-Google-Smtp-Source: ABdhPJyaLnrvBR1GirLP6z7PnAvaEZSPl/7FkU07rnTPTggjjrfaUZoZ9Dtaxv533+HXIQmc4RkcFg==
-X-Received: by 2002:a92:7984:: with SMTP id u126mr13816635ilc.139.1600107611878;
-        Mon, 14 Sep 2020 11:20:11 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v20sm7265643ile.42.2020.09.14.11.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 11:20:11 -0700 (PDT)
-Received: (nullmailer pid 4178218 invoked by uid 1000);
-        Mon, 14 Sep 2020 18:20:10 -0000
-Date:   Mon, 14 Sep 2020 12:20:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: leds: common: Add mmc0 as default trigger
-Message-ID: <20200914182010.GA4172388@bogus>
-References: <20200830111115.32623-1-krzk@kernel.org>
+        id S1726074AbgINSVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:21:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbgINSUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:20:54 -0400
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67E9321D7B;
+        Mon, 14 Sep 2020 18:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600107653;
+        bh=BAjJTlDtrbfSxx3WpXifRRlUlkkL6nq/6bBLXSRWPJM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kPWTPtFmGeAcUwV2ZzcSWRLVUn+chuLd0NhGULBRQ+mOorNLZ19F5q/V2RhCj2MRj
+         vN3hZ1c3c87HkfKtvIQpoAf/F7rrxQgnJ5PTgfWTl9lNtg4pqyVtSwWPubgfqOnNCI
+         +zRYSUDpw8rpBpZQ/xk8gLHFcEZgPE+EE9CWAb5g=
+Received: by mail-lf1-f47.google.com with SMTP id d15so266429lfq.11;
+        Mon, 14 Sep 2020 11:20:53 -0700 (PDT)
+X-Gm-Message-State: AOAM533aiOb13/7WyyO9G5jKLmSQHASmgMA6xp2fBHTuSKdSB4SlPY/M
+        fGKSPkMoPt3UKHXR0B0u60htp59IdV1r96R3V8o=
+X-Google-Smtp-Source: ABdhPJxoTxm1xcGm5mS9x2ZonnbPk6/jiP4lwuM2k2GJ8gJUA03fMwGd0MKe4URzQ/whPBokmgSVduJDna9EJ/Gucek=
+X-Received: by 2002:a19:992:: with SMTP id 140mr4464849lfj.273.1600107651627;
+ Mon, 14 Sep 2020 11:20:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200830111115.32623-1-krzk@kernel.org>
+References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+In-Reply-To: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 14 Sep 2020 11:20:40 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
+Message-ID: <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
+To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 01:11:15PM +0200, Krzysztof Kozlowski wrote:
-> MMC could be a default trigger so add a pattern to match it and fix
-> dtbs_check warnings like:
-> 
->   arch/arm/boot/dts/exynos4412-odroidx.dt.yaml: leds: led2:linux,default-trigger:0:
->     'mmc0' is not one of ['backlight', 'default-on', 'heartbeat', 'disk-activity', 'ide-disk', 'timer', 'pattern']
->     From schema: Documentation/devicetree/bindings/leds/leds-gpio.yaml
-
-The preference is to move from 'linux,default-trigger' to 'function' 
-with some standardization of the names or use the trigger-source binding.
-
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+On Fri, Sep 11, 2020 at 8:07 AM Nicolas Rybowski
+<nicolas.rybowski@tessares.net> wrote:
+>
+> is_mptcp is a field from struct tcp_sock used to indicate that the
+> current tcp_sock is part of the MPTCP protocol.
+>
+> In this protocol, a first socket (mptcp_sock) is created with
+> sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
+> isn't directly on the wire. This is the role of the subflow (kernel)
+> sockets which are classical tcp_sock with sk_protocol set to
+> IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
+> sockets is the is_mptcp field from tcp_sock.
+>
+> Such an exposure in BPF is thus required to be able to differentiate
+> plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
+> programs.
+>
+> The choice has been made to silently pass the case when CONFIG_MPTCP is
+> unset by defaulting is_mptcp to 0 in order to make BPF independent of
+> the MPTCP configuration. Another solution is to make the verifier fail
+> in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
+> '#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
+> will not run if MPTCP is not set.
+>
+> An example use-case is provided in
+> https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
+>
+> Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
 > ---
->  .../devicetree/bindings/leds/common.yaml      | 39 ++++++++++---------
->  1 file changed, 20 insertions(+), 19 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-> index a2a541bca73c..6b38f9f3792c 100644
-> --- a/Documentation/devicetree/bindings/leds/common.yaml
-> +++ b/Documentation/devicetree/bindings/leds/common.yaml
-> @@ -78,25 +78,26 @@ properties:
->        This parameter, if present, is a string defining the trigger assigned to
->        the LED.
->      $ref: /schemas/types.yaml#definitions/string
-> -
-> -    enum:
-> -        # LED will act as a back-light, controlled by the framebuffer system
-> -      - backlight
-> -        # LED will turn on (but for leds-gpio see "default-state" property in
-> -        # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
-> -      - default-on
-> -        # LED "double" flashes at a load average based rate
-> -      - heartbeat
-> -        # LED indicates disk activity
-> -      - disk-activity
-> -        # LED indicates IDE disk activity (deprecated), in new implementations
-> -        # use "disk-activity"
-> -      - ide-disk
-> -        # LED flashes at a fixed, configurable rate
-> -      - timer
-> -        # LED alters the brightness for the specified duration with one software
-> -        # timer (requires "led-pattern" property)
-> -      - pattern
-> +    oneOf:
-> +      - enum:
-> +            # LED will act as a back-light, controlled by the framebuffer system
-> +          - backlight
-> +            # LED will turn on (but for leds-gpio see "default-state" property in
-> +            # Documentation/devicetree/bindings/leds/leds-gpio.yaml)
-> +          - default-on
-> +            # LED "double" flashes at a load average based rate
-> +          - heartbeat
-> +            # LED indicates disk activity
-> +          - disk-activity
-> +            # LED indicates IDE disk activity (deprecated), in new implementations
-> +            # use "disk-activity"
-> +          - ide-disk
-> +            # LED flashes at a fixed, configurable rate
-> +          - timer
-> +            # LED alters the brightness for the specified duration with one software
-> +            # timer (requires "led-pattern" property)
-> +          - pattern
-> +      - pattern: "^mmc[0-9]+$"
->  
->    led-pattern:
->      description: |
-> -- 
-> 2.17.1
-> 
+>  include/uapi/linux/bpf.h       | 1 +
+>  net/core/filter.c              | 9 ++++++++-
+>  tools/include/uapi/linux/bpf.h | 1 +
+>  3 files changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7dd314176df7..7d179eada1c3 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
+>         __u32 delivered;        /* Total data packets delivered incl. rexmits */
+>         __u32 delivered_ce;     /* Like the above but only ECE marked packets */
+>         __u32 icsk_retransmits; /* Number of unrecovered [RTO] timeouts */
+> +       __u32 is_mptcp;         /* Is MPTCP subflow? */
+
+Shall we have an __u32 flags, and make is_mptcp a bit of it?
+
+Thanks,
+Song
+[...]
