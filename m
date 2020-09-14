@@ -2,421 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D297268DD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEFA268DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgINOfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:35:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726752AbgINOcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:32:31 -0400
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DFDE207EA;
-        Mon, 14 Sep 2020 14:32:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600093949;
-        bh=YofIJT7hGk9ue3KB7CrdnFSD9Las8gAsZInxMUkrQk0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FwEeRWDtibtWFRoWEuKLy9J20D9HtBVsMhdQsxWx3fFQO3QKYQJ0Vofk2sENchqVG
-         RR2MG6/gA0PyibAp0Xmjjl+3XRamQEAsgJXKN0UDJDxVk+7T3wk6QFN5QzEr6kgOAl
-         iI6Ve1SPgfeIfsMQhiQf2Ox4m435UjK6hkjpHZfw=
-Received: by mail-oi1-f182.google.com with SMTP id x19so105030oix.3;
-        Mon, 14 Sep 2020 07:32:29 -0700 (PDT)
-X-Gm-Message-State: AOAM5330s8Mmp0IGLQC8u9BmpcqrUCt6FW2hD0h3siy/+Su8D9JqLpRx
-        dgAEBaqG6V2avYDh4Af/6issAxXb37geqysxYQ==
-X-Google-Smtp-Source: ABdhPJzS/DWXs28Wldey5jZtJV5LeOyL6S0f46cXQ+TaUcwK089s3k9DwBs3X8QmwGVKk0CYqSeDKHkiAijt5sj7jCI=
-X-Received: by 2002:aca:4cc7:: with SMTP id z190mr9193353oia.147.1600093948903;
- Mon, 14 Sep 2020 07:32:28 -0700 (PDT)
+        id S1726716AbgINOev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:34:51 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:41599 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726662AbgINOcm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:32:42 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200914143237euoutp014cdf814a295d54a319462584c468d0b1~0rPn8awqs0576605766euoutp01v
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:32:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200914143237euoutp014cdf814a295d54a319462584c468d0b1~0rPn8awqs0576605766euoutp01v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600093957;
+        bh=cZ/X0pnwEDNop7KD1zyKUAqIDp6wLTFuzlElBsuE/G0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=ck4TzJMCDsjuaDQnvrub4Hu7Jw7VI000ULIkZYpbeFmAx/KX/HTAuEYkf8cyOYbXH
+         Vcpbu7qXVM++OiB8MUxTa6lmE1y+/ltiKc/8P3QEF19AjzMQCNwi5vQ+fI/Tsp/F4Y
+         ZPQ3Nk5lVOTDpb/RFPfLQ88FaMWItKJhB0ziAlJU=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200914143236eucas1p2319c37a886287840d2e3cb9edac17604~0rPnbhDka0871208712eucas1p2-;
+        Mon, 14 Sep 2020 14:32:36 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 52.03.05997.40F7F5F5; Mon, 14
+        Sep 2020 15:32:36 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4~0rPm3Knt51897018970eucas1p1Z;
+        Mon, 14 Sep 2020 14:32:36 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200914143236eusmtrp1fbdd66f78d44a47ee04fc814c6815fd7~0rPm2Q9Bs1836018360eusmtrp1b;
+        Mon, 14 Sep 2020 14:32:36 +0000 (GMT)
+X-AuditID: cbfec7f4-65dff7000000176d-dc-5f5f7f04405f
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 0F.9B.06314.30F7F5F5; Mon, 14
+        Sep 2020 15:32:36 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200914143235eusmtip118a24575f4b6fe3314d94755aa930f1f~0rPl-f5i60253302533eusmtip1c;
+        Mon, 14 Sep 2020 14:32:35 +0000 (GMT)
+Subject: Re: [PATCH v3 10/16] irqchip/bcm2836: Configure mailbox interrupts
+ as standard interrupts
+To:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <3e52be78-1725-a3a2-c97c-625d46017a4b@samsung.com>
+Date:   Mon, 14 Sep 2020 16:32:35 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200910034536.30860-1-jianjun.wang@mediatek.com>
- <20200910034536.30860-3-jianjun.wang@mediatek.com> <20200911224434.GA2905744@bogus>
- <1600081533.2521.49.camel@mhfsdcap03>
-In-Reply-To: <1600081533.2521.49.camel@mhfsdcap03>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 14 Sep 2020 08:32:17 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ0sBK0pSDec3KBwNNq9metxn2x1-O9ANzPOktboRxc1A@mail.gmail.com>
-Message-ID: <CAL_JsqJ0sBK0pSDec3KBwNNq9metxn2x1-O9ANzPOktboRxc1A@mail.gmail.com>
-Subject: Re: [v2,2/3] PCI: mediatek: Add new generation controller support
-To:     Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     devicetree@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sj Huang <sj.huang@mediatek.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200901144324.1071694-11-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SaUhUYRTlm/fNm+fQk89J82YbTCXYollGHxRS0o8XQUUFlS3jlI/JcmOe
+        S1agOdEyTJFJVK9h2izNrLGZGreImkpRc2toYRoJW8DCDFJaJKXG1+K/c849h3suXI7RDamj
+        uLTMHNGcaUzXs1rsafzRMRcXGgzzur9E045uL0M/X7UhOtT/SEPtFQX0QJkP09qacOp6+1xN
+        ffV2lpa8qtbQVz6e1tmb1dTqHWbpzXvHWep2nWJozfkfDD0YWLiUCJ4Gj1qoclQh4aDFxgqO
+        qn1CndytES64cgVX5VFWKLrfgYXA87us0N/erhHcZYVCXe2AShhwTV3DJ2uXpIrpaXmiOS4x
+        Rbuz5PoznF02cY/n/TFchK5FWFEIByQB5M7vjBVpOR2pQPAw4GYVMohAPuzHChlA0Fd8i/kb
+        8V+8q1IG5QjcvTf+RD7/Jm3BSAg3nqRCTaVFE8ThxASd9luaoIkhJRj6mkfY4IAl8WD9ZB3F
+        PEmEwa9DyIo4DpOZUF49JShHkG3Q2PIGK5YwaD77bhSHkEVQ9O0sCmKGTAPLnXOMgiPB/+78
+        aDsgVzjweWWNUns5dHRdVil4PHxsuv1HnwytpTasBCwIetpvaBRiQ+ArPoMU12IItA+xwXYM
+        iQFnfZwiLwN3Q8uoDCQUXn4KU0qEwknPaUaReThySKe4o0Fuuvlv7YPOp8wJpJfHnCaPOUce
+        c478f+8FhCtRpJgrZZhEaX6mmB8rGTOk3ExT7I6sDBf6/ZGtI02Dtaj+53YvIhzSj+NT8g0G
+        ndqYJxVkeBFwjD6cT2pr3abjU40Fe0VzlsGcmy5KXjSJw/pIfsGlD1t1xGTMEXeLYrZo/jtV
+        cSFRRcje+9pfHKntinHYHte3rW6bbV01eVN17Iwc7lroW1Op83BpzeYryYkpvd9WyA+H74xk
+        pVk2eyfkq2wNLVvW+tVRdOmLapJUsC5MWuHYmLDh4pNs3DKnJ9mJ1+2958zedTr1J/91Ej7n
+        iOCiu9ZYVj517p/eeTWmNJDUuKTvTHjTej2WdhrjZzFmyfgL2M/yjo0DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRzFe3bv7q7S4HFu+CSaMRAjcnXVuUfREX2ISxQWfckyt6WXaTln
+        u5upQS2tqGXhiASnTYVlpktsw/mSRA5JfEkjycAXKlSIQEvWC2pJTg38dvif8zvwh0MTkrvC
+        SDq/0MyZCnUFciqUHF4bmIknr2k0B5trBHhsxk/gb02VAK8s9otwXXMpvu4aJ3FXpxR7ZieE
+        eLynjsL2qXYRnhoX4+66QSG2+f9SuO3lfQp7PQ8J3Fm/TOAb08pDkPW98AlZt9MN2BsVlRTr
+        dF9hux0zIrbBY2E9LXco1vpqjGSnJ3opdnF0VMR6XdfY7q6AgA14dp8Qn1GkmYwWM7cnz8ib
+        0+VnGZygYFKwIiEpRcEkqs6lJijlB9RpuVxBfjFnOqDWKvLsre/JIteuEt/8PdIKnspsIIRG
+        MAlNNvYKbCCUlsDHALXOe8lNIwoNVluFmzoc/ZmwUZuhBYBW3o4LgkY4zEVD3wc2QlKoR7MT
+        I2QwRMAHJFp6dXPDkMDzyG5zb7RSkEG2hWBTCC2GavTj1wqwAZomYSx60h4dPMtgNhqp/LIV
+        CUODNXMbaAhUIevvGhDUBExGTu9nYlPHoIqO2i0dgSbn6gVVQOLYhju2IY5tiGMb0gDIFiDl
+        LLxBb+AZBa8z8JZCvSLHaPCA9SH4Xi97u8C756f8ANJAvlOsvazRSIS6Yr7U4AeIJuRS8eE3
+        w9kSca6utIwzGTUmSwHH+4Fy/Tc7ESnLMa7PqtCsYZSMCqcwqkRVYjKWR4hvw74sCdTrzNxF
+        jiviTP85AR0SaQU21UfF6VX9h6yByEmj4AgTbY6rj1rt79RbXQ2Z2c4e2f5wL/N6+NalhUbR
+        wbj5xvR67fHUpa9rx2SP3IHMKr4soUMNd9gX9OVsYMghja0ejE86atS1/QzE5Ozu1TZeGPKF
+        Zaxprkr6eiIynHytUn1y9dazJe0ndQmkyvc2yUk+T8fsI0y87h8xuK2wHgMAAA==
+X-CMS-MailID: 20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4
+References: <20200901144324.1071694-1-maz@kernel.org>
+        <20200901144324.1071694-11-maz@kernel.org>
+        <CGME20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 5:07 AM Jianjun Wang <jianjun.wang@mediatek.com> wrote:
+Hi Marc,
+
+On 01.09.2020 16:43, Marc Zyngier wrote:
+> In order to switch the bcm2836 driver to privide standard interrupts
+> for IPIs, it first needs to stop lying about the way things work.
 >
-> On Fri, 2020-09-11 at 16:44 -0600, Rob Herring wrote:
-> > On Thu, Sep 10, 2020 at 11:45:35AM +0800, Jianjun Wang wrote:
-> > > MediaTek's PCIe host controller has three generation HWs, the new
-> > > generation HW is an individual bridge, it supoorts Gen3 speed and
-> > > up to 256 MSI interrupt numbers for multi-function devices.
-> > >
-> > > Add support for new Gen3 controller which can be found on MT8192.
-> > >
-> > > Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> > > Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> > > ---
-> > >  drivers/pci/controller/Kconfig              |   14 +
-> > >  drivers/pci/controller/Makefile             |    1 +
-> > >  drivers/pci/controller/pcie-mediatek-gen3.c | 1076 +++++++++++++++++++
-> > >  3 files changed, 1091 insertions(+)
-> > >  create mode 100644 drivers/pci/controller/pcie-mediatek-gen3.c
-> > >
-> > > diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-> > > index f18c3725ef80..83daa772595b 100644
-> > > --- a/drivers/pci/controller/Kconfig
-> > > +++ b/drivers/pci/controller/Kconfig
-> > > @@ -239,6 +239,20 @@ config PCIE_MEDIATEK
-> > >       Say Y here if you want to enable PCIe controller support on
-> > >       MediaTek SoCs.
-> > >
-> > > +config PCIE_MEDIATEK_GEN3
-> > > +   tristate "MediaTek GEN3 PCIe controller"
-> > > +   depends on ARCH_MEDIATEK || COMPILE_TEST
-> > > +   depends on OF
-> > > +   depends on PCI_MSI_IRQ_DOMAIN
-> > > +   help
-> > > +     Adds support for PCIe Gen3 MAC controller for MediaTek SoCs.
-> > > +     This PCIe controller provides the capable of Gen3, Gen2 and
-> > > +     Gen1 speed, and support up to 256 MSI interrupt numbers for
-> > > +     multi-function devices.
-> > > +
-> > > +     Say Y here if you want to enable Gen3 PCIe controller support on
-> > > +     MediaTek SoCs.
-> > > +
-> > >  config PCIE_TANGO_SMP8759
-> > >     bool "Tango SMP8759 PCIe controller (DANGEROUS)"
-> > >     depends on ARCH_TANGO && PCI_MSI && OF
-> > > diff --git a/drivers/pci/controller/Makefile b/drivers/pci/controller/Makefile
-> > > index bcdbf49ab1e4..9c1b96777597 100644
-> > > --- a/drivers/pci/controller/Makefile
-> > > +++ b/drivers/pci/controller/Makefile
-> > > @@ -27,6 +27,7 @@ obj-$(CONFIG_PCIE_ROCKCHIP) += pcie-rockchip.o
-> > >  obj-$(CONFIG_PCIE_ROCKCHIP_EP) += pcie-rockchip-ep.o
-> > >  obj-$(CONFIG_PCIE_ROCKCHIP_HOST) += pcie-rockchip-host.o
-> > >  obj-$(CONFIG_PCIE_MEDIATEK) += pcie-mediatek.o
-> > > +obj-$(CONFIG_PCIE_MEDIATEK_GEN3) += pcie-mediatek-gen3.o
-> > >  obj-$(CONFIG_PCIE_TANGO_SMP8759) += pcie-tango.o
-> > >  obj-$(CONFIG_VMD) += vmd.o
-> > >  obj-$(CONFIG_PCIE_BRCMSTB) += pcie-brcmstb.o
-> > > diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
-> > > new file mode 100644
-> > > index 000000000000..f8c8bdf88d33
-> > > --- /dev/null
-> > > +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
-> > > @@ -0,0 +1,1076 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * MediaTek PCIe host controller driver.
-> > > + *
-> > > + * Copyright (c) 2020 MediaTek Inc.
-> > > + * Author: Jianjun Wang <jianjun.wang@mediatek.com>
-> > > + */
-> > > +
-> > > +#include <linux/clk.h>
-> > > +#include <linux/delay.h>
-> > > +#include <linux/iopoll.h>
-> > > +#include <linux/irq.h>
-> > > +#include <linux/irqchip/chained_irq.h>
-> > > +#include <linux/irqdomain.h>
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/msi.h>
-> > > +#include <linux/of_address.h>
-> > > +#include <linux/of_clk.h>
-> > > +#include <linux/of_pci.h>
-> > > +#include <linux/of_platform.h>
-> > > +#include <linux/pci.h>
-> > > +#include <linux/phy/phy.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/pm_domain.h>
-> > > +#include <linux/pm_runtime.h>
-> > > +#include <linux/reset.h>
-> > > +
-> > > +#include "../pci.h"
-> > > +
-> > > +#define PCIE_SETTING_REG           0x80
-> > > +#define PCIE_PCI_IDS_1                     0x9c
-> > > +#define PCI_CLASS(class)           (class << 8)
-> > > +#define PCIE_RC_MODE                       BIT(0)
-> > > +
-> > > +#define PCIE_CFGNUM_REG                    0x140
-> > > +#define PCIE_CFG_DEVFN(devfn)              ((devfn) & GENMASK(7, 0))
-> > > +#define PCIE_CFG_BUS(bus)          (((bus) << 8) & GENMASK(15, 8))
-> > > +#define PCIE_CFG_BYTE_EN(bytes)            (((bytes) << 16) & GENMASK(19, 16))
-> > > +#define PCIE_CFG_FORCE_BYTE_EN             BIT(20)
-> > > +#define PCIE_CFG_OFFSET_ADDR               0x1000
-> > > +#define PCIE_CFG_HEADER(devfn, bus) \
-> > > +   (PCIE_CFG_DEVFN(devfn) | PCIE_CFG_BUS(bus))
-> > > +
-> > > +#define PCIE_CFG_HEADER_FORCE_BE(devfn, bus, bytes) \
-> > > +   (PCIE_CFG_HEADER(devfn, bus) | PCIE_CFG_BYTE_EN(bytes) \
-> > > +    | PCIE_CFG_FORCE_BYTE_EN)
-> > > +
-> > > +#define PCIE_RST_CTRL_REG          0x148
-> > > +#define PCIE_MAC_RSTB                      BIT(0)
-> > > +#define PCIE_PHY_RSTB                      BIT(1)
-> > > +#define PCIE_BRG_RSTB                      BIT(2)
-> > > +#define PCIE_PE_RSTB                       BIT(3)
-> > > +
-> > > +#define PCIE_MISC_STATUS_REG               0x14C
-> > > +#define PCIE_LTR_MSG_RECEIVED              BIT(0)
-> > > +#define PCIE_PCIE_MSG_RECEIVED             BIT(1)
-> > > +
-> > > +#define PCIE_LTSSM_STATUS_REG              0x150
-> > > +#define PCIE_LTSSM_STATE_MASK              GENMASK(28, 24)
-> > > +#define PCIE_LTSSM_STATE(val)              ((val & PCIE_LTSSM_STATE_MASK) >> 24)
-> > > +#define PCIE_LTSSM_STATE_L0                0x10
-> > > +#define PCIE_LTSSM_STATE_L1_IDLE   0x13
-> > > +#define PCIE_LTSSM_STATE_L2_IDLE   0x14
-> > > +
-> > > +#define PCIE_LINK_STATUS_REG               0x154
-> > > +#define PCIE_PORT_LINKUP           BIT(8)
-> > > +
-> > > +#define PCIE_MSI_SET_NUM           8
-> > > +#define PCIE_MSI_IRQS_PER_SET              32
-> > > +#define PCIE_MSI_IRQS_NUM \
-> > > +   (PCIE_MSI_IRQS_PER_SET * (PCIE_MSI_SET_NUM))
-> > > +
-> > > +#define PCIE_INT_ENABLE_REG                0x180
-> > > +#define PCIE_MSI_MASK                      GENMASK(PCIE_MSI_SET_NUM + 8 - 1, 8)
-> > > +#define PCIE_MSI_SHIFT                     8
-> > > +#define PCIE_INTX_SHIFT                    24
-> > > +#define PCIE_INTX_MASK                     GENMASK(27, 24)
-> > > +#define PCIE_MSG_MASK                      BIT(28)
-> > > +#define PCIE_AER_MASK                      BIT(29)
-> > > +#define PCIE_PM_MASK                       BIT(30)
-> > > +
-> > > +#define PCIE_INT_STATUS_REG                0x184
-> > > +#define PCIE_MSI_SET_ENABLE_REG            0x190
-> > > +
-> > > +#define PCIE_LOW_POWER_CTRL_REG            0x194
-> > > +#define PCIE_DIS_LOWPWR_MASK               GENMASK(3, 0)
-> > > +#define PCIE_DIS_L0S_MASK          BIT(0)
-> > > +#define PCIE_DIS_L1_MASK           BIT(1)
-> > > +#define PCIE_DIS_L11_MASK          BIT(2)
-> > > +#define PCIE_DIS_L12_MASK          BIT(3)
-> > > +#define PCIE_FORCE_DIS_LOWPWR              GENMASK(11, 8)
-> > > +#define PCIE_FORCE_DIS_L0S         BIT(8)
-> > > +#define PCIE_FORCE_DIS_L1          BIT(9)
-> > > +#define PCIE_FORCE_DIS_L11         BIT(10)
-> > > +#define PCIE_FORCE_DIS_L12         BIT(11)
-> > > +
-> > > +#define PCIE_ICMD_PM_REG           0x198
-> > > +#define PCIE_TURN_OFF_LINK         BIT(4)
-> > > +
-> > > +#define PCIE_MSI_ADDR_BASE_REG             0xc00
-> > > +#define PCIE_MSI_SET_OFFSET                0x10
-> > > +#define PCIE_MSI_STATUS_OFFSET             0x04
-> > > +#define PCIE_MSI_ENABLE_OFFSET             0x08
-> > > +
-> > > +#define PCIE_TRANS_TABLE_BASE_REG  0x800
-> > > +#define PCIE_ATR_SRC_ADDR_MSB_OFFSET       0x4
-> > > +#define PCIE_ATR_TRSL_ADDR_LSB_OFFSET      0x8
-> > > +#define PCIE_ATR_TRSL_ADDR_MSB_OFFSET      0xc
-> > > +#define PCIE_ATR_TRSL_PARAM_OFFSET 0x10
-> > > +#define PCIE_ATR_TLB_SET_OFFSET            0x20
-> > > +
-> > > +#define PCIE_MAX_TRANS_TABLES              8
-> > > +#define ATR_EN                             BIT(0)
-> > > +#define ATR_SIZE(size)                     ((((size) - 1) << 1) & GENMASK(6, 1))
-> > > +#define ATR_ID(id)                 (id & GENMASK(3, 0))
-> > > +#define ATR_PARAM(param)           (((param) << 16) & GENMASK(27, 16))
-> > > +
-> > > +/**
-> > > + * struct mtk_pcie_msi - MSI information for each set
-> > > + * @base: IO mapped register base
-> > > + * @hwirq: Hardware interrupt number
-> > > + * @irq: MSI set Interrupt number
-> > > + * @index: MSI set number
-> > > + * @msg_addr: MSI message address
-> > > + * @domain: IRQ domain
-> > > + */
-> > > +struct mtk_pcie_msi {
-> > > +   void __iomem *base;
-> > > +   int hwirq;
-> > > +   int irq;
-> > > +   int index;
-> > > +   phys_addr_t msg_addr;
-> > > +   struct irq_domain *domain;
-> > > +};
-> > > +
-> > > +/**
-> > > + * struct mtk_pcie_port - PCIe port information
-> > > + * @dev: PCIe device
-> > > + * @base: IO mapped register base
-> > > + * @reg_base: Physical register base
-> > > + * @mac_reset: mac reset control
-> > > + * @phy_reset: phy reset control
-> > > + * @phy: PHY controller block
-> > > + * @clks: PCIe clocks
-> > > + * @num_clks: PCIe clocks count for this port
-> > > + * @is_suspended: device suspend state
-> > > + * @irq: PCIe controller interrupt number
-> > > + * @intx_domain: legacy INTx IRQ domain
-> > > + * @msi_domain: MSI IRQ domain
-> > > + * @msi_top_domain: MSI IRQ top domain
-> > > + * @msi_info: MSI sets information
-> > > + * @lock: lock protecting IRQ bit map
-> > > + * @msi_irq_in_use: bit map for assigned MSI IRQ
-> > > + */
-> > > +struct mtk_pcie_port {
-> > > +   struct device *dev;
-> > > +   void __iomem *base;
-> > > +   phys_addr_t reg_base;
-> > > +   struct reset_control *mac_reset;
-> > > +   struct reset_control *phy_reset;
-> > > +   struct phy *phy;
-> > > +   struct clk **clks;
-> > > +   int num_clks;
-> > > +   bool is_suspended;
-> > > +
-> > > +   int irq;
-> > > +   struct irq_domain *intx_domain;
-> > > +   struct irq_domain *msi_domain;
-> > > +   struct irq_domain *msi_top_domain;
-> > > +   struct mtk_pcie_msi **msi_info;
-> > > +   struct mutex lock;
-> > > +   DECLARE_BITMAP(msi_irq_in_use, PCIE_MSI_IRQS_NUM);
-> > > +};
-> > > +
-> > > +static int mtk_pcie_config_read(struct pci_bus *bus, unsigned int devfn,
-> > > +                               int where, int size, u32 *val)
-> > > +{
-> > > +   struct mtk_pcie_port *port = bus->sysdata;
-> > > +   int bytes;
-> > > +
-> > > +   bytes = ((1 << size) - 1) << (where & 0x3);
-> > > +   writel(PCIE_CFG_HEADER_FORCE_BE(devfn, bus->number, bytes),
-> > > +          port->base + PCIE_CFGNUM_REG);
-> > > +
-> > > +   *val = readl(port->base + PCIE_CFG_OFFSET_ADDR + (where & ~0x3));
-> > > +
-> > > +   if (size <= 2)
-> > > +           *val = (*val >> (8 * (where & 0x3))) & ((1 << (size * 8)) - 1);
-> > > +
-> > > +   return PCIBIOS_SUCCESSFUL;
-> > > +}
-> > > +
-> > > +static int mtk_pcie_config_write(struct pci_bus *bus, unsigned int devfn,
-> > > +                                int where, int size, u32 val)
-> > > +{
-> > > +   struct mtk_pcie_port *port = bus->sysdata;
-> > > +   int bytes;
-> > > +
-> > > +   bytes = ((1 << size) - 1) << (where & 0x3);
-> > > +   writel(PCIE_CFG_HEADER_FORCE_BE(devfn, bus->number, bytes),
-> > > +          port->base + PCIE_CFGNUM_REG);
-> > > +
-> > > +   if (size <= 2)
-> > > +           val = (val & ((1 << (size * 8)) - 1)) << ((where & 0x3) * 8);
-> > > +
-> > > +   writel(val, port->base + PCIE_CFG_OFFSET_ADDR + (where & ~0x3));
-> > > +
-> > > +   return PCIBIOS_SUCCESSFUL;
-> > > +}
-> > > +
-> > > +static struct pci_ops mtk_pcie_ops = {
-> > > +   .read  = mtk_pcie_config_read,
-> > > +   .write = mtk_pcie_config_write,
-> > > +};
-> > > +
-> > > +static void mtk_pcie_set_trans_window(void __iomem *reg,
-> > > +                                 resource_size_t cpu_addr,
-> > > +                                 resource_size_t pci_addr, size_t size)
-> > > +{
-> > > +   writel(lower_32_bits(cpu_addr) | ATR_SIZE(fls(size) - 1) | ATR_EN, reg);
-> > > +   writel(upper_32_bits(cpu_addr), reg + PCIE_ATR_SRC_ADDR_MSB_OFFSET);
-> > > +   writel(lower_32_bits(pci_addr), reg + PCIE_ATR_TRSL_ADDR_LSB_OFFSET);
-> > > +   writel(upper_32_bits(pci_addr), reg + PCIE_ATR_TRSL_ADDR_MSB_OFFSET);
-> > > +   writel(ATR_ID(0) | ATR_PARAM(0), reg + PCIE_ATR_TRSL_PARAM_OFFSET);
-> > > +}
-> > > +
-> > > +static int mtk_pcie_set_trans_table(void __iomem *reg,
-> > > +                               resource_size_t cpu_addr,
-> > > +                               resource_size_t pci_addr, size_t size,
-> > > +                               int num)
-> > > +{
-> > > +   void __iomem *table_base;
-> > > +
-> > > +   if (num > PCIE_MAX_TRANS_TABLES)
-> > > +           return -ENODEV;
-> > > +
-> > > +   table_base = reg + num * PCIE_ATR_TLB_SET_OFFSET;
-> > > +   mtk_pcie_set_trans_window(table_base, cpu_addr, pci_addr, size);
-> > > +
-> > > +   return 0;
-> > > +}
-> > > +
-> > > +static int mtk_pcie_startup_port(struct mtk_pcie_port *port)
-> > > +{
-> > > +   struct resource_entry *entry;
-> > > +   struct pci_host_bridge *host = pci_host_bridge_from_priv(port);
-> > > +   u32 val;
-> > > +   int err = 0, table_index = 0;
-> > > +
-> > > +   /* Set as RC mode */
-> > > +   val = readl(port->base + PCIE_SETTING_REG);
-> > > +   val |= PCIE_RC_MODE;
-> > > +   writel(val, port->base + PCIE_SETTING_REG);
-> > > +
-> > > +   /* Set class code */
-> > > +   val = readl(port->base + PCIE_PCI_IDS_1);
-> > > +   val &= ~GENMASK(31, 8);
-> > > +   val |= PCI_CLASS(PCI_CLASS_BRIDGE_PCI << 8);
-> > > +   writel(val, port->base + PCIE_PCI_IDS_1);
-> > > +
-> > > +   /* Assert all reset signals */
-> > > +   val = readl(port->base + PCIE_RST_CTRL_REG);
-> > > +   val |= PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB | PCIE_PE_RSTB;
-> > > +   writel(val, port->base + PCIE_RST_CTRL_REG);
-> > > +
-> > > +   /* De-assert reset signals*/
-> > > +   val &= ~(PCIE_MAC_RSTB | PCIE_PHY_RSTB | PCIE_BRG_RSTB);
-> > > +   writel(val, port->base + PCIE_RST_CTRL_REG);
-> > > +
-> > > +   usleep_range(100 * 1000, 120 * 1000);
-> >
-> > Seems like a long delay...
+> The mailbox interrupt is actually a multiplexer, with enough
+> bits to store 32 pending interrupts per CPU. So let's turn it
+> into a chained irqchip.
 >
-> Yes, it's truly a long delay, the PCI Express Card Electromechanical
-> Specification suggests that the de-assertion of PERST# should be delayed
-> 100ms to wait the reference clocks become stable.I will discuss with the
-> designers to check if we really need that long time and try to make it
-> shorter.
-
-Just add a comment as to what the delay is for or based on.
-
-[...]
-
-> > > +static int __maybe_unused mtk_pcie_suspend_noirq(struct device *dev)
-> >
-> > Why do you need the noirq variant?
+> Once this is done, we can instanciate the corresponding IPIs,
+> and pass them to the architecture code.
 >
-> I think the suspend of bus controller should be the last callback
-> function which will be called, so I add noirq variant to make sure it's
-> called after the device driver's suspend function.
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-The Linux driver model will ensure that. Child devices will be
-suspended before the parent. If there's some non parent-child
-dependency, that should get handled with devlinks.
+This one also fails. It breaks booting of Raspberry Pi 3b boards (both 
+in ARM and ARM64 mode):
 
-Rob
+NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = (ptrval)
+[00000000] *pgd=80000000004003, *pmd=00000000
+Internal error: Oops: 80000206 [#1] SMP ARM
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc4+ #9166
+Hardware name: BCM2835
+PC is at 0x0
+LR is at irq_percpu_enable+0x40/0x50
+pc : [<00000000>]    lr : [<c0274638>]    psr: 600000d3
+sp : c1201e00  ip : c1201e18  fp : c1201e14
+r10: c0ef23dc  r9 : c120583c  r8 : 00000000
+r7 : 00000011  r6 : eb032d00  r5 : 00000000  r4 : eb032d00
+r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : eb032d18
+Flags: nZCv  IRQs off  FIQs off  Mode SVC_32  ISA ARM  Segment user
+Control: 30c5383d  Table: 00003000  DAC: fffffffd
+Process swapper/0 (pid: 0, stack limit = 0x(ptrval))
+Stack: (0xc1201e00 to 0xc1202000)
+...
+Backtrace:
+[<c02745f8>] (irq_percpu_enable) from [<c0272498>] 
+(enable_percpu_irq+0xa4/0xd8)
+  r5:c1204ec8 r4:00000000
+[<c02723f4>] (enable_percpu_irq) from [<c020ded0>] 
+(ipi_setup.part.0+0x3c/0x48)
+  r8:c107ba80 r7:00000018 r6:00000011 r5:c1204ee0 r4:00000001
+[<c020de94>] (ipi_setup.part.0) from [<c1005684>] 
+(set_smp_ipi_range+0xd8/0xf8)
+  r5:c1204ee0 r4:00000008
+[<c10055ac>] (set_smp_ipi_range) from [<c1023388>] 
+(bcm2836_arm_irqchip_l1_intc_of_init+0x1c0/0x22c)
+  r8:c1366820 r7:c1204ec8 r6:00000010 r5:00000001 r4:00000000
+[<c10231c8>] (bcm2836_arm_irqchip_l1_intc_of_init) from [<c102f28c>] 
+(of_irq_init+0x18c/0x2dc)
+  r9:00000000 r8:c1201f34 r7:c1204ec8 r6:c1201f2c r5:c1201f2c r4:eb004880
+[<c102f100>] (of_irq_init) from [<c1022f4c>] (irqchip_init+0x1c/0x24)
+  r10:0000006c r9:00000000 r8:00000000 r7:ffffffff r6:cccccccd r5:c0eb7abe
+  r4:c103ba30
+[<c1022f30>] (irqchip_init) from [<c1003960>] (init_IRQ+0x30/0x98)
+[<c1003930>] (init_IRQ) from [<c1000ebc>] (start_kernel+0x3b4/0x628)
+  r5:c0eb7abe r4:c12c1000
+[<c1000b08>] (start_kernel) from [<00000000>] (0x0)
+  r10:30c5387d r9:410fd034 r8:02600000 r7:00000000 r6:30c0387d r5:00000000
+  r4:c1000330
+Code: bad PC value
+random: get_random_bytes called from init_oops_id+0x30/0x4c with crng_init=0
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Attempted to kill the idle task!
+---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+
+
+> ---
+>   drivers/irqchip/irq-bcm2836.c | 151 ++++++++++++++++++++++++++++------
+>   1 file changed, 125 insertions(+), 26 deletions(-)
+>
+> ...
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
