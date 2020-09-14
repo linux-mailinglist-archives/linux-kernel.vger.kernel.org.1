@@ -2,243 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D5F26923A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318C426923B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgINQ4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:56:22 -0400
-Received: from mga09.intel.com ([134.134.136.24]:56663 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgINQsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:48:41 -0400
-IronPort-SDR: 08k3SYL/WK59UR63CrI02biJImv7W0OwbVQ7ekpfBJrOrPHWTW/9bOV3Xyu8RzXfPcKAlr8wQA
- V8xpVf0DQXEg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="160042313"
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="160042313"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:48:16 -0700
-IronPort-SDR: XdL0NgjpLuufygeHgWNjWxVEI9Ld4lKwibNbZn7UJirEi6s6XRp0No/DC038c6d4t5Ig2Dgo1H
- XbhlFDoOOoIQ==
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="287677312"
-Received: from daser-mobl.ger.corp.intel.com (HELO localhost) ([10.252.38.230])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:48:09 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v37 01/24] x86/cpufeatures: x86/msr: Add Intel SGX hardware bits
-Date:   Mon, 14 Sep 2020 19:48:05 +0300
-Message-Id: <20200914164805.6167-1-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726389AbgINQ4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:56:31 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44888 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbgINQsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:48:40 -0400
+Received: by mail-pg1-f195.google.com with SMTP id 7so211228pgm.11;
+        Mon, 14 Sep 2020 09:48:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=v48L7JGX53l/CPfgPRdRY47vGmb+Jr3vZoi7acfa0+s=;
+        b=R1otZGJKzYcNcf/JYO0gR3t3fgIgp5hM03CWtrRL4qEeO9VFvVY/9tpQDjM4OiQU2f
+         Ys90t0atxrSx5Ya2X9UuzX37h/hvEi1zSnusYYziBYV2NTaxgszkEuhD/ZoTNK97OiT/
+         yCqIzwT4eGRIaRxOjy9iYrRqo8DPp+FGaOEkyiZxsTp4muJ85gTwxbPiKiymvnccV4Xy
+         AQI/ksytNeCmMNmZshCKFGIYR97IB1kBtLybkAOi23jOsgF/6Upa8xLoP9DgLa0kB510
+         MKM08AFmilTy0b9oqryyaQB2dhzrBypTFoXiDt8m/2WxY5jRF4++DYPHoxLG7GhXal6R
+         ci/Q==
+X-Gm-Message-State: AOAM531O8FrBWLVWpX7mKw7E7pV1kWEjjviw/McpFImNlIgtMs5A64VA
+        zAjPpSdFK5/sHj7tP+fyNQh4ADD24Xk=
+X-Google-Smtp-Source: ABdhPJyePguPzBlUFLzaQLcFKfIEGTMzHj3PRVFNJ8tN5cMZO0FSobDirkqph0ea+MOsi32QmGimIA==
+X-Received: by 2002:a62:d44e:0:b029:13c:1611:652f with SMTP id u14-20020a62d44e0000b029013c1611652fmr14027695pfl.15.1600102089878;
+        Mon, 14 Sep 2020 09:48:09 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:3f5a:7698:1b81:cc96? ([2601:647:4000:d7:3f5a:7698:1b81:cc96])
+        by smtp.gmail.com with ESMTPSA id g23sm10805716pfh.133.2020.09.14.09.48.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 09:48:08 -0700 (PDT)
+Subject: Re: [PATCH] blk-mq: fix hang issue in blk_queue_enter()
+To:     Yang Yang <yang.yang@vivo.com>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     onlyfever@icloud.com
+References: <20200914071903.65704-1-yang.yang@vivo.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <1f7aa460-6a6c-d200-786e-bfccf5fc2bff@acm.org>
+Date:   Mon, 14 Sep 2020 09:48:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200914071903.65704-1-yang.yang@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On 2020-09-14 00:19, Yang Yang wrote:
+> There is a race between blk_queue_enter() and block layer's runtime
+> suspend.
+> 
+>  CPU0                                CPU1
+>  ---------------------------------   -------------------------------
+>  blk_pre_runtime_suspend(q) {        blk_queue_enter() {
+>    /* q->rpm_status=RPM_ACTIVE */
+>    blk_set_pm_only(q)
+>    /* q->pm_only=1 */
+>    blk_freeze_queue_start(q)
+>    blk_mq_unfreeze_queue(q)
+>                                        if (percpu_ref_tryget_live()) {
+>                                          /* pm=0 && q->pm_only=1 */
+>                                          if (pm || !blk_queue_pm_only(q)) {
+>                                          } else {
+>                                            percpu_ref_put()
+>                                          }
+>                                        }
+>                                        wait_event(q->mq_freeze_wq,
+>                                          (!q->mq_freeze_depth &&
+>                                          /* q->rpm_status=RPM_ACTIVE
+>                                             q->pm_only=1 */
+>                                          (pm || (blk_pm_request_resume(q),
+>                                           !blk_queue_pm_only(q)))) ||
+>                                           blk_queue_dying(q))
+>                                      }
+>    spin_lock_irq(&q->queue_lock)
+>    q->rpm_status = RPM_SUSPENDING
+>    spin_unlock_irq(&q->queue_lock)
+>  }
+> 
+> At this point blk_pm_request_resume() missed the chance to resume the
+> queue, so blk_queue_enter() may wait here forever.
+> The solution is to wake up the mq_freeze_wq after runtime suspend
+> completed, make blk_pm_request_resume() reexamine the q->rpm_status flag.
+> 
+> Signed-off-by: Yang Yang <yang.yang@vivo.com>
+> ---
+>  block/blk-pm.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/block/blk-pm.c b/block/blk-pm.c
+> index b85234d758f7..dec7d0aef606 100644
+> --- a/block/blk-pm.c
+> +++ b/block/blk-pm.c
+> @@ -132,6 +132,8 @@ void blk_post_runtime_suspend(struct request_queue *q, int err)
+>  
+>  	if (err)
+>  		blk_clear_pm_only(q);
+> +	else
+> +		wake_up_all(&q->mq_freeze_wq);
+>  }
+>  EXPORT_SYMBOL(blk_post_runtime_suspend);
 
-Add X86_FEATURE_SGX from CPUID.(EAX=7, ECX=1), which informs whether the
-CPU has SGX.
+Please verify whether the following patch series also fixes the reported
+hang: https://lore.kernel.org/linux-block/20200906012219.17893-1-bvanassche@acm.org/T/#t
 
-Add X86_FEATURE_SGX1 and X86_FEATURE_SGX2 from CPUID.(EAX=12H, ECX=0),
-which describe the level of SGX support available [1].
+Thanks,
 
-Add IA32_FEATURE_CONTROL.SGX_ENABLE. BIOS can use this bit to opt-in SGX
-before locking the feature control MSR [2].
-
-[1] Intel SDM: 36.7.2 Intel® SGX Resource Enumeration Leaves
-[2] Intel SDM: 36.7.1 Intel® SGX Opt-In Configuration
-
-Reviewed-by: Borislav Petkov <bp@alien8.de>
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- arch/x86/include/asm/cpufeature.h        |  5 +++--
- arch/x86/include/asm/cpufeatures.h       |  7 ++++++-
- arch/x86/include/asm/disabled-features.h | 18 +++++++++++++++---
- arch/x86/include/asm/msr-index.h         |  1 +
- arch/x86/include/asm/required-features.h |  2 +-
- arch/x86/kernel/cpu/common.c             |  4 ++++
- 6 files changed, 30 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index 59bf91c57aa8..efbdba5170a3 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -30,6 +30,7 @@ enum cpuid_leafs
- 	CPUID_7_ECX,
- 	CPUID_8000_0007_EBX,
- 	CPUID_7_EDX,
-+	CPUID_12_EAX,
- };
- 
- #ifdef CONFIG_X86_FEATURE_NAMES
-@@ -89,7 +90,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
- 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 17, feature_bit) ||	\
- 	   CHECK_BIT_IN_MASK_WORD(REQUIRED_MASK, 18, feature_bit) ||	\
- 	   REQUIRED_MASK_CHECK					  ||	\
--	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
-+	   BUILD_BUG_ON_ZERO(NCAPINTS != 20))
- 
- #define DISABLED_MASK_BIT_SET(feature_bit)				\
- 	 ( CHECK_BIT_IN_MASK_WORD(DISABLED_MASK,  0, feature_bit) ||	\
-@@ -112,7 +113,7 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
- 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 17, feature_bit) ||	\
- 	   CHECK_BIT_IN_MASK_WORD(DISABLED_MASK, 18, feature_bit) ||	\
- 	   DISABLED_MASK_CHECK					  ||	\
--	   BUILD_BUG_ON_ZERO(NCAPINTS != 19))
-+	   BUILD_BUG_ON_ZERO(NCAPINTS != 20))
- 
- #define cpu_has(c, bit)							\
- 	(__builtin_constant_p(bit) && REQUIRED_MASK_BIT_SET(bit) ? 1 :	\
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 2901d5df4366..159b635159c0 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -13,7 +13,7 @@
- /*
-  * Defines x86 CPU feature bits
-  */
--#define NCAPINTS			19	   /* N 32-bit words worth of info */
-+#define NCAPINTS			20	   /* N 32-bit words worth of info */
- #define NBUGINTS			1	   /* N 32-bit bug flags */
- 
- /*
-@@ -240,6 +240,7 @@
- /* Intel-defined CPU features, CPUID level 0x00000007:0 (EBX), word 9 */
- #define X86_FEATURE_FSGSBASE		( 9*32+ 0) /* RDFSBASE, WRFSBASE, RDGSBASE, WRGSBASE instructions*/
- #define X86_FEATURE_TSC_ADJUST		( 9*32+ 1) /* TSC adjustment MSR 0x3B */
-+#define X86_FEATURE_SGX			( 9*32+ 2) /* Software Guard Extensions */
- #define X86_FEATURE_BMI1		( 9*32+ 3) /* 1st group bit manipulation extensions */
- #define X86_FEATURE_HLE			( 9*32+ 4) /* Hardware Lock Elision */
- #define X86_FEATURE_AVX2		( 9*32+ 5) /* AVX2 instructions */
-@@ -377,6 +378,10 @@
- #define X86_FEATURE_CORE_CAPABILITIES	(18*32+30) /* "" IA32_CORE_CAPABILITIES MSR */
- #define X86_FEATURE_SPEC_CTRL_SSBD	(18*32+31) /* "" Speculative Store Bypass Disable */
- 
-+/* Intel-defined SGX features, CPUID level 0x00000012:0 (EAX), word 19 */
-+#define X86_FEATURE_SGX1		(19*32+ 0) /* SGX1 leaf functions */
-+#define X86_FEATURE_SGX2		(19*32+ 1) /* SGX2 leaf functions */
-+
- /*
-  * BUG word(s)
-  */
-diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
-index 4ea8584682f9..dbe534d5153f 100644
---- a/arch/x86/include/asm/disabled-features.h
-+++ b/arch/x86/include/asm/disabled-features.h
-@@ -28,13 +28,18 @@
- # define DISABLE_CYRIX_ARR	(1<<(X86_FEATURE_CYRIX_ARR & 31))
- # define DISABLE_CENTAUR_MCR	(1<<(X86_FEATURE_CENTAUR_MCR & 31))
- # define DISABLE_PCID		0
-+# define DISABLE_SGX1		0
-+# define DISABLE_SGX2		0
- #else
- # define DISABLE_VME		0
- # define DISABLE_K6_MTRR	0
- # define DISABLE_CYRIX_ARR	0
- # define DISABLE_CENTAUR_MCR	0
- # define DISABLE_PCID		(1<<(X86_FEATURE_PCID & 31))
--#endif /* CONFIG_X86_64 */
-+# define DISABLE_SGX1		(1<<(X86_FEATURE_SGX1 & 31))
-+# define DISABLE_SGX2		(1<<(X86_FEATURE_SGX2 & 31))
-+ #endif /* CONFIG_X86_64 */
-+
- 
- #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
- # define DISABLE_PKU		0
-@@ -56,6 +61,12 @@
- # define DISABLE_PTI		(1 << (X86_FEATURE_PTI & 31))
- #endif
- 
-+#ifdef CONFIG_INTEL_SGX
-+# define DISABLE_SGX	0
-+#else
-+# define DISABLE_SGX	(1 << (X86_FEATURE_SGX & 31))
-+#endif
-+
- /*
-  * Make sure to add features to the correct mask
-  */
-@@ -68,7 +79,7 @@
- #define DISABLED_MASK6	0
- #define DISABLED_MASK7	(DISABLE_PTI)
- #define DISABLED_MASK8	0
--#define DISABLED_MASK9	(DISABLE_SMAP)
-+#define DISABLED_MASK9	(DISABLE_SMAP|DISABLE_SGX)
- #define DISABLED_MASK10	0
- #define DISABLED_MASK11	0
- #define DISABLED_MASK12	0
-@@ -78,6 +89,7 @@
- #define DISABLED_MASK16	(DISABLE_PKU|DISABLE_OSPKE|DISABLE_LA57|DISABLE_UMIP)
- #define DISABLED_MASK17	0
- #define DISABLED_MASK18	0
--#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
-+#define DISABLED_MASK19	(DISABLE_SGX1|DISABLE_SGX2)
-+#define DISABLED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
- 
- #endif /* _ASM_X86_DISABLED_FEATURES_H */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 2859ee4f39a8..c0b04f020162 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -602,6 +602,7 @@
- #define FEAT_CTL_LOCKED				BIT(0)
- #define FEAT_CTL_VMX_ENABLED_INSIDE_SMX		BIT(1)
- #define FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX	BIT(2)
-+#define FEAT_CTL_SGX_ENABLED			BIT(18)
- #define FEAT_CTL_LMCE_ENABLED			BIT(20)
- 
- #define MSR_IA32_TSC_ADJUST             0x0000003b
-diff --git a/arch/x86/include/asm/required-features.h b/arch/x86/include/asm/required-features.h
-index 6847d85400a8..039e58be2fe6 100644
---- a/arch/x86/include/asm/required-features.h
-+++ b/arch/x86/include/asm/required-features.h
-@@ -101,6 +101,6 @@
- #define REQUIRED_MASK16	0
- #define REQUIRED_MASK17	0
- #define REQUIRED_MASK18	0
--#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 19)
-+#define REQUIRED_MASK_CHECK BUILD_BUG_ON_ZERO(NCAPINTS != 20)
- 
- #endif /* _ASM_X86_REQUIRED_FEATURES_H */
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index c5d6f17d9b9d..ccd9a11d5d1a 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -931,6 +931,10 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
- 		c->x86_capability[CPUID_D_1_EAX] = eax;
- 	}
- 
-+	/* Additional Intel-defined SGX flags: level 0x00000012 */
-+	if (c->cpuid_level >= 0x00000012)
-+		c->x86_capability[CPUID_12_EAX] = cpuid_eax(0x00000012);
-+
- 	/* AMD-defined flags: level 0x80000001 */
- 	eax = cpuid_eax(0x80000000);
- 	c->extended_cpuid_level = eax;
--- 
-2.25.1
-
+Bart.
