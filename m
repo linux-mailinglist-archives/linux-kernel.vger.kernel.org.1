@@ -2,125 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0042694DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E782694D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgINS3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgINS2C (ORCPT
+        id S1726013AbgINS3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:29:11 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:36474 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgINS2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:28:02 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C6EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:28:02 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w2so977223wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=W3YbmmsfMHlVdLS6jlOLoQAflYIsxSXUugWSN1kR+Rc=;
-        b=Y6ZDna6IoIoMEvcCeX8HsYV6y5FPwgzJsnsokv96XLNqt3SNXxCM+Z79rfnLiyStCE
-         Muo3JB7WJnyMkZuqp6Ix6dd90jr5V4xhLE1y0JKJmfLJjPTPdcMLxkt9+NCWR9ptZiD5
-         8/LRFoeOAHM9vnqIEh/YpuIrpjmI6r0yYwHIAB/yxNDCtDTvHtzY/gRXZw0jzU8DJ6F0
-         Js5DdlCtvhBfq1cIXuWba3rlUzKBodjzXdCdujyGzLUyxBTjIJl/1W9YKjT8LP6mVPle
-         AcgJdV9z+XuJTJUnu4IuWaGWHm0qMdypbmU45KBUpE8awMEcAnapLRZ9bYP3yNoGG0DN
-         5W5Q==
+        Mon, 14 Sep 2020 14:28:00 -0400
+Received: by mail-io1-f66.google.com with SMTP id d190so1191766iof.3;
+        Mon, 14 Sep 2020 11:27:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=W3YbmmsfMHlVdLS6jlOLoQAflYIsxSXUugWSN1kR+Rc=;
-        b=ZgGxbpydyW5nmqiaNycp2ktLMoMnuPvQcjJR/XydolxOpuZM0O7g08K6mowRINWAiJ
-         LxP2ZFHQTVXJoDN5JwRX2RVvRqv6oiGm4BXjUnbv7if/I5ULQTw3w7XnZTCS19OOiMZE
-         3rmOmgOZe92ilTlOnXpNakpyFTiI7gqMf/G1v1+Y5AGOTykEx8zmqaLif8lslzaMA0WV
-         YdMLHUAN17p82Dgx/LRZCnvB98jtFddCbKrgOUKv17+YAYFQUgY8nJr1opacpsI9mVRi
-         GV0rakGFubuFST5IU5Re6wEhpdgPL7vqZEdciM9Ba31dE2vDPzdPEJhynzyvgP6/1MUW
-         wQww==
-X-Gm-Message-State: AOAM530PusPPGCigdj41i5PCS59b1RdThwvPh0iLPqnKHAbgrTRw6I6H
-        erGGR55P3wJC33jciPSwynsKgg==
-X-Google-Smtp-Source: ABdhPJwqlkc2zKOHr4CZKudC+z5XkhQYQppbD4OIiflpEBJodVcF2fyVWwwJjG35lxfxhFMJRptUqA==
-X-Received: by 2002:a1c:e256:: with SMTP id z83mr683787wmg.137.1600108080849;
-        Mon, 14 Sep 2020 11:28:00 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id s26sm21264637wmh.44.2020.09.14.11.27.58
+         :mime-version:content-disposition:in-reply-to;
+        bh=l4g5OoxxF+9yzxAjLMDaIDUd18eI2/a5ro5lS6ONqCw=;
+        b=UeZSKtY+bGKRKFz5J4s5eJx56xgyMQOEQbaw0h+wCH0zuZVU2TxcnLIzMeV9Oap5YH
+         HpifrOxuU01GC84JwfHtJJ4UIvAGBbAqQV31qGALK45OfoFMikYxvVbknIT/1DXBl+KM
+         LMCXuxPhI0a1jZFtuJ976DGsvvt3hJiLvEhzR11tAPDq8D/wAPyBlZsk1uyk6aht4Bf/
+         RAfqi3CZfM7ypXteo8FGEkdf63cl8S7ejN71VLTIwa6oJI1iq8czBo1OUHGHS4phLguz
+         UhYNlKLPlsCBp/tZYqwFh/V6+Cz7tk9rvZKiM6wDI3E35Ft60UjNVga6U4gWiFkfbDDM
+         L9XA==
+X-Gm-Message-State: AOAM530LfVkC61zGYIr2cCuCCDFvbma3zreYju6JSa6z4qOquhdLeEYi
+        h2DXYYURqzyqdpYdC4H6Sg==
+X-Google-Smtp-Source: ABdhPJwKld0xWWDnzmcZqPeA5m4c/eQUKyHKzBrV0bXyq635hMGM20j5yM+z0ilMPdD7q+8DX7cymg==
+X-Received: by 2002:a05:6602:2201:: with SMTP id n1mr12091795ion.35.1600108079647;
+        Mon, 14 Sep 2020 11:27:59 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id r11sm7363906ilt.76.2020.09.14.11.27.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 11:28:00 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 21:27:56 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Xi Wang <xi.wang@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200914182756.GA22294@apalos.home>
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck>
- <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home>
- <20200914140114.GG24441@willie-the-truck>
- <20200914181234.0f1df8ba@carbon>
- <20200914170205.GA20549@apalos.home>
- <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
- <20200914175516.GA21832@apalos.home>
- <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
+        Mon, 14 Sep 2020 11:27:59 -0700 (PDT)
+Received: (nullmailer pid 4191074 invoked by uid 1000);
+        Mon, 14 Sep 2020 18:27:57 -0000
+Date:   Mon, 14 Sep 2020 12:27:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Santiago Hormazabal <santiagohssl@gmail.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add KT Micro
+Message-ID: <20200914182757.GA4191021@bogus>
+References: <20200831220601.20794-1-santiagohssl@gmail.com>
+ <20200831220601.20794-2-santiagohssl@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
+In-Reply-To: <20200831220601.20794-2-santiagohssl@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xi, 
-
-On Mon, Sep 14, 2020 at 11:08:13AM -0700, Xi Wang wrote:
-> On Mon, Sep 14, 2020 at 10:55 AM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> > We've briefly discussed this approach with Yauheni while coming up with the
-> > posted patch.
-> > I think that contructing the array correctly in the first place is better.
-> > Right now it might only be used in bpf2a64_offset() and bpf_prog_fill_jited_linfo()
-> > but if we fixup the values on the fly in there, everyone that intends to use the
-> > offset for any reason will have to account for the missing instruction.
+On Mon, 31 Aug 2020 19:05:59 -0300, Santiago Hormazabal wrote:
+> Adds ktm as the prefix of KT Micro, Inc.
 > 
-> I don't understand what you mean by "correctly."  What's your correctness spec?
-
+> Signed-off-by: Santiago Hormazabal <santiagohssl@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> I don't think there's some consistent semantics of "offsets" across
-> the JITs of different architectures (maybe it's good to clean that
-> up).  RV64 and RV32 JITs are doing something similar to arm64 with
-> respect to offsets.  CCing Björn and Luke.
 
-Even if that's true, is any reason at all why we should skip the first element 
-of the array, that's now needed since 7c2e988f400 to jump back to the first
-instruction?
-Introducing 2 extra if conditions and hotfix the array on the fly (and for 
-every future invocation of that), seems better to you?
-
-Cheers
-/Ilias
+Acked-by: Rob Herring <robh@kernel.org>
