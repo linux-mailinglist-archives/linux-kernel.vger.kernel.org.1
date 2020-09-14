@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671252689E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C666C268A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgINLZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgINLYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:24:37 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D7AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:24:36 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id ADD1C2250C;
-        Mon, 14 Sep 2020 13:24:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1600082671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TSIenT/eAdfWHsMzr+7fvwJvSwJevHUBTg8/EDHXEAI=;
-        b=WbXvk1B0PQEhKBAqE5pX/daD7i4tV8zaQsMadEivSvPhV4tUoEeoBeBAtKNQ8AsDD6sq2C
-        30H8jvQKhIO2M334SGFHZJluZ3NdqUlyV9UOnANuwI6yIoZsk/mET0hdZn6oyHDq91IhAI
-        LgQRf+K8/cAl8j8PhrNLh8JonEfb2uU=
+        id S1726086AbgINL2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:28:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:34758 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726070AbgINL0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:26:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34438106F;
+        Mon, 14 Sep 2020 04:26:51 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 854733F68F;
+        Mon, 14 Sep 2020 04:26:49 -0700 (PDT)
+References: <20200910054203.525420-1-aubrey.li@intel.com> <20200910054203.525420-2-aubrey.li@intel.com> <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com> <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com> <jhjmu1s644x.mognet@arm.com> <20200914110809.2nu7vt2s3lzlvxoz@e107158-lin.cambridge.arm.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     "Li\, Aubrey" <aubrey.li@linux.intel.com>,
+        Aubrey Li <aubrey.li@intel.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask in sched domain
+In-reply-to: <20200914110809.2nu7vt2s3lzlvxoz@e107158-lin.cambridge.arm.com>
+Date:   Mon, 14 Sep 2020 12:26:47 +0100
+Message-ID: <jhjk0ww61l4.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 13:24:30 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Jungseung Lee <js07.lee@samsung.com>
-Subject: Re: [PATCH v2 0/4] mtd: spi-nor: OTP support
-In-Reply-To: <20200911222634.31804-1-michael@walle.cc>
-References: <20200911222634.31804-1-michael@walle.cc>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <fd6562b7771c2dc18292b588ae75d17d@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-09-12 00:26, schrieb Michael Walle:
-> This patchset implements the MTD OTP functions to allow access to the 
-> SPI
-> OTP data. Specific support is added for the Adesto, Macronix and 
-> Winbond
-> flash chips.
-> 
-> In the past there was already an attempt by Rahul Bedarkar to add this, 
-> but
-> there was no response. These patches are slightly based on his work.
-> 
-> https://lore.kernel.org/linux-mtd/1489754636-21461-1-git-send-email-rahul.bedarkar@imgtec.com/
-> 
 
-I've missed appending the changelog:
+On 14/09/20 12:08, Qais Yousef wrote:
+> On 09/14/20 11:31, Valentin Schneider wrote:
+>>
+>> On 12/09/20 00:04, Li, Aubrey wrote:
+>> >>> +++ b/include/linux/sched/topology.h
+>> >>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+>> >>>     atomic_t	ref;
+>> >>>     atomic_t	nr_busy_cpus;
+>> >>>     int		has_idle_cores;
+>> >>> +	/*
+>> >>> +	 * Span of all idle CPUs in this domain.
+>> >>> +	 *
+>> >>> +	 * NOTE: this field is variable length. (Allocated dynamically
+>> >>> +	 * by attaching extra space to the end of the structure,
+>> >>> +	 * depending on how many CPUs the kernel has booted up with)
+>> >>> +	 */
+>> >>> +	unsigned long	idle_cpus_span[];
+>> >>
+>> >> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
+>> >
+>> > I can use the existing free code. Do we have a problem of this?
+>> >
+>>
+>> Nah, flexible array members are the preferred approach here; this also
+>
+> Is this your opinion or a rule written somewhere I missed?
 
-changes since v1:
-  - rebased to latest tree
-  - correctly check return code of otp_ops->is_locked() in 
-spi_nor_mtd_otp_info()
-  - use correct bouncebuf for spi command in spi_nor_otp_lock_sr2()
-  - add cleanup patch to consolidate some of the "if (spimem) {} else {}" 
-patterns
-  - add otp support for macronix and similar flashes
-  - moved otp code into core.c because it is used across different 
-vendors
-  - use generic naming, eg. spi_nor_otp_lock_sr2() instead of 
-winbond_otp_lock()
+I don't think there's a written rule, but AIUI it is preferred by at
+least Peter:
 
--michael
+https://lore.kernel.org/linux-pm/20180612125930.GP12217@hirez.programming.kicks-ass.net/
+https://lore.kernel.org/lkml/20180619110734.GO2458@hirez.programming.kicks-ass.net/
 
-> Michael Walle (4):
->   mtd: spi-nor: cleanup common code
->   mtd: spi-nor: add OTP support
->   mtd: spi-nor: implement OTP support for Macronix and similar flashes
->   mtd: spi-nor: implement OTP support for Winbond and similar flashes
-> 
->  drivers/mtd/chips/Kconfig      |   2 +-
->  drivers/mtd/spi-nor/atmel.c    |  13 +-
->  drivers/mtd/spi-nor/core.c     | 769 ++++++++++++++++++++++++---------
->  drivers/mtd/spi-nor/core.h     |  61 +++
->  drivers/mtd/spi-nor/macronix.c |  13 +-
->  drivers/mtd/spi-nor/winbond.c  |  18 +-
->  include/linux/mtd/spi-nor.h    |  16 +
->  7 files changed, 676 insertions(+), 216 deletions(-)
+And my opinion is that, if you can, having fewer separate allocation is better.
+
+>
+>> means we don't let CONFIG_CPUMASK_OFFSTACK dictate where this gets
+>> allocated.
+>>
+>> See struct numa_group, struct sched_group, struct sched_domain, struct
+>> em_perf_domain...
+>
+> struct root_domain, struct cpupri_vec, struct generic_pm_domain,
+> struct irq_common_data..
+>
+> Use cpumask_var_t.
+>
+> Both approach look correct to me, so no objection in principle. cpumask_var_t
+> looks neater IMO and will be necessary once more than one cpumask are required
+> in a struct.
+>
+
+You're right in that cpumask_var_t becomes necessary when you need more
+than one mask. For those that use it despite requiring only one mask
+(cpupri stuff, struct nohz too), I'm not sure.
