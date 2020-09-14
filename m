@@ -2,118 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4B3269129
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C034226913F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgINQLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:11:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgINQIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:08:17 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 223E620715;
-        Mon, 14 Sep 2020 16:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600099696;
-        bh=CWHXWAocNcGLO4AHayYtfc64U7QGTbBoqSWHR+p5jB0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PmrRg1zeMNMnekbolZ6hxaaSargI6yZx0PJTlBTkIh2SqNOfQfgAAxJWRhjlwk/qN
-         P04YfphTBlp4QdgVI9Kho6bdka3aD4P9V3mu6oS9VVBl9mfhKkvriDs7Rum9i0UFrl
-         iIDEC0afwNiP81A10Eet43mIt/gmc3XQOqODkt7Q=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 33B1D40D3D; Mon, 14 Sep 2020 13:08:14 -0300 (-03)
-Date:   Mon, 14 Sep 2020 13:08:14 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 17/26] perf tools: Synthesize kernel with mmap3
-Message-ID: <20200914160814.GL160517@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-18-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200913210313.1985612-18-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+        id S1726131AbgINQOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726416AbgINQKM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:10:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC6DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:10:12 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 193so258866ybi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=C2H9/eVSssk9N9c19TNJ2NvJt1R7mxUsxPzXQi2K3kk=;
+        b=fDeporrsJV/dWDridcsDYkD9WhhQkww1EXqMrmF2B+RkyEVSOGhQaNCxuIJMlEjRrx
+         g8yfIrEKwcaPWD45Cpmg/l2Ubu31x/5g9qomcMGC96Uz6Y3nNgJLfc+f9/zNobLxS5xV
+         ks/jS5e+LzBvu8WZ6zb/8FzufYgbNJIfEy/qWYpB4a77W972KfC2n+6Ti/WcpxSbF/I+
+         vyeqiimeIgc5PPnZRXKKYMp1q8UKtOjRi3RnX7GOTeX7czYvGgVahPR/IhJ8Z2ROoj1W
+         qTgvO1xxTV2J/uQkiGlvyoG3z714GWisc9F5JAkhdNcsBatzCc118wMvfwKOSlQPhWgB
+         vptQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=C2H9/eVSssk9N9c19TNJ2NvJt1R7mxUsxPzXQi2K3kk=;
+        b=okOWHX51fG8/eXkOeLEvsdtFgMcEVtmfQOZzzGEg3WI1LlOOSjOwuudqNJZQ5EJ2n/
+         et66P6NzYlbGHJO2mbJvxgf+aopMdGoTX/Rh9khQlsVvW46p+YS8u/kd2gj/MZ2K0MwN
+         SmUXgLvM0DHzdn9F1aE2PUMTtw4mYvBl5DhceQAF68ejW/YNNOc2MWS719tMYpq2ycyl
+         08ylI5ncOvx0BRVbdsgIClKe+iSH40qQ/C1dJgj8Py8O2OtU1eRBtLKEvtQSWJ6RUcUC
+         sLvCjIWYCI73kqcpHd/yy/uL1tSKQjY7iSUjOjo+H1jVoz1bbYFW4BzWCUwStaSjAYIo
+         VIrw==
+X-Gm-Message-State: AOAM531idf+4lfyJem0mgZxR/oZrl++3qbipKxY5DWg6SwQCClQdu6EA
+        dCn/V9vbazf82uOKp8kyQPV8/AR8CezWteEK17c=
+X-Google-Smtp-Source: ABdhPJx8aZpEsKXySdSPyRjhfwyZ8AQEa2E2IoVBsvSrRsyabBpcL3j3xYdB/MKcncDBFONrCBjEJ1xnj7rcIU89YgY=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a5b:f03:: with SMTP id
+ x3mr8451188ybr.137.1600099811376; Mon, 14 Sep 2020 09:10:11 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 09:09:58 -0700
+Message-Id: <20200914160958.889694-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+Subject: [PATCH v4] lib/string.c: implement stpcpy
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Andy Lavr <andy.lavr@gmail.com>, Joe Perches <joe@perches.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Sep 13, 2020 at 11:03:04PM +0200, Jiri Olsa escreveu:
-> Synthesizing kernel with mmap3 events so we can
-> get build id data for kernel map as well.
+LLVM implemented a recent "libcall optimization" that lowers calls to
+`sprintf(dest, "%s", str)` where the return value is used to
+`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+in parsing format strings.  `stpcpy` is just like `strcpy` except it
+returns the pointer to the new tail of `dest`.  This optimization was
+introduced into clang-12.
 
-Ditto as for 15/26
+Implement this so that we don't observe linkage failures due to missing
+symbol definitions for `stpcpy`.
+
+Similar to last year's fire drill with:
+commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+
+The kernel is somewhere between a "freestanding" environment (no full libc)
+and "hosted" environment (many symbols from libc exist with the same
+type, function signature, and semantics).
+
+As H. Peter Anvin notes, there's not really a great way to inform the
+compiler that you're targeting a freestanding environment but would like
+to opt-in to some libcall optimizations (see pr/47280 below), rather than
+opt-out.
+
+Arvind notes, -fno-builtin-* behaves slightly differently between GCC
+and Clang, and Clang is missing many __builtin_* definitions, which I
+consider a bug in Clang and am working on fixing.
+
+Masahiro summarizes the subtle distinction between compilers justly:
+  To prevent transformation from foo() into bar(), there are two ways in
+  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
+  only one in GCC; -fno-buitin-foo.
+
+(Any difference in that behavior in Clang is likely a bug from a missing
+__builtin_* definition.)
+
+Masahiro also notes:
+  We want to disable optimization from foo() to bar(),
+  but we may still benefit from the optimization from
+  foo() into something else. If GCC implements the same transform, we
+  would run into a problem because it is not -fno-builtin-bar, but
+  -fno-builtin-foo that disables that optimization.
+
+  In this regard, -fno-builtin-foo would be more future-proof than
+  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
+  may want to prevent calls from foo() being optimized into calls to
+  bar(), but we still may want other optimization on calls to foo().
+
+It seems that compilers today don't quite provide the fine grain control
+over which libcall optimizations pseudo-freestanding environments would
+prefer.
+
+Finally, Kees notes that this interface is unsafe, so we should not
+encourage its use.  As such, I've removed the declaration from any
+header, but it still needs to be exported to avoid linkage errors in
+modules.
+
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Suggested-by: Andy Lavr <andy.lavr@gmail.com>
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Kees Cook <keescook@chromium.org>
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: stable@vger.kernel.org
+Link: https://bugs.llvm.org/show_bug.cgi?id=47162
+Link: https://bugs.llvm.org/show_bug.cgi?id=47280
+Link: https://github.com/ClangBuiltLinux/linux/issues/1126
+Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
+Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
+Link: https://reviews.llvm.org/D85963
+---
+Changes V4:
+* Roll up Kees' comment fixup from
+  https://lore.kernel.org/lkml/202009060302.4574D8D0E0@keescook/#t.
+* Keep Nathan's tested by tag.
+* Add Kees' reviewed by tag from
+  https://lore.kernel.org/lkml/202009031446.3865FE82B@keescook/.
+
+Changes V3:
+* Drop Sami's Tested by tag; newer patch.
+* Add EXPORT_SYMBOL as per Andy.
+* Rewrite commit message, rewrote part of what Masahiro said to be
+  generic in terms of foo() and bar().
+* Prefer %NUL-terminated to NULL terminated. NUL is the ASCII character
+  '\0', as per Arvind and Rasmus.
+
+Changes V2:
+* Added Sami's Tested by; though the patch changed implementation, the
+  missing symbol at link time was the problem Sami was observing.
+* Fix __restrict -> __restrict__ typo as per Joe.
+* Drop note about restrict from commit message as per Arvind.
+* Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
+* Fix off by one error as per Arvind; I had another off by one error in
+  my test program that was masking this.
+ lib/string.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/lib/string.c b/lib/string.c
+index 6012c385fb31..b6b8847218b5 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
+ }
+ EXPORT_SYMBOL(strscpy_pad);
  
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/synthetic-events.c | 23 ++++++++++++++---------
->  1 file changed, 14 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> index 6bd2423ce2f3..844ca87b6e97 100644
-> --- a/tools/perf/util/synthetic-events.c
-> +++ b/tools/perf/util/synthetic-events.c
-> @@ -1029,7 +1029,7 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
->  	 * available use this, and after it is use this as a fallback for older
->  	 * kernels.
->  	 */
-> -	event = zalloc((sizeof(event->mmap) + machine->id_hdr_size));
-> +	event = zalloc((sizeof(event->mmap3) + machine->id_hdr_size));
->  	if (event == NULL) {
->  		pr_debug("Not enough memory synthesizing mmap event "
->  			 "for kernel modules\n");
-> @@ -1046,16 +1046,21 @@ static int __perf_event__synthesize_kernel_mmap(struct perf_tool *tool,
->  		event->header.misc = PERF_RECORD_MISC_GUEST_KERNEL;
->  	}
->  
-> -	size = snprintf(event->mmap.filename, sizeof(event->mmap.filename),
-> +	size = snprintf(event->mmap3.filename, sizeof(event->mmap3.filename),
->  			"%s%s", machine->mmap_name, kmap->ref_reloc_sym->name) + 1;
->  	size = PERF_ALIGN(size, sizeof(u64));
-> -	event->mmap.header.type = PERF_RECORD_MMAP;
-> -	event->mmap.header.size = (sizeof(event->mmap) -
-> -			(sizeof(event->mmap.filename) - size) + machine->id_hdr_size);
-> -	event->mmap.pgoff = kmap->ref_reloc_sym->addr;
-> -	event->mmap.start = map->start;
-> -	event->mmap.len   = map->end - event->mmap.start;
-> -	event->mmap.pid   = machine->pid;
-> +	event->mmap3.header.type = PERF_RECORD_MMAP3;
-> +	event->mmap3.header.size = (sizeof(event->mmap3) -
-> +			(sizeof(event->mmap3.filename) - size) + machine->id_hdr_size);
-> +	event->mmap3.pgoff = kmap->ref_reloc_sym->addr;
-> +	event->mmap3.start = map->start;
-> +	event->mmap3.len   = map->end - event->mmap3.start;
-> +	event->mmap3.pid   = machine->pid;
-> +
-> +	err = sysfs__read_build_id("/sys/kernel/notes", event->mmap3.buildid,
-> +				   BUILD_ID_SIZE);
-> +	if (err)
-> +		pr_err("Failed to read kernel build ID\n");
->  
->  	err = perf_tool__process_synth_event(tool, event, machine, process);
->  	free(event);
-> -- 
-> 2.26.2
-> 
-
++/**
++ * stpcpy - copy a string from src to dest returning a pointer to the new end
++ *          of dest, including src's %NUL-terminator. May overrun dest.
++ * @dest: pointer to end of string being copied into. Must be large enough
++ *        to receive copy.
++ * @src: pointer to the beginning of string being copied from. Must not overlap
++ *       dest.
++ *
++ * stpcpy differs from strcpy in a key way: the return value is a pointer
++ * to the new %NUL-terminating character in @dest. (For strcpy, the return
++ * value is a pointer to the start of @dest. This interface is considered
++ * unsafe as it doesn't perform bounds checking of the inputs. As such it's
++ * not recommended for usage. Instead, its definition is provided in case
++ * the compiler lowers other libcalls to stpcpy.
++ */
++char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
++char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
++{
++	while ((*dest++ = *src++) != '\0')
++		/* nothing */;
++	return --dest;
++}
++EXPORT_SYMBOL(stpcpy);
++
+ #ifndef __HAVE_ARCH_STRCAT
+ /**
+  * strcat - Append one %NUL-terminated string to another
 -- 
+2.28.0.618.gf4bc123cb7-goog
 
-- Arnaldo
