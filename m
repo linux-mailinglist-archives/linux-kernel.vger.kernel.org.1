@@ -2,188 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96D12699F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50432699FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgINXxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:53:34 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3927 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgINXx3 (ORCPT
+        id S1726067AbgINX74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgINX7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:53:29 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f6001ec0000>; Mon, 14 Sep 2020 16:51:08 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 14 Sep 2020 16:53:28 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 14 Sep 2020 16:53:28 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Sep
- 2020 23:53:26 +0000
-Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Linux MM <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
-        <nouveau@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Bharata B Rao" <bharata@linux.ibm.com>, Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>
-References: <20200914224509.17699-1-rcampbell@nvidia.com>
- <CAPcyv4gVJuWsOtejrKvWgByq=c1niwQOZ0HHYaSo4h6vc-Xw+Q@mail.gmail.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <10b4b85c-f1e9-b6b5-74cd-6190ee0aca5d@nvidia.com>
-Date:   Mon, 14 Sep 2020 16:53:25 -0700
+        Mon, 14 Sep 2020 19:59:53 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A7EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:59:51 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id w186so2485145qkd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:59:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=s+D9XMZ1jPyuXwGqHc+ajg65qFn6d40xSHUZSsGwDms=;
+        b=aJfGo70Jabf9ZjvZMb10fhhLl23I8KWpDWnfOFg4Ru48CIqIpSHGvt3W64+QvAZ09L
+         eMMy0/7+NuAnCHtAoOAkuZiYBiLJEPSaWezzPamfq1IxrLBS6nfWQ1lPKahi386qsQR9
+         VBUS2yvrsMhEDG7Vk2ZNLpHkvHUt/RP0vtV/kbODtXEfRCA+XYK9XrelVE6FokN3Ub7W
+         Hn5tL+kZsc0zC+fSmxhS1SFLFcgVOlV5uqKwlSiQTYV5lOcomoHqE0vYNoKXOqYIs71m
+         o4S3UCx8B9xMS9dTwKcAosNr/GDx4rJFszDgPvAJuHEud8rxuonk5DxNTCWuAHZP3Cgo
+         OYAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s+D9XMZ1jPyuXwGqHc+ajg65qFn6d40xSHUZSsGwDms=;
+        b=pm3RqGB+95MEZjBieaMIRMVPuiqKW9y1iLmnphZDnGzV3c1SfGbpjLMCsVZ51hJ0HE
+         O/el9KzEDczmb3Ql+5GvN8SCjnCrU7j7n8OnDWxG23yamXjktPO+7zyT0Y3cxPA7XCH9
+         W5cMfg9n4WMfkZK0CYbaRcFmo8o4Hl8/FQWpSsX7sJomx7G2htCYhfUJxbXTSppBuP8i
+         Mp23Npzbwb+2aHoqXCtebgdl6apewMvarIwdZtH3sk/3IJbU7JTscCnNPyWWWjwIeDsJ
+         YzS8+Hn74/OdqtJS+AAQicj3/7GdRh5fkkx9aq/Rq6VG7u1CN8fOusDMmfsVD8wy0n1H
+         NPQA==
+X-Gm-Message-State: AOAM533UVransce3Na2/P+DauOBdgIaw7GU6tjADyZATB63LgnKKQKeg
+        tqA1hH6hWb3oZuAexZDYQZ6sgA==
+X-Google-Smtp-Source: ABdhPJz/EKcPRQd0aezEJWSxXoe5tCiYr5gNZLNu1Xag1+dH6WurzzLTZnYoALFVujHZMCflMhPn/Q==
+X-Received: by 2002:a05:620a:546:: with SMTP id o6mr15829768qko.296.1600127990550;
+        Mon, 14 Sep 2020 16:59:50 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id g25sm15241941qto.47.2020.09.14.16.59.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 16:59:50 -0700 (PDT)
+Subject: Re: [PATCH v2 0/7] SM8150 and SM8250 dispcc drivers
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
+References: <20200903222620.27448-1-jonathan@marek.ca>
+ <fd5fbe73-e2a5-d877-743c-ad7cc6110483@linaro.org>
+ <160012787871.4188128.16710718496771467444@swboyd.mtv.corp.google.com>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <540d95d2-ea53-f103-590e-a34d2d0cb8c5@marek.ca>
+Date:   Mon, 14 Sep 2020 19:58:45 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4gVJuWsOtejrKvWgByq=c1niwQOZ0HHYaSo4h6vc-Xw+Q@mail.gmail.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <160012787871.4188128.16710718496771467444@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600127468; bh=GSb48WQPQrkgi3bBuccaFuKU67HsPRSlHk+Uq/1GA1o=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=dbMe0ECus2gTUFHe8/EBdTG4bM7a+Szx8krahhX/k29r99HHbmD68ATPlhtwnTF9n
-         C7TC982i8Jc/5aPiL2zAOpmuksKWq48vM3OHgCxO7MnVYDNko4Iq++kuBOWAO9LzZE
-         Dqg5Q+fKWQ96YvBB6v9Oghw9EljXDcrdFJBKfe1tGWveRagxMvjZr/nq3WA2le6AMr
-         h82lKgJNzBp+2CsP6rGlL6SZSf457Gi4YF79V3sMfANnPLN9Hbe7qsSqwbxPIU4EpV
-         0zuB+3QAuNzfS4e/E7mmwdT5zpkubVabPUTY83gjy8ryR1p3huULeumACtmkH4AsM0
-         LXVytDljms0fA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/14/20 7:57 PM, Stephen Boyd wrote:
+> Quoting Dmitry Baryshkov (2020-09-07 07:25:45)
+>> On 04/09/2020 01:26, Jonathan Marek wrote:
+>>> Add display clock drivers required to get DSI and DP displays working on
+>>> SM8150 and SM8250 SoCs.
+>>>
+>>> Derived from downstream drivers. Notable changes compared to downstream:
+>>>    - EDP clks removed (nothing uses these even in downstream it seems)
+>>>    - freq_tbl values for dp_link clk is in Hz and not kHz
+>>
+>>
+>> On SM8250:
+>> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> 
+> Can this be carried to v3?
+> 
 
-On 9/14/20 4:10 PM, Dan Williams wrote:
-> On Mon, Sep 14, 2020 at 3:45 PM Ralph Campbell <rcampbell@nvidia.com> wrote:
->>
->> ZONE_DEVICE struct pages have an extra reference count that complicates the
->> code for put_page() and several places in the kernel that need to check the
->> reference count to see that a page is not being used (gup, compaction,
->> migration, etc.). Clean up the code so the reference count doesn't need to
->> be treated specially for ZONE_DEVICE.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> ---
->>
->> Matthew Wilcox, Ira Weiny, and others have complained that ZONE_DEVICE
->> struct page reference counting is ugly/broken. This is my attempt to
->> fix it and it works for the HMM migration self tests.
-> 
-> Can you link to a technical description of what's broken? Or better
-> yet, summarize that argument in the changelog?
-> 
->> I'm only sending this out as a RFC since I'm not that familiar with the
->> DAX, PMEM, XEN, and other uses of ZONE_DEVICE struct pages allocated
->> with devm_memremap_pages() or memremap_pages() but my best reading of
->> the code looks like it might be OK. I could use help testing these
->> configurations.
-> 
-> Back in the 4.15 days I could not convince myself that some code paths
-> blindly assumed that pages with refcount==0 were on an lru list. Since
-> then, struct page has been reorganized to not collide the ->pgmap back
-> pointer with the ->lru list and there have been other cleanups for
-> page pinning that might make this incremental cleanup viable.
-> 
-> You also need to fix up ext4_break_layouts() and
-> xfs_break_dax_layouts() to expect ->_refcount is 0 instead of 1. This
-> also needs some fstests exposure.
-
-Got it. Thanks!
-
->> I have a modified THP migration patch series that applies on top of
->> this one and is cleaner since I don't have to add code to handle the
->> +1 reference count. The link below is for the earlier v2:
->> ("mm/hmm/nouveau: add THP migration to migrate_vma_*")
->> https://lore.kernel.org/linux-mm/20200902165830.5367-1-rcampbell@nvidia.com
->>
->>
->>   arch/powerpc/kvm/book3s_hv_uvmem.c     |  1 -
->>   drivers/gpu/drm/nouveau/nouveau_dmem.c |  1 -
->>   include/linux/memremap.h               |  6 +--
->>   include/linux/mm.h                     | 39 ---------------
->>   lib/test_hmm.c                         |  1 -
->>   mm/gup.c                               | 44 -----------------
->>   mm/memremap.c                          | 20 ++++----
->>   mm/migrate.c                           |  5 --
->>   mm/swap.c                              | 66 +++++++++++---------------
->>   9 files changed, 41 insertions(+), 142 deletions(-)
-> 
-> This diffstat is indeed appealing.
-> 
->>
->> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
->> index 84e5a2dc8be5..00d97050d7ff 100644
->> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
->> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
->> @@ -711,7 +711,6 @@ static struct page *kvmppc_uvmem_get_page(unsigned long gpa, struct kvm *kvm)
->>
->>          dpage = pfn_to_page(uvmem_pfn);
->>          dpage->zone_device_data = pvt;
->> -       get_page(dpage);
->>          lock_page(dpage);
->>          return dpage;
->>   out_clear:
->> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> index a13c6215bba8..2a4bbe01a455 100644
->> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
->> @@ -324,7 +324,6 @@ nouveau_dmem_page_alloc_locked(struct nouveau_drm *drm)
->>                          return NULL;
->>          }
->>
->> -       get_page(page);
->>          lock_page(page);
->>          return page;
->>   }
->> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
->> index 4e9c738f4b31..7dd9802d2612 100644
->> --- a/include/linux/memremap.h
->> +++ b/include/linux/memremap.h
->> @@ -67,9 +67,9 @@ enum memory_type {
->>
->>   struct dev_pagemap_ops {
->>          /*
->> -        * Called once the page refcount reaches 1.  (ZONE_DEVICE pages never
->> -        * reach 0 refcount unless there is a refcount bug. This allows the
->> -        * device driver to implement its own memory management.)
->> +        * Called once the page refcount reaches 0. The reference count is
->> +        * reset to 1 before calling page_free(). This allows the
->> +        * device driver to implement its own memory management.
-> 
-> I'd clarify the order events / responsibility of the common core
-> page_free() and the device specific page_free(). At the same time, why
-> not update drivers to expect that the page is already refcount==0 on
-> entry? Seems odd to go through all this trouble to make the reference
-> count appear to be zero to the wider kernel but expect that drivers
-> get a fake reference on entry to their ->page_free() callbacks.
-
-Good point.
-
-Since set_page_refcounted() is defined in mm_interal.h I would have to
-move the definition to someplace like page_ref.h or have the drivers
-cal init_page_count() or set_page_count() since get_page() calls
-VM_BUG_ON_PAGE() if refcount == 0.
-I'll move set_page_refcounted() since that is what the page allocator
-uses and seems named for the purpose.
-
+I already included the tag in the last commit which adds the SM8250 
+dispcc driver (probably should've included it in the SM8250 dt-bindings 
+patch too though).
