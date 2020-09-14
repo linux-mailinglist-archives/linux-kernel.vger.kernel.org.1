@@ -2,161 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73465268771
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287CC268777
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726242AbgINIqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726078AbgINIqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:46:11 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C2FC06174A;
-        Mon, 14 Sep 2020 01:46:10 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g4so16751747edk.0;
-        Mon, 14 Sep 2020 01:46:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XuGmVWQ/C1VQzn4NF907Rd7tGA3RzQj75SvBymACUwY=;
-        b=KAuZQWGnWOXAmoIJ5RdYKX9qoFTKc0Gcvcq8zH+aq2w+X3GwZ73Oa2h/MdKH/g9IPu
-         W0N7nAjtS9/XVhZjl6FB7tDoHdpmsKUVcwFdfCVB9lLE1OGIREhBvPZ08timIm12KiyJ
-         0J5oE4+as6cuGA50OvJV2j5KrvDcM+fLZRaKPjoA4MAhx66D79/A2DVGEz1/NSu7lxAj
-         JN+dUtBCntrGR3q0x8xqkxIM8p6XY7hXSUzJHwmKNyVWiMZt6YQg4iDiLtlzf5yKa5Bo
-         YIchxne8SZJqBrGQQXayKoq5qbcbf++luzrFUzN8cPKLWOIn19EGYuygx2zNGbGrBudZ
-         Vb5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XuGmVWQ/C1VQzn4NF907Rd7tGA3RzQj75SvBymACUwY=;
-        b=e4H+kOpGp01+T5WRQ8yU7DDCA/wibU1BxCJ6OHz/oJbO+mkVSoOk2nekDJrs5f3Rp3
-         0l2fHEkQMixN3XCdBSOzAN3Zt7i1u18MKWVKuzLb4liX6G4NU7h+cJN/363JU1vgj0jf
-         KGkvPkQ2Y4u+qF5yo87gUjd6JhIueFtBwAE7utxaa9hj8R65RS7ZnhuAiErb8gHvwDLB
-         BMw8WcCjUVKVZJHUpEL3Y0OFUU7o5qGdVD3NS1+Z4/6VDhD/uXwAWOC1f/iYuHL3515e
-         bOkJOiUJGBMYOtnguap8a+4WU/pDjtY7X+vLcqZfpsocI7wXrMnb9863NewBQbTraDQ9
-         V59Q==
-X-Gm-Message-State: AOAM5316hhMT5g6M/O5QCseRy5jeAZ4GAj/5Jmiq7ZcZDZbw1QfcYKSU
-        8W4XbZkVWAIe2Z59/jN9plY=
-X-Google-Smtp-Source: ABdhPJzEsKFuXqBrpFADuhzDzq7+l8150SWf9Q+c3B5bBRXqBwwccQdGwdJQXfE/OUgwIXZ37Q6rQg==
-X-Received: by 2002:aa7:d059:: with SMTP id n25mr16026892edo.270.1600073169140;
-        Mon, 14 Sep 2020 01:46:09 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id bz5sm7156811ejc.83.2020.09.14.01.46.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Sep 2020 01:46:08 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 4F55527C0054;
-        Mon, 14 Sep 2020 04:46:04 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 14 Sep 2020 04:46:04 -0400
-X-ME-Sender: <xms:yi1fX7cJdjPxAbgq6OtpkW20p1EEwwA5oOPDcucjS6H_STSteqW0Vg>
-    <xme:yi1fXxOppuRZANpu32LzJXvEsnjYlJ8Xy18zvXascEVOW2X4JAFYQwnDzXa6hMzew
-    T-2ERBIGpb9TI7jlw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudeiiedgtdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhorhhtvggutfgvtghiphdvucdlgedtmdenucfjughrpeffhffvuffkfhggtggujges
-    thdtredttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnh
-    hgsehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfej
-    veeuveeiteejieekvdfgjeefudehfefhgfegvdegjeenucfkphephedvrdduheehrdduud
-    durdejudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtd
-    eigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehf
-    ihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:yi1fX0hnwWWjBhv_AMzWu1kBSFd25-1FpdweIkTWDQAaQr-UieaQ_Q>
-    <xmx:yi1fX88VZwE7ao4zxSnWzGhEwJ_r-tIdsvh4ttcJW0mK6ohVHxYjhg>
-    <xmx:yi1fX3sHlA8luMPiQxVkqGe7gB3fCYiIn7rL9dsUXa4FJ8CXz-iVpQ>
-    <xmx:zC1fX3dLnRdBGH9yqfr9D3wNHYf_o7tV8I8UQCmEkwcfhVCYhYyXLnXzZiw>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8D6FC306467D;
-        Mon, 14 Sep 2020 04:46:01 -0400 (EDT)
-Date:   Mon, 14 Sep 2020 16:46:00 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>, will@kernel.org,
-        ardb@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        mark.rutland@arm.com, maz@kernel.org
-Subject: Re: [PATCH v3 08/11] Input: hyperv-keyboard: Make ringbuffer at
- least take two pages
-Message-ID: <20200914084600.GA45838@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200910143455.109293-1-boqun.feng@gmail.com>
- <20200910143455.109293-9-boqun.feng@gmail.com>
+        id S1726184AbgINIrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:47:13 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52320 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726078AbgINIrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:47:04 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 6D7A9749817C5FE586B7;
+        Mon, 14 Sep 2020 16:46:59 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 14 Sep 2020 16:46:51 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH 1/2] f2fs: compress: introduce page array slab cache
+Date:   Mon, 14 Sep 2020 16:46:44 +0800
+Message-ID: <20200914084645.44063-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910143455.109293-9-boqun.feng@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 10:34:52PM +0800, Boqun Feng wrote:
-> When PAGE_SIZE > HV_HYP_PAGE_SIZE, we need the ringbuffer size to be at
-> least 2 * PAGE_SIZE: one page for the header and at least one page of
-> the data part (because of the alignment requirement for double mapping).
-> 
-> So make sure the ringbuffer sizes to be at least 2 * PAGE_SIZE when
-> using vmbus_open() to establish the vmbus connection.
-> 
-> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  drivers/input/serio/hyperv-keyboard.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/serio/hyperv-keyboard.c b/drivers/input/serio/hyperv-keyboard.c
-> index df4e9f6f4529..6ebc61e2db3f 100644
-> --- a/drivers/input/serio/hyperv-keyboard.c
-> +++ b/drivers/input/serio/hyperv-keyboard.c
-> @@ -75,8 +75,8 @@ struct synth_kbd_keystroke {
->  
->  #define HK_MAXIMUM_MESSAGE_SIZE 256
->  
-> -#define KBD_VSC_SEND_RING_BUFFER_SIZE		(40 * 1024)
-> -#define KBD_VSC_RECV_RING_BUFFER_SIZE		(40 * 1024)
-> +#define KBD_VSC_SEND_RING_BUFFER_SIZE	max(40 * 1024, (int)(2 * PAGE_SIZE))
-> +#define KBD_VSC_RECV_RING_BUFFER_SIZE	max(40 * 1024, (int)(2 * PAGE_SIZE))
->  
+Add a per-sbi slab cache "f2fs_page_array_entry-%u:%u" for memory
+allocation of page pointer array in compress context.
 
-Hmm.. just realized there is a problem here, if PAGE_SIZE = 16k, then
-40 * 1024 > 2 * PAGE_SIZE, however in the ring buffer size should also
-be page aligned, otherwise vmbus_open() will fail.
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/compress.c | 86 +++++++++++++++++++++++++++++++++-------------
+ fs/f2fs/f2fs.h     |  7 ++++
+ fs/f2fs/super.c    |  8 ++++-
+ 3 files changed, 77 insertions(+), 24 deletions(-)
 
-I plan to modify this as
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 7895186cc765..c6fcd68df71a 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -17,6 +17,32 @@
+ #include "node.h"
+ #include <trace/events/f2fs.h>
+ 
++static void *page_array_alloc(struct inode *inode)
++{
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	unsigned int size = sizeof(struct page *) <<
++				F2FS_I(inode)->i_log_cluster_size;
++
++	if (likely(size == sbi->page_array_slab_size))
++		return kmem_cache_zalloc(sbi->page_array_slab, GFP_NOFS);
++	return f2fs_kzalloc(sbi, size, GFP_NOFS);
++}
++
++static void page_array_free(struct inode *inode, void *pages)
++{
++	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	unsigned int size = sizeof(struct page *) <<
++				F2FS_I(inode)->i_log_cluster_size;
++
++	if (!pages)
++		return;
++
++	if (likely(size == sbi->page_array_slab_size))
++		kmem_cache_free(sbi->page_array_slab, pages);
++	else
++		kfree(pages);
++}
++
+ struct f2fs_compress_ops {
+ 	int (*init_compress_ctx)(struct compress_ctx *cc);
+ 	void (*destroy_compress_ctx)(struct compress_ctx *cc);
+@@ -130,19 +156,16 @@ struct page *f2fs_compress_control_page(struct page *page)
+ 
+ int f2fs_init_compress_ctx(struct compress_ctx *cc)
+ {
+-	struct f2fs_sb_info *sbi = F2FS_I_SB(cc->inode);
+-
+ 	if (cc->nr_rpages)
+ 		return 0;
+ 
+-	cc->rpages = f2fs_kzalloc(sbi, sizeof(struct page *) <<
+-					cc->log_cluster_size, GFP_NOFS);
++	cc->rpages = page_array_alloc(cc->inode);
+ 	return cc->rpages ? 0 : -ENOMEM;
+ }
+ 
+ void f2fs_destroy_compress_ctx(struct compress_ctx *cc)
+ {
+-	kfree(cc->rpages);
++	page_array_free(cc->inode, cc->rpages);
+ 	cc->rpages = NULL;
+ 	cc->nr_rpages = 0;
+ 	cc->nr_cpages = 0;
+@@ -573,7 +596,6 @@ static void *f2fs_vmap(struct page **pages, unsigned int count)
+ 
+ static int f2fs_compress_pages(struct compress_ctx *cc)
+ {
+-	struct f2fs_sb_info *sbi = F2FS_I_SB(cc->inode);
+ 	struct f2fs_inode_info *fi = F2FS_I(cc->inode);
+ 	const struct f2fs_compress_ops *cops =
+ 				f2fs_cops[fi->i_compress_algorithm];
+@@ -592,8 +614,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 	max_len = COMPRESS_HEADER_SIZE + cc->clen;
+ 	cc->nr_cpages = DIV_ROUND_UP(max_len, PAGE_SIZE);
+ 
+-	cc->cpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
+-					cc->nr_cpages, GFP_NOFS);
++	cc->cpages = page_array_alloc(cc->inode);
+ 	if (!cc->cpages) {
+ 		ret = -ENOMEM;
+ 		goto destroy_compress_ctx;
+@@ -667,7 +688,7 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
+ 		if (cc->cpages[i])
+ 			f2fs_compress_free_page(cc->cpages[i]);
+ 	}
+-	kfree(cc->cpages);
++	page_array_free(cc->inode, cc->cpages);
+ 	cc->cpages = NULL;
+ destroy_compress_ctx:
+ 	if (cops->destroy_compress_ctx)
+@@ -706,8 +727,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
+ 		goto out_free_dic;
+ 	}
+ 
+-	dic->tpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
+-					dic->cluster_size, GFP_NOFS);
++	dic->tpages = page_array_alloc(dic->inode);
+ 	if (!dic->tpages) {
+ 		ret = -ENOMEM;
+ 		goto out_free_dic;
+@@ -1046,6 +1066,7 @@ bool f2fs_compress_write_end(struct inode *inode, void *fsdata,
+ 
+ {
+ 	struct compress_ctx cc = {
++		.inode = inode,
+ 		.log_cluster_size = F2FS_I(inode)->i_log_cluster_size,
+ 		.cluster_size = F2FS_I(inode)->i_cluster_size,
+ 		.rpages = fsdata,
+@@ -1179,8 +1200,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	cic->magic = F2FS_COMPRESSED_PAGE_MAGIC;
+ 	cic->inode = inode;
+ 	atomic_set(&cic->pending_pages, cc->nr_cpages);
+-	cic->rpages = f2fs_kzalloc(sbi, sizeof(struct page *) <<
+-			cc->log_cluster_size, GFP_NOFS);
++	cic->rpages = page_array_alloc(cc->inode);
+ 	if (!cic->rpages)
+ 		goto out_put_cic;
+ 
+@@ -1278,7 +1298,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
+ 	return 0;
+ 
+ out_destroy_crypt:
+-	kfree(cic->rpages);
++	page_array_free(cc->inode, cic->rpages);
+ 
+ 	for (--i; i >= 0; i--)
+ 		fscrypt_finalize_bounce_page(&cc->cpages[i]);
+@@ -1322,7 +1342,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
+ 		end_page_writeback(cic->rpages[i]);
+ 	}
+ 
+-	kfree(cic->rpages);
++	page_array_free(cic->inode, cic->rpages);
+ 	kfree(cic);
+ }
+ 
+@@ -1419,7 +1439,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
+ 
+ 		err = f2fs_write_compressed_pages(cc, submitted,
+ 							wbc, io_type);
+-		kfree(cc->cpages);
++		page_array_free(cc->inode, cc->cpages);
+ 		cc->cpages = NULL;
+ 		if (!err)
+ 			return 0;
+@@ -1446,8 +1466,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
+ 	if (!dic)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	dic->rpages = f2fs_kzalloc(sbi, sizeof(struct page *) <<
+-			cc->log_cluster_size, GFP_NOFS);
++	dic->rpages = page_array_alloc(cc->inode);
+ 	if (!dic->rpages) {
+ 		kfree(dic);
+ 		return ERR_PTR(-ENOMEM);
+@@ -1466,8 +1485,7 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
+ 		dic->rpages[i] = cc->rpages[i];
+ 	dic->nr_rpages = cc->cluster_size;
+ 
+-	dic->cpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
+-					dic->nr_cpages, GFP_NOFS);
++	dic->cpages = page_array_alloc(dic->inode);
+ 	if (!dic->cpages)
+ 		goto out_free;
+ 
+@@ -1502,7 +1520,7 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
+ 				continue;
+ 			f2fs_compress_free_page(dic->tpages[i]);
+ 		}
+-		kfree(dic->tpages);
++		page_array_free(dic->inode, dic->tpages);
+ 	}
+ 
+ 	if (dic->cpages) {
+@@ -1511,10 +1529,10 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
+ 				continue;
+ 			f2fs_compress_free_page(dic->cpages[i]);
+ 		}
+-		kfree(dic->cpages);
++		page_array_free(dic->inode, dic->cpages);
+ 	}
+ 
+-	kfree(dic->rpages);
++	page_array_free(dic->inode, dic->rpages);
+ 	kfree(dic);
+ }
+ 
+@@ -1543,3 +1561,25 @@ void f2fs_decompress_end_io(struct page **rpages,
+ 		unlock_page(rpage);
+ 	}
+ }
++
++int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi)
++{
++	dev_t dev = sbi->sb->s_bdev->bd_dev;
++	char slab_name[32];
++
++	sprintf(slab_name, "f2fs_page_array_entry-%u:%u", MAJOR(dev), MINOR(dev));
++
++	sbi->page_array_slab_size = sizeof(struct page *) <<
++					F2FS_OPTION(sbi).compress_log_size;
++
++	sbi->page_array_slab = f2fs_kmem_cache_create(slab_name,
++					sbi->page_array_slab_size);
++	if (!sbi->page_array_slab)
++		return -ENOMEM;
++	return 0;
++}
++
++void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi)
++{
++	kmem_cache_destroy(sbi->page_array_slab);
++}
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 8efa19baf33d..3cfed2d8bd05 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1626,6 +1626,9 @@ struct f2fs_sb_info {
+ 
+ 	struct kmem_cache *inline_xattr_slab;	/* inline xattr entry */
+ 	unsigned int inline_xattr_slab_size;	/* default inline xattr slab size */
++
++	struct kmem_cache *page_array_slab;	/* page array entry */
++	unsigned int page_array_slab_size;	/* default page array slab size */
+ };
+ 
+ struct f2fs_private_dio {
+@@ -3933,6 +3936,8 @@ void f2fs_decompress_end_io(struct page **rpages,
+ int f2fs_init_compress_ctx(struct compress_ctx *cc);
+ void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
+ void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
++int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
++void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
+ #else
+ static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
+ static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
+@@ -3949,6 +3954,8 @@ static inline struct page *f2fs_compress_control_page(struct page *page)
+ }
+ static inline int f2fs_init_compress_mempool(void) { return 0; }
+ static inline void f2fs_destroy_compress_mempool(void) { }
++static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
++static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
+ #endif
+ 
+ static inline void set_compress_context(struct inode *inode)
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 844ea837ebd7..d7336914d2b3 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1277,6 +1277,7 @@ static void f2fs_put_super(struct super_block *sb)
+ 	kfree(sbi->raw_super);
+ 
+ 	destroy_device_list(sbi);
++	f2fs_destroy_page_array_cache(sbi);
+ 	f2fs_destroy_xattr_caches(sbi);
+ 	mempool_destroy(sbi->write_io_dummy);
+ #ifdef CONFIG_QUOTA
+@@ -3613,13 +3614,16 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	err = f2fs_init_xattr_caches(sbi);
+ 	if (err)
+ 		goto free_io_dummy;
++	err = f2fs_init_page_array_cache(sbi);
++	if (err)
++		goto free_xattr_cache;
+ 
+ 	/* get an inode for meta space */
+ 	sbi->meta_inode = f2fs_iget(sb, F2FS_META_INO(sbi));
+ 	if (IS_ERR(sbi->meta_inode)) {
+ 		f2fs_err(sbi, "Failed to read F2FS meta data inode");
+ 		err = PTR_ERR(sbi->meta_inode);
+-		goto free_xattr_cache;
++		goto free_page_array_cache;
+ 	}
+ 
+ 	err = f2fs_get_valid_checkpoint(sbi);
+@@ -3895,6 +3899,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	make_bad_inode(sbi->meta_inode);
+ 	iput(sbi->meta_inode);
+ 	sbi->meta_inode = NULL;
++free_page_array_cache:
++	f2fs_destroy_page_array_cache(sbi);
+ free_xattr_cache:
+ 	f2fs_destroy_xattr_caches(sbi);
+ free_io_dummy:
+-- 
+2.26.2
 
-in linux/hyperv.h:
-
-#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + (playload_sz))
-
-and here:
-
-#define KBD_VSC_SEND_RING_BUFFER_SIZE VMBUS_RING_SIZE(36 * 1024)
-#define KBD_VSC_RECV_RING_BUFFER_SIZE VMBUS_RING_SIZE(36 * 1024)
-
-and the similar change for patch #9.
-
-Thoughts?
-
-Regards,
-Boqun
-
->  #define XTKBD_EMUL0     0xe0
->  #define XTKBD_EMUL1     0xe1
-> -- 
-> 2.28.0
-> 
