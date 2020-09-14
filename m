@@ -2,117 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7FE26849C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A5126849E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgINGNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:13:51 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:47200 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726027AbgINGNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:13:51 -0400
-Received: from [10.130.0.155] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv98MCl9fQh4VAA--.5455S3;
-        Mon, 14 Sep 2020 14:13:33 +0800 (CST)
-Subject: Re: [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec
- reboot and connected PCI devices
-To:     Lukas Wunner <lukas@wunner.de>
-References: <1600028950-10644-1-git-send-email-yangtiezhu@loongson.cn>
- <20200914040625.GA20033@wunner.de>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Konstantin Khlebnikov <khlebnikov@openvz.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Vivek Goyal <vgoyal@redhat.com>, oohall@gmail.com,
-        rafael.j.wysocki@intel.com, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <43683243-f8e2-c555-447a-f108740c70e8@loongson.cn>
-Date:   Mon, 14 Sep 2020 14:13:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <20200914040625.GA20033@wunner.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxv98MCl9fQh4VAA--.5455S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur4rWryDuw1DCr1fuFyUZFb_yoW8uFykpF
-        WDJa92yFy0qry7Xr43XFyxXF15JwsIy34Fkr18C3y3Wrs3Ar95trWrtF909wn5X3yvyFW7
-        Ar95trn7GrWxJFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-        Y4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1uc_DUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726115AbgINGOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgINGOG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:14:06 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F280AC06174A;
+        Sun, 13 Sep 2020 23:14:05 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id i26so21440921ejb.12;
+        Sun, 13 Sep 2020 23:14:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=rIC1oHrjeeueYz0HBFCkUv0ag151JIWmWoXarLnIZ+0=;
+        b=U+xrXrSDw4TAeqmWS5MUGHGG2D46SgGKRCAiPepOWuqpLsn0bLYNR2enUp8NXYi6g3
+         vLiKwgup66PPSTNeN9SJfuqjvdiDxtc2wvUXQJ7PI5UVXMzc4bNndtvu3NVq8Q2LLtGZ
+         jr1zbApXt4OzE3NdcscJPlS/GBKAOtROtHG5RFuke677Gc1VhiFo0nbisXSeBiCzfaO6
+         9dbajD5pPZPDSJVyfTPh5Avn8JRo+zpdsYWmwiXzIxtrDME7xU7ThX6P2tlDC/JIxAdC
+         JQHm21cS7XFAPh0fQp0y5YYzZp/N/h8qDacwzlbtJyPhM2YFcB4XU482n6Hanfc8E2bc
+         fgZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rIC1oHrjeeueYz0HBFCkUv0ag151JIWmWoXarLnIZ+0=;
+        b=l8ngG3XsCewBTVH+iJNcrHL4hsq2LSB1lAtR6JXro27/J0qBfuzVfxYBuI9ympxPrK
+         d2s1uX++mKshgzkX1fO5KaygK+Kx/+S85XZAiRdDPyR7bpSLrQ27Dzv4YUCNo0hUBrmV
+         M53/6goGbnZIj3UzVVXVje9i6RsZyEatlmowBkeq6l8OXjG0bOz0mW+txgiFtbimQHHD
+         QUFMCTD5bAnmU8CTy/8JW/NxS8lF6HwnZ/7kcNGrhtXbXQJ8FAR7izV+ZVayy6K2/Kqj
+         fW/BJCEmYNR80dSjwJkyRKaatp7kSieB21gdiN5UYokdckXNEO+zHXpfZ9l4S2jSQSzY
+         KcHw==
+X-Gm-Message-State: AOAM530zlU5fJk7INmOz3OtOSVBeyaclMxvRJIblP+u73yKxCIfFJCXz
+        5GEL2hM3zUaG7K5vhbVqlRQ=
+X-Google-Smtp-Source: ABdhPJxhBiboB7fvBSZBflKPyaSYrlFG8klS6slvEQ6v0pbn8KL5pzjo9IHEjVDrbIZLulUhgCKyWw==
+X-Received: by 2002:a17:906:72d2:: with SMTP id m18mr13009569ejl.220.1600064044596;
+        Sun, 13 Sep 2020 23:14:04 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2ddc:3000:7936:d9d0:986e:cca5])
+        by smtp.gmail.com with ESMTPSA id dv6sm6865615ejb.7.2020.09.13.23.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 23:14:04 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Krzysztof Kozlowski <k.kozlowski.k@gmail.com>,
+        linux-samsung-soc@vger.kernel.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: mark linux-samsung-soc list non-moderated
+Date:   Mon, 14 Sep 2020 08:13:53 +0200
+Message-Id: <20200914061353.17535-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/14/2020 12:06 PM, Lukas Wunner wrote:
-> On Mon, Sep 14, 2020 at 04:29:10AM +0800, Tiezhu Yang wrote:
->> --- a/drivers/pci/pcie/portdrv_pci.c
->> +++ b/drivers/pci/pcie/portdrv_pci.c
->> @@ -143,6 +144,28 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
->>   	}
->>   
->>   	pcie_port_device_remove(dev);
->> +	pci_disable_device(dev);
->> +}
->> +
->> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
->> +{
->> +	if (pci_bridge_d3_possible(dev)) {
->> +		pm_runtime_forbid(&dev->dev);
->> +		pm_runtime_get_noresume(&dev->dev);
->> +		pm_runtime_dont_use_autosuspend(&dev->dev);
->> +	}
->> +
->> +	pcie_port_device_remove(dev);
->> +
->> +	/*
->> +	 * If this is a kexec reboot, turn off Bus Master bit on the
->> +	 * device to tell it to not continue to do DMA. Don't touch
->> +	 * devices in D3cold or unknown states.
->> +	 * If it is not a kexec reboot, firmware will hit the PCI
->> +	 * devices with big hammer and stop their DMA any way.
->> +	 */
->> +	if (kexec_in_progress && (dev->current_state <= PCI_D3hot))
->> +		pci_disable_device(dev);
-> The last portion of this function is already executed afterwards by
-> pci_device_shutdown().  You don't need to duplicate it here:
->
-> device_shutdown()
->    dev->bus->shutdown() == pci_device_shutdown()
->      drv->shutdown() == pcie_portdrv_shutdown()
->        pci_disable_device()
->      pci_disable_device()
+In fifteen entries mentioning linux-samsung-soc@vger.kernel.org in
+MAINTAINERS, seven entries mention the list being moderated for
+non-subscribers and eight entries do not. Clearly only one can be right,
+though.
 
-pcie_port_device_remove() deletes pci_disable_device(dev)  at the beginning of this patch.
+Joe Perches suggested that all vger.kernel.org are not moderated for
+non-subscribers.
 
+Remove all the remarks from the entries following Joe's suggestion.
 
-diff 
-<https://lore.kernel.org/linux-pci/CAAhV-H5-X9OcBe3iRxF8PnKW-0j_10FVqm8cbiqW2-Lv4mTTdQ@mail.gmail.com/T/#iZ2e.:..:1600028950-10644-1-git-send-email-yangtiezhu::40loongson.cn:0drivers:pci:pcie:portdrv_core.c> 
---git a/drivers/pci/pcie/portdrv_core.c 
-b/drivers/pci/pcie/portdrv_core.c index 50a9522..1991aca 100644 --- 
-a/drivers/pci/pcie/portdrv_core.c +++ b/drivers/pci/pcie/portdrv_core.c 
-@@ -491,7 +491,6 @@ void pcie_port_device_remove(struct pci_dev *dev)   {
-  	device_for_each_child(&dev->dev, NULL, remove_iter);
-  	pci_free_irq_vectors(dev);
-- pci_disable_device(dev);   }
+Link: https://lore.kernel.org/lkml/da6f30896a8fd78635b3ca454d77a5292a9aa76d.camel@perches.com/
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on v5.9-rc5 and next-20200911
 
->
-> Thanks,
->
-> Lukas
+Krzysztof, please pick this minor non-urgent cleanup patch.
+
+This patch submission will also show me if linux-samsung-soc is moderated
+or not. I have not subscribed to linux-samsung-soc and if it shows up
+quickly in the archive, the list is probably not moderated, and hence,
+validating the patch.
+
+ MAINTAINERS | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0d0862b19ce5..de8741d24cb0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2399,7 +2399,7 @@ ARM/SAMSUNG EXYNOS ARM ARCHITECTURES
+ M:	Kukjin Kim <kgene@kernel.org>
+ M:	Krzysztof Kozlowski <krzk@kernel.org>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+ Q:	https://patchwork.kernel.org/project/linux-samsung-soc/list/
+ F:	Documentation/arm/samsung/
+@@ -2441,7 +2441,7 @@ F:	drivers/media/platform/s5p-g2d/
+ 
+ ARM/SAMSUNG S5P SERIES HDMI CEC SUBSYSTEM SUPPORT
+ M:	Marek Szyprowski <m.szyprowski@samsung.com>
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/media/s5p-cec.txt
+@@ -13321,7 +13321,7 @@ PCI DRIVER FOR SAMSUNG EXYNOS
+ M:	Jingoo Han <jingoohan1@gmail.com>
+ L:	linux-pci@vger.kernel.org
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+ F:	drivers/pci/controller/dwc/pci-exynos.c
+ 
+@@ -13729,7 +13729,7 @@ M:	Tomasz Figa <tomasz.figa@gmail.com>
+ M:	Krzysztof Kozlowski <krzk@kernel.org>
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+ Q:	https://patchwork.kernel.org/project/linux-samsung-soc/list/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pinctrl/samsung.git
+@@ -15275,7 +15275,7 @@ F:	include/linux/mfd/samsung/
+ SAMSUNG S3C24XX/S3C64XX SOC SERIES CAMIF DRIVER
+ M:	Sylwester Nawrocki <sylvester.nawrocki@gmail.com>
+ L:	linux-media@vger.kernel.org
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+ F:	drivers/media/platform/s3c-camif/
+ F:	include/media/drv-intf/s3c_camif.h
+@@ -15324,7 +15324,7 @@ SAMSUNG SOC CLOCK DRIVERS
+ M:	Sylwester Nawrocki <s.nawrocki@samsung.com>
+ M:	Tomasz Figa <tomasz.figa@gmail.com>
+ M:	Chanwoo Choi <cw00.choi@samsung.com>
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/snawrocki/clk.git
+ F:	Documentation/devicetree/bindings/clock/exynos*.txt
+@@ -15338,7 +15338,7 @@ M:	Kukjin Kim <kgene@kernel.org>
+ M:	Krzysztof Kozlowski <krzk@kernel.org>
+ M:	Andi Shyti <andi@etezian.org>
+ L:	linux-spi@vger.kernel.org
+-L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
++L:	linux-samsung-soc@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/spi/spi-samsung.txt
+ F:	drivers/spi/spi-s3c*
+-- 
+2.17.1
 
