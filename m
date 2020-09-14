@@ -2,79 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0B8268C9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01B1268CA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbgINNyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbgINNuC (ORCPT
+        id S1726787AbgINN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:58:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34454 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726758AbgINNwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:50:02 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6131C061788;
-        Mon, 14 Sep 2020 06:50:01 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x123so12685475pfc.7;
-        Mon, 14 Sep 2020 06:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qINGFtSPWGNrqHNXnCfgs2pWvwknYld67sOTbOuVcak=;
-        b=Ez0tNCcm8W9613bR67t6HRCE+7qfpUwATfnund6fwPuBwQlQkGXIjmzul3DaLYwfeb
-         Evo6JD1jzaDQ2EOc6ABed9p/dh6V3Ts7qsHw1RsMOD0rnKFRUU7nNdCABRbS1MBh00FC
-         bRRDIoYcJXdAjTpvojrWof9f7BnQsq4hroqfm3Pa6ODgZFqasEW0VCNocXZTY/6HliiN
-         2dVSZYeiw2EQnJtzBkvpq0XN/COmtkug2u39DipSmziYxvyW8XyaOORKKO9Dox1ahaT9
-         jtEjMZFXCGGiwqXBGZ7j/gvIGoFm/456QNy/NCG9ean5lCSS1pu/zbAJy35JYRnbAbvK
-         0dqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qINGFtSPWGNrqHNXnCfgs2pWvwknYld67sOTbOuVcak=;
-        b=hnlO18QVAz5FXslSCrdxd+9iPICQYyHV1kAkMhDV0pSjU2P4U+XtKydb36xxenznKR
-         Kii8cyKCmg0Bn7uaFu94HDzYVneswi2TIJBM6bHigPUhjs8ODMAS/WaPaINf33NoKxjJ
-         gUsVbcLaepJHrJAtSqXWH+pcJJARzjwSbELtmK8Y2XpOLruSnixSsfXEQsaD0BHJZIDx
-         Mqno+CnT/eeOx5fYFmfbJwzFd5TMMsfUsFnUbSnGFrkmTqZiUh+b9MPhK0AQiSMdG7lE
-         +AzMSsAOxNRtntO92nyUSB4C2b0JcjiAkSN05fSVUKnkoGRkRMKuh+gR3MMSdahD61Lk
-         EX5g==
-X-Gm-Message-State: AOAM5304RRKdH4GYHnsTm9Xo6/by33EZHaaH1Ld+U7IXVKCQA59atHHE
-        FeTiiRUjncSdE6GXkWRVzf/3DAN5aL/gGWAl7zE=
-X-Google-Smtp-Source: ABdhPJxe3hIIeHpn/2J/uMtRoQFCrer+CBkXfv0sNfItbc2DD0UzyJVYdKXNZpi83JeZBl9gGSZ2UKFdU5AGItVYLEE=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr10896689pgj.4.1600091401279;
- Mon, 14 Sep 2020 06:50:01 -0700 (PDT)
+        Mon, 14 Sep 2020 09:52:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600091494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fu/1GHUDf4AcKJWnq4PI0AJl4nVdBvz984mVLLa8XWI=;
+        b=FXur+oHttylqzUUIdyCox9+t9no2W5Hg02/O1KZXBXsILmO/f8dvL+me4gbOKYXRLPA6S0
+        FNC7RyrknDa9olelUdO6SZObUVpBpT1Wp9XKxhKTYssqyHzU+b62i9HrETu+pM1fux/Xzk
+        qzc4SLOTz7r/GR3xXBRWzEJyrmlNE00=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-FShcX2-SMQ2YvK_dh2FRxA-1; Mon, 14 Sep 2020 09:51:30 -0400
+X-MC-Unique: FShcX2-SMQ2YvK_dh2FRxA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 479C884F227;
+        Mon, 14 Sep 2020 13:51:28 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A85011002D60;
+        Mon, 14 Sep 2020 13:51:26 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914024452.19167-3-longman@redhat.com>
+ <20200914114825.GM16999@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
+Date:   Mon, 14 Sep 2020 09:51:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200908151617.12199-1-jiada_wang@mentor.com>
-In-Reply-To: <20200908151617.12199-1-jiada_wang@mentor.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 14 Sep 2020 16:49:43 +0300
-Message-ID: <CAHp75VdD3NoesXsxk=v8ghr+wtV4XXQLyY881ob0uzvhJTa=HA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Jiada Wang <jiada_wang@mentor.com>
-Cc:     nick@shmanahar.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew_Gabbasov@mentor.com, Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Dmitry Osipenko <digetx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200914114825.GM16999@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 11:11 PM Jiada Wang <jiada_wang@mentor.com> wrote:
+On 9/14/20 7:48 AM, Michal Hocko wrote:
+> On Sun 13-09-20 22:44:51, Waiman Long wrote:
+>> The mem_cgroup_get_max() function used to get memory+swap max from
+>> both the v1 memsw and v2 memory+swap page counters & return the maximum
+>> of these 2 values. This is redundant and it is more efficient to just
+>> get either the v1 or the v2 values depending on which one is currently
+>> in use.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   mm/memcontrol.c | 20 +++++++++-----------
+>>   1 file changed, 9 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 8c74f1200261..ca36bed588d1 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+>>    */
+>>   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+>>   {
+>> -	unsigned long max;
+>> -
+>> -	max = READ_ONCE(memcg->memory.max);
+>> -	if (mem_cgroup_swappiness(memcg)) {
+>> -		unsigned long memsw_max;
+>> -		unsigned long swap_max;
+>> -
+>> -		memsw_max = memcg->memsw.max;
+>> -		swap_max = READ_ONCE(memcg->swap.max);
+>> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+>> -		max = min(max + swap_max, memsw_max);
+>> +	unsigned long max = READ_ONCE(memcg->memory.max);
+>> +
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>> +		if (mem_cgroup_swappiness(memcg))
+>> +			max += min(READ_ONCE(memcg->swap.max),
+>> +				   (unsigned long)total_swap_pages);
+>> +	} else { /* v1 */
+>> +		if (mem_cgroup_swappiness(memcg))
+>> +			max = memcg->memsw.max;
+> I agree that making v1 vs. v2 distinction here makes the code more
+> obvious. But I do not think your code is correct for v1. In a default
+> state it would lead to max = PAGE_COUNTER_MAX which is not something
+> we want, right?
 >
-> From: Nick Dyer <nick.dyer@itdev.co.uk>
+> instead you want
+> 		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
 >
-> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
-> when they are in a sleep state. It must be retried after a delay for the
-> chip to wake up.
->
+You are right, it is a bit tricky for v1.
 
-Same comments as per v2.
+I will change it to
 
+     max += min(READ_ONCE(memcg->memsw.max) - max, total_swap_pages):
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Longman
+
