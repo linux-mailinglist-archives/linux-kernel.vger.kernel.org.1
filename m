@@ -2,111 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D30F26871A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23028268730
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbgINIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:21:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54421 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgINIV5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:21:57 -0400
-Received: from [125.35.49.90] (helo=[10.0.0.22])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <hui.wang@canonical.com>)
-        id 1kHjkG-0004vh-Kg; Mon, 14 Sep 2020 08:21:53 +0000
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable front panel headset LED on
- Lenovo ThinkStation P520
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        Kailang Yang <kailang@realtek.com>, tiwai@suse.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        Jian-Hong Pan <jian-hong@endlessm.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-References: <20200914070231.13192-1-kai.heng.feng@canonical.com>
- <c4a9ed79-1c9d-8fbc-8c3b-eab191bd56bd@canonical.com>
- <07CC762F-BA94-43C0-A8C8-5B3C43291F3E@canonical.com>
-From:   Hui Wang <hui.wang@canonical.com>
-Message-ID: <041af07f-6168-19ed-dddd-1fd30a75b020@canonical.com>
-Date:   Mon, 14 Sep 2020 16:21:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726239AbgINI0h convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 04:26:37 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:21153 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726139AbgINI0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:26:36 -0400
+Received: from DAG2EX02-BASE.srv.huawei-3com.com ([10.8.0.65])
+        by h3cspam01-ex.h3c.com with ESMTPS id 08E8PM4L038283
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Sep 2020 16:25:22 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX02-BASE.srv.huawei-3com.com (10.8.0.65) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 14 Sep 2020 16:25:24 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Mon, 14 Sep 2020 16:25:24 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     "minyard@acm.org" <minyard@acm.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ipmi: retry to get device id when error
+Thread-Topic: [PATCH] ipmi: retry to get device id when error
+Thread-Index: AQHWicayYDI4BxkBBkSNG1QnUn+lFKll/C8AgACPz+D//8BXAIABgCiw
+Date:   Mon, 14 Sep 2020 08:25:24 +0000
+Message-ID: <b3f5d1e3b4e741a7874680a4e3bc4c57@h3c.com>
+References: <20200913120203.3368-1-tian.xianting@h3c.com>
+ <20200913123930.GH15602@minyard.net>
+ <a5ac0e7e90a442e6b29ba243ae1920c0@h3c.com>
+ <20200913172622.GI15602@minyard.net>
+In-Reply-To: <20200913172622.GI15602@minyard.net>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <07CC762F-BA94-43C0-A8C8-5B3C43291F3E@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 08E8PM4L038283
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Corey,
+Thanks a lot for you kindly guide.
 
-On 2020/9/14 下午4:07, Kai-Heng Feng wrote:
-> Hi Hui,
->
->> On Sep 14, 2020, at 16:04, Hui Wang <hui.wang@canonical.com> wrote:
->>
->> Thanks Kaiheng, and we just had one P520 in the Beijing office and I also worked on this issue happenly. Does the led change according to jack plugging in or plugging out with your patch?
-> No, the LED won't reflect the jack plugging status.
->
-> The LED is always on under Windows, so we are doing the same here.
+I send the version 2 patch to you: [PATCH] [v2] ipmi: retry to get device id when error
+If there is still something wrong or I missed something, please correct me:)
 
-Weird, the bug's title is "The backlight for a headset connector didn't 
-light up after connecting a headset" and the QA in Beijing office also 
-requires the led could change according to plugging or no plugging.
+-----Original Message-----
+From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey Minyard
+Sent: Monday, September 14, 2020 1:26 AM
+To: tianxianting (RD) <tian.xianting@h3c.com>
+Cc: arnd@arndb.de; gregkh@linuxfoundation.org; openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ipmi: retry to get device id when error
 
->
-> Kai-Heng
->
->> I also prepared a patchset but my patchset has more code than yours, please take a look. :-)
->>
->> Thanks.
->>
->> Hui.
->>
->> On 2020/9/14 下午3:02, Kai-Heng Feng wrote:
->>> On Lenovo P520, the front panel headset LED isn't lit up right now.
->>>
->>> Realtek states that the LED needs to be enabled by ALC233's GPIO2, so
->>> let's do it accordingly to light the LED up.
->>>
->>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>> ---
->>>   sound/pci/hda/patch_realtek.c | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>>
->>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->>> index c521a1f17096..ba941bd0b792 100644
->>> --- a/sound/pci/hda/patch_realtek.c
->>> +++ b/sound/pci/hda/patch_realtek.c
->>> @@ -6017,6 +6017,7 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
->>>   #include "hp_x360_helper.c"
->>>     enum {
->>> +	ALC269_FIXUP_GPIO2,
->>>   	ALC269_FIXUP_SONY_VAIO,
->>>   	ALC275_FIXUP_SONY_VAIO_GPIO2,
->>>   	ALC269_FIXUP_DELL_M101Z,
->>> @@ -6194,6 +6195,10 @@ enum {
->>>   };
->>>     static const struct hda_fixup alc269_fixups[] = {
->>> +	[ALC269_FIXUP_GPIO2] = {
->>> +		.type = HDA_FIXUP_FUNC,
->>> +		.v.func = alc_fixup_gpio2,
->>> +	},
->>>   	[ALC269_FIXUP_SONY_VAIO] = {
->>>   		.type = HDA_FIXUP_PINCTLS,
->>>   		.v.pins = (const struct hda_pintbl[]) {
->>> @@ -7013,6 +7018,8 @@ static const struct hda_fixup alc269_fixups[] = {
->>>   	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
->>>   		.type = HDA_FIXUP_FUNC,
->>>   		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
->>> +		.chained = true,
->>> +		.chain_id = ALC269_FIXUP_GPIO2
->>>   	},
->>>   	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
->>>   		.type = HDA_FIXUP_VERBS,
+On Sun, Sep 13, 2020 at 02:10:01PM +0000, Tianxianting wrote:
+> Hi Corey
+> Thanks for your quickly reply,
+> We didn't try the method you mentioned, actually, I didn't know it 
+> before you told me:( The issue ever occurred on our 2 ceph storage server both with low probability.
+> We finally use this patch to solve the issue, it can automatically solve the issue when it happened. So no need to judge and reload ipmi driver manually or develop additional scripts to make it.
+> The 1 second delay is acceptable to us.
+> 
+> If there really isn't a BMC out there, ipmi driver will not be loaded, is it right?
+
+No, there are systems that have IPMI controllers that are specified in the ACPI/SMBIOS tables but have no IPMI controller.
+
+> 
+> May be we can adjust to retry 3 times with 500ms interval? 
+
+Maybe there is another way.  What I'm guessing is happening is not that the interface is lossy, but that the BMC is in the middle of a reset or an upgrade.  The D5 completion code means: Cannot execute command. Command, or request parameter(s), not supported in present state.
+
+That error is also returned from bt_start_transaction() in the driver if the driver is not in the right state when starting a transaction, which may point to a bug in the BT state machine.  Search for IPMI_NOT_IN_MY_STATE_ERR in drivers/char/ipmi/ipmi_bt_sm.c.
+
+If it's coming fron the state machine, it would be handy to know what state it was in when the error happened to help trace the bug down.
+That's what I would suggest first.  Fix the fundamental bug, if you can.
+a pr_warn() added to the code there would be all that's needed, and thats probably a good permanent addition.
+
+I would be ok with a patch that retried some number of times if it got a
+D5 completion code.  That wouldn't have any effect on other systems.
+Plus you could add a D1 and D2 completion code, which are similar things.  Add the new completion codes to include/uapi/linux/ipmi_msgdefs.h and implement the retry.  That makes sense from a general point of view.
+
+Thanks,
+
+-corey
+
+> 
+> Thanks in advance if you can feedback again.
+> 
+> -----Original Message-----
+> From: Corey Minyard [mailto:tcminyard@gmail.com] On Behalf Of Corey 
+> Minyard
+> Sent: Sunday, September 13, 2020 8:40 PM
+> To: tianxianting (RD) <tian.xianting@h3c.com>
+> Cc: arnd@arndb.de; gregkh@linuxfoundation.org; 
+> openipmi-developer@lists.sourceforge.net; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] ipmi: retry to get device id when error
+> 
+> On Sun, Sep 13, 2020 at 08:02:03PM +0800, Xianting Tian wrote:
+> > We can't get bmc's device id with low probability when loading ipmi 
+> > driver, it caused bmc device register failed. This issue may caused 
+> > by bad lpc signal quality. When this issue happened, we got below kernel printks:
+> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: IPMI message handler: device id demangle failed: -22
+> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: using default values
+> > 	[Wed Sep  9 19:52:03 2020] IPMI BT: req2rsp=5 secs retries=2
+> > 	[Wed Sep  9 19:52:03 2020] ipmi_si IPI0001:00: Unable to get the device id: -5
+> > 	[Wed Sep  9 19:52:04 2020] ipmi_si IPI0001:00: Unable to register
+> > device: error -5
+> > 
+> > When this issue happened, we want to manually unload the driver and 
+> > try to load it again, but it can't be unloaded by 'rmmod' as it is already 'in use'.
+> 
+> I'm not sure this patch is a good idea; it would cause a long boot delay in situations where there really isn't a BMC out there.  Yes, it happens.
+> 
+> You don't have to reload the driver to add a device, though.  You can hot-add devices using /sys/modules/ipmi_si/parameters/hotmod.  Look in Documentation/driver-api/ipmi.rst for details.
+> 
+> Does that work for you?
+> 
+> -corey
+> 
+> > 
+> > We add below 'printk' in handle_one_recv_msg(), when this issue 
+> > happened, the msg we received is "Recv: 1c 01 d5", which means the 
+> > data_len is 1, data[0] is 0xd5.
+> > 	Debug code:
+> > 	static int handle_one_recv_msg(struct ipmi_smi *intf,
+> >                                struct ipmi_smi_msg *msg) {
+> >         	printk("Recv: %*ph\n", msg->rsp_size, msg->rsp);
+> > 		... ...
+> > 	}
+> > Then in ipmi_demangle_device_id(), it returned '-EINVAL' as 'data_len < 7'
+> > and 'data[0] != 0'.
+> > 
+> > We used this patch to retry to get device id when error happen, we 
+> > reproduced this issue again and the retry succeed on the first 
+> > retry, we finally got the correct msg and then all is ok:
+> > Recv: 1c 01 00 01 81 05 84 02 af db 07 00 01 00 b9 00 10 00
+> > 
+> > So use retry machanism in this patch to give bmc more opportunity to 
+> > correctly response kernel.
+> > 
+> > Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> > ---
+> >  drivers/char/ipmi/ipmi_msghandler.c | 17 ++++++++++++++---
+> >  1 file changed, 14 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/char/ipmi/ipmi_msghandler.c
+> > b/drivers/char/ipmi/ipmi_msghandler.c
+> > index 737c0b6b2..bfb2de77a 100644
+> > --- a/drivers/char/ipmi/ipmi_msghandler.c
+> > +++ b/drivers/char/ipmi/ipmi_msghandler.c
+> > @@ -34,6 +34,7 @@
+> >  #include <linux/uuid.h>
+> >  #include <linux/nospec.h>
+> >  #include <linux/vmalloc.h>
+> > +#include <linux/delay.h>
+> >  
+> >  #define IPMI_DRIVER_VERSION "39.2"
+> >  
+> > @@ -60,6 +61,9 @@ enum ipmi_panic_event_op {  #else  #define 
+> > IPMI_PANIC_DEFAULT IPMI_SEND_PANIC_EVENT_NONE  #endif
+> > +
+> > +#define GET_DEVICE_ID_MAX_RETRY	5
+> > +
+> >  static enum ipmi_panic_event_op ipmi_send_panic_event = 
+> > IPMI_PANIC_DEFAULT;
+> >  
+> >  static int panic_op_write_handler(const char *val, @@ -2426,19
+> > +2430,26 @@ send_get_device_id_cmd(struct ipmi_smi *intf)  static 
+> > +int
+> > __get_device_id(struct ipmi_smi *intf, struct bmc_device *bmc)  {
+> >  	int rv;
+> > -
+> > -	bmc->dyn_id_set = 2;
+> > +	unsigned int retry_count = 0;
+> >  
+> >  	intf->null_user_handler = bmc_device_id_handler;
+> >  
+> > +retry:
+> > +	bmc->dyn_id_set = 2;
+> > +
+> >  	rv = send_get_device_id_cmd(intf);
+> >  	if (rv)
+> >  		return rv;
+> >  
+> >  	wait_event(intf->waitq, bmc->dyn_id_set != 2);
+> >  
+> > -	if (!bmc->dyn_id_set)
+> > +	if (!bmc->dyn_id_set) {
+> > +		msleep(1000);
+> > +		if (++retry_count <= GET_DEVICE_ID_MAX_RETRY)
+> > +			goto retry;
+> > +
+> >  		rv = -EIO; /* Something went wrong in the fetch. */
+> > +	}
+> >  
+> >  	/* dyn_id_set makes the id data available. */
+> >  	smp_rmb();
+> > --
+> > 2.17.1
+> > 
