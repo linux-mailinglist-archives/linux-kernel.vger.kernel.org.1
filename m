@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AFE268FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C6C268F87
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgINP3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:29:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58868 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbgINPSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:18:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2882EB52E;
-        Mon, 14 Sep 2020 15:18:52 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 17:18:36 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v4 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-Message-ID: <20200914151836.GB16999@dhcp22.suse.cz>
-References: <20200914024452.19167-1-longman@redhat.com>
- <20200914150928.7841-1-longman@redhat.com>
+        id S1726357AbgINPUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:20:14 -0400
+Received: from kylie.crudebyte.com ([5.189.157.229]:52141 "EHLO
+        kylie.crudebyte.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgINPTi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        Content-ID:Content-Description;
+        bh=IiQzWNzedauPyLVA9z0iBW2QLEA08tfWMzr6ARLoZVE=; b=A0G3RgALAwLHAmd65ENtiXIOSX
+        v1OiuZ6rUFL2gTm+ku2xG07l+3U/1YCn1FrIYsJ3J8hDAgHTmeFzmcH2ydR7iojrt9/x3gh0jacjm
+        8NWiQ77JDB/Wszwd8MaauHBL8AuvsZROohRBVhrjy37WOiDwu6fqxIkfhK3aL6rGqIMt7ypTUFoiK
+        7GQ9MxQYIeuc/43bUchyXLBnAksuso2WpeU0viQkDXbUI4ML1/4LhZfK9LZqtLX1P90tynmM2nIlz
+        gjGGRb0mnJnk+DmpMXOE/agQCkQd7GpbiUP5fCwYL+g61o/s1HC/014bgqx8mAguACXzkyiAmjvWz
+        UeDN0Lgb2v7iQ+7fCeA6pZV5up65iUXM/EUCq/uktZgL3X13a1GqBEDEQ4vz6iBkS3cazN5NtswnR
+        +DhhNa5d253RppT1/sU7dAJ0eo5QqcpV6spCbz9hrGnDo2lClefn6i41oE6/YFkBgeeZliy0rMwyK
+        zgmC6o1V2SU7QgT/wL2Tr/0wcZjJRu7HahWOedcbiDlu4xfcNLFmkvqwFYbSAYpQHitS99scsO25t
+        7Ejgcn5c378kpx42qkxwPjgQbbF6rUuMrVm+/FSgkDHs92hEgjPH04hpbynK/cR1EP5t+vPW9bzZR
+        P7RpXvrP1TYZ6UlEoAD4tFdRYCogoSfsKSi/KnR6c=;
+From:   Christian Schoenebeck <qemu_oss@crudebyte.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Jianyong Wu <jianyong.wu@arm.com>, ericvh@gmail.com,
+        lucho@ionkov.net, asmadeus@codewreck.org,
+        v9fs-developer@lists.sourceforge.net, justin.he@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [V9fs-developer] [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall bug
+Date:   Mon, 14 Sep 2020 17:19:20 +0200
+Message-ID: <2037087.W39pGsgtbe@silver>
+In-Reply-To: <20200914144325.7928dbd3@bahia.lan>
+References: <20200914033754.29188-1-jianyong.wu@arm.com> <2828347.d8MXItvaOC@silver> <20200914144325.7928dbd3@bahia.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914150928.7841-1-longman@redhat.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-09-20 11:09:28, Waiman Long wrote:
-> The mem_cgroup_get_max() function used to get memory+swap max from
-> both the v1 memsw and v2 memory+swap page counters & return the maximum
-> of these 2 values. This is redundant and it is more efficient to just
-> get either the v1 or the v2 values depending on which one is currently
-> in use.
+On Montag, 14. September 2020 14:43:25 CEST Greg Kurz wrote:
+> > So yes, looks like this also requires changes to the 9pfs 'local' fs
+> > driver on QEMU side:
+> > https://lists.nongnu.org/archive/html/qemu-devel/2016-06/msg07586.html
+> > 
+> > Eric, Greg, would there be an easy way to establish QEMU test cases
+> > running
+> > the 9pfs 'local' fs driver? Right now we only have 9pfs qtest cases for
+> > QEMU which can only use the 'synth' driver, which is not helpful for such
+> > kind of issues.
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> I guess it's possible to introduce new qtests that start QEMU with
+> -fsdev local instead of -fsdev synth... I haven't looked in a while
+> though, so I won't comment on "easy way" ;-)
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Makes sense, and I considered that approach as well.
 
-Thanks!
-> ---
->  mm/memcontrol.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8c74f1200261..cad1ac4551ad 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->   */
->  unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
->  {
-> -	unsigned long max;
-> -
-> -	max = READ_ONCE(memcg->memory.max);
-> -	if (mem_cgroup_swappiness(memcg)) {
-> -		unsigned long memsw_max;
-> -		unsigned long swap_max;
-> -
-> -		memsw_max = memcg->memsw.max;
-> -		swap_max = READ_ONCE(memcg->swap.max);
-> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
-> -		max = min(max + swap_max, memsw_max);
-> +	unsigned long max = READ_ONCE(memcg->memory.max);
-> +
-> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-> +		if (mem_cgroup_swappiness(memcg))
-> +			max += min(READ_ONCE(memcg->swap.max),
-> +				   (unsigned long)total_swap_pages);
-> +	} else { /* v1 */
-> +		if (mem_cgroup_swappiness(memcg)) {
-> +			/* Calculate swap excess capacity from memsw limit */
-> +			unsigned long swap = READ_ONCE(memcg->memsw.max) - max;
-> +
-> +			max += min(swap, (unsigned long)total_swap_pages);
-> +		}
->  	}
->  	return max;
->  }
-> -- 
-> 2.18.1
+The question is the following: is there a QEMU policy about test cases that 
+create/write/read/delete *real* files? I.e. should those test files be written 
+to a certain location, and are there measures of sandboxing required?
 
--- 
-Michal Hocko
-SUSE Labs
+Best regards,
+Christian Schoenebeck
+
+
