@@ -2,80 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E5A2696E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDF22696E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgINUnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:43:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:44921 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725914AbgINUni (ORCPT
+        id S1726189AbgINUn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726076AbgINUnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:43:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600116216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XhZR9JYQsXNLLd0TG2xo2FyOkMXunuikJcr8t+XLfwA=;
-        b=c/TRHhs63UtxUl13OapZQdyAxa4rsOL0bT/Gn494HM6JkOHYdeNRP3ybST0wuOHa0quLh0
-        DWajdOM/PWh/ecuLilvH0+hK4ZQPqb0II/wrpi14Czhuf4KdyynX6JmYBq+mKrn/sTuGYC
-        vHUNqnyOiqwNRYDHjxckToNrQUjRA1U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-Oa6uMA6KOmqcxKvae5PbKQ-1; Mon, 14 Sep 2020 16:43:33 -0400
-X-MC-Unique: Oa6uMA6KOmqcxKvae5PbKQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EB74801AB1;
-        Mon, 14 Sep 2020 20:43:31 +0000 (UTC)
-Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8418B75138;
-        Mon, 14 Sep 2020 20:43:27 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 22:43:26 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 04/26] perf tools: Add filename__decompress function
-Message-ID: <20200914204326.GY1714160@krava>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-5-jolsa@kernel.org>
- <20200914153554.GF160517@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914153554.GF160517@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Mon, 14 Sep 2020 16:43:52 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA82C06174A;
+        Mon, 14 Sep 2020 13:43:51 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3781912793E55;
+        Mon, 14 Sep 2020 13:27:03 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 13:43:49 -0700 (PDT)
+Message-Id: <20200914.134349.2168616259804526399.davem@davemloft.net>
+To:     zhangchangzhong@huawei.com
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: pxa168_eth: remove unused variable
+ 'retval' int pxa168_eth_change_mtu()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1600089552-22368-1-git-send-email-zhangchangzhong@huawei.com>
+References: <1600089552-22368-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 14 Sep 2020 13:27:03 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:35:54PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Sun, Sep 13, 2020 at 11:02:51PM +0200, Jiri Olsa escreveu:
-> > Factor filename__decompress from decompress_kmodule function.
-> > It can decompress files with compressions supported in perf -
-> > xz and gz, the support needs to be compiled in.
-> > 
-> > It will to be used in following changes to get build id out of
-> > compressed elf objects.
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
+Date: Mon, 14 Sep 2020 21:19:12 +0800
+
+> Fixes the following W=1 kernel build warning(s):
 > 
-> This is prep work, can be applied now, done.
+> drivers/net/ethernet/marvell/pxa168_eth.c:1190:6: warning:
+>  variable 'retval' set but not used [-Wunused-but-set-variable]
+>  1190 |  int retval;
+>       |      ^~~~~~
+> 
+> Function pxa168_eth_change_mtu() always return zero, so variable 'retval'
+> is redundant, just remove it.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-thanks,
-jirka
-
+Applied.
