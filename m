@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A94826993F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D36D2269943
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgINWxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:53:44 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:38038 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgINWxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:53:38 -0400
-Received: by mail-il1-f193.google.com with SMTP id t18so1199112ilp.5;
-        Mon, 14 Sep 2020 15:53:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qADdGXdYZqT13TlNq77A8iEBF6/xm6VQ88F8vF+6Mt0=;
-        b=ZbwWEunnv1fLjUlZfWALBywgqa/JrdFYFsEZ5uOdqAaVON/iJ2+C7cMU3jLZ+K61xg
-         +urO/m3JnJxAngXvKxmzGwcdooHPiNPi37q1SaOeylT3oHPZMYQQJy4pAUj8L1UrCinA
-         jo1O69pZd8+uC5DhlTP1dGg2/8a5onvHHFUoo96RDnKVmwDwle08G19fAytPtbRDewBn
-         SR9yFVHftFVXNBbSjX6LgxcInc4pUR6rmFSApRBoIrh0G/xzXVZ8Z/mZBVak9f1HTmgH
-         kDDGiylv0aRE0pq4AwgQ+dZKQthaej7c4IOTnLYkvonCdhB7VypvjOOKIVOumX+EYDlA
-         CfrQ==
-X-Gm-Message-State: AOAM532gritv5PYZ6UaVf9rRnMHbKTueSse2Gh4HtgNALnJk3yJAic98
-        tRlz9Ar6FMPYtzI1uhfANZ9RONpe9j8f
-X-Google-Smtp-Source: ABdhPJxQ6XmFgSPgsFsEuxc9KsSWx/uXdnk7BWY/+ZvrQLIouNhajOLGL/a9iRpmAURP/dKuGjOVsg==
-X-Received: by 2002:a92:b109:: with SMTP id t9mr13133758ilh.191.1600124017132;
-        Mon, 14 Sep 2020 15:53:37 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v20sm7670949ile.42.2020.09.14.15.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 15:53:36 -0700 (PDT)
-Received: (nullmailer pid 419687 invoked by uid 1000);
-        Mon, 14 Sep 2020 22:53:32 -0000
-Date:   Mon, 14 Sep 2020 16:53:32 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-pwm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v3 00/14] dt-bindings: Cleanup of i.MX 8
-Message-ID: <20200914225332.GA418101@bogus>
-References: <20200904152404.20636-1-krzk@kernel.org>
+        id S1726038AbgINWzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgINWza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:55:30 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EF40020732;
+        Mon, 14 Sep 2020 22:55:29 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 18:55:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2 0/4] tracing: trivial cleanup
+Message-ID: <20200914185528.77d36e9d@gandalf.local.home>
+In-Reply-To: <20200828034257.GA8994@L-31X9LVDL-1304.local>
+References: <20200712011036.70948-1-richard.weiyang@linux.alibaba.com>
+        <20200828034257.GA8994@L-31X9LVDL-1304.local>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904152404.20636-1-krzk@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 05:23:50PM +0200, Krzysztof Kozlowski wrote:
-> Hi Rob,
-> 
-> I am resending the series (v3) without actual changes.  You already
-> reviewed many of them.  I think that subsystem maintainers are hesitant
-> to pick them up, so maybe this could go via your tree (all of them)?
-> 
-> Changes against previous revisions are in individual patches.
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
-> Krzysztof Kozlowski (14):
->   dt-bindings: perf: fsl-imx-ddr: Add i.MX 8M compatibles
->   dt-bindings: pwm: imx-pwm: Add i.MX 8M compatibles
->   dt-bindings: serial: fsl-imx-uart: Add i.MX 8M compatibles
->   dt-bindings: serial: fsl-lpuart: Fix compatible matching
->   dt-bindings: watchdog: fsl-imx-wdt: Add i.MX 8M compatibles
->   dt-bindings: reset: fsl,imx7-src: Add i.MX 8M compatibles
->   dt-bindings: thermal: imx8mm-thermal: Add i.MX 8M Nano compatible
->   dt-bindings: nvmem: imx-ocotp: Update i.MX 8M compatibles
->   dt-bindings: mfd: rohm,bd71847-pmic: Correct clock properties
->     requirements
->   dt-bindings: interrupt-controller: fsl,irqsteer: Fix compatible
->     matching
->   dt-bindings: mtd: gpmi-nand: Add i.MX 8M compatibles
->   dt-bindings: mtd: gpmi-nand: Fix matching of clocks on different SoCs
->   dt-bindings: mtd: nand-controller: Fix matching with size-cells==1
->   dt-bindings: clock: imx8m: Integrate duplicated i.MX 8M schemas
+On Fri, 28 Aug 2020 11:42:57 +0800
+Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
 
-I've applied patches 1-11 and 14.
+> Steven,
+> 
+> Would you like to pick this up?
+> 
 
-Rob
+Hmm, patch 1 and 2 have been accepted (different subjects though):
+
+   746cf3459f11859 ("tracing: Simplify defining of the next event id")
+   36b8aacf2a483ba ("tracing: Save one trace_event->type by using __TRACE_LAST_TYPE")
+
+I'm not sure why I didn't pick up patches 3 and 4. I'm looking into that
+now.
+
+-- Steve
+
+
+> On Sun, Jul 12, 2020 at 09:10:32AM +0800, Wei Yang wrote:
+> >Some trivial cleanup for tracing.
+> >
+> >v2:
+> >  * drop patch 1
+> >  * merge patch 4 & 5
+> >  * introduce a new patch change the return value of tracing_init_dentry()
+> >
+> >Wei Yang (4):
+> >  tracing: simplify the logic by defining next to be "lasst + 1"
+> >  tracing: save one trace_event->type by using __TRACE_LAST_TYPE
+> >  tracing: toplevel d_entry already initialized
+> >  tracing: make tracing_init_dentry() returns an integer instead of a
+> >    d_entry pointer
+> >
+> > kernel/trace/trace.c                 | 36 ++++++++++++++--------------
+> > kernel/trace/trace.h                 |  2 +-
+> > kernel/trace/trace_dynevent.c        |  8 +++----
+> > kernel/trace/trace_events.c          |  9 ++-----
+> > kernel/trace/trace_events_synth.c    |  9 +++----
+> > kernel/trace/trace_functions_graph.c |  8 +++----
+> > kernel/trace/trace_hwlat.c           |  8 +++----
+> > kernel/trace/trace_kprobe.c          | 10 ++++----
+> > kernel/trace/trace_output.c          | 14 +++++------
+> > kernel/trace/trace_printk.c          |  8 +++----
+> > kernel/trace/trace_stack.c           | 12 +++++-----
+> > kernel/trace/trace_stat.c            |  8 +++----
+> > kernel/trace/trace_uprobe.c          |  9 ++++---
+> > 13 files changed, 66 insertions(+), 75 deletions(-)
+> >
+> >-- 
+> >2.20.1 (Apple Git-117)  
+> 
+
