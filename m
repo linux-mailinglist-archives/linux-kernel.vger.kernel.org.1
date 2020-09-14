@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9022693FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3242693EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgINRrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:47:20 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:41740 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbgINMD5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:03:57 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kHnCe-006GOo-TE; Mon, 14 Sep 2020 06:03:24 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kHnCd-0004kn-Vt; Mon, 14 Sep 2020 06:03:24 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     linmiaohe <linmiaohe@huawei.com>
-Cc:     "christian.brauner\@ubuntu.com" <christian.brauner@ubuntu.com>,
-        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "christian\@kellner.me" <christian@kellner.me>,
-        "surenb\@google.com" <surenb@google.com>,
-        "areber\@redhat.com" <areber@redhat.com>,
-        "shakeelb\@google.com" <shakeelb@google.com>,
-        "cyphar\@cyphar.com" <cyphar@cyphar.com>,
-        "tglx\@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <23352bc3a9914e79a0aa29bc63f830bd@huawei.com>
-Date:   Mon, 14 Sep 2020 07:03:03 -0500
-In-Reply-To: <23352bc3a9914e79a0aa29bc63f830bd@huawei.com> (linmiaohe's
-        message of "Mon, 14 Sep 2020 01:38:24 +0000")
-Message-ID: <87h7s0va4o.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
+        id S1726252AbgINRpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:45:09 -0400
+Received: from mail-eopbgr690084.outbound.protection.outlook.com ([40.107.69.84]:19078
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726104AbgINMFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:05:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A49i+r5wkVTNODvUcWX5z1h5d/Pz48Odt4U5rPOWU60uz42Smfi0fJGHARHdn4nsaxKVdpU8rLt66AwoYQD5nxpZh74x1zk2K+z7P708b7oMjs6uFfoudxw2DPdC7H0jhfd6IafgSSZWq5rt9J+ubOJNuiGvZvzMpSTcXjb/Cl/0bxpxfUW5g98Kcf1vmuM9q3g1HeagbYHY1Q1DILbxvoYZLXXUKDK+eeWsiNmagmtkHa962FtPBdPl64D9ubN7ai3/QGOlj8P2wpULWaDBeAXOtysHApfwB+8aHtWzmaJGGjyJqoJxnnPiL8HODZbqFNWZfKpV0Za4/ddv/jJKrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZXnyBccMue9ZoWvF8U33+0ExjhxyLeHHkuIFiRa2qYk=;
+ b=a7vSjLc0bkr/1C6kZyJtn2K7dhTEr7atFzzRbOri2kwi4ZkBJEyYCawDOJ2hl+n5p+84GVMSPJ5D7BwnU8Eof2uzAtwoLAMq1YrZrB/KOkNRNxILAWvuYl4dZNRZ1fiufAopnwE2Y2vttAr7jQmdFM5AhSG9bkeSO+Lar1m3XiRSZ0pYrmJ2Gtu9W62qPEVk/GCQJ29Do8Km0yWvbP8H7ljXy0iEOCL/5LG1CwwfeISYBTomP7hzZ5VHO1cQFRjl5z7uqrcqVwYrw52wdxPzduw+aSczGZONZvTkYwd8A+AYGVlArSYz3RUqlh1gctT8i/xBOa+T0WjyqNI9f6bekA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
+ header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZXnyBccMue9ZoWvF8U33+0ExjhxyLeHHkuIFiRa2qYk=;
+ b=gXN+jS0XRTSzVD9s2HqV1nBQlPXG10eiQ8IOYpCujU/2PRnLty3+YmpBQFZy0/7sSnH7GqTc+ymMFt3QIymX3tY/8cjsF6w1QZ+8wA5y3VZ9YPJUqCEsZ+gXj/bVG8HwItyzINTa3flldaxZx5vSnoa0lp4oj8Bz4EPGUWji/20=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=tw.synaptics.com;
+Received: from SN6PR03MB3952.namprd03.prod.outlook.com (2603:10b6:805:75::26)
+ by SN6PR03MB4014.namprd03.prod.outlook.com (2603:10b6:805:c3::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
+ 2020 12:04:14 +0000
+Received: from SN6PR03MB3952.namprd03.prod.outlook.com
+ ([fe80::3c54:f5cf:3148:407e]) by SN6PR03MB3952.namprd03.prod.outlook.com
+ ([fe80::3c54:f5cf:3148:407e%7]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 12:04:13 +0000
+From:   Vincent Huang <vincent.huang@tw.synaptics.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Vincent Huang <vincent.huang@tw.synaptics.com>,
+        Andrew Duggan <aduggan@synaptics.com>
+Subject: [PATCH v2] Input: trackpoint - add new trackpoint variant IDs
+Date:   Mon, 14 Sep 2020 20:03:27 +0800
+Message-Id: <20200914120327.2592-1-vincent.huang@tw.synaptics.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-XM-SPF: eid=1kHnCd-0004kn-Vt;;;mid=<87h7s0va4o.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19DUNV8SW3I069vNxB+YtPgPAYKB1GiTRI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4464]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;linmiaohe <linmiaohe@huawei.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 473 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 10 (2.1%), b_tie_ro: 9 (1.9%), parse: 0.75 (0.2%),
-         extract_message_metadata: 12 (2.5%), get_uri_detail_list: 0.76 (0.2%),
-         tests_pri_-1000: 13 (2.7%), tests_pri_-950: 1.06 (0.2%),
-        tests_pri_-900: 0.80 (0.2%), tests_pri_-90: 109 (23.0%), check_bayes:
-        107 (22.6%), b_tokenize: 4.9 (1.0%), b_tok_get_all: 4.2 (0.9%),
-        b_comp_prob: 1.37 (0.3%), b_tok_touch_all: 93 (19.7%), b_finish: 0.95
-        (0.2%), tests_pri_0: 310 (65.6%), check_dkim_signature: 0.68 (0.1%),
-        check_dkim_adsp: 2.3 (0.5%), poll_dns_idle: 0.71 (0.1%), tests_pri_10:
-        3.8 (0.8%), tests_pri_500: 10 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] fork: Use helper function mapping_allow_writable() in dup_mmap()
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-ClientProxiedBy: HK0PR03CA0115.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::31) To SN6PR03MB3952.namprd03.prod.outlook.com
+ (2603:10b6:805:75::26)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (60.250.40.148) by HK0PR03CA0115.apcprd03.prod.outlook.com (2603:1096:203:b0::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Mon, 14 Sep 2020 12:04:11 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [60.250.40.148]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f25c0dec-0a31-4fa0-c9ab-08d858a64bc9
+X-MS-TrafficTypeDiagnostic: SN6PR03MB4014:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR03MB40146C37E9E96196D2D92310D6230@SN6PR03MB4014.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:404;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OrkB7faiDd5vFxXkt4p5mrOprY28Ou19ZB7K8Jk462msoiSi+NhG0NOg3rGo136P6BSeTYiqs4rebj9LmNt/G+uQLjdhhpXl7lzUntAxl7n0uFLyCa9bSempi584YtRpkrXA5SB0TM4Ag2OiSj0ElaXJj+jO6TEVR2AnD7OqbSd6c0gBBhZXkTeCCbfpk5O7DsLtYWHwOvPAszb/rSoE9D4c11bHuFp3BBya6pQwUo8XN3wpxjOs+4GRVjzP/OM3JGqPjJTe5ayDUWDDxFs4LRhmrYZRd+Mw4Vekfvau/db2GEMbThRBIF7KbMEHJJeN6rc4Z2IhD3Wrgy2UGepi7FnnwC5xkyncR/YbnrZ2o1lkGn60qht4etTExv36+2ff
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR03MB3952.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(396003)(39860400002)(346002)(136003)(16526019)(6506007)(2616005)(8936002)(69590400008)(44832011)(478600001)(86362001)(316002)(6666004)(4326008)(66556008)(54906003)(1076003)(66946007)(66476007)(6916009)(107886003)(956004)(26005)(186003)(8676002)(6486002)(6512007)(5660300002)(2906002)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: cF8eRxunP40m1VtLOEtbGUa80WRbtAhX0Rkt5eXuvbG0bDA5BA0YBbNIMRAKVGrpV9AqFWM5qZoWgXtwGNbKGjLePIr7nnyQ/W+AFfJoQilo6LqSLCecLMZTJ/u/BLSWxuErKeM+F/VmoIwLSCXKEo+GOT2A1EIALZZ8J4k+3/p7TIfFT1C6RBDHssnVbcZjYvojpCtPNvvGcSf3GvbUGAz/A/pgj3KRKMzmG1h7JTyb5A2Yu4nDaA0rwIhRuTWGhh+C7GXu9G9P3F7h5HvU8WDSOBM6XAKenjrQ/6bj+7bfHoXkKu1lBscMvWm1tFAeSjrqcq9RPoQgc0JlBakURoOAHD7twsXDx1yBlSMj3HVvZktYEUutSEwm1AZwkgay0ogTl3Irce4DrOtuF5sNqnG5kqDn1adIWBFD8EhS1yyRsQbK6aOn97trxCzHjGGcD9E4hklIbKt1O/RxubZdJzDxH77MDckenLNf3+exX6qQgphSgDarQmgMZtIVWT5puq9H6uulWYEXiET9ms8s/EqQkaQGazrkMyID8Q/CAOPbdnZ/Pxx+5W5oEVAGqGwBiJinz4toj7rvJY09gyfLw5vGJB57YfWw/EZOmeXZWThTCdWiIXKpejfB3jyQ6EW/AF2t4Es/wz93aQ7RU9Qs2Q==
+X-OriginatorOrg: tw.synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f25c0dec-0a31-4fa0-c9ab-08d858a64bc9
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR03MB3952.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 12:04:13.6233
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xEVWrIYNYmoulcJSyrlhNOerloEpYAgWtkZKRC5/E3bWfiQXMxVHa2bEHzaguH1gQWUC6rbmo0zRsxIgss8FKw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR03MB4014
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linmiaohe <linmiaohe@huawei.com> writes:
+Add trackpoint variant IDs to allow supported control on Synaptics
+trackpoints
 
-> Eric W. Biederman <ebiederm@xmission.com> wrote:
->> Miaohe Lin <linmiaohe@huawei.com> writes:
->>
->>> Use helper function mapping_allow_writable() to atomic_inc 
->>> i_mmap_writable.
->>
->>Why?
->>
->
-> Because I think it's better to use the wrapper function instead of the
-> open hard code.
+Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
+---
+ drivers/input/mouse/trackpoint.c | 2 ++
+ drivers/input/mouse/trackpoint.h | 2 ++
+ 2 files changed, 4 insertions(+)
 
-My point is there is no context in this commit message.
+diff --git a/drivers/input/mouse/trackpoint.c b/drivers/input/mouse/trackpoint.c
+index 3eefee2ee2a1..dde4c9d8d6bc 100644
+--- a/drivers/input/mouse/trackpoint.c
++++ b/drivers/input/mouse/trackpoint.c
+@@ -21,6 +21,8 @@ static const char * const trackpoint_variants[] = {
+ 	[TP_VARIANT_ALPS]	= "ALPS",
+ 	[TP_VARIANT_ELAN]	= "Elan",
+ 	[TP_VARIANT_NXP]	= "NXP",
++	[TP_VARIANT_JYT_SYNAPTICS]	= "JYT_Synaptics",
++	[TP_VARIANT_SYNAPTICS]	= "Synaptics",
+ };
+ 
+ /*
+diff --git a/drivers/input/mouse/trackpoint.h b/drivers/input/mouse/trackpoint.h
+index 5cb93ed26085..42eda7d4ba08 100644
+--- a/drivers/input/mouse/trackpoint.h
++++ b/drivers/input/mouse/trackpoint.h
+@@ -28,6 +28,8 @@
+ #define TP_VARIANT_ALPS		0x02
+ #define TP_VARIANT_ELAN		0x03
+ #define TP_VARIANT_NXP		0x04
++#define TP_VARIANT_JYT_SYNAPTICS		0x05
++#define TP_VARIANT_SYNAPTICS		0x06
+ 
+ /*
+  * Commands
+-- 
+2.25.1
 
-What makes it better to use the wrapper function?
-What makes the wrapper function the appropriate function to use?
-Why just this location?
-Why wasn't this change made when the wrapper function was introduced?
-
-I could probably read through the code and figure these things out
-but the description of the change should really include these things.
-
-Eric
