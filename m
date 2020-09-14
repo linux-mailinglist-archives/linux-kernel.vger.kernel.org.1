@@ -2,97 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F73526961F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EFC269622
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgINUOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:14:07 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:52177 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725951AbgINUOF (ORCPT
+        id S1726009AbgINUPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:15:08 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:37633 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbgINUPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:14:05 -0400
-Received: (qmail 978548 invoked by uid 1000); 14 Sep 2020 16:14:03 -0400
-Date:   Mon, 14 Sep 2020 16:14:03 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        linux-usb@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Peter Chen <peter.chen@nxp.com>, linux-kernel@vger.kernel.org,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH 2/2] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20200914201403.GA977844@rowland.harvard.edu>
-References: <20200914112716.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+        Mon, 14 Sep 2020 16:15:06 -0400
+Received: by mail-il1-f193.google.com with SMTP id q4so835038ils.4;
+        Mon, 14 Sep 2020 13:15:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n0MSpQUUz3/AeMyW1sKXcTCeGErt+hRzppRfjEwGRP4=;
+        b=hh5pAJxkh9u3EekrJNCs8j83bafCP71/evlLh8ndlWbft43TWnxwNyxKK+KY29Yi6d
+         DT2+9l6/+xf+DYN36KuJ7mI1VOkMuwhIg1dY22qjciXdnNWa+Rh1cO0U4CgHOSPczLiS
+         vq+6e6hwzoT9QQBZATuNc5/nTmaSiyTnBjNMjZI/HjRwJcyudmye5VKeMG8l7l9rRdjI
+         QCCeUzuI3dvFzqYOOFIFYU8mu2sQh79y3MWJO5SkmFsiMsrX/cGQ3doYAYcHRjBSLqRM
+         bJOSutbebcO3tHolMCwvHzLVbJPx6tjyiPA9OgQHVjbfJJ9ozLfAgTBKncuA+mrs1iD8
+         J89w==
+X-Gm-Message-State: AOAM531QT4H5YglTzV2vIcR9Ck0XSBRH1TUyZapA0Uo7XklKsmXPBLFc
+        CcdkzZkYfPCmNjXLFvVzyg==
+X-Google-Smtp-Source: ABdhPJzwYkYIciGDUUmcf97fSVYjBK/rofVqSufC/hvYJ1di0l08bkmMVv+r2CHb5xTuqV9d8SlfhA==
+X-Received: by 2002:a92:1f1a:: with SMTP id i26mr7541134ile.201.1600114505427;
+        Mon, 14 Sep 2020 13:15:05 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id d1sm7395332ila.67.2020.09.14.13.15.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 13:15:04 -0700 (PDT)
+Received: (nullmailer pid 164938 invoked by uid 1000);
+        Mon, 14 Sep 2020 20:15:03 -0000
+Date:   Mon, 14 Sep 2020 14:15:03 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: timer: renesas,cmt: Document r8a7742 CMT
+ support
+Message-ID: <20200914201503.GA164883@bogus>
+References: <20200902091927.32211-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914112716.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200902091927.32211-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:27:49AM -0700, Matthias Kaehlcke wrote:
-> The main issue this driver addresses is that a USB hub needs to be
-> powered before it can be discovered. For onboard hubs this is often
-> solved by supplying the hub with an 'always-on' regulator, which is
-> kind of a hack. Some onboard hubs may require further initialization
-> steps, like changing the state of a GPIO or enabling a clock, which
-> requires further hacks. This driver creates a platform device
-> representing the hub which performs the necessary initialization.
-> Currently it only supports switching on a single regulator, support
-> for multiple regulators or other actions can be added as needed.
-> Different initialization sequences can be supported based on the
-> compatible string.
+On Wed, 02 Sep 2020 10:19:27 +0100, Lad Prabhakar wrote:
+> Document SoC specific compatible strings for r8a7742. No driver change
+> is needed as the fallback strings will activate the right code.
 > 
-> Besides performing the initialization the driver can be configured
-> to power the hub off during system suspend. This can help to extend
-> battery life on battery powered devices, which have no requirements
-> to keep the hub powered during suspend. The driver can also be
-> configured to leave the hub powered when a wakeup capable USB device
-> is connected when suspending, and keeping it powered otherwise.
-> 
-> Technically the driver consists of two drivers, the platform driver
-> described above and a very thin USB driver that subclasses the
-> generic hub driver.
-
-Actually it subclasses the generic usb device driver, not the hub 
-driver.
-
->  The purpose of this driver is to provide the
-> platform driver with the USB devices corresponding to the hub(s)
-> (a hub controller may provide multiple 'logical' hubs, e.g. one
-> to support USB 2.0 and another for USB 3.x).
-> 
-> Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-> Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
-> This is an evolution of '[RFC] USB: misc: Add usb_hub_pwr driver'
-> (https://lore.kernel.org/patchwork/patch/1299239/).
+> v1->v2
+> * Reabsed the patch on top YAML conversion
+> * Restored the Acks
+> ---
+>  Documentation/devicetree/bindings/timer/renesas,cmt.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Changes in v1:
-> - renamed the driver to 'onboard_usb_hub'
-> - single file for platform and USB driver
-> - USB hub devices register with the platform device
->   - the DT includes a phandle of the platform device
-> - the platform device now controls when power is turned off
-> - the USB driver became a very thin subclass of the generic hub
->   driver
-> - enabled autosuspend support
 
-See https://marc.info/?l=linux-usb&m=159914635920888&w=2 and the 
-accompanying submissions.  You'll probably want to include those updates 
-in your driver.
-
-Alan Stern
+Acked-by: Rob Herring <robh@kernel.org>
