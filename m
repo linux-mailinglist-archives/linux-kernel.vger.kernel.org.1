@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1F826926B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDCE269269
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgINREY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        id S1726011AbgINRDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgINRCM (ORCPT
+        with ESMTP id S1726035AbgINRCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:02:12 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93924C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:02:11 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so399876wrm.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:02:11 -0700 (PDT)
+        Mon, 14 Sep 2020 13:02:45 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7B5C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:02:45 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x23so739300wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:02:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8phrXHPm9iOawTdsaIPnylRsltNcVb5/pPjRLSqXyMk=;
-        b=H262HavfjAMKUr1v/sUjYJPhhhCjLTriI/M7rKKaiYnuzgf9T0ia46nZNeoILPihEq
-         dmOPrBGWckaIU5DFj3jeSForb8LDfCEAHv7n/nkdye++p73LHuzDnAGBOgBj0tRwKBC+
-         APVbeMAbByOfNr3qSAr75PjjgJnTm2wpekcBzsUelMXk6W+z9Zf2tJz190MrinY9zjQi
-         CHk5udFpGgosByJSnpFSaZ12OUSBvyBIhYjZMhAOBHoqFu+eJf5gCU8ljlLSt3Cb4orW
-         Jxi5563V/3+whieCptlduy6v88dwV7BYNs9AZ2fdY+Ps2ekXDXNu1WoCb3Kcaq36tm85
-         ETtw==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XBsBN4g4WydhGxWoeGf4IyB73ADZjcR/c1AieyhiWwM=;
+        b=TVpqwhRGl8uCFTVBhKXTj2ew41sAH7bBSKeGCXZ2x1i0BmskYB6XAIUcAjezGBFWsg
+         Njzbq/518D+Z/5y0QzPUAWX+zP3ltC3gdgl6TnL01l5e07Vo2ZjNavpnUfdE3IUAxajy
+         BOtbaM5VqR3XVTqhzrPdQG2c/qnLnnN0wCgaQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8phrXHPm9iOawTdsaIPnylRsltNcVb5/pPjRLSqXyMk=;
-        b=EWLpN9rPvSlzIOrweQJl1nwyBfEZz5kmxQBZsvF5uxhUmL+geo29kiE/Luir2Pb/xZ
-         AdVncleXlRrrx6vob+Bj31x/kqW1a6z9Wj026W1u9RYat09B+avsO+3cScEOnkExEJv2
-         espUo0KSTEvj6+YM8Qx0gNYw9BFAH01xEH4HbOgmHljLec6pT216JbPaqFXsUTAe3den
-         b7RcJTn2pmZ+vHxw+eSdhXOppDjw2pIQ3EkkpIGCXDzRLib0dbbiaIIXjGztY/dhreSo
-         MNu85frIgF+wHuH0GsRk6K1+ESNPPKgwz9EHx0kfzKxeSmSbTJPXoM8S3O5ihLAP7gni
-         hGUg==
-X-Gm-Message-State: AOAM533cJjTw8MoTCQ86jJc2cqky28m6H41L4KbpDdwZBu+sBpkqPFyW
-        9JiNakMj+32J7ygaSiCVHRd0sw==
-X-Google-Smtp-Source: ABdhPJwAa55HftLb6r7Iwk0ni2ORg7ecloANTsssVyBu6gm2nFHsVbTL9FHc8yFemg38gD48gj5mMw==
-X-Received: by 2002:adf:e80b:: with SMTP id o11mr14005546wrm.118.1600102930108;
-        Mon, 14 Sep 2020 10:02:10 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id y5sm20313641wmg.21.2020.09.14.10.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 10:02:09 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 20:02:05 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200914170205.GA20549@apalos.home>
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck>
- <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home>
- <20200914140114.GG24441@willie-the-truck>
- <20200914181234.0f1df8ba@carbon>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XBsBN4g4WydhGxWoeGf4IyB73ADZjcR/c1AieyhiWwM=;
+        b=uVy0eR2G+MYaTtU+vO013ONV5K7yavYJqatwm1SQPv2r9VRsKQ85tb+ttFwNG0tb9w
+         doeqamYDxcTNklHQqNU121Oh8QGaL2uA97cvuAKfCaapMHZuUfCB/0riBZJcrQ19PkD/
+         l1YWxOpNKBk0F2vLSF9HuGEj0njF9McSqUzVA+KCocOStDI550tiBP8WuODI5efalXtL
+         40dtoF/26vyONhxIuLKgpiQKGvZg1ayFCYEDxNXCTu+apTxc36rw82hR6KRI/hq3LiDi
+         2cAqJxanxxY2I34+lof/WpvRNpKXugwAnaYr0CeiEjR2TgNNu6M7McDhdpru9poDxMLa
+         LWrw==
+X-Gm-Message-State: AOAM5309ldQpG7Ggji9//gJKESFAPd7Ij7fOzOsTA2GA8uY7qn3w+JRl
+        w5o9L4hnkqIg4gn6yJzDiF55dp1mSW+ggDhFmqaXcA==
+X-Google-Smtp-Source: ABdhPJyLcp0SNDqyD1tDe2dF/Gmd6ajPcTyhHVQXfdJcEXkvuAIb6mvX1Hgg+eil+8E5rfUz0K99hRB/EtJweYNc6Bw=
+X-Received: by 2002:a1c:408a:: with SMTP id n132mr310643wma.45.1600102963699;
+ Mon, 14 Sep 2020 10:02:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914181234.0f1df8ba@carbon>
+References: <20200908164512.15379-1-james.quinlan@broadcom.com> <20200910093709.GA10310@alpha.franken.de>
+In-Reply-To: <20200910093709.GA10310@alpha.franken.de>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Mon, 14 Sep 2020 13:02:32 -0400
+Message-ID: <CA+-6iNyvkvwPvr-_R8zivnKLtkwmYG34vephdYUJ7ywCqNmjMg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v1] MIPS: uasm: false warning on use of uasm_i_lui()
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 06:12:34PM +0200, Jesper Dangaard Brouer wrote:
-> 
-> On Mon, 14 Sep 2020 15:01:15 +0100 Will Deacon <will@kernel.org> wrote:
-> 
-> > Hi Ilias,
-> > 
-> > On Mon, Sep 14, 2020 at 04:23:50PM +0300, Ilias Apalodimas wrote:
-> > > On Mon, Sep 14, 2020 at 03:35:04PM +0300, Ilias Apalodimas wrote:  
-> > > > On Mon, Sep 14, 2020 at 01:20:43PM +0100, Will Deacon wrote:  
-> > > > > On Mon, Sep 14, 2020 at 11:36:21AM +0300, Ilias Apalodimas wrote:  
-> > > > > > Running the eBPF test_verifier leads to random errors looking like this:  
-> > 
-> > [...]
-> > > >   
-> > > Any suggestion on any Fixes I should apply? The original code was 'correct' and
-> > > broke only when bounded loops and their self-tests were introduced.  
-> > 
-> > Ouch, that's pretty bad as it means nobody is regression testing BPF on
-> > arm64 with mainline. Damn.
-> 
-> Yes, it unfortunately seems that upstream is lacking BPF regression
-> testing for ARM64 :-(
-> 
-> This bug surfaced when Red Hat QA tested our kernel backports, on
-> different archs.
+On Thu, Sep 10, 2020 at 5:37 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Tue, Sep 08, 2020 at 12:45:06PM -0400, Jim Quinlan wrote:
+> > Currently, the example uasm code
+> >
+> >       uasm_i_lui(p, tmp, 0xa000);
+> >
+> > issues a warning at Linux boot when the code is "assembled".  This is
+> > because the "lui" instruction is defined by the macro "Ip_u1s2(_lui)" -- I
+> > believe it should be Ip_u1u2(_lui) -- and its definition is associated with
+> > the SIMM macro -- I believe it should be the UIMM macro.  The current code
+> > takes a 32bit number and checks that it can be converted to a 16bit signed
+> > immediate.  This check fails of course for an immediate such as 0x0000a000.
+>
+> IMHO SIMM is correct as the upper 16bits will be sign extended on 64bit
+> CPUs.
+>
+Hi Thomas,
 
-Naresh from Linaro reported it during his tests on 5.8-rc1 as well [1].
-I've included both Jiri and him on the v2 as reporters.
+Got it.
 
-[1] https://lkml.org/lkml/2020/8/11/58
-> 
-> -- 
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
-> 
+Thanks,
+Jim
+
+> Your example looks like to try to load a KSEG1 address, so just use
+>
+> uasm_i_lui(p, tmp, uasm_rel_hi(0xa0000000));
+>
+> which even makes it clearer, what this is about.
+>
+> Thomas.
+>
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
