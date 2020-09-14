@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70801269856
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D457E269858
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgINVvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:51:55 -0400
-Received: from mga04.intel.com ([192.55.52.120]:31453 "EHLO mga04.intel.com"
+        id S1726153AbgINVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726136AbgINVvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:51:47 -0400
-IronPort-SDR: G0qi4DcXulCQCE6zZu89m7dmCPC9SrP9qaowDvOdtfZ6SuvatCAgzUHgf1e3t9NrToUSlJhp1t
- tR764kI1FuCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156558708"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="156558708"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:51:46 -0700
-IronPort-SDR: LcBOudzkE4g59yt4ncCQ1nyyWKogchU/1XtnSx1ua06AycBa7pdmDhhdmo6il05NMUQg1ZUxEI
- PhWALHWpYGrg==
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="451045487"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:51:46 -0700
-Date:   Mon, 14 Sep 2020 14:51:45 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC PATCH 28/35] KVM: X86: Update
- kvm_skip_emulated_instruction() for an SEV-ES guest
-Message-ID: <20200914215144.GE7192@sjchrist-ice>
-References: <cover.1600114548.git.thomas.lendacky@amd.com>
- <ff66ee115d05d698813f54e10497698da21d1b73.1600114548.git.thomas.lendacky@amd.com>
+        id S1726067AbgINVv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:51:58 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11775208DB;
+        Mon, 14 Sep 2020 21:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600120317;
+        bh=1AVQi9i+IaU2iOoMkEHs7qZRDRG3IlwAxAl+7TRTQc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yfr+mH+tLwPjZLhwtzrotSjh6e9HGgFCEdZw6OqICy2nsrovd/lJaCuu/Lg4d7icE
+         tjR77gU5Fp4kjk9SCGdrlru7u16z9uTUg1EM1cjKtjj5cT3Q8CekAMq/VTnnbqwPhC
+         jpGi7iEy0GAekP1kdTuXTHzRiVMb95tPxy5bnZwU=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3C7A740D3D; Mon, 14 Sep 2020 18:51:55 -0300 (-03)
+Date:   Mon, 14 Sep 2020 18:51:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 05/26] perf tools: Add build_id__is_defined function
+Message-ID: <20200914215155.GG166601@kernel.org>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-6-jolsa@kernel.org>
+ <CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com>
+ <20200914204701.GZ1714160@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ff66ee115d05d698813f54e10497698da21d1b73.1600114548.git.thomas.lendacky@amd.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200914204701.GZ1714160@krava>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:15:42PM -0500, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
+Em Mon, Sep 14, 2020 at 10:47:01PM +0200, Jiri Olsa escreveu:
+> On Mon, Sep 14, 2020 at 02:44:35PM +0900, Namhyung Kim wrote:
+> > On Mon, Sep 14, 2020 at 6:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Adding build_id__is_defined helper to check build id
+> > > is defined and is != zero build id.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/perf/util/build-id.c | 11 +++++++++++
+> > >  tools/perf/util/build-id.h |  1 +
+> > >  2 files changed, 12 insertions(+)
+> > >
+> > > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> > > index 31207b6e2066..bdee4e08e60d 100644
+> > > --- a/tools/perf/util/build-id.c
+> > > +++ b/tools/perf/util/build-id.c
+> > > @@ -902,3 +902,14 @@ bool perf_session__read_build_ids(struct perf_session *session, bool with_hits)
+> > >
+> > >         return ret;
+> > >  }
+> > > +
+> > > +bool build_id__is_defined(const u8 *build_id)
+> > > +{
+> > > +       static u8 zero[BUILD_ID_SIZE];
+> > > +       int err = 0;
+> > > +
+> > > +       if (build_id)
+> > > +               err = memcmp(build_id, &zero, BUILD_ID_SIZE);
+> > > +
+> > > +       return err ? true : false;
+> > > +}
+> > 
+> > I think this is a bit confusing.. How about this?
+> > 
+> >   bool ret = false;
+> >   if (build_id)
+> >       ret = memcmp(...);
+> >   return ret;
 > 
-> The register state for an SEV-ES guest is encrypted so the value of the
-> RIP cannot be updated. For an automatic exit, the RIP will be advanced
-> as necessary. For a non-automatic exit, it is up to the #VC handler in
-> the guest to advance the RIP.
+> ok
 > 
-> Add support to skip any RIP updates in kvm_skip_emulated_instruction()
-> for an SEV-ES guest.
+> > 
+> > Or, it can be a oneliner..
+> 
+> everything can be oneliner ;-)
 
-Is there a reason this can't be handled in svm?  E.g. can KVM be reworked
-to effectively split the emulation logic so that it's a bug for KVM to end
-up trying to modify RIP?
+But has to pass checkpatch.pl, so no more than 80 chars.
 
-Also, patch 06 modifies SVM's skip_emulated_instruction() to skip the RIP
-update, but keeps the "svm_set_interrupt_shadow(vcpu, 0)" logic.  Seems like
-either that change or this one is wrong.
+;-)
 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/kvm/x86.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 23564d02d158..1dbdca607511 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -6874,13 +6874,17 @@ static int kvm_vcpu_do_singlestep(struct kvm_vcpu *vcpu)
->  
->  int kvm_skip_emulated_instruction(struct kvm_vcpu *vcpu)
->  {
-> -	unsigned long rflags = kvm_x86_ops.get_rflags(vcpu);
-> +	unsigned long rflags;
->  	int r;
->  
->  	r = kvm_x86_ops.skip_emulated_instruction(vcpu);
->  	if (unlikely(!r))
->  		return 0;
->  
-> +	if (vcpu->arch.vmsa_encrypted)
-> +		return 1;
-> +
-> +	rflags = kvm_x86_ops.get_rflags(vcpu);
->  	/*
->  	 * rflags is the old, "raw" value of the flags.  The new value has
->  	 * not been saved yet.
-> -- 
-> 2.28.0
-> 
+- Arnaldo
