@@ -2,225 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FEC26874A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A027268750
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgINIg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgINIgv (ORCPT
+        id S1726180AbgINIjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:39:48 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60305 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726070AbgINIjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:36:51 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B298EC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:36:50 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a17so17714207wrn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XocWBvr/wpI0xYVxfd6SkL7Z8etNiS2BwYzO/1XPVHg=;
-        b=IVsQ3IuuNi2hhysVA+2+GTorRddoaCd9NLr8I554ayl2U6q4IDUEzkr1INk6XpKMJ1
-         uqxB8sR8Uqq5pSNEB8kbZZzoddkojBObzgnXEXwY+Dtyne9Qxs83HhOX9FcTbwEDi8Vl
-         qBl+L0gnG04GIzXYF8eeHblOyNBvxMrNg9QPBJGRC1AvcpWBnNo3QOreZxY/C51/E7Qs
-         Sn8CV0llz+Pf/KtvyD5VFR/wwhM7fiaZhnp1elS1n2Adw/C1ACGXQbPPF6P0Id1ponz9
-         YJQDezMhO5kR81ku/tLAQ6ZxPMN3c/fFkw/GDRtyc40D31kHwySXAVUhRWoDF5Hwa1T1
-         5Alw==
+        Mon, 14 Sep 2020 04:39:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600072784;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCnbyPYtJnKEy5YVojzV65Y7fbgg+Mn8uVF7EIN9WS0=;
+        b=dXNxKjjZYWUIr8RDKC0BhXXWqnNNdQ3aRRFrvw1tYj73n/OTXzqfjoiH2wadTS3semc9fk
+        Qeul6CaIG5VjoKp3h9MBMJVm30fTyCXpatdjEfju1lQhwFGIoHIHqP4jByeyThCnTCbfC3
+        xhW6vgwtV+gapmTxJuLxlxj5axrMiPU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-vM1C5W6cOWCVqEV78W-Wmg-1; Mon, 14 Sep 2020 04:39:42 -0400
+X-MC-Unique: vM1C5W6cOWCVqEV78W-Wmg-1
+Received: by mail-ej1-f69.google.com with SMTP id qn7so7745650ejb.15
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:39:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=XocWBvr/wpI0xYVxfd6SkL7Z8etNiS2BwYzO/1XPVHg=;
-        b=feCqvQ3tzmwMa85vKJlRQRkeY9nzwHWr8sVu7Bhw1gR1VF0Js+e6Z1sKe4j6epkvKk
-         3yYUMGunDZqKxrwz0PxZVV+IZkMLrIl9D0N/eo8JjBcuZMA+39MztwMShzEq+Pl5KP2C
-         BCreOSHoz2UMvuMD9e+y7VWKK9qqpJxOEyYbTw2zWVeo9haQ80BTZZgS5e5hw7xC0Zn/
-         UsLn0UiuF0c040s5Nqb2iNSpy3zY23mzXeV/0ef7w+71/cPbyDiLmcUgMc7EMRRnA4K3
-         kv9uosfpLIfVbqxzHb3jqeNrCrfFXD8RTWIdTTgjANmvp8wSbETG+q9Vy1mXZNA0SrUT
-         hqEA==
-X-Gm-Message-State: AOAM532TrlHVFnKSsuqASZ9o9FwGDM1TFUGkabkgn+9WuvAEZP34q/6H
-        lUSYA0sb7WK5eSCH/e9+gOHSew==
-X-Google-Smtp-Source: ABdhPJyUqOi2jNQEC2gkhbdbotbQDpErc+C5q1RJUrhpZo+s2UVOm60Lp1X2XTE+4KE2XRndSAgxXg==
-X-Received: by 2002:adf:f0c7:: with SMTP id x7mr14423737wro.315.1600072609210;
-        Mon, 14 Sep 2020 01:36:49 -0700 (PDT)
-Received: from apalos.home ([2a02:587:4633:88b0:2e56:dcff:fe9a:8f06])
-        by smtp.gmail.com with ESMTPSA id q192sm20015597wme.13.2020.09.14.01.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 01:36:48 -0700 (PDT)
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     bpf@vger.kernel.org
-Cc:     ardb@kernel.org, naresh.kamboju@linaro.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: bpf: Fix branch offset in JIT
-Date:   Mon, 14 Sep 2020 11:36:21 +0300
-Message-Id: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
-X-Mailer: git-send-email 2.28.0
+        bh=oCnbyPYtJnKEy5YVojzV65Y7fbgg+Mn8uVF7EIN9WS0=;
+        b=cO41Q51XclW+4ovwJEKZTDGcXMseIGdB5KzO68O8kd4qGuWOeRiObuH7sVM8TuNsx4
+         MXf9CV1afV7sjHVic46Z4C4gfgtpJdEJ0glgM/mQQuFWKjTsIGeHeA6kY/7bR3FReVf7
+         TlhHFQuQcz/jqGAlhnTXp3QkD2K+klTnLvuHsZlmCKKqzkc3PkTgGCYb/WVYVNJ77c+w
+         YWvcufZCo+bISqqgHHJ1AiE/crbM0Ck5RJ4W3kTPlr/K/6A2ZnzZzoJN2W/runkfq90z
+         TFzN/pyQAAjniEB28roiqSkDJajx8zXHgR+UY7iQMBMhzuoRqf3A0kol1KAIu62cqq8p
+         G0mA==
+X-Gm-Message-State: AOAM530uqrkGsNtoJYg26s9Gzm8buY8TmGF97FG96TV4WKpGCGSI4iOr
+        6rLv8DaRzC7nzoT1oBYiUOZwBVrRwN73knE+da9POZ45ZJPPXEi78oI4Iq68LVhnFlehm0AHXwf
+        p3Q27tI/XuYXYf7FG00ciyTyb
+X-Received: by 2002:aa7:cc8d:: with SMTP id p13mr16650054edt.136.1600072781163;
+        Mon, 14 Sep 2020 01:39:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZXdVARzLUw7WAq7wkDHEHhLPkouA7UD6PE5EzIGCpR1WR3HyevCJtD0Jl6rog54V8dyUT9A==
+X-Received: by 2002:aa7:cc8d:: with SMTP id p13mr16650038edt.136.1600072781005;
+        Mon, 14 Sep 2020 01:39:41 -0700 (PDT)
+Received: from x1.localdomain ([78.108.130.193])
+        by smtp.gmail.com with ESMTPSA id jo2sm7137504ejb.101.2020.09.14.01.39.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 01:39:40 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: initialize tp_nvram_state
+ variable
+To:     trix@redhat.com, ibm-acpi@hmh.eng.br, dvhart@infradead.org,
+        andy@infradead.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, len.brown@intel.com
+Cc:     ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20200913190203.22238-1-trix@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a20bfbb6-65d4-2aef-1b78-15af329d77b4@redhat.com>
+Date:   Mon, 14 Sep 2020 10:39:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200913190203.22238-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running the eBPF test_verifier leads to random errors looking like this:
+Hi,
 
-[ 6525.735488] Unexpected kernel BRK exception at EL1
-[ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-[ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
-[ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
-[ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
-[ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-[ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-[ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-[ 6525.820832] sp : ffff8000130cbb80
-[ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
-[ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
-[ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
-[ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
-[ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
-[ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
-[ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
-[ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
-[ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
-[ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
-[ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
-[ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
-[ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
-[ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
-[ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
-[ 6525.903760] Call trace:
-[ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-[ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-[ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
-[ 6525.920398]  bpf_test_run+0x70/0x1b0
-[ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
-[ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
-[ 6525.932072]  __arm64_sys_bpf+0x24/0x30
-[ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
-[ 6525.940607]  do_el0_svc+0x28/0x88
-[ 6525.943920]  el0_sync_handler+0x88/0x190
-[ 6525.947838]  el0_sync+0x140/0x180
-[ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
-[ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
+On 9/13/20 9:02 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis flags this represenative problem
+> thinkpad_acpi.c:2523:7: warning: Branch condition evaluates
+>    to a garbage value
+>                  if (!oldn->mute ||
+>                      ^~~~~~~~~~~
+> 
+> In hotkey_kthread() mute is conditionally set by hotkey_read_nvram()
+> but unconditionally checked by hotkey_compare_and_issue_event().
+> So the tp_nvram_state variable s[2] needs to be initialized.
+> 
+> Fixes: 01e88f25985d ("ACPI: thinkpad-acpi: add CMOS NVRAM polling for hot keys (v9)")
 
-The reason seems to be the offset[] creation and usage ctx->offset[]
-while building the eBPF body.  The code currently omits the first 
-instruction, since build_insn() will increase our ctx->idx before saving 
-it.  When "taken loop with back jump to 1st insn" test runs it will
-eventually call bpf2a64_offset(-1, 2, ctx). Since negative indexing is
-permitted, the current outcome depends on the value stored in
-ctx->offset[-1], which has nothing to do with our array.
-If the value happens to be 0 the tests will work. If not this error
-triggers.
+Looking at the code I do not think this can actually happen,
+this can only happen if the poll_mask == 0 the first time
+through the loop so s[1] does never gets initialized and then
+the second time to the loop poll_mask != 0, but if poll_mask
+changes then we hit:
 
-So let's fix it by creating the ctx->offset[] correctly in the first
-place and account for the extra instruction while calculating the arm
-instruction offsets.
+                 mutex_lock(&hotkey_thread_data_mutex);
+                 if (was_frozen || hotkey_config_change != change_detector) {
+                         /* forget old state on thaw or config change */
+                         si = so;
+                         t = 0;
+                         change_detector = hotkey_config_change;
+                 }
 
-Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- arch/arm64/net/bpf_jit_comp.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+Where we set si = so so then this can also not happen.
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index f8912e45be7a..5891733a9f39 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -143,9 +143,13 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
- 	}
- }
- 
--static inline int bpf2a64_offset(int bpf_to, int bpf_from,
-+static inline int bpf2a64_offset(int bpf_insn, int off,
- 				 const struct jit_ctx *ctx)
- {
-+	/* arm64 offset is relative to the branch instruction */
-+	int bpf_from = bpf_insn + 1;
-+	/* BPF JMP offset is relative to the next instruction */
-+	int bpf_to = bpf_insn + off + 1;
- 	int to = ctx->offset[bpf_to];
- 	/* -1 to account for the Branch instruction */
- 	int from = ctx->offset[bpf_from] - 1;
-@@ -642,7 +646,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 
- 	/* JUMP off */
- 	case BPF_JMP | BPF_JA:
--		jmp_offset = bpf2a64_offset(i + off, i, ctx);
-+		jmp_offset = bpf2a64_offset(i, off, ctx);
- 		check_imm26(jmp_offset);
- 		emit(A64_B(jmp_offset), ctx);
- 		break;
-@@ -669,7 +673,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 	case BPF_JMP32 | BPF_JSLE | BPF_X:
- 		emit(A64_CMP(is64, dst, src), ctx);
- emit_cond_jmp:
--		jmp_offset = bpf2a64_offset(i + off, i, ctx);
-+		jmp_offset = bpf2a64_offset(i, off, ctx);
- 		check_imm19(jmp_offset);
- 		switch (BPF_OP(code)) {
- 		case BPF_JEQ:
-@@ -912,18 +916,21 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
- 		const struct bpf_insn *insn = &prog->insnsi[i];
- 		int ret;
- 
-+		if (ctx->image == NULL)
-+			ctx->offset[i] = ctx->idx;
-+
- 		ret = build_insn(insn, ctx, extra_pass);
- 		if (ret > 0) {
- 			i++;
- 			if (ctx->image == NULL)
--				ctx->offset[i] = ctx->idx;
-+				ctx->offset[i] = ctx->offset[i - 1];
- 			continue;
- 		}
--		if (ctx->image == NULL)
--			ctx->offset[i] = ctx->idx;
- 		if (ret)
- 			return ret;
- 	}
-+	if (ctx->image == NULL)
-+		ctx->offset[i] = ctx->idx;
- 
- 	return 0;
- }
-@@ -1002,7 +1009,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	memset(&ctx, 0, sizeof(ctx));
- 	ctx.prog = prog;
- 
--	ctx.offset = kcalloc(prog->len, sizeof(int), GFP_KERNEL);
-+	ctx.offset = kcalloc(prog->len + 1, sizeof(int), GFP_KERNEL);
- 	if (ctx.offset == NULL) {
- 		prog = orig_prog;
- 		goto out_off;
-@@ -1089,7 +1096,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	prog->jited_len = prog_size;
- 
- 	if (!prog->is_func || extra_pass) {
--		bpf_prog_fill_jited_linfo(prog, ctx.offset);
-+		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
- out_off:
- 		kfree(ctx.offset);
- 		kfree(jit_data);
--- 
-2.28.0
+I can understand the static-analyzer warning about this, and fixing
+that warning is good. But I doubt that this warrants a fixes tag.
+
+So with the Fixes tag dropped this is:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>   drivers/platform/x86/thinkpad_acpi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index 47925c319d7b..24da8b6872f2 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -2573,7 +2573,7 @@ static void hotkey_compare_and_issue_event(struct tp_nvram_state *oldn,
+>    */
+>   static int hotkey_kthread(void *data)
+>   {
+> -	struct tp_nvram_state s[2];
+> +	struct tp_nvram_state s[2] = { 0 };
+>   	u32 poll_mask, event_mask;
+>   	unsigned int si, so;
+>   	unsigned long t;
+> 
 
