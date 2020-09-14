@@ -2,221 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43DC26853D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81D3268540
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgINHAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        id S1726103AbgINHCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbgINHAh (ORCPT
+        with ESMTP id S1726042AbgINHA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:00:37 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F786C06174A;
-        Mon, 14 Sep 2020 00:00:36 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b17so4853516pji.1;
-        Mon, 14 Sep 2020 00:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=Y2wlAqtXNyefQseZpanYLfJq3N5RvjaF5iCZEQXKmek=;
-        b=SPsvJsoOJGWCNz0MqiQxw/0yRCr5888lfA3TYTSv87ufnSkUZYEsSA86+seIOVYE/Y
-         sEsXwdezlw4T7/8lmU7BopeUocyx8Wa6xwC9agje45+MBpLMpwWv97C8P//JYAbRAGs3
-         RMmdIo20tOL6WZzNu7HBBNTUuknLwntruhux56ilu09Rfw4I8shyVWz/6m63EEJ+2snF
-         +epCklQ4IYAAnNg7MixSMBYM1fXZ+nXjSTYll1bQtE6q+nwWRrZrh+whLeyFq0aW0EYf
-         K1k/F/sraohhvQlS7WMZtC4lA8lFxZZTPqySYZ/mADZFg1s3OkMfGyw5Am2EyNN2yrYJ
-         NFdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=Y2wlAqtXNyefQseZpanYLfJq3N5RvjaF5iCZEQXKmek=;
-        b=pQYGZlElBZyNJe7PM6OlSVr/43w06P1EHrA1s52ZgtWAwK75z3d6eabKdNIyI7BIpg
-         HTiAyXE8dIL1HZofbiMA/bOq2LI1HpNqhDNVEUVKpbScqG3kBv9HOPzj6t1RkpsbXsrD
-         ySu+Y4HXPF+X0C36mbptPa3t48y2y2848RYrbagPB0apJ4QwAS28agr6D7ElzmIHUpcN
-         3YrMjlsrI23enXLIBXnFd0U2J/010AZorQ3m9C1OX4EjmTcIm3+nUaOGdGw3kCPpK2QD
-         WC72bNFFTdTPhujTqbLmSXwDPQiNH/ky+PnfPC0ZG3rqHd/nYbn325qhas77Az0lmVMg
-         PuJQ==
-X-Gm-Message-State: AOAM533mwkQ7Qy/q3iTtBodKG8ZVSp6Vb2EMv/49F2VgMWhRZjQLkAcT
-        OGgyUsZyimvsiKmKVh/3Rl0=
-X-Google-Smtp-Source: ABdhPJxSdvNhMAY02DXO75GE5ykb8GoCQd5VlSAXulERBIog4wwB9uSCtbBQFfL7CZp4YQqpVBmMZw==
-X-Received: by 2002:a17:90a:930e:: with SMTP id p14mr13005911pjo.49.1600066835157;
-        Mon, 14 Sep 2020 00:00:35 -0700 (PDT)
-Received: from localhost ([203.185.249.227])
-        by smtp.gmail.com with ESMTPSA id e2sm7536325pgl.38.2020.09.14.00.00.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 00:00:34 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 17:00:29 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 3/4] sparc64: remove mm_cpumask clearing to fix
- kthread_use_mm race
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        sparclinux@vger.kernel.org
-References: <20200914045219.3736466-1-npiggin@gmail.com>
-        <20200914045219.3736466-4-npiggin@gmail.com>
-In-Reply-To: <20200914045219.3736466-4-npiggin@gmail.com>
+        Mon, 14 Sep 2020 03:00:58 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9673CC06174A;
+        Mon, 14 Sep 2020 00:00:57 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqchR6YYYz9ryj;
+        Mon, 14 Sep 2020 17:00:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600066856;
+        bh=ICDhwkBYOZdaGKLT7o+YZA8ex9YcfcWpdqbW1i6hdA4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LrZgBBKTOpAOo9Ucha5gGcOSJ7mBBqGYPVWUaT+fH6VDCMYI5YCigdfIoy5FYfQR3
+         pvjw2reOJwmAzlmKxiI/2Me4T+pfsb5qubzO6rMRPGhfVZpeGVbM342c7qwAXXFQs2
+         Nd/S3Udoc6Il1ywrevyEkiX2aP2zgqIupTRP90W/l5q1ZPXQrQgZVpmoUoatEdRixU
+         TI1t0WGLY8DNVBZaKSoO31v8NXQPvk2ramJq+gxKmIMerBSmMsTjmMOZVGg6wzKaqb
+         Kz1TkGad+Iq4zsRT0aN0vnUrFbFst02rcW6S3tvZw9TV6DhAXZUGsbqMxlnUDGcXbl
+         1MMh+t2hhRUPQ==
+Date:   Mon, 14 Sep 2020 17:00:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Patricia Alfonso <trishalfonso@google.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+Subject: linux-next: build warning after merge of the akpm-current tree
+Message-ID: <20200914170055.45a02b55@canb.auug.org.au>
 MIME-Version: 1.0
-Message-Id: <1600066040.vnmz9nxhwt.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/s9W4y/JvljleMS/0+ojh80Q";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Nicholas Piggin's message of September 14, 2020 2:52 pm:
+--Sig_/s9W4y/JvljleMS/0+ojh80Q
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-[...]
+Hi all,
 
-> The basic fix for sparc64 is to remove its mm_cpumask clearing code. The
-> optimisation could be effectively restored by sending IPIs to mm_cpumask
-> members and having them remove themselves from mm_cpumask. This is more
-> tricky so I leave it as an exercise for someone with a sparc64 SMP.
-> powerpc has a (currently similarly broken) example.
+After merging the akpm-current tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
-So this compiles and boots on qemu, but qemu does not support any
-sparc64 machines with SMP. Attempting some simple hacks doesn't get
-me far because openbios isn't populating an SMP device tree, which
-blows up everywhere.
+In file included from lib/test_kasan_module.c:16:
+lib/../mm/kasan/kasan.h:232:6: warning: conflicting types for built-in func=
+tion '__asan_register_globals'; expected 'void(void *, long int)' [-Wbuilti=
+n-declaration-mismatch]
+  232 | void __asan_register_globals(struct kasan_global *globals, size_t s=
+ize);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:233:6: warning: conflicting types for built-in func=
+tion '__asan_unregister_globals'; expected 'void(void *, long int)' [-Wbuil=
+tin-declaration-mismatch]
+  233 | void __asan_unregister_globals(struct kasan_global *globals, size_t=
+ size);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:235:6: warning: conflicting types for built-in func=
+tion '__asan_alloca_poison'; expected 'void(void *, long int)' [-Wbuiltin-d=
+eclaration-mismatch]
+  235 | void __asan_alloca_poison(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:236:6: warning: conflicting types for built-in func=
+tion '__asan_allocas_unpoison'; expected 'void(void *, long int)' [-Wbuilti=
+n-declaration-mismatch]
+  236 | void __asan_allocas_unpoison(const void *stack_top, const void *sta=
+ck_bottom);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:238:6: warning: conflicting types for built-in func=
+tion '__asan_load1'; expected 'void(void *)' [-Wbuiltin-declaration-mismatc=
+h]
+  238 | void __asan_load1(unsigned long addr);
+      |      ^~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:239:6: warning: conflicting types for built-in func=
+tion '__asan_store1'; expected 'void(void *)' [-Wbuiltin-declaration-mismat=
+ch]
+  239 | void __asan_store1(unsigned long addr);
+      |      ^~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:240:6: warning: conflicting types for built-in func=
+tion '__asan_load2'; expected 'void(void *)' [-Wbuiltin-declaration-mismatc=
+h]
+  240 | void __asan_load2(unsigned long addr);
+      |      ^~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:241:6: warning: conflicting types for built-in func=
+tion '__asan_store2'; expected 'void(void *)' [-Wbuiltin-declaration-mismat=
+ch]
+  241 | void __asan_store2(unsigned long addr);
+      |      ^~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:242:6: warning: conflicting types for built-in func=
+tion '__asan_load4'; expected 'void(void *)' [-Wbuiltin-declaration-mismatc=
+h]
+  242 | void __asan_load4(unsigned long addr);
+      |      ^~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:243:6: warning: conflicting types for built-in func=
+tion '__asan_store4'; expected 'void(void *)' [-Wbuiltin-declaration-mismat=
+ch]
+  243 | void __asan_store4(unsigned long addr);
+      |      ^~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:244:6: warning: conflicting types for built-in func=
+tion '__asan_load8'; expected 'void(void *)' [-Wbuiltin-declaration-mismatc=
+h]
+  244 | void __asan_load8(unsigned long addr);
+      |      ^~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:245:6: warning: conflicting types for built-in func=
+tion '__asan_store8'; expected 'void(void *)' [-Wbuiltin-declaration-mismat=
+ch]
+  245 | void __asan_store8(unsigned long addr);
+      |      ^~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:246:6: warning: conflicting types for built-in func=
+tion '__asan_load16'; expected 'void(void *)' [-Wbuiltin-declaration-mismat=
+ch]
+  246 | void __asan_load16(unsigned long addr);
+      |      ^~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:247:6: warning: conflicting types for built-in func=
+tion '__asan_store16'; expected 'void(void *)' [-Wbuiltin-declaration-misma=
+tch]
+  247 | void __asan_store16(unsigned long addr);
+      |      ^~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:248:6: warning: conflicting types for built-in func=
+tion '__asan_loadN'; expected 'void(void *, long int)' [-Wbuiltin-declarati=
+on-mismatch]
+  248 | void __asan_loadN(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:249:6: warning: conflicting types for built-in func=
+tion '__asan_storeN'; expected 'void(void *, long int)' [-Wbuiltin-declarat=
+ion-mismatch]
+  249 | void __asan_storeN(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:251:6: warning: conflicting types for built-in func=
+tion '__asan_load1_noabort'; expected 'void(void *)' [-Wbuiltin-declaration=
+-mismatch]
+  251 | void __asan_load1_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:252:6: warning: conflicting types for built-in func=
+tion '__asan_store1_noabort'; expected 'void(void *)' [-Wbuiltin-declaratio=
+n-mismatch]
+  252 | void __asan_store1_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:253:6: warning: conflicting types for built-in func=
+tion '__asan_load2_noabort'; expected 'void(void *)' [-Wbuiltin-declaration=
+-mismatch]
+  253 | void __asan_load2_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:254:6: warning: conflicting types for built-in func=
+tion '__asan_store2_noabort'; expected 'void(void *)' [-Wbuiltin-declaratio=
+n-mismatch]
+  254 | void __asan_store2_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:255:6: warning: conflicting types for built-in func=
+tion '__asan_load4_noabort'; expected 'void(void *)' [-Wbuiltin-declaration=
+-mismatch]
+  255 | void __asan_load4_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:256:6: warning: conflicting types for built-in func=
+tion '__asan_store4_noabort'; expected 'void(void *)' [-Wbuiltin-declaratio=
+n-mismatch]
+  256 | void __asan_store4_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:257:6: warning: conflicting types for built-in func=
+tion '__asan_load8_noabort'; expected 'void(void *)' [-Wbuiltin-declaration=
+-mismatch]
+  257 | void __asan_load8_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:258:6: warning: conflicting types for built-in func=
+tion '__asan_store8_noabort'; expected 'void(void *)' [-Wbuiltin-declaratio=
+n-mismatch]
+  258 | void __asan_store8_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:259:6: warning: conflicting types for built-in func=
+tion '__asan_load16_noabort'; expected 'void(void *)' [-Wbuiltin-declaratio=
+n-mismatch]
+  259 | void __asan_load16_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:260:6: warning: conflicting types for built-in func=
+tion '__asan_store16_noabort'; expected 'void(void *)' [-Wbuiltin-declarati=
+on-mismatch]
+  260 | void __asan_store16_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:261:6: warning: conflicting types for built-in func=
+tion '__asan_loadN_noabort'; expected 'void(void *, long int)' [-Wbuiltin-d=
+eclaration-mismatch]
+  261 | void __asan_loadN_noabort(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:262:6: warning: conflicting types for built-in func=
+tion '__asan_storeN_noabort'; expected 'void(void *, long int)' [-Wbuiltin-=
+declaration-mismatch]
+  262 | void __asan_storeN_noabort(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:264:6: warning: conflicting types for built-in func=
+tion '__asan_report_load1_noabort'; expected 'void(void *)' [-Wbuiltin-decl=
+aration-mismatch]
+  264 | void __asan_report_load1_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:265:6: warning: conflicting types for built-in func=
+tion '__asan_report_store1_noabort'; expected 'void(void *)' [-Wbuiltin-dec=
+laration-mismatch]
+  265 | void __asan_report_store1_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:266:6: warning: conflicting types for built-in func=
+tion '__asan_report_load2_noabort'; expected 'void(void *)' [-Wbuiltin-decl=
+aration-mismatch]
+  266 | void __asan_report_load2_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:267:6: warning: conflicting types for built-in func=
+tion '__asan_report_store2_noabort'; expected 'void(void *)' [-Wbuiltin-dec=
+laration-mismatch]
+  267 | void __asan_report_store2_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:268:6: warning: conflicting types for built-in func=
+tion '__asan_report_load4_noabort'; expected 'void(void *)' [-Wbuiltin-decl=
+aration-mismatch]
+  268 | void __asan_report_load4_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:269:6: warning: conflicting types for built-in func=
+tion '__asan_report_store4_noabort'; expected 'void(void *)' [-Wbuiltin-dec=
+laration-mismatch]
+  269 | void __asan_report_store4_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:270:6: warning: conflicting types for built-in func=
+tion '__asan_report_load8_noabort'; expected 'void(void *)' [-Wbuiltin-decl=
+aration-mismatch]
+  270 | void __asan_report_load8_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:271:6: warning: conflicting types for built-in func=
+tion '__asan_report_store8_noabort'; expected 'void(void *)' [-Wbuiltin-dec=
+laration-mismatch]
+  271 | void __asan_report_store8_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:272:6: warning: conflicting types for built-in func=
+tion '__asan_report_load16_noabort'; expected 'void(void *)' [-Wbuiltin-dec=
+laration-mismatch]
+  272 | void __asan_report_load16_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:273:6: warning: conflicting types for built-in func=
+tion '__asan_report_store16_noabort'; expected 'void(void *)' [-Wbuiltin-de=
+claration-mismatch]
+  273 | void __asan_report_store16_noabort(unsigned long addr);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:274:6: warning: conflicting types for built-in func=
+tion '__asan_report_load_n_noabort'; expected 'void(void *, long int)' [-Wb=
+uiltin-declaration-mismatch]
+  274 | void __asan_report_load_n_noabort(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/../mm/kasan/kasan.h:275:6: warning: conflicting types for built-in func=
+tion '__asan_report_store_n_noabort'; expected 'void(void *, long int)' [-W=
+builtin-declaration-mismatch]
+  275 | void __asan_report_store_n_noabort(unsigned long addr, size_t size);
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c: In function 'common_nfc_set_geo=
+metry':
+drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c:514:3: warning: initialization d=
+iscards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  514 |   nanddev_get_ecc_requirements(&chip->base);
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The patch is _relatively_ simple, hopefully it shouldn't explode, so
-it's probably ready for testing on real SMP hardware, if someone has
-a few cycles.
+Introduced by commit
 
-Thanks,
-Nick
+  77e7d1c8c356 ("KASAN: Port KASAN Tests to KUnit")
 
->=20
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/sparc/kernel/smp_64.c | 65 ++++++++------------------------------
->  1 file changed, 14 insertions(+), 51 deletions(-)
->=20
-> diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
-> index e286e2badc8a..e38d8bf454e8 100644
-> --- a/arch/sparc/kernel/smp_64.c
-> +++ b/arch/sparc/kernel/smp_64.c
-> @@ -1039,38 +1039,9 @@ void smp_fetch_global_pmu(void)
->   * are flush_tlb_*() routines, and these run after flush_cache_*()
->   * which performs the flushw.
->   *
-> - * The SMP TLB coherency scheme we use works as follows:
-> - *
-> - * 1) mm->cpu_vm_mask is a bit mask of which cpus an address
-> - *    space has (potentially) executed on, this is the heuristic
-> - *    we use to avoid doing cross calls.
-> - *
-> - *    Also, for flushing from kswapd and also for clones, we
-> - *    use cpu_vm_mask as the list of cpus to make run the TLB.
-> - *
-> - * 2) TLB context numbers are shared globally across all processors
-> - *    in the system, this allows us to play several games to avoid
-> - *    cross calls.
-> - *
-> - *    One invariant is that when a cpu switches to a process, and
-> - *    that processes tsk->active_mm->cpu_vm_mask does not have the
-> - *    current cpu's bit set, that tlb context is flushed locally.
-> - *
-> - *    If the address space is non-shared (ie. mm->count =3D=3D 1) we avo=
-id
-> - *    cross calls when we want to flush the currently running process's
-> - *    tlb state.  This is done by clearing all cpu bits except the curre=
-nt
-> - *    processor's in current->mm->cpu_vm_mask and performing the
-> - *    flush locally only.  This will force any subsequent cpus which run
-> - *    this task to flush the context from the local tlb if the process
-> - *    migrates to another cpu (again).
-> - *
-> - * 3) For shared address spaces (threads) and swapping we bite the
-> - *    bullet for most cases and perform the cross call (but only to
-> - *    the cpus listed in cpu_vm_mask).
-> - *
-> - *    The performance gain from "optimizing" away the cross call for thr=
-eads is
-> - *    questionable (in theory the big win for threads is the massive sha=
-ring of
-> - *    address space state across processors).
-> + * mm->cpu_vm_mask is a bit mask of which cpus an address
-> + * space has (potentially) executed on, this is the heuristic
-> + * we use to limit cross calls.
->   */
-> =20
->  /* This currently is only used by the hugetlb arch pre-fault
-> @@ -1080,18 +1051,13 @@ void smp_fetch_global_pmu(void)
->  void smp_flush_tlb_mm(struct mm_struct *mm)
->  {
->  	u32 ctx =3D CTX_HWBITS(mm->context);
-> -	int cpu =3D get_cpu();
-> =20
-> -	if (atomic_read(&mm->mm_users) =3D=3D 1) {
-> -		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
-> -		goto local_flush_and_out;
-> -	}
-> +	get_cpu();
-> =20
->  	smp_cross_call_masked(&xcall_flush_tlb_mm,
->  			      ctx, 0, 0,
->  			      mm_cpumask(mm));
-> =20
-> -local_flush_and_out:
->  	__flush_tlb_mm(ctx, SECONDARY_CONTEXT);
-> =20
->  	put_cpu();
-> @@ -1114,17 +1080,15 @@ void smp_flush_tlb_pending(struct mm_struct *mm, =
-unsigned long nr, unsigned long
->  {
->  	u32 ctx =3D CTX_HWBITS(mm->context);
->  	struct tlb_pending_info info;
-> -	int cpu =3D get_cpu();
-> +
-> +	get_cpu();
-> =20
->  	info.ctx =3D ctx;
->  	info.nr =3D nr;
->  	info.vaddrs =3D vaddrs;
-> =20
-> -	if (mm =3D=3D current->mm && atomic_read(&mm->mm_users) =3D=3D 1)
-> -		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
-> -	else
-> -		smp_call_function_many(mm_cpumask(mm), tlb_pending_func,
-> -				       &info, 1);
-> +	smp_call_function_many(mm_cpumask(mm), tlb_pending_func,
-> +			       &info, 1);
-> =20
->  	__flush_tlb_pending(ctx, nr, vaddrs);
-> =20
-> @@ -1134,14 +1098,13 @@ void smp_flush_tlb_pending(struct mm_struct *mm, =
-unsigned long nr, unsigned long
->  void smp_flush_tlb_page(struct mm_struct *mm, unsigned long vaddr)
->  {
->  	unsigned long context =3D CTX_HWBITS(mm->context);
-> -	int cpu =3D get_cpu();
-> =20
-> -	if (mm =3D=3D current->mm && atomic_read(&mm->mm_users) =3D=3D 1)
-> -		cpumask_copy(mm_cpumask(mm), cpumask_of(cpu));
-> -	else
-> -		smp_cross_call_masked(&xcall_flush_tlb_page,
-> -				      context, vaddr, 0,
-> -				      mm_cpumask(mm));
-> +	get_cpu();
-> +
-> +	smp_cross_call_masked(&xcall_flush_tlb_page,
-> +			      context, vaddr, 0,
-> +			      mm_cpumask(mm));
-> +
->  	__flush_tlb_page(context, vaddr);
-> =20
->  	put_cpu();
-> --=20
-> 2.23.0
->=20
->=20
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/s9W4y/JvljleMS/0+ojh80Q
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9fFScACgkQAVBC80lX
+0GyIIAf/bz3L1l80LtykY4ZcHwzB4pHZbD4UQ80qFVaR47dEvLvbP7rqWqb+pKP/
+jhU/mHMqyQuDckYyZelVS+iZWYoeaslV9iPffks/VYtr91cmZn+QOO6VXpBz48Vo
+b6kNGzJ4kX4T1dSMDxQkoCJP5Bq0GKjgQBk4wB+AKL+aOH3wk6c7UN5CbMz6Pfi9
+LOyKHK3kRuRgB6PPgfBPNg0IO1k9qih0PpCC7pANcjbYRlxs1HuKzSuP7S7loVDh
+erz+fh/FfqKlR+C5lX1Cd4v7pvcNDtmTlleI5JrCrHvysMIa6MskJ4HDw9jBYe1r
+uV8YKCZBihDgqLW6347ut5qdSb8jUw==
+=vwNl
+-----END PGP SIGNATURE-----
+
+--Sig_/s9W4y/JvljleMS/0+ojh80Q--
