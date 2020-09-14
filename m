@@ -2,210 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A442687FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0043E2687FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgINJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:07:40 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12251 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726110AbgINJHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:07:38 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 81DD0430855B451F977F;
-        Mon, 14 Sep 2020 17:07:36 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
- 17:07:21 +0800
-Subject: Re: [PATCH v3 2/3] irqchip: dw-apb-ictl: support hierarchy irq domain
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <20200909065836.2631-1-thunder.leizhen@huawei.com>
- <20200909065836.2631-3-thunder.leizhen@huawei.com>
- <87o8m9r9uw.wl-maz@kernel.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <244f8985-f26d-f956-8d54-98acf141a478@huawei.com>
-Date:   Mon, 14 Sep 2020 17:07:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726249AbgINJIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgINJIf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:08:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F8AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hXoUqsNRo+6pMZXVZ1O13i0Nd6wRO3cvEeAK3h9XGi0=; b=o36M4ItaaBmYJj0OrZzNSVVQA+
+        FzcGjasNLRvf5kGo8/Rpmbcw23y9tQ3xHEkV/DKDTxvoJp38E6+/Z9hse8+1tYknozXtSsaMqOxsc
+        tI9mdfUVHl0q1IJL0abZ7FzpKrhiA3STngNeQ9NWTgkQdplAUof+5alP9JvGvgD2+5g2lsxuSZz4D
+        tp/uAlbW/05dUKubyeVnLOeSNuBRMb0/xYm/QIWyeX3YI49Lcv1zNzWrEDYawt8vnAi10rlICWO5Y
+        gqUDWyEr1dmo0D1dMEG1oznaakDs2i5Vz/Ijo/hk91E3++m4YaRtsV/b+VIOxBLezAz198mKc8Ppj
+        VLEBhArQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHkT8-0005qU-U5; Mon, 14 Sep 2020 09:08:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E9733006D0;
+        Mon, 14 Sep 2020 11:08:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 51ADB2C47815E; Mon, 14 Sep 2020 11:08:11 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 11:08:11 +0200
+From:   peterz@infradead.org
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+Message-ID: <20200914090811.GM1362448@hirez.programming.kicks-ass.net>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-3-jolsa@kernel.org>
+ <CABPqkBTk+SwTAxXDa6HL8TqvEmUunfMZxpAtx6CebNbd+3hEHw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87o8m9r9uw.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABPqkBTk+SwTAxXDa6HL8TqvEmUunfMZxpAtx6CebNbd+3hEHw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/9/13 23:10, Marc Zyngier wrote:
-> On Wed, 09 Sep 2020 07:58:35 +0100,
-> Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>
->> Add support to use dw-apb-ictl as primary interrupt controller.
->>
->> Suggested-by: Marc Zyngier <maz@kernel.org>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> Tested-by: Haoyu Lv <lvhaoyu@huawei.com>
->> ---
->>  drivers/irqchip/Kconfig           |  2 +-
->>  drivers/irqchip/irq-dw-apb-ictl.c | 76 +++++++++++++++++++++++++++----
->>  2 files changed, 69 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
->> index bfc9719dbcdc..7c2d1c8fa551 100644
->> --- a/drivers/irqchip/Kconfig
->> +++ b/drivers/irqchip/Kconfig
->> @@ -148,7 +148,7 @@ config DAVINCI_CP_INTC
->>  config DW_APB_ICTL
->>  	bool
->>  	select GENERIC_IRQ_CHIP
->> -	select IRQ_DOMAIN
->> +	select IRQ_DOMAIN_HIERARCHY
->>  
->>  config FARADAY_FTINTC010
->>  	bool
->> diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
->> index 5458004242e9..3c7bebe1b947 100644
->> --- a/drivers/irqchip/irq-dw-apb-ictl.c
->> +++ b/drivers/irqchip/irq-dw-apb-ictl.c
->> @@ -17,6 +17,7 @@
->>  #include <linux/irqchip/chained_irq.h>
->>  #include <linux/of_address.h>
->>  #include <linux/of_irq.h>
->> +#include <linux/interrupt.h>
->>  
->>  #define APB_INT_ENABLE_L	0x00
->>  #define APB_INT_ENABLE_H	0x04
->> @@ -26,6 +27,27 @@
->>  #define APB_INT_FINALSTATUS_H	0x34
->>  #define APB_INT_BASE_OFFSET	0x04
->>  
->> +/* irq domain of the primary interrupt controller. */
->> +static struct irq_domain *dw_apb_ictl_irq_domain;
->> +
->> +static void __irq_entry dw_apb_ictl_handle_irq(struct pt_regs *regs)
->> +{
->> +	struct irq_domain *d = dw_apb_ictl_irq_domain;
->> +	int n;
->> +
->> +	for (n = 0; n < d->revmap_size; n += 32) {
->> +		struct irq_chip_generic *gc = irq_get_domain_generic_chip(d, n);
->> +		u32 stat = readl_relaxed(gc->reg_base + APB_INT_FINALSTATUS_L);
->> +
->> +		while (stat) {
->> +			u32 hwirq = ffs(stat) - 1;
->> +
->> +			handle_domain_irq(d, hwirq, regs);
->> +			stat &= ~BIT(hwirq);
->> +		}
->> +	}
->> +}
->> +
->>  static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
->>  {
->>  	struct irq_domain *d = irq_desc_get_handler_data(desc);
->> @@ -50,6 +72,30 @@ static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
->>  	chained_irq_exit(chip, desc);
->>  }
->>  
->> +static int dw_apb_ictl_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
->> +				unsigned int nr_irqs, void *arg)
->> +{
->> +	int i, ret;
->> +	irq_hw_number_t hwirq;
->> +	unsigned int type = IRQ_TYPE_NONE;
->> +	struct irq_fwspec *fwspec = arg;
->> +
->> +	ret = irq_domain_translate_onecell(domain, fwspec, &hwirq, &type);
->> +	if (ret)
->> +		return ret;
->> +
->> +	for (i = 0; i < nr_irqs; i++)
->> +		irq_map_generic_chip(domain, virq + i, hwirq + i);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct irq_domain_ops dw_apb_ictl_irq_domain_ops = {
->> +	.translate = irq_domain_translate_onecell,
->> +	.alloc = dw_apb_ictl_irq_domain_alloc,
->> +	.free = irq_domain_free_irqs_top,
->> +};
->> +
->>  #ifdef CONFIG_PM
->>  static void dw_apb_ictl_resume(struct irq_data *d)
->>  {
->> @@ -75,13 +121,20 @@ static int __init dw_apb_ictl_init(struct device_node *np,
->>  	void __iomem *iobase;
->>  	int ret, nrirqs, parent_irq, i;
->>  	u32 reg;
->> -	const struct irq_domain_ops *domain_ops = &irq_generic_chip_ops;
->> -
->> -	/* Map the parent interrupt for the chained handler */
->> -	parent_irq = irq_of_parse_and_map(np, 0);
->> -	if (parent_irq <= 0) {
->> -		pr_err("%pOF: unable to parse irq\n", np);
->> -		return -EINVAL;
->> +	const struct irq_domain_ops *domain_ops;
->> +
->> +	if (!parent || (np == parent)) {
->> +		/* It's used as the primary interrupt controller */
->> +		parent_irq = 0;
->> +		domain_ops = &dw_apb_ictl_irq_domain_ops;
->> +	} else {
->> +		/* Map the parent interrupt for the chained handler */
->> +		parent_irq = irq_of_parse_and_map(np, 0);
->> +		if (parent_irq <= 0) {
->> +			pr_err("%pOF: unable to parse irq\n", np);
->> +			return -EINVAL;
->> +		}
->> +		domain_ops = &irq_generic_chip_ops;
->>  	}
->>  
->>  	ret = of_address_to_resource(np, 0, &r);
->> @@ -144,10 +197,17 @@ static int __init dw_apb_ictl_init(struct device_node *np,
->>  		gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
->>  		gc->chip_types[0].chip.irq_unmask = irq_gc_mask_clr_bit;
->>  		gc->chip_types[0].chip.irq_resume = dw_apb_ictl_resume;
->> +		if (!parent_irq)
->> +			gc->chip_types[0].chip.irq_eoi = irq_gc_noop;
+On Sun, Sep 13, 2020 at 11:41:00PM -0700, Stephane Eranian wrote:
+> On Sun, Sep 13, 2020 at 2:03 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> what happens if I set mmap3 and mmap2?
 > 
-> Again: what is that for? The level flow doesn't use any EOI callback.
+> I think using mmap3 for every mmap may be overkill as you add useless
+> 20 bytes to an mmap record.
+> I am not sure if your code handles the case where mmap3 is not needed
+> because there is no buildid, e.g, anonymous memory.
+> It seems to me you've written the patch in such a way that if the user
+> tool supports mmap3, then it supersedes mmap2, and thus
+> you need all the fields of mmap2. But if could be more interesting to
+> return either MMAP2 or MMAP3 depending on tool support
+> and type of mmap, that would certainly save 20 bytes on any anon mmap.
+> But maybe that logic is already in your patch and I missed it.
 
-OK, I will remove it. Yes, irq_eoi is only needed by handle_fasteoi_irq().
-
-> 
->>  	}
->>  
->> -	irq_set_chained_handler_and_data(parent_irq,
->> +	if (parent_irq) {
->> +		irq_set_chained_handler_and_data(parent_irq,
->>  				dw_apb_ictl_handle_irq_cascaded, domain);
->> +	} else {
->> +		dw_apb_ictl_irq_domain = domain;
->> +		set_handle_irq(dw_apb_ictl_handle_irq);
-> 
-> This only exists on architectures that select GENERIC_IRQ_MULTI_HANDLER,
-> and yet this driver is used on some arc system (AXS10x), which doesn't
-> have this option selected.
-> 
-> Please make sure this at least builds on all supported architectures.
-
-OK, I will intsall the gcc of arc and csky, and build it.
-
-> 
-> 	M.
-> 
+That, and what if you don't want any of that buildid nonsense at all? I
+always kill that because it makes perf pointlessly slow and has
+absolutely no upsides for me.
 
