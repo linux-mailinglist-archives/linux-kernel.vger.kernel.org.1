@@ -2,49 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968D326938A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A66F269387
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbgINRfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:35:07 -0400
-Received: from mga09.intel.com ([134.134.136.24]:60769 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgINR0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:26:41 -0400
-IronPort-SDR: mEJgPqSdaZHrDn9e+UsUq0JURUmEH00ZPPYibaKhAiEkQmjn7kvtlOiRFC6iwxgpd+MnFfwM9n
- gsj8/29Ou5jA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="160055266"
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="160055266"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 10:26:40 -0700
-IronPort-SDR: EXUArbWF6MqzxQVzC9rRVE2IA6NQYNT/XVBpbxMnmAssoFi6iFw2p5l2uddSLDCmYby6YzuDUo
- k6epqzo8iOFw==
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="482431915"
-Received: from mgorski-mobl.ger.corp.intel.com (HELO localhost) ([10.249.43.120])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 10:26:33 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v37 09/24] x86/sgx: Add __sgx_alloc_epc_page() and sgx_free_epc_page()
-Date:   Mon, 14 Sep 2020 20:26:27 +0300
-Message-Id: <20200914172627.7693-1-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726022AbgINRen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:34:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726131AbgINR2F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:28:05 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C26C06178B
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:04 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so531772wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=067z7eOkoIjswCFUZaQiAlz7Yh/C6SQlkfm83TpWTDI=;
+        b=Ccbq3bhSWLvuICZcTk6r5XIHbRKedih0ZWTIzz80wN/dhQskbOMUHfhHes6S8NjK03
+         MdZiUUQ1RqECF0LV++t36OhqhWKQin1j4MGs2VLOVHTXD7mAlHdM1hMqdM0sm1D53f9d
+         KkXWyEOSr43mtUVMecgZ3sBGstXl2R6MoLAtF48EkQ5IpPN2RtScfjiA74Iqd502EOpw
+         5LwHPOjozU2dfOg4wiCnsQJHx/5ydgKvDDJLVEeAbUJ1AomfjISseAhY1fyJhK+2EfWk
+         JFJTokplO4+5jUEMY9SWa8pFoguuVKTfKKsEyOf0gPldU07FI17N8pzfweAg5M7GAaBI
+         x3xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=067z7eOkoIjswCFUZaQiAlz7Yh/C6SQlkfm83TpWTDI=;
+        b=IvrwkglPwFOL3C5zgHTgKad7uUORHxYcePKtr3SfcWtwvuw/FFekkwO0yMVz61kZg+
+         cI8DW3nQjfyb2n5pRa8A66dmpl/awX44fukXnXAZa0gLKQiAuo51gLHX5ut1nzCm76FB
+         S0ce+7p1gbXhCehmQxd/Lzid1pc0lv8uRquxILn0CM0y8bT+oiHZVzWFW9zVRwyUfAXN
+         /RfY9qbdBdXzy+Y5tfjDKIKYUijzh40O/TfLj6jcaJlJDzdSHeq3n3Q6kzsSDpPioVGb
+         EbAQNDQuI9zW6s7VrnAFF3UWnFGfmOBXmkYZ/S6x/j7nL6nZTHns1RSh8pduynDHF/jg
+         9sCA==
+X-Gm-Message-State: AOAM531owizsmK9u8bo64NlH/pth6D3pewlpcPbn1eyr+4W7VOBNQZZb
+        j4ygiRYvNXbfYop7jAghxpqqeA==
+X-Google-Smtp-Source: ABdhPJxPTT5/y2bkI5dyBo11sTtACjcXqzQfAIFfMByvB17sbPDS6CpmIX1YCL1LK2SPPsa/YejUaQ==
+X-Received: by 2002:a5d:5281:: with SMTP id c1mr16890910wrv.184.1600104483118;
+        Mon, 14 Sep 2020 10:28:03 -0700 (PDT)
+Received: from localhost (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id y1sm19586977wma.36.2020.09.14.10.28.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 10:28:02 -0700 (PDT)
+From:   George-Aurelian Popescu <georgepope@google.com>
+To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        masahiroy@kernel.org, michal.lkml@markovi.net
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        dbrazdil@google.com, broonie@kernel.org, maskray@google.com,
+        ascull@google.com, keescook@chromium.org,
+        akpm@linux-foundation.org, dvyukov@google.com, elver@google.com,
+        tglx@linutronix.de, arnd@arndb.de,
+        George Popescu <georgepope@google.com>
+Subject: [PATCH 01/14] KVM: arm64: Enable UBSan instrumentation in nVHE hyp code
+Date:   Mon, 14 Sep 2020 17:27:37 +0000
+Message-Id: <20200914172750.852684-2-georgepope@google.com>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+In-Reply-To: <20200914172750.852684-1-georgepope@google.com>
+References: <20200914172750.852684-1-georgepope@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -52,107 +74,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add __sgx_alloc_epc_page(), which iterates through EPC sections and borrows
-a page structure that is not used by anyone else. When a page is no longer
-needed it must be released with sgx_free_epc_page(). This function
-implicitly calls ENCLS[EREMOVE], which will return the page to the
-uninitialized state (i.e. not required from caller part).
+From: George Popescu <georgepope@google.com>
 
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Implement UBSan handlers inside nVHe hyp code, as empty functions for the
+moment, so the undefined behaviours, that are triggered there, will be
+linked to them, not to the ones defined in kernel-proper lib/ubsan.c.
+
+In this way, enabling UBSAN_MISC won't cause a link error.
+
+Signed-off-by: George Popescu <georgepope@google.com>
 ---
- arch/x86/kernel/cpu/sgx/main.c | 62 ++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/sgx.h  |  3 ++
- 2 files changed, 65 insertions(+)
+ arch/arm64/kvm/hyp/nvhe/Makefile |  4 +++-
+ arch/arm64/kvm/hyp/nvhe/ubsan.c  | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/ubsan.c
 
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c5831e3db14a..97c6895fb6c9 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -83,6 +83,68 @@ static bool __init sgx_page_reclaimer_init(void)
- 	return true;
- }
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index aef76487edc2..cc082e516353 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -10,6 +10,9 @@ obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o
+ obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
+ 	 ../fpsimd.o ../hyp-entry.o
  
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_section *section)
-+{
-+	struct sgx_epc_page *page;
++CFLAGS_ubsan.hyp.tmp.o += -I $(srctree)/lib/
++obj-$(CONFIG_UBSAN) += ubsan.o
 +
-+	if (list_empty(&section->page_list))
-+		return NULL;
-+
-+	page = list_first_entry(&section->page_list, struct sgx_epc_page, list);
-+	list_del_init(&page->list);
-+
-+	return page;
-+}
-+
-+/**
-+ * __sgx_alloc_epc_page() - Allocate an EPC page
-+ *
-+ * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-+ * page is no longer needed it must be released with sgx_free_epc_page().
-+ *
-+ * Return:
-+ *   an EPC page,
-+ *   -errno on error
-+ */
-+struct sgx_epc_page *__sgx_alloc_epc_page(void)
-+{
-+	struct sgx_epc_section *section;
-+	struct sgx_epc_page *page;
-+	int i;
-+
-+	for (i = 0; i < sgx_nr_epc_sections; i++) {
-+		section = &sgx_epc_sections[i];
-+		spin_lock(&section->lock);
-+		page = __sgx_alloc_epc_page_from_section(section);
-+		spin_unlock(&section->lock);
-+
-+		if (page)
-+			return page;
-+	}
-+
-+	return ERR_PTR(-ENOMEM);
-+}
-+
-+/**
-+ * sgx_free_epc_page() - Free an EPC page
-+ * @page:	an EPC page
-+ *
-+ * Call EREMOVE for an EPC page and insert it back to the list of free pages.
-+ */
-+void sgx_free_epc_page(struct sgx_epc_page *page)
-+{
-+	struct sgx_epc_section *section = sgx_get_epc_section(page);
-+	int ret;
-+
-+	ret = __eremove(sgx_get_epc_addr(page));
-+	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
-+		return;
-+
-+	spin_lock(&section->lock);
-+	list_add_tail(&page->list, &section->page_list);
-+	spin_unlock(&section->lock);
-+}
-+
- static void __init sgx_free_epc_section(struct sgx_epc_section *section)
- {
- 	struct sgx_epc_page *page;
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index dff4f5f16d09..fce756c3434b 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -49,4 +49,7 @@ static inline void *sgx_get_epc_addr(struct sgx_epc_page *page)
- 	return section->va + (page->desc & PAGE_MASK) - section->pa;
- }
+ obj-y := $(patsubst %.o,%.hyp.o,$(obj-y))
+ extra-y := $(patsubst %.hyp.o,%.hyp.tmp.o,$(obj-y))
  
-+struct sgx_epc_page *__sgx_alloc_epc_page(void);
-+void sgx_free_epc_page(struct sgx_epc_page *page);
+@@ -54,7 +57,6 @@ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS), $(KBUILD_CFLAG
+ # cause crashes. Just disable it.
+ GCOV_PROFILE	:= n
+ KASAN_SANITIZE	:= n
+-UBSAN_SANITIZE	:= n
+ KCOV_INSTRUMENT	:= n
+ 
+ # Skip objtool checking for this directory because nVHE code is compiled with
+diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+new file mode 100644
+index 000000000000..a5db6b61ceb2
+--- /dev/null
++++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2020 Google LLC
++ * Author: George Popescu <georgepope@google.com>
++ */
++#include <linux/ctype.h>
++#include <linux/types.h>
++#include <ubsan.h>
 +
- #endif /* _X86_SGX_H */
++void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_mul_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_negate_overflow(void *_data, void *old_val) {}
++
++void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr) {}
++
++void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr) {}
++
++void __ubsan_handle_out_of_bounds(void *_data, void *index) {}
++
++void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs) {}
++
++void __ubsan_handle_builtin_unreachable(void *_data) {}
++
++void __ubsan_handle_load_invalid_value(void *_data, void *val) {}
 -- 
-2.25.1
+2.28.0.618.gf4bc123cb7-goog
 
