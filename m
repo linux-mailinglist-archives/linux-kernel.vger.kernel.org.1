@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E770726940D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B2F269404
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725999AbgINRu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgINRsK (ORCPT
+        id S1725961AbgINRtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:49:09 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:34903 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgINRrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:48:10 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE15CC06174A;
-        Mon, 14 Sep 2020 10:48:09 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id v54so591746qtj.7;
-        Mon, 14 Sep 2020 10:48:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o4QoP2H/4Foo2ltH87doo80dVxctNT7kAfNaEVcg1eg=;
-        b=q3hAdXNeJLbn/VHK7vR/1FKykV4bz7/nMjPX3AkF/xTnsXDTVyXNCrUNIiBRg5UjIF
-         6mi3jrdlT44H0YhebDQkAx5xgML5bxl44KNqTf2QJx8inu5R7oLfS6+koj0w9Llg70JV
-         Xu3iU4Iwigw1d7Bh2gm1hUOHUTKfgrh61NiVI1Pf9yNJd8lf3z3tUDbKy8pGmnGhCEW3
-         N/ICuCvIYNI85lVHKDiU1YYGNwKgjtE3+vnh9it/AkzYIkulFRlph9z5Up/+PmsC2IaU
-         4Od8eer3spf7/+YRls0GqiQcIpVdHUDFv1VF8hfnGik+PbkfX0qHQIiqMq1q7Fw7Jb+D
-         3CdQ==
+        Mon, 14 Sep 2020 13:47:41 -0400
+Received: by mail-il1-f194.google.com with SMTP id y9so417158ilq.2;
+        Mon, 14 Sep 2020 10:47:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o4QoP2H/4Foo2ltH87doo80dVxctNT7kAfNaEVcg1eg=;
-        b=tYlL6FyXCyfIOPig8tnFL3Z3fBv94qt9KUJmNqFl2Gpwp27F5lwWj8T0jUqtyCWAyu
-         n6Fhx0pC/lBsoIhGAsP8c8MYc+sDDrLtWE2m0BA7wmRi01ZcIY9n7nLypEnXento+QHT
-         WikgEuA7SAYWziD3YElzFM/X30TtuZ6W52bGBhQ9SCnF+nsht3f8/HtbVt8pfw18Rer+
-         Udxzdbze4pvN+61oU/gEIIfQBllnlBMURjh5MEhyvn8F+GFo9nJRzq/Z+AFRPuGS6b0S
-         y0TaABGJ1MrLM3QlfmdMK15Mlt/tHhi+AdAQJPAkW0v4ZGplnsQBDx5WtO5+y6ud8OMj
-         TCIw==
-X-Gm-Message-State: AOAM533b7FfgpAOR4RHIehOszEqthdrwquPvFI6IAhJ+1FKrjzEI4SHP
-        7g42ZTm5WWMzptGOjUaNEsojok6WAu/4EYlLcSM=
-X-Google-Smtp-Source: ABdhPJxh5GxP7zV2ugpdarY0VBvR0YuuxK5UNa0Om8U0VAZIza95/YyEZLiyNz4xSf/jZPHvMlgr1GPl2L8rJ59+B/k=
-X-Received: by 2002:ac8:b83:: with SMTP id h3mr14472830qti.113.1600105688936;
- Mon, 14 Sep 2020 10:48:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8FKqqHI43ZNUstDJ82DPkSy2JKzbYvOmCyAgDqTrEzk=;
+        b=LdXc6OEW1dya9NnOAvIXdboElsOzgnHV3O9Lf4KZ50pA0cm+cvSzEeZ4hlAepBU4bV
+         iKVBG1P49hyDN90V6gIoDaMs5SGziuzyHmE/VywenZZFQ7iiovgfxDuEKzQcEKRQOvPH
+         zbfKp1InxuM80y/V4oHA7e6KS+fq7G3tggOQhm60yzakYyueWRG3GcwQbD8kBZluewDo
+         R88nQnDGW58+9SqhY2lHnEIrW7etmfD5pniiomKZLuBykTnu3a2VGczWywqGrv9lHglf
+         cHf1kFkq55hruikcXgqmXkQlgIvw95GYPUDJMwfjGR92VS4S0AV5lR3s2K7y5eg+U2sN
+         Sk7A==
+X-Gm-Message-State: AOAM531mjkNz6Vg8a7LwMTLf0OAWeo9mVqaW1y9sNfzZfV8nH2s0Zu2+
+        qgwhAq91qgEX3unhhqAH311vuxEi4MQ3
+X-Google-Smtp-Source: ABdhPJzpyn24Vz9ija1M57QQb8SfqJ917hudtYiBZDQuh5eGko/u4/bPPbpYYckifhGhUstBxDgYCQ==
+X-Received: by 2002:a92:d8d0:: with SMTP id l16mr1593436ilo.47.1600105656088;
+        Mon, 14 Sep 2020 10:47:36 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id x185sm6411583iof.41.2020.09.14.10.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 10:47:35 -0700 (PDT)
+Received: (nullmailer pid 4125400 invoked by uid 1000);
+        Mon, 14 Sep 2020 17:47:33 -0000
+Date:   Mon, 14 Sep 2020 11:47:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+Cc:     andriy.shevchenko@linux.intel.com, kishon@ti.com,
+        vadivel.muruganx.ramuthevar@linux.intel.com,
+        eswara.kota@linux.intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        linux-kernel@vger.kernel.org, vkoul@kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v9 2/3] dt-bindings: phy: intel: Add Keem Bay eMMC PHY
+ bindings
+Message-ID: <20200914174733.GA4125267@bogus>
+References: <20200913235522.4316-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+ <20200913235522.4316-3-wan.ahmad.zainie.wan.mohamad@intel.com>
 MIME-Version: 1.0
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck> <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home> <20200914140114.GG24441@willie-the-truck>
- <20200914181234.0f1df8ba@carbon> <20200914170205.GA20549@apalos.home>
-In-Reply-To: <20200914170205.GA20549@apalos.home>
-From:   Xi Wang <xi.wang@gmail.com>
-Date:   Mon, 14 Sep 2020 10:47:33 -0700
-Message-ID: <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913235522.4316-3-wan.ahmad.zainie.wan.mohamad@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:03 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
-> Naresh from Linaro reported it during his tests on 5.8-rc1 as well [1].
-> I've included both Jiri and him on the v2 as reporters.
->
-> [1] https://lkml.org/lkml/2020/8/11/58
+On Mon, 14 Sep 2020 07:55:21 +0800, Wan Ahmad Zainie wrote:
+> Binding description for Intel Keem Bay eMMC PHY.
+> 
+> Signed-off-by: Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
+> ---
+>  .../bindings/phy/intel,lgm-emmc-phy.yaml        | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
 
-I'm curious what you think of Luke's earlier patch to this bug:
-
-https://lore.kernel.org/bpf/CANoWswkaj1HysW3BxBMG9_nd48fm0MxM5egdtmHU6YsEc_GUtQ@mail.gmail.com/T/#m4335b4005da0d60059ba96920fcaaecf2637042a
+Reviewed-by: Rob Herring <robh@kernel.org>
