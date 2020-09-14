@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8FF268979
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64DA26897C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgINKnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:43:02 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37999 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgINKmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:42:40 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bqjc052t6z9sTS;
-        Mon, 14 Sep 2020 20:42:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600080146;
-        bh=jqSJTAAE2viP+VO1tceykIVX3foZjPzbA2zwdIB6bEI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PlHbxoBHG5ylBadCb1uIKkkEA099PgfyJFldyi+NHbZfDaCtkzM6SFCtuBcHki+XO
-         j88VvgTfUiAqoPvu2P6c1kM2+TEK4VXYjvgp0GQqtQdHa4O5+YjBFlQlDRSxEN9xbU
-         9MN7LRZnZva62eVRmLnVdp0WEWJqvUgb3F6Gkv8h3AJi9j2DsB6N+SZnMFhLm4FnoV
-         bmsxyC3MOSX3s42hADtlc6M9hxlYioX2EYSt+hAuuZkq/MC/+KUVyjjkYa4ZUKsJSK
-         CyoLooZWXlxbqM8TUtfgjwoaVbztAj3vs9OZW5J9sa3n2uEYommZMPVSt8q3fVUDRt
-         yfcAj785z1T3g==
-Date:   Mon, 14 Sep 2020 20:42:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>,
-        Evan Nimmo <Evan.Nimmo@alliedtelesis.co.nz>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
-        "jdelvare@suse.de" <jdelvare@suse.de>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 1/1] i2c: algo-pca: Reapply i2c bus settings after
- reset
-Message-ID: <20200914204223.5a96f84d@canb.auug.org.au>
-In-Reply-To: <CAHp75Vf-1vqHjqNixXtnziCd6squwwj0sEArZ8C1YiDwafhk7Q@mail.gmail.com>
-References: <20200908203247.14374-1-evan.nimmo@alliedtelesis.co.nz>
-        <20200909082338.GC2272@ninjato>
-        <5410e288-e369-0310-1b8e-061c95e46164@alliedtelesis.co.nz>
-        <20200911194526.GB909@ninjato>
-        <61c139a0-26fc-8cd1-0b54-b7cb9d9c0648@alliedtelesis.co.nz>
-        <CAHp75VdtE_UBsNrSxbVPprmp7=-iVCrXv9x6Tu82b4q2ODfKQg@mail.gmail.com>
-        <CAHp75Vf-1vqHjqNixXtnziCd6squwwj0sEArZ8C1YiDwafhk7Q@mail.gmail.com>
+        id S1726437AbgINKoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgINKnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:43:10 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC79C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:43:10 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x123so12287040pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mShHt/IoIdL3zeM5kIPVohLF6OMC2OmAiOHFn3/ncho=;
+        b=TlSyaj053NENZSrfv+oka1gshBooRj3AvapgIi6QCWmTwNyeTmetK9vMsLNNR+ozXy
+         RbmBxz5ox9jH88LJ3ApAYjuFI64eDX9X0KVSqUriSwv3whAWQViYjJgECAfTT5Qvd9mm
+         1DEsN4dJPRGvJPUq32DgY1RL3YWVtSBZ2L2U0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mShHt/IoIdL3zeM5kIPVohLF6OMC2OmAiOHFn3/ncho=;
+        b=tSSGp+0IsLqOcYgrHlmBOz11HMOAdq/VboAMnMch93x+nwFDseIBQZMJ5AjrdFn20P
+         TWynPdhZsl3+ibmcSqHjTe2HvZ7/7Z9Mr07VoLXACftLr/YEf63/FJ6Y4HPzc2dNekeL
+         S1HtjnBWaSs+vFxORI5GwHhRnh/1DSdkLJvDnF/XWvFMQekiNmpJuGGkRDwNLj7wOs9a
+         v8TQUssNmB75AnirWySAoF9r19202glXlBY+Oy86Vw1bY+krh7TcLAwyui8mmDi3cL0P
+         RzQrngl34MTVPGgmn4CB3bPw6phgcycx/hROYp3Jr6ijC0UnMRE4t4+1YjPZXhcCdtZk
+         EbZw==
+X-Gm-Message-State: AOAM531cMHjN8R4KZlnKxzTIVWQR2nREZ5GNUBLu9BTK4r6fKnkBv7qu
+        WiP+dyFNxqaDzvg+s8Ucagg5EA==
+X-Google-Smtp-Source: ABdhPJwg/lYdcj3OZVybohSNYV5EFYCt8XkCIyDkfaxG2ud8Xq9uxHY7E0+aNG7IJevg90qa6w/6PA==
+X-Received: by 2002:a63:5d09:: with SMTP id r9mr9667453pgb.397.1600080189654;
+        Mon, 14 Sep 2020 03:43:09 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id j11sm8090881pgh.8.2020.09.14.03.43.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 03:43:09 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     linux-mtd@lists.infradead.org
+Cc:     Ikjoon Jang <ikjn@chromium.org>,
+        Xingyu Wu <wuxy@bitland.corp-partner.google.com>,
+        ST Lin <stlin2@winbond.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] mtd: spi-nor: winbond: Add support for w25q64jwm
+Date:   Mon, 14 Sep 2020 18:43:03 +0800
+Message-Id: <20200914104303.830795-1-ikjn@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cHmrJ/D4znt7MYG1cUv/aML";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/cHmrJ/D4znt7MYG1cUv/aML
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add support Winbond w25q{64,128,256}jwm which are identical to existing
+w25q32jwm except for their sizes.
 
-Hi Andy,
+This was tested with w25q64jwm, basic erase/write/readback and
+lock/unlock top and bottom blocks were okay.
 
-On Mon, 14 Sep 2020 11:51:04 +0300 Andy Shevchenko <andy.shevchenko@gmail.c=
-om> wrote:
->
-> On Mon, Sep 14, 2020 at 11:50 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Mon, Sep 14, 2020 at 12:27 AM Chris Packham
-> > <Chris.Packham@alliedtelesis.co.nz> wrote: =20
-> > > On 12/09/20 7:45 am, Wolfram Sang wrote: =20
-> > =20
-> > > I'm happy to route it to stable@ if you think it's worth it but I don=
-'t
-> > > think there's a specific Fixes: reference that can be used. The curre=
-nt
-> > > behavior appears to have been that way since before git (looks like we
-> > > noticed in 2014 but it's taken me 6 years to nag people into sending
-> > > their fixes upstream). =20
-> >
-> > JFYI: there is a history.git repository from History Group on
-> > kernel.org. You may dig till the very beginning of the kernel (yes,
-> > it's not properly formed Git history, but it will give you a hash
-> > commit as a reference. =20
->=20
-> Stephen, btw, does your scripts that validate Fixes, take into
-> consideration references to history.git?
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Signed-off-by: Xingyu Wu <wuxy@bitland.corp-partner.google.com>
+Signed-off-by: ST Lin <stlin2@winbond.com>
+---
 
-I assuming you are referring to
-https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+Changes in v4:
+- drops package type code from name
 
-I have found a few by hand in the past (I also missed a few), but I
-guess I could expend the checks.
+Changes in v3:
+- fix commit message formats
 
-Maybe that tree could be put somewhere that appears more permanent if
-we are going to permanently refer to it? (Or has that happened already?)
---=20
-Cheers,
-Stephen Rothwell
+Changes in v2:
+- remove duplicated flash ID (w25q32jwm)
 
---Sig_/cHmrJ/D4znt7MYG1cUv/aML
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ drivers/mtd/spi-nor/winbond.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 6dcde15fb1aa..e5dfa786f190 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -63,6 +63,15 @@ static const struct flash_info winbond_parts[] = {
+ 	{ "w25q32jwm", INFO(0xef8016, 0, 64 * 1024,  64,
+ 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++	{ "w25q64jwm", INFO(0xef8017, 0, 64 * 1024, 128,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++	{ "w25q128jwm", INFO(0xef8018, 0, 64 * 1024, 256,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++	{ "w25q256jwm", INFO(0xef8019, 0, 64 * 1024, 512,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
+ 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-- 
+2.28.0.618.gf4bc123cb7-goog
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9fSQ8ACgkQAVBC80lX
-0Gy2Sgf/Uk1aL4NRj/kH6KJ6MvTqkkqOH4OcuMvhjgPGgwjvDpRFWXw3K9c4XxbU
-DN3dshR27b4lOn3g4pB5Fy6Xr41f5fX7L3z5Qw0fzmsxmdNHyh/V+7UUvGhOTQo9
-0ON2Z2at3wKyEuUIweOrWV52twydCRMwr9cDE3io+76ro2b4UOX/M4jlnSSE4HT1
-o6WTsuYAgpdYf+cWeejOs5AMEOukYxsmN9Zmr4rEeCaOCZdFOTTuBCvedI+989qK
-8Capogbs3ZzBufYKm7i1v4LVzb0Dc0pqA4cfvKN6MoAs3K+PxusctkzZQfvAIaPq
-Y5K1lkYJ9Mq/VQqkhsR4sM8BWIxfjg==
-=wEB6
------END PGP SIGNATURE-----
-
---Sig_/cHmrJ/D4znt7MYG1cUv/aML--
