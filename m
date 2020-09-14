@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF02326921B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59533269230
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgINQvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:51:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726349AbgINQuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:50:21 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3F0D20829;
-        Mon, 14 Sep 2020 16:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600102221;
-        bh=fjDVxTT4iFv5fMkMhLJSlhBi4P9qMYMhYAv6LFdtSMs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GRiu9srCw2nY3msEykEVdDAyg8cDJ6cMq0JmZgQgyoNESbX9zG0L0POfmo77QK/ra
-         OAw7ypT9ACL+QIZLoVu2FUDc9o87C7oHNPEmjYqGcxkls9xkrtvSCuMLw+G5wLSW15
-         G5tRpPKd/7AQK3ei2W/csQSFAuvdNUFKvdgw6jRo=
-Date:   Mon, 14 Sep 2020 09:50:18 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Omer Shpigelman <oshpigelman@habana.ai>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        SW_Drivers <SW_Drivers@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
-Message-ID: <20200914095018.21808fae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <AM0PR02MB552316B9A1635C18F8464116B8230@AM0PR02MB5523.eurprd02.prod.outlook.com>
-References: <20200910161126.30948-1-oded.gabbay@gmail.com>
-        <20200910161126.30948-13-oded.gabbay@gmail.com>
-        <20200910130138.6d595527@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf113A_=da2fGxgMbq_V0OcHsxdp5MpfHiUfeew+gEdnjaQ@mail.gmail.com>
-        <20200910131629.65b3e02c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAFCwf10XdCDhLeyiArc29PAJ_7=BGpdiUvFRotvFHieiaRn=aA@mail.gmail.com>
-        <20200910133058.0fe0f5e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <AM0PR02MB552316B9A1635C18F8464116B8230@AM0PR02MB5523.eurprd02.prod.outlook.com>
+        id S1726061AbgINQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbgINQun (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:50:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EBAC06174A;
+        Mon, 14 Sep 2020 09:50:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ONEBRln/W01sImpX9+NYKevjldL0jmS6ROdAPg7RGBo=; b=d20rYKoM3MFFGhKV+vJP3AYgTj
+        mwiFsplmERWLiFhdGa/edRGM+Qj9ahLzBKxByDwrrNrodrlLBFd+1uxwJNSncFSR/DD/F8eYJ5rpd
+        EWsrP4oBnQqVW69V09WhLgJDPlKrXa8ft32xDOYXKu7Bgk67FVD/8Jbrd6iHTXw2MTrw/1EsWJ3ne
+        U0zv3kyDd+IGx1DtSu4NHxadm7YDbRJCUD6CifAvTitUWGFAaXv+75kmqz8whwirQbRHFU2JP0SQa
+        20qFkwfkN4dRDAt7KOAwTrSVq9FT/o5iGlEJyqm8QeKBfLHUzYc5Q4s1ILBQr52OTeC3zWItAqCYw
+        TLiYM1yg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHrgX-0001cn-28; Mon, 14 Sep 2020 16:50:33 +0000
+Date:   Mon, 14 Sep 2020 17:50:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Qian Cai <cai@redhat.com>
+Cc:     linux-mm@kvack.org, intel-gfx@lists.freedesktop.org,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Subject: Re: [PATCH v2 3/8] mm: Optimise madvise WILLNEED
+Message-ID: <20200914165032.GS6583@casper.infradead.org>
+References: <20200910183318.20139-1-willy@infradead.org>
+ <20200910183318.20139-4-willy@infradead.org>
+ <c48c5eaa09d1ea5b78b12b545c034d1e937c49ba.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c48c5eaa09d1ea5b78b12b545c034d1e937c49ba.camel@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 13:48:14 +0000 Omer Shpigelman wrote:
-> On Thu, Sep 10, 2020 at 11:31 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Thu, 10 Sep 2020 23:17:59 +0300 Oded Gabbay wrote:  
-> > > > Doesn't seem like this one shows any more information than can be
-> > > > queried with ethtool, right?  
-> > > correct, it just displays it in a format that is much more readable  
-> > 
-> > You can cat /sys/class/net/$ifc/carrier if you want 0/1.
-> >   
-> > > > > nic_mac_loopback
-> > > > > is to set a port to loopback mode and out of it. It's not really
-> > > > > configuration but rather a mode change.  
-> > > >
-> > > > What is this loopback for? Testing?  
-> > >
-> > > Correct.  
-> > 
-> > Loopback test is commonly implemented via ethtool -t  
-> 
-> This debugfs entry is only to set the port to loopback mode, not running a loopback test.
-> Hence IMO adding a private flag is more suitable here and please correct me if I'm wrong.
-> But either way, doing that from ethtool instead of debugfs is not a good practice in our case.
-> Due to HW limitations, when we switch a port to/from loopback mode, we need to reset the device.
-> Since ethtool works on specific interface rather than an entire device, we'll need to reset the device 10 times in order to switch the entire device to loopback mode.
-> Moreover, running this command for one interface affects other interfaces which is not desirable when using ethtool AFAIK.
-> Is there any other acceptable debugfs-like mechanism for that?
+On Mon, Sep 14, 2020 at 12:17:07PM -0400, Qian Cai wrote:
+> Reverting the "Return head pages from find_*_entry" patchset [1] up to this
+> patch fixed the issue that LTP madvise06 test [2] would trigger endless soft-
+> lockups below. It does not help after applied patches fixed other separate
+> issues in the patchset [3][4].
 
-What's the use for a networking device which only communicates with
-itself, other than testing?
+Thanks for the report.  Could you try this?
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 96189acd6969..2d9ceccb338d 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -234,6 +234,7 @@ static void force_shm_swapin_readahead(struct vm_area_struct *vma,
+ 
+ 		if (!xa_is_value(page))
+ 			continue;
++		xas_pause(&xas);
+ 		rcu_read_unlock();
+ 
+ 		swap = radix_to_swp_entry(page);
+@@ -243,7 +244,6 @@ static void force_shm_swapin_readahead(struct vm_area_struct *vma,
+ 			put_page(page);
+ 
+ 		rcu_read_lock();
+-		xas_reset(&xas);
+ 	}
+ 	rcu_read_unlock();
+ 
