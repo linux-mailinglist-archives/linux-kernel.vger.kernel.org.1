@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858D126822F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229B8268236
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgINAjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 20:39:00 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:41184 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbgINAiz (ORCPT
+        id S1725990AbgINAtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 20:49:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26210 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725978AbgINAtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:38:55 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 800AFCC3AE;
-        Mon, 14 Sep 2020 08:38:51 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P23637T140494925444864S1600043930497733_;
-        Mon, 14 Sep 2020 08:38:51 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <de5c6ad02f6aa7c49a146817455a2579>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: linus.walleij@linaro.org
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Jianqun Xu <jay.xu@rock-chips.com>
-To:     linus.walleij@linaro.org, heiko@sntech.de
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Jianqun Xu <jay.xu@rock-chips.com>
-Subject: [PATCH 2/2] pinctrl: rockchip: make driver be tristate module
-Date:   Mon, 14 Sep 2020 08:38:47 +0800
-Message-Id: <20200914003847.10341-1-jay.xu@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200907025927.9713-3-jay.xu@rock-chips.com>
-References: <20200907025927.9713-3-jay.xu@rock-chips.com>
+        Sun, 13 Sep 2020 20:49:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600044550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ghr5orKu6aikpqEdskdLQXzPfKKUxCEDmVqKYdI6iBc=;
+        b=HFkRkDPOJuQrm495jcsfjUCmrPKddHy15H44p0l10DJV29aSp3YowDQO5sl5kyW1tfnGBE
+        dAEQ5gckhkrKfbZc9vVxlVu6j8KND15yMSNTh9klcuJa1cV82EkNkJwgo+/fQbfEyhc219
+        Q8AWPjs1FeIMHST12cuVMq8U0pVmpAI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-gFHhDZXQMyGmwnYw-_oZFw-1; Sun, 13 Sep 2020 20:49:05 -0400
+X-MC-Unique: gFHhDZXQMyGmwnYw-_oZFw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DB18425CB;
+        Mon, 14 Sep 2020 00:49:03 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-113-90.rdu2.redhat.com [10.10.113.90])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D919F60BF3;
+        Mon, 14 Sep 2020 00:49:01 +0000 (UTC)
+Subject: Re: [PATCH 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200820130350.3211-1-longman@redhat.com>
+ <20200820130350.3211-3-longman@redhat.com>
+ <20200820173546.GB912520@cmpxchg.org>
+ <a3d4783b-5aee-da40-06c0-ac63e292ccdb@redhat.com>
+ <CALvZod6GARMuO8YzMp-1FZaasSZJ8t2b9dUu5tXUcDeuHxA6KA@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <73bab001-b819-1e6d-e130-c52ae2206f19@redhat.com>
+Date:   Sun, 13 Sep 2020 20:49:01 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <CALvZod6GARMuO8YzMp-1FZaasSZJ8t2b9dUu5tXUcDeuHxA6KA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make pinctrl-rockchip driver to be tristate module, support to build as
-a module, this is useful for GKI.
+On 8/20/20 5:25 PM, Shakeel Butt wrote:
+> On Thu, Aug 20, 2020 at 1:29 PM Waiman Long <longman@redhat.com> wrote:
+>> On 8/20/20 1:35 PM, Johannes Weiner wrote:
+>>> On Thu, Aug 20, 2020 at 09:03:49AM -0400, Waiman Long wrote:
+>>>> The mem_cgroup_get_max() function used to get memory+swap max from
+>>>> both the v1 memsw and v2 memory+swap page counters & return the maximum
+>>>> of these 2 values. This is redundant and it is more efficient to just
+>>>> get either the v1 or the v2 values depending on which one is currently
+>>>> in use.
+>>>>
+>>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>>> ---
+>>>>    mm/memcontrol.c | 14 +++++---------
+>>>>    1 file changed, 5 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>>> index 26b7a48d3afb..d219dca5239f 100644
+>>>> --- a/mm/memcontrol.c
+>>>> +++ b/mm/memcontrol.c
+>>>> @@ -1633,17 +1633,13 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+>>>>     */
+>>>>    unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+>>>>    {
+>>>> -    unsigned long max;
+>>>> +    unsigned long max = READ_ONCE(memcg->memory.max);
+>>>>
+>>>> -    max = READ_ONCE(memcg->memory.max);
+>>>>       if (mem_cgroup_swappiness(memcg)) {
+>>>> -            unsigned long memsw_max;
+>>>> -            unsigned long swap_max;
+>>>> -
+>>>> -            memsw_max = memcg->memsw.max;
+>>>> -            swap_max = READ_ONCE(memcg->swap.max);
+>>>> -            swap_max = min(swap_max, (unsigned long)total_swap_pages);
+>>>> -            max = min(max + swap_max, memsw_max);
+>>>> +            if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>>>> +                    max += READ_ONCE(memcg->swap.max);
+>>>> +            else
+>>>> +                    max = memcg->memsw.max;
+>>> I agree with the premise of the patch, but v1 and v2 have sufficiently
+>>> different logic, and the way v1 overrides max from the innermost
+>>> branch again also doesn't help in understanding what's going on.
+>>>
+>>> Can you please split out the v1 and v2 code?
+>>>
+>>>        if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>>>                max = READ_ONCE(memcg->memory.max);
+>>>                if (mem_cgroup_swappiness(memcg))
+>>>                        max += READ_ONCE(memcg->swap.max);
+>>>        } else {
+>>>                if (mem_cgroup_swappiness(memcg))
+>>>                        max = memcg->memsw.max;
+>>>                else
+>>>                        max = READ_ONCE(memcg->memory.max);
+>>>        }
+>>>
+>>> It's slightly repetitive, but IMO much more readable.
+>>>
+>> Sure. That makes it even better.
+>>
+> Can you please also add in the commit message why it is ok to drop
+> total_swap_pages comparison from mem_cgroup_get_max()?
+>
+My bad. I accidentally skipped the total_swap_pages check. Will add it 
+back in v2.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- drivers/pinctrl/Kconfig            |  2 +-
- drivers/pinctrl/pinctrl-rockchip.c | 13 +++++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 4284f39a5c61..743eb2bb8709 100644
---- a/drivers/pinctrl/Kconfig
-+++ b/drivers/pinctrl/Kconfig
-@@ -207,7 +207,7 @@ config PINCTRL_OXNAS
- 	select MFD_SYSCON
- 
- config PINCTRL_ROCKCHIP
--	bool
-+	tristate "Rockchip gpio and pinctrl driver"
- 	depends on OF
- 	select PINMUX
- 	select GENERIC_PINCONF
-diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
-index 0401c1da79dd..927d132d6716 100644
---- a/drivers/pinctrl/pinctrl-rockchip.c
-+++ b/drivers/pinctrl/pinctrl-rockchip.c
-@@ -16,10 +16,12 @@
-  */
- 
- #include <linux/init.h>
-+#include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/bitops.h>
- #include <linux/gpio/driver.h>
-+#include <linux/of_device.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/pinctrl/machine.h>
-@@ -4258,3 +4260,14 @@ static int __init rockchip_pinctrl_drv_register(void)
- 	return platform_driver_register(&rockchip_pinctrl_driver);
- }
- postcore_initcall(rockchip_pinctrl_drv_register);
-+
-+static void __exit rockchip_pinctrl_drv_unregister(void)
-+{
-+	platform_driver_unregister(&rockchip_pinctrl_driver);
-+}
-+module_exit(rockchip_pinctrl_drv_unregister);
-+
-+MODULE_DESCRIPTION("ROCKCHIP Pin Controller Driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:pinctrl-rockchip");
-+MODULE_DEVICE_TABLE(of, rockchip_pinctrl_dt_match);
--- 
-2.17.1
-
-
+Cheers,
+Longman
 
