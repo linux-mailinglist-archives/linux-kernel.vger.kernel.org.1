@@ -2,290 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8ED26880C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A8A268815
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgINJOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:14:04 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54145 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726284AbgINJOB (ORCPT
+        id S1726239AbgINJQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726199AbgINJQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:14:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600074837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CfJskBQHpZ9+0kSwLmzC02tWH8sjBa4yGY+QGL9Ecbg=;
-        b=cy/llAoH/ik1fOffYstaawNlSu/8zhyVx50fSNmtkSrZrWyWkS27jvCwdm07d9ztae2Lre
-        HfrEFv8I/9CSLC4BojNyfamnzNfd4s3AYOS6Xg9ZHiPoWbVslnZEGCtJPnFqVB0qTIrpDL
-        etFiLfuVDTnxQ+GYmpusstqGSwbG3gM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-ByrWbMASNMq5Z0PXhXpXKA-1; Mon, 14 Sep 2020 05:13:55 -0400
-X-MC-Unique: ByrWbMASNMq5Z0PXhXpXKA-1
-Received: by mail-ed1-f72.google.com with SMTP id x14so9001802edv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:13:55 -0700 (PDT)
+        Mon, 14 Sep 2020 05:16:33 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12392C06174A;
+        Mon, 14 Sep 2020 02:16:31 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id n13so16746705edo.10;
+        Mon, 14 Sep 2020 02:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XXy/wM2htl8rGdlFZEO1cSyO0iLpVUoMkmwaTLnGh7Y=;
+        b=Gy6frrKpAhm/U4ECz6t6JookWgXUzuBG/YmtM/vp0fegQQQlXyfQISfmiKNMzFIF4x
+         2wGO7lcW5rjp7XVKiWw8w8ggxPgDO6z/vmqseIxOb/bPjKy/9WvFJ65S7jz7FIvbCqby
+         nWvEDQDbTf+H7CrtRI6R3DoZr5Fxb3ymAXanK83P8VOxh+4ISx+Wg8kpRgezrK+LqoRb
+         H7hP5E6xOdmoT337Ca3RUplVaZMNcX2IcousmLqxgfjuVZv5jqpi3P1jg0wwohg/PJQ2
+         m3tzGXdfjQ2wT81gKiTU0BNXTORKhjSRfzk0MQaRb85bTwryf3u8g/E8YKrK4CIANhrF
+         gPoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CfJskBQHpZ9+0kSwLmzC02tWH8sjBa4yGY+QGL9Ecbg=;
-        b=F01p6uDZOwV4xRSkRpyafGNsDsf4e304JRM7Rk1im2lW5Ii1C/cnyCXYA6kpteZMgz
-         qSbmqnqK5MrATn7gBY3cRDUYUSvF83cgQYG9eqMt1pPJLmWpe3eSZ04uoNepzAKlhZnh
-         nkQnsJokmSbv2Vrmh7vEkoGa0z1ykuN4H73iVAoWZdh3U7Ks0CmhohMr7st97HYNAIsu
-         SFMVwnlw5MLhNqzht7BtIXVA7pkrh6WjGFZWPwzeB1/l2DKWKvL6+4nn72AlefGKG/BO
-         8HqehacnuApOxryvf6Vghb+DMgbqKGP+6rxldx5HUXcaEgMolGNKtMxenLvrmxKBpJ65
-         Dz7w==
-X-Gm-Message-State: AOAM533IuveAAtafYDqbheDmdYU/PxuDWmiuLx9xw77UZ8a9KeAoFhIn
-        NcO+CesX/pxNWXCWJVsGnFlhM5bR3fo93C+OkWhpf3GdzkpirOR4HpAftDSIW9FVnsNjd8xotEd
-        97uB5yhk8kJqA4ATjun6feuf0
-X-Received: by 2002:a17:906:cf82:: with SMTP id um2mr13570484ejb.49.1600074834291;
-        Mon, 14 Sep 2020 02:13:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJysL1pyes10CScG4wjxSTQHVK5ShSVXdhDVlsBVuhhKnzo+TmMEVrrtEd6BYfUO/oEh2yB8qg==
-X-Received: by 2002:a17:906:cf82:: with SMTP id um2mr13570450ejb.49.1600074833896;
-        Mon, 14 Sep 2020 02:13:53 -0700 (PDT)
-Received: from x1.localdomain ([78.108.130.193])
-        by smtp.gmail.com with ESMTPSA id ot19sm7243799ejb.121.2020.09.14.02.13.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 02:13:53 -0700 (PDT)
-Subject: Re: [PATCH] Introduce support for Systems Management Driver over WMI
- for Dell Systems
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Divya Bharathi <divya27392@gmail.com>,
-        "dvhart@infradead.org" <dvhart@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>,
-        Richard Hughes <rhughes@redhat.com>,
-        Jared Dominguez <jaredz@redhat.com>
-References: <20200730143122.10237-1-divya_bharathi@dell.com>
- <d3de1d27-25ac-be43-54d8-dcbfffa31e1d@redhat.com>
- <DM6PR19MB26364970D0981212E811E1B0FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <67ca316a-227f-80f6-ad22-7d08112b2584@redhat.com>
-Date:   Mon, 14 Sep 2020 11:13:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XXy/wM2htl8rGdlFZEO1cSyO0iLpVUoMkmwaTLnGh7Y=;
+        b=IyIbnkRkaoSJtQaLtPBxmQRHN66owSR1GqYcBSDPeHWvdEw3MUGv6rO6P8DwTEvaCd
+         8Z1urcUqAu+diCJFKClMqpfkrgwTWtCmTe3/FHjV3H272kn4nxa7I6C3YDbiLO8phRXL
+         5Z1LjKsA+Hgds8lQUcqYS+O5hYF4isFOWIfkxGHdDncVOFOxRnPm45E4zwx2RKq31cQB
+         C823+60CASqbHnwSdwOi2EkZ2Ipk7TIF6autEKyrUgy9GFb/UBW62RTzS0YBSSrZ/Och
+         maX7rPIA10BfImnKEMN6reVFwF612/DgtByc3arbzURFWTdxkVdHlQ7d0Xggp7fQiNtL
+         ygjw==
+X-Gm-Message-State: AOAM530UcbiuZ8xP04BBdNyb7obaqUdwng/FRebzGaQibj2oGIw+mPoW
+        NXzq6v/8IBGzS7fztsT22AU=
+X-Google-Smtp-Source: ABdhPJxsTH23qFvtGZgKcPOWJngZAz4+NnnzhQdifQpvY+O2WIlBXxLFfnO96I7eUVCxjSAcT8ORkw==
+X-Received: by 2002:a50:fd0a:: with SMTP id i10mr15856716eds.277.1600074990515;
+        Mon, 14 Sep 2020 02:16:30 -0700 (PDT)
+Received: from gmail.com (5400A980.dsl.pool.telekom.hu. [84.0.169.128])
+        by smtp.gmail.com with ESMTPSA id c8sm7266991ejp.30.2020.09.14.02.16.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 02:16:29 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 11:16:27 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        e5ten.arch@gmail.com,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH v2] x86/boot/compressed: Disable relocation relaxation
+Message-ID: <20200914091627.GA153848@gmail.com>
+References: <20200812004158.GA1447296@rani.riverdale.lan>
+ <20200812004308.1448603-1-nivedita@alum.mit.edu>
+ <CA+icZUVdTT1Vz8ACckj-SQyKi+HxJyttM52s6HUtCDLFCKbFgQ@mail.gmail.com>
+ <CAKwvOdmHxsLzou=6WN698LOGq9ahWUmztAHfUYYAUcgpH1FGRA@mail.gmail.com>
+ <20200825145652.GA780995@rani.riverdale.lan>
+ <20200913223455.GA349140@rani.riverdale.lan>
+ <CAMj1kXFnuzdmPxCytCbFdgtLo8Bb4k247ePgbLuZ1mANEn=azw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR19MB26364970D0981212E811E1B0FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFnuzdmPxCytCbFdgtLo8Bb4k247ePgbLuZ1mANEn=azw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 9/1/20 4:17 PM, Limonciello, Mario wrote:
+* Ard Biesheuvel <ardb@kernel.org> wrote:
 
-<snip>
-
->> So first of all some comments on the userspace (sysfs) API for that. Getting
->> this
->> part right is the most important part of this patch, as that will be set in
->> stone
->> once merged.
->>
->> My first reaction to the suggest API is that I find the sorting by type thing
->> really weird,
->> so if I were to do:
->>
->> ls /sys/devices/platform/dell-wmi-sysman/attributes/
->>
->> I would get the following as output:
->>
->> enumeration
->> integer
->> string
->>
->> And then to see the actual attributes I would need to do:
->>
->> ls /sys/devices/platform/dell-wmi-sysman/attributes/{enumeration,integer,string}
->>
->> This feels less then ideal both when interacting from a shell, but also when
->> e.g. envisioning C-code enumerating attributes.
->>
->> IMHO it would be better to have:
->>
->> /sys/devices/platform/dell-wmi-sysman/attributes/<attr>/type
->>
->> Which can be one of "enumeration,integer,string"
->>
->> and then have the other sysfs files (default_Value, current_value, max..., etc.)
->> as:
->>
->> /sys/devices/platform/dell-wmi-sysman/attributes/<attr>/default_value
->> etc.
->>
->> Where which files exactly are present for a specific <attr> depends on the type.
->>
->> This will make e.g C-code enumerating all attributes be a single readdir,
->> followed
->> by reading the type for each dir entry; and if we add a new type the C-code can
->> warn the user that it encountered an atribute with unknown type <new-type>,
->> rather then not being aware that there is a fourth dir (for the new type) with
->> attributes to check.
+> On Mon, 14 Sep 2020 at 01:34, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> >
+> > On Tue, Aug 25, 2020 at 10:56:52AM -0400, Arvind Sankar wrote:
+> > > On Sat, Aug 15, 2020 at 01:56:49PM -0700, Nick Desaulniers wrote:
+> > > > Hi Ingo,
+> > > > I saw you picked up Arvind's other series into x86/boot.  Would you
+> > > > mind please including this, as well?  Our CI is quite red for x86...
+> > > >
+> > > > EOM
+> > > >
+> > >
+> > > Hi Ingo, while this patch is unnecessary after the series in
+> > > tip/x86/boot, it is still needed for 5.9 and older. Would you be able to
+> > > send it in for the next -rc? It shouldn't hurt the tip/x86/boot series,
+> > > and we can add a revert on top of that later.
+> > >
+> > > Thanks.
+> >
+> > Ping.
+> >
+> > https://lore.kernel.org/lkml/20200812004308.1448603-1-nivedita@alum.mit.edu/
 > 
-> I agree this is the most important part to get correct.  This proposal seems pretty
-> good to me.
-> 
->>
->> Other then that the sysfs interface generally looks good to me, except for
->> one other big thing (and one small thing, see below).
->>
->> This interface seems pretty generic (which is a good thing), but then having
->> it live in the hardcoded /sys/devices/platform/dell-wmi-sysman/attributes
->> name-space seems less then ideal. I also see in the code that you are creating
->> a dummy platform device, just to have a place/parent to register the attributes
->> dir with.
->>
->> Combining these 2 things I think that it would be better to make a new class
->> for this, like how we e.g. have a backlight class under /sys/class/backlight
->> we could have a /sys/class/firmware_attributes class and then we would get
->> a dell_wmi entry under that (and drop the "attributes" dir), so we would get:
->>
->> /sys/class/firmware_attributes/dell_wmi/<attr>/type
->>
->> Etc.
->>
->> So instead of creating a dummy platform device, you would create a
->> firmware_attributes
->> class device.
->>
->> I think it is likely that other vendors may eventually also support modifying
->> BIOS settings without going into the BIOS setup menu and I would like us to
->> use one unified userspace API for this.  Note this changes little for the Dell
->> code /
->> this patch (although eventually some code may be moved into shared helpers), but
->> it does allow userspace to discover if the firmware-attr sysfs API is supported
->> in
->> a vendor agnostic API by doing a readdir on /sys/class/firmware_attributes
->>
-> 
-> This area I'm not sure I'm aligned.  Two reasons come to mind:
-> 
-> 1) The interface that Dell offers isn't guaranteed to work the same as any other
-> Vendors. Do we want to force them to use the same interface as Dell?  For example what
-> if another vendor doesn't offer an interface from their firmware to enumerate possible
-> options for any attribute but you have to know them in advance?
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-So my thinking here is as follows:
+Thanks guys - queued up in tip:x86/urgent.
 
-1. AFAIK other vendors may want to do something similar in the near future
-2. The interface you (Dell) have come up with looks pretty generic / complete to me
-
-> Would those possible options
-> be hardcoded in their kernel driver?
-
-Maybe, so the firmware implementation of an enum type, can take 2 forms:
-a) An integer in the range of 0-# where 0-# is like the integer value backing an enum in C
-b) Reading the current value as a string and when writing only a value from a fixed list of strings is valid
-
-Now in both cases, either not knowing what the numbers actually mean, or not knowing
-which values are valid for writing would make the interface pretty hard to use,
-close to useless. So yes in that case the driver may need to hardcode to values
-(assuming that scales for that vendor and they don't have a gazillion different
-enums).
-
-Also note that sysfs attributes can be marked as optional, so we could mark
-things like possible enum-values, min/max/scalar_inc as optal right from the start.
-We could for now mark everything optional except for type, current_value and
-display-name. That should make it easy for other vendors implementations to
-adhere to / implement the API.
-
-> Dell sets precedent here by having the first driver.
-
-Right and normally I may have wanted to wait until a second vendor implements
-a similar mechanism under Linux so that we can find common ground between the
-2 implementations for the generic userspace API for this.
-
-The problem with that approach is that because we do not break userspace,
-we then get to carry the "temporary" vendor-specific implementation of the
-userspace API around for ever, since it may very well have existing users
-before we replace it with the generic API.
-
-This scenario would mean that after some point in time (when the generic API gets
-added to the kernel) Dell needs to support 2 userspace APIs the one which is
-being introduced by this patch + the generic one going forward.
-
-Since to me the current API/ABI Dell is proposing is pretty generic I'm
-trying to avoid this having 2 maintain 2 different userspace APIs problem
-by making this the generic API from the get go.
-
-> 2) Dell has some extensions planned for other authentication mechanisms than password.
-> That is *definitely* going to be Dell specific, so should it be done in this vendor
-> agnostic directory?
-
-Well each property:
-
-/sys/class/firmware-properties/dell-bios/<property-name>
-
-Will have a type attribute:
-
-/sys/class/firmware-properties/dell-bios/<property-name>/type
-
-You can use dell-special-auth-mechanism as type for this and
-then it is clear it is dell specific. As mentioned above I
-fully expect new types to get added over this and userspace tools
-will be expected to just skip properties with unknown types
-(possibly with a warning).
-
-We could even do something like we have for .desktop files
-fields, where we add something to the sysfs ABI documentation
-that vendors may add vendor specific types prefixed with X-<vendorname>.
-
-So all in all I believe that we can make using the proposed sysfs ABI
-a generic one work, and that this will be worth it to avoid having the
-issue of eventually having both a couple of vendor specific APIs +
-one grant unified generic API replacing those vendor-APIs
-(where we can never drop the vendor specific APIs because of
-backward compat. guarantees).
-
->> There could even be multiple instances implementing this interface, e.g. if
->> their
->> is an add-on card with its own option-ROM, see for iscsi booting then the iscsi
->> boot
->> options could be available under:
->>
->> /sys/class/firmware_attributes/iscsi_boot_nic/<attr>/*
->>
->> While the main system firmware settings would be available under:
->>
->> /sys/class/firmware_attributes/dell_wmi/<attr>/*
->>
->> Since you have already designed a nice generic API for this it seems
->> sensible to me to make it possible to use this outside the Dell WMI case.
->>
->>
->> So as mentioned I also have one smaller issue with the API, how is a
->> UI supposed to represent all these attributes?  In the BIOS setup screen
->> they are typically grouped together under e.g. CPU settings, power-management
->> settings,
->> etc.  I wonder if it would be possible to add a "group" sysfs file to each
->> attribute
->> which represent the typical grouping. E.g. for pm related settings the group
->> file
->> would contain "Power Management" then an userspace Ui can enumerate the groups
->> and
->> have e.g. 1 tab per group, or a tree with the groups as parents oof the
->> attributes
->> for each group. This is just an idea I don't know if such grouping info is
->> available
->> in the WMI interface for this.
-> 
-> This information isn't available in the ACPI-WMI interface unfortunately.
-
-Ok, too bad, but understandable.
-
-Regards,
-
-Hans
-
+	Ingo
