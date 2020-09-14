@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0E926847E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D79268490
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:12:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgINGKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:10:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41152 "EHLO mail.kernel.org"
+        id S1726115AbgINGMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbgINGKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:10:09 -0400
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726027AbgINGMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:12:14 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 411CD221E7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:10:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7C1E206F4;
+        Mon, 14 Sep 2020 06:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600063806;
-        bh=gRfQi8Y/zVpyvyp+ighIXW73BdG51yD5X7tJ3596N1A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YVUJRDj0Ic1/CpKcLrV0F3HgmCgmH+afICkTmLfhWwrcRiHDr2CnKLJu5PqesWAS+
-         9Zzj9TvouRnL/lw9j98/mekrrxex4dTJA1xLKj7vCdPUDH/gIncTCnKQ1ohJqcLuV9
-         /LOEwjEqKAtiUAApf2bpwJfMexk6zXP7RSr7/Qlg=
-Received: by mail-lf1-f41.google.com with SMTP id q8so12102683lfb.6
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:10:06 -0700 (PDT)
-X-Gm-Message-State: AOAM532NBdx8gKIC8gdzWunG7pnraMzpP7aFTfbY1msTDdySJOgxMLGz
-        Ylc0OrPFCqOtrd0uYTLtsGilqOzoUVlMWv0qkAA=
-X-Google-Smtp-Source: ABdhPJzfD85LEbn1RMbKHVgRbfr5GGWW4QkAKY8dPx11eG7y/46JHyMRK2g+W5HH90o7lPdnpSi7Vea1ckAXY6/XeGY=
-X-Received: by 2002:a19:7902:: with SMTP id u2mr4091112lfc.515.1600063804480;
- Sun, 13 Sep 2020 23:10:04 -0700 (PDT)
+        s=default; t=1600063934;
+        bh=ZKOHf2zMJ25tsrVOijUOnI9bZN2JzvoOq1izeZqL5m8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EfMRweeL90HLKvDBprKOhF4+ELQkJXvlVWgLXVwzXa+x0lIL9WzLmpVuaKOTsey18
+         Z8uzeR2+7Bx9clnefccjp3Chx4t0Q3Nv/MwA9cLBOgnIXsOr5VAZHUmbhdvc6Gtpd5
+         lci0reQSkZFMeurt55H/3uqKpuqkj4asGPD0itlk=
+Date:   Mon, 14 Sep 2020 08:12:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH] usb: gadget: bcm63xx_udc: fix up the error of undeclared
+ usb_debug_root
+Message-ID: <20200914061210.GA788192@kroah.com>
+References: <1600061930-778-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-2-jolsa@kernel.org>
-In-Reply-To: <20200913210313.1985612-2-jolsa@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 13 Sep 2020 23:09:53 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7jkH7kmG9HZ_fs2dGq=G=AE17ofexkKkVLD-qCYC0=dg@mail.gmail.com>
-Message-ID: <CAPhsuW7jkH7kmG9HZ_fs2dGq=G=AE17ofexkKkVLD-qCYC0=dg@mail.gmail.com>
-Subject: Re: [PATCH 01/26] bpf: Move stack_map_get_build_id into lib
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600061930-778-1-git-send-email-chunfeng.yun@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 2:05 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Moving stack_map_get_build_id into lib with
-> prototype in linux/buildid.h header:
->
->   int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
->
-> This function returns build id for given struct vm_area_struct.
-> There is no functional change to stack_map_get_build_id function.
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Mon, Sep 14, 2020 at 01:38:50PM +0800, Chunfeng Yun wrote:
+> Fix up the build error caused by undeclared usb_debug_root
+> 
+> Cc: stable <stable@vger.kernel.org>
+> Fixes: a66ada4f241c("usb: gadget: bcm63xx_udc: create debugfs directory under usb root")
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Nit, you need a ' ' before the '(' character...
+
+thanks,
+
+greg k-h
