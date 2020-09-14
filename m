@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D070D268B67
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBAC268B71
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgINMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:48:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55928 "EHLO mx2.suse.de"
+        id S1726553AbgINMuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:50:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58000 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbgINMoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:44:06 -0400
+        id S1726548AbgINMq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:46:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1AAE7AD25;
-        Mon, 14 Sep 2020 12:44:21 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 14:44:05 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] printk: ringbuffer: avoid memcpy() on state_var
-Message-ID: <20200914124404.GD11154@alley>
-References: <20200914094803.27365-1-john.ogness@linutronix.de>
- <20200914094803.27365-2-john.ogness@linutronix.de>
+        by mx2.suse.de (Postfix) with ESMTP id 586A5AC79;
+        Mon, 14 Sep 2020 12:46:30 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 14:46:12 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/traps: fix recoverability of machine check
+ handling on book3s/32
+Message-ID: <20200914124612.GC29778@kitsune.suse.cz>
+References: <1c804764d38fb084b420b12ca13e8c1b2dea075e.1548166189.git.christophe.leroy@c-s.fr>
+ <20200911091542.GE29521@kitsune.suse.cz>
+ <87pn6sqweq.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200914094803.27365-2-john.ogness@linutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87pn6sqweq.fsf@mpe.ellerman.id.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-09-14 11:54:03, John Ogness wrote:
-> @state_var is copied as part of the descriptor copying via
-> memcpy(). This is not allowed because @state_var is an atomic type,
-> which in some implementations may contain a spinlock.
+On Fri, Sep 11, 2020 at 11:23:57PM +1000, Michael Ellerman wrote:
+> Michal Suchánek <msuchanek@suse.de> writes:
+> > Hello,
+> >
+> > does this logic apply to "Unrecoverable System Reset" as well?
+> 
+> Which logic do you mean?
+> 
+> We do call die() before checking MSR_RI in system_reset_exception():
+> 
+>   	/*
+>   	 * No debugger or crash dump registered, print logs then
+>   	 * panic.
+>   	 */
+>   	die("System Reset", regs, SIGABRT);
+>   
+>   	mdelay(2*MSEC_PER_SEC); /* Wait a little while for others to print */
+>   	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
+>   	nmi_panic(regs, "System Reset");
+>   
+>   out:
+>   #ifdef CONFIG_PPC_BOOK3S_64
+>   	BUG_ON(get_paca()->in_nmi == 0);
+>   	if (get_paca()->in_nmi > 1)
+>   		die("Unrecoverable nested System Reset", regs, SIGABRT);
+>   #endif
+>   	/* Must die if the interrupt is not recoverable */
+>   	if (!(regs->msr & MSR_RI))
+>   		die("Unrecoverable System Reset", regs, SIGABRT);
+> 
+> 
+> So you should see the output from die("System Reset", ...) even if
+> MSR[RI] was clear when you took the system reset.
 
-Great catch!
+Indeed, replied to the wrong patch. I was looking at daf00ae71dad
+("powerpc/traps: restore recoverability of machine_check interrupts")
+which has very similar commit message.
 
-> Avoid using memcpy() with @state_var by explicitly copying the other
-> fields of the descriptor. @state_var is set using atomic set
-> operator before returning.
+Sorry about the confusion.
 
-Just thinking loudly.
+Thanks
 
-Strictly speaking, memcpy() might be used when the atomic variable
-is later corrected by an atomic operation. And it is done by the first
-patch.
+Michal
 
-I think that it is a matter of taste what solution is more error
-prone. Either this function must be updated when a new field
-is added into struct prb_desc or the atomic_long_set() must not
-get removed.
-
-Hmm, missing memcpy() should be rather easy to debug. While missing
-atomic_long_set() is really subtle problem problem. So, the new
-code is better from my POV.
-
-
-> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+> 
+> cheers
+> 
+> > On Tue, Jan 22, 2019 at 02:11:24PM +0000, Christophe Leroy wrote:
+> >> Looks like book3s/32 doesn't set RI on machine check, so
+> >> checking RI before calling die() will always be fatal
+> >> allthought this is not an issue in most cases.
+> >> 
+> >> Fixes: b96672dd840f ("powerpc: Machine check interrupt is a non-maskable interrupt")
+> >> Fixes: daf00ae71dad ("powerpc/traps: restore recoverability of machine_check interrupts")
+> >> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> >> Cc: stable@vger.kernel.org
+> >> ---
+> >>  arch/powerpc/kernel/traps.c | 8 ++++----
+> >>  1 file changed, 4 insertions(+), 4 deletions(-)
+> >> 
+> >> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+> >> index 64936b60d521..c740f8bfccc9 100644
+> >> --- a/arch/powerpc/kernel/traps.c
+> >> +++ b/arch/powerpc/kernel/traps.c
+> >> @@ -763,15 +763,15 @@ void machine_check_exception(struct pt_regs *regs)
+> >>  	if (check_io_access(regs))
+> >>  		goto bail;
+> >>  
+> >> -	/* Must die if the interrupt is not recoverable */
+> >> -	if (!(regs->msr & MSR_RI))
+> >> -		nmi_panic(regs, "Unrecoverable Machine check");
+> >> -
+> >>  	if (!nested)
+> >>  		nmi_exit();
+> >>  
+> >>  	die("Machine check", regs, SIGBUS);
+> >>  
+> >> +	/* Must die if the interrupt is not recoverable */
+> >> +	if (!(regs->msr & MSR_RI))
+> >> +		nmi_panic(regs, "Unrecoverable Machine check");
+> >> +
+> >>  	return;
+> >>  
+> >>  bail:
+> >> -- 
+> >> 2.13.3
+> >> 
