@@ -2,220 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2282699A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1FD2699AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726066AbgINX2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
+        id S1726102AbgINX3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgINX2A (ORCPT
+        with ESMTP id S1725997AbgINX2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:28:00 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDD8C06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:27:59 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y11so1099298lfl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:27:59 -0700 (PDT)
+        Mon, 14 Sep 2020 19:28:54 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2ACC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:28:54 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id d190so2070510iof.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=r2GMisdxFuJIz8Oi1Fu4M0eVpKlXoiL45pGV8V5Zu24=;
-        b=a+K4RbaJnscL4621Dq0mKkwgar6f4XoIA9LGaSxpiPd9HHQ4Rlx13fofQWWRRKhqVT
-         /yo3kkPAjCp27Tl7r/JI/O8rJBvORth8susMft10B0mYTYxNb7EmUfAIsh7cApWHuup1
-         9ZFW4MkQSaae7sYhOdOTFQIYXporG+j9nEaLVSgxa0kvEuG/eNu5slzBlu3DgwxeUNFR
-         vPTs+O/zHYXwbtzZDSWEEBA6usaMey3eUexXGnmjTGX5DyxMQQwfLuGSTb0mcl4SNFiC
-         7LJ3gqJUrFoKT3AuyOP0yI3kKMuc17boaTwI07hsPnq80lMDA/Nba4hOilwhsLEM+i9T
-         UZGQ==
+         :content-disposition:in-reply-to;
+        bh=6mwCziIgbqCaPfGhbpJclA7zt0zT/DjQfjFbGVV4PrQ=;
+        b=mbkthaWgzvywMvbJyHZOeX0puvYOuoc5q0gETR5HzioqXS8ZkYvVEYF3J+yIQjWyUP
+         kEqKwkFqykyQK59/mExPj8FoETOqv/t6lNhTWmHz1qjAFMqCoF7jriHIJRmUwiA3GVeo
+         VlnTmNl1ZnUsyCfJ6cdAhGnYee4TQEiPK29Maz9zvvqLdNv0IbSUgwMFSuZ8JhvgP78a
+         WKaTzspxrQtFYvWoy2K+YX2mmbE8DlshKWu9spLPDSTuo+ks53uTooHvZhVIGm03DSd0
+         isDitc2HqrQrd+3JmpckFY0gQaY0TguDoCByCi3dSE31S6/AsPgdGLQLl/jGaYSQQfdk
+         NIQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r2GMisdxFuJIz8Oi1Fu4M0eVpKlXoiL45pGV8V5Zu24=;
-        b=hbR6bQYkhkkf0D7V3SLQxm0bdg8b2E8k7F9o7zECCY582W1E6mtGOKw7AU0VKNUMtg
-         YWzJDAbAv/q5VgumpqxtA1YQSY91RJeJKjZrarjiqSXv5shy+VFxZvV6pQ6Ja5VUahd6
-         EQP8C36E3YyhVPqRv3M/VO2Gzr1WQjxQZgVW5c5f/rqHO9FAK8xt3oE/YQwADqS2WIV5
-         EefELwtMDNXjz9LwQnLYMPSuxYrUlTzZj8b18YjU+GyQUUvZhQlX+djL9fXQuRzhGcmk
-         3mZ9Cs7N4VjPBdQMe0Bk/vt4v5I9/a6ayfGzeOEZR8mCY3W/iixphB+ncxtKz6QsYg1k
-         SnQg==
-X-Gm-Message-State: AOAM532+TLu4Ed+zcKphOfvgDGSs6kbV/AZdugREC2d7QrZ5CV3WLTG9
-        7XZEhRqqRywEpR7lu8Or9tA4Lg==
-X-Google-Smtp-Source: ABdhPJyp0bWKCn/K5zSlid5A0seiTiqxw7kxU6VrW0Tdi/BaM3+tE9I+UcsDSHxIzo0mrwBeSpXhYg==
-X-Received: by 2002:a05:6512:3f3:: with SMTP id n19mr4607751lfq.531.1600126077920;
-        Mon, 14 Sep 2020 16:27:57 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id 80sm3955438lff.61.2020.09.14.16.27.56
+         :mime-version:content-disposition:in-reply-to;
+        bh=6mwCziIgbqCaPfGhbpJclA7zt0zT/DjQfjFbGVV4PrQ=;
+        b=B+grGcjjnLNlW/y8VL8La2Fx4ZmYfNPGzpDsU3Wpmr79R14M7BwmgLaaK04iOHmHpg
+         ctxXPJuEddudNLqz32gxYriZ10a3kPn1DaZav9Xnx/gkEQlhd6VOrqLZ1hQ80LkIYZ+v
+         GzvMukTnldkOPDTS6G86RKdO3DGQvnn0T4SDFa2/1cNguM8ryGj/pGomUQdsITekFrZM
+         A84g/QQ5XKxE/eHvqQrBsMaPcfb4lL/S4gP3ax0ZUqBypzcwHZr2mB/nUs7xCNKcoDQZ
+         3eRthO5l520vUfQGiRi/WMci+9fHMcYVIgx4oUNEDh29+CJZQ358kTYOLO9Nv4x8r3iz
+         qjOw==
+X-Gm-Message-State: AOAM5312LsvmtMZGdjFp2jSRwPNgt+QhNw5ajp0bNk/thClZNYzDOjWE
+        zvwgI+8tswRSCtEi4215xMFkPw==
+X-Google-Smtp-Source: ABdhPJzUNguBOvRQmINN/RQZ6Oz1sZ8VDajcEqKrO2vPt27FjIWG90hIUgcGs0Kzr+zOltr0u22Y9Q==
+X-Received: by 2002:a02:a615:: with SMTP id c21mr15063821jam.106.1600126133326;
+        Mon, 14 Sep 2020 16:28:53 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id p9sm6756721iov.18.2020.09.14.16.28.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 16:27:57 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 01:27:56 +0200
-From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Mon, 14 Sep 2020 16:28:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kHxtz-006Hgi-6k; Mon, 14 Sep 2020 20:28:51 -0300
+Date:   Mon, 14 Sep 2020 20:28:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v2] pinctrl: sh-pfc: r8a7790: Add VIN1-B and VIN2-G pins,
- groups and functions
-Message-ID: <20200914232756.GA1669406@oden.dyn.berto.se>
-References: <20200913182850.32660-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWjnQGKt12_=Z1Lc4fE2hecC6V7ELYpGW6FP2zm8mBp=w@mail.gmail.com>
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20200914232851.GH1221970@ziepe.ca>
+References: <20200821234958.7896-1-peterx@redhat.com>
+ <20200821234958.7896-2-peterx@redhat.com>
+ <20200914143829.GA1424636@nvidia.com>
+ <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
+ <20200914183436.GD30881@xz-x1>
+ <20200914211515.GA5901@xz-x1>
+ <20200914225542.GO904879@nvidia.com>
+ <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWjnQGKt12_=Z1Lc4fE2hecC6V7ELYpGW6FP2zm8mBp=w@mail.gmail.com>
+In-Reply-To: <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert, Lad,
-
-On 2020-09-14 16:47:27 +0200, Geert Uytterhoeven wrote:
-> Hi Prabhakar,
-> 
-> CC Laurent, Niklas
-> 
-> On Sun, Sep 13, 2020 at 8:29 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add pins, groups and functions for the VIN1-B [data/clk/sync] and VIN2-G [data].
+On Mon, Sep 14, 2020 at 03:59:31PM -0700, Linus Torvalds wrote:
+> On Mon, Sep 14, 2020 at 3:55 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 > >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> > Changes for v2:
-> > * Added complete list of VIN1-B pins
-> > * Renamed vin2_data8_g to vin2_data8g
-> > * Sorted vin1_sync_b pins
-> >
-> > v1 - https://patchwork.kernel.org/patch/11761191/
+> > Just as an aside, the RDMA stuff is also supposed to set MADV_DONTFORK
+> > on these regions, so I'm a bit puzzled what is happening here.
 > 
-> Thanks for the update!
-> 
-> > --- a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-> > +++ b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-> 
-> > @@ -3874,6 +3940,14 @@ static const unsigned int vin1_sync_mux[] = {
-> >         VI1_HSYNC_N_MARK,
-> >         VI1_VSYNC_N_MARK,
-> >  };
-> > +static const unsigned int vin1_sync_b_pins[] = {
-> > +       RCAR_GP_PIN(1, 24), /* HSYNC */
-> > +       RCAR_GP_PIN(1, 25), /* VSYNC */
-> > +};
-> > +static const unsigned int vin1_sync_b_mux[] = {
-> > +       VI1_HSYNC_N_B_MARK,
-> > +       VI1_VSYNC_N_B_MARK,
-> > +};
-> >  static const unsigned int vin1_field_pins[] = {
-> >         RCAR_GP_PIN(1, 13),
-> >  };
-> 
-> Missing field_b and clkenb_b.
-> 
-> > @@ -3959,6 +4039,18 @@ static const unsigned int vin2_data18_mux[] = {
-> >         VI2_R4_MARK, VI2_R5_MARK,
-> >         VI2_R6_MARK, VI2_R7_MARK,
-> >  };
-> > +static const unsigned int vin2_data8g_pins[] = {
-> > +       RCAR_GP_PIN(0, 27), RCAR_GP_PIN(0, 28),
-> > +       RCAR_GP_PIN(0, 29), RCAR_GP_PIN(1, 10),
-> > +       RCAR_GP_PIN(1, 4), RCAR_GP_PIN(1, 5),
-> > +       RCAR_GP_PIN(1, 6), RCAR_GP_PIN(1, 7),
-> > +};
-> > +static const unsigned int vin2_data8g_mux[] = {
-> > +       VI2_G0_MARK, VI2_G1_MARK,
-> > +       VI2_G2_MARK, VI2_G3_MARK,
-> > +       VI2_G4_MARK, VI2_G5_MARK,
-> > +       VI2_G6_MARK, VI2_G7_MARK,
-> > +};
-> 
-> Laurent, Niklas: are you happy with the name "vin2_data8g", or do
-> you have a better suggestion?
+> Did the fork perhaps happen _before_ , so the pages are shared when
+> you do the pin?
 
-I learnt recently that traditionally for single 8-bit RAW inputs are 
-named R8 (fist in RGB). But as this really is the G pins and they are 
-labeled as such I'm OK with the name, but I would like to hear Laurent's 
-view as well.
+Looking at the progam, it seems there are a number of forks for exec
+before and after pin_user_pages_fast(), but the parent process always
+does waitpid() after the fork.
 
-> 
-> >  static const unsigned int vin2_sync_pins[] = {
-> >         RCAR_GP_PIN(1, 16), /* HSYNC */
-> >         RCAR_GP_PIN(1, 21), /* VSYNC */
-> 
-> > @@ -4310,15 +4402,25 @@ static const struct {
-> >                 VIN_DATA_PIN_GROUP(vin1_data, 10),
-> >                 VIN_DATA_PIN_GROUP(vin1_data, 8),
-> >                 VIN_DATA_PIN_GROUP(vin1_data, 4),
-> > +               VIN_DATA_PIN_GROUP(vin1_data, 24, _b),
-> > +               VIN_DATA_PIN_GROUP(vin1_data, 20, _b),
-> > +               SH_PFC_PIN_GROUP(vin1_data18_b),
-> > +               VIN_DATA_PIN_GROUP(vin1_data, 16, _b),
-> > +               VIN_DATA_PIN_GROUP(vin1_data, 12, _b),
-> > +               VIN_DATA_PIN_GROUP(vin1_data, 10, _b),
-> > +               VIN_DATA_PIN_GROUP(vin1_data, 8, _b),
-> 
-> Missing vin1_data4_b.
-> 
-> >                 SH_PFC_PIN_GROUP(vin1_sync),
-> > +               SH_PFC_PIN_GROUP(vin1_sync_b),
-> >                 SH_PFC_PIN_GROUP(vin1_field),
-> >                 SH_PFC_PIN_GROUP(vin1_clkenb),
-> >                 SH_PFC_PIN_GROUP(vin1_clk),
-> > +               SH_PFC_PIN_GROUP(vin1_clk_b),
-> >                 VIN_DATA_PIN_GROUP(vin2_data, 24),
-> >                 SH_PFC_PIN_GROUP(vin2_data18),
-> >                 VIN_DATA_PIN_GROUP(vin2_data, 16),
-> >                 VIN_DATA_PIN_GROUP(vin2_data, 8),
-> >                 VIN_DATA_PIN_GROUP(vin2_data, 4),
-> > +               SH_PFC_PIN_GROUP(vin2_data8g),
-> >                 SH_PFC_PIN_GROUP(vin2_sync),
-> >                 SH_PFC_PIN_GROUP(vin2_field),
-> >                 SH_PFC_PIN_GROUP(vin2_clkenb),
-> > @@ -4784,10 +4886,19 @@ static const char * const vin1_groups[] = {
-> >         "vin1_data10",
-> >         "vin1_data8",
-> >         "vin1_data4",
-> > +       "vin1_data24_b",
-> > +       "vin1_data20_b",
-> > +       "vin1_data18_b",
-> > +       "vin1_data16_b",
-> > +       "vin1_data12_b",
-> > +       "vin1_data10_b",
-> > +       "vin1_data8_b",
-> 
-> Missing vin1_data4_b.
-> 
-> >         "vin1_sync",
-> > +       "vin1_sync_b",
-> >         "vin1_field",
-> >         "vin1_clkenb",
-> >         "vin1_clk",
-> > +       "vin1_clk_b",
-> >  };
-> >
-> >  static const char * const vin2_groups[] = {
-> 
-> The rest looks good to me.
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> MADV_DONTFORK doesn't mean COW doesn't happen. It just means that the
+> next fork() won't be copying that memory area.
 
--- 
-Regards,
-Niklas Söderlund
+Yes, this stuff does pin_user_pages_fast() and MADV_DONTFORK
+together. It sets FOLL_FORCE and FOLL_WRITE to get an exclusive copy
+of the page and MADV_DONTFORK was needed to ensure that a future fork
+doesn't establish a COW that would break the DMA by moving the
+physical page over to the fork. DMA should stay with the process that
+called pin_user_pages_fast() (Is MADV_DONTFORK still needed with
+recent years work to GUP/etc? It is a pretty terrible ancient thing)
+
+> That said, it's possible that the test cases do something invalid - or
+> maybe we've broken MADV_DONTFORK - and it all just happened to work
+> before.
+
+Hmm. If symptoms stop with this patch should we investigate
+MADV_DONTFORK?
+
+Thanks,
+Jason
