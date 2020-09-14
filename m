@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9728268966
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A853A26896C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgINKjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgINKjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:39:12 -0400
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AAC1C06174A;
-        Mon, 14 Sep 2020 03:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
-        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
-        bh=wlDIRDEfQWNob552Fwn5LzRLZbzE03QEuC1qTEAINRc=; b=cIcaToVtgQV2EaIpn+9phQNfAf
-        Xs+f1cwrLc7phMf80weTR9ISZSPzE0C4tpCZGbLV9An2Wpy9k9xjPSTziIN0UUSUxmthKj+TEGh4p
-        JbrqNbMH5QnBvF8CCeIrt60XCHtye5EmobBMb3Fa1C64YZmeqCiisQHwknK9JDku02Hgu9b4R+SFt
-        gbez+4TVMC+cQ9azI90zA50Vx4zry07F8glQ9yhqeF99KoxAi6N8Kyb7iCxi91my2VTfFzLOgwqiN
-        SRKyU8CB5XZQ+MLWdfiJN3XRDUaXASQYhMY4wEHq1lufzoESIDrombnpb7FKjZ21PrndsJ/3Csbga
-        hkmubpXA==;
-Received: from [2a01:e35:2fdd:a4e1:fe91:fc89:bc43:b814] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1kHlsb-0001fB-Oz; Mon, 14 Sep 2020 12:38:37 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.94)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1kHlsa-00Cx5R-Sz; Mon, 14 Sep 2020 12:38:36 +0200
-Date:   Mon, 14 Sep 2020 12:38:36 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Nick Hu <nickhu@andestech.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
-Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
-Message-ID: <20200914103836.GB2705@aurel32.net>
-Mail-Followup-To: Guo Ren <guoren@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Nick Hu <nickhu@andestech.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
-References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
- <1593266228-61125-2-git-send-email-guoren@kernel.org>
- <20200911204512.GA2705@aurel32.net>
- <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
+        id S1726446AbgINKlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:41:01 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:45462 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726474AbgINKk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:40:28 -0400
+Received: from [10.130.0.187] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf8d3SF9f_i8VAA--.5680S3;
+        Mon, 14 Sep 2020 18:39:52 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Remove unused BOOT_MEM_INIT_RAM
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1599875955-9207-1-git-send-email-tangyouling@loongson.cn>
+ <f2349dc3-8086-64ee-e2d7-7a69afac6623@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <06109011-21af-ad1d-41cb-18542b9b77f6@loongson.cn>
+Date:   Mon, 14 Sep 2020 18:39:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <f2349dc3-8086-64ee-e2d7-7a69afac6623@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxf8d3SF9f_i8VAA--.5680S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4ruF4rJw17XF1Utr48Crg_yoW8GryfpF
+        4DA3WkGFWkWrW7ta40qwnxuF12y345tF1q9F42gFyvy3WDZFn7WF17Kry5ArykXFWkta12
+        q3WfGa45Z39IqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
+        02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
+        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU8XJ55UUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-12 10:39, Guo Ren wrote:
-> It's come from mm/usercopy.c
-> /* Is this address range in the kernel text area? */
-> static inline void check_kernel_text_object(const unsigned long ptr,
->                                             unsigned long n, bool to_user)
-> {
->         unsigned long textlow = (unsigned long)_stext;
->         unsigned long texthigh = (unsigned long)_etext;
->         unsigned long textlow_linear, texthigh_linear;
-> 
->         if (overlaps(ptr, n, textlow, texthigh))
->                 usercopy_abort("kernel text", NULL, to_user, ptr - textlow, n);
-> 
-> The __init_text/data areas will be freed after bootup, so I think it should be:
-> -        unsigned long textlow = (unsigned long)_stext;
-> +        unsigned long textlow = (unsigned long)_text;
-> 
-> That means _stext should include init_text/data and _text is only for freeable.
 
-I have no idea if it is the right thing to do or not, but I can confirm
-this fixes the issue.
 
-How should we proceed to get that fixed in time for 5.9? For the older
-branches where it has been backported (so far 5.7 and 5.8), should we
-just get that commit reverted instead?
+On 09/14/2020 12:32 PM, Jiaxun Yang wrote:
+>
+>
+> 在 2020/9/12 9:59, Youling Tang 写道:
+>> Commit a94e4f24ec83 ("MIPS: init: Drop boot_mem_map") left
+>> the BOOT_MEM_INIT_RAM unused, remove it.
+>>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> ---
+>>   arch/mips/include/asm/bootinfo.h | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/arch/mips/include/asm/bootinfo.h 
+>> b/arch/mips/include/asm/bootinfo.h
+>> index 147c932..39196ae 100644
+>> --- a/arch/mips/include/asm/bootinfo.h
+>> +++ b/arch/mips/include/asm/bootinfo.h
+>> @@ -91,7 +91,6 @@ extern unsigned long mips_machtype;
+>>   #define BOOT_MEM_RAM        1
+>>   #define BOOT_MEM_ROM_DATA    2
+>>   #define BOOT_MEM_RESERVED    3
+>> -#define BOOT_MEM_INIT_RAM    4
+>
+> If you're willing to remove that you'd better turn the memtype struct
+> into a enum.
+>
+Hi  Jiaxun,
+Do you mean to modify it as follows?
 
-Thanks,
-Aurelien
+enum boot_memtype {
+                 BOOT_MEM_RAM,
+                 BOOT_MEM_ROM_DATA,
+                 BOOT_MEM_RESERVED,
+                 BOOT_MEM_NOMAP,
+};
 
--- 
-Aurelien Jarno                          GPG: 4096R/1DDD8C9B
-aurelien@aurel32.net                 http://www.aurel32.net
+Thanks.
+
+- Youling
+> Btw: It seems you've done a lot of minor clean-up works recently,
+> if you'd like to I think you can try to turn all the platforms into 
+> memblock
+> and remove all these gules between memblock and legacy code.
+>
+> Thanks.
+>
+> - Jiaxun
+>
+>>   #define BOOT_MEM_NOMAP        5
+>>     extern void add_memory_region(phys_addr_t start, phys_addr_t 
+>> size, long type);
+
