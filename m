@@ -2,59 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E2A2689BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8427A2689BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgINLIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgINLIG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:08:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F4DC06174A;
-        Mon, 14 Sep 2020 04:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R3WQcbK1OYupOiZx/4aRKRWUnmzNcweOP1HOOsSlSWU=; b=TkCOOe1DWoOM+uWKWkJZWxo9oD
-        kqJ7qOtuibBqqE6cz5MQssWjL0fhXofYGJHn60PJEkdsLwjUSdo4O90gd+4J7mMFw17z+1Xu++JbS
-        Gi8Zv+v+uSAPWwOVL+458uKf07DKJ+cBRDNd7ncoIR2Ua+tYTiJ9GJ0TRPxVjmucZCZPlkoJQaldy
-        wbatSlKrssuvitaz2/VjlhfZK2svX0dFEZlSc0rcCj6mK+HZgKFhsftYqJw210I4xVHHBXgka2OLp
-        ZDKDrkaLtuvPZfdV/FfXSYRDE9Ma+3Cc4unIyIrelx2ZNV44gV0DcIkLqbsZgC1032RKRj7T3gFvA
-        T+Oi3tHg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHmL6-0004bO-15; Mon, 14 Sep 2020 11:08:04 +0000
-Date:   Mon, 14 Sep 2020 12:08:03 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Anmol Karn <anmol.karan123@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com
-Subject: Re: [Linux-kernel-mentees] [PATCH] idr: remove WARN_ON_ONCE() when
- trying to check id
-Message-ID: <20200914110803.GL6583@casper.infradead.org>
-References: <20200914071724.202365-1-anmol.karan123@gmail.com>
+        id S1726035AbgINLJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:09:02 -0400
+Received: from foss.arm.com ([217.140.110.172]:34470 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726004AbgINLIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:08:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 645A3113E;
+        Mon, 14 Sep 2020 04:08:14 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1AD43F68F;
+        Mon, 14 Sep 2020 04:08:12 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:08:10 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Aubrey Li <aubrey.li@intel.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
+ in sched domain
+Message-ID: <20200914110809.2nu7vt2s3lzlvxoz@e107158-lin.cambridge.arm.com>
+References: <20200910054203.525420-1-aubrey.li@intel.com>
+ <20200910054203.525420-2-aubrey.li@intel.com>
+ <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
+ <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
+ <jhjmu1s644x.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200914071724.202365-1-anmol.karan123@gmail.com>
+In-Reply-To: <jhjmu1s644x.mognet@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:47:24PM +0530, Anmol Karn wrote:
-> idr_get_next() gives WARN_ON_ONCE() when it gets (id > INT_MAX) true
-> and this happens when syzbot does fuzzing, and that warning is
-> expected, but WARN_ON_ONCE() is not required here and, cecking
-> the condition and returning NULL value would be suffice.
+On 09/14/20 11:31, Valentin Schneider wrote:
 > 
-> Reference: commit b9959c7a347 ("filldir[64]: remove WARN_ON_ONCE() for bad directory entries")
-> Reported-and-tested-by: syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com
-> Link: https://syzkaller.appspot.com/bug?extid=f7204dcf3df4bb4ce42c 
-> Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> On 12/09/20 00:04, Li, Aubrey wrote:
+> >>> +++ b/include/linux/sched/topology.h
+> >>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
+> >>>     atomic_t	ref;
+> >>>     atomic_t	nr_busy_cpus;
+> >>>     int		has_idle_cores;
+> >>> +	/*
+> >>> +	 * Span of all idle CPUs in this domain.
+> >>> +	 *
+> >>> +	 * NOTE: this field is variable length. (Allocated dynamically
+> >>> +	 * by attaching extra space to the end of the structure,
+> >>> +	 * depending on how many CPUs the kernel has booted up with)
+> >>> +	 */
+> >>> +	unsigned long	idle_cpus_span[];
+> >>
+> >> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
+> >
+> > I can use the existing free code. Do we have a problem of this?
+> >
+> 
+> Nah, flexible array members are the preferred approach here; this also
 
-https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
+Is this your opinion or a rule written somewhere I missed?
+
+> means we don't let CONFIG_CPUMASK_OFFSTACK dictate where this gets
+> allocated.
+> 
+> See struct numa_group, struct sched_group, struct sched_domain, struct
+> em_perf_domain...
+
+struct root_domain, struct cpupri_vec, struct generic_pm_domain,
+struct irq_common_data..
+
+Use cpumask_var_t.
+
+Both approach look correct to me, so no objection in principle. cpumask_var_t
+looks neater IMO and will be necessary once more than one cpumask are required
+in a struct.
+
+> 
+> >>
+> >> The patch looks useful. Did it help you with any particular workload? It'd be
+> >> good to expand on that in the commit message.
+> >>
+> > Odd, that included in patch v1 0/1, did you receive it?
+
+Aubrey,
+
+Sorry I didn't see that no. It's important justification to be part of the
+commit message, I think worth adding it.
+
+Thanks
+
+--
+Qais Yousef
