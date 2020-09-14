@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943F6268C97
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004AD268C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgINNxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:53:19 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:37257 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726721AbgINNsw (ORCPT
+        id S1726296AbgINNvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726532AbgINNt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:48:52 -0400
-Received: (qmail 963410 invoked by uid 1000); 14 Sep 2020 09:48:43 -0400
-Date:   Mon, 14 Sep 2020 09:48:43 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     linux@prisktech.co.nz, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: host: ehci-platform: Add workaround for
- brcm,xgs-iproc-ehci
-Message-ID: <20200914134843.GA963127@rowland.harvard.edu>
-References: <20200913215926.29880-1-chris.packham@alliedtelesis.co.nz>
+        Mon, 14 Sep 2020 09:49:26 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845CBC06174A;
+        Mon, 14 Sep 2020 06:49:26 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id fa1so5608305pjb.0;
+        Mon, 14 Sep 2020 06:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XzOvlX+sP3vsygdyJ38+0fijbYFw1gd5AT6Thqbr//0=;
+        b=dh/5ICgu3T4+wVxGpYdipQhDiwWA/rm3mjWf8HfXDtRbPDV18bkCO/d420HeOqvfcJ
+         l8gb2w4zTDyWQL8IWyblCxxs3DdqEIgA7vwi+/Qrv+LAdoQsIWpVZFhGQjKWXkUkPv7B
+         u4N30A3kTHhHtlbm7usuiCjQGy3Rxx3Ekijo+Nl0fdM2mg343IuVe3I8dDisuQIjMBGp
+         kvWKesnrNWvSxSZ5EiGdvpetX3ycax/94yt+rQ93w6/q2cjj7W/m7S9DMHNlVZp8pg7/
+         lhGOGV64wEi9JrM65AAfrgVl6pdpDLroQb+n2fTTZ5C9rw/wO8+WxjXluBZ+aolM5g27
+         HaMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XzOvlX+sP3vsygdyJ38+0fijbYFw1gd5AT6Thqbr//0=;
+        b=no/AbjNpihv5z4BcfSQKPF6nNz5Pc9sEdNHJZ3i/l9f/ad1Rcy/Pwx8Kmd2BN3RuLp
+         E1eCEvzZCwYaKYAA9DZP+hqmUlPQ/PDKRCWUtTd5j849t/PjgXaGa38xftnIpfPV/2lr
+         Z0bkJ6SpTUk6pkVr5rpIUlN+MtlH2V8siEpwug1Pz7uMFvsH7ycHmL7ndAkHn7CqnYKa
+         u9MfYf6GPFdLEbaRYM/jX9srolkwFpnUOcYO6rcY5rodxm5Qto3aeikFSf9VhiGtaODr
+         7b0VBhYqqPZKp68mo7itmeyY/HGAlDDajizM06Siv7yNEL2abdQH+ze5zj/LKnEknTVf
+         GY5A==
+X-Gm-Message-State: AOAM532qUQKw8yf56oXnwWnNnsP60v3TKY7m4ONkNMvrVQn9Ok/KgJ23
+        /bH3CcBk5I9nfU91Xk6aBVlXPz59qt+l3sQbBOo=
+X-Google-Smtp-Source: ABdhPJw3CIu6eBgKUqJsjlWGfutqdQ+FOwipqDCd9UWLDSd9LxDN7vOcj7TdzuqMaiSDYDD9P/6UF69G3JtDRaFa4XY=
+X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr14404428pjr.228.1600091366066;
+ Mon, 14 Sep 2020 06:49:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200913215926.29880-1-chris.packham@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200912005521.26319-1-jiada_wang@mentor.com> <CAHp75Vc5YCb-6oRRfVOE5bL_Dmzy0LwDpetxqD-G+E9M=EwA=w@mail.gmail.com>
+ <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com>
+In-Reply-To: <bd668b99-5b14-f54d-101d-7d56e0c8c4c0@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 14 Sep 2020 16:49:08 +0300
+Message-ID: <CAHp75VdTv-uCQue3VU=czZJd4iTG+XBVe2kFtnP+fZ1XQuFbzA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] Input: atmel_mxt_ts - implement I2C retries
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jiada Wang <jiada_wang@mentor.com>, nick@shmanahar.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Andrew_Gabbasov@mentor.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:59:26AM +1200, Chris Packham wrote:
-> The ehci controller found in some Broadcom switches with integrated SoCs
-> has an issue which causes a soft lockup with large transfers like you
-> see when running ext4 on USB3 flash drive.
-> 
-> Port the fix from the Broadcom XLDK to increase the OUT_THRESHOLD to
-> avoid the problem.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
-> 
-> I don't have much data on what this change does. I can say it is needed to
-> avoid a soft lockup when using a USB3 Flash drive formatted has ext4 (USB2 +
-> ext4 is OK, USB3 + fat is OK). I presume the affected combination ends up using
-> larger transfers triggering the problem.
-> 
-> The equivalent change in the Broadcom XLDK is
-> 
-> 	if (IS_ENABLED(CONFIG_USB_EHCI_XGS_IPROC))
-> 		ehci_writel(ehci, BCM_USB_FIFO_THRESHOLD,
-> 				&ehci->regs->reserved4[6]);
-> 
-> This is problematic because it would unconditionally apply to all ehci
-> controllers whenever CONFIG_USB_EHCI_XGS_IPROC is enabled (also reserved4 only
-> goes to 6 so technically it's indexing off the end of the array).
-> 
-> I wasn't sure if I should add a new property or somehow detect the affected
-> host controller. I settled on using of_device_is_compatible() as that seemed
-> the simplest thing to do.
-> 
-> Changes in v2:
-> - move workaround to ehci_platform_reset
-> - cosmetic changes suggested by Alan
-> 
->  drivers/usb/host/ehci-platform.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-> index 006c4f6188a5..9804ffa9e67f 100644
-> --- a/drivers/usb/host/ehci-platform.c
-> +++ b/drivers/usb/host/ehci-platform.c
-> @@ -42,6 +42,9 @@
->  #define EHCI_MAX_CLKS 4
->  #define hcd_to_ehci_priv(h) ((struct ehci_platform_priv *)hcd_to_ehci(h)->priv)
->  
-> +#define BCM_USB_FIFO_THRESHOLD	0x00800040
-> +#define bcm_iproc_insnreg01	hostpc[0]
-> +
->  struct ehci_platform_priv {
->  	struct clk *clks[EHCI_MAX_CLKS];
->  	struct reset_control *rsts;
-> @@ -75,6 +78,11 @@ static int ehci_platform_reset(struct usb_hcd *hcd)
->  
->  	if (pdata->no_io_watchdog)
->  		ehci->need_io_watchdog = 0;
-> +
-> +	if (of_device_is_compatible(pdev->dev.of_node, "brcm,xgs-iproc-ehci"))
-> +		ehci_writel(ehci, BCM_USB_FIFO_THRESHOLD,
-> +			    &ehci->regs->bcm_iproc_insnreg01);
-> +
->  	return 0;
->  }
+On Sun, Sep 13, 2020 at 3:57 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 13.09.2020 11:43, Andy Shevchenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > ...
+> >
+> >> +       bool retried =3D false;
+>
+> > I thought Dmitry wants that to be retry
+>
+> In the comment to v2 you suggested to negate the condition,
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Where? I just checked a few messages before and I found that I asked
+the same question: why is negative conditional used instead of
+positive.
+
+> hence I
+> thought it's YOU who wants it to be retried.
+
+I see. Let's see how it goes with positive conditionals first.
+
+
+> The "retried" is a very common form among kernel drivers, so it's good
+> to me.
+>
+> >>         u8 buf[2];
+> >>         int ret;
+> >
+> >> -       ret =3D i2c_transfer(client->adapter, xfer, 2);
+> >> -       if (ret =3D=3D 2) {
+> >> -               ret =3D 0;
+> >> -       } else {
+> >> -               if (ret >=3D 0)
+> >> -                       ret =3D -EIO;
+> >> +retry_read:
+> >
+> >> +       ret =3D i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
+> >> +       if (ret !=3D ARRAY_SIZE(xfer)) {
+> ...> Also why switch from positive to negative conditional?
+>
+> This will make code less readable because of the goto, and thus, there
+> will be two branches for handling of the returned value instead of one +
+> goto. Hence this part is good to me as-is.
+
+But it's not the purpose of this patch, right?
+Style changes should be really separated from the fix.
+And since it's a fix it should have a Fixes tag.
+
+>
+> >> +               if (!retried) {
+> >> +                       dev_dbg(&client->dev, "i2c retry\n");
+> >> +                       msleep(MXT_WAKEUP_TIME);
+> >> +                       retried =3D true;
+> >> +                       goto retry_read;
+> >> +               }
+> >> +               ret =3D ret < 0 ? ret : -EIO;
+> >>                 dev_err(&client->dev, "%s: i2c transfer failed (%d)\n"=
+,
+> >>                         __func__, ret);
+> >> +               return ret;
+> >>         }
+> >>
+> >> -       return ret;
+> >> +       return 0;
+> >>  }
+
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
