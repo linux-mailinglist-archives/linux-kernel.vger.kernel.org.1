@@ -2,131 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8FD2686AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE222686A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgINH7I convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 03:59:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:40595 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726138AbgINH7B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:59:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-215-wJUKj1CvOB2KCgXzcGT9iA-1; Mon, 14 Sep 2020 08:58:55 +0100
-X-MC-Unique: wJUKj1CvOB2KCgXzcGT9iA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 14 Sep 2020 08:58:54 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 14 Sep 2020 08:58:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Greg KH' <greg@kroah.com>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com" 
-        <syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: RE: [Linux-kernel-mentees] [PATCH] net: fix uninit value error in
- __sys_sendmmsg
-Thread-Topic: [Linux-kernel-mentees] [PATCH] net: fix uninit value error in
- __sys_sendmmsg
-Thread-Index: AQHWiZUUFtyl13ctBkOLZWcXDFPGWKlnweqA
-Date:   Mon, 14 Sep 2020 07:58:54 +0000
-Message-ID: <346bcf816616429abb01a475dd8d87fc@AcuMS.aculab.com>
-References: <20200913055639.15639-1-anant.thazhemadam@gmail.com>
- <20200913061351.GA585618@kroah.com>
-In-Reply-To: <20200913061351.GA585618@kroah.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726163AbgINH7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726050AbgINH67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 03:58:59 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2459E20829;
+        Mon, 14 Sep 2020 07:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600070338;
+        bh=gOckBU/C3tkEKhzQbfY7Y+yhZEKq+qqNfBzi4OkB38M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=USGIaH6+9IJ8iO6KUmeLFYLTUFYms0t4YbAu8y0Be1K4oFHJaBds2UnctLOP/xQ8q
+         wgQnT6v6FZ4/S/RIlNrG2BgHAp/Yb2hkL9ZWAFltUoS/HFRT8VVeG1Ieco++3s38/9
+         K9JXpK/LfryKf9exufq0kz+Hs8KrfSMyHhqbieMc=
+Date:   Mon, 14 Sep 2020 09:58:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 4.19 1/8] ALSA; firewire-tascam: exclude Tascam FE-8 from
+ detection
+Message-ID: <20200914075858.GA1035258@kroah.com>
+References: <20200911125421.695645838@linuxfoundation.org>
+ <20200911125421.771196664@linuxfoundation.org>
+ <20200914074731.GA11659@amd>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.002
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914074731.GA11659@amd>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg KH
-> Sent: 13 September 2020 07:14
-> On Sun, Sep 13, 2020 at 11:26:39AM +0530, Anant Thazhemadam wrote:
-> > The crash report showed that there was a local variable;
-> >
-> > ----iovstack.i@__sys_sendmmsg created at:
-> >  ___sys_sendmsg net/socket.c:2388 [inline]
-> >  __sys_sendmmsg+0x6db/0xc90 net/socket.c:2480
-> >
-> >  that was left uninitialized.
-> >
-> > The contents of iovstack are of interest, since the respective pointer
-> > is passed down as an argument to sendmsg_copy_msghdr as well.
-> > Initializing this contents of this stack prevents this bug from happening.
-> >
-> > Since the memory that was initialized is freed at the end of the function
-> > call, memory leaks are not likely to be an issue.
-> >
-> > syzbot seems to have triggered this error by passing an array of 0's as
-> > a parameter while making the initial system call.
-> >
-> > Reported-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
-> > Tested-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
-> > Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-> > ---
-> >  net/socket.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/net/socket.c b/net/socket.c
-> > index 0c0144604f81..d74443dfd73b 100644
-> > --- a/net/socket.c
-> > +++ b/net/socket.c
-> > @@ -2396,6 +2396,7 @@ static int ___sys_sendmsg(struct socket *sock, struct user_msghdr __user *msg,
-> >  {
-> >  	struct sockaddr_storage address;
-> >  	struct iovec iovstack[UIO_FASTIOV], *iov = iovstack;
-> > +	memset(iov, 0, UIO_FASTIOV);
-> >  	ssize_t err;
-> >
-> >  	msg_sys->msg_name = &address;
+On Mon, Sep 14, 2020 at 09:47:31AM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> I don't think you built this code change, otherwise you would have seen
-> that it adds a build warning to the system, right?
+> > From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> > 
+> > Tascam FE-8 is known to support communication by asynchronous transaction
+> > only. The support can be implemented in userspace application and
+> > snd-firewire-ctl-services project has the support. However, ALSA
+> > firewire-tascam driver is bound to the model.
+> 
+> This one is in upstream, but is not marked as such. AFAICT it is
+> 0bd8bce897b6697bbc286b8ba473aa0705fe394b.
+> 
+> Unfortunately it is too late to fix that now.
+> 
+> This one was scheduled to be released at "Responses should be made by
+> Sun, 13 Sep 2020 12:54:13 +0000.". But it was released day earlier:
+> "Date: Sat, 12 Sep 2020 14:42:49 +0200".
+> 
+> Could you actually follow published schedule?
 
-Also it can't be the right 'fix' for whatever sysbot found.
-(I can't find the sysbot report.)
+If all of the reported testing systems come back successful, there is no
+need to wait any longer.
 
-Zeroing iov[] just slows down a path that is already too slow because
-of the contorted functions used to read in iov[].
+> Could you cc me release announcements on pavel@denx.de email?
 
-If it does need to be zerod then it would be needed in a lot
-of other code paths that read in iov[].
+Will add you to the list, thanks.
 
-If a zero length iov[] needs converting into a single entity
-with a zero length - then that needs to be done elsewhere.
-
-I've a patch series I might redo that changes the code that
-reads in iov[] to return the address of any buffer that
-needed to be malloced (more than UIV_FASTIO buffers) rather
-than using the iov parameter to pass in the cache and
-return the buffer to free.
-It would be less confusing and error prone.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+greg k-h
