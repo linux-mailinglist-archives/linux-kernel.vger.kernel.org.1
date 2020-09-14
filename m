@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1FD2699AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814AB2699B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgINX3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
+        id S1726106AbgINXaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgINX2y (ORCPT
+        with ESMTP id S1725997AbgINX36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:28:54 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2ACC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:28:54 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id d190so2070510iof.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:28:54 -0700 (PDT)
+        Mon, 14 Sep 2020 19:29:58 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15C6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:29:58 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id cy2so885780qvb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6mwCziIgbqCaPfGhbpJclA7zt0zT/DjQfjFbGVV4PrQ=;
-        b=mbkthaWgzvywMvbJyHZOeX0puvYOuoc5q0gETR5HzioqXS8ZkYvVEYF3J+yIQjWyUP
-         kEqKwkFqykyQK59/mExPj8FoETOqv/t6lNhTWmHz1qjAFMqCoF7jriHIJRmUwiA3GVeo
-         VlnTmNl1ZnUsyCfJ6cdAhGnYee4TQEiPK29Maz9zvvqLdNv0IbSUgwMFSuZ8JhvgP78a
-         WKaTzspxrQtFYvWoy2K+YX2mmbE8DlshKWu9spLPDSTuo+ks53uTooHvZhVIGm03DSd0
-         isDitc2HqrQrd+3JmpckFY0gQaY0TguDoCByCi3dSE31S6/AsPgdGLQLl/jGaYSQQfdk
-         NIQw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1LMMeKp2XZpRF1V6rdaV2oQtIOtoLTbfrUXrpOurESU=;
+        b=fqM0/dnlaOPZfZDvSInehjqLCGv92Do9aryh7PrDqYuQtkMj3euxZkE7wJKpo0cifl
+         MQEVan4yDBhZX5g2RWHmv4zkFdJP+knp1Jk+ab2C1zGoxVKQz5D5MbE9W35NirE/GIKT
+         4sQBCktG8vHj7E/6k5NAammSu2lDQHkfs3k+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6mwCziIgbqCaPfGhbpJclA7zt0zT/DjQfjFbGVV4PrQ=;
-        b=B+grGcjjnLNlW/y8VL8La2Fx4ZmYfNPGzpDsU3Wpmr79R14M7BwmgLaaK04iOHmHpg
-         ctxXPJuEddudNLqz32gxYriZ10a3kPn1DaZav9Xnx/gkEQlhd6VOrqLZ1hQ80LkIYZ+v
-         GzvMukTnldkOPDTS6G86RKdO3DGQvnn0T4SDFa2/1cNguM8ryGj/pGomUQdsITekFrZM
-         A84g/QQ5XKxE/eHvqQrBsMaPcfb4lL/S4gP3ax0ZUqBypzcwHZr2mB/nUs7xCNKcoDQZ
-         3eRthO5l520vUfQGiRi/WMci+9fHMcYVIgx4oUNEDh29+CJZQ358kTYOLO9Nv4x8r3iz
-         qjOw==
-X-Gm-Message-State: AOAM5312LsvmtMZGdjFp2jSRwPNgt+QhNw5ajp0bNk/thClZNYzDOjWE
-        zvwgI+8tswRSCtEi4215xMFkPw==
-X-Google-Smtp-Source: ABdhPJzUNguBOvRQmINN/RQZ6Oz1sZ8VDajcEqKrO2vPt27FjIWG90hIUgcGs0Kzr+zOltr0u22Y9Q==
-X-Received: by 2002:a02:a615:: with SMTP id c21mr15063821jam.106.1600126133326;
-        Mon, 14 Sep 2020 16:28:53 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id p9sm6756721iov.18.2020.09.14.16.28.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 16:28:52 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kHxtz-006Hgi-6k; Mon, 14 Sep 2020 20:28:51 -0300
-Date:   Mon, 14 Sep 2020 20:28:51 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-Message-ID: <20200914232851.GH1221970@ziepe.ca>
-References: <20200821234958.7896-1-peterx@redhat.com>
- <20200821234958.7896-2-peterx@redhat.com>
- <20200914143829.GA1424636@nvidia.com>
- <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
- <20200914183436.GD30881@xz-x1>
- <20200914211515.GA5901@xz-x1>
- <20200914225542.GO904879@nvidia.com>
- <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1LMMeKp2XZpRF1V6rdaV2oQtIOtoLTbfrUXrpOurESU=;
+        b=WpH3wzr2w/1ZOwrXEF45gn06Y63cwmq3T9Dz1dXth23IxYy71RqSA8fTAFXEQiUjh5
+         4kqv9ie9SqBqVw1UevbSV+FWLgLMu6q9S9cpI1sW4exizJ/2Z4oowpHYjyT+e87CoFfN
+         +oQMJEW8HpYBcjmark2OjC8L6Chk5JsmXTLVjdhjkuZKIw43bL9+mSRZ8tExSpIbit+z
+         LqLBfYAkzVB6AGWV91935Ipbpz67fvQC5NjR9lXo2nMQN3HBdvTqpg5zp73c6bhSDMdr
+         I7Ritoh4vsoEMEeho8sOQ+oeJIkUOjTwVn3GOo4l1IknJmefwmuzxs2OntgbsIpY342N
+         kgrg==
+X-Gm-Message-State: AOAM533ZWIsYevqSNLdXugjTg64lb5h7EULQ7jPwNhxt+NL1iVbW/H0i
+        NELXf4AwXP5TEIDxwS/YTgY514jl2JyAlPngX+es9w==
+X-Google-Smtp-Source: ABdhPJwZEVJlR0rJuUtA5howpx7Kih8SD0nC3OjP9MBPorg1HbQRclaaF6QmZf4lQRTDQo5rKjzq/t4b+OGaGsvr3Jk=
+X-Received: by 2002:ad4:56a6:: with SMTP id bd6mr16021039qvb.25.1600126195518;
+ Mon, 14 Sep 2020 16:29:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgdn5sJ0UEVZRQvj6r5kqOkU24jA_V6cPkqb9tqoAKBJg@mail.gmail.com>
+References: <20200903095415.2572049-1-pmalani@chromium.org> <1e2de378-5f5b-939e-39d8-00d6cc5ab6c8@collabora.com>
+In-Reply-To: <1e2de378-5f5b-939e-39d8-00d6cc5ab6c8@collabora.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Mon, 14 Sep 2020 16:29:43 -0700
+Message-ID: <CACeCKaeNbhcoxCUkTJ1=jxGff5tNsSm4w7NdPe9=7dhUE7baqA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] platform/chrome: cros_ec_proto: Update
+ cros_ec_cmd_xfer() call-sites
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Gwendal Grignou <gwendal@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 03:59:31PM -0700, Linus Torvalds wrote:
-> On Mon, Sep 14, 2020 at 3:55 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+Thanks Enric,
+
+On Mon, Sep 7, 2020 at 3:48 AM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> Hi Prashant,
+>
+> Thank you for your patch.
+>
+> On 3/9/20 11:54, Prashant Malani wrote:
+> > Since all the other call-sites of cros_ec_cmd_xfer() have been converted
+> > to use cros_ec_cmd_xfer_status() instead, update the remaining
+> > call-sites to prepare for the merge of cros_ec_cmd_xfer() into
+> > cros_ec_cmd_xfer_status().
 > >
-> > Just as an aside, the RDMA stuff is also supposed to set MADV_DONTFORK
-> > on these regions, so I'm a bit puzzled what is happening here.
-> 
-> Did the fork perhaps happen _before_ , so the pages are shared when
-> you do the pin?
+> > As part of this update, change the error handling inside
+> > cros_ec_get_sensor_count() such that the legacy LPC interface is tried
+> > on all error values, not just when msg->result != EC_RESULT_SUCCESS.
+> >
+> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+>
+> Gwendal, I'd like to hear from you regarding this patch as you're the one that
+> know most about the corner cases for the sensors in different hardware. Could
+> you take a look and give us your Reviewed tag if all is good?
+>
+Gwendal, could you kindly take a look? Thanks!
 
-Looking at the progam, it seems there are a number of forks for exec
-before and after pin_user_pages_fast(), but the parent process always
-does waitpid() after the fork.
-
-> MADV_DONTFORK doesn't mean COW doesn't happen. It just means that the
-> next fork() won't be copying that memory area.
-
-Yes, this stuff does pin_user_pages_fast() and MADV_DONTFORK
-together. It sets FOLL_FORCE and FOLL_WRITE to get an exclusive copy
-of the page and MADV_DONTFORK was needed to ensure that a future fork
-doesn't establish a COW that would break the DMA by moving the
-physical page over to the fork. DMA should stay with the process that
-called pin_user_pages_fast() (Is MADV_DONTFORK still needed with
-recent years work to GUP/etc? It is a pretty terrible ancient thing)
-
-> That said, it's possible that the test cases do something invalid - or
-> maybe we've broken MADV_DONTFORK - and it all just happened to work
-> before.
-
-Hmm. If symptoms stop with this patch should we investigate
-MADV_DONTFORK?
-
-Thanks,
-Jason
+> Thanks,
+>
+>  Enric
+>
+> > ---
+> >  drivers/platform/chrome/cros_ec_proto.c | 15 ++++-----------
+> >  1 file changed, 4 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+> > index dda182132a6a..2cb1defcdd13 100644
+> > --- a/drivers/platform/chrome/cros_ec_proto.c
+> > +++ b/drivers/platform/chrome/cros_ec_proto.c
+> > @@ -650,7 +650,7 @@ static int get_next_event_xfer(struct cros_ec_device *ec_dev,
+> >       msg->insize = size;
+> >       msg->outsize = 0;
+> >
+> > -     ret = cros_ec_cmd_xfer(ec_dev, msg);
+> > +     ret = cros_ec_cmd_xfer_status(ec_dev, msg);
+> >       if (ret > 0) {
+> >               ec_dev->event_size = ret - 1;
+> >               ec_dev->event_data = *event;
+> > @@ -694,7 +694,7 @@ static int get_keyboard_state_event(struct cros_ec_device *ec_dev)
+> >       msg->insize = sizeof(ec_dev->event_data.data);
+> >       msg->outsize = 0;
+> >
+> > -     ec_dev->event_size = cros_ec_cmd_xfer(ec_dev, msg);
+> > +     ec_dev->event_size = cros_ec_cmd_xfer_status(ec_dev, msg);
+> >       ec_dev->event_data.event_type = EC_MKBP_EVENT_KEY_MATRIX;
+> >       memcpy(&ec_dev->event_data.data, msg->data,
+> >              sizeof(ec_dev->event_data.data));
+> > @@ -883,11 +883,9 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
+> >       params = (struct ec_params_motion_sense *)msg->data;
+> >       params->cmd = MOTIONSENSE_CMD_DUMP;
+> >
+> > -     ret = cros_ec_cmd_xfer(ec->ec_dev, msg);
+> > +     ret = cros_ec_cmd_xfer_status(ec->ec_dev, msg);
+> >       if (ret < 0) {
+> >               sensor_count = ret;
+> > -     } else if (msg->result != EC_RES_SUCCESS) {
+> > -             sensor_count = -EPROTO;
+> >       } else {
+> >               resp = (struct ec_response_motion_sense *)msg->data;
+> >               sensor_count = resp->dump.sensor_count;
+> > @@ -898,9 +896,7 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
+> >        * Check legacy mode: Let's find out if sensors are accessible
+> >        * via LPC interface.
+> >        */
+> > -     if (sensor_count == -EPROTO &&
+> > -         ec->cmd_offset == 0 &&
+> > -         ec_dev->cmd_readmem) {
+> > +     if (sensor_count < 0 && ec->cmd_offset == 0 && ec_dev->cmd_readmem) {
+> >               ret = ec_dev->cmd_readmem(ec_dev, EC_MEMMAP_ACC_STATUS,
+> >                               1, &status);
+> >               if (ret >= 0 &&
+> > @@ -915,9 +911,6 @@ int cros_ec_get_sensor_count(struct cros_ec_dev *ec)
+> >                        */
+> >                       sensor_count = 0;
+> >               }
+> > -     } else if (sensor_count == -EPROTO) {
+> > -             /* EC responded, but does not understand DUMP command. */
+> > -             sensor_count = 0;
+> >       }
+> >       return sensor_count;
+> >  }
+> >
