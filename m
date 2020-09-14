@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229B8268236
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E546E26823E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 03:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgINAtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 20:49:16 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26210 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725978AbgINAtL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:49:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600044550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ghr5orKu6aikpqEdskdLQXzPfKKUxCEDmVqKYdI6iBc=;
-        b=HFkRkDPOJuQrm495jcsfjUCmrPKddHy15H44p0l10DJV29aSp3YowDQO5sl5kyW1tfnGBE
-        dAEQ5gckhkrKfbZc9vVxlVu6j8KND15yMSNTh9klcuJa1cV82EkNkJwgo+/fQbfEyhc219
-        Q8AWPjs1FeIMHST12cuVMq8U0pVmpAI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-gFHhDZXQMyGmwnYw-_oZFw-1; Sun, 13 Sep 2020 20:49:05 -0400
-X-MC-Unique: gFHhDZXQMyGmwnYw-_oZFw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DB18425CB;
-        Mon, 14 Sep 2020 00:49:03 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-113-90.rdu2.redhat.com [10.10.113.90])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D919F60BF3;
-        Mon, 14 Sep 2020 00:49:01 +0000 (UTC)
-Subject: Re: [PATCH 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <20200820130350.3211-1-longman@redhat.com>
- <20200820130350.3211-3-longman@redhat.com>
- <20200820173546.GB912520@cmpxchg.org>
- <a3d4783b-5aee-da40-06c0-ac63e292ccdb@redhat.com>
- <CALvZod6GARMuO8YzMp-1FZaasSZJ8t2b9dUu5tXUcDeuHxA6KA@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <73bab001-b819-1e6d-e130-c52ae2206f19@redhat.com>
-Date:   Sun, 13 Sep 2020 20:49:01 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1725981AbgINBQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 21:16:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:19584 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725965AbgINBQS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 21:16:18 -0400
+IronPort-SDR: YR+KCHyXj/VCV1pWy97vxdTXnC2V0VI9NgNWkd9wkyVZV8jyYP/Xq80x/3i0bE9rjRHA/9cuqC
+ xK6SpqcCdxMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="146705115"
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="146705115"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 18:16:17 -0700
+IronPort-SDR: SrCHkU1u15brAcYtdi+6L2+guoSnwYNYGrj5vzKeafIgHEJjHNGTl1FmHOKfTcdCH5wWVVcraT
+ eUa1Lq99StkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="330537101"
+Received: from unknown (HELO [10.239.154.46]) ([10.239.154.46])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Sep 2020 18:16:13 -0700
+Subject: Re: [PATCH v2] i2c: virtio: add a virtio i2c frontend driver
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     mst@redhat.com, jasowang@redhat.com,
+        wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
+References: <c4bd4fd56df36864ed34d3572f00b2b838fd833a.1599795029.git.jie.deng@intel.com>
+ <f235538d-63d6-2c16-4d9e-d913f15cdcf7@infradead.org>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <39c7c5ba-58c2-2b94-d4a5-59dff1b6f556@intel.com>
+Date:   Mon, 14 Sep 2020 09:16:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.0.1
 MIME-Version: 1.0
-In-Reply-To: <CALvZod6GARMuO8YzMp-1FZaasSZJ8t2b9dUu5tXUcDeuHxA6KA@mail.gmail.com>
+In-Reply-To: <f235538d-63d6-2c16-4d9e-d913f15cdcf7@infradead.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/20/20 5:25 PM, Shakeel Butt wrote:
-> On Thu, Aug 20, 2020 at 1:29 PM Waiman Long <longman@redhat.com> wrote:
->> On 8/20/20 1:35 PM, Johannes Weiner wrote:
->>> On Thu, Aug 20, 2020 at 09:03:49AM -0400, Waiman Long wrote:
->>>> The mem_cgroup_get_max() function used to get memory+swap max from
->>>> both the v1 memsw and v2 memory+swap page counters & return the maximum
->>>> of these 2 values. This is redundant and it is more efficient to just
->>>> get either the v1 or the v2 values depending on which one is currently
->>>> in use.
->>>>
->>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>> ---
->>>>    mm/memcontrol.c | 14 +++++---------
->>>>    1 file changed, 5 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index 26b7a48d3afb..d219dca5239f 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -1633,17 +1633,13 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->>>>     */
->>>>    unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
->>>>    {
->>>> -    unsigned long max;
->>>> +    unsigned long max = READ_ONCE(memcg->memory.max);
->>>>
->>>> -    max = READ_ONCE(memcg->memory.max);
->>>>       if (mem_cgroup_swappiness(memcg)) {
->>>> -            unsigned long memsw_max;
->>>> -            unsigned long swap_max;
->>>> -
->>>> -            memsw_max = memcg->memsw.max;
->>>> -            swap_max = READ_ONCE(memcg->swap.max);
->>>> -            swap_max = min(swap_max, (unsigned long)total_swap_pages);
->>>> -            max = min(max + swap_max, memsw_max);
->>>> +            if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->>>> +                    max += READ_ONCE(memcg->swap.max);
->>>> +            else
->>>> +                    max = memcg->memsw.max;
->>> I agree with the premise of the patch, but v1 and v2 have sufficiently
->>> different logic, and the way v1 overrides max from the innermost
->>> branch again also doesn't help in understanding what's going on.
->>>
->>> Can you please split out the v1 and v2 code?
->>>
->>>        if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
->>>                max = READ_ONCE(memcg->memory.max);
->>>                if (mem_cgroup_swappiness(memcg))
->>>                        max += READ_ONCE(memcg->swap.max);
->>>        } else {
->>>                if (mem_cgroup_swappiness(memcg))
->>>                        max = memcg->memsw.max;
->>>                else
->>>                        max = READ_ONCE(memcg->memory.max);
->>>        }
->>>
->>> It's slightly repetitive, but IMO much more readable.
->>>
->> Sure. That makes it even better.
->>
-> Can you please also add in the commit message why it is ok to drop
-> total_swap_pages comparison from mem_cgroup_get_max()?
+
+On 2020/9/11 11:53, Randy Dunlap wrote:
+> On 9/10/20 8:48 PM, Jie Deng wrote:
+>> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+>> index 293e7a0..70c8e30 100644
+>> --- a/drivers/i2c/busses/Kconfig
+>> +++ b/drivers/i2c/busses/Kconfig
+>> @@ -21,6 +21,17 @@ config I2C_ALI1535
+>>   	  This driver can also be built as a module.  If so, the module
+>>   	  will be called i2c-ali1535.
+>>   
+>> +config I2C_VIRTIO
+>> +	tristate "Virtio I2C Adapter"
+>> +	depends on VIRTIO
+>> +	help
+>> +	  If you say yes to this option, support will be included for the virtio
+>> +	  i2c adapter driver. The hardware can be emulated by any device model
+> 	  I2C
+> preferably
 >
-My bad. I accidentally skipped the total_swap_pages check. Will add it 
-back in v2.
+I will fix this typo. Thank you.
 
-Cheers,
-Longman
 
+>> +	  software according to the virtio protocol.
+>> +
+>> +	  This driver can also be built as a module. If so, the module
+>> +	  will be called i2c-virtio.
+>> +
+>>   config I2C_ALI1563
+>>   	tristate "ALI 1563"
+>>   	depends on PCI
+>
+> thanks.
