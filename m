@@ -2,227 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32D62687EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2A92687FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726341AbgINJFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:05:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12250 "EHLO huawei.com"
+        id S1726253AbgINJGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:06:46 -0400
+Received: from mail-eopbgr700064.outbound.protection.outlook.com ([40.107.70.64]:23008
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726184AbgINJFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:05:46 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5381F2149C8889357443;
-        Mon, 14 Sep 2020 17:05:41 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 14 Sep 2020 17:05:32 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2 2/2] f2fs: compress: introduce cic/dic slab cache
-Date:   Mon, 14 Sep 2020 17:05:14 +0800
-Message-ID: <20200914090514.50102-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200914090514.50102-1-yuchao0@huawei.com>
-References: <20200914090514.50102-1-yuchao0@huawei.com>
+        id S1726110AbgINJGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:06:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fu5Kluvur/1cQHqUVWNe1m8OhHw4l54CfA3LOm89LO8v3bUiY7lpD+ujC3Ium88L1igPS2IgNbggJ+8coQUGFfz1XIoeBScbUZMsmmdQUNE2QlOUFR3GeJUNIj8VqNG7apIrBBSALEH/vPIHUhCf150/lUmm11PG4lKZ8nzLNrdVgxcQ/lKE7oR6+cspSq0FQK2pcGeyLOt/no1HwGsVJ2KxE2Ew/C/fgqLk3aXqIpkwwdB1V9LtENkEcRnt0ml3gtwiWfF0jWwJiBNqLGu//XPd6jULReCh78XZ5iz5SVvZePu9RjAshpQ0R7+PQq8HveBUzD6J6wsne/pw5de9Mg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OHIlsQZJ/lbsypyE/2m0tKIro9ZIX1IVoMFm/LHuL+s=;
+ b=kNU8CCri7Co0Tl36ES4x7OUkEo2DKpfrCo1CBXTlk5lKxmx3oAGt7FDXEaZ+SSRPsmOzor8/b1KVzTggFHNELPYujtNizek5XtG7scj8nrjXoqGRpm5rpolX1wE4H6gG+IN8WjJNRTo3Eiv+fs1cmKbZ+6PGjYanNDd6hcPraXldvDX51nQBGFpRfCNOP7dEvTZdSxuXAY/olh5E5MtRuSgup7igXFmCdUASYYwbZpeIpCKM7WI/kQjXW84Ra0z78o5q8Yuhdi06TYuheDhfnlMYdJaJxmNOem9cakKdpBv0bSY3AZV3ABZaaM9YUKUkDl/8zxCDcedGGWkoHBsEsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
+ dkim=pass header.d=infinera.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OHIlsQZJ/lbsypyE/2m0tKIro9ZIX1IVoMFm/LHuL+s=;
+ b=X0TnHGZcSrrfDGu4wtZpHGhwP/rtR7Xh0ko+8KE84Uu/WSjb7tGZ+gEFDwb/uj20hKIJ7lpAiXRsssTOqJKiyIMN2OzHn1t1tFjm54vZQvcTvs8uFQYVKt9nwjgdLH0/a4X4YyRwFz+ACcqmTIVdmlSjoJYJizuym5zo8Tx0GIY=
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ (2603:10b6:910:45::21) by CY4PR10MB1943.namprd10.prod.outlook.com
+ (2603:10b6:903:11a::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
+ 2020 09:06:36 +0000
+Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::7c3b:e8e3:3d1b:284d]) by CY4PR1001MB2389.namprd10.prod.outlook.com
+ ([fe80::7c3b:e8e3:3d1b:284d%7]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 09:06:36 +0000
+From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To:     "broonie@kernel.org" <broonie@kernel.org>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: fsl-espi: Only process interrupts for expected
+ events
+Thread-Topic: [PATCH] spi: fsl-espi: Only process interrupts for expected
+ events
+Thread-Index: AQHWglNX/MkS6yQMU06L+lI5I1P9i6lnLtiAgABJ/gCAAG8xgA==
+Date:   Mon, 14 Sep 2020 09:06:36 +0000
+Message-ID: <7ae62a6e39195af79eb8415f98d64ba5a1789d8d.camel@infinera.com>
+References: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
+         <ecedc71d-100a-7d7a-ff7f-ef1a3086dd74@alliedtelesis.co.nz>
+         <1600050281.5iiy8pkb7z.astroid@bobo.none>
+In-Reply-To: <1600050281.5iiy8pkb7z.astroid@bobo.none>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.37.92 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=infinera.com;
+x-originating-ip: [88.131.87.201]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0b6f2e28-46ef-4b8a-7c2d-08d8588d7bd7
+x-ms-traffictypediagnostic: CY4PR10MB1943:
+x-microsoft-antispam-prvs: <CY4PR10MB1943B9B4517E2A960E6D1AC0F4230@CY4PR10MB1943.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0TIZOBoZN+FpKtWDngocoG870EHHdq/iRUE18KGrb+gQWvs46s7M0k7WKddRnXWZUC0byjcyTEXWCtzuOjxG/QW7mTqddNahpLMIY9BD7sTXSH/vs0ej1ty2E5xRec4HfZUQx4YPTZ5AYZ0iOINcVbTFIQgeFa7/D1mLGXVxo0/Ii8+7hG4hu0isicKfbPkdrUMP1rtqx3WyfYo+EUbn2sayBKWCTe5/+ltNqXycz3FH935DUFp53yw+Us4hKKPckoTEyuZ6KSbV7pdEmQIsLx7t4S8Ez8f2+pmYBisBFdWG0ViogSvCJtgwkVuJjPaUoxrcA+9Kf5fQWL3UE0xPpw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39860400002)(396003)(54906003)(5660300002)(110136005)(6512007)(6486002)(316002)(71200400001)(2616005)(66556008)(66476007)(478600001)(8936002)(2906002)(53546011)(64756008)(66446008)(36756003)(6506007)(26005)(8676002)(66946007)(83380400001)(76116006)(91956017)(86362001)(186003)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: P1Ga8YsOs0KbKjCySpOli/t5xrDt4G29K2chYij0oKFYUNheZEHGQhM3MNPqzmb6nZr6pYUD74RqIYqTYqRtBUaGyzRGb4+cUXG7X3k7p5vk7Lg+8wqIINj4qg50Byp7SeKvPfRzJukZUgJZbWs5nxfvz+2CFzYJdsK0Ywanoqg0TqZD0E3mLDaKf28ezX0tOY51O9f64yn3xMTwyrzffVNERXMz+oG8pocwAtrDwLjqsXzLJxEy8lQhXWT/1xUFuWsMkUuuQPs/hDWpKtpO8tn5KttJM82bkrH+4szzxi8mTpPib/ghu1yNL/qaIXHMYXePKwggDTGg+9AbZauDfUN0zj/e5Tcj+FP3mfY+e2YzHlNJ+cLXDl3gnU5rQffsyT1ApQZSxNrirKCXyQ0NQ6cJy+NlTrGwDpcVB+T0YXzwsQpFCS75k905Hd7mePKKhF2ZC9voa8tagMGsiPoM7j0030d/DJy7CR2s4qtI0pNjzTUpQ5zaH8qaXFrrTJ6a+4QRLRZramkBKEDW8oV1yJVOcTnGQ/mPdEWVvYUPvggmESrL0agNAW1YTwD3e3xhXwZoF8a7meBU/4u9eGSgZxgEnw0xuU4mW+fkeE6DrVbh+/3dbMyJ64VcgUvWKE5o90vEULMR7KlVFxja60v+qw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B54D11ED1530094EA0F116D330AB50F3@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: infinera.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b6f2e28-46ef-4b8a-7c2d-08d8588d7bd7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 09:06:36.2928
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: U2VNkKMxraK7S4mfZycH25Jb2q0k+Cg65An/Jfx1Xa3rxPFjqmtIi5NitG9daCzKtIKYGQJYaKcUoyhi61YeKQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1943
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add two slab caches: "f2fs_cic_entry" and "f2fs_dic_entry" for memory
-allocation of compress_io_ctx and decompress_io_ctx structure.
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2:
-- fix -Wreturn-type warning
- fs/f2fs/compress.c | 67 +++++++++++++++++++++++++++++++++++++++++-----
- fs/f2fs/f2fs.h     |  4 +++
- fs/f2fs/super.c    |  6 +++++
- 3 files changed, 70 insertions(+), 7 deletions(-)
-
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index c6fcd68df71a..10a9f39b9d6a 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -17,6 +17,9 @@
- #include "node.h"
- #include <trace/events/f2fs.h>
- 
-+static struct kmem_cache *cic_entry_slab;
-+static struct kmem_cache *dic_entry_slab;
-+
- static void *page_array_alloc(struct inode *inode)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-@@ -1193,7 +1196,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 
- 	fio.version = ni.version;
- 
--	cic = f2fs_kzalloc(sbi, sizeof(struct compress_io_ctx), GFP_NOFS);
-+	cic = kmem_cache_zalloc(cic_entry_slab, GFP_NOFS);
- 	if (!cic)
- 		goto out_put_dnode;
- 
-@@ -1308,7 +1311,7 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
- 		f2fs_put_page(cc->cpages[i], 1);
- 	}
- out_put_cic:
--	kfree(cic);
-+	kmem_cache_free(cic_entry_slab, cic);
- out_put_dnode:
- 	f2fs_put_dnode(&dn);
- out_unlock_op:
-@@ -1343,7 +1346,7 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page)
- 	}
- 
- 	page_array_free(cic->inode, cic->rpages);
--	kfree(cic);
-+	kmem_cache_free(cic_entry_slab, cic);
- }
- 
- static int f2fs_write_raw_pages(struct compress_ctx *cc,
-@@ -1457,18 +1460,17 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
- 
- struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
- {
--	struct f2fs_sb_info *sbi = F2FS_I_SB(cc->inode);
- 	struct decompress_io_ctx *dic;
- 	pgoff_t start_idx = start_idx_of_cluster(cc);
- 	int i;
- 
--	dic = f2fs_kzalloc(sbi, sizeof(struct decompress_io_ctx), GFP_NOFS);
-+	dic = kmem_cache_zalloc(dic_entry_slab, GFP_NOFS);
- 	if (!dic)
- 		return ERR_PTR(-ENOMEM);
- 
- 	dic->rpages = page_array_alloc(cc->inode);
- 	if (!dic->rpages) {
--		kfree(dic);
-+		kmem_cache_free(dic_entry_slab, dic);
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-@@ -1533,7 +1535,7 @@ void f2fs_free_dic(struct decompress_io_ctx *dic)
- 	}
- 
- 	page_array_free(dic->inode, dic->rpages);
--	kfree(dic);
-+	kmem_cache_free(dic_entry_slab, dic);
- }
- 
- void f2fs_decompress_end_io(struct page **rpages,
-@@ -1583,3 +1585,54 @@ void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi)
- {
- 	kmem_cache_destroy(sbi->page_array_slab);
- }
-+
-+static int __init f2fs_init_cic_cache(void)
-+{
-+	cic_entry_slab = f2fs_kmem_cache_create("f2fs_cic_entry",
-+					sizeof(struct compress_io_ctx));
-+	if (!cic_entry_slab)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+static void f2fs_destroy_cic_cache(void)
-+{
-+	kmem_cache_destroy(cic_entry_slab);
-+}
-+
-+static int __init f2fs_init_dic_cache(void)
-+{
-+	dic_entry_slab = f2fs_kmem_cache_create("f2fs_dic_entry",
-+					sizeof(struct decompress_io_ctx));
-+	if (!dic_entry_slab)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+static void f2fs_destroy_dic_cache(void)
-+{
-+	kmem_cache_destroy(dic_entry_slab);
-+}
-+
-+int __init f2fs_init_compress_cache(void)
-+{
-+	int err;
-+
-+	err = f2fs_init_cic_cache();
-+	if (err)
-+		goto out;
-+	err = f2fs_init_dic_cache();
-+	if (err)
-+		goto free_cic;
-+	return 0;
-+free_cic:
-+	f2fs_destroy_cic_cache();
-+out:
-+	return -ENOMEM;
-+}
-+
-+void f2fs_destroy_compress_cache(void)
-+{
-+	f2fs_destroy_dic_cache();
-+	f2fs_destroy_cic_cache();
-+}
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 50953b442220..ca3f3ce4b2e3 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3940,6 +3940,8 @@ void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
- void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
- int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
- void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
-+int __init f2fs_init_compress_cache(void);
-+void f2fs_destroy_compress_cache(void);
- #else
- static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
- static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
-@@ -3958,6 +3960,8 @@ static inline int f2fs_init_compress_mempool(void) { return 0; }
- static inline void f2fs_destroy_compress_mempool(void) { }
- static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
- static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
-+static inline int __init f2fs_init_compress_cache(void) { return 0; }
-+static inline void f2fs_destroy_compress_cache(void) { }
- #endif
- 
- static inline void set_compress_context(struct inode *inode)
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index d7336914d2b3..427ce4cbd124 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -4047,7 +4047,12 @@ static int __init init_f2fs_fs(void)
- 	err = f2fs_init_compress_mempool();
- 	if (err)
- 		goto free_bioset;
-+	err = f2fs_init_compress_cache();
-+	if (err)
-+		goto free_compress_mempool;
- 	return 0;
-+free_compress_mempool:
-+	f2fs_destroy_compress_mempool();
- free_bioset:
- 	f2fs_destroy_bioset();
- free_bio_enrty_cache:
-@@ -4079,6 +4084,7 @@ static int __init init_f2fs_fs(void)
- 
- static void __exit exit_f2fs_fs(void)
- {
-+	f2fs_destroy_compress_cache();
- 	f2fs_destroy_compress_mempool();
- 	f2fs_destroy_bioset();
- 	f2fs_destroy_bio_entry_cache();
--- 
-2.26.2
-
+T24gTW9uLCAyMDIwLTA5LTE0IGF0IDEyOjI4ICsxMDAwLCBOaWNob2xhcyBQaWdnaW4gd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
+PiANCj4gDQo+IEV4Y2VycHRzIGZyb20gQ2hyaXMgUGFja2hhbSdzIG1lc3NhZ2Ugb2YgU2VwdGVt
+YmVyIDE0LCAyMDIwIDg6MDMgYW06DQo+ID4gSGkgQWxsLA0KPiA+IA0KPiA+IE9uIDQvMDkvMjAg
+MTI6MjggcG0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+ID4gPiBUaGUgU1BJRSByZWdpc3RlciBj
+b250YWlucyBjb3VudHMgZm9yIHRoZSBUWCBGSUZPIHNvIGFueSB0aW1lIHRoZSBpcnENCj4gPiA+
+IGhhbmRsZXIgd2FzIGludm9rZWQgd2Ugd291bGQgYXR0ZW1wdCB0byBwcm9jZXNzIHRoZSBSWC9U
+WCBmaWZvcy4gVXNlIHRoZQ0KPiA+ID4gU1BJTSB2YWx1ZSB0byBtYXNrIHRoZSBldmVudHMgc28g
+dGhhdCB3ZSBvbmx5IHByb2Nlc3MgaW50ZXJydXB0cyB0aGF0DQo+ID4gPiB3ZXJlIGV4cGVjdGVk
+Lg0KPiA+ID4gDQo+ID4gPiBUaGlzIHdhcyBhIGxhdGVudCBpc3N1ZSBleHBvc2VkIGJ5IGNvbW1p
+dCAzMjgyYTNkYTI1YmQgKCJwb3dlcnBjLzY0Og0KPiA+ID4gSW1wbGVtZW50IHNvZnQgaW50ZXJy
+dXB0IHJlcGxheSBpbiBDIikuDQo+ID4gPiANCj4gPiA+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBh
+Y2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gPiA+IENjOiBzdGFi
+bGVAdmdlci5rZXJuZWwub3JnDQo+ID4gPiAtLS0NCj4gPiBwaW5nPw0KPiANCj4gSSBkb24ndCBr
+bm93IHRoZSBjb2RlL2hhcmR3YXJlIGJ1dCB0aGFua3MgZm9yIHRyYWNraW5nIHRoaXMgZG93bi4N
+Cj4gDQo+IFdhcyB0aGVyZSBhbnl0aGluZyBtb3JlIHRvIGJlIGRvbmUgd2l0aCBKb2NrZSdzIG9i
+c2VydmF0aW9ucywgb3Igd291bGQNCj4gdGhhdCBiZSBhIGZvbGxvdy11cCBwYXRjaCBpZiBhbnl0
+aGluZz8NCg0KUGF0Y2ggaXMgZ29vZCBJTUhPLCB0aGVyZSBtYXkgYmUgbW9yZSB0byBmaXggdy5y
+LnQgY2xlYXJpbmcgdGhlIElSUXMNCg0KPiANCj4gSWYgdGhpcyBwYXRjaCBmaXhlcyB5b3VyIHBy
+b2JsZW0gaXQgc2hvdWxkIHByb2JhYmx5IGdvIGluLCB1bmxlc3MgdGhlcmUNCj4gYXJlIGFueSBv
+YmplY3Rpb25zLg0KDQpJdCBzaG91bGQgZ28gaW4gSSB0aGluay4NCg0KIEpvY2tlDQoNCj4gDQo+
+IFRoYW5rcywNCj4gTmljaw0KPiANCj4gPiA+IA0KPiA+ID4gTm90ZXM6DQo+ID4gPiDCoMKgwqDC
+oMKgSSd2ZSB0ZXN0ZWQgdGhpcyBvbiBhIFQyMDgwUkRCIGFuZCBhIGN1c3RvbSBib2FyZCB1c2lu
+ZyB0aGUgVDIwODEgU29DLiBXaXRoDQo+ID4gPiDCoMKgwqDCoMKgdGhpcyBjaGFuZ2UgSSBkb24n
+dCBzZWUgYW55IHNwdXJpb3VzIGluc3RhbmNlcyBvZiB0aGUgIlRyYW5zZmVyIGRvbmUgYnV0DQo+
+ID4gPiDCoMKgwqDCoMKgU1BJRV9ET04gaXNuJ3Qgc2V0ISIgb3IgIlRyYW5zZmVyIGRvbmUgYnV0
+IHJ4L3R4IGZpZm8ncyBhcmVuJ3QgZW1wdHkhIiBtZXNzYWdlcw0KPiA+ID4gwqDCoMKgwqDCoGFu
+ZCB0aGUgdXBkYXRlcyB0byBzcGkgZmxhc2ggYXJlIHN1Y2Nlc3NmdWwuDQo+ID4gPiANCj4gPiA+
+IMKgwqDCoMKgwqBJIHRoaW5rIHRoaXMgc2hvdWxkIGdvIGludG8gdGhlIHN0YWJsZSB0cmVlcyB0
+aGF0IGNvbnRhaW4gMzI4MmEzZGEyNWJkIGJ1dCBJDQo+ID4gPiDCoMKgwqDCoMKgaGF2ZW4ndCBh
+ZGRlZCBhIEZpeGVzOiB0YWcgYmVjYXVzZSBJIHRoaW5rIDMyODJhM2RhMjViZCBleHBvc2VkIHRo
+ZSBpc3N1ZSBhcw0KPiA+ID4gwqDCoMKgwqDCoG9wcG9zZWQgdG8gY2F1c2luZyBpdC4NCj4gPiA+
+IA0KPiA+ID4gwqDCoGRyaXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jIHwgNSArKystLQ0KPiA+ID4g
+wqDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4g
+PiANCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktZnNsLWVzcGkuYyBiL2RyaXZl
+cnMvc3BpL3NwaS1mc2wtZXNwaS5jDQo+ID4gPiBpbmRleCA3ZTdjOTJjYWZkYmIuLmNiMTIwYjY4
+YzBlMiAxMDA2NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jDQo+ID4g
+PiArKysgYi9kcml2ZXJzL3NwaS9zcGktZnNsLWVzcGkuYw0KPiA+ID4gQEAgLTU3NCwxMyArNTc0
+LDE0IEBAIHN0YXRpYyB2b2lkIGZzbF9lc3BpX2NwdV9pcnEoc3RydWN0IGZzbF9lc3BpICplc3Bp
+LCB1MzIgZXZlbnRzKQ0KPiA+ID4gwqDCoHN0YXRpYyBpcnFyZXR1cm5fdCBmc2xfZXNwaV9pcnEo
+czMyIGlycSwgdm9pZCAqY29udGV4dF9kYXRhKQ0KPiA+ID4gwqDCoHsNCj4gPiA+IMKgwqDCoMKg
+wqBzdHJ1Y3QgZnNsX2VzcGkgKmVzcGkgPSBjb250ZXh0X2RhdGE7DQo+ID4gPiAtICAgIHUzMiBl
+dmVudHM7DQo+ID4gPiArICAgIHUzMiBldmVudHMsIG1hc2s7DQo+ID4gPiANCj4gPiA+IMKgwqDC
+oMKgwqBzcGluX2xvY2soJmVzcGktPmxvY2spOw0KPiA+ID4gDQo+ID4gPiDCoMKgwqDCoMKgLyog
+R2V0IGludGVycnVwdCBldmVudHModHgvcngpICovDQo+ID4gPiDCoMKgwqDCoMKgZXZlbnRzID0g
+ZnNsX2VzcGlfcmVhZF9yZWcoZXNwaSwgRVNQSV9TUElFKTsNCj4gPiA+IC0gICAgaWYgKCFldmVu
+dHMpIHsNCj4gPiA+ICsgICAgbWFzayA9IGZzbF9lc3BpX3JlYWRfcmVnKGVzcGksIEVTUElfU1BJ
+TSk7DQo+ID4gPiArICAgIGlmICghKGV2ZW50cyAmIG1hc2spKSB7DQo+ID4gPiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoHNwaW5fdW5sb2NrKCZlc3BpLT5sb2NrKTsNCj4gPiA+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIElSUV9OT05FOw0KPiA+ID4gwqDCoMKgwqDCoH0NCg0K
