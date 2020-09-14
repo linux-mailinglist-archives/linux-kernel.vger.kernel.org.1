@@ -2,84 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA2D2699A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157E02699A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbgINXYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:24:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgINXYd (ORCPT
+        id S1726064AbgINXZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:25:26 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:18528 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725953AbgINXZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:24:33 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B550C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:24:33 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id y190so897900vsy.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X+7ayRJRVcL9E9FgaMmSHKBAwd3QZcH8/3SgPpQfdjs=;
-        b=kwZbe8HoMejYOA2ogML+Pn1xAVwI02AXWR37EzjSYBVlQ7oo29ImB354b9HQnU7XSY
-         ZTLs54/yF2Zn+vweEuWP86W3Kx1sFTeDFmm2EHHD2tMgRffqH6F6xCPoWAJSdjAsIUzw
-         anRHI15T0f1Me495ok/562HIcQzrOtstQ/GAM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X+7ayRJRVcL9E9FgaMmSHKBAwd3QZcH8/3SgPpQfdjs=;
-        b=RK/hSaM9zz6fZCfwchzxmI/vSHe1cjZ9F9MvNynDTrDXUVvC0v6k+J6ESS0zTpA37l
-         PQiI0aWdUBJzjOS7jVP4cYwytTJMgM6SVNAHvXlW8g0nxrWnMks0rssXN6BlpfbBw/Lo
-         Ukq2XdKWvhA+692WZOa4yOjp+y/ZXNSrLnJrHCAAowOGEozaVUXuVb0xS1/i6DrbXnOv
-         Rl9ik1vR5Gxn+IC5WW3WairsmMOsZ7T736Rax3lcUPKGKw0//6WpOPeYc4N6ghDE0LVg
-         W1odJ0vTlR7PSNIdj67SkGp/FFaiLnVZ3sRg858xK0RLtKKCUnI3iEPgO/eTXeA8n+oE
-         ijRg==
-X-Gm-Message-State: AOAM531CHXv7DOUgTRlLi23W31Cl3pQkayXTB05FHliNKJNY0QzqjZ/k
-        Po99JbXuVfOGSmWSA+KJbdW8uOjsRCQUSw==
-X-Google-Smtp-Source: ABdhPJxNiSI0nrqu7ej6VbQxiAOAcw1CE67mRObcWrZMA0yb4qU2pucqDn8LpQk0cy+WfGjfs4/V9Q==
-X-Received: by 2002:a67:8041:: with SMTP id b62mr9378382vsd.19.1600125872657;
-        Mon, 14 Sep 2020 16:24:32 -0700 (PDT)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id y84sm1770256vsc.33.2020.09.14.16.24.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 16:24:32 -0700 (PDT)
-Received: by mail-ua1-f52.google.com with SMTP id i22so414321uat.8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:24:32 -0700 (PDT)
-X-Received: by 2002:ab0:5905:: with SMTP id n5mr8232516uad.90.1600125871797;
- Mon, 14 Sep 2020 16:24:31 -0700 (PDT)
+        Mon, 14 Sep 2020 19:25:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600125924; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=i0McWH3ChhVD51TjTlBQAsRufyXydsyKQ1IxlVdDtwk=; b=QRoGXamJqM4dRCHbLLahQWEIelJHp/mA3hx4dzNUhSAJnXIf/o34kCoVw2MHXa0bENWCSf+S
+ /YFwYqTdlu95z+qJK1puWKmeT2tQgTNvRpuwIT7JTvwR9ejHQFtlAkUVpviVqQNlOhE5e2Xc
+ Mz/wXFmXn5M1l5v/xx7ok42S11w=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f5ffbcb252c522440b80ecb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 23:24:59
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 41DFDC433F1; Mon, 14 Sep 2020 23:24:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A802EC433CA;
+        Mon, 14 Sep 2020 23:24:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A802EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
+Date:   Tue, 15 Sep 2020 07:24:48 +0800
+From:   Tingwei Zhang <tingweiz@codeaurora.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Message-ID: <20200914232448.GA20431@codeaurora.org>
+References: <20200813014552.23539-1-tingwei@codeaurora.org>
+ <20200901232839.GB13346@codeaurora.org>
+ <20200914184309.7a9de53a@gandalf.local.home>
 MIME-Version: 1.0
-References: <20200914232218.658664-1-swboyd@chromium.org>
-In-Reply-To: <20200914232218.658664-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 14 Sep 2020 16:24:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W8_ERtKWLQzC_1ZBDeUJPR1+S_3Mt=mA-RCuUB8t0uGg@mail.gmail.com>
-Message-ID: <CAD=FV=W8_ERtKWLQzC_1ZBDeUJPR1+S_3Mt=mA-RCuUB8t0uGg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: trogdor: Add labels for type-c ports
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914184309.7a9de53a@gandalf.local.home>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 15, 2020 at 06:43:09AM +0800, Steven Rostedt wrote:
+> On Wed, 2 Sep 2020 07:28:39 +0800
+> Tingwei Zhang <tingweiz@codeaurora.org> wrote:
+> 
+> > Hi Alexander,
+> > 
+> > May I know your comments for this patch set?
+> 
+> I ran your patch set against get_maintainers.pl and it came up with this:
+> 
+> Alexander Shishkin <alexander.shishkin@linux.intel.com> (maintainer:SYSTEM
+> TRACE MODULE CLASS)
+> Maxime Coquelin <mcoquelin.stm32@gmail.com> (maintainer:ARM/STM32
+> ARCHITECTURE)
+> Alexandre Torgue <alexandre.torgue@st.com> (maintainer:ARM/STM32
+> ARCHITECTURE)
+> Steven Rostedt <rostedt@goodmis.org> (maintainer:TRACING)
+> Ingo Molnar <mingo@redhat.com> (maintainer:TRACING)
+> linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32
+> ARCHITECTURE)
+> linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32
+> ARCHITECTURE)
+> linux-kernel@vger.kernel.org (open list)
+> 
+> I would use that to know who to send to.
+> 
+> You have Alexander, myself, Ingo and LKML, but you should add the others
+> in
+> that list for this series, and then it may get noticed. Please use
+> get_maintainers.pl for future patches if you don't know who to send them
+> to.
+> 
+> -- Steve
+> 
+Thanks a lot for the detail instructions, Steve.  I noticed that after
+senting previous mail to Alexander.
 
-On Mon, Sep 14, 2020 at 4:22 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Some trogdor board variants only have one USB port, so add a couple
-> labels to these ports so we can modify them later.
->
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+I sent the patchset to maintainers and mail list as you mentioned in
+https://patchwork.kernel.org/cover/11752107/.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Thanks,
+Tingwei
+
+> > 
+> > Thanks,
+> > Tingwei
+> > 
+> > On Thu, Aug 13, 2020 at 09:45:46AM +0800, Tingwei Zhang wrote:
+> > > Ftrace has ability to export trace packets to other destination.
+> > > Currently, only function trace can be exported. This series extends
+> the
+> > > support to event trace and trace_maker. STM is one possible
+> destination to
+> > > export ftrace. Use separate channel for each CPU to avoid mixing up
+> > > packets
+> > > from different CPUs together.
+> > > 
+> > > Change from v2:
+> > > Change flag definition to BIT(). (Steven)
+> > > Add comment in stm_ftrace_write() to clarify it's safe to use 
+> > > smp_processor_id() here since preempt is disabled. (Steven) 
+> > > 
+> > > Change from v1:
+> > > All changes are suggested by Steven Rostedt.
+> > > User separate flag to control function trace, event trace and trace
+> mark.
+> > > Allocate channels according to num_possible_cpu() dynamically.
+> > > Move ftrace_exports routines up so all ftrace can use them.
+> > > 
+> > > Tingwei Zhang (6):
+> > >   stm class: ftrace: change dependency to TRACING
+> > >   tracing: add flag to control different traces
+> > >   tracing: add trace_export support for event trace
+> > >   tracing: add trace_export support for trace_marker
+> > >   stm class: ftrace: enable supported trace export flag
+> > >   stm class: ftrace: use different channel accroding to CPU
+> > > 
+> > >  drivers/hwtracing/stm/Kconfig  |   2 +-
+> > >  drivers/hwtracing/stm/ftrace.c |   7 +-
+> > >  include/linux/trace.h          |   7 +
+> > >  kernel/trace/trace.c           | 270
+> ++++++++++++++++++---------------
+> > >  4 files changed, 159 insertions(+), 127 deletions(-)
+> > > 
+> > > -- 
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> Forum,
+> > > a Linux Foundation Collaborative Project
+> > >   
+> 
