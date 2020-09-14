@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06EC268988
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18340268977
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgINKpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:45:53 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60444 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726485AbgINKl0 (ORCPT
+        id S1726502AbgINKmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726474AbgINKlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:41:26 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08EAbFPo020705;
-        Mon, 14 Sep 2020 12:40:56 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=4AOl8zA73SiKvpzlJQNtoLQ7m//cXKzrs7YyUfVTfBY=;
- b=O5x0BqE/4a9f2c1gkhYShO5czig4PZSI27N1vVHs5oxGk381Ybc05NixUflE3WzWo5Yh
- XphTxKaEn7fs3oKRv7xgnQnTmTu80/cwSnKmZP2eNX6kLp50bsjvRvzPVmDM5MsdUOGh
- zwhQ2u+96R2THq7tbm2/iIaODXe5xWNVv1uCDAgav3D2ignhf+vvqyKdamvPJzXdevki
- dUQz7RgaHYXf5IXCyEcqrKCv1C8208TMA++aZ3/9IjBdP52StUBXKt1mbwRqM3kml7lZ
- 7v7sVxyv3K9hfxkt+fcWzD1DMgww7wqcOFZu3nzCsazFR1CU7sN/w5GxMSEVsn23CT96 ag== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33gm3w9med-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 12:40:56 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 83187100038;
-        Mon, 14 Sep 2020 12:40:55 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6D5DE2ADA05;
-        Mon, 14 Sep 2020 12:40:55 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Sep 2020 12:40:55
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
-CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <krzk@kernel.org>, <h.assmann@pengutronix.de>,
-        <alain.volmat@st.com>
-Subject: [PATCH v2 2/2] i2c: stm32: Simplify with dev_err_probe()
-Date:   Mon, 14 Sep 2020 12:40:34 +0200
-Message-ID: <1600080034-2050-3-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600080034-2050-1-git-send-email-alain.volmat@st.com>
-References: <1600080034-2050-1-git-send-email-alain.volmat@st.com>
+        Mon, 14 Sep 2020 06:41:11 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CE1C06174A;
+        Mon, 14 Sep 2020 03:41:02 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so18178180wrn.0;
+        Mon, 14 Sep 2020 03:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KK6ppy+gk7UiuxPQUTeMnH2C+XIbYHWEr8o1+X2zUXc=;
+        b=BInOJyjRPk8YQPjXak4SQncm/Rnt8fnKX7KW2tMQ/nQFgfRwbs8qs6TnLWKjquskxH
+         20X3fPs0KriO+DOKwTWqMn8pL5SXBUwuJo+ycG30xuFk6E6mRBuf/aK9XaQYA8k8/Zaj
+         yW1MoQJ2Rq1MI1lrkZ9zin98cM6faweGYrxaMQcUU1wkyTgK35oBPBk49ApYIjm1xdos
+         ANzm54kNz9mYsw+/s3Jlxd3F2qYNuLcqJo+bjt2hw+OUx5BqFOK6U53lq6bc1PSzNhLc
+         0X8sAZ4hjlWhZ2Adyuj3ylvxzsxgEtoHWRFTHvlZvSfJM29zD6p8I7abQHNC8ascpd5j
+         97Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KK6ppy+gk7UiuxPQUTeMnH2C+XIbYHWEr8o1+X2zUXc=;
+        b=kcggpbOv2LPvJi+szcVW2nApU2qDVqgk0Ohek6tQ/vBNtlqKw1IoIYnzhF3rsVLAcr
+         zV5WDZIr0uOI9o8WhLIESAz4xflqK3NJGStX66mEJ8BScbFSvuUfZHyL53QUnY/lgnzE
+         hNpCF5UPHoEVLQNFstup/eFrqUObC5YONRC5hh2a3XySsvdU12bZXcrFqGoYDWbouJaR
+         SohKxENFfNCWMP2CA1MFUJBRtsgm8fQqfAITwFlKQQ5by++xbFRJgsXIJmvZCT4I9nlr
+         +9av3zQtuIcguQo/xzgmz/lnvN9vtJb2/5fr3ORKKobYEBzee5L9yLDyBI9WefA6OZAv
+         +1ag==
+X-Gm-Message-State: AOAM5306D8T2OFHi2hmKxXuO22J2LS95Q/nqFggt3JrIOBSXupxFqFun
+        7ZDLpX8ucSEPeQ6NgnvPKwU=
+X-Google-Smtp-Source: ABdhPJx9quePo/D3nopjLPPXnThJTb3/w0LqiOFeKU3H19JP8qXFQKfegHyv6mSo8JfrdYKfWGgNLg==
+X-Received: by 2002:a5d:4f09:: with SMTP id c9mr14577754wru.427.1600080061284;
+        Mon, 14 Sep 2020 03:41:01 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id j14sm19012868wmj.19.2020.09.14.03.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 03:41:00 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:40:58 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
+Message-ID: <20200914104058.GA14265@Red>
+References: <202009061621.J89kO43Q%lkp@intel.com>
+ <20200907062400.GA15841@gondor.apana.org.au>
+ <20200907160029.GC11894@Red>
+ <20200908050036.GA19817@gondor.apana.org.au>
+ <20200910122248.GA22506@Red>
+ <20200911041354.GA5275@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-14_02:2020-09-10,2020-09-14 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911041354.GA5275@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+On Fri, Sep 11, 2020 at 02:13:55PM +1000, Herbert Xu wrote:
+> On Thu, Sep 10, 2020 at 02:22:48PM +0200, Corentin Labbe wrote:
+> >
+> > I get some md5 error on both A20+BE:
+> > alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=129 ksize=0\", cfg=\"random: inplace use_finup nosimd src_divs=[<reimport,nosimd>85.99%@+3999, 5.85%@+30, <reimport>0.96%@+25, <reimport,nosimd>5.9%@+2263, <flush,nosimd>2.11%@+1950] iv_offset=2 key_offset=43\"
+> > and A33+BE:
+> > [   84.469045] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=322 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[<reimport>99.1%@+2668, <reimport>0.88%@alignmask+3630, 0.11%@+3403] iv_offset=33\"
+> > +[   84.469074] need:35966fc8 b31ea266 2bf064e9 f20f40ad
+> > +[   84.469084] have:e29e4491 f3b6effc fa366691 00e04bd9
+> > 
+> > Thoses errors are random. (1 boot out of 2)
+> 
+> Do these really go away without this patch applied? AFAICS the
+> generated code should be identical.
+> 
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and the error value gets printed.
+I got this on next-20200910/multi_v7_defconfig BigEndian
+[   12.137856] alg: hash: skipping comparison tests for md5-sun4i-ss because md5-generic is unavailable
+md5-sun4i-ss md5 reqs=763
+[   98.286632] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=65 ksize=0\", cfg=\"random: use_finup src_divs=[95.28%@+1052, <reimport>0.61%@+4046, 0.87%@+24, <reimport,nosimd>3.24%@+542] key_offset=54\"
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
-v2: rebased on top of patch [i2c: stm32: fix error message on upon
-dma_request_chan & defer handling]
----
- drivers/i2c/busses/i2c-stm32.c   | 10 ++++++----
- drivers/i2c/busses/i2c-stm32f4.c |  6 ++----
- drivers/i2c/busses/i2c-stm32f7.c | 14 +++++---------
- 3 files changed, 13 insertions(+), 17 deletions(-)
+So sun4i-ss is not involved.
+Strangely /proc/crypto show:
+name         : md5                                                                                  
+driver       : md5-generic                                                                          
+module       : md5                                                                                  
+priority     : 0                                                                                    
+refcnt       : 1                                                                                    
+selftest     : passed                                                                               
+internal     : no                                                                                   
+type         : shash                                                                                
+blocksize    : 64                                                                                   
+digestsize   : 16
 
-diff --git a/drivers/i2c/busses/i2c-stm32.c b/drivers/i2c/busses/i2c-stm32.c
-index 468620db9ea5..157c64e27d0b 100644
---- a/drivers/i2c/busses/i2c-stm32.c
-+++ b/drivers/i2c/busses/i2c-stm32.c
-@@ -26,8 +26,9 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
- 	dma->chan_tx = dma_request_chan(dev, "tx");
- 	if (IS_ERR(dma->chan_tx)) {
- 		ret = PTR_ERR(dma->chan_tx);
--		if ((ret != -ENODEV) && (ret != -EPROBE_DEFER))
--			dev_err(dev, "can't request DMA tx channel\n");
-+		if (ret != -ENODEV)
-+			ret = dev_err_probe(dev, ret,
-+					    "can't request DMA tx channel\n");
- 		goto fail_al;
- 	}
- 
-@@ -46,8 +47,9 @@ struct stm32_i2c_dma *stm32_i2c_dma_request(struct device *dev,
- 	dma->chan_rx = dma_request_chan(dev, "rx");
- 	if (IS_ERR(dma->chan_rx)) {
- 		ret = PTR_ERR(dma->chan_rx);
--		if ((ret != -ENODEV) && (ret != -EPROBE_DEFER))
--			dev_err(dev, "can't request DMA rx channel\n");
-+		if (ret != -ENODEV)
-+			ret = dev_err_probe(dev, ret,
-+					    "can't request DMA rx channel\n");
- 
- 		goto fail_tx;
- 	}
-diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-index 48e269284369..937c2c8fd349 100644
---- a/drivers/i2c/busses/i2c-stm32f4.c
-+++ b/drivers/i2c/busses/i2c-stm32f4.c
-@@ -797,10 +797,8 @@ static int stm32f4_i2c_probe(struct platform_device *pdev)
- 
- 	rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
- 	if (IS_ERR(rst)) {
--		ret = PTR_ERR(rst);
--		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "Error: Missing reset ctrl\n");
--
-+		ret = dev_err_probe(&pdev->dev, PTR_ERR(rst),
-+				    "Error: Missing reset ctrl\n");
- 		goto clk_free;
- 	}
- 	reset_control_assert(rst);
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 8a61320a9cb9..0fbd964c2fe8 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1968,11 +1968,9 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 						    "wakeup-source");
- 
- 	i2c_dev->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(i2c_dev->clk)) {
--		if (PTR_ERR(i2c_dev->clk) != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "Failed to get controller clock\n");
--		return PTR_ERR(i2c_dev->clk);
--	}
-+	if (IS_ERR(i2c_dev->clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(i2c_dev->clk),
-+				     "Failed to get controller clock\n");
- 
- 	ret = clk_prepare_enable(i2c_dev->clk);
- 	if (ret) {
-@@ -1982,10 +1980,8 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
- 
- 	rst = devm_reset_control_get(&pdev->dev, NULL);
- 	if (IS_ERR(rst)) {
--		ret = PTR_ERR(rst);
--		if (ret != -EPROBE_DEFER)
--			dev_err(&pdev->dev, "Error: Missing reset ctrl\n");
--
-+		ret = dev_err_probe(&pdev->dev, PTR_ERR(rst),
-+				    "Error: Missing reset ctrl\n");
- 		goto clk_free;
- 	}
- 	reset_control_assert(rst);
--- 
-2.7.4
+and I didnt see anything failed/unknow in /proc/crypto
 
+Why the failed algorithm is not visible ?
