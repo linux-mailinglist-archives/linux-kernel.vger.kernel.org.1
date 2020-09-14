@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBE1268D5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95839268D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgINOVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:21:20 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31605 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726671AbgINOU0 (ORCPT
+        id S1726780AbgINOWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgINOVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:20:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600093223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=HtBSdfoUR8h4s3JfPJeC6QxKphf9QsZWctKie4ScbZc=;
-        b=UzPDPcVOjSdDqGtUIanjQUmjVq7q2VZt13t5mDDtAr+u9HX9cGFZGeloUCY7VLkbkcb4rY
-        x1xwHI4XIU9CH8nEwwktAHlOKVuNirs6SGh6AsCuzHkZ+5uefxu6q9uau1gJkVneQlgIPt
-        LSSdlXelNJp5s/VOnYN3a1840sTvcjk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-7AJo8FsCMz-PblnLrDL7sw-1; Mon, 14 Sep 2020 10:20:20 -0400
-X-MC-Unique: 7AJo8FsCMz-PblnLrDL7sw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DDA6884E47;
-        Mon, 14 Sep 2020 14:20:18 +0000 (UTC)
-Received: from llong.com (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F9A727BCB;
-        Mon, 14 Sep 2020 14:20:14 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v3 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-Date:   Mon, 14 Sep 2020 10:19:55 -0400
-Message-Id: <20200914141955.2145-1-longman@redhat.com>
-In-Reply-To: <20200914024452.19167-1-longman@redhat.com>
-References: <20200914024452.19167-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Mon, 14 Sep 2020 10:21:23 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41A7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:21:22 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so18962204wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ouLLBB71MhyAg7cMX0BP37uhOtAVXyfejLB2F4clRRw=;
+        b=jrgwn5mu2PMzca842yB4ncq2yiMP4FsMcmYN2CJ977wDsSuwJt8QmFLdii/PI+3JWF
+         k3AOsTo2++2Xnfd5FfA0TZBia2mkZpJJDA9PVCp+3NvkfAwTcTCQXMickGcwnyXkoxD8
+         mcjG/8nKgvZWoGrIr1g3ey1m2BD6lDCaWqrDKBi5XVApic5oPQYZwUlEvLb17c6y8ICX
+         lWaBGmI0Ok5KMYlLCg8wYyrIEEXtAKlHbKr7UPKhbIST0J2Le4BVfeLjSjn9jyGI+NoN
+         Y2Hm39O/FhfLmsfaxPCrrvUxq3QTnLnTAt6I9K1tR7NpQg04RH1AHVR2t5dfejbxYBl7
+         Jkew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ouLLBB71MhyAg7cMX0BP37uhOtAVXyfejLB2F4clRRw=;
+        b=un93JngfBnxaGhxNIbaJ1KJAJ6I2tdX4CVGzlgWeHvxHkVfZxhE94Nn3KtvmxUi+oW
+         09PonJdgsjkvDeN4tgzR6uUXj73cRfivqHTbPiE68vZAWNvrQnF4GJy/CRMgHyd0JF7W
+         PcuJYwJGxon/wrxP+pgqPibPWobnSYh6UlkYNv/xYmECHlFZnaq16tukvp3xKVkg1pHW
+         6krE94Q/RdrgNRGR+WyCNtIuHNrK6m3BQv6hTyDYuEOA7Nh3WIgXb4LP/GjOAgIH8eAU
+         2MITI6CaghvgEP6652P/swUVrHkop74PdgnV02pT/JADt1bmIMTtvhrh03gpjWY4BAKJ
+         +n4A==
+X-Gm-Message-State: AOAM530rdbki6ir4/9oBLIWMNVwlOUBf9pAcheVP1xHiUu/AHMyYnyQY
+        ilppFsVkYPb+SoHvEnaG3IU=
+X-Google-Smtp-Source: ABdhPJyBkeH639gpmxUu4EBk1c5TfnFJ/18t5q/8xof1GxQyUirG+AKeMaPlVO28GPbsBSMakadMXg==
+X-Received: by 2002:adf:df0f:: with SMTP id y15mr16039892wrl.127.1600093281468;
+        Mon, 14 Sep 2020 07:21:21 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id b187sm19192697wmb.8.2020.09.14.07.21.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 07:21:20 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     nsekhar@ti.com
+Cc:     geert+renesas@glider.be, bgolaszewski@baylibre.com, arnd@arndb.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] ARM: davinci: fix kconfig dependency warning when !GPIOLIB
+Date:   Mon, 14 Sep 2020 17:19:55 +0300
+Message-Id: <20200914141954.337859-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mem_cgroup_get_max() function used to get memory+swap max from
-both the v1 memsw and v2 memory+swap page counters & return the maximum
-of these 2 values. This is redundant and it is more efficient to just
-get either the v1 or the v2 values depending on which one is currently
-in use.
+When MACH_DAVINCI_DA830_EVM is enabled and GPIOLIB is disabled, it results
+in the following Kbuild warning:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
+WARNING: unmet direct dependencies detected for GPIO_PCF857X
+  Depends on [n]: GPIOLIB [=n] && I2C [=y]
+  Selected by [y]:
+  - MACH_DAVINCI_DA830_EVM [=y] && ARCH_DAVINCI [=y] && ARCH_DAVINCI_DA830 [=y] && I2C [=y]
+
+The reason is that MACH_DAVINCI_DA830_EVM selects GPIO_PCF857X without
+depending on or selecting GPIOLIB while GPIO_PCF857X is subordinate to
+GPIOLIB.
+
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+
+Fixes: 77316f057526 ("davinci: DA830/OMAP-L137 EVM: use runtime detection for UI card")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 ---
- mm/memcontrol.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ arch/arm/mach-davinci/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8c74f1200261..2331d4bc7c4d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
-  */
- unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
- {
--	unsigned long max;
--
--	max = READ_ONCE(memcg->memory.max);
--	if (mem_cgroup_swappiness(memcg)) {
--		unsigned long memsw_max;
--		unsigned long swap_max;
--
--		memsw_max = memcg->memsw.max;
--		swap_max = READ_ONCE(memcg->swap.max);
--		swap_max = min(swap_max, (unsigned long)total_swap_pages);
--		max = min(max + swap_max, memsw_max);
-+	unsigned long max = READ_ONCE(memcg->memory.max);
-+
-+	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-+		if (mem_cgroup_swappiness(memcg))
-+			max += min(READ_ONCE(memcg->swap.max),
-+				   (unsigned long)total_swap_pages);
-+	} else { /* v1 */
-+		if (mem_cgroup_swappiness(memcg)) {
-+			unsigned long memsw = READ_ONCE(memcg->memsw.max);
-+
-+			if (memsw > max)
-+				max += min(memsw - max, (unsigned long)total_swap_pages);
-+		}
- 	}
- 	return max;
- }
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index e0cbcda6f087..3a6307d85828 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -130,6 +130,7 @@ config MACH_DAVINCI_DA830_EVM
+ 	bool "TI DA830/OMAP-L137/AM17x Reference Platform"
+ 	default ARCH_DAVINCI_DA830
+ 	depends on ARCH_DAVINCI_DA830
++	select GPIOLIB if I2C
+ 	select GPIO_PCF857X if I2C
+ 	help
+ 	  Say Y here to select the TI DA830/OMAP-L137/AM17x Evaluation Module.
 -- 
-2.18.1
+2.25.1
 
