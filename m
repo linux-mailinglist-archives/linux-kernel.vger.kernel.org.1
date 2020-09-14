@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3387A268512
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CE6268513
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgINGly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726033AbgINGlw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:41:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283B3C06174A;
-        Sun, 13 Sep 2020 23:41:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id y1so4428430pgk.8;
-        Sun, 13 Sep 2020 23:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4j1wpOUPZHYeQ1KVLH9A1rpuv7I2GduTgKoNqY9anMs=;
-        b=vLNKNVjk8xz0T5qxS6P/lGl7L9Arz+li5WH8yqk5J0GGRqNFFiPTgyGsqkzPuBGitl
-         ay1omB2RkFXq3gpjwAthhRYl0NVjv0YcSfPWUKXxIgVRzWjm9cjz2eCcSi4OlFH0buQk
-         iSisMcPFsZ4fYKJlsL+UdPI81HHPSFndgsby1XeMpxoqb6KtGZ4vOVAVGQzpaw7BlsIw
-         WLw/vtiLEpqMrA8TM5OO/GH+RLtkaehTKI+ek9eH6pMfBa6bSzAIWZYiGdEE3uXsWFiT
-         CMChBESV2i6xGomImzR3uLcs7wcoidKFyQg31mQygvTbPbl66uUx9wzPQ/KYeSnwJECI
-         Z6Fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4j1wpOUPZHYeQ1KVLH9A1rpuv7I2GduTgKoNqY9anMs=;
-        b=Es1Gi0XOTOUD/ywjrmIT9sz5PwwCmjvONx1eHk9t7mCJJxPzDO8aZq/jgXS8napxjK
-         xONDXhKG55tx54wl5sSEPfYfOy8ZfRWNkbsw5RUgalZXkf2AENCz3ZkhRBShDa7ZV1Hn
-         HykYDZfOPFh9l9BRVevCQl8sFlvquck0MznLJKM4K5jzmBqyP6lDB+kfIRXqe1rFEt+W
-         i7eoONbuEtOo67KUHSNb+yTD4zifI5Fv/bF12oLielO3PHCnESFgjR6/yb48nga+MfyS
-         t3BZ6B4zgcGVGt1OqSZ4Xzk6U1pMb7C7isnDI/ukc9ESpMSzHTsRzVeDFGQYBC8bXByG
-         rE9g==
-X-Gm-Message-State: AOAM532ZPcwUz0X6vb48ZQWVN7xDd5eoPmKl7ENpleYIT7kthnSfR4Y2
-        9B6UPjSqmMuvBHZI8Ccx3lU=
-X-Google-Smtp-Source: ABdhPJw0F9PhngxvikWDC7OchP5PgExFmrZfIqUPNBIT8COwaL4Oeof9JeVKX3qIvc2BxksSxiNJig==
-X-Received: by 2002:a17:902:9349:b029:d0:cb2d:f26c with SMTP id g9-20020a1709029349b02900d0cb2df26cmr12836255plp.5.1600065711632;
-        Sun, 13 Sep 2020 23:41:51 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id k11sm8231303pjs.18.2020.09.13.23.41.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 23:41:50 -0700 (PDT)
-Date:   Sun, 13 Sep 2020 23:41:48 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Harry Cutts <hcutts@chromium.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>
-Subject: Re: [PATCH v3] Input: elants_i2c - Report resolution of
- ABS_MT_TOUCH_MAJOR by FW information.
-Message-ID: <20200914064148.GQ1665100@dtor-ws>
-References: <1598581195-9874-1-git-send-email-johnny.chuang.emc@gmail.com>
+        id S1726116AbgINGmj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 02:42:39 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3097 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726033AbgINGmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:42:38 -0400
+Received: from dggeme701-chm.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id AAD4F3BF067353C133EB;
+        Mon, 14 Sep 2020 14:42:35 +0800 (CST)
+Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
+ dggeme701-chm.china.huawei.com (10.1.199.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 14 Sep 2020 14:42:35 +0800
+Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
+ dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
+ Mon, 14 Sep 2020 14:42:35 +0800
+From:   linmiaohe <linmiaohe@huawei.com>
+To:     syzbot <syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com>
+CC:     Hillf Danton <hdanton@sina.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+Subject: Re: general protection fault in unlink_file_vma
+Thread-Topic: general protection fault in unlink_file_vma
+Thread-Index: AdaKYYsoZHV5jjgSQ2GCPR6aoXlAWw==
+Date:   Mon, 14 Sep 2020 06:42:35 +0000
+Message-ID: <c18bd0f194854077bbab3c50bab98c92@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.109]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598581195-9874-1-git-send-email-johnny.chuang.emc@gmail.com>
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 10:19:55AM +0800, Johnny Chuang wrote:
-> This patch adds a new behavior to report touch major resolution
-> based on information provided by firmware.
+Tue, 08 Sep 2020 17:19:17 -0700
+> syzbot found the following issue on:
 > 
-> In initial process, driver acquires touch information from touch ic.
-> It contains one byte about the resolution value of ABS_MT_TOUCH_MAJOR.
-> Touch driver will report touch major resolution by this information.
+> HEAD commit:    59126901 Merge tag 'perf-tools-fixes-for-v5.9-2020-09-03' ..
+> git tree:       upstream
+> console output: 
+> https://syzkaller.appspot.com/x/log.txt?x=1166cb5d900000
+> kernel config:  
+> https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c5d5a51dcbb558ca0cb5
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11901e95900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f56195900000
 > 
-> Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
-> ---
-> Changes in v2:
->   - register a real resolution value from firmware,
-> 	instead of hardcoding resolution value as 1 by flag.
-> Changes in v3:
->   - modify git log message from flag to real value.
->   - modify driver comment from flag to real value.
-> ---
->  drivers/input/touchscreen/elants_i2c.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Bisection is inconclusive: the issue happens on the oldest tested release.
 > 
-> diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-> index b0bd5bb..661a3ee 100644
-> --- a/drivers/input/touchscreen/elants_i2c.c
-> +++ b/drivers/input/touchscreen/elants_i2c.c
-> @@ -151,6 +151,7 @@ struct elants_data {
->  
->  	bool wake_irq_enabled;
->  	bool keep_power_in_suspend;
-> +	u8 report_major_resolution;
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1205faed900000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1105faed900000
+> console output: 
+> https://syzkaller.appspot.com/x/log.txt?x=1605faed900000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c5d5a51dcbb558ca0cb5@syzkaller.appspotmail.com
+> 
+> general protection fault, probably for non-canonical address 
+> 0xe00eeaee0000003b: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: maybe wild-memory-access in range 
+> [0x00777770000001d8-0x00777770000001df]
+> CPU: 1 PID: 10488 Comm: syz-executor721 Not tainted 
+> 5.9.0-rc3-syzkaller #0 Hardware name: Google Google Compute 
+> Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:unlink_file_vma+0x57/0xb0 mm/mmap.c:164
+> Code: 4c 8b a5 a0 00 00 00 4d 85 e4 74 4e e8 92 d7 cd ff 49 8d bc 24 
+> d8 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 
+> 02 00 75 3d 4d 8b b4 24 d8 01 00 00 4d 8d 6e 78 4c 89 ef e8
+> RSP: 0018:ffffc9000ac0f9b0 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: ffff88800010ceb0 RCX: ffffffff81592421
+> RDX: 000eeeee0000003b RSI: ffffffff81a6736e RDI: 00777770000001d8
+> RBP: ffff88800010ceb0 R08: 0000000000000001 R09: ffff88801291a50f
+> R10: ffffed10025234a1 R11: 0000000000000001 R12: 0077777000000000
+> R13: 00007f1eea0da000 R14: 00007f1eea0d9000 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) 
+> knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f1eea11a9d0 CR3: 000000000007e000 CR4: 00000000001506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400 Call 
+> Trace:
+>  free_pgtables+0x1b3/0x2f0 mm/memory.c:415
+>  exit_mmap+0x2c0/0x530 mm/mmap.c:3184
+>  __mmput+0x122/0x470 kernel/fork.c:1076
+>  mmput+0x53/0x60 kernel/fork.c:1097
+>  exit_mm kernel/exit.c:483 [inline]
+>  do_exit+0xa8b/0x29f0 kernel/exit.c:793
+>  do_group_exit+0x125/0x310 kernel/exit.c:903
+>  get_signal+0x428/0x1f00 kernel/signal.c:2757
+>  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811  
+> exit_to_user_mode_loop kernel/entry/common.c:136 [inline]
+>  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:167
+>  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:242
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-I renamed this to "major_res" to match x_res and y_res, and applied.
+#syz test: https://github.com/Linmiaohe/linux/ 796cd8f497d5b62b00667229375326381c32bdb3
 
-Thanks.
-
--- 
-Dmitry
