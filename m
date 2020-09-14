@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D457E269858
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994CD26985D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726153AbgINVwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59584 "EHLO mail.kernel.org"
+        id S1726168AbgINVxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:53:07 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:16041 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgINVv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:51:58 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726013AbgINVw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:52:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600120376; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=McgfBzMTGCjtNIsTYVb4iriu19nAkMDbTGSM3XXPH4A=;
+ b=vyG7iDRemRZFfgW5NReb1MgS+MSLmYqx4dsDfy4Ad28e7BgY22Puo0GybIIe3m9ZOtwmehlM
+ fuHbjHbtFYp4ywUe55nqjMHtUgXI9/9GkcLqaI8CGh9MQKk03zWZA4p3/R3N97CojHe3pt0h
+ HBgIGqJh9f38peRq+HRyIgOoP3M=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f5fe6274ba82a82fd75a33c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 21:52:39
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6F5E6C433F0; Mon, 14 Sep 2020 21:52:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11775208DB;
-        Mon, 14 Sep 2020 21:51:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600120317;
-        bh=1AVQi9i+IaU2iOoMkEHs7qZRDRG3IlwAxAl+7TRTQc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yfr+mH+tLwPjZLhwtzrotSjh6e9HGgFCEdZw6OqICy2nsrovd/lJaCuu/Lg4d7icE
-         tjR77gU5Fp4kjk9SCGdrlru7u16z9uTUg1EM1cjKtjj5cT3Q8CekAMq/VTnnbqwPhC
-         jpGi7iEy0GAekP1kdTuXTHzRiVMb95tPxy5bnZwU=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3C7A740D3D; Mon, 14 Sep 2020 18:51:55 -0300 (-03)
-Date:   Mon, 14 Sep 2020 18:51:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 05/26] perf tools: Add build_id__is_defined function
-Message-ID: <20200914215155.GG166601@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-6-jolsa@kernel.org>
- <CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com>
- <20200914204701.GZ1714160@krava>
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D68DFC433CA;
+        Mon, 14 Sep 2020 21:52:37 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914204701.GZ1714160@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 14:52:37 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com,
+        linux-arm-msm-owner@vger.kernel.org,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
+In-Reply-To: <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
+References: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
+ <1599851809-4342-1-git-send-email-cgoldswo@codeaurora.org>
+ <010101747e998731-e49f209f-8232-4496-a9fc-2465334e70d7-000000@us-west-2.amazonses.com>
+ <a4bdda08-9e2a-4862-00a3-72d4c90e82c7@redhat.com>
+ <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
+Message-ID: <57119844135c2b3ac5d075d077cd8c8e@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 14, 2020 at 10:47:01PM +0200, Jiri Olsa escreveu:
-> On Mon, Sep 14, 2020 at 02:44:35PM +0900, Namhyung Kim wrote:
-> > On Mon, Sep 14, 2020 at 6:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Adding build_id__is_defined helper to check build id
-> > > is defined and is != zero build id.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/perf/util/build-id.c | 11 +++++++++++
-> > >  tools/perf/util/build-id.h |  1 +
-> > >  2 files changed, 12 insertions(+)
-> > >
-> > > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> > > index 31207b6e2066..bdee4e08e60d 100644
-> > > --- a/tools/perf/util/build-id.c
-> > > +++ b/tools/perf/util/build-id.c
-> > > @@ -902,3 +902,14 @@ bool perf_session__read_build_ids(struct perf_session *session, bool with_hits)
-> > >
-> > >         return ret;
-> > >  }
-> > > +
-> > > +bool build_id__is_defined(const u8 *build_id)
-> > > +{
-> > > +       static u8 zero[BUILD_ID_SIZE];
-> > > +       int err = 0;
-> > > +
-> > > +       if (build_id)
-> > > +               err = memcmp(build_id, &zero, BUILD_ID_SIZE);
-> > > +
-> > > +       return err ? true : false;
-> > > +}
-> > 
-> > I think this is a bit confusing.. How about this?
-> > 
-> >   bool ret = false;
-> >   if (build_id)
-> >       ret = memcmp(...);
-> >   return ret;
+On 2020-09-14 11:33, Chris Goldsworthy wrote:
+> On 2020-09-14 02:31, David Hildenbrand wrote:
+>> What about long-term pinnings? IIRC, that can happen easily e.g., with
+>> vfio (and I remember there is a way via vmsplice).
+>> 
+>> Not convinced trying forever is a sane approach in the general case 
+>> ...
 > 
-> ok
+> Hi David,
 > 
-> > 
-> > Or, it can be a oneliner..
+> I've botched the threading, so there are discussions with respect to
+> the previous patch-set that is missing on this thread, which I will
+> summarize below:
 > 
-> everything can be oneliner ;-)
+> V1:
+> [1] https://lkml.org/lkml/2020/8/5/1097
+> [2] https://lkml.org/lkml/2020/8/6/1040
+> [3] https://lkml.org/lkml/2020/8/11/893
+> [4] https://lkml.org/lkml/2020/8/21/1490
+> [5] https://lkml.org/lkml/2020/9/11/1072
+> 
+> [1] features version of the patch featured a finite number of retries,
+> which has been stable for our kernels. In [2], Andrew questioned
+> whether we could actually find a way of solving the problem on the
+> grounds that doing a finite number of retries doesn't actually fix the
+> problem (more importantly, in [4] Andrew indicated that he would
+> prefer not to merge the patch as it doesn't solve the issue).  In [3],
+> I suggest one actual fix for this, which is to use
+> preempt_disable/enable() to prevent context switches from occurring
+> during the periods in copy_one_pte() and exit_mmap() (I forgot to
+> mention this case in the commit text) in which _refcount > _mapcount
+> for a page - you would also need to prevent interrupts from occurring
+> to if we were to fully prevent the issue from occurring.  I think this
+> would be acceptable for the copy_one_pte() case, since there _refcount
+> > _mapcount for little time.  For the exit_mmap() case, however, _refcount is greater than _mapcount whilst the page-tables are being torn down for a process - that could be too long for disabling preemption / interrupts.
+> 
+> So, in [4], Andrew asks about two alternatives to see if they're
+> viable: (1) acquiring locks on the exit_mmap path and migration paths,
+> (2) retrying indefinitely.  In [5], I discuss how using locks could
+> increase the time it takes to perform a CMA allocation, such that a
+> retry approach would avoid increased CMA allocation times. I'm also
+> uncertain about how the locking scheme could be implemented
+> effectively without introducing a new per-page lock that will be used
+> specifically to solve this issue, and I'm not sure this would be
+> accepted.
+> 
+> We're fine with doing indefinite retries, on the grounds that if there
+> is some long-term pinning that occurs when alloc_contig_range returns
+> -EBUSY, that it should be debugged and fixed.  Would it be possible to
+> make this infinite-retrying something that could be enabled or
+> disabled by a defconfig option?
+> 
+> Thanks,
+> 
+> Chris.
 
-But has to pass checkpatch.pl, so no more than 80 chars.
+Actually, if we were willing to have a defconfig option for enabling / 
+disabling indefinite retries on the return of -EBUSY, would it be 
+possibly to re-structure the patch to allow either (1) indefinite 
+retrying, or (2) doing a fixed number of retires (as some people might 
+want to tolerate CMA allocation failures in favor of making progress)?
 
-;-)
-
-- Arnaldo
+-- 
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
