@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023FC2698D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434B42698D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgINWbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:31:13 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45591 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgINWbJ (ORCPT
+        id S1726074AbgINWbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:31:37 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40916 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgINWbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:31:09 -0400
-Received: by mail-il1-f195.google.com with SMTP id h2so1103267ilo.12;
-        Mon, 14 Sep 2020 15:31:07 -0700 (PDT)
+        Mon, 14 Sep 2020 18:31:36 -0400
+Received: by mail-io1-f65.google.com with SMTP id j2so1906215ioj.7;
+        Mon, 14 Sep 2020 15:31:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nT6K1KQBj4W8IpGEQ4J6WYsBu8HZ684HxeYYE+eGjiY=;
-        b=aQLYfPbFL0n3PHbhTJV6HttEGqgazcEivzcVk03pCAY3pYiPXiYsrT/uF5OPsB5d5i
-         xsuOanFaqMv7mqf3fIk+I6Bcx0+qWdPBz0jLBHTcYCm4dl6CudhSPkIJDtrYyaoseYT1
-         uE+SRFXL53cUj80m+9iDNk23s46kwKBEgCOk9vebZreXzOAMWu6NqC25UUKlhK/9sBC6
-         rDZfPacY3pmg/lm2w99UpNNZfRwKNcGSe2isDv9u8cXA2pqd+zExkcoblo+7MoM/zcN3
-         5529qeSJBpKKgzlo650ffBBujmTbf70cXzPKuMlA6WU4WqxBpPgEZHhUarfhhuk4cEf/
-         Vjcw==
-X-Gm-Message-State: AOAM531rOqteuk6BAC52S7bTg/OPffpMl75WobdE6C4EKJS+xamFj99Z
-        g8SyjbRWQ1Ai5QMFC2gU0w==
-X-Google-Smtp-Source: ABdhPJz21EfEdkgbUKk4Ay96aVETSaWe1zUZ+gDkOp3S2g9h0lxpKe8gdihfIGpebZrhD7CCljrBlQ==
-X-Received: by 2002:a92:9ac7:: with SMTP id c68mr13567597ill.221.1600122666900;
-        Mon, 14 Sep 2020 15:31:06 -0700 (PDT)
+        bh=/pD/h9E35swAdheWUiJTW2U8mtD3mvR4TbFwObgRqNQ=;
+        b=s7eke34TMsW035nc80TIYPkq2ySlz4V07pj+Zf9awkmCUsVcyQ/TXMdaZamZLBdYg1
+         tv0iE5aCF3x5cZ3e3PUyfzs/WHsIiQTEsPCmUURILy1xglSc4HgDLJCRuWgonYupdY4r
+         73PEAsmEVCcKQaVRO4+ylTW3VbnzCFcNdDBgc8/V/DbYRyIVOPAsDLqHq3DdnU+R3vQH
+         9cIuQxd387YfE13seKPO9mkWuKR4825eW55Gliv/bibYm7TDTV9Ux0+41RbtspPzj+hK
+         UJuCY2jIhu4lwZv6pZd73HNBl0XtIxdcHQuhqyiN7a46LCK3Cg6hfbiepxcOXdhOmz3E
+         twLA==
+X-Gm-Message-State: AOAM532fU7nqt7wTdg0itPuYf2nIDzBX9RTDIkzU/ACnMD0PjJqorbPH
+        RUVAev00QBtfDXWxwIdpsJu74IPPPEZw
+X-Google-Smtp-Source: ABdhPJxo23QcjWKVaJTELcfH6zvKBCo6gLwUuumBxvcGYu10LcMbvle/m6Ht8hvnRhQrVk6QQijdPw==
+X-Received: by 2002:a02:6043:: with SMTP id d3mr15339291jaf.122.1600122694328;
+        Mon, 14 Sep 2020 15:31:34 -0700 (PDT)
 Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l14sm7668265ili.84.2020.09.14.15.31.03
+        by smtp.gmail.com with ESMTPSA id z10sm6559662ioi.13.2020.09.14.15.31.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 15:31:06 -0700 (PDT)
-Received: (nullmailer pid 382849 invoked by uid 1000);
-        Mon, 14 Sep 2020 22:31:02 -0000
-Date:   Mon, 14 Sep 2020 16:31:02 -0600
+        Mon, 14 Sep 2020 15:31:33 -0700 (PDT)
+Received: (nullmailer pid 383796 invoked by uid 1000);
+        Mon, 14 Sep 2020 22:31:32 -0000
+Date:   Mon, 14 Sep 2020 16:31:32 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, etnaviv@lists.freedesktop.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
         Lee Jones <lee.jones@linaro.org>,
         Russell King <linux+etnaviv@armlinux.org.uk>,
-        David Airlie <airlied@linux.ie>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        devicetree@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
+        Daniel Vetter <daniel@ffwll.ch>, Li Yang <leoyang.li@nxp.com>,
+        dri-devel@lists.freedesktop.org,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
         Lucas Stach <l.stach@pengutronix.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
         Robert Chiras <robert.chiras@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        David Airlie <airlied@linux.ie>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        etnaviv@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH 01/13] dt-bindings: power: fsl, imx-gpcv2: Document
- interrupt controller properties
-Message-ID: <20200914223102.GA382796@bogus>
+Subject: Re: [PATCH 02/13] dt-bindings: display: bridge: nwl-dsi: Add common
+ properties
+Message-ID: <20200914223132.GA383744@bogus>
 References: <20200904145312.10960-1-krzk@kernel.org>
- <20200904145312.10960-2-krzk@kernel.org>
+ <20200904145312.10960-3-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904145312.10960-2-krzk@kernel.org>
+In-Reply-To: <20200904145312.10960-3-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Sep 2020 16:53:00 +0200, Krzysztof Kozlowski wrote:
-> The i.MX General Power Controller v2 is also an interrupt controller so
-> document additional properties to fix dtbs_check warnings like:
+On Fri, 04 Sep 2020 16:53:01 +0200, Krzysztof Kozlowski wrote:
+> Add common properties appearing in DTSes (assigned-clocks and others) to
+> fix dtbs_check warnings like:
 > 
->   arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: gpc@303a0000:
->     '#interrupt-cells', 'interrupt-controller' do not match any of the regexes: 'pinctrl-[0-9]+'
+>   arch/arm64/boot/dts/freescale/imx8mq-evk.dt.yaml: mipi-dsi@30a00000:
+>     'assigned-clock-parents', 'assigned-clock-rates', 'assigned-clocks' do not match any of the regexes: '^panel@[0-9]+$', 'pinctrl-[0-9]+'
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml | 4 ++++
+>  Documentation/devicetree/bindings/display/bridge/nwl-dsi.yaml | 4 ++++
 >  1 file changed, 4 insertions(+)
 > 
 
