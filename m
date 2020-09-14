@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6F5268445
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7A7268444
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgINFxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:53:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgINFxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:53:04 -0400
-Received: from localhost.localdomain (unknown [122.171.195.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC93821548;
-        Mon, 14 Sep 2020 05:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600062800;
-        bh=hlGqel7p8xW9ykeELpNGI2jnINIqXQtf7fPGszvl2vI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TTfdGxzUskZq/pm5SqpBeVBa+Tj2rP+6bJwt4nFuyCoBZjDIi5ZwrQ7M1pygI69Ww
-         CrawKN2hJehBpPOoVn4Krn1KF5XoTCMI2KE0F/Th/fQbJQEiGxgnqMz12eHNcyUG5b
-         jl+phuQM6MDtNPdka/aANvE8lvHiY5Ju6fkOTUos=
-From:   Vinod Koul <vkoul@kernel.org>
-To:     dmaengine@vger.kernel.org, Green Wan <green.wan@sifive.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] dmaengine: sf-pdma: remove unused 'desc'
-Date:   Mon, 14 Sep 2020 11:23:02 +0530
-Message-Id: <20200914055302.22962-1-vkoul@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726060AbgINFxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgINFxC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 01:53:02 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B14C06174A;
+        Sun, 13 Sep 2020 22:53:18 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id y1so4339488pgk.8;
+        Sun, 13 Sep 2020 22:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fu+Unq5S6ACh7iYsqq0q6WI21x0YuOKv2but7DIYHco=;
+        b=o/X10V9OrT4RY5VME92I67Ty5nMf/YdeZnF4osFSsDvxrcqLjrieCBh/BuQxCo8Odl
+         GJZ05F1zlzMzPte84nYm6xExf0+97izmbQT/DvQDBpukvyTFRGYw/bKTb7f17HFk3UKO
+         9X9DHs7/l17ZiTa+qrC2r9b3xbn4yek/kHH/pA0x5R7sdm90rlo0rTgD2XfEwf61RbS2
+         L9lbVMniijOCyro99DIa0Tu2eW+hu4jZvOk/qaqYXomiyItVwy8g4LStZkTl/4a1TdZM
+         dYAFaYEA/ld9TZBMvtPvAljAsSNRXLaDHXBwMQECCJVDbH4qqZ7JaVVqMo2bJCAnIJsV
+         o3jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fu+Unq5S6ACh7iYsqq0q6WI21x0YuOKv2but7DIYHco=;
+        b=N/elPBe6pVyUWm+e/m1tqVLBOq/8cRqgdO0JafQ6xmwJHnGcxnumXdA4KCHXRTnFbr
+         iyumR2kdkZqIm5LTcIqgspNPDCNz/mXPlU/ZC5TMapWF9+HIIqWWS/EGVLI/CjNfwmjk
+         XsHdLzNF1u8cwAJRcSePw2+gsl3lP6j1vMQRemecZ7rJQtWoExuadgFuGMTVy4lG1Da4
+         cWc3yezTlgadN508hGTNL6E44F4Yyxite+Dg1ES7KrtV8Bhf2Yd2AD/HRlWHxq7SriFF
+         D9W1KwLfaz9Hawe4kZRe0XcvdHFpIN+mfAkP8ZcOml+WgRdFu3tQU1G6BvlqWKwg7s+M
+         rtiQ==
+X-Gm-Message-State: AOAM5330mTb+GxMw56ova5a+W2D+x0xq+Vewk/t1xpBvRhmDBXt8YEtt
+        GKsUNHPOigWQ6MlCf9hsSBI=
+X-Google-Smtp-Source: ABdhPJwtLsRNLtWA3y2GtumiwQhYjfTb+m+yPk/jEtTINjVXfSq6KN2ZYqJ/Sw2Ya7XHIe8ichHrsw==
+X-Received: by 2002:aa7:86d3:: with SMTP id h19mr12315138pfo.84.1600062797975;
+        Sun, 13 Sep 2020 22:53:17 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id m21sm8836737pfo.13.2020.09.13.22.53.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 22:53:17 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 22:53:15 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Fengping Yu <fengping.yu@mediatek.com>
+Cc:     Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-input@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v18 2/3] drivers: input:keyboard: Add mtk keypad driver
+Message-ID: <20200914055315.GJ1665100@dtor-ws>
+References: <20200909072159.14888-1-fengping.yu@mediatek.com>
+ <20200909072159.14888-3-fengping.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909072159.14888-3-fengping.yu@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'desc' variable is now defined but not used in sf_pdma_donebh_tasklet(),
-causing this warning:
+Hi Fengping,
 
-drivers/dma/sf-pdma/sf-pdma.c: In function 'sf_pdma_donebh_tasklet':
-drivers/dma/sf-pdma/sf-pdma.c:287:23: warning: unused variable 'desc' [-Wunused-variable]
+On Wed, Sep 09, 2020 at 03:22:00PM +0800, Fengping Yu wrote:
+> From: "fengping.yu" <fengping.yu@mediatek.com>
+> 
+> This patch adds matrix keypad support for Mediatek SoCs.
 
-Remove this unused variable
+I am generally happy with the driver, however I do not believe this will
+be the only Mediatek driver ever. Do you think we could rename it to
+mt6779-keypad.c and use mt6779_keypad_ as prefix for function names?
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/dma/sf-pdma/sf-pdma.c | 1 -
- 1 file changed, 1 deletion(-)
+Thanks!
 
-diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
-index 754994087e5f..1e66c6990d81 100644
---- a/drivers/dma/sf-pdma/sf-pdma.c
-+++ b/drivers/dma/sf-pdma/sf-pdma.c
-@@ -284,7 +284,6 @@ static void sf_pdma_free_desc(struct virt_dma_desc *vdesc)
- static void sf_pdma_donebh_tasklet(unsigned long arg)
- {
- 	struct sf_pdma_chan *chan = (struct sf_pdma_chan *)arg;
--	struct sf_pdma_desc *desc = chan->desc;
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&chan->lock, flags);
 -- 
-2.26.2
-
+Dmitry
