@@ -2,43 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FD7268880
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663FE268881
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgINJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:34:37 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:46971 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgINJeU (ORCPT
+        id S1726418AbgINJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:34:39 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:50535 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgINJeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:34:20 -0400
-Received: by mail-io1-f80.google.com with SMTP id j8so2385681iof.13
+        Mon, 14 Sep 2020 05:34:21 -0400
+Received: by mail-il1-f208.google.com with SMTP id u20so3014692ilk.17
         for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:34:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=E/QTzBsB9NrbrnyD5JfbMzAIiLjuZEKI1ZQTWSSXoa4=;
-        b=YMhmvZdejHQG/EsFXvNGUgN2884AE0UnTOWslZ+78TEtNsJa3XFpnjsiyvBdxxYAtx
-         /2iJMPXt2GMhooz7fDzogJYfT+IfcPolWb07JvjrQawgqQlyiJhw6zoHlR6ldGfJ0Lka
-         mvnOwW+ufHSzreEsOjpPq6RvLVRID/GHDgoPJtxoc6W2JNlEr55PE131ZCqBObK3t27G
-         deO0XRpkw83WJd2hqXbkrsE5PCLvAgKACqT/lRf986OepPJ75MmppxZb6TdwdReCrqOi
-         JMWD9c/jbyEUVs2bWw+BLSq6kaxMcq4qRvB/W9/qTP2BVzWdrVYo/i/6QxMj3Q84hLYS
-         +s0A==
-X-Gm-Message-State: AOAM533B9fwNW8YactRNUeG2p7PjMvZsxKqjK/N+TeEPs6mw9oQFUcuZ
-        qvowEJAdDQ9djmZvqXONtrhcSIfr4w66RGrQki9ksv+GL4hc
-X-Google-Smtp-Source: ABdhPJz7iG02x/zNqSUBW/Ko76Ck8RPpcBpoX+83zp085P7Df7QS5p4V+Nb+NblkkR5CVY6nPVm0/N466WJViD3aaddPvibh3/fO
+        bh=mpLvn3u66tHFv9Em3uKyA7uympIh7+6tlTS3lnYh3rs=;
+        b=bdag0g9bkAzTGfnG2dxFIoBBAagmyPVFV+exYnF2wQnlCA3fYRMbNcdLe3x7ZIPGUm
+         Nhrx3maIp/6Ux6NKzBBZTCMnG36z87QdifpYJdBZVKgc9h43u80gB0S5tUJcdWKb/QAN
+         NxeiStJdL5y8cnK7z+e4Tpl1m3JCjTx0JqYgnpdKBYdqiDcRJxoS9osNMT1E/QLj1qm7
+         mask4JK9C9degqrVz0gOOfiZ4B7BFBS2gkl2nF92yN8Bo2NFoQGSjhGIwEa+xZXa5c+h
+         bSw7GabgElWrVR/j8ZbjNYcGBkeEAsiMP3LfLWIZzDq+Lninb2zRYBdx9XEwbvTO1Nwv
+         bo2A==
+X-Gm-Message-State: AOAM532lNB27CBD3jN7ONi72BwmxvZRJq71rfpGljG3rECraQt2qo2/8
+        q6bbZUXDEG0WrRrst4HY8YD19orwpmGTtWsYgch19eSujAYQ
+X-Google-Smtp-Source: ABdhPJzEMiBYiQ7QRCK6v++Le5dE5IBqLuugWk6dN7RvJEqI+dAVSPXalZTWVLzi15OUqkFHKoe9rSW1ncq7zS32yizJc+TWKxQn
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:134b:: with SMTP id u11mr12503383jad.18.1600076059963;
- Mon, 14 Sep 2020 02:34:19 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 02:34:19 -0700
+X-Received: by 2002:a05:6e02:d2:: with SMTP id r18mr10890752ilq.303.1600076060199;
+ Mon, 14 Sep 2020 02:34:20 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 02:34:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002af53f05af42bd63@google.com>
-Subject: WARNING: refcount bug in io_worker_exit
-From:   syzbot <syzbot+c4934d8fed67bdb3b763@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <0000000000002e90d405af42bd38@google.com>
+Subject: KASAN: slab-out-of-bounds Read in fbcon_scrolldelta
+From:   syzbot <syzbot+9381e25e04a6ea4f2a20@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
+        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        natechancellor@gmail.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -51,47 +53,92 @@ syzbot found the following issue on:
 
 HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1717bb21900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8f5c353182ed6199
-dashboard link: https://syzkaller.appspot.com/bug?extid=c4934d8fed67bdb3b763
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+console output: https://syzkaller.appspot.com/x/log.txt?x=14d155f9900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=9381e25e04a6ea4f2a20
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c4934d8fed67bdb3b763@syzkaller.appspotmail.com
+Reported-by: syzbot+9381e25e04a6ea4f2a20@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 714 at lib/refcount.c:28 refcount_warn_saturate+0x15b/0x1a0 lib/refcount.c:28
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 714 Comm: io_wqe_worker-1 Not tainted 5.9.0-rc4-syzkaller #0
+==================================================================
+BUG: KASAN: slab-out-of-bounds in fbcon_redraw_softback drivers/video/fbdev/core/fbcon.c:1676 [inline]
+BUG: KASAN: slab-out-of-bounds in fbcon_scrolldelta+0x10da/0x1230 drivers/video/fbdev/core/fbcon.c:2909
+Read of size 2 at addr ffff8881e9ae68c0 by task syz-executor.1/20692
+
+CPU: 0 PID: 20692 Comm: syz-executor.1 Not tainted 5.9.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:refcount_warn_saturate+0x15b/0x1a0 lib/refcount.c:28
-Code: c7 3a 98 15 89 31 c0 e8 43 21 a6 fd 0f 0b eb 85 e8 aa 82 d4 fd c6 05 16 6b ea 05 01 48 c7 c7 66 98 15 89 31 c0 e8 25 21 a6 fd <0f> 0b e9 64 ff ff ff e8 89 82 d4 fd c6 05 f6 6a ea 05 01 48 c7 c7
-RSP: 0018:ffffc90008e7fdb8 EFLAGS: 00010246
-RAX: 4ee61c65d7036100 RBX: 0000000000000003 RCX: ffff8880934bc2c0
-RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-RBP: 0000000000000003 R08: ffffffff815e3810 R09: ffffed1015d062c0
-R10: ffffed1015d062c0 R11: 0000000000000000 R12: ffff88809fbb50b8
-R13: dffffc0000000000 R14: ffff88809e8a2400 R15: ffff8880a6179330
- refcount_sub_and_test include/linux/refcount.h:274 [inline]
- refcount_dec_and_test include/linux/refcount.h:294 [inline]
- io_worker_exit+0x63f/0x750 fs/io-wq.c:236
- io_wqe_worker+0x799/0x810 fs/io-wq.c:596
- kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ fbcon_redraw_softback drivers/video/fbdev/core/fbcon.c:1676 [inline]
+ fbcon_scrolldelta+0x10da/0x1230 drivers/video/fbdev/core/fbcon.c:2909
+ fbcon_set_origin+0x3c/0x50 drivers/video/fbdev/core/fbcon.c:2959
+ set_origin+0xe7/0x3e0 drivers/tty/vt/vt.c:930
+ vc_do_resize+0xb0f/0x1150 drivers/tty/vt/vt.c:1305
+ fbcon_modechanged+0x36c/0x710 drivers/video/fbdev/core/fbcon.c:3011
+ fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:3069
+ do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1106
+ fb_ioctl+0xdd/0x130 drivers/video/fbdev/core/fbmem.c:1181
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5f9
+Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f51ee9c6c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000000e0c0 RCX: 000000000045d5f9
+RDX: 0000000020001180 RSI: 0000000000004601 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007fffb40f07cf R14: 00007f51ee9c79c0 R15: 000000000118cf4c
+
+Allocated by task 3837:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x1b0/0x310 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ vc_do_resize+0x2f6/0x1150 drivers/tty/vt/vt.c:1228
+ vt_resizex drivers/tty/vt/vt_ioctl.c:818 [inline]
+ vt_ioctl+0xef0/0x2cc0 drivers/tty/vt/vt_ioctl.c:1036
+ tty_ioctl+0x1019/0x15f0 drivers/tty/tty_io.c:2656
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8881e9ae6000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 2240 bytes inside of
+ 4096-byte region [ffff8881e9ae6000, ffff8881e9ae7000)
+The buggy address belongs to the page:
+page:00000000761e5aa4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1e9ae6
+head:00000000761e5aa4 order:1 compound_mapcount:0
+flags: 0x57ffe0000010200(slab|head)
+raw: 057ffe0000010200 ffffea0007bbe508 ffffea0007bc1288 ffff8880aa040900
+raw: 0000000000000000 ffff8881e9ae6000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8881e9ae6780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff8881e9ae6800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff8881e9ae6880: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+                                           ^
+ ffff8881e9ae6900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8881e9ae6980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
 
 ---
