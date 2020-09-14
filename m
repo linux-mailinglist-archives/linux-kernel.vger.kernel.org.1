@@ -2,140 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC45268839
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E07C126883F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgINJY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:24:26 -0400
-Received: from mx01-muc.bfs.de ([193.174.230.67]:46705 "EHLO mx01-muc.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgINJYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:24:25 -0400
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-muc.bfs.de (Postfix) with ESMTPS id 59B8E20430;
-        Mon, 14 Sep 2020 11:24:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1600075461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=68NXYa0BEnVQVS9UE+cSng/EbXwq0ErayJ1ex9WHk3E=;
-        b=XJUkjzcvR3xP+8zTM72jXQErxwNGZrLzcfZ63pqqi0zCPA3o8opa2WPwcw/aIYkJ2kk67U
-        7u/9Z8FqkW+dpuRHNOMSwhPNqRHNcKqXS4wKA3HuTMAd6Kn+UP0AoU08hFbKMjG0BVHT06
-        crYyW2lpKdA35ZWvGDbLQ4vbLN2UCqUEdDQKfcZjmvLKCJto2WBT7pyPor7QRgZ0XQqYNV
-        87tPDqr+8rOAqYa0wB7ik98yDTHsPrKzS2bXbAjSiYC3MFG4LKyyTTQ+nGSl6XWg4NYoNv
-        H3NUUUrkjDdmuFzklaaWSC1hExCHykcI91ATDqZ5EpSj0RTj2I0TnIE9szq3aA==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2044.4; Mon, 14 Sep
- 2020 11:24:20 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
- 15.01.2044.004; Mon, 14 Sep 2020 11:24:20 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
-        "mtk.manpages@gmail.com" <mtk.manpages@gmail.com>
-CC:     "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: AW: AW: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer size
- (instead of hardcoding macro name)
-Thread-Topic: AW: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer size
- (instead of hardcoding macro name)
-Thread-Index: AQHWh7eCoX2qxL9OEkaYnOmAJnp5MKljZJ9jgABKwQCABDGHAg==
-Date:   Mon, 14 Sep 2020 09:24:20 +0000
-Message-ID: <67f68125677e4e17aa1742b88267e05f@bfs.de>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-13-colomar.6.4.3@gmail.com>
- <00ae0174f35241efa962286b9247c590@bfs.de>,<c2b43a9c-ae80-fae6-16a4-09c9aab73ac1@gmail.com>
-In-Reply-To: <c2b43a9c-ae80-fae6-16a4-09c9aab73ac1@gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.39]
-x-tm-as-product-ver: SMEX-14.0.0.3031-8.6.1012-25664.005
-x-tm-as-result: No-10--3.206700-5.000000
-x-tmase-matchedrid: m4O0KhaxV9YI9V8p1Mx66XbspjK6JP6qDZxgL2y+vXeRmBpkPchPVWhk
-        SwpykoqVxTsa1zsKwGBXo+50WYSM+DIiDIfRJcbnEhGH3CRdKUVOZvhLfqob32OMyb1Ixq8Vwzt
-        gYVFKGplZVPxvRQjmVN7x/oGnlZAtIgXwp4ASkATx5KZMlKYS/a5BoXfdPww+EeYfWHmbru00hE
-        i4P3jSnyFDPhCO3zhjQMEEqjKL1z9p8VUyl8SK7TuUqTPTfDTrrzl8sNiWClKbKItl61J/yZkw8
-        KdMzN86KrauXd3MZDXZKSb2ILhhPAectNw3JwqQm07PbFcBn9LBbcxnuOFzqMXq/HY0K7Gc+T4M
-        aKAbC1sItXxQKmji2ikAmjvWIcXsuDshmoxBQb3HCnBrOyIevHApsmbw8EMtreWoUbwyBi2trdV
-        Vx3oRXsv0CksmuJO/QwymtxuJ6y0=
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--3.206700-5.000000
-x-tmase-version: SMEX-14.0.0.3031-8.6.1012-25664.005
-x-tm-snts-smtp: E5EA56FF5E9DACA039B53DF381F054ADD62BDE6CF580CC03AE12FB44D728A1DC2000:9
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726289AbgINJZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgINJZk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:25:40 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4EDC06174A;
+        Mon, 14 Sep 2020 02:25:40 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so17865743wrm.9;
+        Mon, 14 Sep 2020 02:25:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1dIPQoWyftPmIiGZ7bnGzVMHwKLifufczvlCSX3EG1w=;
+        b=jw0rY+eY22uu18XCKudon3U6qaDho8rSQASPXbM1kk+uiI/Ym5Vp9eYIxzx8KX+QAT
+         SMqS4LqpAm1a+bqfONdmKttchrdKwbUELxMvuObXuxSmNxn3onhYhAfAlUlR+3XNBFGv
+         cDkJ2Hb0WwEQaEIfFUHFZMq3TPY8FI4La+beet5Tu51LRrcgVKZOLJf5VN+o8J8fuM6E
+         TkXvcCe+SfIzu2VaVVUn+OJDr499M08gFdPwJgKnKcJU7zDtsyM0LvjVlxWo2fgbAiHM
+         gx39WMCroNvj3O4xZZ1ShVyqPrw8Ko1HV0ryCiaAJ72XRoBk6jrxH7ZZzMu022Avlsy4
+         J38A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1dIPQoWyftPmIiGZ7bnGzVMHwKLifufczvlCSX3EG1w=;
+        b=tg+Oy4C0OzKr8qlt9VAwgg3Ft1vM+XrsuBIucILYTccQG3AzBrVoVCZuzfxzs5VDL0
+         wLW9gvp1MKIDV/Wd0bbq3dIdjfwaG9WSsHjGh0wBN+IZQNOYINbf5FzS+t/QPOFR7wtf
+         6qxpQcRLm+EiXL9famUAyBVXWCqCFZgJNuThLG8y0BIryO90CsZftAEcmSa/C2YycWNr
+         dgFMvWdXwWoOymiDQEAnkJ7WYQQtOT6R7C7eCagZkJSEuRwREudFGZ1R5KFSsXb8zLkd
+         5l9iSm6/DK60IOqfo+ymcciZx4VqP/5FobKZDBxKK5qw8mQRN6rwlZfX/FYbIp0X21qj
+         S5Yw==
+X-Gm-Message-State: AOAM533CWLJVQ6r5jEeV+kKIwnZ8sswdpDtoxhDQqMhLaHr2VKH477KS
+        wGn0izkEq8RHrTHLFks6k4YllyWBWAqo6g==
+X-Google-Smtp-Source: ABdhPJzp1mmUX8nlci/vOl0gLyKDPoBLlS4rVJjGZY5jj/3T55L4YK892bTlqiJPPr47dPxF7D7ubA==
+X-Received: by 2002:adf:f78c:: with SMTP id q12mr15217468wrp.6.1600075538591;
+        Mon, 14 Sep 2020 02:25:38 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id x24sm19633590wrd.53.2020.09.14.02.25.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 02:25:38 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: make linux-mediatek list remarks consistent
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200914053110.23286-1-lukas.bulwahn@gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <f6bc41d3-5ce4-b9ea-e2bb-e0cee4de3179@gmail.com>
+Date:   Mon, 14 Sep 2020 11:25:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Spam-Status: No, score=0.55
-Authentication-Results: mx01-muc.bfs.de;
-        none
-X-Spamd-Result: default: False [0.55 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_SPAM(0.55)[75.69%];
-         TO_DN_SOME(0.00)[];
-         DKIM_SIGNED(0.00)[];
-         NEURAL_HAM(-0.00)[-1.036];
-         FREEMAIL_TO(0.00)[gmail.com];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[]
+In-Reply-To: <20200914053110.23286-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-missunderstanding,
-i do not want to discuss sizeof() vs define
 
-in this example you do:
-#define BUFLEN 4096
- char buf[BUFLEN];
-getgrent_r(&grp, buf, sizeof(buf), &grpp);
 
-so there is no real need for BUFLEN anymore
-so donig
- char buf[BUFLEN]; -> char buf[4096];
-would remove BUFLEN
+On 14/09/2020 07:31, Lukas Bulwahn wrote:
+> Commit 637cfacae96f ("PCI: mediatek: Add MediaTek PCIe host controller
+> support") does not mention that linux-mediatek@lists.infradead.org is
+> moderated for non-subscribers, but the other eight entries for
+> linux-mediatek@lists.infradead.org do.
+> 
+> Adjust this entry to be consistent with all others.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-________________________________________
-Von: Alejandro Colomar [colomar.6.4.3@gmail.com]
-Gesendet: Freitag, 11. September 2020 21:17
-An: Walter Harms; mtk.manpages@gmail.com
-Cc: linux-man@vger.kernel.org; linux-kernel@vger.kernel.org
-Betreff: Re: AW: [PATCH 12/24] getgrent_r.3: Use sizeof() to get buffer siz=
-e (instead of hardcoding macro name)
+Maybe rephrase the commit message to something like:
+"Mark linux-mediatek@lists.infraded.org as moderated for the MediaTek PCIe host 
+controller entry, as the list actually is moderated."
 
-Hi Walter,
+Anyway:
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 
-On 2020-09-11 14:50, Walter Harms wrote:
-> BUFLEN should  be remove completely or stay
->
-> jm2c
->   wh
+> ---
+> applies cleanly on v5.9-rc5 and next-20200911
+> 
+> Ryder, please ack.
+> 
+> Bjorn, Matthias, please pick this minor non-urgent clean-up patch.
+> 
+> This patch submission will also show me if linux-mediatek is moderated or
+> not. I have not subscribed to linux-mediatek and if it shows up quickly in
+> the archive, the list is probably not moderated; and if it takes longer, it
+> is moderated, and hence, validating the patch.
 
-Sorry that you weren't CC'd in the conversation we are having about it.
-You can have a look at it here:
+I can affirm the list is moderated :)
 
-https://lore.kernel.org/linux-man/ab12151d-6951-2a36-2fc6-ea7eed538c45@gmai=
-l.com/T/#m423de347de6a64d099887d4ce615660d16d5b0e6
-
-I'll CC you in the next reply there.
-
-Cheers,
-
-Alex
+> 
+>   MAINTAINERS | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5e6e36542c62..83c83d7ef2a5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13485,7 +13485,7 @@ F:	drivers/pci/controller/dwc/pcie-histb.c
+>   PCIE DRIVER FOR MEDIATEK
+>   M:	Ryder Lee <ryder.lee@mediatek.com>
+>   L:	linux-pci@vger.kernel.org
+> -L:	linux-mediatek@lists.infradead.org
+> +L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
+>   S:	Supported
+>   F:	Documentation/devicetree/bindings/pci/mediatek*
+>   F:	drivers/pci/controller/*mediatek*
+> 
