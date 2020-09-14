@@ -2,64 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4136726832A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E539A26832B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgINDiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:38:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:58106 "EHLO foss.arm.com"
+        id S1725993AbgINDiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:38:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:58118 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725965AbgINDiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:38:13 -0400
+        id S1725965AbgINDiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:38:16 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B17A1045;
-        Sun, 13 Sep 2020 20:38:12 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71E06113E;
+        Sun, 13 Sep 2020 20:38:15 -0700 (PDT)
 Received: from entos-thunderx2-desktop.shanghai.arm.com (entos-thunderx2-desktop.shanghai.arm.com [10.169.212.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F2E7F3F718;
-        Sun, 13 Sep 2020 20:38:09 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D554A3F718;
+        Sun, 13 Sep 2020 20:38:12 -0700 (PDT)
 From:   Jianyong Wu <jianyong.wu@arm.com>
 To:     ericvh@gmail.com, lucho@ionkov.net, asmadeus@codewreck.org,
         v9fs-developer@lists.sourceforge.net
 Cc:     linux-kernel@vger.kernel.org, justin.he@arm.com,
-        jianyong.wu@arm.com
-Subject: [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall bug
-Date:   Mon, 14 Sep 2020 11:37:50 +0800
-Message-Id: <20200914033754.29188-1-jianyong.wu@arm.com>
+        jianyong.wu@arm.com, Greg Kurz <gkurz@linux.vnet.ibm.com>
+Subject: [PATCH RFC 1/4] fs/9p: fix create-unlink-getattr idiom
+Date:   Mon, 14 Sep 2020 11:37:51 +0800
+Message-Id: <20200914033754.29188-2-jianyong.wu@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200914033754.29188-1-jianyong.wu@arm.com>
+References: <20200914033754.29188-1-jianyong.wu@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-open-unlink-f*syscall bug is a well-known bug in 9p, we try to fix the bug
-in this patch set.
-I take Eric's and Greg's patches which constiute the 1/4 - 3/4 of this patch
-set as the main frame of the solution. In patch 4/4, I fix the fid race issue
-exists in Greg's patch.
+From: Eric Van Hensbergen <ericvh@gmail.com>
 
-Eric Van Hensbergen (1):
-  fs/9p: fix create-unlink-getattr idiom
+Fixes several outstanding bug reports of not being able to getattr from an
+open file after an unlink.  This patch cleans up transient fids on an unlink
+and will search open fids on a client if it detects a dentry that appears to
+have been unlinked.  This search is necessary because fstat does not pass fd
+information through the VFS API to the filesystem, only the dentry which for
+9p has an imperfect match to fids.
 
-Greg Kurz (1):
-  fs/9p: search open fids first
+Inherent in this patch is also a fix for the qid handling on create/open
+which apparently wasn't being set correctly and was necessary for the search
+to succeed.
 
-Jianyong Wu (2):
-  fs/9p: track open fids
-  9p: fix race issue in fid contention.
+A possible optimization over this fix is to include accounting of open fids
+with the inode in the private data (in a similar fashion to the way we track
+transient fids with dentries).  This would allow a much quicker search for
+a matching open fid.
 
- fs/9p/fid.c             | 72 +++++++++++++++++++++++++++++++++++------
- fs/9p/fid.h             | 25 +++++++++++---
- fs/9p/vfs_dentry.c      |  2 +-
- fs/9p/vfs_dir.c         | 20 ++++++++++--
- fs/9p/vfs_file.c        |  3 +-
- fs/9p/vfs_inode.c       | 52 +++++++++++++++++++++--------
- fs/9p/vfs_inode_dotl.c  | 44 ++++++++++++++++---------
- fs/9p/vfs_super.c       |  7 ++--
- fs/9p/xattr.c           | 18 ++++++++---
- include/net/9p/client.h |  8 +++++
- net/9p/client.c         |  7 +++-
- 11 files changed, 206 insertions(+), 52 deletions(-)
+Signed-off-by: Eric Van Hensbergen <ericvh@gmail.com>
+(changed v9fs_fid_find_global to v9fs_fid_find_inode in comment)
+Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
+Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
 
+Change-Id: Ifd5c8cdca8b40216e3e7d021eb6d0afd750096e7
+---
+ fs/9p/fid.c       | 30 ++++++++++++++++++++++++++++++
+ fs/9p/vfs_inode.c |  4 ++++
+ net/9p/client.c   |  5 ++++-
+ 3 files changed, 38 insertions(+), 1 deletion(-)
+
+diff --git a/fs/9p/fid.c b/fs/9p/fid.c
+index 3d681a2c2731..3304984c0fad 100644
+--- a/fs/9p/fid.c
++++ b/fs/9p/fid.c
+@@ -38,6 +38,33 @@ void v9fs_fid_add(struct dentry *dentry, struct p9_fid *fid)
+ 	spin_unlock(&dentry->d_lock);
+ }
+ 
++/**
++ * v9fs_fid_find_inode - search for a fid off of the client list
++ * @inode: return a fid pointing to a specific inode
++ * @uid: return a fid belonging to the specified user
++ *
++ */
++
++static struct p9_fid *v9fs_fid_find_inode(struct inode *inode, kuid_t uid)
++{
++	struct p9_client *clnt = v9fs_inode2v9ses(inode)->clnt;
++	struct p9_fid *fid, *fidptr, *ret = NULL;
++	unsigned long flags;
++
++	p9_debug(P9_DEBUG_VFS, " inode: %p\n", inode);
++
++	spin_lock_irqsave(&clnt->lock, flags);
++	list_for_each_entry_safe(fid, fidptr, &clnt->fidlist, flist) {
++		if (uid_eq(fid->uid, uid) &&
++		   (inode->i_ino == v9fs_qid2ino(&fid->qid))) {
++			ret = fid;
++			break;
++		}
++	}
++	spin_unlock_irqrestore(&clnt->lock, flags);
++	return ret;
++}
++
+ /**
+  * v9fs_fid_find - retrieve a fid that belongs to the specified uid
+  * @dentry: dentry to look for fid in
+@@ -65,6 +92,9 @@ static struct p9_fid *v9fs_fid_find(struct dentry *dentry, kuid_t uid, int any)
+ 			}
+ 		}
+ 		spin_unlock(&dentry->d_lock);
++	} else {
++		if (dentry->d_inode)
++			ret = v9fs_fid_find_inode(dentry->d_inode, uid);
+ 	}
+ 
+ 	return ret;
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index ae0c38ad1fcb..31c2fddabb82 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -570,6 +570,10 @@ static int v9fs_remove(struct inode *dir, struct dentry *dentry, int flags)
+ 
+ 		v9fs_invalidate_inode_attr(inode);
+ 		v9fs_invalidate_inode_attr(dir);
++
++		/* invalidate all fids associated with dentry */
++		/* NOTE: This will not include open fids */
++		dentry->d_op->d_release(dentry);
+ 	}
+ 	return retval;
+ }
+diff --git a/net/9p/client.c b/net/9p/client.c
+index 09f1ec589b80..1a3f72bf45fc 100644
+--- a/net/9p/client.c
++++ b/net/9p/client.c
+@@ -1219,7 +1219,7 @@ struct p9_fid *p9_client_walk(struct p9_fid *oldfid, uint16_t nwname,
+ 	if (nwname)
+ 		memmove(&fid->qid, &wqids[nwqids - 1], sizeof(struct p9_qid));
+ 	else
+-		fid->qid = oldfid->qid;
++		memmove(&fid->qid, &oldfid->qid, sizeof(struct p9_qid));
+ 
+ 	kfree(wqids);
+ 	return fid;
+@@ -1272,6 +1272,7 @@ int p9_client_open(struct p9_fid *fid, int mode)
+ 		p9_is_proto_dotl(clnt) ? "RLOPEN" : "ROPEN",  qid.type,
+ 		(unsigned long long)qid.path, qid.version, iounit);
+ 
++	memmove(&fid->qid, &qid, sizeof(struct p9_qid));
+ 	fid->mode = mode;
+ 	fid->iounit = iounit;
+ 
+@@ -1317,6 +1318,7 @@ int p9_client_create_dotl(struct p9_fid *ofid, const char *name, u32 flags, u32
+ 			(unsigned long long)qid->path,
+ 			qid->version, iounit);
+ 
++	memmove(&ofid->qid, qid, sizeof(struct p9_qid));
+ 	ofid->mode = mode;
+ 	ofid->iounit = iounit;
+ 
+@@ -1362,6 +1364,7 @@ int p9_client_fcreate(struct p9_fid *fid, const char *name, u32 perm, int mode,
+ 				(unsigned long long)qid.path,
+ 				qid.version, iounit);
+ 
++	memmove(&fid->qid, &qid, sizeof(struct p9_qid));
+ 	fid->mode = mode;
+ 	fid->iounit = iounit;
+ 
 -- 
 2.17.1
 
