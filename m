@@ -2,267 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8279B2683DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFBDB2683E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726054AbgINE7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725996AbgINE66 (ORCPT
+        id S1726059AbgINFBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:01:13 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:13937 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725974AbgINFBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:58:58 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E83AC061788
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 21:58:57 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id a12so16165440eds.13
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 21:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bruhIH4CDHums7UUWVvK8ZwvwKM6vyD/d4MfCflsEtg=;
-        b=Om3aDl9WIviASU808y7ftS1SfffUPIlGspCiwkFK0X80hhlm8kExah6P5oCwh1w62j
-         JSBRPpPzqkXxK45ryxK/SfsUXQIWCU/cXOpiFyQjwZ5JJ/ZK3oCw5GWyci9OgEEQiap2
-         bOzmsHzb4u8G7Of4XIIXKP9kwvydnwUGuLoTg7oPZijs5AQ5S4WebFLUR44miSDhq+aC
-         GLQfPoj5mTlrhfkc2Lkp2Z0x7QTp7mUJDA+alJjFQ8thea4qVe4wWpCA0FslsJg1kAFg
-         K+2nwPyNTzxZC43iVEw5EI1FDBM4LpMAujbg9LbCTKOVeIYr+tLIofheyhrZHevMXhfM
-         CjOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bruhIH4CDHums7UUWVvK8ZwvwKM6vyD/d4MfCflsEtg=;
-        b=LSzmUmyn7Y+Gq1FWpbTGSSHPYKoT+ZaP0VtxIkQWco38DbL8mMQN9xW96j02lHFL5n
-         sKm70rrqoj6b9436w+yRogkcAeu58tkIuQuY8CSJB1VtA0tAFtgvvrzN43QLabuSvqrM
-         ofMHH43NW2bdzYnY1w5lEApyLVPDkiQ9Su/3a9WoyyMsg3Dh/d3cX6Wlg1eslgKKSxGr
-         vifBbEOE/yq9dN2Z9E4qxaYfk64TCKT+zEOdWicnPNOO3VhC4QZBMK06GkLjNfXTkJ5H
-         MRp94J5NsyjE7cku5hJKgFHrwsduEvmI4URmCCzpLRLhb2m3iuFuWTqNDrI5XBKl8J5r
-         GKMQ==
-X-Gm-Message-State: AOAM532uk9oxCtESzAtTwakbAguLFNjNnHdkbDAwR6c6sHOJSbX+G/fg
-        kNaHtcTw38E/mJrdkzu0dpAHHFccgWfFAA43BoRheQ==
-X-Google-Smtp-Source: ABdhPJzUl2PIE+E4bdR2k5a/nAFLbfeXoaODUXNbWgYHryIReE2MsJE8Hrq/ShhJGEaZo1TBsmuDvyFioDuUZJE9zSo=
-X-Received: by 2002:aa7:d606:: with SMTP id c6mr15708061edr.370.1600059535975;
- Sun, 13 Sep 2020 21:58:55 -0700 (PDT)
+        Mon, 14 Sep 2020 01:01:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600059667; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=incIykKufp2vCbdHmRPdZFVE3aFFHufJedlCIBpyTrM=;
+ b=PEvt8YrkOAayKIreCBDAaP0M6gPbrVassSb4G9TmJrgwnd7NujbUpGKp2Q5kS6RFKs0PxC6k
+ qo6rnwT4ygBgMIRzemHqlVSOhThd8SlcoOD8mawQxDq0b3WuF1QuUu5oQWsis3LUayQaljgL
+ EnrKW8BV9//puSzF4+XudZHHNHc=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f5ef8efcc683673f92bc9d1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 05:00:31
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EE400C433FF; Mon, 14 Sep 2020 05:00:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C38FC433C6;
+        Mon, 14 Sep 2020 05:00:30 +0000 (UTC)
 MIME-Version: 1.0
-References: <20200903223332.881541-1-haoluo@google.com> <20200903223332.881541-4-haoluo@google.com>
- <CAEf4BzZPMwe=kz_K8P-6aeLiJo4rC69bMvju4=JEEv0CDEE9_w@mail.gmail.com>
-In-Reply-To: <CAEf4BzZPMwe=kz_K8P-6aeLiJo4rC69bMvju4=JEEv0CDEE9_w@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Sun, 13 Sep 2020 21:58:45 -0700
-Message-ID: <CA+khW7gWaMfok5wxyB0_EiVBnULR08vi6mtVZMwat2bhJY+k8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/6] bpf/selftests: ksyms_btf to test typed ksyms
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 13:00:30 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
         open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v2 1/2] scsi: ufs: Abort tasks before clear them from
+ doorbell
+In-Reply-To: <d151d6a2b53cfbd7bf3f9c9313b49c4c404c4c5a.camel@gmail.com>
+References: <1599099873-32579-1-git-send-email-cang@codeaurora.org>
+ <1599099873-32579-2-git-send-email-cang@codeaurora.org>
+ <1599627906.10803.65.camel@linux.ibm.com>
+ <yq14ko62wn5.fsf@ca-mkp.ca.oracle.com>
+ <1599706080.10649.30.camel@mtkswgap22>
+ <1599718697.3851.3.camel@HansenPartnership.com>
+ <1599725880.10649.35.camel@mtkswgap22>
+ <1599754148.3575.4.camel@HansenPartnership.com>
+ <010101747af387e9-f68ac6fa-1bc6-461d-92ec-dc0ee4486728-000000@us-west-2.amazonses.com>
+ <d151d6a2b53cfbd7bf3f9c9313b49c4c404c4c5a.camel@gmail.com>
+Message-ID: <030cecc931ef5d210c89d4541c2adea2@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for taking a look, Andrii.
+On 2020-09-11 17:09, Bean Huo wrote:
+> On Fri, 2020-09-11 at 02:16 +0000, Can Guo wrote:
+>> > >
+>> > > So your resolution looks good to me.
+>> > >
+>> > > Thanks so much : )
+>> >
+>> > You're welcome ... but just remember I have to explain this to
+>> > Linus
+>> > when the merge window opens.  It would be a lot easier if this
+>> > hadn't
+>> > happened so please don't make it any worse ...
+>> >
+>> > James
+>> 
+>> Sorry that my changes got you confused and thank you for help
+>> resolve
+>> the
+>> conflicts. My change ("scsi: ufs: Abort tasks before clearing them
+>> from
+>> doorbell") is to serve my fixes to ufs error recovery which only got
+>> picked
+>> up on scsi-queue-5.10. So I checked out to scsi-queue-5.10 and made
+>> my
+>> changes on the tip of scsi-queue-5.10, below 2 changes were not even
+>> present in scsi-queue-5.10 back that time.
+> 
+> I mentioned here https://patchwork.kernel.org/patch/11734713/
+> 
+> this change (scsi: ufs: Abort tasks before clearing them from doorbell)
+> has conflicts with the scsi-fixes branch. I don't know which branch is
+> the main branch we should focus on.
+> 
+> 
+> Bean
 
-On Fri, Sep 4, 2020 at 12:49 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Sep 3, 2020 at 3:35 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Selftests for typed ksyms. Tests two types of ksyms: one is a struct,
-> > the other is a plain int. This tests two paths in the kernel. Struct
-> > ksyms will be converted into PTR_TO_BTF_ID by the verifier while int
-> > typed ksyms will be converted into PTR_TO_MEM.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  .../testing/selftests/bpf/prog_tests/ksyms.c  | 31 +++------
-> >  .../selftests/bpf/prog_tests/ksyms_btf.c      | 63 +++++++++++++++++++
-> >  .../selftests/bpf/progs/test_ksyms_btf.c      | 23 +++++++
-> >  tools/testing/selftests/bpf/trace_helpers.c   | 26 ++++++++
-> >  tools/testing/selftests/bpf/trace_helpers.h   |  4 ++
-> >  5 files changed, 123 insertions(+), 24 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> >
+Yeah, I know that one, but I was not even working on scsi-fixes branch
+at that time. Now I have two more fixes to ufshcd_abort(), not sure
+which branch I should work on, so asking the same here.
 
-[...]
+Regards,
 
-> > +       percpu_datasec = btf__find_by_name_kind(btf, ".data..percpu",
-> > +                                               BTF_KIND_DATASEC);
-> > +       if (percpu_datasec < 0) {
-> > +               printf("%s:SKIP:no PERCPU DATASEC in kernel btf\n",
-> > +                      __func__);
-> > +               test__skip();
->
-> leaking btf here
->
-> > +               return;
-> > +       }
-> > +
-> > +       skel = test_ksyms_btf__open_and_load();
-> > +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
->
-> here
->
-
-Oops. Good catches. Will fix.
-
-> > +               return;
-> > +
-> > +       err = test_ksyms_btf__attach(skel);
-> > +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> > +               goto cleanup;
-> > +
-> > +       /* trigger tracepoint */
-> > +       usleep(1);
-> > +
-> > +       data = skel->data;
-> > +       CHECK(data->out__runqueues != runqueues_addr, "runqueues",
-> > +             "got %llu, exp %llu\n", data->out__runqueues, runqueues_addr);
-> > +       CHECK(data->out__bpf_prog_active != bpf_prog_active_addr, "bpf_prog_active",
-> > +             "got %llu, exp %llu\n", data->out__bpf_prog_active, bpf_prog_active_addr);
->
-> u64 is not %llu on some arches, please cast explicitly to (unsigned long long)
->
-
-Ack.
-
-> > +
-> > +cleanup:
->
-> ... and here (I suggest to just jump from all those locations here for cleanup)
->
-
-Makes sense. Will do.
-
-> > +       test_ksyms_btf__destroy(skel);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> > new file mode 100644
-> > index 000000000000..e04e31117f84
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-> > @@ -0,0 +1,23 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2020 Google */
-> > +
-> > +#include "vmlinux.h"
-> > +
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +__u64 out__runqueues = -1;
-> > +__u64 out__bpf_prog_active = -1;
->
-> this is addresses, not values, so _addr part would make it clearer.
->
-
-Ack.
-
-> > +
-> > +extern const struct rq runqueues __ksym; /* struct type global var. */
-> > +extern const int bpf_prog_active __ksym; /* int type global var. */
->
-> When we add non-per-CPU kernel variables, I wonder if the fact that we
-> have both per-CPU and global kernel variables under the same __ksym
-> section would cause any problems and confusion? It's not clear to me
-> if we need to have a special __percpu_ksym section or not?..
->
-
-Yeah. Totally agree. I thought about this. I think a separate
-__percpu_ksym attribute is *probably* more clear. Not sure though. How
-about we introduce a "__percpu_ksym" and make it an alias to "__ksym"
-for now? If needed, we make an actual section for it in future.
-
-> > +
-> > +SEC("raw_tp/sys_enter")
-> > +int handler(const void *ctx)
-> > +{
-> > +       out__runqueues = (__u64)&runqueues;
-> > +       out__bpf_prog_active = (__u64)&bpf_prog_active;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> > index 4d0e913bbb22..ade555fe8294 100644
-> > --- a/tools/testing/selftests/bpf/trace_helpers.c
-> > +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> > @@ -90,6 +90,32 @@ long ksym_get_addr(const char *name)
-> >         return 0;
-> >  }
-> >
-> > +/* open kallsyms and read symbol addresses on the fly. Without caching all symbols,
-> > + * this is faster than load + find. */
-> > +int kallsyms_find(const char *sym, unsigned long long *addr)
-> > +{
-> > +       char type, name[500];
-> > +       unsigned long long value;
-> > +       int err = 0;
-> > +       FILE *f;
-> > +
-> > +       f = fopen("/proc/kallsyms", "r");
-> > +       if (!f)
-> > +               return -ENOENT;
-> > +
-> > +       while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
-> > +               if (strcmp(name, sym) == 0) {
-> > +                       *addr = value;
-> > +                       goto out;
-> > +               }
-> > +       }
-> > +       err = -EINVAL;
->
-> These error codes seem backward to me. If you fail to open
-> /proc/kallsyms, that's an unexpected and invalid situation, so EINVAL
-> makes a bit more sense there. But -ENOENT is clearly for cases where
-> you didn't find what you were looking for, which is exactly this case.
->
->
-
-I thought about it. I used -ENOENT for fopen failure because I found
--ENOENT is for the case when a file/directory is not found, which is
-more reasonable in describing fopen error. But your proposal also
-makes  sense and that is what I originally had. It doesn't sound like
-a big deal, I can switch the order them in v3.
-
-> > +
-> > +out:
-> > +       fclose(f);
-> > +       return err;
-> > +}
-> > +
-> >  void read_trace_pipe(void)
-> >  {
-> >         int trace_fd;
-> > diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
-> > index 25ef597dd03f..f62fdef9e589 100644
-> > --- a/tools/testing/selftests/bpf/trace_helpers.h
-> > +++ b/tools/testing/selftests/bpf/trace_helpers.h
-> > @@ -12,6 +12,10 @@ struct ksym {
-> >  int load_kallsyms(void);
-> >  struct ksym *ksym_search(long key);
-> >  long ksym_get_addr(const char *name);
-> > +
-> > +/* open kallsyms and find addresses on the fly, faster than load + search. */
-> > +int kallsyms_find(const char *sym, unsigned long long *addr);
-> > +
-> >  void read_trace_pipe(void);
-> >
-> >  #endif
-> > --
-> > 2.28.0.526.ge36021eeef-goog
-> >
+Can Guo.
