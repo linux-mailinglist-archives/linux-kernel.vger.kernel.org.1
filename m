@@ -2,166 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C3F268E36
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000CD268DE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgINOsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:48:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:14939 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726646AbgINOng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:43:36 -0400
-IronPort-SDR: JeMBDX517DsM8QnYFh5GyXe4sxNLggo/lyJPiCWme2HHaLpO7WWw1leSOjAfiJINThsot/VhoQ
- clz9OQ/mY9Bg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="223270420"
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="223270420"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 07:43:25 -0700
-IronPort-SDR: J9VkLX+WS4+151O1KrflHO3gXm7gQwRMGHrg5AZsOr1M7bJdqAyuqk63qT/Viub7/+3I+vRzAd
- Tko9GIL7rfzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="335304750"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2020 07:43:25 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     bhelgaas@google.com, eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [RESEND PATCH V2 6/6] perf/x86/intel/uncore: Support PCIe3 unit on Snow Ridge
-Date:   Mon, 14 Sep 2020 07:34:20 -0700
-Message-Id: <1600094060-82746-7-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600094060-82746-1-git-send-email-kan.liang@linux.intel.com>
-References: <1600094060-82746-1-git-send-email-kan.liang@linux.intel.com>
+        id S1726550AbgINOh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:37:27 -0400
+Received: from mail-db8eur05on2075.outbound.protection.outlook.com ([40.107.20.75]:22621
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726698AbgINOfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:35:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hi89aEVT2EZy5ZyJ4rJKjGrzjeyGTsRocyuxVYcZepBcp3epRcfU32Ym6wI2HlZ0Dsr8177X4at0Ssfggq0NA4zGOA/xcMgi6qV3Ar2S6y3gDD7uMP6OUAzKTeAANjg+0jZtitMzAHpd56gP3tdNLIusKbFVco6bembAYPoJpLqDfEFV5n2P+c9erNXU/5kM5wLNO5zeYaMcOvz65yWZ4H/GvRLQTPLny9PxhyV++iSntKiJI7FNDLfHXIVjL/2UaEAdsaK2Aj/1NMudh3o1Kx2GGmkaQQ1/BU56SuQuUSH4VN/J0uvKlXzHSrhdcerdWpq+T3Zrv6hibjbAjSYMBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KTQdSaPt+QqPjJLzIwyP16qbAjyJTPY/zv5P7EqHf+k=;
+ b=BTs3BWJktQXSbZ+X/psrBIJZcbrvPN5tWUjwKZCduqjLHLEHZdZuShatNyBJzbunziIG2ZzRqaR2jDcz7a9Pk9kFlmUomQlNumaeluNhRIjcBH1O7w6QSchF86gWTVD+qi59QyHoc/98t2hnRVelBwgvbzc/GpluxGKo2LFYTdztaVQEfiBpuuRAvHEkm6QnwbGSsqhTwKftaHCVdZRmd7w5scbPbpm9dN9St9HNQSTWO32J7K0nbnq6mcFMHy5lPjiUG7OoaWpQ7zX4vPrLumny2zDfMqBa/Co6016DUmVTjt9eh/49E7eBAaDfCjqWlJ6zJ5eBLKkLWAhmM5j0vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KTQdSaPt+QqPjJLzIwyP16qbAjyJTPY/zv5P7EqHf+k=;
+ b=q2qHV2SGaVtoZY4j7fmx5s7LcJIbwCe43srndDPnPLjAEWFcVgNSxP2WMsvUqmha0eF/cJNrMUQktjdZEDoHW+xtZ3Slkw/Cpw1LfgDKwGqYCUvy1dfwkHjKT12Ac3A8A7YldyuP/kEC5OZ9qGxDOXCCBksJV5bGWVhQ56/0WDo=
+Received: from AM8PR04MB7315.eurprd04.prod.outlook.com (2603:10a6:20b:1d4::7)
+ by AM0PR0402MB3476.eurprd04.prod.outlook.com (2603:10a6:208:25::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Mon, 14 Sep
+ 2020 14:35:38 +0000
+Received: from AM8PR04MB7315.eurprd04.prod.outlook.com
+ ([fe80::c10b:eaf9:da9a:966e]) by AM8PR04MB7315.eurprd04.prod.outlook.com
+ ([fe80::c10b:eaf9:da9a:966e%7]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 14:35:38 +0000
+From:   Andy Duan <fugang.duan@nxp.com>
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next] net: fec: ptp: remove unused variable 'ns' in
+ fec_time_keep()
+Thread-Topic: [PATCH net-next] net: fec: ptp: remove unused variable 'ns' in
+ fec_time_keep()
+Thread-Index: AQHWipki3XCTRnqQD0iUbmkKhFWiuqloMy5A
+Date:   Mon, 14 Sep 2020 14:35:38 +0000
+Message-ID: <AM8PR04MB7315343612D0F76F6D6EB8CAFF230@AM8PR04MB7315.eurprd04.prod.outlook.com>
+References: <1600089264-21910-1-git-send-email-zhangchangzhong@huawei.com>
+In-Reply-To: <1600089264-21910-1-git-send-email-zhangchangzhong@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.68]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c6d7bd9f-3a87-416e-04e9-08d858bb72f1
+x-ms-traffictypediagnostic: AM0PR0402MB3476:
+x-microsoft-antispam-prvs: <AM0PR0402MB3476579CADC0B63F09D59DF3FF230@AM0PR0402MB3476.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:46;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: a8qfY+gs17/9lU/tDEGLjR9S9ODgfPzCjFRVR7Z7tgJ7bgG80MM0AMtR4FHe2r3+ClbwhPFarnVk4Jvc6c/F1f9mkugTeYRV0TeGSWSyWZBk3qRYlU8SJw1SvMb9+NuCJzeueVIMq+6tEWRfd3JkbPVvX6lIkb/wbqF3Q5vBt3ehyrC6GJO4l7ZhZAxS3VVu9ezCwN67OypNDHL23eG8b1L8rymXQbImCIPFWFxs7qNpL31HQS2vdeLh3tutocHnQsiRilxkYT/auO+Chr5vqo6axW4ezRb68zGeaQ6NEpido3ZncIEtgvw3+fa7Kcr56wA1O0noAzPq+0VdHyClgQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7315.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(366004)(64756008)(66556008)(66446008)(7696005)(76116006)(478600001)(86362001)(83380400001)(2906002)(186003)(55016002)(8676002)(6506007)(71200400001)(26005)(52536014)(8936002)(5660300002)(9686003)(316002)(66476007)(66946007)(110136005)(33656002)(54906003)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: l1n/2z4o8igW3CMkoU4Uno83B65UClvXayW+li2LReEAB5NeJr/OX96TYYTJ8oZ519obGMUqMbaw/Mao7X8xGmMcFzVMRK+RQy3jaOpIPGwTNHl8rjQG4b3CX9TEvmvKd5tPum6ULngYZbPmPOYDQjnR7UAXGSBWJ/mvt2XGGtuDUhTERsutcyuFLNRqPkm8wWdlCOwbB7mF2YrzkkrQcE+1HIG3WXR5RLb/ZS13cANeGP1GWIDTvXfD0h237TyA0STcUjGuQv2AO/jioiWO1Y5Gqc3RKoI/mYN5HIs1k65dfQQ5dFnYakpQWVQHUMqiIvisZl6cwrIU0CKPMGKZS/ILQuQBi1Spq+/7u9qPDudliESdKShvKjaAKTgPqYHcmb5RyZgRFmXTImQfPlsBS4xGfbRi4/7SWGBUxo/vhS5XH1KHD2/m2fPC7czQLwJqZfZlRTFsta5DCVMGItPK37PdenyLm0zV3mUv2wnjQ2Sr0xoFJnc+aKIKGoN0NOAsoxEYaBsS3B3ijCKvjfRCp+qYoiNFjo7zvkgKLboXzo6OfxOcbb1pOV3v+tIdqryKEpl/6I98uQECl/tSKPSZEWIpFGZWz9VJ6shMnQb+gT+m2uVD+aOZQrU3esKwqdxbmFz7MPT2jOVimqgtrt2IZg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7315.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c6d7bd9f-3a87-416e-04e9-08d858bb72f1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 14:35:38.3013
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cbNqqI2cuoa03T1Pl6zOTUPRujG7Rqr4qDIPiSLu/fFBWqMjrEMJDwwNmguQWG+j5KHDsXE4BwzW3TaKztW+KQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3476
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com> Sent: Monday, September=
+ 14, 2020 9:14 PM
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+> drivers/net/ethernet/freescale/fec_ptp.c:523:6: warning:
+>  variable 'ns' set but not used [-Wunused-but-set-variable]
+>   523 |  u64 ns;
+>       |      ^~
+>=20
+> After commit 6605b730c061 ("FEC: Add time stamping code and a PTP
+> hardware clock"), variable 'ns' is never used in fec_time_keep(), so remo=
+ving it
+> to avoid build warning.
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-The Snow Ridge integrated PCIe3 uncore unit can be used to collect
-performance data, e.g. utilization, between PCIe devices, plugged into
-the PCIe port, and the components (in M2IOSF) responsible for
-translating and managing requests to/from the device. The performance
-data is very useful for analyzing the performance of PCIe devices.
-
-The device with the PCIe3 uncore PMON units is owned by the portdrv_pci
-driver. Create a PCI sub driver for the PCIe3 uncore PMON units.
-
-Here are some difference between PCIe3 uncore unit and other uncore
-pci units.
-- There may be several Root Ports on a system. But the uncore counters
-  only exist in the Root Port A. A user can configure the channel mask
-  to collect the data from other Root Ports.
-- The event format of the PCIe3 uncore unit is the same as IIO unit of
-  SKX.
-- The Control Register of PCIe3 uncore unit is 64 bits.
-- The offset of each counters is 8, which is the same as M2M unit of
-  SNR.
-- New MSR addresses for unit control, counter and counter config.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore_snbep.c | 53 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
-
-diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 62e88ad..495056f 100644
---- a/arch/x86/events/intel/uncore_snbep.c
-+++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -393,6 +393,11 @@
- #define SNR_M2M_PCI_PMON_BOX_CTL		0x438
- #define SNR_M2M_PCI_PMON_UMASK_EXT		0xff
- 
-+/* SNR PCIE3 */
-+#define SNR_PCIE3_PCI_PMON_CTL0			0x508
-+#define SNR_PCIE3_PCI_PMON_CTR0			0x4e8
-+#define SNR_PCIE3_PCI_PMON_BOX_CTL		0x4e0
-+
- /* SNR IMC */
- #define SNR_IMC_MMIO_PMON_FIXED_CTL		0x54
- #define SNR_IMC_MMIO_PMON_FIXED_CTR		0x38
-@@ -4551,12 +4556,46 @@ static struct intel_uncore_type snr_uncore_m2m = {
- 	.format_group	= &snr_m2m_uncore_format_group,
- };
- 
-+static void snr_uncore_pci_enable_event(struct intel_uncore_box *box, struct perf_event *event)
-+{
-+	struct pci_dev *pdev = box->pci_dev;
-+	struct hw_perf_event *hwc = &event->hw;
-+
-+	pci_write_config_dword(pdev, hwc->config_base, (u32)(hwc->config | SNBEP_PMON_CTL_EN));
-+	pci_write_config_dword(pdev, hwc->config_base + 4, (u32)(hwc->config >> 32));
-+}
-+
-+static struct intel_uncore_ops snr_pcie3_uncore_pci_ops = {
-+	.init_box	= snr_m2m_uncore_pci_init_box,
-+	.disable_box	= snbep_uncore_pci_disable_box,
-+	.enable_box	= snbep_uncore_pci_enable_box,
-+	.disable_event	= snbep_uncore_pci_disable_event,
-+	.enable_event	= snr_uncore_pci_enable_event,
-+	.read_counter	= snbep_uncore_pci_read_counter,
-+};
-+
-+static struct intel_uncore_type snr_uncore_pcie3 = {
-+	.name		= "pcie3",
-+	.num_counters	= 4,
-+	.num_boxes	= 1,
-+	.perf_ctr_bits	= 48,
-+	.perf_ctr	= SNR_PCIE3_PCI_PMON_CTR0,
-+	.event_ctl	= SNR_PCIE3_PCI_PMON_CTL0,
-+	.event_mask	= SKX_IIO_PMON_RAW_EVENT_MASK,
-+	.event_mask_ext	= SKX_IIO_PMON_RAW_EVENT_MASK_EXT,
-+	.box_ctl	= SNR_PCIE3_PCI_PMON_BOX_CTL,
-+	.ops		= &snr_pcie3_uncore_pci_ops,
-+	.format_group	= &skx_uncore_iio_format_group,
-+};
-+
- enum {
- 	SNR_PCI_UNCORE_M2M,
-+	SNR_PCI_UNCORE_PCIE3,
- };
- 
- static struct intel_uncore_type *snr_pci_uncores[] = {
- 	[SNR_PCI_UNCORE_M2M]		= &snr_uncore_m2m,
-+	[SNR_PCI_UNCORE_PCIE3]		= &snr_uncore_pcie3,
- 	NULL,
- };
- 
-@@ -4573,6 +4612,19 @@ static struct pci_driver snr_uncore_pci_driver = {
- 	.id_table	= snr_uncore_pci_ids,
- };
- 
-+static const struct pci_device_id snr_uncore_pci_sub_ids[] = {
-+	{ /* PCIe3 RP */
-+		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x334a),
-+		.driver_data = UNCORE_PCI_DEV_FULL_DATA(4, 0, SNR_PCI_UNCORE_PCIE3, 0),
-+	},
-+	{ /* end: all zeroes */ }
-+};
-+
-+static struct pci_driver snr_uncore_pci_sub_driver = {
-+	.name		= "snr_uncore_sub",
-+	.id_table	= snr_uncore_pci_sub_ids,
-+};
-+
- int snr_uncore_pci_init(void)
- {
- 	/* SNR UBOX DID */
-@@ -4584,6 +4636,7 @@ int snr_uncore_pci_init(void)
- 
- 	uncore_pci_uncores = snr_pci_uncores;
- 	uncore_pci_driver = &snr_uncore_pci_driver;
-+	uncore_pci_sub_driver = &snr_uncore_pci_sub_driver;
- 	return 0;
- }
- 
--- 
-2.7.4
+Acked-by: Fugang Duan <fugang.duan@nxp.com>
+> ---
+>  drivers/net/ethernet/freescale/fec_ptp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/freescale/fec_ptp.c
+> b/drivers/net/ethernet/freescale/fec_ptp.c
+> index a0c1f44..0405a39 100644
+> --- a/drivers/net/ethernet/freescale/fec_ptp.c
+> +++ b/drivers/net/ethernet/freescale/fec_ptp.c
+> @@ -520,13 +520,12 @@ static void fec_time_keep(struct work_struct *work)
+> {
+>  	struct delayed_work *dwork =3D to_delayed_work(work);
+>  	struct fec_enet_private *fep =3D container_of(dwork, struct
+> fec_enet_private, time_keep);
+> -	u64 ns;
+>  	unsigned long flags;
+>=20
+>  	mutex_lock(&fep->ptp_clk_mutex);
+>  	if (fep->ptp_clk_on) {
+>  		spin_lock_irqsave(&fep->tmreg_lock, flags);
+> -		ns =3D timecounter_read(&fep->tc);
+> +		timecounter_read(&fep->tc);
+>  		spin_unlock_irqrestore(&fep->tmreg_lock, flags);
+>  	}
+>  	mutex_unlock(&fep->ptp_clk_mutex);
+> --
+> 2.9.5
 
