@@ -2,246 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1911E2682C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD312682AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgINCrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:47:42 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:58220 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgINCrh (ORCPT
+        id S1726029AbgINCmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:42:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48197 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725965AbgINCmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:47:37 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 35CBF2A46D; Sun, 13 Sep 2020 22:47:34 -0400 (EDT)
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-Message-Id: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
-Date:   Mon, 14 Sep 2020 12:42:11 +1000
+        Sun, 13 Sep 2020 22:42:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600051338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dAara/ChDatzgfsJw1KVRRZSOmBMiVP7kGi1yosi4Xw=;
+        b=QKmPmz2mk9LGtTwNiSCJr697qCWvo97nbcOwZMfhtlFQGQls4NOS6b2DFOgMi8ihcpOiJf
+        2CsfgtiWZtjyn0XZYvSPXBKdE/XhW4uoQAUl3ikE67Y4dAKqKFmxEh20TkKkOCngjyPlhl
+        LGmcFIY/HQnmTD9NuqwAE6MrTqSJbKE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-PMEHTvPYNtivp0j5MCgq1g-1; Sun, 13 Sep 2020 22:42:16 -0400
+X-MC-Unique: PMEHTvPYNtivp0j5MCgq1g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 729CE1074658;
+        Mon, 14 Sep 2020 02:42:15 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 674AE60C87;
+        Mon, 14 Sep 2020 02:42:15 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 4CED7180BACB;
+        Mon, 14 Sep 2020 02:42:15 +0000 (UTC)
+Date:   Sun, 13 Sep 2020 22:42:15 -0400 (EDT)
+From:   Jason Wang <jasowang@redhat.com>
+To:     Li Wang <li.wang@windriver.com>
+Cc:     mst@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <1199326218.16921082.1600051335160.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1599836979-4950-1-git-send-email-li.wang@windriver.com>
+References: <1599836979-4950-1-git-send-email-li.wang@windriver.com>
+Subject: Re: [PATCH] vhost: reduce stack usage in log_used
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.68.5.20, 10.4.195.2]
+Thread-Topic: vhost: reduce stack usage in log_used
+Thread-Index: s9yTJ0ICAZlN+4H+zWFH+IIKdn+BDA==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add platform devices for the Mac IDE controller variants. Convert the
-macide module into a platform driver to support two of those variants.
-For the third, use a generic "pata_platform" driver instead.
-This enables automatic loading of the appropriate module and begins
-the process of replacing the driver with libata alternatives.
 
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
-This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-using both pata_platform and ide_platform drivers.
-The next step will be to try using these generic drivers with the other
-IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-driver can be entirely replaced with libata drivers.
 
-Changed since v1:
- - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
- - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
-   and IRQF_SHARED makes no difference in this case.
- - Removed redundant release_mem_region() call.
- - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
-   CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
-   patch (as this patch has some unrelated benefits).
----
- arch/m68k/configs/mac_defconfig |  1 +
- arch/m68k/mac/config.c          | 41 ++++++++++++++++++++
- drivers/ide/macide.c            | 66 +++++++++++++++++++++------------
- 3 files changed, 85 insertions(+), 23 deletions(-)
+----- Original Message -----
+> Fix the warning: [-Werror=-Wframe-larger-than=]
+> 
+> drivers/vhost/vhost.c: In function log_used:
+> drivers/vhost/vhost.c:1906:1:
+> warning: the frame size of 1040 bytes is larger than 1024 bytes
+> 
+> Signed-off-by: Li Wang <li.wang@windriver.com>
+> ---
+>  drivers/vhost/vhost.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index b45519c..41769de 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -1884,25 +1884,31 @@ static int log_write_hva(struct vhost_virtqueue *vq,
+> u64 hva, u64 len)
+>  
+>  static int log_used(struct vhost_virtqueue *vq, u64 used_offset, u64 len)
+>  {
+> -	struct iovec iov[64];
+> +	struct iovec *iov;
+>  	int i, ret;
+>  
+>  	if (!vq->iotlb)
+>  		return log_write(vq->log_base, vq->log_addr + used_offset, len);
+>  
+> +	iov = kcalloc(64, sizeof(*iov), GFP_KERNEL);
+> +	if (!iov)
+> +		return -ENOMEM;
 
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 6087798662601..f770970fe4e99 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_MAC_IDE=y
- CONFIG_RAID_ATTRS=m
- CONFIG_SCSI=y
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 5c9f3a2d65388..43fc29180cb58 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -24,6 +24,7 @@
- #include <linux/init.h>
- #include <linux/vt_kern.h>
- #include <linux/platform_device.h>
-+#include <linux/ata_platform.h>
- #include <linux/adb.h>
- #include <linux/cuda.h>
- #include <linux/pmu.h>
-@@ -940,6 +941,26 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
- 	},
- };
- 
-+static const struct resource mac_ide_quadra_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_F),
-+};
-+
-+static const struct resource mac_ide_pb_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_C),
-+};
-+
-+static const struct resource mac_pata_baboon_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x38),
-+	DEFINE_RES_MEM(0x50F1A038, 0x04),
-+	DEFINE_RES_IRQ(IRQ_BABOON_1),
-+};
-+
-+static const struct pata_platform_info mac_pata_baboon_data __initconst = {
-+	.ioport_shift = 2,
-+};
-+
- int __init mac_platform_init(void)
- {
- 	phys_addr_t swim_base = 0;
-@@ -1048,6 +1069,26 @@ int __init mac_platform_init(void)
- 		break;
- 	}
- 
-+	/*
-+	 * IDE device
-+	 */
-+
-+	switch (macintosh_config->ide_type) {
-+	case MAC_IDE_QUADRA:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_quadra_rsrc, ARRAY_SIZE(mac_ide_quadra_rsrc));
-+		break;
-+	case MAC_IDE_PB:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_pb_rsrc, ARRAY_SIZE(mac_ide_pb_rsrc));
-+		break;
-+	case MAC_IDE_BABOON:
-+		platform_device_register_resndata(NULL, "pata_platform", -1,
-+			mac_pata_baboon_rsrc, ARRAY_SIZE(mac_pata_baboon_rsrc),
-+			&mac_pata_baboon_data, sizeof(mac_pata_baboon_data));
-+		break;
-+	}
-+
- 	/*
- 	 * Ethernet device
- 	 */
-diff --git a/drivers/ide/macide.c b/drivers/ide/macide.c
-index 3c6bb8599303b..f2236456b3706 100644
---- a/drivers/ide/macide.c
-+++ b/drivers/ide/macide.c
-@@ -18,10 +18,11 @@
- #include <linux/delay.h>
- #include <linux/ide.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/macintosh.h>
--#include <asm/macints.h>
--#include <asm/mac_baboon.h>
-+
-+#define DRV_NAME "mac_ide"
- 
- #define IDE_BASE 0x50F1A000	/* Base address of IDE controller */
- 
-@@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-  * Probe for a Macintosh IDE interface
-  */
- 
--static int __init macide_init(void)
-+static int mac_ide_probe(struct platform_device *pdev)
- {
--	unsigned long base;
--	int irq;
-+	struct resource *mem, *irq;
- 	struct ide_hw hw, *hws[] = { &hw };
- 	struct ide_port_info d = macide_port_info;
-+	struct ide_host *host;
-+	int rc;
- 
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
--	switch (macintosh_config->ide_type) {
--	case MAC_IDE_QUADRA:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_F;
--		break;
--	case MAC_IDE_PB:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_C;
--		break;
--	case MAC_IDE_BABOON:
--		base = BABOON_BASE;
--		d.port_ops = NULL;
--		irq = IRQ_BABOON_1;
--		break;
--	default:
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -ENODEV;
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq)
- 		return -ENODEV;
-+
-+	if (!devm_request_mem_region(&pdev->dev, mem->start,
-+				     resource_size(mem), DRV_NAME)) {
-+		dev_err(&pdev->dev, "resources busy\n");
-+		return -EBUSY;
- 	}
- 
- 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
- 			 mac_ide_name[macintosh_config->ide_type - 1]);
- 
--	macide_setup_ports(&hw, base, irq);
-+	macide_setup_ports(&hw, mem->start, irq->start);
- 
--	return ide_host_add(&d, hws, 1, NULL);
-+	rc = ide_host_add(&d, hws, 1, &host);
-+	if (rc)
-+		return rc;
-+
-+	platform_set_drvdata(pdev, host);
-+	return 0;
- }
- 
--module_init(macide_init);
-+static int mac_ide_remove(struct platform_device *pdev)
-+{
-+	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-+
-+	ide_host_remove(host);
-+	return 0;
-+}
-+
-+static struct platform_driver mac_ide_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+	},
-+	.probe  = mac_ide_probe,
-+	.remove = mac_ide_remove,
-+};
-+
-+module_platform_driver(mac_ide_driver);
- 
-+MODULE_ALIAS("platform:" DRV_NAME);
- MODULE_LICENSE("GPL");
--- 
-2.26.2
+Let's preallocate it in e.g vhost_net_open().
+
+We don't want to fail the log due to -ENOMEM.
+
+Thanks
+
+> +
+>  	ret = translate_desc(vq, (uintptr_t)vq->used + used_offset,
+>  			     len, iov, 64, VHOST_ACCESS_WO);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto out;
+>  
+>  	for (i = 0; i < ret; i++) {
+>  		ret = log_write_hva(vq,	(uintptr_t)iov[i].iov_base,
+>  				    iov[i].iov_len);
+>  		if (ret)
+> -			return ret;
+> +			goto out;
+>  	}
+>  
+> -	return 0;
+> +out:
+> +	kfree(iov);
+> +	return ret;
+>  }
+>  
+>  int vhost_log_write(struct vhost_virtqueue *vq, struct vhost_log *log,
+> --
+> 2.7.4
+> 
+> 
 
