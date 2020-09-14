@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427D82699B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0FD2699C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgINXch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
+        id S1726062AbgINXhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgINXce (ORCPT
+        with ESMTP id S1725994AbgINXhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:32:34 -0400
+        Mon, 14 Sep 2020 19:37:09 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E5BC06174A;
-        Mon, 14 Sep 2020 16:32:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDC3C06174A;
+        Mon, 14 Sep 2020 16:37:09 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id F0592128B2345;
-        Mon, 14 Sep 2020 16:15:44 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 16:32:28 -0700 (PDT)
-Message-Id: <20200914.163228.1898649357949030454.davem@davemloft.net>
-To:     landen.chao@mediatek.com
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        kuba@kernel.org, robh+dt@kernel.org, matthias.bgg@gmail.com,
-        sean.wang@mediatek.com, p.zabel@pengutronix.de,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        frank-w@public-files.de, opensource@vdorst.com, dqfext@gmail.com
-Subject: Re: [PATCH net-next v5 0/6] net-next: dsa: mt7530: add support for
- MT7531
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 6BD0E128BC946;
+        Mon, 14 Sep 2020 16:20:20 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 16:37:06 -0700 (PDT)
+Message-Id: <20200914.163706.1002264196277641638.davem@davemloft.net>
+To:     yepeilin.cs@gmail.com
+Cc:     jmaloy@redhat.com, ying.xue@windriver.com, kuba@kernel.org,
+        hdanton@sina.com, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH net v2] tipc: Fix memory leak in
+ tipc_group_create_member()
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <cover.1599829696.git.landen.chao@mediatek.com>
-References: <cover.1599829696.git.landen.chao@mediatek.com>
+In-Reply-To: <20200913080605.1542170-1-yepeilin.cs@gmail.com>
+References: <20200912102230.1529402-1-yepeilin.cs@gmail.com>
+        <20200913080605.1542170-1-yepeilin.cs@gmail.com>
 X-Mailer: Mew version 6.8 on Emacs 27.1
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 14 Sep 2020 16:15:45 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 14 Sep 2020 16:20:20 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Landen Chao <landen.chao@mediatek.com>
-Date: Fri, 11 Sep 2020 21:48:50 +0800
+From: Peilin Ye <yepeilin.cs@gmail.com>
+Date: Sun, 13 Sep 2020 04:06:05 -0400
 
-> This patch series adds support for MT7531.
+> tipc_group_add_to_tree() returns silently if `key` matches `nkey` of an
+> existing node, causing tipc_group_create_member() to leak memory. Let
+> tipc_group_add_to_tree() return an error in such a case, so that
+> tipc_group_create_member() can handle it properly.
 > 
-> MT7531 is the next generation of MT7530 which could be found on Mediatek
-> router platforms such as MT7622 or MT7629.
-> 
-> It is also a 7-ports switch with 5 giga embedded phys, 2 cpu ports, and
-> the same MAC logic of MT7530. Cpu port 6 only supports SGMII interface.
-> Cpu port 5 supports either RGMII or SGMII in different HW SKU, but cannot
-> be muxed to PHY of port 0/4 like mt7530. Due to support for SGMII
-> interface, pll, and pad setting are different from MT7530.
-> 
-> MT7531 SGMII interface can be configured in following mode:
-> - 'SGMII AN mode' with in-band negotiation capability
->     which is compatible with PHY_INTERFACE_MODE_SGMII.
-> - 'SGMII force mode' without in-band negotiation
->     which is compatible with 10B/8B encoding of
->     PHY_INTERFACE_MODE_1000BASEX with fixed full-duplex and fixed pause.
-> - 2.5 times faster clocked 'SGMII force mode' without in-band negotiation
->     which is compatible with 10B/8B encoding of
->     PHY_INTERFACE_MODE_2500BASEX with fixed full-duplex and fixed pause.
- ...
+> Fixes: 75da2163dbb6 ("tipc: introduce communication groups")
+> Reported-and-tested-by: syzbot+f95d90c454864b3b5bc9@syzkaller.appspotmail.com
+> Cc: Hillf Danton <hdanton@sina.com>
+> Link: https://syzkaller.appspot.com/bug?id=048390604fe1b60df34150265479202f10e13aff
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> ---
+> Change in v2:
+>     - let tipc_group_add_to_tree() return a real error code instead of -1.
+>       (Suggested by David Miller <davem@davemloft.net>)
 
-Series applied, thank you.
+Applied and queued up for -stable, thank you.
