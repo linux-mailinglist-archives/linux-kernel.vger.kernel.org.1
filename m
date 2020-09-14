@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6BE2691B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD452691B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgINQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:35:45 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:36196 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726061AbgINQez (ORCPT
+        id S1726065AbgINQhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgINQgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:34:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600101294; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ObHJxhWnQ6Id1CMXMXxijV0dvfRIEHq6RwO9EgQfuVY=;
- b=oKIphcYV0NliUt8T6UoTTw0fXbfmUGsLuARMeLY9LJnbmbr8hmVdL5f5AJ/ETIW1Udmgqv0J
- lTaanG5r+mf2nC2RbmjLyE9wjSzi+zrHuivrAwuSOb4G8MyaMaJacgRrYb4ZbYltKCgkR2a8
- di03CQKfT/M18ivZuV7HAICgQFE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f5f9ba44ba82a82fdbafb38 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 16:34:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2DA8DC43382; Mon, 14 Sep 2020 16:34:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 613BAC433C8;
-        Mon, 14 Sep 2020 16:34:43 +0000 (UTC)
+        Mon, 14 Sep 2020 12:36:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175D9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WDMT4z+GYiPzqUDcVnVV7jQyFbfLccJ4XjhSBakvxjY=; b=e6+JbYmbABPLBOMdfnaNTiaF0A
+        pBG/q91PcXZX1t0MJFpX40KBCJi9XmiN+KhKdSnj1tT06UrOS8VS5XFXukMiPqqhpDfUnmbNqqCem
+        pcI+JKLldqcHd8kAmUq0RmWSm8MCnZI07pIzUurMEBrwhZ9m1yPIuqZuayDG/aSYv9bESda3pJzJG
+        uCkSGQWnQ2VqI36ySZ3h0/BqRGulBGOa7d2I5pXQqpkvP2hMl+6So/6rEJ3/UgtHmkvXrKJESmJeJ
+        JUuhghlGU+NQfHAFV/uX7Gjpr9ijAoAlGAgpdk7pifShbnmnL+EBVJhxEqXle6ZdOZDh273FKLYLN
+        bHELImPA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHrS5-0000dy-97; Mon, 14 Sep 2020 16:35:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 823AD3003D8;
+        Mon, 14 Sep 2020 18:35:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3824C2B4A4AFF; Mon, 14 Sep 2020 18:35:34 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 18:35:34 +0200
+From:   peterz@infradead.org
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+Message-ID: <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-3-jolsa@kernel.org>
+ <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+ <20200914152841.GC160517@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 09:34:43 -0700
-From:   nguyenb@codeaurora.org
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
-In-Reply-To: <BY5PR04MB6705A865E35CDA367249DC4EFC270@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
- <0101017475a11d00-6def34a7-db5d-472c-9dcc-215a80510402-000000@us-west-2.amazonses.com>
- <BY5PR04MB6705A865E35CDA367249DC4EFC270@BY5PR04MB6705.namprd04.prod.outlook.com>
-Message-ID: <e1b4e9f5eab891fa6615e7a4b2ed29e6@codeaurora.org>
-X-Sender: nguyenb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914152841.GC160517@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-10 03:02, Avri Altman wrote:
->> 
->> On 2020-08-31 18:19, Bao D. Nguyen wrote:
->> > UFS version 3.0 and later devices require Vcc and Vccq power supplies
->> > with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
->> > devices, the Vcc and Vccq2 are required with Vccq being optional.
->> > Check the required power supplies used by the device
->> > and set the device's supported Icc level properly.
-> Practically you are correct - most flash vendors moved in UFS3.1 to
-> 1.2 supply instead of 1.8.
-> However, the host should provide all 3 supplies to the device because -
-> a) A flash vendor might want to still use 1.8 in its UFS3.1 device, and
-> b) We should allow a degenerated configurations, e.g. 3.1 devices,
-> that are degenerated to 2.1 or 2.2
-Thank you for your comment.
-The host can provide all 3 power supplies. However, the change is to 
-ensure
-we do not exit early and fail to properly set the Icc level because the 
-optional power
-supply is not provided.
-> 
-> That said, I think we can entirely remove the check in the beginning
-> of the function,
-> But not because the spec allows it, but because each supply is
-> explicitly checked later on,
-> before reading its applicable max current entry in the power 
-> descriptor.
-We need these checks to prevent NULL pointer access subsequently in this 
-function.
-> Thanks,
-> Avri
+On Mon, Sep 14, 2020 at 12:28:41PM -0300, Arnaldo Carvalho de Melo wrote:
 
+> > >   struct {
+> > >     struct perf_event_header header;
+> 
+> > >     u32                      pid, tid;
+> > >     u64                      addr;
+> > >     u64                      len;
+> > >     u64                      pgoff;
+> > >     u32                      maj;
+> > >     u32                      min;
+> > >     u64                      ino;
+> > >     u64                      ino_generation;
+> > >     u32                      prot, flags;
+> > >     u32                      reserved;
+> 
+> What for this reserved? its all nicely aligned already, u64 followed by
+> two u32 (prot, flags).
+
+I suspect it is so that sizeof(reserve+buildid) is a multiple of 8. But
+yes, that's a wee bit daft, since the next field is a variable length
+character array.
+
+> > >     u8                       buildid[20];
+>  
+> > Do we need maj, min, ino, ino_generation for mmap3 event?
+> > I think they are to compare binaries, then we can do it with
+> > build-id (and I think it'd be better)..
+> 
+> Humm, I thought MMAP2 would be a superset of MMAP and MMAP3 would be a
+> superset of MMAP2.
+
+Well, the 'funny' thing is that if you do use buildid, then
+{maj,min,ino,ino_generation} are indeed superfluous, but are combined
+also large enough to contain buildid.
+
+> If we want to ditch useless stuff, then trow away pid, tid too, as we
+> can select those via sample_type.
+
+Correct.
+
+So something like:
+
+struct {
+  struct perf_event_header header;
+
+  u64                      addr;
+  u64                      len;
+  u64                      pgoff;
+  union {
+    struct {
+      u32                  maj;
+      u32                  min;
+      u64                  ino;
+      u64                  ino_generation;
+    };
+    u8                     buildid[20];
+  };
+  u32                      prot, flags;
+  char			   filename[];
+  struct sample_id         sample_id;
+};
+
+Using one of the MISC bits to resolve the union. Might actually bring
+benefit to everyone. Us normal people get to have a smaller MMAP record,
+while the buildid folks can have it too.
+
+Even more extreme would be using 2 MISC bits and allowing the union to
+be 0 sized for anon.
+
+That said; I have the nagging feeling there were unresolved issues with
+mmap2, but I can't seem to find any relevant emails on it :/ My
+google-fu is weak today.
