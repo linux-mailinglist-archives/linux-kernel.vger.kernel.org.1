@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B47268747
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB07D268767
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgINIfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:35:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40540 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgINIfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:35:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 01E62AD60;
-        Mon, 14 Sep 2020 08:35:27 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 47D141E12ED; Mon, 14 Sep 2020 10:35:12 +0200 (CEST)
-Date:   Mon, 14 Sep 2020 10:35:12 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ext2: Fix some kernel-doc warnings in balloc.c
-Message-ID: <20200914083512.GB4863@quack2.suse.cz>
-References: <20200911114036.60616-1-wanghai38@huawei.com>
+        id S1726253AbgINIlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:41:08 -0400
+Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:38705 "EHLO
+        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726183AbgINIlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:41:07 -0400
+X-Greylist: delayed 316 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Sep 2020 04:41:06 EDT
+Received: from mxplan5.mail.ovh.net (unknown [10.109.143.134])
+        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id 68299614D66C;
+        Mon, 14 Sep 2020 10:35:49 +0200 (CEST)
+Received: from kaod.org (37.59.142.101) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 14 Sep
+ 2020 10:35:47 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-101G00438ece552-2604-404d-8aff-070da96458dd,
+                    33559CD024D4F69900824C14C2AC4808F9346AFD) smtp.auth=groug@kaod.org
+Date:   Mon, 14 Sep 2020 10:35:46 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+CC:     <ericvh@gmail.com>, <lucho@ionkov.net>, <asmadeus@codewreck.org>,
+        <v9fs-developer@lists.sourceforge.net>, <justin.he@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        Christian Schoenebeck <qemu_oss@crudebyte.com>
+Subject: Re: [V9fs-developer] [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall
+ bug
+Message-ID: <20200914103546.0f775bcd@bahia.lan>
+In-Reply-To: <20200914033754.29188-1-jianyong.wu@arm.com>
+References: <20200914033754.29188-1-jianyong.wu@arm.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911114036.60616-1-wanghai38@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.101]
+X-ClientProxiedBy: DAG9EX2.mxp5.local (172.16.2.82) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: a4adab61-5db0-417d-bdd6-ca742aabf020
+X-Ovh-Tracer-Id: 3126905517296294252
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudeiiedgtdeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfhisehtjeertdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeefuddtieejjeevheekieeltefgleetkeetheettdeifeffvefhffelffdtfeeljeenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtohepqhgvmhhupghoshhssegtrhhuuggvsgihthgvrdgtohhm
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 11-09-20 19:40:36, Wang Hai wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
-> fs/ext2/balloc.c:203: warning: Excess function parameter 'rb_root' description in '__rsv_window_dump'
-> fs/ext2/balloc.c:294: warning: Excess function parameter 'rb_root' description in 'search_reserve_window'
-> fs/ext2/balloc.c:878: warning: Excess function parameter 'rsv' description in 'alloc_new_reservation'
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+On Mon, 14 Sep 2020 11:37:50 +0800
+Jianyong Wu <jianyong.wu@arm.com> wrote:
 
-Thanks. I've added the patch to my tree.
-
-								Honza
-
-> ---
->  fs/ext2/balloc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> open-unlink-f*syscall bug is a well-known bug in 9p, we try to fix the bug
+> in this patch set.
+> I take Eric's and Greg's patches which constiute the 1/4 - 3/4 of this patch
+> set as the main frame of the solution. In patch 4/4, I fix the fid race issue
+> exists in Greg's patch.
 > 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index fa9c951d3471..1f3f4326bf3c 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -189,7 +189,7 @@ static void group_adjust_blocks(struct super_block *sb, int group_no,
->  
->  /**
->   * __rsv_window_dump() -- Dump the filesystem block allocation reservation map
-> - * @rb_root:		root of per-filesystem reservation rb tree
-> + * @root:		root of per-filesystem reservation rb tree
->   * @verbose:		verbose mode
->   * @fn:			function which wishes to dump the reservation map
->   *
-> @@ -282,7 +282,7 @@ goal_in_my_reservation(struct ext2_reserve_window *rsv, ext2_grpblk_t grp_goal,
->  
->  /**
->   * search_reserve_window()
-> - * @rb_root:		root of reservation tree
-> + * @root:		root of reservation tree
->   * @goal:		target allocation block
->   *
->   * Find the reserved window which includes the goal, or the previous one
-> @@ -859,7 +859,7 @@ static int find_next_reservable_window(
->   *
->   *	failed: we failed to find a reservation window in this group
->   *
-> - *	@rsv: the reservation
-> + *	@my_rsv: the reservation
->   *
->   *	@grp_goal: The goal (group-relative).  It is where the search for a
->   *		free reservable space should start from.
-> -- 
-> 2.17.1
+
+IIRC some patches were needed on the QEMU side as well... I'm spending
+less time on 9pfs in QEMU, so Cc'ing the new maintainer:
+
+Christian Schoenebeck <qemu_oss@crudebyte.com>
+
+> Eric Van Hensbergen (1):
+>   fs/9p: fix create-unlink-getattr idiom
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Greg Kurz (1):
+>   fs/9p: search open fids first
+> 
+> Jianyong Wu (2):
+>   fs/9p: track open fids
+>   9p: fix race issue in fid contention.
+> 
+>  fs/9p/fid.c             | 72 +++++++++++++++++++++++++++++++++++------
+>  fs/9p/fid.h             | 25 +++++++++++---
+>  fs/9p/vfs_dentry.c      |  2 +-
+>  fs/9p/vfs_dir.c         | 20 ++++++++++--
+>  fs/9p/vfs_file.c        |  3 +-
+>  fs/9p/vfs_inode.c       | 52 +++++++++++++++++++++--------
+>  fs/9p/vfs_inode_dotl.c  | 44 ++++++++++++++++---------
+>  fs/9p/vfs_super.c       |  7 ++--
+>  fs/9p/xattr.c           | 18 ++++++++---
+>  include/net/9p/client.h |  8 +++++
+>  net/9p/client.c         |  7 +++-
+>  11 files changed, 206 insertions(+), 52 deletions(-)
+> 
+
