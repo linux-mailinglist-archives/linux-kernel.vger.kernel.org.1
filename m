@@ -2,57 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779E82695FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264A12695FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgINUDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725994AbgINUDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:03:02 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 354A5207EA;
-        Mon, 14 Sep 2020 20:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600113781;
-        bh=l4Q4WPuEytbe/ZhzYL6FNXk2+70d3f/3OC4oKlTk4zA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0JSe+BRQnuBv9MknhqUcoIWiIpdTzU2B5ghDLqRhoYOujklgzUCKnb+onVuFSSefW
-         r2lpUr1U/uIgk6W06goftBPLsMY/Q8Xp/4ZvmCFni+w8B2Xj4mAGXixYnbRsXjzwvQ
-         qoFgKuL6vgVD8Z8GCq7T2NMhBBp8XAPZPGkEDPbM=
-Date:   Mon, 14 Sep 2020 13:02:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tariq Toukan <ttoukan.linux@gmail.com>
-Cc:     David Miller <davem@davemloft.net>, luojiaxing@huawei.com,
-        idos@mellanox.com, ogerlitz@mellanox.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH net-next] net: ethernet: mlx4: Avoid assigning a value
- to ring_cons but not used it anymore in mlx4_en_xmit()
-Message-ID: <20200914130259.6b0e2ec6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <c0987225-0079-617a-bf89-b672b07f298a@gmail.com>
-References: <1599898095-10712-1-git-send-email-luojiaxing@huawei.com>
-        <20200912.182219.1013721666435098048.davem@davemloft.net>
-        <c0987225-0079-617a-bf89-b672b07f298a@gmail.com>
+        id S1726055AbgINUEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725992AbgINUEK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 16:04:10 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FA3C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:04:09 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id jw11so459579pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ajhHJz1gbeguv7fK0Au1e3qVDEqjerkQfY+fM8vzCCM=;
+        b=CdEu6eSd17f/rk+wfAgK/BrqcVAQIAIBjP+4xk9dVA6ehCXoX8DmYKL0CAhajwAIMG
+         my1lgEZzRYjb0bDJCpWwQtRx85YChWHge3kcwzvvRT3QOFQ0mP60F+tJVzsyeRM0SNiT
+         /zvcEr86RGaB+T9OplOmrOoW5XSMoRS2MYKc8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ajhHJz1gbeguv7fK0Au1e3qVDEqjerkQfY+fM8vzCCM=;
+        b=UIpX0m+iga1hHtF4odIm2qnbqXg2Ro8QNQKXTvI+OM3x+3SVTWshFAEn/eweA7/Fe9
+         9V3AYTCGDGinFx8CSVGyaqmVAupgIo+DK6AEIFYgMEisyhg9jLqYaiHovE5ZVz6HRq62
+         LifrGh5cAs/NorwGnIYcM5zXnrXSrs/EfKanU2NB8gdjsoqcw8O2e0cQi4SZ4HOSinu2
+         O9O5bLRDm7Jc6w0mrV+fAPcDPbonec1m8XfJejKiFKKa6XuzT+TsRw7ng+BB8yWgZCV7
+         eZZ+CxEuEFBc9SgaZOetwDjsCe/nDKgXnMOLeAxsug+j+XWmZU+FHntoBbDsWPP505Z0
+         I8+A==
+X-Gm-Message-State: AOAM5317h8HyjlK4TEctBgqfklBxh+wPdGHxFToOHkwnpjeU/4RpKm2F
+        VIHxgk+ZoQLqCmLGzEKNfRzoCQ==
+X-Google-Smtp-Source: ABdhPJw3YjGHWrvjXN7tCQLQdNHZkCPff5W+k6kJgt9qjZ+YtqW3xrMBKUir8djUXs8pTT88pQs2fA==
+X-Received: by 2002:a17:90a:df0b:: with SMTP id gp11mr925413pjb.64.1600113848920;
+        Mon, 14 Sep 2020 13:04:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i9sm11461663pfq.53.2020.09.14.13.04.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 13:04:08 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 13:04:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kyle Huey <me@kylehuey.com>
+Subject: Re: [REGRESSION] x86/entry: Tracer no longer has opportunity to
+ change the syscall number at entry via orig_ax
+Message-ID: <202009141303.08B39E5783@keescook>
+References: <CAP045Arc1Vdh+n2j2ELE3q7XfagLjyqXji9ZD0jqwVB-yuzq-g@mail.gmail.com>
+ <87blj6ifo8.fsf@nanos.tec.linutronix.de>
+ <87a6xzrr89.fsf@mpe.ellerman.id.au>
+ <202009111609.61E7875B3@keescook>
+ <87d02qqfxy.fsf@mpe.ellerman.id.au>
+ <87o8m98rck.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8m98rck.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Sep 2020 13:12:05 +0300 Tariq Toukan wrote:
-> 2. When MLX4_EN_PERF_STAT is not defined, we should totally remove the 
-> local variable declaration, not only its usage.
+On Sun, Sep 13, 2020 at 08:27:23PM +0200, Thomas Gleixner wrote:
+> On Sun, Sep 13 2020 at 17:44, Michael Ellerman wrote:
+> > Kees Cook <keescook@chromium.org> writes:
+> > diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> > index 18683598edbc..901361e2f8ea 100644
+> > --- a/kernel/entry/common.c
+> > +++ b/kernel/entry/common.c
+> > @@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+> >                         return ret;
+> >         }
+> >  
+> > +       syscall = syscall_get_nr(current, regs);
+> > +
+> >         if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+> >                 trace_sys_enter(regs, syscall);
+> >  
+> >         syscall_enter_audit(regs, syscall);
+> >  
+> >         /* The above might have changed the syscall number */
+> > -       return ret ? : syscall_get_nr(current, regs);
+> > +       return ret ? : syscall;
+> >  }
+> 
+> Yup, this looks right. Can you please send a proper patch?
 
-I was actually wondering about this when working on the pause stat
-patch. Where is MLX4_EN_PERF_STAT ever defined?
+I already did on Friday:
+https://lore.kernel.org/lkml/20200912005826.586171-1-keescook@chromium.org/
 
-$ git grep MLX4_EN_PERF_STAT
-drivers/net/ethernet/mellanox/mlx4/mlx4_en.h:#ifdef MLX4_EN_PERF_STAT
-drivers/net/ethernet/mellanox/mlx4/mlx4_en.h:#endif /* MLX4_EN_PERF_STAT */
-drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h:#ifdef MLX4_EN_PERF_STAT
-
+-- 
+Kees Cook
