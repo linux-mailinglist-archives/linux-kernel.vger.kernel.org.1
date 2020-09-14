@@ -2,206 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2A2268FF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F548268FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgINPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S1726044AbgINPbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726031AbgINPaZ (ORCPT
+        with ESMTP id S1726057AbgINPad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:30:25 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1775C06174A;
-        Mon, 14 Sep 2020 08:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Mime-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JfMZv0yawZLzoee4iW7gor0d+MQ6VM9jOAxK8EtyRRE=; b=TI6/jI7eATsIMKNaZ4Xbe+SKNO
-        21iornDb5W6OaNM9RaOPUYC+XfcpCLO7pAeBCdpEomDmq4FXl4vHcXjpVBTovyeoxFQaVO7Jm/epC
-        Ek+NQq+o0wpG+LW6A/AdPftonjOCYSbQY02jQ8x40IFFyUT3WjC/JF/B+W45+VM0mZ3M44tlU/prm
-        qg2pjMLrpDhS8ukOeYKUWeUu0AqJJXLIAiNXi5/wgPI+tP28dce9nHR1dntlQACMuxX0hDj4T/44T
-        SykrDhK/JRfuLPyutt80AzkDN5bv/SMtY0dGZkxkUM3/jN7/wxUztLTio1uFAKsW3zz6+tNx2dUTQ
-        9kdxxb7Q==;
-Received: from 54-240-197-235.amazon.com ([54.240.197.235] helo=u3832b3a9db3152.ant.amazon.com)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHqQt-0001Tw-NN; Mon, 14 Sep 2020 15:30:20 +0000
-Message-ID: <bc5ba52bb0c123d0ed038e5dce9474f27ac2f750.camel@infradead.org>
-Subject: Re: [PATCH] MAINTAINERS: make linux-mediatek list remarks consistent
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 14 Sep 2020 16:30:16 +0100
-In-Reply-To: <alpine.DEB.2.21.2009141717470.17999@felia>
-References: <20200914053110.23286-1-lukas.bulwahn@gmail.com>
-         <f6bc41d3-5ce4-b9ea-e2bb-e0cee4de3179@gmail.com>
-         <alpine.DEB.2.21.2009141208200.17999@felia>
-         <9c5aaa15-bdd8-ae4f-0642-092566ab08ba@gmail.com>
-         <alpine.DEB.2.21.2009141552570.17999@felia>
-         <7da64c0975c345f1f45034410c9ed7d509ba9831.camel@infradead.org>
-         <alpine.DEB.2.21.2009141615020.17999@felia>
-         <f511570405799df421397ff65847e927745dad08.camel@infradead.org>
-         <alpine.DEB.2.21.2009141717470.17999@felia>
-Content-Type: multipart/signed; micalg="sha-256";
-        protocol="application/x-pkcs7-signature";
-        boundary="=-8puGEqhBqvWrC5IAq9zC"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+        Mon, 14 Sep 2020 11:30:33 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A52FC061788;
+        Mon, 14 Sep 2020 08:30:32 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f09260028f4716b73cc78b7.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:2600:28f4:716b:73cc:78b7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4FF221EC058B;
+        Mon, 14 Sep 2020 17:30:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600097430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=IO3nJCxiAaLTozpIMPP+zcFAu5QWr1+m3yLnakXhZ/c=;
+        b=qdH3yHi18x7LvT7GDCEl2cq+OXEBSOlCfo/k+7Z4tyANVhlIri1j9CGyFZM/8Kl4GAlqY0
+        uhVStXSphAV1KQPDcmFuYz/SFHRMoZ1zmSJMlbrsqc5j2iSTmwu18Kzfz67/9DAFSk2M9f
+        W6viYl3K2oRHuas9qQ8EqtgGAMzJa9Y=
+Date:   Mon, 14 Sep 2020 17:30:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
+        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v3 1/2] cper, apei, mce: Pass x86 CPER through the MCA
+ handling chain
+Message-ID: <20200914153024.GC680@zn.tnic>
+References: <20200903234531.162484-1-Smita.KoralahalliChannabasappa@amd.com>
+ <20200903234531.162484-2-Smita.KoralahalliChannabasappa@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200903234531.162484-2-Smita.KoralahalliChannabasappa@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 03, 2020 at 06:45:30PM -0500, Smita Koralahalli wrote:
+> Linux Kernel uses ACPI Boot Error Record Table (BERT) to report fatal
+> errors that occurred in a previous boot. The MCA errors in the BERT are
+> reported using the x86 Processor Error Common Platform Error Record (CPER)
+> format. Currently, the record prints out the raw MSR values and AMD relies
+> on the raw record to provide MCA information.
+> 
+> Extract the raw MSR values of MCA registers from the BERT and feed it into
+> the standard mce_log() function through the existing x86/MCA RAS
+> infrastructure. This will result in better decoding from the EDAC MCE
+> decoder or the default notifier.
+> 
+> The implementation is SMCA specific as the raw MCA register values are
+> given in the register offset order of the MCAX address space.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
 
---=-8puGEqhBqvWrC5IAq9zC
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+What's that Reported-by for?
 
-On Mon, 2020-09-14 at 17:23 +0200, Lukas Bulwahn wrote:
-> >  # /usr/lib/mailman/bin/config_list -o- linux-mediatek | grep -B5 ^gene=
-ric_nonmember_action
-> > # legal values are:
-> > #    0 =3D "Accept"
-> > #    1 =3D "Hold"
-> > #    2 =3D "Reject"
-> > #    3 =3D "Discard"
-> > generic_nonmember_action =3D 0
->
-> David, I guess if you have access to the ground truth on=20
-> lists.infradead.org, maybe you can dump the actual setting for all those=
-=20
-> lists?
+Pls put in [] brackets over it what the 0day robot has reported.
 
-ath10k:generic_nonmember_action =3D 0
-ath11k:generic_nonmember_action =3D 0
-b43-dev:generic_nonmember_action =3D 0
-kexec:generic_nonmember_action =3D 0
-libertas-dev:generic_nonmember_action =3D 0
-linux-afs:generic_nonmember_action =3D 0
-linux-amlogic:generic_nonmember_action =3D 0
-linux-arm-kernel:generic_nonmember_action =3D 0
-linux-geode:generic_nonmember_action =3D 1
-linux-i3c:generic_nonmember_action =3D 1
-linux-mediatek:generic_nonmember_action =3D 0
-linux-mtd:generic_nonmember_action =3D 0
-linux-nvme:generic_nonmember_action =3D 0
-linux-parport:generic_nonmember_action =3D 1
-linux-realtek-soc:generic_nonmember_action =3D 1
-linux-riscv:generic_nonmember_action =3D 0
-linux-rockchip:generic_nonmember_action =3D 0
-linux-rpi-kernel:generic_nonmember_action =3D 0
-linux-snps-arc:generic_nonmember_action =3D 0
-linux-um:generic_nonmember_action =3D 0
-linux-unisoc:generic_nonmember_action =3D 1
-wcn36xx:generic_nonmember_action =3D 0
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+> ---
+> Link:
+> https://lkml.kernel.org/r/20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com
+> 
+> v3:
+> 	Moved arch specific declarations from generic header file to arch
+> 	specific header file.
+> 	Cleaned additional declarations which are unnecessary.
+> 	Included the check for context type.
+> 	Added a check to verify for the first MSR address in the register
+> 	layout.
+> v2:
+> 	Fixed build error reported by kernel test robot.
+> 	Passed struct variable as function argument instead of entire struct
+> ---
+>  arch/x86/include/asm/acpi.h     | 11 +++++++++
+>  arch/x86/include/asm/mce.h      |  3 +++
+>  arch/x86/kernel/acpi/apei.c     |  9 +++++++
+>  arch/x86/kernel/cpu/mce/apei.c  | 42 +++++++++++++++++++++++++++++++++
+>  drivers/firmware/efi/cper-x86.c | 10 +++++---
+>  5 files changed, 72 insertions(+), 3 deletions(-)
 
---=-8puGEqhBqvWrC5IAq9zC
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+...
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCECow
-ggUcMIIEBKADAgECAhEA4rtJSHkq7AnpxKUY8ZlYZjANBgkqhkiG9w0BAQsFADCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0EwHhcNMTkwMTAyMDAwMDAwWhcNMjIwMTAxMjM1
-OTU5WjAkMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZyYWRlYWQub3JnMIIBIjANBgkqhkiG9w0B
-AQEFAAOCAQ8AMIIBCgKCAQEAsv3wObLTCbUA7GJqKj9vHGf+Fa+tpkO+ZRVve9EpNsMsfXhvFpb8
-RgL8vD+L133wK6csYoDU7zKiAo92FMUWaY1Hy6HqvVr9oevfTV3xhB5rQO1RHJoAfkvhy+wpjo7Q
-cXuzkOpibq2YurVStHAiGqAOMGMXhcVGqPuGhcVcVzVUjsvEzAV9Po9K2rpZ52FE4rDkpDK1pBK+
-uOAyOkgIg/cD8Kugav5tyapydeWMZRJQH1vMQ6OVT24CyAn2yXm2NgTQMS1mpzStP2ioPtTnszIQ
-Ih7ASVzhV6csHb8Yrkx8mgllOyrt9Y2kWRRJFm/FPRNEurOeNV6lnYAXOymVJwIDAQABo4IB0zCC
-Ac8wHwYDVR0jBBgwFoAUgq9sjPjF/pZhfOgfPStxSF7Ei8AwHQYDVR0OBBYEFLfuNf820LvaT4AK
-xrGK3EKx1DE7MA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMBAf8EAjAAMB0GA1UdJQQWMBQGCCsGAQUF
-BwMEBggrBgEFBQcDAjBGBgNVHSAEPzA9MDsGDCsGAQQBsjEBAgEDBTArMCkGCCsGAQUFBwIBFh1o
-dHRwczovL3NlY3VyZS5jb21vZG8ubmV0L0NQUzBaBgNVHR8EUzBRME+gTaBLhklodHRwOi8vY3Js
-LmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWls
-Q0EuY3JsMIGLBggrBgEFBQcBAQR/MH0wVQYIKwYBBQUHMAKGSWh0dHA6Ly9jcnQuY29tb2RvY2Eu
-Y29tL0NPTU9ET1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcnQwJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNkd213MkBpbmZy
-YWRlYWQub3JnMA0GCSqGSIb3DQEBCwUAA4IBAQALbSykFusvvVkSIWttcEeifOGGKs7Wx2f5f45b
-nv2ghcxK5URjUvCnJhg+soxOMoQLG6+nbhzzb2rLTdRVGbvjZH0fOOzq0LShq0EXsqnJbbuwJhK+
-PnBtqX5O23PMHutP1l88AtVN+Rb72oSvnD+dK6708JqqUx2MAFLMevrhJRXLjKb2Mm+/8XBpEw+B
-7DisN4TMlLB/d55WnT9UPNHmQ+3KFL7QrTO8hYExkU849g58Dn3Nw3oCbMUgny81ocrLlB2Z5fFG
-Qu1AdNiBA+kg/UxzyJZpFbKfCITd5yX49bOriL692aMVDyqUvh8fP+T99PqorH4cIJP6OxSTdxKM
-MIIFHDCCBASgAwIBAgIRAOK7SUh5KuwJ6cSlGPGZWGYwDQYJKoZIhvcNAQELBQAwgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTE5MDEwMjAwMDAwMFoXDTIyMDEwMTIz
-NTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcN
-AQEBBQADggEPADCCAQoCggEBALL98Dmy0wm1AOxiaio/bxxn/hWvraZDvmUVb3vRKTbDLH14bxaW
-/EYC/Lw/i9d98CunLGKA1O8yogKPdhTFFmmNR8uh6r1a/aHr301d8YQea0DtURyaAH5L4cvsKY6O
-0HF7s5DqYm6tmLq1UrRwIhqgDjBjF4XFRqj7hoXFXFc1VI7LxMwFfT6PStq6WedhROKw5KQytaQS
-vrjgMjpICIP3A/CroGr+bcmqcnXljGUSUB9bzEOjlU9uAsgJ9sl5tjYE0DEtZqc0rT9oqD7U57My
-ECIewElc4VenLB2/GK5MfJoJZTsq7fWNpFkUSRZvxT0TRLqznjVepZ2AFzsplScCAwEAAaOCAdMw
-ggHPMB8GA1UdIwQYMBaAFIKvbIz4xf6WYXzoHz0rcUhexIvAMB0GA1UdDgQWBBS37jX/NtC72k+A
-CsaxitxCsdQxOzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEF
-BQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwWgYDVR0fBFMwUTBPoE2gS4ZJaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vQ09NT0RPUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFp
-bENBLmNybDCBiwYIKwYBBQUHAQEEfzB9MFUGCCsGAQUFBzAChklodHRwOi8vY3J0LmNvbW9kb2Nh
-LmNvbS9DT01PRE9SU0FDbGllbnRBdXRoZW50aWNhdGlvbmFuZFNlY3VyZUVtYWlsQ0EuY3J0MCQG
-CCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAC20spBbrL71ZEiFrbXBHonzhhirO1sdn+X+O
-W579oIXMSuVEY1LwpyYYPrKMTjKECxuvp24c829qy03UVRm742R9Hzjs6tC0oatBF7KpyW27sCYS
-vj5wbal+TttzzB7rT9ZfPALVTfkW+9qEr5w/nSuu9PCaqlMdjABSzHr64SUVy4ym9jJvv/FwaRMP
-gew4rDeEzJSwf3eeVp0/VDzR5kPtyhS+0K0zvIWBMZFPOPYOfA59zcN6AmzFIJ8vNaHKy5QdmeXx
-RkLtQHTYgQPpIP1Mc8iWaRWynwiE3ecl+PWzq4i+vdmjFQ8qlL4fHz/k/fT6qKx+HCCT+jsUk3cS
-jDCCBeYwggPOoAMCAQICEGqb4Tg7/ytrnwHV2binUlYwDQYJKoZIhvcNAQEMBQAwgYUxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMSswKQYDVQQDEyJDT01PRE8gUlNBIENlcnRpZmljYXRp
-b24gQXV0aG9yaXR5MB4XDTEzMDExMDAwMDAwMFoXDTI4MDEwOTIzNTk1OVowgZcxCzAJBgNVBAYT
-AkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNV
-BAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAvrOeV6wodnVAFsc4A5jTxhh2IVDzJXkLTLWg0X06WD6cpzEup/Y0dtmEatrQPTRI5Or1u6zf
-+bGBSyD9aH95dDSmeny1nxdlYCeXIoymMv6pQHJGNcIDpFDIMypVpVSRsivlJTRENf+RKwrB6vcf
-WlP8dSsE3Rfywq09N0ZfxcBa39V0wsGtkGWC+eQKiz4pBZYKjrc5NOpG9qrxpZxyb4o4yNNwTqza
-aPpGRqXB7IMjtf7tTmU2jqPMLxFNe1VXj9XB1rHvbRikw8lBoNoSWY66nJN/VCJv5ym6Q0mdCbDK
-CMPybTjoNCQuelc0IAaO4nLUXk0BOSxSxt8kCvsUtQIDAQABo4IBPDCCATgwHwYDVR0jBBgwFoAU
-u69+Aj36pvE8hI6t7jiY7NkyMtQwHQYDVR0OBBYEFIKvbIz4xf6WYXzoHz0rcUhexIvAMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMBEGA1UdIAQKMAgwBgYEVR0gADBMBgNVHR8E
-RTBDMEGgP6A9hjtodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9DT01PRE9SU0FDZXJ0aWZpY2F0aW9u
-QXV0aG9yaXR5LmNybDBxBggrBgEFBQcBAQRlMGMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9jcnQuY29t
-b2RvY2EuY29tL0NPTU9ET1JTQUFkZFRydXN0Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
-cC5jb21vZG9jYS5jb20wDQYJKoZIhvcNAQEMBQADggIBAHhcsoEoNE887l9Wzp+XVuyPomsX9vP2
-SQgG1NgvNc3fQP7TcePo7EIMERoh42awGGsma65u/ITse2hKZHzT0CBxhuhb6txM1n/y78e/4ZOs
-0j8CGpfb+SJA3GaBQ+394k+z3ZByWPQedXLL1OdK8aRINTsjk/H5Ns77zwbjOKkDamxlpZ4TKSDM
-KVmU/PUWNMKSTvtlenlxBhh7ETrN543j/Q6qqgCWgWuMAXijnRglp9fyadqGOncjZjaaSOGTTFB+
-E2pvOUtY+hPebuPtTbq7vODqzCM6ryEhNhzf+enm0zlpXK7q332nXttNtjv7VFNYG+I31gnMrwfH
-M5tdhYF/8v5UY5g2xANPECTQdu9vWPoqNSGDt87b3gXb1AiGGaI06vzgkejL580ul+9hz9D0S0U4
-jkhJiA7EuTecP/CFtR72uYRBcunwwH3fciPjviDDAI9SnC/2aPY8ydehzuZutLbZdRJ5PDEJM/1t
-yZR2niOYihZ+FCbtf3D9mB12D4ln9icgc7CwaxpNSCPt8i/GqK2HsOgkL3VYnwtx7cJUmpvVdZ4o
-gnzgXtgtdk3ShrtOS1iAN2ZBXFiRmjVzmehoMof06r1xub+85hFQzVxZx5/bRaTKTlL8YXLI8nAb
-R9HWdFqzcOoB/hxfEyIQpx9/s81rgzdEZOofSlZHynoSMYIDyjCCA8YCAQEwga0wgZcxCzAJBgNV
-BAYTAkdCMRswGQYDVQQIExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAY
-BgNVBAoTEUNPTU9ETyBDQSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA4rtJSHkq7AnpxKUY8ZlYZjANBglghkgB
-ZQMEAgEFAKCCAe0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAw
-OTE0MTUzMDE2WjAvBgkqhkiG9w0BCQQxIgQguwmuSGoU/pCQ//OTjKqxRpP8CquABSsK19TRoV8i
-cTcwgb4GCSsGAQQBgjcQBDGBsDCBrTCBlzELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIg
-TWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQx
-PTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1h
-aWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMIHABgsqhkiG9w0BCRACCzGBsKCBrTCBlzELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEaMBgG
-A1UEChMRQ09NT0RPIENBIExpbWl0ZWQxPTA7BgNVBAMTNENPTU9ETyBSU0EgQ2xpZW50IEF1dGhl
-bnRpY2F0aW9uIGFuZCBTZWN1cmUgRW1haWwgQ0ECEQDiu0lIeSrsCenEpRjxmVhmMA0GCSqGSIb3
-DQEBAQUABIIBAJFS98Is8qpmbZaSvakQxnUya5vE8gd/FX+eZHbyBZ1IxGRUfy16HWPcTP6wmYnm
-9bcofWvMQn4lK9fhpE0CjEci73ndlWzt0quAipdckwkmPplRLlW3F5MPFUBudQXWTaBNCvse/Sjo
-aNbNQ92QyNdW6mi1WM4BUTYeGYU1HNwzila5NlNFQ7/J8hu89YX13TcblSJFFbAVKj9ziyiKkrgp
-3EnxvMHdP7lo76I0ZxrcUjlEzgzD83Eot1sUeiu9+j32EOETa2hgf+zvcAArzLvKl8trxoCurEo1
-rX7xWU97TKNhg2YMLo9YpQIubxUJffSmbaR51m5nzLRMzUaQZG4AAAAAAAA=
+> diff --git a/arch/x86/kernel/acpi/apei.c b/arch/x86/kernel/acpi/apei.c
+> index c22fb55abcfd..13d60a91eaa0 100644
+> --- a/arch/x86/kernel/acpi/apei.c
+> +++ b/arch/x86/kernel/acpi/apei.c
+> @@ -43,3 +43,12 @@ void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err)
+>  	apei_mce_report_mem_error(sev, mem_err);
+>  #endif
+>  }
+> +
+> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
+> +{
+> +	int err = -EINVAL;
+> +#ifdef CONFIG_X86_MCE
+> +	err = apei_mce_report_x86_error(ctx_info, lapic_id);
+> +#endif
+> +	return err;
+> +}
 
+Add a stub for apei_mce_report_x86_error() in
+arch/x86/include/asm/mce.h, in one of the !CONFIG_X86_MCE ifdeffery
+which returns -EINVAL and get rid of this ifdeffery and simply do:
 
---=-8puGEqhBqvWrC5IAq9zC--
+	return apei_mce_report_x86_error(ctx_info, lapic_id);
 
+here.
+
+If you wanna fix the above apei_mce_report_mem_error() too, you can do
+that in a separate patch.
+
+> diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
+> index af8d37962586..65001d342302 100644
+> --- a/arch/x86/kernel/cpu/mce/apei.c
+> +++ b/arch/x86/kernel/cpu/mce/apei.c
+> @@ -26,6 +26,8 @@
+>  
+>  #include "internal.h"
+>  
+> +#define MASK_MCA_STATUS 0xC0002001
+
+What does that mask mean? Either here or where it is used needs a
+comment.
+
+>  void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
+>  {
+>  	struct mce m;
+> @@ -51,6 +53,46 @@ void apei_mce_report_mem_error(int severity, struct cper_sec_mem_err *mem_err)
+>  }
+>  EXPORT_SYMBOL_GPL(apei_mce_report_mem_error);
+>  
+> +int apei_mce_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
+> +{
+> +	const u64 *i_mce = ((const void *) (ctx_info + 1));
+> +	unsigned int cpu;
+> +	struct mce m;
+> +
+> +	if (!boot_cpu_has(X86_FEATURE_SMCA))
+
+If this function you're adding is SMCA-specific, then its name cannot be
+as generic as it is now.
+
+> +		return -EINVAL;
+> +
+> +	if ((ctx_info->msr_addr & MASK_MCA_STATUS) != MASK_MCA_STATUS)
+> +		return -EINVAL;
+> +
+> +	mce_setup(&m);
+> +
+> +	m.extcpu = -1;
+> +	m.socketid = -1;
+> +
+> +	for_each_possible_cpu(cpu) {
+> +		if (cpu_data(cpu).initial_apicid == lapic_id) {
+
+I don't like that but I don't think we have a reverse mapping from LAPIC
+ID to logical CPU numbers in the kernel...
+
+> +			m.extcpu = cpu;
+> +			m.socketid = cpu_data(m.extcpu).phys_proc_id;
+
+			m.socketid = cpu_data(cpu).phys_proc_id;
+
+> +			break;
+> +		}
+> +	}
+> +
+> +	m.apicid = lapic_id;
+> +	m.bank = (ctx_info->msr_addr >> 4) & 0xFF;
+> +	m.status = *i_mce;
+> +	m.addr = *(i_mce + 1);
+> +	m.misc = *(i_mce + 2);
+> +	/* Skipping MCA_CONFIG */
+> +	m.ipid = *(i_mce + 4);
+> +	m.synd = *(i_mce + 5);
+
+Is that structure after cper_ia_proc_ctx defined somewhere in the UEFI
+spec so that you can cast to it directly instead of doing this ugly
+pointer arithmetic?
+
+> +
+> +	mce_log(&m);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(apei_mce_report_x86_error);
+
+Why is this function exported?
+
+If "no reason", you can fix the above one too, with a separate commit.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
