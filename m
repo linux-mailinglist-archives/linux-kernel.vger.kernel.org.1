@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E097026986C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C580C269871
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINVzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:55:32 -0400
-Received: from mga11.intel.com ([192.55.52.93]:26291 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgINVzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:55:24 -0400
-IronPort-SDR: MXvbmpvQpLTABb2QX/iGeOai1nm3yQXqZWw8ZM8g3a/IgWbnbYh5p3XDpP8AArZ/Wiw1bu5T1P
- 2RnvvwouEmJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156598035"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="156598035"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:55:24 -0700
-IronPort-SDR: R/iVU5aCQQWyUGqhn9MQzVnzWaGoIJQHmmT3eF3wD8sB6fhDirSQAvY/i3l5NYUicCMBnG7hkd
- lv/djkZiy+BQ==
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="482509332"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:55:23 -0700
-Date:   Mon, 14 Sep 2020 14:55:22 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
-Message-ID: <20200914215522.GG7192@sjchrist-ice>
-References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
- <20200914195634.12881-2-sean.j.christopherson@intel.com>
- <20200914204024.w3rpjon64d3fesys@treble>
- <20200914210719.GB7084@sjchrist-ice>
- <CAFULd4Z9-Btyqo+i=w5Zyr=vJ46FBXzN7ovWGFxpnLiU2JE6eg@mail.gmail.com>
- <CAFULd4YrhpPp+MvX5jeSfF54eEeQocs_Z5iY_N3rMGXMzx3RjQ@mail.gmail.com>
+        id S1726085AbgINV5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:57:41 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:43025 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgINV5d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:57:33 -0400
+Received: by mail-il1-f194.google.com with SMTP id a19so1037803ilq.10;
+        Mon, 14 Sep 2020 14:57:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N49eBEf0OcBxq3YK+LLNsu/+jh0vCe22KQ35c/vRW6I=;
+        b=mFeF1YP0l9VhbLwT2oBGiAnAwmNrHsyhX1HPF4zke3hy3sMSnz1Iz0ExIKScT1DIbz
+         hbBct22s2nPJh/bQMrVdwGE9X0CdPmmJOJwRUN3TTMYNBn/cfph36gwY1r3DpWb316WC
+         QDO3Za8WZjrKrmF4aM1ubnkORVVmDKkQmG1DU4FpiEgO0hwprrwRcz3k8pBGUx1u1R3f
+         U8mLnDiXQSQJd5fqoGNmwMFI6aoIYsppQxyhJuFvDitzBFCEqcCTtplAJbg4azdNANNQ
+         jAoAbpuQQFC1DIZOlV/l+UBedbsOp/DXx88+42p8mxE4q74AQsBtPLqFMXeAg0fdVzMM
+         XWQw==
+X-Gm-Message-State: AOAM530PbgSlnpSgaftxvzTRJYme0i+12k7hdggAjnhxt7AeH2VXssot
+        JEDyuXZikhP4kuNRb1hnrw==
+X-Google-Smtp-Source: ABdhPJzHimwcweTB6LyvH7oBdWTbwaHmSrJfZexpF0TO7ddG3+ZaHNRwfzMo34YjbqX1u/ueBO53OA==
+X-Received: by 2002:a05:6e02:6d0:: with SMTP id p16mr5106632ils.64.1600120652133;
+        Mon, 14 Sep 2020 14:57:32 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c12sm7429573ilm.17.2020.09.14.14.57.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 14:57:31 -0700 (PDT)
+Received: (nullmailer pid 329540 invoked by uid 1000);
+        Mon, 14 Sep 2020 21:57:28 -0000
+Date:   Mon, 14 Sep 2020 15:57:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, jackp@codeaurora.org,
+        sergei.shtylyov@gmail.com
+Subject: Re: [PATCH v9 2/4] dt-bindings: usb: Add Qualcomm PMIC type C
+ controller dt-binding
+Message-ID: <20200914215728.GA258460@bogus>
+References: <20200904082223.25563-1-wcheng@codeaurora.org>
+ <0101017458361303-16620b87-c433-4c00-a061-b1e688363539-000000@us-west-2.amazonses.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFULd4YrhpPp+MvX5jeSfF54eEeQocs_Z5iY_N3rMGXMzx3RjQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0101017458361303-16620b87-c433-4c00-a061-b1e688363539-000000@us-west-2.amazonses.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:31:26PM +0200, Uros Bizjak wrote:
-> On Mon, Sep 14, 2020 at 11:21 PM Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > On Mon, Sep 14, 2020 at 11:07 PM Sean Christopherson
-> > <sean.j.christopherson@intel.com> wrote:
-> > >
-> > > On Mon, Sep 14, 2020 at 03:40:24PM -0500, Josh Poimboeuf wrote:
-> > > > On Mon, Sep 14, 2020 at 12:56:33PM -0700, Sean Christopherson wrote:
-> > > > > Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
-> > > > > into a proper subroutine.  Slightly rework the blob so that it plays
-> > > > > nice with objtool without any additional hints (existing hints aren't
-> > > > > able to handle returning with a seemingly modified stack size).
-> > > > >
-> > > > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > > Cc: Uros Bizjak <ubizjak@gmail.com>
-> > > > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> > > > > ---
-> > > > >  arch/x86/kvm/vmx/vmenter.S | 28 ++++++++++++++++++++++++++++
-> > > > >  arch/x86/kvm/vmx/vmx.c     | 33 +++------------------------------
-> > > > >  2 files changed, 31 insertions(+), 30 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-> > > > > index 799db084a336..baec1e0fefc5 100644
-> > > > > --- a/arch/x86/kvm/vmx/vmenter.S
-> > > > > +++ b/arch/x86/kvm/vmx/vmenter.S
-> > > > > @@ -4,6 +4,7 @@
-> > > > >  #include <asm/bitsperlong.h>
-> > > > >  #include <asm/kvm_vcpu_regs.h>
-> > > > >  #include <asm/nospec-branch.h>
-> > > > > +#include <asm/segment.h>
-> > > > >
-> > > > >  #define WORD_SIZE (BITS_PER_LONG / 8)
-> > > > >
-> > > > > @@ -294,3 +295,30 @@ SYM_FUNC_START(vmread_error_trampoline)
-> > > > >
-> > > > >     ret
-> > > > >  SYM_FUNC_END(vmread_error_trampoline)
-> > > > > +
-> > > > > +SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-> > > > > +   /*
-> > > > > +    * Unconditionally create a stack frame.  RSP needs to be aligned for
-> > > > > +    * x86-64, getting the correct RSP on the stack (for x86-64) would take
-> > > > > +    * two instructions anyways, and it helps make objtool happy (see below).
-> > > > > +    */
-> > > > > +   push %_ASM_BP
-> > > > > +   mov %rsp, %_ASM_BP
-> > > >
-> > > > RSP needs to be aligned to what?  How would this align the stack, other
-> > > > than by accident?
-> > >
-> > > Ah, yeah, that's lacking info.
-> > >
-> > > 16-byte aligned to correctly mimic CPU behavior when vectoring an IRQ/NMI.
-> > > When not changing stack, the CPU aligns RSP before pushing the frame.
-> > >
-> > > The above shenanigans work because the x86-64 ABI also requires RSP to be
-> > > 16-byte aligned prior to CALL.  RSP is thus 8-byte aligned due to CALL
-> > > pushing the return IP, and so creating the stack frame by pushing RBP makes
-> > > it 16-byte aliagned again.
-> >
-> > IIRC, the kernel violates x86_64 ABI and aligns RSP to 8 bytes prior
-> > to CALL. Please note -mpreferred-stack-boundary=3 in the compile
-> > flags.
+On Fri, Sep 04, 2020 at 08:22:53AM +0000, Wesley Cheng wrote:
+> Introduce the dt-binding for enabling USB type C orientation and role
+> detection using the PM8150B.  The driver will be responsible for receiving
+> the interrupt at a state change on the CC lines, reading the
+> orientation/role, and communicating this information to the remote
+> clients, which can include a role switch node and a type C switch.
 > 
-> +       push %_ASM_BP
-> +       mov %_ASM_SP, %_ASM_BP
-> +
-> +#ifdef CONFIG_X86_64
-> +       and $-16, %rsp"
-> +       push $__KERNEL_DS
-> +       push %rbp
-> +#endif
-> +       pushf
-> +       push $__KERNEL_CS
-> +       CALL_NOSPEC _ASM_ARG1
-> ...
-> +       mov %_ASM_BP, %_ASM_SP
-> +       pop %_ASM_BP
-> +       ret
-> 
-> should work.
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  .../bindings/usb/qcom,pmic-typec.yaml         | 108 ++++++++++++++++++
+>  1 file changed, 108 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
 
-Yar, I thought I was being super clever to avoid the AND :-/
+Please see this thread[1]. Looks like similar functions and hence the 
+bindings should be similar. There's a lot of USB Type C binding changes 
+in flight. I'm just going to reject them all if folks that know the 
+h/w and USB Type C better than me can't work together.
+
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> new file mode 100644
+> index 000000000000..8582ab6a3cc4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/qcom,pmic-typec.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/usb/qcom,pmic-typec.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm PMIC based USB type C Detection Driver
+> +
+> +maintainers:
+> +  - Wesley Cheng <wcheng@codeaurora.org>
+> +
+> +description: |
+> +  Qualcomm PMIC Type C Detect
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8150b-usb-typec
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: Type C base address
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: CC change interrupt from PMIC
+> +
+> +  connector:
+> +    $ref: /connector/usb-connector.yaml#
+> +    description: Connector type for remote endpoints
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        enum:
+> +          - usb-c-connector
+> +
+> +      power-role: true
+> +      data-role: true
+> +
+> +      ports:
+> +        description: Remote endpoint connections
+> +        type: object
+> +
+> +        properties:
+> +          port@1:
+> +            description: Remote endpoints for the Super Speed path
+> +            type: object
+> +
+> +            properties:
+> +              endpoint@0:
+> +                description: Connection to USB type C mux node
+> +                type: object
+> +
+> +              endpoint@1:
+> +                description: Connection to role switch node
+> +                type: object
+
+Not sure about this. The connector SS signals are routed to a mux and 
+the above are the 2 choices?
+
+Rob
+
+
+[1] https://lore.kernel.org/linux-usb/TYBPR01MB53096D5A92B7AA149E5803D786260@TYBPR01MB5309.jpnprd01.prod.outlook.com/
