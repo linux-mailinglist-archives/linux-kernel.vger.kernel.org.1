@@ -2,182 +2,396 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B608269242
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CEB269256
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgINQ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S1726239AbgINQ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgINQz1 (ORCPT
+        with ESMTP id S1726147AbgINQz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:55:27 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB23C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:55:27 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f18so16806pfa.10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:55:27 -0700 (PDT)
+        Mon, 14 Sep 2020 12:55:57 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAECC06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:55:56 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d13so255604pgl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nn8uGO9a9X0XwaIfMVFd2VgaWgHbpK8dvPYHd7Sq/nA=;
-        b=RB+2IbSgUvQBoAdsF0OTSCz20nt98NJ5VHwnf9jRx7zYNTMQeX4LZz03zL76irCDsG
-         0mdg45wZp2YAKNVNcAwTPfapLTrblMQfnEi5juhLmTb8jSzbarIx3WRVlOGm1lwO0q4M
-         JQXKYTnJSK2DV38j5skJQDiuqxCdrQ3kOy8gMmaXArc3C/XUvXxCidE0P/u3zhA62+yi
-         xxn5pXMlfzPSghT6dqYreCTRbu1o6GiEEvmXJk4bl7fHVfWaL8keJwVa0PHKeirScjuK
-         prJC8gaEvEx5yF4bvJyP9nUjr2ef9WkOsxRj3i4EAEkOXmG5T4VYP6A9imu3h5LqM1Nm
-         5WRg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ea+ZW1A7YbcpqTkgliK0jWyiobb/VnbwaIbkYZAOVbM=;
+        b=R8Y6wmPEsRZE6C8fYNWPVfUGXlnEM5IgMX/oMGHWJKShpepxLh9fgKfli5w6RfYOUz
+         1ZIRVx/SxYlYZLpzUXUXEdSx0LDuBt54xgTHGW6hzgyOLHFZ9t4osoGJNrQ+tURR3KdJ
+         9ANhxR9uYXBM1a0ZItLsuiQLHVpP6sj/9mrN5z0nEPt1lOEheEhCbzP6Pw/KICt3Wbjm
+         L5EBuwKMdP5q8Zn5SPMuVODu+ahaKLyyIFxUCffa5USdvIF15oLHSkn8rEMxtmWKhxGq
+         9QkmjwD8CuapJZON+ePTOZdsYxKWcaxBq8ZV7wl7v1gKnsDWlZt9LCLyZOgZbZr4Oasz
+         PkHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nn8uGO9a9X0XwaIfMVFd2VgaWgHbpK8dvPYHd7Sq/nA=;
-        b=s8UPQ55VFkbaS0Xt+1lBOXtjDR1ryluozc6i2iI9D2/WwDI/pDE5jByB7/6TBAxup5
-         ihzBO4O60IJ9/v7YG7AzIp/sAfbsJhx8t5HLD/0Ey3dLshyOABteuGJVpi9HnDs45VKU
-         18nlFUALp/LHcGu2+tZxoJIOQ2pAYTX2qH4Pt+k6/NhRl6tAgoyA9qy3VjOxNTPy1C2j
-         Nu4L7PcIUBkwC57RpBjhz8SIvJXouqMZJaNbC2LZrbDZsxSYntqRyd+Dqeu1OF5DBCzB
-         UjcmsajyrLKFQYCiMJNInWA7Kw8e2YuXYUy8nv1vWVz3sHWjHOW/Eo+ULIJSnmZLXdRs
-         hOiQ==
-X-Gm-Message-State: AOAM531iuiDeNGUAIaSnM/fPYga180DA2skxSFZ1905ExhrCN1Wo4BmI
-        BjE7Bk6J5Y6h2Y7CdvR837DmtnbS7j7MEuoMf4gI7g==
-X-Google-Smtp-Source: ABdhPJxzhrEWtHfAz9YebgAYjnUP/OKSRvXH7hybqZE4UdLRz9e4pHdbh/Rl/limT4J8drQRD3Oae84qwNQP5k5X5fM=
-X-Received: by 2002:a62:8f4c:: with SMTP id n73mr13928326pfd.65.1600102526730;
- Mon, 14 Sep 2020 09:55:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ea+ZW1A7YbcpqTkgliK0jWyiobb/VnbwaIbkYZAOVbM=;
+        b=antEJnwEkn3vbk5DXVrIsQH27NFEzHnkielr2xKytq3vyIVlRAFOp4687HnL5PhcUt
+         XFRbCSQWQhyYYjPq14gLTRP3/TjvHMQvfqmjysk4B+sez+haW8TIvJFzLKt15mzxSX/r
+         0rV6qaqxLUUUsEeTDN8Mxz4P2sHpJ/v43fPj1sEAZ9LagUtNYwFVdH8oZPpy/0o/b+Sz
+         DDFJlvcS3DeTemizwzLJj+4xsseafCL7Bc/cUufz/72ZQyyXYgqe6YuvYZMNQthqzFBF
+         q/tWOLndKOdyV6b5g2fTJnO4dU8fLV8cUh9rxAPe8vh3O7ervVNOwqUMSTj+5cBmYykB
+         nK4A==
+X-Gm-Message-State: AOAM5303uw05wInd9lSrl+yfMAuMqtIgK1bL06ul84RLNOo+3nixiwEP
+        IP+zJBwTdNOiAUyDykQa55mi+A==
+X-Google-Smtp-Source: ABdhPJx0m7t2eJqGYfDjTWx6SvRiWkjiGbVrjHbBvoLoGdBIQzvBgdYp+8ibbu9B1IKADnZE5jvJxw==
+X-Received: by 2002:a63:160d:: with SMTP id w13mr11214420pgl.97.1600102555984;
+        Mon, 14 Sep 2020 09:55:55 -0700 (PDT)
+Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
+        by smtp.gmail.com with ESMTPSA id a138sm11191748pfd.19.2020.09.14.09.55.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Sep 2020 09:55:55 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>, Jonathan.Cameron@huawei.com,
+        rjw@rjwysocki.net, sathyanarayanan.kuppuswamy@linux.intel.com,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/10] PCI/RCEC: Add pcie_walk_rcec() to walk
+ associated RCiEPs
+Date:   Mon, 14 Sep 2020 09:55:53 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <7B04CA9A-7332-4001-963B-E56642044F5D@intel.com>
+In-Reply-To: <20200912005013.GA912147@bjorn-Precision-5520>
+References: <20200912005013.GA912147@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200913070010.44053-1-songmuchun@bytedance.com> <CALvZod7VH3NDwBXrY9w95pUY7DV+R-b_chBHuygmwH_bhpULkQ@mail.gmail.com>
-In-Reply-To: <CALvZod7VH3NDwBXrY9w95pUY7DV+R-b_chBHuygmwH_bhpULkQ@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 15 Sep 2020 00:54:50 +0800
-Message-ID: <CAMZfGtXoBrFioh=FqRA82ZRSt=2oW=ie8BgZE0hAvtCOBRMXiw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3] mm: memcontrol: Add the missing
- numa_stat interface for cgroup v2
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+On 11 Sep 2020, at 17:50, Bjorn Helgaas wrote:
+
+> On Fri, Sep 11, 2020 at 04:16:03PM -0700, Sean V Kelley wrote:
+>> On 4 Sep 2020, at 19:23, Bjorn Helgaas wrote:
+>>> On Fri, Sep 04, 2020 at 10:18:30PM +0000, Kelley, Sean V wrote:
+>>>> Hi Bjorn,
+>>>>
+>>>> Quick question below...
+>>>>
+>>>> On Wed, 2020-09-02 at 14:55 -0700, Sean V Kelley wrote:
+>>>>> Hi Bjorn,
+>>>>>
+>>>>> On Wed, 2020-09-02 at 14:00 -0500, Bjorn Helgaas wrote:
+>>>>>> On Wed, Aug 12, 2020 at 09:46:53AM -0700, Sean V Kelley wrote:
+>>>>>>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>>>>>>
+>>>>>>> When an RCEC device signals error(s) to a CPU core, the CPU core
+>>>>>>> needs to walk all the RCiEPs associated with that RCEC to check
+>>>>>>> errors. So add the function pcie_walk_rcec() to walk all RCiEPs
+>>>>>>> associated with the RCEC device.
+>>>>>>>
+>>>>>>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+>>>>>>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>>>>>>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>>>>>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>>>>>> ---
+>>>>>>>  drivers/pci/pci.h       |  4 +++
+>>>>>>>  drivers/pci/pcie/rcec.c | 76
+>>>>>>> +++++++++++++++++++++++++++++++++++++++++
+>>>>>>>  2 files changed, 80 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+>>>>>>> index bd25e6047b54..8bd7528d6977 100644
+>>>>>>> --- a/drivers/pci/pci.h
+>>>>>>> +++ b/drivers/pci/pci.h
+>>>>>>> @@ -473,9 +473,13 @@ static inline void pci_dpc_init(struct
+>>>>>>> pci_dev
+>>>>>>> *pdev) {}
+>>>>>>>  #ifdef CONFIG_PCIEPORTBUS
+>>>>>>>  void pci_rcec_init(struct pci_dev *dev);
+>>>>>>>  void pci_rcec_exit(struct pci_dev *dev);
+>>>>>>> +void pcie_walk_rcec(struct pci_dev *rcec, int (*cb)(struct
+>>>>>>> pci_dev
+>>>>>>> *, void *),
+>>>>>>> +		    void *userdata);
+>>>>>>>  #else
+>>>>>>>  static inline void pci_rcec_init(struct pci_dev *dev) {}
+>>>>>>>  static inline void pci_rcec_exit(struct pci_dev *dev) {}
+>>>>>>> +static inline void pcie_walk_rcec(struct pci_dev *rcec, int
+>>>>>>> (*cb)(struct pci_dev *, void *),
+>>>>>>> +				  void *userdata) {}
+>>>>>>>  #endif
+>>>>>>>
+>>>>>>>  #ifdef CONFIG_PCI_ATS
+>>>>>>> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+>>>>>>> index 519ae086ff41..405f92fcdf7f 100644
+>>>>>>> --- a/drivers/pci/pcie/rcec.c
+>>>>>>> +++ b/drivers/pci/pcie/rcec.c
+>>>>>>> @@ -17,6 +17,82 @@
+>>>>>>>
+>>>>>>>  #include "../pci.h"
+>>>>>>>
+>>>>>>> +static int pcie_walk_rciep_devfn(struct pci_bus *bus, int
+>>>>>>> (*cb)(struct pci_dev *, void *),
+>>>>>>> +				 void *userdata, const unsigned long
+>>>>>>> bitmap)
+>>>>>>> +{
+>>>>>>> +	unsigned int devn, fn;
+>>>>>>> +	struct pci_dev *dev;
+>>>>>>> +	int retval;
+>>>>>>> +
+>>>>>>> +	for_each_set_bit(devn, &bitmap, 32) {
+>>>>>>> +		for (fn = 0; fn < 8; fn++) {
+>>>>>>> +			dev = pci_get_slot(bus, PCI_DEVFN(devn, fn));
+>>>>>>
+>>>>>> Wow, this is a lot of churning to call pci_get_slot() 256 times 
+>>>>>> per
+>>>>>> bus for the "associated bus numbers" case where we pass a bitmap 
+>>>>>> of
+>>>>>> 0xffffffff.  They didn't really make it easy for software when 
+>>>>>> they
+>>>>>> added the next/last bus number thing.
+>>>>>>
+>>>>>> Just thinking out loud here.  What if we could set dev->rcec 
+>>>>>> during
+>>>>>> enumeration, and then use that to build pcie_walk_rcec()?
+>>>>>
+>>>>> I think follow what you are doing.
+>>>>>
+>>>>> As we enumerate an RCEC, use the time to discover RCiEPs and
+>>>>> associate
+>>>>> each RCiEP's dev->rcec. Although BIOS already set the bitmap for
+>>>>> this
+>>>>> specific RCEC, it's more efficient to simply discover the devices
+>>>>> through the bus walk and verify each one found against the bitmap.
+>>>>>
+>>>>> Further, while we can be certain that an RCiEP found with a 
+>>>>> matching
+>>>>> device no. in a bitmap for an associated RCEC is correct, we 
+>>>>> cannot
+>>>>> be
+>>>>> certain that any RCiEP found on another bus range is correct 
+>>>>> unless
+>>>>> we
+>>>>> verify the bus is within that next/last bus range.
+>>>>>
+>>>>> Finally, that's where find_rcec() callback for rcec_assoc_rciep()
+>>>>> does
+>>>>> double duty by also checking on the "on-a-separate-bus" case
+>>>>> captured
+>>>>> potentially by find_rcec() during an RCiEP's bus walk.
+>>>>>
+>>>>>
+>>>>>>   bool rcec_assoc_rciep(rcec, rciep)
+>>>>>>   {
+>>>>>>     if (rcec->bus == rciep->bus)
+>>>>>>       return (rcec->bitmap contains rciep->devfn);
+>>>>>>
+>>>>>>     return (rcec->next/last contains rciep->bus);
+>>>>>>   }
+>>>>>>
+>>>>>>   link_rcec(dev, data)
+>>>>>>   {
+>>>>>>     struct pci_dev *rcec = data;
+>>>>>>
+>>>>>>     if ((dev is RCiEP) && rcec_assoc_rciep(rcec, dev))
+>>>>>>       dev->rcec = rcec;
+>>>>>>   }
+>>>>>>
+>>>>>>   find_rcec(dev, data)
+>>>>>>   {
+>>>>>>     struct pci_dev *rciep = data;
+>>>>>>
+>>>>>>     if ((dev is RCEC) && rcec_assoc_rciep(dev, rciep))
+>>>>>>       rciep->rcec = dev;
+>>>>>>   }
+>>>>>>
+>>>>>>   pci_setup_device
+>>>>>>     ...
+>>>>
+>>>> I just noticed your use of pci_setup_device(). Are you suggesting
+>>>> moving the call to pci_rcec_init() out of pci_init_capabilities() 
+>>>> and
+>>>> move it into pci_setup_device()?  If so, would pci_rcec_exit() 
+>>>> still
+>>>> remain in pci_release_capabilities()?
+>>>>
+>>>> I'm just wondering if it could just remain in
+>>>> pci_init_capabilities().
+>>>
+>>> Yeah, I didn't mean in pci_setup_device() specifically, just 
+>>> somewhere
+>>> in the callchain of pci_setup_device().  But you're right, it 
+>>> probably
+>>> would make more sense in pci_init_capabilities(), so I *should* have
+>>> said pci_scan_single_device() to be a little less specific.
+>>
+>> I’ve done some experimenting with this approach, and I think there 
+>> may be a
+>> problem of just walking the busses during enumeration
+>> pci_init_capabilities(). One problem is where one has an RCEC on a 
+>> root bus:
+>> 6a(00.4) and an RCiEP on another root bus: 6b(00.0).  They will never 
+>> find
+>> each other in this approach through a normal pci_bus_walk() call 
+>> using their
+>> respective root_bus.
+>>
+>>>  +-[0000:6b]-+-00.0
+>>>  |           +-00.1
+>>>  |           +-00.2
+>>>  |           \-00.3
+>>>  +-[0000:6a]-+-00.0
+>>>  |           +-00.1
+>>>  |           +-00.2
+>>>  |           \-00.4
 >
-> On Sun, Sep 13, 2020 at 12:01 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > In the cgroup v1, we have a numa_stat interface. This is useful for
-> > providing visibility into the numa locality information within an
-> > memcg since the pages are allowed to be allocated from any physical
-> > node. One of the use cases is evaluating application performance by
-> > combining this information with the application's CPU allocation.
-> > But the cgroup v2 does not. So this patch adds the missing information.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Suggested-by: Shakeel Butt <shakeelb@google.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > ---
-> [snip]
-> > +
-> > +static struct numa_stat numa_stats[] = {
-> > +       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
-> > +       { "file", PAGE_SIZE, NR_FILE_PAGES },
-> > +       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-> > +       { "shmem", PAGE_SIZE, NR_SHMEM },
-> > +       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-> > +       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-> > +       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > +       /*
-> > +        * The ratio will be initialized in numa_stats_init(). Because
-> > +        * on some architectures, the macro of HPAGE_PMD_SIZE is not
-> > +        * constant(e.g. powerpc).
-> > +        */
-> > +       { "anon_thp", 0, NR_ANON_THPS },
-> > +#endif
-> > +       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-> > +       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-> > +       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-> > +       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-> > +       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-> > +       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-> > +       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-> > +};
-> > +
-> > +static int __init numa_stats_init(void)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > +               if (numa_stats[i].idx == NR_ANON_THPS)
-> > +                       numa_stats[i].ratio = HPAGE_PMD_SIZE;
-> > +#endif
-> > +       }
+> Wow, is that even allowed?
 >
-> The for loop seems excessive but I don't really have a good alternative.
+> There's no bridge from 0000:6a to 0000:6b, so we will not scan 0000:6b
+> unless we find a host bridge with _CRS where 6b is the first bus
+> number below the bridge.  I think that means this would have to be
+> described in ACPI as two separate root bridges:
+>
+>   ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 6a])
+>   ACPI: PCI Root Bridge [PCI1] (domain 0000 [bus 6b])
 
-Yeah, I also have no good alternative. The numa_stats is only initialized
-once. So there may be no problem :).
+Otherwise, the RCEC Associated Endpoint Extended Capabilities would have 
+to have explicitly mentioned a bridge?
 
 >
-> > +
-> > +       return 0;
-> > +}
-> > +pure_initcall(numa_stats_init);
-> > +
-> > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
-> > +                                          unsigned int nid,
-> > +                                          enum node_stat_item idx)
-> > +{
-> > +       VM_BUG_ON(nid >= nr_node_ids);
-> > +       return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
-> > +}
-> > +
-> > +static const char *memory_numa_stat_format(struct mem_cgroup *memcg)
-> > +{
-> > +       int i;
-> > +       struct seq_buf s;
-> > +
-> > +       /* Reserve a byte for the trailing null */
-> > +       seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE - 1);
-> > +       if (!s.buffer)
-> > +               return NULL;
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
-> > +               int nid;
-> > +
-> > +               seq_buf_printf(&s, "%s", numa_stats[i].name);
-> > +               for_each_node_state(nid, N_MEMORY) {
-> > +                       u64 size;
-> > +
-> > +                       size = memcg_node_page_state(memcg, nid,
-> > +                                                    numa_stats[i].idx);
-> > +                       size *= numa_stats[i].ratio;
-> > +                       seq_buf_printf(&s, " N%d=%llu", nid, size);
-> > +               }
-> > +               seq_buf_putc(&s, '\n');
-> > +       }
-> > +
-> > +       /* The above should easily fit into one page */
-> > +       if (WARN_ON_ONCE(seq_buf_putc(&s, '\0')))
-> > +               s.buffer[PAGE_SIZE - 1] = '\0';
+> I *guess* maybe it's allowed by the PCIe spec to have an RCEC and
+> associated RCiEPs on separate root buses?  It seems awfully strange
+> and not in character for PCIe, but I guess I can't point to language
+> that prohibits it.
+
+Yes, it should be possible.
+
 >
-> I think you should follow Michal's recommendation at
-> http://lkml.kernel.org/r/20200914115724.GO16999@dhcp22.suse.cz
+>> While having a lot of slot calls per bus is unfortunate, unless I’m 
+>> mistaken
+>> you would have to walk every peer root_bus with your RCiEP in this 
+>> example
+>> until you hit on the right RCEC, unless of course you have a bitmap
+>> associated RCEC on dev->bus.
+>
+> I really despise pci_find_bus(), pci_get_slot(), and related
+> functions, but maybe they can't be avoided.
+>
+> I briefly hoped we could forget about connecting them at
+> enumeration-time and just build a list of RCECs in the host bridge.
+> Then when we handle an event for an RCiEP, we could search the list to
+> find the right RCEC (and potentially cache it then).  But I don't
+> think that would work either, because in the example above, they will
+> be under different host bridges.  I guess we could maybe have a global
+> (or maybe per-domain) list of RCECs.
 
-Here is different, because the seq_buf_putc(&s, '\n') will not add \0 unless
-we use seq_buf_puts(&s, "\n").
+Right, we could just have a list and only need to search the list when 
+we need to handle an event.
+
+>
+>> Conversely, if you are enumerating the above RCEC at 6a(00.4) and you
+>> attempt to link_rcec() through calls to pci_walk_bus(), the walk will 
+>> still
+>> be limited to 6a and below; never encountering 6b(00.0).  So you 
+>> would then
+>> need an additional walk for each of the associated bus ranges, 
+>> excluding the
+>> same bus as the RCEC.
+>>
+>> pci_init_capabilities()
+>> …
+>> pci_init_rcec() // Cached
+>>
+>> if (RCEC)
+>>  Walk the dev->bus for bitmap associated RCiEP
+>>  Walk all associated bus ranges for RCiEP
+>>
+>> else if (RCiEP)
+>>  Walk the dev->bus for bitmap associated RCEC
+>>  Walk all peer root_bus for RCEC, confirm if own dev->bus falls 
+>> within
+>> discovered RCEC associated ranges
+>>
+>> The other problem here is temporal. I’m wondering if we may be 
+>> trying to
+>> find associated devices at the pci_init_capabilities() stage prior to 
+>> them
+>> being fully enumerated, i.e., RCEC has not been cached but we are 
+>> searching
+>> with a future associated RCiEP.  So one could encounter a race 
+>> condition
+>> where one is checking on an RCiEP whose associated RCEC has not been
+>> enumerated yet.
+>
+> Maybe I'm misunderstanding this problem, but I think my idea would
+> handle this: If we find the RCEC first, we cache its info and do
+> nothing else.  When we subsequently discover an RCiEP, we walk the
+> tree, find the RCEC, and connect them.
+>
+> If we find an RCiEP first, we do nothing.  When we subsequently
+> discover an RCEC, we walk the tree, find any associated RCiEPs, and
+> connect them.
 
 
--- 
-Yours,
-Muchun
+Your approach makes sense. In retrospect, I don’t think there can be a 
+race condition here because of the fallback from one RCEC to the other 
+when they enumerate. You have two chances of finding the relationship.
+
+>
+> The discovery can happen in different orders based on the
+> bus/device/function numbers, but it's not really a race because
+> enumeration is single-threaded.  But if we're talking about two
+> separate host bridges (PNP0A03 devices), we *should* allow them to be
+> enumerated in parallel, even though we don't do that today.
+>
+> I think this RCEC association design is really kind of problematic.
+>
+> We don't really *need* the association until some RCiEP event (PME,
+> error, etc) occurs, so it's reasonable to defer making the RCEC
+> connection until then.  But it seems like things should be designed so
+> we're guaranteed to enumerate the RCEC before the RCiEPs.  Otherwise,
+> we don't really know when we can enable RCiEP events.  If we discover
+> an RCiEP first, enable error reporting, and an error occurs before we
+> find the RCEC, we're in a bit of a pickle.
+
+So we could have a global list (RCiEP or RCEC) in which we wait to 
+identify the associations only when we need to respond to events. Or in 
+your original suggestion we could walk the RCEC bus ranges in addition 
+to its root_bus.
+
+i.e., We bus walk an enumerating RCEC with link_rcec() callback for not 
+only the root_bus but each bus number in the associated ranges if the 
+extended cap exists.
+
+RCiEPs will simply continue to invoke their callback via find_rcec() and 
+only check on their own bus for the encountered RCEC’s associated 
+bitmap case.
+
+
+Sean
+
+>
+>> So let’s say one throws out RCiEP entirely and just relies upon 
+>> RCEC to find
+>> the associations because one knows that an encountered RCEC (in
+>> pci_init_capabilities()) has already been cached. In that case you 
+>> end up
+>> with the original implementation being done with this patch series…
+>>
+>> if (RCEC)
+>>  Walk the dev->bus for bitmap associated RCiEP
+>>  Walk all associated bus ranges for RCiEP
+>>
+>> Perhaps I’ve muddled some things here but it doesn’t look like 
+>> the twain
+>> will meet unless I cover multiple peer root_bus and even then you may 
+>> have
+>> an issue because the devices don’t yet fully exist from the 
+>> perspective of
+>> the OS.
+>>
+>> Thanks,
+>>
+>> Sean
