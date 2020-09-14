@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE35268E68
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475A6268E6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726322AbgINOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53134 "EHLO mail.kernel.org"
+        id S1726872AbgINOyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726659AbgINOwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:52:35 -0400
+        id S1726772AbgINOwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:52:47 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1730920829;
-        Mon, 14 Sep 2020 14:52:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F28D20715;
+        Mon, 14 Sep 2020 14:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600095154;
-        bh=Yn6LJndEJ3tzSzC6KEHoAKdcl9DLcigX6eBX6tAwLyM=;
+        s=default; t=1600095166;
+        bh=M2DIyqZOF1aOYfADXh4hvgjSrHg+ONJQHW16u8xBjA4=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=kvGTdnVlBfsxz1IUIUVn/6pS26bO4+GHW9lY3A7NX8Lg0u9c1KV1bEp6SekNQ3otI
-         lLQREDSoMUVPXlOj4nhFxDKDUOu1+g7UUzwo0NTPTwFjPG4+FXyr6OpDxeDhcOQIqI
-         VzLEPgYaytK+XCIbsIhRJE1I8elmxOf2RnST8c60=
-Date:   Mon, 14 Sep 2020 15:51:46 +0100
+        b=0d2IhcbTsNq3ez+y+kRsDIEtX9nWSFo8nFYmvPWfwl7rZ/Dt+D9H9A/+CU3+bFfFk
+         a/zyAD4incso7WguvIDi8GCiGuKprme3/qQN79S57e2CJGeQNIBS6kicHaU3gLUdlO
+         eyd4Vg3/HIctzsK49G8UImGV9DWEPrApD0H8q9SM=
+Date:   Mon, 14 Sep 2020 15:51:58 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20200913084114.8851-1-rikard.falkeborn@gmail.com>
-References: <20200913084114.8851-1-rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH 0/5] drivers/regulator: Constify static variables
-Message-Id: <160009510609.5653.5132281509197932767.b4-ty@kernel.org>
+To:     linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        Colin King <colin.king@canonical.com>,
+        Andy Gross <agross@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <20200910150410.750959-1-colin.king@canonical.com>
+References: <20200910150410.750959-1-colin.king@canonical.com>
+Subject: Re: [PATCH] spi: qup: remove redundant assignment to variable ret
+Message-Id: <160009511676.5702.4493764455278443968.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Sep 2020 10:41:09 +0200, Rikard Falkeborn wrote:
-> Constify a couple of static variables, most importantly regulator_ops to
-> allow the compiler to put them in read-only memory.
-> 
-> Rikard Falkeborn (5):
->   regulator: dummy: Constify dummy_initdata and dummy_ops
->   regulator: fixed: Constify static regulator_ops
->   regulator: stw481x-vmmc: Constify static structs
->   regulator: pca9450: Constify static regulator_ops
->   regulator: ti-abb: Constify ti_abb_reg_ops
-> 
-> [...]
+On Thu, 10 Sep 2020 16:04:10 +0100, Colin King wrote:
+> The variable ret is being initialized with a value that is
+> never read and it is being updated later with a new value. The
+> initialization is redundant and can be removed.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/5] regulator: dummy: Constify dummy_initdata and dummy_ops
-      commit: 087c09c2d273823bac906d590280f7e8052f7eff
-[2/5] regulator: fixed: Constify static regulator_ops
-      commit: 96ee75ffd4f63a3d5f9d6a3ea592b2c0ee97acb0
-[3/5] regulator: stw481x-vmmc: Constify static structs
-      commit: 9032693e218e69a9527fd5d08c4ce5cdbe90820f
-[4/5] regulator: pca9450: Constify static regulator_ops
-      commit: 72f2746c52e3fa6c0f6740df2d4fb70419533084
-[5/5] regulator: ti-abb: Constify ti_abb_reg_ops
-      commit: 2b37a18b58ed12b711591ec54c2b2a0e2068cf6e
+[1/1] spi: qup: remove redundant assignment to variable ret
+      commit: 4a6c7d6f940107d6383291e2cb450039790b752d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
