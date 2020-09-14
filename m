@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137C02684A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3115E2684AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgINGOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:14:36 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12247 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726003AbgINGOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:14:36 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0147C93470AE4918D371;
-        Mon, 14 Sep 2020 14:14:33 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 14 Sep 2020 14:14:25 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Qinglang Miao" <miaoqinglang@huawei.com>
-Subject: [PATCH] media: flexcop-usb: remove needless check before usb_free_coherent()
-Date:   Mon, 14 Sep 2020 14:15:13 +0800
-Message-ID: <20200914061513.3512-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726078AbgINGSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:18:52 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:4650 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726030AbgINGSs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:18:48 -0400
+X-UUID: 5de75fe1365e422fa86cc95bc383e785-20200914
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=FgYGajFnr48178YWlLNBCrvjxfgu8FSyvJO866EVJIo=;
+        b=ej2v/DB2B/D9UhzwXru0U1Y702h6SfGBRQ7CArp8gQkYi+N91eXG2i60uToa9o4b87b22RCWuR9x9opkcmEkRGe3qHnOjHyIHZIhTjjIHD75p3HczxgP2lCzNNwO2LoopytwYf1FTn8GbPqhAn9RfOj28fTOjKYCkgf2f9IehWw=;
+X-UUID: 5de75fe1365e422fa86cc95bc383e785-20200914
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 654306854; Mon, 14 Sep 2020 14:18:38 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 14 Sep
+ 2020 14:18:37 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Sep 2020 14:18:36 +0800
+Message-ID: <1600064195.29909.13.camel@mhfsdcap03>
+Subject: Re: [PATCH] usb: gadget: bcm63xx_udc: fix up the error of
+ undeclared usb_debug_root
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Felipe Balbi <balbi@kernel.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Date:   Mon, 14 Sep 2020 14:16:35 +0800
+In-Reply-To: <20200914061210.GA788192@kroah.com>
+References: <1600061930-778-1-git-send-email-chunfeng.yun@mediatek.com>
+         <20200914061210.GA788192@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: 4EF90E5793C0723BBF8B3E7E35116F0E7C228F9523B03CB81A31635FD5023F032000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb_free_coherent() is safe with NULL addr and this check is
-not required.
-
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/media/usb/b2c2/flexcop-usb.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/usb/b2c2/flexcop-usb.c b/drivers/media/usb/b2c2/flexcop-usb.c
-index 198ddfb8d..12c0b40be 100644
---- a/drivers/media/usb/b2c2/flexcop-usb.c
-+++ b/drivers/media/usb/b2c2/flexcop-usb.c
-@@ -419,10 +419,9 @@ static void flexcop_usb_transfer_exit(struct flexcop_usb *fc_usb)
- 			usb_free_urb(fc_usb->iso_urb[i]);
- 		}
- 
--	if (fc_usb->iso_buffer != NULL)
--		usb_free_coherent(fc_usb->udev,
--			fc_usb->buffer_size, fc_usb->iso_buffer,
--			fc_usb->dma_addr);
-+	usb_free_coherent(fc_usb->udev, fc_usb->buffer_size,
-+			  fc_usb->iso_buffer, fc_usb->dma_addr);
-+
- }
- 
- static int flexcop_usb_transfer_init(struct flexcop_usb *fc_usb)
--- 
-2.25.1
+T24gTW9uLCAyMDIwLTA5LTE0IGF0IDA4OjEyICswMjAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIE1vbiwgU2VwIDE0LCAyMDIwIGF0IDAxOjM4OjUwUE0gKzA4MDAsIENodW5mZW5n
+IFl1biB3cm90ZToNCj4gPiBGaXggdXAgdGhlIGJ1aWxkIGVycm9yIGNhdXNlZCBieSB1bmRlY2xh
+cmVkIHVzYl9kZWJ1Z19yb290DQo+ID4gDQo+ID4gQ2M6IHN0YWJsZSA8c3RhYmxlQHZnZXIua2Vy
+bmVsLm9yZz4NCj4gPiBGaXhlczogYTY2YWRhNGYyNDFjKCJ1c2I6IGdhZGdldDogYmNtNjN4eF91
+ZGM6IGNyZWF0ZSBkZWJ1Z2ZzIGRpcmVjdG9yeSB1bmRlciB1c2Igcm9vdCIpDQo+IA0KPiBOaXQs
+IHlvdSBuZWVkIGEgJyAnIGJlZm9yZSB0aGUgJygnIGNoYXJhY3Rlci4uLg0KT2ssIHRoYW5rcw0K
+PiANCj4gdGhhbmtzLA0KPiANCj4gZ3JlZyBrLWgNCg0K
 
