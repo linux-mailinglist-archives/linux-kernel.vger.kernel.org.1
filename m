@@ -2,176 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3107269984
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E82269986
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgINXKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgINXKv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:10:51 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D08C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:10:51 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id i1so1227335edv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R+itrPmdb1uT2Do7NFJXS/q5A1e11LUUi6cUnbB8ULo=;
-        b=OscoufG8IHAPrzgYF4fy7Cn/cK7ubF9tgWt8ZSshsxggI+VMUPvxKjh5r2Y2J5l2uh
-         UMyGvicURId/BnfvWei+UmGlQYfxb5gUlFtgYBcc/sJkxR+BZ2rRPTNZH5n/MxAVMRLN
-         CezpW17Hi9Ria77HBMgvk5dRIHYzNvD4OTOZUVYZXT31uiRdBc4PlG/C/OYuQ4Untxyu
-         kIt724BvF7EyKYooWsH51W5qekRgsO4eUc1/CVX37OQ6wcqYsq+DZM1YYO1oZVsFiCsF
-         nflntEDKVeno16Chu1iM5WP+Uts0fcm5u8ZwXwx+sYYJvRnI59vxmBtjLMtucxbocrlI
-         NYeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R+itrPmdb1uT2Do7NFJXS/q5A1e11LUUi6cUnbB8ULo=;
-        b=l/b6J5xtIEFegOIJyNevLWe6mXetXAOzsm34FtswrrhjYuR70Ocu3rE4xUWbTBaKbW
-         Kw3nJxDvh2+lvd8LgRAXqhX1h8Zf1HysA1Au7MaQxC3++aU3u37k8gDUZ48EQS3KTZO0
-         5Q9Xy/+XLjA12PhoToYOHfypGoqqk6zmZLv6zb0idgYetPvL1jBGb7MQwI1yaUtdqIta
-         Id+TKLAtL0Xp/EH0w2sR0ovuJ2qr1N5YzsmD5u7VZLs13urS2mKpIu1UVN5J8P+puNF4
-         LEY8Z7LVjnKkFqgONv+YtpFgUH3Z7z0qCnKIoIBY5yjuwT40XXU53XV7vGHEbRzyvF1I
-         B6UQ==
-X-Gm-Message-State: AOAM530HSgAnSsjpyuJRw/Oxc8DymeTZ7VNt968JAUZD1V7AJlm69gQb
-        pXNNopYveedY4uUTj6lWjlOoqjUa5211IhrrOppa9g==
-X-Google-Smtp-Source: ABdhPJz25sdc/c10PW3FBm8YfGcEy9UNPAY+TzoW85B7fIMK8zMcw5r6ppC0h9BjQjMtQWUZ3domYRB1253CIsTQm98=
-X-Received: by 2002:aa7:c511:: with SMTP id o17mr20039691edq.300.1600125049629;
- Mon, 14 Sep 2020 16:10:49 -0700 (PDT)
+        id S1726066AbgINXLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:11:21 -0400
+Received: from mga07.intel.com ([134.134.136.100]:4224 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726046AbgINXLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 19:11:20 -0400
+IronPort-SDR: slAHHIcx7fCS9f69N98J89VvlYjNNKA/ZEwPkQzRF38ArVCaPILRgeajbhg/7CUQ1b9cP0dknL
+ yjPRZ6jTFMcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="223357059"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="223357059"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 16:11:19 -0700
+IronPort-SDR: gM+xmcJhYsAd6UEwKFNEHuth0LNnx51+MdwRbCcK4RCYokdVVWDrI6alDr2OgB5wJSWWXYzroj
+ 0XOUoVMGu5Mg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="345600026"
+Received: from lkp-server01.sh.intel.com (HELO a75722977aa5) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 14 Sep 2020 16:11:17 -0700
+Received: from kbuild by a75722977aa5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kHxcy-0001Dq-W5; Mon, 14 Sep 2020 23:11:16 +0000
+Date:   Tue, 15 Sep 2020 07:10:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 09e43968db40c33a73e9ddbfd937f46d5c334924
+Message-ID: <5f5ff877.wtR/bNrIjMqp4Aha%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200914224509.17699-1-rcampbell@nvidia.com>
-In-Reply-To: <20200914224509.17699-1-rcampbell@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 14 Sep 2020 16:10:38 -0700
-Message-ID: <CAPcyv4gVJuWsOtejrKvWgByq=c1niwQOZ0HHYaSo4h6vc-Xw+Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: remove extra ZONE_DEVICE struct page refcount
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Linux MM <linux-mm@kvack.org>, kvm-ppc@vger.kernel.org,
-        nouveau@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Zi Yan <ziy@nvidia.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 3:45 PM Ralph Campbell <rcampbell@nvidia.com> wrote:
->
-> ZONE_DEVICE struct pages have an extra reference count that complicates the
-> code for put_page() and several places in the kernel that need to check the
-> reference count to see that a page is not being used (gup, compaction,
-> migration, etc.). Clean up the code so the reference count doesn't need to
-> be treated specially for ZONE_DEVICE.
->
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> ---
->
-> Matthew Wilcox, Ira Weiny, and others have complained that ZONE_DEVICE
-> struct page reference counting is ugly/broken. This is my attempt to
-> fix it and it works for the HMM migration self tests.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 09e43968db40c33a73e9ddbfd937f46d5c334924  x86/boot/compressed: Disable relocation relaxation
 
-Can you link to a technical description of what's broken? Or better
-yet, summarize that argument in the changelog?
+elapsed time: 723m
 
-> I'm only sending this out as a RFC since I'm not that familiar with the
-> DAX, PMEM, XEN, and other uses of ZONE_DEVICE struct pages allocated
-> with devm_memremap_pages() or memremap_pages() but my best reading of
-> the code looks like it might be OK. I could use help testing these
-> configurations.
+configs tested: 145
+configs skipped: 81
 
-Back in the 4.15 days I could not convince myself that some code paths
-blindly assumed that pages with refcount==0 were on an lru list. Since
-then, struct page has been reorganized to not collide the ->pgmap back
-pointer with the ->lru list and there have been other cleanups for
-page pinning that might make this incremental cleanup viable.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-You also need to fix up ext4_break_layouts() and
-xfs_break_dax_layouts() to expect ->_refcount is 0 instead of 1. This
-also needs some fstests exposure.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+nios2                         3c120_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                     am200epdkit_defconfig
+arm                         vf610m4_defconfig
+sh                            shmin_defconfig
+mips                          ath79_defconfig
+sh                          sdk7786_defconfig
+powerpc                          g5_defconfig
+arm                           tegra_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                        icon_defconfig
+m68k                         amcore_defconfig
+mips                    maltaup_xpa_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                   currituck_defconfig
+riscv                          rv32_defconfig
+sh                          r7780mp_defconfig
+powerpc                    mvme5100_defconfig
+um                             i386_defconfig
+arc                            hsdk_defconfig
+powerpc                    gamecube_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                        fsp2_defconfig
+arc                             nps_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                 mpc85xx_cds_defconfig
+sh                           se7722_defconfig
+powerpc                     ep8248e_defconfig
+sparc                       sparc64_defconfig
+ia64                         bigsur_defconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc8540_ads_defconfig
+mips                 pnx8335_stb225_defconfig
+powerpc                 linkstation_defconfig
+powerpc                  storcenter_defconfig
+alpha                               defconfig
+m68k                           sun3_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                      mgcoge_defconfig
+mips                        bcm47xx_defconfig
+arc                        nsimosci_defconfig
+ia64                                defconfig
+arm                         cm_x300_defconfig
+xtensa                generic_kc705_defconfig
+arm                         lpc18xx_defconfig
+c6x                              allyesconfig
+mips                      loongson3_defconfig
+powerpc                     tqm8541_defconfig
+arm                         hackkit_defconfig
+nds32                             allnoconfig
+arm                             ezx_defconfig
+arm                       aspeed_g5_defconfig
+powerpc                     tqm8560_defconfig
+riscv                            allmodconfig
+arm                        spear3xx_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20200914
+x86_64               randconfig-a006-20200914
+x86_64               randconfig-a003-20200914
+x86_64               randconfig-a002-20200914
+x86_64               randconfig-a001-20200914
+x86_64               randconfig-a005-20200914
+i386                 randconfig-a004-20200913
+i386                 randconfig-a006-20200913
+i386                 randconfig-a003-20200913
+i386                 randconfig-a001-20200913
+i386                 randconfig-a002-20200913
+i386                 randconfig-a005-20200913
+i386                 randconfig-a004-20200914
+i386                 randconfig-a006-20200914
+i386                 randconfig-a001-20200914
+i386                 randconfig-a003-20200914
+i386                 randconfig-a002-20200914
+i386                 randconfig-a005-20200914
+x86_64               randconfig-a014-20200913
+x86_64               randconfig-a011-20200913
+x86_64               randconfig-a012-20200913
+x86_64               randconfig-a016-20200913
+x86_64               randconfig-a015-20200913
+x86_64               randconfig-a013-20200913
+i386                 randconfig-a015-20200914
+i386                 randconfig-a014-20200914
+i386                 randconfig-a011-20200914
+i386                 randconfig-a013-20200914
+i386                 randconfig-a016-20200914
+i386                 randconfig-a012-20200914
+i386                 randconfig-a015-20200913
+i386                 randconfig-a014-20200913
+i386                 randconfig-a011-20200913
+i386                 randconfig-a013-20200913
+i386                 randconfig-a016-20200913
+i386                 randconfig-a012-20200913
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-> I have a modified THP migration patch series that applies on top of
-> this one and is cleaner since I don't have to add code to handle the
-> +1 reference count. The link below is for the earlier v2:
-> ("mm/hmm/nouveau: add THP migration to migrate_vma_*")
-> https://lore.kernel.org/linux-mm/20200902165830.5367-1-rcampbell@nvidia.com
->
->
->  arch/powerpc/kvm/book3s_hv_uvmem.c     |  1 -
->  drivers/gpu/drm/nouveau/nouveau_dmem.c |  1 -
->  include/linux/memremap.h               |  6 +--
->  include/linux/mm.h                     | 39 ---------------
->  lib/test_hmm.c                         |  1 -
->  mm/gup.c                               | 44 -----------------
->  mm/memremap.c                          | 20 ++++----
->  mm/migrate.c                           |  5 --
->  mm/swap.c                              | 66 +++++++++++---------------
->  9 files changed, 41 insertions(+), 142 deletions(-)
+clang tested configs:
+x86_64               randconfig-a006-20200913
+x86_64               randconfig-a004-20200913
+x86_64               randconfig-a003-20200913
+x86_64               randconfig-a002-20200913
+x86_64               randconfig-a005-20200913
+x86_64               randconfig-a001-20200913
+x86_64               randconfig-a014-20200914
+x86_64               randconfig-a011-20200914
+x86_64               randconfig-a016-20200914
+x86_64               randconfig-a012-20200914
+x86_64               randconfig-a015-20200914
+x86_64               randconfig-a013-20200914
 
-This diffstat is indeed appealing.
-
->
-> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
-> index 84e5a2dc8be5..00d97050d7ff 100644
-> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
-> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
-> @@ -711,7 +711,6 @@ static struct page *kvmppc_uvmem_get_page(unsigned long gpa, struct kvm *kvm)
->
->         dpage = pfn_to_page(uvmem_pfn);
->         dpage->zone_device_data = pvt;
-> -       get_page(dpage);
->         lock_page(dpage);
->         return dpage;
->  out_clear:
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> index a13c6215bba8..2a4bbe01a455 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> @@ -324,7 +324,6 @@ nouveau_dmem_page_alloc_locked(struct nouveau_drm *drm)
->                         return NULL;
->         }
->
-> -       get_page(page);
->         lock_page(page);
->         return page;
->  }
-> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> index 4e9c738f4b31..7dd9802d2612 100644
-> --- a/include/linux/memremap.h
-> +++ b/include/linux/memremap.h
-> @@ -67,9 +67,9 @@ enum memory_type {
->
->  struct dev_pagemap_ops {
->         /*
-> -        * Called once the page refcount reaches 1.  (ZONE_DEVICE pages never
-> -        * reach 0 refcount unless there is a refcount bug. This allows the
-> -        * device driver to implement its own memory management.)
-> +        * Called once the page refcount reaches 0. The reference count is
-> +        * reset to 1 before calling page_free(). This allows the
-> +        * device driver to implement its own memory management.
-
-I'd clarify the order events / responsibility of the common core
-page_free() and the device specific page_free(). At the same time, why
-not update drivers to expect that the page is already refcount==0 on
-entry? Seems odd to go through all this trouble to make the reference
-count appear to be zero to the wider kernel but expect that drivers
-get a fake reference on entry to their ->page_free() callbacks.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
