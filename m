@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3710F268891
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BA52688B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgINJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgINJgR (ORCPT
+        id S1726378AbgINJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:42:30 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:26329 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726355AbgINJmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:36:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62512C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:36:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rFo3P/yVEyT/riHvD1+zwROozsgCZ0ZeAptyOa2H33c=; b=T9KZTDpWfoB57jBow3SI6kuA7g
-        bd2gJINBMhS9DcpnlC24QPiXMjh4ndu42NvJvZCt0qQW4XErhdg9CxyUKOLjy0mz2Xoa7yRvtVocI
-        VWnlXKgPGq7yoFebdCt9aM48eLlepjUVDt1ZJ8qhqPGScMD8ayI8e17U90u5LXXKxYRQjAKJKajt1
-        wlFk02oHJEOqi2GL4H3Mjh7ADfonFV0OYdXXepN5F4MowWEgvBTCZFKAoSA8NwRgUvnC/Gn/aCTaJ
-        aNTJtyLD/gfv1KsENa8kbns/F1/X0QTupv5hDXi6HdHXdY03KooduRqFrjmUixb3V5hY7WC7UAMim
-        2+hYyHDA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHku3-0007eb-As; Mon, 14 Sep 2020 09:36:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FEE73012C3;
-        Mon, 14 Sep 2020 11:36:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2D6192CA75AAC; Mon, 14 Sep 2020 11:36:02 +0200 (CEST)
-Date:   Mon, 14 Sep 2020 11:36:02 +0200
-From:   peterz@infradead.org
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-Message-ID: <20200914093602.GN1362448@hirez.programming.kicks-ass.net>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-3-jolsa@kernel.org>
+        Mon, 14 Sep 2020 05:42:25 -0400
+X-UUID: d08c180bc3314fe2974c175af6ce0ff1-20200914
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=bQUXUzbFriOSQ+r1Po0//r4PBP6F9rJZE9cWHJ8VvZM=;
+        b=gJHGt4LaCju5NNB6YbRj+x8Zgc9Pl/jRH6LAfCy+XTy4H1UWTgRoQYyBvE4MdL6ud87oCtn1Bu1Pag8SipaL9yyJH6dbkUmpWO6Twy90DmNdljIy7U1Ia+LQzfsDuk0MG75fetNq+O/cULYehF+3xBbw5eHPUYGXilHxLF+4Awg=;
+X-UUID: d08c180bc3314fe2974c175af6ce0ff1-20200914
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <maoguang.meng@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 855825856; Mon, 14 Sep 2020 17:42:19 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 14 Sep 2020 17:42:16 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Sep 2020 17:42:16 +0800
+From:   <maoguang.meng@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <tfiga@chromium.org>,
+        <yong.wu@mediatek.com>, <sj.huang@mediatek.com>
+CC:     <linux-media@vger.kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
+        <xia.jiang@mediatek.com>, <maoguang.meng@mediatek.com>
+Subject: [PATCH] arm64: dts: add jpeg enc node for mt8183
+Date:   Mon, 14 Sep 2020 17:40:12 +0800
+Message-ID: <20200914094012.5817-1-maoguang.meng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200913210313.1985612-3-jolsa@kernel.org>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 11:02:49PM +0200, Jiri Olsa wrote:
-> Add new version of mmap event. The MMAP3 record is an
-> augmented version of MMAP2, it adds build id value to
-> identify the exact binary object behind memory map:
-> 
->   struct {
->     struct perf_event_header header;
-> 
->     u32                      pid, tid;
->     u64                      addr;
->     u64                      len;
->     u64                      pgoff;
->     u32                      maj;
->     u32                      min;
->     u64                      ino;
->     u64                      ino_generation;
->     u32                      prot, flags;
->     u32                      reserved;
->     u8                       buildid[20];
->     char                     filename[];
->     struct sample_id         sample_id;
->   };
-> 
+RnJvbTogTWFvZ3VhbmcgTWVuZyA8bWFvZ3VhbmcubWVuZ0BtZWRpYXRlay5jb20+DQoNCmFkZCBq
+cGVnIGVuYyBkZXZpY2UgdHJlZSBub2RlDQoNClNpZ25lZC1vZmYtYnk6IE1hb2d1YW5nIE1lbmcg
+PG1hb2d1YW5nLm1lbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQpSZWJhc2Ugb24gdjUuOS1yYzEuDQog
+ICBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3BhdGNoLzExNjQ3NDYvDQog
+ICBbMl0gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTcwMzI5OS8NCiAgIFsz
+XSBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExMjgzNzczLw0KLS0tDQoNCiBh
+cmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE4My5kdHNpIHwgMTEgKysrKysrKysrKysN
+CiAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvYXJjaC9h
+cm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxODMuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMv
+bWVkaWF0ZWsvbXQ4MTgzLmR0c2kNCmluZGV4IDhkOGY0MjdkYjAzMC4uMWU3MjYyNWYxNjE1IDEw
+MDY0NA0KLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxODMuZHRzaQ0KKysr
+IGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxODMuZHRzaQ0KQEAgLTk2MSw2ICs5
+NjEsMTcgQEANCiAJCQlwb3dlci1kb21haW5zID0gPCZzY3BzeXMgTVQ4MTgzX1BPV0VSX0RPTUFJ
+Tl9WRU5DPjsNCiAJCX07DQogDQorCQl2ZW5jX2pwZ0AxNzAzMDAwMCB7DQorCQkJY29tcGF0aWJs
+ZSA9ICJtZWRpYXRlayxtdDgxODMtanBnZW5jIiwgIm1lZGlhdGVrLG10ay1qcGdlbmMiOw0KKwkJ
+CXJlZyA9IDwwIDB4MTcwMzAwMDAgMCAweDEwMDA+Ow0KKwkJCWludGVycnVwdHMgPSA8R0lDX1NQ
+SSAyNDkgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCisJCQlpb21tdXMgPSA8JmlvbW11IE00VV9QT1JU
+X0pQR0VOQ19SRE1BPiwNCisJCQkJIDwmaW9tbXUgTTRVX1BPUlRfSlBHRU5DX0JTRE1BPjsNCisJ
+CQlwb3dlci1kb21haW5zID0gPCZzY3BzeXMgTVQ4MTgzX1BPV0VSX0RPTUFJTl9WRU5DPjsNCisJ
+CQljbG9ja3MgPSA8JnZlbmNzeXMgQ0xLX1ZFTkNfSlBHRU5DPjsNCisJCQljbG9jay1uYW1lcyA9
+ICJqcGdlbmMiOw0KKwkJfTsNCisNCiAJCWlwdV9jb25uOiBzeXNjb25AMTkwMDAwMDAgew0KIAkJ
+CWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWlwdV9jb25uIiwgInN5c2NvbiI7DQogCQkJ
+cmVnID0gPDAgMHgxOTAwMDAwMCAwIDB4MTAwMD47DQotLSANCjIuMTguMA0K
 
-So weren't there still open problems with mmap2 that also needed
-addressing? I seem to have forgotten :/
