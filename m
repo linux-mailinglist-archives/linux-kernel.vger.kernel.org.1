@@ -2,102 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E3A2697B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DE92697B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgINVbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbgINVbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:31:03 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8FE120715;
-        Mon, 14 Sep 2020 21:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600119063;
-        bh=3rkZ7CdRjA/a6sBAPu8azs7PpRx/PIItk/odvnzR4Lg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1XMZ4k3PkXzdo83RypURrov6El8Lv/9IadYO3elfz2vWmH4qh5XzNycExEvgb08ie
-         nyN/qb2rXSPj5DVSLTeMNqtaoca6LBhFJg9OsTpsn8VyXixZ2F6BNuRVP0iaFFmtJ6
-         rtzaUq2nXYOlytOcKqB4EjLTmhCnxodV91WI23YY=
-Date:   Mon, 14 Sep 2020 14:31:00 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>
-Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200914143100.06a4641d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200914112829.GC2236@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
-        <1600063682-17313-2-git-send-email-moshe@mellanox.com>
-        <CAACQVJochmfmUgKSvSTe4McFvG6=ffBbkfXsrOJjiCDwQVvaRw@mail.gmail.com>
-        <20200914093234.GB2236@nanopsycho.orion>
-        <CAACQVJqVV_YLfV002wxU2s1WJUa3_AvqwMMVr8KLAtTa0d9iOw@mail.gmail.com>
-        <20200914112829.GC2236@nanopsycho.orion>
+        id S1726085AbgINVbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgINVbj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:31:39 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F997C06174A;
+        Mon, 14 Sep 2020 14:31:38 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id t138so1993003qka.0;
+        Mon, 14 Sep 2020 14:31:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mbVYbUwuAgj0gZUzhMIQHhBdT+m+c8C6wWNEnv4NlZs=;
+        b=YD9sRm5yT9owz3HKM14xky8JKTJx+V/EU9RqYee67PL2MQzDF+DC0DdZ1pRB9rONt+
+         5DH5fiypxF2Ip2K1rW4qRMZkDTJxgw3hN8AoSolqiibS/7bHKjZEEHWftNJHwFHSsIun
+         35a0rYoZ1IAxXNmcKzjQA9fLe3D7UGOrwSQnxrAEse4mstg3V1JhBTdzcTl720pPAP/e
+         //AbavDIpMzrt7UO+Gx4JGERovmeTGefEBwlw3xbfasfMi+kQuWtxlbk4BaarGbliWNj
+         rPCGOswv29fhlulzS2w3o0dgvkr5jSAuxQxpwJXHuLu9J28MLkqlBXuYdkSTMcyRCulj
+         VHFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mbVYbUwuAgj0gZUzhMIQHhBdT+m+c8C6wWNEnv4NlZs=;
+        b=B+XSXpQnbFSZSp+tKm++fm+IqHKq8MSGicw0/c5Mbu55IyhcDJk0d3uEB5JTrtjZ29
+         +msJL6IHx74AnUi+1U1PE8zJdu84n06mcY01czkqQegXAw1cL4sHPVMO9NjKryW3cC+N
+         YAi9PVL+4Cup7RDNMAnV+xFCHU2TTadgh1X/vXr2AYLF+Ni+QGgtt0Fai6rrc73bj2Im
+         NoS64D2rcOgy/6BUfvug1P8agPfrGTPZhsf+rJ87u4SpbhBEOwquU1t4KZ3CuTbVZs0k
+         XffBNsIlIJMBFPlLYmrpUJ4DymFinU2N0LZg6Rz0/7LFpENHlOzdCnj2hOH82pZySLlu
+         fUtQ==
+X-Gm-Message-State: AOAM532x6GHEj57bxDTUB2jWuckATo7oqRTHIro67EtX7VaDyoDFPXUP
+        4ZX6za7odiAgjmvHG/6oNfukU57w+A+cx+iQskg=
+X-Google-Smtp-Source: ABdhPJwRyAgl+QzcCijWEtni3+p0D9s2SnrN8uISflLGy6Y5Dvyux1wcPbi/mnd3XTTAAJikaARQVmqQAfEik4Gz/bU=
+X-Received: by 2002:a37:9c8:: with SMTP id 191mr14533038qkj.292.1600119097641;
+ Mon, 14 Sep 2020 14:31:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
+ <20200914195634.12881-2-sean.j.christopherson@intel.com> <20200914204024.w3rpjon64d3fesys@treble>
+ <20200914210719.GB7084@sjchrist-ice> <CAFULd4Z9-Btyqo+i=w5Zyr=vJ46FBXzN7ovWGFxpnLiU2JE6eg@mail.gmail.com>
+In-Reply-To: <CAFULd4Z9-Btyqo+i=w5Zyr=vJ46FBXzN7ovWGFxpnLiU2JE6eg@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 14 Sep 2020 23:31:26 +0200
+Message-ID: <CAFULd4YrhpPp+MvX5jeSfF54eEeQocs_Z5iY_N3rMGXMzx3RjQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 13:28:29 +0200 Jiri Pirko wrote:
-> Mon, Sep 14, 2020 at 11:54:55AM CEST, vasundhara-v.volam@broadcom.com wrote:
-> >On Mon, Sep 14, 2020 at 3:02 PM Jiri Pirko <jiri@resnulli.us> wrote:  
-> >> >> +mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink, enum devlink_reload_action action,
-> >> >> +                                       struct netlink_ext_ack *extack,
-> >> >> +                                       unsigned long *actions_performed)  
-> >> >Sorry for repeating again, for fw_activate action on our device, all
-> >> >the driver entities undergo reset asynchronously once user initiates
-> >> >"devlink dev reload action fw_activate" and reload_up does not have
-> >> >much to do except reporting actions that will be/being performed.
-> >> >
-> >> >Once reset is complete, the health reporter will be notified using  
-> >>
-> >> Hmm, how is the fw reset related to health reporter recovery? Recovery
-> >> happens after some error event. I don't believe it is wise to mix it.  
-> >Our device has a fw_reset health reporter, which is updated on reset
-> >events and firmware activation is one among them. All non-fatal
-> >firmware reset events are reported on fw_reset health reporter.  
-> 
-> Hmm, interesting. In that case, assuming this is fine, should we have
-> some standard in this. I mean, if the driver supports reset, should it
-> also define the "fw_reset" reporter to report such events?
-> 
-> Jakub, what is your take here?
-
-Sounds doubly wrong to me.
-
-As you say health reporters should trigger on error events,
-communicating completion of an action requested by the user
-seems very wrong. IIUC operators should monitor and collect
-health failures. In this case looks like all events from fw_reset 
-would need to be discarded, since they are not meaningful
-without the context of what triggered them.
-
-And secondly, reporting the completion via some async mechanism
-that user has to monitor is just plain lazy. That's pushing out
-the work that has to be done out to user space. Wait for the 
-completion in the driver.
-
-> >> Instead, why don't you block in reload_up() until the reset is complete?  
+On Mon, Sep 14, 2020 at 11:21 PM Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> On Mon, Sep 14, 2020 at 11:07 PM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
 > >
-> >Though user initiate "devlink dev reload" event on a single interface,
-> >all driver entities undergo reset and all entities recover
-> >independently. I don't think we can block the reload_up() on the
-> >interface(that user initiated the command), until whole reset is
-> >complete.  
-> 
-> Why not? mlxsw reset takes up to like 10 seconds for example.
+> > On Mon, Sep 14, 2020 at 03:40:24PM -0500, Josh Poimboeuf wrote:
+> > > On Mon, Sep 14, 2020 at 12:56:33PM -0700, Sean Christopherson wrote:
+> > > > Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
+> > > > into a proper subroutine.  Slightly rework the blob so that it plays
+> > > > nice with objtool without any additional hints (existing hints aren't
+> > > > able to handle returning with a seemingly modified stack size).
+> > > >
+> > > > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > > > Cc: Uros Bizjak <ubizjak@gmail.com>
+> > > > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > > > ---
+> > > >  arch/x86/kvm/vmx/vmenter.S | 28 ++++++++++++++++++++++++++++
+> > > >  arch/x86/kvm/vmx/vmx.c     | 33 +++------------------------------
+> > > >  2 files changed, 31 insertions(+), 30 deletions(-)
+> > > >
+> > > > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> > > > index 799db084a336..baec1e0fefc5 100644
+> > > > --- a/arch/x86/kvm/vmx/vmenter.S
+> > > > +++ b/arch/x86/kvm/vmx/vmenter.S
+> > > > @@ -4,6 +4,7 @@
+> > > >  #include <asm/bitsperlong.h>
+> > > >  #include <asm/kvm_vcpu_regs.h>
+> > > >  #include <asm/nospec-branch.h>
+> > > > +#include <asm/segment.h>
+> > > >
+> > > >  #define WORD_SIZE (BITS_PER_LONG / 8)
+> > > >
+> > > > @@ -294,3 +295,30 @@ SYM_FUNC_START(vmread_error_trampoline)
+> > > >
+> > > >     ret
+> > > >  SYM_FUNC_END(vmread_error_trampoline)
+> > > > +
+> > > > +SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
+> > > > +   /*
+> > > > +    * Unconditionally create a stack frame.  RSP needs to be aligned for
+> > > > +    * x86-64, getting the correct RSP on the stack (for x86-64) would take
+> > > > +    * two instructions anyways, and it helps make objtool happy (see below).
+> > > > +    */
+> > > > +   push %_ASM_BP
+> > > > +   mov %rsp, %_ASM_BP
+> > >
+> > > RSP needs to be aligned to what?  How would this align the stack, other
+> > > than by accident?
+> >
+> > Ah, yeah, that's lacking info.
+> >
+> > 16-byte aligned to correctly mimic CPU behavior when vectoring an IRQ/NMI.
+> > When not changing stack, the CPU aligns RSP before pushing the frame.
+> >
+> > The above shenanigans work because the x86-64 ABI also requires RSP to be
+> > 16-byte aligned prior to CALL.  RSP is thus 8-byte aligned due to CALL
+> > pushing the return IP, and so creating the stack frame by pushing RBP makes
+> > it 16-byte aliagned again.
+>
+> IIRC, the kernel violates x86_64 ABI and aligns RSP to 8 bytes prior
+> to CALL. Please note -mpreferred-stack-boundary=3 in the compile
+> flags.
 
-+1, why?
++       push %_ASM_BP
++       mov %_ASM_SP, %_ASM_BP
++
++#ifdef CONFIG_X86_64
++       and $-16, %rsp"
++       push $__KERNEL_DS
++       push %rbp
++#endif
++       pushf
++       push $__KERNEL_CS
++       CALL_NOSPEC _ASM_ARG1
+...
++       mov %_ASM_BP, %_ASM_SP
++       pop %_ASM_BP
++       ret
+
+should work.
+
+Uros.
