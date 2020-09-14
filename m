@@ -2,98 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4816D2682D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C511268302
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726033AbgINDBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726016AbgINDBa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:01:30 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D404FC06174A;
-        Sun, 13 Sep 2020 20:01:29 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so10380873pgl.2;
-        Sun, 13 Sep 2020 20:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lyLNdA4xrXocOcTdyl66Bfsi09lJXmV7xTXnFfeHCDE=;
-        b=DvJv456xq70FIh5msQ6QNCM81uLc+IEpVUr7p8Swoi4KEfwBDw43z0YQ7OXV5eZsFy
-         zfyrMccjxhHJJgYVDU6ueLCfDi5lCCouphN1wGJDoybglGNNjMbgqFu1agaUco4gTYIw
-         7xWxzXfocqvrs7PNrvjZ58oTNFa2IMxwgh+aZCxCpVQFToaYBbq+n6I8QgNJDLhctyzo
-         Pm6du+DSKZuoEQitd0etqJHqXABXx+mpirdd+b+XsUgqj+LnS9afJpZt+IOFxa5zgpyl
-         ZC7YgLKK9UCx6RkmytedEA0OFAcyFles175yeSZgfVTTg3v3gyp7fSs/CjIbCKR9J90h
-         +nxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lyLNdA4xrXocOcTdyl66Bfsi09lJXmV7xTXnFfeHCDE=;
-        b=NCGZZuwxCS2byOenin87/pE84RDYW6183F29UrlzJ39f4GDd8bPQVk1vUImfgUyQVN
-         B/LsG8gXLhGjRA+pmlZVfueKrb4t8WeRGrZJEz4sc3l8S9B7p1oGB4RIOoH7QT5/7jkm
-         6BZLzccm5Xf19JCKxp90IblLIcI05Zd0r28ZfhxzWDfd+E+tLa4VK2NjT8Xf8a2A7poQ
-         6816meNM2Bo6UVWKMYm3MhMgOeFCz0o2MH8aqsnp05cunUYAhJ+JKjBRLKgQBrf+kbrN
-         02WYkbqK5mmOmasP8a3h2e9063iQG4ba2Y6u/0bJVsRmCJFqwCO+12Qq86b1h7ry+TY0
-         AOcg==
-X-Gm-Message-State: AOAM532itk/3//VeHF/AON/b90oloM2KC/8xc9O1nX2wqDEVukm4kggT
-        gUWxPJxBADsRICv8ROeadTU=
-X-Google-Smtp-Source: ABdhPJyQG67+KJ6O9daScNbPgx0CN+jeuxOa0ZZSYpf4iwF5/ESDGcgFhCq5LDsJIhUz8X4B23YV/Q==
-X-Received: by 2002:a17:902:9f86:: with SMTP id g6mr11822108plq.32.1600052489155;
-        Sun, 13 Sep 2020 20:01:29 -0700 (PDT)
-Received: from localhost.localdomain (ec2-13-52-163-24.us-west-1.compute.amazonaws.com. [13.52.163.24])
-        by smtp.gmail.com with ESMTPSA id z18sm8474265pfn.186.2020.09.13.20.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 20:01:28 -0700 (PDT)
-From:   Xiaoliang Pang <dawning.pang@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        matthias.bgg@gmail.com, swboyd@chromium.org, yuehaibing@huawei.com,
-        tianjia.zhang@linux.alibaba.com, ryder.lee@mediatek.com
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dawning.pang@gmail.com
-Subject: [PATCH v6] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
-Date:   Mon, 14 Sep 2020 11:00:51 +0800
-Message-Id: <20200914030051.16956-1-dawning.pang@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726080AbgINDIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:08:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14035 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725982AbgINDIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:08:22 -0400
+IronPort-SDR: QNUCvnFEKlUiTHOY4VpZkN12iWKkIIzxBnEFXAK7z4dYjFlCRWcZf37zm6i7Yem6nWr3eyiXy2
+ /4Rkg07k58NQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="220572090"
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="220572090"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 20:08:19 -0700
+IronPort-SDR: MM5/sFSifKGqGPPL5Uqo4zu6Mz4fdHmevk1+AaGj0Csw64JOdeOSEMSWn24AFq1rwcg9CWswTx
+ e8b1YEkqRZ8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="408731471"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2020 20:08:16 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] iommu: Add iommu_at(de)tach_subdev_group()
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20200901033422.22249-1-baolu.lu@linux.intel.com>
+ <20200901033422.22249-3-baolu.lu@linux.intel.com>
+ <20200910160547.0a8b9891@w520.home>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <01d80e65-c372-4944-753f-454a190a8cd0@linux.intel.com>
+Date:   Mon, 14 Sep 2020 11:02:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200910160547.0a8b9891@w520.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the init loop, if an error occurs in function 'dma_alloc_coherent',
-then goto the err_cleanup section, after run i--,
-in the array ring, the struct mtk_ring with index i will not be released,
-causing memory leaks
+Hi Alex,
 
-Fixes: 785e5c616c849 ("crypto: mediatek - Add crypto driver support for some MediaTek chips")
-Cc: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
----
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 9/11/20 6:05 AM, Alex Williamson wrote:
+> On Tue,  1 Sep 2020 11:34:19 +0800
+> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> 
+>> This adds two new APIs for the use cases like vfio/mdev where subdevices
+>> derived from physical devices are created and put in an iommu_group. The
+>> new IOMMU API interfaces mimic the vfio_mdev_at(de)tach_domain() directly,
+>> testing whether the resulting device supports IOMMU_DEV_FEAT_AUX and using
+>> an aux vs non-aux at(de)tach.
+>>
+>> By doing this we could
+>>
+>> - Set the iommu_group.domain. The iommu_group.domain is private to iommu
+>>    core (therefore vfio code cannot set it), but we need it set in order
+>>    for iommu_get_domain_for_dev() to work with a group attached to an aux
+>>    domain.
+>>
+>> - Prefer to use the _attach_group() interfaces while the _attach_device()
+>>    interfaces are relegated to special cases.
+>>
+>> Link: https://lore.kernel.org/linux-iommu/20200730134658.44c57a67@x1.home/
+>> Link: https://lore.kernel.org/linux-iommu/20200730151703.5daf8ad4@x1.home/
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/iommu.c | 136 ++++++++++++++++++++++++++++++++++++++++++
+>>   include/linux/iommu.h |  20 +++++++
+>>   2 files changed, 156 insertions(+)
+>>
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 38cdfeb887e1..fb21c2ff4861 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -2757,6 +2757,142 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+>>   }
+>>   EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+>>   
+>> +static int __iommu_aux_attach_device(struct iommu_domain *domain,
+>> +				     struct device *phys_dev,
+>> +				     struct device *sub_dev)
+>> +{
+>> +	int ret;
+>> +
+>> +	if (unlikely(!domain->ops->aux_attach_dev))
+>> +		return -ENODEV;
+>> +
+>> +	ret = domain->ops->aux_attach_dev(domain, phys_dev, sub_dev);
+>> +	if (!ret)
+>> +		trace_attach_device_to_domain(sub_dev);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void __iommu_aux_detach_device(struct iommu_domain *domain,
+>> +				      struct device *phys_dev,
+>> +				      struct device *sub_dev)
+>> +{
+>> +	if (unlikely(!domain->ops->aux_detach_dev))
+>> +		return;
+>> +
+>> +	domain->ops->aux_detach_dev(domain, phys_dev, sub_dev);
+>> +	trace_detach_device_from_domain(sub_dev);
+>> +}
+>> +
+>> +static int __iommu_attach_subdev_group(struct iommu_domain *domain,
+>> +				       struct iommu_group *group,
+>> +				       iommu_device_lookup_t fn)
+>> +{
+>> +	struct group_device *device;
+>> +	struct device *phys_dev;
+>> +	int ret = -ENODEV;
+>> +
+>> +	list_for_each_entry(device, &group->devices, list) {
+>> +		phys_dev = fn(device->dev);
+>> +		if (!phys_dev) {
+>> +			ret = -ENODEV;
+>> +			break;
+>> +		}
+>> +
+>> +		if (iommu_dev_feature_enabled(phys_dev, IOMMU_DEV_FEAT_AUX))
+>> +			ret = __iommu_aux_attach_device(domain, phys_dev,
+>> +							device->dev);
+>> +		else
+>> +			ret = __iommu_attach_device(domain, phys_dev);
+>> +
+>> +		if (ret)
+>> +			break;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void __iommu_detach_subdev_group(struct iommu_domain *domain,
+>> +					struct iommu_group *group,
+>> +					iommu_device_lookup_t fn)
+>> +{
+>> +	struct group_device *device;
+>> +	struct device *phys_dev;
+>> +
+>> +	list_for_each_entry(device, &group->devices, list) {
+>> +		phys_dev = fn(device->dev);
+>> +		if (!phys_dev)
+>> +			break;
+> 
+> 
+> Seems like this should be a continue rather than a break.  On the
+> unwind path maybe we're relying on holding the group mutex and
+> deterministic behavior from the fn() callback to unwind to the same
+> point, but we still have an entirely separate detach interface and I'm
+> not sure we couldn't end up with an inconsistent state if we don't
+> iterate each group device here.  Thanks,
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index 7e3ad085b5bd..f83cead30d8f 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -469,13 +469,13 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 	return 0;
- 
- err_cleanup:
--	for (; i--; ) {
-+	do {
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->res_base, ring[i]->res_dma);
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
--	}
-+	} while (i--);
- 	return err;
- }
- 
--- 
-2.17.1
+Yes, agreed.
 
+Best regards,
+baolu
+
+> 
+> Alex
+> 
+>> +
+>> +		if (iommu_dev_feature_enabled(phys_dev, IOMMU_DEV_FEAT_AUX))
+>> +			__iommu_aux_detach_device(domain, phys_dev, device->dev);
+>> +		else
+>> +			__iommu_detach_device(domain, phys_dev);
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * iommu_attach_subdev_group - attach domain to an iommu_group which
+>> + *			       contains subdevices.
+>> + *
+>> + * @domain: domain
+>> + * @group:  iommu_group which contains subdevices
+>> + * @fn:     callback for each subdevice in the @iommu_group to retrieve the
+>> + *          physical device where the subdevice was created from.
+>> + *
+>> + * Returns 0 on success, or an error value.
+>> + */
+>> +int iommu_attach_subdev_group(struct iommu_domain *domain,
+>> +			      struct iommu_group *group,
+>> +			      iommu_device_lookup_t fn)
+>> +{
+>> +	int ret = -ENODEV;
+>> +
+>> +	mutex_lock(&group->mutex);
+>> +	if (group->domain) {
+>> +		ret = -EBUSY;
+>> +		goto unlock_out;
+>> +	}
+>> +
+>> +	ret = __iommu_attach_subdev_group(domain, group, fn);
+>> +	if (ret)
+>> +		__iommu_detach_subdev_group(domain, group, fn);
+>> +	else
+>> +		group->domain = domain;
+>> +
+>> +unlock_out:
+>> +	mutex_unlock(&group->mutex);
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(iommu_attach_subdev_group);
+>> +
+>> +/**
+>> + * iommu_detach_subdev_group - detach domain from an iommu_group which
+>> + *			       contains subdevices
+>> + *
+>> + * @domain: domain
+>> + * @group:  iommu_group which contains subdevices
+>> + * @fn:     callback for each subdevice in the @iommu_group to retrieve the
+>> + *          physical device where the subdevice was created from.
+>> + *
+>> + * The domain must have been attached to @group via iommu_attach_subdev_group().
+>> + */
+>> +void iommu_detach_subdev_group(struct iommu_domain *domain,
+>> +			       struct iommu_group *group,
+>> +			       iommu_device_lookup_t fn)
+>> +{
+>> +	mutex_lock(&group->mutex);
+>> +	if (!group->domain)
+>> +		goto unlock_out;
+>> +
+>> +	__iommu_detach_subdev_group(domain, group, fn);
+>> +	group->domain = NULL;
+>> +
+>> +unlock_out:
+>> +	mutex_unlock(&group->mutex);
+>> +}
+>> +EXPORT_SYMBOL_GPL(iommu_detach_subdev_group);
+>> +
+>>   /**
+>>    * iommu_sva_bind_device() - Bind a process address space to a device
+>>    * @dev: the device
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index 871267104915..b9df8b510d4f 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -48,6 +48,7 @@ struct iommu_fault_event;
+>>   typedef int (*iommu_fault_handler_t)(struct iommu_domain *,
+>>   			struct device *, unsigned long, int, void *);
+>>   typedef int (*iommu_dev_fault_handler_t)(struct iommu_fault *, void *);
+>> +typedef struct device *(*iommu_device_lookup_t)(struct device *);
+>>   
+>>   struct iommu_domain_geometry {
+>>   	dma_addr_t aperture_start; /* First address that can be mapped    */
+>> @@ -631,6 +632,12 @@ bool iommu_dev_feature_enabled(struct device *dev, enum iommu_dev_features f);
+>>   int iommu_aux_attach_device(struct iommu_domain *domain, struct device *dev);
+>>   void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
+>>   int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
+>> +int iommu_attach_subdev_group(struct iommu_domain *domain,
+>> +			      struct iommu_group *group,
+>> +			      iommu_device_lookup_t fn);
+>> +void iommu_detach_subdev_group(struct iommu_domain *domain,
+>> +			       struct iommu_group *group,
+>> +			       iommu_device_lookup_t fn);
+>>   
+>>   struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+>>   					struct mm_struct *mm,
+>> @@ -1019,6 +1026,19 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+>>   	return -ENODEV;
+>>   }
+>>   
+>> +static inline int
+>> +iommu_attach_subdev_group(struct iommu_domain *domain, struct iommu_group *group,
+>> +			  iommu_device_lookup_t fn)
+>> +{
+>> +	return -ENODEV;
+>> +}
+>> +
+>> +static inline void
+>> +iommu_detach_subdev_group(struct iommu_domain *domain, struct iommu_group *group,
+>> +			  iommu_device_lookup_t fn)
+>> +{
+>> +}
+>> +
+>>   static inline struct iommu_sva *
+>>   iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
+>>   {
+> 
