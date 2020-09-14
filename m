@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B04268714
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D30F26871A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726235AbgINITc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:19:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59616 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726094AbgINITb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:19:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5C04CAC46;
-        Mon, 14 Sep 2020 08:19:45 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 10:19:26 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Laurent Dufour <ldufour@linux.ibm.com>, akpm@linux-foundation.org,
-        mhocko@kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 2/3] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200914081921.GA15113@linux>
-References: <20200911134831.53258-1-ldufour@linux.ibm.com>
- <20200911134831.53258-3-ldufour@linux.ibm.com>
- <f50fe4ae-faf0-6e03-b87e-45ca8c53960d@redhat.com>
+        id S1726219AbgINIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:21:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54421 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbgINIV5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:21:57 -0400
+Received: from [125.35.49.90] (helo=[10.0.0.22])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <hui.wang@canonical.com>)
+        id 1kHjkG-0004vh-Kg; Mon, 14 Sep 2020 08:21:53 +0000
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable front panel headset LED on
+ Lenovo ThinkStation P520
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        Kailang Yang <kailang@realtek.com>, tiwai@suse.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+References: <20200914070231.13192-1-kai.heng.feng@canonical.com>
+ <c4a9ed79-1c9d-8fbc-8c3b-eab191bd56bd@canonical.com>
+ <07CC762F-BA94-43C0-A8C8-5B3C43291F3E@canonical.com>
+From:   Hui Wang <hui.wang@canonical.com>
+Message-ID: <041af07f-6168-19ed-dddd-1fd30a75b020@canonical.com>
+Date:   Mon, 14 Sep 2020 16:21:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f50fe4ae-faf0-6e03-b87e-45ca8c53960d@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <07CC762F-BA94-43C0-A8C8-5B3C43291F3E@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:57:46AM +0200, David Hildenbrand wrote:
-> >  /* register memory section under specified node if it spans that node */
-> > +struct rmsun_args {
-> > +	int nid;
-> > +	enum memplug_context context;
-> > +};
 
-Uhmf, that is a not so descriptive name.
+On 2020/9/14 下午4:07, Kai-Heng Feng wrote:
+> Hi Hui,
+>
+>> On Sep 14, 2020, at 16:04, Hui Wang <hui.wang@canonical.com> wrote:
+>>
+>> Thanks Kaiheng, and we just had one P520 in the Beijing office and I also worked on this issue happenly. Does the led change according to jack plugging in or plugging out with your patch?
+> No, the LED won't reflect the jack plugging status.
+>
+> The LED is always on under Windows, so we are doing the same here.
 
-> Instead of handling this in register_mem_sect_under_node(), I
-> think it would be better two have two separate
-> register_mem_sect_under_node() implementations.
-> 
-> static int register_mem_sect_under_node_hotplug(struct memory_block *mem_blk,
-> 						void *arg)
-> {
-> 	const int nid = *(int *)arg;
-> 	int ret;
-> 
-> 	/* Hotplugged memory has no holes and belongs to a single node. */
-> 	mem_blk->nid = nid;
-> 	ret = sysfs_create_link_nowarn(&node_devices[nid]->dev.kobj,
-> 				       &mem_blk->dev.kobj,
-> 				       kobject_name(&mem_blk->dev.kobj));
-> 	if (ret)
-> 		returnr et;
-> 	return sysfs_create_link_nowarn(&mem_blk->dev.kobj,
-> 					&node_devices[nid]->dev.kobj,
-> 					kobject_name(&node_devices[nid]->dev.kobj));
-> 
-> }
-> 
-> Cleaner, right? :) No unnecessary checks.
+Weird, the bug's title is "The backlight for a headset connector didn't 
+light up after connecting a headset" and the QA in Beijing office also 
+requires the led could change according to plugging or no plugging.
 
-I tend to agree here, I like more a simplistic version for hotplug.
-
-> One could argue if link_mem_section_hotplug() would be better than passing around the context.
-
-I am not sure if I would duplicate the code there.
-We could just pass the pointer of the function we want to call to
-link_mem_sections? either register_mem_sect_under_node_hotplug or
-register_mem_sect_under_node_early?
-Would not that be clean and clear enough?
-
--- 
-Oscar Salvador
-SUSE L3
+>
+> Kai-Heng
+>
+>> I also prepared a patchset but my patchset has more code than yours, please take a look. :-)
+>>
+>> Thanks.
+>>
+>> Hui.
+>>
+>> On 2020/9/14 下午3:02, Kai-Heng Feng wrote:
+>>> On Lenovo P520, the front panel headset LED isn't lit up right now.
+>>>
+>>> Realtek states that the LED needs to be enabled by ALC233's GPIO2, so
+>>> let's do it accordingly to light the LED up.
+>>>
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>> ---
+>>>   sound/pci/hda/patch_realtek.c | 7 +++++++
+>>>   1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>>> index c521a1f17096..ba941bd0b792 100644
+>>> --- a/sound/pci/hda/patch_realtek.c
+>>> +++ b/sound/pci/hda/patch_realtek.c
+>>> @@ -6017,6 +6017,7 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
+>>>   #include "hp_x360_helper.c"
+>>>     enum {
+>>> +	ALC269_FIXUP_GPIO2,
+>>>   	ALC269_FIXUP_SONY_VAIO,
+>>>   	ALC275_FIXUP_SONY_VAIO_GPIO2,
+>>>   	ALC269_FIXUP_DELL_M101Z,
+>>> @@ -6194,6 +6195,10 @@ enum {
+>>>   };
+>>>     static const struct hda_fixup alc269_fixups[] = {
+>>> +	[ALC269_FIXUP_GPIO2] = {
+>>> +		.type = HDA_FIXUP_FUNC,
+>>> +		.v.func = alc_fixup_gpio2,
+>>> +	},
+>>>   	[ALC269_FIXUP_SONY_VAIO] = {
+>>>   		.type = HDA_FIXUP_PINCTLS,
+>>>   		.v.pins = (const struct hda_pintbl[]) {
+>>> @@ -7013,6 +7018,8 @@ static const struct hda_fixup alc269_fixups[] = {
+>>>   	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
+>>>   		.type = HDA_FIXUP_FUNC,
+>>>   		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
+>>> +		.chained = true,
+>>> +		.chain_id = ALC269_FIXUP_GPIO2
+>>>   	},
+>>>   	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
+>>>   		.type = HDA_FIXUP_VERBS,
