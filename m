@@ -2,34 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8203626834C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E7B268346
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgINDzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:55:43 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45110 "EHLO huawei.com"
+        id S1726049AbgINDzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:55:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12246 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726010AbgINDzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:55:21 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6A42718915B87E4F904A;
-        Mon, 14 Sep 2020 11:55:17 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
- 11:55:11 +0800
+        id S1726030AbgINDzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:55:23 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 8BD54B3DD203246DF187;
+        Mon, 14 Sep 2020 11:55:22 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
+ 11:55:12 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+To:     Li Yang <leoyang.li@nxp.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] mt76: mt7915: convert to use le16_add_cpu()
-Date:   Mon, 14 Sep 2020 12:17:50 +0800
-Message-ID: <20200914041750.3702052-1-liushixin2@huawei.com>
+Subject: [PATCH -next] soc/qman: convert to use be32_add_cpu()
+Date:   Mon, 14 Sep 2020 12:17:52 +0800
+Message-ID: <20200914041752.3702104-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,28 +36,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert cpu_to_le16(le16_to_cpu(E1) + E2) to use le16_add_cpu().
-
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+drivers/soc/fsl/qbman/qman_test_api.c---
+ drivers/soc/fsl/qbman/qman_test_api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index ac8ec257da03..8f0b67d0e93e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -714,8 +714,8 @@ mt7915_mcu_add_nested_subtlv(struct sk_buff *skb, int sub_tag, int sub_len,
- 	ptlv = skb_put(skb, sub_len);
- 	memcpy(ptlv, &tlv, sizeof(tlv));
+diff --git a/drivers/soc/fsl/qbman/qman_test_api.c b/drivers/soc/fsl/qbman/qman_test_api.c
+index 2895d062cf51..7066b2f1467c 100644
+--- a/drivers/soc/fsl/qbman/qman_test_api.c
++++ b/drivers/soc/fsl/qbman/qman_test_api.c
+@@ -86,7 +86,7 @@ static void fd_inc(struct qm_fd *fd)
+ 	len--;
+ 	qm_fd_set_param(fd, fmt, off, len);
  
--	*sub_ntlv = cpu_to_le16(le16_to_cpu(*sub_ntlv) + 1);
--	*len = cpu_to_le16(le16_to_cpu(*len) + sub_len);
-+	le16_add_cpu(sub_ntlv, 1);
-+	le16_add_cpu(len, sub_len);
- 
- 	return ptlv;
+-	fd->cmd = cpu_to_be32(be32_to_cpu(fd->cmd) + 1);
++	be32_add_cpu(&fd->cmd, 1);
  }
+ 
+ /* The only part of the 'fd' we can't memcmp() is the ppid */
 -- 
 2.25.1
 
