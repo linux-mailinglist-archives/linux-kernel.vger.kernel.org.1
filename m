@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9FF268787
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F08126878F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbgINIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        id S1726262AbgINIur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgINIuG (ORCPT
+        with ESMTP id S1726171AbgINIuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:50:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AF3C06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:50:05 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e16so17783247wrm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:50:04 -0700 (PDT)
+        Mon, 14 Sep 2020 04:50:10 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17A9C061352
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:50:08 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so9806939wmh.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:50:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2Z76iN5dKrEwSbBG4O9fZZwE0qBKlqiQkkuHppjnLYk=;
-        b=I4Wog418XUa15zpIkSdZkM0NfYYZFUjtsBkNZ/nbw/Vs16KcGu6uLbhnVEfgX/mnzm
-         ngoZJMAxMmv4IxCIuOMUpm5SE+/85fyREV/XPkPMYm3dgvKcgMlbLFzS1cmalD84aXon
-         0TXQg1ex1N/stApONUWBM15sM/2NPvq71eKY6xdsdLIOTY788Au2Gs/V3qPU9YRM8d84
-         OvxVM/yV1/P1pPkB0PxNuskRmkB3+Bny/JmF7paTyd8qfKe4q9Ok5Ga+DOb2XH4aYiLX
-         /g2tNeUFNF7b42K/SJLaE2ns2DWLx5d1aTkMYM/GF5jy2FMHQL/c+23W2mJlcBqgRkYZ
-         j4NQ==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6RihlPiUoKJ5dO8u5VgwLil1hFKYQdPZrQdkm6dxH7U=;
+        b=OGWWk4oUqeZhemDzsBit+3ybTzgLDKa8+inPhCSBdmqT0VzUjdt473bbAx3PXD/Me1
+         eom9s9PKN5pOuPDzFY8AmNEoCYJLd74DOxySWtNOyilvYNdjkPP9vo2ruWNm2vZzzLwc
+         clrzILcPcXnV9H59MtGhVLK9Q3XhKSWhFpes4vKRRbtz1Ujtg943pwlv3IOxo4PawCsA
+         wFlI3O3k5pELJnuaLXjy1AocjNWv277s1Z7ijKfV7B8NMJefnKlW5XwzMPckNmVoAcDa
+         MHjzDGi6vpv4Pd0z8TG8BIYNFAwiOvw3crmxTlPMJ8DAudVkWC6dooPf1kpLi9WwgHfs
+         KZ7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2Z76iN5dKrEwSbBG4O9fZZwE0qBKlqiQkkuHppjnLYk=;
-        b=jbKC9L8eaf8X5OFkufXLLcln3pYNYQ7bCMZrIl0OBin4CD27xBHOHdzNMxB3/7B1uy
-         2QqAzvwck+LXk7xkwP20bIJ0F+vyxJlTi5ofE/YhJfpOMDrnFCnRK25iuiYodZ3iXU/H
-         TpcOZoVP7WuoTIcmJNyP2IEiA+oKus1DepMJQnTShWXTSoO8o4QMYxlyIc06ulsulSDg
-         3MzZC6JswbHGS+Blh0yIFBG5UvTlGjAPS7HRAGANShgVOp1p+guzS0CUEH4cSrdlydfA
-         +Vh0sNjjvKrW/oAUDmg4ZitCD/2OOMsrV1263XXTKtTJguAnmHINyZ3uCwiYsJnvMsgK
-         b9xA==
-X-Gm-Message-State: AOAM532CdDCrwBI3tXHQVcekaicmSG7bJ4N5+HnnIri+o2Jej/AGuj6k
-        izSs2ahUJdadwSL0iqEjCVLaATA6UWqYhQ==
-X-Google-Smtp-Source: ABdhPJziOaoLyqZezVgUbtyPAxvBCTpzyAkveYpRhKWSfKSVWKFznTfHP8u9zRb8BEszGSJh/ZyEYQ==
-X-Received: by 2002:adf:f7d0:: with SMTP id a16mr14104094wrq.381.1600073403505;
-        Mon, 14 Sep 2020 01:50:03 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=6RihlPiUoKJ5dO8u5VgwLil1hFKYQdPZrQdkm6dxH7U=;
+        b=KLifQo18nGoAdrk+aOQpio0rFLUDdQh5YYDnPUmmV++FmmQ3q268Eb9+g0CRM8MGT0
+         P6v9RnLZMlV4XNjr06zjUBzlrwcYoT8CeQBp6BNkC06fqgXznL/jQatPGnY9wgbbPt7s
+         s5rYaUVkm2+RIQAkyAgNczzF2kOYG00E9VllYPRy5GJBEBxH25Npa8yvIIoB2BNR7xIB
+         rhAGzR8hyXwNwCnpfDD3xQugyiOiqGfHE3IPfluyPIacR4lMIlUUsDGJIJ/KROwUteb+
+         4Cgl5ifb2YDiST0WOKfjOypUK4voxGkliwVsVLpbVIUzy/Yf2heQ5Gx0O1S3rKDOSMH5
+         8zqA==
+X-Gm-Message-State: AOAM531U0DLi9TmzibiAPoPvGjdjc8TTlbln0ebTG6XYivcYE0G0x0MH
+        /ScdVftlkunu8+7jMSacVM7v6pEMqwWs+Q==
+X-Google-Smtp-Source: ABdhPJwdaqg5f5Kke+vMgGPevV790jo7Y8/D5K3C8rI0hjcUYSusmPhaIAH2G6dWHFzgQjwy7rM1wA==
+X-Received: by 2002:a1c:750d:: with SMTP id o13mr11267961wmc.54.1600073405221;
+        Mon, 14 Sep 2020 01:50:05 -0700 (PDT)
 Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id j14sm20378080wrr.66.2020.09.14.01.50.02
+        by smtp.gmail.com with ESMTPSA id q12sm18980386wrs.48.2020.09.14.01.50.04
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Sep 2020 01:50:02 -0700 (PDT)
+        Mon, 14 Sep 2020 01:50:04 -0700 (PDT)
 From:   Michal Simek <michal.simek@xilinx.com>
 To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
         michal.simek@xilinx.com, git@xilinx.com
-Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
+        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -59,10 +60,12 @@ Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
         Wolfgang Grandegger <wg@grandegger.com>,
         linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH 0/3] can: xilinx_can: Some minor changes
-Date:   Mon, 14 Sep 2020 10:49:55 +0200
-Message-Id: <cover.1600073396.git.michal.simek@xilinx.com>
+Subject: [PATCH 1/3] can: xilinx_can: Limit CANFD brp to 2
+Date:   Mon, 14 Sep 2020 10:49:56 +0200
+Message-Id: <bca871d7f3ca9c653d50e63c5b60028f2bdf3fb0.1600073396.git.michal.simek@xilinx.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <cover.1600073396.git.michal.simek@xilinx.com>
+References: <cover.1600073396.git.michal.simek@xilinx.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,24 +73,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-recently some small patches come to our internal tree. We started to use
-coverity which found 2 issues (last two patches) which is simply to fix.
+Bit enlarging is observed for CANFD2.0 when brp is 1,
+So change brp_min value to 2.
 
-Thanks,
-Michal
+Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+---
 
+ drivers/net/can/xilinx_can.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Srinivas Neeli (3):
-  can: xilinx_can: Limit CANFD brp to 2
-  can: xilinx_can: Check return value of set_reset_mode
-  can: xilinx_can: Fix incorrect variable and initialize with a default
-    value
-
- drivers/net/can/xilinx_can.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+index c1dbab8c896d..f4b544b69646 100644
+--- a/drivers/net/can/xilinx_can.c
++++ b/drivers/net/can/xilinx_can.c
+@@ -259,7 +259,7 @@ static const struct can_bittiming_const xcan_bittiming_const_canfd2 = {
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 128,
+ 	.sjw_max = 128,
+-	.brp_min = 1,
++	.brp_min = 2,
+ 	.brp_max = 256,
+ 	.brp_inc = 1,
+ };
+@@ -272,7 +272,7 @@ static struct can_bittiming_const xcan_data_bittiming_const_canfd2 = {
+ 	.tseg2_min = 1,
+ 	.tseg2_max = 16,
+ 	.sjw_max = 16,
+-	.brp_min = 1,
++	.brp_min = 2,
+ 	.brp_max = 256,
+ 	.brp_inc = 1,
+ };
 -- 
 2.28.0
 
