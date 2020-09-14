@@ -2,39 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7897F2689C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5F12689CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbgINLNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgINLLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:11:37 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726049AbgINLNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:13:42 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50491 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbgINLNf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:13:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600082014; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=/yMlfJNEm+xEntTDHJwxA8p6C+/uqgHLYnuIJrcUhJs=; b=RZ76RXeeT0B+rJ7UsWFAxTR0qD5RVqVw90In2gThIzptsZSHu/51M+Bz94R+V1fNe7sPm6Nb
+ aF5JxizSUhtaV9FKgeD5IzHsGF/xqQXwxJam0xGLdpNU+VXnMTtFVYwZLUK9oQbbpsRx7njg
+ BAG7w/Vw23svYbafsEu51UN/UhA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f5f5053252c522440f997b4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 11:13:23
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 75AEBC433C8; Mon, 14 Sep 2020 11:13:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6CBB208DB;
-        Mon, 14 Sep 2020 11:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600081896;
-        bh=VgiBygJayp3Yq+rBv/px72wCsFME/htiIlDTHCnzEBI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JU1/kyI7oA9Ur2c1p8SNk1MQOEtAbo4NSdWqvSMIj4Ya7DUP4AskS4SHqdV2vD7Wm
-         A+Mht9CPp+N79ZudRTFICIn5JLYc4DWS1s54pIBkabHtlYJVvskvLviunG6xpjP/50
-         0J4XYdsoagqV/+A/jZk+AxHfM6leNmM8tnVE8nR0=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>
-Subject: [PATCH rdma-next v1 0/4] Query GID table API
-Date:   Mon, 14 Sep 2020 14:11:25 +0300
-Message-Id: <20200914111129.343651-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C41FC433C8;
+        Mon, 14 Sep 2020 11:13:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C41FC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv4 0/2] soc: qcom: llcc: Support chipsets that can write to llcc regs
+Date:   Mon, 14 Sep 2020 16:42:58 +0530
+Message-Id: <cover.1599974998.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -42,79 +61,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Older chipsets may not be allowed to configure certain LLCC registers
+as that is handled by the secure side software. However, this is not
+the case for newer chipsets and they must configure these registers
+according to the contents of the SCT table, while keeping in mind that
+older targets may not have these capabilities. So add support to allow
+such configuration of registers to enable capacity based allocation
+and power collapse retention for capable chipsets.
 
-Changelog:
-v1:
- * Moved git_type logic to cma_set_default_gid_type - Patch #2
- * Changed signature of rdma_query_gid_table - Patch #3
- * Changed i to be unsigned - Patch #3
- * Fixed multiplication overflow - Patch #4
-v0: https://lore.kernel.org/lkml/20200910142204.1309061-1-leon@kernel.org
+Reason for choosing capacity based allocation rather than the default
+way based allocation is because capacity based allocation allows more
+finer grain partition and provides more flexibility in configuration.
+As for the retention through power collapse, it has an advantage where
+the cache hits are more when we wake up from power collapse although
+it does burn more power but the exact power numbers are not known at
+the moment.
 
-------------------------------------------------------------------------------
+Patch 1 is a cleanup to separate out llcc attribute configuration to
+its own function.
+Patch 2 adds support for chipsets capable of writing to llcc registers.
 
-From Avihai,
+Changes in v4:
+ * Separate out llcc attribute config to its own function (Stephen)
+ * Pass qcom_llcc_config instead of a new llcc_drvdata property (Doug)
 
-When an application is not using RDMA CM and if it is using multiple RDMA
-devices with one or more RoCE ports, finding the right GID table entry is
-a long process.
+Changes in v3:
+ * Drop separate table and use existing qcom_llcc_config (Doug)
+ * More descriptive commit msg (Doug)
+ * Directly set the config instead of '|=' (Doug)
 
-For example, with two RoCE dual-port devices in a system, when IP
-failover is used between two RoCE ports, searching a suitable GID
-entry for a given source IP, matching netdevice of given RoCEv1/v2 type
-requires iterating over all 4 ports * 256 entry GID table.
+Changes in v2:
+ * Fix build errors reported by kernel test robot.
 
-Even though the best first match GID table for given criteria is used,
-when the matching entry is on the 4th port, it requires reading
-3 ports * 256 entries * 3 files (GID, netdev, type) = 2304 files.
+Isaac J. Manjarres (1):
+  soc: qcom: llcc: Support chipsets that can write to llcc
 
-The GID table needs to be referred on every QP creation during IP
-failover on other netdevice of an RDMA device.
+Sai Prakash Ranjan (1):
+  soc: qcom: llcc: Move attribute config to its own function
 
-In an alternative approach, a GID cache may be maintained and updated on
-GID change event was reported by the kernel. However, it comes with below
-two limitations:
-(a) Maintain a thread per application process instance to listen and update
- the cache.
-(b) Without the thread, on cache miss event, query the GID table. Even in
- this approach, if multiple processes are used, a GID cache needs to be
- maintained on a per-process basis. With a large number of processes,
- this method doesn't scale.
+ drivers/soc/qcom/llcc-qcom.c | 100 +++++++++++++++++++++++------------
+ 1 file changed, 65 insertions(+), 35 deletions(-)
 
-Hence, we introduce this series of patches, which introduces an API to
-query the complete GID tables of an RDMA device, that returns all valid
-GID table entries.
 
-This is done through single ioctl, eliminating 2304 read, 2304 open and
-2304 close system calls to just a total of 2 calls (one for each device).
-
-While at it, we also introduce an API to query an individual GID entry
-over ioctl interface, which provides all GID attributes information.
-
-Thanks
-
-Avihai Horon (4):
-  RDMA/core: Change rdma_get_gid_attr returned error code
-  RDMA/core: Modify enum ib_gid_type and enum rdma_network_type
-  RDMA/core: Introduce new GID table query API
-  RDMA/uverbs: Expose the new GID query API to user space
-
- drivers/infiniband/core/cache.c               |  97 +++++++++-
- drivers/infiniband/core/cma.c                 |   4 +
- drivers/infiniband/core/cma_configfs.c        |   9 +-
- drivers/infiniband/core/sysfs.c               |   3 +-
- .../infiniband/core/uverbs_std_types_device.c | 182 +++++++++++++++++-
- drivers/infiniband/core/verbs.c               |   2 +-
- drivers/infiniband/hw/mlx5/cq.c               |   2 +-
- drivers/infiniband/hw/mlx5/main.c             |   4 +-
- drivers/infiniband/hw/qedr/verbs.c            |   4 +-
- include/rdma/ib_cache.h                       |   5 +
- include/rdma/ib_verbs.h                       |  19 +-
- include/uapi/rdma/ib_user_ioctl_cmds.h        |  16 ++
- include/uapi/rdma/ib_user_ioctl_verbs.h       |  14 ++
- 13 files changed, 341 insertions(+), 20 deletions(-)
-
---
-2.26.2
+base-commit: 75894849c81ab9a2e9df2e8cf2f9c52035cd22a0
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
