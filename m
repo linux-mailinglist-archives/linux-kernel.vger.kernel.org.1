@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D26268689
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD722686AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgINHvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48106 "EHLO mail.kernel.org"
+        id S1726123AbgINIAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:00:11 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:51716 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726023AbgINHvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:51:41 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC8C720829;
-        Mon, 14 Sep 2020 07:51:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600069900;
-        bh=sLEmFEgLgQ6VIFDmYtTYiby9H19HNBdE2pb0auPAfNs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MUh+xMZ+3cK9OUG8yLvWphyyGhj7Or4v1gE0rD6UnExgdRYqIRszoy75p+Ht77soV
-         dBzl7yjyDdoIBZvIAv/a8hHLpP7ud29rOK5ermxXFAxrIPMqc1KVs5mSVKaY1fISmm
-         jyLnRqaaow9iBmMY+4C7qFm71KH/+bqz89eLJRHQ=
-Date:   Mon, 14 Sep 2020 09:51:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     iommu@lists.linux-foundation.org,
-        Russell King <linux@armlinux.org.uk>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 5/6] usb: don't inherity DMA properties for USB devices
-Message-ID: <20200914075140.GA1033580@kroah.com>
-References: <20200914073343.1579578-1-hch@lst.de>
- <20200914073343.1579578-6-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914073343.1579578-6-hch@lst.de>
+        id S1726024AbgINIAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:00:07 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9D5FD1A1298;
+        Mon, 14 Sep 2020 10:00:05 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3F8FB1A1682;
+        Mon, 14 Sep 2020 10:00:03 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AF63840299;
+        Mon, 14 Sep 2020 09:59:59 +0200 (CEST)
+From:   Qiang Zhao <qiang.zhao@nxp.com>
+To:     shawnguo@kernel.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Zhao Qiang <qiang.zhao@nxp.com>
+Subject: [PATCH] arm64: dts: layerscape: correct watchdog clocks for LS1088A
+Date:   Mon, 14 Sep 2020 15:52:02 +0800
+Message-Id: <20200914075202.43341-1-qiang.zhao@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:33:42AM +0200, Christoph Hellwig wrote:
-> As the comment in usb_alloc_dev correctly states, drivers can't use
-> the DMA API on usb device, and at least calling dma_set_mask on them
-> is highly dangerous.  Unlike what the comment states upper level drivers
-> also can't really use the presence of a dma mask to check for DMA
-> support, as the dma_mask is set by default for most busses.
-> 
-> Setting the dma_mask comes from "[PATCH] usbcore dma updates (and doc)"
-> in BitKeeper times, as it seems like it was primarily for setting the
-> NETIF_F_HIGHDMA flag in USB drivers, something that has long been
-> fixed up since.
-> 
-> Setting the dma_pfn_offset comes from commit b44bbc46a8bb
-> ("usb: core: setup dma_pfn_offset for USB devices and, interfaces"),
-> which worked around the fact that the scsi_calculate_bounce_limits
-> functions wasn't going through the proper driver interface to query
-> DMA information, but that function was removed in commit 21e07dba9fb1
-> ("scsi: reduce use of block bounce buffers") years ago.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+From: Zhao Qiang <qiang.zhao@nxp.com>
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On LS1088A, watchdog clk are divided by 16, correct it in dts.
+
+Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index b0bbe57..2bd0a71 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -712,56 +712,56 @@
+ 		cluster1_core0_watchdog: wdt@c000000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc000000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster1_core1_watchdog: wdt@c010000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc010000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster1_core2_watchdog: wdt@c020000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc020000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster1_core3_watchdog: wdt@c030000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc030000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster2_core0_watchdog: wdt@c100000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc100000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster2_core1_watchdog: wdt@c110000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc110000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster2_core2_watchdog: wdt@c120000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc120000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+ 		cluster2_core3_watchdog: wdt@c130000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc130000 0x0 0x1000>;
+-			clocks = <&clockgen 4 3>, <&clockgen 4 3>;
++			clocks = <&clockgen 4 15>, <&clockgen 4 15>;
+ 			clock-names = "apb_pclk", "wdog_clk";
+ 		};
+ 
+-- 
+2.7.4
+
