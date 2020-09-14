@@ -2,179 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4262683AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C282683B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgINEbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:31:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51571 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725973AbgINEbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:31:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600057861; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=88UihbQrOz0bvm/bZjwFSbpcpa8STz3Eo/uF7Jfs0XM=; b=H4z+K0N7ecz/fq6RN/1pvy0GXiAL86FAHO1a0k2aiKyHTmyOV5p2c89qf3S0ntyMBSIWjPV+
- PRGBYUPQS42nT4pW5bMypEkOjFA4AIptjzg5DeBgzlO4e7esnFsWel9hvpyu/7BAFqyI0swY
- yMOj/+UyrX0oKb9fy9JUoivzc+w=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f5ef200380a624e4dee7924 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 04:30:56
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7542FC433CA; Mon, 14 Sep 2020 04:30:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.4] (unknown [171.49.233.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: gkohli)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87E1FC433C6;
-        Mon, 14 Sep 2020 04:30:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87E1FC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
-Subject: Re: [PATCH] trace: Fix race in trace_open and buffer resize call
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-Message-ID: <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
-Date:   Mon, 14 Sep 2020 10:00:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726040AbgINEbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725981AbgINEbT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 00:31:19 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB5BC06174A;
+        Sun, 13 Sep 2020 21:31:19 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id r25so18620692ioj.0;
+        Sun, 13 Sep 2020 21:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DsZ3lIX5gUOeOkzUQTxhWkAmsPOYNnnOW1gG/K3R+V8=;
+        b=mF7Fd5B/3mpOxdJjmfoNJUK/K22MJ090gLMjEthMfdykhBuVHEU18C0B0F1gWP3lAd
+         925DZjFFHEvr6MFwjW/V8ur2f0pa8w5ElPtg5Ow9F+se1YEQenEttI+8SK++lGjgUDc9
+         8YWL5PLHXqoU+ocKChI/rs8Hq9EpSh0Wi8G1A+DrIceHokKJJI+7s5bRTFRu/rLy5GWm
+         j+SopgnGiQgrtBKINA6LaRE2EtOV6X0JKgF6LIalu/6rI5cRGsvjEjOVttktHyfmdWpw
+         3yVKX+58AYGi9p3SMzxMZSjXzvQHAOBQ3b5QG8HUBR/Hz8GGTeX7wQ4wYcwxE2Ffumn4
+         ghew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DsZ3lIX5gUOeOkzUQTxhWkAmsPOYNnnOW1gG/K3R+V8=;
+        b=dmkKRWJkEDVIj6KfDHjEFcZw5vP7zdXEiIbsGGuCitjUKTgTcA0Avj3ljVKTXT6kTj
+         K+0mphDL+z36XNLohQ+96sasU9Vgzq/eCYpUTkBTdjjTJMi2IT4kdVOsy2hzr45bfF/s
+         UFxU3Vf4wVhYyo/7nWykQ2O4/JFAZlXRRZJt+UeFmnSlrsd49sLvmdg5Fv6N+KY3VPZw
+         Z4FeFwgYv7Ubz4z2ZicqjZ+eGe1X4lkxJqDPz8pQsWnDW2PJI6RrLtrWo2fL02ho49YA
+         R0u/n+fcDtR3wA2A/whJ/I7NwdDxXjdtqkLE0S0anHQKn3IgLy09GJojJ8w57gOn7Upy
+         2o6g==
+X-Gm-Message-State: AOAM531PsOVEHe5QsWVzEvTfnld+XWh+H7sAVheoXXYAVTP8Adyga8eP
+        yJ8wEmzQ+w6UvvK/hhNCiJkjPL/12bUTyZg9f8I=
+X-Google-Smtp-Source: ABdhPJyc/K58LLbl09KQIaVix4ILpCnjQsbupppbIRjarJBAcenkAAUClCCW5KkB5yqaySHyBt7agDekXVbJHzd3iTU=
+X-Received: by 2002:a5d:8604:: with SMTP id f4mr10017634iol.196.1600057876290;
+ Sun, 13 Sep 2020 21:31:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1600028950-10644-1-git-send-email-yangtiezhu@loongson.cn> <tencent_44F0201A70619BA613F16BA4@qq.com>
+In-Reply-To: <tencent_44F0201A70619BA613F16BA4@qq.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Mon, 14 Sep 2020 12:31:04 +0800
+Message-ID: <CAAhV-H5-X9OcBe3iRxF8PnKW-0j_10FVqm8cbiqW2-Lv4mTTdQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec
+ reboot and connected PCI devices
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Konstantin Khlebnikov <khlebnikov@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Lukas Wunner <lukas@wunner.de>, oohall <oohall@gmail.com>,
+        "rafael.j.wysocki" <rafael.j.wysocki@intel.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        zhouyanjie <zhouyanjie@wanyeetech.com>, git <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+Hi, Tiezhu
 
-Please let us know, if below change looks good.
-Or let us know some other way to solve this.
+> ------------------ Original ------------------
+> From:  "Tiezhu Yang"<yangtiezhu@loongson.cn>;
+> Date:  Mon, Sep 14, 2020 04:29 AM
+> To:  "Bjorn Helgaas"<bhelgaas@google.com>;
+> Cc:  "Konstantin Khlebnikov"<khlebnikov@openvz.org>; "Khalid Aziz"<khalid=
+.aziz@oracle.com>; "Vivek Goyal"<vgoyal@redhat.com>; "Lukas Wunner"<lukas@w=
+unner.de>; "oohall"<oohall@gmail.com>; "rafael.j.wysocki"<rafael.j.wysocki@=
+intel.com>; "Xuefeng Li"<lixuefeng@loongson.cn>; "Huacai Chen"<chenhc@lemot=
+e.com>; "Jiaxun Yang"<jiaxun.yang@flygoat.com>; "linux-pci"<linux-pci@vger.=
+kernel.org>; "linux-kernel"<linux-kernel@vger.kernel.org>;
+> Subject:  [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec re=
+boot and connected PCI devices
+>
+>
+>
+> After commit 745be2e700cd ("PCIe: portdrv: call pci_disable_device
+> during remove") and commit cc27b735ad3a ("PCI/portdrv: Turn off PCIe
+> services during shutdown"), it also calls pci_disable_device() during
+> shutdown, this leads to shutdown or reboot failure occasionally due to
+> clear PCI_COMMAND_MASTER on the device in do_pci_disable_device().
+>
+> drivers/pci/pci.c
+> static void do_pci_disable_device(struct pci_dev *dev)
+> {
+>         u16 pci_command;
+>
+>         pci_read_config_word(dev, PCI_COMMAND, &pci_command);
+>         if (pci_command & PCI_COMMAND_MASTER) {
+>                 pci_command &=3D ~PCI_COMMAND_MASTER;
+>                 pci_write_config_word(dev, PCI_COMMAND, pci_command);
+>         }
+>
+>         pcibios_disable_device(dev);
+> }
+>
+> When remove "pci_command &=3D ~PCI_COMMAND_MASTER;", it can work well.
+>
+> As Oliver O'Halloran said, no need to call pci_disable_device() when
+> actually shutting down, but we should call pci_disable_device() before
+> handing over to the new kernel on kexec reboot, so we can do some
+> condition checks which are similar with pci_device_shutdown(), this is
+> done by commit 4fc9bbf98fd6 ("PCI: Disable Bus Master only on kexec
+> reboot") and commit 6e0eda3c3898 ("PCI: Don't try to disable Bus Master
+> on disconnected PCI devices").
+>
+> drivers/pci/pci-driver.c
+> static void pci_device_shutdown(struct device *dev)
+> {
+> ...
+>
+>         /*
+>          * If this is a kexec reboot, turn off Bus Master bit on the
+>          * device to tell it to not continue to do DMA. Don't touch
+>          * devices in D3cold or unknown states.
+>          * If it is not a kexec reboot, firmware will hit the PCI
+>          * devices with big hammer and stop their DMA any way.
+>          */
+>         if (kexec_in_progress && (pci_dev->current_state <=3D PCI_D3hot))
+>                 pci_clear_master(pci_dev);
+> }
+Have you really tried kexec? Why do you think kexec can disable pci
+device successfully while normal reboot/poweroff cannot?
 
-Thanks,
-Gaurav
-
-
-
-On 9/4/2020 11:39 AM, Gaurav Kohli wrote:
-> Below race can come, if trace_open and resize of
-> cpu buffer is running parallely on different cpus
-> CPUX                                CPUY
-> 				    ring_buffer_resize
-> 				    atomic_read(&buffer->resize_disabled)
-> tracing_open
-> tracing_reset_online_cpus
-> ring_buffer_reset_cpu
-> rb_reset_cpu
-> 				    rb_update_pages
-> 				    remove/insert pages
-> resetting pointer
-> This race can cause data abort or some times infinte loop in
-> rb_remove_pages and rb_insert_pages while checking pages
-> for sanity.
-> Take ring buffer lock in trace_open to avoid resetting of cpu buffer.
-> 
-> Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
-> 
-> diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-> index 136ea09..55f9115 100644
-> --- a/include/linux/ring_buffer.h
-> +++ b/include/linux/ring_buffer.h
-> @@ -163,6 +163,8 @@ bool ring_buffer_empty_cpu(struct trace_buffer *buffer, int cpu);
->   
->   void ring_buffer_record_disable(struct trace_buffer *buffer);
->   void ring_buffer_record_enable(struct trace_buffer *buffer);
-> +void ring_buffer_mutex_acquire(struct trace_buffer *buffer);
-> +void ring_buffer_mutex_release(struct trace_buffer *buffer);
->   void ring_buffer_record_off(struct trace_buffer *buffer);
->   void ring_buffer_record_on(struct trace_buffer *buffer);
->   bool ring_buffer_record_is_on(struct trace_buffer *buffer);
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index 93ef0ab..638ec8f 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -3632,6 +3632,25 @@ void ring_buffer_record_enable(struct trace_buffer *buffer)
->   EXPORT_SYMBOL_GPL(ring_buffer_record_enable);
->   
->   /**
-> + * ring_buffer_mutex_acquire - prevent resetting of buffer
-> + * during resize
-> + */
-> +void ring_buffer_mutex_acquire(struct trace_buffer *buffer)
-> +{
-> +	mutex_lock(&buffer->mutex);
+Huacai
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  drivers/pci/pcie/portdrv_core.c |  1 -
+>  drivers/pci/pcie/portdrv_pci.c  | 25 ++++++++++++++++++++++++-
+>  2 files changed, 24 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_c=
+ore.c
+> index 50a9522..1991aca 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -491,7 +491,6 @@ void pcie_port_device_remove(struct pci_dev *dev)
+>  {
+>         device_for_each_child(&dev->dev, NULL, remove_iter);
+>         pci_free_irq_vectors(dev);
+> -       pci_disable_device(dev);
+>  }
+>
+>  /**
+> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pc=
+i.c
+> index 3a3ce40..ce89a9e8 100644
+> --- a/drivers/pci/pcie/portdrv_pci.c
+> +++ b/drivers/pci/pcie/portdrv_pci.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/init.h>
+>  #include <linux/aer.h>
+>  #include <linux/dmi.h>
+> +#include <linux/kexec.h>
+>
+>  #include "../pci.h"
+>  #include "portdrv.h"
+> @@ -143,6 +144,28 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
+>         }
+>
+>         pcie_port_device_remove(dev);
+> +       pci_disable_device(dev);
 > +}
-> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_acquire);
 > +
-> +/**
-> + * ring_buffer_mutex_release - prevent resetting of buffer
-> + * during resize
-> + */
-> +void ring_buffer_mutex_release(struct trace_buffer *buffer)
+> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
 > +{
-> +	mutex_unlock(&buffer->mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
-> +/**
->    * ring_buffer_record_off - stop all writes into the buffer
->    * @buffer: The ring buffer to stop writes to.
->    *
-> @@ -4918,6 +4937,8 @@ void ring_buffer_reset(struct trace_buffer *buffer)
->   	struct ring_buffer_per_cpu *cpu_buffer;
->   	int cpu;
->   
-> +	/* prevent another thread from changing buffer sizes */
-> +	mutex_lock(&buffer->mutex);
->   	for_each_buffer_cpu(buffer, cpu) {
->   		cpu_buffer = buffer->buffers[cpu];
->   
-> @@ -4936,6 +4957,7 @@ void ring_buffer_reset(struct trace_buffer *buffer)
->   		atomic_dec(&cpu_buffer->record_disabled);
->   		atomic_dec(&cpu_buffer->resize_disabled);
->   	}
-> +	mutex_unlock(&buffer->mutex);
->   }
->   EXPORT_SYMBOL_GPL(ring_buffer_reset);
->   
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index f40d850..392e9aa 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2006,6 +2006,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
->   	if (!buffer)
->   		return;
->   
-> +	ring_buffer_mutex_acquire(buffer);
+> +       if (pci_bridge_d3_possible(dev)) {
+> +               pm_runtime_forbid(&dev->dev);
+> +               pm_runtime_get_noresume(&dev->dev);
+> +               pm_runtime_dont_use_autosuspend(&dev->dev);
+> +       }
 > +
->   	ring_buffer_record_disable(buffer);
->   
->   	/* Make sure all commits have finished */
-> @@ -2016,6 +2018,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
->   	ring_buffer_reset_online_cpus(buffer);
->   
->   	ring_buffer_record_enable(buffer);
+> +       pcie_port_device_remove(dev);
 > +
-> +	ring_buffer_mutex_release(buffer);
->   }
->   
->   /* Must have trace_types_lock held */
-> 
-
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> +       /*
+> +        * If this is a kexec reboot, turn off Bus Master bit on the
+> +        * device to tell it to not continue to do DMA. Don't touch
+> +        * devices in D3cold or unknown states.
+> +        * If it is not a kexec reboot, firmware will hit the PCI
+> +        * devices with big hammer and stop their DMA any way.
+> +        */
+> +       if (kexec_in_progress && (dev->current_state <=3D PCI_D3hot))
+> +               pci_disable_device(dev);
+>  }
+>
+>  static pci_ers_result_t pcie_portdrv_error_detected(struct pci_dev *dev,
+> @@ -211,7 +234,7 @@ static void pcie_portdrv_err_resume(struct pci_dev *d=
+ev)
+>
+>         .probe          =3D pcie_portdrv_probe,
+>         .remove         =3D pcie_portdrv_remove,
+> -       .shutdown       =3D pcie_portdrv_remove,
+> +       .shutdown       =3D pcie_portdrv_shutdown,
+>
+>         .err_handler    =3D &pcie_portdrv_err_handler,
+>
+> --
+> 1.8.3.1
