@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B11268956
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4653C268972
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbgINKdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:33:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58630 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726449AbgINKcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:32:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 23940AF49;
-        Mon, 14 Sep 2020 10:32:24 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 12:32:05 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-Message-ID: <20200914103205.GI16999@dhcp22.suse.cz>
-References: <20200912155100.25578-1-songmuchun@bytedance.com>
- <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
- <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
- <20200914091844.GE16999@dhcp22.suse.cz>
- <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
+        id S1726495AbgINKlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:41:47 -0400
+Received: from mx2.securetransport.de ([188.68.39.254]:47616 "EHLO
+        mx2.securetransport.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbgINKka (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:40:30 -0400
+X-Greylist: delayed 384 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Sep 2020 06:40:26 EDT
+Received: from mail.dh-electronics.com (business-24-134-97-169.pool2.vodafone-ip.de [24.134.97.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx2.securetransport.de (Postfix) with ESMTPSA id 4025B5E879;
+        Mon, 14 Sep 2020 12:33:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+        s=dhelectronicscom; t=1600079597;
+        bh=QqiALWQWqzk3v5Egngf7/oNah0zdhttVToTd3Q1YPvQ=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=tkjqpb1o8Of4A2fKxnLJoTJGfj3Sgr2FaVttqYfn6gwrqcAPlozgl5MpScJ/8J7vb
+         +F7vh1Z/4Il6S6ICqH668xixkwxizgft4T0+gSpEITbuEROGQiU/OVmSrGh4CX1Msm
+         9Twyh5t3llDHa3qPPhy+Doy49mMQ+1TU82yDjNz+uFmAzB/ZUPXs2zaaLjUYn0kIID
+         BLbQDu3+iXvqwd+7hBQINr5Agq35uSPcJWt1VqkeB0r66OMlUsDVUomW1UhmeXDU4u
+         7usFuA7bMc7yy7Imb/9Ne2T4JGI69wb1suEW9Un+ec3f5fbFkiwzDElqHKVJclP0R0
+         O3NI5qCowHLqA==
+Received: from DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) by
+ DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.659.4;
+ Mon, 14 Sep 2020 12:33:10 +0200
+Received: from deb10-lzenz.dh-electronics.org (10.64.6.180) by
+ DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.659.4
+ via Frontend Transport; Mon, 14 Sep 2020 12:33:10 +0200
+From:   Ludwig Zenz <lzenz@dh-electronics.com>
+To:     <alain.volmat@st.com>
+CC:     <alexandre.torgue@st.com>, <amelie.delaunay@st.com>,
+        <broonie@kernel.org>, <fabrice.gasnier@st.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <mcoquelin.stm32@gmail.com>, <marex@denx.de>
+Subject: [PATCH v2 2/5] spi: stm32: fix fifo threshold level in case of short transfer
+Date:   Mon, 14 Sep 2020 12:33:00 +0200
+Message-ID: <20200914103300.5832-1-lzenz@dh-electronics.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1597043558-29668-3-git-send-email-alain.volmat@st.com>
+References: <1597043558-29668-3-git-send-email-alain.volmat@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
+X-klartext: yes
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-09-20 17:43:42, Muchun Song wrote:
-> On Mon, Sep 14, 2020 at 5:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 14-09-20 12:02:33, Muchun Song wrote:
-> > > On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > >
-> > > > On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > > > The memory_stat_format() returns a format string, but the return buf
-> > > > > may not including the trailing '\0'. So the users may read the buf
-> > > > > out of bounds.
-> > > >
-> > > > That sounds serious.  Is a cc:stable appropriate?
-> > > >
-> > >
-> > > Yeah, I think we should cc:stable.
-> >
-> > Is this a real problem? The buffer should contain 36 lines which makes
-> > it more than 100B per line. I strongly suspect we are not able to use
-> > that storage up.
-> 
-> Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
-> Otherwise, the return buf string has no trailing null('\0'). But users treat buf
-> as a string(and read the string oob). It is wrong. Thanks.
+> When transfer is shorter than half of the fifo, set the data packet size
+> up to transfer size instead of up to half of the fifo.
+> Check also that threshold is set at least to 1 data frame.
 
-I am not sure I follow you. vsnprintf which is used by seq_printf will
-add \0 if there is a room for that. And I argue there is a lot of room
-in the buffer so a corner case where the buffer gets full doesn't happen
-with the current code.
--- 
-Michal Hocko
-SUSE Labs
+Through a git-bisect we have identified this patch as problematic. We have an application that uses a SPI protocol with telegrams of length 2 to 16 bytes. Due to this patch we have errors in the data transfer of the MOSI direction. We use SPI in PIO mode.
+
+Please explain what this patch should improve or what exactly is changed in the behaviour.
+
+best regards,
+Ludwig Zenz
