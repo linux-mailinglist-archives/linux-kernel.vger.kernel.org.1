@@ -2,192 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30141268D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A397268CD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgINOKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbgINOKB (ORCPT
+        id S1726769AbgINOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:06:57 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:35569 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgINOGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:10:01 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E2FC06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:10:01 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id o16so5637413pjr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:10:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PRqXshFDT+vnZmomkxjfH2FYDG36/bbMKP3d6/TVV9M=;
-        b=SA6T4f5wMMABu+t8mm80Smz6yCnXmOq4zhzbzYWqAt4U6dd1B4KI5EWZkoOvr2B1gU
-         QgoGOV3mSA281/6F47ccWVGpociAdB0LrUQA4l3YR2SeyfI0wSm9qf8US52gEW0KQF2y
-         H6qrSGtKEVOqURphrLheizNfZf4sq3h89O0/czzgZVCEWsLf/BKneKHsAOwbCHap5+Wp
-         NJHyoJF/o+ebSmCYqBF+eB4fDR9e+bO/d/Q19gWKyxze0kMq7WVFrF/ap0HI6pPiOytZ
-         LjjmKZXYYXnmskJR37USBx1R4oRyBc/NmCl86+YGHoIKRxnuD4UbSgs6aAfL3sGcD1Yi
-         bnVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PRqXshFDT+vnZmomkxjfH2FYDG36/bbMKP3d6/TVV9M=;
-        b=BtaMcY4La3SmyXKeJJyZqCd4gtCHbzrFmtBkg/cmwNDanrXci8f0aimycwSju19wqf
-         bF1MRLTSBX8Lqm8QE15y52MjCgfVeW5M6B+PbOW++W6+nvbGHOjc9n/b9GstN7maJoPB
-         JyMQMXIzX/slj59bvQpce1XdeHRDc9RCMMPsJp50t2uS5xtPQ3TDiK+llhDSTQD8xDce
-         lYHH7u7+XPj87w+/0xiO8ESHThfr4uxFQnCg4FQ6f1vo4aug/lUf+4r+5Ibnwu6Ed8zB
-         4gAE0pbfpvQBvS8LgxOfE/uQDH0wlxn29bfNG7KdYduRP+JUbHZXgUwyq/TfiCw+xCW7
-         qR+g==
-X-Gm-Message-State: AOAM5324eO2WUCy3m4puD8pdLZLYZzozL4q5FDOi0dK+HQETYhLr4Hbv
-        zlb+2mEzplWy+XBCK/K8pdqbxmPzGvpUxDk3j3gvSQ==
-X-Google-Smtp-Source: ABdhPJw9BQptYud9GJhEfnROZuP65PKWdze/0QkF0LIi84zuolcXFlUe3SubWt2yYGeG0S67y6BktHx0FAti4nACcww=
-X-Received: by 2002:a17:90a:fa94:: with SMTP id cu20mr14131322pjb.147.1600092600608;
- Mon, 14 Sep 2020 07:10:00 -0700 (PDT)
+        Mon, 14 Sep 2020 10:06:04 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BF0812000D;
+        Mon, 14 Sep 2020 14:05:46 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 16:09:37 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v4 1/3] media: i2c: ov772x: Parse endpoint properties
+Message-ID: <20200914140937.kja7x5k2xo2uwgqg@uno.localdomain>
+References: <20200913184247.618-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200913184247.618-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-References: <20200828031928.43584-1-songmuchun@bytedance.com>
- <CAMZfGtWtAYNexRq1xf=5At1+YJ+_TtN=F6bVnm9EPuqRnMuroA@mail.gmail.com>
- <8c288fd4-2ef7-ca47-1f3b-e4167944b235@linux.com> <CAMZfGtXsXWtHh_G0TWm=DxG_5xT6kN_BbfqNgoQvTRu89FJihA@mail.gmail.com>
- <2f347fde-6f8d-270b-3886-0d106fcc5a46@linux.com>
-In-Reply-To: <2f347fde-6f8d-270b-3886-0d106fcc5a46@linux.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 22:09:24 +0800
-Message-ID: <CAMZfGtVRXVuzUc_ddJJPD9D4tzvDAJTbQxaEx=+ghSOh4w4iKA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] stackleak: Fix a race between stack
- erasing sysctl handlers
-To:     alex.popov@linux.com
-Cc:     Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        miguel.ojeda.sandonis@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-fsdevel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200913184247.618-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 9:56 PM Alexander Popov <alex.popov@linux.com> wrote:
+Hi Prabhakar,
+
+On Sun, Sep 13, 2020 at 07:42:45PM +0100, Lad Prabhakar wrote:
+> Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> to determine bus-type and store it locally in priv data.
 >
-> On 07.09.2020 16:53, Muchun Song wrote:
-> > On Mon, Sep 7, 2020 at 7:24 PM Alexander Popov <alex.popov@linux.com> wrote:
-> >>
-> >> On 07.09.2020 05:54, Muchun Song wrote:
-> >>> Hi all,
-> >>>
-> >>> Any comments or suggestions? Thanks.
-> >>>
-> >>> On Fri, Aug 28, 2020 at 11:19 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >>>>
-> >>>> There is a race between the assignment of `table->data` and write value
-> >>>> to the pointer of `table->data` in the __do_proc_doulongvec_minmax() on
-> >>>> the other thread.
-> >>>>
-> >>>>     CPU0:                                 CPU1:
-> >>>>                                           proc_sys_write
-> >>>>     stack_erasing_sysctl                    proc_sys_call_handler
-> >>>>       table->data = &state;                   stack_erasing_sysctl
-> >>>>                                                 table->data = &state;
-> >>>>       proc_doulongvec_minmax
-> >>>>         do_proc_doulongvec_minmax             sysctl_head_finish
-> >>>>           __do_proc_doulongvec_minmax           unuse_table
-> >>>>             i = table->data;
-> >>>>             *i = val;  // corrupt CPU1's stack
-> >>
-> >> Hello everyone!
-> >>
-> >> As I remember, I implemented stack_erasing_sysctl() very similar to other sysctl
-> >> handlers. Is that issue relevant for other handlers as well?
-> >
-> > Yeah, it's very similar. But the difference is that others use a
-> > global variable as the
-> > `table->data`, but here we use a local variable as the `table->data`.
-> > The local variable
-> > is allocated from the stack. So other thread could corrupt the stack
-> > like the diagram
-> > above.
+> Also for backward compatibility with the existing DT where bus-type
+> isnt specified fallback to V4L2_MBUS_PARALLEL.
 >
-> Hi Muchun,
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  drivers/media/i2c/ov772x.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 >
-> I don't think that the proposed copying of struct ctl_table to local variable is
-> a good fix of that issue. There might be other bugs caused by concurrent
-> execution of stack_erasing_sysctl().
-
-I can not figure out how the bug happened when there is concurrent
-execution of stack_erasing_sysctl().
-
+> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> index 2cc6a678069a..551082aa7026 100644
+> --- a/drivers/media/i2c/ov772x.c
+> +++ b/drivers/media/i2c/ov772x.c
+> @@ -31,6 +31,7 @@
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-device.h>
+>  #include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-image-sizes.h>
+>  #include <media/v4l2-subdev.h>
 >
-> I would recommend using some locking instead.
+> @@ -434,6 +435,7 @@ struct ov772x_priv {
+>  #ifdef CONFIG_MEDIA_CONTROLLER
+>  	struct media_pad pad;
+>  #endif
+> +	enum v4l2_mbus_type		  bus_type;
+>  };
 >
-> But you say there are other similar issues. Should it be fixed on higher level
-> in kernel/sysctl.c?
-
-Yeah, we can see the same issue here.
-
-    https://lkml.org/lkml/2020/8/22/105.
-
-I agree with you. Maybe a fix on the higher level is a good choice in
-kernel/sysctl.c. If someone also agrees with this solution, I can do
-this work.
-
+>  /*
+> @@ -1354,6 +1356,8 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
 >
-> [Adding more knowing people to CC]
+>  static int ov772x_probe(struct i2c_client *client)
+>  {
+> +	struct v4l2_fwnode_endpoint bus_cfg = { .bus_type = 0 };
+> +	struct fwnode_handle	*ep;
+>  	struct ov772x_priv	*priv;
+>  	int			ret;
+>  	static const struct regmap_config ov772x_regmap_config = {
+> @@ -1415,6 +1419,26 @@ static int ov772x_probe(struct i2c_client *client)
+>  		goto error_clk_put;
+>  	}
 >
-> Thanks!
+> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> +					    NULL);
+> +	if (!ep) {
+> +		dev_err(&client->dev, "endpoint node not found\n");
+> +		ret = -EINVAL;
+> +		goto error_clk_put;
+> +	}
+> +
+> +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+
+Could you set the bus type when you declare bus_cfg ? There's no point
+in setting it to UNKNOW and re-writing it here
+
+> +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+
+Should you here fwnode_handle_put(ep) ?
+
+Also, this driver does not support the 'link_frequency' property, as the
+device does not support CSI-2. As commented on the previous version,
+the 'alloc' version of v4l2_fwnode_endpoint_parse() reserves space for
+that property, and requires a manual free like you have here below. So
+using the 'alloc' version is not techincally wrong, but I don't think
+it's required here.
+
+> +	priv->bus_type = bus_cfg.bus_type;
+> +	v4l2_fwnode_endpoint_free(&bus_cfg);
+> +	if (ret) {
+
+By reading the code in v4l2-fwnode it seems to me that, if you set
+bus_cfg.bus_type:
+1) The "bus_type" property is set in the fwnode and doesn't match the
+requested one -> return -ENXIO
+2) The "bus_type" property is not set in the fwnode: no error code is
+returned and vep->bus_type is not changed.
+
+> +		/* For backward compatibility with the existing DT where
+> +		 * bus-type isnt specified fallback to V4L2_MBUS_PARALLEL
+> +		 */
+
+This mean there's no need to fallback here, as at this point we only
+support PARALLEL. If fwnode,bus_type is not set you won't faile, if
+it's set and doesn't match you should fail as the DT is not correct
+(at this point).
+
+1) In this patch: try to parse as MBUS_PARALLEL, fail if -ENXIO,
+assume parallel otherwise and continue.
+
+2) When you introduce BT.656 in the next patch things become nasty.
+Newer DTS will have bus_type mandatory once my series gets in. Old
+ones do not and assume "parallel".
+2.a) If you try to parse with "cfg.bus_type = MBUS_BT656" and there's
+no 'bus_type' in the fwnode, the 'parallel' flags are simply cleared
+at the end of v4l2_fwnode_endpoint_parse_parallel_bus(), but the
+bus_type does not get changed. You won't detect the mismatch and
+happily assume the bus type is BT.656. In other word, if you set
+cfg.bus_type that's always authoritative unless the fwnode property
+contradicts it (and if that's the case, it should be documented in
+v4l2-fnode, unless it is and I missed it).
+2.b) If the fwnode.bus_type is set, you try to parse one bus type
+first, if -ENOXIO try the second. If it fails again, then return an
+error.
+
+In the next patch, to avoid the case described in 2.a I would:
+- Parse the 'bus_type' property in the driver (mentioning it's for
+  retrocompatibility).
+-- If not present: Assume parallel and parse the fwnode. Enclose that
+with a comment about "retrocompatibility" and proceed.
+-- If present: Do what suggested in the 2.b case. Try one, then the
+other, then eventually fail.
+
+I hope this makes any sense, this part is such a gray area... and as a
+note to "self" in the forthcoming "of_graph.yaml", let's make bus_type
+mandatory for all endpoints!
+
+Also, I might be mistaken in following the code and if you have tested
+all cases and they work as intended please call me out on this :)
+
+Thanks
+  j
+
+> +		priv->bus_type = V4L2_MBUS_PARALLEL;
+> +		dev_notice(&client->dev, "Falling back to V4L2_MBUS_PARALLEL mode\n");
+> +	}
+> +
+>  	ret = ov772x_video_probe(priv);
+>  	if (ret < 0)
+>  		goto error_gpio_put;
+> --
+> 2.17.1
 >
-> >> Muchun, could you elaborate how CPU1's stack is corrupted and how you detected
-> >> that? Thanks!
-> >
-> > Why did I find this problem? Because I solve another problem which is
-> > very similar to
-> > this issue. You can reference the following fix patch. Thanks.
-> >
-> >   https://lkml.org/lkml/2020/8/22/105
-> >>
-> >>>> Fix this by duplicating the `table`, and only update the duplicate of
-> >>>> it.
-> >>>>
-> >>>> Fixes: 964c9dff0091 ("stackleak: Allow runtime disabling of kernel stack erasing")
-> >>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>>> ---
-> >>>> changelogs in v2:
-> >>>>  1. Add more details about how the race happened to the commit message.
-> >>>>
-> >>>>  kernel/stackleak.c | 11 ++++++++---
-> >>>>  1 file changed, 8 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/kernel/stackleak.c b/kernel/stackleak.c
-> >>>> index a8fc9ae1d03d..fd95b87478ff 100644
-> >>>> --- a/kernel/stackleak.c
-> >>>> +++ b/kernel/stackleak.c
-> >>>> @@ -25,10 +25,15 @@ int stack_erasing_sysctl(struct ctl_table *table, int write,
-> >>>>         int ret = 0;
-> >>>>         int state = !static_branch_unlikely(&stack_erasing_bypass);
-> >>>>         int prev_state = state;
-> >>>> +       struct ctl_table dup_table = *table;
-> >>>>
-> >>>> -       table->data = &state;
-> >>>> -       table->maxlen = sizeof(int);
-> >>>> -       ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-> >>>> +       /*
-> >>>> +        * In order to avoid races with __do_proc_doulongvec_minmax(), we
-> >>>> +        * can duplicate the @table and alter the duplicate of it.
-> >>>> +        */
-> >>>> +       dup_table.data = &state;
-> >>>> +       dup_table.maxlen = sizeof(int);
-> >>>> +       ret = proc_dointvec_minmax(&dup_table, write, buffer, lenp, ppos);
-> >>>>         state = !!state;
-> >>>>         if (ret || !write || state == prev_state)
-> >>>>                 return ret;
-> >>>> --
-> >>>> 2.11.0
-
-
-
--- 
-Yours,
-Muchun
