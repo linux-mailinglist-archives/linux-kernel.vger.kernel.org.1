@@ -2,182 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB62268C4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70B5268C51
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgINNgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbgINNYj (ORCPT
+        id S1726522AbgINNhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:37:40 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:42140 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726547AbgINN0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:24:39 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04868C06174A;
-        Mon, 14 Sep 2020 06:24:37 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k14so1172024pgi.9;
-        Mon, 14 Sep 2020 06:24:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UxjCIDPFaDaw0Aevl12WvNq3PRFVzMo2HersEB4khs4=;
-        b=VDGB+o7nTwxg8C96CJ13YdC6HV/Nxim8U6l8TQ6xqmyhI++qDovF1C6GhdrBQp7p5x
-         EiVnEAN2Iw8yeTTAoZNwc+d4SXn7DVW7wZDQHo2/Eq1XHS64TbH2y+bWPJ/pHur49PWO
-         avp2uJlrT1GvcYsi+k/5IYhURpEm5spdbXVloVuv5ltPMMdw6fBXnEv0zUDgsdcKm7Cc
-         o2UkGkIFsVribS5rLZDBni0+cfeT1nxCtMhA28sN1r+LLCj+7G6LPshf0LaGRA9/VEL9
-         WlW/uVxeZHMSODRs3WIA3XIwDmssry8kE7DAp1k3L2KLpMAVEzJ3ngbUsH8LH1LOkBux
-         PcXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UxjCIDPFaDaw0Aevl12WvNq3PRFVzMo2HersEB4khs4=;
-        b=clDW7OKlUIWV0B32d2mVF3SXqDSLw8INGjFi0/RLzKOPbB1oNJ2N9b2bz11zXfkzw9
-         lBS6XuAt/7YAsQet82pKXmHeOI1XONOdsX2x4ZEauCKYIA1AcUU4S7t03kD7S7ghn2Bb
-         96WxJ04Ug32GUe8iTLL8M4PXVPANjLRtqeSVfqt/GHL5v32hSnpPNoijgBM6xRFk5C5P
-         ucaNCGUjft5YYagH0WytsJl+61OKiDZvoVb4TheORsok/5mDZ8JnddCCKUz9PFStngC5
-         f7DTq2BsrFlh+toOEzGAYlqJCXDbwpYUdwNyd/YuoVrlMv4sr3yj44ZZEt02firUVKsI
-         81Mg==
-X-Gm-Message-State: AOAM531S7Zx4JutOPYX6O2B7TxI9BVfeuEHHMH99VcCIabLvaba3GzVK
-        tnxADdIIc5VrdZzRPNDJrVc6rihcEWL+Vw==
-X-Google-Smtp-Source: ABdhPJxXWWq/KN5aAZ1Us02gVvFHuH0VP9PqMtqGuzlCPK3bb4MqeudCDHBMQGWWRbtQUZLauA2U4g==
-X-Received: by 2002:a65:6104:: with SMTP id z4mr4006631pgu.184.1600089876464;
-        Mon, 14 Sep 2020 06:24:36 -0700 (PDT)
-Received: from localhost (g168.115-65-169.ppp.wakwak.ne.jp. [115.65.169.168])
-        by smtp.gmail.com with ESMTPSA id y4sm10760351pfr.46.2020.09.14.06.24.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 06:24:35 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 22:24:33 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Mateusz Holenko <mholenko@antmicro.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gabriel L. Somlo" <gsomlo@gmail.com>
-Subject: Re: [PATCH v10 3/5] drivers/soc/litex: add LiteX SoC Controller
- driver
-Message-ID: <20200914132433.GB2512402@lianli.shorne-pla.net>
-References: <20200812143324.2394375-0-mholenko@antmicro.com>
- <20200812143324.2394375-3-mholenko@antmicro.com>
- <20200911005740.GN3562056@lianli.shorne-pla.net>
- <CAPk366Tvb9g960e3ZLv3+_H8FZJRRe0Jqa4q7tejE+svMcQvLA@mail.gmail.com>
+        Mon, 14 Sep 2020 09:26:35 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200914132633euoutp010b7d3f50f747b81f5828dc629c79a5f3~0qV8w8XRd1168011680euoutp01M
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:26:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200914132633euoutp010b7d3f50f747b81f5828dc629c79a5f3~0qV8w8XRd1168011680euoutp01M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600089993;
+        bh=LazJEHqWr5JHZhH4YnfcycNbNEHWm3sDL3AOXvPu7Rw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=taH7j5SIP2dDbkAEYB7Aik7wvbeQwXPihXC8fSCUFH6k80Vo6u0XcCHlUB01Fqqxq
+         5JMaKhtQTy1L2M4EhHaKeVfkvhPO9L35lljQo0oQhJh0GXOkXqbabHhVI5pMfoPHlf
+         VeQbcHAJszTP2u+MLkbN6/Qslgagbp72yzLUN7kM=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200914132633eucas1p2bbf2ba14b5279b77bbb218522d446d67~0qV8YXj0Y2229022290eucas1p2i;
+        Mon, 14 Sep 2020 13:26:33 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 71.F6.05997.98F6F5F5; Mon, 14
+        Sep 2020 14:26:33 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200914132633eucas1p23dba9f6ffe292478a1997a2a2a3f765b~0qV76WUQP2826028260eucas1p2V;
+        Mon, 14 Sep 2020 13:26:33 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200914132633eusmtrp18437b6f6da63a7d8aa913a349cf9058b~0qV75ebfM0668806688eusmtrp19;
+        Mon, 14 Sep 2020 13:26:33 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-f2-5f5f6f894faa
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 91.90.06017.88F6F5F5; Mon, 14
+        Sep 2020 14:26:32 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200914132632eusmtip1900ac21e625f37b027b95ac0fe7f44fd~0qV7A2_3n0268302683eusmtip1H;
+        Mon, 14 Sep 2020 13:26:32 +0000 (GMT)
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>,
+        kernel-team@android.com,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <65565f85-d932-37f3-a8cd-dbd13d7dbfad@samsung.com>
+Date:   Mon, 14 Sep 2020 15:26:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPk366Tvb9g960e3ZLv3+_H8FZJRRe0Jqa4q7tejE+svMcQvLA@mail.gmail.com>
+In-Reply-To: <8642847d83ef5bb15663d0246d6af668@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHeXfOzo7m5Dgve7CoXBkklF3hzUoyDM+3RKgPQdrKg13mhR21
+        rCBNS11D8kY2zaldFDPLaXNTkTqVMq3N1MR0fqgkSLxEKmVm1Ha6+O33fy7v8/wfXppQ5FOB
+        9KmkVE6bpNaoKE/S3LXg2JSfHBe3ZfhRIHaMCQRuKnsoxTP39Ah/n34uwxV1GTjrzgCJLa1+
+        2OF4JMOmD0NSPNBWQeEyR6cEjw7IsbXCJsU6YYnCjZ0FFG42lRK41bhA4Bznzn0K1txulrIN
+        lQ2IzcnWU2xlwwXWahiTsVWmNNZUn0+xmU8cJOsc6qDYabtdxjbfucRaLbMStqClHrGzptXR
+        3kc898RzmlPpnDY0/JjnyQetXUSKVX7OOFlNZCL9Ch3yoIHZAT/f2Egd8qQVTB2C4aW7SBRz
+        CHon+2WimEVgceb9LqPdLa3fgsV4LYKemUGJKGYQjOZNE653fZkYGLtWiFzsxwTBlz6b+1mC
+        MUtBEAR3gmK2gm5KR7lYzoRD5dtGN5NMMLwuuk262J+Jha6e96RY4wO2m+Nu9mDCYKi2xz2M
+        YNZA9uPyP6yEkXGjeyNgOmgY13VKRKeR0FRVSonsCxPdLTKRV0FvsZ4UG7IRvLM/kIlCj2Dg
+        chkSq3aD0/6dch2AYDbCw7ZQMRwBE3l3peJdvGF4ykdcwhuKzDcIMSyHvKsKsXoDGLob/419
+        2tdPXEcqwzJrhmV2DMvsGP7PrUJkPVJyaXxiAsdvS+LObubViXxaUsLmE8mJJvT7g/b+7J6z
+        oLYfxwXE0EjlJY/eGxunkKrT+YxEAQFNqPzk+1/1xirk8eqM85w2OU6bpuF4Aa2kSZVSvr3m
+        01EFk6BO5c5wXAqn/ZuV0B6BmWhtyKjy68Wd65pSA1403Hp+qKX44+yBKaP9/tD6uuzTeyT8
+        SExnScrnmqiO4YMlbK4m1+4f4TzH9SvLHVcWTRaN45ktzFhoDVBerciM4oOMCfciq6v84l8s
+        ztcc/XztcPqVjbvmheD2vsGs+YstXo83HO425ttezq8+dkYILMWvclUkf1K9NYTQ8upflBDf
+        IZwDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNKsWRmVeSWpSXmKPExsVy+t/xu7od+fHxBud2Wlmcv3uI2WLjjPWs
+        Fu+X9TBa/Hp3hN1izopKi8Yll1ksdmwXsTh/fgO7xabH11gtLu+aw2Yx4/w+Jovbl3ktds45
+        yWrRdegvm8W6fX1sFps3TWW22D7/J7NFyx1TByGPbbu3sXqsmbeG0aOluYfNY96aao+ds+6y
+        eyzYVOqxaVUnm0fDgfMsHneu7WHzeHfuHLvH5iX1Hjt3fGby6NuyitHj8ya5AL4oPZui/NKS
+        VIWM/OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYy1248xF+zkrZj/
+        ZiFzA2MPdxcjB4eEgInE9h+qXYxcHEICSxkl3sxoYuxi5ASKy0icnNbACmELS/y51sUGUfSW
+        UWJPyzQWkISwQJDE3e6JYA0iAooSny6cZAQpYhbYwSoxc8MhFoiOWUwSLzu/gI1iEzCU6HoL
+        MoqTg1fATmLezXVgNouAqsTFSYvBpooKxEmc6XkBVSMocXLmE7A4p4CVxLXlp5hBbGYBM4l5
+        mx9C2fISzVtnQ9niEreezGeawCg0C0n7LCQts5C0zELSsoCRZRWjSGppcW56brGRXnFibnFp
+        Xrpecn7uJkZgwth27OeWHYxd74IPMQpwMCrx8AbYxsULsSaWFVfmHmKU4GBWEuF1Ons6Tog3
+        JbGyKrUoP76oNCe1+BCjKdBzE5mlRJPzgcksryTe0NTQ3MLS0NzY3NjMQkmct0PgYIyQQHpi
+        SWp2ampBahFMHxMHp1QDow37JcflR/kbPqyZHlXv5TCv1LF7q82PQiuewLmW707k3wtgeCfu
+        /tdJ6saxHruDEX3Ry4oLu+5mf24SEA2+eulr+WKdLvXJJlMZFxmq55u6XlqmfNEixOaL/trj
+        nac4Flmwan99ER/lU9JgLPUy53x0Y+w5iVldNy88WV2oqtd11a9lQRyXEktxRqKhFnNRcSIA
+        eu0FSS4DAAA=
+X-CMS-MailID: 20200914132633eucas1p23dba9f6ffe292478a1997a2a2a3f765b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+References: <20200901144324.1071694-1-maz@kernel.org>
+        <20200901144324.1071694-9-maz@kernel.org>
+        <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+        <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+        <8642847d83ef5bb15663d0246d6af668@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:33:11PM +0200, Mateusz Holenko wrote:
-> On Fri, Sep 11, 2020 at 2:57 AM Stafford Horne <shorne@gmail.com> wrote:
-> >
-> > On Wed, Aug 12, 2020 at 02:34:34PM +0200, Mateusz Holenko wrote:
-> > > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > >
-> > > This commit adds driver for the FPGA-based LiteX SoC
-> > > Controller from LiteX SoC builder.
-> > >
-> > > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> > > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> > > ---
-> > > +     node = dev->of_node;
-> > > +     if (!node)
-> > > +             return -ENODEV;
+Hi Marc,
 
-We return here without BUG() if the setup fails.
+On 14.09.2020 15:13, Marc Zyngier wrote:
+> On 2020-09-14 14:06, Marek Szyprowski wrote:
+>> On 01.09.2020 16:43, Marc Zyngier wrote:
+>>> Change the way we deal with GIC SGIs by turning them into proper
+>>> IRQs, and calling into the arch code to register the interrupt range
+>>> instead of a callback.
+>>>
+>>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> This patch landed in linux next-20200914 as commit ac063232d4b0
+>> ("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it breaks
+>> booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM
+>> Cortex A9 based). Here are the last lines from the bootlog:
+>>
+>> [    0.106322] CPU: Testing write buffer coherency: ok
+>> [    0.109895] CPU0: Spectre v2: using BPIALL workaround
+>> [    0.116057] CPU0: thread -1, cpu 0, socket 9, mpidr 80000900
+>> [    0.123885] Setting up static identity map for 0x40100000 - 
+>> 0x40100060
+>> [    0.130191] rcu: Hierarchical SRCU implementation.
+>> [    0.137195] soc soc0: Exynos: CPU[EXYNOS4210] PRO_ID[0x43210211]
+>> REV[0x11] Detected
+>> [    0.145129] smp: Bringing up secondary CPUs ...
+>> [    0.156279] CPU1: thread -1, cpu 1, socket 9, mpidr 80000901
+>> [    0.156291] CPU1: Spectre v2: using BPIALL workaround
+>> [    2.716379] random: fast init done
+>
+> Thanks for the report. Is this the funky non-banked GIC?
 
-> > > +
-> > > +     soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
-> > > +     if (!soc_ctrl_dev)
-> > > +             return -ENOMEM;
+Both Exynos 4210 and 4412 use non-zero cpu-offset in GIC node in 
+device-tree: arch/arm/boot/dts/exynos{4210,4412}.dtsi, so I assume that 
+the GIC registers are not banked.
 
-We return here without BUG() if we are out of memory.
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
-> > > +
-> > > +     soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
-> > > +     if (IS_ERR(soc_ctrl_dev->base))
-> > > +             return PTR_ERR(soc_ctrl_dev->base);
-
-Etc.
-
-> > > +
-> > > +     result = litex_check_csr_access(soc_ctrl_dev->base);
-> > > +     if (result) {
-> > > +             // LiteX CSRs access is broken which means that
-> > > +             // none of LiteX drivers will most probably
-> > > +             // operate correctly
-> > The comment format here with // is not usually used in the kernel, but its not
-> > forbidded.  Could you use the /* */ multiline style?
-> 
-> Sure, I'll change the commenting style here.
-> 
-> >
-> > > +             BUG();
-> > Instead of stopping the system with BUG, could we just do:
-> >
-> >         return litex_check_csr_access(soc_ctrl_dev->base);
-> >
-> > We already have failure for NODEV/NOMEM so might as well not call BUG() here
-> > too.
-> 
-> It's true that litex_check_csr_accessors() already generates error
-> codes that could be
-> returned directly.
-> The point of using BUG() macro here, however, is to stop booting the
-> system so that it's visible
-> (and impossible to miss for the user) that an unresolvable HW issue
-> was encountered.
-> 
-> CSR-accessors - the litex_{g,s}et_reg() functions - are intended to be
-> used by other LiteX drivers
-> and it's very unlikely that those drivers would work properly after
-> the fail of litex_check_csr_accessors().
-> Since in such case the UART driver will be affected too (no boot logs
-> and error messages visible to the user),
-> I thought it'll be easier to spot and debug the problem if the system
-> stopped in the BUG loop.
-> Perhaps there are other, more linux-friendly, ways of achieving a
-> similar goal - I'm open for suggestions.
-
-I see your point, but I thought if failed with an exit status above, we could do
-the same here.  But I guess failing here means that something is really wrong as
-validation failed.
-
-Some points:
- - If we return here, the system will still boot but there will be no UART
- - If we bail with BUG(), here the system stops, and there is no UART
- - Both cases the user can connect with a debugger and read "dmesg", to see what
-   is wrong, but BUG() does not print an error message on all architectures.
-
-We could also use:
-
- - WARN(1, "Failed to validate CSR registers, the system is probably broken.");
-
-If you want to keep BUG() it may be fine.
-
-I am not an expert on handling these type of bailout's so other input is
-appreciated.
-
--Stafford
