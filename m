@@ -2,156 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97E9268C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB62268C4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgINNfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:35:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
+        id S1726764AbgINNgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:36:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgINNX4 (ORCPT
+        with ESMTP id S1726751AbgINNYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:23:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FFBC06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:23:55 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id b79so6744wmb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:23:55 -0700 (PDT)
+        Mon, 14 Sep 2020 09:24:39 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04868C06174A;
+        Mon, 14 Sep 2020 06:24:37 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id k14so1172024pgi.9;
+        Mon, 14 Sep 2020 06:24:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=9KKAHd5EbHuuNc2bMZWefZ2QJ1kYaQRNhIokoyRDv7I=;
-        b=AWHXc65nC76ZJ07Uekj/yaBkYFLpJmsZJwnwv60ov4DbxiEghNfiULexY+KkQ96BMt
-         LYIwerzTExsN1HWP8OcWhdpddU4jIFCyDu/ey/Q8fK3El/O7MjDkU5hpdWIHvYSEBJYm
-         wQVng0N7hnH8An20DqOLSYR9L18l094ndlyL655nA68OBX0YiAhyJue8p77Xudp739qk
-         tub9HffaRQR/LpkRp56YvPKtDI4jQ3VhbVYTR2QXOngbdqMWv3DJK0RkH0+hDOEKZJ13
-         7+UhBuav5mqtSEd4dckaPi5iVyRyjCFKErYoKW8L4RycAhIzckzG3jzq1KN8cqlo7aAa
-         ++9A==
+        bh=UxjCIDPFaDaw0Aevl12WvNq3PRFVzMo2HersEB4khs4=;
+        b=VDGB+o7nTwxg8C96CJ13YdC6HV/Nxim8U6l8TQ6xqmyhI++qDovF1C6GhdrBQp7p5x
+         EiVnEAN2Iw8yeTTAoZNwc+d4SXn7DVW7wZDQHo2/Eq1XHS64TbH2y+bWPJ/pHur49PWO
+         avp2uJlrT1GvcYsi+k/5IYhURpEm5spdbXVloVuv5ltPMMdw6fBXnEv0zUDgsdcKm7Cc
+         o2UkGkIFsVribS5rLZDBni0+cfeT1nxCtMhA28sN1r+LLCj+7G6LPshf0LaGRA9/VEL9
+         WlW/uVxeZHMSODRs3WIA3XIwDmssry8kE7DAp1k3L2KLpMAVEzJ3ngbUsH8LH1LOkBux
+         PcXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9KKAHd5EbHuuNc2bMZWefZ2QJ1kYaQRNhIokoyRDv7I=;
-        b=aCWv0PzLjpzmkKMfKYtMlxDO4dE06HPFn03QWCrEpihw37NvvijBL//m16sM1m44z5
-         BMvG3bBgY/uYbvZ1APG8T+dbnC09rQrdfNdiSuhD6TuEcpx07Eoqh6kPz8YUUEfnfRrb
-         erNXXiioTdTRiOp/T8fvCVnxdUKG0vtc9TR624dUipKFdbggCVAnQtLbE/w7ZDlMGezI
-         dBNNmRhfdWOookp91R0HVOXkHydHq2eNFXhHFO9bn8yOpDI1f4uVkCfLOtPDJdm5BFnu
-         TXHBtZaAm/M5l7Wb0OB1LLJcZRjhJEglx3ZoBKqcdDmGWYmTu5dzbfFT4FY+sLnrr2tF
-         dXJw==
-X-Gm-Message-State: AOAM5311vPlFzDLuHgANqHfc5mYh7QfGR7lH8BxhyzxAxCdMPHCcB4iw
-        OgIU5UTDLSiukOSUgcEgn+g/EA==
-X-Google-Smtp-Source: ABdhPJzBeS/FWVDFZNGQu2g6+tjT96HdaLGMykxt2m78OmL3rcFW6brflSpcC2qSq1TCf30r8oS22A==
-X-Received: by 2002:a7b:c3d0:: with SMTP id t16mr15150689wmj.169.1600089833911;
-        Mon, 14 Sep 2020 06:23:53 -0700 (PDT)
-Received: from apalos.home (athedsl-4483967.home.otenet.gr. [94.71.55.135])
-        by smtp.gmail.com with ESMTPSA id o9sm20388713wrw.58.2020.09.14.06.23.51
+        bh=UxjCIDPFaDaw0Aevl12WvNq3PRFVzMo2HersEB4khs4=;
+        b=clDW7OKlUIWV0B32d2mVF3SXqDSLw8INGjFi0/RLzKOPbB1oNJ2N9b2bz11zXfkzw9
+         lBS6XuAt/7YAsQet82pKXmHeOI1XONOdsX2x4ZEauCKYIA1AcUU4S7t03kD7S7ghn2Bb
+         96WxJ04Ug32GUe8iTLL8M4PXVPANjLRtqeSVfqt/GHL5v32hSnpPNoijgBM6xRFk5C5P
+         ucaNCGUjft5YYagH0WytsJl+61OKiDZvoVb4TheORsok/5mDZ8JnddCCKUz9PFStngC5
+         f7DTq2BsrFlh+toOEzGAYlqJCXDbwpYUdwNyd/YuoVrlMv4sr3yj44ZZEt02firUVKsI
+         81Mg==
+X-Gm-Message-State: AOAM531S7Zx4JutOPYX6O2B7TxI9BVfeuEHHMH99VcCIabLvaba3GzVK
+        tnxADdIIc5VrdZzRPNDJrVc6rihcEWL+Vw==
+X-Google-Smtp-Source: ABdhPJxXWWq/KN5aAZ1Us02gVvFHuH0VP9PqMtqGuzlCPK3bb4MqeudCDHBMQGWWRbtQUZLauA2U4g==
+X-Received: by 2002:a65:6104:: with SMTP id z4mr4006631pgu.184.1600089876464;
+        Mon, 14 Sep 2020 06:24:36 -0700 (PDT)
+Received: from localhost (g168.115-65-169.ppp.wakwak.ne.jp. [115.65.169.168])
+        by smtp.gmail.com with ESMTPSA id y4sm10760351pfr.46.2020.09.14.06.24.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 06:23:53 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 16:23:50 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        Mon, 14 Sep 2020 06:24:35 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 22:24:33 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Mateusz Holenko <mholenko@antmicro.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200914132350.GA126552@apalos.home>
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck>
- <20200914123504.GA124316@apalos.home>
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gabriel L. Somlo" <gsomlo@gmail.com>
+Subject: Re: [PATCH v10 3/5] drivers/soc/litex: add LiteX SoC Controller
+ driver
+Message-ID: <20200914132433.GB2512402@lianli.shorne-pla.net>
+References: <20200812143324.2394375-0-mholenko@antmicro.com>
+ <20200812143324.2394375-3-mholenko@antmicro.com>
+ <20200911005740.GN3562056@lianli.shorne-pla.net>
+ <CAPk366Tvb9g960e3ZLv3+_H8FZJRRe0Jqa4q7tejE+svMcQvLA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914123504.GA124316@apalos.home>
+In-Reply-To: <CAPk366Tvb9g960e3ZLv3+_H8FZJRRe0Jqa4q7tejE+svMcQvLA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Mon, Sep 14, 2020 at 12:33:11PM +0200, Mateusz Holenko wrote:
+> On Fri, Sep 11, 2020 at 2:57 AM Stafford Horne <shorne@gmail.com> wrote:
+> >
+> > On Wed, Aug 12, 2020 at 02:34:34PM +0200, Mateusz Holenko wrote:
+> > > From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+> > >
+> > > This commit adds driver for the FPGA-based LiteX SoC
+> > > Controller from LiteX SoC builder.
+> > >
+> > > Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
+> > > Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+> > > Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+> > > ---
+> > > +     node = dev->of_node;
+> > > +     if (!node)
+> > > +             return -ENODEV;
 
-On Mon, Sep 14, 2020 at 03:35:04PM +0300, Ilias Apalodimas wrote:
-> On Mon, Sep 14, 2020 at 01:20:43PM +0100, Will Deacon wrote:
-> > On Mon, Sep 14, 2020 at 11:36:21AM +0300, Ilias Apalodimas wrote:
-> > > Running the eBPF test_verifier leads to random errors looking like this:
-> > > 
-> > > [ 6525.735488] Unexpected kernel BRK exception at EL1
-> > > [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-> > > [ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
-> > > [ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
-> > > [ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
-> > > [ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-> > > [ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-> > > [ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-> > > [ 6525.820832] sp : ffff8000130cbb80
-> > > [ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
-> > > [ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
-> > > [ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
-> > > [ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
-> > > [ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
-> > > [ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
-> > > [ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
-> > > [ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
-> > > [ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
-> > > [ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
-> > > [ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
-> > > [ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
-> > > [ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
-> > > [ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
-> > > [ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
-> > > [ 6525.903760] Call trace:
-> > > [ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
-> > > [ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
-> > > [ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
-> > > [ 6525.920398]  bpf_test_run+0x70/0x1b0
-> > > [ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
-> > > [ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
-> > > [ 6525.932072]  __arm64_sys_bpf+0x24/0x30
-> > > [ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
-> > > [ 6525.940607]  do_el0_svc+0x28/0x88
-> > > [ 6525.943920]  el0_sync_handler+0x88/0x190
-> > > [ 6525.947838]  el0_sync+0x140/0x180
-> > > [ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
-> > > [ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
-> > > 
-> > > The reason seems to be the offset[] creation and usage ctx->offset[]
-> > 
-> > "seems to be"? Are you unsure?
+We return here without BUG() if the setup fails.
+
+> > > +
+> > > +     soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
+> > > +     if (!soc_ctrl_dev)
+> > > +             return -ENOMEM;
+
+We return here without BUG() if we are out of memory.
+
+> > > +
+> > > +     soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
+> > > +     if (IS_ERR(soc_ctrl_dev->base))
+> > > +             return PTR_ERR(soc_ctrl_dev->base);
+
+Etc.
+
+> > > +
+> > > +     result = litex_check_csr_access(soc_ctrl_dev->base);
+> > > +     if (result) {
+> > > +             // LiteX CSRs access is broken which means that
+> > > +             // none of LiteX drivers will most probably
+> > > +             // operate correctly
+> > The comment format here with // is not usually used in the kernel, but its not
+> > forbidded.  Could you use the /* */ multiline style?
 > 
-> Reading the history and other ports of the JIT implementation, I couldn't 
-> tell if the decision on skipping the 1st entry was deliberate or not on 
-> Aarch64. Reading through the mailist list didn't help either [1].
-> Skipping the 1st entry seems indeed to cause the problem.
-> I did run the patch though the BPF tests and showed no regressions + fixing 
-> the error.
-
-I'll correct myself here.
-Looking into 7c2e988f400e ("bpf: fix x64 JIT code generation for jmp to 1st insn")
-explains things a bit better.
-Jumping back to the 1st insn wasn't allowed until eBPF bounded loops were 
-introduced. That's what the 1st instruction was not saved in the original code.
-
-> > 
-> > No Fixes: tag?
+> Sure, I'll change the commenting style here.
 > 
-> I'll re-spin and apply one 
+> >
+> > > +             BUG();
+> > Instead of stopping the system with BUG, could we just do:
+> >
+> >         return litex_check_csr_access(soc_ctrl_dev->base);
+> >
+> > We already have failure for NODEV/NOMEM so might as well not call BUG() here
+> > too.
 > 
-Any suggestion on any Fixes I should apply? The original code was 'correct' and
-broke only when bounded loops and their self-tests were introduced.
+> It's true that litex_check_csr_accessors() already generates error
+> codes that could be
+> returned directly.
+> The point of using BUG() macro here, however, is to stop booting the
+> system so that it's visible
+> (and impossible to miss for the user) that an unresolvable HW issue
+> was encountered.
+> 
+> CSR-accessors - the litex_{g,s}et_reg() functions - are intended to be
+> used by other LiteX drivers
+> and it's very unlikely that those drivers would work properly after
+> the fail of litex_check_csr_accessors().
+> Since in such case the UART driver will be affected too (no boot logs
+> and error messages visible to the user),
+> I thought it'll be easier to spot and debug the problem if the system
+> stopped in the BUG loop.
+> Perhaps there are other, more linux-friendly, ways of achieving a
+> similar goal - I'm open for suggestions.
 
-Thanks
-/Ilias
+I see your point, but I thought if failed with an exit status above, we could do
+the same here.  But I guess failing here means that something is really wrong as
+validation failed.
+
+Some points:
+ - If we return here, the system will still boot but there will be no UART
+ - If we bail with BUG(), here the system stops, and there is no UART
+ - Both cases the user can connect with a debugger and read "dmesg", to see what
+   is wrong, but BUG() does not print an error message on all architectures.
+
+We could also use:
+
+ - WARN(1, "Failed to validate CSR registers, the system is probably broken.");
+
+If you want to keep BUG() it may be fine.
+
+I am not an expert on handling these type of bailout's so other input is
+appreciated.
+
+-Stafford
