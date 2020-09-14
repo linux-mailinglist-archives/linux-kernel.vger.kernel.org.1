@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9158F2691E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5F72691FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgINQnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:43:13 -0400
-Received: from smtprelay0063.hostedemail.com ([216.40.44.63]:48834 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726061AbgINQnC (ORCPT
+        id S1726172AbgINQpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:45:42 -0400
+Received: from smtp-8fae.mail.infomaniak.ch ([83.166.143.174]:42155 "EHLO
+        smtp-8fae.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725970AbgINQoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:43:02 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 7633B100E8465;
-        Mon, 14 Sep 2020 16:42:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:2898:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:7576:7904:9010:9545:10004:10400:10967:11026:11232:11657:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:13161:13229:13255:13439:13848:14096:14097:14181:14659:14721:21080:21451:21627:21660:21740:21990:30041:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:11,LUA_SUMMARY:none
-X-HE-Tag: twig87_0f068782710a
-X-Filterd-Recvd-Size: 3560
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 14 Sep 2020 16:42:50 +0000 (UTC)
-Message-ID: <8c95d3d02dbdd36a048280cb8d9e8f171c3b4959.camel@perches.com>
-Subject: Re: [RESEND PATCH] staging: rtl8188eu: Fix else after return
- WARNING (checkpatch)
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Sohom Datta <sohom.datta@learner.manipal.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Date:   Mon, 14 Sep 2020 09:42:49 -0700
-In-Reply-To: <20200914145755.GD4282@kadam>
-References: <230f781dcaadfc797a016cc6036d63efe6542062.camel@learner.manipal.edu>
-         <20200914145755.GD4282@kadam>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 14 Sep 2020 12:44:07 -0400
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BqscT0NnczlhdtR;
+        Mon, 14 Sep 2020 18:43:21 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4BqscQ11RWzlh8TF;
+        Mon, 14 Sep 2020 18:43:18 +0200 (CEST)
+Subject: Re: [RFC PATCH v9 0/3] Add introspect_access(2) (was O_MAYEXEC)
+Cc:     James Morris <jmorris@namei.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200910164612.114215-1-mic@digikod.net>
+ <20200910170424.GU6583@casper.infradead.org>
+ <f6e2358c-8e5e-e688-3e66-2cdd943e360e@digikod.net>
+ <a48145770780d36e90f28f1526805a7292eb74f6.camel@linux.ibm.com>
+ <880bb4ee-89a2-b9b0-747b-0f779ceda995@digikod.net>
+ <20200910184033.GX6583@casper.infradead.org>
+ <alpine.LRH.2.21.2009121019050.17638@namei.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-api@vger.kernel.org
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <d7126fd7-cca1-42e4-6a7b-6a3b9e77306e@digikod.net>
+Date:   Mon, 14 Sep 2020 18:43:17 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <alpine.LRH.2.21.2009121019050.17638@namei.org>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-14 at 17:57 +0300, Dan Carpenter wrote:
-> On Sun, Sep 13, 2020 at 12:19:50PM +0530, Sohom Datta wrote:
-> > > From 4c8c8f3ff7f4d711daea4ac3bb987fcecc7ef1ed Mon Sep 17 00:00:00 2001
-> > From: Sohom <sohom.datta@learner.manipal.edu>
-> > Date: Sat, 12 Sep 2020 18:04:56 +0530
-> > Subject: [RESEND PATCH] staging: rtl8188eu: Fix else after return WARNING
-> >  (checkpatch)
-> > 
-> > Fixed:
-> > WARNING: else is not generally useful after a break or return
-> > 1636: FILE: ./rtw_recv.c:1636:
-> > +           return false;
-> > +       else
-> > 
-> > Separated the return statement into a separate block since
-> > it doesn't seem to depend on the SN_LESS explicity being false.
-> > 
-> > Signed-off-by: Sohom <sohom.datta@learner.manipal.edu>
-> > ---
-> >  drivers/staging/rtl8188eu/core/rtw_recv.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
-> > index 5fe7a0458dd2..5e81134ffb6d 100644
-> > --- a/drivers/staging/rtl8188eu/core/rtw_recv.c
-> > +++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
-> > @@ -1629,10 +1629,11 @@ static int enqueue_reorder_recvframe(struct recv_reorder_ctrl *preorder_ctrl,
-> >  		hdr = list_entry(plist, struct recv_frame, list);
-> >  		pnextattrib = &hdr->attrib;
-> >  
-> > +		if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
-> > +			return false;
-> > +
-> >  		if (SN_LESS(pnextattrib->seq_num, pattrib->seq_num))
-> >  			plist = plist->next;
-> > -		else if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
-> > -			return false;
-> >  		else
-> >  			break;
-> >  	}
+Arnd and Michael,
+
+What do you think of "should_faccessat" or "entrusted_faccessat" for
+this new system call?
+
+
+On 12/09/2020 02:28, James Morris wrote:
+> On Thu, 10 Sep 2020, Matthew Wilcox wrote:
 > 
-> Checkpatch is just wrong here.  Ignore it when it's wrong.
+>> On Thu, Sep 10, 2020 at 08:38:21PM +0200, Mickaël Salaün wrote:
+>>> There is also the use case of noexec mounts and file permissions. From
+>>> user space point of view, it doesn't matter which kernel component is in
+>>> charge of defining the policy. The syscall should then not be tied with
+>>> a verification/integrity/signature/appraisal vocabulary, but simply an
+>>> access control one.
+>>
+>> permission()?
+>>
+> 
+> The caller is not asking the kernel to grant permission, it's asking 
+> "SHOULD I access this file?"
+> 
+> The caller doesn't know, for example, if the script file it's about to 
+> execute has been signed, or if it's from a noexec mount. It's asking the 
+> kernel, which does know. (Note that this could also be extended to reading 
+> configuration files).
+> 
+> How about: should_faccessat ?
+> 
 
-It's not "wrong" here.  It's making a suggestion.
-
-Perhaps read the SN_EQUAL and SN_LESS macros.
-
-a and b are both u16's here.
-
-drivers/staging/rtl8188eu/include/rtw_recv.h:#define SN_LESS(a, b)              (((a - b) & 0x800) != 0)
-drivers/staging/rtl8188eu/include/rtw_recv.h:#define SN_EQUAL(a, b)     (a == b)
-
-Reordering works, perhaps it's just a question of
-whether it's the most likely result of the test.
-
-This is in a while loop.
-
-If the expected test is really the most likely that
-SN_LESS is true, then perhaps this loop could be
-something like:
-
-		if (SN_LESS(pnextattrib->seq_num, pattrib->seq_num)) {
-			plist = plist->next;
-			continue;
-		}
-		if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
-			return false;
-		break;
-	}
-
-The real question is whether or not that's more readable.
-
-
+Sounds good to me.
