@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E599A2690A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D960E2690FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgINPup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        id S1726543AbgINQAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgINPq2 (ORCPT
+        with ESMTP id S1726536AbgINPqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:46:28 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582A7C061356
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:09 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a9so555363wmm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:09 -0700 (PDT)
+        Mon, 14 Sep 2020 11:46:34 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C087C061224
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:14 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w5so156404wrp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=IrnQfXAwl9bcL5E0QBsVJFHpEFR9fxJonOnaBemm2TE=;
-        b=HmV/oEnRNtPlxtAT0Sg9rlFRvqlKlQ7ADsGicyJMLcWMMBL8QKsbSV5Qs973MIPXon
-         yXPKQ7CvHL5wI+T8l8xPWD26TB7obfBV3XfkTYn9vck1tdlQ8kzctLZtNVV4ndzOVpIB
-         hlMeDbo4/EQPJ2INqwfjgS/5DQRmbnywCWXVX9fdiYaBBHNAtEP2LPg67cZRlK/sa2xH
-         2ZLgFDTxeNv2UlO45+/EHO7bV6tAAL6NZhwwnpnFXRgEpAHVmboE8G0tDY5I/eivysk3
-         A8rCXm6Hgo1tROLBqZjiwGzq5SckG0ntoFuJVfM7uoMIqtR7TQH7TOpZPfVIf8fsCnhO
-         nxdQ==
+        bh=/bIA2YmUmXjfEQqSveKUMWzIp1Qh5l6kP8KUqfJvUYc=;
+        b=jk2QemzAep7aiq8P/HwiXdSGtnzJ++v1QrzrmmVtaYBOt+Y3E0hlOPxJcExY1QsCDp
+         p+895PsxdfOOnMMDJLCPMo0KMJG8Jcvx89sLickgyle/2OJcZa5/4aNP02q496RmW3hb
+         dW9Z+F1PY83kT1w1nNellUjpmzAh7syuPOM4/Ji+nSJAL6H5o0d85VrTciXtIUIqV2IE
+         JP1y9WE10lHZhd05Ueb+eJJsCnSSgs7dF0aU3er2QR3AXoGm9OmH2yF69rUDaN+vcSxl
+         4+7izozlmkKqDr2K7gU4wLcMkI7/5osBI4VQBSZRDZUnzDBXQETHA/N6WFQcUAb2p09h
+         Z3Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=IrnQfXAwl9bcL5E0QBsVJFHpEFR9fxJonOnaBemm2TE=;
-        b=WBdTag7G1EBqSi18a/P+1gR/W7lgs02njh4xxlhlmhwBmpTZ/Y48UWIzBCiGUZojvp
-         qZETF8X6u4ne2HtC2PsMlPG0xHEWR7pDUFVT/EoCNJQfIYCVe+o/RZhxF6MDffEmb+r+
-         iJ+Pj2wij+bdzzcCCMHpYYK42I4poFqDeOArawGATCgq8lrtQS68QD+KPk3QFRE5qIqV
-         RqTV/9UGzCraf7IwaTv0dr2475zfnYWXhYJj+YZlW5NlHbE2rxfxYpBd2sAYO6ZYAjCD
-         EM71VqYTcZXGH8TvO9u2WbUs0hdB0fLdvJ9yG8GpT32ZjNFxJ2C4ZQCV88LQiG5iOh4h
-         KtDg==
-X-Gm-Message-State: AOAM532djduKsV4e0jBPalpWy6XPldHOpSY01RBGNZ+1wdIw3qiSf2qz
-        9CxYv5fx3iaCFEw9mO98F8egsA==
-X-Google-Smtp-Source: ABdhPJyBZ2pvmkMwfuapBiZzxMdOAuM/klJ/ew3ZcPQMcjFQzmAcJaYDz2JIDAkmm++Uu8HETmvR5g==
-X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr17600wme.188.1600098368083;
-        Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
+        bh=/bIA2YmUmXjfEQqSveKUMWzIp1Qh5l6kP8KUqfJvUYc=;
+        b=HvYk+91U3j1MtCf1jmajigRHIqJM2cKGJw/WmmESF6mfMldXDxsT3bg/AzqBIYhkDD
+         XG0/T6pwnRWeedYr/j0b9/ohr9e1YRguejX1NjorlwqiolWX+xPwe+796c51C12ozhT3
+         t+BPFLr4I7eWrfucGbeB7bm6W7Uc1zN6JiMUIJ4dFyuiUQ32lilpiiWUgUfk2ymc5oXT
+         H9rxm8JsQ4Zjrw3G6arSNwNJGyGN370nMUMU7G7FuWBbOe+AbqWoSDEiPd7z5+vG5wCR
+         p6P95JHSe6zzJ2sUE0OV+9LG0blMetbUkOtR918OaXcl5GB3+Cgh3B40/QyynBEoQ30s
+         DEbw==
+X-Gm-Message-State: AOAM532vqkgvDn08QH4WaRpG4NNkeb7oCQva4gllws5NVUBtkb9iunIJ
+        szcLAYCbf2X8wz/GXisHZEbNFg==
+X-Google-Smtp-Source: ABdhPJzNyScHgNXmICEfdwO3M4sHDrQlUGaTo060vEI/UTF5d/kYM1HJMQwFiyn2Jh+pBIsNPvPnpA==
+X-Received: by 2002:a5d:4104:: with SMTP id l4mr16512968wrp.396.1600098373177;
+        Mon, 14 Sep 2020 08:46:13 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.07
+        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:46:07 -0700 (PDT)
+        Mon, 14 Sep 2020 08:46:12 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 04/14] rtc: rx8010: consolidate local variables of the same type
-Date:   Mon, 14 Sep 2020 17:45:51 +0200
-Message-Id: <20200914154601.32245-5-brgl@bgdev.pl>
+Subject: [PATCH v3 09/14] rtc: rx8010: use a helper variable for client->dev in probe()
+Date:   Mon, 14 Sep 2020 17:45:56 +0200
+Message-Id: <20200914154601.32245-10-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
 References: <20200914154601.32245-1-brgl@bgdev.pl>
@@ -68,79 +68,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Move local variables of the same type into a single line for better
-readability.
+Simple 'dev' looks better then repeated &client->dev and has the added
+benefit of avoiding unnecessary line breaks.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/rtc/rtc-rx8010.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ drivers/rtc/rtc-rx8010.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index 79a3d90d2c43..153fa58f0365 100644
+index 64a9964eb5e0..dba7c3f87d9e 100644
 --- a/drivers/rtc/rtc-rx8010.c
 +++ b/drivers/rtc/rtc-rx8010.c
-@@ -109,8 +109,7 @@ static int rx8010_get_time(struct device *dev, struct rtc_time *dt)
+@@ -419,6 +419,7 @@ static int rx8010_probe(struct i2c_client *client,
  {
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 date[7];
--	int flagreg;
--	int err;
-+	int flagreg, err;
+ 	struct i2c_adapter *adapter = client->adapter;
+ 	const struct rtc_class_ops *rtc_ops;
++	struct device *dev = &client->dev;
+ 	struct rx8010_data *rx8010;
+ 	int err = 0;
  
- 	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
- 	if (flagreg < 0)
-@@ -141,8 +140,7 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- {
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 date[7];
--	int ctrl, flagreg;
--	int ret;
-+	int ctrl, flagreg, ret;
+@@ -428,8 +429,7 @@ static int rx8010_probe(struct i2c_client *client,
+ 		return -EIO;
+ 	}
  
- 	if ((dt->tm_year < 100) || (dt->tm_year > 199))
- 		return -EINVAL;
-@@ -250,8 +248,7 @@ static int rx8010_read_alarm(struct device *dev, struct rtc_wkalrm *t)
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	struct i2c_client *client = rx8010->client;
- 	u8 alarmvals[3];
--	int flagreg;
--	int err;
-+	int flagreg, err;
+-	rx8010 = devm_kzalloc(&client->dev, sizeof(struct rx8010_data),
+-			      GFP_KERNEL);
++	rx8010 = devm_kzalloc(dev, sizeof(struct rx8010_data), GFP_KERNEL);
+ 	if (!rx8010)
+ 		return -ENOMEM;
  
- 	err = i2c_smbus_read_i2c_block_data(client, RX8010_ALMIN, 3, alarmvals);
- 	if (err != 3)
-@@ -279,8 +276,7 @@ static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 alarmvals[3];
--	int extreg, flagreg;
--	int err;
-+	int extreg, flagreg, err;
+@@ -441,13 +441,13 @@ static int rx8010_probe(struct i2c_client *client,
+ 		return err;
  
- 	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
- 	if (flagreg < 0)
-@@ -346,9 +342,8 @@ static int rx8010_alarm_irq_enable(struct device *dev,
- {
- 	struct i2c_client *client = to_i2c_client(dev);
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
--	int flagreg;
-+	int flagreg, err;
- 	u8 ctrl;
--	int err;
+ 	if (client->irq > 0) {
+-		dev_info(&client->dev, "IRQ %d supplied\n", client->irq);
+-		err = devm_request_threaded_irq(&client->dev, client->irq, NULL,
++		dev_info(dev, "IRQ %d supplied\n", client->irq);
++		err = devm_request_threaded_irq(dev, client->irq, NULL,
+ 						rx8010_irq_1_handler,
+ 						IRQF_TRIGGER_LOW | IRQF_ONESHOT,
+ 						"rx8010", client);
+ 		if (err) {
+-			dev_err(&client->dev, "unable to request IRQ\n");
++			dev_err(dev, "unable to request IRQ\n");
+ 			return err;
+ 		}
  
- 	ctrl = rx8010->ctrlreg;
+@@ -456,11 +456,10 @@ static int rx8010_probe(struct i2c_client *client,
+ 		rtc_ops = &rx8010_rtc_ops_default;
+ 	}
  
-@@ -387,8 +382,7 @@ static int rx8010_alarm_irq_enable(struct device *dev,
- static int rx8010_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
- {
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
--	int tmp;
--	int flagreg;
-+	int tmp, flagreg;
+-	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
++	rx8010->rtc = devm_rtc_device_register(dev, client->name,
+ 					       rtc_ops, THIS_MODULE);
+-
+ 	if (IS_ERR(rx8010->rtc)) {
+-		dev_err(&client->dev, "unable to register the class device\n");
++		dev_err(dev, "unable to register the class device\n");
+ 		return PTR_ERR(rx8010->rtc);
+ 	}
  
- 	switch (cmd) {
- 	case RTC_VL_READ:
 -- 
 2.26.1
 
