@@ -2,130 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D17268A3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66777268A1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgINLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:40:23 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38387 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbgINL2U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:28:20 -0400
-Received: by mail-wm1-f67.google.com with SMTP id l9so10863762wme.3;
-        Mon, 14 Sep 2020 04:28:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3d4JMvjpduBqCz6k+QE3NkfxQ9su5/24VCmbJg/2Vm4=;
-        b=TXnFyoqEwYFTSUpA8DPAX8bstot46vmXpVt/XL3yRjgUstcqjhLPCm2DieF+VkZ/Q7
-         8rDnG8K++UMPDIsU7IyFqYgxyPurcsIEjcvAZKGfxPfgLMREHR5Wh838iGg49jXXMT2Z
-         b+/0jdMNHcSa6m7fL46kcQItMyN5Qbki/nZ5skR6VMleRYofe7z8bO2s9IUqxLmE5FZt
-         t8J7Z76o1tF/1SFoaILUgMHVx5BwaGKJHz8UbZq0Gy0oqnYJtPFeonBU0oUynCPx7vwZ
-         O1vfOosLOcCJU16DBVuKY0okhHKR8ZTc43fVq7Y7LsgoQkhIVOarvKX9+d6tbd6ZH4rs
-         vXew==
-X-Gm-Message-State: AOAM531EOk8QfztQSJu/mdi9Kx4+oYNUYLjvx03Ib5aFHo7yfG7L07bc
-        hgiXeDBkQbED0dpTyqNYk/azA3YRgRo=
-X-Google-Smtp-Source: ABdhPJystUif1wRjcF7mRpnR+zmeWbWgyHyEK47dCztPMpjeOrLJ9raORZNTohyNmiK+Y3KwzAGL8A==
-X-Received: by 2002:a1c:a557:: with SMTP id o84mr14199501wme.96.1600082897536;
-        Mon, 14 Sep 2020 04:28:17 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s12sm12024606wmd.20.2020.09.14.04.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:28:17 -0700 (PDT)
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH RFC v1 08/18] x86/hyperv: handling hypercall page setup for root
-Date:   Mon, 14 Sep 2020 11:27:52 +0000
-Message-Id: <20200914112802.80611-9-wei.liu@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200914112802.80611-1-wei.liu@kernel.org>
-References: <20200914112802.80611-1-wei.liu@kernel.org>
+        id S1726053AbgINLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726076AbgINL2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:28:09 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B185D216C4;
+        Mon, 14 Sep 2020 11:28:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600082888;
+        bh=LD8gKfq3+M60A9fkVwtz5N1wN5RFsUcksTxvGuoEBr4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rCXdm3mH4nZTgySe0Df0IfxBSbZSiJeZOD3cinDUh6HQHt/AZE/IuWIZ05PGlegVy
+         Q9lkl/AGuTd5Z9Thoapgv8scMIg5OFQ277Cf4Xczsvlzyc0DD0OdzIn9dAlcU/fdk7
+         5SipduQ6w15WyHR6gsWFZWNakkNN3pKiB9OimdvM=
+Date:   Mon, 14 Sep 2020 12:28:04 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Salter <msalter@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/perf: xgene_pmu: Fix uninitialized resource
+ struct
+Message-ID: <20200914112803.GA24312@willie-the-truck>
+References: <20200913174536.207265-1-msalter@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913174536.207265-1-msalter@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When Linux is running as the root partition, the hypercall page will
-have already been setup by Hyper-V. Copy the content over to the
-allocated page.
+On Sun, Sep 13, 2020 at 01:45:36PM -0400, Mark Salter wrote:
+> @@ -1483,11 +1473,23 @@ xgene_pmu_dev_ctx *acpi_get_pmu_hw_inf(struct xgene_pmu *xgene_pmu,
+>  		return NULL;
+>  
+>  	INIT_LIST_HEAD(&resource_list);
+> -	rc = acpi_dev_get_resources(adev, &resource_list,
+> -				    acpi_pmu_dev_add_resource, &res);
+> +	rc = acpi_dev_get_resources(adev, &resource_list, NULL, NULL);
+> +	if (rc <= 0) {
+> +		dev_err(dev, "PMU type %d: No resources found\n", type);
+> +		return NULL;
+> +	}
+> +
+> +	list_for_each_entry(rentry, &resource_list, node) {
+> +		if (resource_type(rentry->res) == IORESOURCE_MEM) {
+> +			res = *rentry->res;
+> +			rentry = NULL;
+> +			break;
+> +		}
+> +	}
+>  	acpi_dev_free_resource_list(&resource_list);
+> -	if (rc < 0) {
+> -		dev_err(dev, "PMU type %d: No resource address found\n", type);
+> +
+> +	if (rentry) {
 
-The suspend, resume and cleanup paths remain untouched because they are
-not supported in this setup yet.
+I'm curious as to why you've had to change the failure logic here, setting
+rentry to NULL instead of checking 'rentry->res' like the TX2 driver (which
+I don't immediately understand at first glance).
 
-Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-Signed-off-by: Nuno Das Neves <nudasnev@microsoft.com>
-Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-Co-Developed-by: Nuno Das Neves <nudasnev@microsoft.com>
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
- arch/x86/hyperv/hv_init.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 0eec1ed32023..26233aebc86c 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -25,6 +25,7 @@
- #include <linux/cpuhotplug.h>
- #include <linux/syscore_ops.h>
- #include <clocksource/hyperv_timer.h>
-+#include <linux/highmem.h>
- 
- /* Is Linux running as the root partition? */
- bool hv_root_partition;
-@@ -448,8 +449,29 @@ void __init hyperv_init(void)
- 
- 	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
- 	hypercall_msr.enable = 1;
--	hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
--	wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+
-+	if (hv_root_partition) {
-+		struct page *pg;
-+		void *src, *dst;
-+
-+		/*
-+		 * Order is important here. We must enable the hypercall page
-+		 * so it is populated with code, then copy the code to an
-+		 * executable page.
-+		 */
-+		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+
-+		pg = vmalloc_to_page(hv_hypercall_pg);
-+		dst = kmap(pg);
-+		src = memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PAGE_SIZE,
-+				MEMREMAP_WB);
-+		memcpy(dst, src, PAGE_SIZE);
-+		memunmap(src);
-+		kunmap(pg);
-+	} else {
-+		hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
-+		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-+	}
- 
- 	/*
- 	 * Ignore any errors in setting up stimer clockevents
--- 
-2.20.1
-
+Will
