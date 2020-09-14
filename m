@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A49C2690EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB3B2690ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgINP7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgINPql (ORCPT
+        id S1726416AbgINP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:59:03 -0400
+Received: from smtpout1.mo804.mail-out.ovh.net ([79.137.123.220]:39339 "EHLO
+        smtpout1.mo804.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726550AbgINPqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:46:41 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933D2C061A10
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:19 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q9so506158wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XJ05GIM5VsS2yiXaAJqmcLCOwDz0VZkcOpGm3rJm6lA=;
-        b=GdVwKgSs+W+8Lgf7KkHcvg9GafNOENKBc2QdAPDfVpxuCfSnD626g1Gha1BudiWIX4
-         naUI3Ud4QH/njSuDHXC0ruyzdcx4Lwo9EMo56ivCyNCWtXTuEXXyeFkLDH+I7BRJQ/hy
-         VtufdtVilPrRLN9bEXo/lU27WyPvyEhwvajQnf+9qD7nnfzj2Iag5MhwpckwNTg9W6VM
-         0PEjJRlZ4GIyS5A7LrsC2WDINvM1T8O9Y87M2bFebq9w9Jr8FxnytrQASAnQIOluIoKz
-         FeYqVj1dkRGCdpENGHdZM+R2wXqSiegcDsmNS42PoOlDIG/qfbgKf2CorEG9E3d6mh8k
-         85TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XJ05GIM5VsS2yiXaAJqmcLCOwDz0VZkcOpGm3rJm6lA=;
-        b=d9O6hhVMNPIGJ+W20Me6zrhMbHwW5i6hT26N1MSVvxN8PHydaM5OX+P8OWQO4KzMWl
-         f+djVDlunox2JSx0sGTu3wS7XC/4w9BKUQofuCHUnhJB3yUWPucn3R7LSY1laKaplM2u
-         mBecLuhqHmP4c6W/2qr6xe2Dicnu+q2Srgh616CDUwNNY0HIWRJTfyGZWzi8BU//EQp2
-         6iLaG93+jfkvstELBjsn8tWp09WNJi0Xt58K84MXjliF+8VRRcozIY+Hk3CZAESYuzyF
-         XnDZkyNoCWisGA2cKdeoNVdO+7tuJaSSLND5IZm5+C+4Zbf0lBsCNDywD6PGDRR0kgx9
-         GMSQ==
-X-Gm-Message-State: AOAM533i2YwXZlF9ld8A0faU8AVc3gLdyQ1Os1IJG2BSYl4RnuOnpe+/
-        hxTCbdbs9Kfph8tagx0r2kQmSw==
-X-Google-Smtp-Source: ABdhPJzoNU6DBG61ZYnZYLOEF4Qk5ctIwlgijgjPwzfzHfVo98LPePhCVsBKavSNPAg/TQsllDUeog==
-X-Received: by 2002:a1c:7911:: with SMTP id l17mr15408214wme.179.1600098378278;
-        Mon, 14 Sep 2020 08:46:18 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:46:17 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 14/14] rtc: rx8010: use range checking provided by core RTC code
-Date:   Mon, 14 Sep 2020 17:46:01 +0200
-Message-Id: <20200914154601.32245-15-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
-References: <20200914154601.32245-1-brgl@bgdev.pl>
+        Mon, 14 Sep 2020 11:46:54 -0400
+Received: from mxplan5.mail.ovh.net (unknown [10.108.4.92])
+        by mo804.mail-out.ovh.net (Postfix) with ESMTPS id 99160617F1AA;
+        Mon, 14 Sep 2020 17:46:32 +0200 (CEST)
+Received: from kaod.org (37.59.142.106) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 14 Sep
+ 2020 17:46:31 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-106R00607f539b8-6c4b-4c84-ba45-0f0b12b78fa8,
+                    33559CD024D4F69900824C14C2AC4808F9346AFD) smtp.auth=groug@kaod.org
+Date:   Mon, 14 Sep 2020 17:46:30 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Christian Schoenebeck <qemu_oss@crudebyte.com>
+CC:     Jianyong Wu <jianyong.wu@arm.com>, <ericvh@gmail.com>,
+        <lucho@ionkov.net>, <asmadeus@codewreck.org>,
+        <v9fs-developer@lists.sourceforge.net>, <justin.he@arm.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [V9fs-developer] [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall
+ bug
+Message-ID: <20200914174630.195e816f@bahia.lan>
+In-Reply-To: <2037087.W39pGsgtbe@silver>
+References: <20200914033754.29188-1-jianyong.wu@arm.com>
+        <2828347.d8MXItvaOC@silver>
+        <20200914144325.7928dbd3@bahia.lan>
+        <2037087.W39pGsgtbe@silver>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.106]
+X-ClientProxiedBy: DAG2EX2.mxp5.local (172.16.2.12) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: a4e8086c-a59a-4e2b-a409-446354a421de
+X-Ovh-Tracer-Id: 10401063342826494316
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudeiiedgleehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfhisehtjeertdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeekvdfguefgtddvleefffeuveefgedukeehffdtjeevgfevieelleduffekuedvffenucffohhmrghinhepnhhonhhgnhhurdhorhhgnecukfhppedtrddtrddtrddtpdefjedrheelrddugedvrddutdeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepmhigphhlrghnhedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehgrhhouhhgsehkrghougdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, 14 Sep 2020 17:19:20 +0200
+Christian Schoenebeck <qemu_oss@crudebyte.com> wrote:
 
-We don't need to check the time range manually in set_time(), we can
-use range_min and range_max exposed by struct rtc_device.
+> On Montag, 14. September 2020 14:43:25 CEST Greg Kurz wrote:
+> > > So yes, looks like this also requires changes to the 9pfs 'local' fs
+> > > driver on QEMU side:
+> > > https://lists.nongnu.org/archive/html/qemu-devel/2016-06/msg07586.html
+> > > 
+> > > Eric, Greg, would there be an easy way to establish QEMU test cases
+> > > running
+> > > the 9pfs 'local' fs driver? Right now we only have 9pfs qtest cases for
+> > > QEMU which can only use the 'synth' driver, which is not helpful for such
+> > > kind of issues.
+> > 
+> > I guess it's possible to introduce new qtests that start QEMU with
+> > -fsdev local instead of -fsdev synth... I haven't looked in a while
+> > though, so I won't comment on "easy way" ;-)
+> 
+> Makes sense, and I considered that approach as well.
+> 
+> The question is the following: is there a QEMU policy about test cases that 
+> create/write/read/delete *real* files? I.e. should those test files be written 
+> to a certain location, and are there measures of sandboxing required?
+> 
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/rtc/rtc-rx8010.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I don't know. You'll need to figure out by yourself, reading code from
+other tests or asking on IRC.
 
-diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index b8aa98fb62de..01e9017d4025 100644
---- a/drivers/rtc/rtc-rx8010.c
-+++ b/drivers/rtc/rtc-rx8010.c
-@@ -140,9 +140,6 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- 	u8 date[RX8010_YEAR - RX8010_SEC + 1];
- 	int err;
- 
--	if ((dt->tm_year < 100) || (dt->tm_year > 199))
--		return -EINVAL;
--
- 	/* set STOP bit before changing clock/calendar */
- 	err = regmap_set_bits(rx8010->regs, RX8010_CTRL, RX8010_CTRL_STOP);
- 	if (err)
-@@ -419,6 +416,8 @@ static int rx8010_probe(struct i2c_client *client)
- 	}
- 
- 	rx8010->rtc->max_user_freq = 1;
-+	rx8010->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
-+	rx8010->rtc->range_max = RTC_TIMESTAMP_END_2099;
- 
- 	return rtc_register_device(rx8010->rtc);
- }
--- 
-2.26.1
+> Best regards,
+> Christian Schoenebeck
+> 
+> 
 
