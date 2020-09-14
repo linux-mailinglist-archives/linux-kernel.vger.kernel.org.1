@@ -2,170 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0FF26954D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE3A269550
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725989AbgINTNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:13:15 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:43469 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgINTNF (ORCPT
+        id S1725999AbgINTPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgINTPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:13:05 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200914191302euoutp02820d913f3c97a7428beb399588146aa4~0vEd6hERd1415914159euoutp02u
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 19:13:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200914191302euoutp02820d913f3c97a7428beb399588146aa4~0vEd6hERd1415914159euoutp02u
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600110782;
-        bh=fP9QMXdbuLNBl4oeiPp8QcMQCAxsDI2S/KFNXBuW1ZU=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ES3Iq+ueNyo255r9mApgyrg2yEWWNzz7G+3SGxiz00Qv/w6TvrFVb5eIKVDyrLTj0
-         H7RIRIY1KxwHNCah+ZHdCIEOyUfLsqaFwpa8poOPT4q3PWMv6/vaU+6v/CRtxJ5z/q
-         +X+kkjm/7Y87ke8AwIyKT4dtfIvlzqIKIhux2Y4I=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200914191301eucas1p10774cbab0bd065ae5293551e313d81f0~0vEcuLZZs0355103551eucas1p1M;
-        Mon, 14 Sep 2020 19:13:01 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 76.0E.06456.DB0CF5F5; Mon, 14
-        Sep 2020 20:13:01 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200914191300eucas1p1690684814f22581f1f83c928036abf60~0vEcEACDl0294802948eucas1p11;
-        Mon, 14 Sep 2020 19:13:00 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200914191300eusmtrp1a5f026abfeda482709f825ddade07744~0vEcDJlmg0597905979eusmtrp1P;
-        Mon, 14 Sep 2020 19:13:00 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-71-5f5fc0bd5773
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id CE.3F.06314.CB0CF5F5; Mon, 14
-        Sep 2020 20:13:00 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200914191259eusmtip1bd2a8d43acd55e5ad020438ec650728c~0vEbHS1Ar2190121901eusmtip1a;
-        Mon, 14 Sep 2020 19:12:59 +0000 (GMT)
-Subject: Re: [PATCH v3 10/16] irqchip/bcm2836: Configure mailbox interrupts
- as standard interrupts
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <d62e71b5-78c7-dabe-6d20-74e533549db3@samsung.com>
-Date:   Mon, 14 Sep 2020 21:13:00 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Mon, 14 Sep 2020 15:15:01 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E21C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:15:00 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id k18so1122625wmj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=otkTAULWhgakQf2K8e6OJQkZhWIe/H1QBsJL/JJYQ4c=;
+        b=Yon35tE9Wc9xWgrxr1p+no1Vm7P1R36MEpUbZ9T/yfQ66Y06F9LtPhXeQzl+QxTZYW
+         ijZ/41gnNCAwAbC1eX7BtLdtJUhnuu1d2aWgKKPesWqtMF7/7YHpze87bWV5JfAWKM2A
+         qw2iNybpOqFG4Bq475JqywdDEiK1n7mdoL+NibZu/g0Yl6s/nz+hr9SBUe2+GbhyNOPe
+         Sepw/kexCZf34fIbjm+OvgizIq/8xmZLuaY1SpylK2GI1rcdpG80C8bK+Ez13+nronoP
+         1L00VIFYO28KecN5xLeOTZJeI5tuN5OMpbxxn6zlkAMPFem5Wpd71CzHRR3CE90itbyO
+         2UgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=otkTAULWhgakQf2K8e6OJQkZhWIe/H1QBsJL/JJYQ4c=;
+        b=JzpUYe8wVBKmOvJyP+8mI3W+pSl+dVzXFVTZKtmJ8jQoibK0UgnZciqU0xbtZ3VSr0
+         yHL+NasDVlRvAllxi7SKsWB/z7cHd0llmwA1zJAWOXsC6bxdeNIla5dHHgqv8iqHel7I
+         qyDdT83KvG8EfSkmk00WXkcxEMFBPwMYg5tc2hEax+zV+Z0qHoHhKwbP0xcDvhdaONWL
+         Y/RpTrrZ92ypjdexMCY7G4asYtOtK3xyjdxrPW9vd2brMaowkHiYxC51VptcRkYWjFHR
+         FvQXuLqRt3UXHZyFLtj7JLcNUFBJTcUOvAFabgzG/NoBlmpG95QL+7wT8UtZWTqDOWza
+         HkbA==
+X-Gm-Message-State: AOAM532OiSTnjs7iouhq4iUAThZEa+7Tmzvtda8AA0vHRcfHJ7Zk8AfG
+        u4ihbZA2Ozj558dfm3dg/t+G/RrPBaVIanBQWRk=
+X-Google-Smtp-Source: ABdhPJx7o4K91MyAuQ9EPwsFKaX9MaW3JSQNMRKMl0vgwbZNjICM2HtwCfI0iMlvFmNu7YeWzkQ+XPp/9EaT+ZHZXxg=
+X-Received: by 2002:a1c:2403:: with SMTP id k3mr782091wmk.153.1600110898792;
+ Mon, 14 Sep 2020 12:14:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e99cc81b24475c54e173e6dd0d9d827b@kernel.org>
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0gUYRTl25mdGa2xz83wYg9xqcAePqhgKJGMiCEi+mEEQq5bDlqtu7bj
-        Iy3IXDNdtqgV0VZxrczMzHR9a5ot4WKSiopZ6Y82hQpU0srUjFxHy3/n3HsO5x64DKGYk/sw
-        57QJgl6r1igpd7K+Y7Znd2u7ShWUWbmR6xmxE9xkqQlxcxOvaK6wLIW7VtJPco0NXpzt06Cc
-        628upLg7H6po7kM/yzUVdso5o32B4irbblFcjS2X4BqsswSXMbzvIObrW+rlfEVRBeIzDCaK
-        L6q4zDdZRmi+2JbI28qzKT6tvYfkhwefU/xEdzfN15Rc5Zsap2X8tG3LCTbCPSRa0JxLEvSB
-        oVHusd/aH9Px8+wla+aQLA29WGNEbgzgvZDjdNJG5M4ocBmCKuu0XCLfEYw5bxAulQJPIygv
-        PLni+JZ2b9nxCEFrcSkhkUkEN9NHSZdqPY6GhnID7cJe2A+mejuRS0TgtyTkdzQi14LCwWAc
-        N1IuzOJQGHW8WzKQeBuU/iqWu/AGHAkdr52kpPGEzrtSgBveDw+ybyx5CewLhroCQsLe8H7U
-        KnOFAX7IwJOe30i6+zD0DS4s4/Xw1VFLS3gTdOWYSMlgQPCx+yktEROC/vT8ZccBGO6eW4xj
-        FiP84VlzoDQOg5qW10tjwB4wNO4pHeEB5vo8QhqzkJWpkNTbweKo/Bf7srePuI2UllXVLKvq
-        WFbVsfzPLUZkOfIWEsW4GEEM1grJAaI6TkzUxgSc1cXZ0OJHdv1xTDWiH31n7AgzSLmWjUpW
-        qRRydZKYEmdHwBBKL/bQm65IBRutTkkV9DqVPlEjiHa0kSGV3uye+19OK3CMOkG4IAjxgn5l
-        K2PcfNJQ6HyrZtdsQJRpZLjtellvnkadXVDluy782U9e5wz291XMmM3WgmqntjZL3GxNkV2P
-        1R0ZCDtaN6BK2NywcyLVqArrG7sVdH7G2p6eeyzcsS5iwEweH3nn5Yz0u0h9nrEo50O2lsTH
-        78kNN1zZ8ObHKd1Tn6mpwAzzUNCF6sGqEiUpxqqDdxB6Uf0XXixtT40DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphleLIzCtJLcpLzFFi42I5/e/4Xd09B+LjDSZ+1bQ4f/cQs8X7ZT2M
-        Fr/eHWG3mLOi0qJxyWUWix3bRSw2Pb7GanF51xw2i4m3N7Bb3L7Ma7FzzklWi65Df9ks1u3r
-        Y7PYvGkqs8X2+T+ZLVrumDoIeGzbvY3VY828NYweLc09bB7z1lR77Jx1l91jwaZSj02rOtk8
-        Gg6cZ/G4c20Pm8e7c+fYPTYvqffYueMzk8fnTXIBvFF6NkX5pSWpChn5xSW2StGGFkZ6hpYW
-        ekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GR8PrGQv+M1bMb/tBlMD437uLkZODgkBE4mP
-        DQvZQWwhgaWMEof/i0HEZSROTmtghbCFJf5c62LrYuQCqnnLKLFk9QIWkISwQIrEqQ/HwYpE
-        BBQlPl04yQhSxCxwk0ViatsSZoiO2UwSJ9+DOJwcbAKGEl1vQUZxcvAK2Ek8OX4TbDWLgKrE
-        sh8LwCaJCsRJnOl5AVUjKHFy5hOwbZwCVhKLO9vB4swCZhLzNj9khrDlJZq3zoayxSVuPZnP
-        NIFRaBaS9llIWmYhaZmFpGUBI8sqRpHU0uLc9NxiQ73ixNzi0rx0veT83E2MwJSw7djPzTsY
-        L20MPsQowMGoxMObUB4fL8SaWFZcmXuIUYKDWUmE1+ns6Tgh3pTEyqrUovz4otKc1OJDjKZA
-        z01klhJNzgemq7ySeENTQ3MLS0NzY3NjMwslcd4OgYMxQgLpiSWp2ampBalFMH1MHJxSDYxt
-        twUcX+c56cctNVRk8nyxbsHE9eeKH+eEvRc6+b7+2aWqv3rWuu/4a9knTSiaV88gJ6I6XWW5
-        RcT30v/lzStMPJ6LXCm/kSF44dwqN5fKEv0Urc3PecM2zXPf4PFThqlwM8+CfVePJfZvsu1m
-        nC1yzkdtTnEvJ0t2d1ncsiv9T5drqaVtPKPEUpyRaKjFXFScCAAHJyeEHwMAAA==
-X-CMS-MailID: 20200914191300eucas1p1690684814f22581f1f83c928036abf60
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4
-References: <20200901144324.1071694-1-maz@kernel.org>
-        <20200901144324.1071694-11-maz@kernel.org>
-        <CGME20200914143236eucas1p17e8849c67d01db2c5ebb3b6a126aebf4@eucas1p1.samsung.com>
-        <3e52be78-1725-a3a2-c97c-625d46017a4b@samsung.com>
-        <e99cc81b24475c54e173e6dd0d9d827b@kernel.org>
+References: <20200914061931.21886-1-oss@malat.biz>
+In-Reply-To: <20200914061931.21886-1-oss@malat.biz>
+From:   Nick Terrell <nickrterrell@gmail.com>
+Date:   Mon, 14 Sep 2020 12:14:48 -0700
+Message-ID: <CANr2Dbft5ax3eOc1DGztLWHGqR_GztAQM1n+5HJippD9R_1e=Q@mail.gmail.com>
+Subject: Re: [PATCH] zstd: Fix decompression of large window archives on
+ 32-bit platforms
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-kernel@vger.kernel.org, gustavoars@kernel.org,
+        Nick Terrell <terrelln@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 14.09.2020 18:10, Marc Zyngier wrote:
-> On 2020-09-14 15:32, Marek Szyprowski wrote:
->> On 01.09.2020 16:43, Marc Zyngier wrote:
->>> In order to switch the bcm2836 driver to privide standard interrupts
->>> for IPIs, it first needs to stop lying about the way things work.
->>>
->>> The mailbox interrupt is actually a multiplexer, with enough
->>> bits to store 32 pending interrupts per CPU. So let's turn it
->>> into a chained irqchip.
->>>
->>> Once this is done, we can instanciate the corresponding IPIs,
->>> and pass them to the architecture code.
->>>
->>> Signed-off-by: Marc Zyngier <maz@kernel.org>
->>
->> This one also fails. It breaks booting of Raspberry Pi 3b boards (both
->> in ARM and ARM64 mode):
+On Sun, Sep 13, 2020 at 11:19 PM Petr Malat <oss@malat.biz> wrote:
 >
-> Damn. This used to work. Looks like I was eager to delete stuff at
-> some point. Can you give this a go and let me know if that works
-> for you (only tested in QEMU with the raspi2 model):
+> It seems some optimization has been removed from the code without removing
+> the if condition which should activate it only on 64-bit platforms and as
+> a result the code responsible for decompression with window larger than
+> 8MB was disabled on 32-bit platforms.
 >
-> diff --git a/drivers/irqchip/irq-bcm2836.c 
-> b/drivers/irqchip/irq-bcm2836.c
-> index 85df6ddad9be..97838eb705f9 100644
-> --- a/drivers/irqchip/irq-bcm2836.c
-> +++ b/drivers/irqchip/irq-bcm2836.c
-> @@ -193,6 +193,8 @@ static void 
-> bcm2836_arm_irqchip_ipi_send_mask(struct irq_data *d,
+> Signed-off-by: Petr Malat <oss@malat.biz>
+
+Reviewed-by: Nick Terrell <terrelln@fb.com>
+
+Thanks for the fix! I looked upstream and this fix corresponds to this
+upstream commit:
+https://github.com/facebook/zstd/commit/8a5c0c98ae5a7884694589d7a69bc99011add94d
+
+Thanks,
+Nick Terrell
+
+> ---
+>  lib/zstd/decompress.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 >
->  static struct irq_chip bcm2836_arm_irqchip_ipi = {
->      .name        = "IPI",
-> +    .irq_mask    = bcm2836_arm_irqchip_dummy_op,
-> +    .irq_unmask    = bcm2836_arm_irqchip_dummy_op,
->      .irq_eoi    = bcm2836_arm_irqchip_ipi_eoi,
->      .ipi_send_mask    = bcm2836_arm_irqchip_ipi_send_mask,
->  };
+> diff --git a/lib/zstd/decompress.c b/lib/zstd/decompress.c
+> index db6761ea4deb..509a3b8d51b9 100644
+> --- a/lib/zstd/decompress.c
+> +++ b/lib/zstd/decompress.c
+> @@ -1457,12 +1457,8 @@ static size_t ZSTD_decompressBlock_internal(ZSTD_DCtx *dctx, void *dst, size_t d
+>                 ip += litCSize;
+>                 srcSize -= litCSize;
+>         }
+> -       if (sizeof(size_t) > 4) /* do not enable prefetching on 32-bits x86, as it's performance detrimental */
+> -                               /* likely because of register pressure */
+> -                               /* if that's the correct cause, then 32-bits ARM should be affected differently */
+> -                               /* it would be good to test this on ARM real hardware, to see if prefetch version improves speed */
+> -               if (dctx->fParams.windowSize > (1 << 23))
+> -                       return ZSTD_decompressSequencesLong(dctx, dst, dstCapacity, ip, srcSize);
+> +       if (dctx->fParams.windowSize > (1 << 23))
+> +               return ZSTD_decompressSequencesLong(dctx, dst, dstCapacity, ip, srcSize);
+>         return ZSTD_decompressSequences(dctx, dst, dstCapacity, ip, srcSize);
+>  }
 >
+> --
+> 2.20.1
 >
-> Thanks again,
-
-This fixes boot on my RPi3b. Thanks!
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
