@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3314268B94
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C18DE268B92
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgINM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:58:43 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:44920 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726438AbgINMxt (ORCPT
+        id S1726603AbgINM6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgINMyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:53:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600088008;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HD6K7iEyfKt9ztXCnGE6bNakZvZxN19cANl0JTN4EYg=;
-        b=VJM7lh4QeY2XLvMwKgASpWcWig4C3jRwbKWa4J3U2g+AHmEq4vB/SbBK4504zh+cUUTm9q
-        Jnmfss2RUZ+rwKXTVAnVfmVOb9TYE7yU6pa/3W37yhZRS1bTL26X5/geIFjqzn/y9gMGL2
-        BqTC4M9bYlFrGWL9h261JBAEZIb5s/E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-4e4NH806MriLDuKVKrttrA-1; Mon, 14 Sep 2020 08:53:26 -0400
-X-MC-Unique: 4e4NH806MriLDuKVKrttrA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E84E107B113;
-        Mon, 14 Sep 2020 12:53:24 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-89.phx2.redhat.com [10.3.113.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 03E6F7E8D8;
-        Mon, 14 Sep 2020 12:53:10 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 08:53:09 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     peterz@infradead.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        linux-kernel@vger.kernel.org, valentin.schneider@arm.com
-Subject: Re: [PATCH 0/4] sched/fair: Improve fairness between cfs tasks
-Message-ID: <20200914125309.GA4008@lorien.usersys.redhat.com>
-References: <20200914100340.17608-1-vincent.guittot@linaro.org>
- <20200914114202.GQ1362448@hirez.programming.kicks-ass.net>
+        Mon, 14 Sep 2020 08:54:44 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C98C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:54:43 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id z17so3719769pgc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ngNWy/set35eDcRrocNaiD2hdN17P0QKd2jx49cDY3o=;
+        b=EFVqJGbysM76maNrv2Noz9s4+27KusZI1iGNcHSVNLnpxGrn7ZABC7ZAScHf0wo8PG
+         X4fma1wpPNK5/Sq5h7y596TswDPoXnTpknekySraTOio0HBtj54pcots2L41rFDT0Hcg
+         tpNa0Ox9XHuUQXIjYbUkB2gisdNjbq4fHRUCxvDfS6OtsiV+M2ed6eWpe2ygl8nBPMjQ
+         XIQrEc0bnmUkZPbxNTYvFbZPetMKPkUkYF5f2+ydYr5ED5D+QLWqgxdqMoEYIJiUqmhB
+         sE4uqzfYTYFCxoClJTF+POnB0fgTnndROKLoWc7iZZhra5jDdBlq6clAK2agqnWv1HDQ
+         ND2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ngNWy/set35eDcRrocNaiD2hdN17P0QKd2jx49cDY3o=;
+        b=oc+SJdVDuoRtAzBqjZBiaU6QVPk3JzQ3q9cZ7Zfj2cY7bAtrWoo01yu/Fkn+FRop1P
+         nrkQOY458WxENq7E5+Bwa4iyfU/TNAoAxiUdhTeogBi+EgZq/Gt9rRBsCKHCEkTnOEIt
+         svsIMFUnpQstRxWUA5/guDV8WYGUM7mhZJitqvBHI9kl/iiM7Sld0rDMuiOx/F2MkBOK
+         GBChQr6xpVhfIqVfN+u2poiA520lvbg9MJfmlnFi+kubwVATPypBHXZoF7ZHZspXLeZ8
+         5vjDdGOsMJTjtxY2sWnM9rrjUxBO8o6EtR1FJaesCsx9MaMhpsTovBkjGqFtRDAaLWxr
+         6bsw==
+X-Gm-Message-State: AOAM530C1zemJ40klKf11Csh/leizfP58jiHZD0LiEuKbydF+WNjbRhe
+        VohME7smD686DNvKaJOecuM=
+X-Google-Smtp-Source: ABdhPJxkzEsCFZ3P5WFOH11y+vjK7tvfj9W7/j1IhpCQI6TRunKvp8D1wlKDy9AGTQprD0xz7jWGVQ==
+X-Received: by 2002:a17:902:c407:: with SMTP id k7mr14199547plk.95.1600088080664;
+        Mon, 14 Sep 2020 05:54:40 -0700 (PDT)
+Received: from localhost (g168.115-65-169.ppp.wakwak.ne.jp. [115.65.169.168])
+        by smtp.gmail.com with ESMTPSA id w19sm10659360pfq.60.2020.09.14.05.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 05:54:39 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 21:54:37 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: Re: drivers/android/binder.c:3689: Error: unrecognized
+ keyword/register name `l.lwz
+Message-ID: <20200914125437.GA2512402@lianli.shorne-pla.net>
+References: <202009111401.bEXTltMk%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914114202.GQ1362448@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <202009111401.bEXTltMk%lkp@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 01:42:02PM +0200 peterz@infradead.org wrote:
-> On Mon, Sep 14, 2020 at 12:03:36PM +0200, Vincent Guittot wrote:
-> > Vincent Guittot (4):
-> >   sched/fair: relax constraint on task's load during load balance
-> >   sched/fair: reduce minimal imbalance threshold
-> >   sched/fair: minimize concurrent LBs between domain level
-> >   sched/fair: reduce busy load balance interval
+On Fri, Sep 11, 2020 at 02:37:14PM +0800, kernel test robot wrote:
+> Hi Stafford,
 > 
-> I see nothing objectionable there, a little more testing can't hurt, but
-> I'm tempted to apply them.
-> 
-> Phil, Mel, any chance you can run them through your respective setups?
-> 
+> FYI, the error/warning still remains.
 
-Yep. I'll try to get something started today, results in a few days.
+A change was merged to master today that should fix this.  Please let me know if
+it's still an issue.
 
-These look pretty inocuous. It'll be interesting to see the effect is.
-
-
-Cheers,
-Phil
--- 
+-Stafford
 
