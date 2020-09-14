@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F3A269694
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BC7269693
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbgINU2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
+        id S1725953AbgINU27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgINU2S (ORCPT
+        with ESMTP id S1726354AbgINU2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:28:18 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED51FC06178C;
-        Mon, 14 Sep 2020 13:28:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a17so991604wrn.6;
-        Mon, 14 Sep 2020 13:28:16 -0700 (PDT)
+        Mon, 14 Sep 2020 16:28:22 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B558C061797;
+        Mon, 14 Sep 2020 13:28:18 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id a9so1325997wmm.2;
+        Mon, 14 Sep 2020 13:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QKEcj6oDHmXRZ5pplKPHEAFNzhGOvMPel3F0ifZLyHc=;
-        b=rmqKvBojcrH/eecdca40UuBSY/P6OcDg74bM+TOTOjb8EwT55dNJNb3mFK24M/amrX
-         uQjmhPXBp49aW14NXySS8z8LUey1I6CfGp5pkHioNe3M11LiFSAHsq0G6oyoZvBY9vH6
-         gGWgrIi/uuoUDeb+CWLy3x2HpIR8wI+9fXH5L8BYPe/I5wArIFft2HV7hAw2aMCyr7JL
-         SNjRMZDRr+UNw37FZC67UtDGOKwB3yqqE9y9UZZ5TCzDZnpHZd/KKMIrJEKT2H/fWThX
-         XCbG7B2Dck3CVKUNerPYtnNWR9h8kQbrElMcOuZfkkZKOXK3sQKfGZQs+9AOHZbLB87y
-         gOiw==
+        bh=TfJihMsMhRJ/+S5wdJVUFID0QqKRghvIoFnr9LgeHsI=;
+        b=Ow+KrT1hJoCNp5PDVmlVjEkGtwFSY3Q+i8M57SEWD1JW8QM4rmmS2K5gJhCfTkkO2k
+         rB2iBbS2O6iVQLocnzqa7vZebmeaXLfK7b4bHgil7YgjIi4/+7+/SXVl3gXIoqSUDazp
+         M0uSVbN8medDnudRkqf8TwZdwSeKIp774InnBnfJjfuvs+oDzP6x4vi7z8bX2N5E4TX3
+         0iDBAm/Sj8X3S9QFsy1cnzFaM3/Bz6IIHem3cWEpGdQPAb3SG5ct2tOW2mHaqRn2fYSY
+         ttYoCsuGbj0zDqECbxv4V0NiKhnbShfwF436cWhOo5gDRpdiSxfFeh4pzsf2zMVjb76M
+         AyWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QKEcj6oDHmXRZ5pplKPHEAFNzhGOvMPel3F0ifZLyHc=;
-        b=gKcYTTjG2wjYDSL9djfd00bpiLij2NqBE5cPNzHM95dLOKCKs7ydCQFyQ8UIwwDDeo
-         +6o5zPUt868YSxdLyj6bprId1a88m/ea1IG9JjfI2aosnmxbEa8Xu3ugSHITVMHx1krv
-         +89Hv1x2qnEHVGTBfWfar/qyw7verJ6Gz5/E/MqvU5XwkS8g/Gk438Z4z81vWwrrNs/1
-         vDUhyt693OrPYqWslXHQCn84V+pBuGLnhElozVHYArbCF8EWSPIPfJTA5JdUYJ8ufS4u
-         RdelzBXkbWtwu0/rrPmLPTJY7akChBek7h82iu19UVFQB0S+oCAYbVirqY9ZX3W8lDI6
-         A2Jw==
-X-Gm-Message-State: AOAM530KfKJP3dFHutu8HM5+OCK2fUmsXXTxtfDPTBl9kgu/XV/5w7Wy
-        baoRUAS3GwIptuBZmGJJh3U=
-X-Google-Smtp-Source: ABdhPJxCePpNmRdLTbbRYjcOU0/T+9jzaEDj9XI9+7/pYvBRIP6jiis4kqN/4IIL1w4hvSDTlvk4Ag==
-X-Received: by 2002:adf:f852:: with SMTP id d18mr17631937wrq.245.1600115295552;
-        Mon, 14 Sep 2020 13:28:15 -0700 (PDT)
+        bh=TfJihMsMhRJ/+S5wdJVUFID0QqKRghvIoFnr9LgeHsI=;
+        b=pgsbZU9/B5gB/orirrm6MStOO89jPTl48eOotynGhQbCbcKP1mtta6Ps8wEazIbB9R
+         rqpOzaqeGwnE1LFyS/3DVymTD4zj9MRnlz7zWi3BarTCeYCUy7yTE8Cim9YnV7Ez6se4
+         JAmmNAnVpIypsza2N3h/TC+gnskXG3A0dttgbzm0uHLR+P2tvCL63YEQnOB+CkQM4Ibp
+         UFoULQFWDTQ1WYAKMRbZpoXWzRn1uvbVZlDWWXObkeHjxZZmtxvWNqZzoRgzh9QwH999
+         FSlITf/juUD3CPHb+jEdcrs1O9ImlZfWiWqDDv86MJCiaXk94/SNTu3vnqOKWYn8K3wo
+         +8hg==
+X-Gm-Message-State: AOAM531/+8p5aLOOSBMfoFHfA0ScES9XQ0QPVTozTxCsrx2Ezs+LNUHJ
+        pOF5Fm6cTsMXzRrnkKkB+DU=
+X-Google-Smtp-Source: ABdhPJzcF41Qz2Eg0LtglB5VAz+lTAIxTvoWphE1MTNH/z14nj9t+eMEVyOzfQXZ+frpcQa2lb/y6A==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr1075224wmi.186.1600115297164;
+        Mon, 14 Sep 2020 13:28:17 -0700 (PDT)
 Received: from localhost.localdomain (oi48z9.static.otenet.gr. [79.129.51.141])
-        by smtp.gmail.com with ESMTPSA id 92sm24201125wra.19.2020.09.14.13.28.13
+        by smtp.gmail.com with ESMTPSA id 92sm24201125wra.19.2020.09.14.13.28.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 13:28:15 -0700 (PDT)
+        Mon, 14 Sep 2020 13:28:16 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
@@ -57,11 +57,10 @@ To:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
 Cc:     parthiban@linumiz.com, Saravanan Sekar <sravanhome@gmail.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org,
-        Parthiban Nallathambi <pn@denx.de>
-Subject: [PATCH v7 2/3] irqchip: Add Actions Semi Owl SIRQ controller
-Date:   Mon, 14 Sep 2020 23:27:18 +0300
-Message-Id: <1a010ef0eb78831b5657d74a0fcdef7a8efb2ec4.1600114378.git.cristian.ciocaltea@gmail.com>
+        linux-actions@lists.infradead.org
+Subject: [PATCH v7 3/3] MAINTAINERS: Add entries for Actions Semi Owl SIRQ controller
+Date:   Mon, 14 Sep 2020 23:27:19 +0300
+Message-Id: <174084658e46824a02edf41beae134214d858d46.1600114378.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <cover.1600114378.git.cristian.ciocaltea@gmail.com>
 References: <cover.1600114378.git.cristian.ciocaltea@gmail.com>
@@ -72,424 +71,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This interrupt controller is found in the Actions Semi Owl SoCs (S500,
-S700 and S900) and provides support for handling up to 3 external
-interrupt lines.
+Add entries for Actions Semi Owl SIRQ controller binding and driver.
 
-Each line can be independently configured as interrupt and triggers on
-either of the edges or either of the levels. Additionally, each line
-can also be masked individually.
-
-Co-developed-by: Parthiban Nallathambi <pn@denx.de>
-Signed-off-by: Parthiban Nallathambi <pn@denx.de>
-Co-developed-by: Saravanan Sekar <sravanhome@gmail.com>
-Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
-Changes in v7 - commit message update:
- - Added the missing Co-developed-by tags, as indicated by Marc
- - Removed the obsolete statements regarding the base work
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes in v6:
- - Got rid of the of_match table and used IRQCHIP_DECLARE for each
-   of the 3 driver compatibles
- - Transformed owl_sirq_of_init() into a helper function: renamed
-   to owl_sirq_of_init(), dropped handling of the custom property
-   'actions,ext-interrupts' and used standard API for parsing the
-   replacement 'interrupts'
- - Used GIC_SPI constant instead of the related number
- - Minor changes in the commit message
-
-Changes in v5 - according to Marc's review:
- - Updated commit message
- - Aligned members in struct owl_sirq_chip_data
- - Added naming for SIRQ0 control register offset
- - Improved code readability by using FIELD_PREP and FIELD_GET
- - Dropped redundant handling of the IRQ trigger information
- - Added missing irq_set_affinity to owl_sirq_chip descriptor
-
- drivers/irqchip/Makefile       |   1 +
- drivers/irqchip/irq-owl-sirq.c | 359 +++++++++++++++++++++++++++++++++
- 2 files changed, 360 insertions(+)
- create mode 100644 drivers/irqchip/irq-owl-sirq.c
-
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 133f9c45744a..b8eb5b8b766d 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -7,6 +7,7 @@ obj-$(CONFIG_ATH79)			+= irq-ath79-cpu.o
- obj-$(CONFIG_ATH79)			+= irq-ath79-misc.o
- obj-$(CONFIG_ARCH_BCM2835)		+= irq-bcm2835.o
- obj-$(CONFIG_ARCH_BCM2835)		+= irq-bcm2836.o
-+obj-$(CONFIG_ARCH_ACTIONS)		+= irq-owl-sirq.o
- obj-$(CONFIG_DAVINCI_AINTC)		+= irq-davinci-aintc.o
- obj-$(CONFIG_DAVINCI_CP_INTC)		+= irq-davinci-cp-intc.o
- obj-$(CONFIG_EXYNOS_IRQ_COMBINER)	+= exynos-combiner.o
-diff --git a/drivers/irqchip/irq-owl-sirq.c b/drivers/irqchip/irq-owl-sirq.c
-new file mode 100644
-index 000000000000..6e4127465094
---- /dev/null
-+++ b/drivers/irqchip/irq-owl-sirq.c
-@@ -0,0 +1,359 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Actions Semi Owl SoCs SIRQ interrupt controller driver
-+ *
-+ * Copyright (C) 2014 Actions Semi Inc.
-+ * David Liu <liuwei@actions-semi.com>
-+ *
-+ * Author: Parthiban Nallathambi <pn@denx.de>
-+ * Author: Saravanan Sekar <sravanhome@gmail.com>
-+ * Author: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/interrupt.h>
-+#include <linux/irqchip.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+#define NUM_SIRQ			3
-+
-+#define INTC_EXTCTL_PENDING		BIT(0)
-+#define INTC_EXTCTL_CLK_SEL		BIT(4)
-+#define INTC_EXTCTL_EN			BIT(5)
-+#define INTC_EXTCTL_TYPE_MASK		GENMASK(7, 6)
-+#define INTC_EXTCTL_TYPE_HIGH		0
-+#define INTC_EXTCTL_TYPE_LOW		BIT(6)
-+#define INTC_EXTCTL_TYPE_RISING		BIT(7)
-+#define INTC_EXTCTL_TYPE_FALLING	(BIT(6) | BIT(7))
-+
-+/* S500 & S700 SIRQ control register masks */
-+#define INTC_EXTCTL_SIRQ0_MASK		GENMASK(23, 16)
-+#define INTC_EXTCTL_SIRQ1_MASK		GENMASK(15, 8)
-+#define INTC_EXTCTL_SIRQ2_MASK		GENMASK(7, 0)
-+
-+/* S900 SIRQ control register offsets, relative to controller base address */
-+#define INTC_EXTCTL0			0x0000
-+#define INTC_EXTCTL1			0x0328
-+#define INTC_EXTCTL2			0x032c
-+
-+struct owl_sirq_params {
-+	/* INTC_EXTCTL reg shared for all three SIRQ lines */
-+	bool reg_shared;
-+	/* INTC_EXTCTL reg offsets relative to controller base address */
-+	u16 reg_offset[NUM_SIRQ];
-+};
-+
-+struct owl_sirq_chip_data {
-+	const struct owl_sirq_params	*params;
-+	void __iomem			*base;
-+	raw_spinlock_t			lock;
-+	u32				ext_irqs[NUM_SIRQ];
-+};
-+
-+/* S500 & S700 SoCs */
-+static const struct owl_sirq_params owl_sirq_s500_params = {
-+	.reg_shared = true,
-+	.reg_offset = { 0, 0, 0 },
-+};
-+
-+/* S900 SoC */
-+static const struct owl_sirq_params owl_sirq_s900_params = {
-+	.reg_shared = false,
-+	.reg_offset = { INTC_EXTCTL0, INTC_EXTCTL1, INTC_EXTCTL2 },
-+};
-+
-+static u32 owl_field_get(u32 val, u32 index)
-+{
-+	switch (index) {
-+	case 0:
-+		return FIELD_GET(INTC_EXTCTL_SIRQ0_MASK, val);
-+	case 1:
-+		return FIELD_GET(INTC_EXTCTL_SIRQ1_MASK, val);
-+	case 2:
-+	default:
-+		return FIELD_GET(INTC_EXTCTL_SIRQ2_MASK, val);
-+	}
-+}
-+
-+static u32 owl_field_prep(u32 val, u32 index)
-+{
-+	switch (index) {
-+	case 0:
-+		return FIELD_PREP(INTC_EXTCTL_SIRQ0_MASK, val);
-+	case 1:
-+		return FIELD_PREP(INTC_EXTCTL_SIRQ1_MASK, val);
-+	case 2:
-+	default:
-+		return FIELD_PREP(INTC_EXTCTL_SIRQ2_MASK, val);
-+	}
-+}
-+
-+static u32 owl_sirq_read_extctl(struct owl_sirq_chip_data *data, u32 index)
-+{
-+	u32 val;
-+
-+	val = readl_relaxed(data->base + data->params->reg_offset[index]);
-+	if (data->params->reg_shared)
-+		val = owl_field_get(val, index);
-+
-+	return val;
-+}
-+
-+static void owl_sirq_write_extctl(struct owl_sirq_chip_data *data,
-+				  u32 extctl, u32 index)
-+{
-+	u32 val;
-+
-+	if (data->params->reg_shared) {
-+		val = readl_relaxed(data->base + data->params->reg_offset[index]);
-+		val &= ~owl_field_prep(0xff, index);
-+		extctl = owl_field_prep(extctl, index) | val;
-+	}
-+
-+	writel_relaxed(extctl, data->base + data->params->reg_offset[index]);
-+}
-+
-+static void owl_sirq_clear_set_extctl(struct owl_sirq_chip_data *d,
-+				      u32 clear, u32 set, u32 index)
-+{
-+	unsigned long flags;
-+	u32 val;
-+
-+	raw_spin_lock_irqsave(&d->lock, flags);
-+	val = owl_sirq_read_extctl(d, index);
-+	val &= ~clear;
-+	val |= set;
-+	owl_sirq_write_extctl(d, val, index);
-+	raw_spin_unlock_irqrestore(&d->lock, flags);
-+}
-+
-+static void owl_sirq_eoi(struct irq_data *data)
-+{
-+	struct owl_sirq_chip_data *chip_data = irq_data_get_irq_chip_data(data);
-+
-+	/*
-+	 * Software must clear external interrupt pending, when interrupt type
-+	 * is edge triggered, so we need per SIRQ based clearing.
-+	 */
-+	if (!irqd_is_level_type(data))
-+		owl_sirq_clear_set_extctl(chip_data, 0, INTC_EXTCTL_PENDING,
-+					  data->hwirq);
-+
-+	irq_chip_eoi_parent(data);
-+}
-+
-+static void owl_sirq_mask(struct irq_data *data)
-+{
-+	struct owl_sirq_chip_data *chip_data = irq_data_get_irq_chip_data(data);
-+
-+	owl_sirq_clear_set_extctl(chip_data, INTC_EXTCTL_EN, 0, data->hwirq);
-+	irq_chip_mask_parent(data);
-+}
-+
-+static void owl_sirq_unmask(struct irq_data *data)
-+{
-+	struct owl_sirq_chip_data *chip_data = irq_data_get_irq_chip_data(data);
-+
-+	owl_sirq_clear_set_extctl(chip_data, 0, INTC_EXTCTL_EN, data->hwirq);
-+	irq_chip_unmask_parent(data);
-+}
-+
-+/*
-+ * GIC does not handle falling edge or active low, hence SIRQ shall be
-+ * programmed to convert falling edge to rising edge signal and active
-+ * low to active high signal.
-+ */
-+static int owl_sirq_set_type(struct irq_data *data, unsigned int type)
-+{
-+	struct owl_sirq_chip_data *chip_data = irq_data_get_irq_chip_data(data);
-+	u32 sirq_type;
-+
-+	switch (type) {
-+	case IRQ_TYPE_LEVEL_LOW:
-+		sirq_type = INTC_EXTCTL_TYPE_LOW;
-+		type = IRQ_TYPE_LEVEL_HIGH;
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		sirq_type = INTC_EXTCTL_TYPE_HIGH;
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		sirq_type = INTC_EXTCTL_TYPE_FALLING;
-+		type = IRQ_TYPE_EDGE_RISING;
-+		break;
-+	case IRQ_TYPE_EDGE_RISING:
-+		sirq_type = INTC_EXTCTL_TYPE_RISING;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	owl_sirq_clear_set_extctl(chip_data, INTC_EXTCTL_TYPE_MASK, sirq_type,
-+				  data->hwirq);
-+
-+	return irq_chip_set_type_parent(data, type);
-+}
-+
-+static struct irq_chip owl_sirq_chip = {
-+	.name		= "owl-sirq",
-+	.irq_mask	= owl_sirq_mask,
-+	.irq_unmask	= owl_sirq_unmask,
-+	.irq_eoi	= owl_sirq_eoi,
-+	.irq_set_type	= owl_sirq_set_type,
-+	.irq_retrigger	= irq_chip_retrigger_hierarchy,
-+#ifdef CONFIG_SMP
-+	.irq_set_affinity = irq_chip_set_affinity_parent,
-+#endif
-+};
-+
-+static int owl_sirq_domain_translate(struct irq_domain *d,
-+				     struct irq_fwspec *fwspec,
-+				     unsigned long *hwirq,
-+				     unsigned int *type)
-+{
-+	if (!is_of_node(fwspec->fwnode))
-+		return -EINVAL;
-+
-+	if (fwspec->param_count != 2 || fwspec->param[0] >= NUM_SIRQ)
-+		return -EINVAL;
-+
-+	*hwirq = fwspec->param[0];
-+	*type = fwspec->param[1];
-+
-+	return 0;
-+}
-+
-+static int owl_sirq_domain_alloc(struct irq_domain *domain, unsigned int virq,
-+				 unsigned int nr_irqs, void *data)
-+{
-+	struct owl_sirq_chip_data *chip_data = domain->host_data;
-+	struct irq_fwspec *fwspec = data;
-+	struct irq_fwspec parent_fwspec;
-+	irq_hw_number_t hwirq;
-+	unsigned int type;
-+	int ret;
-+
-+	if (WARN_ON(nr_irqs != 1))
-+		return -EINVAL;
-+
-+	ret = owl_sirq_domain_translate(domain, fwspec, &hwirq, &type);
-+	if (ret)
-+		return ret;
-+
-+	switch (type) {
-+	case IRQ_TYPE_EDGE_RISING:
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		type = IRQ_TYPE_EDGE_RISING;
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		type = IRQ_TYPE_LEVEL_HIGH;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	irq_domain_set_hwirq_and_chip(domain, virq, hwirq, &owl_sirq_chip,
-+				      chip_data);
-+
-+	parent_fwspec.fwnode = domain->parent->fwnode;
-+	parent_fwspec.param_count = 3;
-+	parent_fwspec.param[0] = GIC_SPI;
-+	parent_fwspec.param[1] = chip_data->ext_irqs[hwirq];
-+	parent_fwspec.param[2] = type;
-+
-+	return irq_domain_alloc_irqs_parent(domain, virq, 1, &parent_fwspec);
-+}
-+
-+static const struct irq_domain_ops owl_sirq_domain_ops = {
-+	.translate	= owl_sirq_domain_translate,
-+	.alloc		= owl_sirq_domain_alloc,
-+	.free		= irq_domain_free_irqs_common,
-+};
-+
-+static int __init owl_sirq_init(const struct owl_sirq_params *params,
-+				struct device_node *node,
-+				struct device_node *parent)
-+{
-+	struct irq_domain *domain, *parent_domain;
-+	struct owl_sirq_chip_data *chip_data;
-+	int ret, i;
-+
-+	parent_domain = irq_find_host(parent);
-+	if (!parent_domain) {
-+		pr_err("%pOF: failed to find sirq parent domain\n", node);
-+		return -ENXIO;
-+	}
-+
-+	chip_data = kzalloc(sizeof(*chip_data), GFP_KERNEL);
-+	if (!chip_data)
-+		return -ENOMEM;
-+
-+	raw_spin_lock_init(&chip_data->lock);
-+
-+	chip_data->params = params;
-+
-+	chip_data->base = of_iomap(node, 0);
-+	if (!chip_data->base) {
-+		pr_err("%pOF: failed to map sirq registers\n", node);
-+		ret = -ENXIO;
-+		goto out_free;
-+	}
-+
-+	for (i = 0; i < NUM_SIRQ; i++) {
-+		struct of_phandle_args irq;
-+
-+		ret = of_irq_parse_one(node, i, &irq);
-+		if (ret) {
-+			pr_err("%pOF: failed to parse interrupt %d\n", node, i);
-+			goto out_unmap;
-+		}
-+
-+		if (WARN_ON(irq.args_count != 3)) {
-+			ret = -EINVAL;
-+			goto out_unmap;
-+		}
-+
-+		chip_data->ext_irqs[i] = irq.args[1];
-+
-+		/* Set 24MHz external interrupt clock freq */
-+		owl_sirq_clear_set_extctl(chip_data, 0, INTC_EXTCTL_CLK_SEL, i);
-+	}
-+
-+	domain = irq_domain_add_hierarchy(parent_domain, 0, NUM_SIRQ, node,
-+					  &owl_sirq_domain_ops, chip_data);
-+	if (!domain) {
-+		pr_err("%pOF: failed to add domain\n", node);
-+		ret = -ENOMEM;
-+		goto out_unmap;
-+	}
-+
-+	return 0;
-+
-+out_unmap:
-+	iounmap(chip_data->base);
-+out_free:
-+	kfree(chip_data);
-+
-+	return ret;
-+}
-+
-+static int __init owl_sirq_s500_of_init(struct device_node *node,
-+					struct device_node *parent)
-+{
-+	return owl_sirq_init(&owl_sirq_s500_params, node, parent);
-+}
-+
-+IRQCHIP_DECLARE(owl_sirq_s500, "actions,s500-sirq", owl_sirq_s500_of_init);
-+IRQCHIP_DECLARE(owl_sirq_s700, "actions,s700-sirq", owl_sirq_s500_of_init);
-+
-+static int __init owl_sirq_s900_of_init(struct device_node *node,
-+					struct device_node *parent)
-+{
-+	return owl_sirq_init(&owl_sirq_s900_params, node, parent);
-+}
-+
-+IRQCHIP_DECLARE(owl_sirq_s900, "actions,s900-sirq", owl_sirq_s900_of_init);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9544eec4eff2..04c75815fac6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1525,6 +1525,7 @@ F:	Documentation/devicetree/bindings/arm/actions.yaml
+ F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
+ F:	Documentation/devicetree/bindings/dma/owl-dma.txt
+ F:	Documentation/devicetree/bindings/i2c/i2c-owl.txt
++F:	Documentation/devicetree/bindings/interrupt-controller/actions,owl-sirq.yaml
+ F:	Documentation/devicetree/bindings/mmc/owl-mmc.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/actions,*
+ F:	Documentation/devicetree/bindings/power/actions,owl-sps.txt
+@@ -1536,6 +1537,7 @@ F:	drivers/clk/actions/
+ F:	drivers/clocksource/timer-owl*
+ F:	drivers/dma/owl-dma.c
+ F:	drivers/i2c/busses/i2c-owl.c
++F:	drivers/irqchip/irq-owl-sirq.c
+ F:	drivers/mmc/host/owl-mmc.c
+ F:	drivers/pinctrl/actions/*
+ F:	drivers/soc/actions/
 -- 
 2.28.0
 
