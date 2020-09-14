@@ -2,174 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CD2269434
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5E8269435
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgINRxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgINRxO (ORCPT
+        id S1726118AbgINRyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:54:05 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:37189 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgINRx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:53:14 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACBBC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:53:13 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q9so879219wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZKhv5rTCRwwZYJ4fJZiFA0QJHdmQ369d7Ye56iqS39I=;
-        b=LSYBezCbF3qD2J1/hnvedLtI3NNJxjkCI3H7K3OpFvBX9JZU0AhCfLK8/EptPQIA1x
-         AzWCI/TnXymeOP930uBLk0o6wdCrYsuqj1ik1lCEEVx3QSZI4XJkHJ61lRT4e5wbGq9z
-         hlCIWs01gU+mS+7JoC9yORjrjQkPCTlgo2oho=
+        Mon, 14 Sep 2020 13:53:57 -0400
+Received: by mail-il1-f193.google.com with SMTP id q4so421297ils.4;
+        Mon, 14 Sep 2020 10:53:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZKhv5rTCRwwZYJ4fJZiFA0QJHdmQ369d7Ye56iqS39I=;
-        b=oq4lbHsgm8cq32u/wZF0v0a/mBn9LxvDebQi31+ZU0HLvs9y0SlWaf6xpVk4t+XvwR
-         SKa8YTMtgsQIANud7tP8AmGMzPN1wv2eiNp0GOjaIhYKnU1MLMlv3iJTmJ12VDv3DsPF
-         DvC/TF2yVhKGSOwsZtLBHIx7q1pCdfGyMQA8szECEkGfgKNn8cIYmMdr9INpbSEtxFlH
-         ZjENjzBG0oiPQiqdbzxip/imXEhB9FYZfuHp/ORKKx4DGArUHRsbnvyHvpLrQcZM7C4s
-         PyBAhhvn49VVm3QXy9mdxMuywzmTR0fC/nREPTH2z1MGtGnu+LP4dma2+ve2qB9HVKeg
-         fD3Q==
-X-Gm-Message-State: AOAM531ctUZ46Hv8FnTKc6tD2t8BmWgmtY5iWFN7PMrjlo2xJSket+jy
-        9EkGlcNKf3zCmWi3kN2vOhj9ekXpXSYU+HV9IGp+
-X-Google-Smtp-Source: ABdhPJxw1Qpj5A7GWHWLHZ09ZPMi/B/UvNz/rjGtLMnwaH4Nhx+vHKTB51J5Q9V4CbzLicMUN+/4uZ5UPpaX2uHHBfE=
-X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr531634wml.176.1600105992277;
- Mon, 14 Sep 2020 10:53:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2qj8tRwwb6mL83OdJiTqiFtTk2+6xjuz2fEjNrt8UOA=;
+        b=bLg83qzTSRF5HwOaljMJkzL1nUBn5dPdLbvT6ZjYWZQmmr9misnlDASY1i+z7bwftD
+         A0lw9ABGMIYYErqaOQLIwAB5UHBnKfTCCflIDGxosjrXIlLHB/xw5btHvk1NcUPqeXQB
+         C5y+e/3+4wl3wcDIE9mO3MlD37SqaYwU6sxKPESxrA7syInEd+wtpFAD5YysxcZ3OZ+t
+         XaRumQLwmZbHcDjuxOMRbcWMUh+L2Ej+8AaHNXqE8idgrObyx9k1zU2bvCIrf5sz8zir
+         I9dqjQ9hfUCM75V9I02Ug3hepw4UWuSeAfhn0G5Hg4DQ6Q5U0uW0KExAPV4nqn4pd9he
+         cCZQ==
+X-Gm-Message-State: AOAM530QGbpre6ukfMgOKJSAj60e+oS4ie1zns1fD09R81tzt3sJZukv
+        caaAyMCDVx0eR76UT3h4cw==
+X-Google-Smtp-Source: ABdhPJwZuEEOjA/38pkz+xsbLFQQ6WIEeX2g3Z1se/ADcSs7SpH1DoVj5rbLnF/FSEQ/Gu+Mov/xKQ==
+X-Received: by 2002:a92:7c03:: with SMTP id x3mr13668869ilc.241.1600106036059;
+        Mon, 14 Sep 2020 10:53:56 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id c6sm3414096ils.86.2020.09.14.10.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 10:53:55 -0700 (PDT)
+Received: (nullmailer pid 4136085 invoked by uid 1000);
+        Mon, 14 Sep 2020 17:53:53 -0000
+Date:   Mon, 14 Sep 2020 11:53:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
+Cc:     linux-media@vger.kernel.org, mchehab@kernel.org,
+        mark.rutland@arm.com, mripard@kernel.org, wens@csie.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        paul.kocialkowski@bootlin.com, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: media: i2c: Add documentation for
+ ov8865
+Message-ID: <20200914175353.GA4127535@bogus>
+References: <20200828131134.12113-1-kevin.lhopital@bootlin.com>
+ <20200828131134.12113-2-kevin.lhopital@bootlin.com>
 MIME-Version: 1.0
-References: <20200912002341.4869-1-atish.patra@wdc.com> <20200912104502.GF2142832@kernel.org>
- <CAOnJCU+yK8uxFU-zv5BPTzmtxwiVpiPxGsNkVEtnTQ+64UU-ug@mail.gmail.com> <CAAhSdy0cudvf4Lc3YaSc7MH5oGH1V60C3rToMUZU01LPxRWLKQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy0cudvf4Lc3YaSc7MH5oGH1V60C3rToMUZU01LPxRWLKQ@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Mon, 14 Sep 2020 10:53:00 -0700
-Message-ID: <CAOnJCUKqUZVTKzgjK0=Kj_WCZU+hP27SX8V0mvT+2AVk_MMC5w@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Consider sparse memory while removing unusable memory
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200828131134.12113-2-kevin.lhopital@bootlin.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 4:52 AM Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Sep 14, 2020 at 5:18 AM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Sat, Sep 12, 2020 at 3:45 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > >
-> > > Hello Atish,
-> > >
-> > > On Fri, Sep 11, 2020 at 05:23:41PM -0700, Atish Patra wrote:
-> > > > Currently, any usable memory area beyond page_offset is removed by adding the
-> > > > memory sizes from each memblock. That may not work for sparse memory
-> > > > as memory regions can be very far apart resulting incorrect removal of some
-> > > > usable memory.
-> > >
-> > > If I understand correctly, the memory with physical addresses larger
-> > > than (-PAGE_OFFSET) cannot be used. Since it was aready
-> > > memblock_add()'ed during device tree parsing, you need to remove it from
-> > > memblock.
-> > >
-> >
-> > IIRC, the original intention was to fix MAXPHYSMEM_2GB option for RV64
-> > for the medlow model.
-> > That's why the patch removed any memory beyond -PAGE_OFFSET.
-> >
-> > > For that you can use memblock_enforce_memory_limit(-PAGE_OFFSET).
-> > >
-> > Thanks. I think we can just call memblock_enforce_memory_limit without
-> > tracking the total memory size
-> > and whether maximum memory described in DT is greater than  -PAGE_OFFSET.
-> >
-> > @Anup Patel Was there any other reason for this change originally?
->
-> No other reason. We just wanted to ensure that amount of memory addressable
-> by kernel (i.e. -PAGE_OFFSET) is also considered when removing memblock.
->
+On Fri, Aug 28, 2020 at 03:11:32PM +0200, Kévin L'hôpital wrote:
+> Add a documentation for the sensor ov8865 from Omnivision.
+> 
+> Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> ---
+>  .../devicetree/bindings/media/i2c/ov8865.yaml | 165 ++++++++++++++++++
 
-It looks like we have an agreement here then. I will update the patch
-to directly call
-memblock_enforce_memory_limit as suggested by Mike.
+Use the compatible string for the filename.
 
-> Regards,
-> Anup
->
-> >
-> > > > Just use the start of the first memory block and the end of the last memory
-> > > > block to compute the size of the total memory that can be used.
-> > > >
-> > > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > > > ---
-> > > >  arch/riscv/mm/init.c | 6 ++----
-> > > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > > index 787c75f751a5..188281fc2816 100644
-> > > > --- a/arch/riscv/mm/init.c
-> > > > +++ b/arch/riscv/mm/init.c
-> > > > @@ -147,7 +147,6 @@ void __init setup_bootmem(void)
-> > > >  {
-> > > >       struct memblock_region *reg;
-> > > >       phys_addr_t mem_size = 0;
-> > > > -     phys_addr_t total_mem = 0;
-> > > >       phys_addr_t mem_start, end = 0;
-> > > >       phys_addr_t vmlinux_end = __pa_symbol(&_end);
-> > > >       phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> > > > @@ -155,18 +154,17 @@ void __init setup_bootmem(void)
-> > > >       /* Find the memory region containing the kernel */
-> > > >       for_each_memblock(memory, reg) {
-> > > >               end = reg->base + reg->size;
-> > > > -             if (!total_mem)
-> > > > +             if (!mem_start)
-> > > >                       mem_start = reg->base;
-> > > >               if (reg->base <= vmlinux_start && vmlinux_end <= end)
-> > > >                       BUG_ON(reg->size == 0);
-> > > > -             total_mem = total_mem + reg->size;
-> > > >       }
-> > > >
-> > > >       /*
-> > > >        * Remove memblock from the end of usable area to the
-> > > >        * end of region
-> > > >        */
-> > > > -     mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> > > > +     mem_size = min(end - mem_start, (phys_addr_t)-PAGE_OFFSET);
-> > > >       if (mem_start + mem_size < end)
-> > > >               memblock_remove(mem_start + mem_size,
-> > > >                               end - mem_start - mem_size);
-> > > > --
-> > > > 2.24.0
-> > > >
-> > >
-> > > --
-> > > Sincerely yours,
-> > > Mike.
-> > >
-> > > _______________________________________________
-> > > linux-riscv mailing list
-> > > linux-riscv@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
+>  1 file changed, 165 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/ov8865.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ov8865.yaml b/Documentation/devicetree/bindings/media/i2c/ov8865.yaml
+> new file mode 100644
+> index 000000000000..468ddfd48c7a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/ov8865.yaml
+> @@ -0,0 +1,165 @@
+> +# SPDX-License-Identifier: (GPL-2.0 0R BSD-2-Clause)
+> +# Copyright (C) 2020 Kévin L'hôpital
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/ov8865.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Omnivision OV8865 Sensor Device Tree Bindings
+> +
+> +maintainers:
+> +  - Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> +
+> +description: |-
+> +  The Omnivision OV8865 is a image sensor that supports up to 3264x2448. It
+> +  provides a 10 bits output format and a MIPI CSI2 interface (up to 4-lane).
+> +  This chip is programmable through I2C.
+> +
+> +properties:
+> +  compatible:
+> +    const: ovti,ov8865
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  pinctrl-names:
+> +    description:
+> +      Default name for the ov8865 pinctrl.
+> +
+> +  pinctrl-0:
+> +    description:
+> +      Pinctrl for the ov8865.
 
+You can drop pinctrl-*. They are automatically added.
 
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    description:
+> +      Input clock name for the sensor.
+> +
+> +    items:
+> +      - const: xclk
+> +
+> +  avdd-supply:
+> +    description:
+> +      Definition of the regulator used as analog power supply.
+> +
+> +  dovdd-supply:
+> +    description:
+> +      Definition of the regulator used as interface power supply.
+> +
+> +  vdd2-supply:
+> +    description:
+> +      Definition of the regulator used as digital power supply
+> +
+> +  afvdd-supply:
+> +    description:
+> +      Definition of the regulator used as actuator power supply.
+> +
+> +  powerdown-gpios:
+> +    description:
+> +      reference to the GPIO connceted to the powerdown pin. This is an active
+> +      low signal on the OV8865.
+> +
+> +  reset-gpios:
+> +    description:
+> +      Reference to the GPIO connected to the reset pin. This is an active low
+> +      signal for the OV8865.
+> +
+> +  rotation:
+> +    description:
+> +      Position of the sensor, the valid values are 0 (sensor mounted upright)
+> +      and 180 (sensor mounted upside down).
 
--- 
-Regards,
-Atish
+Constraints, not free form text:
+
+enum: [ 0, 180 ]
+
+> +
+> +  port:
+> +    type: object
+> +    additionalProperties: false
+> +    description:
+> +      A node containing an output port node with an endpoint definition as
+> +      documented in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt
+> +
+> +    properties:
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          data-lanes:
+> +            description:
+> +              The driver only supports four-lane operation.
+
+Not relevant to the h/w description.
+
+> +            items:
+> +              - const: 1
+> +              - const: 2
+> +              - const: 3
+> +              - const: 4
+> +
+> +          clock-lanes:
+> +            items:
+> +              const: 0
+
+If fixed in the h/w, it doesn't need to be in DT.
+
+> +
+> +          bus-type:
+> +            description:
+> +              The driver only supports the MIPI CSI2
+> +            items:
+> +              const: 4
+
+Both of the above comments apply here...
+
+> +
+> +        required:
+> +          - data-lanes
+> +          - clock-lanes
+> +          - bus-type
+> +
+> +    required:
+> +      - endpoint
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - pinctrl-names
+> +  - pinctrl-0
+> +  - clocks
+> +  - clock-names
+> +  - avdd-supply
+> +  - dovdd-supply
+> +  - vdd2-supply
+> +  - afvdd-supply
+> +  - powerdown-gpios
+> +  - reset-gpios
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sun8i-a83t-ccu.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c2 {
+> +         #address-cells = <1>;
+> +         #size-cells = <0>;
+> +          ov8865: camera@36 {
+> +                 compatible = "ovti,ov8865";
+> +                 reg = <0x36>;
+> +                 pinctrl-names = "default";
+> +                 pinctrl-0 = <&csi_mclk_pin>; 
+> +                 clocks = <&ccu CLK_CSI_MCLK>;
+> +                 clock-names ="xclk";
+> +                 avdd-supply = <&reg_ov8865_avdd>;
+> +                 dovdd-supply = <&reg_ov8865_dovdd>;
+> +                 vdd2-supply = <&reg_ov8865_vdd2>;
+> +                 afvdd-supply = <&reg_ov8865_afvdd>;
+> +                 powerdown-gpios = <&pio 4 17 GPIO_ACTIVE_LOW>; /* PE17 */
+> +                 reset-gpios = <&pio 4 16 GPIO_ACTIVE_LOW>; /* PE16 */
+> +                 rotation = <180>;
+> +
+> +                 port {
+> +                      ov8865_to_mipi_csi2: endpoint {
+> +                                 remote-endpoint = <&mipi_csi2_from_ov8865>;
+> +                                 data-lanes = <1 2 3 4>;
+> +                                 clock-lanes = <0>;
+> +                                 bus-type = <4>; /* V4L2_FWNODE_BUS_TYPE_CSI2_DPHY */
+> +                      };
+> +                 };
+> +           };
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
