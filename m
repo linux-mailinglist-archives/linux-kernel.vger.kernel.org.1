@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C052693FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126E62693EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgINRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
+        id S1726094AbgINRpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgINMD4 (ORCPT
+        with ESMTP id S1726145AbgINMFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:03:56 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D78C061352
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:10 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id c196so12571759pfc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:10 -0700 (PDT)
+        Mon, 14 Sep 2020 08:05:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3134C061353
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:16 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id t14so11335621pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IaSLSMOw5IWqW5et4rXV7onS1Eb2MpKZtJ8PkFCqqpQ=;
-        b=jN2Nodok2f44UjLuI6RwmJ6F0perVG/SjqBnoUwC14KhAruCkNXi+YxMeOdX8u4NWH
-         UsPwjBotAmgdqlLbFIyyTW9fsMOjd50OZl98z4E6QkIK6alfixogirPR2gSa9Yb5MRR5
-         FFheGNClwqk7XkwySM2Ch7pJPJZ2XjnEf4sFiiJw+9iJD7XDgY28BDA3rgDgfvZkmAli
-         Am7B4vRVE8veGc4eXGHnbFC3o2SnUF9jM9bozjpV/DKSfiDmza1FMqDn2LLZeuteUOYY
-         Z+y7wCujYbA4agwP0/7c1SQRfiaPyJlBdrEoTOTY1COrqhxd89tnp4+dzux96fj0Ll8e
-         XZpQ==
+        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
+        b=kuCmwrQrg7GJ9HX906/sSdZbuErryyJ0Dz8Oj+NGbspBGEYAznqdQWVNoTE8TLZLH0
+         LuVLq2yO5Nk7H0eV+WdsjLsaNVOTQA3NNMYVFaUDJvMTik77DB/mWAsrYZyn96N/RvOL
+         97A7M+Y5Iuf5kKiFE36DrcKO0zB8g/ThDLYh3DlkkzANowb1UvV9g4ZASIEDVcQ7+O4n
+         3B2qz+E/JdDK+66qcmmo3+q/BWRCVwF7spBQwZW+sPdR0yHRx9cwrdc4AO3kHjr+MCZ4
+         tKsrlEHOIi31ZJ2NuIRE/A8kTzIBs/PE2ct0OpmbJ9wAWbkII6g/0c6ShMt2WSge4JlB
+         7pzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=IaSLSMOw5IWqW5et4rXV7onS1Eb2MpKZtJ8PkFCqqpQ=;
-        b=ni7y2pw3mlgprpXqTvbZOt1IRLI2w1V50KDu4F9Y+NKLCvstJ1ktGI2+mVq8v5+AKm
-         Y17/+zOTZUBraLHGJZanFvfl437dVTPXMRHJS/X7/LUy897C+HbQFiJf+CVIq2A2G3Pf
-         DFPlds7kAVUtbcCPBruKXfGZGVbG3E+QdlEuHJP94MhU9HnLiwno4J5ur/d8YDY/535Y
-         3swYmITBX91Gkp05DnQhRY5ntyyI+OdQqy+pjw94Eu/DsLN1MppgmnB1MWqHKIH/3czC
-         N3tXW1fmGUBLo9dIxB6Oh7aUI/4XP9RzFQkcz0la0CPSgv6bkXyb8Vn/122WR1308g7Y
-         Iy0w==
-X-Gm-Message-State: AOAM5327JcJYq+qCONFu/1qCV5lVv5bcRHRrF5TqWxEedWOED3tKlUfp
-        TOo+UDXYC9X+7hs0BbAAq+Orcg==
-X-Google-Smtp-Source: ABdhPJwGkXwVhJDWvoVTteJpq/PxlhK3ELJ97elqqV4V+nd3pbnJxnqmo5HPRgvGZLjIOmRBPYQ/Uw==
-X-Received: by 2002:a63:4e52:: with SMTP id o18mr10419275pgl.171.1600084509540;
-        Mon, 14 Sep 2020 04:55:09 -0700 (PDT)
+        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
+        b=LfxgHeWZ3kfXfA+gb8s/69sEwmx4iOE8JvZJ8jVnGGXB2RK6Chb3CK8dnpBFNer0s3
+         5K3Q+henVZIJYxmgv7LTPvyJEF3ylm9DvEo4PBjcFhbEZQstsRE49wM+t7iG/gR0Db+p
+         4cBeA0rUBR8en41iegWSCdeUMDw/nReU5JwAM3ADpvs9rGOkhIxF1iqoc6tMF4qPWrso
+         f8MNO2YPVMWMXh1itaqtR94fNzKZxyE+1l+LgjkQsyXvn6/opj94oaW+3xwaZHEAzsbC
+         bzsYMFePlEbxDXHF5wWJJSgUIFR9S+ueYW61xC/jzG4N4dAWktuiAEX6HJp54DOEzwqF
+         K3zg==
+X-Gm-Message-State: AOAM532Wy++JnQVtRkv4ouIjmH/V58ZUso5+JVC0gL1vCtOfVG7y/c/z
+        La22DnC2YVbOBKKdKLzy5Vwm8w==
+X-Google-Smtp-Source: ABdhPJwMivTpJYi6MvYsaIi8RtkLmeWPRGs92dGue7CU8k3cf5rOcu1bj0SIUEFoRHy99vDQn47Vgg==
+X-Received: by 2002:a17:902:ac83:b029:d1:920c:c022 with SMTP id h3-20020a170902ac83b02900d1920cc022mr14302606plr.38.1600084516188;
+        Mon, 14 Sep 2020 04:55:16 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id n2sm9583614pja.41.2020.09.14.04.55.08
+        by smtp.gmail.com with ESMTPSA id v13sm9068714pjr.12.2020.09.14.04.55.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Sep 2020 04:55:09 -0700 (PDT)
+        Mon, 14 Sep 2020 04:55:15 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -69,9 +69,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 2/6] perf tsc: Add rdtsc() for Arm64
-Date:   Mon, 14 Sep 2020 19:53:07 +0800
-Message-Id: <20200914115311.2201-3-leo.yan@linaro.org>
+Subject: [PATCH v4 3/6] perf tsc: Calculate timestamp with cap_user_time_short
+Date:   Mon, 14 Sep 2020 19:53:08 +0800
+Message-Id: <20200914115311.2201-4-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200914115311.2201-1-leo.yan@linaro.org>
 References: <20200914115311.2201-1-leo.yan@linaro.org>
@@ -80,55 +80,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The system register CNTVCT_EL0 can be used to retrieve the counter from
-user space.  Add rdtsc() for Arm64.
+The perf mmap'ed buffer contains the flag 'cap_user_time_short' and two
+extra fields 'time_cycles' and 'time_mask', perf tool needs to know
+them for handling the counter wrapping case.
+
+This patch is to reads out the relevant parameters from the head of the
+first mmap'ed page and stores into the structure 'perf_tsc_conversion',
+if the flag 'cap_user_time_short' has been set, it will firstly
+calibrate cycle value for timestamp calculation.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/arch/arm64/util/Build |  1 +
- tools/perf/arch/arm64/util/tsc.c | 21 +++++++++++++++++++++
- 2 files changed, 22 insertions(+)
- create mode 100644 tools/perf/arch/arm64/util/tsc.c
+ tools/perf/util/tsc.c | 12 +++++++++---
+ tools/perf/util/tsc.h |  5 +++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
-index 5c13438c7bd4..b53294d74b01 100644
---- a/tools/perf/arch/arm64/util/Build
-+++ b/tools/perf/arch/arm64/util/Build
-@@ -1,6 +1,7 @@
- perf-y += header.o
- perf-y += machine.o
- perf-y += perf_regs.o
-+perf-y += tsc.o
- perf-$(CONFIG_DWARF)     += dwarf-regs.o
- perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
- perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
-diff --git a/tools/perf/arch/arm64/util/tsc.c b/tools/perf/arch/arm64/util/tsc.c
-new file mode 100644
-index 000000000000..cc85bd9e73f1
---- /dev/null
-+++ b/tools/perf/arch/arm64/util/tsc.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
+diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
+index 9e3f04ddddf8..c0ca40204649 100644
+--- a/tools/perf/util/tsc.c
++++ b/tools/perf/util/tsc.c
+@@ -28,6 +28,10 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
+ {
+ 	u64 quot, rem;
+ 
++	if (tc->cap_user_time_short)
++		cyc = tc->time_cycles +
++			((cyc - tc->time_cycles) & tc->time_mask);
 +
-+#include <linux/types.h>
+ 	quot = cyc >> tc->time_shift;
+ 	rem  = cyc & (((u64)1 << tc->time_shift) - 1);
+ 	return tc->time_zero + quot * tc->time_mult +
+@@ -37,7 +41,6 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
+ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
+ 			     struct perf_tsc_conversion *tc)
+ {
+-	bool cap_user_time_zero;
+ 	u32 seq;
+ 	int i = 0;
+ 
+@@ -47,7 +50,10 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
+ 		tc->time_mult = pc->time_mult;
+ 		tc->time_shift = pc->time_shift;
+ 		tc->time_zero = pc->time_zero;
+-		cap_user_time_zero = pc->cap_user_time_zero;
++		tc->time_cycles = pc->time_cycles;
++		tc->time_mask = pc->time_mask;
++		tc->cap_user_time_zero = pc->cap_user_time_zero;
++		tc->cap_user_time_short	= pc->cap_user_time_short;
+ 		rmb();
+ 		if (pc->lock == seq && !(seq & 1))
+ 			break;
+@@ -57,7 +63,7 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
+ 		}
+ 	}
+ 
+-	if (!cap_user_time_zero)
++	if (!tc->cap_user_time_zero)
+ 		return -EOPNOTSUPP;
+ 
+ 	return 0;
+diff --git a/tools/perf/util/tsc.h b/tools/perf/util/tsc.h
+index 3c5a632ee57c..72a15419f3b3 100644
+--- a/tools/perf/util/tsc.h
++++ b/tools/perf/util/tsc.h
+@@ -8,6 +8,11 @@ struct perf_tsc_conversion {
+ 	u16 time_shift;
+ 	u32 time_mult;
+ 	u64 time_zero;
++	u64 time_cycles;
++	u64 time_mask;
 +
-+#include "../../../util/tsc.h"
-+
-+u64 rdtsc(void)
-+{
-+	u64 val;
-+
-+	/*
-+	 * According to ARM DDI 0487F.c, from Armv8.0 to Armv8.5 inclusive, the
-+	 * system counter is at least 56 bits wide; from Armv8.6, the counter
-+	 * must be 64 bits wide.  So the system counter could be less than 64
-+	 * bits wide and it is attributed with the flag 'cap_user_time_short'
-+	 * is true.
-+	 */
-+	asm volatile("mrs %0, cntvct_el0" : "=r" (val));
-+
-+	return val;
-+}
++	bool cap_user_time_zero;
++	bool cap_user_time_short;
+ };
+ 
+ struct perf_event_mmap_page;
 -- 
 2.17.1
 
