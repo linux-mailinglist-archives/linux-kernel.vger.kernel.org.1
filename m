@@ -2,127 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E641A2697B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16CF2697B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINV2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:28:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbgINV2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:28:09 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71E5A20759;
-        Mon, 14 Sep 2020 21:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600118888;
-        bh=8bhZoVD8TkqP7pZrtp8IBtCGwd8g4lCXEJfjLAu/Ark=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Te1MQWTKnzL++nKPCKRSJUSVkg73rHLbKXx2SBQzgtKJJVlq34ZCKmHGMddsc5rOO
-         TybVS7D/Ni2lGGzAqmRhlFCOLSPdfxf7/4HAzvKl6dCr9ZbVNo07+2ZYtAVvLoq8PY
-         f6sZNYRl6UrdOHKIL6H/+Cmnz8kLv+fD7hHiq97U=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7103C40D3D; Mon, 14 Sep 2020 18:28:06 -0300 (-03)
-Date:   Mon, 14 Sep 2020 18:28:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Wang Nan <wangnan0@huawei.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>
-Subject: Re: [PATCH] perf test: Fix signal test inline assembly
-Message-ID: <20200914212806.GB166601@kernel.org>
-References: <20200911130005.1842138-1-jolsa@kernel.org>
+        id S1726024AbgINVae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgINVaa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:30:30 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FBFC061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:30:29 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 16so1953071qkf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=yrT8gC4TTWet6cZ9YwSESn7cnuC6utKAOdmSGQgzcPU=;
+        b=W3aKslhundhu3B/Fi871b2e1Fj2OCJtvs3SQyw2QoDeAfHiT1b1gbC21cgtxcN50dv
+         Cl4JMtBfvUJmy9RKwjSs56Q31TGv1HgO7nxpzUNGD2+pg4uDX6AE4R5Ma8mwZ3Erc/YK
+         lW+50k3WsMh8OoaNKn4SxKilIjiwgWYIclfyPq2DbbLw6Xei5uUMHF4p0ObonXrxcZhT
+         TmmRrdD/VsUAEtTbbTdj4+IQ0mvQ2mXthq0yJpFmfnrEohvPyxMISwsI7I1wjKJQ1F6Z
+         ERw5AsyT/pD/oIHNusD7gJKQH56XMtLUL5i7yaHDmTZx8Se9E5lzKJn9MmkGYrnKmxGU
+         6FZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=yrT8gC4TTWet6cZ9YwSESn7cnuC6utKAOdmSGQgzcPU=;
+        b=KGVuiU5HxXl3KC0O9L+i2KmONiwyFTTU55Iig3Kb+PmbAcpu16+gQQq8Js/wD9w25S
+         AC4gPQYb0OstkqzKS5Y+PCCp+U+Rv7bHeQNfYmwkXNoUwIfSE/3EF9yu7D9YXsJoIKoI
+         YS3hWv5mRatAIWzx6B2Kv3P+Dk5cqs60T7F2BHLCd+ZnNQ2dmLC1ta+2XAXn5u1zyzu8
+         Ac+dRrndzkbv6dJo0QYMoDs/hhprETBNa5E6pYyTUGdl+7A1S96KBAsT4mh34f6Teyn8
+         i+l/Kf/loEuJxDY61VxJzmhFkFZ1v3rtgfQMa4NomdX0joW92dRZS3eNJedAGykDYsjP
+         ThiQ==
+X-Gm-Message-State: AOAM533BwA+sIMAC9lEJ/SIwHOMqV4/RgXOd0WQL1/rBxcfG5vAe9AHR
+        vkx4Tsl87PUGh2dPeGsw6WIPkg==
+X-Google-Smtp-Source: ABdhPJwMuP07J26GGphmCo+u7UAeSFqN5H7Ty4LWtqDD81qpUgIvxOKrdjMXQKWssUo+sQzJki5LYA==
+X-Received: by 2002:a37:a84a:: with SMTP id r71mr14209038qke.481.1600119026836;
+        Mon, 14 Sep 2020 14:30:26 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3700])
+        by smtp.gmail.com with ESMTPSA id z74sm15698299qkb.11.2020.09.14.14.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 14:30:26 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 17:29:04 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+Message-ID: <20200914212904.GB175618@cmpxchg.org>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914024452.19167-3-longman@redhat.com>
+ <20200914114825.GM16999@dhcp22.suse.cz>
+ <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200911130005.1842138-1-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Sep 11, 2020 at 03:00:05PM +0200, Jiri Olsa escreveu:
-> When compiling with DEBUG=1 on Fedora 32 I'm getting crash for
-> 'perf test signal':
+On Mon, Sep 14, 2020 at 09:51:26AM -0400, Waiman Long wrote:
+> On 9/14/20 7:48 AM, Michal Hocko wrote:
+> > On Sun 13-09-20 22:44:51, Waiman Long wrote:
+> > > The mem_cgroup_get_max() function used to get memory+swap max from
+> > > both the v1 memsw and v2 memory+swap page counters & return the maximum
+> > > of these 2 values. This is redundant and it is more efficient to just
+> > > get either the v1 or the v2 values depending on which one is currently
+> > > in use.
+> > > 
+> > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > ---
+> > >   mm/memcontrol.c | 20 +++++++++-----------
+> > >   1 file changed, 9 insertions(+), 11 deletions(-)
+> > > 
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 8c74f1200261..ca36bed588d1 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+> > >    */
+> > >   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+> > >   {
+> > > -	unsigned long max;
+> > > -
+> > > -	max = READ_ONCE(memcg->memory.max);
+> > > -	if (mem_cgroup_swappiness(memcg)) {
+> > > -		unsigned long memsw_max;
+> > > -		unsigned long swap_max;
+> > > -
+> > > -		memsw_max = memcg->memsw.max;
+> > > -		swap_max = READ_ONCE(memcg->swap.max);
+> > > -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+> > > -		max = min(max + swap_max, memsw_max);
+> > > +	unsigned long max = READ_ONCE(memcg->memory.max);
+> > > +
+> > > +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+> > > +		if (mem_cgroup_swappiness(memcg))
+> > > +			max += min(READ_ONCE(memcg->swap.max),
+> > > +				   (unsigned long)total_swap_pages);
+> > > +	} else { /* v1 */
+> > > +		if (mem_cgroup_swappiness(memcg))
+> > > +			max = memcg->memsw.max;
+> > I agree that making v1 vs. v2 distinction here makes the code more
+> > obvious. But I do not think your code is correct for v1. In a default
+> > state it would lead to max = PAGE_COUNTER_MAX which is not something
+> > we want, right?
+> > 
+> > instead you want
+> > 		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
+> > 
+> You are right, it is a bit tricky for v1.
 > 
->   Program received signal SIGSEGV, Segmentation fault.
->   0x0000000000c68548 in __test_function ()
->   (gdb) bt
->   #0  0x0000000000c68548 in __test_function ()
->   #1  0x00000000004d62e9 in test_function () at tests/bp_signal.c:61
->   #2  0x00000000004d689a in test__bp_signal (test=0xa8e280 <generic_ ...
->   #3  0x00000000004b7d49 in run_test (test=0xa8e280 <generic_tests+1 ...
->   #4  0x00000000004b7e7f in test_and_print (t=0xa8e280 <generic_test ...
->   #5  0x00000000004b8927 in __cmd_test (argc=1, argv=0x7fffffffdce0, ...
->   ...
+> I will change it to
 > 
-> It's caused by __test_function being in .bss section:
-> 
->   $ readelf -a ./perf | less
->     [Nr] Name              Type             Address           Offset
->          Size              EntSize          Flags  Link  Info  Align
->     ...
->     [28] .bss              NOBITS           0000000000c356a0  008346a0
->          00000000000511f8  0000000000000000  WA       0     0     32
-> 
->   $ nm perf | grep __test_function
->   0000000000c68548 B __test_function
-> 
-> I guess most of the time we're just lucky the inline asm ended up
-> in .text section, so making it specific explicit with push and pop
-> section cluases.
-> 
->   $ readelf -a ./perf | less
->     [Nr] Name              Type             Address           Offset
->          Size              EntSize          Flags  Link  Info  Align
->     ...
->     [13] .text             PROGBITS         0000000000431240  00031240
->          0000000000306faa  0000000000000000  AX       0     0     16
-> 
->   $ nm perf | grep __test_function
->   00000000004d62c8 T __test_function
+>     max += min(READ_ONCE(memcg->memsw.max) - max, total_swap_pages):
 
-Thanks, tested and applied.
+memsw.max can be smaller than max.
 
-- Arnaldo
- 
-> Cc: Wang Nan <wangnan0@huawei.com>
-> Fixes: 8fd34e1cce18 ("perf test: Improve bp_signal")
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/tests/bp_signal.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/bp_signal.c b/tools/perf/tests/bp_signal.c
-> index da8ec1e8e064..cc9fbcedb364 100644
-> --- a/tools/perf/tests/bp_signal.c
-> +++ b/tools/perf/tests/bp_signal.c
-> @@ -45,10 +45,13 @@ volatile long the_var;
->  #if defined (__x86_64__)
->  extern void __test_function(volatile long *ptr);
->  asm (
-> +	".pushsection .text;"
->  	".globl __test_function\n"
-> +	".type __test_function, @function;"
->  	"__test_function:\n"
->  	"incq (%rdi)\n"
-> -	"ret\n");
-> +	"ret\n"
-> +	".popsection\n");
->  #else
->  static void __test_function(volatile long *ptr)
->  {
-> -- 
-> 2.26.2
-> 
-
--- 
-
-- Arnaldo
+max = min3(max, READ_ONCE(memcg->memsw.max), total_swap_pages)?
