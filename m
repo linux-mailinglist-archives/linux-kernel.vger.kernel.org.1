@@ -2,54 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6736E269308
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 264B4269307
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgINRX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:23:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43130 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgINM3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:29:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 35AF4AC79;
-        Mon, 14 Sep 2020 12:29:30 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 14:29:11 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] printk: ringbuffer: fix setting state in desc_read()
-Message-ID: <20200914122910.GC11154@alley>
-References: <20200914094803.27365-1-john.ogness@linutronix.de>
+        id S1726358AbgINRXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:23:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37183 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726350AbgINM3b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:29:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600086568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fk8zzz6iG+LTm12PI7VouoO/Ytz2Ct1GiEhjBUFwErY=;
+        b=AYYeMzNY5Bspq0LrGLneAO6ZMmdhtwSohYvLC711L0IHDj22DvEvdmDeGLFKh5i4CDm8o1
+        NfBW/1DNeo3FazUgxSIfGjjh7kT+2yOILd8QsqH+uMz2wfgGm5ezLdBAC0JZb+sQ93KRzW
+        e8To/wK3rpQBOCACv4lr53ZeCuQ9I4w=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-YoJ2SHaYObak6LW2DYdg2A-1; Mon, 14 Sep 2020 08:29:27 -0400
+X-MC-Unique: YoJ2SHaYObak6LW2DYdg2A-1
+Received: by mail-wr1-f69.google.com with SMTP id n15so6813804wrv.23
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:29:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fk8zzz6iG+LTm12PI7VouoO/Ytz2Ct1GiEhjBUFwErY=;
+        b=gl9dmKELclilX4drHooOCcAVNlmVqVXwtnJTj6nolQFUNBl2qEASnnvfyPjyfU14fD
+         HbaTF8mar16NtaKvv3RrXa5l8twiEQ02HbSUXp87zPZkPRMIOoKbJDpdmcb2KLt6RQAs
+         jUGTlIqTYS+F17oSbrMzuiJE3ZgGP9IpqENK63sT9fiCvdEfLI6WfslQ6rDJSmZHIiL3
+         gjuVf1viSFdbF8uO0/jYhtgi8R+uLMZsbGjdejcqoxuyFQ7moJ3MOcbsf4gnbH9wXpsz
+         GtsKzW6CoXB4z5r1RhAsruqeXoX+HmwSyYLc4FTWXLZpKUfVrWZmDzlWNUkeg7fekJdl
+         H6jg==
+X-Gm-Message-State: AOAM530GuOLN4lZvTgs0nIsZjeyqXivXBf24fYhXsK3W8rv/MbiTtSjS
+        WY0N3KvPD7LWs8QEOOHJm1H5wfgebg+1bxTkCAl4xVHHltBJaXkiW8xk/NORQyFgJ5I4RGXsRIQ
+        0oIJNuH3zj1MW0AF+oZXon1SJi+AArd8IQL/vbAbS
+X-Received: by 2002:adf:e391:: with SMTP id e17mr15196098wrm.289.1600086566095;
+        Mon, 14 Sep 2020 05:29:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+1/aFCLy9zZXQtB8mFgNA23Rd5h+C192n3Cb5/bsjdvKfJteU4hp00DAohSj/jPGHMiEVc2PHHrciAVdye6k=
+X-Received: by 2002:adf:e391:: with SMTP id e17mr15196076wrm.289.1600086565833;
+ Mon, 14 Sep 2020 05:29:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914094803.27365-1-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200623052059.1893966-1-david@fromorbit.com> <CAOQ4uxh0dnVXJ9g+5jb3q72RQYYqTLPW_uBqHPKn6AJZ2DNPOQ@mail.gmail.com>
+ <20200914113516.GE4863@quack2.suse.cz>
+In-Reply-To: <20200914113516.GE4863@quack2.suse.cz>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 14 Sep 2020 14:29:14 +0200
+Message-ID: <CAHc6FU6jU3qJppLvs-FrKVt0SryWDs_q9bV_=Lr6rZTwMfv+Tg@mail.gmail.com>
+Subject: Re: More filesystem need this fix (xfs: use MMAPLOCK around filemap_map_pages())
+To:     Dave Chinner <david@fromorbit.com>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Qiuyang Sun <sunqiuyang@huawei.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-09-14 11:54:02, John Ogness wrote:
-> It is expected that desc_read() will always set at least the
-> @state_var field. However, if the descriptor is in an inconsistent
-> state, no fields are set.
-> 
-> Also, the second load of @state_var is not stored in @desc_out and
-> so might not match the state value that is returned.
-> 
-> Always set the last loaded @state_var into @desc_out, regardless of
-> the descriptor consistency.
-> 
-> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Could the xfs mmap lock documentation please be cleaned up? For
+example, the xfs_ilock description says:
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+> * In addition to i_rwsem in the VFS inode, the xfs inode contains 2
+> * multi-reader locks: i_mmap_lock and the i_lock.  This routine allows
+> * various combinations of the locks to be obtained.
 
-Best Regards,
-Petr
+The field in struct xfs_inode is called i_mmaplock though, not
+i_mmap_lock. In addition, struct inode has an i_mmap_rwsem field which
+is also referred to as i_mmap_lock. If that isn't irritating enough.
+
+Thanks,
+Andreas
+
