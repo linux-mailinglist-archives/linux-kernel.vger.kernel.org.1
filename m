@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09BB268856
+	by mail.lfdr.de (Postfix) with ESMTP id 1E03B268855
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgINJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:30:09 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:43353 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgINJ3S (ORCPT
+        id S1726367AbgINJaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:30:06 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:35858 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgINJ3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 05:29:18 -0400
-Received: by mail-il1-f206.google.com with SMTP id t11so2058ilj.10
+Received: by mail-il1-f205.google.com with SMTP id q11so571941ilt.3
         for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:29:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FxeDq5AQH5uHHpJ+wPvZ1zxw5WWwefv1515RpflhzxI=;
-        b=S54uXM8j0RgsUeGz98MwGa190sCZaM3FXZXuOy0vFo2InDhkiirJees2DkKipdDlQf
-         OPIsUAGBksN2F7TD+O+aKw+URtfFC8fbDYaljJxSNTyKYlIVe8CcD4wd0gyzCeJNNIZK
-         QJQoW8ewRfkGIvXCQFbi0sreEob9sZs19Qady3Y5pzrMWYbacr2BsZhBQbBiFSPXaG33
-         VJ0AWaRKMVBV0PUwVd2pLNgyNkGo7TzC2Buq5C7ZsszU80OcfaORhxUiBLQIW+HHcbm7
-         LC3aKRoPegpmcdiIglipj8C1U3lP6gesJox6XZ+CQ0S2TGBHmmsco5qyB92yK3qsMVmL
-         VLJw==
-X-Gm-Message-State: AOAM533H1ddwVN614G9rrBBfaAyGiUPnqflJlPG5eG9lRANISv7mTfmb
-        DsN7OsACLw2PKag3sezu2MxFXK0nbkI9az+8rHvKkL4l1ar5
-X-Google-Smtp-Source: ABdhPJyWyUMD8W6ehOB2EEv3I0k651Qbg5cZcJ/j5goK3SazR4aqiGrSybdd3RQxvz4mMpCrNrFVsbBCpbJ5GqBNgB1Pp3GpHuGf
+        bh=TH4I0FLdiIpGQ5Tl/2ypovGARPOu1ONo1HGqptIa4OQ=;
+        b=HhtSNcNy7POyZTIA2YnOZIguc02fYcwRMWEZ8z8bOP0O4EMwDl6WE2ASEgEGtwac/Z
+         KNIYw+TvhFLICnxMMbOQlZ+6AH7CRZShP7Hm/oOQkHi6WOFiyxvOInQGPszaCHnMucSs
+         byiQ+KB/RnzzM+Zopvv9USKKlSb3SitwRd7fkA6Cnh90fthLtcsLuXm7e6mHHZiFMVVP
+         DgsUJuAZzQN4fgtO3enyiGVJZcftEaVkws+UMoFT1eiKatLDC8oca0gHzjk+q9rg1cRV
+         Q2cyLBInekvy+ZRo/GaZuSPhFM8T4zrfSSWt6wrubIk+6ES/BiL4i3QlnsTnxjMmhcwA
+         +jxw==
+X-Gm-Message-State: AOAM531WYg3ul957P76+rihDIH+mfF3eNmTC90f0UYuVLWstLQKgazZf
+        edkaIDp8sLN+7BO01BCWemM75wP0Irdv9sK2vUWMO82QkPPk
+X-Google-Smtp-Source: ABdhPJzP23iVG+WXX/FkJ2v54zMWyx+UEXTrxJNY+GFVWlpIiEJEP44cezQz5Ln1yXBtRMM98RGo39wurcMIIk41Im6zXNAL0w0f
 MIME-Version: 1.0
-X-Received: by 2002:a02:c8c6:: with SMTP id q6mr12342949jao.76.1600075756987;
+X-Received: by 2002:a92:dc47:: with SMTP id x7mr2965857ilq.127.1600075756567;
  Mon, 14 Sep 2020 02:29:16 -0700 (PDT)
 Date:   Mon, 14 Sep 2020 02:29:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001be78b05af42abd8@google.com>
-Subject: kernel BUG at lib/assoc_array.c:LINE! (2)
-From:   syzbot <syzbot+5cb98ddf89ec01d73c6d@syzkaller.appspotmail.com>
-To:     dhowells@redhat.com, jarkko.sakkinen@linux.intel.com,
-        jmorris@namei.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000015820705af42ab4d@google.com>
+Subject: INFO: trying to register non-static key in cfg80211_release_pmsr
+From:   syzbot <syzbot+7c0d914f0ea7b89ad50c@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -51,66 +49,119 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    e8878ab8 Merge tag 'spi-fix-v5.9-rc4' of git://git.kernel...
+HEAD commit:    7fe10096 Merge branch 'linus' of git://git.kernel.org/pub/..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12892c11900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=5cb98ddf89ec01d73c6d
+console output: https://syzkaller.appspot.com/x/log.txt?x=1655e245900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
+dashboard link: https://syzkaller.appspot.com/bug?extid=7c0d914f0ea7b89ad50c
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5cb98ddf89ec01d73c6d@syzkaller.appspotmail.com
+Reported-by: syzbot+7c0d914f0ea7b89ad50c@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-kernel BUG at lib/assoc_array.c:652!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 7123 Comm: kworker/1:3 Not tainted 5.9.0-rc4-syzkaller #0
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 1 PID: 1483 Comm: syz-executor.4 Not tainted 5.9.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: afs afs_manage_cell
-RIP: 0010:assoc_array_insert_into_terminal_node lib/assoc_array.c:652 [inline]
-RIP: 0010:assoc_array_insert+0x1cbe/0x2a80 lib/assoc_array.c:1001
-Code: 0f 84 cd fe ff ff e8 e1 62 15 fe e9 c3 fe ff ff e8 57 5c d5 fd 0f 0b e8 50 5c d5 fd 0f 0b e8 49 5c d5 fd 0f 0b e8 42 5c d5 fd <0f> 0b 48 8b 04 24 4c 89 74 24 70 48 b9 00 00 00 00 00 fc ff df 41
-RSP: 0018:ffffc900054977a0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 000000000000000f RCX: ffffffff839eeb4c
-RDX: ffff8880553a0540 RSI: ffffffff839ef13e RDI: ffff88804726f688
-RBP: 0000000000000011 R08: 0000000000000dc0 R09: ffffffff8b177750
-R10: 0000000000000010 R11: 000000000000016e R12: 0000000000000010
-R13: ffff888053910000 R14: ffff888051e50101 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ assign_lock_key kernel/locking/lockdep.c:894 [inline]
+ register_lock_class+0x157d/0x1630 kernel/locking/lockdep.c:1206
+ __lock_acquire+0xf9/0x5570 kernel/locking/lockdep.c:4305
+ lock_acquire+0x1f3/0xae0 kernel/locking/lockdep.c:5006
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ cfg80211_release_pmsr+0x33/0x166 net/wireless/pmsr.c:621
+ nl80211_netlink_notify net/wireless/nl80211.c:17301 [inline]
+ nl80211_netlink_notify+0x32e/0x970 net/wireless/nl80211.c:17265
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ __blocking_notifier_call_chain kernel/notifier.c:284 [inline]
+ __blocking_notifier_call_chain kernel/notifier.c:271 [inline]
+ blocking_notifier_call_chain kernel/notifier.c:295 [inline]
+ blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:292
+ netlink_release+0xc51/0x1cf0 net/netlink/af_netlink.c:775
+ __sock_release+0xcd/0x280 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x416f01
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fe5ec9199c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 00007fe5ec919a40 RCX: 0000000000416f01
+RDX: 0000000000000200 RSI: 00007fe5ec919a40 RDI: 0000000000000004
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000004
+R13: 000000000169fb6f R14: 00007fe5ec91a9c0 R15: 000000000118cf4c
+BUG: unable to handle page fault for address: ffffffffffffffec
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 9a90067 P4D 9a90067 PUD 9a92067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 1483 Comm: syz-executor.4 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:cfg80211_release_pmsr+0xce/0x166 net/wireless/pmsr.c:623
+Code: 39 c5 74 6b e8 f3 a6 e8 f9 48 8d 7b 14 48 89 f8 48 c1 e8 03 42 0f b6 14 20 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 62 <44> 8b 7b 14 89 ee 44 89 ff e8 c4 a2 e8 f9 41 39 ef 75 9f e8 ba a6
+RSP: 0018:ffffc90018e2fbe0 EFLAGS: 00010246
+RAX: 0000000000000007 RBX: ffffffffffffffd8 RCX: ffffc90010d5b000
+RDX: 0000000000000000 RSI: ffffffff878ba68d RDI: ffffffffffffffec
+RBP: 0000000000001751 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff520031c5f6e R11: 0000000038343154 R12: dffffc0000000000
+R13: ffff8880001010e0 R14: ffff888000100c10 R15: 0000000000000000
+FS:  00007fe5ec91a700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000768000 CR3: 000000009e098000 CR4: 00000000001506e0
+CR2: ffffffffffffffec CR3: 000000020d667000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __key_link_begin+0xec/0x250 security/keys/keyring.c:1314
- construct_alloc_key security/keys/request_key.c:404 [inline]
- construct_key_and_link security/keys/request_key.c:499 [inline]
- request_key_and_link+0x894/0x1350 security/keys/request_key.c:637
- request_key_tag+0x4e/0xb0 security/keys/request_key.c:701
- dns_query+0x257/0x6c3 net/dns_resolver/dns_query.c:128
- afs_dns_query+0x122/0x390 fs/afs/addr_list.c:249
- afs_update_cell fs/afs/cell.c:403 [inline]
- afs_manage_cell+0x8c5/0x11c0 fs/afs/cell.c:708
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+ nl80211_netlink_notify net/wireless/nl80211.c:17301 [inline]
+ nl80211_netlink_notify+0x32e/0x970 net/wireless/nl80211.c:17265
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ __blocking_notifier_call_chain kernel/notifier.c:284 [inline]
+ __blocking_notifier_call_chain kernel/notifier.c:271 [inline]
+ blocking_notifier_call_chain kernel/notifier.c:295 [inline]
+ blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:292
+ netlink_release+0xc51/0x1cf0 net/netlink/af_netlink.c:775
+ __sock_release+0xcd/0x280 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
+ exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x416f01
+Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fe5ec9199c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 00007fe5ec919a40 RCX: 0000000000416f01
+RDX: 0000000000000200 RSI: 00007fe5ec919a40 RDI: 0000000000000004
+RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000004
+R13: 000000000169fb6f R14: 00007fe5ec91a9c0 R15: 000000000118cf4c
 Modules linked in:
----[ end trace 234f5667657c5700 ]---
-RIP: 0010:assoc_array_insert_into_terminal_node lib/assoc_array.c:652 [inline]
-RIP: 0010:assoc_array_insert+0x1cbe/0x2a80 lib/assoc_array.c:1001
-Code: 0f 84 cd fe ff ff e8 e1 62 15 fe e9 c3 fe ff ff e8 57 5c d5 fd 0f 0b e8 50 5c d5 fd 0f 0b e8 49 5c d5 fd 0f 0b e8 42 5c d5 fd <0f> 0b 48 8b 04 24 4c 89 74 24 70 48 b9 00 00 00 00 00 fc ff df 41
-RSP: 0018:ffffc900054977a0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 000000000000000f RCX: ffffffff839eeb4c
-RDX: ffff8880553a0540 RSI: ffffffff839ef13e RDI: ffff88804726f688
-RBP: 0000000000000011 R08: 0000000000000dc0 R09: ffffffff8b177750
-R10: 0000000000000010 R11: 000000000000016e R12: 0000000000000010
-R13: ffff888053910000 R14: ffff888051e50101 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CR2: ffffffffffffffec
+---[ end trace 5d967f6ee373c846 ]---
+RIP: 0010:cfg80211_release_pmsr+0xce/0x166 net/wireless/pmsr.c:623
+Code: 39 c5 74 6b e8 f3 a6 e8 f9 48 8d 7b 14 48 89 f8 48 c1 e8 03 42 0f b6 14 20 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 62 <44> 8b 7b 14 89 ee 44 89 ff e8 c4 a2 e8 f9 41 39 ef 75 9f e8 ba a6
+RSP: 0018:ffffc90018e2fbe0 EFLAGS: 00010246
+RAX: 0000000000000007 RBX: ffffffffffffffd8 RCX: ffffc90010d5b000
+RDX: 0000000000000000 RSI: ffffffff878ba68d RDI: ffffffffffffffec
+RBP: 0000000000001751 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff520031c5f6e R11: 0000000038343154 R12: dffffc0000000000
+R13: ffff8880001010e0 R14: ffff888000100c10 R15: 0000000000000000
+FS:  00007fe5ec91a700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f340d222000 CR3: 00000000a6f13000 CR4: 00000000001506e0
+CR2: ffffffffffffffec CR3: 000000020d667000 CR4: 00000000001506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
