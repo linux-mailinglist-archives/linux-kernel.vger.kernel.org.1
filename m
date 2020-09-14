@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1858268B37
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BCD268B49
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgINMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:40:37 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:24014 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726546AbgINMjc (ORCPT
+        id S1726574AbgINMlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:41:49 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:45291 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgINMlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:39:32 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.226])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id AACCB4E1503;
-        Mon, 14 Sep 2020 20:09:30 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Qing <wangqing@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] doc: zh_CN: add translatation for ext3.rst
-Date:   Mon, 14 Sep 2020 20:08:32 +0800
-Message-Id: <1600085362-2157-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 14 Sep 2020 08:41:03 -0400
+Received: by mail-yb1-f196.google.com with SMTP id p81so11681225ybc.12;
+        Mon, 14 Sep 2020 05:41:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pADP6qzUrYMCYvH+CFX4SosBM+qgginkcbgh+0+Vh8g=;
+        b=c/hGNLMrpQ+A40x0ZjivCwqgLxCXQuqGqUeM0NTV5AtN+U7k6U7ZohYrSE+J+uYLxQ
+         s/VhX1mr+dWJkYF7qmTqDNQjHuC7bx216qQ0UomTGDkxA3FeeX+UkninJSJmu1K8pHbU
+         yCbbVeMZ5EQ/96gTV5oJIvx1LJUNFyvsBsfmvk1RsJMgddFq+Kv11xLtcJx2DLDt17ZT
+         rIUxY3uvvB5seOLx5pX1oJNogz7y90bOxQHvrDBRAUt9i2DEOoGXYemGbLqy+PrqAgW1
+         GfGCE5gNuG+sBzX912jrfxk8rsj6Uk289Y6XQgGbgQhnp05tCNXiTHILZv5/Cc7Y6evx
+         8+tQ==
+X-Gm-Message-State: AOAM530ib5E0aqToGlBWVGEAI7qn618Q/0fSRGM2n0Gmj13M8yx+2hl6
+        KBaEoGb3Qg5LKxSJDDlp65tdMwC7/55wv26KdITGUmGvjxQ=
+X-Google-Smtp-Source: ABdhPJw0rS0SECxSrJqxyMZRelj1qSCZeHdheuNXeS8R7ywmxQAb0yM5b9d02qUFIk2ygT1exPjrqXF2qIaoEUmDriM=
+X-Received: by 2002:a9d:5a92:: with SMTP id w18mr8913041oth.145.1600085338477;
+ Mon, 14 Sep 2020 05:08:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUIZQh1OTxhPHhkdVkpNS0tLQ05ITEpLSUpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVKS0tZBg++
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nwg6Sgw*PT8hDhc2ESg0TzEj
-        CwwwCTRVSlVKTUtLS0NOSExKT05OVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlJTVlXWQgBWUFJSU9MNwY+
-X-HM-Tid: 0a748c8528119376kuwsaaccb4e1503
+References: <20200911101703.20521-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200911101703.20521-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Sep 2020 14:08:47 +0200
+Message-ID: <CAMuHMdWk+uenHO=4VFQSYdJRew5EWxGfNtamO_OTcdL0g+QZ4Q@mail.gmail.com>
+Subject: Re: [PATCH] clk: renesas: Kconfig: Update description for
+ CLK_RCAR_GEN3_CPG config
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Translate Documentation/filesystems/ext3.rst into Chinese.
+On Fri, Sep 11, 2020 at 12:17 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> rcar-gen3-cpg driver is also used on Renesas RZ/G2 SoC's, update the same
+> to reflect the description for CLK_RCAR_GEN3_CPG config.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- .../translations/zh_CN/filesystems/ext3.rst        | 24 ++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in clk-renesas for v5.10, as:
 
-diff --git a/Documentation/translations/zh_CN/filesystems/ext3.rst b/Documentation/translations/zh_CN/filesystems/ext3.rst
-index 0000000..38ac08b
---- /dev/null
-+++ b/Documentation/translations/zh_CN/filesystems/ext3.rst
-@@ -0,0 +1,24 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/filesystems/ext3.rst <ext3_index>`
-+
-+译者
-+::
-+
-+	中文版维护者： 王擎 Wang Qing <wangqing@vivo.com>
-+	中文版翻译者： 王擎 Wang Qing <wangqing@vivo.com>
-+	中文版校译者： 王擎 Wang Qing <wangqing@vivo.com>
-+
-+- Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-+
-+===============
-+Ext3 文件系统
-+===============
-+
-+Ext3最初于1999年9月发布。由Stephen Tweedie撰写，由Peter Braam，Andreas Dilger，
-+Andrew Morton，Alexander Viro，Ted Ts'o和Stephen Tweedie移植到2.2内核。
-+
-+Ext3在ext2文件系统基础上增强日记功能。该文件系统是ext4文件系统的子集，因此请
-+使用ext4驱动访问ext3文件系统。
+    clk: renesas: rcar-gen3: Update description for RZ/G2
+
+    The rcar-gen3-cpg driver is also used on Renesas RZ/G2 SoC's, update the
+    description for the CLK_RCAR_GEN3_CPG config symbol to reflect this.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.7.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
