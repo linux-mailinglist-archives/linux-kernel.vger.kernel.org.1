@@ -2,164 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3010269407
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FE4269402
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbgINRtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43172 "EHLO
+        id S1726244AbgINRsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgINMDl (ORCPT
+        with ESMTP id S1726052AbgINMDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:03:41 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8267CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:52:44 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y15so10953535wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:52:44 -0700 (PDT)
+        Mon, 14 Sep 2020 08:03:43 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8A4C06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:54:57 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id o20so12401927pfp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:54:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PJ7iJNVDDaND4zplndsbl4Uby21iiMEjNanabMHyNa8=;
-        b=YalQb9qXnij3jA+z9DcxOA6IfyTifBTo3+5ciDzFu0EX8HtYUQWiH1DfbNzkQ5E4Wg
-         n9tEwxvm65+rVwSYeQMc2Aeh/gYDYfUiZN0Pn1sNa+UWyQH3JerLbfdSWlfaqGboTyxk
-         cx3klAP3OoD3zNPoXyDGb7iQc4jb276bpjW/piZZahi+ZdAaHXAPMRzwePA2V73YOOi8
-         YeF+3dio/BlVTJ9VLcik8+RQmy+l6AQFnUSvJQzDppohujPTTJT+i8wYKFDzOs/x3aQ4
-         ZCHX3caFgONUgL5jSFttJNsV5c+i+7BQbP92MTWKyiAK/xiitzOqpv0wjUVqqur0EfGU
-         QroQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Q23N1TOucc/ZEqxZTf6rnZyxpHwEyiRp1vp3lvFnC78=;
+        b=vITVmm8kJizd444PDe3E8+UH7q3lTG7Znw5SAbXHotbSLqVh4qAJvoAmZkXOzsvS65
+         xkAK+aQ1L5/qZhNqfeYmlLYxGcTVvrpvr3XcQw4hEzTBU8fuytzaP5EzL1IbRTKKWmwO
+         FmfBO1y0COxhKyTQ+fiXz+8kZMboE75xDquYmNqscuU81XwcVgxV4L6owAIfM9yZNc3x
+         EBwNjILz70k541PUtPVEG4Y94EqwJ958fWASypuidNz9+ZRi5XWujASsVZAYASOula/M
+         7/4Yq7M/RStZFClyDSBUeOApVxbeDFJoVr82RqtWnYVZeKJfW/8uKk5CtcNwWat2M16v
+         fDUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PJ7iJNVDDaND4zplndsbl4Uby21iiMEjNanabMHyNa8=;
-        b=UbAh6ajpV5V4bqbF2NQcVVKEut5DSfqiPEzU/cz55bh1rPd5vzLlHZ+EFaIPRWtRTN
-         3rcnolBjuyJ6XvVkktTHNDn0zAokiAlvOT+NBJHTekA20A+u9SRFKymYPQmGbAN1zZBS
-         dHh+B0vRHPW4bbuexmynrPCnjCPLr0adzEvDl05uZ44TWL5xylJTTzPPXpI0GIKdqz1G
-         OHWbATQEbMVIywNVch410TPHzwHL/t7ruPAvreeCgDk8OacDhuFHpfBzJeywPEmidGFd
-         5l5vP7YZ9U/xhaf/ALLQ0m8/ICGPxsyPr7EJ+wDb3w5/H1pf8tD2YZ0WPmgZTvgnZIQn
-         Drmw==
-X-Gm-Message-State: AOAM531gRB6zBS63WAgwCBGqcTLcYKxn/1zReJCu4l1wig/Zz0Gn93df
-        LMNMP0sn2GmB6lycirATB6MkO+5Wa6zehaCeP5makg==
-X-Google-Smtp-Source: ABdhPJxRyS8Ai4E8v9nf+FcXijbMUkAsU+Eigzaf0copkXWk29uviSgjKvIWApV4fAHRX2LCjI94vgVq+VQJ/1zXIU0=
-X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr14501327wmh.152.1600084362966;
- Mon, 14 Sep 2020 04:52:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200912002341.4869-1-atish.patra@wdc.com> <20200912104502.GF2142832@kernel.org>
- <CAOnJCU+yK8uxFU-zv5BPTzmtxwiVpiPxGsNkVEtnTQ+64UU-ug@mail.gmail.com>
-In-Reply-To: <CAOnJCU+yK8uxFU-zv5BPTzmtxwiVpiPxGsNkVEtnTQ+64UU-ug@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 14 Sep 2020 17:22:31 +0530
-Message-ID: <CAAhSdy0cudvf4Lc3YaSc7MH5oGH1V60C3rToMUZU01LPxRWLKQ@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Consider sparse memory while removing unusable memory
-To:     Atish Patra <atishp@atishpatra.org>
-Cc:     Mike Rapoport <rppt@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Q23N1TOucc/ZEqxZTf6rnZyxpHwEyiRp1vp3lvFnC78=;
+        b=nnGYJDzKz8UPhtIdiMxgV3pUHP8C//uLs5dzRdgLzCYFNQ3pt04MtJt/5dHNfEEH6F
+         bi899TAiMrTmwfzeCjOMz5X7KaqTOdinWXQTVc87W8MTONzyujc5YxAjf7/1e7M9gw6I
+         KvomVqa8KEZ+pTfFHue9A5i4XRHZAgmDb73857mEDaP3S26lGYvJ9MQ9EN9fRBC+kOcH
+         i1EkXwBGZmQENSoDGB93jjOcZk26NA1779onHX9xM0yvy5ziXeQzqXH2aiKctnRP2Lbi
+         RPSGSFx7YEVs4jr37HLTCks25doZdeLDf8DGiVHp0Dbnb9pj40y0uctcUqMboI/ChCQy
+         NbMw==
+X-Gm-Message-State: AOAM5316pWeO33x4/Y54nngI60MqmQBBK+drYTjegs1hz7mTWH0xxjfY
+        8EPtmXypt9XE56l0Oo7crhcKxw==
+X-Google-Smtp-Source: ABdhPJzInXcOR8cfrDUoA75xVqAPvLKogwE4HlVoVmEvnWPVnjb/9o00lIHq3RxZ+dKL36R28iXX+w==
+X-Received: by 2002:a63:c80b:: with SMTP id z11mr10047599pgg.298.1600084497023;
+        Mon, 14 Sep 2020 04:54:57 -0700 (PDT)
+Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id q4sm5910898pjl.28.2020.09.14.04.54.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 14 Sep 2020 04:54:56 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Nick Gasson <nick.gasson@arm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Steve MacLean <Steve.MacLean@Microsoft.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v4 0/6] Perf tool: Support TSC for Arm64
+Date:   Mon, 14 Sep 2020 19:53:05 +0800
+Message-Id: <20200914115311.2201-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 5:18 AM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Sat, Sep 12, 2020 at 3:45 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > Hello Atish,
-> >
-> > On Fri, Sep 11, 2020 at 05:23:41PM -0700, Atish Patra wrote:
-> > > Currently, any usable memory area beyond page_offset is removed by adding the
-> > > memory sizes from each memblock. That may not work for sparse memory
-> > > as memory regions can be very far apart resulting incorrect removal of some
-> > > usable memory.
-> >
-> > If I understand correctly, the memory with physical addresses larger
-> > than (-PAGE_OFFSET) cannot be used. Since it was aready
-> > memblock_add()'ed during device tree parsing, you need to remove it from
-> > memblock.
-> >
->
-> IIRC, the original intention was to fix MAXPHYSMEM_2GB option for RV64
-> for the medlow model.
-> That's why the patch removed any memory beyond -PAGE_OFFSET.
->
-> > For that you can use memblock_enforce_memory_limit(-PAGE_OFFSET).
-> >
-> Thanks. I think we can just call memblock_enforce_memory_limit without
-> tracking the total memory size
-> and whether maximum memory described in DT is greater than  -PAGE_OFFSET.
->
-> @Anup Patel Was there any other reason for this change originally?
+This patch set is to refactor TSC implementation and move TSC code from
+x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
+alse move the TSC testing from x86 folder to tests so can work as a
+common testing.
 
-No other reason. We just wanted to ensure that amount of memory addressable
-by kernel (i.e. -PAGE_OFFSET) is also considered when removing memblock.
+So far, for x86 it needs to support cap_user_time_zero and for Arm64
+it needs to support cap_user_time_short.  For architecture specific
+code, every arch only needs to implement its own rdtsc() to read out
+timer's counter.
 
-Regards,
-Anup
+This patch set has been rebased on the perf/core branch with latest
+commit b1f815c479c1 ("perf vendor events power9: Add hv_24x7 core level
+metric events") and tested on Arm64 DB410c.
 
->
-> > > Just use the start of the first memory block and the end of the last memory
-> > > block to compute the size of the total memory that can be used.
-> > >
-> > > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > > ---
-> > >  arch/riscv/mm/init.c | 6 ++----
-> > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > index 787c75f751a5..188281fc2816 100644
-> > > --- a/arch/riscv/mm/init.c
-> > > +++ b/arch/riscv/mm/init.c
-> > > @@ -147,7 +147,6 @@ void __init setup_bootmem(void)
-> > >  {
-> > >       struct memblock_region *reg;
-> > >       phys_addr_t mem_size = 0;
-> > > -     phys_addr_t total_mem = 0;
-> > >       phys_addr_t mem_start, end = 0;
-> > >       phys_addr_t vmlinux_end = __pa_symbol(&_end);
-> > >       phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> > > @@ -155,18 +154,17 @@ void __init setup_bootmem(void)
-> > >       /* Find the memory region containing the kernel */
-> > >       for_each_memblock(memory, reg) {
-> > >               end = reg->base + reg->size;
-> > > -             if (!total_mem)
-> > > +             if (!mem_start)
-> > >                       mem_start = reg->base;
-> > >               if (reg->base <= vmlinux_start && vmlinux_end <= end)
-> > >                       BUG_ON(reg->size == 0);
-> > > -             total_mem = total_mem + reg->size;
-> > >       }
-> > >
-> > >       /*
-> > >        * Remove memblock from the end of usable area to the
-> > >        * end of region
-> > >        */
-> > > -     mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> > > +     mem_size = min(end - mem_start, (phys_addr_t)-PAGE_OFFSET);
-> > >       if (mem_start + mem_size < end)
-> > >               memblock_remove(mem_start + mem_size,
-> > >                               end - mem_start - mem_size);
-> > > --
-> > > 2.24.0
-> > >
-> >
-> > --
-> > Sincerely yours,
-> > Mike.
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
->
->
->
-> --
-> Regards,
-> Atish
+  $ perf test list
+    [...]
+    68: Convert perf time to TSC
+    [...]
+
+  $ perf test 68 -v
+    68: Convert perf time to TSC
+    --- start ---
+    test child forked, pid 10961
+    mmap size 528384B
+    1st event perf time 35715036563417 tsc 686221770989
+    rdtsc          time 35715036649719 tsc 686221772647
+    2nd event perf time 35715036660448 tsc 686221772852
+    test child finished with 0
+    ---- end ----
+    Convert perf time to TSC: Ok
+
+Changes from v3:
+* Added comments for Arm64's rdtsc() for short counter (PeterZ);
+* Rebased on latest acme/perf/core branch.
+
+Changes from v2:
+* Refactored patch set to move TSC common code to util/tsc.c (Wei/Al);
+* Moved TSC testing to perf/tests (Wei);
+* Dropped Arm SPE timestamp patch so can have clear purpose and easier
+  reviewing; will send Arm SPE timestamp as separate patch.
+
+
+Leo Yan (6):
+  perf tsc: Move out common functions from x86
+  perf tsc: Add rdtsc() for Arm64
+  perf tsc: Calculate timestamp with cap_user_time_short
+  perf tsc: Support cap_user_time_short for event TIME_CONV
+  perf tests tsc: Make tsc testing as a common testing
+  perf tests tsc: Add checking helper is_supported()
+
+ tools/lib/perf/include/perf/event.h           |  4 +
+ tools/perf/arch/arm64/util/Build              |  1 +
+ tools/perf/arch/arm64/util/tsc.c              | 21 +++++
+ tools/perf/arch/x86/include/arch-tests.h      |  1 -
+ tools/perf/arch/x86/tests/Build               |  1 -
+ tools/perf/arch/x86/tests/arch-tests.c        |  4 -
+ tools/perf/arch/x86/util/tsc.c                | 73 +----------------
+ tools/perf/tests/Build                        |  1 +
+ tools/perf/tests/builtin-test.c               |  5 ++
+ .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 13 +++
+ tools/perf/tests/tests.h                      |  2 +
+ tools/perf/util/jitdump.c                     | 14 ++--
+ tools/perf/util/synthetic-events.c            |  8 --
+ tools/perf/util/tsc.c                         | 81 +++++++++++++++++++
+ tools/perf/util/tsc.h                         |  5 ++
+ 15 files changed, 143 insertions(+), 91 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/util/tsc.c
+ rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (93%)
+
+-- 
+2.17.1
+
