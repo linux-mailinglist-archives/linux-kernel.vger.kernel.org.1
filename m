@@ -2,152 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983E92681FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D6926822D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbgINADm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 20:03:42 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:46711 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgINADi (ORCPT
+        id S1725975AbgINAgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 20:36:36 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:46579 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbgINAg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:03:38 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200914000332epoutp02a42904d9768c1a89fa35c05335423ebe~0fY0c0iF00064200642epoutp02L
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 00:03:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200914000332epoutp02a42904d9768c1a89fa35c05335423ebe~0fY0c0iF00064200642epoutp02L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600041812;
-        bh=qDu6UuoR1j78Y94GV7MM4oVV/smj/mjEvM/pJIQx1oE=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=aB8mtERBFvIWaAxq37bCavViN32BY1yON4WF1OMUuZ7nF7pYGA4SZu9MTtDDuVaJP
-         Tpbzd3AU0i0pIUY2qZCaEf15mE8zIoNV0ppQW8IpPjeE052umRKu0NsP0wjQ/QpilR
-         pWAnrsHc68J7HLH40eyw6JEtflWDILkLsrM4/jNU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200914000332epcas1p428a2a2a7d94877e6f217dc3f416021ee~0fYz6368S3186631866epcas1p4V;
-        Mon, 14 Sep 2020 00:03:32 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BqRQm6gLXzMqYkv; Mon, 14 Sep
-        2020 00:03:28 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        35.B7.20696.F43BE5F5; Mon, 14 Sep 2020 09:03:27 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200914000327epcas1p4d83c4cf93f3661c3c8787b2261b8a526~0fYvu_SCq2542825428epcas1p4C;
-        Mon, 14 Sep 2020 00:03:27 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200914000327epsmtrp1441c3c23f39c7c8b32249cebf4c06ee5~0fYvuICRQ0656106561epsmtrp1F;
-        Mon, 14 Sep 2020 00:03:27 +0000 (GMT)
-X-AuditID: b6c32a39-eebff700000050d8-2d-5f5eb34f79d6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        66.A2.08382.F43BE5F5; Mon, 14 Sep 2020 09:03:27 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200914000327epsmtip2cfb48a96f91d45f9133e1a880291f55d~0fYvfkwot2499624996epsmtip2T;
-        Mon, 14 Sep 2020 00:03:27 +0000 (GMT)
-Subject: Re: [PATCH v3 3/3] PM / devfreq: event: Change prototype of
- devfreq_event_get_edev_by_phandle function
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        lukasz.luba@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <6ed7a604-d10d-c2e1-34cf-d22b6fa083f8@samsung.com>
-Date:   Mon, 14 Sep 2020 09:15:39 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Sun, 13 Sep 2020 20:36:28 -0400
+Received: by mail-pf1-f195.google.com with SMTP id b124so11063328pfg.13
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 17:36:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mOb5/fVBtStcT7CwxGssb2rLXfqX4ouo9PLSR/6SaEc=;
+        b=Jm5evZQWG4nclhVFDZFLlEQ5GpgtrCdIs4xyJvS1wobhq9295Mg3HwuaV5BSVvWWVz
+         VfmsLa/ShQIKKME1NsLYGkCQ5h2Dy4h7a/7iMivS+ti+UUbwg2v1yepk5mGI71dUgUSs
+         0qI6LXkOdk5iH6LjDB4wjxBnpTH3sqWA2lmkYIvy8vWIV/MkUQJJVN/ERT0HtBrdVfp2
+         6OexG0mfu0P0bMB9eFzHw7x1yPUN9ZhrJ5EAlO+U1YwgWpbnErmkZZa0jHzoW223yp7Q
+         b2iXFHvraZ+7lMS9uJhBJNDvDIG2WXRkRhoQ3FWDaJqcrWAABMb6rg/2gp1gLyHMKW7B
+         kTyw==
+X-Gm-Message-State: AOAM531Eu9b7Y3rVLZyQiLwI5yGeex1CdyYgxXMvIpDmruT86tTEpEHN
+        iSxPvNqotNjteRVP24J2eQVOtk1zH0UJ2A==
+X-Google-Smtp-Source: ABdhPJwsORdL0ffWEgS4xiLqVeaWlOhBTdFYd9LQqD047kWn2orvZaMwrSRDx56o4LYorDQa4QbKpg==
+X-Received: by 2002:aa7:9a42:: with SMTP id x2mr11398442pfj.5.1600043787673;
+        Sun, 13 Sep 2020 17:36:27 -0700 (PDT)
+Received: from sultan-book.localdomain ([104.200.129.212])
+        by smtp.gmail.com with ESMTPSA id q18sm8401451pfg.158.2020.09.13.17.36.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 17:36:27 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 17:36:24 -0700
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] locking/mutex: Don't hog RCU read lock while
+ optimistically spinning
+Message-ID: <20200914003624.GA3944@sultan-book.localdomain>
+References: <20200807191636.75045-1-sultan@kerneltoast.com>
+ <20200907162031.GA13172@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20200910120812.GC2206@pi3>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmnq7/5rh4g76fJhbnz29gtzjb9Ibd
-        YtPja6wWl3fNYbP43HuE0WLG+X1MFgubWtgtbjeuYHPg8Fgzbw2jx6ZVnWwem5fUe/RtWcXo
-        8XmTXABrVLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2Si0+Arltm
-        DtApSgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwCywK94sTc4tK8dL3k/FwrQwMD
-        I1OgwoTsjId/rjIVvOGuaJ+9m62B8SRnFyMnh4SAicShw39YQGwhgR2MEhtnC3cxcgHZnxgl
-        mjdfYYJwvjFKHFq+BMjhAOs4f0cAomEvo0TbmWQI+z2jxP8FpiC2sEChxPVjV9hAbBEBTYnr
-        f7+zgsxhFrjIKNH59Ro7SIJNQEti/4sbYEX8AooSV388ZgSxeQXsJM5fawKrYRFQlbh0ZDMT
-        iC0qECZxclsLVI2gxMmZT8Cu5hTQkGh49gasnllAXOLWk/lMELa8xPa3c5ghvlzIIXHwqxyE
-        7SKx5MJNNghbWOLV8S3sELaUxMv+Nii7WmLlySNsIEdLCHQwSmzZf4EVImEssX/pZHBAMAN9
-        tn6XPkRYUWLn77mMEHv5JN597WGFhBWvREebEESJssTlB3eZIGxJicXtnWwTGJVmIflmFpIP
-        ZiH5YBbCsgWMLKsYxVILinPTU4sNC0yRo3oTIziNalnuYJz+9oPeIUYmDsZDjBIczEoivK4p
-        sfFCvCmJlVWpRfnxRaU5qcWHGE2B4TuRWUo0OR+YyPNK4g1NjYyNjS1MDM1MDQ2VxHkf3lKI
-        FxJITyxJzU5NLUgtgulj4uCUamBSepT5+OdLrb+uZxJn7qmpva1w9+y+S4ELWJ6JTLe2ejyz
-        /kLV9MM2FdJv5ryTXJ65Uv7b1aTZPw9OmpowhU8uzWSNmqfvwo0pRboejnNP2XjdivVe9sP/
-        Y9P04vV/v8/41F+yNnXB4Q9OChv2t4YG3XRVWPzKPTlStddUYcXNyp6d07yyRT//mV52/IyU
-        hUdExl5bNoEF+97KJz3nTF9/oNVwp3JOblj+nkPlUcIPpSpt3r0pLJioFhp0X+PXym/5m29H
-        HUiTeXbI4KF+gccWZb8n3+VvRWss4PFf3Ps2/MPPcw/U0tTZb5tbekjM8bX0dw7SOXzBOPCJ
-        xpsTm7/Mvjjvmvj6tTkis7YIVE99psRSnJFoqMVcVJwIALp5KVcsBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJXtd/c1y8wapd8hbnz29gtzjb9Ibd
-        YtPja6wWl3fNYbP43HuE0WLG+X1MFgubWtgtbjeuYHPg8Fgzbw2jx6ZVnWwem5fUe/RtWcXo
-        8XmTXABrFJdNSmpOZllqkb5dAlfGwz9XmQrecFe0z97N1sB4krOLkYNDQsBE4vwdgS5GTg4h
-        gd2MEu9PiYHYEgKSEtMuHmWGKBGWOHy4uIuRC6jkLaPE+unz2UBqhAUKJa4fuwJmiwhoSlz/
-        +50VpIhZ4CKjxIufv9gght5mlNj5xB/EZhPQktj/4gZYnF9AUeLqj8eMIDavgJ3E+WtN7CA2
-        i4CqxKUjm5lAbFGBMImdSx4zQdQISpyc+YQFxOYU0JBoePYGrJ5ZQF3iz7xLzBC2uMStJ/OZ
-        IGx5ie1v5zBPYBSehaR9FpKWWUhaZiFpWcDIsopRMrWgODc9t9iwwDAvtVyvODG3uDQvXS85
-        P3cTIzimtDR3MG5f9UHvECMTB+MhRgkOZiURXteU2Hgh3pTEyqrUovz4otKc1OJDjNIcLEri
-        vDcKF8YJCaQnlqRmp6YWpBbBZJk4OKUamFgK/y+axJUTeYal0tum9t7yRwaMG7YohFdyNbQZ
-        mBjnf3/C2xb872HX62suayNZe548ci9vctLNCpxZ3pPRfsW/Y5JK9RYdv28fb8o2aMZ8mSe1
-        QG8rcynnN32Nxe2cbyt/nfpw/O4jRy5em5Z4zqJTxocTOde33jpw6z7DmuZ5zFwTloY3a1U2
-        dj4wMlaTM/A7uPGW5MoVzNMb4/51tu46PTf0yd09hxfvNdPo6Jm00fYBT+3ZzaclX61lsFa/
-        aZmTn6kfosa0NlXLk7+F5Zvisfnb+cy2Ptk2bcZRSZv9Mp+S97cu2pPXZXZJso5TQVx5770c
-        pw6/dwFHLsX87lS8N7vvzseW5RLWmYtalViKMxINtZiLihMBs/vDhRgDAAA=
-X-CMS-MailID: 20200914000327epcas1p4d83c4cf93f3661c3c8787b2261b8a526
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200908101231epcas1p4b6262aae4d5272f6cce366ac1ffbb955
-References: <20200908102447.15097-1-cw00.choi@samsung.com>
-        <CGME20200908101231epcas1p4b6262aae4d5272f6cce366ac1ffbb955@epcas1p4.samsung.com>
-        <20200908102447.15097-4-cw00.choi@samsung.com> <20200910120812.GC2206@pi3>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200907162031.GA13172@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/20 9:08 PM, Krzysztof Kozlowski wrote:
-> On Tue, Sep 08, 2020 at 07:24:47PM +0900, Chanwoo Choi wrote:
->> Previously, devfreq core support 'devfreq-events' property in order to get
->> the devfreq-event device by phandle. But, 'devfreq-events' property name is
->> not proper on devicetree binding because this name doesn't mean
->> the any h/w attribute.
->>
->> The devfreq-event core hand over the rights to decide the property name
->> for getting the devfreq-event device on devicetree. Each devfreq-event driver
->> will decide the property name on devicetree binding and then pass
->> the their own property name to devfreq_event_get_edev_by_phandle function.
->>
->> And change the prototype of devfreq_event_get_edev_count function
->> because of used deprecated 'devfreq-events' property.
->>
->> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
->> ---
->>  drivers/devfreq/devfreq-event.c         | 14 ++++++++------
->>  drivers/devfreq/exynos-bus.c            |  5 +++--
->>  drivers/devfreq/rk3399_dmc.c            |  2 +-
->>  drivers/memory/samsung/exynos5422-dmc.c |  6 ++++--
->>  include/linux/devfreq-event.h           | 14 ++++++++++----
->>  5 files changed, 26 insertions(+), 15 deletions(-)
->>
+On Mon, Sep 07, 2020 at 05:20:31PM +0100, Will Deacon wrote:
+> On Fri, Aug 07, 2020 at 12:16:35PM -0700, Sultan Alsawaf wrote:
+> > From: Sultan Alsawaf <sultan@kerneltoast.com>
+> > 
+> > There's no reason to hold an RCU read lock the entire time while
+> > optimistically spinning for a mutex lock. This can needlessly lengthen
+> > RCU grace periods and slow down synchronize_rcu() when it doesn't brute
+> > force the RCU grace period via rcupdate.rcu_expedited=1.
 > 
-> Feel free to take it via devfreq tree. I don't expect conflicts around
-> memory/samsung/exynos5422-dmc.c.
-> 
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
+> Would be good to demonstrate this with numbers if you can.
 
-Thanks for review. Applied them to devfreq-next.
+I could simulate the worst possible case, which would stall synchronize_rcu() by
+one jiffy, which could be 10ms with CONFIG_HZ=100. The way that would happen is
+when the mutex owner does a lot of non-sleeping work while the lock is held, and
+while another CPU tries to acquire the lock.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+This is a dummy example of the scenario I have in mind:
+      CPU0                         CPU1
+----------------------------------------------
+mutex_lock(locky)
+mdelay(100)                  mutex_lock(locky)
+mutex_unlock(locky)
+
+In this case, CPU1 could spin in mutex_lock() for up to a jiffy (until CPU0
+releases locky, which won't happen for 100ms, or until CPU1's task needs to
+reschedule). While the spinning occurs, the RCU read lock will be held the whole
+time, and then synchronize_rcu() will be stalled.
+
+One could argue that most mutex-locked critical sections probably wouldn't spend
+so long working on something without scheduling (at least, not intentionally),
+but on slower SMP CPUs I suspect that this is common.
+
+> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> > ---
+> >  kernel/locking/mutex.c | 25 +++++++++++++++++--------
+> >  1 file changed, 17 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+> > index 5352ce50a97e..cc5676712458 100644
+> > --- a/kernel/locking/mutex.c
+> > +++ b/kernel/locking/mutex.c
+> > @@ -552,21 +552,31 @@ bool mutex_spin_on_owner(struct mutex *lock, struct task_struct *owner,
+> >  {
+> >  	bool ret = true;
+> >  
+> > -	rcu_read_lock();
+> > -	while (__mutex_owner(lock) == owner) {
+> > +	for (;;) {
+> > +		unsigned int cpu;
+> > +		bool same_owner;
+> > +
+> >  		/*
+> > -		 * Ensure we emit the owner->on_cpu, dereference _after_
+> > -		 * checking lock->owner still matches owner. If that fails,
+> > +		 * Ensure lock->owner still matches owner. If that fails,
+> >  		 * owner might point to freed memory. If it still matches,
+> >  		 * the rcu_read_lock() ensures the memory stays valid.
+> >  		 */
+> > -		barrier();
+> > +		rcu_read_lock();
+> > +		same_owner = __mutex_owner(lock) == owner;
+> > +		if (same_owner) {
+> > +			ret = owner->on_cpu;
+> > +			if (ret)
+> > +				cpu = task_cpu(owner);
+> > +		}
+> > +		rcu_read_unlock();
+> 
+> Are you sure this doesn't break the ww mutex spinning? That thing also goes
+> and looks at the owner, but now it's called outside of the read-side
+> critical section.
+
+Yes, it's safe because it's not dereferencing the owner pointer.
+
+Sultan
