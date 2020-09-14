@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49D42695BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAADF2695BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgINTij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:38:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42115 "EHLO
+        id S1726028AbgINTiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:38:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48001 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725914AbgINTii (ORCPT
+        by vger.kernel.org with ESMTP id S1725914AbgINTiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:38:38 -0400
+        Mon, 14 Sep 2020 15:38:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600112316;
+        s=mimecast20190719; t=1600112332;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2rX44fORneLTrsGw8dMUWqFurvE6jUJfJ/7J84+5FHc=;
-        b=GoQjXQAmWhGdQTioYVPpReyo59XV7os8cXkFCN8DCsp8KoVAS4Fct/VRZIIdNhw52fOKBH
-        8RDYEdp2M5gH/7iPXkPpx4j2wLfgzLbrYwvsPPKKsJhcL+dn1vYovHoWfhQAJKb5IF9alI
-        LgoiiLgIw97kkrA5xw6Royw5kKAIPyQ=
+        bh=vmY3KqhhGvzV+d5TP9N2N7K426wvJo+nZ3Drl42v3nI=;
+        b=F6tVZrBa8P3bcstN1qylkOabQ8XOKORBDy147BtzE7UnExQlsmOWZM1Eq/r80HiIO0jJFb
+        cXWPqg9GgSiXGBVkflJ5PTwRONYpBb8+gj34FGPxmIhTxtiu3Xp6JeS/T0Z1cbVnWEDUCi
+        +uowVEvzyFXspcV8e/4pIIyB4Y5zIPs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-422-quM1a3E8OWmgGo6w2YOn6g-1; Mon, 14 Sep 2020 15:38:32 -0400
-X-MC-Unique: quM1a3E8OWmgGo6w2YOn6g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-511-kSYcYa3PPQqkzgxPKq5kqg-1; Mon, 14 Sep 2020 15:38:50 -0400
+X-MC-Unique: kSYcYa3PPQqkzgxPKq5kqg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7D7D8800683;
-        Mon, 14 Sep 2020 19:38:30 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEC181882FBB;
+        Mon, 14 Sep 2020 19:38:47 +0000 (UTC)
 Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 34D6510013BD;
-        Mon, 14 Sep 2020 19:38:26 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 21:38:25 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4BDF95F9C1;
+        Mon, 14 Sep 2020 19:38:42 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 21:38:41 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     peterz@infradead.org
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -50,106 +50,92 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Stephane Eranian <eranian@google.com>,
         Alexey Budankov <alexey.budankov@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
+        Adrian Hunter <adrian.hunter@intel.com>
 Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-Message-ID: <20200914193825.GL1714160@krava>
+Message-ID: <20200914193841.GM1714160@krava>
 References: <20200913210313.1985612-1-jolsa@kernel.org>
  <20200913210313.1985612-3-jolsa@kernel.org>
  <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
- <20200914152841.GC160517@kernel.org>
- <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 06:35:34PM +0200, peterz@infradead.org wrote:
-> On Mon, Sep 14, 2020 at 12:28:41PM -0300, Arnaldo Carvalho de Melo wrote:
-> 
-> > > >   struct {
-> > > >     struct perf_event_header header;
-> > 
-> > > >     u32                      pid, tid;
-> > > >     u64                      addr;
-> > > >     u64                      len;
-> > > >     u64                      pgoff;
-> > > >     u32                      maj;
-> > > >     u32                      min;
-> > > >     u64                      ino;
-> > > >     u64                      ino_generation;
-> > > >     u32                      prot, flags;
-> > > >     u32                      reserved;
-> > 
-> > What for this reserved? its all nicely aligned already, u64 followed by
-> > two u32 (prot, flags).
-> 
-> I suspect it is so that sizeof(reserve+buildid) is a multiple of 8. But
-> yes, that's a wee bit daft, since the next field is a variable length
-> character array.
-> 
-> > > >     u8                       buildid[20];
-> >  
-> > > Do we need maj, min, ino, ino_generation for mmap3 event?
-> > > I think they are to compare binaries, then we can do it with
-> > > build-id (and I think it'd be better)..
-> > 
-> > Humm, I thought MMAP2 would be a superset of MMAP and MMAP3 would be a
-> > superset of MMAP2.
-> 
-> Well, the 'funny' thing is that if you do use buildid, then
-> {maj,min,ino,ino_generation} are indeed superfluous, but are combined
-> also large enough to contain buildid.
+On Mon, Sep 14, 2020 at 02:38:27PM +0900, Namhyung Kim wrote:
 
-yay! nice
+SNIP
 
+> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> > index 077e7ee69e3d..facfc3c673ed 100644
+> > --- a/include/uapi/linux/perf_event.h
+> > +++ b/include/uapi/linux/perf_event.h
+> > @@ -384,7 +384,8 @@ struct perf_event_attr {
+> >                                 aux_output     :  1, /* generate AUX records instead of events */
+> >                                 cgroup         :  1, /* include cgroup events */
+> >                                 text_poke      :  1, /* include text poke events */
+> > -                               __reserved_1   : 30;
+> > +                               mmap3          :  1, /* include bpf events */
 > 
-> > If we want to ditch useless stuff, then trow away pid, tid too, as we
-> > can select those via sample_type.
+> ???
 > 
-> Correct.
+> > +                               __reserved_1   : 29;
+> >
+> >         union {
+> >                 __u32           wakeup_events;    /* wakeup every n events */
+> > @@ -1060,6 +1061,30 @@ enum perf_event_type {
+> >          */
+> >         PERF_RECORD_TEXT_POKE                   = 20,
+> >
+> > +       /*
+> > +        * The MMAP3 records are an augmented version of MMAP2, they add
+> > +        * build id value to identify the exact binary behind map
+> > +        *
+> > +        * struct {
+> > +        *      struct perf_event_header        header;
+> > +        *
+> > +        *      u32                             pid, tid;
+> > +        *      u64                             addr;
+> > +        *      u64                             len;
+> > +        *      u64                             pgoff;
+> > +        *      u32                             maj;
+> > +        *      u32                             min;
+> > +        *      u64                             ino;
+> > +        *      u64                             ino_generation;
+> > +        *      u32                             prot, flags;
+> > +        *      u32                             reserved;
+> > +        *      u8                              buildid[20];
+> > +        *      char                            filename[];
+> > +        *      struct sample_id                sample_id;
+> > +        * };
+> > +        */
+> > +       PERF_RECORD_MMAP3                       = 21,
+> > +
+> >         PERF_RECORD_MAX,                        /* non-ABI */
+> >  };
+> >
+> [SNIP]
+> > @@ -8098,6 +8116,9 @@ static void perf_event_mmap_event(struct perf_mmap_event *mmap_event)
+> >         mmap_event->prot = prot;
+> >         mmap_event->flags = flags;
+> >
+> > +       if (atomic_read(&nr_mmap3_events))
+> > +               build_id_parse(vma, mmap_event->buildid);
+> 
+> What about if it failed?  We should zero out the build-id..
 
-can we? I think you could disable sample_id then
-you won't have pid/tid in mmap event
+it is initialized to zero in perf_event_mmap
 
-> 
-> So something like:
-> 
-> struct {
->   struct perf_event_header header;
-> 
->   u64                      addr;
->   u64                      len;
->   u64                      pgoff;
->   union {
->     struct {
->       u32                  maj;
->       u32                  min;
->       u64                  ino;
->       u64                  ino_generation;
->     };
->     u8                     buildid[20];
->   };
->   u32                      prot, flags;
->   char			   filename[];
->   struct sample_id         sample_id;
-> };
-> 
-> Using one of the MISC bits to resolve the union. Might actually bring
-> benefit to everyone. Us normal people get to have a smaller MMAP record,
-> while the buildid folks can have it too.
-> 
-> Even more extreme would be using 2 MISC bits and allowing the union to
-> be 0 sized for anon.
+        mmap_event = (struct perf_mmap_event){
+                .vma    = vma,
+	...
 
-I like that idea, I'll check on it
+I'll double check build_id_parse won't leave anything half
+baked there, but I dont think so
 
 thanks,
 jirka
