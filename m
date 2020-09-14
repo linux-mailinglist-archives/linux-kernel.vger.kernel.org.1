@@ -2,114 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D75269109
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F987269111
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgINQFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726061AbgINQCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:02:21 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CC1C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:02:06 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id s12so188564wrw.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:02:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n6LtCGvrAXE3QiE4qfJQGgn89kMaY1QEsIyHXiYtTTc=;
-        b=uMO0rA52/BJZa3hesvspLsRNPKOgvDHB48G3FFPOnOTHBvO/7rzHvbZH+I+ezWRfER
-         gGgQ5y/XC6V89t9/Cnj0yTvVFYqa6YvbsNVA/4QPyivhzcUj6JdwA3IZpyMJrpBO6EFj
-         RIXJMmdGYuChKvDCXMTRC6UAL3aHZHAi4LIWcQ/UYrymAp9TxuevXWznP3BcpYb6mpu4
-         BhL9hIZUOeg/xF6oeIJr/pByUK6pVGXKdkctS3rVaFPczGwl5CmdAhihkzkrSDzQHasD
-         Cv9ebamJkPytXiJLcbdH3bmbaAa1hgqXzVeH4C3gixvhKmpVX10AZXpvmHt3fxzpriPk
-         nDVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n6LtCGvrAXE3QiE4qfJQGgn89kMaY1QEsIyHXiYtTTc=;
-        b=sjNQAdZUUYoW3EqhWrZvSIqROVtNjLmps/070E2/Ey7UWiTkEeEH0km25lelotidFD
-         OEOnlic+oI/GMHn7nodqZ9EkhWPXj7CqC/sNpuargOWexK/14R9UCbyW6+HM7F17bLd0
-         l/2XYcGNzjAf7UlInOBFSEV7hYv+kfrUGPoYw6TQfwW3+K8VPQ6jgNRj6Dsi6IDA+OsY
-         btIwEh9rRQiRxmFdMLBW6VyUKd18ZlJS/eR7SFH52xRdSUHOfQ79olIeK833AITaexN8
-         MlB6M7h4Mk2dMeIV282NxZk4Tq4synIFua7wLxlrqu+mjGlC1mxQZpHYZ1+Y+KxsgXsc
-         gXAA==
-X-Gm-Message-State: AOAM531voALA26QDFzjvIChhvELuyuBcSMtq8DGRD+6NwwHM86oB9ETV
-        6CgIcAciIK/VWsHrfYl1vjepeg==
-X-Google-Smtp-Source: ABdhPJxrxx4pHXAatCaTpLx0Z01e1J3C6ex7zab4CjGtNT/uGp91v/25pIPlvN+Y7kD/f3mo80j7AA==
-X-Received: by 2002:a5d:4c90:: with SMTP id z16mr17678413wrs.170.1600099324621;
-        Mon, 14 Sep 2020 09:02:04 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id v204sm20508924wmg.20.2020.09.14.09.02.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 09:02:04 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 19:02:00 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200914160200.GA19026@apalos.home>
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
- <20200914122042.GA24441@willie-the-truck>
- <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home>
- <20200914140114.GG24441@willie-the-truck>
+        id S1725967AbgINQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:07:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726090AbgINQEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:04:04 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D97920EDD;
+        Mon, 14 Sep 2020 16:03:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600099400;
+        bh=yI0s//6TJSSQUXdVVQjhJfjWuCd2EdWI8qBQV3YQ9ew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mvDKO755QCkKry9ENHnmoI8y02lzf3KZzcp4AKASxezMRa7nTzHcSRTXfhUPHwa+R
+         y6/hcVyRJQS8nujE1QM+0qNIN87zdInb49CWM+Rpek+Tmn1iJ9AfCB2uYmYicE0bkQ
+         K6TmkcVKtYDC3XoxqpyvsFxxQvwoLBy1pcdTkOpU=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7AB0840D3D; Mon, 14 Sep 2020 13:03:18 -0300 (-03)
+Date:   Mon, 14 Sep 2020 13:03:18 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 05/26] perf tools: Add build_id__is_defined function
+Message-ID: <20200914160318.GG160517@kernel.org>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-6-jolsa@kernel.org>
+ <CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914140114.GG24441@willie-the-truck>
+In-Reply-To: <CAM9d7cjjGjTN8sDgLZ1PoQZ-sUXWjnVaNdyOVE1yHxq46PrPkw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+Em Mon, Sep 14, 2020 at 02:44:35PM +0900, Namhyung Kim escreveu:
+> On Mon, Sep 14, 2020 at 6:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding build_id__is_defined helper to check build id
+> > is defined and is != zero build id.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/util/build-id.c | 11 +++++++++++
+> >  tools/perf/util/build-id.h |  1 +
+> >  2 files changed, 12 insertions(+)
+> >
+> > diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+> > index 31207b6e2066..bdee4e08e60d 100644
+> > --- a/tools/perf/util/build-id.c
+> > +++ b/tools/perf/util/build-id.c
+> > @@ -902,3 +902,14 @@ bool perf_session__read_build_ids(struct perf_session *session, bool with_hits)
+> >
+> >         return ret;
+> >  }
+> > +
+> > +bool build_id__is_defined(const u8 *build_id)
+> > +{
+> > +       static u8 zero[BUILD_ID_SIZE];
+> > +       int err = 0;
+> > +
+> > +       if (build_id)
+> > +               err = memcmp(build_id, &zero, BUILD_ID_SIZE);
+> > +
+> > +       return err ? true : false;
+> > +}
+ 
+> I think this is a bit confusing.. How about this?
+ 
+>   bool ret = false;
+>   if (build_id)
+>       ret = memcmp(...);
+>   return ret;
+ 
+> Or, it can be a oneliner..
 
-On Mon, Sep 14, 2020 at 03:01:15PM +0100, Will Deacon wrote:
-> Hi Ilias,
-> 
+Yeah.
 
-[...]
+I was curious about if the kernel lib has something to ask if a range of
+memory is zeroed, and there is this:
 
-> > > > 
-> > > > No Fixes: tag?
-> > > 
-> > > I'll re-spin and apply one 
-> > > 
-> > Any suggestion on any Fixes I should apply? The original code was 'correct' and
-> > broke only when bounded loops and their self-tests were introduced.
-> 
-> Ouch, that's pretty bad as it means nobody is regression testing BPF on
-> arm64 with mainline. Damn.
+static bool is_zeroed(void *from, size_t size)
+{
+        return memchr_inv(from, 0x0, size) == NULL;
+}
 
-That might not be entirely true. Since offset is a pointer, there's a chance
-(and a pretty high one according to my reproducer) that the offset[-1] value 
-happens to be 0. In that case the tests will pass fine. I can reproduce the bug
-approximately 1 every 6-7 passes here.
+commit 798248206b59acc6e1238c778281419c041891a7
+Author: Akinobu Mita <akinobu.mita@gmail.com>
+Date:   Mon Oct 31 17:08:07 2011 -0700
 
-I'll send a v2 shortly fixing the tags and adding a few comments on the code,
-which will hopefully make future reading easier.
+    lib/string.c: introduce memchr_inv()
 
-Cheers
-/Ilias
+    memchr_inv() is mainly used to check whether the whole buffer is filled
+    with just a specified byte.
+
+    The function name and prototype are stolen from logfs and the
+    implementation is from SLUB.
+
+---
+
+Some usage in drivers/nvme/target/admin-cmd.c
+
++static void nvmet_execute_identify_desclist(struct nvmet_req *req)
++{
++       struct nvmet_ns *ns;
++       u16 status = 0;
++       off_t off = 0;
++
++       ns = nvmet_find_namespace(req->sq->ctrl, req->cmd->identify.nsid);
++       if (!ns) {
++               status = NVME_SC_INVALID_NS | NVME_SC_DNR;
++               goto out;
++       }
++
++       if (memchr_inv(&ns->uuid, 0, sizeof(ns->uuid))) {
++               status = nvmet_copy_ns_identifier(req, NVME_NIDT_UUID,
++                                                 NVME_NIDT_UUID_LEN,
++                                                 &ns->uuid, &off);
++               if (status)
++                       goto out_put_ns;
++       }
+
+More:
+
+[acme@five perf]$ find arch/ -type f | xargs grep memchr_inv
+arch/x86/kernel/fpu/xstate.c:	if (memchr_inv(hdr->reserved, 0, sizeof(hdr->reserved)))
+arch/x86/mm/init_64.c:			if (!memchr_inv(page_addr, PAGE_INUSE, PAGE_SIZE)) {
+arch/x86/mm/init_64.c:				if (!memchr_inv(page_addr, PAGE_INUSE,
+arch/x86/mm/init_64.c:				if (!memchr_inv(page_addr, PAGE_INUSE,
+arch/s390/mm/vmem.c:	return !memchr_inv(page, PAGE_UNUSED, PMD_SIZE);
+arch/powerpc/platforms/powermac/nvram.c:	if (memchr_inv(base, 0xff, NVRAM_SIZE)) {
+arch/powerpc/platforms/powermac/nvram.c:	if (memchr_inv(base, 0xff, NVRAM_SIZE)) {
+[acme@five perf]$
+
+- Arnaldo
