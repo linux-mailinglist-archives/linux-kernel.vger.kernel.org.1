@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB40126961A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83056269617
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgINULy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:11:54 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:30924 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgINULp (ORCPT
+        id S1726020AbgINULo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgINULk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:11:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1600114299;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=vQITCXnG/2YZ2774yYTecNxsLQZF33SDBa0LlBI8CQs=;
-        b=Na2kUwbRnYn95j+bM8Fj17OyL6ydD9prX/J2QzkoH/zj4+sPSjW9txZ5DR2EIzkB1o
-        7Pa+T/o45ZHEgwhXmLzIqgkeiUc8Ae4kA6kGFnjjhUtd/xs6v462GpO8xSAMw7JyHxqC
-        /jbKDI4oZe5by6/uZLSASAzXYonlFEwRJ6ADGbAW/B2J6SQxmA+CniZJrE9K2LNMQJSF
-        0eknMZivDyju33E1Kb3hIqNgoz0y8XVo8O3uW/BeI8B6lpj9a8oPzyr3ErBLiiABvsqb
-        1r9ONdM2Bg/ccEliwg7H/nDidkd/bM+SdEgi9brscLbwY1MUVOuNAzp5JbmT2Ouo8IrU
-        /ctg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IcfFBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 46.10.7 DYNA|AUTH)
-        with ESMTPSA id g0b6c1w8EKBct9y
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 14 Sep 2020 22:11:38 +0200 (CEST)
-Date:   Mon, 14 Sep 2020 22:11:32 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] opp: Allow opp-level to be set to 0
-Message-ID: <20200914201132.GA163547@gerhold.net>
-References: <40b676a1e261d1cfd12788d88e0d2026dbbe226b.1599817789.git.viresh.kumar@linaro.org>
+        Mon, 14 Sep 2020 16:11:40 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3488AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:11:40 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id q4so470846pjh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XNL8jhesDz5w5639aZYzscEjBERwRtey/diox1hIc1E=;
+        b=d7YvdRlJXEdwAOpI/T/HJ6dvTJ7saYd+au2CY13FtLC3mNnYuxo+4TG584AlgjGamb
+         4ljFLewIY8GdPgCJBsR4Dn/U2nCXNnAsLiSGU1pcqsN+eo3nd9XXnt4aXp6/i2AQ0aX5
+         d15/TcomKYYHT4pNH2Y+q5zOZNjbstyBplPmU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XNL8jhesDz5w5639aZYzscEjBERwRtey/diox1hIc1E=;
+        b=YHspf8ZuiT0HhRpfGojlDkeONt+q7NLUYG55RZIRzJcIYjyU3cJ/E/yes/T++Ho7ID
+         6Dc9UzaL+nq+z0qWCIMQcr0S60qa17kwjpFt9+pwaIApbz0FbApG8QUgnTWSka2YdctP
+         E5TAjfr4EL5h6rIylycycY6RSjRP1b/v7CWYQEY7hVd58cVp7ViiQ0o9806oxt5XBUWK
+         NXYP7+pjjVCdQ0a/P5cbBbuMctyeU86HBZWF6kz3gHjiHJUtBGPzL+IaslImPCb1A0c1
+         ezB6nLGmYY194r1gHhuus2L3gybqCAhvPBGkNWqWZjrYbdtkiNubYMR7Y1hvraljPeEh
+         GNvA==
+X-Gm-Message-State: AOAM530lLoMCX2iWafk08i+159B+Go04Cq3MSUXlnYXkTp0DtetwMXsN
+        VisBfJT5Y2w8ZDedZsvoMzk4qQ==
+X-Google-Smtp-Source: ABdhPJzzRGMAJ2ODlXq9ROLBadXCECak5JzFlT7eXG1NEBdvTymcuCsDxhVCu6n92KAIjAuUVwy5og==
+X-Received: by 2002:a17:902:9a02:: with SMTP id v2mr15694438plp.151.1600114299795;
+        Mon, 14 Sep 2020 13:11:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f6sm11202626pfq.82.2020.09.14.13.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 13:11:38 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 13:11:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the tip tree
+Message-ID: <202009141310.C668784@keescook>
+References: <20200914132249.40c88461@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <40b676a1e261d1cfd12788d88e0d2026dbbe226b.1599817789.git.viresh.kumar@linaro.org>
+In-Reply-To: <20200914132249.40c88461@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 03:19:53PM +0530, Viresh Kumar wrote:
-> The DT bindings don't put such a constraint, nor should the kernel. It
-> is perfectly fine for opp-level to be set to 0, if we need to put the
-> performance state votes for a domain for a particular OPP.
+On Mon, Sep 14, 2020 at 01:22:49PM +1000, Stephen Rothwell wrote:
+> After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+> produced this warning:
 > 
-> Reported-by: Stephan Gerhold <stephan@gerhold.net>
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kernel/trace/trace_selftest_dynamic.o' being placed in section `.ctors.65435'
+> [...]
 
-I tried adding an opp-level = <0> and voting for it using required-opps
-for some of the OPPs in the CPU OPP table and it seems to work fine now.
+Hmm, I wasn't seeing that...
 
-Tested-by: Stephan Gerhold <stephan@gerhold.net>
+Which gcc and bintuils versions are you using?
 
-Just need to solve the "enable power domains" problem now :)
-
-Thanks!
-Stephan
-
-> ---
->  drivers/opp/core.c |  3 ---
->  drivers/opp/of.c   | 20 +++++++-------------
->  2 files changed, 7 insertions(+), 16 deletions(-)
+> Probably exposed by commit
 > 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index 214c1619b445..2483e765318a 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -2117,9 +2117,6 @@ int dev_pm_opp_xlate_performance_state(struct opp_table *src_table,
->  	int dest_pstate = -EINVAL;
->  	int i;
->  
-> -	if (!pstate)
-> -		return 0;
-> -
->  	/*
->  	 * Normally the src_table will have the "required_opps" property set to
->  	 * point to one of the OPPs in the dst_table, but in some cases the
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index e72753be7dc7..87f839a1899a 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -842,7 +842,7 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
->  static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
->  {
->  	struct device_node *np;
-> -	int ret, count = 0, pstate_count = 0;
-> +	int ret, count = 0;
->  	struct dev_pm_opp *opp;
->  
->  	/* OPP table is already initialized for the device */
-> @@ -876,20 +876,14 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
->  		goto remove_static_opp;
->  	}
->  
-> -	list_for_each_entry(opp, &opp_table->opp_list, node)
-> -		pstate_count += !!opp->pstate;
-> -
-> -	/* Either all or none of the nodes shall have performance state set */
-> -	if (pstate_count && pstate_count != count) {
-> -		dev_err(dev, "Not all nodes have performance state set (%d: %d)\n",
-> -			count, pstate_count);
-> -		ret = -ENOENT;
-> -		goto remove_static_opp;
-> +	list_for_each_entry(opp, &opp_table->opp_list, node) {
-> +		/* Any non-zero performance state would enable the feature */
-> +		if (opp->pstate) {
-> +			opp_table->genpd_performance_state = true;
-> +			break;
-> +		}
->  	}
->  
-> -	if (pstate_count)
-> -		opp_table->genpd_performance_state = true;
-> -
->  	return 0;
->  
->  remove_static_opp:
-> -- 
-> 2.25.0.rc1.19.g042ed3e048af
-> 
+>   83109d5d5fba ("x86/build: Warn on orphan section placement")
+
+Very likely! :)
+
+-- 
+Kees Cook
