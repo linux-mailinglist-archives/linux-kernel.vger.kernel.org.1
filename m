@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DE9269000
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C889A269006
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgINPcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgINPbm (ORCPT
+        id S1726189AbgINPd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:33:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33986 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726127AbgINPcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:31:42 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2BEC06174A;
-        Mon, 14 Sep 2020 08:31:42 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id i1so17503edv.2;
-        Mon, 14 Sep 2020 08:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=fLNb41VIkD/RuPBy33egUq3B1KbchS1GHIy2wAcNoFg=;
-        b=d0tBg5CSotliTfnKU7Ilv5nD9qZmOmvj/sU2Ziv6THacAnNAFTW90Yu2SPIxroUKsV
-         xrmiUPNCSlyl3aS/OnAPZLAxu0/xuDAcixMjklz/Zrg9fu+RzNHWNFCCDDmRV9jPExea
-         EyTMhntUbksZ0nXC2jqaVEeNjXq/LcWt0oZy4H/4LLABUKEBm15YPRUshQarzoAzB4ZO
-         2RUhIwMFPfuM7dHoPvA8v/G6CLw9kdLaWm3xbA+CAXO7WNT4W7Wd4QEF+utG86NZbIbL
-         YurdpOElqlpSsf5ChLfltUGYueNj2XYA+YtnRMEU/+e+jAYqUtR5LXlCJ6NO9gB8c7l7
-         mz7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=fLNb41VIkD/RuPBy33egUq3B1KbchS1GHIy2wAcNoFg=;
-        b=ScJYXKki9eyOvICr+OZpYSAY30lrnzbS7YJqxzMwbT+ra38FE8tfAu3ABX3yXmaoLv
-         33V52M8GIVV69btltyorNBjDWwfNeA950e1lzNmKYsmZdPa3Jlfz+bsdyvxp2l5K1CPM
-         d4qnQSOyf/xxPJY1da2nMwICEfyranOoR6PkChPyEINV3pasW3+j30XLyIZScnRLR4ES
-         Om5Lk2pnnKaZyKoW54n98Y3IjW0z6g+rX6Dgu/IRmNvBxRF/KC1Ik8XnAoizEp6G2LTz
-         KupCCP0aQ8DlkeOr4zU2YOzRgbcOD5sn9IVHQccDshLH9haNAkDtaUwdgG1kcxeUAzth
-         OdSQ==
-X-Gm-Message-State: AOAM532aMTGAXY3C5RQH4y1KD9U35/lSzczxCtc5Khv4jvi/Ab4fLCga
-        THXSswbzQZMgNVa/bA7nTvk=
-X-Google-Smtp-Source: ABdhPJwRC+BDZn+93nSISeCmb/4S7FDAVbfdIR/fBXtuiCtf3Xc9d5JcoVVQV7/DqrSLMq3Wh4zs0g==
-X-Received: by 2002:aa7:cd90:: with SMTP id x16mr17354077edv.302.1600097500699;
-        Mon, 14 Sep 2020 08:31:40 -0700 (PDT)
-Received: from felia ([2001:16b8:2ddc:3000:7936:d9d0:986e:cca5])
-        by smtp.gmail.com with ESMTPSA id bo8sm9559422edb.39.2020.09.14.08.31.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:31:40 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Mon, 14 Sep 2020 17:31:38 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     David Woodhouse <dwmw2@infradead.org>
-cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: make linux-mediatek list remarks
- consistent
-In-Reply-To: <bc5ba52bb0c123d0ed038e5dce9474f27ac2f750.camel@infradead.org>
-Message-ID: <alpine.DEB.2.21.2009141731030.17999@felia>
-References: <20200914053110.23286-1-lukas.bulwahn@gmail.com> <f6bc41d3-5ce4-b9ea-e2bb-e0cee4de3179@gmail.com> <alpine.DEB.2.21.2009141208200.17999@felia> <9c5aaa15-bdd8-ae4f-0642-092566ab08ba@gmail.com> <alpine.DEB.2.21.2009141552570.17999@felia>
- <7da64c0975c345f1f45034410c9ed7d509ba9831.camel@infradead.org> <alpine.DEB.2.21.2009141615020.17999@felia> <f511570405799df421397ff65847e927745dad08.camel@infradead.org> <alpine.DEB.2.21.2009141717470.17999@felia>
- <bc5ba52bb0c123d0ed038e5dce9474f27ac2f750.camel@infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 14 Sep 2020 11:32:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600097529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hYwIPUBVeru2C0Pit6Q9ISN4S7/HsDvY1EPeSpcccVM=;
+        b=LQuQpX9f9EWiy3Ak6ldiEouM4QEucsMgFjX2FhtMadDtr9Ykjcfdv8pCHIFCX/VI0O7YZc
+        PvkZGtVSzS2QAcKsPtIhbcQwEV9jxr+m32RzguoUrYVCttw7u0+o2o4uf/Wo+ceCTAsdlH
+        Ja3YwoiQdVjynt1msgIq7/FJ4wsCOWs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-3FfxvtFdMpeMPgPdPi2dfQ-1; Mon, 14 Sep 2020 11:32:05 -0400
+X-MC-Unique: 3FfxvtFdMpeMPgPdPi2dfQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D008E800C60;
+        Mon, 14 Sep 2020 15:32:02 +0000 (UTC)
+Received: from gondolin (ovpn-112-214.ams2.redhat.com [10.36.112.214])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D8ECD7A1FC;
+        Mon, 14 Sep 2020 15:31:52 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 17:31:49 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 05/16] s390/vfio-ap: implement in-use callback for
+ vfio_ap driver
+Message-ID: <20200914173149.70fa59d9.cohuck@redhat.com>
+In-Reply-To: <20200821195616.13554-6-akrowiak@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-6-akrowiak@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 21 Aug 2020 15:56:05 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-
-On Mon, 14 Sep 2020, David Woodhouse wrote:
-
-> On Mon, 2020-09-14 at 17:23 +0200, Lukas Bulwahn wrote:
-> > >  # /usr/lib/mailman/bin/config_list -o- linux-mediatek | grep -B5 ^generic_nonmember_action
-> > > # legal values are:
-> > > #    0 = "Accept"
-> > > #    1 = "Hold"
-> > > #    2 = "Reject"
-> > > #    3 = "Discard"
-> > > generic_nonmember_action = 0
-> >
-> > David, I guess if you have access to the ground truth on 
-> > lists.infradead.org, maybe you can dump the actual setting for all those 
-> > lists?
+> Let's implement the callback to indicate when an APQN
+> is in use by the vfio_ap device driver. The callback is
+> invoked whenever a change to the apmask or aqmask would
+> result in one or more queue devices being removed from the driver. The
+> vfio_ap device driver will indicate a resource is in use
+> if the APQN of any of the queue devices to be removed are assigned to
+> any of the matrix mdevs under the driver's control.
 > 
-> ath10k:generic_nonmember_action = 0
-> ath11k:generic_nonmember_action = 0
-> b43-dev:generic_nonmember_action = 0
-> kexec:generic_nonmember_action = 0
-> libertas-dev:generic_nonmember_action = 0
-> linux-afs:generic_nonmember_action = 0
-> linux-amlogic:generic_nonmember_action = 0
-> linux-arm-kernel:generic_nonmember_action = 0
-> linux-geode:generic_nonmember_action = 1
-> linux-i3c:generic_nonmember_action = 1
-> linux-mediatek:generic_nonmember_action = 0
-> linux-mtd:generic_nonmember_action = 0
-> linux-nvme:generic_nonmember_action = 0
-> linux-parport:generic_nonmember_action = 1
-> linux-realtek-soc:generic_nonmember_action = 1
-> linux-riscv:generic_nonmember_action = 0
-> linux-rockchip:generic_nonmember_action = 0
-> linux-rpi-kernel:generic_nonmember_action = 0
-> linux-snps-arc:generic_nonmember_action = 0
-> linux-um:generic_nonmember_action = 0
-> linux-unisoc:generic_nonmember_action = 1
-> wcn36xx:generic_nonmember_action = 0
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_drv.c     |  1 +
+>  drivers/s390/crypto/vfio_ap_ops.c     | 68 ++++++++++++++++++++-------
+>  drivers/s390/crypto/vfio_ap_private.h |  2 +
+>  3 files changed, 53 insertions(+), 18 deletions(-)
 > 
+> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+> index 24cdef60039a..aae5b3d8e3fa 100644
+> --- a/drivers/s390/crypto/vfio_ap_drv.c
+> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+> @@ -175,6 +175,7 @@ static int __init vfio_ap_init(void)
+>  	memset(&vfio_ap_drv, 0, sizeof(vfio_ap_drv));
+>  	vfio_ap_drv.probe = vfio_ap_queue_dev_probe;
+>  	vfio_ap_drv.remove = vfio_ap_queue_dev_remove;
+> +	vfio_ap_drv.in_use = vfio_ap_mdev_resource_in_use;
+>  	vfio_ap_drv.ids = ap_queue_ids;
+>  
+>  	ret = ap_driver_register(&vfio_ap_drv, THIS_MODULE, VFIO_AP_DRV_NAME);
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 2e37ee82e422..fc1aa6f947eb 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -515,18 +515,36 @@ vfio_ap_mdev_verify_queues_reserved_for_apid(struct ap_matrix_mdev *matrix_mdev,
+>  	return 0;
+>  }
+>  
+> +#define MDEV_SHARING_ERR "Userspace may not re-assign queue %02lx.%04lx " \
+> +			 "already assigned to %s"
 
-Thanks, I will provide a suitable patch for MAINTAINERS.
+Ah, I spoke too soon; this is what I had been looking for :)
 
-Lukas
