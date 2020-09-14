@@ -2,113 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64DA26897C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304BD26897E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgINKoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbgINKnK (ORCPT
+        id S1726529AbgINKoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:44:38 -0400
+Received: from mail-il1-f205.google.com ([209.85.166.205]:39161 "EHLO
+        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726516AbgINKnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 06:43:10 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC79C06174A
+Received: by mail-il1-f205.google.com with SMTP id u8so8825997ilc.6
         for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:43:10 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x123so12287040pfc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mShHt/IoIdL3zeM5kIPVohLF6OMC2OmAiOHFn3/ncho=;
-        b=TlSyaj053NENZSrfv+oka1gshBooRj3AvapgIi6QCWmTwNyeTmetK9vMsLNNR+ozXy
-         RbmBxz5ox9jH88LJ3ApAYjuFI64eDX9X0KVSqUriSwv3whAWQViYjJgECAfTT5Qvd9mm
-         1DEsN4dJPRGvJPUq32DgY1RL3YWVtSBZ2L2U0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mShHt/IoIdL3zeM5kIPVohLF6OMC2OmAiOHFn3/ncho=;
-        b=tSSGp+0IsLqOcYgrHlmBOz11HMOAdq/VboAMnMch93x+nwFDseIBQZMJ5AjrdFn20P
-         TWynPdhZsl3+ibmcSqHjTe2HvZ7/7Z9Mr07VoLXACftLr/YEf63/FJ6Y4HPzc2dNekeL
-         S1HtjnBWaSs+vFxORI5GwHhRnh/1DSdkLJvDnF/XWvFMQekiNmpJuGGkRDwNLj7wOs9a
-         v8TQUssNmB75AnirWySAoF9r19202glXlBY+Oy86Vw1bY+krh7TcLAwyui8mmDi3cL0P
-         RzQrngl34MTVPGgmn4CB3bPw6phgcycx/hROYp3Jr6ijC0UnMRE4t4+1YjPZXhcCdtZk
-         EbZw==
-X-Gm-Message-State: AOAM531cMHjN8R4KZlnKxzTIVWQR2nREZ5GNUBLu9BTK4r6fKnkBv7qu
-        WiP+dyFNxqaDzvg+s8Ucagg5EA==
-X-Google-Smtp-Source: ABdhPJwg/lYdcj3OZVybohSNYV5EFYCt8XkCIyDkfaxG2ud8Xq9uxHY7E0+aNG7IJevg90qa6w/6PA==
-X-Received: by 2002:a63:5d09:: with SMTP id r9mr9667453pgb.397.1600080189654;
-        Mon, 14 Sep 2020 03:43:09 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id j11sm8090881pgh.8.2020.09.14.03.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 03:43:09 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     linux-mtd@lists.infradead.org
-Cc:     Ikjoon Jang <ikjn@chromium.org>,
-        Xingyu Wu <wuxy@bitland.corp-partner.google.com>,
-        ST Lin <stlin2@winbond.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] mtd: spi-nor: winbond: Add support for w25q64jwm
-Date:   Mon, 14 Sep 2020 18:43:03 +0800
-Message-Id: <20200914104303.830795-1-ikjn@chromium.org>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=nb6tKmJrQ0MmWDFi2dgAqU18Vn8+HnihNjS4obNqQco=;
+        b=WeJnGJP2lf/SiZ0kIvhMjgHKX0EGwaGC3CqcdklDc1Z7yjKT0do1DqiUrPLIJvNdaG
+         9OBFoNEgZgg4nMlZE9tkWBiYWjU7twYK3XpPm8yfZccyO9/+E86rqd9VUeXzJc3laCw4
+         w15fqmTTkKgYnEmmlT2LRN7nJBwkXhV4tnxwNt8eF0z5LNRxOecHALMRIv6+odH0UQoh
+         Q5bSq3taxOh4CTdEQTZjDoyBvpOQ/mhqy8Ok1m9fvCBKW3FvGFKeXIeo7eFrHliVqNRW
+         k9hzBa6T5rmOPtPwU4KcRXn1oIJWhZ6UOfwb3MYaCZkse3MlRQkbapOb5UCx028KR95N
+         /N3g==
+X-Gm-Message-State: AOAM533WT86Dp8m651h2+hy/thSE4KEnp1Sl5oMotcC5q4zGwQUdwc3f
+        cM1AhXLyXtinC5nCwNSAqzAx+l8reoy/5ve/HyjXwgbD7Ups
+X-Google-Smtp-Source: ABdhPJw3hKEMEFQ6nl0KkpYooE/vnNAMhKv3GfHMUPVBUXKB8aMSrYkYbBuuawf5tSFsTTZBsh8wJCl+lxAnm8WpnpiGPDu7HIsV
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:d88:: with SMTP id l8mr12660369jaj.95.1600080187586;
+ Mon, 14 Sep 2020 03:43:07 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 03:43:07 -0700
+In-Reply-To: <000000000000eb3fa9057cbc2f06@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000031842b05af43b363@google.com>
+Subject: Re: INFO: task hung in ctrl_getfamily
+From:   syzbot <syzbot+36edb5cac286af8e3385@syzkaller.appspotmail.com>
+To:     avagin@virtuozzo.com, davem@davemloft.net, dvyukov@google.com,
+        jon.maloy@ericsson.com, keescook@chromium.org,
+        ktkhai@virtuozzo.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, nicolas.dichtel@6wind.com,
+        syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, xiyou.wangcong@gmail.com,
+        ying.xue@windriver.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support Winbond w25q{64,128,256}jwm which are identical to existing
-w25q32jwm except for their sizes.
+syzbot suspects this issue was fixed by commit:
 
-This was tested with w25q64jwm, basic erase/write/readback and
-lock/unlock top and bottom blocks were okay.
+commit 47733f9daf4fe4f7e0eb9e273f21ad3a19130487
+Author: Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat Aug 15 23:29:15 2020 +0000
 
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-Signed-off-by: Xingyu Wu <wuxy@bitland.corp-partner.google.com>
-Signed-off-by: ST Lin <stlin2@winbond.com>
----
+    tipc: fix uninit skb->data in tipc_nl_compat_dumpit()
 
-Changes in v4:
-- drops package type code from name
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13f287b3900000
+start commit:   f5d58277 Merge branch 'for-linus' of git://git.kernel.org/..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c8970c89a0efbb23
+dashboard link: https://syzkaller.appspot.com/bug?extid=36edb5cac286af8e3385
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139f101b400000
 
-Changes in v3:
-- fix commit message formats
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Changes in v2:
-- remove duplicated flash ID (w25q32jwm)
+#syz fix: tipc: fix uninit skb->data in tipc_nl_compat_dumpit()
 
- drivers/mtd/spi-nor/winbond.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 6dcde15fb1aa..e5dfa786f190 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -63,6 +63,15 @@ static const struct flash_info winbond_parts[] = {
- 	{ "w25q32jwm", INFO(0xef8016, 0, 64 * 1024,  64,
- 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+	{ "w25q64jwm", INFO(0xef8017, 0, 64 * 1024, 128,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+	{ "w25q128jwm", INFO(0xef8018, 0, 64 * 1024, 256,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+	{ "w25q256jwm", INFO(0xef8019, 0, 64 * 1024, 512,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
- 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--- 
-2.28.0.618.gf4bc123cb7-goog
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
