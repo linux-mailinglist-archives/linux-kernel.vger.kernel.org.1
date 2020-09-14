@@ -2,144 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB93268644
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA34526865D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgINHmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
+        id S1726104AbgINHpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgINHmE (ORCPT
+        with ESMTP id S1726020AbgINHpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:42:04 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56756C06174A;
-        Mon, 14 Sep 2020 00:42:04 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id md22so4789885pjb.0;
-        Mon, 14 Sep 2020 00:42:04 -0700 (PDT)
+        Mon, 14 Sep 2020 03:45:50 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4E9C06174A;
+        Mon, 14 Sep 2020 00:45:49 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g4so17544648wrs.5;
+        Mon, 14 Sep 2020 00:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Lks6efxXFomrH6KYFBOQMjC6drBRK3wyX746XI+NTs=;
-        b=c0lpRyd7AVhRwxvB9sYkoZxIBUBDHbPm5xC/e6KabWR9RKDBwTu7N5rYFm1p54MkGU
-         ZnKTJoQJPuzio5lNEVT4sIvUfr/ckB3e/83L3YKdW8Pd1UC5m9wxLyBa6JeqHwXMMe6h
-         BEE9p6mOTe2ubtNVpg6dHclD3RruI2yt/MFNKGuAcc1RimQfeUWcgddUFHKF6g6QG4Sj
-         KIqlnZqPqM0I9+LyRvLrUlKmDwZgjTGOvAnQPsJNv8M8mXXfD4/MKkfCuk5k6I9i5Qni
-         /w4EwjRU6PG6t4qA7QWk/tPuNxq0OQrT1SsnsuDvWF/8X1V3ojmGyKo+TQnFDOWEqdKV
-         WuIw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3R77E9EeU0q3+YiyfWBGCJYkWETSW8Cgd6Iyt7BfdgE=;
+        b=jYUciHslOoIXrMwFXOQv4b5M8AsToUU8/l5vkYm2QT5xAu7sNR6sNZDK2205SNQZrV
+         i7WYk4nuem/SEOwPVmXPm0SHMFfrmuvJlSU1WaUtyssLaCqbqn6e+SDkrOuU3w4i4B7S
+         Mjh5wGmMZZRgBaOEFd3h55RXeIYCw++8imnge28YULTYKgpTZTyI80KGfGVhn5hIYqC0
+         zVp24Mv4Rucev2EhqWJLlzIpK31pOlRlhMUah31fJ7uBDWG7qVd6uePxhfTo+JzoyaMr
+         nb1IR8WtkeErSHBMMi4rjew1T0ecfunSMV+SG/UbSevutlK51FcFT/GTW1L3ExRn7B49
+         zUiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7Lks6efxXFomrH6KYFBOQMjC6drBRK3wyX746XI+NTs=;
-        b=jmj3aZRvlozfDGEyCYVEseu/Gc/JIxGHjvMjqM1cJI/NyJfvGtBVS+7DVheF8M7KdP
-         FR/Muakuu1nBKUNXb/k7E1cUZWraE8sGQeLR496mSDFOU1eEhPcGR5Or+I5RS/NpeMXM
-         8r/4YzyA9hGNDRvlU457gfGBcpWVxwfkJqlFNhKzJaGnuIddOP6qhQMAfwV+vFTDF7cR
-         /uN7WvfLeY5Sm3wLRDzemHiDMVm3lDx6DVAmHbEKyJ7DhQ8I459hlf0L5Pf6OfINTKa3
-         2KD9IYkVi+vj+6GF09eyBOYaicxRKyIcf144CkbEF0O1f5YS2s/B91R4dTRJJxMUuqMs
-         lx8g==
-X-Gm-Message-State: AOAM533TY1bT792rkmZX1a6fgYmtLR6riF/nMFb1IYqPKUf2mslnbssI
-        iGaX8G3F/GJOK2UdrcUj6zRvuBhG074=
-X-Google-Smtp-Source: ABdhPJzvkfmZravMN4vZoGHd4ltV16sBO1vu46ZnJfR70QIVfpCb5nT8jMYO1MlSH1lfUKiP4Hmxng==
-X-Received: by 2002:a17:90a:8588:: with SMTP id m8mr12190268pjn.91.1600069323896;
-        Mon, 14 Sep 2020 00:42:03 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:d0fe:61cf:2e8d:f96])
-        by smtp.gmail.com with ESMTPSA id o20sm8182050pgh.63.2020.09.14.00.42.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3R77E9EeU0q3+YiyfWBGCJYkWETSW8Cgd6Iyt7BfdgE=;
+        b=HMyDD+789mbkEqV1kaTgu4xCFqNJEbdQRZjyHRSu3HCzNeuq1M1Hg3fg+55ftnqZ7z
+         wPfJcLnSnwx4woISNkkEMwS3yX5rw5SHmknngojzB2REUs2AgczwAVfb0Mqtae4fp6h8
+         c2uaJTxp/8Q20hUQUNrxG2oeaCHDQeGbPln6Yg827N8QJINE91pwLa1/VUq5dhoQgoLf
+         kzNtdBtHvUqBVZPxHCDFe3y4FJbUjqj79NTHn1QIjiiJn0vOPW2rAgSN/47ygAJfsSJt
+         K/qRe2aRD7Pm69tIlIMVGSel3rUCS+FR/4X+8aSqj9MeWz0HIX/uoXY3Y2mcLnOQs9C3
+         oRuw==
+X-Gm-Message-State: AOAM530wt1qeQ8MNeu6VLlH7XyJvdT/VKEoUTsihnPJkIVPiS8B3Xa+Z
+        1Kr6QAxT3JRDFHT7qTviu1Q=
+X-Google-Smtp-Source: ABdhPJzgC1plQU3KLNxPE2pqVjKuloNGrXcm89L8bQcQmJCzuHaT0bS+D6RLsdRdTotZn/LDB2WHrQ==
+X-Received: by 2002:adf:e9c3:: with SMTP id l3mr14261614wrn.63.1600069545827;
+        Mon, 14 Sep 2020 00:45:45 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id y1sm17455186wma.36.2020.09.14.00.45.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 00:42:03 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [PATCH net-next v2] net/packet: Fix a comment about hard_header_len and headroom allocation
-Date:   Mon, 14 Sep 2020 00:41:54 -0700
-Message-Id: <20200914074154.1255716-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 14 Sep 2020 00:45:45 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 09:45:43 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
+Message-ID: <20200914074543.GA8698@Red>
+References: <202009061621.J89kO43Q%lkp@intel.com>
+ <20200907062400.GA15841@gondor.apana.org.au>
+ <20200907160029.GC11894@Red>
+ <20200908050036.GA19817@gondor.apana.org.au>
+ <20200910122248.GA22506@Red>
+ <20200911041354.GA5275@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200911041354.GA5275@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This comment is outdated and no longer reflects the actual implementation
-of af_packet.c.
+On Fri, Sep 11, 2020 at 02:13:55PM +1000, Herbert Xu wrote:
+> On Thu, Sep 10, 2020 at 02:22:48PM +0200, Corentin Labbe wrote:
+> >
+> > I get some md5 error on both A20+BE:
+> > alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=129 ksize=0\", cfg=\"random: inplace use_finup nosimd src_divs=[<reimport,nosimd>85.99%@+3999, 5.85%@+30, <reimport>0.96%@+25, <reimport,nosimd>5.9%@+2263, <flush,nosimd>2.11%@+1950] iv_offset=2 key_offset=43\"
+> > and A33+BE:
+> > [   84.469045] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=322 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[<reimport>99.1%@+2668, <reimport>0.88%@alignmask+3630, 0.11%@+3403] iv_offset=33\"
+> > +[   84.469074] need:35966fc8 b31ea266 2bf064e9 f20f40ad
+> > +[   84.469084] have:e29e4491 f3b6effc fa366691 00e04bd9
+> > 
+> > Thoses errors are random. (1 boot out of 2)
+> 
+> Do these really go away without this patch applied? AFAICS the
+> generated code should be identical.
+> 
 
-Reasons for the new comment:
-
-1.
-
-In af_packet.c, the function packet_snd first reserves a headroom of
-length (dev->hard_header_len + dev->needed_headroom).
-Then if the socket is a SOCK_DGRAM socket, it calls dev_hard_header,
-which calls dev->header_ops->create, to create the link layer header.
-If the socket is a SOCK_RAW socket, it "un-reserves" a headroom of
-length (dev->hard_header_len), and checks if the user has provided a
-header sized between (dev->min_header_len) and (dev->hard_header_len)
-(in dev_validate_header).
-This shows the developers of af_packet.c expect hard_header_len to
-be consistent with header_ops.
-
-2.
-
-In af_packet.c, the function packet_sendmsg_spkt has a FIXME comment.
-That comment states that prepending an LL header internally in a driver
-is considered a bug. I believe this bug can be fixed by setting
-hard_header_len to 0, making the internal header completely invisible
-to af_packet.c (and requesting the headroom in needed_headroom instead).
-
-3.
-
-There is a commit for a WiFi driver:
-commit 9454f7a895b8 ("mwifiex: set needed_headroom, not hard_header_len")
-According to the discussion about it at:
-  https://patchwork.kernel.org/patch/11407493/
-The author tried to set the WiFi driver's hard_header_len to the Ethernet
-header length, and request additional header space internally needed by
-setting needed_headroom.
-This means this usage is already adopted by driver developers.
-
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Brian Norris <briannorris@chromium.org>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- net/packet/af_packet.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index af6c93ed9fa0..2d5d5fbb435c 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -93,12 +93,15 @@
- 
- /*
-    Assumptions:
--   - if device has no dev->hard_header routine, it adds and removes ll header
--     inside itself. In this case ll header is invisible outside of device,
--     but higher levels still should reserve dev->hard_header_len.
--     Some devices are enough clever to reallocate skb, when header
--     will not fit to reserved space (tunnel), another ones are silly
--     (PPP).
-+   - If the device has no dev->header_ops, there is no LL header visible
-+     above the device. In this case, its hard_header_len should be 0.
-+     The device may prepend its own header internally. In this case, its
-+     needed_headroom should be set to the space needed for it to add its
-+     internal header.
-+     For example, a WiFi driver pretending to be an Ethernet driver should
-+     set its hard_header_len to be the Ethernet header length, and set its
-+     needed_headroom to be (the real WiFi header length - the fake Ethernet
-+     header length).
-    - packet socket receives packets with pulled ll header,
-      so that SOCK_RAW should push it back.
- 
--- 
-2.25.1
-
+It happens without your patch, so your patch is unrelated to this issue.
+You can add:
+Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
