@@ -2,97 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC07269318
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA1E26931C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgINRY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:24:56 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:45374 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgINRYB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:24:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600104240; x=1631640240;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=2iQFonidT7fWQUWyw8u47esTrEsM+cNF81wcQLjt6KA=;
-  b=BQj1KrU20YMT9jBK1PyajfuapaJ+Y88o7dMRh8bemeW7JdWeZfVPdml4
-   QQTkXEdqjH4bR2HDjcz+SZXESON689NrGVX/7xSVBGAK+JyKXftiU4dk7
-   DTQuMIxRJVQ458m3WqT0qprPeASVeqbj3XMTIu6nz2wkHIWICYG5Vl8oy
-   g=;
-X-IronPort-AV: E=Sophos;i="5.76,426,1592870400"; 
-   d="scan'208";a="53938959"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 14 Sep 2020 17:23:58 +0000
-Received: from EX13D16EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com (Postfix) with ESMTPS id 26606A18EC;
-        Mon, 14 Sep 2020 17:23:57 +0000 (UTC)
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.71) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 14 Sep 2020 17:23:48 +0000
-Subject: Re: [PATCH v9 14/18] nitro_enclaves: Add Kconfig for the Nitro
- Enclaves driver
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Karen Noel" <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-References: <20200911141141.33296-1-andraprs@amazon.com>
- <20200911141141.33296-15-andraprs@amazon.com>
- <20200914155913.GB3525000@kroah.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <c3a33dcf-794c-31ef-ced5-4f87ba21dd28@amazon.com>
-Date:   Mon, 14 Sep 2020 20:23:38 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1726179AbgINRZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:25:34 -0400
+Received: from mail-eopbgr30043.outbound.protection.outlook.com ([40.107.3.43]:30853
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725976AbgINRYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:24:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BEQSf3sNVh5A2pPUhx9ZxpM6o1JNZV1mbJ2rUi6yL6IyaqRDBn2kWClApQpBfcnkaO8my6EIZEVpYQPyCXLn82Y3JXx0ejla6X/AVBj8oB2mHKTGxsf9uBjKetT+Ko3O9HWQ8cy3daSykrojuQZOaS8xszRrPand7ErumxavczFD6dLEO4ISMcb5A39uciiWWOu4WB6IQEP7CZnK9rfhJll03neT9W1hrYJMHvueTmDOEpD0luJ74K3eqfD8Xu1Wk2lCQj5v9cbln72gl4VAy9enJpSimI6OWB6Y2JQLSBwUh6f8HBbmKh8beFPiwMxhUuG1F5OFhbbrFcH/fJFDBw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sjimxta+ky+5X6bGQ4v6pfTjXQHA5ZQ/D9uhRa9bo9w=;
+ b=nP8HKi6v3TFUNBhcqS4AOlRwIbG9lvjr5404EezZNd8lrHM/aD+G8dZDLtaIGiWM8En4SPx9mUetF+nD0D/WTjsPukSyl7edtwoPpnvX/tvfzyYOCKjVt/ieDkFFkKLS0WpblzSnlMWjsL0p7oT8uOdMgktonK0YHZg+AHjs7ngHtVok987TGGTAJSlKa2TLWL1FFfTM1n2V5x2Z3jBO1QQMXT7nQJC/ySha8RXpL/GwC479gx+cKhAKlJNDtav8uV7fA+wUXN4ZKn2eX/gqeZB+aiWp7jYCNSltSGAq/e4vK0NsCNSTQCublg9pwFHPAVUUEOrCX46fIyD4c+/ivw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sjimxta+ky+5X6bGQ4v6pfTjXQHA5ZQ/D9uhRa9bo9w=;
+ b=mW+e8jvdN3QrVpQFVIQCiWWe+ZmOWKDokSL59vfoKBtR0B5OnJlS+RvSdaA5ohgf/TE9OKQ6oZogjsxKu4wXT7Mb39IrS+GaMez8XvX9GtFKaWhaFaHoci/sooFxTiZyT51tiw8jGVFq+fzzDQB8laMLRaoaOPQZLy8N//j6Ffw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12) by VI1PR04MB6047.eurprd04.prod.outlook.com
+ (2603:10a6:803:fb::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.17; Mon, 14 Sep
+ 2020 17:24:41 +0000
+Received: from VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000]) by VI1PR0401MB2272.eurprd04.prod.outlook.com
+ ([fe80::e00e:ad13:489b:8000%6]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 17:24:41 +0000
+From:   "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>
+To:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Viorel Suman <viorel.suman@gmail.com>,
+        Viorel Suman <viorel.suman@nxp.com>
+Subject: [PATCH] ASoC: fsl_audmix: make clock and output src write only
+Date:   Mon, 14 Sep 2020 20:24:34 +0300
+Message-Id: <1600104274-13110-1-git-send-email-viorel.suman@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0044.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:150::24) To VI1PR0401MB2272.eurprd04.prod.outlook.com
+ (2603:10a6:800:31::12)
 MIME-Version: 1.0
-In-Reply-To: <20200914155913.GB3525000@kroah.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D24UWA001.ant.amazon.com (10.43.160.138) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1664-116.ea.freescale.net (83.217.231.2) by AM0PR10CA0044.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3370.19 via Frontend Transport; Mon, 14 Sep 2020 17:24:40 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [83.217.231.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ea276ba8-48ee-4204-de84-08d858d31084
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6047:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6047F723D7F357C946BB7EF9D3230@VI1PR04MB6047.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nD/3hDgAqby1z4DChfzfbLMIlmziMhJv6L7NXPmZunXuu9ns2QNqcRApdY8mnpi3Vi159hseZ2t1fk8wzHCzGOQ5UcJei9nfQnZGV67JNsW67sslur0UL2A29bqxMW0rjl7ZVKVCjdLklYrjk4wNVZijZ37YAYoOGsSnU1vkMxBhTbWGad2oFlyCtC+pQI/9LnW8ZYC6ert1R/lvcM38HrLbpgtzQfloSuCXPs8hfrlOcb05A4fTr453BZD5b7YEU2upWO2jGIgrIBUY88esSelG0FbVLCBkCK/9VdEl/PRxtRFXa6jsfd4H/2BXH4+nXIFQZw0lx/X00zA412ZMsBQlRSqHKnN24XDDLlSvhHF9I/J3AeXppWYbyyatqRWq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2272.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(366004)(376002)(39860400002)(4326008)(5660300002)(83380400001)(7416002)(16526019)(8676002)(8936002)(6486002)(2906002)(86362001)(2616005)(956004)(6506007)(6666004)(6512007)(316002)(66946007)(110136005)(186003)(26005)(66556008)(52116002)(54906003)(478600001)(66476007)(921003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Wt9nM+NNaxgeNhlrn4lqd4pDni5UgvOBogBGUyolXnyFYRFW6cdvrO9IkTddavKBWTW2tBtr+Zon9V0XIUZ2uWbbdbamDhC4+x1/eMbs7PacONCrWrD1uW2GcfJHAr0kxWCqtfx8Xs1ZMv+bOBmd6510Q7C14qj0SYOYEU0AsfXRoughCVbGlrz5PkLR6sPFBPdevNaUnQdo77a5aXlU5wNt09H4hlALSKbkqtbIXi+dzyE7DedlyZyLIgPuKKxwALoOTJ+W9ZYWIqBPzUpHkApRVJ2XhlvxzK7+iMTgQvC9agyO613h5t05FYcBa28Bnyuo8H7ewiSdyOl4BD+kIKMN+lS1o7RnixYnGAS4poqqYQXp2/6TJVCCpXWHU/jMpXxi5M9pKaIuDWIgW9CpW+r7tUEv65VTj2aGocu2wzBJTxrKJ5zdQJ/s51PnDIfy0qA+OMBYS0sAyy9klgvuXm43ox8DybqBZI+WtLpjEokBQTmc4c1M9EE+TQLZAuzZin+8kQz/QSJJufQlizQk3zguh9nvJj4KLoYC3ekGvoYlGH9CorSvSahhlPSIzwowuIMODTKtieYPC+Q+SqR/rA80KpCG4CpkQJOQxzxwqu+l+QEIEIYMkE3hTieWktOVK0Me9b+RGUt/MKisda8gWA==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea276ba8-48ee-4204-de84-08d858d31084
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2272.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 17:24:41.4665
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: napGHQGam2D8PTh0PEzafiI1NGZo0hcauqp7+usF1CenJ3sTJn/4SaCjNpVNLGD4x55Yk7slby08SVYPFsyMJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6047
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAxNC8wOS8yMDIwIDE4OjU5LCBHcmVnIEtIIHdyb3RlOgo+IE9uIEZyaSwgU2VwIDExLCAy
-MDIwIGF0IDA1OjExOjM3UE0gKzAzMDAsIEFuZHJhIFBhcmFzY2hpdiB3cm90ZToKPj4gU2lnbmVk
-LW9mZi1ieTogQW5kcmEgUGFyYXNjaGl2IDxhbmRyYXByc0BhbWF6b24uY29tPgo+PiBSZXZpZXdl
-ZC1ieTogQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9uLmNvbT4KPiBJIGNhbid0IHRha2UgcGF0
-Y2hlcyB3aXRob3V0IGFueSBjaGFuZ2Vsb2cgdGV4dCBhdCBhbGwsIHNvcnJ5Lgo+Cj4gU2FtZSBm
-b3IgYSBmZXcgb3RoZXIgcGF0Y2hlcyBpbiB0aGlzIHNlcmllcyA6KAo+CgpJIGNhbiBtb3ZlIHRo
-ZSBjaGFuZ2Vsb2cgdGV4dCBiZWZvcmUgdGhlIFNvYiB0YWcocykgZm9yIGFsbCB0aGUgcGF0Y2hl
-cy4gCkkgYWxzbyBjYW4gYWRkIGEgc3VtbWFyeSBwaHJhc2UgaW4gdGhlIGNvbW1pdCBtZXNzYWdl
-IGZvciB0aGUgY29tbWl0cyAKbGlrZSB0aGlzIG9uZSB0aGF0IGhhdmUgb25seSB0aGUgY29tbWl0
-IHRpdGxlIGFuZCBTb2IgJiBSYiB0YWdzLgoKV291bGQgdGhlc2UgdXBkYXRlcyB0byB0aGUgY29t
-bWl0IG1lc3NhZ2VzIG1hdGNoIHRoZSBleHBlY3RhdGlvbnM/CgpMZXQgbWUga25vdyBpZiByZW1h
-aW5pbmcgZmVlZGJhY2sgdG8gZGlzY3VzcyBhbmQgSSBzaG91bGQgaW5jbHVkZSBhcyAKdXBkYXRl
-cyBpbiB2MTAuIE90aGVyd2lzZSwgSSBjYW4gc2VuZCB0aGUgbmV3IHJldmlzaW9uIHdpdGggdGhl
-IHVwZGF0ZWQgCmNvbW1pdCBtZXNzYWdlcy4KClRoYW5rcyBmb3IgcmV2aWV3LgoKQW5kcmEKCgoK
-QW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2Zm
-aWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3Vu
-dHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24g
-bnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
+From: Viorel Suman <viorel.suman@nxp.com>
+
+"alsactl -f state.conf store/restore" sequence fails because setting
+"mixing clock source" and "output source" requires active TDM clock
+being started for configuration propagation. Make these two controls
+write only so that their values are not stored at "alsactl store".
+
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+---
+ sound/soc/fsl/fsl_audmix.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
+index a447baf..7ad5925 100644
+--- a/sound/soc/fsl/fsl_audmix.c
++++ b/sound/soc/fsl/fsl_audmix.c
+@@ -199,10 +199,18 @@ static int fsl_audmix_put_out_src(struct snd_kcontrol *kcontrol,
+ 
+ static const struct snd_kcontrol_new fsl_audmix_snd_controls[] = {
+ 	/* FSL_AUDMIX_CTR controls */
+-	SOC_ENUM_EXT("Mixing Clock Source", fsl_audmix_enum[0],
+-		     snd_soc_get_enum_double, fsl_audmix_put_mix_clk_src),
+-	SOC_ENUM_EXT("Output Source", fsl_audmix_enum[1],
+-		     snd_soc_get_enum_double, fsl_audmix_put_out_src),
++	{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Mixing Clock Source",
++		.info = snd_soc_info_enum_double,
++		.access = SNDRV_CTL_ELEM_ACCESS_WRITE,
++		.put = fsl_audmix_put_mix_clk_src,
++		.private_value = (unsigned long)&fsl_audmix_enum[0] },
++	{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Output Source",
++		.info = snd_soc_info_enum_double,
++		.access = SNDRV_CTL_ELEM_ACCESS_WRITE,
++		.put = fsl_audmix_put_out_src,
++		.private_value = (unsigned long)&fsl_audmix_enum[1] },
+ 	SOC_ENUM("Output Width", fsl_audmix_enum[2]),
+ 	SOC_ENUM("Frame Rate Diff Error", fsl_audmix_enum[3]),
+ 	SOC_ENUM("Clock Freq Diff Error", fsl_audmix_enum[4]),
+-- 
+2.7.4
 
