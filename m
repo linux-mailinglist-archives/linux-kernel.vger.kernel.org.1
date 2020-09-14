@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8242268C17
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9FD268C19
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgINNTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:19:54 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:47548 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726675AbgINNKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726529AbgINNUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:20:18 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:35058 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726704AbgINNKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 09:10:10 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8A3A3BF9A70C6DFAA768;
-        Mon, 14 Sep 2020 21:09:46 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 14 Sep 2020 21:09:43 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: dnet: remove unused variable 'tx_status 'in dnet_start_xmit()
-Date:   Mon, 14 Sep 2020 21:08:37 +0800
-Message-ID: <1600088917-21372-1-git-send-email-zhangchangzhong@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600088993; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=qzjPchJ1lLROgB9pP+RCaQlLLLIEeCxtEGrdUIxmEZU=; b=LSd/yCqadEW8Rj1+0qYYvu8EWOh+x3exSiqPpXubGiCadC+3EP7+kXn/FJ7q2IqNGYybd191
+ Dx5WgQ6Cqn2I822J/XLHb0oVJStDGnFtYGrAwLOu+WbzbFFBtIKlBL0g/3YBV7ALa8Ml3Azc
+ W7sps6XuYFCuy4cgi8jdI5jITNY=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f5f6b95be06707b342ac16f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 13:09:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D362AC433F0; Mon, 14 Sep 2020 13:09:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.43.98] (unknown [47.8.187.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE9E5C433CA;
+        Mon, 14 Sep 2020 13:09:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE9E5C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH] spi: spi-geni-qcom: Don't wait to start 1st transfer if
+ transmitting
+To:     Douglas Anderson <dianders@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     swboyd@chromium.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+References: <20200912111716.1.Ied5e843fad0d6b733a1fb8bcfb364dd2fa889eb3@changeid>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <838a6074-73e6-a48b-2684-5ea2ebff443a@codeaurora.org>
+Date:   Mon, 14 Sep 2020 18:39:25 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200912111716.1.Ied5e843fad0d6b733a1fb8bcfb364dd2fa889eb3@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
 
-drivers/net/ethernet/dnet.c:510:6: warning:
- variable 'tx_status' set but not used [-Wunused-but-set-variable]
-  u32 tx_status, irq_enable;
-      ^~~~~~~~~
+On 9/12/2020 11:47 PM, Douglas Anderson wrote:
+> If we're sending bytes over SPI, we know the FIFO is empty at the
+> start of the transfer.  There's no reason to wait for the interrupt
+> telling us to start--we can just start right away.  Then if we
+> transmit everything in one swell foop we don't even need to bother
+> listening for TX interrupts.
+>
+> In a test of "flashrom -p ec -r /tmp/foo.bin" interrupts were reduced
+> from ~30560 to ~29730, about a 3% savings.
+>
+> This patch looks bigger than it is because I moved a few functions
+> rather than adding a forward declaration.  The only actual change to
+> geni_spi_handle_tx() was to make it return a bool indicating if there
+> is more to tx.
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> Signed-off-by: Douglas Anderson<dianders@chromium.org>
 
-After commit 4796417417a6 ("dnet: Dave DNET ethernet controller driver
-(updated)"), variable 'tx_status' is never used in dnet_start_xmit(),
-so removing it to avoid build warning.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
----
- drivers/net/ethernet/dnet.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/dnet.c b/drivers/net/ethernet/dnet.c
-index 3143df9..7f87b0f 100644
---- a/drivers/net/ethernet/dnet.c
-+++ b/drivers/net/ethernet/dnet.c
-@@ -507,12 +507,12 @@ static netdev_tx_t dnet_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 
- 	struct dnet *bp = netdev_priv(dev);
--	u32 tx_status, irq_enable;
-+	u32 irq_enable;
- 	unsigned int i, tx_cmd, wrsz;
- 	unsigned long flags;
- 	unsigned int *bufp;
- 
--	tx_status = dnet_readl(bp, TX_STATUS);
-+	dnet_readl(bp, TX_STATUS);
- 
- 	pr_debug("start_xmit: len %u head %p data %p\n",
- 	       skb->len, skb->head, skb->data);
-@@ -520,7 +520,7 @@ static netdev_tx_t dnet_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 
- 	spin_lock_irqsave(&bp->lock, flags);
- 
--	tx_status = dnet_readl(bp, TX_STATUS);
-+	dnet_readl(bp, TX_STATUS);
- 
- 	bufp = (unsigned int *)(((unsigned long) skb->data) & ~0x3UL);
- 	wrsz = (u32) skb->len + 3;
-@@ -542,7 +542,7 @@ static netdev_tx_t dnet_start_xmit(struct sk_buff *skb, struct net_device *dev)
- 
- 	if (dnet_readl(bp, TX_FIFO_WCNT) > DNET_FIFO_TX_DATA_AF_TH) {
- 		netif_stop_queue(dev);
--		tx_status = dnet_readl(bp, INTR_SRC);
-+		dnet_readl(bp, INTR_SRC);
- 		irq_enable = dnet_readl(bp, INTR_ENB);
- 		irq_enable |= DNET_INTR_ENB_TX_FIFOAE;
- 		dnet_writel(bp, irq_enable, INTR_ENB);
 -- 
-2.9.5
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
