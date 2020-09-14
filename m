@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7A62695EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8A12695F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINT4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:56:38 -0400
-Received: from mga01.intel.com ([192.55.52.88]:50094 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725961AbgINT4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:56:36 -0400
-IronPort-SDR: hk7D+S/eltzBrA8k+iCz6Vn2Jvq5sN5qsds3Dl6VbMyidi36NeEKR9GWCzCnTlfACuRpieBRt4
- RmmoKSRRewwg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="177217546"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="177217546"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 12:56:35 -0700
-IronPort-SDR: MdEN13xKZ0uwTw3Wv173sApK1iJaywuHqbYr3TMFtChpWxcKXl+TFlIX+NRbu8EAlG1FY7yqIC
- j8hET53nG0uw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="287730761"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Sep 2020 12:56:35 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH 0/2] KVM: VMX: Clean up IRQ/NMI handling
-Date:   Mon, 14 Sep 2020 12:56:32 -0700
-Message-Id: <20200914195634.12881-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726011AbgINT7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725964AbgINT7w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 15:59:52 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9910C06174A;
+        Mon, 14 Sep 2020 12:59:51 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0A5F912354CAC;
+        Mon, 14 Sep 2020 12:42:57 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:59:42 -0700 (PDT)
+Message-Id: <20200914.125942.5644261129883859.davem@davemloft.net>
+To:     npiggin@gmail.com
+Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, aneesh.kumar@linux.ibm.com,
+        akpm@linux-foundation.org, axboe@kernel.dk, peterz@infradead.org
+Subject: Re: [PATCH v2 3/4] sparc64: remove mm_cpumask clearing to fix
+ kthread_use_mm race
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200914045219.3736466-4-npiggin@gmail.com>
+References: <20200914045219.3736466-1-npiggin@gmail.com>
+        <20200914045219.3736466-4-npiggin@gmail.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 14 Sep 2020 12:42:58 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Minor (if there is such a thing for this code) cleanup of KVM's handling
-of IRQ and NMI exits to move the invocation of the IRQ handler to a
-standalone assembly routine, and to then consolidate the NMI handling to
-use the same indirect call approach instead of using INTn.
+From: Nicholas Piggin <npiggin@gmail.com>
+Date: Mon, 14 Sep 2020 14:52:18 +1000
 
-The IRQ cleanup was suggested by Josh Poimboeuf in the context of a false
-postive objtool warning[*].  I believe Josh intended to use UNWIND hints
-instead of trickery to avoid objtool complaints.  I opted for trickery in
-the form of a redundant, but explicit, restoration of RSP after the hidden
-IRET.  AFAICT, there are no existing UNWIND hints that would let objtool
-know that the stack is magically being restored, and adding a new hint to
-save a single MOV <reg>, <reg> instruction seemed like overkill.
+ ...
+> The basic fix for sparc64 is to remove its mm_cpumask clearing code. The
+> optimisation could be effectively restored by sending IPIs to mm_cpumask
+> members and having them remove themselves from mm_cpumask. This is more
+> tricky so I leave it as an exercise for someone with a sparc64 SMP.
+> powerpc has a (currently similarly broken) example.
+> 
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 
-The NMI consolidation was loosely suggested by Andi Kleen.  Andi's actual
-suggestion was to export and directly call the NMI handler, but that's a
-more involved change (unless I'm misunderstanding the wants of the NMI
-handler), whereas piggybacking the IRQ code is simple and seems like a
-worthwhile intermediate step.
+Sad to see this optimization go away, but what can I do:
 
-[*] https://lkml.kernel.org/r/20200908205947.arryy75c5cvldps7@treble
-
-Sean Christopherson (2):
-  KVM: VMX: Move IRQ invocation to assembly subroutine
-  KVM: VMX: Invoke NMI handler via indirect call instead of INTn
-
- arch/x86/kvm/vmx/vmenter.S | 28 +++++++++++++++++
- arch/x86/kvm/vmx/vmx.c     | 61 +++++++++++---------------------------
- 2 files changed, 45 insertions(+), 44 deletions(-)
-
--- 
-2.28.0
-
+Acked-by: David S. Miller <davem@davemloft.net>
