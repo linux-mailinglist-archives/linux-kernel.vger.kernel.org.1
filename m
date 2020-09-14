@@ -2,227 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DE1268260
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 03:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4EC268272
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726015AbgINBwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 21:52:22 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:37492 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725965AbgINBwT (ORCPT
+        id S1725997AbgINCK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbgINCKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 21:52:19 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07457206|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00567186-0.0021741-0.992154;FP=0|0|0|0|0|-1|-1|-1;HT=e01l10434;MF=liush@allwinnertech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.IWjNbES_1600048326;
-Received: from localhost.localdomain(mailfrom:liush@allwinnertech.com fp:SMTPD_---.IWjNbES_1600048326)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Mon, 14 Sep 2020 09:52:13 +0800
-From:   liush <liush@allwinnertech.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, rjw@rjwysocki.net,
-        daniel.lezcano@linaro.org, anup.patel@wdc.com, atish.patra@wdc.com,
-        damien.lemoal@wdc.com, wangkefeng.wang@huawei.com, kernel@esmil.dk,
-        zong.li@sifive.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, liush <liush@allwinnertech.com>
-Subject: [PATCH] cpuidle: add riscv cpuidle driver
-Date:   Mon, 14 Sep 2020 09:52:03 +0800
-Message-Id: <1600048323-2964-1-git-send-email-liush@allwinnertech.com>
-X-Mailer: git-send-email 2.7.4
+        Sun, 13 Sep 2020 22:10:25 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06503C06174A;
+        Sun, 13 Sep 2020 19:10:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqVFB71Dnz9sTR;
+        Mon, 14 Sep 2020 12:10:22 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600049423;
+        bh=czzVw1X9umrKlqXKzA6kNpSv3y0geLZMHepujkNHsls=;
+        h=Date:From:To:Cc:Subject:From;
+        b=feeTzdN++0/grAHhmuNK6MMODXgfLyP7FP8Zbl/OjKfTsFJSa1sYqLrjeiqBaTgLu
+         TMi1VExhWSjlhoIXnwYRvkkXdPHhx+VRr1FadcqmeaeIIEPkc5gnzfYF9aw/42ZdXB
+         I0eS+OqgbCoyFd2fs4aXn265N6y16dY6pejUE/yL9KCYD3AVLOCFzEw+/VDD1Ul12C
+         REZeePRcIA95ABRkMIzW8sUJ8Pa21h+2+bBWs5V9FRYVIKwiiNAq2biK9/SuXl8faK
+         Ri4g2gsMTgDRs3YtqRygwOv5cIQ1rM+gY7rJV5Y1piC0D+xYshi/N9UT58dZ9oX9vY
+         72ThWCVYlQ69g==
+Date:   Mon, 14 Sep 2020 12:10:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-msm tree
+Message-ID: <20200914121022.2c5c494a@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/9IVE0RfM5BBrakyo_BPayQZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a cpuidle driver for systems based RISCV architecture.
-This patch supports state WFI. Other states will be supported in the
-future.
+--Sig_/9IVE0RfM5BBrakyo_BPayQZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: liush <liush@allwinnertech.com>
----
- arch/riscv/Kconfig               |  7 +++++
- arch/riscv/include/asm/cpuidle.h |  7 +++++
- arch/riscv/kernel/Makefile       |  1 +
- arch/riscv/kernel/cpuidle.c      |  8 ++++++
- drivers/cpuidle/Kconfig          |  5 ++++
- drivers/cpuidle/Kconfig.riscv    | 11 ++++++++
- drivers/cpuidle/Makefile         |  4 +++
- drivers/cpuidle/cpuidle-riscv.c  | 55 ++++++++++++++++++++++++++++++++++++++++
- 8 files changed, 98 insertions(+)
- create mode 100644 arch/riscv/include/asm/cpuidle.h
- create mode 100644 arch/riscv/kernel/cpuidle.c
- create mode 100644 drivers/cpuidle/Kconfig.riscv
- create mode 100644 drivers/cpuidle/cpuidle-riscv.c
+Hi all,
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index df18372..c7ddb9d 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -86,6 +86,7 @@ config RISCV
- 	select SPARSE_IRQ
- 	select SYSCTL_EXCEPTION_TRACE
- 	select THREAD_INFO_IN_TASK
-+	select CPU_IDLE
- 
- config ARCH_MMAP_RND_BITS_MIN
- 	default 18 if 64BIT
-@@ -407,6 +408,12 @@ config BUILTIN_DTB
- 	depends on RISCV_M_MODE
- 	depends on OF
- 
-+menu "CPU Power Management"
-+
-+source "drivers/cpuidle/Kconfig"
-+
-+endmenu
-+
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/cpuidle.h
-new file mode 100644
-index 00000000..2599d2f
---- /dev/null
-+++ b/arch/riscv/include/asm/cpuidle.h
-@@ -0,0 +1,7 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __RISCV_CPUIDLE_H
-+#define __RISCV_CPUIDLE_H
-+
-+extern void cpu_do_idle(void);
-+
-+#endif
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index dc93710..396ba9c 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -29,6 +29,7 @@ obj-y	+= riscv_ksyms.o
- obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
- obj-y	+= patch.o
-+obj-y	+= cpuidle.o
- obj-$(CONFIG_MMU) += vdso.o vdso/
- 
- obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
-diff --git a/arch/riscv/kernel/cpuidle.c b/arch/riscv/kernel/cpuidle.c
-new file mode 100644
-index 00000000..a3289e7
---- /dev/null
-+++ b/arch/riscv/kernel/cpuidle.c
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <asm/cpuidle.h>
-+
-+void cpu_do_idle(void)
-+{
-+	__asm__ __volatile__ ("wfi");
-+
-+}
-diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
-index c0aeedd..f6be0fd 100644
---- a/drivers/cpuidle/Kconfig
-+++ b/drivers/cpuidle/Kconfig
-@@ -62,6 +62,11 @@ depends on PPC
- source "drivers/cpuidle/Kconfig.powerpc"
- endmenu
- 
-+menu "RISCV CPU Idle Drivers"
-+depends on RISCV
-+source "drivers/cpuidle/Kconfig.riscv"
-+endmenu
-+
- config HALTPOLL_CPUIDLE
- 	tristate "Halt poll cpuidle driver"
- 	depends on X86 && KVM_GUEST
-diff --git a/drivers/cpuidle/Kconfig.riscv b/drivers/cpuidle/Kconfig.riscv
-new file mode 100644
-index 00000000..e86d36b
---- /dev/null
-+++ b/drivers/cpuidle/Kconfig.riscv
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# RISCV CPU Idle drivers
-+#
-+config RISCV_CPUIDLE
-+        bool "Generic RISCV CPU idle Driver"
-+        select DT_IDLE_STATES
-+	select CPU_IDLE_MULTIPLE_DRIVERS
-+        help
-+          Select this option to enable generic cpuidle driver for RISCV.
-+	  Now only support C0 State.
-diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-index 26bbc5e..4c83c4e 100644
---- a/drivers/cpuidle/Makefile
-+++ b/drivers/cpuidle/Makefile
-@@ -34,3 +34,7 @@ obj-$(CONFIG_MIPS_CPS_CPUIDLE)		+= cpuidle-cps.o
- # POWERPC drivers
- obj-$(CONFIG_PSERIES_CPUIDLE)		+= cpuidle-pseries.o
- obj-$(CONFIG_POWERNV_CPUIDLE)		+= cpuidle-powernv.o
-+
-+###############################################################################
-+# RISCV drivers
-+obj-$(CONFIG_RISCV_CPUIDLE)		+= cpuidle-riscv.o
-diff --git a/drivers/cpuidle/cpuidle-riscv.c b/drivers/cpuidle/cpuidle-riscv.c
-new file mode 100644
-index 00000000..5dddcfa
---- /dev/null
-+++ b/drivers/cpuidle/cpuidle-riscv.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * RISC-V CPU idle driver.
-+ *
-+ * Copyright (C) 2020-2022 Allwinner Ltd
-+ *
-+ * Based on code - driver/cpuidle/cpuidle-at91.c
-+ *
-+ */
-+#include <linux/cpuidle.h>
-+#include <linux/cpumask.h>
-+#include <linux/cpu_pm.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/slab.h>
-+#include <linux/platform_device.h>
-+#include <asm/cpuidle.h>
-+
-+#define MAX_IDLE_STATES	1
-+
-+/* TODO: Implement deeper idle states */
-+static int riscv_low_level_suspend_enter(int state)
-+{
-+	return 0;
-+}
-+
-+/* Actual code that puts the SoC in different idle states */
-+static int riscv_enter_idle(struct cpuidle_device *dev,
-+			struct cpuidle_driver *drv,
-+			       int index)
-+{
-+	return CPU_PM_CPU_IDLE_ENTER_PARAM(riscv_low_level_suspend_enter,
-+					   index, 0);
-+}
-+
-+static struct cpuidle_driver riscv_idle_driver = {
-+	.name			= "riscv_idle",
-+	.owner			= THIS_MODULE,
-+	.states[0]		= {
-+		.enter			= riscv_enter_idle,
-+		.exit_latency		= 1,
-+		.target_residency	= 1,
-+		.name			= "WFI",
-+		.desc			= "RISCV WFI",
-+	},
-+	.state_count = MAX_IDLE_STATES,
-+};
-+
-+static int __init riscv_cpuidle_init(void)
-+{
-+	return cpuidle_register(&riscv_idle_driver, NULL);
-+}
-+
-+device_initcall(riscv_cpuidle_init);
--- 
-2.7.4
+After merging the drm-msm tree, today's linux-next build (arm
+multi_v7_defconfig) produced this warning:
 
+drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c: In function 'msm_dsi_pll_7nm_ini=
+t':
+drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c:882:19: warning: conversion from =
+'long long unsigned int' to 'long unsigned int' changes value from '5000000=
+000' to '705032704' [-Woverflow]
+  882 |   pll->max_rate =3D 5000000000UL;
+      |                   ^~~~~~~~~~~~
+
+Introduced by commit
+
+  1ef7c99d145c ("drm/msm/dsi: add support for 7nm DSI PHY/PLL")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9IVE0RfM5BBrakyo_BPayQZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9e0Q4ACgkQAVBC80lX
+0GxEPgf/TMDfbnrfkqc9iJBa138krCqyN1HIsRvTqGuhLfzum5SCMxBIF+0U+8Gr
+DWbAbmeiARV207duUIJZfz+qzvxYum8tSMd+9vB9eW42iVZKT4kTqHNA6UtU6Amw
+WlnXaJJ56TTN+FP5w2KWNKt/PCWHuyw565t6SB0l39XKVN5DSYaqx93Kkr9ue2IS
+ts6eWlNpvDN7wY3oKdPzeQCsIsCmlTSACcpwKlgk0BCOkICFHGfVAEWGMZJztnEl
+ZZMlUoyoSWaRhG+4+X6VrT11013np44cNeko0UuRnFSP6mNuJVKDN2+fLy8/Wuo4
+h2zrUw7znsr/LjiG2mt+8UB0oF4B6w==
+=V6Cz
+-----END PGP SIGNATURE-----
+
+--Sig_/9IVE0RfM5BBrakyo_BPayQZ--
