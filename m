@@ -2,420 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE88D268871
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CA326886E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgINJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:33:14 -0400
-Received: from mga07.intel.com ([134.134.136.100]:53409 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgINJdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:33:01 -0400
-IronPort-SDR: iap7XMEPdRSvb0ynBKt5riCBx9zuXPBUADqkAhLeuNU/3LYbJozLgHvpKkfD+q66q5wBkfWV/X
- 8FHkpDFvLFjw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="223234643"
-X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
-   d="scan'208";a="223234643"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 02:32:56 -0700
-IronPort-SDR: huOULYQsrv1dEkWsprw/vC3mTe0Rmd2ISo8B4k85gEZTjG8bG17IiejfkWCLTFT4EMx6xkQon2
- yz7y9eU7oTZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
-   d="scan'208";a="335229923"
-Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.2.93]) ([10.238.2.93])
-  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2020 02:32:54 -0700
-Subject: Re: [RFC v3 2/2] KVM: VMX: Enable bus lock VM exit
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>, kvm@vger.kernel.org,
+        id S1726275AbgINJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:33:02 -0400
+Received: from mail-eopbgr80080.outbound.protection.outlook.com ([40.107.8.80]:61021
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726267AbgINJco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:32:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KhjR5M2dXJubtjb3SmLnZ/9lGEfhcy3p3dGWTN+1CsOXJSu1IO2rWelD7SSzLERo1vxlGsaTiQUkwH48edxLBW7Y2y4ohNssld66vV2pO/EZIqfJUniL+c0Rl2Y+hS1C0eLDMBah8+xJLXO3vT2kcMGc3HwU+SPhVWlyaq+LxX/MiTI2RDVlrSpldKGjnDbGqz5IFGHtBwe1tXVNJf067jOpYq2GA4g7My/NRwft6RENqeIC+FqJOnOImjP0M436dr0b3girmiTGcZaSHqq70TKaQ5gQz8kVPYaMyFsz1trIl7zb/965y4SC4E+3HzRcBwTOCwOKBDPx2U1FvHfpAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gIrf6XmG+2q7KDoYFGD7m01T8hk6JPx/FshZKQ/TdUU=;
+ b=UScBoEUMb0b6bnn3fxwD+NZ4eEx53bh/gpLe17XRs7zmK0pjnOCqIkkSE7r4lKs79p6iRERmTxkXA7c6omgImzV8BhZRQ3Q6WwF5jiPX25MduQsuN5JpOGurNssOi9KeQzUrsQXqHJ8/At8sAhovJJUa6dhEcpBotuGw9g/0aSZJ98kvcfgyS3YaIlrvf9jEmt5FniShygKFSAj/GdnwWPDL7wGodfPIIXRU4CjgWZFfx4nZeGZ+JrHzzbo8cERhQNvwXN9PQgwW2y2692asQol3gd5kHn0O3DeZbKHJJe0c4BSNTy66YGWKA5B707KpY1J56lK1ixbeW361h+3MSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gIrf6XmG+2q7KDoYFGD7m01T8hk6JPx/FshZKQ/TdUU=;
+ b=T3qW8+owFHiDSGQdS7QFDC0XucaglNXqKaTTJjf88LBJ2VQWf/OeA7yb6WYJnK/L6sQPQ5qyiy6vKDV+4TltWS+CLEQa48S9tURPoXrhDsiNzLZgTp6Rj/QYNTpzmFAUlaghq+rS9+wVAiqevMehHmt4afufBbXQmBquOLBN7WU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19) by VE1PR04MB6688.eurprd04.prod.outlook.com
+ (2603:10a6:803:127::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
+ 2020 09:32:41 +0000
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::174:edc4:7d33:9c88]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::174:edc4:7d33:9c88%12]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 09:32:40 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     shawnguo@kernel.org, o.rempel@pengutronix.de
+Cc:     kernel@pengutronix.de, s.hauer@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20200910083751.26686-1-chenyi.qiang@intel.com>
- <20200910083751.26686-3-chenyi.qiang@intel.com>
- <20200911172703.GE4344@sjchrist-ice>
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-Message-ID: <d8cb06e8-1fd5-7029-20af-36b869a7ab59@intel.com>
-Date:   Mon, 14 Sep 2020 17:32:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+Subject: [RESEND PATCH 0/3] Allow on demand channel request / free
+Date:   Mon, 14 Sep 2020 12:32:24 +0300
+Message-Id: <20200914093227.5094-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR06CA0133.eurprd06.prod.outlook.com
+ (2603:10a6:208:ab::38) To VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19)
 MIME-Version: 1.0
-In-Reply-To: <20200911172703.GE4344@sjchrist-ice>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-103.ro-buh02.nxp.com (83.217.231.2) by AM0PR06CA0133.eurprd06.prod.outlook.com (2603:10a6:208:ab::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Mon, 14 Sep 2020 09:32:39 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [83.217.231.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d9c3c3b1-5792-45a3-6463-08d858911fd6
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6688:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6688D882825CF48FB03938CBB8230@VE1PR04MB6688.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: alOY1FcYvuJ0HsaQLeN8ZoON7jKipOVB/NiqtYrNydxWIp5V4cU2SBFv1ydKStMMyOzYj9/YXsO7T7NTi2yLrKGnCrTZoNuysgH4IjcpWfFRYaDNg2FceOPQV3pEpw1vLdToDYlFQoiGPCkDhlMt9O3T32iiv1NFlFxt7fNZ/+mxJjXj/j7H2v0wac51PQ9pn9CIjbKsXTGdEzt3Dbuot2V9bJdj4p/ipwJl5rKtc3c+B8EXXVxFDDMyYoLJKd1Dg4tF3LPdGugkKdXAD3k70ywtlqAxWvjHSSNTfhkzl3p4fs8ZDLftiG+p35VzPcl6Vq9KpIwmjGR6McUlxhYLqQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(396003)(136003)(366004)(376002)(16526019)(6512007)(186003)(6486002)(66946007)(52116002)(66556008)(66476007)(316002)(26005)(6666004)(4744005)(6506007)(478600001)(956004)(2616005)(2906002)(44832011)(8936002)(5660300002)(86362001)(8676002)(1076003)(83380400001)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: D399ezxWlPxxmsl5iZWlFoKAD0UYdyNYbX9FEc4xmS2kkyW2JVFKy/aujhsJjj64zT4eyjSHjqBeYt/o13mQiwqlJy2XxJo99jJN454p+JGqLCeGniZAn3odgPrsLfI10krfWBdhUgBtkUevWott70NX2/6w4qwcTHUBedKXsy4Fey/vhp5hwrtlWZFPNbebOqLAmxCYMG5OWA6Nj1FG+yYSVjI27WcU59rWl3bKMg/VL6KKyAjKFnUjGeok8yFeE4yNzRWOYn+qUIBAkxUeO47yP4FuOB4trsleS6c3a7DCfNLbHhHloAMgog5vKjqGaDNX2MG72N91QwkSfTB3lhB5m2ursa1NHF3wFhEtf38AWA5zkhZxl5qibNCEzyNNKIpnqallJo/pSuQHIOufvF+CEQ1JqEbexif/i12t2q/SIJcCqlVuQKYTt3IH82kLXxsor7g7j8NTA7kGjlL6Ds+iByCfldUP3pEz3M52m8/EoyUDze75raxRmx7BFK0UHSxI6rAn4b1F/17LuOSfCIQ1Q8nig3gxqvVF+FGwe+cElCTpOitM6SfIt6nyHrPN5AbyWCrA2eQzvIpiIo+iUWNXoHpjKPN/uoKziNRLUzs/91LtrwpzAQqH77A0PExyflGjCg00jj4noFQnAMVfRw==
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9c3c3b1-5792-45a3-6463-08d858911fd6
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 09:32:40.7288
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mRvtNSwazEW68FOrsjLWQH9HYvuKOoR8BSUKYUefx4pQjvQTpg3t4Nya+a9+Gbeau1IjtKzBEIF2KYZqJXC27w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6688
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for comments. Will clean up my code.
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
-On 9/12/2020 1:27 AM, Sean Christopherson wrote:
-> On Thu, Sep 10, 2020 at 04:37:51PM +0800, Chenyi Qiang wrote:
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index 5303dbc5c9bc..8059b8b21ecd 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -961,6 +961,9 @@ struct kvm_arch {
->>   	bool guest_can_read_msr_platform_info;
->>   	bool exception_payload_enabled;
->>   
->> +	/* Set when bus lock vm exit is enabled by user */
->> +	bool bus_lock_exit;
-> 
-> Maybe bus_lock_detection_enabled?  Then you don't need the comment or the
-> accessor.
-> 
->> +
->>   	struct kvm_pmu_event_filter *pmu_event_filter;
->>   	struct task_struct *nx_lpage_recovery_thread;
->>   };
->> @@ -1347,6 +1350,8 @@ extern u8   kvm_tsc_scaling_ratio_frac_bits;
->>   extern u64  kvm_max_tsc_scaling_ratio;
->>   /* 1ull << kvm_tsc_scaling_ratio_frac_bits */
->>   extern u64  kvm_default_tsc_scaling_ratio;
->> +/* bus lock detection supported */
->> +extern bool kvm_has_bus_lock_exit;
-> 
-> Hrm, it'd be nice to somehow squeeze this into kvm_cpu_caps, but I can't
-> think of a clever/clean way to do so.
-> 
->>   extern u64 kvm_mce_cap_supported;
->>   
->> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
->> index cd7de4b401fe..93a880bc31a7 100644
->> --- a/arch/x86/include/asm/vmx.h
->> +++ b/arch/x86/include/asm/vmx.h
->> @@ -73,6 +73,7 @@
->>   #define SECONDARY_EXEC_PT_USE_GPA		VMCS_CONTROL_BIT(PT_USE_GPA)
->>   #define SECONDARY_EXEC_TSC_SCALING              VMCS_CONTROL_BIT(TSC_SCALING)
->>   #define SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE	VMCS_CONTROL_BIT(USR_WAIT_PAUSE)
->> +#define SECONDARY_EXEC_BUS_LOCK_DETECTION	VMCS_CONTROL_BIT(BUS_LOCK_DETECTION)
->>   
->>   #define PIN_BASED_EXT_INTR_MASK                 VMCS_CONTROL_BIT(INTR_EXITING)
->>   #define PIN_BASED_NMI_EXITING                   VMCS_CONTROL_BIT(NMI_EXITING)
->> diff --git a/arch/x86/include/asm/vmxfeatures.h b/arch/x86/include/asm/vmxfeatures.h
->> index 9915990fd8cf..e80523346274 100644
->> --- a/arch/x86/include/asm/vmxfeatures.h
->> +++ b/arch/x86/include/asm/vmxfeatures.h
->> @@ -83,5 +83,6 @@
->>   #define VMX_FEATURE_TSC_SCALING		( 2*32+ 25) /* Scale hardware TSC when read in guest */
->>   #define VMX_FEATURE_USR_WAIT_PAUSE	( 2*32+ 26) /* Enable TPAUSE, UMONITOR, UMWAIT in guest */
->>   #define VMX_FEATURE_ENCLV_EXITING	( 2*32+ 28) /* "" VM-Exit on ENCLV (leaf dependent) */
->> +#define VMX_FEATURE_BUS_LOCK_DETECTION	( 2*32+ 30) /* VM-Exit when bus lock caused */
->>   
->>   #endif /* _ASM_X86_VMXFEATURES_H */
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index 0780f97c1850..a1471c05f7f9 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -111,6 +111,7 @@ struct kvm_ioapic_state {
->>   #define KVM_NR_IRQCHIPS          3
->>   
->>   #define KVM_RUN_X86_SMM		 (1 << 0)
->> +#define KVM_RUN_BUS_LOCK         (1 << 1)
->>   
->>   /* for KVM_GET_REGS and KVM_SET_REGS */
->>   struct kvm_regs {
->> diff --git a/arch/x86/include/uapi/asm/vmx.h b/arch/x86/include/uapi/asm/vmx.h
->> index b8ff9e8ac0d5..14c177c4afd5 100644
->> --- a/arch/x86/include/uapi/asm/vmx.h
->> +++ b/arch/x86/include/uapi/asm/vmx.h
->> @@ -88,6 +88,7 @@
->>   #define EXIT_REASON_XRSTORS             64
->>   #define EXIT_REASON_UMWAIT              67
->>   #define EXIT_REASON_TPAUSE              68
->> +#define EXIT_REASON_BUS_LOCK            74
->>   
->>   #define VMX_EXIT_REASONS \
->>   	{ EXIT_REASON_EXCEPTION_NMI,         "EXCEPTION_NMI" }, \
->> @@ -148,7 +149,8 @@
->>   	{ EXIT_REASON_XSAVES,                "XSAVES" }, \
->>   	{ EXIT_REASON_XRSTORS,               "XRSTORS" }, \
->>   	{ EXIT_REASON_UMWAIT,                "UMWAIT" }, \
->> -	{ EXIT_REASON_TPAUSE,                "TPAUSE" }
->> +	{ EXIT_REASON_TPAUSE,                "TPAUSE" }, \
->> +	{ EXIT_REASON_BUS_LOCK,              "BUS_LOCK" }
->>   
->>   #define VMX_EXIT_REASON_FLAGS \
->>   	{ VMX_EXIT_REASONS_FAILED_VMENTRY,	"FAILED_VMENTRY" }
->> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
->> index 4bbd8b448d22..aa94535e6705 100644
->> --- a/arch/x86/kvm/vmx/capabilities.h
->> +++ b/arch/x86/kvm/vmx/capabilities.h
->> @@ -262,6 +262,12 @@ static inline bool cpu_has_vmx_tsc_scaling(void)
->>   		SECONDARY_EXEC_TSC_SCALING;
->>   }
->>   
->> +static inline bool cpu_has_vmx_bus_lock_detection(void)
->> +{
->> +	return vmcs_config.cpu_based_2nd_exec_ctrl &
->> +	    SECONDARY_EXEC_BUS_LOCK_DETECTION;
->> +}
->> +
->>   static inline bool cpu_has_vmx_apicv(void)
->>   {
->>   	return cpu_has_vmx_apic_register_virt() &&
->> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> index adc59cf9036d..5dbfee639375 100644
->> --- a/arch/x86/kvm/vmx/vmx.c
->> +++ b/arch/x86/kvm/vmx/vmx.c
->> @@ -2461,7 +2461,8 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->>   			SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE |
->>   			SECONDARY_EXEC_PT_USE_GPA |
->>   			SECONDARY_EXEC_PT_CONCEAL_VMX |
->> -			SECONDARY_EXEC_ENABLE_VMFUNC;
->> +			SECONDARY_EXEC_ENABLE_VMFUNC |
->> +			SECONDARY_EXEC_BUS_LOCK_DETECTION;
->>   		if (cpu_has_sgx())
->>   			opt2 |= SECONDARY_EXEC_ENCLS_EXITING;
->>   		if (adjust_vmx_controls(min2, opt2,
->> @@ -4244,6 +4245,9 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
->>   		}
->>   	}
->>   
->> +	if (!kvm_bus_lock_exit_enabled(vmx->vcpu.kvm))
->> +		exec_control &= ~SECONDARY_EXEC_BUS_LOCK_DETECTION;
->> +
->>   	vmx->secondary_exec_control = exec_control;
->>   }
->>   
->> @@ -5685,6 +5689,14 @@ static int handle_encls(struct kvm_vcpu *vcpu)
->>   	return 1;
->>   }
->>   
->> +static int handle_bus_lock(struct kvm_vcpu *vcpu)
->> +{
->> +	struct kvm_run *kvm_run = vcpu->run;
->> +
->> +	kvm_run->exit_reason = KVM_EXIT_BUS_LOCK;
-> 
-> No need for kvm_run, "vcpu->run->exit_reason = KVM_EXIT_BUS_LOCK" will do.
-> 
->> +	return 0;
->> +}
->> +
->>   /*
->>    * The exit handlers return 1 if the exit was handled fully and guest execution
->>    * may resume.  Otherwise they set the kvm_run parameter to indicate what needs
->> @@ -5741,6 +5753,7 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
->>   	[EXIT_REASON_VMFUNC]		      = handle_vmx_instruction,
->>   	[EXIT_REASON_PREEMPTION_TIMER]	      = handle_preemption_timer,
->>   	[EXIT_REASON_ENCLS]		      = handle_encls,
->> +	[EXIT_REASON_BUS_LOCK]                = handle_bus_lock,
->>   };
->>   
->>   static const int kvm_vmx_max_exit_handlers =
->> @@ -5979,7 +5992,7 @@ void dump_vmcs(void)
->>    * The guest has exited.  See if we can fix it or if we need userspace
->>    * assistance.
->>    */
->> -static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->> +static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->>   {
->>   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->>   	union vmx_exit_reason exit_reason = vmx->exit_reason;
->> @@ -6131,6 +6144,28 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->>   	return 0;
->>   }
->>   
->> +static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->> +{
->> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> 
-> Personal preference, but I'd probably skip the local 'vmx' variable since
-> there's only a single user, i.e. "to_vmx(vcpu)->exit_reason....".
-> 
->> +	int ret = __vmx_handle_exit(vcpu, exit_fastpath);
->> +
->> +	/*
->> +	 * Even when current exit reason is handled by KVM
->> +	 * internally, we still needs to exit to user space
->> +	 * when bus lock detected to inform that there is a
->> +	 * bus lock in guest.
-> 
-> Run these lines out to the edge of 80 chars, wrapping this aggressively just
-> adds extra lines.
-> 
->> +	 */
->> +	if (vmx->exit_reason.bus_lock_detected) {
->> +		if (ret > 0)
->> +			vcpu->run->exit_reason = KVM_EXIT_BUS_LOCK;
->> +		else
->> +			vcpu->run->flags |= KVM_RUN_BUS_LOCK;
->> +		return 0;
->> +	}
->> +	vcpu->run->flags &= ~KVM_RUN_BUS_LOCK;
->> +	return ret;
->> +}
->> +
->>   /*
->>    * Software based L1D cache flush which is used when microcode providing
->>    * the cache control MSR is not loaded.
->> @@ -8097,6 +8132,9 @@ static __init int hardware_setup(void)
->>   		kvm_tsc_scaling_ratio_frac_bits = 48;
->>   	}
->>   
->> +	if (cpu_has_vmx_bus_lock_detection())
->> +		kvm_has_bus_lock_exit = true;
-> 
-> Or simply:
-> 
-> 	kvm_has_bus_lock_exit = cpu_has_vmx_bus_lock_detection();
-> 
-> 
->> +
->>   	set_bit(0, vmx_vpid_bitmap); /* 0 is reserved for host */
->>   
->>   	if (enable_ept)
->> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
->> index 8bf97a81affd..779ea3b15134 100644
->> --- a/arch/x86/kvm/vmx/vmx.h
->> +++ b/arch/x86/kvm/vmx/vmx.h
->> @@ -105,7 +105,7 @@ union vmx_exit_reason {
->>   		u32	reserved23		: 1;
->>   		u32	reserved24		: 1;
->>   		u32	reserved25		: 1;
->> -		u32	reserved26		: 1;
->> +		u32	bus_lock_detected	: 1;
->>   		u32	enclave_mode		: 1;
->>   		u32	smi_pending_mtf		: 1;
->>   		u32	smi_from_vmx_root	: 1;
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index d39d6cf1d473..d96619ce7f66 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -134,6 +134,8 @@ u64  __read_mostly kvm_max_tsc_scaling_ratio;
->>   EXPORT_SYMBOL_GPL(kvm_max_tsc_scaling_ratio);
->>   u64 __read_mostly kvm_default_tsc_scaling_ratio;
->>   EXPORT_SYMBOL_GPL(kvm_default_tsc_scaling_ratio);
->> +bool __read_mostly kvm_has_bus_lock_exit;
->> +EXPORT_SYMBOL_GPL(kvm_has_bus_lock_exit);
->>   
->>   /* tsc tolerance in parts per million - default to 1/2 of the NTP threshold */
->>   static u32 __read_mostly tsc_tolerance_ppm = 250;
->> @@ -3578,6 +3580,11 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->>   	case KVM_CAP_SMALLER_MAXPHYADDR:
->>   		r = (int) allow_smaller_maxphyaddr;
->>   		break;
->> +	case KVM_CAP_X86_BUS_LOCK_EXIT:
-> 
-> Hmm, it might make more sense to do:
-> 
-> 		if (kvm_has_bus_lock_exit)
-> 			r = KVM_BUS_LOCK_DETECTION_OFF |
-> 			    KVM_BUS_LOCK_DETECTION_EXIT;
-> 		else
-> 			r = 0;
-> 
-> On the other hand I can see it being useful for userspace to know that
-> KVM itself supports bus lock detection, but hardware does not.
-> 		
->> +		r |= KVM_BUS_LOCK_DETECTION_OFF;
->> +		if (kvm_has_bus_lock_exit)
->> +			r |= KVM_BUS_LOCK_DETECTION_EXIT;
->> +		break;
->>   	default:
->>   		break;
->>   	}
->> @@ -5030,6 +5037,20 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->>   		kvm->arch.exception_payload_enabled = cap->args[0];
->>   		r = 0;
->>   		break;
->> +	case KVM_CAP_X86_BUS_LOCK_EXIT:
->> +		r = -EINVAL;
->> +		if (cap->args[0] & ~KVM_BUS_LOCK_DETECTION_VALID_MODE)
->> +			break;
->> +
->> +		if ((cap->args[0] & KVM_BUS_LOCK_DETECTION_OFF) &&
->> +		    (cap->args[0] & KVM_BUS_LOCK_DETECTION_EXIT))
->> +			break;
->> +
->> +		if (kvm_has_bus_lock_exit &&
->> +		    cap->args[0] & KVM_BUS_LOCK_DETECTION_EXIT)
->> +			kvm->arch.bus_lock_exit = true;
->> +		r = 0;
->> +		break;
->>   	default:
->>   		r = -EINVAL;
->>   		break;
->> @@ -7772,12 +7793,16 @@ static void post_kvm_run_save(struct kvm_vcpu *vcpu)
->>   	struct kvm_run *kvm_run = vcpu->run;
->>   
->>   	kvm_run->if_flag = (kvm_get_rflags(vcpu) & X86_EFLAGS_IF) != 0;
->> -	kvm_run->flags = is_smm(vcpu) ? KVM_RUN_X86_SMM : 0;
->>   	kvm_run->cr8 = kvm_get_cr8(vcpu);
->>   	kvm_run->apic_base = kvm_get_apic_base(vcpu);
->>   	kvm_run->ready_for_interrupt_injection =
->>   		pic_in_kernel(vcpu->kvm) ||
->>   		kvm_vcpu_ready_for_interrupt_injection(vcpu);
->> +
->> +	if (is_smm(vcpu))
->> +		kvm_run->flags |= KVM_RUN_X86_SMM;
->> +	else
->> +		kvm_run->flags &= ~KVM_RUN_X86_SMM;
->>   }
->>   
->>   static void update_cr8_intercept(struct kvm_vcpu *vcpu)
->> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
->> index 995ab696dcf0..54aa7712cb52 100644
->> --- a/arch/x86/kvm/x86.h
->> +++ b/arch/x86/kvm/x86.h
->> @@ -335,6 +335,11 @@ static inline bool kvm_cstate_in_guest(struct kvm *kvm)
->>   	return kvm->arch.cstate_in_guest;
->>   }
->>   
->> +static inline bool kvm_bus_lock_exit_enabled(struct kvm *kvm)
-> 
-> I don't see any point in adding an accessor for a bool.
-> 
->> +{
->> +	return kvm->arch.bus_lock_exit;
->> +}
->> +
->>   DECLARE_PER_CPU(struct kvm_vcpu *, current_vcpu);
->>   
->>   static inline void kvm_before_interrupt(struct kvm_vcpu *vcpu)
->> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
->> index f6d86033c4fa..3f0176733622 100644
->> --- a/include/uapi/linux/kvm.h
->> +++ b/include/uapi/linux/kvm.h
->> @@ -248,6 +248,7 @@ struct kvm_hyperv_exit {
->>   #define KVM_EXIT_IOAPIC_EOI       26
->>   #define KVM_EXIT_HYPERV           27
->>   #define KVM_EXIT_ARM_NISV         28
->> +#define KVM_EXIT_BUS_LOCK         29
->>   
->>   /* For KVM_EXIT_INTERNAL_ERROR */
->>   /* Emulate instruction failed. */
->> @@ -1035,6 +1036,7 @@ struct kvm_ppc_resize_hpt {
->>   #define KVM_CAP_LAST_CPU 184
->>   #define KVM_CAP_SMALLER_MAXPHYADDR 185
->>   #define KVM_CAP_S390_DIAG318 186
->> +#define KVM_CAP_X86_BUS_LOCK_EXIT 187
->>   
->>   #ifdef KVM_CAP_IRQ_ROUTING
->>   
->> @@ -1689,4 +1691,9 @@ struct kvm_hyperv_eventfd {
->>   #define KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE    (1 << 0)
->>   #define KVM_DIRTY_LOG_INITIALLY_SET            (1 << 1)
->>   
->> +#define KVM_BUS_LOCK_DETECTION_OFF             (1 << 0)
->> +#define KVM_BUS_LOCK_DETECTION_EXIT            (1 << 1)
->> +#define KVM_BUS_LOCK_DETECTION_VALID_MODE      (KVM_BUS_LOCK_DETECTION_OFF | \
->> +						KVM_BUS_LOCK_DETECTION_EXIT)
-> 
-> I don't think we want to define KVM_BUS_LOCK_DETECTION_VALID_MODE in the
-> uapi header, that should be kernel only.
-> 
->> +
->>   #endif /* __LINUX_KVM_H */
->> -- 
->> 2.17.1
->>
+Requesting an mailbox channel will call mailbox's startup
+function.
+
+startup function calls pm_runtime_get_sync which increments device usage
+count and will keep the device active. Specifically, mailbox clock will
+be always ON when a mailbox channel is requested.
+
+For this, reason we introduce a way to request/free IMX DSP channels
+on demand to save power when the channels are not used.
+
+First two patches are doing code refactoring preparing the path
+for 3rd patch which exports functions for on demand channel request/free
+
+Daniel Baluta (3):
+  firmware: imx: Introduce imx_dsp_setup_channels
+  firmware: imx: Save channel name for further use
+  firmware: imx-dsp: Export functions to request/free channels
+
+ drivers/firmware/imx/imx-dsp.c   | 72 ++++++++++++++++++++++++--------
+ include/linux/firmware/imx/dsp.h | 10 +++++
+ 2 files changed, 64 insertions(+), 18 deletions(-)
+
+-- 
+2.17.1
+
