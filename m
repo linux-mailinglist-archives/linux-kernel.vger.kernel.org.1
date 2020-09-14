@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A2E2691F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9FC2691E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgINQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:44:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:39648 "EHLO foss.arm.com"
+        id S1726179AbgINQmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726300AbgINPKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:10:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4C8B15A2;
-        Mon, 14 Sep 2020 08:10:51 -0700 (PDT)
-Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABC983F718;
-        Mon, 14 Sep 2020 08:10:50 -0700 (PDT)
-From:   Oliver Swede <oli.swede@arm.com>
-To:     catalin.marinas@arm.com, will@kernel.org
-Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.indradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 14/14] arm64: usercopy: Reduce overhead in fixup
-Date:   Mon, 14 Sep 2020 15:09:58 +0000
-Message-Id: <20200914150958.2200-15-oli.swede@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200914150958.2200-1-oli.swede@arm.com>
-References: <20200914150958.2200-1-oli.swede@arm.com>
+        id S1726121AbgINPNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:13:13 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39BDB20829;
+        Mon, 14 Sep 2020 15:13:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600096393;
+        bh=2n6xn1dNb+jBWIYWoXM59/cL0r2SN9OLGc/w/yYX4lc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CX21HqYOSTW7DxJJi9tuQNthrvklblenjRZ8AKtZedFGn5cnOcyTnun31WvqoZvUu
+         vt/mlbJvtmTMtGM+Rx2kQUQeVHlUaFraOTtA7nKxTyzGlBe6INrZLXSaayWu4LpVSr
+         Q1/eyCA5lY3hFIeaFqEteERMOwqykEL70biA9hwA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1370440D3D; Mon, 14 Sep 2020 12:13:11 -0300 (-03)
+Date:   Mon, 14 Sep 2020 12:13:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [RFC 00/26] perf: Add mmap3 support
+Message-ID: <20200914151310.GA160517@kernel.org>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <CAM9d7ci4VUuAguynK76Zd7YSnNoAErsgabucUjb3qcuXj5m7Pg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7ci4VUuAguynK76Zd7YSnNoAErsgabucUjb3qcuXj5m7Pg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the usercopy fixups the intermediate in-order copy step could
-create an overhead for a fault that occurs a large number of
-bytes ahead in the buffer. On inspection of the copy routine,
-it appears possible to leverage the property where all bytes lower
-than the fault address minus N bytes (128 for this algorithm) have
-already been copied at the point of a fault .
+Em Mon, Sep 14, 2020 at 02:25:25PM +0900, Namhyung Kim escreveu:
+> On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > while playing with perf daemon support I realized I need
+> > the build id data in mmap events, so we don't need to care
+> > about removed/updated binaries during long perf runs.
 
-This adds a preprocessor directive for defining the value that should
-be subtracted from the intermediate fault address by the first-stage
-fixup routine. This is the only dependency on the copy routine and
-this change should be re-evaluated when importing new optimized copy
-routines to determine if the property still holds, or e.g. if N needs
-to be increased, to ensure the fixup remains precise.
+> > This RFC patchset adds new mmap3 events that copies mmap2
+> > event and adds build id in it. It makes mmap3 the default
+> > mmap event for synthesizing kernel/modules/tasks and adds
+> > some tooling enhancements to enable the workflow below.
 
-Signed-off-by: Oliver Swede <oli.swede@arm.com>
----
- arch/arm64/lib/copy_user_fixup.S | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> Cool! It's nice that we can skip the final build-id collection stage
+> with this while data size will be bigger.
 
-diff --git a/arch/arm64/lib/copy_user_fixup.S b/arch/arm64/lib/copy_user_fixup.S
-index 4858edd55994..970370b5b0a5 100644
---- a/arch/arm64/lib/copy_user_fixup.S
-+++ b/arch/arm64/lib/copy_user_fixup.S
-@@ -1,5 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- 
-+#define FIXUP_GRANULE 128
-+
- addr	.req	x15
- .section .fixup,"ax"
- .align	2
-@@ -36,6 +38,13 @@ L(src_fault):
- 	mov	x4, x0 // x4: initial target store address
- 	add	x5, x1, x2 // x5: srcend
- 
-+	subs	x3, x15, FIXUP_GRANULE
-+	ccmp	x3, x1, #0, pl
-+	csel	x3, x3, x1, ge // x3: initial target (user) load address
-+	sub	x4, x3, x1
-+	add	x4, x0, x4 // x4: initial target store address
-+	add	x5, x1, x2 // x5: srcend
-+
- L(src_buf_scan):
- 	ldrb2_post	w6, x3, #1
- 	strb2_post	w6, x4, #1
-@@ -52,6 +61,13 @@ L(dst_fault):
- 	mov	x4, x1 // x4: initial target load address
- 	add	x5, x0, x2 // x5: dstend
- 
-+	subs	x3, x15, FIXUP_GRANULE
-+	ccmp	x3, x0, #0, pl
-+	csel	x3, x3, x0, ge // x3: initial target (user) store address
-+	sub	x4, x3, x0
-+	add	x4, x1, x4 // x4: initial target load address
-+	add	x5, x0, x2 // x5: dstend
-+
- L(dst_buf_scan):
- 	ldrb2_post	w6, x4, #1
- 	strb2_post	w6, x3, #1
--- 
-2.17.1
+Yeah, this is something long overdue, comes with extra cost for people
+not wanting build-ids, but then they can just use MMAP2 or even MMAP if
+that is enough.
 
+More comments on the other patches.
+
+- Arnaldo
