@@ -2,139 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A44268A8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CB8268A8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgINLjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgINL2c (ORCPT
+        id S1726138AbgINMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:02:09 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37398 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbgINLnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:28:32 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E58C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:28:32 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id k14so1276346edo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:28:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ueJpq893gUO+axrd/5TX/kkh5xlTqV0vp+NxtBKI8r8=;
-        b=vEOkSlbiTR0FB7u5nOEqCxgF9Y0JIfTIUnHf+eYnro+P2y7hFd86mdqfPNxSkRIl93
-         K7lKy2LzTfI9cEUQrobvXAyvWk1R9xdNZOuZ5kwq39uZXSjs+S1xxvAl0LXSMxtcn3YO
-         c6fBfNNbeOxb2SPvsud0lI+3s6LIkSbqnMdmHnIpt4C75aINOJPrtpFF9D9lhQ+KNPpI
-         8VJEdmYEYvfwYV0zC/CPSHVThI0LHAD1kkBPmuygCWyjc6seLYPGu80m9CWiys3g6eN5
-         yVMCSIW8L5KlaQPWzMt5kNMJvpxQqi8ogOTQmzl0gS80zHJqH79PeJgzyDjqH90N/OTr
-         de1w==
+        Mon, 14 Sep 2020 07:43:09 -0400
+Received: by mail-oi1-f193.google.com with SMTP id a3so17531511oib.4;
+        Mon, 14 Sep 2020 04:43:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ueJpq893gUO+axrd/5TX/kkh5xlTqV0vp+NxtBKI8r8=;
-        b=TI71grHEVR9ahlLjuyXaC3qsoK6H7eZzoPdg8j+ZBn9ahNj/Wk1hqCcuiDrRaC5w84
-         V08WvBhTddSxK6RHOVULDq8gHW8QbPhrTukNrO9xUEDg0BZwfl3FETQAZ5IdRfB/XVpR
-         C80dRrG3Xcd93MYbdrkTYvgg5UF7d4LLACGFDCKND0o19HIqe5/JfwWGX9Gl2iis3t9F
-         negyh7lxIYpgorewn0STHdFdRoQ17kOLa+nDBUWzYO73yKJtdLcNsx3c2lje4rSkIj2w
-         3iPy31sSZxVjRsQqea3bfqJ7+5ieKZ8+mNKItI6M2isJCEvyk4e00ccQqZlTPz9wfF17
-         pqaw==
-X-Gm-Message-State: AOAM533adwMVm7s6rPD/KI6yzvyIPc0ffSA52aLtiaGDVSficlSk1p7F
-        EQud44GEdc6Ssr6q/wcn/PG2RA==
-X-Google-Smtp-Source: ABdhPJxxa22k0tyYYsZqkw575AdHLtFmcfXeXtQgasSchDYyiAjATwRvMqf2bds7G+REYxRqdiOb1A==
-X-Received: by 2002:a05:6402:1151:: with SMTP id g17mr17054933edw.227.1600082911058;
-        Mon, 14 Sep 2020 04:28:31 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id c8sm7500970ejp.30.2020.09.14.04.28.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:28:30 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 13:28:29 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>
-Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200914112829.GC2236@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-2-git-send-email-moshe@mellanox.com>
- <CAACQVJochmfmUgKSvSTe4McFvG6=ffBbkfXsrOJjiCDwQVvaRw@mail.gmail.com>
- <20200914093234.GB2236@nanopsycho.orion>
- <CAACQVJqVV_YLfV002wxU2s1WJUa3_AvqwMMVr8KLAtTa0d9iOw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MAnMfyqXWfQGfIGw15jGsaHsgLXdnRjwDpDAGMwU7WA=;
+        b=l76HGE1NsOISgVHXfSQ9SiLtk2TOix9aj/YJ0J0SPZudXlpdkLP1v6DcZKG6Ddw8s8
+         NNsQ8AokJzRUmpVDqTFD/YUjdgK+hthpTDFcYzkVMMbx07EWRU184ZQ2IZ8EiUVTYLpQ
+         eH2MzbpoDVMwRQ8asu6V+mdv4a+LNzOThzg/CSdK4611CwTviLkINyYaX7UIEmWMP2Gh
+         ZPvt8yRyvhoVU6zpy+G6EIouGkaXDemsXuXzh3Q2MxMdVJ2SI/ZA+e4aIx1uBaubZwrs
+         2J/vGRWq7xpiREnUrJQEl5Su49RQXOB+8I/pVuXhlhLnrkVS8MW5uJubxmLoQOYapX7B
+         l/1g==
+X-Gm-Message-State: AOAM531Gj3oci8H++Gc8J9k0AZCPxjNVU4Y4mpfnc9k3yiLnkiaEzS4H
+        VNDn4pchByt03RdzG7pzf0Z6II4dpUV9/ESl69E=
+X-Google-Smtp-Source: ABdhPJx1JN0QWdrAwf9e1fPzpz0MTklVvosg75s+ekjAUlq1Q5Wjd87gxkBY2lffCmxyNTGaVh+NOl9PcAyV+g77LRM=
+X-Received: by 2002:aca:3bc3:: with SMTP id i186mr7592032oia.148.1600083788561;
+ Mon, 14 Sep 2020 04:43:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAACQVJqVV_YLfV002wxU2s1WJUa3_AvqwMMVr8KLAtTa0d9iOw@mail.gmail.com>
+References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
+In-Reply-To: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Sep 2020 13:42:57 +0200
+Message-ID: <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Sep 14, 2020 at 11:54:55AM CEST, vasundhara-v.volam@broadcom.com wrote:
->On Mon, Sep 14, 2020 at 3:02 PM Jiri Pirko <jiri@resnulli.us> wrote:
->>
->> Mon, Sep 14, 2020 at 09:08:58AM CEST, vasundhara-v.volam@broadcom.com wrote:
->> >On Mon, Sep 14, 2020 at 11:39 AM Moshe Shemesh <moshe@mellanox.com> wrote:
->>
->> [...]
->>
->>
->> >> @@ -1126,15 +1126,24 @@ mlxsw_devlink_core_bus_device_reload_down(struct devlink *devlink,
->> >>  }
->> >>
->> >>  static int
->> >> -mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink,
->> >> -                                       struct netlink_ext_ack *extack)
->> >> +mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink, enum devlink_reload_action action,
->> >> +                                       struct netlink_ext_ack *extack,
->> >> +                                       unsigned long *actions_performed)
->> >Sorry for repeating again, for fw_activate action on our device, all
->> >the driver entities undergo reset asynchronously once user initiates
->> >"devlink dev reload action fw_activate" and reload_up does not have
->> >much to do except reporting actions that will be/being performed.
->> >
->> >Once reset is complete, the health reporter will be notified using
->>
->> Hmm, how is the fw reset related to health reporter recovery? Recovery
->> happens after some error event. I don't believe it is wise to mix it.
->Our device has a fw_reset health reporter, which is updated on reset
->events and firmware activation is one among them. All non-fatal
->firmware reset events are reported on fw_reset health reporter.
+Hi Finn,
 
-Hmm, interesting. In that case, assuming this is fine, should we have
-some standard in this. I mean, if the driver supports reset, should it
-also define the "fw_reset" reporter to report such events?
-
-Jakub, what is your take here?
-
-
+On Mon, Sep 14, 2020 at 4:47 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> Add platform devices for the Mac IDE controller variants. Convert the
+> macide module into a platform driver to support two of those variants.
+> For the third, use a generic "pata_platform" driver instead.
+> This enables automatic loading of the appropriate module and begins
+> the process of replacing the driver with libata alternatives.
 >
->>
->> Instead, why don't you block in reload_up() until the reset is complete?
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Joshua Thompson <funaho@jurai.org>
+> References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
+> References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
+> Tested-by: Stan Johnson <userm57@yahoo.com>
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+> ---
+> This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
+> using both pata_platform and ide_platform drivers.
+> The next step will be to try using these generic drivers with the other
+> IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
+> driver can be entirely replaced with libata drivers.
 >
->Though user initiate "devlink dev reload" event on a single interface,
->all driver entities undergo reset and all entities recover
->independently. I don't think we can block the reload_up() on the
->interface(that user initiated the command), until whole reset is
->complete.
+> Changed since v1:
+>  - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
+>  - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
+>    and IRQF_SHARED makes no difference in this case.
+>  - Removed redundant release_mem_region() call.
+>  - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
+>    CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
+>    patch (as this patch has some unrelated benefits).
 
-Why not? mlxsw reset takes up to like 10 seconds for example.
+Thanks for the update!
 
+BTW, who do you envision taking this (or the next version)? IDE or m68k?
 
->>
->>
->> >devlink_health_reporter_recovery_done(). Returning from reload_up does
->> >not guarantee successful activation of firmware. Status of reset will
->> >be notified to the health reporter via
->> >devlink_health_reporter_state_update().
->> >
->> >I am just repeating this, so I want to know if I am on the same page.
->> >
->> >Thanks.
->>
->> [...]
+> --- a/arch/m68k/configs/mac_defconfig
+> +++ b/arch/m68k/configs/mac_defconfig
+> @@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
+>  CONFIG_IDE=y
+>  CONFIG_IDE_GD_ATAPI=y
+>  CONFIG_BLK_DEV_IDECD=y
+> +CONFIG_BLK_DEV_PLATFORM=y
+
+I guess we want this in multi_defconfig, too?
+
+>  CONFIG_BLK_DEV_MAC_IDE=y
+>  CONFIG_RAID_ATTRS=m
+>  CONFIG_SCSI=y
+
+> --- a/drivers/ide/macide.c
+> +++ b/drivers/ide/macide.c
+
+> @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
+>   * Probe for a Macintosh IDE interface
+>   */
+>
+> -static int __init macide_init(void)
+> +static int mac_ide_probe(struct platform_device *pdev)
+>  {
+
+>         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
+>                          mac_ide_name[macintosh_config->ide_type - 1]);
+>
+> -       macide_setup_ports(&hw, base, irq);
+> +       macide_setup_ports(&hw, mem->start, irq->start);
+>
+> -       return ide_host_add(&d, hws, 1, NULL);
+> +       rc = ide_host_add(&d, hws, 1, &host);
+> +       if (rc)
+> +               return rc;
+> +
+> +       platform_set_drvdata(pdev, host);
+
+Move one up, to play it safe?
+
+> +       return 0;
+>  }
+>
+> -module_init(macide_init);
+> +static int mac_ide_remove(struct platform_device *pdev)
+> +{
+> +       struct ide_host *host = dev_get_drvdata(&pdev->dev);
+
+As you use platform_set_drvdata() above, you might as well use the
+platform_get_drvdata() helper here, for symmetry.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
