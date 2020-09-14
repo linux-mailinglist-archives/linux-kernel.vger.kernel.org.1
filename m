@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994CD26985D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729726985F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726168AbgINVxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:53:07 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:16041 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbgINVw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:52:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600120376; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=McgfBzMTGCjtNIsTYVb4iriu19nAkMDbTGSM3XXPH4A=;
- b=vyG7iDRemRZFfgW5NReb1MgS+MSLmYqx4dsDfy4Ad28e7BgY22Puo0GybIIe3m9ZOtwmehlM
- fuHbjHbtFYp4ywUe55nqjMHtUgXI9/9GkcLqaI8CGh9MQKk03zWZA4p3/R3N97CojHe3pt0h
- HBgIGqJh9f38peRq+HRyIgOoP3M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f5fe6274ba82a82fd75a33c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 21:52:39
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6F5E6C433F0; Mon, 14 Sep 2020 21:52:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D68DFC433CA;
-        Mon, 14 Sep 2020 21:52:37 +0000 (UTC)
+        id S1726068AbgINVxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgINVxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:53:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A10C06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:53:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k18so1463088wmj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:53:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=d6R//vqMN6BffGOrWatWjWsmRIOB1pIO7I9oLqMWNw0=;
+        b=SI0yvrVcSl0TT8KkITBTYo9ix5y+//IhJ97vmN+e6qPoyMhGlpE0n6hrqvoq9VB519
+         d9S2CbSTBPueFmj6QkI+fGGTgHG6CBejqmKUFK+e0R8w9H6R69Fi9ZuUM1jq7uYKTj7k
+         QHWIHdH+fNMVE+p4+fhNqOnJl7dN+sOiZSY0MlR5QYYq6SXX6zexWxkpwj7YXhU7GcwP
+         GiBzHsXGtqIq/KE5BsFRYUpu8fem5uOgtdsjge9au4rovoTwTHfmotXRDy+rbrJcssVm
+         //LsJ5gC+eW5lenSVwjPEs+DlWq1OIVfEimSstQtMbpv4hRz/ovxOeb9vKGGvdyYTz6J
+         XGCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=d6R//vqMN6BffGOrWatWjWsmRIOB1pIO7I9oLqMWNw0=;
+        b=W1DZVJLspP09XyInCBW9GNi9UgV+CyM6UIORBKCSXzzfo38N0Q4PsCD8E4zhTOrJ6D
+         EDRSyBRvAGXpaXWGvAdsggrADQ1nuGOAHzPGLG3IDOd++i/4uJSc3LzzieUsfWrJz0Ha
+         EYb538FhtYORBuctSyufwAFWkRe0NGdtJ/uUPI9d13mJB6mi2b01M1YA/QNKkz2HTfz7
+         o853eDsJb8ltcYfgilkvyj+3RsuiTQgI7VZTCDXQa4KSH7wwKViW/y7lyCOJpu7GhDbF
+         V4pvO24vnXcQgWfs6Wvk3dDsCcoHTmu+WQMOzJvlMI8uKS7XmCHZ0YfMMsHZ+cNkGN1l
+         9dAA==
+X-Gm-Message-State: AOAM530Kx7OU2ZJv4Q+RAX6TfZvhyWk0TXwppcdBp5Gti/+sVGxM9wT1
+        QVyvgRuBusmzdWYuPJ6fw+rGKniXO4Pd6xyGP1IfBA==
+X-Google-Smtp-Source: ABdhPJwmw2QvynGaxOjZ5iu4c71i7/aOOzaly5AbCXm0aW1KbcG1yQbmPSTCcVsNVTl5BNQc7viCFFZlMJpOCYDbdZU=
+X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr1357304wms.77.1600120393828;
+ Mon, 14 Sep 2020 14:53:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 14:52:37 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pratikp@codeaurora.org, pdaly@codeaurora.org,
-        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com,
-        linux-arm-msm-owner@vger.kernel.org,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
-In-Reply-To: <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
-References: <06489716814387e7f147cf53d1b185a8@codeaurora.org>
- <1599851809-4342-1-git-send-email-cgoldswo@codeaurora.org>
- <010101747e998731-e49f209f-8232-4496-a9fc-2465334e70d7-000000@us-west-2.amazonses.com>
- <a4bdda08-9e2a-4862-00a3-72d4c90e82c7@redhat.com>
- <72ae0f361df527cf70946992e4ab1eb3@codeaurora.org>
-Message-ID: <57119844135c2b3ac5d075d077cd8c8e@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20200912025655.1337192-1-irogers@google.com> <20200912025655.1337192-4-irogers@google.com>
+ <20200914214655.GE166601@kernel.org> <20200914215106.GF166601@kernel.org>
+In-Reply-To: <20200914215106.GF166601@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 14 Sep 2020 14:52:57 -0700
+Message-ID: <CAP-5=fUO_HFd2-z53u6GdRV=o7HsB4ThzWYJDGQG8OwGDeV+VA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] perf record: Don't clear event's period if set by
+ a term
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-14 11:33, Chris Goldsworthy wrote:
-> On 2020-09-14 02:31, David Hildenbrand wrote:
->> What about long-term pinnings? IIRC, that can happen easily e.g., with
->> vfio (and I remember there is a way via vmsplice).
->> 
->> Not convinced trying forever is a sane approach in the general case 
->> ...
-> 
-> Hi David,
-> 
-> I've botched the threading, so there are discussions with respect to
-> the previous patch-set that is missing on this thread, which I will
-> summarize below:
-> 
-> V1:
-> [1] https://lkml.org/lkml/2020/8/5/1097
-> [2] https://lkml.org/lkml/2020/8/6/1040
-> [3] https://lkml.org/lkml/2020/8/11/893
-> [4] https://lkml.org/lkml/2020/8/21/1490
-> [5] https://lkml.org/lkml/2020/9/11/1072
-> 
-> [1] features version of the patch featured a finite number of retries,
-> which has been stable for our kernels. In [2], Andrew questioned
-> whether we could actually find a way of solving the problem on the
-> grounds that doing a finite number of retries doesn't actually fix the
-> problem (more importantly, in [4] Andrew indicated that he would
-> prefer not to merge the patch as it doesn't solve the issue).  In [3],
-> I suggest one actual fix for this, which is to use
-> preempt_disable/enable() to prevent context switches from occurring
-> during the periods in copy_one_pte() and exit_mmap() (I forgot to
-> mention this case in the commit text) in which _refcount > _mapcount
-> for a page - you would also need to prevent interrupts from occurring
-> to if we were to fully prevent the issue from occurring.  I think this
-> would be acceptable for the copy_one_pte() case, since there _refcount
-> > _mapcount for little time.  For the exit_mmap() case, however, _refcount is greater than _mapcount whilst the page-tables are being torn down for a process - that could be too long for disabling preemption / interrupts.
-> 
-> So, in [4], Andrew asks about two alternatives to see if they're
-> viable: (1) acquiring locks on the exit_mmap path and migration paths,
-> (2) retrying indefinitely.  In [5], I discuss how using locks could
-> increase the time it takes to perform a CMA allocation, such that a
-> retry approach would avoid increased CMA allocation times. I'm also
-> uncertain about how the locking scheme could be implemented
-> effectively without introducing a new per-page lock that will be used
-> specifically to solve this issue, and I'm not sure this would be
-> accepted.
-> 
-> We're fine with doing indefinite retries, on the grounds that if there
-> is some long-term pinning that occurs when alloc_contig_range returns
-> -EBUSY, that it should be debugged and fixed.  Would it be possible to
-> make this infinite-retrying something that could be enabled or
-> disabled by a defconfig option?
-> 
-> Thanks,
-> 
-> Chris.
+On Mon, Sep 14, 2020 at 2:51 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Mon, Sep 14, 2020 at 06:46:55PM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Fri, Sep 11, 2020 at 07:56:54PM -0700, Ian Rogers escreveu:
+> > > If events in a group explicitly set a frequency or period with leader
+> > > sampling, don't disable the samples on those events.
+> > >
+> > > Prior to 5.8:
+> > > perf record -e '{cycles/period=3D12345000/,instructions/period=3D6789=
+000/}:S'
+> > > would clear the attributes then apply the config terms. In commit
+> > > 5f34278867b7 leader sampling configuration was moved to after applyin=
+g the
+> > > config terms, in the example, making the instructions' event have its=
+ period
+> > > cleared.
+> > > This change makes it so that sampling is only disabled if configurati=
+on
+> > > terms aren't present.
+> >
+> > Adrian, Jiri, can you please take a look a this and provide Reviewed-by
+> > or Acked-by tags?
+>
+> Without this patch we have:
+>
+> # perf record -e '{cycles/period=3D1/,instructions/period=3D2/}:S' sleep =
+1
+> [ perf record: Woken up 1 times to write data ]
+> [ perf record: Captured and wrote 0.051 MB perf.data (6 samples) ]
+> #
+> # perf evlist -v
+> cycles/period=3D1/: size: 120, { sample_period, sample_freq }: 1, sample_=
+type: IP|TID|TIME|READ|ID, read_format: ID|GROUP, disabled: 1, mmap: 1, com=
+m: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2=
+: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
+> instructions/period=3D2/: size: 120, config: 0x1, sample_type: IP|TID|TIM=
+E|READ|ID, read_format: ID|GROUP, sample_id_all: 1, exclude_guest: 1
+> #
+>
+> So indeed the period=3D2 is being cleared for the second event in that
+> group.
+>
+> - Arnaldo
 
-Actually, if we were willing to have a defconfig option for enabling / 
-disabling indefinite retries on the return of -EBUSY, would it be 
-possibly to re-structure the patch to allow either (1) indefinite 
-retrying, or (2) doing a fixed number of retires (as some people might 
-want to tolerate CMA allocation failures in favor of making progress)?
+Thanks Arnaldo and Adrian! Adrian's acked-by is here:
+https://lore.kernel.org/lkml/77df85d3-a50c-d6aa-1d60-4fc9ea90dc44@intel.com=
+/
+Let me know if anything is missing.
 
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Ian
