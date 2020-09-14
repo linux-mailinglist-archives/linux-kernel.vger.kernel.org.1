@@ -2,172 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C38268D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEE4268D95
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgINOTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726700AbgINNHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:07:11 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1398622227;
-        Mon, 14 Sep 2020 13:05:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600088756;
-        bh=FdcLDIpj7/cpMfR2qbqwN7TxTM3UDHbRkP2BwTRqlMo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=00ANBOhB9QdwguPzRecTCAjT2B+YVOcFyIghdF40RKE2KidoeKAjXFYmYYnfblAQm
-         79VwiT1yJltuJvSKJSVBMR0BH4AFSp4iisgvUEfQzH++W1HLqk6Ui32IKeIwf1AiMl
-         ZnKx7OKCciY2MF2RtybJV1xhoXdVkRtVQ3RSCl8E=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 09/10] i2c: algo: pca: Reapply i2c bus settings after reset
-Date:   Mon, 14 Sep 2020 09:05:44 -0400
-Message-Id: <20200914130545.1805084-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200914130545.1805084-1-sashal@kernel.org>
-References: <20200914130545.1805084-1-sashal@kernel.org>
+        id S1726499AbgINO1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:27:40 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:33168 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726659AbgINNGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:06:04 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200914130602euoutp02cdc0eca1397aa3302b6ea85655ee6350~0qEBfSHXx2212622126euoutp02d
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:06:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200914130602euoutp02cdc0eca1397aa3302b6ea85655ee6350~0qEBfSHXx2212622126euoutp02d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1600088762;
+        bh=Jji5sZwwjG0m2sT1+OrKz5E0RZlO03vIrdnfilowYso=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=iXscQB9XMdu1gg3VoWGyvYQAqcmn3ppV+4l1ef4WFXJw9YMfnKMjy5eYInoNZ0Vpk
+         yrWe0yqrszV9i3XysMKX00si4hH1reui7lr6TG6UW2gux7ZLcRRGaEOW1VxDEuDQ2j
+         W5yCACOXC/rVHvZQj07dNVVbx8WryiBZfeu2wfuA=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200914130601eucas1p19a008db149998a8bc73d0f47260f7482~0qEBEP_0X2766727667eucas1p16;
+        Mon, 14 Sep 2020 13:06:01 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id AA.1A.06456.9BA6F5F5; Mon, 14
+        Sep 2020 14:06:01 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200914130601eucas1p23ce276d168dee37909b22c75499e68da~0qEArF1sO2837128371eucas1p2D;
+        Mon, 14 Sep 2020 13:06:01 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200914130601eusmtrp275f86fbcdbed1bb7e4ccb079e515d7fe~0qEAqR5yR2903029030eusmtrp2b;
+        Mon, 14 Sep 2020 13:06:01 +0000 (GMT)
+X-AuditID: cbfec7f2-809ff70000001938-8c-5f5f6ab91fe7
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 53.2D.06017.9BA6F5F5; Mon, 14
+        Sep 2020 14:06:01 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200914130600eusmtip1edf0adac8c32ca3868a3f5a25f1e4126~0qD-up_EH2003720037eusmtip1K;
+        Mon, 14 Sep 2020 13:06:00 +0000 (GMT)
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+To:     Marc Zyngier <maz@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>,
+        kernel-team@android.com,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+Date:   Mon, 14 Sep 2020 15:06:00 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <20200901144324.1071694-9-maz@kernel.org>
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHeXZfdmdtXJfmwUJpUKDQi5XxkCW9SZc+RWBCkGvVxSw3ZWua
+        GWRaUdPUwsqmbFJmU3TWzJeprFrlMm0TxbLSwvJDWqmoGRN6cV4tv/3OOf//c/4HHoaQX6aD
+        mUTNSV6rUSUpaD+yvtXrXm0/rlSuczWEYE+/k8APimooPFqei/D0yDMxLrGk43Nl3SRubAjA
+        Hs99MbZ9fk3h7qYSGhd5HCL8vluK7SVtFDY4f9HY6sijca3tOoEbzF4Cn++L3Cbn6pvrKa7K
+        VIW489m5NGeqyuDsxn4xV2rTc7bKyzSX+dhDcn2vW2huxO0Wc7VlZzl744SIy3tYibgJW8he
+        2QG/LUf5pMRUXrs2+pDfsZ7xK3TK80WnPk54iUzUKjEgCQPsRsgx5RMG5MfIWQuC+wVusVBM
+        Ivj5wjQ3mUDwrfk3MW8ZezlFCYN7CFpGCucsowjefO2YVS1h90F/zlXk4wA2ATpLHoh9TLBj
+        JJSbT/mYZiPA8N1A+1jKRoO1vJnyMcmuhG+erllvIBsPrS8/kYLGH9puDc6yhN0EPY6BuTdD
+        IbuumBA4CN4NmkW+QMA2MjDtyqeE2LvA0vFDLPASGHY9nOPl8Mc+b8hGMOCuFgtFLoLurCIk
+        qKKgzz09E5WZWREGNU1rhfZ2GL50l/K1gZVB73d/IYQMrtXfJIS2FC5dlAvqVWB0Wf+tfdLZ
+        RRQghXHBacYF5xgXnGP8v7cUkZUoiNfr1Am8LkLDp63RqdQ6vSZhzZFktQ3NfND2367xRvSj
+        67ATsQxSLJbu3RqvlFOqVF262omAIRQB0h2v2uPl0qOq9NO8Nlmp1SfxOidaxpCKIOmG20MH
+        5WyC6iR/gudTeO38VMRIgjNR3tOPnGdUZnbsjIncb9kmku0OW16bozRs1kylaTvKAscUFz7o
+        77x6UfsoOPH60gpHpWVFtdnadnaqrvht3c9Jddn68FBvr8254xkuTW4JaIq2ZckNFwbinlZk
+        9Ga0X1kfW525h+7xWuOyvoxLOoYqYlXewhsx9ruLWqNMQYE5ZxSk7pgqIpzQ6lR/AXxPugmc
+        AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRiA+3a2s2lOTnPmx+jGrD/CZvO2z/ASYXH6pSVEmDmHnqblnO5s
+        oka10B9rmmlQzCkmZVayrOZt05AaaZnmyMvAcpR4DzVRECaZOWfgvwfe93nghZeD8apZAk52
+        roZS58pzhLgvs//vR5fIdlUmOz7jZiOHy46hN8ZXLPS7sRyg9aUPbFT7vAjdbhhmImsHHzkc
+        r9nIMulkoeHOWhwZHd0M9H2Yi2y1fSxksG/gqLm7AkctlgcY6njkxlDpeORJHtne1c4izXVm
+        QJaWlONknfk6aTO52GS9RUtamu7gpO6dg0mOO9/i5NLgIJtsabhF2qyrDLKitQmQq5ZDSf4p
+        4hi1SquhjmSpaE2s8JIEhYkl0UgcFhEtloRLL58IixSGxsVkUjnZBZQ6NC5dnDW6chfP69lb
+        +GPVjelAr48B+HAgEQGXP6+xDMCXwyOeAji7+JLhHRyAfQ91LC8HwD9OA+5hHrEI4FCtysMB
+        xHnoKqsCHuYTCjjpHGB6GCNWmNAyRnr35bD7XgXbwzghgYZFb4dLxMHmxq7tPpM4BhccQ9ud
+        QCINDpTP7ezsg33VU9tNHyIKjnZPsL39KFjXMoF5+TAsaavZ4SD4beoRoxLwTLt00y7FtEsx
+        7VLqAbMJ8CktrVQo6TAxLVfS2lyFOEOltICtt2jvdbdagWEp2Q4IDhD6cZNi02Q8lryALlLa
+        AeRgQj731Jf+NB43U15UTKlVMrU2h6LtIHLruCpMEJih2nqyXI1MEimRomiJNFwaHoWEQVw9
+        8T6VRyjkGuoaReVR6v8eg+Mj0IH2xw1X4kcqrbaf2ObgTHzCVMuYos28XL/B1k3/enFUFBzw
+        qbFHdDDfnFhjNPbqiyYu9K3f7+14MpcqOn0x5Ozq/s5iwUhwbEpicmDXQMJXab5/8EKq9dnN
+        znnZufCy2eLpwuzN7J4N0Z75oEQ/45mkmkStwj+2f31Nn76hv7EgFTLpLLkkBFPT8n9a0wvf
+        LAMAAA==
+X-CMS-MailID: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200914130601eucas1p23ce276d168dee37909b22c75499e68da
+References: <20200901144324.1071694-1-maz@kernel.org>
+        <20200901144324.1071694-9-maz@kernel.org>
+        <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Hi Marc,
 
-[ Upstream commit 0a355aeb24081e4538d4d424cd189f16c0bbd983 ]
+On 01.09.2020 16:43, Marc Zyngier wrote:
+> Change the way we deal with GIC SGIs by turning them into proper
+> IRQs, and calling into the arch code to register the interrupt range
+> instead of a callback.
+>
+> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+This patch landed in linux next-20200914 as commit ac063232d4b0 
+("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it breaks 
+booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM 
+Cortex A9 based). Here are the last lines from the bootlog:
 
-If something goes wrong (such as the SCL being stuck low) then we need
-to reset the PCA chip. The issue with this is that on reset we lose all
-config settings and the chip ends up in a disabled state which results
-in a lock up/high CPU usage. We need to re-apply any configuration that
-had previously been set and re-enable the chip.
+[    0.106322] CPU: Testing write buffer coherency: ok
+[    0.109895] CPU0: Spectre v2: using BPIALL workaround
+[    0.116057] CPU0: thread -1, cpu 0, socket 9, mpidr 80000900
+[    0.123885] Setting up static identity map for 0x40100000 - 0x40100060
+[    0.130191] rcu: Hierarchical SRCU implementation.
+[    0.137195] soc soc0: Exynos: CPU[EXYNOS4210] PRO_ID[0x43210211] 
+REV[0x11] Detected
+[    0.145129] smp: Bringing up secondary CPUs ...
+[    0.156279] CPU1: thread -1, cpu 1, socket 9, mpidr 80000901
+[    0.156291] CPU1: Spectre v2: using BPIALL workaround
+[    2.716379] random: fast init done
 
-Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Reviewed-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/i2c/algos/i2c-algo-pca.c | 35 +++++++++++++++++++++-----------
- include/linux/i2c-algo-pca.h     | 15 ++++++++++++++
- 2 files changed, 38 insertions(+), 12 deletions(-)
+> ---
+>   drivers/irqchip/irq-gic.c | 103 +++++++++++++++++++++++---------------
+>   1 file changed, 63 insertions(+), 40 deletions(-)
+>
+> ...
 
-diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
-index 3a9db4626cb60..1886588b9ea3e 100644
---- a/drivers/i2c/algos/i2c-algo-pca.c
-+++ b/drivers/i2c/algos/i2c-algo-pca.c
-@@ -50,8 +50,22 @@ static void pca_reset(struct i2c_algo_pca_data *adap)
- 		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
- 		pca_outw(adap, I2C_PCA_IND, 0xA5);
- 		pca_outw(adap, I2C_PCA_IND, 0x5A);
-+
-+		/*
-+		 * After a reset we need to re-apply any configuration
-+		 * (calculated in pca_init) to get the bus in a working state.
-+		 */
-+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IMODE);
-+		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.mode);
-+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
-+		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.tlow);
-+		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
-+		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.thi);
-+
-+		pca_set_con(adap, I2C_PCA_CON_ENSIO);
- 	} else {
- 		adap->reset_chip(adap->data);
-+		pca_set_con(adap, I2C_PCA_CON_ENSIO | adap->bus_settings.clock_freq);
- 	}
- }
- 
-@@ -435,13 +449,14 @@ static int pca_init(struct i2c_adapter *adap)
- 				" Use the nominal frequency.\n", adap->name);
- 		}
- 
--		pca_reset(pca_data);
--
- 		clock = pca_clock(pca_data);
- 		printk(KERN_INFO "%s: Clock frequency is %dkHz\n",
- 		     adap->name, freqs[clock]);
- 
--		pca_set_con(pca_data, I2C_PCA_CON_ENSIO | clock);
-+		/* Store settings as these will be needed when the PCA chip is reset */
-+		pca_data->bus_settings.clock_freq = clock;
-+
-+		pca_reset(pca_data);
- 	} else {
- 		int clock;
- 		int mode;
-@@ -508,19 +523,15 @@ static int pca_init(struct i2c_adapter *adap)
- 			thi = tlow * min_thi / min_tlow;
- 		}
- 
-+		/* Store settings as these will be needed when the PCA chip is reset */
-+		pca_data->bus_settings.mode = mode;
-+		pca_data->bus_settings.tlow = tlow;
-+		pca_data->bus_settings.thi = thi;
-+
- 		pca_reset(pca_data);
- 
- 		printk(KERN_INFO
- 		     "%s: Clock frequency is %dHz\n", adap->name, clock * 100);
--
--		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_IMODE);
--		pca_outw(pca_data, I2C_PCA_IND, mode);
--		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
--		pca_outw(pca_data, I2C_PCA_IND, tlow);
--		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
--		pca_outw(pca_data, I2C_PCA_IND, thi);
--
--		pca_set_con(pca_data, I2C_PCA_CON_ENSIO);
- 	}
- 	udelay(500); /* 500 us for oscillator to stabilise */
- 
-diff --git a/include/linux/i2c-algo-pca.h b/include/linux/i2c-algo-pca.h
-index a3c3ecd59f08c..7a43afd273655 100644
---- a/include/linux/i2c-algo-pca.h
-+++ b/include/linux/i2c-algo-pca.h
-@@ -52,6 +52,20 @@
- #define I2C_PCA_CON_SI		0x08 /* Serial Interrupt */
- #define I2C_PCA_CON_CR		0x07 /* Clock Rate (MASK) */
- 
-+/**
-+ * struct pca_i2c_bus_settings - The configured PCA i2c bus settings
-+ * @mode: Configured i2c bus mode
-+ * @tlow: Configured SCL LOW period
-+ * @thi: Configured SCL HIGH period
-+ * @clock_freq: The configured clock frequency
-+ */
-+struct pca_i2c_bus_settings {
-+	int mode;
-+	int tlow;
-+	int thi;
-+	int clock_freq;
-+};
-+
- struct i2c_algo_pca_data {
- 	void 				*data;	/* private low level data */
- 	void (*write_byte)		(void *data, int reg, int val);
-@@ -63,6 +77,7 @@ struct i2c_algo_pca_data {
- 	 * For PCA9665, use the frequency you want here. */
- 	unsigned int			i2c_clock;
- 	unsigned int			chip;
-+	struct pca_i2c_bus_settings		bus_settings;
- };
- 
- int i2c_pca_add_bus(struct i2c_adapter *);
+Best regards
 -- 
-2.25.1
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
