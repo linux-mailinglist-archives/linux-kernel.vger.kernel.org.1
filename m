@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F90026984E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBD1269847
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgINVva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:51:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37837 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726102AbgINVvR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:51:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600120276;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OwTbahsND2Yz3ope7XDliFQKn4OcNlEFhaYev3tnX1g=;
-        b=HI+YrhPJgwqTxZdgzqYDjBpwrMuC1Y0qm2KvfrAT47bWWYCJdEL8c0l/hHS524/pstjvcL
-        qWZbDVwxPwqMnmMgFbbQmGxy7sSgENdB2UcidveUvIERRgVfWRbKQCOyWChd1Okj1/9hSQ
-        A3X8G9nTG0kkXkD28DQXF07/9XWI05M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-ST0-bU-rM5ywG7G9xhOq2A-1; Mon, 14 Sep 2020 17:51:14 -0400
-X-MC-Unique: ST0-bU-rM5ywG7G9xhOq2A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1725979AbgINVvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:51:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgINVvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:51:09 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2E5F1074642;
-        Mon, 14 Sep 2020 21:51:11 +0000 (UTC)
-Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0BF8B7BE76;
-        Mon, 14 Sep 2020 21:51:05 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 16:51:04 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Borislav Petkov' <bp@alien8.de>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <20200914215104.cjvycgie2wd3omtn@treble>
-References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
- <20200914175604.GF680@zn.tnic>
- <2e6a4d75b38248f1b8b3b874d36065f1@AcuMS.aculab.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id D0AC5208DB;
+        Mon, 14 Sep 2020 21:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600120269;
+        bh=+FEpcIhViOgTUtQdSUvBkprU5Exd/D3lhLbC2kvqwT0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HbQ5da+499fY/uzSjoufy2Ou87x0mMmUS7xsBDfWfAp63ZMGtNaRPp/pxiTU7jhxG
+         /9ojiH2X3Yo3F4ew9jSLioclJMUODfj+940eXc8cbLhxHHcIvm7OXdJxCNZ4Ld0fxn
+         9RplXoZZle8NiFmAoRikyoqh7iDe/A9cO5p8rMhA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DBCA440D3D; Mon, 14 Sep 2020 18:51:06 -0300 (-03)
+Date:   Mon, 14 Sep 2020 18:51:06 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 3/4] perf record: Don't clear event's period if set by
+ a term
+Message-ID: <20200914215106.GF166601@kernel.org>
+References: <20200912025655.1337192-1-irogers@google.com>
+ <20200912025655.1337192-4-irogers@google.com>
+ <20200914214655.GE166601@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2e6a4d75b38248f1b8b3b874d36065f1@AcuMS.aculab.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200914214655.GE166601@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:23:59PM +0000, David Laight wrote:
-> From: Borislav Petkov
-> > Sent: 14 September 2020 18:56
+Em Mon, Sep 14, 2020 at 06:46:55PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Sep 11, 2020 at 07:56:54PM -0700, Ian Rogers escreveu:
+> > If events in a group explicitly set a frequency or period with leader
+> > sampling, don't disable the samples on those events.
 > > 
-> > On Thu, Sep 10, 2020 at 12:22:53PM -0500, Josh Poimboeuf wrote:
-> > > +/*
-> > > + * Sanitize a user pointer such that it becomes NULL if it's not a valid user
-> > > + * pointer.  This prevents speculative dereferences of user-controlled pointers
-> > > + * to kernel space when access_ok() speculatively returns true.  This should be
-> > > + * done *after* access_ok(), to avoid affecting error handling behavior.
-> > 
-> > Err, stupid question: can this macro then be folded into access_ok() so
-> > that you don't have to touch so many places and the check can happen
-> > automatically?
+> > Prior to 5.8:
+> > perf record -e '{cycles/period=12345000/,instructions/period=6789000/}:S'
+> > would clear the attributes then apply the config terms. In commit
+> > 5f34278867b7 leader sampling configuration was moved to after applying the
+> > config terms, in the example, making the instructions' event have its period
+> > cleared.
+> > This change makes it so that sampling is only disabled if configuration
+> > terms aren't present.
 > 
-> My thoughts are that access_ok() could return 0 for fail and ~0u
-> for success.
-> You could then do (with a few casts):
-> 	mask = access_ok(ptr, size);
-> 	/* Stop gcc tracking the value of mask. */
-> 	asm volatile( "" : "+r" (mask));
-> 	addr = ptr & mask;
-> 	if (!addr && ptr)  // Let NULL through??
-> 		return -EFAULT;
-> 
-> I think there are other changes in the pipeline to remove
-> most of the access_ok() apart from those inside put/get_user()
-> and copy_to/from_user().
-> So the changes should be more limited than you might think.
+> Adrian, Jiri, can you please take a look a this and provide Reviewed-by
+> or Acked-by tags?
 
-Maybe, but I believe that's still going to end up a treewide change.
+Without this patch we have:
 
-And, if we're going to the trouble of changing the access_ok()
-interface, we should change it enough to make sure that accidental uses
-of the old interface (after years of muscle memory) will fail to build.
+# perf record -e '{cycles/period=1/,instructions/period=2/}:S' sleep 1
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.051 MB perf.data (6 samples) ]
+#
+# perf evlist -v
+cycles/period=1/: size: 120, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|READ|ID, read_format: ID|GROUP, disabled: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
+instructions/period=2/: size: 120, config: 0x1, sample_type: IP|TID|TIME|READ|ID, read_format: ID|GROUP, sample_id_all: 1, exclude_guest: 1
+#
 
-We could either add a 3rd argument, or rename it to access_ok_mask() or
-something.
+So indeed the period=2 is being cleared for the second event in that
+group.
 
--- 
-Josh
-
+- Arnaldo
