@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7EE2684B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1382684B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbgINGTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        id S1726100AbgINGUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgINGTB (ORCPT
+        with ESMTP id S1726030AbgINGT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:19:01 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423FCC06174A;
-        Sun, 13 Sep 2020 23:18:57 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id o16so4919078pjr.2;
-        Sun, 13 Sep 2020 23:18:57 -0700 (PDT)
+        Mon, 14 Sep 2020 02:19:59 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA005C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:19:58 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id q13so21453107ejo.9
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MYPgJwOB3wumsWdm8PpM5P24nVAroSIX0XmTHErtiN8=;
-        b=m5zMQqKAG7mE5eqF77oB/b+ELIhxJkB11rPryu9vgZLGbo7a1hjoJPuvEC46eeAbUb
-         TvORpGMCWlzy78ABjT1P8r37FE7fDcjlIRp3EyDUNtuk5fq/U/c5lbVDOdA3NK5Y4ucD
-         65f+xAFfoO4sbKoTuikmMNgGMxj8FKtoa05l7gyBS0KQAsW8rZNwELD7uyMW930xwSxK
-         BxSt1RQ2vNiQQcwlMGr2Iobk1FBirbaqaHv0GuZDKwIX23s3o0S/twXEw5hVBrPtiYAT
-         +1WX+naMwoWrE14C5dLRsD/N9Grk/QAgGFYLVdND9VyqROiLmtEwI8VAzWJZKWOU0F7z
-         Ts2Q==
+        d=malat-biz.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OPWNvv2kZKctpbCV5DaDmYimW34Kcud5VzQfi7Xnkyc=;
+        b=a0bp8QrNiHY/XDpAKBCEXGpK4nesHUgOvIqiaHQ/49/zhPg9G9bMJrl+0kD50tu+BN
+         zJrhlnPXT9LQNjSyVwOF1BZfFMxS7aHAjONIckGM6ssXdV3xR90WKRKmVT72QtMoTHc5
+         02iM0zN1sJIwCCHo00jljpmXWbsNYB1LrZA778IywvEN1oU+aVNoYoqLerxRreONkIXw
+         7LRwUVGoaOE6L+exYogI4sgqyVR7GbOcnDT9DPb4gAzPBN+vCF80pMrCQZvhPCRZRbiH
+         lIxhT9AhuugbMOrH4k144DA2+LivRf9UzfcU+EzCq8nStJ27d8jHjG1G7F/vJEap2AUw
+         PSGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MYPgJwOB3wumsWdm8PpM5P24nVAroSIX0XmTHErtiN8=;
-        b=Qmzyo6JXLg3JG/I3niXWVkxEfsqVyLJ1F1ODNs24vDEM2mUu6+PZzNpVe53dQ1FbGZ
-         5FPEeWDN+uJ1vU3rHv0KnDgsTP6+OQ918JTpgFJW8d8tnEOM9nbauzgiuPbb3GL5o3ax
-         v1oeIU8aqOYkJhfHm0BZW6M2lcI4zjfWlIl6hMK0AjweHapn1O29edexo7OHYiMT8eIy
-         Qmk7cRxGtRDcMZPCv9u7iwUdbRRVeLGHp3VdpL9cYU5fsbu6tbjwysTzL44vdW+zbFSl
-         K2sVuaWsOsN+j3MsaEuUVQxvDzWhLKamwu+l26NguCXeFx2mB/6K7YOdDKcXz6tk1Xyf
-         V+hg==
-X-Gm-Message-State: AOAM533KL5atjmgZiPpCE617PLQ7XXB6tLNUXO8aeIuOJL9CeSaxCMvL
-        kYO5hdfp67cTJOBDBuFshdHQA2C5X1nzf1Bf6lKjhoPk
-X-Google-Smtp-Source: ABdhPJyEN20m5tXqOxy4gIhmp00NE75m2DyLIIl8otL6PZ8wLltOCahP2WCtfHH9VdmpvmESJEu6iu48pwOkmLq1X8I=
-X-Received: by 2002:a17:90b:816:: with SMTP id bk22mr12784047pjb.66.1600064336828;
- Sun, 13 Sep 2020 23:18:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OPWNvv2kZKctpbCV5DaDmYimW34Kcud5VzQfi7Xnkyc=;
+        b=Vh3zYMg4J2tDpExHULf7Y1dwPEI99zvllC21tse1bWP8J2gAVdoNgPObaMEHlyVuBk
+         vxDFZ2f97sJtGgroCyFopIe5RGakoTsr3xopPj/1rIpU8y9glwuWtsCgUjGi/Kyjo5c9
+         pgDI/Zm/RbY6+iVplxFMFdT9pBeDAJgyn3SRBDn4aVSa+OkbJWFZbNedKEwQNF/L/XV9
+         tgcM3LTSEwqB5sg5gUDyXQUZOdu97HHbpIJ2tbQ6kKwRlohAAEhcxXqFIvoH97aNKgdr
+         Q6+GGrHMRuDxMm2sydtQ1d+tgJ1CC6yZHZXaFGTa3mbUUI5x5Ngs7x/DI7IolSOSsF2M
+         /sbA==
+X-Gm-Message-State: AOAM532GZa/xxWb45nRfwUJrFDYGBCVw4AIsHpOFQXsmaIBebj4XYdk+
+        /bd4UcVkeEf6gDkR9vMwUUWj7R8Ef1kfZg==
+X-Google-Smtp-Source: ABdhPJxTX6eaqt+d7327S219jroTAm/VsVceytUy20ioHotlZJMs5l8aRJUNIYUqEBETCgzQhnqKug==
+X-Received: by 2002:a17:906:914b:: with SMTP id y11mr13608778ejw.145.1600064396976;
+        Sun, 13 Sep 2020 23:19:56 -0700 (PDT)
+Received: from ntb.Speedport_W_921V_1_46_000 (p5b363350.dip0.t-ipconnect.de. [91.54.51.80])
+        by smtp.googlemail.com with ESMTPSA id p12sm7024641ejb.42.2020.09.13.23.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 23:19:56 -0700 (PDT)
+From:   Petr Malat <oss@malat.biz>
+To:     linux-kernel@vger.kernel.org
+Cc:     nickrterrell@gmail.com, gustavoars@kernel.org,
+        Petr Malat <oss@malat.biz>
+Subject: [PATCH] zstd: Fix decompression of large window archives on 32-bit platforms
+Date:   Mon, 14 Sep 2020 08:19:31 +0200
+Message-Id: <20200914061931.21886-1-oss@malat.biz>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200903000658.89944-1-xie.he.0141@gmail.com> <20200904151441.27c97d80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EN+=WTuduvm43_Lq=XWL78AcF5q6Zoyg8S5fao_udL=+Q@mail.gmail.com> <m3v9ghgc97.fsf@t19.piap.pl>
-In-Reply-To: <m3v9ghgc97.fsf@t19.piap.pl>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Sun, 13 Sep 2020 23:18:46 -0700
-Message-ID: <CAJht_ENMtrJouSazq3yL7JUS+Hwv4mjtxrcpqxOrc+6vMUVM=w@mail.gmail.com>
-Subject: Re: [PATCH net v2] drivers/net/wan/hdlc_fr: Add needed_headroom for
- PVC devices
-To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Krzysztof Halasa <khc@pm.waw.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 10:26 PM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wr=
-ote:
->
-> Xie He <xie.he.0141@gmail.com> writes:
->
-> > The HDLC device is not actually prepending any header when it is used
-> > with this driver. When the PVC device has prepended its header and
-> > handed over the skb to the HDLC device, the HDLC device just hands it
-> > over to the hardware driver for transmission without prepending any
-> > header.
->
-> That's correct. IIRC:
-> - Cisco and PPP modes add 4 bytes
-> - Frame Relay adds 4 (specific protocols - mostly IPv4) or 10 (general
->   case) bytes. There is that pvcX->hdlcX transition which adds nothing
->   (the header is already in place when the packet leaves pvcX device).
-> - Raw mode adds nothing (IPv4 only, though it could be modified for
->   both IPv4/v6 easily)
-> - Ethernet (hdlc_raw_eth.c) adds normal Ethernet header.
+It seems some optimization has been removed from the code without removing
+the if condition which should activate it only on 64-bit platforms and as
+a result the code responsible for decompression with window larger than
+8MB was disabled on 32-bit platforms.
 
-Thank you for the nice summary!
+Signed-off-by: Petr Malat <oss@malat.biz>
+---
+ lib/zstd/decompress.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-I just realized that we can indeed support both IPv4/v6 in hdlc_raw.
-Both IPv4 and v6 packets have a version field in the header, so we can
-use it to distinguish v4 and v6 packets on receiving. We can introduce
-it as a new feature some time.
+diff --git a/lib/zstd/decompress.c b/lib/zstd/decompress.c
+index db6761ea4deb..509a3b8d51b9 100644
+--- a/lib/zstd/decompress.c
++++ b/lib/zstd/decompress.c
+@@ -1457,12 +1457,8 @@ static size_t ZSTD_decompressBlock_internal(ZSTD_DCtx *dctx, void *dst, size_t d
+ 		ip += litCSize;
+ 		srcSize -= litCSize;
+ 	}
+-	if (sizeof(size_t) > 4) /* do not enable prefetching on 32-bits x86, as it's performance detrimental */
+-				/* likely because of register pressure */
+-				/* if that's the correct cause, then 32-bits ARM should be affected differently */
+-				/* it would be good to test this on ARM real hardware, to see if prefetch version improves speed */
+-		if (dctx->fParams.windowSize > (1 << 23))
+-			return ZSTD_decompressSequencesLong(dctx, dst, dstCapacity, ip, srcSize);
++	if (dctx->fParams.windowSize > (1 << 23))
++		return ZSTD_decompressSequencesLong(dctx, dst, dstCapacity, ip, srcSize);
+ 	return ZSTD_decompressSequences(dctx, dst, dstCapacity, ip, srcSize);
+ }
+ 
+-- 
+2.20.1
+
