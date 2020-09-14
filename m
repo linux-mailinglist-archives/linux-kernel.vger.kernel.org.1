@@ -2,98 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91BD268CEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30141268D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgINOIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
+        id S1726750AbgINOKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgINOIT (ORCPT
+        with ESMTP id S1726385AbgINOKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:08:19 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71557C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:08:19 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id a8so16904782ilk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:08:19 -0700 (PDT)
+        Mon, 14 Sep 2020 10:10:01 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E2FC06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:10:01 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id o16so5637413pjr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 07:10:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fctxu7rmqR9iwM1SRRmUo1RPPdPeoBrrnFYgiya+56E=;
-        b=grP9mBb4KNUrt6s5j5aZDliofeFad5VWpNdpG7QV94Lq30LC+iL4EExE7kyGKWB5Gf
-         /gSh5AyuAed2NYgfVl+TGjM6+PvxmXzc4hKIQBH3SfoUY3P3t1LV4232yJI75e/YJNG6
-         Q+FpLdX/A/RXeNFtq9e2HUk91tNk7d+VWEdYqzgF6WJmp5TR26CFRkEIeLDEiTdr9ACA
-         91aJyHqx2eQWN4Z4enVwN2LT4t1ICt9n0QjRRgL80aVofbYWfiyzEIrTWcE0URGKvlZS
-         8W5ulQtbKbTyaYpofTmquomWBpZFd+9ywGLaRsd5cZ9vgh5cJeBQ4LzVp0OOFE78katd
-         Sm9Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PRqXshFDT+vnZmomkxjfH2FYDG36/bbMKP3d6/TVV9M=;
+        b=SA6T4f5wMMABu+t8mm80Smz6yCnXmOq4zhzbzYWqAt4U6dd1B4KI5EWZkoOvr2B1gU
+         QgoGOV3mSA281/6F47ccWVGpociAdB0LrUQA4l3YR2SeyfI0wSm9qf8US52gEW0KQF2y
+         H6qrSGtKEVOqURphrLheizNfZf4sq3h89O0/czzgZVCEWsLf/BKneKHsAOwbCHap5+Wp
+         NJHyoJF/o+ebSmCYqBF+eB4fDR9e+bO/d/Q19gWKyxze0kMq7WVFrF/ap0HI6pPiOytZ
+         LjjmKZXYYXnmskJR37USBx1R4oRyBc/NmCl86+YGHoIKRxnuD4UbSgs6aAfL3sGcD1Yi
+         bnVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fctxu7rmqR9iwM1SRRmUo1RPPdPeoBrrnFYgiya+56E=;
-        b=pt/D/gwtC86h42zplvZTiRsvIHE0yDahSHkQ50Z8/ElzrdNWrp7LiVlDxo9curdtDi
-         OzK77Id2xCMbpbAAbsG0nAIXootRzRVpeP3clJmIHe4BNiWazV2qJ+VhT/K4PU4C6Ik9
-         Z9soe3Z4yJLy7dTSG+TSW0FtlBtk5hx/uRVOhlpMYWXFs1V8tXXe2eQyjXkMVRiM7p3D
-         8YkavMLH/stUe4mDtEIoIV3R+Y4b82oTIytSDYWVQQlApqrWVEPY+Gm9y0brLSfTdks1
-         74t6RdYfyDr+5CSN+S6TSiB+Oe5a8Zh0yF56RKPwQPNpgSJPlUrSjRBNePTon2iiFovS
-         rLTw==
-X-Gm-Message-State: AOAM530pGumF9zD95x3xErl6sI3rF8S7N4d4vEjMPpiV/g+NzqwVm/VA
-        zgcIv4Kc2s6gBdV4h41Noy3hIw==
-X-Google-Smtp-Source: ABdhPJxqHuHFmUi4XSYUrDn5jbXri907X+UgEsG3mAQAgDE1Hk4Av6GNH2lJfQO/tH0rRUWPkMdG3w==
-X-Received: by 2002:a92:5893:: with SMTP id z19mr3854498ilf.158.1600092495877;
-        Mon, 14 Sep 2020 07:08:15 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id c12sm6771213ilm.17.2020.09.14.07.08.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 07:08:15 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kHp9S-005y8Y-9k; Mon, 14 Sep 2020 11:08:14 -0300
-Date:   Mon, 14 Sep 2020 11:08:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH] mm/gup.c: Handling ERR within unpin_user_pages()
-Message-ID: <20200914140814.GE1221970@ziepe.ca>
-References: <1600007555-11650-1-git-send-email-jrdr.linux@gmail.com>
- <20200913145520.GH6583@casper.infradead.org>
- <CAFqt6zYru2VfaBFHEB6+7vMPXUbgX8R5f+GHqxaGjhP8QZEyzw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PRqXshFDT+vnZmomkxjfH2FYDG36/bbMKP3d6/TVV9M=;
+        b=BtaMcY4La3SmyXKeJJyZqCd4gtCHbzrFmtBkg/cmwNDanrXci8f0aimycwSju19wqf
+         bF1MRLTSBX8Lqm8QE15y52MjCgfVeW5M6B+PbOW++W6+nvbGHOjc9n/b9GstN7maJoPB
+         JyMQMXIzX/slj59bvQpce1XdeHRDc9RCMMPsJp50t2uS5xtPQ3TDiK+llhDSTQD8xDce
+         lYHH7u7+XPj87w+/0xiO8ESHThfr4uxFQnCg4FQ6f1vo4aug/lUf+4r+5Ibnwu6Ed8zB
+         4gAE0pbfpvQBvS8LgxOfE/uQDH0wlxn29bfNG7KdYduRP+JUbHZXgUwyq/TfiCw+xCW7
+         qR+g==
+X-Gm-Message-State: AOAM5324eO2WUCy3m4puD8pdLZLYZzozL4q5FDOi0dK+HQETYhLr4Hbv
+        zlb+2mEzplWy+XBCK/K8pdqbxmPzGvpUxDk3j3gvSQ==
+X-Google-Smtp-Source: ABdhPJw9BQptYud9GJhEfnROZuP65PKWdze/0QkF0LIi84zuolcXFlUe3SubWt2yYGeG0S67y6BktHx0FAti4nACcww=
+X-Received: by 2002:a17:90a:fa94:: with SMTP id cu20mr14131322pjb.147.1600092600608;
+ Mon, 14 Sep 2020 07:10:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFqt6zYru2VfaBFHEB6+7vMPXUbgX8R5f+GHqxaGjhP8QZEyzw@mail.gmail.com>
+References: <20200828031928.43584-1-songmuchun@bytedance.com>
+ <CAMZfGtWtAYNexRq1xf=5At1+YJ+_TtN=F6bVnm9EPuqRnMuroA@mail.gmail.com>
+ <8c288fd4-2ef7-ca47-1f3b-e4167944b235@linux.com> <CAMZfGtXsXWtHh_G0TWm=DxG_5xT6kN_BbfqNgoQvTRu89FJihA@mail.gmail.com>
+ <2f347fde-6f8d-270b-3886-0d106fcc5a46@linux.com>
+In-Reply-To: <2f347fde-6f8d-270b-3886-0d106fcc5a46@linux.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 14 Sep 2020 22:09:24 +0800
+Message-ID: <CAMZfGtVRXVuzUc_ddJJPD9D4tzvDAJTbQxaEx=+ghSOh4w4iKA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] stackleak: Fix a race between stack
+ erasing sysctl handlers
+To:     alex.popov@linux.com
+Cc:     Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        miguel.ojeda.sandonis@gmail.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-fsdevel@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 07:20:34AM +0530, Souptick Joarder wrote:
-> On Sun, Sep 13, 2020 at 8:25 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Mon, Sep 14, 2020 at 9:56 PM Alexander Popov <alex.popov@linux.com> wrote:
+>
+> On 07.09.2020 16:53, Muchun Song wrote:
+> > On Mon, Sep 7, 2020 at 7:24 PM Alexander Popov <alex.popov@linux.com> wrote:
+> >>
+> >> On 07.09.2020 05:54, Muchun Song wrote:
+> >>> Hi all,
+> >>>
+> >>> Any comments or suggestions? Thanks.
+> >>>
+> >>> On Fri, Aug 28, 2020 at 11:19 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> >>>>
+> >>>> There is a race between the assignment of `table->data` and write value
+> >>>> to the pointer of `table->data` in the __do_proc_doulongvec_minmax() on
+> >>>> the other thread.
+> >>>>
+> >>>>     CPU0:                                 CPU1:
+> >>>>                                           proc_sys_write
+> >>>>     stack_erasing_sysctl                    proc_sys_call_handler
+> >>>>       table->data = &state;                   stack_erasing_sysctl
+> >>>>                                                 table->data = &state;
+> >>>>       proc_doulongvec_minmax
+> >>>>         do_proc_doulongvec_minmax             sysctl_head_finish
+> >>>>           __do_proc_doulongvec_minmax           unuse_table
+> >>>>             i = table->data;
+> >>>>             *i = val;  // corrupt CPU1's stack
+> >>
+> >> Hello everyone!
+> >>
+> >> As I remember, I implemented stack_erasing_sysctl() very similar to other sysctl
+> >> handlers. Is that issue relevant for other handlers as well?
 > >
-> > On Sun, Sep 13, 2020 at 08:02:35PM +0530, Souptick Joarder wrote:
-> > > It is possible that a buggy caller of unpin_user_pages()
-> > > (specially in error handling path) may end up calling it with
-> > > npages < 0 which is unnecessary.
-> > > @@ -328,6 +328,9 @@ void unpin_user_pages(struct page **pages, unsigned long npages)
-> > >  {
-> > >       unsigned long index;
-> > >
-> > > +     if (WARN_ON_ONCE(npages < 0))
-> > > +             return;
+> > Yeah, it's very similar. But the difference is that others use a
+> > global variable as the
+> > `table->data`, but here we use a local variable as the `table->data`.
+> > The local variable
+> > is allocated from the stack. So other thread could corrupt the stack
+> > like the diagram
+> > above.
+>
+> Hi Muchun,
+>
+> I don't think that the proposed copying of struct ctl_table to local variable is
+> a good fix of that issue. There might be other bugs caused by concurrent
+> execution of stack_erasing_sysctl().
+
+I can not figure out how the bug happened when there is concurrent
+execution of stack_erasing_sysctl().
+
+>
+> I would recommend using some locking instead.
+>
+> But you say there are other similar issues. Should it be fixed on higher level
+> in kernel/sysctl.c?
+
+Yeah, we can see the same issue here.
+
+    https://lkml.org/lkml/2020/8/22/105.
+
+I agree with you. Maybe a fix on the higher level is a good choice in
+kernel/sysctl.c. If someone also agrees with this solution, I can do
+this work.
+
+>
+> [Adding more knowing people to CC]
+>
+> Thanks!
+>
+> >> Muchun, could you elaborate how CPU1's stack is corrupted and how you detected
+> >> that? Thanks!
 > >
-> > But npages is unsigned long.  So it can't be less than zero.
-> 
-> Sorry, I missed it.
-> 
-> Then, it means if npages is assigned with -ERRNO by caller, unpin_user_pages()
-> may end up calling a big loop, which is unnecessary.
+> > Why did I find this problem? Because I solve another problem which is
+> > very similar to
+> > this issue. You can reference the following fix patch. Thanks.
+> >
+> >   https://lkml.org/lkml/2020/8/22/105
+> >>
+> >>>> Fix this by duplicating the `table`, and only update the duplicate of
+> >>>> it.
+> >>>>
+> >>>> Fixes: 964c9dff0091 ("stackleak: Allow runtime disabling of kernel stack erasing")
+> >>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>>> ---
+> >>>> changelogs in v2:
+> >>>>  1. Add more details about how the race happened to the commit message.
+> >>>>
+> >>>>  kernel/stackleak.c | 11 ++++++++---
+> >>>>  1 file changed, 8 insertions(+), 3 deletions(-)
+> >>>>
+> >>>> diff --git a/kernel/stackleak.c b/kernel/stackleak.c
+> >>>> index a8fc9ae1d03d..fd95b87478ff 100644
+> >>>> --- a/kernel/stackleak.c
+> >>>> +++ b/kernel/stackleak.c
+> >>>> @@ -25,10 +25,15 @@ int stack_erasing_sysctl(struct ctl_table *table, int write,
+> >>>>         int ret = 0;
+> >>>>         int state = !static_branch_unlikely(&stack_erasing_bypass);
+> >>>>         int prev_state = state;
+> >>>> +       struct ctl_table dup_table = *table;
+> >>>>
+> >>>> -       table->data = &state;
+> >>>> -       table->maxlen = sizeof(int);
+> >>>> -       ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+> >>>> +       /*
+> >>>> +        * In order to avoid races with __do_proc_doulongvec_minmax(), we
+> >>>> +        * can duplicate the @table and alter the duplicate of it.
+> >>>> +        */
+> >>>> +       dup_table.data = &state;
+> >>>> +       dup_table.maxlen = sizeof(int);
+> >>>> +       ret = proc_dointvec_minmax(&dup_table, write, buffer, lenp, ppos);
+> >>>>         state = !!state;
+> >>>>         if (ret || !write || state == prev_state)
+> >>>>                 return ret;
+> >>>> --
+> >>>> 2.11.0
 
-How will a caller allocate memory of the right size and still manage
-to call with the wrong npages? Do you have an example of a broken caller?
 
-Jason
+
+-- 
+Yours,
+Muchun
