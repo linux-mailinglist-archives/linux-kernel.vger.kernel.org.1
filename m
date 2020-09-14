@@ -2,213 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C2E268370
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31AE2683AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINEW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:22:29 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40906 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725973AbgINEWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:22:25 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kHg0O-0004sN-IQ; Mon, 14 Sep 2020 14:22:17 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 14 Sep 2020 14:22:16 +1000
-From:   "Herbert Xu" <herbert@gondor.apana.org.au>
-Date:   Mon, 14 Sep 2020 14:22:16 +1000
-Subject: [PATCH 3/3] crypto: inside-secure - Reuse code in safexcel_hmac_alg_setkey
-References: <20200914042055.GA19691@gondor.apana.org.au>
-To:     kernel test robot <lkp@intel.com>,
-        Pascal van Leeuwen <pascalvanl@gmail.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Antoine Tenart <antoine.tenart@bootlin.com>
-Message-Id: <E1kHg0O-0004sN-IQ@fornost.hmeau.com>
+        id S1725995AbgINE35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbgINE34 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 00:29:56 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7864EC06174A;
+        Sun, 13 Sep 2020 21:29:55 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqYL84NKlz9sTN;
+        Mon, 14 Sep 2020 14:29:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600057792;
+        bh=6b/mDq/3QAr/1YD62GFOqQo1PLtnCBY+v0GMC/ZiQY4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uSgQvy9/JBGr0hlf1vwJfGBABebHsrUCdW+AaOnyx/PPNZPaJZ3LAPIqkks+rgsWw
+         IdEZcm55BXUPfMSyBKuGYqCCVgfmoB86C+2wj4UESi5KsGCBV4BBH8z5GSDkPL97uk
+         uin4RrKvPQ56FWXwWoPteQkJpX3HZREZpuZYz/oGGOSWCkUvu33O7BXaehobOrTUD2
+         x9d+3yNlG6BeRK/EDlvElKJwDeU7KCPvug768G13zTz9+xoTbcrrsz7TtjzPSSN74v
+         dEV9azRhT5SDzaHiGXZvFTgYSPKbQIjjYs3pu0q7QP54qpB3Qeo5X9cZms5HnnE6J7
+         ttmak12b3Rv+Q==
+Date:   Mon, 14 Sep 2020 14:29:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Brad Kim <brad.kim@sifive.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build warning after merge of the dmaengine tree
+Message-ID: <20200914142951.66cd3498@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/T_6P2ekptJ7jjOZECFQy7tb";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code in the current implementation of safexcel_hmac_alg_setkey
-can be reused by safexcel_cipher.  This patch does just that by
-renaming the previous safexcel_hmac_setkey to __safexcel_hmac_setkey.
-The now-shared safexcel_hmac_alg_setkey becomes safexcel_hmac_setkey
-and a new safexcel_hmac_alg_setkey has been added for use by ahash
-transforms.
+--Sig_/T_6P2ekptJ7jjOZECFQy7tb
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-As a result safexcel_aead_setkey's stack frame has been reduced by
-about half in size, or about 512 bytes.
+Hi all,
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
----
+After merging the dmaengine tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
- drivers/crypto/inside-secure/safexcel.h        |    5 ++-
- drivers/crypto/inside-secure/safexcel_cipher.c |   36 ++++++------------------
- drivers/crypto/inside-secure/safexcel_hash.c   |   37 +++++++++++++++----------
- 3 files changed, 36 insertions(+), 42 deletions(-)
+drivers/dma/sf-pdma/sf-pdma.c: In function 'sf_pdma_donebh_tasklet':
+drivers/dma/sf-pdma/sf-pdma.c:287:23: warning: unused variable 'desc' [-Wun=
+used-variable]
+  287 |  struct sf_pdma_desc *desc =3D chan->desc;
+      |                       ^~~~
 
-diff --git a/drivers/crypto/inside-secure/safexcel.h b/drivers/crypto/inside-secure/safexcel.h
-index dd095f6622ace..7bbb6fcec3739 100644
---- a/drivers/crypto/inside-secure/safexcel.h
-+++ b/drivers/crypto/inside-secure/safexcel.h
-@@ -908,8 +908,9 @@ void safexcel_rdr_req_set(struct safexcel_crypto_priv *priv,
- inline struct crypto_async_request *
- safexcel_rdr_req_get(struct safexcel_crypto_priv *priv, int ring);
- void safexcel_inv_complete(struct crypto_async_request *req, int error);
--int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
--			 void *istate, void *ostate);
-+int safexcel_hmac_setkey(struct safexcel_context *base, const u8 *key,
-+			 unsigned int keylen, const char *alg,
-+			 unsigned int state_sz);
- 
- /* available algorithms */
- extern struct safexcel_alg_template safexcel_alg_ecb_des;
-diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index d0cfdbb144a3a..9bcfb79a030f1 100644
---- a/drivers/crypto/inside-secure/safexcel_cipher.c
-+++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -404,11 +404,11 @@ static int safexcel_aead_setkey(struct crypto_aead *ctfm, const u8 *key,
- {
- 	struct crypto_tfm *tfm = crypto_aead_tfm(ctfm);
- 	struct safexcel_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
--	struct safexcel_ahash_export_state istate, ostate;
- 	struct safexcel_crypto_priv *priv = ctx->base.priv;
- 	struct crypto_authenc_keys keys;
- 	struct crypto_aes_ctx aes;
- 	int err = -EINVAL, i;
-+	const char *alg;
- 
- 	if (unlikely(crypto_authenc_extractkeys(&keys, key, len)))
- 		goto badkey;
-@@ -463,53 +463,37 @@ static int safexcel_aead_setkey(struct crypto_aead *ctfm, const u8 *key,
- 	/* Auth key */
- 	switch (ctx->hash_alg) {
- 	case CONTEXT_CONTROL_CRYPTO_ALG_SHA1:
--		if (safexcel_hmac_setkey("safexcel-sha1", keys.authkey,
--					 keys.authkeylen, &istate, &ostate))
--			goto badkey;
-+		alg = "safexcel-sha1";
- 		break;
- 	case CONTEXT_CONTROL_CRYPTO_ALG_SHA224:
--		if (safexcel_hmac_setkey("safexcel-sha224", keys.authkey,
--					 keys.authkeylen, &istate, &ostate))
--			goto badkey;
-+		alg = "safexcel-sha224";
- 		break;
- 	case CONTEXT_CONTROL_CRYPTO_ALG_SHA256:
--		if (safexcel_hmac_setkey("safexcel-sha256", keys.authkey,
--					 keys.authkeylen, &istate, &ostate))
--			goto badkey;
-+		alg = "safexcel-sha256";
- 		break;
- 	case CONTEXT_CONTROL_CRYPTO_ALG_SHA384:
--		if (safexcel_hmac_setkey("safexcel-sha384", keys.authkey,
--					 keys.authkeylen, &istate, &ostate))
--			goto badkey;
-+		alg = "safexcel-sha384";
- 		break;
- 	case CONTEXT_CONTROL_CRYPTO_ALG_SHA512:
--		if (safexcel_hmac_setkey("safexcel-sha512", keys.authkey,
--					 keys.authkeylen, &istate, &ostate))
--			goto badkey;
-+		alg = "safexcel-sha512";
- 		break;
- 	case CONTEXT_CONTROL_CRYPTO_ALG_SM3:
--		if (safexcel_hmac_setkey("safexcel-sm3", keys.authkey,
--					 keys.authkeylen, &istate, &ostate))
--			goto badkey;
-+		alg = "safexcel-sm3";
- 		break;
- 	default:
- 		dev_err(priv->dev, "aead: unsupported hash algorithm\n");
- 		goto badkey;
- 	}
- 
--	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr_dma &&
--	    (memcmp(&ctx->base.ipad, istate.state, ctx->state_sz) ||
--	     memcmp(&ctx->base.opad, ostate.state, ctx->state_sz)))
--		ctx->base.needs_inv = true;
-+	if (safexcel_hmac_setkey(&ctx->base, keys.authkey, keys.authkeylen,
-+				 alg, ctx->state_sz))
-+		goto badkey;
- 
- 	/* Now copy the keys into the context */
- 	for (i = 0; i < keys.enckeylen / sizeof(u32); i++)
- 		ctx->key[i] = cpu_to_le32(((u32 *)keys.enckey)[i]);
- 	ctx->key_len = keys.enckeylen;
- 
--	memcpy(&ctx->base.ipad, &istate.state, ctx->state_sz);
--	memcpy(&ctx->base.opad, &ostate.state, ctx->state_sz);
--
- 	memzero_explicit(&keys, sizeof(keys));
- 	return 0;
- 
-diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
-index 1711ccfc5d36d..1b634889d1115 100644
---- a/drivers/crypto/inside-secure/safexcel_hash.c
-+++ b/drivers/crypto/inside-secure/safexcel_hash.c
-@@ -1138,8 +1138,9 @@ static int safexcel_hmac_init_iv(struct ahash_request *areq,
- 	return crypto_ahash_export(areq, state);
- }
- 
--int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
--			 void *istate, void *ostate)
-+static int __safexcel_hmac_setkey(const char *alg, const u8 *key,
-+				  unsigned int keylen,
-+				  void *istate, void *ostate)
- {
- 	struct ahash_request *areq;
- 	struct crypto_ahash *tfm;
-@@ -1188,30 +1189,38 @@ int safexcel_hmac_setkey(const char *alg, const u8 *key, unsigned int keylen,
- 	return ret;
- }
- 
--static int safexcel_hmac_alg_setkey(struct crypto_ahash *tfm, const u8 *key,
--				    unsigned int keylen, const char *alg,
--				    unsigned int state_sz)
-+int safexcel_hmac_setkey(struct safexcel_context *base, const u8 *key,
-+			 unsigned int keylen, const char *alg,
-+			 unsigned int state_sz)
- {
--	struct safexcel_ahash_ctx *ctx = crypto_tfm_ctx(crypto_ahash_tfm(tfm));
--	struct safexcel_crypto_priv *priv = ctx->base.priv;
-+	struct safexcel_crypto_priv *priv = base->priv;
- 	struct safexcel_ahash_export_state istate, ostate;
- 	int ret;
- 
--	ret = safexcel_hmac_setkey(alg, key, keylen, &istate, &ostate);
-+	ret = __safexcel_hmac_setkey(alg, key, keylen, &istate, &ostate);
- 	if (ret)
- 		return ret;
- 
--	if (priv->flags & EIP197_TRC_CACHE && ctx->base.ctxr &&
--	    (memcmp(&ctx->base.ipad, istate.state, state_sz) ||
--	     memcmp(&ctx->base.opad, ostate.state, state_sz)))
--		ctx->base.needs_inv = true;
-+	if (priv->flags & EIP197_TRC_CACHE && base->ctxr &&
-+	    (memcmp(&base->ipad, istate.state, state_sz) ||
-+	     memcmp(&base->opad, ostate.state, state_sz)))
-+		base->needs_inv = true;
- 
--	memcpy(&ctx->base.ipad, &istate.state, state_sz);
--	memcpy(&ctx->base.opad, &ostate.state, state_sz);
-+	memcpy(&base->ipad, &istate.state, state_sz);
-+	memcpy(&base->opad, &ostate.state, state_sz);
- 
- 	return 0;
- }
- 
-+static int safexcel_hmac_alg_setkey(struct crypto_ahash *tfm, const u8 *key,
-+				    unsigned int keylen, const char *alg,
-+				    unsigned int state_sz)
-+{
-+	struct safexcel_ahash_ctx *ctx = crypto_ahash_ctx(tfm);
-+
-+	return safexcel_hmac_setkey(&ctx->base, key, keylen, alg, state_sz);
-+}
-+
- static int safexcel_hmac_sha1_setkey(struct crypto_ahash *tfm, const u8 *key,
- 				     unsigned int keylen)
- {
+Introduced by commit
+
+  8f6b6d060602 ("dmaengine: sf-pdma: Fix an error that calls callback twice=
+")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/T_6P2ekptJ7jjOZECFQy7tb
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9e8b8ACgkQAVBC80lX
+0GxvfAgAkUberfm0WWPsAXdCHTlAsoduLqL1I4l5d3hwti3Roexf2a62YJYfxf+V
+zQjus9S1FzPUP9EQVcGv/RccbrM0mPcul/44Ifn4Fo1KZbn0GaAD/T+zm/SdaABl
+LkM59tFuRuAhqP4nMIIXLFHNdW0EK6RQ9FzqPOk3vfS62SHQ9FgZ6cHhJF8ympmC
+8HHKHy8RtpWRz9QbvJCuNEP01WFsAoB1AyV6cJELCyHitfHYqutn7I+xEHu+Lcdr
+R7qSi16GMDIPg+BMHDVWTb8ZziQyQ6KMrDho5TqPCAMTKUxFTexBPVf9O72h0uBd
+zifnzHZ/heliyOkOyS58SGYXjwZXcg==
+=rg+f
+-----END PGP SIGNATURE-----
+
+--Sig_/T_6P2ekptJ7jjOZECFQy7tb--
