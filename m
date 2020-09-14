@@ -2,73 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC5F26911F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1277626912B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgINQKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:10:21 -0400
-Received: from mga01.intel.com ([192.55.52.88]:20121 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726482AbgINQHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:07:16 -0400
-IronPort-SDR: Q95QUSTE79/pFCwBScfYGYrVMaY3/mlLbcxl+E6wE8B3F/k4P14GpEiRn+fzPJgtec3IXRTj/5
- w+0Q+4P6idSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="177163241"
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="177163241"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:06:41 -0700
-IronPort-SDR: QSuTLZPYyEx/9A4qq6SZEnLbfXsDH2Pdk9RcBl+P4oAtC0CPqqKrHLwbet1Df3Vp1mqEj+9ZMD
- kN0OORP71wCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="335327535"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2020 09:06:38 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kHqzy-00Gda8-Gs; Mon, 14 Sep 2020 19:06:34 +0300
-Date:   Mon, 14 Sep 2020 19:06:34 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Changqi Hu <changqi.hu@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: Re: [PATCH 1/2] tty: serial: print earlycon info after match->setup
-Message-ID: <20200914160634.GL3956970@smile.fi.intel.com>
-References: <20200911093927.608024-1-hsinyi@chromium.org>
+        id S1726198AbgINQMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726447AbgINQHo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:07:44 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6414C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:07:41 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id b19so120612lji.11
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K/o4tAbgmhnFT0w3pjwutrP2CtxBURpGRMbYhc3bTBE=;
+        b=pPpu3G310vswA/nzxXfPePwsCLMfpRmAnUA0uCGCsS5PHm/yNqAAZL2/DWNTt+l3lM
+         PvlI6UlO5TrzkcEInN5arkbz9MYp5S/M8PMd7n++rLAP9m+3RZZ/Am/tFaUXp52FBSLC
+         g9fkBMmm8TJVzOiKLzLjysDoYMvdFdpXgllEVnYccmou3TECsBCo4Q2XgnBx3b4PGwt4
+         BMgJKPRRG756/BLx5t0gSUmFPXy7A4lKFKoEMbj5iWrtu7xM2kDexDml++76NxnnYD9H
+         94UfzpBjkzJ7QZEtd34w21csMPfqIeV1HofiC94xe6y3JiZRWGK2Vp6V0Ze6AjD7WFwN
+         V5mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K/o4tAbgmhnFT0w3pjwutrP2CtxBURpGRMbYhc3bTBE=;
+        b=q3lu2+ijYbgPxz+JwuLGK3xDZd9wFOguTKZ+xe7xGOzb/62bikvxB/VJiglmfhgMSN
+         NpZLNyc1+nZPyOLNfYcm91MelR7N1AYKklp1xBvxw8Ef44Y9tMVWM97jlkz6TOvtwOxA
+         rvChl7cogvhkVyL/nHzkOEXWN1vw6xknHgVHwOqGPAucVDH0nIEgVE5qcZNKVWR9OJ36
+         ryM8BjHqyW8yDM3kJgCtPcDCg37ZQIDHzVauHmFdivSUku21lyRLenS13oj7JdyqTpv1
+         j0wglx0h+f7Dzl7tLggqzxJI4gn9wZVEt5XAhiVPTutYOD7VKBulvhArAnMKvjIC35Sl
+         2zXg==
+X-Gm-Message-State: AOAM531nFRvIapUcOYU0Fou6GRJicAk9Vj6TBsIRLhxRFgJQMxdG3Cqf
+        EgFLjG0/JpgY4Rce1grg0hab9WI1NZQAERHkQxO3uw==
+X-Google-Smtp-Source: ABdhPJz+2ugwt3MV2M7c335KpsfycuWNA1d6x4/tCRTixfpAEWF4+SuPRbjwGuDcrW0MaFTlnu3YbseYJIzRlcDu9uA=
+X-Received: by 2002:a2e:92d6:: with SMTP id k22mr5766745ljh.332.1600099659795;
+ Mon, 14 Sep 2020 09:07:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911093927.608024-1-hsinyi@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200913070010.44053-1-songmuchun@bytedance.com>
+In-Reply-To: <20200913070010.44053-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 14 Sep 2020 09:07:28 -0700
+Message-ID: <CALvZod7VH3NDwBXrY9w95pUY7DV+R-b_chBHuygmwH_bhpULkQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcontrol: Add the missing numa_stat interface
+ for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 05:39:26PM +0800, Hsin-Yi Wang wrote:
-> 8250 devices may modify iotype in their own earlycon setup. For example:
-> 8250_mtk and 8250_uniphier force iotype to be MMIO32. Print earlycon info
-> after match->setup to reflect actual earlycon info.
+On Sun, Sep 13, 2020 at 12:01 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Suggested-by: Shakeel Butt <shakeelb@google.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+[snip]
+> +
+> +static struct numa_stat numa_stats[] = {
+> +       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> +       { "file", PAGE_SIZE, NR_FILE_PAGES },
+> +       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> +       { "shmem", PAGE_SIZE, NR_SHMEM },
+> +       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> +       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> +       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       /*
+> +        * The ratio will be initialized in numa_stats_init(). Because
+> +        * on some architectures, the macro of HPAGE_PMD_SIZE is not
+> +        * constant(e.g. powerpc).
+> +        */
+> +       { "anon_thp", 0, NR_ANON_THPS },
+> +#endif
+> +       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> +       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> +       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> +       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> +       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> +       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> +       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> +};
+> +
+> +static int __init numa_stats_init(void)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +               if (numa_stats[i].idx == NR_ANON_THPS)
+> +                       numa_stats[i].ratio = HPAGE_PMD_SIZE;
+> +#endif
+> +       }
 
-But this means you do something which user didn't ask for...
+The for loop seems excessive but I don't really have a good alternative.
 
-> +static void __init earlycon_info(struct earlycon_device *device)
+> +
+> +       return 0;
+> +}
+> +pure_initcall(numa_stats_init);
+> +
+> +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> +                                          unsigned int nid,
+> +                                          enum node_stat_item idx)
+> +{
+> +       VM_BUG_ON(nid >= nr_node_ids);
+> +       return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
+> +}
+> +
+> +static const char *memory_numa_stat_format(struct mem_cgroup *memcg)
+> +{
+> +       int i;
+> +       struct seq_buf s;
+> +
+> +       /* Reserve a byte for the trailing null */
+> +       seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE - 1);
+> +       if (!s.buffer)
+> +               return NULL;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> +               int nid;
+> +
+> +               seq_buf_printf(&s, "%s", numa_stats[i].name);
+> +               for_each_node_state(nid, N_MEMORY) {
+> +                       u64 size;
+> +
+> +                       size = memcg_node_page_state(memcg, nid,
+> +                                                    numa_stats[i].idx);
+> +                       size *= numa_stats[i].ratio;
+> +                       seq_buf_printf(&s, " N%d=%llu", nid, size);
+> +               }
+> +               seq_buf_putc(&s, '\n');
+> +       }
+> +
+> +       /* The above should easily fit into one page */
+> +       if (WARN_ON_ONCE(seq_buf_putc(&s, '\0')))
+> +               s.buffer[PAGE_SIZE - 1] = '\0';
 
-Can it be earlycon_pr_info() or earlycon_print_info() ?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+I think you should follow Michal's recommendation at
+http://lkml.kernel.org/r/20200914115724.GO16999@dhcp22.suse.cz
