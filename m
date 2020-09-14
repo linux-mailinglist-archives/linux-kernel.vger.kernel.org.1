@@ -2,111 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA172694D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0042694DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgINS1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        id S1726068AbgINS3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726055AbgINS0v (ORCPT
+        with ESMTP id S1726024AbgINS2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:26:51 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471DDC06174A;
-        Mon, 14 Sep 2020 11:26:51 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id lo4so1323221ejb.8;
-        Mon, 14 Sep 2020 11:26:51 -0700 (PDT)
+        Mon, 14 Sep 2020 14:28:02 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C6EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:28:02 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w2so977223wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=rRCccI3O7Q3cBqCSADJ9p4p+tEsMBm/uVKtxbUUahJg=;
-        b=AHU/AtiFLbe3+YZTSiSO41xN3EYAURxPkCRh+hyV2jBoPZbsqwzbhpl0akYfJBMPh2
-         GdoV/jU0y46ZvoaNtPW5sVRWLONy7foziuLCeS1APrEX8izp6/it+zrdWHvQUOjPECV8
-         kB7W1+i3+4RQmCjcYSgt8GmVX60YbKXvrYQ935YbMGmcC+Y3RrmejwX9MuUqN/4gxW+w
-         p9wyDOyjmoAnidi0YOCj7SvrMJ4axu2Wgsuk7CwANUckz/Frkghi87fW2cv/ABBYL0YV
-         xb4eWMau1U5Byo4YNt3vlVYn6A8mZH4KW40UkwdZmk/fyI2XhIUesHolLHBTj+uM0sjB
-         W+7g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=W3YbmmsfMHlVdLS6jlOLoQAflYIsxSXUugWSN1kR+Rc=;
+        b=Y6ZDna6IoIoMEvcCeX8HsYV6y5FPwgzJsnsokv96XLNqt3SNXxCM+Z79rfnLiyStCE
+         Muo3JB7WJnyMkZuqp6Ix6dd90jr5V4xhLE1y0JKJmfLJjPTPdcMLxkt9+NCWR9ptZiD5
+         8/LRFoeOAHM9vnqIEh/YpuIrpjmI6r0yYwHIAB/yxNDCtDTvHtzY/gRXZw0jzU8DJ6F0
+         Js5DdlCtvhBfq1cIXuWba3rlUzKBodjzXdCdujyGzLUyxBTjIJl/1W9YKjT8LP6mVPle
+         AcgJdV9z+XuJTJUnu4IuWaGWHm0qMdypbmU45KBUpE8awMEcAnapLRZ9bYP3yNoGG0DN
+         5W5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=rRCccI3O7Q3cBqCSADJ9p4p+tEsMBm/uVKtxbUUahJg=;
-        b=aSr6mDncjpypoZ7ldivJ6EpLYm/PQM6LSDKrcCXkfPA2vSk7EPQSCsYIlaExJAVZju
-         IylBuG1kGUpVFjBVPZgnSNJrFPaT8ciAsgG6X6Ita54ZxWjLhJHudtwaLwTTVEsBJ2HH
-         /Jo3bYJ0EgmxwOtYAtemTOvb22JQ70Kvk0V6GBx60dPoHwTldzbFiwoLcIfqOaEt5PRS
-         W+cgneKnfFKgGg3zj6LEI3P4okr7Vqbz/43NlONmgl/LoF3z0Sboc6DZwq2Ix4PRunly
-         0phAtjnFTzETtm3LJ6x3N0EoEQMqPbl4/9yLavSlNB+hn3NAIlkaBgiyM/O+HUC7Htyp
-         Nczw==
-X-Gm-Message-State: AOAM532oKIk8bgiLfmBzJbONumUNUy4mqi3q3t9X0VfNhK4f5v42FvA0
-        YxLhPfU3msrE8JIfiBXepqU=
-X-Google-Smtp-Source: ABdhPJz2+wxT5cFNCOXfBWV9IOT32aJMuEc+G7OyK+aP3oDWfuWU/cXhqKfbYJVkKAeo1FWAagaPJg==
-X-Received: by 2002:a17:906:a101:: with SMTP id t1mr15720702ejy.203.1600108009977;
-        Mon, 14 Sep 2020 11:26:49 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id b6sm9871930eds.46.2020.09.14.11.26.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 11:26:49 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: Changing vma->vm_file in dma_buf_mmap()
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     akpm@linux-foundation.org, sumit.semwal@linaro.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Daniel Vetter <daniel.vetter@ffwll.ch>
-References: <20200914132920.59183-1-christian.koenig@amd.com>
- <40cd26ae-b855-4627-5a13-4dcea5d622f6@gmail.com>
- <20200914140632.GD1221970@ziepe.ca>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <9302e4e0-0ff0-8b00-ada1-85feefb49e88@gmail.com>
-Date:   Mon, 14 Sep 2020 20:26:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=W3YbmmsfMHlVdLS6jlOLoQAflYIsxSXUugWSN1kR+Rc=;
+        b=ZgGxbpydyW5nmqiaNycp2ktLMoMnuPvQcjJR/XydolxOpuZM0O7g08K6mowRINWAiJ
+         LxP2ZFHQTVXJoDN5JwRX2RVvRqv6oiGm4BXjUnbv7if/I5ULQTw3w7XnZTCS19OOiMZE
+         3rmOmgOZe92ilTlOnXpNakpyFTiI7gqMf/G1v1+Y5AGOTykEx8zmqaLif8lslzaMA0WV
+         YdMLHUAN17p82Dgx/LRZCnvB98jtFddCbKrgOUKv17+YAYFQUgY8nJr1opacpsI9mVRi
+         GV0rakGFubuFST5IU5Re6wEhpdgPL7vqZEdciM9Ba31dE2vDPzdPEJhynzyvgP6/1MUW
+         wQww==
+X-Gm-Message-State: AOAM530PusPPGCigdj41i5PCS59b1RdThwvPh0iLPqnKHAbgrTRw6I6H
+        erGGR55P3wJC33jciPSwynsKgg==
+X-Google-Smtp-Source: ABdhPJwqlkc2zKOHr4CZKudC+z5XkhQYQppbD4OIiflpEBJodVcF2fyVWwwJjG35lxfxhFMJRptUqA==
+X-Received: by 2002:a1c:e256:: with SMTP id z83mr683787wmg.137.1600108080849;
+        Mon, 14 Sep 2020 11:28:00 -0700 (PDT)
+Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
+        by smtp.gmail.com with ESMTPSA id s26sm21264637wmh.44.2020.09.14.11.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 11:28:00 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 21:27:56 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Xi Wang <xi.wang@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>
+Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200914182756.GA22294@apalos.home>
+References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
+ <20200914122042.GA24441@willie-the-truck>
+ <20200914123504.GA124316@apalos.home>
+ <20200914132350.GA126552@apalos.home>
+ <20200914140114.GG24441@willie-the-truck>
+ <20200914181234.0f1df8ba@carbon>
+ <20200914170205.GA20549@apalos.home>
+ <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
+ <20200914175516.GA21832@apalos.home>
+ <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200914140632.GD1221970@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 14.09.20 um 16:06 schrieb Jason Gunthorpe:
-> On Mon, Sep 14, 2020 at 03:30:47PM +0200, Christian König wrote:
->> Am 14.09.20 um 15:29 schrieb Christian König:
->>> Hi Andrew,
->>>
->>> I'm the new DMA-buf maintainer and Daniel and others came up with
->>> patches extending the use of the dma_buf_mmap() function.
->>>
->>> Now this function is doing something a bit odd by changing the
->>> vma->vm_file while installing a VMA in the mmap() system call
-> It doesn't look obviously safe as mmap_region() has an interesting mix
-> of file and vma->file
->
-> Eg it calls mapping_unmap_writable() using both routes
+Hi Xi, 
 
-Thanks for the hint, going to take a look at that code tomorrow.
+On Mon, Sep 14, 2020 at 11:08:13AM -0700, Xi Wang wrote:
+> On Mon, Sep 14, 2020 at 10:55 AM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> > We've briefly discussed this approach with Yauheni while coming up with the
+> > posted patch.
+> > I think that contructing the array correctly in the first place is better.
+> > Right now it might only be used in bpf2a64_offset() and bpf_prog_fill_jited_linfo()
+> > but if we fixup the values on the fly in there, everyone that intends to use the
+> > offset for any reason will have to account for the missing instruction.
+> 
+> I don't understand what you mean by "correctly."  What's your correctness spec?
 
-> What about security? Is it OK that some other random file, maybe in
-> another process, is being linked to this mmap?
+> 
+> I don't think there's some consistent semantics of "offsets" across
+> the JITs of different architectures (maybe it's good to clean that
+> up).  RV64 and RV32 JITs are doing something similar to arm64 with
+> respect to offsets.  CCing Bj�rn and Luke.
 
-Good question, I have no idea. That's why I send out this mail.
+Even if that's true, is any reason at all why we should skip the first element 
+of the array, that's now needed since 7c2e988f400 to jump back to the first
+instruction?
+Introducing 2 extra if conditions and hotfix the array on the fly (and for 
+every future invocation of that), seems better to you?
 
->>> The background here is that DMA-buf allows device drivers to
->>> export buffer which are then imported into another device
->>> driver. The mmap() handler of the importing device driver then
->>> find that the pgoff belongs to the exporting device and so
->>> redirects the mmap() call there.
-> So the pgoff is some virtualized thing?
-
-Yes, absolutely.
-
-Christian.
-
->
-> Jason
-
+Cheers
+/Ilias
