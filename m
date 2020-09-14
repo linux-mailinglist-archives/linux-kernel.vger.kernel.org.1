@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14625268319
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8BE26831C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgIND2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:28:32 -0400
-Received: from mga05.intel.com ([192.55.52.43]:27438 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgIND2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:28:30 -0400
-IronPort-SDR: BtEvS2HBjhGWgcJfsJUzn9KH/to7bA6CZRAg8RTYCDnIKRX4wtjGLqErMYGIjEBH5oZsBOLG4b
- 8boExQQ8xFsA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="243850851"
-X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
-   d="scan'208";a="243850851"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 20:28:29 -0700
-IronPort-SDR: ht3z4prTyg6/AD7ktePHWbFV4fbVpogys0DPQki0eUnfpIYfPGCHfOEO7p5jPKTdc6/AVITSQn
- d2/tjp3DRjUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
-   d="scan'208";a="306018259"
-Received: from ubuntu1604.sh.intel.com ([10.67.114.235])
-  by orsmga006.jf.intel.com with ESMTP; 13 Sep 2020 20:28:28 -0700
-From:   Lang Dai <lang.dai@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     yuan1.wang@intel.com, Lang Dai <lang.dai@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] uio: free uio id after uio file node is freed
-Date:   Mon, 14 Sep 2020 11:26:41 +0800
-Message-Id: <1600054002-17722-1-git-send-email-lang.dai@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726015AbgIND2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725997AbgIND2r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:28:47 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8E5C061788
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so11392016pfa.10
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4kHmejXTIo1BBSLRENZgyqFfGzb/ylHsGPtQU3ORsGY=;
+        b=qSowdt5PMPNIuUtYyjjVxXOB007fAprML0D9RLG01hggiBoUvwOyNQT+CB+AUUb69C
+         Pc6o7Mnk2vhKMTjLgNpanvxjhxy12n3MbsrZ/gqVlxBp2pO+LF73GR00DawWKvKDEQsv
+         INJmnpgtznXFsTnRJ8tPl4m3KAttaAVb/5EBaSasg3mXATRb/qHyV5IFUeU2QrDAOVbu
+         QZNs8r67pQqpSQsotruFc6agNZUIRsmSIkmzxe1hrZWD8YD0gAfCg7B+Hp3gnZqSNQg8
+         1wR3DvI5i/2fNqtA75uiMcFkcXEoRE0qzVYmtLhPvo7zAXgkliZi0O7BUNBe2LhOOGEn
+         U0lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4kHmejXTIo1BBSLRENZgyqFfGzb/ylHsGPtQU3ORsGY=;
+        b=ZmQP6xzWLIap/poEyjdpcl8awhfV2EzOGp2OGpx9pCRjZ27k9FaDlXupIoc07tzSB5
+         /emS5gq7BNmdHeTiVyaiCteUe6SJpMB+sOPGUl62HpriTCPp0CDdZ6n9Ag4BJr04pEMW
+         Y0QMtbB4/vlJwc0GkE+hIe41KUrp3bAyowuEhKK840qoOENUVH5Wm0Zx2/xVWqvEoKRW
+         OKukgRAKwdDl1cPoT4but9eQm2B/yT8lqlNXnp6n45mqJ3Dk36sl31osIZU/e3TxjTKU
+         A59UNEBWs+w5cQqE8ZLbiqJQlv901aaycd9yBDwYZ4sKg1dxevN2CdldXVckkwbT/yIP
+         ECkA==
+X-Gm-Message-State: AOAM530yWXAvUPOcF0yWH4StZTTBrEQ+cpbfixlwpwyOZ66ga9jd5QBe
+        JNwU9C1g7dHNk1AOw6y28boiVx1iecqb/IaQIlOjhQ==
+X-Google-Smtp-Source: ABdhPJyYRwniJbcpH5xKTfN/gYBasufM4x3VEAlZv0zuWL45LjZLH0gCwfNtbKPcwb9oAoUfGRtNjqlf+aJkB1XhvT8=
+X-Received: by 2002:a63:5515:: with SMTP id j21mr9223604pgb.31.1600054125347;
+ Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200913070010.44053-1-songmuchun@bytedance.com>
+ <20200913170913.GB2239582@chrisdown.name> <CAMZfGtVBFCodKuNKzG8TxKjeuC1_hF_YKdqMTmX5ENE_FfDmzw@mail.gmail.com>
+ <91184891-6a12-87a2-5a82-099a637b072f@huawei.com>
+In-Reply-To: <91184891-6a12-87a2-5a82-099a637b072f@huawei.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 14 Sep 2020 11:28:09 +0800
+Message-ID: <CAMZfGtVGRDCNm0oOpco+-uPjsx6+VyVrCwVRS4dKV2ZTbY-e+w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3] mm: memcontrol: Add the missing
+ numa_stat interface for cgroup v2
+To:     Zefan Li <lizefan@huawei.com>
+Cc:     Chris Down <chris@chrisdown.name>, tj@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>, corbet@lwn.net,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-uio_register_device() do two things.
-1) get an uio id from a global pool, e.g. the id is <A>
-2) create file nodes like /sys/class/uio/uio<A>
+On Mon, Sep 14, 2020 at 11:19 AM Zefan Li <lizefan@huawei.com> wrote:
+>
+> On 2020/9/14 11:10, Muchun Song wrote:
+> > On Mon, Sep 14, 2020 at 1:09 AM Chris Down <chris@chrisdown.name> wrote:
+> >>
+> >> Muchun Song writes:
+> >>> In the cgroup v1, we have a numa_stat interface. This is useful for
+> >>> providing visibility into the numa locality information within an
+> >>> memcg since the pages are allowed to be allocated from any physical
+> >>> node. One of the use cases is evaluating application performance by
+> >>> combining this information with the application's CPU allocation.
+> >>> But the cgroup v2 does not. So this patch adds the missing information.
+> >>>
+> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>> Suggested-by: Shakeel Butt <shakeelb@google.com>
+> >>> Reported-by: kernel test robot <lkp@intel.com>
+> >>
+> >> This is a feature patch, why does this have LKP's Reported-by?
+> >
+> > In the v2 version, the kernel test robot reported a compiler error
+> > on the powerpc architecture. So I added that. Thanks.
+> >
+>
+> You should remove this reported-by, and then add v2->v3 changelog:
 
-uio_unregister_device() do two things.
-1) free the uio id <A> and return it to the global pool
-2) free the file node /sys/class/uio/uio<A>
+Got it. I see Andrew has done it for me, thank him very much for
+his work. He also added this patch to the -mm tree.
 
-There is a situation is that one worker is calling uio_unregister_device(),
-and another worker is calling uio_register_device().
-If the two workers are X and Y, they go as below sequence,
-1) X free the uio id <AAA>
-2) Y get an uio id <AAA>
-3) Y create file node /sys/class/uio/uio<AAA>
-4) X free the file note /sys/class/uio/uio<AAA>
-Then it will failed at the 3rd step and cause the phenomenon we saw as it
-is creating a duplicated file node.
+>
+> ...original changelog...
+>
+> v3:
+> - fixed something reported by test rebot
 
-Failure reports as follows:
-sysfs: cannot create duplicate filename '/class/uio/uio10'
-Call Trace:
-   sysfs_do_create_link_sd.isra.2+0x9e/0xb0
-   sysfs_create_link+0x25/0x40
-   device_add+0x2c4/0x640
-   __uio_register_device+0x1c5/0x576 [uio]
-   adf_uio_init_bundle_dev+0x231/0x280 [intel_qat]
-   adf_uio_register+0x1c0/0x340 [intel_qat]
-   adf_dev_start+0x202/0x370 [intel_qat]
-   adf_dev_start_async+0x40/0xa0 [intel_qat]
-   process_one_work+0x14d/0x410
-   worker_thread+0x4b/0x460
-   kthread+0x105/0x140
- ? process_one_work+0x410/0x410
- ? kthread_bind+0x40/0x40
- ret_from_fork+0x1f/0x40
- Code: 85 c0 48 89 c3 74 12 b9 00 10 00 00 48 89 c2 31 f6 4c 89 ef
- e8 ec c4 ff ff 4c 89 e2 48 89 de 48 c7 c7 e8 b4 ee b4 e8 6a d4 d7
- ff <0f> 0b 48 89 df e8 20 fa f3 ff 5b 41 5c 41 5d 5d c3 66 0f 1f 84
----[ end trace a7531c1ed5269e84 ]---
- c6xxvf b002:00:00.0: Failed to register UIO devices
- c6xxvf b002:00:00.0: Failed to register UIO devices
+I already added that in the changelog. Thanks.
 
-Signed-off-by: Lang Dai <lang.dai@intel.com>
 
-diff --git a/drivers/uio/uio.c b/drivers/uio/uio.c
-index 73efb80..6dca744 100644
---- a/drivers/uio/uio.c
-+++ b/drivers/uio/uio.c
-@@ -1048,8 +1048,6 @@ void uio_unregister_device(struct uio_info *info)
- 
- 	idev = info->uio_dev;
- 
--	uio_free_minor(idev);
--
- 	mutex_lock(&idev->info_lock);
- 	uio_dev_del_attributes(idev);
- 
-@@ -1064,6 +1062,8 @@ void uio_unregister_device(struct uio_info *info)
- 
- 	device_unregister(&idev->dev);
- 
-+	uio_free_minor(idev);
-+
- 	return;
- }
- EXPORT_SYMBOL_GPL(uio_unregister_device);
--- 
-2.7.4
-
+--
+Yours,
+Muchun
