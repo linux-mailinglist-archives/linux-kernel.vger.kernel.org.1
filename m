@@ -2,135 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C20926869B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D042686A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbgINH4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgINHzy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:55:54 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2132C06174A;
-        Mon, 14 Sep 2020 00:55:53 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id c2so17754171ljj.12;
-        Mon, 14 Sep 2020 00:55:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OLKPHbtOt8z8JIW1cBDEqkvkofIIPjEN7iRAGXlScGQ=;
-        b=UNTubtzZLEL8oapWyD53tB8szukUP0AsmWl7SbBE//kxC0c5XMcjBS6sLBATSDVR0L
-         IuE5QOsKg8Z7ySquYugpz11Rnpjcczw6WLt23YwjdbPhYhE+s8AtwAKd0lmVypuaKUAm
-         WnDbCLuYROjkokJMWl5HQTzaEkHHorc236gPnmWlDu89LOHv4fdV47LNV35Eh/7MHzch
-         GkB/RCzN7Df7uAt3kYFACzQ4EXUcvAGS9JkEOzpuYFOo+ClyR4eO8b2SWveMCzIPTS4t
-         XSGpah8zxJIgzICSppIZO7ur7/HHngsoldfPVNV2D/LXWaQBtOVIiv05AjerqOXxiZ5N
-         paKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=OLKPHbtOt8z8JIW1cBDEqkvkofIIPjEN7iRAGXlScGQ=;
-        b=lAAWy+dWcKcACWSDGUafjQ3FVLOvcF9uEpKyMpvfcvjW1omlx74sKZz62Kwm+9wXKm
-         ty9nWizsl8yukUQ+pbGH0nwWtfolZRoYE5zQrKwwortS04gq/7nJuXhnF9gHIlNYuQfu
-         l9R1sJoX0i79vYWIVsqGAqGrI5gyJ1PYft8uN18XiAL5EaGISYfghcP1RWOOtImvP0Qy
-         y4Y4jEH2rlEUBy0wGebqi5YcudIqGvmjmo7iiXd/Eogbm9dNh6OrsbrfNX04o7Ou4KNI
-         6vtmygbQEJP0zZ1/yUxeVa6s2qZYnFwfsqH2/eQNhW/9lb/VvmpnNc2HYBFS9SDPEl91
-         mlaQ==
-X-Gm-Message-State: AOAM533EpOUyU2WbEOMAE/WioWA6lJpf0Wp7LUip66EUtHGUlzOQY/of
-        1wzqPubIBtoRdDYH40N6a1f2i6OJ8gE7mw==
-X-Google-Smtp-Source: ABdhPJw1Eycx1S/HY2dEZIfzRDk6BOovCZSHzkBaMT4r1idgXaFwjQ+i7sxIZUsbExhYOCgFKvCMjg==
-X-Received: by 2002:a2e:92cd:: with SMTP id k13mr4455424ljh.138.1600070152066;
-        Mon, 14 Sep 2020 00:55:52 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:239:d1e4:b56b:9cf2:d12e:444? ([2a00:1fa0:239:d1e4:b56b:9cf2:d12e:444])
-        by smtp.gmail.com with ESMTPSA id h16sm3577107lfc.63.2020.09.14.00.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 00:55:51 -0700 (PDT)
-Subject: Re: [PATCH v4 2/3] media: i2c: ov772x: Add support for BT656 mode
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20200913184247.618-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200913184247.618-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <bb9fcd11-21d9-1ce0-4247-a5f80d836da7@gmail.com>
-Date:   Mon, 14 Sep 2020 10:55:48 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200913184247.618-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726128AbgINH5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:57:21 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40826 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726068AbgINH5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 03:57:18 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz99IIl9fbiUVAA--.4831S2;
+        Mon, 14 Sep 2020 15:56:56 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [RFC PATCH v3] PCI/portdrv: Only disable Bus Master on kexec reboot and connected PCI devices
+Date:   Mon, 14 Sep 2020 15:56:55 +0800
+Message-Id: <1600070215-3901-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxz99IIl9fbiUVAA--.4831S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF1fKFyxGFyUCw1kZrykAFb_yoWrXw4rpa
+        yUJF9FyrW0qry2gr43tFyUXa45JanFya4IyryxG343ur4xCFy0yrWxtFyavw1DJrZYvFy7
+        JayDt3y8GFWUJF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfUYgAwDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+After commit 745be2e700cd ("PCIe: portdrv: call pci_disable_device
+during remove") and commit cc27b735ad3a ("PCI/portdrv: Turn off PCIe
+services during shutdown"), it also calls pci_disable_device() during
+shutdown, this leads to shutdown or reboot failure occasionally due to
+clear PCI_COMMAND_MASTER on the device in do_pci_disable_device().
 
-On 13.09.2020 21:42, Lad Prabhakar wrote:
+drivers/pci/pci.c
+static void do_pci_disable_device(struct pci_dev *dev)
+{
+        u16 pci_command;
 
-> Add support to read the bus-type for V4L2_MBUS_BT656 and
-> enable BT656 mode in the sensor if needed.
+        pci_read_config_word(dev, PCI_COMMAND, &pci_command);
+        if (pci_command & PCI_COMMAND_MASTER) {
+                pci_command &= ~PCI_COMMAND_MASTER;
+                pci_write_config_word(dev, PCI_COMMAND, pci_command);
+        }
 
-    Isn't it called BT.656?
+        pcibios_disable_device(dev);
+}
 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->   drivers/media/i2c/ov772x.c | 27 +++++++++++++++++++++------
->   1 file changed, 21 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> index 551082aa7026..edd7c4c22225 100644
-> --- a/drivers/media/i2c/ov772x.c
-> +++ b/drivers/media/i2c/ov772x.c
-[...]
-> @@ -1427,16 +1434,24 @@ static int ov772x_probe(struct i2c_client *client)
->   		goto error_clk_put;
->   	}
->   
-> -	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
-> +	bus_cfg = (struct v4l2_fwnode_endpoint)
-> +		  { .bus_type = V4L2_MBUS_BT656 };
->   	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
->   	priv->bus_type = bus_cfg.bus_type;
->   	v4l2_fwnode_endpoint_free(&bus_cfg);
->   	if (ret) {
-> -		/* For backward compatibility with the existing DT where
-> -		 * bus-type isnt specified fallback to V4L2_MBUS_PARALLEL
-> -		 */
-> -		priv->bus_type = V4L2_MBUS_PARALLEL;
-> -		dev_notice(&client->dev, "Falling back to V4L2_MBUS_PARALLEL mode\n");
-> +		bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
-> +		ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
-> +		priv->bus_type = bus_cfg.bus_type;
-> +		v4l2_fwnode_endpoint_free(&bus_cfg);
-> +		if (ret) {
-> +			/* For backward compatibility with the existing DT where
-> +			 * bus-type isnt specified fallback to V4L2_MBUS_PARALLEL
-                                     ^^^^ isn't
-    Could be fixed, while at it?
+When remove "pci_command &= ~PCI_COMMAND_MASTER;", it can work well when
+shutdown or reboot.
 
-> +			 */
-> +			priv->bus_type = V4L2_MBUS_PARALLEL;
-> +			dev_notice(&client->dev,
-> +				   "Falling back to V4L2_MBUS_PARALLEL mode\n");
-> +		}
->   	}
->   
->   	ret = ov772x_video_probe(priv);
+As Oliver O'Halloran said, no need to call pci_disable_device() when
+actually shutting down, but we should call pci_disable_device() before
+handing over to the new kernel on kexec reboot, so we can do some
+condition checks which are already executed afterwards by the function
+pci_device_shutdown(), this is done by commit 4fc9bbf98fd6 ("PCI: Disable
+Bus Master only on kexec reboot") and commit 6e0eda3c3898 ("PCI: Don't try
+to disable Bus Master on disconnected PCI devices").
 
-MBR, Sergei
+drivers/pci/pci-driver.c
+static void pci_device_shutdown(struct device *dev)
+{
+ ...
+        if (drv && drv->shutdown)
+                drv->shutdown(pci_dev);
+
+        /*
+         * If this is a kexec reboot, turn off Bus Master bit on the
+         * device to tell it to not continue to do DMA. Don't touch
+         * devices in D3cold or unknown states.
+         * If it is not a kexec reboot, firmware will hit the PCI
+         * devices with big hammer and stop their DMA any way.
+         */
+        if (kexec_in_progress && (pci_dev->current_state <= PCI_D3hot))
+                pci_clear_master(pci_dev);
+}
+
+[   36.159446] Call Trace:
+[   36.241688] [<ffffffff80211434>] show_stack+0x9c/0x130
+[   36.326619] [<ffffffff80661b70>] dump_stack+0xb0/0xf0
+[   36.410403] [<ffffffff806a8240>] pcie_portdrv_shutdown+0x18/0x78
+[   36.495302] [<ffffffff8069c6b4>] pci_device_shutdown+0x44/0x90
+[   36.580027] [<ffffffff807aac90>] device_shutdown+0x130/0x290
+[   36.664486] [<ffffffff80265448>] kernel_power_off+0x38/0x80
+[   36.748272] [<ffffffff80265634>] __do_sys_reboot+0x1a4/0x258
+[   36.831985] [<ffffffff80218b90>] syscall_common+0x34/0x58
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/pci/pcie/portdrv_core.c |  1 -
+ drivers/pci/pcie/portdrv_pci.c  | 14 +++++++++++++-
+ 2 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+index 50a9522..1991aca 100644
+--- a/drivers/pci/pcie/portdrv_core.c
++++ b/drivers/pci/pcie/portdrv_core.c
+@@ -491,7 +491,6 @@ void pcie_port_device_remove(struct pci_dev *dev)
+ {
+ 	device_for_each_child(&dev->dev, NULL, remove_iter);
+ 	pci_free_irq_vectors(dev);
+-	pci_disable_device(dev);
+ }
+ 
+ /**
+diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
+index 3a3ce40..cab37a8 100644
+--- a/drivers/pci/pcie/portdrv_pci.c
++++ b/drivers/pci/pcie/portdrv_pci.c
+@@ -143,6 +143,18 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
+ 	}
+ 
+ 	pcie_port_device_remove(dev);
++	pci_disable_device(dev);
++}
++
++static void pcie_portdrv_shutdown(struct pci_dev *dev)
++{
++	if (pci_bridge_d3_possible(dev)) {
++		pm_runtime_forbid(&dev->dev);
++		pm_runtime_get_noresume(&dev->dev);
++		pm_runtime_dont_use_autosuspend(&dev->dev);
++	}
++
++	pcie_port_device_remove(dev);
+ }
+ 
+ static pci_ers_result_t pcie_portdrv_error_detected(struct pci_dev *dev,
+@@ -211,7 +223,7 @@ static struct pci_driver pcie_portdriver = {
+ 
+ 	.probe		= pcie_portdrv_probe,
+ 	.remove		= pcie_portdrv_remove,
+-	.shutdown	= pcie_portdrv_remove,
++	.shutdown	= pcie_portdrv_shutdown,
+ 
+ 	.err_handler	= &pcie_portdrv_err_handler,
+ 
+-- 
+2.1.0
+
