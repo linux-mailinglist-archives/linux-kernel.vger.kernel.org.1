@@ -2,157 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12AA2691AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452D226919B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbgINQeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:34:05 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37796 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgINPoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:44:39 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08EFiFC6141963;
-        Mon, 14 Sep 2020 15:44:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=eq4LTC2Yd5sfvcCLwppvKF+HmjZnZ6bst/Dh6vKmwQ4=;
- b=RLRAX6BrM34Ih+gjIw+Epxc9xBzMUxjRCzA49x9waBmG5ROyH122zIRNrKiJcl9F4jMG
- o5vlXfAT76qxk9mGooEGm/w6UYM4CCE3WCBuFtR+4iaDo4nWs6vrmB8arGC7QccFXZSe
- VtHLWWOWHlPYBIcfMkraiW/aC9MBB7N2cvKZt3LkD1WKoJbZL147JheLdjJKGzCnX0Ss
- IeoCGLYVBe9oQ4aZyDIr/uu9HrZapDkRL6gUQ2umnPvjwv4HxsI4nQKDZdgQARax9ZdL
- G5UdZXSmS3zQytLdUz5zKalVJIjdKEvbw6goCGJZhgXmGY10EVQtklnmB5CNlCMbejZk Vw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33j91d916q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Sep 2020 15:44:18 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08EFPMNK113211;
-        Mon, 14 Sep 2020 15:44:17 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 33h881tn8s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Sep 2020 15:44:17 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08EFiDnQ017022;
-        Mon, 14 Sep 2020 15:44:14 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Sep 2020 15:44:13 +0000
-Date:   Mon, 14 Sep 2020 18:44:05 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Anmol Karn <anmol.karan123@gmail.com>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        kuba@kernel.org, davem@davemloft.net,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: Re: [Linux-kernel-mentees] [PATCH] net: bluetooth: Fix null pointer
- dereference in hci_event_packet()
-Message-ID: <20200914154405.GC18329@kadam>
-References: <20200910043424.19894-1-anmol.karan123@gmail.com>
- <20200910104918.GF12635@kadam>
- <20200912091028.GA67109@Thinkpad>
+        id S1726447AbgINQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:12:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:58202 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726481AbgINQJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:09:08 -0400
+IronPort-SDR: wKV5nzp4vd2VYW/Gr67OJhnhiRIulxoZT4yPUDHUKVgc5iAiGNTKej1+11rRGMk0UJAt7M6CYc
+ RsU4KsfGhJrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="146792575"
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="146792575"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:08:50 -0700
+IronPort-SDR: UiGrMlA3ZvzCKetd+zbQl9xfL2hz20+ZIEgqGOqpEgt+1xUQn95d6KsEA4pHndFmAv+wFTEFaD
+ yMyLQNempZNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="335328062"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 14 Sep 2020 09:08:46 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kHr23-00GdbG-9I; Mon, 14 Sep 2020 19:08:43 +0300
+Date:   Mon, 14 Sep 2020 19:08:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, Jie Deng <jie.deng@intel.com>,
+        linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com,
+        kbuild-all@lists.01.org, mst@redhat.com, jasowang@redhat.com,
+        wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        jarkko.nikula@linux.intel.com, jdelvare@suse.de
+Subject: Re: [PATCH v2] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20200914160843.GM3956970@smile.fi.intel.com>
+References: <c4bd4fd56df36864ed34d3572f00b2b838fd833a.1599795029.git.jie.deng@intel.com>
+ <20200914144807.GC4282@kadam>
+ <20200914152455.GI3956970@smile.fi.intel.com>
+ <20200914154726.GE18329@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200912091028.GA67109@Thinkpad>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 adultscore=0
- suspectscore=0 phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009140125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009140126
+In-Reply-To: <20200914154726.GE18329@kadam>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 02:40:28PM +0530, Anmol Karn wrote:
-> On Thu, Sep 10, 2020 at 01:49:18PM +0300, Dan Carpenter wrote:
-> > On Thu, Sep 10, 2020 at 10:04:24AM +0530, Anmol Karn wrote:
-> > > Prevent hci_phy_link_complete_evt() from dereferencing 'hcon->amp_mgr'
-> > > as NULL. Fix it by adding pointer check for it.
+On Mon, Sep 14, 2020 at 06:47:27PM +0300, Dan Carpenter wrote:
+> On Mon, Sep 14, 2020 at 06:24:55PM +0300, Andy Shevchenko wrote:
+> > On Mon, Sep 14, 2020 at 05:48:07PM +0300, Dan Carpenter wrote:
+> > > Hi Jie,
 > > > 
-> > > Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-> > > Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f 
-> > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+> > > url:    https://github.com/0day-ci/linux/commits/Jie-Deng/i2c-virtio-add-a-virtio-i2c-frontend-driver/20200911-115013 
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git  i2c/for-next
+> > > config: parisc-randconfig-m031-20200913 (attached as .config)
+> > > compiler: hppa-linux-gcc (GCC) 9.3.0
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > > 
+> > > smatch warnings:
+> > > drivers/i2c/busses/i2c-virtio.c:160 virtio_i2c_xfer() error: we previously assumed 'vmsg' could be null (see line 137)
+> > > 
+> > 
+> > It's quite possible a false positive. Look at 122. But I agree that for-loop is
+> > not the best for such things to understand. Perhaps switching to do {} while ()
+> > will make it better.
+> > 
+> 
+> Smatch is assuming that virtqueue_get_buf() can return NULL on the last
+> iteration through the loop.
+
+I see now. Thanks.
+
+> > > # https://github.com/0day-ci/linux/commit/0a54ec771966748fcbc86256b830b5f786168b7d 
+> > > git remote add linux-review https://github.com/0day-ci/linux 
+> > > git fetch --no-tags linux-review Jie-Deng/i2c-virtio-add-a-virtio-i2c-frontend-driver/20200911-115013
+> > > git checkout 0a54ec771966748fcbc86256b830b5f786168b7d
+> > > vim +/vmsg +160 drivers/i2c/busses/i2c-virtio.c
+> > > 
+> > > 0a54ec77196674 Jie Deng 2020-09-11  109  static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+> > > 0a54ec77196674 Jie Deng 2020-09-11  110  {
+> > > 0a54ec77196674 Jie Deng 2020-09-11  111  	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  112  	struct virtqueue *vq = vi->vq;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  113  	struct virtio_i2c_msg *vmsg;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  114  	unsigned long time_left;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  115  	int len, i, ret = 0;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  116  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  117  	mutex_lock(&vi->i2c_lock);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  118  	vmsg = &vi->vmsg;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  119  	vmsg->buf = NULL;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  120  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  121  	for (i = 0; i < num; i++) {
+> > > 0a54ec77196674 Jie Deng 2020-09-11  122  		ret = virtio_i2c_add_msg(vq, vmsg, &msgs[i]);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  123  		if (ret) {
+> > > 0a54ec77196674 Jie Deng 2020-09-11  124  			dev_err(&adap->dev, "failed to add msg[%d] to virtqueue.\n", i);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  125  			break;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  126  		}
+> > > 0a54ec77196674 Jie Deng 2020-09-11  127  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  128  		virtqueue_kick(vq);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  129  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  130  		time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  131  		if (!time_left) {
+> > > 0a54ec77196674 Jie Deng 2020-09-11  132  			dev_err(&adap->dev, "msg[%d]: addr=0x%x timeout.\n", i, msgs[i].addr);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  133  			break;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  134  		}
+> > > 0a54ec77196674 Jie Deng 2020-09-11  135  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  136  		vmsg = (struct virtio_i2c_msg *)virtqueue_get_buf(vq, &len);
+> > > 0a54ec77196674 Jie Deng 2020-09-11 @137  		if (vmsg) {
+> > >                                                             ^^^^
+> > > Check for NULL.
+> > > 
+> > > 0a54ec77196674 Jie Deng 2020-09-11  138  			/* vmsg should point to the same address with &vi->vmsg */
+> > > 0a54ec77196674 Jie Deng 2020-09-11  139  			if (vmsg != &vi->vmsg) {
+> > > 0a54ec77196674 Jie Deng 2020-09-11  140  				dev_err(&adap->dev, "msg[%d]: addr=0x%x virtqueue error.\n",
+> > > 0a54ec77196674 Jie Deng 2020-09-11  141  					i, le16_to_cpu(vmsg->hdr.addr));
+> > > 0a54ec77196674 Jie Deng 2020-09-11  142  				break;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  143  			}
+> > > 0a54ec77196674 Jie Deng 2020-09-11  144  			if (vmsg->status != VIRTIO_I2C_MSG_OK) {
+> > > 0a54ec77196674 Jie Deng 2020-09-11  145  				dev_err(&adap->dev, "msg[%d]: addr=0x%x error=%d.\n",
+> > > 0a54ec77196674 Jie Deng 2020-09-11  146  					i, le16_to_cpu(vmsg->hdr.addr), vmsg->status);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  147  				break;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  148  			}
+> > > 0a54ec77196674 Jie Deng 2020-09-11  149  			if ((msgs[i].flags & I2C_M_RD) && msgs[i].len)
+> > > 0a54ec77196674 Jie Deng 2020-09-11  150  				memcpy(msgs[i].buf, vmsg->buf, msgs[i].len);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  151  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  152  			kfree(vmsg->buf);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  153  			vmsg->buf = NULL;
+> > > 0a54ec77196674 Jie Deng 2020-09-11  154  		}
+> > > 0a54ec77196674 Jie Deng 2020-09-11  155  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  156  		reinit_completion(&vi->completion);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  157  	}
+> > > 0a54ec77196674 Jie Deng 2020-09-11  158  
+> > > 0a54ec77196674 Jie Deng 2020-09-11  159  	mutex_unlock(&vi->i2c_lock);
+> > > 0a54ec77196674 Jie Deng 2020-09-11 @160  	kfree(vmsg->buf);
+> > >                                                       ^^^^^^^^^
+> > > Unchecked dereference.
+> > > 
+> > > 0a54ec77196674 Jie Deng 2020-09-11  161  	return ((ret < 0) ? ret : i);
+> > > 0a54ec77196674 Jie Deng 2020-09-11  162  }
+> > > 
 > > > ---
-> > >  net/bluetooth/hci_event.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> > > index 4b7fc430793c..871e16804433 100644
-> > > --- a/net/bluetooth/hci_event.c
-> > > +++ b/net/bluetooth/hci_event.c
-> > > @@ -4936,6 +4936,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
-> > >  		return;
-> > >  	}
-> > >  
-> > > +	if (IS_ERR_OR_NULL(hcon->amp_mgr)) {
+> > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
 > > 
-> > It can't be an error pointer.  Shouldn't we call hci_conn_del() on this
-> > path?  Try to find the Fixes tag to explain how this bug was introduced.
 > > 
-> > (Don't rush to send a v2.  The patch requires quite a bit more digging
-> > and detective work before it is ready).
 > > 
-> > > +		hci_dev_unlock(hdev);
-> > > +		return;
-> > > +	}
-> > > +
-> > >  	if (ev->status) {
-> > >  		hci_conn_del(hcon);
-> > >  		hci_dev_unlock(hdev);
+> > -- 
+> > With Best Regards,
+> > Andy Shevchenko
 > > 
-> > regards,
-> > dan carpenter
-> > 
-> 
-> Sir,
-> 
-> I need little advice in continuing with this Patch,
-> 
-> I have looked into the Bisected logs and the problem occurs from this commit:
-> 
-> 941992d29447 ("ethernet: amd: use IS_ENABLED() instead of checking for built-in or module")
-> 
 
-That's just the patch which made the code testable by syzbot.  It didn't
-introduce the bug.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> 
-> Here is a diff of patch which i modified from last patch,
-> 
-> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-> index 4b7fc430793c..6ce435064e0b 100644
-> --- a/net/bluetooth/hci_event.c
-> +++ b/net/bluetooth/hci_event.c
-> @@ -4936,6 +4936,12 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
->                 return;
->         }
-> 
-> +       if (!hcon->amp_mgr) {
-> +               hci_conn_del(hcon);
-> +               hci_dev_unlock(hdev);
-
-I have no idea if calling hci_conn_del() is really the correct, thing.
-I don't know the code at all.  Anyway, do some research and figure out
-for sure what the correct thing is.
-
-Also look for similar bugs in other places where hcon->amp_mgr is
-dereferenced.  For example, amp_read_loc_assoc_final_data() seems to
-have a similar bug.
-
-regards,
-dan carpenter
 
