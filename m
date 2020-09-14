@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663FE268881
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D29B26887E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgINJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:34:39 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:50535 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbgINJeV (ORCPT
+        id S1726400AbgINJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:34:33 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:52820 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbgINJeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:34:21 -0400
-Received: by mail-il1-f208.google.com with SMTP id u20so3014692ilk.17
+        Mon, 14 Sep 2020 05:34:22 -0400
+Received: by mail-il1-f206.google.com with SMTP id m1so12206392iln.19
         for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:34:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mpLvn3u66tHFv9Em3uKyA7uympIh7+6tlTS3lnYh3rs=;
-        b=bdag0g9bkAzTGfnG2dxFIoBBAagmyPVFV+exYnF2wQnlCA3fYRMbNcdLe3x7ZIPGUm
-         Nhrx3maIp/6Ux6NKzBBZTCMnG36z87QdifpYJdBZVKgc9h43u80gB0S5tUJcdWKb/QAN
-         NxeiStJdL5y8cnK7z+e4Tpl1m3JCjTx0JqYgnpdKBYdqiDcRJxoS9osNMT1E/QLj1qm7
-         mask4JK9C9degqrVz0gOOfiZ4B7BFBS2gkl2nF92yN8Bo2NFoQGSjhGIwEa+xZXa5c+h
-         bSw7GabgElWrVR/j8ZbjNYcGBkeEAsiMP3LfLWIZzDq+Lninb2zRYBdx9XEwbvTO1Nwv
-         bo2A==
-X-Gm-Message-State: AOAM532lNB27CBD3jN7ONi72BwmxvZRJq71rfpGljG3rECraQt2qo2/8
-        q6bbZUXDEG0WrRrst4HY8YD19orwpmGTtWsYgch19eSujAYQ
-X-Google-Smtp-Source: ABdhPJzEMiBYiQ7QRCK6v++Le5dE5IBqLuugWk6dN7RvJEqI+dAVSPXalZTWVLzi15OUqkFHKoe9rSW1ncq7zS32yizJc+TWKxQn
+        bh=gHiF/tAb6hDyOHdyhfRLLKJ7FRYtrKMjyUsdefDryVk=;
+        b=jR9zLD3+Hdb7S+qFXUOLEkbdPoqXbDuzOQ97sFVS8CbMZxenNLMMosxPnLU0h4U2GC
+         nQ1NkwB6GNDCGpBPIcIErxefkV3bDKQwJGDQuPGOCCINQF4UZ2EZqUTefbL8MkuDlU5s
+         J7Zy9XUGC0o7A1t3qBGEC7ym2dCY2iMy7CW3sbzF5628MOq0Mrb8uyOovtDlRiaRy92B
+         cYjifjbSmNV4WTQoDaTzFA56MQdGTm7Av6Rq3Ae4ZODNmqyjFYXg9PBzKste/7NOSWXp
+         VFh50iDW4czcoms5CVN8+XINfUiTt966eWb8OumspUC3wbbYrDDqwxOtk3Y+aiwc9lKc
+         G3og==
+X-Gm-Message-State: AOAM532IMI1FWEfP7ScZUDSXyvGq5q5TikhNlcJBGviFo91PBfUDN3oj
+        2fbk2klgPNxCqKLmdmtDq2HWxOYe0pZfX8Q1ar06wM6vyA42
+X-Google-Smtp-Source: ABdhPJyOBIgLwXAHI8ybLGF73CaJomR5rzqOej8iL2TNynGD4n+9/55IAMn1qXjkh5uI4dL4FED4AyzNFsdXuxKyZgFv3ru3CpUA
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:d2:: with SMTP id r18mr10890752ilq.303.1600076060199;
+X-Received: by 2002:a05:6e02:df1:: with SMTP id m17mr10118481ilj.276.1600076060403;
  Mon, 14 Sep 2020 02:34:20 -0700 (PDT)
 Date:   Mon, 14 Sep 2020 02:34:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002e90d405af42bd38@google.com>
-Subject: KASAN: slab-out-of-bounds Read in fbcon_scrolldelta
-From:   syzbot <syzbot+9381e25e04a6ea4f2a20@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, george.kennedy@oracle.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        natechancellor@gmail.com, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000031ae7305af42bdd4@google.com>
+Subject: KASAN: slab-out-of-bounds Read in do_update_region
+From:   syzbot <syzbot+f91d979f99fe699f08e0@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -53,22 +50,21 @@ syzbot found the following issue on:
 
 HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d155f9900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=132e6253900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=9381e25e04a6ea4f2a20
+dashboard link: https://syzkaller.appspot.com/bug?extid=f91d979f99fe699f08e0
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9381e25e04a6ea4f2a20@syzkaller.appspotmail.com
+Reported-by: syzbot+f91d979f99fe699f08e0@syzkaller.appspotmail.com
 
 ==================================================================
-BUG: KASAN: slab-out-of-bounds in fbcon_redraw_softback drivers/video/fbdev/core/fbcon.c:1676 [inline]
-BUG: KASAN: slab-out-of-bounds in fbcon_scrolldelta+0x10da/0x1230 drivers/video/fbdev/core/fbcon.c:2909
-Read of size 2 at addr ffff8881e9ae68c0 by task syz-executor.1/20692
+BUG: KASAN: slab-out-of-bounds in do_update_region+0x5aa/0x630 drivers/tty/vt/vt.c:663
+Read of size 2 at addr ffff888218bbd2c0 by task syz-executor.3/21923
 
-CPU: 0 PID: 20692 Comm: syz-executor.1 Not tainted 5.9.0-rc4-syzkaller #0
+CPU: 1 PID: 21923 Comm: syz-executor.3 Not tainted 5.9.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
@@ -76,31 +72,26 @@ Call Trace:
  print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
  __kasan_report mm/kasan/report.c:513 [inline]
  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- fbcon_redraw_softback drivers/video/fbdev/core/fbcon.c:1676 [inline]
- fbcon_scrolldelta+0x10da/0x1230 drivers/video/fbdev/core/fbcon.c:2909
- fbcon_set_origin+0x3c/0x50 drivers/video/fbdev/core/fbcon.c:2959
- set_origin+0xe7/0x3e0 drivers/tty/vt/vt.c:930
- vc_do_resize+0xb0f/0x1150 drivers/tty/vt/vt.c:1305
- fbcon_modechanged+0x36c/0x710 drivers/video/fbdev/core/fbcon.c:3011
- fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:3069
- do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1106
- fb_ioctl+0xdd/0x130 drivers/video/fbdev/core/fbmem.c:1181
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_update_region+0x5aa/0x630 drivers/tty/vt/vt.c:663
+ update_region+0xb5/0x140 drivers/tty/vt/vt.c:693
+ vcs_write+0x403/0xc30 drivers/tty/vt/vc_screen.c:623
+ do_loop_readv_writev fs/read_write.c:737 [inline]
+ do_loop_readv_writev fs/read_write.c:721 [inline]
+ do_iter_write+0x489/0x670 fs/read_write.c:1020
+ vfs_writev+0x1aa/0x2e0 fs/read_write.c:1091
+ do_writev+0x139/0x300 fs/read_write.c:1134
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 RIP: 0033:0x45d5f9
 Code: 5d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 2b b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f51ee9c6c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000000e0c0 RCX: 000000000045d5f9
-RDX: 0000000020001180 RSI: 0000000000004601 RDI: 0000000000000003
+RSP: 002b:00007f831f788c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
+RAX: ffffffffffffffda RBX: 0000000000039c40 RCX: 000000000045d5f9
+RDX: 0000000000000002 RSI: 0000000020000380 RDI: 0000000000000003
 RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
 R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007fffb40f07cf R14: 00007f51ee9c79c0 R15: 000000000118cf4c
+R13: 00007ffc44f8988f R14: 00007f831f7899c0 R15: 000000000118cf4c
 
-Allocated by task 3837:
+Allocated by task 1:
  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
  kasan_set_track mm/kasan/common.c:56 [inline]
  __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
@@ -109,35 +100,52 @@ Allocated by task 3837:
  kmalloc include/linux/slab.h:559 [inline]
  kzalloc include/linux/slab.h:666 [inline]
  vc_do_resize+0x2f6/0x1150 drivers/tty/vt/vt.c:1228
- vt_resizex drivers/tty/vt/vt_ioctl.c:818 [inline]
- vt_ioctl+0xef0/0x2cc0 drivers/tty/vt/vt_ioctl.c:1036
- tty_ioctl+0x1019/0x15f0 drivers/tty/tty_io.c:2656
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+ fbcon_init+0x1319/0x1b00 drivers/video/fbdev/core/fbcon.c:1218
+ visual_init+0x30e/0x5d0 drivers/tty/vt/vt.c:1074
+ do_bind_con_driver.isra.0+0x549/0x8e0 drivers/tty/vt/vt.c:3658
+ do_take_over_console+0x423/0x570 drivers/tty/vt/vt.c:4238
+ do_fbcon_takeover+0x10b/0x210 drivers/video/fbdev/core/fbcon.c:588
+ fbcon_fb_registered+0x26b/0x340 drivers/video/fbdev/core/fbcon.c:3283
+ do_register_framebuffer drivers/video/fbdev/core/fbmem.c:1660 [inline]
+ register_framebuffer+0x587/0x980 drivers/video/fbdev/core/fbmem.c:1828
+ vga16fb_probe+0x6b4/0x7b5 drivers/video/fbdev/vga16fb.c:1373
+ platform_drv_probe+0x87/0x140 drivers/base/platform.c:747
+ really_probe+0x282/0x9f0 drivers/base/dd.c:553
+ driver_probe_device+0xfe/0x1d0 drivers/base/dd.c:738
+ __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:844
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x470 drivers/base/dd.c:912
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xb17/0x1c40 drivers/base/core.c:2926
+ platform_device_add+0x34f/0x6d0 drivers/base/platform.c:597
+ vga16fb_init+0x152/0x1c8 drivers/video/fbdev/vga16fb.c:1431
+ do_one_initcall+0x10a/0x7a4 init/main.c:1204
+ do_initcall_level init/main.c:1277 [inline]
+ do_initcalls init/main.c:1293 [inline]
+ do_basic_setup init/main.c:1313 [inline]
+ kernel_init_freeable+0x5e9/0x66d init/main.c:1512
+ kernel_init+0xd/0x1c0 init/main.c:1402
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-The buggy address belongs to the object at ffff8881e9ae6000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 2240 bytes inside of
- 4096-byte region [ffff8881e9ae6000, ffff8881e9ae7000)
+The buggy address belongs to the object at ffff888218bbc000
+ which belongs to the cache kmalloc-8k of size 8192
+The buggy address is located 4800 bytes inside of
+ 8192-byte region [ffff888218bbc000, ffff888218bbe000)
 The buggy address belongs to the page:
-page:00000000761e5aa4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1e9ae6
-head:00000000761e5aa4 order:1 compound_mapcount:0
+page:00000000b53090a6 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x218bbc
+head:00000000b53090a6 order:2 compound_mapcount:0 compound_pincount:0
 flags: 0x57ffe0000010200(slab|head)
-raw: 057ffe0000010200 ffffea0007bbe508 ffffea0007bc1288 ffff8880aa040900
-raw: 0000000000000000 ffff8881e9ae6000 0000000100000001 0000000000000000
+raw: 057ffe0000010200 ffffea0008654508 ffffea0008603708 ffff8880aa040a00
+raw: 0000000000000000 ffff888218bbc000 0000000100000001 0000000000000000
 page dumped because: kasan: bad access detected
 
 Memory state around the buggy address:
- ffff8881e9ae6780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff8881e9ae6800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff8881e9ae6880: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+ ffff888218bbd180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888218bbd200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888218bbd280: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
                                            ^
- ffff8881e9ae6900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff8881e9ae6980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888218bbd300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888218bbd380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
 ==================================================================
 
 
