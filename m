@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B94269194
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6BE2691B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgINQck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:32:40 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41028 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgINQcO (ORCPT
+        id S1726137AbgINQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:35:45 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:36196 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726061AbgINQez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:32:14 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08EGPXrX112214;
-        Mon, 14 Sep 2020 16:31:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Evh2jsniAFKHtrc5+Oi5f7q5JnurDPbwp2ePFfWfGgA=;
- b=g4+VVkynB3PXXkpaEe3vbY2N5Hj/gkN3QmlYB+JVQ/RmurzmNnTZnPMuhRI4p76N61ui
- BabxXQh9sUugesUMD9B8aFk3gxlCfJ94SXfrqk1CEqLe06eIlMomnTvaQHdPf1zy1fnl
- CVvEFdNPOIiBO6fFA+y1/apY9n9nMzy7BYoPB5ImJCu2zi5nAUTQrfQoH/9Bgsicvh11
- 4ca41Qp1xXBq4c3b1+7eZV9H289lZyxZnmqn/pvBSqEz0LUT1W+RxYKxdDZkhI7blt8D
- L28lrqlBpLUZkNsPy2FMHgjM+EXNPHrTgxGDkEauxcH9Bj6IQrR1hQ/ks1Yaxjtx7hVv FQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 33gnrqqqb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Sep 2020 16:31:56 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08EGTtNW142320;
-        Mon, 14 Sep 2020 16:31:56 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 33h7wmennp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Sep 2020 16:31:55 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08EGVsWH013859;
-        Mon, 14 Sep 2020 16:31:54 GMT
-Received: from OracleT490.vogsphere (/73.203.30.179)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Sep 2020 16:31:54 +0000
-Subject: Re: [RESEND PATCH 0/2] iowait and idle fixes in /proc/stat
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        adobriyan@gmail.com
-References: <20200909144122.77210-1-tom.hromatka@oracle.com>
-From:   Tom Hromatka <tom.hromatka@oracle.com>
-Message-ID: <11c8b2ee-7d87-ae0b-c11b-71a052865000@oracle.com>
-Date:   Mon, 14 Sep 2020 10:31:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 14 Sep 2020 12:34:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600101294; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ObHJxhWnQ6Id1CMXMXxijV0dvfRIEHq6RwO9EgQfuVY=;
+ b=oKIphcYV0NliUt8T6UoTTw0fXbfmUGsLuARMeLY9LJnbmbr8hmVdL5f5AJ/ETIW1Udmgqv0J
+ lTaanG5r+mf2nC2RbmjLyE9wjSzi+zrHuivrAwuSOb4G8MyaMaJacgRrYb4ZbYltKCgkR2a8
+ di03CQKfT/M18ivZuV7HAICgQFE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f5f9ba44ba82a82fdbafb38 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 16:34:44
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2DA8DC43382; Mon, 14 Sep 2020 16:34:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 613BAC433C8;
+        Mon, 14 Sep 2020 16:34:43 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200909144122.77210-1-tom.hromatka@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009140133
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9744 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0 suspectscore=0
- clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009140132
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 09:34:43 -0700
+From:   nguyenb@codeaurora.org
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
+In-Reply-To: <BY5PR04MB6705A865E35CDA367249DC4EFC270@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+ <0101017475a11d00-6def34a7-db5d-472c-9dcc-215a80510402-000000@us-west-2.amazonses.com>
+ <BY5PR04MB6705A865E35CDA367249DC4EFC270@BY5PR04MB6705.namprd04.prod.outlook.com>
+Message-ID: <e1b4e9f5eab891fa6615e7a4b2ed29e6@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your time and  feedback, Thomas and Alexey.  I'll
-address the comments and send out a v2 in the next couple
-days.
-
-Thanks!
-
-Tom
-
-
-On 9/9/20 8:41 AM, Tom Hromatka wrote:
-> A customer is using /proc/stat to track cpu usage in a VM and noted
-> that the iowait and idle times behave strangely when a cpu goes
-> offline and comes back online.
->
-> This patchset addresses two issues that can cause iowait and idle
-> to fluctuate up and down.  With these changes, cpu iowait and idle
-> now only monotonically increase.
->
-> Tom Hromatka (2):
->    tick-sched: Do not clear the iowait and idle times
->    /proc/stat: Simplify iowait and idle calculations when cpu is offline
->
->   fs/proc/stat.c           | 24 ++++++------------------
->   kernel/time/tick-sched.c |  9 +++++++++
->   2 files changed, 15 insertions(+), 18 deletions(-)
->
+On 2020-09-10 03:02, Avri Altman wrote:
+>> 
+>> On 2020-08-31 18:19, Bao D. Nguyen wrote:
+>> > UFS version 3.0 and later devices require Vcc and Vccq power supplies
+>> > with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
+>> > devices, the Vcc and Vccq2 are required with Vccq being optional.
+>> > Check the required power supplies used by the device
+>> > and set the device's supported Icc level properly.
+> Practically you are correct - most flash vendors moved in UFS3.1 to
+> 1.2 supply instead of 1.8.
+> However, the host should provide all 3 supplies to the device because -
+> a) A flash vendor might want to still use 1.8 in its UFS3.1 device, and
+> b) We should allow a degenerated configurations, e.g. 3.1 devices,
+> that are degenerated to 2.1 or 2.2
+Thank you for your comment.
+The host can provide all 3 power supplies. However, the change is to 
+ensure
+we do not exit early and fail to properly set the Icc level because the 
+optional power
+supply is not provided.
+> 
+> That said, I think we can entirely remove the check in the beginning
+> of the function,
+> But not because the spec allows it, but because each supply is
+> explicitly checked later on,
+> before reading its applicable max current entry in the power 
+> descriptor.
+We need these checks to prevent NULL pointer access subsequently in this 
+function.
+> Thanks,
+> Avri
 
