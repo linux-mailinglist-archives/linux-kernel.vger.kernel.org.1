@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D058269514
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8A726951E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgINSj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:39:59 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:25106 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725978AbgINSjs (ORCPT
+        id S1726068AbgINSm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgINSmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:39:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600108787; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=QaXy23BdxFSfWsX1lrU9pZ17VgKF+BFRvgU3A+0s0s4=;
- b=i4eEI6z+cq48HaNf/3psX2s+dM0Ygr0ijvnvWusc1zXdFMJAUaMR7iZ7Fqu/s5rH4DoJKMC3
- Ywln+oTDF7u7/QhtQZkN8rzDCc9WkoVgIfbjaPPyldJpaayyx4ejjpTWEOSMH05xqk2TfKw1
- b5GrWVrQALHeYk/PHAp2mNRksi8=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f5fb8f0ba408b30ce9e8a04 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 18:39:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 37E11C433F1; Mon, 14 Sep 2020 18:39:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A0A0C433C8;
-        Mon, 14 Sep 2020 18:39:43 +0000 (UTC)
+        Mon, 14 Sep 2020 14:42:38 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E0EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:42:31 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d9so338351pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:42:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/0N1kgY4YSskKhtqicU+MJ56FlC+m73zDjYCiR+Q+4A=;
+        b=U8JwsRuQylQ/N4j0Os9z7VbzjHcCPIh2U1adn08h+ARrGqo9UqxlRe19UQwz36Cvul
+         9rTibomVDcAgcJf052jJoNC5xh7phJQLQwX13DhEzR23K8TLI57Iz70v3bso0BvbwATi
+         WNFQIJHVJcXamKwjH/iet5kkUdrrCfa+lMKyo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/0N1kgY4YSskKhtqicU+MJ56FlC+m73zDjYCiR+Q+4A=;
+        b=ZW6zwK6jJlxdserh/mAG63RYVHMYpuiutHk2MKw0mp2ZtSdyPzJ/PZoQFKt28VByxk
+         qWwVrevQREKxdyC22p/wDbW16Q4KeWxUp8/h7XzCae21BTtY9GBnWr3jDFTP18AsvIyA
+         cF7KUFEoJYttgpi9e5Z2eLCiY1J4qTv3xBCRLpJRB0NLdmqSBbTSYUqcZrbGBjlTf0Se
+         v7dCkuzSx7mNq0WM15evhaT86GBU9H+zP3LhLyfZamotsd89hwmI99lteq+gG/Envjm6
+         gAsaV8ewJoVbvKAqyDZcTg4EmOxp7qJ+FBQPjgCUb4i9ew4bq1sBwvbTmUin3ishaig4
+         eDlw==
+X-Gm-Message-State: AOAM532zKrWk/vAylEwwfE/46Z08Ughjwa6ZWKdmU28PduHgOpXWwxq9
+        R15pvrGzMIHijanzu93TNJ4hFw==
+X-Google-Smtp-Source: ABdhPJxJXJLZVn7PXxzlK/sOGuAY0mmNTwXAWorffgP/IANILSesIVCB6gXi809M/9nfMwGvaRbCIQ==
+X-Received: by 2002:a63:7b16:: with SMTP id w22mr11501114pgc.17.1600108950799;
+        Mon, 14 Sep 2020 11:42:30 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id s24sm9072901pgv.55.2020.09.14.11.42.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 11:42:30 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 11:42:29 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Peter Chen <peter.chen@nxp.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [RFC PATCH] USB: misc: Add usb_hub_pwr driver
+Message-ID: <20200914184229.GC2022397@google.com>
+References: <20200901132005.RFC.1.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200902053048.GB6837@b29397-desktop>
+ <20200902174536.GE3419728@google.com>
+ <20200903014559.GB11250@b29397-desktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 11:39:43 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
-In-Reply-To: <410a4e0c-f924-4564-ae1e-cc9f6292c88e@gmail.com>
-References: <1599857630-23714-1-git-send-email-cgoldswo@codeaurora.org>
- <010101747ef2b8fc-a5e44a5a-dcf4-4828-a1d4-a099df63f2df-000000@us-west-2.amazonses.com>
- <410a4e0c-f924-4564-ae1e-cc9f6292c88e@gmail.com>
-Message-ID: <75058e054256df7fddf0bfc251b43aa1@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200903014559.GB11250@b29397-desktop>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-11 14:37, Florian Fainelli wrote:
-> On 9/11/2020 1:54 PM, Chris Goldsworthy wrote:
->> CMA allocations will fail if 'pinned' pages are in a CMA area, since 
->> we
->> cannot migrate pinned pages. The _refcount of a struct page being 
->> greater
->> than _mapcount for that page can cause pinning for anonymous pages.  
->> This
->> is because try_to_unmap(), which (1) is called in the CMA allocation 
->> path,
->> and (2) decrements both _refcount and _mapcount for a page, will stop
->> unmapping a page from VMAs once the _mapcount for a page reaches 0.  
->> This
->> implies that after try_to_unmap() has finished successfully for a page
->> where _recount > _mapcount, that _refcount will be greater than 0.  
->> Later
->> in the CMA allocation path in migrate_page_move_mapping(), we will 
->> have one
->> more reference count than intended for anonymous pages, meaning the
->> allocation will fail for that page.
->> 
->> One example of where _refcount can be greater than _mapcount for a 
->> page we
->> would not expect to be pinned is inside of copy_one_pte(), which is 
->> called
->> during a fork. For ptes for which pte_present(pte) == true, 
->> copy_one_pte()
->> will increment the _refcount field followed by the  _mapcount field of 
->> a
->> page. If the process doing copy_one_pte() is context switched out 
->> after
->> incrementing _refcount but before incrementing _mapcount, then the 
->> page
->> will be temporarily pinned.
->> 
->> So, inside of cma_alloc(), instead of giving up when 
->> alloc_contig_range()
->> returns -EBUSY after having scanned a whole CMA-region bitmap, perform
->> retries indefinitely, with sleeps, to give the system an opportunity 
->> to
->> unpin any pinned pages.
+Hi Peter,
+
+sorry for the delayed reply, I got distracted by other things and ran into
+issues with my mail setup.
+
+On Thu, Sep 03, 2020 at 01:46:18AM +0000, Peter Chen wrote:
+> On 20-09-02 10:45:36, Matthias Kaehlcke wrote:
+> > > 
+> > > Hi Matthias,
+> > > 
+> > > I did similar several years ago [1], but the concept (power sequence)
+> > > doesn't be accepted by power maintainer.
+> > 
+> > Yeah, I saw that, I think I even reviewed or tested some early version
+> > of it :)
+> > 
+> > > Your patch introduce an new way to fix this long-term issue, I have an
+> > > idea to fix it more generally.
+> > 
+> > > - Create a table (say usb_pm_table) for USB device which needs to do
+> > > initial power on and power management during suspend suspend/resume based
+> > > on VID and PID, example: usb/core/quirks.c
+> > > - After hub (both roothub and intermediate hub) device is created, search
+> > > the DT node under this hub, and see if the device is in usb_pm_table. If
+> > > it is in it, create a platform device, say usb-power-supply, and the
+> > > related driver is like your usb_hub_psupply.c, the parent of this device
+> > > is controller device.
+> > 
+> > This part isn't clear to me. How would the DT look like? Would it have a
+> > single node per physical hub chip or one node for each 'logical' hub?
+> > Similarly, would there be a single plaform device or multiple?
 > 
-> I am by no means an authoritative CMA person but this behavior does
-> not seem acceptable, there is no doubt the existing one is sub-optimal
-> under specific circumstances, but an indefinite retry, as well as a
-> 100ms sleep appear to be arbitrary at best. How about you introduce a
-> parameter that allows the tuning of the number of retries and/or delay
-> between retries?
-> 
+> One power supply platform device for one physical device, and DT only
+> describes physical device. HUB driver only probes non-SS HUB port to
+> avoid create two power supply device for SS HUB, there should be no
+> SS-only HUB.
 
-Apologies Florian, I messed up on the threading and there are 
-discussions that aren't reference here.  The original version of this 
-patch was doing a finite number of retires.  Also, this e-mail was just 
-sent out to LKML so I could debug some issues I was facing with git 
-send-email.  The actual thread is now here, which summarizes the 
-discussions w.r.t. this patch so far:  
-https://lkml.org/lkml/2020/9/14/1097
+I agree that there should be only one platform device per physical device.
+Probing only the non-SS hub should work to avoid multiple instances, however
+it doesn't work for the extended use case, where the hub is powered off
+during system suspend, but only when no wakeup capable devices are connected
+to any of the 'logical' hubs. For this to work the driver that controls the
+regulators, GPIOs, ... needs to have knowledge of all 'logical' hubs.
 
-Thanks,
+I just sent v1 of this driver, which reworks things a bit, but for now
+there is still one platform device instantiated through the DT, and
+one DT entry for every 'logical' hub.
 
-Chris.
-
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+I'm open to keep discussing alternative designs, as long as they can also
+cover the use case of conditionally powering the hub off during system
+suspend. We can probably continue the discussion on v1, unless it takes
+me longer than
