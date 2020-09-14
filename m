@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2B62690FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8313B2690FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgINQAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S1726556AbgINQAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726532AbgINPqd (ORCPT
+        with ESMTP id S1726044AbgINQA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:46:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C0EC061222
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:13 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k18so528855wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:13 -0700 (PDT)
+        Mon, 14 Sep 2020 12:00:29 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00F4C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:00:28 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so13011176pff.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=avMaqwPGzdeKkSKqRirt6hCdePgw6LORRPG15IF7BP8=;
-        b=z5Dq2xz7pXKlDrPAHbbIocObQJ4q+ZhUVYDnRGffL97PkmBw35XlCHi+Ps+RMMZPFm
-         pjxEA/tKW45yyLw/yscwWynEWI2bGzpw1uw+f3B3SCChor9bKn0kqFKGIs1Bi5Jc4AUU
-         0dodGuafj2OMuafnmBHAu3D7A8//WJ+3QZZI229LYvG3xZGOkeeTuEQn5V5Kid9MF+Ra
-         cg3L/glPbxjpkfa+DXZkSg9Zfs7bjAWcuGcA2GRQUJFmNIPt21mO1Fka4YeGPSL74xMR
-         mjqt1u/66cjQVNEWBnjwa3jQaMVcXdJ7ADt0sfM//c/kKvWH02toNkZ9hBc0tNoCI1nB
-         vEHQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=J3qzQNXEKPitJbZnYSgSznC4VEr1dCfbjhaeGKfkj78=;
+        b=TZ2oAOAhJlBmeifpZvQ/3DCynN/XFxVLLq9VsqytIptQTPvoIONACGQy9VzfABciGJ
+         a0WV//Q/+DHD/+Cr/UoeTsyHjgvj2CFRneZgn8KqEBWtvNI8n45SrisEtvntXSL+MsnH
+         utTNpLeG8d2pW4IsTe8A9/mJ8NdrmIjOj3/dU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=avMaqwPGzdeKkSKqRirt6hCdePgw6LORRPG15IF7BP8=;
-        b=Y6zRlHbOsEmS4/X6kq5tB7tAASqH0WNsQb9wfSm25tc4aub7ZnpvWxSIwG5JC8djtI
-         xlrTnLAgdCM0XPY7F905rj6GsX/S61UpwM3+O6yziXyW+1lQomuYdu4JJAbe26Hhtu2X
-         jy5emhEOcrvS7kz+nAE8Lt3znGQgG8Gs00H8HESkqBT/J9YgYPZO4SBi5K4/fvapakSL
-         4m2YeY7in92/Ua42DjNol/0HEQmJF3cZN6YTjweOoeZR8UA32Ozp0UMn0ZyFqdZVN19j
-         2axDF91NZh3b4SsiwbN7SmLk4ER3JbBHjrTSj+Mj3UrParJ7R9JysygfrcALXytmuG0S
-         Sprw==
-X-Gm-Message-State: AOAM533qFUp1ljl3X5YpC7iKhJYfq76tklsb6u5YVzSSrAR1TJq6BURp
-        Ic1XRaKtCpxSDVxgNXUqV7X43Q==
-X-Google-Smtp-Source: ABdhPJwGUZouYD38wJ7iS8X9se2XvwqnoGs+3+A93aquGGR79iwQUj2YoEmWPsD1BGx2Hsn9MHru6g==
-X-Received: by 2002:a1c:2441:: with SMTP id k62mr22011wmk.178.1600098372266;
-        Mon, 14 Sep 2020 08:46:12 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:46:11 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 08/14] rtc: rx8010: drop unnecessary initialization
-Date:   Mon, 14 Sep 2020 17:45:55 +0200
-Message-Id: <20200914154601.32245-9-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
-References: <20200914154601.32245-1-brgl@bgdev.pl>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J3qzQNXEKPitJbZnYSgSznC4VEr1dCfbjhaeGKfkj78=;
+        b=BjAZj2QLRdPzh998IzuN8cojTeaVEdrQD5+js5KA/ZOoW6WdFe44Iz+kOC+p1m95Fq
+         kibLrmyXwxBd1Ye75Ea7WazpchCGae3HCXOft3HTyQS+pF2sWW0Herl9HcxTI9qpI+Z2
+         vuQmYdBn1qUB4oBPlcFnS0frY2HWVR6uzah80b/kwGM4unaGWObK1n7YJRp6FL0jk9GK
+         Ws4pQEvfUGk9zsL2A1hzqtNwYverSaA6BUI6Nr3fz1qzIdtJ9EyFre59mY4mYlTulIVS
+         LXb8g/YKWpP0AqNaqqVzf0PcxTHIHjBjG0uZ7I4dJtYMNWYBtcOkuPUPDTXEtZMnbbzW
+         PITA==
+X-Gm-Message-State: AOAM53142znagP1cjFp9DBFQd2wLNO4vur/lWuYg+JRMTo/U71GOwPfC
+        UzTCV0Q7uc2hCxkXOOgi7N/F/w==
+X-Google-Smtp-Source: ABdhPJyK/bFQuCmEiSgXJWOG3fwKFYqjHULDTgfZZht5xuc/httEWmwBgaEYmug8R3XcTwHISfjQnA==
+X-Received: by 2002:a17:902:9e08:b029:d0:8a6a:d5e8 with SMTP id d8-20020a1709029e08b02900d08a6ad5e8mr14961811plq.0.1600099228442;
+        Mon, 14 Sep 2020 09:00:28 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id z1sm6333167pfq.102.2020.09.14.09.00.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 09:00:27 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 09:00:26 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
+        rojay@codeaurora.org, msavaliy@qti.qualcomm.com,
+        dianders@chromium.org
+Subject: Re: [PATCH V6 3/4] arm64: dts: qcom: sc7180-trogdor: Add wakeup
+ support for BT UART
+Message-ID: <20200914160026.GB2022397@google.com>
+References: <1600091917-7464-1-git-send-email-skakit@codeaurora.org>
+ <1600091917-7464-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1600091917-7464-4-git-send-email-skakit@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, Sep 14, 2020 at 07:28:36PM +0530, satya priya wrote:
+> Add the necessary pinctrl, interrupt property and a suitable sleep config
+> to support Bluetooth wakeup feature.
+> 
+> GPIO mode is configured in sleep state to drive the RTS/RFR line low.
+> If QUP function is selected in sleep state, UART RTS/RFR is pulled high
+> during suspend and BT SoC not able to send wakeup bytes.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
 
-The 'err' local variable in rx8010_init_client() doesn't need to be
-initialized.
-
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/rtc/rtc-rx8010.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index 2c894e7aab6d..64a9964eb5e0 100644
---- a/drivers/rtc/rtc-rx8010.c
-+++ b/drivers/rtc/rtc-rx8010.c
-@@ -194,7 +194,7 @@ static int rx8010_init_client(struct i2c_client *client)
- {
- 	struct rx8010_data *rx8010 = i2c_get_clientdata(client);
- 	u8 ctrl[2];
--	int need_clear = 0, err = 0;
-+	int need_clear = 0, err;
- 
- 	/* Initialize reserved registers as specified in datasheet */
- 	err = i2c_smbus_write_byte_data(client, RX8010_RESV17, 0xD8);
--- 
-2.26.1
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
