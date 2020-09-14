@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF99268EAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AAE268EB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgINO7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:59:16 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:61669 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726633AbgINO64 (ORCPT
+        id S1726928AbgINO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:59:27 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:41793 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726864AbgINO64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 10:58:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600095536; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=6B1eHivMPY/Y7JjheulizygZ7FR99YPUY1zmWLJj70I=; b=GPvzuW2TyVFP2D786flJfk7eK3vRVVprYQajdiF/7AWmSTzeuBXodwdEhSf+rYNro1QxiQtq
- rHpcKE8VYXA96NMbkKfTF8h+e8SY8f+2Qt8bKSfxB1nfT7WOK2QMAeCRblkPiWDZyOWBZsPJ
- VCk1j7QGFJdx82d3n3uCBsNRgIQ=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f5f850c4ba82a82fd76569d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 14:58:20
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AA676C433C8; Mon, 14 Sep 2020 14:58:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600095531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p4EylP6DiiMU0xDyOAgmGkadg42XWec7eelWwk0KDc0=;
+        b=bgr9QGacO+rrT8VwtKAUTbJ/z4GDHTDFdxMq62qBPJIcOt+deZ1Xwi960jmvG+K1dYXGjI
+        beoZ11jQOQxEQTmiK/M8uKzgCpffDYUDN5vQMk84BpuXytKTCiICsv7tNcqc7uvwTK7rOq
+        wUeQDJ9dmB2thGFCU+e4ZwMCtOGQzSU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-132-kbpRmOvBMeOFddDEB9xAAg-1; Mon, 14 Sep 2020 10:58:49 -0400
+X-MC-Unique: kbpRmOvBMeOFddDEB9xAAg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8699C433F0;
-        Mon, 14 Sep 2020 14:58:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A8699C433F0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org, rishabhb@codeaurora.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sidgup@codeaurora.org,
-        stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH] soc: qcom: pdr: Fixup array type of get_domain_list_resp message
-Date:   Mon, 14 Sep 2020 20:28:07 +0530
-Message-Id: <20200914145807.1224-1-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A848189E62E;
+        Mon, 14 Sep 2020 14:58:47 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AF18C5DA60;
+        Mon, 14 Sep 2020 14:58:45 +0000 (UTC)
+Subject: Re: [PATCH v3 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914141955.2145-1-longman@redhat.com>
+ <20200914144739.GV16999@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <24d1cfe4-845e-0944-4187-217d345d59a5@redhat.com>
+Date:   Mon, 14 Sep 2020 10:58:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200914144739.GV16999@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The array type of get_domain_list_resp is incorrectly marked as NO_ARRAY.
-Due to which the following error was observed when using pdr helpers with
-the downstream proprietary pd-mapper. Fix this up by marking it as
-VAR_LEN_ARRAY instead.
+On 9/14/20 10:47 AM, Michal Hocko wrote:
+> On Mon 14-09-20 10:19:55, Waiman Long wrote:
+>> The mem_cgroup_get_max() function used to get memory+swap max from
+>> both the v1 memsw and v2 memory+swap page counters & return the maximum
+>> of these 2 values. This is redundant and it is more efficient to just
+>> get either the v1 or the v2 values depending on which one is currently
+>> in use.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   mm/memcontrol.c | 24 +++++++++++++-----------
+>>   1 file changed, 13 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 8c74f1200261..2331d4bc7c4d 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+>>    */
+>>   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+>>   {
+>> -	unsigned long max;
+>> -
+>> -	max = READ_ONCE(memcg->memory.max);
+>> -	if (mem_cgroup_swappiness(memcg)) {
+>> -		unsigned long memsw_max;
+>> -		unsigned long swap_max;
+>> -
+>> -		memsw_max = memcg->memsw.max;
+>> -		swap_max = READ_ONCE(memcg->swap.max);
+>> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+>> -		max = min(max + swap_max, memsw_max);
+>> +	unsigned long max = READ_ONCE(memcg->memory.max);
+>> +
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>> +		if (mem_cgroup_swappiness(memcg))
+>> +			max += min(READ_ONCE(memcg->swap.max),
+>> +				   (unsigned long)total_swap_pages);
+>> +	} else { /* v1 */
+>> +		if (mem_cgroup_swappiness(memcg)) {
+>> +			unsigned long memsw = READ_ONCE(memcg->memsw.max);
+>> +
+>> +			if (memsw > max)
+>> +				max += min(memsw - max, (unsigned long)total_swap_pages);
+> Yes this looks better. But, memsw can never be smaller than the hard
+> limit (mem_cgroup_resize_max). I would find it slightly easier to
+> understand if you did
+> 	/* calculate swap excess capacity from memsw limit*/
+> 	unsigned long memsw = READ_ONCE(memcg->memsw.max) - max;
+> 	max += min (memsw, total_swap_pages);
 
-Err logs:
-qmi_decode_struct_elem: Fault in decoding: dl(2), db(27), tl(160), i(1), el(1)
-failed to decode incoming message
-PDR: tms/servreg get domain list txn wait failed: -14
-PDR: service lookup for tms/servreg failed: -14
+Right, I thought it was possible to set memsw lower than mem. It was not 
+allowed. So the extra check is unnecessary. Will fix that.
 
-Fixes: fbe639b44a82 ("soc: qcom: Introduce Protection Domain Restart helpers")
-Reported-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
- drivers/soc/qcom/pdr_internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soc/qcom/pdr_internal.h b/drivers/soc/qcom/pdr_internal.h
-index 15b5002e4127b..ab9ae8cdfa54c 100644
---- a/drivers/soc/qcom/pdr_internal.h
-+++ b/drivers/soc/qcom/pdr_internal.h
-@@ -185,7 +185,7 @@ struct qmi_elem_info servreg_get_domain_list_resp_ei[] = {
- 		.data_type      = QMI_STRUCT,
- 		.elem_len       = SERVREG_DOMAIN_LIST_LENGTH,
- 		.elem_size      = sizeof(struct servreg_location_entry),
--		.array_type	= NO_ARRAY,
-+		.array_type	= VAR_LEN_ARRAY,
- 		.tlv_type       = 0x12,
- 		.offset         = offsetof(struct servreg_get_domain_list_resp,
- 					   domain_list),
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Cheers,
+Longman
 
