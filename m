@@ -2,195 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88AC2696B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CDE2696B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725979AbgINUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        id S1726202AbgINUds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgINUcN (ORCPT
+        with ESMTP id S1726198AbgINUdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:32:13 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E57C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:32:11 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id u3so492948pjr.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:32:11 -0700 (PDT)
+        Mon, 14 Sep 2020 16:33:35 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27120C06178B
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:33:33 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id w25so1108363otk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:33:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MAegNs4VOwWv9UrQbG/3KsC+fif9tz3H9h+v9DTenlg=;
-        b=fLq43tsj0idL5YeRKTDNHNUi+/bcp9W/YMHPxve4qth42qg71hfTUM5Xq3cazIdDrI
-         NFB+4SH1S70GAC48b8DplcyZACd4EXVyXgXskD80RFmDCDa/3pUt9RLyrlu1vxpWwB4f
-         i2X0eeheLlVij915s5y5BUr4hEXriYpLc1OPM=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Mk3y4QTN6xRvnXKdPBhBHuIkyeIhKX+xzx1HRoc+Og=;
+        b=OTIQLfXHW0RjDPV9vcIIYHecMLZb9OV/uMKqh+bsWegXRtYmZtVl7avhDJ6GbPFe5L
+         Mydvpa/Xw2S0ui0IpPFqgSxIs1firZ3KdqZFFHaNLRLd7uY0+g196Ra6qF+/qAagO98v
+         ZEtZaBlx34trmmHI/utemWOB0m7eevHR3iD8KW1TnUdx8k3lvXOEDDI0bQYsEo1pof0S
+         o7MhOSoj7rXUJ0/fgwDRzkJ7LxWl1pQ64nNT5W2VQcrUJVDrrV6hHS71BRRT/to6TkPz
+         /iepClQDeyNBUm5MfcWEeF4Eyd99LCyIT7FxiA/KFuBxbSa9rKnLBHzRHY66mttJJ8dE
+         rVKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MAegNs4VOwWv9UrQbG/3KsC+fif9tz3H9h+v9DTenlg=;
-        b=Plyh0pq5/I0fDkD4bVHaKoXQjgnZi+O1W07URBilWrYtuuwoWjb6gtvBl9rYJnJ0sh
-         Np73XJ4CnOAnAoSD76VQm9N8UY3AvNHRQ7AgfZIXU1puwKaIdWrssW5XFqdgjkQanowI
-         23yxPUqnwAGgXvZGRIYKEUnbep5m0yJ39hO5oz4GNxFdrKLFtwy0FU8D1q/sGAXjO1E/
-         dCF0F93fTdmbIFCB22P/r9z7k0ajOvE1m2DSe/7TJSqQP/IlOrcbS94E0rJkUTzbLJRo
-         /PklwLOh/xxBtdRiTvFlbI9qn/DoNTAiBJ7RWQT1MJ5DQeFzutgG+wR9WO2ipyLx0LfY
-         SG5A==
-X-Gm-Message-State: AOAM531PjOd/owPQhZEvO+RzioqHvYfYI/R1gRV5wJgeb152+mxHlH0P
-        zHDqJYWs7XADMj6QWRZuODVifQ==
-X-Google-Smtp-Source: ABdhPJwLrAeD4ZMb7OCOucEtPSfmxZNEDPJonNkzAiZJUR7jlcfwd9QjlJseUiJhoAyO2uqhAGri2A==
-X-Received: by 2002:a17:90b:364c:: with SMTP id nh12mr972235pjb.182.1600115531070;
-        Mon, 14 Sep 2020 13:32:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j19sm11207357pfi.51.2020.09.14.13.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 13:32:10 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 13:32:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 00/15] selftests/seccomp: Refactor change_syscall()
-Message-ID: <202009141321.366935EF52@keescook>
-References: <20200912110820.597135-1-keescook@chromium.org>
- <87wo0wpnah.fsf@mpe.ellerman.id.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Mk3y4QTN6xRvnXKdPBhBHuIkyeIhKX+xzx1HRoc+Og=;
+        b=Qyd/jwUo+yU4fmJzR4HxWjliROCCZ4JRy4fDALlfMpEIf3/yaZO9FRypk4URsdxeod
+         2WwGF3HKM6UsE5VKU8Jje9h5fLJ++RtRK1Ijqp7RaN8tNB1GI+9FHk46PC6v2IxuRL/7
+         dPHcsKrsGHohhZtzCuxbqPqVKlCGMcMwFXSck2tUpzqQs0HapWTR0X2xyQTSkELeXbyL
+         iPMI3VqoHMd7MY6Ub5k7wnVR9ZH6mLmCyaZkXjlsbUsIqWrCnCKpbNfzO8XiBEpuRqEU
+         c/FAjniFaUjyWTHhancOLbUoAR6fLIKdTCNVAtps2BB2nUDcsL6/7tjaRBNt1v7446dl
+         /ruQ==
+X-Gm-Message-State: AOAM530kQiktAmYGYLFe3WCdpDGhJeud2c+O7q7wEbrhrnqGPVNF9lYh
+        A0WQzBDUIyUxiqascjEaFh2vRWVqtS4T2U/ocmeo4g==
+X-Google-Smtp-Source: ABdhPJxNcyZxLZwBDTQiU7A9JlkrbqGBOA57WFhCgaY6YWrBJ2a42FnksGejlrLgPN53e6O0ZNxIjfqK4RVKFx0Zal4=
+X-Received: by 2002:a9d:2d81:: with SMTP id g1mr10112415otb.352.1600115612473;
+ Mon, 14 Sep 2020 13:33:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wo0wpnah.fsf@mpe.ellerman.id.au>
+References: <20200912125148.1271481-1-maz@kernel.org>
+In-Reply-To: <20200912125148.1271481-1-maz@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 14 Sep 2020 13:33:22 -0700
+Message-ID: <CALAqxLWKDO49=-Uh+ZYibMP-_8ubJQPWJUTiPFJZRRDxhW42hw@mail.gmail.com>
+Subject: Re: [PATCH 0/6] irqchip: Hybrid probing
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Hanks Chen <hanks.chen@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 10:15:18PM +1000, Michael Ellerman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > Hi,
-> >
-> > This refactors the seccomp selftest macros used in change_syscall(),
-> > in an effort to remove special cases for mips, arm, arm64, and xtensa,
-> > which paves the way for powerpc fixes.
-> >
-> > I'm not entirely done testing, but all-arch build tests and x86_64
-> > selftests pass. I'll be doing arm, arm64, and i386 selftests shortly,
-> > but I currently don't have an easy way to check xtensa, mips, nor
-> > powerpc. Any help there would be appreciated!
-> 
-> The series builds fine for me, and all the tests pass (see below).
-> 
-> Thanks for picking up those changes to deal with powerpc being oddball.
-> 
-> Tested-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+On Sat, Sep 12, 2020 at 5:52 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> A recent attempt at converting a couple of interrupt controllers from
+> early probing to standard platform drivers have badly failed, as it
+> became evident that although an interrupt controller can easily probe
+> late, device drivers for the endpoints connected to it are rarely
+> equipped to deal with probe deferral. Changes were swiftly reverted.
+>
+> However, there is some value in *optionally* enabling this, if only
+> for development purposes, as there is otherwise a "chicken and egg"
+> problem, and a few people (cc'd) are working on a potential solution.
+>
+> This short series enables the infrastructure for modular building
+> whilst retaining the usual early probing for monolithic build, and
+> introduces it to the three drivers that were previously made to probe
+> as platform drivers.
+>
+> As I don't have any of the HW, this series is fully untested and I'd
+> welcome some feedback on it.
 
-Awesome; thanks!
+I've tested this on db845c along with a small follow-on patch I'll
+send to you which sets the qcom-pdc as a tristate in the Kconfig, both
+as a module and as a built-in.
 
-However...
+Tested-by: John Stultz <john.stultz@linaro.org>
 
-> 
-> cheers
-> 
-> 
-> ./seccomp_bpf
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> #  RUN           global.kcmp ...
-> #            OK  global.kcmp
-> ok 1 global.kcmp
-> [...]
-> #  RUN           global.KILL_thread ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-
-Was this a mis-paste, or has something very very bad happened here in
-global.KILL_one_arg_six finishes?
-
-> #  RUN           global.kcmp ...
-> #            OK  global.kcmp
-> ok 1 global.kcmp
-> [...]
-> #  RUN           global.user_notification_basic ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_basic ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_signal ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_closed_listener ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_child_pid_ns ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_sibling_pid_ns ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_sibling_pid_ns ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_sibling_pid_ns ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_fault_recv ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_continue ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_filter_empty ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_filter_empty_threaded ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_addfd ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> #  RUN           global.user_notification_addfd_rlimit ...
-> TAP version 13
-> 1..86
-> # Starting 86 tests from 7 test cases.
-> [...]
-> # PASSED: 86 / 86 tests passed.
-> # Totals: pass:86 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-And after every user_notification test? O_O
-
--- 
-Kees Cook
+thanks
+-john
