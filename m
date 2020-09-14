@@ -2,190 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC5F2699D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6722699D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 01:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgINXkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 19:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgINXk3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 19:40:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A83EC06174A;
-        Mon, 14 Sep 2020 16:40:29 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BFB7D275;
-        Tue, 15 Sep 2020 01:40:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1600126827;
-        bh=dpjfNCdpvv0iSnlK1C59zQrHlYUjqqVhCoNym9uTgzg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DZR5n19qTCwZejfbuACt9XJCciUc3DBmeLtRSAUzaIZhQO59E3mm3MejRN2mgF32X
-         gBr0OjBYbbslYgAJiksiVw3NasyXrAt8ICCzOaYjQK5QoIS2GJFZviWM6qX8YuzJ+o
-         zB1PR1hvVQBgzDbkUzRwa3kmTVnWruinB+POSBTU=
-Date:   Tue, 15 Sep 2020 02:40:00 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v2] pinctrl: sh-pfc: r8a7790: Add VIN1-B and VIN2-G pins,
- groups and functions
-Message-ID: <20200914234000.GG15543@pendragon.ideasonboard.com>
-References: <20200913182850.32660-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWjnQGKt12_=Z1Lc4fE2hecC6V7ELYpGW6FP2zm8mBp=w@mail.gmail.com>
- <20200914232756.GA1669406@oden.dyn.berto.se>
+        id S1726066AbgINXkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 19:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725994AbgINXkl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 19:40:41 -0400
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBF6E21D7A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:40:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600126840;
+        bh=7YxhV2xZvx6nrVGCgI8yLCt9xE01+z6rpckv6HeDiOE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=F5kaa6bDRZsnqgJGDMMmyNFrKwzGHueqBd6WRKMgYu9urtYGZwverk0IH0Rhg7VEB
+         rH8RmZ+WayMCTXd+FI77zXckVabDIWc6xRMn4rIKVV+WOc6d1tKVajNp1PuCl+KMAU
+         CQf0DVw7gP2BTeslaKe2/Fqfk4CW/GcaYQqM9fdY=
+Received: by mail-ed1-f48.google.com with SMTP id k14so1287060edo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 16:40:39 -0700 (PDT)
+X-Gm-Message-State: AOAM530hOdPEdnnkG5AQS/qKUelrSmFRu7Hjss1bKYQUr9sWHPM2QH6g
+        0LfFg01XXa2xBhensBum0OM+Lo6C4BpGgHEUHA==
+X-Google-Smtp-Source: ABdhPJy5v5jvk9nSph1QBw9pjsPnW7VLL4rfeN5p0mGA8rEDQJvTN+DhAO3VLkzSupQ7VClzUOPWvQWNgPXdD9WbwZ0=
+X-Received: by 2002:a50:cbc7:: with SMTP id l7mr19619839edi.148.1600126838289;
+ Mon, 14 Sep 2020 16:40:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200914232756.GA1669406@oden.dyn.berto.se>
+References: <20200911112119.3218073-1-yukuai3@huawei.com>
+In-Reply-To: <20200911112119.3218073-1-yukuai3@huawei.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 15 Sep 2020 07:40:28 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__776k8oZRH-DEEO1JZx6Sf0vDMjPVDDXkFH=51nQvJBg@mail.gmail.com>
+Message-ID: <CAAOTY__776k8oZRH-DEEO1JZx6Sf0vDMjPVDDXkFH=51nQvJBg@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: add missing put_device() call in mtk_drm_kms_init()
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        djkurtz@chromium.org, yt.shen@mediatek.com,
+        CK Hu <ck.hu@mediatek.com>, littlecvr@chromium.org,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, yi.zhang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi, Yu Kuai:
 
-On Tue, Sep 15, 2020 at 01:27:56AM +0200, Niklas Söderlund wrote:
-> On 2020-09-14 16:47:27 +0200, Geert Uytterhoeven wrote:
-> > On Sun, Sep 13, 2020 at 8:29 PM Lad Prabhakar wrote:
-> > > Add pins, groups and functions for the VIN1-B [data/clk/sync] and VIN2-G [data].
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > ---
-> > > Changes for v2:
-> > > * Added complete list of VIN1-B pins
-> > > * Renamed vin2_data8_g to vin2_data8g
-> > > * Sorted vin1_sync_b pins
-> > >
-> > > v1 - https://patchwork.kernel.org/patch/11761191/
-> > 
-> > Thanks for the update!
-> > 
-> > > --- a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-> > > +++ b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
-> > 
-> > > @@ -3874,6 +3940,14 @@ static const unsigned int vin1_sync_mux[] = {
-> > >         VI1_HSYNC_N_MARK,
-> > >         VI1_VSYNC_N_MARK,
-> > >  };
-> > > +static const unsigned int vin1_sync_b_pins[] = {
-> > > +       RCAR_GP_PIN(1, 24), /* HSYNC */
-> > > +       RCAR_GP_PIN(1, 25), /* VSYNC */
-> > > +};
-> > > +static const unsigned int vin1_sync_b_mux[] = {
-> > > +       VI1_HSYNC_N_B_MARK,
-> > > +       VI1_VSYNC_N_B_MARK,
-> > > +};
-> > >  static const unsigned int vin1_field_pins[] = {
-> > >         RCAR_GP_PIN(1, 13),
-> > >  };
-> > 
-> > Missing field_b and clkenb_b.
-> > 
-> > > @@ -3959,6 +4039,18 @@ static const unsigned int vin2_data18_mux[] = {
-> > >         VI2_R4_MARK, VI2_R5_MARK,
-> > >         VI2_R6_MARK, VI2_R7_MARK,
-> > >  };
-> > > +static const unsigned int vin2_data8g_pins[] = {
-> > > +       RCAR_GP_PIN(0, 27), RCAR_GP_PIN(0, 28),
-> > > +       RCAR_GP_PIN(0, 29), RCAR_GP_PIN(1, 10),
-> > > +       RCAR_GP_PIN(1, 4), RCAR_GP_PIN(1, 5),
-> > > +       RCAR_GP_PIN(1, 6), RCAR_GP_PIN(1, 7),
-> > > +};
-> > > +static const unsigned int vin2_data8g_mux[] = {
-> > > +       VI2_G0_MARK, VI2_G1_MARK,
-> > > +       VI2_G2_MARK, VI2_G3_MARK,
-> > > +       VI2_G4_MARK, VI2_G5_MARK,
-> > > +       VI2_G6_MARK, VI2_G7_MARK,
-> > > +};
-> > 
-> > Laurent, Niklas: are you happy with the name "vin2_data8g", or do
-> > you have a better suggestion?
-> 
-> I learnt recently that traditionally for single 8-bit RAW inputs are 
-> named R8 (fist in RGB). But as this really is the G pins and they are 
-> labeled as such I'm OK with the name, but I would like to hear Laurent's 
-> view as well.
+Yu Kuai <yukuai3@huawei.com> =E6=96=BC 2020=E5=B9=B49=E6=9C=8811=E6=97=A5 =
+=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=887:22=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> if of_find_device_by_node() succeed, mtk_drm_kms_init() doesn't have
+> a corresponding put_device(). Thus add jump target to fix the exception
+> handling for this function implementation.
 
-I think we should match the pin names from the datasheet, so a R suffix
-isn't a good option. I have a feeling we will suffer with this though,
-as here 'g' refers to the VIN green data pins (g[7:0], a.k.a.
-data[15:8]), while below 'b' refers to the second set of VIN data pins,
-not the blue data pins. One option would be to use "vin2_data8_shift8",
-but I'm not sure I'm very fond of that either. I also wonder whether we
-shouldn't call this "vin2_g8" instead of "vin2_data8g" as the pins are
-named VIN_G[7:0], not VIN_DATAG[7:0].
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-> > >  static const unsigned int vin2_sync_pins[] = {
-> > >         RCAR_GP_PIN(1, 16), /* HSYNC */
-> > >         RCAR_GP_PIN(1, 21), /* VSYNC */
-> > 
-> > > @@ -4310,15 +4402,25 @@ static const struct {
-> > >                 VIN_DATA_PIN_GROUP(vin1_data, 10),
-> > >                 VIN_DATA_PIN_GROUP(vin1_data, 8),
-> > >                 VIN_DATA_PIN_GROUP(vin1_data, 4),
-> > > +               VIN_DATA_PIN_GROUP(vin1_data, 24, _b),
-> > > +               VIN_DATA_PIN_GROUP(vin1_data, 20, _b),
-> > > +               SH_PFC_PIN_GROUP(vin1_data18_b),
-> > > +               VIN_DATA_PIN_GROUP(vin1_data, 16, _b),
-> > > +               VIN_DATA_PIN_GROUP(vin1_data, 12, _b),
-> > > +               VIN_DATA_PIN_GROUP(vin1_data, 10, _b),
-> > > +               VIN_DATA_PIN_GROUP(vin1_data, 8, _b),
-> > 
-> > Missing vin1_data4_b.
-> > 
-> > >                 SH_PFC_PIN_GROUP(vin1_sync),
-> > > +               SH_PFC_PIN_GROUP(vin1_sync_b),
-> > >                 SH_PFC_PIN_GROUP(vin1_field),
-> > >                 SH_PFC_PIN_GROUP(vin1_clkenb),
-> > >                 SH_PFC_PIN_GROUP(vin1_clk),
-> > > +               SH_PFC_PIN_GROUP(vin1_clk_b),
-> > >                 VIN_DATA_PIN_GROUP(vin2_data, 24),
-> > >                 SH_PFC_PIN_GROUP(vin2_data18),
-> > >                 VIN_DATA_PIN_GROUP(vin2_data, 16),
-> > >                 VIN_DATA_PIN_GROUP(vin2_data, 8),
-> > >                 VIN_DATA_PIN_GROUP(vin2_data, 4),
-> > > +               SH_PFC_PIN_GROUP(vin2_data8g),
-> > >                 SH_PFC_PIN_GROUP(vin2_sync),
-> > >                 SH_PFC_PIN_GROUP(vin2_field),
-> > >                 SH_PFC_PIN_GROUP(vin2_clkenb),
-> > > @@ -4784,10 +4886,19 @@ static const char * const vin1_groups[] = {
-> > >         "vin1_data10",
-> > >         "vin1_data8",
-> > >         "vin1_data4",
-> > > +       "vin1_data24_b",
-> > > +       "vin1_data20_b",
-> > > +       "vin1_data18_b",
-> > > +       "vin1_data16_b",
-> > > +       "vin1_data12_b",
-> > > +       "vin1_data10_b",
-> > > +       "vin1_data8_b",
-> > 
-> > Missing vin1_data4_b.
-> > 
-> > >         "vin1_sync",
-> > > +       "vin1_sync_b",
-> > >         "vin1_field",
-> > >         "vin1_clkenb",
-> > >         "vin1_clk",
-> > > +       "vin1_clk_b",
-> > >  };
-> > >
-> > >  static const char * const vin2_groups[] = {
-> > 
-> > The rest looks good to me.
-
--- 
-Regards,
-
-Laurent Pinchart
+>
+> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT817=
+3.")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/med=
+iatek/mtk_drm_drv.c
+> index 040a8f393fe2..7aceace94ebf 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+> @@ -165,7 +165,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+>
+>         ret =3D drmm_mode_config_init(drm);
+>         if (ret)
+> -               return ret;
+> +               goto put_mutex_dev;
+>
+>         drm->mode_config.min_width =3D 64;
+>         drm->mode_config.min_height =3D 64;
+> @@ -182,7 +182,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+>
+>         ret =3D component_bind_all(drm->dev, drm);
+>         if (ret)
+> -               return ret;
+> +               goto put_mutex_dev;
+>
+>         /*
+>          * We currently support two fixed data streams, each optional,
+> @@ -229,7 +229,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+>         }
+>         if (!dma_dev->dma_parms) {
+>                 ret =3D -ENOMEM;
+> -               goto err_component_unbind;
+> +               goto put_dma_dev;
+>         }
+>
+>         ret =3D dma_set_max_seg_size(dma_dev, (unsigned int)DMA_BIT_MASK(=
+32));
+> @@ -256,9 +256,12 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+>  err_unset_dma_parms:
+>         if (private->dma_parms_allocated)
+>                 dma_dev->dma_parms =3D NULL;
+> +put_dma_dev:
+> +       put_device(private->dma_dev);
+>  err_component_unbind:
+>         component_unbind_all(drm->dev, drm);
+> -
+> +put_mutex_dev:
+> +       put_device(private->mutex_dev);
+>         return ret;
+>  }
+>
+> --
+> 2.25.4
+>
