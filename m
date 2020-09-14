@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2F2269505
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66430269512
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgINShg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgINShF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:37:05 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD43C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:37:00 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x14so654688wrl.12
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bcg5MkV7GMo2scuAb1zfDS6UH6+o9K/re2iSmd6wbvs=;
-        b=KKdrh2C8zETXi47pwmmq3wEd9qac/F6YSAv5uRZ7jSCDYcAyhLJcuJqobL/R53Cd+D
-         zj7B6TEZd79dp1G678VQ4G6l4FHSijlJx63WwgYXA3+jU/gjp7p/QKtcBTs82AWmrXQW
-         gPeFKkdlD4YfWcgM8M2RFiyGHuBmwqzAtIlqCDDu3/mHD8CZOUKG3LpYGoc28yIFIQEi
-         niIvmnDw084uEREF6MVGDESR4+9AUVPpl9vCTXuQiO/m75I14vLk34qYthRLr6pAlglv
-         bkEqpn9VoYtEzwuC0yc0JLTKPTLz+IDS5A0H8T5gYkgD56BWA1uoZ6sD5uWGzarAgKE4
-         ogwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bcg5MkV7GMo2scuAb1zfDS6UH6+o9K/re2iSmd6wbvs=;
-        b=LZK2za8Ek42vff8iNlR0B98J5XNQ4eVwnZaDl12sIOjUtQvrNP1Ct9Sh9AAAT7JyfJ
-         jYFO75NC4lxPerpRZtxLT4vWlqcq7QswbS7C6pdjy6OqpaUB1E8DPv9/NKfF4TNQPZyS
-         835T2+YyW12uOzGvPG3uHgK4iz85hDHXSjI3fu+8MYjRiOx7fil9i/W5NOlyEtefv18V
-         XWjSKOH1HJ7NeSYZLZKgr9yDX8RiqstVQclQATmc3Lab/jE52qPCmE/Z/NJDReQV5LWL
-         QPOq3TlNlwqfzHdZcr+72CQhEU+byrp/59d8Ts1Kpt8iBwaaMp6+RuNgamegTSBaM32l
-         i4FA==
-X-Gm-Message-State: AOAM5333d0fcdEd/P4hKcQGEyo6ZpP3f4ptKjvHkUDL7eoQ2lQ3+pbPZ
-        f/99mCokYjJQ3T9nBBMezN9pMQ==
-X-Google-Smtp-Source: ABdhPJy0gpOVhE8x8dTv7A+XKUHITZMMmF32ReDMzwzwrkbFovspL6Bq2nYmj1jvbsD2AfiXK7cJoA==
-X-Received: by 2002:adf:f492:: with SMTP id l18mr18076356wro.280.1600108619101;
-        Mon, 14 Sep 2020 11:36:59 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id s11sm21977314wrt.43.2020.09.14.11.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 11:36:58 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 21:36:55 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Luke Nelson <luke.r.nels@gmail.com>
-Cc:     Xi Wang <xi.wang@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Will Deacon <will@kernel.org>, bpf <bpf@vger.kernel.org>,
-        ardb@kernel.org, naresh.kamboju@linaro.org,
+        id S1726064AbgINSjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:39:25 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31604 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726025AbgINShR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:37:17 -0400
+IronPort-SDR: 5lxc1RjIjBV+CGeJm3avEqJ7qF4o9XTb2Fzllo/M+cgSQ+pZfpQNxaz6jZRSz2JB8M6n8lWhSQ
+ J0mHheu/LPuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="158427556"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="158427556"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 11:37:15 -0700
+IronPort-SDR: e/dhGeM/ItpH4ZIYXtuXHtLqGxZdXvqTHP2RqlUNODU6NosrOaLvBXuJBici5oxhBNwzyjQiMa
+ +dFWGGZNtLzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="330852067"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga004.fm.intel.com with ESMTP; 14 Sep 2020 11:37:15 -0700
+Date:   Mon, 14 Sep 2020 18:37:15 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200914183655.GA22481@apalos.home>
-References: <20200914122042.GA24441@willie-the-truck>
- <20200914123504.GA124316@apalos.home>
- <20200914132350.GA126552@apalos.home>
- <20200914140114.GG24441@willie-the-truck>
- <20200914181234.0f1df8ba@carbon>
- <20200914170205.GA20549@apalos.home>
- <CAKU6vyaxnzWVA=MPAuDwtu4UOTWS6s0cZOYQKVhQg5Mue7Wbww@mail.gmail.com>
- <20200914175516.GA21832@apalos.home>
- <CAKU6vybuEGYtqh9gL9bwFaJ6xD=diN-0w_Mgc2Xyu4tHMdWgAA@mail.gmail.com>
- <CAB-e3NSPcYB6r=ZjFtXQ=s=LU-a9D9OfXJPtGGbY3dupB1Z1Qg@mail.gmail.com>
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v7 9/9] x86/mmu: Allocate/free PASID
+Message-ID: <20200914183715.GA437309@otcwcpicx6.sc.intel.com>
+References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
+ <1598540794-132666-10-git-send-email-fenghua.yu@intel.com>
+ <20200907111843.GC16029@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB-e3NSPcYB6r=ZjFtXQ=s=LU-a9D9OfXJPtGGbY3dupB1Z1Qg@mail.gmail.com>
+In-Reply-To: <20200907111843.GC16029@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luke, 
+Hi, Boris,
 
-On Mon, Sep 14, 2020 at 11:21:58AM -0700, Luke Nelson wrote:
-> On Mon, Sep 14, 2020 at 11:08 AM Xi Wang <xi.wang@gmail.com> wrote:
-> > I don't think there's some consistent semantics of "offsets" across
-> > the JITs of different architectures (maybe it's good to clean that
-> > up).  RV64 and RV32 JITs are doing something similar to arm64 with
-> > respect to offsets.  CCing Björn and Luke.
+On Mon, Sep 07, 2020 at 01:18:43PM +0200, Borislav Petkov wrote:
+> On Thu, Aug 27, 2020 at 08:06:34AM -0700, Fenghua Yu wrote:
+> > +		 */
+> > +		xsave = &fpu->state.xsave;
+> > +		xsave->header.xfeatures |= XFEATURE_MASK_PASID;
+> > +		ppasid_state = get_xsave_addr(xsave, XFEATURE_PASID);
+> > +		if (ppasid_state) {
+> > +			/*
+> > +			 * Only update the task's PASID state when it's
+> > +			 * different from the mm's pasid.
+> > +			 */
+> > +			if (ppasid_state->pasid != pasid_state) {
+> > +				/*
+> > +				 * Invalid fpregs so that xrstors will pick up
+> 							  ^^^^^^^
 > 
-> As I understand it, there are two strategies JITs use to keep track of
-> the ctx->offset table.
-> 
-> Some JITs (RV32, RV64, arm32, arm64 currently, x86-32) track the end
-> of each instruction (e.g., ctx->offset[i] marks the beginning of
-> instruction i + 1).
-> This requires care to handle jumps to the first instruction to avoid
-> using ctx->offset[-1]. The RV32 and RV64 JITs have special handling
-> for this case,
-> while the arm32, arm64, and x86-32 JITs appear not to. The arm32 and
-> x32 probably need to be fixed for the same reason arm64 does.
-> 
-> The other strategy is for ctx->offset[i] to track the beginning of
-> instruction i. The x86-64 JIT currently works this way.
-> This can be easier to use (no need to special case -1) but looks to be
-> trickier to construct. This patch changes the arm64 JIT to work this
-> way.
-> 
-> I don't think either strategy is inherently better, both can be
-> "correct" as long as the JIT uses ctx->offset in the right way.
-> This might be a good opportunity to change the JITs to be consistent
-> about this (especially if the arm32, arm64, and x32 JITs all need to
-> be fixed anyways).
-> Having all JITs agree on the meaning of ctx->offset could help future
-> readers debug / understand the code, and could help to someday verify
-> the
-> ctx->offset construction.
-> 
-> Any thoughts?
+> Not "xrstors" but the "state restoring" or so.
 
-The common strategy does make a lot of sense and yes, both patches will  works 
-assuming the ctx->offset ends up being what the JIT engine expects it to be. 
-As I mentioned earlier we did consider both, but ended up using the later, 
-since as you said, removes the need for handling the special (-1) case.
+Fixed.
 
-Cheers
-/Ilias
-
+> > +				 * the PASID state.
+> > +				 */
+> > +				__fpu_invalidate_fpregs_state(fpu);
+> > +				ppasid_state->pasid = pasid_state;
+> > +			}
 > 
-> - Luke
+> What happens if get_xsave_addr() returns NULL? A WARN_ONCE maybe?
+
+get_xsave_addr() will not return NULL because xsave->header.xfeatures has
+XFEATURE_MASK_PASID set. I will remove the unnecessary check "if (ppasid_state)"
+to optimize the function and add a comment on why the check is unnecessary.
+
+> Ok, done with review.
+
+I addressed all of your comments and will send out the updated series soon.
+
+Thank you very much for your review!
+
+-Fenghua
