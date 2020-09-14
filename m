@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA142693FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0B62693F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgINRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:47:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        id S1726167AbgINRqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgINMDw (ORCPT
+        with ESMTP id S1726122AbgINMFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:03:52 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8170DC061354
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:29 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o20so12402872pfp.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:29 -0700 (PDT)
+        Mon, 14 Sep 2020 08:05:13 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F594C061355
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:35 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id v14so3921462pjd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xSOVJj4da1tYC6z/DHA41bMoIW3TylIOsXwZcMYjIwM=;
-        b=onU8Na4NQzsCjz1LdUqLJrE8OJCGofjylUiz2cNQ7o3o7sX3hOjQ/1wsX753/HwF6Z
-         N+GDj/Q3M7N4vyAhOM83oW75+L4n3+6/3PINbSS+t2xfoByvhdbaPCmeXbubyOBT2ZYh
-         af+ehDjGSxH5twfoUeND5K/STAO+iWETgv5ciaZT+JpYLbuNgi5bTK8dohZhGSnOEIZ4
-         7gnMOAOpVDevGnxA2ZpCMm6Zgvr9AY6rk7qlZXcll561RsDNrVJcdKYLmdCiEmh757eb
-         Y5kFltQoLnYL3OM615QGzGtgGKv3G2f69HASbgbCftZFuXa8fOv2vZ1w7324lbPOq1X/
-         iHfg==
+        bh=aOBJ9MjoirS+L5o0/6ixv/rHOD5sDCECP2wua5enYLg=;
+        b=mFz+j23/DsHUjdmzVxlu9gnTp4M+x6SJ0Zt+v+cAtC5fobW/aJnu0UsSswHbY1B+1n
+         uQzsa/PL/7EhePWKjquPfTPYyhVbxqKxTxnd0KhIPA0f+p+1uvMHQ1WgKjBBUoo5QPkq
+         wjw9UvnrHMoySGqQ8T1WuVS85EPZCUuJJ8Ra3UZRRXEbL9rYZdTKzSGwr/HLlFlV3U61
+         6snzU8WsY0UReB6koWGVldvJEG38Mm/rdlkKPMKjFaiz2UOSCzR/xMAQbL9JJQzoVV4H
+         GYCD9gRBZDXzOKyqDu/bMtc6rMWpve3JBQmBGfr0A0m/5M0JLg9pRvh/TZ5zRproU74A
+         qVrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=xSOVJj4da1tYC6z/DHA41bMoIW3TylIOsXwZcMYjIwM=;
-        b=PsXQkbKO8VN0qGW1YUR+ECXf4yTDooBjV5GfVW9vTsgF+W+yh7HLnog9TaX8sLG6DK
-         z2Ir0vB51mThmmV/qYQsUp8n1GbWAOYmysIkoWUMCMmX+uoV+9ygrmTvcA0t9d+ep8LF
-         OwCqSM36uj4+N9Lkn5G1LNawQHwE/aGdRDVVPM86HURxP0xIgGmg9r4mPz+LCk/O6stD
-         xrjhsybyvmH6JkksJFcVDuTgbnfwXhF9ITKSe3WvaSXr/lzb7hTnXTUIUXozRqqEds0s
-         KwksniRNVTv+aoi23kLiQGSBEroVNHc5a6GOwJa2VNp3lqv9S1h83e/T6IF7w8J+1Dav
-         w1Ag==
-X-Gm-Message-State: AOAM5332lUzitGDYNg5AN5ln63V8PZC15WWRex16OTtwADjIwFgO3ZS1
-        Y6rKD/BhYGPgpAZYrJvabdkxUw==
-X-Google-Smtp-Source: ABdhPJw2OSvlqzGVUzejMKvUgrbZ8/qbT/xYRowKcqOQk7FgKYewgBRxBguBZxrEvtodbEfeLHCjAw==
-X-Received: by 2002:a17:902:a715:b029:d0:89f3:28cf with SMTP id w21-20020a170902a715b02900d089f328cfmr14060884plq.11.1600084529030;
-        Mon, 14 Sep 2020 04:55:29 -0700 (PDT)
+        bh=aOBJ9MjoirS+L5o0/6ixv/rHOD5sDCECP2wua5enYLg=;
+        b=NHiP0nw6CjG0p36Pv/C5u9W0cREAhegjLm/BbAR5gVQlXAllbSlZksGm+Wj6NnnhMT
+         LwlFW7ZzA4ACBAc5qfjKnc5bb8IfkDyJoNq5gg7pKghU17l6c9T7ptVUeJdMEf7VHslL
+         iDztV1Unp3fv4wbwlwi8rdjqbF45FIb0Zh5yn3ipc9VrbLg5FqW5HFdcbC5x/2eDVx5y
+         D3mAsT/VUT5Q5D9M3q1BtTtkhHSO0FCKFdVZtn1WaEPfYG9lyoYbgK9QsSP7dffYdVMz
+         N8WcA96ist6EllGGwTYeMy8VmgrB3fhNnLUqtCQY7MZip2btMktW97ByPZMK56pUYWo6
+         oYcA==
+X-Gm-Message-State: AOAM5324Uof9IFzn3+nq+OZhbY9MqHB7JTfVs8aOt16VhRR/zOWJsqhO
+        PcWU4ksrZ4FU8AFlP5VM/eJwhA==
+X-Google-Smtp-Source: ABdhPJzhnIQHCZNS8UAApJD38ZxCo2Rc99Md+3WX4LEEgKKEZwud4BYFnFfuxmmdE4J+gt4Uo6j9Bw==
+X-Received: by 2002:a17:90a:d3cd:: with SMTP id d13mr14452003pjw.70.1600084534577;
+        Mon, 14 Sep 2020 04:55:34 -0700 (PDT)
 Received: from localhost ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id 137sm10620313pfu.149.2020.09.14.04.55.28
+        by smtp.gmail.com with ESMTPSA id i15sm3628675pfk.145.2020.09.14.04.55.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Sep 2020 04:55:28 -0700 (PDT)
+        Mon, 14 Sep 2020 04:55:34 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -69,9 +69,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v4 4/6] perf tsc: Support cap_user_time_short for event TIME_CONV
-Date:   Mon, 14 Sep 2020 19:53:09 +0800
-Message-Id: <20200914115311.2201-5-leo.yan@linaro.org>
+Subject: [PATCH v4 5/6] perf tests tsc: Make tsc testing as a common testing
+Date:   Mon, 14 Sep 2020 19:53:10 +0800
+Message-Id: <20200914115311.2201-6-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200914115311.2201-1-leo.yan@linaro.org>
 References: <20200914115311.2201-1-leo.yan@linaro.org>
@@ -80,78 +80,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The synthesized event TIME_CONV doesn't contain the complete parameters
-for counters, this will lead to wrong conversion between counter cycles
-and timestamp.
-
-This patch extends event TIME_CONV to record flags 'cap_user_time_zero'
-which is used to indicate the counter parameters are valid or not, if
-not will directly return 0 for timestamp calculation.  And record the
-flag 'cap_user_time_short' and its relevant fields 'time_cycles' and
-'time_mask' for cycle calibration.
+x86 arch provides the testing for conversion between tsc and perf time,
+the testing is located in x86 arch folder.  Move this testing out from
+x86 arch folder and place it into the common testing folder, so allows
+to execute tsc testing on other architectures (e.g. Arm64).
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/lib/perf/include/perf/event.h |  4 ++++
- tools/perf/util/jitdump.c           | 14 +++++++++-----
- tools/perf/util/tsc.c               |  4 ++++
- 3 files changed, 17 insertions(+), 5 deletions(-)
+ tools/perf/arch/x86/include/arch-tests.h           | 1 -
+ tools/perf/arch/x86/tests/Build                    | 1 -
+ tools/perf/arch/x86/tests/arch-tests.c             | 4 ----
+ tools/perf/tests/Build                             | 1 +
+ tools/perf/tests/builtin-test.c                    | 4 ++++
+ tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c | 0
+ tools/perf/tests/tests.h                           | 1 +
+ 7 files changed, 6 insertions(+), 6 deletions(-)
+ rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (100%)
 
-diff --git a/tools/lib/perf/include/perf/event.h b/tools/lib/perf/include/perf/event.h
-index 842028858d66..a6dbba6b9073 100644
---- a/tools/lib/perf/include/perf/event.h
-+++ b/tools/lib/perf/include/perf/event.h
-@@ -324,6 +324,10 @@ struct perf_record_time_conv {
- 	__u64			 time_shift;
- 	__u64			 time_mult;
- 	__u64			 time_zero;
-+	__u64			 time_cycles;
-+	__u64			 time_mask;
-+	bool			 cap_user_time_zero;
-+	bool			 cap_user_time_short;
- };
+diff --git a/tools/perf/arch/x86/include/arch-tests.h b/tools/perf/arch/x86/include/arch-tests.h
+index c41c5affe4be..6a54b94f1c25 100644
+--- a/tools/perf/arch/x86/include/arch-tests.h
++++ b/tools/perf/arch/x86/include/arch-tests.h
+@@ -7,7 +7,6 @@ struct test;
  
- struct perf_record_header_feature {
-diff --git a/tools/perf/util/jitdump.c b/tools/perf/util/jitdump.c
-index 0804308ef285..055bab7a92b3 100644
---- a/tools/perf/util/jitdump.c
-+++ b/tools/perf/util/jitdump.c
-@@ -374,11 +374,15 @@ static uint64_t convert_timestamp(struct jit_buf_desc *jd, uint64_t timestamp)
- 	if (!jd->use_arch_timestamp)
- 		return timestamp;
+ /* Tests */
+ int test__rdpmc(struct test *test __maybe_unused, int subtest);
+-int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest);
+ int test__insn_x86(struct test *test __maybe_unused, int subtest);
+ int test__intel_pt_pkt_decoder(struct test *test, int subtest);
+ int test__bp_modify(struct test *test, int subtest);
+diff --git a/tools/perf/arch/x86/tests/Build b/tools/perf/arch/x86/tests/Build
+index 2997c506550c..36d4f248b51d 100644
+--- a/tools/perf/arch/x86/tests/Build
++++ b/tools/perf/arch/x86/tests/Build
+@@ -3,6 +3,5 @@ perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
  
--	tc.time_shift = jd->session->time_conv.time_shift;
--	tc.time_mult  = jd->session->time_conv.time_mult;
--	tc.time_zero  = jd->session->time_conv.time_zero;
--
--	if (!tc.time_mult)
-+	tc.time_shift	       = jd->session->time_conv.time_shift;
-+	tc.time_mult	       = jd->session->time_conv.time_mult;
-+	tc.time_zero	       = jd->session->time_conv.time_zero;
-+	tc.time_cycles	       = jd->session->time_conv.time_cycles;
-+	tc.time_mask	       = jd->session->time_conv.time_mask;
-+	tc.cap_user_time_zero  = jd->session->time_conv.cap_user_time_zero;
-+	tc.cap_user_time_short = jd->session->time_conv.cap_user_time_short;
-+
-+	if (!tc.cap_user_time_zero)
- 		return 0;
+ perf-y += arch-tests.o
+ perf-y += rdpmc.o
+-perf-y += perf-time-to-tsc.o
+ perf-$(CONFIG_AUXTRACE) += insn-x86.o intel-pt-pkt-decoder-test.o
+ perf-$(CONFIG_X86_64) += bp-modify.o
+diff --git a/tools/perf/arch/x86/tests/arch-tests.c b/tools/perf/arch/x86/tests/arch-tests.c
+index 6763135aec17..bc25d727b4e9 100644
+--- a/tools/perf/arch/x86/tests/arch-tests.c
++++ b/tools/perf/arch/x86/tests/arch-tests.c
+@@ -8,10 +8,6 @@ struct test arch_tests[] = {
+ 		.desc = "x86 rdpmc",
+ 		.func = test__rdpmc,
+ 	},
+-	{
+-		.desc = "Convert perf time to TSC",
+-		.func = test__perf_time_to_tsc,
+-	},
+ #ifdef HAVE_DWARF_UNWIND_SUPPORT
+ 	{
+ 		.desc = "DWARF unwind",
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index 69bea7996f18..8ddf81447344 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -61,6 +61,7 @@ perf-y += demangle-java-test.o
+ perf-y += pfm.o
+ perf-y += parse-metric.o
+ perf-y += pe-file-parsing.o
++perf-y += perf-time-to-tsc.o
  
- 	return tsc_to_perf_time(timestamp, &tc);
-diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
-index c0ca40204649..62b4c75c966c 100644
---- a/tools/perf/util/tsc.c
-+++ b/tools/perf/util/tsc.c
-@@ -98,6 +98,10 @@ int perf_event__synth_time_conv(const struct perf_event_mmap_page *pc,
- 	event.time_conv.time_mult  = tc.time_mult;
- 	event.time_conv.time_shift = tc.time_shift;
- 	event.time_conv.time_zero  = tc.time_zero;
-+	event.time_conv.time_cycles = tc.time_cycles;
-+	event.time_conv.time_mask = tc.time_mask;
-+	event.time_conv.cap_user_time_zero = tc.cap_user_time_zero;
-+	event.time_conv.cap_user_time_short = tc.cap_user_time_short;
+ $(OUTPUT)tests/llvm-src-base.c: tests/bpf-script-example.c tests/Build
+ 	$(call rule_mkdir)
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 651b8ea3354a..0abb5ce88962 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -345,6 +345,10 @@ static struct test generic_tests[] = {
+ 		.desc = "PE file support",
+ 		.func = test__pe_file_parsing,
+ 	},
++	{
++		.desc = "Convert perf time to TSC",
++		.func = test__perf_time_to_tsc,
++	},
+ 	{
+ 		.func = NULL,
+ 	},
+diff --git a/tools/perf/arch/x86/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
+similarity index 100%
+rename from tools/perf/arch/x86/tests/perf-time-to-tsc.c
+rename to tools/perf/tests/perf-time-to-tsc.c
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index ef0f33c6ba23..60a1c317b8db 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -123,6 +123,7 @@ const char *test__pfm_subtest_get_desc(int subtest);
+ int test__pfm_subtest_get_nr(void);
+ int test__parse_metric(struct test *test, int subtest);
+ int test__pe_file_parsing(struct test *test, int subtest);
++int test__perf_time_to_tsc(struct test *test, int subtest);
  
- 	return process(tool, &event, NULL, machine);
- }
+ bool test__bp_signal_is_supported(void);
+ bool test__bp_account_is_supported(void);
 -- 
 2.17.1
 
