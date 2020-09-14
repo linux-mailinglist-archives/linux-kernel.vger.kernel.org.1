@@ -2,110 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26743268629
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5999268642
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbgINHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:36:25 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64210 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726096AbgINHgQ (ORCPT
+        id S1726117AbgINHkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:40:43 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:38538 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725971AbgINHkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:36:16 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08E7WXKN165771;
-        Mon, 14 Sep 2020 03:36:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yNe57v5tEM2OGM2g/Zi7f23YnshelszlVWqCz72cyv0=;
- b=aFXYhS6eUGGFSO8lf6hcQBAu+T/xwF1YAIyvk45r2o9skToZINNIJ1BSC87zyysOeBD2
- +90tuTnBl1TwZtEjUW3mX/jdEj76p43PzI8K+4cVkllazhGQJZqJLE/8CD/LI+zNr/d2
- jqO0OfhZS7B6jTJwwPdFtu0pE4ySJ5xl07hS/3bf2t/T0EOf7EOwQA7G6uTLg4YL7neI
- aUb4uDc3aKLQzIuH5Joeso1MkauOChSGlV1QgWFApu/+FeIwwff7Ai71LuZTuSGcQlbF
- pHAiBVkY2XLI3ZxEVbgTlQLIgiuWuCigY32gj8IJAgHihlWwpDOP74XPo303jlbwesuf mA== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33j3c71puh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 03:36:08 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08E7XAgd018708;
-        Mon, 14 Sep 2020 07:36:07 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 33gny8116s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Sep 2020 07:36:07 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08E7a3C019136950
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Sep 2020 07:36:04 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D50724203F;
-        Mon, 14 Sep 2020 07:36:03 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F75E42045;
-        Mon, 14 Sep 2020 07:36:03 +0000 (GMT)
-Received: from funtu.home (unknown [9.171.37.48])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Sep 2020 07:36:03 +0000 (GMT)
-Subject: Re: [PATCH] s390/zcrypt: remove set_fs() invocation in zcrypt device
- driver
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com
-References: <20200910102838.28887-1-freude@linux.ibm.com>
- <20200911062134.GB21597@lst.de>
-From:   Harald Freudenberger <freude@linux.ibm.com>
-Message-ID: <e367fef4-1634-7b8e-0ef5-4cdc108edadd@linux.ibm.com>
-Date:   Mon, 14 Sep 2020 09:36:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 14 Sep 2020 03:40:25 -0400
+Received: by mail-oi1-f196.google.com with SMTP id y6so16893245oie.5;
+        Mon, 14 Sep 2020 00:40:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9OcnKlqgAuX3lmvtPjQSY28ozZnq3T65wzBJcbrmz6o=;
+        b=ZLQ8zYfHQJNoKuG+aRZ1H9nnh9a4xDHfqXoJD6QYkDtGc6C8hdiq5hfp0fGNJwzMw+
+         H1jQzpooQU23mgfHnzcnCcvQZvf3dbmlI5SfBjbLFIhFXh+WBqbUopKYRAwahnrQPvzy
+         VvBfdP4Sc91YRnuIdb4UYpeJy1lmVIcIghG4fhO3yA32SEqMB4PwRzoZvonwHr/3Oegb
+         cAczL01U9gCOabRrv4EPKDNu5LQJuRwn0remRHdtJOK2hrT5+lKbQsXi61s3zt4oHoCC
+         G8Baniz9N6djPruhuaTAWACHKI5IVNZAlzUObe3yt+qLhDG7zswAw/UmOCBVkuIutzzJ
+         ySSw==
+X-Gm-Message-State: AOAM531x/T1J2g5du09T9lt+RnSSN3fKqCCksE3xypXltREwvPJV99Nc
+        Uzk/MIoXsGPY0moM76cRBYFuNbq3T3kAtCplCpE=
+X-Google-Smtp-Source: ABdhPJxXogF7NIvZqnQWeKTAcrQdTHdknQa9lnRLmhrjpxySJACyegBgSKyjuAW6Zz1mxStR+JFEXOpyVLi/baGaT9s=
+X-Received: by 2002:aca:52d6:: with SMTP id g205mr8014808oib.54.1600069223913;
+ Mon, 14 Sep 2020 00:40:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200911062134.GB21597@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-13_09:2020-09-10,2020-09-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 bulkscore=0
- impostorscore=0 phishscore=0 mlxscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009140061
+References: <CAMuHMdUd4VtpOGr26KAmF22N32obNqQzq3tbcPxLJ7mxUtSyrg@mail.gmail.com>
+ <20200911.174400.306709791543819081.davem@davemloft.net> <CAMuHMdW0agywTHr4bDO9f_xbQibCxDykdkcAmuRJQO90=E6-Zw@mail.gmail.com>
+ <20200912.183437.1205152743307947529.davem@davemloft.net>
+In-Reply-To: <20200912.183437.1205152743307947529.davem@davemloft.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Sep 2020 09:40:12 +0200
+Message-ID: <CAMuHMdXGmKYKWtkFCV0WmYnY4Gn--Bbz-iSX76oc-UNNrzCMuw@mail.gmail.com>
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+To:     David Miller <davem@davemloft.net>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Gaku Inami <gaku.inami.xh@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        bridge@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.20 08:21, Christoph Hellwig wrote:
-> On Thu, Sep 10, 2020 at 12:28:38PM +0200, Harald Freudenberger wrote:
->> +static inline unsigned long z_copy_from_user(bool userspace,
->> +					     void *to, const void __user *from, unsigned long n)
-> Can you avoid the pointless long lines in the function declaration?
-Yes, will do.
->
->> +{
->> +	if (likely(userspace))
->> +		return copy_from_user(to, from, n);
->> +	memcpy(to, (void __force *) from, n);
->> +	return 0;
->> +}
->> +
->> +static inline unsigned long z_copy_to_user(bool userspace,
->> +					   void __user *to, const void *from, unsigned long n)
->> +{
->> +	if (likely(userspace))
->> +		return copy_to_user(to, from, n);
->> +	memcpy((void __force *) to, from, n);
->> +	return 0;
-> Otherwise this doesn't look great, but also not horrible and gets rid
-> of the set_fs while reducing the lines of code, so:
->
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-Christoph, maybe you have a greater idea on how to solve this. So don't hesitate and tell me.
-Otherwise how to we provide this fix then ? My recommendation would be to go the 'usual' way:
-Commit this s390 internal and then let this go out with the next kernel merge window when
-next time Linus is pulling patches from the s390 subsystem for the 5.10 kernel development cycle.
+Hi David,
 
+CC bridge
+
+On Sun, Sep 13, 2020 at 3:34 AM David Miller <davem@davemloft.net> wrote:
+> From: Geert Uytterhoeven <geert@linux-m68k.org>
+> Date: Sat, 12 Sep 2020 14:33:59 +0200
+>
+> > "dev" is not the bridge device, but the physical Ethernet interface, which
+> > may already be suspended during s2ram.
+>
+> Hmmm, ok.
+>
+> Looking more deeply NETDEV_CHANGE causes br_port_carrier_check() to run which
+> exits early if netif_running() is false, which is going to be true if
+> netif_device_present() is false:
+>
+>         *notified = false;
+>         if (!netif_running(br->dev))
+>                 return;
+>
+> The only other work the bridge notifier does is:
+>
+>         if (event != NETDEV_UNREGISTER)
+>                 br_vlan_port_event(p, event);
+>
+> and:
+>
+>         /* Events that may cause spanning tree to refresh */
+>         if (!notified && (event == NETDEV_CHANGEADDR || event == NETDEV_UP ||
+>                           event == NETDEV_CHANGE || event == NETDEV_DOWN))
+>                 br_ifinfo_notify(RTM_NEWLINK, NULL, p);
+>
+> So some vlan stuff, and emitting a netlink message to any available
+> listeners.
+>
+> Should we really do all of this for a device which is not even
+> present?
+>
+> This whole situation seems completely illogical.  The device is
+> useless, it logically has no link or other state that can be managed
+> or used, while it is not present.
+>
+> So all of these bridge operations should only happen when the device
+> transitions back to present again.
+
+Thanks for your analysis!
+I'd like to defer this to the bridge people (CC).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
