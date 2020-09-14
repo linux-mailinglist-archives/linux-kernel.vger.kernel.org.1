@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0F02697C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FD02697BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgINVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbgINVdY (ORCPT
+        id S1726087AbgINVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:32:37 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:37541 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725920AbgINVcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:33:24 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0F0C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:33:24 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id e7so1389897qtj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 14:33:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=M6GRxBpT2cC25wV82DuNi9J3pqiD8OWCE31gUld/UhE=;
-        b=rwyLUxhptQJc4HOqwpHP2HBqm700/ViMyS+157/Rz8Xv6Kt/qW1SS8hfob3t+geEaN
-         jgum4YbUdr9Z/zipYDu1H+ZK7te0x5IIz2kR1YJOnnYec34roru9spTQuD3GhyqhJY7E
-         wn6kotmIL/HBuARMoYXTBU3L5Is9LfKgxWv9elRtM1XilCShSVzx3Ee6PqpwV6evdyUI
-         5R0Pbsb0l9+ce6wHYdnl+Rg3xvN1fh/T6OtQePz+hvQMJgIBut1tgGPjsxnwwtaxvPnl
-         5v3i2B/3e9WAQVVQIaAWihJ0Sv6vxWISBtn5UOkRsG58l7XOP20RC+5xHSPvcaET7Uoe
-         hfqg==
+        Mon, 14 Sep 2020 17:32:36 -0400
+Received: by mail-pf1-f193.google.com with SMTP id w7so666392pfi.4;
+        Mon, 14 Sep 2020 14:32:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=M6GRxBpT2cC25wV82DuNi9J3pqiD8OWCE31gUld/UhE=;
-        b=hVX0Hc6Au8isDXIbDaGW5Am5l3SfXwTNh2uvgUH9asVp1iDli0gCsX0MvLiNiJxSwC
-         6goE9vQqgd2MpSkaBBZnXjh4v9ve0JZCAsCLFj5Ltc07K+X9oqVuhjROBif2SQOlYeJO
-         prJtrMmuORWBeAG5mTHacZHyXcdk60yo9KcRu3RSu/Z+O3Dh8pTwsHxzmmtjv/JA//ot
-         naXv9++pXx17v06hcN3IKuJZFa0BX7iA9GN6mCgpoUgqgOBz1uMyAW4SydUsW94zPQ7k
-         m8cb48oKAawMmbMyISs1Jac9T0QP+YP3320mYqXmFMxq2UDLgHe6rUanlVIG5m5op+ma
-         lxtQ==
-X-Gm-Message-State: AOAM531UHltkU2YGGa561OAt1Xq1S2PZLtlzodnszoQFo28jFVfiULRX
-        QeZf0ny3PSDSQOrwiBpUPnsWMw==
-X-Google-Smtp-Source: ABdhPJxl25SSqbEom8UNjHbcdzIzm36yZ81zxV71gBF1hYZVcVt4BpQ808OQZYcMcR2vsN2uySCkVA==
-X-Received: by 2002:ac8:76c7:: with SMTP id q7mr15059779qtr.293.1600119203260;
-        Mon, 14 Sep 2020 14:33:23 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:3700])
-        by smtp.gmail.com with ESMTPSA id f3sm14633329qtg.71.2020.09.14.14.33.22
+         :mime-version:content-disposition:in-reply-to;
+        bh=GxPkXhqlAFVkhBlcdAangH+5G5NOYVoOkH633FrRrJM=;
+        b=LSU5wCcQV3AIRcBPq5tO7BcB6RnUP/Na6BgwBhnWafBS7T9fphrqgX5yUHGU1H5a/j
+         ZMqqvJlJ+X42NUpOeYq0iCHIP85F1rbRog6fIGiwmQuHZyDFu0po2MWahF8k+tT0UUHT
+         ILYPAfuXo862NuEjVzGn6ZBhcIfhxDAoFsrFQ+5STdgGoMdU1w86wMulcV59unus9ASL
+         XNfE+epISqeCDtnGchvSu7AkP7rRWQcCo969XVH2LZG2tPW1D1NRo137YjT2zgbPFsyj
+         4H7a3cGsvo5Jja8ZF0KoTJ1+WJTAWxgyv3SarnPTwKFCx/sxgB5AxznNfZ1iS02UWGgO
+         OgpQ==
+X-Gm-Message-State: AOAM5303zYIZS/j3QytfNYEZJB3jjo2zsx/RWRoTrOE1BRIliAPCtQPh
+        J4Or3hURuyHl4CJHd9akQ0c=
+X-Google-Smtp-Source: ABdhPJxWp+umJLT77yalayofcGiM3KtEpRnsJ8b5unXVtulF3tO6PepWq9IA7NWnyIwqUcaeAqDJ/A==
+X-Received: by 2002:aa7:9dd2:0:b029:13e:d13d:a109 with SMTP id g18-20020aa79dd20000b029013ed13da109mr14628525pfq.37.1600119155199;
+        Mon, 14 Sep 2020 14:32:35 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id i15sm4620056pfk.145.2020.09.14.14.32.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 14:33:22 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 17:32:00 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-Message-ID: <20200914213200.GC175618@cmpxchg.org>
-References: <20200914024452.19167-1-longman@redhat.com>
- <20200914024452.19167-3-longman@redhat.com>
- <20200914114825.GM16999@dhcp22.suse.cz>
- <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
- <20200914212904.GB175618@cmpxchg.org>
+        Mon, 14 Sep 2020 14:32:34 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 14:32:32 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, "Xu, Yilun" <yilun.xu@intel.com>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: Re: [PATCH 1/3] fpga: dfl: move dfl_device_id to mod_devicetable.h
+Message-ID: <20200914213232.GA1040@epycbox.lan>
+References: <1599544129-17594-1-git-send-email-yilun.xu@intel.com>
+ <1599544129-17594-2-git-send-email-yilun.xu@intel.com>
+ <aaa2d9a5-f5ae-d026-91c9-730403f04050@redhat.com>
+ <20200910084106.GB16318@yilunxu-OptiPlex-7050>
+ <ad9ba1cf-e02f-c09e-f639-2df60f080e5f@redhat.com>
+ <DM6PR11MB3819E2EA499781899B7384F385240@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200914212904.GB175618@cmpxchg.org>
+In-Reply-To: <DM6PR11MB3819E2EA499781899B7384F385240@DM6PR11MB3819.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 05:29:06PM -0400, Johannes Weiner wrote:
-> On Mon, Sep 14, 2020 at 09:51:26AM -0400, Waiman Long wrote:
-> > On 9/14/20 7:48 AM, Michal Hocko wrote:
-> > > On Sun 13-09-20 22:44:51, Waiman Long wrote:
-> > > > The mem_cgroup_get_max() function used to get memory+swap max from
-> > > > both the v1 memsw and v2 memory+swap page counters & return the maximum
-> > > > of these 2 values. This is redundant and it is more efficient to just
-> > > > get either the v1 or the v2 values depending on which one is currently
-> > > > in use.
-> > > > 
-> > > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > > > ---
-> > > >   mm/memcontrol.c | 20 +++++++++-----------
-> > > >   1 file changed, 9 insertions(+), 11 deletions(-)
-> > > > 
-> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > index 8c74f1200261..ca36bed588d1 100644
-> > > > --- a/mm/memcontrol.c
-> > > > +++ b/mm/memcontrol.c
-> > > > @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
-> > > >    */
-> > > >   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
-> > > >   {
-> > > > -	unsigned long max;
-> > > > -
-> > > > -	max = READ_ONCE(memcg->memory.max);
-> > > > -	if (mem_cgroup_swappiness(memcg)) {
-> > > > -		unsigned long memsw_max;
-> > > > -		unsigned long swap_max;
-> > > > -
-> > > > -		memsw_max = memcg->memsw.max;
-> > > > -		swap_max = READ_ONCE(memcg->swap.max);
-> > > > -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
-> > > > -		max = min(max + swap_max, memsw_max);
-> > > > +	unsigned long max = READ_ONCE(memcg->memory.max);
-> > > > +
-> > > > +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-> > > > +		if (mem_cgroup_swappiness(memcg))
-> > > > +			max += min(READ_ONCE(memcg->swap.max),
-> > > > +				   (unsigned long)total_swap_pages);
-> > > > +	} else { /* v1 */
-> > > > +		if (mem_cgroup_swappiness(memcg))
-> > > > +			max = memcg->memsw.max;
-> > > I agree that making v1 vs. v2 distinction here makes the code more
-> > > obvious. But I do not think your code is correct for v1. In a default
-> > > state it would lead to max = PAGE_COUNTER_MAX which is not something
-> > > we want, right?
-> > > 
-> > > instead you want
-> > > 		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
-> > > 
-> > You are right, it is a bit tricky for v1.
-> > 
-> > I will change it to
-> > 
-> >     max += min(READ_ONCE(memcg->memsw.max) - max, total_swap_pages):
-> 
-> memsw.max can be smaller than max.
-> 
-> max = min3(max, READ_ONCE(memcg->memsw.max), total_swap_pages)?
+Hao,
 
-Nevermind, I saw the follow-up below, and it's indeed not allowed to
-configure it like that.
+On Fri, Sep 11, 2020 at 06:50:18AM +0000, Wu, Hao wrote:
+> > On 9/10/20 1:41 AM, Xu Yilun wrote:
+> > > On Wed, Sep 09, 2020 at 05:55:33AM -0700, Tom Rix wrote:
+> > >> On 9/7/20 10:48 PM, Xu Yilun wrote:
+> > >>> In order to support MODULE_DEVICE_TABLE() for dfl device driver, this
+> > >>> patch moves struct dfl_device_id to mod_devicetable.h
+> > >>>
+> > >>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > >>> Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > >>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > >>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > >>> ---
+> > >>>  drivers/fpga/dfl.h              | 13 +------------
+> > >>>  include/linux/mod_devicetable.h | 12 ++++++++++++
+> > >>>  2 files changed, 13 insertions(+), 12 deletions(-)
+> > >>>
+> > >>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> > >>> index 5dc758f..d5b0760 100644
+> > >>> --- a/drivers/fpga/dfl.h
+> > >>> +++ b/drivers/fpga/dfl.h
+> > >>> @@ -26,6 +26,7 @@
+> > >>>  #include <linux/slab.h>
+> > >>>  #include <linux/uuid.h>
+> > >>>  #include <linux/fpga/fpga-region.h>
+> > >>> +#include <linux/mod_devicetable.h>
+> 
+> Please fix the order for the new one, other places to good to me.
+> Acked-by: Wu Hao <hao.wu@intel.com>  for DFL related changes after this fix.
+
+Do you mean the order of the includes, like alphabeticized? If it's
+minor I can fix it up when applying.
+
+Thanks,
+Moritz
