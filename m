@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F617268911
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852E0268913
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbgINKQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:16:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44812 "EHLO mx2.suse.de"
+        id S1726446AbgINKQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:16:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44850 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726406AbgINKQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:16:06 -0400
+        id S1726417AbgINKQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:16:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0F233B266;
+        by mx2.suse.de (Postfix) with ESMTP id 9869AB080;
         Mon, 14 Sep 2020 10:16:21 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     akpm@linux-foundation.org
@@ -22,9 +22,9 @@ Cc:     naoya.horiguchi@nec.com, mhocko@kernel.org, tony.luck@intel.com,
         Oscar Salvador <osalvador@suse.de>,
         Oscar Salvador <osalvador@suse.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH v3 4/5] mm,hwpoison: drop unneeded pcplist draining
-Date:   Mon, 14 Sep 2020 12:15:58 +0200
-Message-Id: <20200914101559.17103-5-osalvador@suse.de>
+Subject: [PATCH v3 5/5] mm,hwpoison: remove stale code
+Date:   Mon, 14 Sep 2020 12:15:59 +0200
+Message-Id: <20200914101559.17103-6-osalvador@suse.de>
 X-Mailer: git-send-email 2.13.7
 In-Reply-To: <20200914101559.17103-1-osalvador@suse.de>
 References: <20200914101559.17103-1-osalvador@suse.de>
@@ -33,17 +33,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memory_failure and soft_offline_path paths now drain pcplists by calling
-get_hwpoison_page.
+Currently we call shake_page and then check whether the page is Buddy
+because shake_page calls drain_all_pages, which sends pcp-pages back to
+the buddy freelists, so we could have a chance to handle free pages.
 
-memory_failure flags the page as HWPoison before, so that page cannot
-longer go into a pcplist, and soft_offline_page only flags a page as
-HWPoison if 1) we took the page off a buddy freelist 2) the page was
-in-use and we migrated it 3) was a clean pagecache.
+get_hwpoison_page already calls drain_all_pages, and we do call
+get_hwpoison_page right before coming here, so we should be on the safe
+side.
 
-Because of that, a page cannot longer be poisoned and be in a pcplist.
-
-Link: https://lkml.kernel.org/r/20200908075626.11976-5-osalvador@suse.de
+Link: https://lkml.kernel.org/r/20200908075626.11976-6-osalvador@suse.de
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
@@ -53,24 +51,32 @@ Cc: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- mm/madvise.c | 4 ----
- 1 file changed, 4 deletions(-)
+ mm/memory-failure.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 4ce66bab53dd..4bac8e85497a 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -917,10 +917,6 @@ static int madvise_inject_error(int behavior,
- 			return ret;
- 	}
- 
--	/* Ensure that all poisoned pages are removed from per-cpu lists */
--	for_each_populated_zone(zone)
--		drain_all_pages(zone);
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 4468c1eb5027..fbe174d54fad 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1421,18 +1421,6 @@ int memory_failure(unsigned long pfn, int flags)
+ 	 * walked by the page reclaim code, however that's not a big loss.
+ 	 */
+ 	shake_page(p, 0);
+-	/* shake_page could have turned it free. */
+-	if (!PageLRU(p) && is_free_buddy_page(p)) {
+-		if (!take_page_off_buddy(p))
+-			res = -EBUSY;
 -
- 	return 0;
- }
- #endif
+-		if (flags & MF_COUNT_INCREASED)
+-			action_result(pfn, MF_MSG_BUDDY, res ? MF_FAILED : MF_RECOVERED);
+-		else
+-			action_result(pfn, MF_MSG_BUDDY_2ND, res ? MF_FAILED : MF_RECOVERED);
+-
+-		return res;
+-	}
+ 
+ 	lock_page(p);
+ 
 -- 
 2.26.2
 
