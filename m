@@ -2,98 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A932698FC
+	by mail.lfdr.de (Postfix) with ESMTP id 7427D2698FD
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbgINWgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgINWgD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:36:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315C6C06174A;
-        Mon, 14 Sep 2020 15:36:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726135AbgINWgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:36:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726031AbgINWgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:36:04 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Br1RG3TNnz9sTR;
-        Tue, 15 Sep 2020 08:35:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600122956;
-        bh=hkG3JIvyG35IhNUVx6HXFIMkJibsuYKVrsgpZVTAVlg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K+cwkIUrBBVa/RfaJ92o/0LF+SwecmOFbOf5+wM0TW+aLTlXA+EDwhxROI8G4nQjd
-         SibM9krdxTL7bsGh9+2+AcecIKGh+Qe8KfT6xrp+WkwPSCenb05WdilTUXUMWBNkO6
-         LaRGL9xDAB2kzS3YXN2KasqFw77g+BlkzFMJwZFKSfVEjScORjpriJM1BBRWnVNIU1
-         nY0zNleh5TsonpLnXJHdU+d3n8rdkXJ4RrN5+HV2Tg9sWFy/GYHsk0TFVDLeWZm0eT
-         p3wbLqqHoAyRL8/+uwcq6Xpur5hHGFrGdDrpG1PGSW6lFIimJ0YHIiG48CUS4r+A6a
-         ZcYW+NsKLQxgw==
-Date:   Tue, 15 Sep 2020 08:35:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the tip tree
-Message-ID: <20200915083553.144aabef@canb.auug.org.au>
-In-Reply-To: <202009141310.C668784@keescook>
-References: <20200914132249.40c88461@canb.auug.org.au>
-        <202009141310.C668784@keescook>
+        by mail.kernel.org (Postfix) with ESMTPSA id E296A20732;
+        Mon, 14 Sep 2020 22:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600122964;
+        bh=iyTRP9xb115YSwNnAmaJ8c2Ffk0qyORigb9cgRe92iM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L4piqai68TzqSmMJT3ckXkEvMZth9f8EFVVoUNar/JdMUxnI8rJFqsf2umpnGom3u
+         10p7OmjtUwso19m4ys3bPWVK+n55Y3H/Cbo6AxR8EIGzJRqNbWYMEWr2CgwWmGyPeQ
+         Te+dR1mNku2fXT7rMmG0LogPr/m0pyWhWjpN+Mlo=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0919E40D3D; Mon, 14 Sep 2020 19:36:02 -0300 (-03)
+Date:   Mon, 14 Sep 2020 19:36:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 4/4] perf test: Leader sampling shouldn't clear sample
+ period
+Message-ID: <20200914223601.GJ166601@kernel.org>
+References: <20200912025655.1337192-1-irogers@google.com>
+ <20200912025655.1337192-5-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/si2Qo.3GZDyydCiIfESV.hT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200912025655.1337192-5-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/si2Qo.3GZDyydCiIfESV.hT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Em Fri, Sep 11, 2020 at 07:56:55PM -0700, Ian Rogers escreveu:
+> Add test that a sibling with leader sampling doesn't have its period
+> cleared.
 
-Hi Kees,
+Thanks, applied and collected Jiri's Acks for [34]/4 and Adrian's for
+3/4.
 
-On Mon, 14 Sep 2020 13:11:37 -0700 Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Sep 14, 2020 at 01:22:49PM +1000, Stephen Rothwell wrote:
-> > After merging the tip tree, today's linux-next build (x86_64 allmodconf=
-ig)
-> > produced this warning:
-> >=20
-> > x86_64-linux-gnu-ld: warning: orphan section `.ctors.65435' from `kerne=
-l/trace/trace_selftest_dynamic.o' being placed in section `.ctors.65435'
-> > [...] =20
->=20
-> Hmm, I wasn't seeing that...
->=20
-> Which gcc and bintuils versions are you using?
+- Arnaldo
+ 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/attr/README             |  1 +
+>  tools/perf/tests/attr/test-record-group2 | 29 ++++++++++++++++++++++++
+>  2 files changed, 30 insertions(+)
+>  create mode 100644 tools/perf/tests/attr/test-record-group2
+> 
+> diff --git a/tools/perf/tests/attr/README b/tools/perf/tests/attr/README
+> index 6cd408108595..a36f49fb4dbe 100644
+> --- a/tools/perf/tests/attr/README
+> +++ b/tools/perf/tests/attr/README
+> @@ -49,6 +49,7 @@ Following tests are defined (with perf commands):
+>    perf record --call-graph fp kill              (test-record-graph-fp)
+>    perf record --group -e cycles,instructions kill (test-record-group)
+>    perf record -e '{cycles,instructions}' kill   (test-record-group1)
+> +  perf record -e '{cycles/period=1/,instructions/period=2/}:S' kill (test-record-group2)
+>    perf record -D kill                           (test-record-no-delay)
+>    perf record -i kill                           (test-record-no-inherit)
+>    perf record -n kill                           (test-record-no-samples)
+> diff --git a/tools/perf/tests/attr/test-record-group2 b/tools/perf/tests/attr/test-record-group2
+> new file mode 100644
+> index 000000000000..6b9f8d182ce1
+> --- /dev/null
+> +++ b/tools/perf/tests/attr/test-record-group2
+> @@ -0,0 +1,29 @@
+> +[config]
+> +command = record
+> +args    = --no-bpf-event -e '{cycles/period=1234000/,instructions/period=6789000/}:S' kill >/dev/null 2>&1
+> +ret     = 1
+> +
+> +[event-1:base-record]
+> +fd=1
+> +group_fd=-1
+> +config=0|1
+> +sample_period=1234000
+> +sample_type=87
+> +read_format=12
+> +inherit=0
+> +freq=0
+> +
+> +[event-2:base-record]
+> +fd=2
+> +group_fd=1
+> +config=0|1
+> +sample_period=6789000
+> +sample_type=87
+> +read_format=12
+> +disabled=0
+> +inherit=0
+> +mmap=0
+> +comm=0
+> +freq=0
+> +enable_on_exec=0
+> +task=0
+> -- 
+> 2.28.0.618.gf4bc123cb7-goog
+> 
 
-gcc (Debian 10.2.0-5) 10.2.0
-GNU ld (GNU Binutils for Debian) 2.35
+-- 
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/si2Qo.3GZDyydCiIfESV.hT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9f8EkACgkQAVBC80lX
-0GzGcQgAoZvYJhci+oNcKY1ijoLmNSzUjI+IU/nIsZ+oh2c/xbd/CWNWI0s2spV7
-cdCX+DKPXdYlgOm9TgjKwPGulhJ7MAYw8u3qslC0T4v70+a+kHd9PPI52xqhDpOl
-n2N9z1iws7Qmjtjn/7H1NVYLjXfYSk3JVHxuaRBpFGQpDLzbqpCY7XWf6TsIQjQc
-dUHXuGODYbmVzYujkjkU2sAXvitoqGIhDIT03OfpTxuNTVsqlMfEqmumTT3UozIe
-YmMI/wGdtMlzT8txqVROSW3mGcM86U9St83//zBe27w4Dw0KmlBTo2UtDgZtGZbY
-CtRb1nE90IxS0PYZzXTDwqo85JJtlQ==
-=Xa5c
------END PGP SIGNATURE-----
-
---Sig_/si2Qo.3GZDyydCiIfESV.hT--
+- Arnaldo
