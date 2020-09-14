@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94AE269528
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBBF26952D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgINSqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:46:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58848 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726040AbgINSpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:45:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600109146; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/goy+YMw4BfvVeOPCaLRpE4rv9Sxs8JsO9XnDZB6Q+8=;
- b=I+VOUdCczLuEWf4a/NVckJoi3ehBlZ/vLketgZrIi5wdZcRUN7njsFUjmdZXvFXKcaJaKTlY
- 6HgbB3S0cmo/iW86F/Q6QVhYU2wh56YutEoaU8hDTRSa/c2mdmKjk+daL4MbmCIg486WVkPv
- TB8YLNCHLjIn802Wv4P9UwLq8do=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f5fba4854e87432be37bca5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 18:45:28
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9C9B2C43382; Mon, 14 Sep 2020 18:45:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 783AFC433C8;
-        Mon, 14 Sep 2020 18:45:26 +0000 (UTC)
+        id S1725953AbgINSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbgINSsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:48:03 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24980C06174A;
+        Mon, 14 Sep 2020 11:48:03 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x123so332028pfc.7;
+        Mon, 14 Sep 2020 11:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TktOLUiCsPv+mpZJL8cK/FeOYzPN9P96m1E+94gvEh4=;
+        b=MEswu/bUFTxGJFDPMxldk8hQ0jsmnkfS5qZJ/PBH0aTk64MLfaJYlL9OG+4I34brDK
+         hQl6RF7aa4miV3MwCE5eAUeCqRB/ehFWklavfjS9RNwbgeaIsM9srsRhK56lRD2pAwzz
+         vknoGJFp1oC0va3WMnpHW3tLlSMI0xJyIWKih6QwhZgrDTWqAi2ih0z4Oj0hg2yOHUAc
+         5conJYan1tShbiXA9oXc/fhP9LD/BkA78OwMv7IGt76Ityv01jj2K0xD/sz/qV4Bnu4j
+         iRqFEw6gCB9/d3Ss8UEKExF26qaKH+4zK+XLxDKYB9tGDVJIeYv+Db8Nbi3hl74pBsZ8
+         VOPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TktOLUiCsPv+mpZJL8cK/FeOYzPN9P96m1E+94gvEh4=;
+        b=pLmiV1tCygVOfnGeEmLc/uAp5qk4YhtkhTHgtm99ncsMk8EVilQWZBk3qfn3dnsB9U
+         VOMc0iRvBH61t4vnE5L2AfOQv7s13fTtM0Sq9Z885b5oyAQjaxhSFhn0Z82VQcecvY9z
+         ion2Yc583L0oDLbUR2zKS+maOypu8u8W8ZXNllvvm0G6KctCsXQrB0uCrdBBucnncMHR
+         dvMcAJ4FJBnT3gD413+q9sDSW+QiCMbbxOXgmN70SAqSVjMsKAHvs2W4hNbs1B1K6IK1
+         t3El+XmpQ1ijx1wEa0h/K8xAMArFutgG51Gs1ED2dqKd5Q0LC2WxzHRttblR8aID8SvL
+         tlpw==
+X-Gm-Message-State: AOAM532zDi+1HPn3eicKfuXDTaBj5HTGbASU29Yj1CFzLEJ4vXdK6CNZ
+        y/GWQI9NlpQ70+kKp4WYlSo=
+X-Google-Smtp-Source: ABdhPJzDGgyED+yg+ViGJ8weGRDUe/EqhSNYnMw1HrhqNBhRaDr5S8e73DEl593zJ9Qtz7A6vPCckg==
+X-Received: by 2002:a62:7bc7:0:b029:138:9430:544e with SMTP id w190-20020a627bc70000b02901389430544emr14988012pfc.1.1600109282564;
+        Mon, 14 Sep 2020 11:48:02 -0700 (PDT)
+Received: from Thinkpad ([45.118.167.196])
+        by smtp.gmail.com with ESMTPSA id j4sm11674416pfd.101.2020.09.14.11.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 11:48:01 -0700 (PDT)
+Date:   Tue, 15 Sep 2020 00:17:55 +0530
+From:   Anmol Karn <anmol.karan123@gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com
+Subject: Re: [Linux-kernel-mentees] [PATCH] idr: remove WARN_ON_ONCE() when
+ trying to check id
+Message-ID: <20200914184755.GB213347@Thinkpad>
+References: <20200914071724.202365-1-anmol.karan123@gmail.com>
+ <20200914110803.GL6583@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 14 Sep 2020 11:45:26 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2] mm: cma: indefinitely retry allocations in cma_alloc
-In-Reply-To: <60e99abb-7f69-c585-ff9f-76ebe6a81de6@infradead.org>
-References: <1599857630-23714-1-git-send-email-cgoldswo@codeaurora.org>
- <010101747ef2b8fc-a5e44a5a-dcf4-4828-a1d4-a099df63f2df-000000@us-west-2.amazonses.com>
- <410a4e0c-f924-4564-ae1e-cc9f6292c88e@gmail.com>
- <60e99abb-7f69-c585-ff9f-76ebe6a81de6@infradead.org>
-Message-ID: <8a736e7e213531c1894e17552152becb@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914110803.GL6583@casper.infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-11 14:42, Randy Dunlap wrote:
-> On 9/11/20 2:37 PM, Florian Fainelli wrote:
->> 
->> I am by no means an authoritative CMA person but this behavior does 
->> not seem acceptable, there is no doubt the existing one is sub-optimal 
->> under specific circumstances, but an indefinite retry, as well as a 
->> 100ms sleep appear to be arbitrary at best. How about you introduce a 
->> parameter that allows the tuning of the number of retries and/or delay 
->> between retries?
+On Mon, Sep 14, 2020 at 12:08:03PM +0100, Matthew Wilcox wrote:
+> On Mon, Sep 14, 2020 at 12:47:24PM +0530, Anmol Karn wrote:
+> > idr_get_next() gives WARN_ON_ONCE() when it gets (id > INT_MAX) true
+> > and this happens when syzbot does fuzzing, and that warning is
+> > expected, but WARN_ON_ONCE() is not required here and, cecking
+> > the condition and returning NULL value would be suffice.
+> > 
+> > Reference: commit b9959c7a347 ("filldir[64]: remove WARN_ON_ONCE() for bad directory entries")
+> > Reported-and-tested-by: syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com
+> > Link: https://syzkaller.appspot.com/bug?extid=f7204dcf3df4bb4ce42c 
+> > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
 > 
-> Also:
-> 
-> You should send your patch to linux-mm@kvack.org -- that's where
-> most memory management type patches are reviewed.
-> 
-> You should also send your patch to someone who could actually merge
-> it into the kernel source tree -- assuming that's what you want to 
-> happen.
-> 
-> Try scripts/get_mainttainer.pl on your patch to see what it says.
-> 
-> And if you are going to use a "cover letter" or "introductory email" 
-> before
-> the actual patch, the second (patch(es)) should be sent chained to the
-> first email.  git send-email should do this for you.
+> https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
 
-Hi Randy,
+Hello sir,
 
-git send-email was not using the correct ID to generate a response to 
-the cover letter, and I'm not able to fathom why.  This e-mail was 
-actually just sent out as a test to LKML as a test so I could figure out 
-how to resolve the issue, I wasn't actually expecting anyone to read 
-this.  The actual e-mail, with the correct maintainer (Andrew Morton) 
-and mailing lists, as well as the summary of the discussion on the 
-patches so far, may be found here: https://lkml.org/lkml/2020/8/11/893
+I have looked into the patch, and it seems the problem is fixed to the root cause
+in this patch, but not yet merged due to some backport issues, so, please ignore 
+this patch(sent by me), and please let me know if i can contribute to fixing this 
+bug's root cause.
 
 Thanks,
-
-Chris.
-
--- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Anmol 
