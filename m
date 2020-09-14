@@ -2,129 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D6926822D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858D126822F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 02:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgINAgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 20:36:36 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:46579 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgINAg2 (ORCPT
+        id S1726027AbgINAjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 20:39:00 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:41184 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgINAiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 20:36:28 -0400
-Received: by mail-pf1-f195.google.com with SMTP id b124so11063328pfg.13
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 17:36:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mOb5/fVBtStcT7CwxGssb2rLXfqX4ouo9PLSR/6SaEc=;
-        b=Jm5evZQWG4nclhVFDZFLlEQ5GpgtrCdIs4xyJvS1wobhq9295Mg3HwuaV5BSVvWWVz
-         VfmsLa/ShQIKKME1NsLYGkCQ5h2Dy4h7a/7iMivS+ti+UUbwg2v1yepk5mGI71dUgUSs
-         0qI6LXkOdk5iH6LjDB4wjxBnpTH3sqWA2lmkYIvy8vWIV/MkUQJJVN/ERT0HtBrdVfp2
-         6OexG0mfu0P0bMB9eFzHw7x1yPUN9ZhrJ5EAlO+U1YwgWpbnErmkZZa0jHzoW223yp7Q
-         b2iXFHvraZ+7lMS9uJhBJNDvDIG2WXRkRhoQ3FWDaJqcrWAABMb6rg/2gp1gLyHMKW7B
-         kTyw==
-X-Gm-Message-State: AOAM531Eu9b7Y3rVLZyQiLwI5yGeex1CdyYgxXMvIpDmruT86tTEpEHN
-        iSxPvNqotNjteRVP24J2eQVOtk1zH0UJ2A==
-X-Google-Smtp-Source: ABdhPJwsORdL0ffWEgS4xiLqVeaWlOhBTdFYd9LQqD047kWn2orvZaMwrSRDx56o4LYorDQa4QbKpg==
-X-Received: by 2002:aa7:9a42:: with SMTP id x2mr11398442pfj.5.1600043787673;
-        Sun, 13 Sep 2020 17:36:27 -0700 (PDT)
-Received: from sultan-book.localdomain ([104.200.129.212])
-        by smtp.gmail.com with ESMTPSA id q18sm8401451pfg.158.2020.09.13.17.36.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 17:36:27 -0700 (PDT)
-Date:   Sun, 13 Sep 2020 17:36:24 -0700
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] locking/mutex: Don't hog RCU read lock while
- optimistically spinning
-Message-ID: <20200914003624.GA3944@sultan-book.localdomain>
-References: <20200807191636.75045-1-sultan@kerneltoast.com>
- <20200907162031.GA13172@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200907162031.GA13172@willie-the-truck>
+        Sun, 13 Sep 2020 20:38:55 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 800AFCC3AE;
+        Mon, 14 Sep 2020 08:38:51 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P23637T140494925444864S1600043930497733_;
+        Mon, 14 Sep 2020 08:38:51 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <de5c6ad02f6aa7c49a146817455a2579>
+X-RL-SENDER: jay.xu@rock-chips.com
+X-SENDER: xjq@rock-chips.com
+X-LOGIN-NAME: jay.xu@rock-chips.com
+X-FST-TO: linus.walleij@linaro.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Jianqun Xu <jay.xu@rock-chips.com>
+To:     linus.walleij@linaro.org, heiko@sntech.de
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Jianqun Xu <jay.xu@rock-chips.com>
+Subject: [PATCH 2/2] pinctrl: rockchip: make driver be tristate module
+Date:   Mon, 14 Sep 2020 08:38:47 +0800
+Message-Id: <20200914003847.10341-1-jay.xu@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200907025927.9713-3-jay.xu@rock-chips.com>
+References: <20200907025927.9713-3-jay.xu@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 07, 2020 at 05:20:31PM +0100, Will Deacon wrote:
-> On Fri, Aug 07, 2020 at 12:16:35PM -0700, Sultan Alsawaf wrote:
-> > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> > 
-> > There's no reason to hold an RCU read lock the entire time while
-> > optimistically spinning for a mutex lock. This can needlessly lengthen
-> > RCU grace periods and slow down synchronize_rcu() when it doesn't brute
-> > force the RCU grace period via rcupdate.rcu_expedited=1.
-> 
-> Would be good to demonstrate this with numbers if you can.
+Make pinctrl-rockchip driver to be tristate module, support to build as
+a module, this is useful for GKI.
 
-I could simulate the worst possible case, which would stall synchronize_rcu() by
-one jiffy, which could be 10ms with CONFIG_HZ=100. The way that would happen is
-when the mutex owner does a lot of non-sleeping work while the lock is held, and
-while another CPU tries to acquire the lock.
+Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+---
+ drivers/pinctrl/Kconfig            |  2 +-
+ drivers/pinctrl/pinctrl-rockchip.c | 13 +++++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-This is a dummy example of the scenario I have in mind:
-      CPU0                         CPU1
-----------------------------------------------
-mutex_lock(locky)
-mdelay(100)                  mutex_lock(locky)
-mutex_unlock(locky)
+diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+index 4284f39a5c61..743eb2bb8709 100644
+--- a/drivers/pinctrl/Kconfig
++++ b/drivers/pinctrl/Kconfig
+@@ -207,7 +207,7 @@ config PINCTRL_OXNAS
+ 	select MFD_SYSCON
+ 
+ config PINCTRL_ROCKCHIP
+-	bool
++	tristate "Rockchip gpio and pinctrl driver"
+ 	depends on OF
+ 	select PINMUX
+ 	select GENERIC_PINCONF
+diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl-rockchip.c
+index 0401c1da79dd..927d132d6716 100644
+--- a/drivers/pinctrl/pinctrl-rockchip.c
++++ b/drivers/pinctrl/pinctrl-rockchip.c
+@@ -16,10 +16,12 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+ #include <linux/bitops.h>
+ #include <linux/gpio/driver.h>
++#include <linux/of_device.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/pinctrl/machine.h>
+@@ -4258,3 +4260,14 @@ static int __init rockchip_pinctrl_drv_register(void)
+ 	return platform_driver_register(&rockchip_pinctrl_driver);
+ }
+ postcore_initcall(rockchip_pinctrl_drv_register);
++
++static void __exit rockchip_pinctrl_drv_unregister(void)
++{
++	platform_driver_unregister(&rockchip_pinctrl_driver);
++}
++module_exit(rockchip_pinctrl_drv_unregister);
++
++MODULE_DESCRIPTION("ROCKCHIP Pin Controller Driver");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:pinctrl-rockchip");
++MODULE_DEVICE_TABLE(of, rockchip_pinctrl_dt_match);
+-- 
+2.17.1
 
-In this case, CPU1 could spin in mutex_lock() for up to a jiffy (until CPU0
-releases locky, which won't happen for 100ms, or until CPU1's task needs to
-reschedule). While the spinning occurs, the RCU read lock will be held the whole
-time, and then synchronize_rcu() will be stalled.
 
-One could argue that most mutex-locked critical sections probably wouldn't spend
-so long working on something without scheduling (at least, not intentionally),
-but on slower SMP CPUs I suspect that this is common.
 
-> > Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
-> > ---
-> >  kernel/locking/mutex.c | 25 +++++++++++++++++--------
-> >  1 file changed, 17 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> > index 5352ce50a97e..cc5676712458 100644
-> > --- a/kernel/locking/mutex.c
-> > +++ b/kernel/locking/mutex.c
-> > @@ -552,21 +552,31 @@ bool mutex_spin_on_owner(struct mutex *lock, struct task_struct *owner,
-> >  {
-> >  	bool ret = true;
-> >  
-> > -	rcu_read_lock();
-> > -	while (__mutex_owner(lock) == owner) {
-> > +	for (;;) {
-> > +		unsigned int cpu;
-> > +		bool same_owner;
-> > +
-> >  		/*
-> > -		 * Ensure we emit the owner->on_cpu, dereference _after_
-> > -		 * checking lock->owner still matches owner. If that fails,
-> > +		 * Ensure lock->owner still matches owner. If that fails,
-> >  		 * owner might point to freed memory. If it still matches,
-> >  		 * the rcu_read_lock() ensures the memory stays valid.
-> >  		 */
-> > -		barrier();
-> > +		rcu_read_lock();
-> > +		same_owner = __mutex_owner(lock) == owner;
-> > +		if (same_owner) {
-> > +			ret = owner->on_cpu;
-> > +			if (ret)
-> > +				cpu = task_cpu(owner);
-> > +		}
-> > +		rcu_read_unlock();
-> 
-> Are you sure this doesn't break the ww mutex spinning? That thing also goes
-> and looks at the owner, but now it's called outside of the read-side
-> critical section.
-
-Yes, it's safe because it's not dereferencing the owner pointer.
-
-Sultan
