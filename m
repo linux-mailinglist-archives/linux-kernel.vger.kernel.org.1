@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8EDE2698F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DEF2698F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbgINWe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:34:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51822 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbgINWeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:34:20 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E027C208DB;
-        Mon, 14 Sep 2020 22:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600122860;
-        bh=VUhtghnsr7sxEh6kYrc2+nG7h0VCsXrYJzf4W/n23ms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kkXsHGPubvAizafHEa7CYeF3kjykbcLNySMjzlvTp2vGQFZ3c3CYwkZD518XTEhJf
-         Wx89Jt1JZEFS3cL4NuNGxL01+pQe/eW9dmZVIDnrDjTAO+tq0v9p/Chl/0P53cV54T
-         np9QcdzxPGCGHpzYyjr8IIaDsXHAD9CnHzcS0Xps=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E158140D3D; Mon, 14 Sep 2020 19:34:17 -0300 (-03)
-Date:   Mon, 14 Sep 2020 19:34:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3 3/4] perf record: Don't clear event's period if set by
- a term
-Message-ID: <20200914223417.GI166601@kernel.org>
-References: <20200912025655.1337192-1-irogers@google.com>
- <20200912025655.1337192-4-irogers@google.com>
- <20200914214655.GE166601@kernel.org>
- <20200914215106.GF166601@kernel.org>
- <CAP-5=fUO_HFd2-z53u6GdRV=o7HsB4ThzWYJDGQG8OwGDeV+VA@mail.gmail.com>
+        id S1726130AbgINWeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:34:36 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:44672 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgINWe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:34:27 -0400
+Received: by mail-io1-f68.google.com with SMTP id g128so1876542iof.11;
+        Mon, 14 Sep 2020 15:34:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qawHL//JCsl3s+o/MBQptvseieD2pIXqGeERB4s68y0=;
+        b=CcK3A6n6Uh1ZymP1sAKpoF2nwMsb31UvsjhinXgNv+Xio+knZBijOUsrJeXt8CKguW
+         k8NBLpBu7YPO5x1QP7+WFZOZJ7lfkNRWhgnixvQw+6CEeNknxMPsPw8UD+e9fOavux+A
+         VrVOWvLDZ9xtf43eyOZ20+0GWNIYletT1rLuWhCbvJoROoBYwdk2PKLJPjkKGqMU8X6x
+         bNsEfh/utwnudENkjUWPERSVo96TLJxTu31X7z8oyqFu/IxDvt+QGnz9TpzD7UCYHUCF
+         pdB2CbAo7rrHP1Bb/Auyhc/UEj/BY3JMvOHV827quY2ThCw27WJetsu3y2ABcO6fa1bj
+         UjoA==
+X-Gm-Message-State: AOAM5334POMcFLeL+wUAWI0E1OIKgpSRHrlK5jvJK7tVh6uqYizXSFMC
+        PBeQ0EL7G6jYnx3kdkuxuQ==
+X-Google-Smtp-Source: ABdhPJzIqAUlesX+PcK3HAo1XZVOGkzfK7XNe09zz72N2Yn2JpGtqmogpPHH5kwRGbL/iuCPfuI3Fw==
+X-Received: by 2002:a05:6638:22ba:: with SMTP id z26mr15372869jas.55.1600122866346;
+        Mon, 14 Sep 2020 15:34:26 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id w15sm7615180ilq.46.2020.09.14.15.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 15:34:25 -0700 (PDT)
+Received: (nullmailer pid 388721 invoked by uid 1000);
+        Mon, 14 Sep 2020 22:34:22 -0000
+Date:   Mon, 14 Sep 2020 16:34:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        David Airlie <airlied@linux.ie>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        linux-arm-kernel@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, Shawn Guo <shawnguo@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 05/13] dt-bindings: gpu: vivante, gc: Remove trailing
+ whitespace
+Message-ID: <20200914223422.GA388670@bogus>
+References: <20200904145312.10960-1-krzk@kernel.org>
+ <20200904145312.10960-6-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fUO_HFd2-z53u6GdRV=o7HsB4ThzWYJDGQG8OwGDeV+VA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200904145312.10960-6-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 14, 2020 at 02:52:57PM -0700, Ian Rogers escreveu:
-> On Mon, Sep 14, 2020 at 2:51 PM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > Em Mon, Sep 14, 2020 at 06:46:55PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Fri, Sep 11, 2020 at 07:56:54PM -0700, Ian Rogers escreveu:
-> > > > If events in a group explicitly set a frequency or period with leader
-> > > > sampling, don't disable the samples on those events.
-> > > >
-> > > > Prior to 5.8:
-> > > > perf record -e '{cycles/period=12345000/,instructions/period=6789000/}:S'
-> > > > would clear the attributes then apply the config terms. In commit
-> > > > 5f34278867b7 leader sampling configuration was moved to after applying the
-> > > > config terms, in the example, making the instructions' event have its period
-> > > > cleared.
-> > > > This change makes it so that sampling is only disabled if configuration
-> > > > terms aren't present.
-> > >
-> > > Adrian, Jiri, can you please take a look a this and provide Reviewed-by
-> > > or Acked-by tags?
-> >
-> > Without this patch we have:
-> >
-> > # perf record -e '{cycles/period=1/,instructions/period=2/}:S' sleep 1
-> > [ perf record: Woken up 1 times to write data ]
-> > [ perf record: Captured and wrote 0.051 MB perf.data (6 samples) ]
-> > #
-> > # perf evlist -v
-> > cycles/period=1/: size: 120, { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|READ|ID, read_format: ID|GROUP, disabled: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-> > instructions/period=2/: size: 120, config: 0x1, sample_type: IP|TID|TIME|READ|ID, read_format: ID|GROUP, sample_id_all: 1, exclude_guest: 1
-> > #
-> >
-> > So indeed the period=2 is being cleared for the second event in that
-> > group.
-> >
-> > - Arnaldo
+On Fri, 04 Sep 2020 16:53:04 +0200, Krzysztof Kozlowski wrote:
+> Remove whitespace at the end of line.
 > 
-> Thanks Arnaldo and Adrian! Adrian's acked-by is here:
-> https://lore.kernel.org/lkml/77df85d3-a50c-d6aa-1d60-4fc9ea90dc44@intel.com/
-> Let me know if anything is missing.
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/gpu/vivante,gc.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Thanks, applied.
-
-- Arnaldo
+Applied, thanks!
