@@ -2,62 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF6D2684F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94973268504
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726067AbgINGez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:34:55 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:18111 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726003AbgINGew (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:34:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0U8rWCKG_1600065272;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U8rWCKG_1600065272)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 14 Sep 2020 14:34:34 +0800
-Subject: Re: [PATCH v6 7/8] X.509: support OSCCA sm2-with-sm3 certificate
- verification
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-security-module@vger.kernel.org,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
- <20200903131242.128665-8-tianjia.zhang@linux.alibaba.com>
- <CAOtvUMfT5zgv=e9nCgz8-1r7LuYSRZ8Zdx2xc0JwckUJZufcvg@mail.gmail.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <6f251e1e-42a0-7e6c-e0cd-51fba3150d17@linux.alibaba.com>
-Date:   Mon, 14 Sep 2020 14:34:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        id S1726107AbgINGge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:36:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:5622 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726051AbgINGga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:36:30 -0400
+IronPort-SDR: qUQVRwYCqeeDo2iVqK2wEy0OvdT4Z+LUSDqmp/L6NzdLwqVxD2163atD9t10THoHRrYIAwtpS/
+ 7QyfdBrB53+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="156427340"
+X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
+   d="scan'208";a="156427340"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 23:36:30 -0700
+IronPort-SDR: +NXA1uT6k9Cy9jdPgS8Cm0Qg72jTm41S2Q5F7VrJc4ChQ3JCB6gu3N2WP0iJZH2Y96RjsEGOji
+ KjniniGqAB5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
+   d="scan'208";a="408770350"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2020 23:36:28 -0700
+Subject: Re: [RFC PATCH V3 15/21] mmc: sdhci: UHS-II support, modify
+ set_power() to handle vdd2
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+References: <20200710111140.29725-1-benchuanggli@gmail.com>
+ <97c43596-a18f-4c7a-c226-5209772d91d1@intel.com>
+ <20200914054537.GA2738017@laputa>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <f0ff6c0a-4029-72a9-559c-8930ef0ea8bb@intel.com>
+Date:   Mon, 14 Sep 2020 09:36:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAOtvUMfT5zgv=e9nCgz8-1r7LuYSRZ8Zdx2xc0JwckUJZufcvg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200914054537.GA2738017@laputa>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,161 +53,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gilad,
+On 14/09/20 8:45 am, AKASHI Takahiro wrote:
+> Adrian,
+> 
+> On Fri, Aug 21, 2020 at 05:11:18PM +0300, Adrian Hunter wrote:
+>> On 10/07/20 2:11 pm, Ben Chuang wrote:
+>>> From: AKASHI Takahiro <takahiro.akashi@linaro.org>
+>>>
+>>> VDD2 is used for powering UHS-II interface.
+>>> Modify sdhci_set_power_and_bus_voltage(), sdhci_set_power_noreg()
+>>> and sdhci_set_power_noreg() to handle VDD2.
+>>
+>> vdd2 is always 1.8 V and I suspect there may never be support for anything
+>> else, so we should start with 1.8 V only.
+> 
+> What do you mean here?
+> You don't want to add an extra argument, vdd2, to sdhci_set_power().
+> Correct?
 
-On 9/13/20 3:12 PM, Gilad Ben-Yossef wrote:
-> Hi,
-> 
-> 
-> On Thu, Sep 3, 2020 at 4:13 PM Tianjia Zhang
-> <tianjia.zhang@linux.alibaba.com> wrote:
->>
->> The digital certificate format based on SM2 crypto algorithm as
->> specified in GM/T 0015-2012. It was published by State Encryption
->> Management Bureau, China.
->>
->> The method of generating Other User Information is defined as
->> ZA=H256(ENTLA || IDA || a || b || xG || yG || xA || yA), it also
->> specified in https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02.
->>
->> The x509 certificate supports sm2-with-sm3 type certificate
->> verification.  Because certificate verification requires ZA
->> in addition to tbs data, ZA also depends on elliptic curve
->> parameters and public key data, so you need to access tbs in sig
->> and calculate ZA. Finally calculate the digest of the
->> signature and complete the verification work. The calculation
->> process of ZA is declared in specifications GM/T 0009-2012
->> and GM/T 0003.2-2012.
->>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
->> ---
->>   crypto/asymmetric_keys/Makefile          |  1 +
->>   crypto/asymmetric_keys/public_key.c      |  6 +++
->>   crypto/asymmetric_keys/public_key_sm2.c  | 61 ++++++++++++++++++++++++
->>   crypto/asymmetric_keys/x509_public_key.c |  3 ++
->>   include/crypto/public_key.h              | 15 ++++++
->>   5 files changed, 86 insertions(+)
->>   create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
->>
->> diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
->> index 28b91adba2ae..1a99ea5acb6b 100644
->> --- a/crypto/asymmetric_keys/Makefile
->> +++ b/crypto/asymmetric_keys/Makefile
->> @@ -11,6 +11,7 @@ asymmetric_keys-y := \
->>          signature.o
->>
->>   obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) += public_key.o
->> +obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) += public_key_sm2.o
->>   obj-$(CONFIG_ASYMMETRIC_TPM_KEY_SUBTYPE) += asym_tpm.o
->>
->>   #
->> diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
->> index d8410ffd7f12..1d0492098bbd 100644
->> --- a/crypto/asymmetric_keys/public_key.c
->> +++ b/crypto/asymmetric_keys/public_key.c
->> @@ -299,6 +299,12 @@ int public_key_verify_signature(const struct public_key *pkey,
->>          if (ret)
->>                  goto error_free_key;
->>
->> +       if (strcmp(sig->pkey_algo, "sm2") == 0 && sig->data_size) {
->> +               ret = cert_sig_digest_update(sig, tfm);
->> +               if (ret)
->> +                       goto error_free_key;
->> +       }
->> +
->>          sg_init_table(src_sg, 2);
->>          sg_set_buf(&src_sg[0], sig->s, sig->s_size);
->>          sg_set_buf(&src_sg[1], sig->digest, sig->digest_size);
->> diff --git a/crypto/asymmetric_keys/public_key_sm2.c b/crypto/asymmetric_keys/public_key_sm2.c
->> new file mode 100644
->> index 000000000000..7325cf21dbb4
->> --- /dev/null
->> +++ b/crypto/asymmetric_keys/public_key_sm2.c
->> @@ -0,0 +1,61 @@
->> +/* SPDX-License-Identifier: GPL-2.0-or-later */
->> +/*
->> + * asymmetric public-key algorithm for SM2-with-SM3 certificate
->> + * as specified by OSCCA GM/T 0003.1-2012 -- 0003.5-2012 SM2 and
->> + * described at https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
->> + *
->> + * Copyright (c) 2020, Alibaba Group.
->> + * Authors: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> + */
->> +
->> +#include <crypto/sm3_base.h>
->> +#include <crypto/sm2.h>
->> +#include <crypto/public_key.h>
->> +
->> +#if IS_REACHABLE(CONFIG_CRYPTO_SM2)
->> +
->> +int cert_sig_digest_update(const struct public_key_signature *sig,
->> +                               struct crypto_akcipher *tfm_pkey)
->> +{
->> +       struct crypto_shash *tfm;
->> +       struct shash_desc *desc;
->> +       size_t desc_size;
->> +       unsigned char dgst[SM3_DIGEST_SIZE];
->> +       int ret;
->> +
->> +       BUG_ON(!sig->data);
->> +
->> +       ret = sm2_compute_z_digest(tfm_pkey, SM2_DEFAULT_USERID,
->> +                                       SM2_DEFAULT_USERID_LEN, dgst);
->> +       if (ret)
->> +               return ret;
->> +
->> +       tfm = crypto_alloc_shash(sig->hash_algo, 0, 0);
->> +       if (IS_ERR(tfm))
->> +               return PTR_ERR(tfm);
->> +
->> +       desc_size = crypto_shash_descsize(tfm) + sizeof(*desc);
->> +       desc = kzalloc(desc_size, GFP_KERNEL);
->> +       if (!desc)
->> +               goto error_free_tfm;
->> +
->> +       desc->tfm = tfm;
->> +
->> +       ret = crypto_shash_init(desc);
->> +       if (ret < 0)
->> +               goto error_free_desc;
->> +
->> +       ret = crypto_shash_update(desc, dgst, SM3_DIGEST_SIZE);
->> +       if (ret < 0)
->> +               goto error_free_desc;
->> +
->> +       ret = crypto_shash_finup(desc, sig->data, sig->data_size, sig->digest);
-> 
-> It looks like you are doing a separate init, update, finup every time
-> - I would consider using crypto_shash_digest() in one go.
-> 
-> In fact, considering the fact that you are allocating a tfm just for
-> this use and then releasing it, I would consider switching to
-> crypto_shash_tfm_digest() and dropping the kzalloc all together.
-> 
-> This should simplify the code a bit.
-> 
-> Other than that I don't have anything smart to say :-)
-> 
-> Gilad
-> 
+Yes
 
-The hash calculation here includes two parts of data, 'dgst' and 
-'sig->data'. The last call is 'finup()' not 'final()'. I understand that 
-it should not be possible to use 'crypto_shash_tfm_digest()' This kind 
-of function is simplified.
+> 
+>> Also can we create uhs2_set_power_reg() and uhs2_set_power_noreg() and use
+>> the existing ->set_power() callback
+> 
+> Again what do you expect here?
+> 
+> Do you want to see any platform-specific mmc driver who supports UHS-II
+> to implement its own call back like:
 
-If a new scope is added, the assignment of desc can be optimized, as 
-follows:
-```
-do {
-     SHASH_DESC_ON_STACK(desc, tfm);
-     desc->tfm = tfm;
+Not exactly.  I expect there to be a common implementation in sdhci-uhs2.c
+called sdhci_uhs2_set_power() for example, that drivers can use by setting
+their .set_power = sdhci_uhs2_set_power.  If they need platform-specific
+code as well then their platform-specific code can call
+sdhci_uhs2_set_power() if desired.
 
-     /* ... */
-} while (0);
-```
-However, the kernel code may not accept this style. What is your opinion?
-
-Thanks,
-Tianjia
+> 
+> void sdhci_foo_set_power(struct sdhci_host *host, unsigned char mode,
+>                                   unsigned short vdd)
+> {
+>         sdhci_set_power(host, mode,vdd);
+> 
+>         /* in case that sdhci_uhs2 module is not inserted */
+>         if (!(mmc->caps & MMC_CAP_UHS2))
+>                 return;
+> 
+>         /* vdd2 specific operation */
+>         if (IS_ERR_OR_NULL(host->mmc->supply.vmmc2))
+>                 sdhci_uhs2_set_power_noreg(host, mode);
+>         else
+>                 sdhci_uhs2_set_power_reg(host, mode);
+> 
+>         /* maybe more platform-specific initialization */
+> }
+> 
+> struct sdhci_ops sdhci_foo_ops = {
+>         .set_power = sdhci_foo_set_power,
+>         ...
+> }
+> 
+> Is this what you mean?
+> (I'm not quite sure yet that sdhci_ush2_set_power_noreg() can be split off
+> from sdhci_set_power_noreg().)
+> 
+> -Takahiro Akashi
