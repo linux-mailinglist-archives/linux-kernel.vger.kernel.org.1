@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F11A2684AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7EE2684B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbgINGSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:18:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:59048 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbgINGSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:18:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBEFFD6E;
-        Sun, 13 Sep 2020 23:18:30 -0700 (PDT)
-Received: from [10.163.73.47] (unknown [10.163.73.47])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95E913F73B;
-        Sun, 13 Sep 2020 23:18:28 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64/mm: Refactor {pgd, pud, pmd, pte}_ERROR()
-To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        catalin.marinas@arm.com, will@kernel.org, shan.gavin@gmail.com
-References: <20200913234730.23145-1-gshan@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <49a724f5-43ea-f09b-4de1-c274f4473b08@arm.com>
-Date:   Mon, 14 Sep 2020 11:47:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726098AbgINGTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgINGTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:19:01 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423FCC06174A;
+        Sun, 13 Sep 2020 23:18:57 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id o16so4919078pjr.2;
+        Sun, 13 Sep 2020 23:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MYPgJwOB3wumsWdm8PpM5P24nVAroSIX0XmTHErtiN8=;
+        b=m5zMQqKAG7mE5eqF77oB/b+ELIhxJkB11rPryu9vgZLGbo7a1hjoJPuvEC46eeAbUb
+         TvORpGMCWlzy78ABjT1P8r37FE7fDcjlIRp3EyDUNtuk5fq/U/c5lbVDOdA3NK5Y4ucD
+         65f+xAFfoO4sbKoTuikmMNgGMxj8FKtoa05l7gyBS0KQAsW8rZNwELD7uyMW930xwSxK
+         BxSt1RQ2vNiQQcwlMGr2Iobk1FBirbaqaHv0GuZDKwIX23s3o0S/twXEw5hVBrPtiYAT
+         +1WX+naMwoWrE14C5dLRsD/N9Grk/QAgGFYLVdND9VyqROiLmtEwI8VAzWJZKWOU0F7z
+         Ts2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MYPgJwOB3wumsWdm8PpM5P24nVAroSIX0XmTHErtiN8=;
+        b=Qmzyo6JXLg3JG/I3niXWVkxEfsqVyLJ1F1ODNs24vDEM2mUu6+PZzNpVe53dQ1FbGZ
+         5FPEeWDN+uJ1vU3rHv0KnDgsTP6+OQ918JTpgFJW8d8tnEOM9nbauzgiuPbb3GL5o3ax
+         v1oeIU8aqOYkJhfHm0BZW6M2lcI4zjfWlIl6hMK0AjweHapn1O29edexo7OHYiMT8eIy
+         Qmk7cRxGtRDcMZPCv9u7iwUdbRRVeLGHp3VdpL9cYU5fsbu6tbjwysTzL44vdW+zbFSl
+         K2sVuaWsOsN+j3MsaEuUVQxvDzWhLKamwu+l26NguCXeFx2mB/6K7YOdDKcXz6tk1Xyf
+         V+hg==
+X-Gm-Message-State: AOAM533KL5atjmgZiPpCE617PLQ7XXB6tLNUXO8aeIuOJL9CeSaxCMvL
+        kYO5hdfp67cTJOBDBuFshdHQA2C5X1nzf1Bf6lKjhoPk
+X-Google-Smtp-Source: ABdhPJyEN20m5tXqOxy4gIhmp00NE75m2DyLIIl8otL6PZ8wLltOCahP2WCtfHH9VdmpvmESJEu6iu48pwOkmLq1X8I=
+X-Received: by 2002:a17:90b:816:: with SMTP id bk22mr12784047pjb.66.1600064336828;
+ Sun, 13 Sep 2020 23:18:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200913234730.23145-1-gshan@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200903000658.89944-1-xie.he.0141@gmail.com> <20200904151441.27c97d80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EN+=WTuduvm43_Lq=XWL78AcF5q6Zoyg8S5fao_udL=+Q@mail.gmail.com> <m3v9ghgc97.fsf@t19.piap.pl>
+In-Reply-To: <m3v9ghgc97.fsf@t19.piap.pl>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sun, 13 Sep 2020 23:18:46 -0700
+Message-ID: <CAJht_ENMtrJouSazq3yL7JUS+Hwv4mjtxrcpqxOrc+6vMUVM=w@mail.gmail.com>
+Subject: Re: [PATCH net v2] drivers/net/wan/hdlc_fr: Add needed_headroom for
+ PVC devices
+To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Krzysztof Halasa <khc@pm.waw.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Sep 13, 2020 at 10:26 PM Krzysztof Ha=C5=82asa <khalasa@piap.pl> wr=
+ote:
+>
+> Xie He <xie.he.0141@gmail.com> writes:
+>
+> > The HDLC device is not actually prepending any header when it is used
+> > with this driver. When the PVC device has prepended its header and
+> > handed over the skb to the HDLC device, the HDLC device just hands it
+> > over to the hardware driver for transmission without prepending any
+> > header.
+>
+> That's correct. IIRC:
+> - Cisco and PPP modes add 4 bytes
+> - Frame Relay adds 4 (specific protocols - mostly IPv4) or 10 (general
+>   case) bytes. There is that pvcX->hdlcX transition which adds nothing
+>   (the header is already in place when the packet leaves pvcX device).
+> - Raw mode adds nothing (IPv4 only, though it could be modified for
+>   both IPv4/v6 easily)
+> - Ethernet (hdlc_raw_eth.c) adds normal Ethernet header.
 
+Thank you for the nice summary!
 
-On 09/14/2020 05:17 AM, Gavin Shan wrote:
-> The function __{pgd, pud, pmd, pte}_error() are introduced so that
-> they can be called by {pgd, pud, pmd, pte}_ERROR(). However, some
-> of the functions could never be called when the corresponding page
-> table level isn't enabled. For example, __{pud, pmd}_error() are
-> unused when PUD and PMD are folded to PGD.
-> 
-> This removes __{pgd, pud, pmd, pte}_error() and call pr_err() from
-> {pgd, pud, pmd, pte}_ERROR() directly, similar to what x86/powerpc
-> are doing. With this, the code looks a bit simplified either.
-> 
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
-> v2: Fix build warning caused by wrong printk format
-> ---
->  arch/arm64/include/asm/pgtable.h | 17 ++++++++---------
->  arch/arm64/kernel/traps.c        | 20 --------------------
->  2 files changed, 8 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index d5d3fbe73953..e0ab81923c30 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -35,11 +35,6 @@
->  
->  extern struct page *vmemmap;
->  
-> -extern void __pte_error(const char *file, int line, unsigned long val);
-> -extern void __pmd_error(const char *file, int line, unsigned long val);
-> -extern void __pud_error(const char *file, int line, unsigned long val);
-> -extern void __pgd_error(const char *file, int line, unsigned long val);
-> -
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
->  
-> @@ -57,7 +52,8 @@ extern void __pgd_error(const char *file, int line, unsigned long val);
->  extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
->  #define ZERO_PAGE(vaddr)	phys_to_page(__pa_symbol(empty_zero_page))
->  
-> -#define pte_ERROR(pte)		__pte_error(__FILE__, __LINE__, pte_val(pte))
-> +#define pte_ERROR(e)	\
-> +	pr_err("%s:%d: bad pte %016llx.\n", __FILE__, __LINE__, pte_val(e))
->  
->  /*
->   * Macros to convert between a physical address and its placement in a
-> @@ -541,7 +537,8 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->  
->  #if CONFIG_PGTABLE_LEVELS > 2
->  
-> -#define pmd_ERROR(pmd)		__pmd_error(__FILE__, __LINE__, pmd_val(pmd))
-> +#define pmd_ERROR(e)	\
-> +	pr_err("%s:%d: bad pmd %016llx.\n", __FILE__, __LINE__, pmd_val(e))
->  
->  #define pud_none(pud)		(!pud_val(pud))
->  #define pud_bad(pud)		(!(pud_val(pud) & PUD_TABLE_BIT))
-> @@ -608,7 +605,8 @@ static inline unsigned long pud_page_vaddr(pud_t pud)
->  
->  #if CONFIG_PGTABLE_LEVELS > 3
->  
-> -#define pud_ERROR(pud)		__pud_error(__FILE__, __LINE__, pud_val(pud))
-> +#define pud_ERROR(e)	\
-> +	pr_err("%s:%d: bad pud %016llx.\n", __FILE__, __LINE__, pud_val(e))
->  
->  #define p4d_none(p4d)		(!p4d_val(p4d))
->  #define p4d_bad(p4d)		(!(p4d_val(p4d) & 2))
-> @@ -667,7 +665,8 @@ static inline unsigned long p4d_page_vaddr(p4d_t p4d)
->  
->  #endif  /* CONFIG_PGTABLE_LEVELS > 3 */
->  
-> -#define pgd_ERROR(pgd)		__pgd_error(__FILE__, __LINE__, pgd_val(pgd))
-> +#define pgd_ERROR(e)	\
-> +	pr_err("%s:%d: bad pgd %016llx.\n", __FILE__, __LINE__, pgd_val(e))
->  
->  #define pgd_set_fixmap(addr)	((pgd_t *)set_fixmap_offset(FIX_PGD, addr))
->  #define pgd_clear_fixmap()	clear_fixmap(FIX_PGD)
-> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> index 13ebd5ca2070..12fba7136dbd 100644
-> --- a/arch/arm64/kernel/traps.c
-> +++ b/arch/arm64/kernel/traps.c
-> @@ -935,26 +935,6 @@ asmlinkage void enter_from_user_mode(void)
->  }
->  NOKPROBE_SYMBOL(enter_from_user_mode);
->  
-> -void __pte_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pte %016lx.\n", file, line, val);
-> -}
-> -
-> -void __pmd_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pmd %016lx.\n", file, line, val);
-> -}
-> -
-> -void __pud_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pud %016lx.\n", file, line, val);
-> -}
-> -
-> -void __pgd_error(const char *file, int line, unsigned long val)
-> -{
-> -	pr_err("%s:%d: bad pgd %016lx.\n", file, line, val);
-> -}
-> -
->  /* GENERIC_BUG traps */
->  
->  int is_valid_bugaddr(unsigned long addr)
-> 
-
-Looks good to me. Seems like a sensible clean up which reduces code.
-Tried booting on multiple page size configs and see no regression.
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+I just realized that we can indeed support both IPv4/v6 in hdlc_raw.
+Both IPv4 and v6 packets have a version field in the header, so we can
+use it to distinguish v4 and v6 packets on receiving. We can introduce
+it as a new feature some time.
