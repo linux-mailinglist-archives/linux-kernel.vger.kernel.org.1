@@ -2,143 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD452691B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9158F2691E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgINQhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgINQgF (ORCPT
+        id S1726340AbgINQnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:43:13 -0400
+Received: from smtprelay0063.hostedemail.com ([216.40.44.63]:48834 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726061AbgINQnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:36:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175D9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WDMT4z+GYiPzqUDcVnVV7jQyFbfLccJ4XjhSBakvxjY=; b=e6+JbYmbABPLBOMdfnaNTiaF0A
-        pBG/q91PcXZX1t0MJFpX40KBCJi9XmiN+KhKdSnj1tT06UrOS8VS5XFXukMiPqqhpDfUnmbNqqCem
-        pcI+JKLldqcHd8kAmUq0RmWSm8MCnZI07pIzUurMEBrwhZ9m1yPIuqZuayDG/aSYv9bESda3pJzJG
-        uCkSGQWnQ2VqI36ySZ3h0/BqRGulBGOa7d2I5pXQqpkvP2hMl+6So/6rEJ3/UgtHmkvXrKJESmJeJ
-        JUuhghlGU+NQfHAFV/uX7Gjpr9ijAoAlGAgpdk7pifShbnmnL+EBVJhxEqXle6ZdOZDh273FKLYLN
-        bHELImPA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHrS5-0000dy-97; Mon, 14 Sep 2020 16:35:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 823AD3003D8;
-        Mon, 14 Sep 2020 18:35:34 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3824C2B4A4AFF; Mon, 14 Sep 2020 18:35:34 +0200 (CEST)
-Date:   Mon, 14 Sep 2020 18:35:34 +0200
-From:   peterz@infradead.org
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-Message-ID: <20200914163534.GT1362448@hirez.programming.kicks-ass.net>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-3-jolsa@kernel.org>
- <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
- <20200914152841.GC160517@kernel.org>
+        Mon, 14 Sep 2020 12:43:02 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 7633B100E8465;
+        Mon, 14 Sep 2020 16:42:52 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:2898:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6119:7576:7904:9010:9545:10004:10400:10967:11026:11232:11657:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:13161:13229:13255:13439:13848:14096:14097:14181:14659:14721:21080:21451:21627:21660:21740:21990:30041:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:11,LUA_SUMMARY:none
+X-HE-Tag: twig87_0f068782710a
+X-Filterd-Recvd-Size: 3560
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf16.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 14 Sep 2020 16:42:50 +0000 (UTC)
+Message-ID: <8c95d3d02dbdd36a048280cb8d9e8f171c3b4959.camel@perches.com>
+Subject: Re: [RESEND PATCH] staging: rtl8188eu: Fix else after return
+ WARNING (checkpatch)
+From:   Joe Perches <joe@perches.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Sohom Datta <sohom.datta@learner.manipal.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>
+Date:   Mon, 14 Sep 2020 09:42:49 -0700
+In-Reply-To: <20200914145755.GD4282@kadam>
+References: <230f781dcaadfc797a016cc6036d63efe6542062.camel@learner.manipal.edu>
+         <20200914145755.GD4282@kadam>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914152841.GC160517@kernel.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:28:41PM -0300, Arnaldo Carvalho de Melo wrote:
-
-> > >   struct {
-> > >     struct perf_event_header header;
+On Mon, 2020-09-14 at 17:57 +0300, Dan Carpenter wrote:
+> On Sun, Sep 13, 2020 at 12:19:50PM +0530, Sohom Datta wrote:
+> > > From 4c8c8f3ff7f4d711daea4ac3bb987fcecc7ef1ed Mon Sep 17 00:00:00 2001
+> > From: Sohom <sohom.datta@learner.manipal.edu>
+> > Date: Sat, 12 Sep 2020 18:04:56 +0530
+> > Subject: [RESEND PATCH] staging: rtl8188eu: Fix else after return WARNING
+> >  (checkpatch)
+> > 
+> > Fixed:
+> > WARNING: else is not generally useful after a break or return
+> > 1636: FILE: ./rtw_recv.c:1636:
+> > +           return false;
+> > +       else
+> > 
+> > Separated the return statement into a separate block since
+> > it doesn't seem to depend on the SN_LESS explicity being false.
+> > 
+> > Signed-off-by: Sohom <sohom.datta@learner.manipal.edu>
+> > ---
+> >  drivers/staging/rtl8188eu/core/rtw_recv.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
+> > index 5fe7a0458dd2..5e81134ffb6d 100644
+> > --- a/drivers/staging/rtl8188eu/core/rtw_recv.c
+> > +++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
+> > @@ -1629,10 +1629,11 @@ static int enqueue_reorder_recvframe(struct recv_reorder_ctrl *preorder_ctrl,
+> >  		hdr = list_entry(plist, struct recv_frame, list);
+> >  		pnextattrib = &hdr->attrib;
+> >  
+> > +		if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
+> > +			return false;
+> > +
+> >  		if (SN_LESS(pnextattrib->seq_num, pattrib->seq_num))
+> >  			plist = plist->next;
+> > -		else if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
+> > -			return false;
+> >  		else
+> >  			break;
+> >  	}
 > 
-> > >     u32                      pid, tid;
-> > >     u64                      addr;
-> > >     u64                      len;
-> > >     u64                      pgoff;
-> > >     u32                      maj;
-> > >     u32                      min;
-> > >     u64                      ino;
-> > >     u64                      ino_generation;
-> > >     u32                      prot, flags;
-> > >     u32                      reserved;
-> 
-> What for this reserved? its all nicely aligned already, u64 followed by
-> two u32 (prot, flags).
+> Checkpatch is just wrong here.  Ignore it when it's wrong.
 
-I suspect it is so that sizeof(reserve+buildid) is a multiple of 8. But
-yes, that's a wee bit daft, since the next field is a variable length
-character array.
+It's not "wrong" here.  It's making a suggestion.
 
-> > >     u8                       buildid[20];
->  
-> > Do we need maj, min, ino, ino_generation for mmap3 event?
-> > I think they are to compare binaries, then we can do it with
-> > build-id (and I think it'd be better)..
-> 
-> Humm, I thought MMAP2 would be a superset of MMAP and MMAP3 would be a
-> superset of MMAP2.
+Perhaps read the SN_EQUAL and SN_LESS macros.
 
-Well, the 'funny' thing is that if you do use buildid, then
-{maj,min,ino,ino_generation} are indeed superfluous, but are combined
-also large enough to contain buildid.
+a and b are both u16's here.
 
-> If we want to ditch useless stuff, then trow away pid, tid too, as we
-> can select those via sample_type.
+drivers/staging/rtl8188eu/include/rtw_recv.h:#define SN_LESS(a, b)              (((a - b) & 0x800) != 0)
+drivers/staging/rtl8188eu/include/rtw_recv.h:#define SN_EQUAL(a, b)     (a == b)
 
-Correct.
+Reordering works, perhaps it's just a question of
+whether it's the most likely result of the test.
 
-So something like:
+This is in a while loop.
 
-struct {
-  struct perf_event_header header;
+If the expected test is really the most likely that
+SN_LESS is true, then perhaps this loop could be
+something like:
 
-  u64                      addr;
-  u64                      len;
-  u64                      pgoff;
-  union {
-    struct {
-      u32                  maj;
-      u32                  min;
-      u64                  ino;
-      u64                  ino_generation;
-    };
-    u8                     buildid[20];
-  };
-  u32                      prot, flags;
-  char			   filename[];
-  struct sample_id         sample_id;
-};
+		if (SN_LESS(pnextattrib->seq_num, pattrib->seq_num)) {
+			plist = plist->next;
+			continue;
+		}
+		if (SN_EQUAL(pnextattrib->seq_num, pattrib->seq_num))
+			return false;
+		break;
+	}
 
-Using one of the MISC bits to resolve the union. Might actually bring
-benefit to everyone. Us normal people get to have a smaller MMAP record,
-while the buildid folks can have it too.
+The real question is whether or not that's more readable.
 
-Even more extreme would be using 2 MISC bits and allowing the union to
-be 0 sized for anon.
 
-That said; I have the nagging feeling there were unresolved issues with
-mmap2, but I can't seem to find any relevant emails on it :/ My
-google-fu is weak today.
