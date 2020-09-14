@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00845269442
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBE0269443
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgINR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgINR5H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:57:07 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F300C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:57:06 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z4so603094wrr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:57:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=UU4YK6KB8K/yy0/XwXQD3IB16jnJ9qXibO9pMdbOoRY=;
-        b=jwtToS9oyke/snrB996EEguzitHvKg1MFr/NuNomJxr/JeDCSBQYtXgqiGrDWMyIBs
-         WDS3GVeff43pAMOPmcCu5lEyPOaGEdBzfrGEEEeQRfH9CxgRRkBFrmJX2JSo/zb3mL9d
-         vPcl+lpYmHruHXxO75CbY2y5HzUCvKb4Kqq0MjeybOZicYlKcHaMXmmeFqLO/BJAZb10
-         Ljw2YIRyz80wONxWjFwDDwbvdPEG6MHaVEVZUKCAUJUNHCM4Txj9IdsbkWSiPSnc1ElT
-         5mGh5/Io787xP744ad4MWvYjT+EWejKEcEdL8QRvoORbkI7kDI30IejEs/xWMe58tBQm
-         1vIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=UU4YK6KB8K/yy0/XwXQD3IB16jnJ9qXibO9pMdbOoRY=;
-        b=Pshr6hFdG36dWa5baGpZjcOCkYLmTjEpmuQuRNw5ObZi6b+wi4hf0MIH7qO6kGAgEX
-         68grThT51MRr/2lZg1chy8KWdDq1CbMq5L4Jw8KNpzqlh/TOqSMzBjgK7NehmnOjFxx1
-         nuzXTxbdWx0632cHVKpJp2HJvJYFHYolE4YQfguDTv0n0oPdKpN1pv5ueMi+tKM2Sj9Z
-         3ZDR7oJxCoUz3bItvNlAP5DrV+qS2I1W+mkV4VBiV8ejPpbeLM4/f1nIcM6cjuFa4St1
-         QIX7d587esKD53EKPSFhNJyOq5eGmtKx2OjoFYjR+SY4ub4nTzwJ5Tgf0pe9zgp8ljXS
-         HceQ==
-X-Gm-Message-State: AOAM5301O/71Lpn/SV2dzO0aCrZtlpr3D/7JysAdgkd2W8sPmrRJGLw3
-        khRj50t6YBWHa019GpTIQuY3iQ==
-X-Google-Smtp-Source: ABdhPJwLbvA0bwNZUrY2/J2Jh4bpdu76XjGMxG6gbt+toWQz5yZ5slWLQdM7mvfzT3xeFaz6EtnIkQ==
-X-Received: by 2002:adf:f203:: with SMTP id p3mr17433255wro.339.1600106225140;
-        Mon, 14 Sep 2020 10:57:05 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id m3sm22115050wrs.83.2020.09.14.10.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 10:57:04 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, kishon@ti.com,
-        balbi@kernel.org, martin.blumenstingl@googlemail.com
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 0/5] usb: dwc-meson-g12a: Add support for USB on S400 board
-In-Reply-To: <20200909160409.8678-1-narmstrong@baylibre.com>
-References: <20200909160409.8678-1-narmstrong@baylibre.com>
-Date:   Mon, 14 Sep 2020 10:57:01 -0700
-Message-ID: <7hft7kw8b6.fsf@baylibre.com>
+        id S1726125AbgINR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:57:25 -0400
+Received: from mout.gmx.net ([212.227.17.21]:43193 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726069AbgINR5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:57:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600106229;
+        bh=VkR3sLNEHGB7vqOFeucWnF1Cpiwm6NMeodVD3aUq3rs=;
+        h=X-UI-Sender-Class:From:To:Subject:Date;
+        b=VPHvLGE3P6Gj313ovpVLFc3MLvGx64PDo1cCrgTUvJQzAf/NiUf3lOYsc997e2zAx
+         6XczVY6GMBIJ2gQUuJ7+PDmIFq28cXcyXNMGtRLC6NdHD2sVZaQPilf5PAsMOKePbI
+         m2VCEhTqLfoikqSvTZgRvMxqTeSS9pbb8akrKg08=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.208.209.101] ([80.208.209.101]) by web-mail.gmx.net
+ (3c-app-gmx-bs03.server.lan [172.19.170.52]) (via HTTP); Mon, 14 Sep 2020
+ 19:57:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <trinity-9cd01270-7c54-4bf5-810d-e1b7de352e11-1600106229398@3c-app-gmx-bs03>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [question] KBUILD_OUTPUT and modules install (with
+ INSTALL_MOD_PATH)
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 14 Sep 2020 19:57:09 +0200
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:ALlgZSKA62hoClrvvBfPSX3yC7O1YXEi6blZpgY6jvYhAYMlyeV+1EZJrcfhxcD9+HoVX
+ bc3bTLKEKABBaVqDgLwSpxGGXGQuaWKbYaNPvqhEGgwabfS1n0sXSByoVnLjZky7V1OOk3qDxQU5
+ MAgkdEZ+APoolnl62ZuoTPmtEgOKG0S6DWpG/6PpgsaWLhjG06/L4ag4bjd7dRtSXb8AjGdl1/sn
+ 2nbLq/wr9WlNylr3yWsue5GgYsW7PQ09HpCfsp3RSgP4cV/qYdsuaJE6ZIVnzmCvv5yRTAB8Vp27
+ F8=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SD2Cj1CuugM=:7FueitUXOoE++PIaOLEejH
+ wJ1HdukpUWpxCUgLqYLJx2ldDFUOwF/gaeE+YnGujhGsw+KX8INrsUeC2GKbnkCL4s82P1p1J
+ UWRCwKejSZ3KmrIaLyvskFAU7gHTnUsIYxGOrzWpr9uqa0pTobrt3Dxk/qyBA/T0gqA2FG91D
+ a82Zwwjxx9H8Af8WWqWSy8Nz9mYHkTNHOJwoOPh2kLshitRPe/6Fn5kun0/wDaQ6Zi2OHT2L8
+ P9HJVzDtXvd1x+Y1y119o3yiW/lKyO1FUU4iOkaBrP1zjdtxaUTUjKNlDvfyOyVYpAZPLxdzh
+ v+a4/683rwUGvs2K6o0WYlTqQj/oWK5t1IGHHzO6XHU9DGDnGukMrrtxU8DCDFPgizIQViM+K
+ wRb/F7uVxXLfo5s+yvbOCWL8hh+tCAqZAdkFDoIhsPLUhBn2rjHZP1ULN7BspEEKIzB4Ya6yS
+ SzWTvyf9sD8/Fkc/dbfqNfFnmyQCKFBSRex6WroCbxWbhZ0GhVSsTcBy9RbQLmh0jUJxiXj3O
+ PXWewb9kANY2Ryc9XHAQd6SFPp+2dncrzkyVk+jsaNkpHqKx3bSI8uyNF7CiHZ05A5bAhaPjf
+ vlL9th/gimp2SpobGHbav5wPsDXaUf38zNyLrC85PI6KW75HeK+v+AHUu1YhD8tnJ43oe/xet
+ zsXOZKQnDd0D85yz9a9/mTDBhBeZV+2CAAWypQoktlZMSiXUVglChUAoMp1YLPsVmeTk=
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+Hi,
 
-> The Amlogic AXG is close from the GXL Glue but with a single OTG PHY.
+i try to use modules_install target after building kernel with KBUILD_OUTP=
+UT set
 
-minor grammar nit: s/close from/close to/  (also in patches 2 & 3).
-Otherwise..
+KBUILD_OUTPUT: /media/data_nvme/git/kernel/build #kernel source is in /med=
+ia/data_nvme/git/kernel/BPI-R2-4.14
 
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+kernel is build successfully, but i fail on running the make modules_insta=
+ll target
 
-Kevin
+  ERROR: Kernel configuration is invalid.
+         include/generated/autoconf.h or include/config/auto.conf are miss=
+ing.
+         Run 'make oldconfig && make prepare' on kernel src to fix it.
 
+Makefile:648: include/config/auto.conf: No such file or directory
+make: *** [Makefile:719: include/config/auto.conf] Error 1
 
+it looks it is ignoring the KBUILD_OUTPUT variable, as both files are pres=
+ent
 
-> It needs the same init sequence as GXL & GXM, but it seems it doesn't need
-> the host disconnect bit.
->
-> The Glue driver reuses the already implemented GXL & GXM work.
->
-> The USB2 PHY driver needs a slight tweak to keep the OTG detection working.
->
-> Neil Armstrong (5):
->   phy: amlogic: phy-meson-gxl-usb2: keep ID pull-up even in Host mode
->   dt-bindings: usb: amlogic,meson-g12a-usb-ctrl: add the Amlogic AXG
->     Families USB Glue Bindings
->   usb: dwc-meson-g12a: Add support for USB on AXG SoCs
->   arm64: dts: meson-axg: add USB nodes
->   arm64: dts: meson-axg-s400: enable USB OTG
->
->  .../usb/amlogic,meson-g12a-usb-ctrl.yaml      | 22 +++++++-
->  .../arm64/boot/dts/amlogic/meson-axg-s400.dts | 10 ++++
->  arch/arm64/boot/dts/amlogic/meson-axg.dtsi    | 51 +++++++++++++++++++
->  drivers/phy/amlogic/phy-meson-gxl-usb2.c      |  3 +-
->  drivers/usb/dwc3/dwc3-meson-g12a.c            | 17 +++++++
->  5 files changed, 101 insertions(+), 2 deletions(-)
->
-> -- 
-> 2.22.0
+$ ls /media/data_nvme/git/kernel/build/include/config/auto.conf
+/media/data_nvme/git/kernel/build/include/config/auto.conf
+$ ls /media/data_nvme/git/kernel/build/include/generated/autoconf.h
+/media/data_nvme/git/kernel/build/include/generated/autoconf.h
+
+i also tried adding KERNEL_DIR var, but also without success
+
+sudo make ARCH=3D$ARCH KERNEL_DIR=3D$KBUILD_OUTPUT INSTALL_MOD_PATH=3D/med=
+ia/$USER/BPI-ROOT/ modules_install
+
+$KBUILD_OUTPUT is definitely set to right directory (checked on beginning =
+of my function)
+
+this message seems to be triggered by Makefile in root (here i tried to ad=
+d the KBUILD_OUTPUT in the test before include without success)
+
+ 718 include/config/auto.conf:
+ 719     $(Q)test -e include/generated/autoconf.h -a -e $@ || (      \
+ 720     echo >&2;                           \
+ 721     echo >&2 "  ERROR: Kernel configuration is invalid.";       \
+ 722     echo >&2 "         include/generated/autoconf.h or $@ are missing=
+.";\
+
+any idea?
+
+regards Frank
+
