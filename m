@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAC22689E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED522689F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgINLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:24:54 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:44986 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgINLYd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726063AbgINLZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:25:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41734 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725968AbgINLYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 07:24:33 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08EBNo2H115990;
-        Mon, 14 Sep 2020 06:23:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600082630;
-        bh=i3S61o3XIm7kuDIMxI7vkJQs4gr1Z+DMR4ZkibvnLLA=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=t7q3wL8Fjjbb+BugwFuULrh3AEl3dKgSe9/f83QOvZmj3dHGSGMUJNXGIZdDbogbV
-         BFyS5AFngtqjoxXmaM91vaYQvK+Y/eUcBN04YpffwK3aEoOh0MPiziiF6pUcx/cufl
-         XTj6tGWbzrg0O4dYuTaV7PA61JM7oxpOtktwpowM=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08EBNoiR074289
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Sep 2020 06:23:50 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Sep 2020 06:23:50 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Sep 2020 06:23:50 -0500
-Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08EBNlXx040893;
-        Mon, 14 Sep 2020 06:23:48 -0500
-Subject: Re: [RESEND PATCH 1/2] arm64: dts: ti: k3-j721e-main: Add PCIe device
- tree nodes
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
-CC:     Tero Kristo <t-kristo@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200901140628.8800-1-kishon@ti.com>
- <20200901140628.8800-2-kishon@ti.com> <20200901145204.ayybrzqjcfhiqnfq@akan>
- <5f23246a-a9d7-495d-a4ec-d392ad95a450@ti.com>
- <4b17cace-09d5-af8c-6e7f-9358cfdceb4d@ti.com>
-Message-ID: <e914e527-00fc-2614-fa74-f2137dbcfaf9@ti.com>
-Date:   Mon, 14 Sep 2020 16:53:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 90E4DAE51;
+        Mon, 14 Sep 2020 11:24:37 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 13:24:21 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jan =?iso-8859-1?Q?H=F6ppner?= <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        linux-api@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
+ ?
+Message-ID: <20200914112421.GK16999@dhcp22.suse.cz>
+References: <f14f7f00-0501-bb93-88cc-780ae4fbaad3@intel.com>
+ <3E00A442-7107-48DA-8172-EED95F6E1663@redhat.com>
+ <20200911072035.GC7986@dhcp22.suse.cz>
+ <02cdbf90-b29f-a9ec-c83d-49f2548e3e91@redhat.com>
+ <20200911091252.GD7986@dhcp22.suse.cz>
+ <0f532ff3-972b-bd91-30fe-1c3111d920bf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <4b17cace-09d5-af8c-6e7f-9358cfdceb4d@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f532ff3-972b-bd91-30fe-1c3111d920bf@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 02/09/20 1:07 pm, Kishon Vijay Abraham I wrote:
-> Hi Rob,
+On Fri 11-09-20 12:09:52, David Hildenbrand wrote:
+> On 11.09.20 11:12, Michal Hocko wrote:
+> > On Fri 11-09-20 10:09:07, David Hildenbrand wrote:
+> > [...]
+> >> Consider two cases:
+> >>
+> >> 1. Hot(un)plugging huge DIMMs: many (not all!) use cases want to
+> >> online/offline the whole thing. HW can effectively only plug/unplug the
+> >> whole thing. It makes sense in some (most?) setups to represent one DIMM
+> >> as one memory block device.
+> > 
+> > Yes, for the physical hotplug it doesn't really make much sense to me to
+> > offline portions that the HW cannot hotremove.
 > 
-> On 02/09/20 10:24 am, Kishon Vijay Abraham I wrote:
->> Hi Nishanth,
->>
->> On 01/09/20 8:22 pm, Nishanth Menon wrote:
->>> On 19:36-20200901, Kishon Vijay Abraham I wrote:
->>>> Add PCIe device tree node (both RC and EP) for the four
->>>> PCIe instances here.
->>>>
->>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->>>> ---
->>>>   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 218
->>>> ++++++++++++++++++++++
->>>>   arch/arm64/boot/dts/ti/k3-j721e.dtsi      |   5 +-
->>>>   2 files changed, 222 insertions(+), 1 deletion(-)
->>>
->>>
->>> Did you look at the diff of the dtbs_check before and after this
->>> series? I see: https://pastebin.ubuntu.com/p/9fyfrTjx9M/
->>
->> I didn't see any errors when I checked for individual bindings
->> a0393678@a0393678-ssd:~/repos/linux$ mkconfig64 dtbs_check
->> DT_SCHEMA_FILES="Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml"
->>
->>    SCHEMA  Documentation/devicetree/bindings/processed-schema.yaml
->>    DTC     arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
->>    DTC     arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
->>    CHECK   arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
->>    CHECK   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
->> a0393678@a0393678-ssd:~/repos/linux$ mkconfig64 dtbs_check
->> DT_SCHEMA_FILES="Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml"
->>
->>    SCHEMA  Documentation/devicetree/bindings/processed-schema.yamlsimple-bus
->>    DTC     arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
->>    DTC     arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
->>    CHECK   arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
->>    CHECK   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
+> I've seen people offline parts of memory to simulate systems with less
+> RAM and people offline parts of memory on demand to save energy
+> (poweroff banks). People won't stop being creative with what we provided
+> to them :D
+
+Heh, I have seen people shooting their foot for fun. But more seriously,
+I do undestand different usecases and we shouldn't cut them off their
+toys.
+
+> >> 2. Hot(un)plugging small memory increments. This is mostly the case in
+> >> virtualized environments - especially hyper-v balloon, xen balloon,
+> >> virtio-mem and (drumroll) ppc dlpar and s390x standby memory. On PPC,
+> >> you want at least all (16MB!) memory block devices that can get
+> >> unplugged again individually ("LMBs") as separate memory blocks. Same on
+> >> s390x on memory increment size (currently effectively the memory block
+> >> size).
+> > 
+> > Yes I do recognize those usecase even though I will not pretend I
+> > consider it quesitonable. E.g. any hotplug with a smaller granularity
+> > than the memory model in Linus allows is just dubious. We simply cannot
+> > implement that without a lot of wasting and then the question is what is
+> > the real point.
 > 
-> Can you give hint on why I get ranges is too long error
-> https://pastebin.ubuntu.com/p/cPm2tg3dcV/ which I give mkconfig64
-> dtbs_check but don't see an error when I include "DT_SCHEMA_FILES"?
+> Having the section size as small as possible in these environments is
+> most certainly preferable, to clean up metadata where possible.
 
-I debugged this and looks like PCIe "ranges" property conflicts with
-simple-bus.
+There is a certain line that is hard to maintain. I consider a section
+to be the smallest granularity that makes sense to support. Current
+section sizing makes sense from the VMEMMAP point of view. If there are
+strong reasons to allow smaller once then I belive this should be
+compile time option.
 
-A diff like below helps to solve the issue
-diff --git a/schemas/simple-bus.yaml b/schemas/simple-bus.yaml
-index 248ac9d..ed818ef 100644
---- a/schemas/simple-bus.yaml
-+++ b/schemas/simple-bus.yaml
-@@ -39,7 +39,7 @@ patternProperties:
-         oneOf:
-           - items:
-               minItems: 3
--              maxItems: 6
-+              maxItems: 7
-             minItems: 0
-             maxItems: 1024
-           - $ref: "types.yaml#/definitions/flag"
+> Otherwise, hot(un)plugging smaller granularity behaves more like memory
+> ballooning (and I think I don't have to tell you that ballooning is used
+> excessively even though it wastes memory on metadata ;) ). Anyhow,
+> that's another discussion.
 
-If this looks right to you, I can post a patch for it. Without fixing
-this we would see false errors for PCIe DT nodes.
+Yeah, I am aware of that. And honestly subsection offlining makes very
+little sense to me. It was hard to argue against that for nvdimm
+usecases where we simply had to workaround the reality where devices
+couldn't have been aligned properly. I do not think we want to claim a
+support for general hotplug though. 
 
-Thanks
-Kishon
+[...]
+
+> > There is only one certainty. Providing a long term interface with ever
+> > growing (ab)users is a hard target. And shinyN might be needed in the
+> > end. Who knows. My main point is that the existing interface is hitting
+> > a wall on usecases which _do_not_care_ about memory hotplug. And that is
+> > something we should be looking at.
+> 
+> Agreed. I can see 3 scenarios
+> 
+> a) no memory hotplug support, no sysfs.
+> b) memory hotplug support, no sysfs
+> c) memory hotplug support, sysfs
+> 
+> Starting with a) and c) is the easiest way to go.
+
+Yes, the first and the simplest way would be to provide
+memory_hotplug=[disabled|v1]
+
+where disabled would be no sysfs interface, v1 would be the existing
+infrastructure. I would hope to land with v2 in a future which would
+provide a new interface.
+
+-- 
+Michal Hocko
+SUSE Labs
