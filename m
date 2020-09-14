@@ -2,215 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD9F269359
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E12F269432
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726366AbgINRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbgINR2k (ORCPT
+        id S1725992AbgINRxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:53:07 -0400
+Received: from kylie.crudebyte.com ([5.189.157.229]:46129 "EHLO
+        kylie.crudebyte.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgINL0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:28:40 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67881C061223
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:26 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id j2so499550wrx.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:28:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iB4T9kLFB3iIR2Z+tST4GCiUmTN46viq6Nw4qtcThCM=;
-        b=tHkFPa0pnHNp4OB1KzhooQ3KuORDrIJ7EGWt10+yQOe8MMQgNYmjvEghP0/sEQoSOw
-         NrHpSaLPFtOEbdIH9+QT2zFtdAdtVSJMZUXbmMtmY3dpj/pbWw+n7CeJaMiwconli2u0
-         Aq9SPNQjoF5YaSNdG2pKHO6K6yXVQYc/hqdvdq04SyAuqS5OMA9RdpqN6bK/vjgH1P2E
-         nEuQNt3dBI+O7bKCdwYE9d4NGSUX4o8hKfj56xPAkb3QSVu8+VbwpCHLiLB43E6Mmk0x
-         T2fPnr0nxh+nP7t5TwBiUIkBB9Mp91pQ3RSH/8TvQJaByVAfUODo3KhhmSbUoNInEg47
-         59PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iB4T9kLFB3iIR2Z+tST4GCiUmTN46viq6Nw4qtcThCM=;
-        b=WTWCkTY3QuE6nvxoOGsaebJC5rznlvbSKNeVNnH9Vc1NW8FiKVYjz5r84Kqc5BPnCt
-         CgTc9DS0//vGouXRvH2k58xcXWquxEV6Fm2XG3NmscK7rKqpmcLitgsjfyXLgH2dIgKZ
-         Cil/az/g5h8gslUIO8HifhuHtIPPWHxRSh8/wfRPa3kW0aHHOP3e9hcjw5XzyNoFBG+c
-         OAewhmabW7qTHSZzwrW2pJMJlXc5hBXf2yOdav2pDb7PGXwvueJs/T7fEcnpJiNBwCiI
-         C2wBT1gIopqBhuXLECyN2WhN0KLipmrdfu+07T9BRkGKi46kok/tQ2Di4p4Lx7tDf7aS
-         6zWg==
-X-Gm-Message-State: AOAM5310BZmYfozR1ZQLzrXFgU3K4T51crHZ9Z4+XIiouKiSP5L3m5z9
-        amRnMZKu2B12fCDgx7KOFLrSOA==
-X-Google-Smtp-Source: ABdhPJxsgUHbqteuZSLV5s7MMDzWKj4bHGqYYGxCbtmcUOFgjTdJjebJk3JjekSIihnZSCM+KQlc3w==
-X-Received: by 2002:adf:cf0b:: with SMTP id o11mr16218454wrj.94.1600104504963;
-        Mon, 14 Sep 2020 10:28:24 -0700 (PDT)
-Received: from localhost (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
-        by smtp.gmail.com with ESMTPSA id l126sm20422503wmf.39.2020.09.14.10.28.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 10:28:24 -0700 (PDT)
-From:   George-Aurelian Popescu <georgepope@google.com>
-To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        masahiroy@kernel.org, michal.lkml@markovi.net
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        clang-built-linux@googlegroups.com, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        dbrazdil@google.com, broonie@kernel.org, maskray@google.com,
-        ascull@google.com, keescook@chromium.org,
-        akpm@linux-foundation.org, dvyukov@google.com, elver@google.com,
-        tglx@linutronix.de, arnd@arndb.de,
-        George Popescu <georgepope@google.com>
-Subject: [PATCH 12/14] KVM: arm64: Detect arithmetic overflow is inside hyp/nVHE.
-Date:   Mon, 14 Sep 2020 17:27:48 +0000
-Message-Id: <20200914172750.852684-13-georgepope@google.com>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-In-Reply-To: <20200914172750.852684-1-georgepope@google.com>
-References: <20200914172750.852684-1-georgepope@google.com>
+        Mon, 14 Sep 2020 07:26:54 -0400
+X-Greylist: delayed 1200 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Sep 2020 07:26:53 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        Content-ID:Content-Description;
+        bh=++NQLUetBSLmFRHbsLpXBmOsqS1jQD6y5F/DUjvr1YA=; b=lZv5LqkCfhovigLTtCbuQfQHrI
+        2asQqCaFUnWxtpt/IjVaApnvHVg8+nq3bJ/xE26Wz/tpJwE1p7h/fQD8S8EAuXiFHtlYNvqnnTmQD
+        mrjOMc/LDfNZZtm8UpFmkeyTG1hVzKVCjERiyn/IHm3b1RDymKHg+wxc2HKTVQhRCkehX5rFFyrgc
+        0b849hfad8x+A16WS1a2m2AK5MuxGPwB3t42Vx2CctMkU/3M2w9gA+BoWikepYTo2JVRa8fvpKhiO
+        QdzKXdvBKY0yUPaua8LHmgYBoVDKkYkxvDu94l0OVOqXLpJ1oEK1SsLDSOgGWkUw1uBCaF69mK04w
+        QPRNgCx/BjqKMfjUlsmR+rY9FXOHmtDjowu91kDU96kXHme3ADrAzlaQ0Knwf08X0ccS3ju1OPR+4
+        8UE/OHkiKpZAumQ6koiyDUXjxGz8dWgWtOqtYY/TKZwh8XT3j1x0JQHA2S/jjNgnCu4Eu/T0uX31r
+        7mEchOl14EG2a5sp6sNToXRVzbT6AfoHX8vZbrD736wxAWRIfGuYZZVqexS3rnX6GpATwSZvwt9Ar
+        LrlR9L4SbfwcmQFHpgVmOQCvHV5lwTHEgThWXAfUqZxqiW4GcaDBKhA4XOhpEbJDDa0Iwrk+ehsdo
+        OFX+JnKNjgUqqDSyb+d7ye2F3mvdfqNBS3sY/7AVA=;
+From:   Christian Schoenebeck <qemu_oss@crudebyte.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Jianyong Wu <jianyong.wu@arm.com>, ericvh@gmail.com,
+        lucho@ionkov.net, asmadeus@codewreck.org,
+        v9fs-developer@lists.sourceforge.net, justin.he@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [V9fs-developer] [PATCH RFC 0/4] 9p: fix open-unlink-f*syscall bug
+Date:   Mon, 14 Sep 2020 13:06:34 +0200
+Message-ID: <2828347.d8MXItvaOC@silver>
+In-Reply-To: <20200914103546.0f775bcd@bahia.lan>
+References: <20200914033754.29188-1-jianyong.wu@arm.com> <20200914103546.0f775bcd@bahia.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Popescu <georgepope@google.com>
+On Montag, 14. September 2020 10:35:46 CEST Greg Kurz wrote:
+> On Mon, 14 Sep 2020 11:37:50 +0800
+> 
+> Jianyong Wu <jianyong.wu@arm.com> wrote:
+> > open-unlink-f*syscall bug is a well-known bug in 9p, we try to fix the bug
+> > in this patch set.
+> > I take Eric's and Greg's patches which constiute the 1/4 - 3/4 of this
+> > patch set as the main frame of the solution. In patch 4/4, I fix the fid
+> > race issue exists in Greg's patch.
+> 
+> IIRC some patches were needed on the QEMU side as well... I'm spending
+> less time on 9pfs in QEMU, so Cc'ing the new maintainer:
+> 
+> Christian Schoenebeck <qemu_oss@crudebyte.com>
 
-Whenever an arithmetic overflow: addition, subtraction, multiplication,
-division or negating happens inside the hyp/nVHE code,
-an __ubsan_handle_*_overflow is called.
+AFAICS this is about this old bug report:
+https://bugs.launchpad.net/qemu/+bug/1336794
 
-All the overflow handlers are sharing the same structure called
-overflow_data and they use the write_overflow_data(*) function to store
-the data to the buffer.
+So yes, looks like this also requires changes to the 9pfs 'local' fs driver on 
+QEMU side:
+https://lists.nongnu.org/archive/html/qemu-devel/2016-06/msg07586.html
 
-When decapsulating the data inside the kernel, the right handler is
-called by checking the "op" field, which stores the arithmetic
-opperator.
+Eric, Greg, would there be an easy way to establish QEMU test cases running 
+the 9pfs 'local' fs driver? Right now we only have 9pfs qtest cases for QEMU 
+which can only use the 'synth' driver, which is not helpful for such kind of 
+issues.
 
-Signed-off-by: George Popescu <georgepope@google.com>
----
- arch/arm64/include/asm/kvm_ubsan.h | 10 ++++++--
- arch/arm64/kvm/hyp/nvhe/ubsan.c    | 40 ++++++++++++++++++++++++++----
- arch/arm64/kvm/kvm_ubsan_buffer.c  | 18 ++++++++++++++
- 3 files changed, 61 insertions(+), 7 deletions(-)
+Best regards,
+Christian Schoenebeck
 
-diff --git a/arch/arm64/include/asm/kvm_ubsan.h b/arch/arm64/include/asm/kvm_ubsan.h
-index a9f499f4ef6d..4abdbff38f79 100644
---- a/arch/arm64/include/asm/kvm_ubsan.h
-+++ b/arch/arm64/include/asm/kvm_ubsan.h
-@@ -24,7 +24,8 @@ struct kvm_ubsan_info {
- 		UBSAN_UNREACHABLE_DATA,
- 		UBSAN_SHIFT_OUT_OF_BOUNDS,
- 		UBSAN_INVALID_DATA,
--		UBSAN_TYPE_MISMATCH
-+		UBSAN_TYPE_MISMATCH,
-+		UBSAN_OVERFLOW_DATA
- 	} type;
- 	union {
- 		struct out_of_bounds_data out_of_bounds_data;
-@@ -32,6 +33,7 @@ struct kvm_ubsan_info {
- 		struct shift_out_of_bounds_data shift_out_of_bounds_data;
- 		struct invalid_value_data invalid_value_data;
- 		struct type_mismatch_data type_mismatch_data;
-+		struct overflow_data overflow_data;
- 	};
- 	union {
- 		struct ubsan_values u_val;
-@@ -44,4 +46,8 @@ void __ubsan_handle_builtin_unreachable(void *_data);
- void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs);
- void __ubsan_handle_load_invalid_value(void *_data, void *val);
- void __ubsan_handle_type_mismatch(struct type_mismatch_data  *_data, void *ptr);
--
-+void __ubsan_handle_add_overflow(void *data, void *lhs, void *rhs);
-+void __ubsan_handle_sub_overflow(void *data, void *lhs, void *rhs);
-+void __ubsan_handle_mul_overflow(void *data, void *lhs, void *rhs);
-+void __ubsan_handle_negate_overflow(void *_data, void *old_val);
-+void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs);
-diff --git a/arch/arm64/kvm/hyp/nvhe/ubsan.c b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-index c99d919105aa..dd2dae60864f 100644
---- a/arch/arm64/kvm/hyp/nvhe/ubsan.c
-+++ b/arch/arm64/kvm/hyp/nvhe/ubsan.c
-@@ -47,15 +47,45 @@ static void write_type_mismatch_data(struct type_mismatch_data_common *data, voi
- 	}
- }
- 
--void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs) {}
-+static void write_overflow_data(struct overflow_data *data, void *lval, void *rval, char op)
-+{
-+	struct kvm_ubsan_info *slot = kvm_ubsan_buffer_next_slot();
-+
-+	if (slot) {
-+		slot->type = UBSAN_OVERFLOW_DATA;
-+		slot->overflow_data = *data;
-+		slot->u_val.op = op;
-+		slot->u_val.lval = lval;
-+		if (op != '!')
-+			slot->u_val.rval = rval;
-+	}
-+}
-+
-+void __ubsan_handle_add_overflow(void *_data, void *lhs, void *rhs)
-+{
-+	write_overflow_data(_data, lhs, rhs, '+');
-+}
- 
--void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs) {}
-+void __ubsan_handle_sub_overflow(void *_data, void *lhs, void *rhs)
-+{
-+	write_overflow_data(_data, lhs, rhs, '-');
-+}
- 
--void __ubsan_handle_mul_overflow(void *_data, void *lhs, void *rhs) {}
-+void __ubsan_handle_mul_overflow(void *_data, void *lhs, void *rhs)
-+{
-+	write_overflow_data(_data, lhs, rhs, '*');
-+}
- 
--void __ubsan_handle_negate_overflow(void *_data, void *old_val) {}
-+void __ubsan_handle_negate_overflow(void *_data, void *old_val)
-+{
-+	write_overflow_data(_data, old_val, NULL, '!');
-+}
-+
-+void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
-+{
-+	write_overflow_data(_data, lhs, rhs, '/');
-+}
- 
--void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs) {}
- 
- void __ubsan_handle_type_mismatch(struct type_mismatch_data *data, void *ptr)
- {
-diff --git a/arch/arm64/kvm/kvm_ubsan_buffer.c b/arch/arm64/kvm/kvm_ubsan_buffer.c
-index 21c242c92f0a..bd847ac1321e 100644
---- a/arch/arm64/kvm/kvm_ubsan_buffer.c
-+++ b/arch/arm64/kvm/kvm_ubsan_buffer.c
-@@ -40,6 +40,24 @@ void __kvm_check_ubsan_data(struct kvm_ubsan_info *slot)
- 		__ubsan_handle_type_mismatch(&slot->type_mismatch_data,
- 				slot->u_val.lval);
- 		break;
-+	case UBSAN_OVERFLOW_DATA:
-+		if (slot->u_val.op == '/') {
-+			__ubsan_handle_divrem_overflow(&slot->overflow_data,
-+					slot->u_val.lval, slot->u_val.rval);
-+		} else if (slot->u_val.op == '!') {
-+			__ubsan_handle_negate_overflow(&slot->overflow_data,
-+					slot->u_val.lval);
-+		} else if (slot->u_val.op == '+') {
-+			__ubsan_handle_add_overflow(&slot->overflow_data,
-+					slot->u_val.lval, slot->u_val.rval);
-+		} else if (slot->u_val.op == '-') {
-+			__ubsan_handle_sub_overflow(&slot->overflow_data,
-+					slot->u_val.lval, slot->u_val.rval);
-+		} else if (slot->u_val.op == '*') {
-+			__ubsan_handle_mul_overflow(&slot->overflow_data,
-+					slot->u_val.lval, slot->u_val.rval);
-+		}
-+		break;
- 	}
- }
- 
--- 
-2.28.0.618.gf4bc123cb7-goog
 
