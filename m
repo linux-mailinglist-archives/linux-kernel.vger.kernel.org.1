@@ -2,300 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECD826828B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E49268293
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726056AbgINCXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
+        id S1726079AbgINCXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgINCWx (ORCPT
+        with ESMTP id S1726063AbgINCXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:22:53 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6377BC06174A;
-        Sun, 13 Sep 2020 19:22:53 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id o16so4668409pjr.2;
-        Sun, 13 Sep 2020 19:22:53 -0700 (PDT)
+        Sun, 13 Sep 2020 22:23:08 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57600C061787
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 19:23:08 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z19so11274446pfn.8
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 19:23:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b2bBXZkh0jhvef6kCSC1RofX3ZIFXsI/OhQfJ9yWyI8=;
-        b=ba7opNHLboxB61OBFimi217/Gvjk9FYh6u1x8tswdV5o5eHlZDncYNta6PXyzBH8VX
-         xlxdVX/0xC9Z0fbagyoVFSeLQAXhARaqHRv+6+II4Mab7neZ5UufDYnuV9UcD0NWbSTX
-         M46oPX5wMqrBHXQvc9Du2xV0Ru65n+NH8Oga5dsfO+ejxIHxD/eMom89rZyhBPHWLWQD
-         6k0htSaRJO39e21r4zWZqgy1Ai44ku74FSyxFLpS097HL4L+gqu+QiurJjHd7nV73vHU
-         ThR/Dzf2Rlk6EdASFmX3vvoPglvvXnIKfr+AmkArpjrdXuIhZIQHa8BgQjmVbBd+f9Va
-         QtGw==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=S0bpuER8lp5sCLLApRh4TVdUkMZpH/s2SiKWUHdd/Wk=;
+        b=LRzvtOfwJ7mfIhgSbAsvzmuhWDE8s77+SaIA0kP0jk8Gnpo3YDH/L4C0TXTxgvw4r+
+         dY/cr/G+b8g0plhTdbrvKRH7VTYJt7ihYowjwdm7nT6Tqlzi65h0Oua7J7+rhwdn3LSD
+         6IK3SYBnhGoU+0TW8AkndZLAkgIlgMpCmIQ6PchAWQWEv1hHb5MnWS1/hF8r0L7WWlte
+         OtNw8rlDhA86kAcfLZ9iGmcZrbVs0JglpASNtrpZpwzB8odjb7d9Mc4ptPtcweP4cPop
+         KXTR53OEfsdbiZ8BWxdwYhwNk0WPl9ULx0+gsu6DjyQLXkYUvbeDvjnmYnHvZ5KkXo7R
+         02uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b2bBXZkh0jhvef6kCSC1RofX3ZIFXsI/OhQfJ9yWyI8=;
-        b=OZrCJEh/oCvPUaocep4CmciBkRhIkWumbXs6CQM4a27eXt7dYGSkW3b9js4KoiGC8t
-         Gwyp1wvaM4L5/kZqQH3S77Lw1B4l8kp6IU3T+jgsprvmWo7giCv/4OZTxOyCoAMHCSpd
-         z69Ug/V0stOD+omQmvooM2YvrCMh6i2H/MXZbfZMtMTtnqOknynuflseYt+3A16mnTkj
-         zcTWYx6Lc2I6nbAWlQODgNR/V6nkEYQZd65bA6PE6q/21ZyHmLunym3VeSCJVe2K1NnL
-         trzZ0xm5cfklgQHy6iINot7ZcxT+mQkBKOtpHEuMcg8+aMytJjjYE0xg/dww1/1MVpiF
-         2zJQ==
-X-Gm-Message-State: AOAM530LgOXznktpSe1hYWSSFhBTTIMbINYDLNWr9ulOscFI4f7bvNOT
-        d+gPbZWck7gCPQ3qc+iLPdKOtb2G45NfKQ==
-X-Google-Smtp-Source: ABdhPJybRO5QZZZU7FOZj/R0+f/hWTOqWRxKUsJlGGHX038s2f3u9fSPj91Hyt4IWNR6U/2gHn8HzA==
-X-Received: by 2002:a17:90a:a787:: with SMTP id f7mr11264165pjq.99.1600050172656;
-        Sun, 13 Sep 2020 19:22:52 -0700 (PDT)
-Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id n2sm8398125pfa.182.2020.09.13.19.22.49
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=S0bpuER8lp5sCLLApRh4TVdUkMZpH/s2SiKWUHdd/Wk=;
+        b=CtjcCgvFyVSW1dtDKilfCK/sLu1k8GQcbJQkeKBMyH3DJ4n9KES5hZBwVQGzZ8eD5j
+         WdkaLfA/jZygvdwNldQVWPDdK9PvqwQcUFEykwXweuQkZmmgAZ5B9mR4Jf6uxjy3Ddqx
+         9OS09yq902YRYoW0yYx2mXjSPzoW5UZF2je6Ieqxbm/YD27LmJXFrh4myMdoLzct6EOV
+         PdtYIbGhFjtop+bgL1ssspst+KFJ3HEUuBrxPfymuzsdU/gm2sE4vhten8to6POEOd/6
+         XPq3xjr+2Nc4dtJ6lrlUcD/sOv0B9DcXm8JiOQQs6GPe+E0/krvVjR0gXqTNmKg5Zh4p
+         V8pg==
+X-Gm-Message-State: AOAM533jTlTq7L5thC959alwUKwRuudHImc5XVrolLeS6tU1pr4S3Upo
+        ZFI+nkWktmSIC4EXjFb/Ni056GqMY5Q=
+X-Google-Smtp-Source: ABdhPJzM7aIfTnbjIRE8UmEylrMp0SwQ8IXrxRm//8Gh+7Y6sS/1zl/nUnchfjLUAnSctnC/0GY+mQ==
+X-Received: by 2002:a17:902:b7c7:b029:d1:cc21:9c38 with SMTP id v7-20020a170902b7c7b02900d1cc219c38mr1129143plz.21.1600050187733;
+        Sun, 13 Sep 2020 19:23:07 -0700 (PDT)
+Received: from localhost ([203.185.249.227])
+        by smtp.gmail.com with ESMTPSA id h14sm8854048pfe.67.2020.09.13.19.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 19:22:52 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tim.Bird@sony.com,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each test individually selectable
-Date:   Mon, 14 Sep 2020 10:22:27 +0800
-Message-Id: <20200914022227.437143-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200914021758.420874-1-liuhangbin@gmail.com/>
-References: <20200914021758.420874-1-liuhangbin@gmail.com/>
+        Sun, 13 Sep 2020 19:23:06 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:23:01 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v1 4/5] powerpc/fault: Avoid heavy
+ search_exception_tables() verification
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <7baae4086cbb9ffb08c933b065ff7d29dbc03dd6.1596734104.git.christophe.leroy@csgroup.eu>
+        <b07bac7a882c69deb9e6c8f234a68b3022f29072.1596734105.git.christophe.leroy@csgroup.eu>
+        <871rjb5vv4.fsf@linux.ibm.com>
+        <1ded5e11-a9e0-a98f-295c-c623e0a5ed36@csgroup.eu>
+In-Reply-To: <1ded5e11-a9e0-a98f-295c-c623e0a5ed36@csgroup.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1600048261.m5q9cmngxb.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, after generating run_kselftest.sh, there is no way to choose
-which test we could run. All the tests are listed together and we have
-to run all every time. This patch enhanced the run_kselftest.sh to make
-the tests individually selectable. e.g.
+Excerpts from Christophe Leroy's message of September 9, 2020 4:20 pm:
+>=20
+>=20
+> Le 09/09/2020 =C3=A0 08:04, Aneesh Kumar K.V a =C3=A9crit=C2=A0:
+>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>=20
+>>> search_exception_tables() is an heavy operation, we have to avoid it.
+>>> When KUAP is selected, we'll know the fault has been blocked by KUAP.
+>>> Otherwise, it behaves just as if the address was already in the TLBs
+>>> and no fault was generated.
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>>   arch/powerpc/mm/fault.c | 20 +++++---------------
+>>>   1 file changed, 5 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+>>> index 525e0c2b5406..edde169ba3a6 100644
+>>> --- a/arch/powerpc/mm/fault.c
+>>> +++ b/arch/powerpc/mm/fault.c
+>>> @@ -214,24 +214,14 @@ static bool bad_kernel_fault(struct pt_regs *regs=
+, unsigned long error_code,
+>>>   	if (address >=3D TASK_SIZE)
+>>>   		return true;
+>>>  =20
+>>> -	if (!is_exec && (error_code & DSISR_PROTFAULT) &&
+>>> -	    !search_exception_tables(regs->nip)) {
+>>> +	// Read/write fault blocked by KUAP is bad, it can never succeed.
+>>> +	if (bad_kuap_fault(regs, address, is_write)) {
+>>>   		pr_crit_ratelimited("Kernel attempted to access user page (%lx) - e=
+xploit attempt? (uid: %d)\n",
+>>> -				    address,
+>>> -				    from_kuid(&init_user_ns, current_uid()));
+>>> -	}
+>>> -
+>>> -	// Fault on user outside of certain regions (eg. copy_tofrom_user()) =
+is bad
+>>> -	if (!search_exception_tables(regs->nip))
+>>> -		return true;
+>>=20
+>> We still need to keep this ? Without that we detect the lack of
+>> exception tables pretty late.
+>=20
+> Is that a problem at all to detect the lack of exception tables late ?
+> That case is very unlikely and will lead to failure anyway. So, is it=20
+> worth impacting performance of the likely case which will always have an=20
+> exception table and where we expect the exception to run as fast as=20
+> possible ?
+>=20
+> The other architectures I have looked at (arm64 and x86) only have the=20
+> exception table search together with the down_read_trylock(&mm->mmap_sem)=
+.
 
-  $ ./run_kselftest.sh -t "bpf size timers"
+Yeah I don't see how it'd be a problem. User could arrange for page=20
+table to already be at this address and avoid the fault so it's not the=20
+right way to stop an attacker, KUAP is.
 
-Before the patch:
-================
-
-$ cat run_kselftest.sh
-\#!/bin/sh
-BASE_DIR=$(realpath $(dirname $0))
-cd $BASE_DIR
-. ./kselftest/runner.sh
-ROOT=$PWD
-if [ "$1" = "--summary" ]; then
-  logfile=$BASE_DIR/output.log
-  cat /dev/null > $logfile
-fi
-[ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
-cd android
-run_many        \
-        "run.sh"
-cd $ROOT
-...<snip>...
-[ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
-cd zram
-run_many        \
-        "zram.sh"
-cd $ROOT
-
-After the patch:
-===============
-
-$ cat run_kselftest.sh
-\#!/bin/sh
-BASE_DIR=$(realpath $(dirname $0))
-. ./kselftest/runner.sh
-TESTS="android ...<snip>... filesystems/binderfs ...<snip>... zram"
-
-run_android()
-{
-        [ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
-        cd android
-        run_many        \
-                "run.sh"
-        cd $ROOT
-}
-
-...<snip>...
-
-run_filesystems_binderfs()
-{
-        [ -w /dev/kmsg ] && echo "kselftest: Running tests in filesystems/binderfs" >> /dev/kmsg
-        cd filesystems/binderfs
-        run_many        \
-                "binderfs_test"
-        cd $ROOT
-}
-
-...<snip>...
-
-run_zram()
-{
-        [ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
-        cd zram
-        run_many        \
-                "zram.sh"
-        cd $ROOT
-}
-
-usage()
-{
-        cat <<EOF
-usage: ${0##*/} OPTS
-        -s | --summary          Only print summary info and put detailed log in output.log
-        -t | --tests            Test name you want to run specifically
-        -h | --help             Show this usage info
-EOF
-}
-
-while true; do
-        case "$1" in
-        -s | --summary ) logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;
-        -t | --tests ) TESTS=$2; shift 2 ;;
-	-l | --list ) echo $TESTS; exit 0 ;;
-        -h | --help ) usage; exit 0 ;;
-        "" ) break;;
-        * ) usage; exit 1;;
-        esac
-done
-
-cd $BASE_DIR
-ROOT=$PWD
-for folder in $TESTS; do
-        folder=$(echo $folder | tr -s '/-' '_')
-        run_$folder
-done
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-
----
-v5:
-Forgot to update commit description for the new added -l option
-
-v4:
-Add parameter -l to list available tests, suggested by Bird, Tim
-
-v3:
-1) rebase the patch to latest code
-2) move `tr -s "/-" "_"` in for loop at the end so user could use test
-   folder name directly. Before the fix, user need to use
-   ./run_kselftest.sh -t 'networking_forwarding'. Now they can just run
-   ./run_kselftest.sh -t 'networking/forwarding' directly.
-
-v2: update document and commit description.
----
- Documentation/dev-tools/kselftest.rst |  8 +++++
- tools/testing/selftests/Makefile      | 51 +++++++++++++++++++++------
- tools/testing/selftests/lib.mk        |  2 +-
- 3 files changed, 50 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
-index 469d115a95f1..7b92f9c177f6 100644
---- a/Documentation/dev-tools/kselftest.rst
-+++ b/Documentation/dev-tools/kselftest.rst
-@@ -151,6 +151,14 @@ note some tests will require root privileges::
-    $ cd kselftest
-    $ ./run_kselftest.sh
- 
-+Or you can run some specific test cases in the installed Kselftests by::
-+
-+   $ ./run_kselftest.sh -t "bpf size timers"
-+
-+You can view the available tests to run with::
-+
-+   $ ./run_kselftest.sh -l
-+
- Packaging selftests
- ===================
- 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 15c1c1359c50..4c8159dd2bd7 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -225,13 +225,9 @@ ifdef INSTALL_PATH
- 	@# Ask all targets to emit their test scripts
- 	echo "#!/bin/sh" > $(ALL_SCRIPT)
- 	echo "BASE_DIR=\$$(realpath \$$(dirname \$$0))" >> $(ALL_SCRIPT)
--	echo "cd \$$BASE_DIR" >> $(ALL_SCRIPT)
- 	echo ". ./kselftest/runner.sh" >> $(ALL_SCRIPT)
--	echo "ROOT=\$$PWD" >> $(ALL_SCRIPT)
--	echo "if [ \"\$$1\" = \"--summary\" ]; then" >> $(ALL_SCRIPT)
--	echo "  logfile=\$$BASE_DIR/output.log" >> $(ALL_SCRIPT)
--	echo "  cat /dev/null > \$$logfile" >> $(ALL_SCRIPT)
--	echo "fi" >> $(ALL_SCRIPT)
-+	echo "TESTS=\"$(TARGETS)\"" >> $(ALL_SCRIPT)
-+	echo "" >> $(ALL_SCRIPT);
- 
- 	@# While building run_kselftest.sh skip also non-existent TARGET dirs:
- 	@# they could be the result of a build failure and should NOT be
-@@ -239,15 +235,50 @@ ifdef INSTALL_PATH
- 	for TARGET in $(TARGETS); do \
- 		BUILD_TARGET=$$BUILD/$$TARGET;	\
- 		[ ! -d $(INSTALL_PATH)/$$TARGET ] && echo "Skipping non-existent dir: $$TARGET" && continue; \
--		echo "[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
--		echo "cd $$TARGET" >> $(ALL_SCRIPT); \
--		echo -n "run_many" >> $(ALL_SCRIPT); \
-+		echo "run_$$TARGET()" | tr -s "/-" "_" >> $(ALL_SCRIPT); \
-+		echo "{" >> $(ALL_SCRIPT); \
-+		echo -e "\t[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
-+		echo -e "\tcd $$TARGET" >> $(ALL_SCRIPT); \
-+		echo -en "\trun_many" >> $(ALL_SCRIPT); \
- 		echo -n "Emit Tests for $$TARGET\n"; \
- 		$(MAKE) -s --no-print-directory OUTPUT=$$BUILD_TARGET -C $$TARGET emit_tests >> $(ALL_SCRIPT); \
- 		echo "" >> $(ALL_SCRIPT);	    \
--		echo "cd \$$ROOT" >> $(ALL_SCRIPT); \
-+		echo -e "\tcd \$$ROOT" >> $(ALL_SCRIPT); \
-+		echo "}" >> $(ALL_SCRIPT); \
-+		echo "" >> $(ALL_SCRIPT); \
- 	done;
- 
-+	echo "usage()" >> $(ALL_SCRIPT);
-+	echo "{" >> $(ALL_SCRIPT);
-+	echo -e "\tcat <<EOF" >> $(ALL_SCRIPT);
-+	echo "usage: \$${0##*/} OPTS" >> $(ALL_SCRIPT);
-+	echo -e "\t-s | --summary\t\tOnly print summary info and put detailed log in output.log" >> $(ALL_SCRIPT);
-+	echo -e "\t-t | --tests\t\tTest name you want to run specifically" >> $(ALL_SCRIPT);
-+	echo -e "\t-l | --list\t\tList the available tests" >> $(ALL_SCRIPT);
-+	echo -e "\t-h | --help\t\tShow this usage info" >> $(ALL_SCRIPT);
-+	echo "EOF" >> $(ALL_SCRIPT);
-+	echo "}" >> $(ALL_SCRIPT);
-+	echo "" >> $(ALL_SCRIPT);
-+
-+	echo "while true; do" >> $(ALL_SCRIPT);
-+	echo -e "\tcase \"\$$1\" in" >> $(ALL_SCRIPT);
-+	echo -e "\t-s | --summary ) logfile=\$$BASE_DIR/output.log; cat /dev/null > \$$logfile; shift ;;" >> $(ALL_SCRIPT);
-+	echo -e "\t-t | --tests ) TESTS=\$$2; shift 2 ;;" >> $(ALL_SCRIPT);
-+	echo -e "\t-l | --list ) echo \$$TESTS; exit 0 ;;" >> $(ALL_SCRIPT);
-+	echo -e "\t-h | --help ) usage; exit 0 ;;" >> $(ALL_SCRIPT);
-+	echo -e "\t\"\" ) break;;" >> $(ALL_SCRIPT);
-+	echo -e "\t* ) usage; exit 1;;" >> $(ALL_SCRIPT);
-+	echo -e "\tesac" >> $(ALL_SCRIPT);
-+	echo "done" >> $(ALL_SCRIPT);
-+	echo "" >> $(ALL_SCRIPT);
-+
-+	echo "cd \$$BASE_DIR" >> $(ALL_SCRIPT)
-+	echo "ROOT=\$$PWD" >> $(ALL_SCRIPT)
-+
-+	echo "for folder in \$$TESTS; do" >> $(ALL_SCRIPT); \
-+	echo -e "\tfolder=\$$(echo \$$folder | tr -s '/-' '_')" >> $(ALL_SCRIPT); \
-+	echo -e "\trun_\$$folder" >> $(ALL_SCRIPT); \
-+	echo "done" >> $(ALL_SCRIPT); \
- 	chmod u+x $(ALL_SCRIPT)
- else
- 	$(error Error: set INSTALL_PATH to use install)
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index 51124b962d56..3c4c94a5d184 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -108,7 +108,7 @@ emit_tests:
- 	for TEST in $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS); do \
- 		BASENAME_TEST=`basename $$TEST`;	\
- 		echo "	\\";				\
--		echo -n "	\"$$BASENAME_TEST\"";	\
-+		echo -ne "\t\t\"$$BASENAME_TEST\"";	\
- 	done;						\
- 
- # define if isn't already. It is undefined in make O= case.
--- 
-2.25.4
-
+Thanks,
+Nick
