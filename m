@@ -2,92 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA34526865D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C758A26865F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbgINHpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgINHpu (ORCPT
+        id S1726112AbgINHqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:46:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725999AbgINHqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:45:50 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4E9C06174A;
-        Mon, 14 Sep 2020 00:45:49 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g4so17544648wrs.5;
-        Mon, 14 Sep 2020 00:45:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3R77E9EeU0q3+YiyfWBGCJYkWETSW8Cgd6Iyt7BfdgE=;
-        b=jYUciHslOoIXrMwFXOQv4b5M8AsToUU8/l5vkYm2QT5xAu7sNR6sNZDK2205SNQZrV
-         i7WYk4nuem/SEOwPVmXPm0SHMFfrmuvJlSU1WaUtyssLaCqbqn6e+SDkrOuU3w4i4B7S
-         Mjh5wGmMZZRgBaOEFd3h55RXeIYCw++8imnge28YULTYKgpTZTyI80KGfGVhn5hIYqC0
-         zVp24Mv4Rucev2EhqWJLlzIpK31pOlRlhMUah31fJ7uBDWG7qVd6uePxhfTo+JzoyaMr
-         nb1IR8WtkeErSHBMMi4rjew1T0ecfunSMV+SG/UbSevutlK51FcFT/GTW1L3ExRn7B49
-         zUiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3R77E9EeU0q3+YiyfWBGCJYkWETSW8Cgd6Iyt7BfdgE=;
-        b=HMyDD+789mbkEqV1kaTgu4xCFqNJEbdQRZjyHRSu3HCzNeuq1M1Hg3fg+55ftnqZ7z
-         wPfJcLnSnwx4woISNkkEMwS3yX5rw5SHmknngojzB2REUs2AgczwAVfb0Mqtae4fp6h8
-         c2uaJTxp/8Q20hUQUNrxG2oeaCHDQeGbPln6Yg827N8QJINE91pwLa1/VUq5dhoQgoLf
-         kzNtdBtHvUqBVZPxHCDFe3y4FJbUjqj79NTHn1QIjiiJn0vOPW2rAgSN/47ygAJfsSJt
-         K/qRe2aRD7Pm69tIlIMVGSel3rUCS+FR/4X+8aSqj9MeWz0HIX/uoXY3Y2mcLnOQs9C3
-         oRuw==
-X-Gm-Message-State: AOAM530wt1qeQ8MNeu6VLlH7XyJvdT/VKEoUTsihnPJkIVPiS8B3Xa+Z
-        1Kr6QAxT3JRDFHT7qTviu1Q=
-X-Google-Smtp-Source: ABdhPJzgC1plQU3KLNxPE2pqVjKuloNGrXcm89L8bQcQmJCzuHaT0bS+D6RLsdRdTotZn/LDB2WHrQ==
-X-Received: by 2002:adf:e9c3:: with SMTP id l3mr14261614wrn.63.1600069545827;
-        Mon, 14 Sep 2020 00:45:45 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id y1sm17455186wma.36.2020.09.14.00.45.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 00:45:45 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 09:45:43 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
-Message-ID: <20200914074543.GA8698@Red>
-References: <202009061621.J89kO43Q%lkp@intel.com>
- <20200907062400.GA15841@gondor.apana.org.au>
- <20200907160029.GC11894@Red>
- <20200908050036.GA19817@gondor.apana.org.au>
- <20200910122248.GA22506@Red>
- <20200911041354.GA5275@gondor.apana.org.au>
+        Mon, 14 Sep 2020 03:46:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600069578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=YlgJj09YwKKXy1UPyDOx/ceUgDZtNbHiT4LgjkWaOuA=;
+        b=fOkzV5P+s5yiNZtTr7eV1Otimfrm3hJGFGM6qLGY5nsLxy6hkpPPkbnXZNXQw+qZ4/s1Tq
+        NlQulxd+WvdQ/WGRfpkeGx2He69vwZIvei2RXTaXy3DrnDNbobv2PjT8nYSPrQ94X5EMOP
+        HgpNh1bmSykZTTJ1N+qb04KSn7wjwtg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-405-igB1FE4tMcGwZMEvGrociw-1; Mon, 14 Sep 2020 03:46:14 -0400
+X-MC-Unique: igB1FE4tMcGwZMEvGrociw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BDD964086;
+        Mon, 14 Sep 2020 07:46:13 +0000 (UTC)
+Received: from [10.36.114.162] (ovpn-114-162.ams2.redhat.com [10.36.114.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 97A0960BE2;
+        Mon, 14 Sep 2020 07:46:05 +0000 (UTC)
+Subject: Re: [PATCH 3/3] virtio-mem: Constify mem_id_table
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>
+References: <20200911203509.26505-1-rikard.falkeborn@gmail.com>
+ <20200911203509.26505-4-rikard.falkeborn@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <4fe879b1-77de-4e88-773d-8836f9170f87@redhat.com>
+Date:   Mon, 14 Sep 2020 09:46:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911041354.GA5275@gondor.apana.org.au>
+In-Reply-To: <20200911203509.26505-4-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 02:13:55PM +1000, Herbert Xu wrote:
-> On Thu, Sep 10, 2020 at 02:22:48PM +0200, Corentin Labbe wrote:
-> >
-> > I get some md5 error on both A20+BE:
-> > alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=129 ksize=0\", cfg=\"random: inplace use_finup nosimd src_divs=[<reimport,nosimd>85.99%@+3999, 5.85%@+30, <reimport>0.96%@+25, <reimport,nosimd>5.9%@+2263, <flush,nosimd>2.11%@+1950] iv_offset=2 key_offset=43\"
-> > and A33+BE:
-> > [   84.469045] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=322 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[<reimport>99.1%@+2668, <reimport>0.88%@alignmask+3630, 0.11%@+3403] iv_offset=33\"
-> > +[   84.469074] need:35966fc8 b31ea266 2bf064e9 f20f40ad
-> > +[   84.469084] have:e29e4491 f3b6effc fa366691 00e04bd9
-> > 
-> > Thoses errors are random. (1 boot out of 2)
+On 11.09.20 22:35, Rikard Falkeborn wrote:
+> mem_id_table is not modified, so make it const to allow the compiler to
+> put it in read-only memory.
 > 
-> Do these really go away without this patch applied? AFAICS the
-> generated code should be identical.
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
+>  drivers/virtio/virtio_mem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index 834b7c13ef3d..1d0f3ab2b509 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -1926,7 +1926,7 @@ static unsigned int virtio_mem_features[] = {
+>  #endif
+>  };
+>  
+> -static struct virtio_device_id virtio_mem_id_table[] = {
+> +static const struct virtio_device_id virtio_mem_id_table[] = {
+>  	{ VIRTIO_ID_MEM, VIRTIO_DEV_ANY_ID },
+>  	{ 0 },
+>  };
 > 
 
-It happens without your patch, so your patch is unrelated to this issue.
-You can add:
-Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
