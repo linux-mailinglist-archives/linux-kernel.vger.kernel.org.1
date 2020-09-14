@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA81269147
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B587426914B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgINQS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:18:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57338 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726420AbgINQM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:12:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600099976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NMcjuPLsban/s/KhGcm7R6jbGaWdBO7FK18RrhrF4m4=;
-        b=Uw76qssjW53IjbMUVcCOwWfrpUSmO9DZ8FS/mCRkJFIgZtsno7Bd662BSPhHvaS+kVIAnw
-        plmiwyA74NQbDsTnduu0+oWwc1O3vqobOHPhf3qGBs5XO8NcqPs8uuwy0giXXbSevBw5SH
-        4ibLawDSALGDEFnc3jY62PIsTOdOaA4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-lmWKx1gVNNS1mWTiGcUWJw-1; Mon, 14 Sep 2020 12:12:52 -0400
-X-MC-Unique: lmWKx1gVNNS1mWTiGcUWJw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7981D425FD;
-        Mon, 14 Sep 2020 16:12:49 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BA4B7EEC9;
-        Mon, 14 Sep 2020 16:12:35 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 18:12:34 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200914181234.0f1df8ba@carbon>
-In-Reply-To: <20200914140114.GG24441@willie-the-truck>
-References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
-        <20200914122042.GA24441@willie-the-truck>
-        <20200914123504.GA124316@apalos.home>
-        <20200914132350.GA126552@apalos.home>
-        <20200914140114.GG24441@willie-the-truck>
+        id S1726467AbgINQTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:19:51 -0400
+Received: from mga14.intel.com ([192.55.52.115]:13774 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbgINQOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:14:02 -0400
+IronPort-SDR: EYHKivvfr7FKJ6ln9K+ec9JGrtaIvxiKpWVepSBrRR6eytE3d99R5vgeMs4PKClhHwHYhaLPHJ
+ cYLHGEoERF9Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="158387388"
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="158387388"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:13:59 -0700
+IronPort-SDR: lPs5notI7pfW/v0x2bYMRlv4zYfXJWQn/fMh5NeEuRHmI6/6xLT9OJRccG7/FGoUXm6gEJqnhk
+ o0FcHVw77frg==
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="450937896"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:13:59 -0700
+Date:   Mon, 14 Sep 2020 09:13:57 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200914161357.GG6855@sjchrist-ice>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
+ <20200914153812.c6uh3spqmcy2ft3d@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914153812.c6uh3spqmcy2ft3d@treble>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 14 Sep 2020 15:01:15 +0100 Will Deacon <will@kernel.org> wrote:
-
-> Hi Ilias,
+On Mon, Sep 14, 2020 at 10:38:12AM -0500, Josh Poimboeuf wrote:
+> On Mon, Sep 14, 2020 at 10:18:16AM -0500, Josh Poimboeuf wrote:
+> > Hi Jarko,
+> > 
+> > It looks like some of the patches weren't delivered to the lists.
+> > Patches 0, 1, 8, 9, and 17 seem to be missing.
+> > 
+> > Lore agrees with me:
+> > 
+> >   https://lore.kernel.org/linux-sgx/20200911124019.42178-1-jarkko.sakkinen@linux.intel.com/
 > 
-> On Mon, Sep 14, 2020 at 04:23:50PM +0300, Ilias Apalodimas wrote:
-> > On Mon, Sep 14, 2020 at 03:35:04PM +0300, Ilias Apalodimas wrote:  
-> > > On Mon, Sep 14, 2020 at 01:20:43PM +0100, Will Deacon wrote:  
-> > > > On Mon, Sep 14, 2020 at 11:36:21AM +0300, Ilias Apalodimas wrote:  
-> > > > > Running the eBPF test_verifier leads to random errors looking like this:  
-> 
-> [...]
-> > >   
-> > Any suggestion on any Fixes I should apply? The original code was 'correct' and
-> > broke only when bounded loops and their self-tests were introduced.  
-> 
-> Ouch, that's pretty bad as it means nobody is regression testing BPF on
-> arm64 with mainline. Damn.
+> And my first email to you bounced, similar to an email I tried sending
+> to Kristen a few weeks ago.  Something weird going on with Intel mail
+> servers?
 
-Yes, it unfortunately seems that upstream is lacking BPF regression
-testing for ARM64 :-(
-
-This bug surfaced when Red Hat QA tested our kernel backports, on
-different archs.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Probably.  Our exchange servers got upgraded and many of the endpoints got
+changed in the process.  It wouldn't surprise me in the least if there are
+gremlins in the new setup.
