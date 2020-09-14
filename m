@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669342697AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A50B2697AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgINVYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:24:05 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:39996 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725926AbgINVYE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:24:04 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-8-UaEi5kBnO_e_VhHpOiWrkQ-1;
- Mon, 14 Sep 2020 22:24:00 +0100
-X-MC-Unique: UaEi5kBnO_e_VhHpOiWrkQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 14 Sep 2020 22:23:59 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 14 Sep 2020 22:23:59 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Borislav Petkov' <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Waiman Long" <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Mark Rutland" <mark.rutland@arm.com>
-Subject: RE: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHWisBV61WRef5OMEyULIupnNS1CKloouig
-Date:   Mon, 14 Sep 2020 21:23:59 +0000
-Message-ID: <2e6a4d75b38248f1b8b3b874d36065f1@AcuMS.aculab.com>
-References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
- <20200914175604.GF680@zn.tnic>
-In-Reply-To: <20200914175604.GF680@zn.tnic>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726034AbgINV0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:26:43 -0400
+Received: from mga05.intel.com ([192.55.52.43]:34059 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgINV0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:26:40 -0400
+IronPort-SDR: 9OZ0uYz76t79GP5OHxVsyEDXDDxq7o6oU06zgc61Seqn0Mp6czgidGu94NIzzpJjYjLrmDnNjX
+ /tnWsOXO9iew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="243994756"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="243994756"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:26:39 -0700
+IronPort-SDR: qYfnipeeOvP60av9B8njck78J5Ni3gb3ze3t6CfQcPhBN5ybNFOaqTLPSMhSHLJR6jzA45SpiZ
+ EQoRpoGgD1zg==
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="330903929"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:26:38 -0700
+Date:   Mon, 14 Sep 2020 14:26:01 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 08/35] KVM: SVM: Prevent debugging under SEV-ES
+Message-ID: <20200914212601.GA7192@sjchrist-ice>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58093c542b5b442b88941828595fb2548706f1bf.1600114548.git.thomas.lendacky@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQm9yaXNsYXYgUGV0a292DQo+IFNlbnQ6IDE0IFNlcHRlbWJlciAyMDIwIDE4OjU2DQo+
-IA0KPiBPbiBUaHUsIFNlcCAxMCwgMjAyMCBhdCAxMjoyMjo1M1BNIC0wNTAwLCBKb3NoIFBvaW1i
-b2V1ZiB3cm90ZToNCj4gPiArLyoNCj4gPiArICogU2FuaXRpemUgYSB1c2VyIHBvaW50ZXIgc3Vj
-aCB0aGF0IGl0IGJlY29tZXMgTlVMTCBpZiBpdCdzIG5vdCBhIHZhbGlkIHVzZXINCj4gPiArICog
-cG9pbnRlci4gIFRoaXMgcHJldmVudHMgc3BlY3VsYXRpdmUgZGVyZWZlcmVuY2VzIG9mIHVzZXIt
-Y29udHJvbGxlZCBwb2ludGVycw0KPiA+ICsgKiB0byBrZXJuZWwgc3BhY2Ugd2hlbiBhY2Nlc3Nf
-b2soKSBzcGVjdWxhdGl2ZWx5IHJldHVybnMgdHJ1ZS4gIFRoaXMgc2hvdWxkIGJlDQo+ID4gKyAq
-IGRvbmUgKmFmdGVyKiBhY2Nlc3Nfb2soKSwgdG8gYXZvaWQgYWZmZWN0aW5nIGVycm9yIGhhbmRs
-aW5nIGJlaGF2aW9yLg0KPiANCj4gRXJyLCBzdHVwaWQgcXVlc3Rpb246IGNhbiB0aGlzIG1hY3Jv
-IHRoZW4gYmUgZm9sZGVkIGludG8gYWNjZXNzX29rKCkgc28NCj4gdGhhdCB5b3UgZG9uJ3QgaGF2
-ZSB0byB0b3VjaCBzbyBtYW55IHBsYWNlcyBhbmQgdGhlIGNoZWNrIGNhbiBoYXBwZW4NCj4gYXV0
-b21hdGljYWxseT8NCg0KTXkgdGhvdWdodHMgYXJlIHRoYXQgYWNjZXNzX29rKCkgY291bGQgcmV0
-dXJuIDAgZm9yIGZhaWwgYW5kIH4wdQ0KZm9yIHN1Y2Nlc3MuDQpZb3UgY291bGQgdGhlbiBkbyAo
-d2l0aCBhIGZldyBjYXN0cyk6DQoJbWFzayA9IGFjY2Vzc19vayhwdHIsIHNpemUpOw0KCS8qIFN0
-b3AgZ2NjIHRyYWNraW5nIHRoZSB2YWx1ZSBvZiBtYXNrLiAqLw0KCWFzbSB2b2xhdGlsZSggIiIg
-OiAiK3IiIChtYXNrKSk7DQoJYWRkciA9IHB0ciAmIG1hc2s7DQoJaWYgKCFhZGRyICYmIHB0cikg
-IC8vIExldCBOVUxMIHRocm91Z2g/Pw0KCQlyZXR1cm4gLUVGQVVMVDsNCg0KSSB0aGluayB0aGVy
-ZSBhcmUgb3RoZXIgY2hhbmdlcyBpbiB0aGUgcGlwZWxpbmUgdG8gcmVtb3ZlDQptb3N0IG9mIHRo
-ZSBhY2Nlc3Nfb2soKSBhcGFydCBmcm9tIHRob3NlIGluc2lkZSBwdXQvZ2V0X3VzZXIoKQ0KYW5k
-IGNvcHlfdG8vZnJvbV91c2VyKCkuDQpTbyB0aGUgY2hhbmdlcyBzaG91bGQgYmUgbW9yZSBsaW1p
-dGVkIHRoYW4geW91IG1pZ2h0IHRoaW5rLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
-ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
-MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Mon, Sep 14, 2020 at 03:15:22PM -0500, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> Since the guest register state of an SEV-ES guest is encrypted, debugging
+> is not supported. Update the code to prevent guest debugging when the
+> guest is an SEV-ES guest. This includes adding a callable function that
+> is used to determine if the guest supports being debugged.
+> 
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  2 ++
+>  arch/x86/kvm/svm/svm.c          | 16 ++++++++++++++++
+>  arch/x86/kvm/vmx/vmx.c          |  7 +++++++
+>  arch/x86/kvm/x86.c              |  3 +++
+>  4 files changed, 28 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index c900992701d6..3e2a3d2a8ba8 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1234,6 +1234,8 @@ struct kvm_x86_ops {
+>  	void (*reg_read_override)(struct kvm_vcpu *vcpu, enum kvm_reg reg);
+>  	void (*reg_write_override)(struct kvm_vcpu *vcpu, enum kvm_reg reg,
+>  				   unsigned long val);
+> +
+> +	bool (*allow_debug)(struct kvm *kvm);
 
+Why add both allow_debug() and vmsa_encrypted?  I assume there are scenarios
+where allow_debug() != vmsa_encrypted?  E.g. is there a debug mode for SEV-ES
+where the VMSA is not encrypted, but KVM (ironically) can't intercept #DBs or
+something?
+
+Alternatively, have you explored using a new VM_TYPE for SEV-ES guests?  With
+a genericized vmsa_encrypted, that would allow something like the following
+for scenarios where the VMSA is not (yet?) encrypted for an SEV-ES guest.  I
+don't love bleeding the VM type into x86.c, but for one-off quirks like this
+I think it'd be preferable to adding a kvm_x86_ops hook.
+
+int kvm_arch_vcpu_ioctl_set_guest_debug(...)
+{
+	if (vcpu->arch.guest_state_protected ||
+	    kvm->arch.vm_type == KVM_X86_SEV_ES_VM)
+		return -EINVAL;
+}
