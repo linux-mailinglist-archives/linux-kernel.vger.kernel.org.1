@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852E0268913
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B8B268920
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgINKQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:16:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44850 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726417AbgINKQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:16:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9869AB080;
-        Mon, 14 Sep 2020 10:16:21 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     akpm@linux-foundation.org
-Cc:     naoya.horiguchi@nec.com, mhocko@kernel.org, tony.luck@intel.com,
-        cai@lca.pw, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Oscar Salvador <osalvador@suse.de>,
-        Oscar Salvador <osalvador@suse.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH v3 5/5] mm,hwpoison: remove stale code
-Date:   Mon, 14 Sep 2020 12:15:59 +0200
-Message-Id: <20200914101559.17103-6-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20200914101559.17103-1-osalvador@suse.de>
-References: <20200914101559.17103-1-osalvador@suse.de>
+        id S1726352AbgINKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:19:58 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:11951 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726354AbgINKTj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:19:39 -0400
+X-UUID: 8070a8dc389a49bd8b984d19dcc73aaf-20200914
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=UFFhIqTpIhOC8ywBiZxNU/Fzmn0uEHIkBJSLINsLE0Q=;
+        b=FScmXuDbVALdHyYP9WfqZFQx8KVyk5Iu8aIKVexmokooEG+ltCHNeKASUGS04jCjFUuopg4fHds1JO0VKfZ9CS5ROpyIirl99n+9uDLeZhXOVI3WxbiYJ5zNuhiR51+Tv9OUjd/A5T2k97OfSdmoai99UzTovgJCOCZ0SPY40Ac=;
+X-UUID: 8070a8dc389a49bd8b984d19dcc73aaf-20200914
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1558188983; Mon, 14 Sep 2020 18:19:32 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs08n2.mediatek.inc
+ (172.21.101.56) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 14 Sep
+ 2020 18:19:28 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Sep 2020 18:19:24 +0800
+Message-ID: <1600078643.2521.25.camel@mhfsdcap03>
+Subject: Re: [v2,2/3] PCI: mediatek: Add new generation controller support
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>,
+        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>
+Date:   Mon, 14 Sep 2020 18:17:23 +0800
+In-Reply-To: <1ac4ba40a031169b968e3084c132579db921033c.camel@pengutronix.de>
+References: <20200910034536.30860-1-jianjun.wang@mediatek.com>
+         <20200910034536.30860-3-jianjun.wang@mediatek.com>
+         <1ac4ba40a031169b968e3084c132579db921033c.camel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 89BC645EE2B99813BCD4031077703FE9AC259110623EE3A7D12DBB813A2C08D72000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we call shake_page and then check whether the page is Buddy
-because shake_page calls drain_all_pages, which sends pcp-pages back to
-the buddy freelists, so we could have a chance to handle free pages.
-
-get_hwpoison_page already calls drain_all_pages, and we do call
-get_hwpoison_page right before coming here, so we should be on the safe
-side.
-
-Link: https://lkml.kernel.org/r/20200908075626.11976-6-osalvador@suse.de
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Cc: Oscar Salvador <osalvador@suse.com>
-Cc: Qian Cai <cai@lca.pw>
-Cc: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- mm/memory-failure.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 4468c1eb5027..fbe174d54fad 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1421,18 +1421,6 @@ int memory_failure(unsigned long pfn, int flags)
- 	 * walked by the page reclaim code, however that's not a big loss.
- 	 */
- 	shake_page(p, 0);
--	/* shake_page could have turned it free. */
--	if (!PageLRU(p) && is_free_buddy_page(p)) {
--		if (!take_page_off_buddy(p))
--			res = -EBUSY;
--
--		if (flags & MF_COUNT_INCREASED)
--			action_result(pfn, MF_MSG_BUDDY, res ? MF_FAILED : MF_RECOVERED);
--		else
--			action_result(pfn, MF_MSG_BUDDY_2ND, res ? MF_FAILED : MF_RECOVERED);
--
--		return res;
--	}
- 
- 	lock_page(p);
- 
--- 
-2.26.2
+T24gRnJpLCAyMDIwLTA5LTExIGF0IDE2OjMzICswMjAwLCBQaGlsaXBwIFphYmVsIHdyb3RlOg0K
+PiBIaSBKaWFuanVuLA0KPiANCj4gT24gVGh1LCAyMDIwLTA5LTEwIGF0IDExOjQ1ICswODAwLCBK
+aWFuanVuIFdhbmcgd3JvdGU6DQo+ID4gTWVkaWFUZWsncyBQQ0llIGhvc3QgY29udHJvbGxlciBo
+YXMgdGhyZWUgZ2VuZXJhdGlvbiBIV3MsIHRoZSBuZXcNCj4gPiBnZW5lcmF0aW9uIEhXIGlzIGFu
+IGluZGl2aWR1YWwgYnJpZGdlLCBpdCBzdXBvb3J0cyBHZW4zIHNwZWVkIGFuZA0KPiA+IHVwIHRv
+IDI1NiBNU0kgaW50ZXJydXB0IG51bWJlcnMgZm9yIG11bHRpLWZ1bmN0aW9uIGRldmljZXMuDQo+
+ID4gDQo+ID4gQWRkIHN1cHBvcnQgZm9yIG5ldyBHZW4zIGNvbnRyb2xsZXIgd2hpY2ggY2FuIGJl
+IGZvdW5kIG9uIE1UODE5Mi4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBKaWFuanVuIFdhbmcg
+PGppYW5qdW4ud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gQWNrZWQtYnk6IFJ5ZGVyIExlZSA8cnlk
+ZXIubGVlQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9wY2kvY29udHJvbGxl
+ci9LY29uZmlnICAgICAgICAgICAgICB8ICAgMTQgKw0KPiA+ICBkcml2ZXJzL3BjaS9jb250cm9s
+bGVyL01ha2VmaWxlICAgICAgICAgICAgIHwgICAgMSArDQo+ID4gIGRyaXZlcnMvcGNpL2NvbnRy
+b2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMgfCAxMDc2ICsrKysrKysrKysrKysrKysrKysNCj4g
+PiAgMyBmaWxlcyBjaGFuZ2VkLCAxMDkxIGluc2VydGlvbnMoKykNCj4gPiAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4gPiAN
+Cj4gWy4uLl0NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1l
+ZGlhdGVrLWdlbjMuYyBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay1nZW4z
+LmMNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uZjhj
+OGJkZjg4ZDMzDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL2NvbnRy
+b2xsZXIvcGNpZS1tZWRpYXRlay1nZW4zLmMNCj4gWy4uLl0NCj4gPiArc3RhdGljIGludCBtdGtf
+cGNpZV9wb3dlcl91cChzdHJ1Y3QgbXRrX3BjaWVfcG9ydCAqcG9ydCkNCj4gPiArew0KPiA+ICsJ
+c3RydWN0IGRldmljZSAqZGV2ID0gcG9ydC0+ZGV2Ow0KPiA+ICsJaW50IGVycjsNCj4gPiArDQo+
+ID4gKwlwb3J0LT5waHlfcmVzZXQgPSBkZXZtX3Jlc2V0X2NvbnRyb2xfZ2V0X29wdGlvbmFsKGRl
+diwgInBoeS1yc3QiKTsNCj4gDQo+IFBsZWFzZSB1c2UgZGV2bV9yZXNldF9jb250cm9sX2dldF9v
+cHRpb25hbF9leGNsdXNpdmUoKSBpbnN0ZWFkLg0KPiANCj4gPiArCWlmIChQVFJfRVJSKHBvcnQt
+PnBoeV9yZXNldCkgPT0gLUVQUk9CRV9ERUZFUikNCj4gPiArCQlyZXR1cm4gUFRSX0VSUihwb3J0
+LT5waHlfcmVzZXQpOw0KPiANCj4gVGhpcyBzaG91bGQgYmUNCj4gDQo+IAlpZiAoSVNfRVJSKHBv
+cnQtPnBoeV9yZXNldCkpDQo+IAkJcmV0dXJuIFBUUl9FUlIocG9ydC0+cGh5X3Jlc2V0KTsNCj4g
+DQo+IHRoZXJlIGlzIG5vIHJlYXNvbiB0byBjb250aW51ZSBpZiB0aGlzIHRocm93cyAtRU5PTUVN
+LCBmb3IgZXhhbXBsZS4NCj4gDQo+IHJlZ2FyZHMNCj4gUGhpbGlwcA0KDQpUaGFua3MgZm9yIHlv
+dXIgcmV2aWV3LCBJIHdpbGwgZml4IGl0IGluIHRoZSBuZXh0IHZlcnNpb24uDQoNCg==
 
