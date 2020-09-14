@@ -2,61 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B82F268E60
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE35268E68
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgINOwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:52:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
+        id S1726322AbgINOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:53:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726645AbgINOw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:52:29 -0400
+        id S1726659AbgINOwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:52:35 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EDC6206BE;
-        Mon, 14 Sep 2020 14:52:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1730920829;
+        Mon, 14 Sep 2020 14:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600095148;
-        bh=cZBt/BYXGb7XMmjCUMxtBhCxEA94mJlipi9mDTE83sM=;
+        s=default; t=1600095154;
+        bh=Yn6LJndEJ3tzSzC6KEHoAKdcl9DLcigX6eBX6tAwLyM=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=d5ifTqJKTWvyHHbPZgIuvbmo2IFAAh3lnZuFAlkurNs9YbM6I3b7TYOxxRQkq0ylv
-         jdXALa300eyOYZ2JtdoC/atrHX17vYwScCc9mQ6nEvHYXz7N4LisLUG6vOMcaUwfpu
-         oI0clGmmToM2VuztaBRIfu5ZELNJTeE2KWQl/nzw=
-Date:   Mon, 14 Sep 2020 15:51:40 +0100
+        b=kvGTdnVlBfsxz1IUIUVn/6pS26bO4+GHW9lY3A7NX8Lg0u9c1KV1bEp6SekNQ3otI
+         lLQREDSoMUVPXlOj4nhFxDKDUOu1+g7UUzwo0NTPTwFjPG4+FXyr6OpDxeDhcOQIqI
+         VzLEPgYaytK+XCIbsIhRJE1I8elmxOf2RnST8c60=
+Date:   Mon, 14 Sep 2020 15:51:46 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     perex@perex.cz, baijiaju1990@163.com, Tuo Li <tuoli96@outlook.com>,
-        lgirdwood@gmail.com, tiwai@suse.com, heiko@sntech.de,
-        islituo@163.com
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org
-In-Reply-To: <TY2PR04MB4029799E60A5BCAAD5B7B5BBB8280@TY2PR04MB4029.apcprd04.prod.outlook.com>
-References: <TY2PR04MB4029799E60A5BCAAD5B7B5BBB8280@TY2PR04MB4029.apcprd04.prod.outlook.com>
-Subject: Re: [PATCH] ALSA: rockchip_i2s: fix a possible divide-by-zero bug in rockchip_i2s_hw_params()
-Message-Id: <160009506912.439.250974884973031810.b4-ty@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <20200913084114.8851-1-rikard.falkeborn@gmail.com>
+References: <20200913084114.8851-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH 0/5] drivers/regulator: Constify static variables
+Message-Id: <160009510609.5653.5132281509197932767.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Sep 2020 21:09:37 +0800, Tuo Li wrote:
-> The variable bclk_rate is checked in:
->   if (bclk_rate && mclk_rate % bclk_rate)
+On Sun, 13 Sep 2020 10:41:09 +0200, Rikard Falkeborn wrote:
+> Constify a couple of static variables, most importantly regulator_ops to
+> allow the compiler to put them in read-only memory.
 > 
-> This indicates that bclk_rate can be zero.
-> If so, a divide-by-zero bug will occur:
->   div_bclk = mclk_rate / bclk_rate;
+> Rikard Falkeborn (5):
+>   regulator: dummy: Constify dummy_initdata and dummy_ops
+>   regulator: fixed: Constify static regulator_ops
+>   regulator: stw481x-vmmc: Constify static structs
+>   regulator: pca9450: Constify static regulator_ops
+>   regulator: ti-abb: Constify ti_abb_reg_ops
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ALSA: rockchip_i2s: fix a possible divide-by-zero bug in rockchip_i2s_hw_params()
-      commit: 375e2c352582442783178e6a33c279d6bc9354a2
+[1/5] regulator: dummy: Constify dummy_initdata and dummy_ops
+      commit: 087c09c2d273823bac906d590280f7e8052f7eff
+[2/5] regulator: fixed: Constify static regulator_ops
+      commit: 96ee75ffd4f63a3d5f9d6a3ea592b2c0ee97acb0
+[3/5] regulator: stw481x-vmmc: Constify static structs
+      commit: 9032693e218e69a9527fd5d08c4ce5cdbe90820f
+[4/5] regulator: pca9450: Constify static regulator_ops
+      commit: 72f2746c52e3fa6c0f6740df2d4fb70419533084
+[5/5] regulator: ti-abb: Constify ti_abb_reg_ops
+      commit: 2b37a18b58ed12b711591ec54c2b2a0e2068cf6e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
