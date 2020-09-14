@@ -2,250 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24EF02687AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204B82687B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgINIzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:55:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58428 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbgINIzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:55:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3FE06AFE1;
-        Mon, 14 Sep 2020 08:56:00 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 10:55:44 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] mm: don't rely on system state to detect hot-plug
- operations
-Message-ID: <20200914085544.GB16999@dhcp22.suse.cz>
-References: <20200911134831.53258-1-ldufour@linux.ibm.com>
- <20200911134831.53258-3-ldufour@linux.ibm.com>
+        id S1726222AbgINI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:58:06 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22979 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726199AbgINI57 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:57:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600073877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WEum23t+svlghEHDrkfiWQI1PF+qJnq2D7g9bZsVKfA=;
+        b=UkmgSxsCZb6Ki7ISCkuXZtS+55Owd8FkoyN4VQncaslfSzS4escwp7cb0J5lgPVcW2BD/d
+        liGURXz84Flfi43a5C/bnfRv6c5kIhSFp2D5y2ffhfFLLsNqWxqdPg4awU3fa+9zP9Dkwu
+        FDq64pjMbb272QwO9rHKS4k+dGAMv6Y=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-g477LoYpMtCAZu6i5V2WCw-1; Mon, 14 Sep 2020 04:57:56 -0400
+X-MC-Unique: g477LoYpMtCAZu6i5V2WCw-1
+Received: by mail-ed1-f70.google.com with SMTP id i23so1021513edr.14
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:57:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WEum23t+svlghEHDrkfiWQI1PF+qJnq2D7g9bZsVKfA=;
+        b=BByYXFpCOuvCmaRtxrLMv9VbZHwP9xvN03HftIKolC+tjLJxCQmWqTKGibUE/lR4wF
+         xODTZStlByydoSl8VWwJnn3tOUtYTbSpK71GUKknIO1x5QwUGfTYSsSfyTPp4k+Ok2py
+         qpH2c8rxNyBmGJWMRkz+kJEuIPiSVGBx29IAIilUn/VUe4/nQZSQPvY9mwixdRrusGQU
+         9yp77OzOp0viRfnOaWPRd3Zl3FH0OQqQfY9ZjzAMfEqT/Qb7WXuyJw+Q8Xhe4vi4hqCD
+         37ogZo0zD5vdAfCJvv8GY2sNxSgikzOeihaqhhuC2hyLmjSzWiR1V5qbysR4NYdeKQyq
+         1iDw==
+X-Gm-Message-State: AOAM530emvzvYn5J4mALlEOLy5AGY2DZRRQvhXOMHgSMwnPd1jINWMrg
+        DnqGCJ2dX6EndukdOZsYf6tuHvqN0GRm5YmPCo8+MiYRmXn52kVTqs0PxcBkIjRfAkHG4IkbxD8
+        UIBczl71GspBPquVd0uX+MkQO
+X-Received: by 2002:a50:fc08:: with SMTP id i8mr16508805edr.257.1600073875044;
+        Mon, 14 Sep 2020 01:57:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzng0e3crIM0MRmKRuvBPIqhmdf3VOfEgrWBfiTtfm3AqYj3npyUr1SsG6ROGW4UluC5pO7Ug==
+X-Received: by 2002:a50:fc08:: with SMTP id i8mr16508791edr.257.1600073874850;
+        Mon, 14 Sep 2020 01:57:54 -0700 (PDT)
+Received: from x1.localdomain ([78.108.130.193])
+        by smtp.gmail.com with ESMTPSA id d6sm8987645edm.31.2020.09.14.01.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 01:57:54 -0700 (PDT)
+Subject: Re: [PATCH] Introduce support for Systems Management Driver over WMI
+ for Dell Systems
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20200730143122.10237-1-divya_bharathi@dell.com>
+ <aa23d8b8-6c6b-b6f2-e916-1defff8a9b26@redhat.com>
+ <DM6PR19MB26362B2A2CDFE73BE167FD34FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
+ <c5a6e340-66ec-e03b-a9a8-9c61b9f388d5@redhat.com>
+Message-ID: <25c9e901-ed28-eb87-bd89-652c3710b62b@redhat.com>
+Date:   Mon, 14 Sep 2020 10:57:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <c5a6e340-66ec-e03b-a9a8-9c61b9f388d5@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200911134831.53258-3-ldufour@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 11-09-20 15:48:30, Laurent Dufour wrote:
-> In register_mem_sect_under_node() the system_state’s value is checked to
-> detect whether the operation the call is made during boot time or during an
-> hot-plug operation. Unfortunately, that check against SYSTEM_BOOTING is
-> wrong because regular memory is registered at SYSTEM_SCHEDULING state. In
-> addition memory hot-plug operation can be triggered at this system state
-> too by the ACPI.
+Hi,
 
-Please add
-(an example would be Qemu to replay hot added memory after reboot).
+On 9/14/20 10:45 AM, Hans de Goede wrote:
 
-> So checking against the system state is not enough.
-> 
-> The consequence is that on system with interleaved node's ranges like this:
->  Early memory node ranges
->    node   1: [mem 0x0000000000000000-0x000000011fffffff]
->    node   2: [mem 0x0000000120000000-0x000000014fffffff]
->    node   1: [mem 0x0000000150000000-0x00000001ffffffff]
->    node   0: [mem 0x0000000200000000-0x000000048fffffff]
->    node   2: [mem 0x0000000490000000-0x00000007ffffffff]
-> 
-> This can be seen on PowerPC LPAR after multiple memory hot-plug and
-> hot-unplug operations are done. At the next reboot the node's memory ranges
-> can be interleaved and since the call to link_mem_sections() is made in
-> topology_init() while the system is in the SYSTEM_SCHEDULING state, the
-> node's id is not checked, and the sections registered to multiple nodes:
-> 
-> $ ls -l /sys/devices/system/memory/memory21/node*
-> total 0
-> lrwxrwxrwx 1 root root     0 Aug 24 05:27 node1 -> ../../node/node1
-> lrwxrwxrwx 1 root root     0 Aug 24 05:27 node2 -> ../../node/node2
-> 
-> In that case, the system is able to boot but if later one of theses memory
-> block is hot-unplugged and then hot-plugged, the sysfs inconsistency is
-> detected and triggered a BUG_ON():
-> 
-> ------------[ cut here ]------------
-> kernel BUG at /Users/laurent/src/linux-ppc/mm/memory_hotplug.c:1084!
-> Oops: Exception in kernel mode, sig: 5 [#1]
-> LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-> Modules linked in: rpadlpar_io rpaphp pseries_rng rng_core vmx_crypto gf128mul binfmt_misc ip_tables x_tables xfs libcrc32c crc32c_vpmsum autofs4
-> CPU: 8 PID: 10256 Comm: drmgr Not tainted 5.9.0-rc1+ #25
-> NIP:  c000000000403f34 LR: c000000000403f2c CTR: 0000000000000000
-> REGS: c0000004876e3660 TRAP: 0700   Not tainted  (5.9.0-rc1+)
-> MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24000448  XER: 20040000
-> CFAR: c000000000846d20 IRQMASK: 0
-> GPR00: c000000000403f2c c0000004876e38f0 c0000000012f6f00 ffffffffffffffef
-> GPR04: 0000000000000227 c0000004805ae680 0000000000000000 00000004886f0000
-> GPR08: 0000000000000226 0000000000000003 0000000000000002 fffffffffffffffd
-> GPR12: 0000000088000484 c00000001ec96280 0000000000000000 0000000000000000
-> GPR16: 0000000000000000 0000000000000000 0000000000000004 0000000000000003
-> GPR20: c00000047814ffe0 c0000007ffff7c08 0000000000000010 c0000000013332c8
-> GPR24: 0000000000000000 c0000000011f6cc0 0000000000000000 0000000000000000
-> GPR28: ffffffffffffffef 0000000000000001 0000000150000000 0000000010000000
-> NIP [c000000000403f34] add_memory_resource+0x244/0x340
-> LR [c000000000403f2c] add_memory_resource+0x23c/0x340
-> Call Trace:
-> [c0000004876e38f0] [c000000000403f2c] add_memory_resource+0x23c/0x340 (unreliable)
-> [c0000004876e39c0] [c00000000040408c] __add_memory+0x5c/0xf0
-> [c0000004876e39f0] [c0000000000e2b94] dlpar_add_lmb+0x1b4/0x500
-> [c0000004876e3ad0] [c0000000000e3888] dlpar_memory+0x1f8/0xb80
-> [c0000004876e3b60] [c0000000000dc0d0] handle_dlpar_errorlog+0xc0/0x190
-> [c0000004876e3bd0] [c0000000000dc398] dlpar_store+0x198/0x4a0
-> [c0000004876e3c90] [c00000000072e630] kobj_attr_store+0x30/0x50
-> [c0000004876e3cb0] [c00000000051f954] sysfs_kf_write+0x64/0x90
-> [c0000004876e3cd0] [c00000000051ee40] kernfs_fop_write+0x1b0/0x290
-> [c0000004876e3d20] [c000000000438dd8] vfs_write+0xe8/0x290
-> [c0000004876e3d70] [c0000000004391ac] ksys_write+0xdc/0x130
-> [c0000004876e3dc0] [c000000000034e40] system_call_exception+0x160/0x270
-> [c0000004876e3e20] [c00000000000d740] system_call_common+0xf0/0x27c
-> Instruction dump:
-> 48442e35 60000000 0b030000 3cbe0001 7fa3eb78 7bc48402 38a5fffe 7ca5fa14
-> 78a58402 48442db1 60000000 7c7c1b78 <0b030000> 7f23cb78 4bda371d 60000000
-> ---[ end trace 562fd6c109cd0fb2 ]---
-> 
-> This patch addresses the root cause by not relying on the system_state
-> value to detect whether the call is due to a hot-plug operation. An extra
-> parameter is needed in register_mem_sect_under_node() detailing whether the
-> operation is due to a hot-plug operation.
+<snip>
 
-Thanks this description is much more clear!
-
-> Fixes: 4fbce633910e ("mm/memory_hotplug.c: make register_mem_sect_under_node() a callback of walk_memory_range()")
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> Cc: stable@vger.kernel.org
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: David Hildenbrand <david@redhat.com>
-
-Wrt to the specific implementation I cannot say I would care much.
-Duplicating the code will make the two callers simpler but there will be
-a code duplication. We have that weird intermix for hotplug vs. early
-init at other places. So I would be very lightly prefering this patch
-and do a larger cleanup on top of that. It is at least clear what the
-patch does this way. So
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  drivers/base/node.c  | 21 ++++++++++++++++-----
->  include/linux/node.h |  9 ++++++---
->  mm/memory_hotplug.c  |  3 ++-
->  3 files changed, 24 insertions(+), 9 deletions(-)
+>>>> +           lower_bound:    A file that can be read to obtain the lower
+>>>> +           bound value of the <attr>
+>>>> +
+>>>> +           modifier:       A file that can be read to obtain attribute-level
+>>>> +           dependency rule which has to be met to configure <attr>
+>>>> +
+>>>> +           scalar_increment:       A file that can be read to obtain the
+>>>> +           resolution of the incremental value this attribute accepts.
+>>>> +
+>>>> +           upper_bound:    A file that can be read to obtain the upper
+>>>> +           bound value of the <attr>
+>>>
+>>> Are these integers or also possibly floats? I guess possibly also floats, right?
+>>> Then at a minimum this should specify which decimal-separator is used (I assume
+>>> we will go with the usual '.' as decimal separator).
+>>
+>> In practice they're integers, but I don't see why they couldn't be floats.
 > 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 508b80f6329b..862516c5a5ae 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -762,14 +762,19 @@ static int __ref get_nid_for_pfn(unsigned long pfn)
->  }
->  
->  /* register memory section under specified node if it spans that node */
-> +struct rmsun_args {
-> +	int nid;
-> +	enum memplug_context context;
-> +};
->  static int register_mem_sect_under_node(struct memory_block *mem_blk,
-> -					 void *arg)
-> +					void *args)
->  {
->  	unsigned long memory_block_pfns = memory_block_size_bytes() / PAGE_SIZE;
->  	unsigned long start_pfn = section_nr_to_pfn(mem_blk->start_section_nr);
->  	unsigned long end_pfn = start_pfn + memory_block_pfns - 1;
-> -	int ret, nid = *(int *)arg;
-> +	int ret, nid = ((struct rmsun_args *)args)->nid;
->  	unsigned long pfn;
-> +	enum memplug_context context = ((struct rmsun_args *)args)->context;
->  
->  	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
->  		int page_nid;
-> @@ -789,7 +794,7 @@ static int register_mem_sect_under_node(struct memory_block *mem_blk,
->  		 * case, during hotplug we know that all pages in the memory
->  		 * block belong to the same node.
->  		 */
-> -		if (system_state == SYSTEM_BOOTING) {
-> +		if (context == MEMPLUG_EARLY) {
->  			page_nid = get_nid_for_pfn(pfn);
->  			if (page_nid < 0)
->  				continue;
-> @@ -832,10 +837,16 @@ void unregister_memory_block_under_nodes(struct memory_block *mem_blk)
->  			  kobject_name(&node_devices[mem_blk->nid]->dev.kobj));
->  }
->  
-> -int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn)
-> +int link_mem_sections(int nid, unsigned long start_pfn, unsigned long end_pfn,
-> +		      enum memplug_context context)
->  {
-> +	struct rmsun_args args = {
-> +		.nid = nid,
-> +		.context = context,
-> +	};
-> +
->  	return walk_memory_blocks(PFN_PHYS(start_pfn),
-> -				  PFN_PHYS(end_pfn - start_pfn), (void *)&nid,
-> +				  PFN_PHYS(end_pfn - start_pfn), (void *)&args,
->  				  register_mem_sect_under_node);
->  }
->  
-> diff --git a/include/linux/node.h b/include/linux/node.h
-> index 4866f32a02d8..8ff08520488c 100644
-> --- a/include/linux/node.h
-> +++ b/include/linux/node.h
-> @@ -100,10 +100,12 @@ typedef  void (*node_registration_func_t)(struct node *);
->  
->  #if defined(CONFIG_MEMORY_HOTPLUG_SPARSE) && defined(CONFIG_NUMA)
->  extern int link_mem_sections(int nid, unsigned long start_pfn,
-> -			     unsigned long end_pfn);
-> +			     unsigned long end_pfn,
-> +			     enum memplug_context context);
->  #else
->  static inline int link_mem_sections(int nid, unsigned long start_pfn,
-> -				    unsigned long end_pfn)
-> +				    unsigned long end_pfn,
-> +				    enum memplug_context context)
->  {
->  	return 0;
->  }
-> @@ -128,7 +130,8 @@ static inline int register_one_node(int nid)
->  		if (error)
->  			return error;
->  		/* link memory sections under this node */
-> -		error = link_mem_sections(nid, start_pfn, end_pfn);
-> +		error = link_mem_sections(nid, start_pfn, end_pfn,
-> +					  MEMPLUG_EARLY);
->  	}
->  
->  	return error;
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index fc21625e42de..912d355ca446 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1080,7 +1080,8 @@ int __ref add_memory_resource(int nid, struct resource *res)
->  	}
->  
->  	/* link memory sections under this node.*/
-> -	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1));
-> +	ret = link_mem_sections(nid, PFN_DOWN(start), PFN_UP(start + size - 1),
-> +				MEMPLUG_HOTPLUG);
->  	BUG_ON(ret);
->  
->  	/* create new memmap entry */
-> -- 
-> 2.28.0
+> Hmm, that is a bit hand-wavy, for an userspace ABI we really need to define
+> this clearly. Either it is integers (which is fine), or it is floats and we need
+> to define a decimal-separator as part of the ABI.
+> 
+> Note the reason why I started wondering about this in the first place is the
+> scalar_increment attribute. I think that can use some clarification too.
 
--- 
-Michal Hocko
-SUSE Labs
+p.s.
+
+I just realized that the lower_ / upper_bound attributes would be
+better if they were renamed to min_value and max_value then everyone
+will immediately understand what they are without even needing to
+consult the docs.
+
+Regards,
+
+Hans
+
