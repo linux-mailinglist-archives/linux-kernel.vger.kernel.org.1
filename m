@@ -2,109 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3397226922C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B608269242
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725976AbgINQxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:53:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52254 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726360AbgINQvX (ORCPT
+        id S1726044AbgINQ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbgINQz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:51:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600102281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PggFTSnEYcfcg6kDYfAZ6ETm3cM7e6PHB09SNM0mGOc=;
-        b=V9irh7lupAbi3b5oJvSFMZoZ2Cb3PX/HDtk3h4fgc8FFxcrP2X3qNu1UJ6VgulHHhClLZP
-        NMkbimKivuws50J4bFgVLxXNpby2Ob66NUVaZuNkDTmrKk/5Ul+pEsqIJEi1jAK9rKrZX0
-        DaT+/Jt95B8KB6IYquC3A5RZK3TSiZc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-vGV-nwK6PMilAVJ-k8RtNA-1; Mon, 14 Sep 2020 12:51:17 -0400
-X-MC-Unique: vGV-nwK6PMilAVJ-k8RtNA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A23A18B9F00;
-        Mon, 14 Sep 2020 16:51:16 +0000 (UTC)
-Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EF2097A41F;
-        Mon, 14 Sep 2020 16:51:14 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 11:51:13 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     syzbot <syzbot+bc9dbf05dcc151e9b972@syzkaller.appspotmail.com>,
-        alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        x86@kernel.org
-Subject: Re: WARNING: can't access registers at
- asm_sysvec_call_function_single
-Message-ID: <20200914165113.l5iloshztgykyqxy@treble>
-References: <0000000000002b02cf05aed302f3@google.com>
- <87lfhdpeum.fsf@nanos.tec.linutronix.de>
- <20200914164927.t476jnlkmdibgqvn@treble>
+        Mon, 14 Sep 2020 12:55:27 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB23C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:55:27 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f18so16806pfa.10
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nn8uGO9a9X0XwaIfMVFd2VgaWgHbpK8dvPYHd7Sq/nA=;
+        b=RB+2IbSgUvQBoAdsF0OTSCz20nt98NJ5VHwnf9jRx7zYNTMQeX4LZz03zL76irCDsG
+         0mdg45wZp2YAKNVNcAwTPfapLTrblMQfnEi5juhLmTb8jSzbarIx3WRVlOGm1lwO0q4M
+         JQXKYTnJSK2DV38j5skJQDiuqxCdrQ3kOy8gMmaXArc3C/XUvXxCidE0P/u3zhA62+yi
+         xxn5pXMlfzPSghT6dqYreCTRbu1o6GiEEvmXJk4bl7fHVfWaL8keJwVa0PHKeirScjuK
+         prJC8gaEvEx5yF4bvJyP9nUjr2ef9WkOsxRj3i4EAEkOXmG5T4VYP6A9imu3h5LqM1Nm
+         5WRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nn8uGO9a9X0XwaIfMVFd2VgaWgHbpK8dvPYHd7Sq/nA=;
+        b=s8UPQ55VFkbaS0Xt+1lBOXtjDR1ryluozc6i2iI9D2/WwDI/pDE5jByB7/6TBAxup5
+         ihzBO4O60IJ9/v7YG7AzIp/sAfbsJhx8t5HLD/0Ey3dLshyOABteuGJVpi9HnDs45VKU
+         18nlFUALp/LHcGu2+tZxoJIOQ2pAYTX2qH4Pt+k6/NhRl6tAgoyA9qy3VjOxNTPy1C2j
+         Nu4L7PcIUBkwC57RpBjhz8SIvJXouqMZJaNbC2LZrbDZsxSYntqRyd+Dqeu1OF5DBCzB
+         UjcmsajyrLKFQYCiMJNInWA7Kw8e2YuXYUy8nv1vWVz3sHWjHOW/Eo+ULIJSnmZLXdRs
+         hOiQ==
+X-Gm-Message-State: AOAM531iuiDeNGUAIaSnM/fPYga180DA2skxSFZ1905ExhrCN1Wo4BmI
+        BjE7Bk6J5Y6h2Y7CdvR837DmtnbS7j7MEuoMf4gI7g==
+X-Google-Smtp-Source: ABdhPJxzhrEWtHfAz9YebgAYjnUP/OKSRvXH7hybqZE4UdLRz9e4pHdbh/Rl/limT4J8drQRD3Oae84qwNQP5k5X5fM=
+X-Received: by 2002:a62:8f4c:: with SMTP id n73mr13928326pfd.65.1600102526730;
+ Mon, 14 Sep 2020 09:55:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200914164927.t476jnlkmdibgqvn@treble>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200913070010.44053-1-songmuchun@bytedance.com> <CALvZod7VH3NDwBXrY9w95pUY7DV+R-b_chBHuygmwH_bhpULkQ@mail.gmail.com>
+In-Reply-To: <CALvZod7VH3NDwBXrY9w95pUY7DV+R-b_chBHuygmwH_bhpULkQ@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 15 Sep 2020 00:54:50 +0800
+Message-ID: <CAMZfGtXoBrFioh=FqRA82ZRSt=2oW=ie8BgZE0hAvtCOBRMXiw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3] mm: memcontrol: Add the missing
+ numa_stat interface for cgroup v2
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:49:30AM -0500, Josh Poimboeuf wrote:
-> On Sun, Sep 13, 2020 at 11:05:21PM +0200, Thomas Gleixner wrote:
-> > On Tue, Sep 08 2020 at 13:16, syzbot wrote:
-> > 
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    f4d51dff Linux 5.9-rc4
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1455d4f9900000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=a9075b36a6ae26c9
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=bc9dbf05dcc151e9b972
-> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > >
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+bc9dbf05dcc151e9b972@syzkaller.appspotmail.com
-> > >
-> > > WARNING: can't access registers at asm_sysvec_call_function_single+0x12/0x20 arch/x86/include/asm/idtentry.h:589
-> > 
-> > That's the ORC unwinder complaining, but I have no idea why...
-> 
-> 0000000000000cd0 <asm_sysvec_call_function_single>:
->      cd0:	90                   	nop
->      cd1:	90                   	nop
->      cd2:	90                   	nop
->      cd3:	6a ff                	pushq  $0xffffffffffffffff
->      cd5:	e8 b6 03 00 00       	callq  1090 <error_entry>
->      cda:	48 89 e7             	mov    %rsp,%rdi
->      cdd:	e8 00 00 00 00       	callq  ce2 <asm_sysvec_call_function_single+0x12>
-> 			cde: R_X86_64_PLT32	sysvec_call_function_single-0x4
->      ce2:	e9 69 04 00 00       	jmpq   1150 <error_return>
->      ce7:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
->      cee:	00 00
-> 
-> This is a head scratcher.  The ORC data looks ok, at least when I build
-> it on my system.  It's expecting to find pt_regs at the top of the stack
-> after returning from sysvec_call_function_single().  But it can't
-> dereference the regs for some reason.
-> 
-> So either it's a bug in ORC data or unwinder (not likely) or the stack
-> pointer got corrupted somehow (also seems unlikely)...
+On Tue, Sep 15, 2020 at 12:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Sun, Sep 13, 2020 at 12:01 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > In the cgroup v1, we have a numa_stat interface. This is useful for
+> > providing visibility into the numa locality information within an
+> > memcg since the pages are allowed to be allocated from any physical
+> > node. One of the use cases is evaluating application performance by
+> > combining this information with the application's CPU allocation.
+> > But the cgroup v2 does not. So this patch adds the missing information.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Suggested-by: Shakeel Butt <shakeelb@google.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > ---
+> [snip]
+> > +
+> > +static struct numa_stat numa_stats[] = {
+> > +       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> > +       { "file", PAGE_SIZE, NR_FILE_PAGES },
+> > +       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> > +       { "shmem", PAGE_SIZE, NR_SHMEM },
+> > +       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> > +       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> > +       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +       /*
+> > +        * The ratio will be initialized in numa_stats_init(). Because
+> > +        * on some architectures, the macro of HPAGE_PMD_SIZE is not
+> > +        * constant(e.g. powerpc).
+> > +        */
+> > +       { "anon_thp", 0, NR_ANON_THPS },
+> > +#endif
+> > +       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> > +       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> > +       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> > +       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> > +       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> > +       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> > +       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> > +};
+> > +
+> > +static int __init numa_stats_init(void)
+> > +{
+> > +       int i;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +               if (numa_stats[i].idx == NR_ANON_THPS)
+> > +                       numa_stats[i].ratio = HPAGE_PMD_SIZE;
+> > +#endif
+> > +       }
+>
+> The for loop seems excessive but I don't really have a good alternative.
 
-The true bug may be revealed elsewhere on the stack... I probably need
-to start enabling ORC stack dumps like I did for FP.
+Yeah, I also have no good alternative. The numa_stats is only initialized
+once. So there may be no problem :).
+
+>
+> > +
+> > +       return 0;
+> > +}
+> > +pure_initcall(numa_stats_init);
+> > +
+> > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> > +                                          unsigned int nid,
+> > +                                          enum node_stat_item idx)
+> > +{
+> > +       VM_BUG_ON(nid >= nr_node_ids);
+> > +       return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
+> > +}
+> > +
+> > +static const char *memory_numa_stat_format(struct mem_cgroup *memcg)
+> > +{
+> > +       int i;
+> > +       struct seq_buf s;
+> > +
+> > +       /* Reserve a byte for the trailing null */
+> > +       seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE - 1);
+> > +       if (!s.buffer)
+> > +               return NULL;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> > +               int nid;
+> > +
+> > +               seq_buf_printf(&s, "%s", numa_stats[i].name);
+> > +               for_each_node_state(nid, N_MEMORY) {
+> > +                       u64 size;
+> > +
+> > +                       size = memcg_node_page_state(memcg, nid,
+> > +                                                    numa_stats[i].idx);
+> > +                       size *= numa_stats[i].ratio;
+> > +                       seq_buf_printf(&s, " N%d=%llu", nid, size);
+> > +               }
+> > +               seq_buf_putc(&s, '\n');
+> > +       }
+> > +
+> > +       /* The above should easily fit into one page */
+> > +       if (WARN_ON_ONCE(seq_buf_putc(&s, '\0')))
+> > +               s.buffer[PAGE_SIZE - 1] = '\0';
+>
+> I think you should follow Michal's recommendation at
+> http://lkml.kernel.org/r/20200914115724.GO16999@dhcp22.suse.cz
+
+Here is different, because the seq_buf_putc(&s, '\n') will not add \0 unless
+we use seq_buf_puts(&s, "\n").
+
 
 -- 
-Josh
-
+Yours,
+Muchun
