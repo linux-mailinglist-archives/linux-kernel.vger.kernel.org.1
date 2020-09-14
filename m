@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7EF268407
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40A1268408
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINFYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgINFYC (ORCPT
+        id S1726056AbgINFZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:25:39 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52707 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726027AbgINFZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:24:02 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17007C06174A;
-        Sun, 13 Sep 2020 22:24:01 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b124so11574393pfg.13;
-        Sun, 13 Sep 2020 22:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=BJTrsJXsTm1uwKnFAZKbGiYZrVLF551foO+8RwWbzPw=;
-        b=Bpp6S27QEWK/70smgm/uwoToXR1lDam7inciZPy/jkInbZg5IEQa64Kraz6IubGSrF
-         kTiWsTRqP/FeVrrcZinUPQDEWFqkpsSxmr6E3JzsqvfEIv3CQI6ZaAxlhSgDyVu2RNgY
-         rioGUWcSAMo3dm8iH0pvvgkCdij4G9b95BxhE+pFiE7elySEsBEW8YOqYWI5N1DTJuQw
-         TSJsOHEz+RKeBar7ky9V2vXk9TV1seeEytv4PfFTlY6AtLlb/HYuChzWTSS4/zqTuXY8
-         7tBHyCMHkW5qAf8c1E7N4f+cAM344pl84eXQmqS0kL9ybZwYppV5t/0TGrDcC99fnoi9
-         8ZMA==
+        Mon, 14 Sep 2020 01:25:38 -0400
+Received: by mail-wm1-f65.google.com with SMTP id q9so9353321wmj.2
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:25:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=BJTrsJXsTm1uwKnFAZKbGiYZrVLF551foO+8RwWbzPw=;
-        b=foqLZdxOiCtjE90KrZiw/9gjnveLvWPH5mj0n4wmLiUItoL4qhqmM1XNFFAIvy/+q+
-         gsacaq72g7VCSMltKEwyhqK1nJ2bWACVKW57R0ueSPM4wle0LAkwuQ1BysJCmsigzCe7
-         7rq3R0vg438j4ejO8TvHD/ry1at9Q8nRHr5YT4wiL8fY5ETfW9dp0xA8sMIeKeP8WJ4U
-         iusCMxLcUw6DnXegLT+mKlstqA0jBwFeWqYuei0FQ0nbB7SNPcRYEGeKZPWbMTKCd5Pi
-         BmDvvdIzNhazSM4pnE2z2XpJ/7yM36OCvj0VauN90ZAbF3e8ypZq2G9JtBBQ6rjRHijG
-         aG9g==
-X-Gm-Message-State: AOAM532qIZQesYhkL8eP26DcL+eU6y27Y47IMoEzVnf0XA4nCl3YUJ2P
-        5Fx0cW7/sgXAiaZbXVQPMjvThoZlOQ0VmEoZ
-X-Google-Smtp-Source: ABdhPJwFOPD+jFZKt3plH7UOAejhz2wwU1G3GQdGj4aHItcwUoC2+X8WErAeubr/RLKXAZPhVmKKkQ==
-X-Received: by 2002:a63:5b64:: with SMTP id l36mr9679517pgm.413.1600061041154;
-        Sun, 13 Sep 2020 22:24:01 -0700 (PDT)
-Received: from [192.168.1.6] ([1.23.2.3])
-        by smtp.gmail.com with ESMTPSA id j19sm9274043pfe.108.2020.09.13.22.23.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Sep 2020 22:24:00 -0700 (PDT)
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com, robh@kernel.org
-From:   Valmiki <valmikibow@gmail.com>
-Subject: dma-coherent property for PCIe Root
-Message-ID: <1512d7b5-54c6-3b87-0090-5e370955223e@gmail.com>
-Date:   Mon, 14 Sep 2020 10:53:48 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v7HOZbUgNHvFsPMQU6cZ31wrCEcVN9PuSG2phiaTblo=;
+        b=spHkyiogNZffnKsCNN3z8OwumSHRiklSfrwS0q9rces2sSCStKUxRx7JZevV4Q4/bN
+         b4nAESBgq8+ehr5XSmatMTUYy8+B5heshmetM4cyCXhTGws5xilLRV1MB4euivQxopt3
+         9m5RoGO/J2ElzMfKWSgcZtGUUvAO2QQWnskcXeaN7METYwOGX4HZA6ILtjswynwmLrmI
+         +ZLIlFC0CYzo6r4ITga5pFlS94TBMjCPeSjKajKmjiBs13Mtw0AcTJtzGK9VtkL02Wft
+         H5zW3SuGcKVZgYPGAFIRdeZxYYkQ/QmD13dyaWL79s/MlWg3dIFBGqvGzwP7+41YIURH
+         OsfA==
+X-Gm-Message-State: AOAM531smWJ+zg36SV38j+O0bR+22iOFARDr7PfyFv8cytIpDkU50uvc
+        kdFmlnLXZcMaH9gfMpwJpFmMes23HHcCaXBB3dk=
+X-Google-Smtp-Source: ABdhPJznlOyo84iHMphhoyjTr+9VWsIClljEwUtiLoffMica6HBBfOzB6JQIkVXO5hQemUSi+/M5YUwcjQ/NbOhCD9Q=
+X-Received: by 2002:a05:600c:4142:: with SMTP id h2mr13084064wmm.128.1600061136206;
+ Sun, 13 Sep 2020 22:25:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+In-Reply-To: <20200913210313.1985612-1-jolsa@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 14 Sep 2020 14:25:25 +0900
+Message-ID: <CAM9d7ci4VUuAguynK76Zd7YSnNoAErsgabucUjb3qcuXj5m7Pg@mail.gmail.com>
+Subject: Re: [RFC 00/26] perf: Add mmap3 support
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+Hi Jiri,
 
-How does "dma-coherent" property will work for PCIe as RC on an
-ARM SOC ?
-Because the end point device drivers are the one which will request dma 
-buffers and Root port driver doesn't involve in data path of end point
-except for handling interrupts.
+On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> hi,
+> while playing with perf daemon support I realized I need
+> the build id data in mmap events, so we don't need to care
+> about removed/updated binaries during long perf runs.
+>
+> This RFC patchset adds new mmap3 events that copies mmap2
+> event and adds build id in it. It makes mmap3 the default
+> mmap event for synthesizing kernel/modules/tasks and adds
+> some tooling enhancements to enable the workflow below.
 
-How does EP DMA buffers will be hardware coherent if RC driver exposes
-dma-coherent property ?
+Cool! It's nice that we can skip the final build-id collection stage
+with this while data size will be bigger.
 
-Regards,
-Valmiki
-
-
+Thanks
+Namhyung
