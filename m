@@ -2,78 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BCD268B49
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B00268B04
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgINMlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:41:49 -0400
-Received: from mail-yb1-f196.google.com ([209.85.219.196]:45291 "EHLO
-        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgINMlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:41:03 -0400
-Received: by mail-yb1-f196.google.com with SMTP id p81so11681225ybc.12;
-        Mon, 14 Sep 2020 05:41:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pADP6qzUrYMCYvH+CFX4SosBM+qgginkcbgh+0+Vh8g=;
-        b=c/hGNLMrpQ+A40x0ZjivCwqgLxCXQuqGqUeM0NTV5AtN+U7k6U7ZohYrSE+J+uYLxQ
-         s/VhX1mr+dWJkYF7qmTqDNQjHuC7bx216qQ0UomTGDkxA3FeeX+UkninJSJmu1K8pHbU
-         yCbbVeMZ5EQ/96gTV5oJIvx1LJUNFyvsBsfmvk1RsJMgddFq+Kv11xLtcJx2DLDt17ZT
-         rIUxY3uvvB5seOLx5pX1oJNogz7y90bOxQHvrDBRAUt9i2DEOoGXYemGbLqy+PrqAgW1
-         GfGCE5gNuG+sBzX912jrfxk8rsj6Uk289Y6XQgGbgQhnp05tCNXiTHILZv5/Cc7Y6evx
-         8+tQ==
-X-Gm-Message-State: AOAM530ib5E0aqToGlBWVGEAI7qn618Q/0fSRGM2n0Gmj13M8yx+2hl6
-        KBaEoGb3Qg5LKxSJDDlp65tdMwC7/55wv26KdITGUmGvjxQ=
-X-Google-Smtp-Source: ABdhPJw0rS0SECxSrJqxyMZRelj1qSCZeHdheuNXeS8R7ywmxQAb0yM5b9d02qUFIk2ygT1exPjrqXF2qIaoEUmDriM=
-X-Received: by 2002:a9d:5a92:: with SMTP id w18mr8913041oth.145.1600085338477;
- Mon, 14 Sep 2020 05:08:58 -0700 (PDT)
+        id S1726364AbgINMdQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 08:33:16 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2816 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726498AbgINMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:32:16 -0400
+Received: from lhreml713-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 71917FA49058FFD59948;
+        Mon, 14 Sep 2020 13:13:45 +0100 (IST)
+Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
+ lhreml713-chm.china.huawei.com (10.201.108.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 14 Sep 2020 13:13:45 +0100
+Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
+ lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
+ Mon, 14 Sep 2020 13:13:45 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     Shiju Jose <shiju.jose@huawei.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "helgaas@kernel.org" <helgaas@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+CC:     Linuxarm <linuxarm@huawei.com>
+Subject: RE: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
+        specific HW errors
+Thread-Topic: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
+        specific HW errors
+Thread-Index: AQHWge9vw3KZA5696kitxl2toth2IaloGvNg
+Date:   Mon, 14 Sep 2020 12:13:45 +0000
+Message-ID: <cb811df3c4cc4f349c4a8da251592904@huawei.com>
+References: <20200903123456.1823-1-shiju.jose@huawei.com>
+In-Reply-To: <20200903123456.1823-1-shiju.jose@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.25.227]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200911101703.20521-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200911101703.20521-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Sep 2020 14:08:47 +0200
-Message-ID: <CAMuHMdWk+uenHO=4VFQSYdJRew5EWxGfNtamO_OTcdL0g+QZ4Q@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: Kconfig: Update description for
- CLK_RCAR_GEN3_CPG config
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 12:17 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> rcar-gen3-cpg driver is also used on Renesas RZ/G2 SoC's, update the same
-> to reflect the description for CLK_RCAR_GEN3_CPG config.
+Hello,
+
+Can you help to merge this series?
+
+Thanks,
+Shiju
+
+>-----Original Message-----
+>From: Linuxarm [mailto:linuxarm-bounces@huawei.com] On Behalf Of Shiju
+>Jose
+>Sent: 03 September 2020 13:35
+>To: linux-acpi@vger.kernel.org; linux-pci@vger.kernel.org; linux-
+>kernel@vger.kernel.org; rjw@rjwysocki.net; helgaas@kernel.org;
+>bp@alien8.de; james.morse@arm.com; lorenzo.pieralisi@arm.com;
+>robh@kernel.org; lenb@kernel.org; tony.luck@intel.com;
+>dan.carpenter@oracle.com; andriy.shevchenko@linux.intel.com
+>Cc: Linuxarm <linuxarm@huawei.com>
+>Subject: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
+>specific HW errors
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in clk-renesas for v5.10, as:
-
-    clk: renesas: rcar-gen3: Update description for RZ/G2
-
-    The rcar-gen3-cpg driver is also used on Renesas RZ/G2 SoC's, update the
-    description for the CLK_RCAR_GEN3_CPG config symbol to reflect this.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>CPER records describing a firmware-first error are identified by GUID.
+>The ghes driver currently logs, but ignores any unknown CPER records.
+>This prevents describing errors that can't be represented by a standard entry,
+>that would otherwise allow a driver to recover from an error.
+>The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of version 2.8).
+>
+>patch set
+>1. add the notifier chain for these non-standard/vendor-records
+>   in the ghes driver.
+>
+>2. add the driver to handle HiSilicon HIP PCIe controller's errors.
+>
+>Changes:
+>
+>V15:
+>1. Change in the HIP PCIe error handling driver
+>   for a comment by Andy Shevchenko.
+>   Removed "depends on ACPI" as it already depends on
+>   it through ACPI_APEI_GHES.
+>
+>V14:
+>1. Add patch[1] posted by James to the series.
+>
+>2. Following changes made for Bjorn's comments,
+>2.1 Deleted stub code from ghes.h
+>2.2 Made CONFIG_PCIE_HISI_ERR depend on CONFIG_ACPI_APEI_GHES.
+>
+>V13:
+>1. Following changes in the HIP PCIe error handling driver.
+>1.1 Add Bjorn's acked-by.
+>1.2. Address the comments and macros order Bjorn mentioned.
+>     Fix the words in the commit.
+>
+>V12:
+>1. Changed the Signed-off-by tag to Co-developed-by tag in the patch
+>   "ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records"
+>
+>V11:
+>1. Following modifications made by James Morse in the APEI patch
+>   for the vendor error record.
+>   - Removed kfifo and ghes_gdata_pool. Expanded commit message.
+>
+>2. Changes in the HIP PCIe error handling driver
+>   for the comments by Andy Shevchenko.
+>
+>V10:
+>1. Changes for Bjorn's comments on HIP PCIe error handler driver
+>   and APEI patch.
+>
+>2. Changes in the HIP PCIe error handler driver
+>   for the feedbacks by Andy Shevchenko.
+>
+>V9:
+>1. Fixed 2 improvements suggested by the kbuild test robot.
+>1.1 Change ghes_gdata_pool_init() as static function.
+>1.2. Removed using buffer to store the error data for
+>     logging in the hisi_pcie_handle_error()
+>
+>V8:
+>1. Removed reporting the standard errors through the interface
+>   because of the conflict with the recent patches in the
+>   memory error handling path.
+>2. Fix comments by Dan Carpenter.
+>
+>V7:
+>1. Add changes in the APEI driver suggested by Borislav Petkov, for
+>   queuing up all the non-fatal HW errors to the work queue and
+>   notify the registered kernel drivers from the bottom half using
+>   blocking notifier, common interface for both standard and
+>   vendor-spcific errors.
+>2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+>   by Bjorn Helgaas.
+>
+>V6:
+>1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+>
+>V5:
+>1. Fix comments from James Morse.
+>1.1 Changed the notification method to use the atomic_notifier_chain.
+>1.2 Add the error handled status for the user space.
+>
+>V4:
+>1. Fix for the following smatch warning in the PCIe error driver,
+>   reported by kbuild test robot<lkp@intel.com>:
+>   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+>   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+>	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+>
+>V3:
+>1. Fix the comments from Bjorn Helgaas.
+>
+>V2:
+>1. Changes in the HiSilicon PCIe controller's error handling driver
+>   for the comments from Bjorn Helgaas.
+>
+>2. Changes in the APEI interface to support reporting the vendor error
+>   for module with multiple devices, but use the same section type.
+>   In the error handler will use socket id/sub module id etc to distinguish
+>   the device.
+>
+>V1:
+>1. Fix comments from James Morse.
+>
+>2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+>   which is an application of the above interface.
+>
+>Shiju Jose (1):
+>  ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records
+>
+>Yicong Yang (1):
+>  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+>
+> drivers/acpi/apei/ghes.c                 |  63 +++++
+> drivers/pci/controller/Kconfig           |   7 +
+> drivers/pci/controller/Makefile          |   1 +
+> drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
+> include/acpi/ghes.h                      |  18 ++
+> 5 files changed, 416 insertions(+)
+> create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+>
+>--
+>2.17.1
+>
+>
+>_______________________________________________
+>Linuxarm mailing list
+>Linuxarm@huawei.com
+>http://hulk.huawei.com/mailman/listinfo/linuxarm
