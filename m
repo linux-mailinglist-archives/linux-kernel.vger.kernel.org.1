@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9102689DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAC22689E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbgINLVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbgINLUm (ORCPT
+        id S1726040AbgINLYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:24:54 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44986 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbgINLYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:20:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85798C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:20:41 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t10so18306575wrv.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kLfSmpZKw0IcWAbxwnk8PLqM8595LR3Odif7KTgUXZk=;
-        b=NrVooSirCkC89uwDGsSlSp0zG/q+C1jxdMRgf5vGubOWhuYbiNfYYdydkZ3JndP3vc
-         6j1Zt4R+v3/omPJt4fTsTB0b5IQG7u4qoZ9UkGKoveS0XQF9k1VBJIsF5vwqHnYw5nbh
-         MlxJi+tdMfm8TSZbWKWyyv0HVCHtRKJeEg0u8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kLfSmpZKw0IcWAbxwnk8PLqM8595LR3Odif7KTgUXZk=;
-        b=nHfvs+FQchrjbnBu6a7uuDOc2EtZIyM07p0/EAovWleCZxreLv8nm6zodBRm/KEoP/
-         UL8z/DKsVwREjcjZw0eocUoI2Pl0wBlyNzUcsiijSHRP6O4G/OQho8XdqyXwKjFS117G
-         rNQv5YAiynbhC+bCDDA3YrZ7o0wBnQTc9mYsapL7ssrH0gvrRN0q1fL08EpducXrMHrn
-         ut0ukhEz97BBXf0Dbyf1wCV4vkHidPi2flTJ7EH8WS/8vh+0/V+7Ii6IwnASITYQROvl
-         TBjIyHH26y/Dby7O+zd0+vzv71PGrRU0uXIyAxp0jMjiPNLyq2R6BUGT38XzINCY0gEx
-         JWXg==
-X-Gm-Message-State: AOAM5319pOIPoM6ZRdvWuHjqUML+AydKpkgy5PbhDsQtnOJH32NaH4jm
-        nP0kShJ/a+ewi4Tkh0c/snG1rg==
-X-Google-Smtp-Source: ABdhPJwBJtsZXWlo/8DZ9/96K7Ym7PgHSobyj/KV5SR5J+lZjhcTVzvshIGxo/oQce5aFlYqWEXtuA==
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr15342266wrw.325.1600082438340;
-        Mon, 14 Sep 2020 04:20:38 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id m185sm19699575wmf.5.2020.09.14.04.20.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:20:37 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:20:37 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-Message-ID: <20200914112037.GA2417148@chrisdown.name>
-References: <20200912155100.25578-1-songmuchun@bytedance.com>
- <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
- <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
- <20200914091844.GE16999@dhcp22.suse.cz>
- <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
- <20200914103205.GI16999@dhcp22.suse.cz>
+        Mon, 14 Sep 2020 07:24:33 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08EBNo2H115990;
+        Mon, 14 Sep 2020 06:23:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600082630;
+        bh=i3S61o3XIm7kuDIMxI7vkJQs4gr1Z+DMR4ZkibvnLLA=;
+        h=Subject:From:To:CC:References:Date:In-Reply-To;
+        b=t7q3wL8Fjjbb+BugwFuULrh3AEl3dKgSe9/f83QOvZmj3dHGSGMUJNXGIZdDbogbV
+         BFyS5AFngtqjoxXmaM91vaYQvK+Y/eUcBN04YpffwK3aEoOh0MPiziiF6pUcx/cufl
+         XTj6tGWbzrg0O4dYuTaV7PA61JM7oxpOtktwpowM=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08EBNoiR074289
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Sep 2020 06:23:50 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
+ Sep 2020 06:23:50 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 14 Sep 2020 06:23:50 -0500
+Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08EBNlXx040893;
+        Mon, 14 Sep 2020 06:23:48 -0500
+Subject: Re: [RESEND PATCH 1/2] arm64: dts: ti: k3-j721e-main: Add PCIe device
+ tree nodes
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
+CC:     Tero Kristo <t-kristo@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200901140628.8800-1-kishon@ti.com>
+ <20200901140628.8800-2-kishon@ti.com> <20200901145204.ayybrzqjcfhiqnfq@akan>
+ <5f23246a-a9d7-495d-a4ec-d392ad95a450@ti.com>
+ <4b17cace-09d5-af8c-6e7f-9358cfdceb4d@ti.com>
+Message-ID: <e914e527-00fc-2614-fa74-f2137dbcfaf9@ti.com>
+Date:   Mon, 14 Sep 2020 16:53:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200914103205.GI16999@dhcp22.suse.cz>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <4b17cace-09d5-af8c-6e7f-9358cfdceb4d@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko writes:
->> > > Yeah, I think we should cc:stable.
->> >
->> > Is this a real problem? The buffer should contain 36 lines which makes
->> > it more than 100B per line. I strongly suspect we are not able to use
->> > that storage up.
+Hi Rob,
+
+On 02/09/20 1:07 pm, Kishon Vijay Abraham I wrote:
+> Hi Rob,
+> 
+> On 02/09/20 10:24 am, Kishon Vijay Abraham I wrote:
+>> Hi Nishanth,
 >>
->> Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
->> Otherwise, the return buf string has no trailing null('\0'). But users treat buf
->> as a string(and read the string oob). It is wrong. Thanks.
->
->I am not sure I follow you. vsnprintf which is used by seq_printf will
->add \0 if there is a room for that. And I argue there is a lot of room
->in the buffer so a corner case where the buffer gets full doesn't happen
->with the current code.
+>> On 01/09/20 8:22 pm, Nishanth Menon wrote:
+>>> On 19:36-20200901, Kishon Vijay Abraham I wrote:
+>>>> Add PCIe device tree node (both RC and EP) for the four
+>>>> PCIe instances here.
+>>>>
+>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>>> ---
+>>>>   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 218
+>>>> ++++++++++++++++++++++
+>>>>   arch/arm64/boot/dts/ti/k3-j721e.dtsi      |   5 +-
+>>>>   2 files changed, 222 insertions(+), 1 deletion(-)
+>>>
+>>>
+>>> Did you look at the diff of the dtbs_check before and after this
+>>> series? I see: https://pastebin.ubuntu.com/p/9fyfrTjx9M/
+>>
+>> I didn't see any errors when I checked for individual bindings
+>> a0393678@a0393678-ssd:~/repos/linux$ mkconfig64 dtbs_check
+>> DT_SCHEMA_FILES="Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml"
+>>
+>>    SCHEMA  Documentation/devicetree/bindings/processed-schema.yaml
+>>    DTC     arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
+>>    DTC     arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
+>>    CHECK   arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
+>>    CHECK   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
+>> a0393678@a0393678-ssd:~/repos/linux$ mkconfig64 dtbs_check
+>> DT_SCHEMA_FILES="Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml"
+>>
+>>    SCHEMA  Documentation/devicetree/bindings/processed-schema.yamlsimple-bus
+>>    DTC     arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
+>>    DTC     arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
+>>    CHECK   arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
+>>    CHECK   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
+> 
+> Can you give hint on why I get ranges is too long error
+> https://pastebin.ubuntu.com/p/cPm2tg3dcV/ which I give mkconfig64
+> dtbs_check but don't see an error when I include "DT_SCHEMA_FILES"?
 
-I don't feel very strongly either way, but in general I agree with Michal. As 
-it is this feels quite perfunctory.
+I debugged this and looks like PCIe "ranges" property conflicts with
+simple-bus.
 
-If you can demonstrate reading the string out of bounds in a 
-userspace-exploitable way -- that is, you can demonstrate one can coerce 
-memory.stat to a format where you would read out of bounds -- then we should 
-obviously cc stable and keep the Fixes tag, but you have not come close to 
-demonstrating this yet.
+A diff like below helps to solve the issue
+diff --git a/schemas/simple-bus.yaml b/schemas/simple-bus.yaml
+index 248ac9d..ed818ef 100644
+--- a/schemas/simple-bus.yaml
++++ b/schemas/simple-bus.yaml
+@@ -39,7 +39,7 @@ patternProperties:
+         oneOf:
+           - items:
+               minItems: 3
+-              maxItems: 6
++              maxItems: 7
+             minItems: 0
+             maxItems: 1024
+           - $ref: "types.yaml#/definitions/flag"
 
-Otherwise, if you cannot provide any way to read the string out of bounds, 
-because the buffer is simply way too big for this to ever happen, this is just 
-a code cleanup, and neither Fixes nor stable are appropriate.
+If this looks right to you, I can post a patch for it. Without fixing
+this we would see false errors for PCIe DT nodes.
 
-So, the question is, which is it? :-)
+Thanks
+Kishon
