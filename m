@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC94269373
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509DB269371
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgINRdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S1726360AbgINRcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgINRcc (ORCPT
+        with ESMTP id S1726040AbgINRcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:32:32 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0A2C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:32:31 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id m5so137770lfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3xtDFEIrvwA/6L1bjyoorbZAuxfj/GqXppLxNbWixgs=;
-        b=U9lHjJaTQ2ejYDJEjf9MUl/d/ihUqXM/TqkzXUb4AZOxhoEk7TVNn0COhc84RxSaLV
-         3+pcJlf0crqOlq4vrcIb8dqZd4MQ0SeI25NKoH0hAKjXq1cgkB4ZXEqDD1m0tRBT8ip6
-         SQGeknRq4aJyT20tR2LNEMQ0JT7ImcwsFJHlo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3xtDFEIrvwA/6L1bjyoorbZAuxfj/GqXppLxNbWixgs=;
-        b=IQeZ1AZ1Nz9D2OYxVuEbyJf/2+Ekx+CTFV0KKgr7aGUUSUhJiJenXuKHghd2239WWI
-         jWAx2A9o/9wkVGZSnrzVuV6bm9UmH2tyJMETU35SGl9Fl7AQicnwzrLPRah+4ho2OgXy
-         5ky93TwW+6mq+OfpmSA7YUwdjmvTvLoyU4rO2nhzJfFehE+RkxbGm2QYNjLSuRD8aDwm
-         4gVwqMEOGVGVG60ZQgcjdZyb+gDI28mHW+mVaT6a/RfQw5N5klepnVmDxrN9wRE+EfeO
-         oN+XV1YXZpxoIATMuiJ23+KKzV+nGLx5jVa8HaWiKTiOiOQ7xpqs4L1HY8hSrFiW8Kw1
-         zv8Q==
-X-Gm-Message-State: AOAM530ebH+zWzex2mOkpJl6kNHWFSfggCwT31pIyq9aSrifGEXIqkF6
-        ceaTaCjlqQKdxlVi8GpQhPv1LJval0LS+g==
-X-Google-Smtp-Source: ABdhPJy3BkOpgzj9HeZdH9H9wWlOid1wECNthAGYfecFZcFD0+9tT8NZPKHqg7imIuLjy03JOYRLHw==
-X-Received: by 2002:a19:cb52:: with SMTP id b79mr2123687lfg.592.1600104749956;
-        Mon, 14 Sep 2020 10:32:29 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id x2sm4147266lji.9.2020.09.14.10.32.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 10:32:28 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id k25so425544ljk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 10:32:28 -0700 (PDT)
-X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr4983630ljp.314.1600104747758;
- Mon, 14 Sep 2020 10:32:27 -0700 (PDT)
+        Mon, 14 Sep 2020 13:32:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3CEC061788;
+        Mon, 14 Sep 2020 10:32:34 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 17:32:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600104752;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C/zbi27KS6L46FLE6w6zqt0MkkEXTH5NZ8ZU0C79NAc=;
+        b=JUJDZwWSiYRMcrj+V9ysGB/yuMLNZj6G3OoxEKfgSC3TWP8tkXQ2p+0doTQYjK1VzNyWHM
+        YIU95uq6SmfaXzcUa8FhvLZHdJtR3ZzXSbgL2NJJ1/V64Pehcb9HEpLm9yiea4jBP+9AZq
+        gXF/AkwO32oHG5OeqryPnr1LB0J274qvjKDQCiv42dveO+QTjhN4tl/rldYo5Yv1Powt6k
+        RbAapeRaIrGki+hkPFSaSOCoPpSO98S1pCayj1Oj+vFo647Q38L4PLtVe2hDMCXoXIr5BX
+        +ywqrr1DbuneW+BH7W9mMC746cCIsLRl/j5jNIN/dSxfJm7lUg9l5WuwJt7Zvg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600104752;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C/zbi27KS6L46FLE6w6zqt0MkkEXTH5NZ8ZU0C79NAc=;
+        b=AVP01KZgt3b8cXe3PqAMuQxFBIUeXHAMH4XhilM88Lq0qglasCnf8FzAAPiow4mmlBcRlk
+        rNU2mxUHxiUqDJAw==
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Stop mce_reign() from re-computing severity
+ for every CPU
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200908175519.14223-2-tony.luck@intel.com>
+References: <20200908175519.14223-2-tony.luck@intel.com>
 MIME-Version: 1.0
-References: <20200821234958.7896-1-peterx@redhat.com> <20200821234958.7896-2-peterx@redhat.com>
- <20200914143829.GA1424636@nvidia.com>
-In-Reply-To: <20200914143829.GA1424636@nvidia.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 14 Sep 2020 10:32:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
-Message-ID: <CAHk-=wj1EDd3dUGz_992_oRqvsy3LGDvxvyQBvutLhBqkYqgcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Peter Xu <peterx@redhat.com>, Leon Romanovsky <leonro@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Maya B . Gokhale" <gokhale2@llnl.gov>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Marty Mcfadden <mcfadden8@llnl.gov>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160010475181.15536.9012382774103702534.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 7:38 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> I don't have a detailed explanation right now, but this patch appears
-> to be causing a regression where RDMA subsystem tests fail. Tests
-> return to normal when this patch is reverted.
->
-> It kind of looks like the process is not seeing DMA'd data to a
-> pin_user_pages()?
+The following commit has been merged into the ras/core branch of tip:
 
-I'm a nincompoop. I actually _talked_ to Hugh Dickins about this when
-he raised concerns, and I dismissed his concerns with "but PAGE_PIN is
-special".
+Commit-ID:     13c877f4b48b943105ad9e13ba2c7a093fb694e8
+Gitweb:        https://git.kernel.org/tip/13c877f4b48b943105ad9e13ba2c7a093fb694e8
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Tue, 08 Sep 2020 10:55:12 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 14 Sep 2020 19:25:23 +02:00
 
-As usual, Hugh was right. Page pinning certainly _is_ special, but
-it's not that different from the regular GUP code.
+x86/mce: Stop mce_reign() from re-computing severity for every CPU
 
-But in the meantime, I have a lovely confirmation from the kernel test
-robot, saying that commit 09854ba94c results in a
-"vm-scalability.throughput 31.4% improvement", which was what I was
-hoping for - the complexity wasn't just complexity, it was active
-badness due to the page locking horrors.
+Back in commit:
 
-I think what we want to do is basically do the "early COW", but only
-do it for FOLL_PIN (and not turn them into writes for anything but the
-COW code). So basically redo the "enforced COW mechanism", but rather
-than do it for everything, now do it only for FOLL_PIN, and only in
-that COW path.
+  20d51a426fe9 ("x86/mce: Reuse one of the u16 padding fields in 'struct mce'")
 
-Peter - any chance you can look at this? I'm still looking at the page
-lock fairness performance regression, although I now think I have a
-test patch for Phoronix to test out.
+a field was added to "struct mce" to save the computed error severity.
 
-                     Linus
+Make use of this in mce_reign() to avoid re-computing the severity
+for every CPU.
+
+In the case where the machine panics, one call to mce_severity() is
+still needed in order to provide the correct message giving the reason
+for the panic.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200908175519.14223-2-tony.luck@intel.com
+---
+ arch/x86/kernel/cpu/mce/core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index a697bae..5b1d5f3 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -920,7 +920,6 @@ static void mce_reign(void)
+ 	struct mce *m = NULL;
+ 	int global_worst = 0;
+ 	char *msg = NULL;
+-	char *nmsg = NULL;
+ 
+ 	/*
+ 	 * This CPU is the Monarch and the other CPUs have run
+@@ -928,12 +927,10 @@ static void mce_reign(void)
+ 	 * Grade the severity of the errors of all the CPUs.
+ 	 */
+ 	for_each_possible_cpu(cpu) {
+-		int severity = mce_severity(&per_cpu(mces_seen, cpu),
+-					    mca_cfg.tolerant,
+-					    &nmsg, true);
+-		if (severity > global_worst) {
+-			msg = nmsg;
+-			global_worst = severity;
++		struct mce *mtmp = &per_cpu(mces_seen, cpu);
++
++		if (mtmp->severity > global_worst) {
++			global_worst = mtmp->severity;
+ 			m = &per_cpu(mces_seen, cpu);
+ 		}
+ 	}
+@@ -943,8 +940,11 @@ static void mce_reign(void)
+ 	 * This dumps all the mces in the log buffer and stops the
+ 	 * other CPUs.
+ 	 */
+-	if (m && global_worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3)
++	if (m && global_worst >= MCE_PANIC_SEVERITY && mca_cfg.tolerant < 3) {
++		/* call mce_severity() to get "msg" for panic */
++		mce_severity(m, mca_cfg.tolerant, &msg, true);
+ 		mce_panic("Fatal machine check", m, msg);
++	}
+ 
+ 	/*
+ 	 * For UC somewhere we let the CPU who detects it handle it.
