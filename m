@@ -2,144 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52B12696E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2932696ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726201AbgINUo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:44:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:37837 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgINUoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:44:55 -0400
-IronPort-SDR: 6nrcm9dSy+DO/jvdZmLKmHnbZys6BAG4RBu3iA68hckXf0bv8JIsargF5GyFyh7NcAW2OqeA4U
- NbxM7z0VeD1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="146898430"
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="146898430"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 13:44:54 -0700
-IronPort-SDR: AkVfmk+B+R2AS1BdaSnCKau8ZPqZEqz9QQUtghb9wnE8lfT5XErlNWR4JSyOEhO3efMA9qoWq9
- vHE3455/G5aw==
-X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
-   d="scan'208";a="506491218"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.244.74]) ([10.212.244.74])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 13:44:51 -0700
-Subject: Re: [NEEDS-REVIEW] Re: [PATCH v11 25/25] x86/cet/shstk: Add
- arch_prctl functions for shadow stack
-To:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        id S1726065AbgINUq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:46:26 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:32818 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbgINUqZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 16:46:25 -0400
+Received: by mail-io1-f65.google.com with SMTP id r25so1685558ioj.0;
+        Mon, 14 Sep 2020 13:46:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=klOkVDd1B3SyX8ctPYt/wmAghOkhqsHMZBP4sDYpJxE=;
+        b=TOQcexeM07KXoko5KqQjNHWPMUOzmxsfN+Os2yHTMG75oZMWPPRHWj/1hoaoFSdMok
+         aQhKv9KS8hBT1eTNg4jDtRIOEyU0b8qkkfySWRbgRMmSJoEC2spQIVkSgU7P7wMhH7Ux
+         LyewMPX1d0IzcgTTnIk4Hr0YRpBG2WnF6FuE6djwwaYnjL37Mo/Mi5z2KW7KT1VQ2OYB
+         Y04DjE3sJA/JQCjx4j0/Fi9PzTavcw+afbFKBc1SU4+F82qlR2GyjruVxEF8E2A5mhSe
+         hsXOXUegT5RMFDGLa+CimhLOddD65jVww6R9YC35JqnYTO3ok44G7DAiUbX5qeoIEsUb
+         O9oQ==
+X-Gm-Message-State: AOAM5332z5x801/akjqhBiQqNnv+ajYwPH4BR+uo/nBuroaImRBKH2Jg
+        5h3PV1a2gIFSvG2+M4akCqQh34VXWbJc
+X-Google-Smtp-Source: ABdhPJxuj9gzARMP5MYHn3yUpfkvf/IjIbb2zP3NfyYXRzndAAyM/cVQavu3G7EXtFGnMDzQQp6RBg==
+X-Received: by 2002:a5e:9419:: with SMTP id q25mr12789640ioj.205.1600116384765;
+        Mon, 14 Sep 2020 13:46:24 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id o4sm3630066ilg.56.2020.09.14.13.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 13:46:24 -0700 (PDT)
+Received: (nullmailer pid 215606 invoked by uid 1000);
+        Mon, 14 Sep 2020 20:46:21 -0000
+Date:   Mon, 14 Sep 2020 14:46:21 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
- <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
- <20200901102758.GY6642@arm.com>
- <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
- <CALCETrWJQgtO_tP1pEaDYYsFgkZ=fOxhyTRE50THcxYoHyTTwg@mail.gmail.com>
- <32005d57-e51a-7c7f-4e86-612c2ff067f3@intel.com>
- <46dffdfd-92f8-0f05-6164-945f217b0958@intel.com>
- <ed929729-4677-3d3b-6bfd-b379af9272b8@intel.com>
- <6e1e22a5-1b7f-2783-351e-c8ed2d4893b8@intel.com>
- <5979c58d-a6e3-d14d-df92-72cdeb97298d@intel.com>
- <ab1a3344-60f4-9b9d-81d4-e6538fdcafcf@intel.com>
- <08c91835-8486-9da5-a7d1-75e716fc5d36@intel.com>
- <a881837d-c844-30e8-a614-8b92be814ef6@intel.com>
- <cbec8861-8722-ec31-2c02-1cfed20255eb@intel.com>
- <b3379d26-d8a7-deb7-59f1-c994bb297dcb@intel.com>
- <a1efc4330a3beff10671949eddbba96f8cde96da.camel@intel.com>
- <41aa5e8f-ad88-2934-6d10-6a78fcbe019b@intel.com>
- <CALCETrX5qJAZBe9sHL6+HFvre-bbo+us1==q9KHNCyRrzaUsjw@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <2d86fa40-3676-62b1-1571-90074ca65971@intel.com>
-Date:   Mon, 14 Sep 2020 13:44:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Kukjin Kim <kgene@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: samsung: pmu: Add missing
+ properties
+Message-ID: <20200914204621.GA215522@bogus>
+References: <20200903191311.12293-1-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrX5qJAZBe9sHL6+HFvre-bbo+us1==q9KHNCyRrzaUsjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903191311.12293-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/2020 11:31 AM, Andy Lutomirski wrote:
->> On Sep 14, 2020, at 7:50 AM, Dave Hansen <dave.hansen@intel.com> wrote:
->>
->> ﻿On 9/11/20 3:59 PM, Yu-cheng Yu wrote:
->> ...
->>> Here are the changes if we take the mprotect(PROT_SHSTK) approach.
->>> Any comments/suggestions?
->>
->> I still don't like it. :)
->>
->> I'll also be much happier when there's a proper changelog to accompany
->> this which also spells out the alternatives any why they suck so much.
->>
+On Thu, 03 Sep 2020 21:13:10 +0200, Krzysztof Kozlowski wrote:
+> Add common properties appearing in DTSes (assigned-clock-parents,
+> assigned-clocks) to fix dtbs_check warnings like:
 > 
-> Let’s take a step back here. Ignoring the precise API, what exactly is
-> a shadow stack from the perspective of a Linux user program?
+>   arch/arm64/boot/dts/exynos/exynos5433-tm2.dt.yaml: system-controller@105c0000:
+>     'assigned-clock-parents', 'assigned-clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
 > 
-> The simplest answer is that it’s just memory that happens to have
-> certain protections.  This enables all kinds of shenanigans.  A
-> program could map a memfd twice, once as shadow stack and once as
-> non-shadow-stack, and change its control flow.  Similarly, a program
-> could mprotect its shadow stack, modify it, and mprotect it back.  In
-
-What if we do the following:
-
-- If the mapping has VM_SHARED, it cannot be turned to shadow stack. 
-Shadow stack cannot be shared anyway.
-
-- Only allow an anonymous mapping to be converted to shadow stack, but 
-not the other way.
-
-> some threat models, though could be seen as a WRSS bypass.  (Although
-> if an attacker can coerce a process to call mprotect(), the game is
-> likely mostly over anyway.)
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> But we could be more restrictive, or perhaps we could allow user code
-> to opt into more restrictions.  For example, we could have shadow
-> stacks be special memory that cannot be written from usermode by any
-> means other than ptrace() and friends, WRSS, and actual shadow stack
-> usage.
+> ---
 > 
-> What is the goal?
-
-There primary goal is to allocate/mmap a shadow stack from user space.
-
-> 
-> No matter what we do, the effects of calling vfork() are going to be a
-> bit odd with SHSTK enabled.  I suppose we could disallow this, but
-> that seems likely to cause its own issues.
+> Changes since v1:
+> 1. Add properties instead of using unevaluated
+> ---
+>  Documentation/devicetree/bindings/arm/samsung/pmu.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 
-Do you mean vfork() has issues with call/return?  That is taken care of 
-in GLIBC.  Or do you mean it has issues with mprotect(PROT_SHSTK)?
+Applied, thanks!
