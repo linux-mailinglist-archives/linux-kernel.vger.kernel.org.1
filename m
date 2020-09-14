@@ -2,235 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A955E268F63
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6336B268F73
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgINPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726358AbgINPOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:14:18 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 515BB208B3;
-        Mon, 14 Sep 2020 15:14:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600096455;
-        bh=gsN0Hgz71ycV/Rhqmz+pV7tWaH9kIZurEr45/d12W4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TJbHNKK9261JpkbPvTOAhiP2FmlLD/oN0aYsH/93qHtu7uGmVr+ajOy9meEBUeVYd
-         xBCdH02Lu0Fgsdz4G23NWpUMbrDnuZ9xKYOmlDZKrWAN+gXUMoWR1NFdn/hqh8Z8+q
-         CY/f/B9NOc/S3mYAGUMRBWqoGj3WoEH2Thuts5TQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7BB8D40D3D; Mon, 14 Sep 2020 12:14:13 -0300 (-03)
-Date:   Mon, 14 Sep 2020 12:14:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 24/26] perf tools: Add buildid-list --store option
-Message-ID: <20200914151413.GB160517@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-25-jolsa@kernel.org>
- <CAM9d7ch5Od3Pz6GORmkW6RfUQL6ON0DVJ+dndA9mGCv6ppLsbA@mail.gmail.com>
+        id S1726423AbgINPP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgINPOg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:14:36 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDDAC06174A;
+        Mon, 14 Sep 2020 08:14:32 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id d189so191732oig.12;
+        Mon, 14 Sep 2020 08:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qD8UOak9rcCgSS3n2z3fRwRhSVKqfGfQ7QFMsM1bLpY=;
+        b=WHTD1OJHvqY/Mnvgbhb9QxzsATBhHEjkHOU7A4ZvjqJ1GJdJXPvGk41f3EdkMTqnEG
+         Ro4mQJaqACiEbayqgnNIk+ju/FDcm54lN3Yqe1AkHZobEQvYYcXmP3RAc3J4lOMPctcw
+         qQNN65Av0Mz7QxDLktRntYxpxoJwU4g2pytPnPFbpeutJUKkcDomt922X31R24HuFdhH
+         4FgE1aT7czoeJhAuGMVyhKRQKJqNf1MYazndwA7WEkAtyUQuoU7fvkLqcd7EsU3zQARG
+         FE6XfeIM4p+7VK5xDH+VMGZxIlnBSiB5Ddj8n3NbLNcP3Lu8VWXUUHSAaUjFYKy0GgRy
+         2kSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=qD8UOak9rcCgSS3n2z3fRwRhSVKqfGfQ7QFMsM1bLpY=;
+        b=C86ewxwyrmukuvyJ8QFK4Wm0i0W4W4nxCj4eNs3greSc1dxg5z5eHFJnlQAExitmiR
+         X3h0CX90YOLGgwv9X256aGghl38pXen8sWIaFHrU3mVndL5kdQTHACcaIr8zXG7vfm8e
+         t1ycDE1vTr23ct89LXFej0JWIOvfgHnDGU9PDzGTrCJW9CwlAxLux2nrjYBLCM8sl3zu
+         xMLUHKSt5GiTmun46hF/LxxodjN42S+mLLectGjnbpt85DxdrmPdr8ukOIAYvDbdrqzp
+         Y3YZxMauNuPw1cnOfxZyfkisVt4SziCmDEoMu2LsV0DPazen19hiYfuz4lUayyr7gTHx
+         s3gw==
+X-Gm-Message-State: AOAM533VyddbGeuzkobDK0Ul+4dAcuEg6jUeybZ/lperB1jC9IcpeNsQ
+        YG6YzUkGQ2dRJCIgGyKMRHE=
+X-Google-Smtp-Source: ABdhPJyu9UmM4FzHywSsK76o4er/josukRwvwNBlLN2jhwo+O1mjlNgZHu+kJIXr+z4owlFumgJpng==
+X-Received: by 2002:aca:5b03:: with SMTP id p3mr8612480oib.41.1600096471724;
+        Mon, 14 Sep 2020 08:14:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 126sm4287931oof.28.2020.09.14.08.14.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 08:14:31 -0700 (PDT)
+Subject: Re: [v4,2/5] arm64: dts: mt8183: update watchdog device node
+To:     Crystal Guo <crystal.guo@mediatek.com>, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, seiya.wang@mediatek.com
+References: <20200803071501.30634-1-crystal.guo@mediatek.com>
+ <20200803071501.30634-3-crystal.guo@mediatek.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <01ab02d8-0154-f151-42da-4b46d85b46ac@roeck-us.net>
+Date:   Mon, 14 Sep 2020 08:14:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7ch5Od3Pz6GORmkW6RfUQL6ON0DVJ+dndA9mGCv6ppLsbA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200803071501.30634-3-crystal.guo@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 14, 2020 at 03:42:55PM +0900, Namhyung Kim escreveu:
-> On Mon, Sep 14, 2020 at 6:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding buildid-list --store option to populate
-> > .debug data with build id files.
+On 8/3/20 12:14 AM, Crystal Guo wrote:
+> The watchdog driver for MT8183 relies on DT data, so the fallback
+> compatible MT6589 won't work, need to update watchdog device node
+> to sync with watchdog dt-binding document.
 > 
-> Hmm.. isn't it better to add it to the buildid-cache command?
+> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
 
-Yes, that is the right place. 'buildid-list' is about perf.data files,
-buildid-cache is about .debug cache.
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-- Arnaldo
- 
-> >
-> >   $ rm -rf ~/.debug/
-> >
-> >   $ perf buildid-list
-> >   1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
-> >   d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
-> >
-> >   $ perf buildid-list --store
-> >
-> >   $ find ~/.debug/
-> >   .../.debug/
-> >   .../.debug/usr
-> >   .../.debug/usr/lib64
-> >   .../.debug/usr/lib64/ld-2.31.so
-> >   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b
-> >   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b/elf
-> >   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b/debug
-> >   .../.debug/usr/lib64/ld-2.31.so/1805c738c8f3ec0f47b7ea09080c28f34d18a82b/probes
-> >   .../.debug/usr/lib64/libc-2.31.so
-> >   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2
-> >   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2/elf
-> >   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2/debug
-> >   .../.debug/usr/lib64/libc-2.31.so/d278249792061c6b74d1693ca59513be1def13f2/probes
-> >   .../.debug/.build-id
-> >   .../.debug/.build-id/18
-> >   .../.debug/.build-id/18/05c738c8f3ec0f47b7ea09080c28f34d18a82b
-> >   .../.debug/.build-id/d2
-> >   .../.debug/.build-id/d2/78249792061c6b74d1693ca59513be1def13f2
-> >
-> > It's possible to query debuginfod daemon for binaries by defining
-> > DEBUGINFOD_URLS variable with server URL, like:
-> >
-> >   $ DEBUGINFOD_URLS=http://192.168.122.174:8002 perf buildid-list --store
-> >   OK   439fe9bdeaed66af2bb8b8de5e650d5ecc3d8d46 .../.debug/.build-id/43/9fe9bdeaed66af2bb8b8de5e650d5ecc3d8d46/elf
-> >   FAIL 23b87f5b0560481043257e82be670bc97786a171 /lib/modules/5.9.0-0.rc3.1.mmap3.fc34.x86_64/kernel/net/ipv4/netfilter/ip_tables.ko.xz
-> >   FAIL d2b3be372bcdd4ebc15e479d2ff803657de0fd1e /lib/modules/5.9.0-0.rc3.1.mmap3.fc34.x86_64/kernel/drivers/block/virtio_blk.ko.xz
-> >   FAIL 1466a71bcd0ff5c975ee79b72752137c0143d225 /lib/modules/5.9.0-0.rc3.1.mmap3.fc34.x86_64/kernel/fs/xfs/xfs.ko.xz
-> >   OK   ad60d10b38c93bd8738d5aa594e240f01bb328cd /usr/lib/systemd/systemd
-> >   OK   589e403a34f55486bcac848a45e00bcdeedd1ca8 /usr/lib64/libcrypto.so.1.1.1g
-> >   OK   3b9b2ef537520303411ad5038b596d5d18e7c2b8 /usr/lib64/libpcre2-8.so.0.10.0
-> >
-> > Increasing debug level in util/probe-event.c to get rid
-> > of the sdt probes messages on single verbose level (-v).
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> [SNIP]
-> > +static int dso__store(struct dso *dso, struct machine *machine __maybe_unused, void *priv)
-> > +{
-> > +       struct dso_store_data *data = priv;
-> > +       char sbuild_id[SBUILD_ID_SIZE];
-> > +       u8 bid[BUILD_ID_SIZE];
-> > +       char *path = NULL;
-> > +       bool is_kallsyms;
-> > +       int err = -1;
-> > +
-> > +       if (!dso->has_build_id ||
-> > +           !build_id__is_defined(dso->build_id))
-> > +               return 0;
-> > +
-> > +       if (data->with_hits && !dso->hit)
-> > +               return 0;
-> > +
-> > +       /*
-> > +        * The storing process is:
-> > +        *   - get build id of the dso
-> > +        *   - check if it matches provided build id from mmap3 event
-> > +        *   - if not, try debuginfod to download the binary
-> > +        *   - store binary to build id database
-> > +        */
-> > +       is_kallsyms = !strcmp(machine->mmap_name, dso->short_name);
-> > +       build_id__sprintf(dso->build_id, sizeof(dso->build_id), sbuild_id);
-> > +
-> > +       if (is_kallsyms) {
-> > +               /*
-> > +                * Find out if we are on the same kernel as perf.data
-> > +                * and keel kallsyms in that case.
-> > +                */
-> > +               path = strdup(dso->long_name);
-> > +               if (!path)
-> > +                       goto out_err;
-> > +
-> > +               err = sysfs__read_build_id("/sys/kernel/notes", &bid, sizeof(bid));
-> > +               if (err < 0)
-> > +                       goto out_err;
-> > +       } else {
-> > +               struct stat st;
-> > +
-> > +               /*
-> > +                * Does the file exists in the first place, if it does,
-> > +                * resolve path and read the build id.
-> > +                */
-> > +               if (stat(dso->long_name, &st)) {
-> > +                       zfree(&path);
-> > +                       goto try_download;
-> > +               }
-> > +
-> > +               path = nsinfo__realpath(dso->long_name, dso->nsinfo);
-> > +               if (!path)
-> > +                       goto out_err;
-> > +
-> > +               err = filename__read_build_id(path, &bid, sizeof(bid));
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Is it ok to read the file out of the namespace?
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 1e03c849dc5d..f8d835746ab8 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -310,8 +310,7 @@
+>  		};
+>  
+>  		watchdog: watchdog@10007000 {
+> -			compatible = "mediatek,mt8183-wdt",
+> -				     "mediatek,mt6589-wdt";
+> +			compatible = "mediatek,mt8183-wdt";
+>  			reg = <0 0x10007000 0 0x100>;
+>  			#reset-cells = <1>;
+>  		};
 > 
-> Thanks
-> Namhyung
-> 
-> 
-> > +               if (err != sizeof(bid))
-> > +                       goto out_err;
-> > +       }
-> > +
-> > +       /*
-> > +        * If we match then we want in mmap3 event,
-> > +        * is what we got in the binary, so we're happy.
-> > +        */
-> > +       if (memcmp(&bid, dso->build_id, BUILD_ID_SIZE)) {
-> > +               char sbid[SBUILD_ID_SIZE];
-> > +
-> > +               build_id__sprintf(bid, sizeof(bid), sbid);
-> > +               pr_debug("mmap build id <%s> does not match for %s <%s>\n",
-> > +                        sbuild_id, path, sbid);
-> > +               zfree(&path);
-> > +       }
-> > +
-> > +try_download:
-> > +       /*
-> > +        * We did not match build id or did not find the
-> > +        * binary - try debuginfod as last resort.
-> > +        */
-> > +       if (!path) {
-> > +               char *tmp = NULL;
-> > +
-> > +               /*
-> > +                * The debuginfo retrieval is handled within
-> > +                * build_id_cache__add function.
-> > +                */
-> > +               if (get_executable(sbuild_id, &tmp)) {
-> > +                       err = -1;
-> > +                       goto out_err;
-> > +               }
-> > +
-> > +               path = tmp;
-> > +
-> > +               /*
-> > +                * The kernel dso is now elf binary, so disable is_kallsyms
-> > +                * so build_id_cache__add can prepare proper file names.
-> > +                */
-> > +               is_kallsyms = false;
-> > +       }
-> > +
-> > +       pr_debug("linking %s %s <%s>\n", dso->short_name, path, sbuild_id);
-> > +
-> > +       err = build_id_cache__add(sbuild_id, path, path,
-> > +                                 dso->nsinfo, is_kallsyms, false);
-> > +out_err:
-> > +       free(path);
-> > +       fprintf(stderr, "%s %s %s\n", err ? "FAIL" : "OK  ", sbuild_id, dso->long_name);
-> > +       return 0;
-> > +}
 
--- 
-
-- Arnaldo
