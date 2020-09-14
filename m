@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9669F2690F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1326269108
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgINP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726522AbgINP7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:59:14 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A130A208DB;
-        Mon, 14 Sep 2020 15:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600099154;
-        bh=KTqqnuYNHBDPGEnW6TQwSmoQqmLX+vuoeMtabOysLw0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qffVypRPw5w3N09WTY0g3jodn/GkH1aVNKANSihDELNikvj7foT39OZPSp+9EUouT
-         8XWn1XiDfjmjcv5YdQrOxDsaylaJUMClKFsDCrI9y1mpwf5xPgZc70+i160ouGOPwJ
-         4zaO26gJrpERQr/rzyazMD+bXgvh8HptzWH5DTdE=
-Date:   Mon, 14 Sep 2020 17:59:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Andra Paraschiv <andraprs@amazon.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        David Duncan <davdunc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>, Karen Noel <knoel@redhat.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        kvm <kvm@vger.kernel.org>,
-        ne-devel-upstream <ne-devel-upstream@amazon.com>
-Subject: Re: [PATCH v9 14/18] nitro_enclaves: Add Kconfig for the Nitro
- Enclaves driver
-Message-ID: <20200914155913.GB3525000@kroah.com>
-References: <20200911141141.33296-1-andraprs@amazon.com>
- <20200911141141.33296-15-andraprs@amazon.com>
+        id S1726366AbgINQFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgINPq2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:46:28 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBCDC061354
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so190044wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AzEpLYmbKmiQH23cwCt0zuNgJwoYOVOuAiMHB8Xci9c=;
+        b=fGe90BwUL9T/sVeFm8B8qjEDsbV7N1Fc0qp1Yn5hDUJkwKQIS4qyv0txAkGyG02TwZ
+         S/EOD9gJYHnj5vGJISv78CjFbkvzKYJNm1VNxL0rxnlQNfqI2SEsCj7+cQaE4vKG1dZm
+         YRwZRKUJj0vx+U88dcWCJl8dv6MDJ+ygddYPQjUAXHUAymD4whxbFh+JbnEjUd84dDm2
+         FAFNKRhEVkRDw3d7N7iVmVwKFu7mq3MLMeBOM8vj4YEq+V5ITixlz0ir3No1MUhgPMhO
+         gWGUrKfEzI3nRFDtUsdF7MJ8JbF3aAw/YYcRfIZLvxLqyHnWyMRzrctjjX0kBJXEG5Ey
+         riVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AzEpLYmbKmiQH23cwCt0zuNgJwoYOVOuAiMHB8Xci9c=;
+        b=iFZ1Mg6uX7SlpiwwmhIWOGAsLqxSp/J4LHR3Df4cSakcuGNBmrB/iJE4HrrgJnvKpZ
+         LLGskCpYDJ3sT9++QVYzMnwrIILXWwqanIZzgVYFS808xMGwudqSci6MnWi//BouP/Bo
+         uJIYXcCTIeC6TdhZBeDdl8B1oDaoqLzACeJfg8FYcKjdVvUD2KrwZIsqyS9sZHneMqFU
+         HN6r8ZeE9V5hiZoHNxd80FK0nS+UjtyTNpX6whxrapQdLlp2hyZtcFU5VGONxg1El3cF
+         Q7bv3CxmvPR/KmLQ5hhCAlxkZb272SaeCpdwddlRjdeA13I1a6XSaoeCr37N+CvBhlSS
+         9BTA==
+X-Gm-Message-State: AOAM531asmeb6YbG+ylBtb6q+93UOMKgB0kZ2r1EQnZR1Ex4StAmtkCu
+        Y0SpoSnnrQm+dItHsRvIB0lMcQ==
+X-Google-Smtp-Source: ABdhPJxvTqzsOYQKy+ApiwvZXKRhb5S5X2RREAKmVMVu9Qx3kT15m1tgR+R1ozwQL9VQTHk88NYFww==
+X-Received: by 2002:a05:6000:83:: with SMTP id m3mr16497440wrx.165.1600098367011;
+        Mon, 14 Sep 2020 08:46:07 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id l19sm19510448wmi.8.2020.09.14.08.46.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 08:46:06 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v3 03/14] rtc: rx8010: remove unnecessary brackets
+Date:   Mon, 14 Sep 2020 17:45:50 +0200
+Message-Id: <20200914154601.32245-4-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200914154601.32245-1-brgl@bgdev.pl>
+References: <20200914154601.32245-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911141141.33296-15-andraprs@amazon.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 05:11:37PM +0300, Andra Paraschiv wrote:
-> Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
-> Reviewed-by: Alexander Graf <graf@amazon.com>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I can't take patches without any changelog text at all, sorry.
+Remove brackets wherever they guard a single line.
 
-Same for a few other patches in this series :(
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/rtc/rtc-rx8010.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-thanks,
+diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
+index c6797ec0aba1..79a3d90d2c43 100644
+--- a/drivers/rtc/rtc-rx8010.c
++++ b/drivers/rtc/rtc-rx8010.c
+@@ -181,9 +181,8 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+ 		return ret;
+ 
+ 	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
+-	if (flagreg < 0) {
++	if (flagreg < 0)
+ 		return flagreg;
+-	}
+ 
+ 	if (flagreg & RX8010_FLAG_VLF)
+ 		ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
+@@ -284,17 +283,15 @@ static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
+ 	int err;
+ 
+ 	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
+-	if (flagreg < 0) {
++	if (flagreg < 0)
+ 		return flagreg;
+-	}
+ 
+ 	if (rx8010->ctrlreg & (RX8010_CTRL_AIE | RX8010_CTRL_UIE)) {
+ 		rx8010->ctrlreg &= ~(RX8010_CTRL_AIE | RX8010_CTRL_UIE);
+ 		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
+ 						rx8010->ctrlreg);
+-		if (err < 0) {
++		if (err < 0)
+ 			return err;
+-		}
+ 	}
+ 
+ 	flagreg &= ~RX8010_FLAG_AF;
+-- 
+2.26.1
 
-greg k-h
