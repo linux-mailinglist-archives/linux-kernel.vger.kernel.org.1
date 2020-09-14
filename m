@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8427A2689BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4A72689C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgINLJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:09:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:34470 "EHLO foss.arm.com"
+        id S1726015AbgINLNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:13:18 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38261 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726004AbgINLIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:08:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 645A3113E;
-        Mon, 14 Sep 2020 04:08:14 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1AD43F68F;
-        Mon, 14 Sep 2020 04:08:12 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:08:10 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Aubrey Li <aubrey.li@intel.com>, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-Message-ID: <20200914110809.2nu7vt2s3lzlvxoz@e107158-lin.cambridge.arm.com>
-References: <20200910054203.525420-1-aubrey.li@intel.com>
- <20200910054203.525420-2-aubrey.li@intel.com>
- <20200911162853.xldy6fvvqph2lahj@e107158-lin.cambridge.arm.com>
- <3f1571ea-b74c-fc40-2696-39ef3fe8b968@linux.intel.com>
- <jhjmu1s644x.mognet@arm.com>
+        id S1725968AbgINLMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:12:22 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kHmOg-0003Bp-00; Mon, 14 Sep 2020 13:11:46 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 2D173C0FA5; Mon, 14 Sep 2020 13:08:56 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 13:08:56 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Youling Tang <tangyouling@loongson.cn>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Remove unused BOOT_MEM_INIT_RAM
+Message-ID: <20200914110856.GA8974@alpha.franken.de>
+References: <1599875955-9207-1-git-send-email-tangyouling@loongson.cn>
+ <f2349dc3-8086-64ee-e2d7-7a69afac6623@flygoat.com>
+ <06109011-21af-ad1d-41cb-18542b9b77f6@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <jhjmu1s644x.mognet@arm.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <06109011-21af-ad1d-41cb-18542b9b77f6@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/14/20 11:31, Valentin Schneider wrote:
+On Mon, Sep 14, 2020 at 06:39:51PM +0800, Youling Tang wrote:
 > 
-> On 12/09/20 00:04, Li, Aubrey wrote:
-> >>> +++ b/include/linux/sched/topology.h
-> >>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
-> >>>     atomic_t	ref;
-> >>>     atomic_t	nr_busy_cpus;
-> >>>     int		has_idle_cores;
-> >>> +	/*
-> >>> +	 * Span of all idle CPUs in this domain.
-> >>> +	 *
-> >>> +	 * NOTE: this field is variable length. (Allocated dynamically
-> >>> +	 * by attaching extra space to the end of the structure,
-> >>> +	 * depending on how many CPUs the kernel has booted up with)
-> >>> +	 */
-> >>> +	unsigned long	idle_cpus_span[];
-> >>
-> >> Can't you use cpumask_var_t and zalloc_cpumask_var() instead?
+> 
+> On 09/14/2020 12:32 PM, Jiaxun Yang wrote:
 > >
-> > I can use the existing free code. Do we have a problem of this?
 > >
-> 
-> Nah, flexible array members are the preferred approach here; this also
-
-Is this your opinion or a rule written somewhere I missed?
-
-> means we don't let CONFIG_CPUMASK_OFFSTACK dictate where this gets
-> allocated.
-> 
-> See struct numa_group, struct sched_group, struct sched_domain, struct
-> em_perf_domain...
-
-struct root_domain, struct cpupri_vec, struct generic_pm_domain,
-struct irq_common_data..
-
-Use cpumask_var_t.
-
-Both approach look correct to me, so no objection in principle. cpumask_var_t
-looks neater IMO and will be necessary once more than one cpumask are required
-in a struct.
-
-> 
+> >在 2020/9/12 9:59, Youling Tang 写道:
+> >>Commit a94e4f24ec83 ("MIPS: init: Drop boot_mem_map") left
+> >>the BOOT_MEM_INIT_RAM unused, remove it.
 > >>
-> >> The patch looks useful. Did it help you with any particular workload? It'd be
-> >> good to expand on that in the commit message.
+> >>Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+> >>---
+> >>  arch/mips/include/asm/bootinfo.h | 1 -
+> >>  1 file changed, 1 deletion(-)
 > >>
-> > Odd, that included in patch v1 0/1, did you receive it?
+> >>diff --git a/arch/mips/include/asm/bootinfo.h
+> >>b/arch/mips/include/asm/bootinfo.h
+> >>index 147c932..39196ae 100644
+> >>--- a/arch/mips/include/asm/bootinfo.h
+> >>+++ b/arch/mips/include/asm/bootinfo.h
+> >>@@ -91,7 +91,6 @@ extern unsigned long mips_machtype;
+> >>  #define BOOT_MEM_RAM        1
+> >>  #define BOOT_MEM_ROM_DATA    2
+> >>  #define BOOT_MEM_RESERVED    3
+> >>-#define BOOT_MEM_INIT_RAM    4
+> >
+> >If you're willing to remove that you'd better turn the memtype struct
+> >into a enum.
+> >
+> Hi  Jiaxun,
+> Do you mean to modify it as follows?
+> 
+> enum boot_memtype {
+>                 BOOT_MEM_RAM,
+>                 BOOT_MEM_ROM_DATA,
+>                 BOOT_MEM_RESERVED,
+>                 BOOT_MEM_NOMAP,
+> };
 
-Aubrey,
+that's not worth the effort, we should convert from add_memory_region
+to direct memblock_XXX calls and get rid of MIPS boot mem completely.
 
-Sorry I didn't see that no. It's important justification to be part of the
-commit message, I think worth adding it.
+Thomas.
 
-Thanks
-
---
-Qais Yousef
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
