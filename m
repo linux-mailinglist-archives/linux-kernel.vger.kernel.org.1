@@ -2,159 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B5B268774
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F3326876C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgINIqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:46:30 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2811 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726078AbgINIq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:46:28 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id E1553BC8B82C58024CAD;
-        Mon, 14 Sep 2020 09:46:26 +0100 (IST)
-Received: from [127.0.0.1] (10.47.10.249) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 14 Sep
- 2020 09:46:26 +0100
-Subject: Re: [PATCH 2/2] iommu/iova: Free global iova rcache on iova alloc
- failure
-To:     Vijayanand Jitta <vjitta@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>
-CC:     <vinmenon@codeaurora.org>, <iommu@lists.linux-foundation.org>,
-        <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <1593785835-27250-1-git-send-email-vjitta@codeaurora.org>
- <1593785835-27250-2-git-send-email-vjitta@codeaurora.org>
- <29f44540-44f8-570d-886f-2090596a3b8e@codeaurora.org>
- <20200812151608.GG3721@8bytes.org>
- <b6c7eb2b-d1f5-058f-943c-1b7c14fe1f7c@codeaurora.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8f3cbf23-eedc-d734-e4b3-41e8baabca15@huawei.com>
-Date:   Mon, 14 Sep 2020 09:43:43 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726202AbgINIpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:45:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48949 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726078AbgINIpJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:45:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600073106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pW/vk94WsYEDRmXNshGA+k0R8rAa7yyDn4jRtsj9CG8=;
+        b=Gnsy7hs0q+6AOQ5RUetgcdaWsJuYS62nl5EgdHIfkAPC0PZtSW+kAg/IFMYrbUYtO8BiO7
+        YUlu6vf78mwjsZIt8cBbyHPSBKSCLTR2Nc70fuz+popE9hAdMRjf+k/5qJEmgt8jNTiEsO
+        WpkcjhX7zPL6Z7fNp9NyUntTX3d5KRU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-kmbptXFkOcC5D8j4BaV5Ow-1; Mon, 14 Sep 2020 04:45:05 -0400
+X-MC-Unique: kmbptXFkOcC5D8j4BaV5Ow-1
+Received: by mail-ed1-f69.google.com with SMTP id m10so1016926edj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:45:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pW/vk94WsYEDRmXNshGA+k0R8rAa7yyDn4jRtsj9CG8=;
+        b=QOkkzaCsgpRFj38cHAo0al1S6w+w2Jx0cT5bOIwiAduWgDsbeIZPTmf/q1KaCtT599
+         +V4JIr4ym1ScTYGrK7TUI+etaj53hLolWX4f3Ff8lpOP9n8z8EeIH3w097KHfq2NIPOd
+         OX36d9o9ZyHWYA/ImJgG4tbrBMZ88yR9NZd3ULHi224TGl2KHEE4lYAeqGtz9kjG2UDG
+         1XH7hOYM+wLZZcW/uINtJ9fe2ibqPBIQs1YSMnTQbQNt9K9kzmVW95eAvhbb6+RgB26o
+         dXEc4VYc5dl7EvnfcOSNUH62vk2LE790t/MIjqC6Vl5aucluokQgTgll3uoP9PoBjhEa
+         xaLA==
+X-Gm-Message-State: AOAM532l6yZb9527Z6KCHTxx8J4uxthgIqreqjDqnuZqpgXXtpo4uJaa
+        58iH+CiUV6pS1agfKdvlUXSlvhS7ZaJI7jp1PDwee97BZjvR+mRug/SZa1XEgsn6LKkwKLsj1VM
+        ITiGHp4F1O4WVlr6u0WFcNKjx
+X-Received: by 2002:a17:907:408d:: with SMTP id nt21mr13288573ejb.355.1600073103718;
+        Mon, 14 Sep 2020 01:45:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxqpFgAK/K/xz5l1UvFiBdC94iD63utdCj8DMpAFZ8VvVN87Ixvtwhq6KbisXo7mWn4AYgV+Q==
+X-Received: by 2002:a17:907:408d:: with SMTP id nt21mr13288561ejb.355.1600073103520;
+        Mon, 14 Sep 2020 01:45:03 -0700 (PDT)
+Received: from x1.localdomain ([78.108.130.193])
+        by smtp.gmail.com with ESMTPSA id p17sm1537912edw.10.2020.09.14.01.45.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 01:45:02 -0700 (PDT)
+Subject: Re: [PATCH] Introduce support for Systems Management Driver over WMI
+ for Dell Systems
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20200730143122.10237-1-divya_bharathi@dell.com>
+ <aa23d8b8-6c6b-b6f2-e916-1defff8a9b26@redhat.com>
+ <DM6PR19MB26362B2A2CDFE73BE167FD34FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <c5a6e340-66ec-e03b-a9a8-9c61b9f388d5@redhat.com>
+Date:   Mon, 14 Sep 2020 10:45:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <b6c7eb2b-d1f5-058f-943c-1b7c14fe1f7c@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <DM6PR19MB26362B2A2CDFE73BE167FD34FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.10.249]
-X-ClientProxiedBy: lhreml743-chm.china.huawei.com (10.201.108.193) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/08/2020 06:36, Vijayanand Jitta wrote:
+Hi,
+
+Sorry for being slow with getting back to you on this.
+
+On 9/1/20 4:22 PM, Limonciello, Mario wrote:
+>>
+>> "A read-only attribute enumerating if a reboot is pending on any BIOS attribute
+>> change."
+>> does not really seem to make much sense. I guess what this is trying to say is:
+>>
+>> "This read-only attribute reads 1 if a reboot is necessary to apply pending BIOS
+>> attribute changes"?
+>>
+>>                0:      All BIOS attributes setting are current
+>>                1:      A reboot is necessary to get pending pending BIOS attribute
+>> changes applied
+>>
+>> Or some such. I'm not really happy with my own text either, but I think it
+>> better explains
+>> what this attribute is about then the original text, right ?
 > 
+> I think that text does read better, Divya and team will reword it.
 > 
-> On 8/12/2020 8:46 PM, Joerg Roedel wrote:
->> On Mon, Aug 03, 2020 at 03:30:48PM +0530, Vijayanand Jitta wrote:
->>> ping?
->>
->> Please repost when v5.9-rc1 is released and add
->>
->> 	Robin Murphy <robin.murphy@arm.com>
->>
->> on your Cc list.
->>
->> Thanks,
->>
->> 	Joerg
->>
+> <snip>
 > 
-> Sure, will do.
+>>> +           display_name_language_code:     A file that can be read to obtain
+>>> +           the language code corresponding to the "display_name" of the <attr>
+>>
+>> This needs to be specified better, e.g. this needs to say that this is an
+>> ISO 639‑1 language code (or some other language-code specification)
 > 
-> Thanks,
-> Vijay
+> Ack.
 > 
+>>
+>>
+>>> +
+>>> +           modifier:       A file that can be read to obtain attribute-level
+>>> +           dependency rule which has to be met to configure <attr>
+>>
+>> What is the difference between modifier and value_modifier ? Also this need to
+>> be specified in more detail.
+> 
+> Ack.
+> 
+>>
+>>> +
+>>> +           possible_value: A file that can be read to obtain the possible
+>>> +           value of the <attr>
+>>
+>> This is an enum, so possible value_s_ ?  I assume that for a enum this will list
+>> all possible values, this also needs to specify how the possible values will be
+>> separated (e.g. using semi-colons or newlines or ...).
+> 
+> Yes correct.
+> 
+>>
+>>
+>>> +
+>>> +           value_modifier: A file that can be read to obtain value-level
+>>> +           dependency on a possible value which has to be met to configure
+>> <attr>
+>>> +
+>>> +What:              /sys/devices/platform/dell-wmi-
+>> sysman/attributes/integer/<attr>/
+>>> +Date:              October 2020
+>>> +KernelVersion:     5.9
+>>> +Contact:   Divya Bharathi <Divya.Bharathi@Dell.com>,
+>>> +           Mario Limonciello <mario.limonciello@dell.com>,
+>>> +           Prasanth KSR <prasanth.ksr@dell.com>
+>>> +Description:
+>>> +           This directory exposes interfaces for interaction with
+>>> +           BIOS integer attributes.
+>>> +
+>>> +           Integer attributes are settings that accept a range of
+>>> +           numerical values for inputs. Each BIOS integer has a
+>>> +           lower bound and an upper bound on the values that it can take.
+>>> +
+>>> +           current_value:  A file that can be read to obtain the current
+>>> +           value of the <attr>
+>>> +
+>>> +           This file can also be written to in order to update
+>>> +           the value of an <attr>.
+>>> +
+>>> +           default_value:  A file that can be read to obtain the default
+>>> +           value of the <attr>
+>>> +
+>>> +           display_name:   A file that can be read to obtain a user friendly
+>>> +           description of the at <attr>
+>>> +
+>>> +           display_name_language_code:     A file that can be read to obtain
+>>> +           the language code corresponding to the "display_name" of the <attr>
+>>> +
+>>> +           lower_bound:    A file that can be read to obtain the lower
+>>> +           bound value of the <attr>
+>>> +
+>>> +           modifier:       A file that can be read to obtain attribute-level
+>>> +           dependency rule which has to be met to configure <attr>
+>>> +
+>>> +           scalar_increment:       A file that can be read to obtain the
+>>> +           resolution of the incremental value this attribute accepts.
+>>> +
+>>> +           upper_bound:    A file that can be read to obtain the upper
+>>> +           bound value of the <attr>
+>>
+>> Are these integers or also possibly floats? I guess possibly also floats, right?
+>> Then at a minimum this should specify which decimal-separator is used (I assume
+>> we will go with the usual '.' as decimal separator).
+> 
+> In practice they're integers, but I don't see why they couldn't be floats.
 
-And a cover letter would be useful also, to at least us know what 
-changes have been made per version.
+Hmm, that is a bit hand-wavy, for an userspace ABI we really need to define
+this clearly. Either it is integers (which is fine), or it is floats and we need
+to define a decimal-separator as part of the ABI.
 
- >
- > diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
- > index 4e77116..5836c87 100644
- > --- a/drivers/iommu/iova.c
- > +++ b/drivers/iommu/iova.c
- > @@ -442,6 +442,7 @@ struct iova *find_iova(struct iova_domain *iovad, 
-unsigned long pfn)
- >   		flush_rcache = false;
- >   		for_each_online_cpu(cpu)
- >   			free_cpu_cached_iovas(cpu, iovad);
- > +		free_global_cached_iovas(iovad);
+Note the reason why I started wondering about this in the first place is the
+scalar_increment attribute. I think that can use some clarification too.
 
-Have you seen an issue where this is needed?
+Regards,
 
-If we have filled the IOVA space, then as a measure we flush all the CPU 
-rcaches, and then there should be free IOVA space and we can make 
-progress. And it may be useful to still have the global depots to use 
-straightaway then to swap into empty CPU rcaches.
-
- >   		goto retry;
- >   	}
- >
- > @@ -1055,5 +1056,27 @@ void free_cpu_cached_iovas(unsigned int cpu, 
-struct iova_domain *iovad)
- >   	}
- >   }
- >
- > +/*
- > + * free all the IOVA ranges of global cache
- > + */
- > +void free_global_cached_iovas(struct iova_domain *iovad)
- > +{
- > +	struct iova_rcache *rcache;
- > +	unsigned long flags;
- > +	int i, j;
- > +
- > +	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
- > +		rcache = &iovad->rcaches[i];
- > +		spin_lock_irqsave(&rcache->lock, flags);
- > +		for (j = 0; j < rcache->depot_size; ++j) {
- > +			iova_magazine_free_pfns(rcache->depot[j], iovad);
- > +			iova_magazine_free(rcache->depot[j]);
- > +			rcache->depot[j] = NULL;
- > +		}
- > +		rcache->depot_size = 0;
- > +		spin_unlock_irqrestore(&rcache->lock, flags);
- > +	}
- > +}
- > +
- >   MODULE_AUTHOR("Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>");
- >   MODULE_LICENSE("GPL");
- > diff --git a/include/linux/iova.h b/include/linux/iova.h
- > index a0637ab..a905726 100644
- > --- a/include/linux/iova.h
- > +++ b/include/linux/iova.h
-
-why is this in the iova.h, when it is only used internally in iova.c?
-
- > @@ -163,6 +163,7 @@ int init_iova_flush_queue(struct iova_domain *iovad,
- >   struct iova *split_and_remove_iova(struct iova_domain *iovad,
- >   	struct iova *iova, unsigned long pfn_lo, unsigned long pfn_hi);
- >   void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain 
-*iovad);
- > +void free_global_cached_iovas(struct iova_domain *iovad);
- >   #else
- >   static inline int iova_cache_get(void)
- >   {
- > @@ -270,6 +271,11 @@ static inline void 
-free_cpu_cached_iovas(unsigned int cpu,
- >   					 struct iova_domain *iovad)
- >   {
- >   }
- > +
- > +static inline void free_global_cached_iovas(struct iova_domain *iovad)
- > +{
- > +}
- > +
- >   #endif
- >
- >   #endif
-
+Hans
 
