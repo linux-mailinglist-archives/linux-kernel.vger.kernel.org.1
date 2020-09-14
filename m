@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F75268E94
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A50268E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbgINO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        id S1726856AbgINO5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:57:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726706AbgINOv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:51:58 -0400
+        id S1726847AbgINOwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:52:03 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BAD520715;
-        Mon, 14 Sep 2020 14:51:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED2A020936;
+        Mon, 14 Sep 2020 14:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600095117;
-        bh=a1JalLnTBAaxUOfrKmYR9snF+OmsXWm89BgkakJgbtY=;
+        s=default; t=1600095123;
+        bh=1qKTCFyAmrhl/DWjwf+6VgDKAdfgJ17CixfdpPZvgzg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=nHlZxjObjD7RILUNaeRVhzLzrOscBBQnb049NK7Yru+8eWh4YiKW/a3s0V8AA7qRi
-         XjU463tCuCy+ATejyKUCV06FhpHxkXJ3afF+6hxo7gX5hYF/UtAwqno023/mh4W98f
-         ZSsq9Le8WOkOHrA9gNfVNN7x7BiOihLCGyBRgOhQ=
-Date:   Mon, 14 Sep 2020 15:51:09 +0100
+        b=xK9lRKLus8ZTZ5sP7mazOB8h5jM837B0pptkzyLD7irDdWvrqWKnFOsSh1FQKxzaG
+         SD9XV4grMNOZdvog2Y5Jgr/u+ynVWIydfGDhPRSTjw5deRqvotddJbb0lVL9IaRBB1
+         pyqgJpp/UhbMLVVR5MGBbR/5ktLTsFN23YwgzodY=
+Date:   Mon, 14 Sep 2020 15:51:15 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     perex@perex.cz, alexandre.torgue@st.com, arnaud.pouliquen@st.com,
-        lgirdwood@gmail.com, Olivier Moysan <olivier.moysan@st.com>,
-        tiwai@suse.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
+To:     robh+dt@kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        lgirdwood@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         alsa-devel@alsa-project.org
-In-Reply-To: <20200911081507.7276-1-olivier.moysan@st.com>
-References: <20200911081507.7276-1-olivier.moysan@st.com>
-Subject: Re: [PATCH] ASoC: stm32: sai: add pm_runtime support
-Message-Id: <160009506912.439.13820832041582523614.b4-ty@kernel.org>
+In-Reply-To: <20200910124110.19361-1-peter.ujfalusi@ti.com>
+References: <20200910124110.19361-1-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2 0/2] ASoC: ti: j721e-evm: Support for j7200 variant
+Message-Id: <160009506911.439.3955483489656494834.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Sep 2020 10:15:07 +0200, Olivier Moysan wrote:
-> Enable support of pm_runtime on STM32 SAI driver to allow
-> SAI power state monitoring.
-> pm_runtime_put_autosuspend() is called from ASoC framework
-> on pcm device close.
-> The pmdown_time delay is available in runtime context, and may be set
-> in SAI driver to take into account shutdown delay on playback.
-> However, this shutdown delay is already handled in the DAPMs
-> of the audio codec linked to SAI CPU DAI.
-> So, the choice is made, not to support this delay on CPU DAI side.
+On Thu, 10 Sep 2020 15:41:08 +0300, Peter Ujfalusi wrote:
+> Changes since v1:
+> - Suffix the 2359296000 constant with 'u' to silence C90 warning
+> 
+> When j7200 SOM is connected to the CPB, the audio setup is a bit different:
+> Only 48KHz family have clock path, 44.1KHz is not supported.
+> 
+> Update the binding documentation and add support for the j7200 version of CPB
+> to the driver.
+> 
+> [...]
 
 Applied to
 
@@ -57,8 +56,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: stm32: sai: add pm_runtime support
-      commit: 4e723e7565c4031568fb9db18253cfbf6442831d
+[1/2] ASoC: dt-bindings: ti, j721e-cpb-audio: Document support for j7200-cpb
+      commit: 18790b1b514a202bae2863a4206b731d95302c85
+[2/2] ASoC: ti: j721e-evm: Add support for j7200-cpb audio
+      commit: 18c140f4a2de8fa674d52fe522a47133bc124f81
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
