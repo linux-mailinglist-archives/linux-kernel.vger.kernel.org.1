@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84E12695D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD062695D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgINTpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:45:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51270 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725951AbgINTpi (ORCPT
+        id S1726050AbgINTqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725914AbgINTqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:45:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600112736;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O9EeupZxGqiAaLUu6ylggzlQguNqzCnvHeCIMXXYQfs=;
-        b=KG+BHMRLsslVt97q7h1u+lDRhGqpIzUwM5D4pwC+KrfV8xyBU7k+2BOAO2frt7mI2TXo1X
-        pTTPqaT49UxysvGoRvrw4HOvTg/MCpIiUtCfp8uj6mRHUkTZAZ+oR1eyEu7NmeBaM4+o72
-        YnZSF1ox0Tt/J0UBpqNaKrev8fnZQM4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-9_JdyIa5MXSsB-6aa9uUBw-1; Mon, 14 Sep 2020 15:45:34 -0400
-X-MC-Unique: 9_JdyIa5MXSsB-6aa9uUBw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 65A141074642;
-        Mon, 14 Sep 2020 19:45:32 +0000 (UTC)
-Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F120D10013BD;
-        Mon, 14 Sep 2020 19:45:28 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 21:45:27 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
-Message-ID: <20200914194527.GP1714160@krava>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-3-jolsa@kernel.org>
- <CABPqkBTk+SwTAxXDa6HL8TqvEmUunfMZxpAtx6CebNbd+3hEHw@mail.gmail.com>
+        Mon, 14 Sep 2020 15:46:07 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45592C06174A;
+        Mon, 14 Sep 2020 12:46:07 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so923885wrv.1;
+        Mon, 14 Sep 2020 12:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C3jJ1hxTPLBGWpQI1GCiVmGcN1WbZ3VAIPQQi3dOMAA=;
+        b=UbivJ5BEE6YXLEJlzMjHXxuufyt9ap5eEUGMjmAtBaYSe4OozvHIX7V+41ySEW8WtF
+         5n3svksvJxMrRJgVt4I3O2rmrSA0M55E32LlVjG9XHGLwK78QjMUyVVZBjeDZxRiuaZL
+         RQAFFPsX5SI7CNXW9O2/89D6cXDO1TXWkwOjGBG0VpKvkprRaq/p6PFNYIhZYE6LkmJX
+         8RgZDtHY62SpL6rtm4KYNceIqPq/cHLWT23tfhle6j7mD26ayGMxksWEkQm1no/qVTh/
+         kPzDBN2xmzu1vnxWC161nUcdgtfX+4yPqD56pawZuJhjAsNN/FULEX0u668G5W801wq9
+         A/xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C3jJ1hxTPLBGWpQI1GCiVmGcN1WbZ3VAIPQQi3dOMAA=;
+        b=bOfKzJwIBXQU5D1GAvdj4qAfZfxbcRJ9SQFrPZ/FT9WWJuuJbzubDaR6OraZnn6FA5
+         vXbCBC3rXeDCelbdlSC/cUsgrZvOREirWSwFwhGPg7n7KeDcrO2ASSz2eEyoFCxNFTo/
+         RDGi447zBFJ8qhVJMIA8ByaySX4bvzfMG4Iwwen3Qu9oVlz8Acqo4TfPvShedq9kaFUa
+         Qn8H70tghH2HF9bJ6dQBZEml+utADI3ZPh0mjJFx42JnI7QlypiPGIgjEQxb3GRKISxK
+         d4r1Gv+cawrqotQ7matrazMNRdGePzq4CUb3a8dherTn6pq60v8i45YoZcAvaMSpQIpa
+         sAHw==
+X-Gm-Message-State: AOAM533K71Uq+oa7DsSL2gNogUdgCfFZQJp33MnD/uag1RBAL4qPN5Yj
+        sxprDWouvA7gIkjqZgb4pFI=
+X-Google-Smtp-Source: ABdhPJyYl1lq1gTyGCizYSQVmMI/1XVEeI9SM1r+ugHKSigZ6mr39a4UpKO38JxJFtBe15jYkAg99g==
+X-Received: by 2002:adf:e6c7:: with SMTP id y7mr16500066wrm.147.1600112766022;
+        Mon, 14 Sep 2020 12:46:06 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id n11sm22410550wrx.91.2020.09.14.12.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 12:46:05 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] SVM: nSVM: fix resource leak on error path
+Date:   Mon, 14 Sep 2020 20:45:57 +0100
+Message-Id: <20200914194557.10158-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABPqkBTk+SwTAxXDa6HL8TqvEmUunfMZxpAtx6CebNbd+3hEHw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 11:41:00PM -0700, Stephane Eranian wrote:
-> On Sun, Sep 13, 2020 at 2:03 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Add new version of mmap event. The MMAP3 record is an
-> > augmented version of MMAP2, it adds build id value to
-> > identify the exact binary object behind memory map:
-> >
-> >   struct {
-> >     struct perf_event_header header;
-> >
-> >     u32                      pid, tid;
-> >     u64                      addr;
-> >     u64                      len;
-> >     u64                      pgoff;
-> >     u32                      maj;
-> >     u32                      min;
-> >     u64                      ino;
-> >     u64                      ino_generation;
-> >     u32                      prot, flags;
-> >     u32                      reserved;
-> >     u8                       buildid[20];
-> >     char                     filename[];
-> >     struct sample_id         sample_id;
-> >   };
-> >
-> > Adding 4 bytes reserved field to align buildid data to 8 bytes,
-> > so sample_id data is properly aligned.
-> >
-> > The mmap3 event is enabled by new mmap3 bit in perf_event_attr
-> > struct.  When set for an event, it enables the build id retrieval
-> > and will use mmap3 format for the event.
-> >
-> > Keeping track of mmap3 events and calling build_id_parse
-> > in perf_event_mmap_event only if we have any defined.
-> >
-> > Having build id attached directly to the mmap event will help
-> > tool like perf to skip final search through perf data for
-> > binaries that are needed in the report time. Also it prevents
-> > possible race when the binary could be removed or replaced
-> > during profiling.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/perf_event.h | 27 ++++++++++++++++++++++-
-> >  kernel/events/core.c            | 38 +++++++++++++++++++++++++++------
-> >  2 files changed, 57 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > index 077e7ee69e3d..facfc3c673ed 100644
-> > --- a/include/uapi/linux/perf_event.h
-> > +++ b/include/uapi/linux/perf_event.h
-> > @@ -384,7 +384,8 @@ struct perf_event_attr {
-> >                                 aux_output     :  1, /* generate AUX records instead of events */
-> >                                 cgroup         :  1, /* include cgroup events */
-> >                                 text_poke      :  1, /* include text poke events */
-> > -                               __reserved_1   : 30;
-> > +                               mmap3          :  1, /* include bpf events */
-> > +                               __reserved_1   : 29;
-> >
-> what happens if I set mmap3 and mmap2?
+In svm_set_nested_state(), if nested_svm_vmrun_msrpm() returns false,
+then variables save and ctl will leak. Fix this.
 
-hum bad things probably ;-) I think mmap3 would overload mmap2
+Fixes: 772b81bb2f9b ("SVM: nSVM: setup nested msr permission bitmap on nested state load")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ arch/x86/kvm/svm/nested.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> I think using mmap3 for every mmap may be overkill as you add useless
-> 20 bytes to an mmap record.
-> I am not sure if your code handles the case where mmap3 is not needed
-> because there is no buildid, e.g, anonymous memory.
-> It seems to me you've written the patch in such a way that if the user
-> tool supports mmap3, then it supersedes mmap2, and thus
-> you need all the fields of mmap2. But if could be more interesting to
-> return either MMAP2 or MMAP3 depending on tool support
-> and type of mmap, that would certainly save 20 bytes on any anon mmap.
-> But maybe that logic is already in your patch and I missed it.
-
-I like peter's idea of ditching mmap3 and use that maj/min..
-area in mmap2 for buildid based on misc bits
-
-jirka
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 598a769f1961..85f572cbabe4 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -1148,7 +1148,7 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 	nested_prepare_vmcb_control(svm);
+ 
+ 	if (!nested_svm_vmrun_msrpm(svm))
+-		return -EINVAL;
++		goto out_free;	/* ret == -EINVAL */
+ 
+ out_set_gif:
+ 	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
+-- 
+2.28.0
 
