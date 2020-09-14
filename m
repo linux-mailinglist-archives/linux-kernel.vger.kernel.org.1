@@ -2,251 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66792693E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EE12693F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgINRpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726195AbgINRo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:44:27 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C587C06174A;
-        Mon, 14 Sep 2020 10:44:25 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z4so568208wrr.4;
-        Mon, 14 Sep 2020 10:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EuPkGgGoA4uFnzzhRpbE+z2Ng4wCuaRwpxF2iWsUijA=;
-        b=bJdBk1O6nlV7gbE3XhrGCiwUt4mGVV5llaPYRKZP0fDDbNjVqj6u07NCjLGZu76NRO
-         WJmCFupxPiZCwu5VFHvU54wNBHYE+V7N0mIYupq0WxIHRu0lRkRGIf6gVjLoii3lPFoy
-         sCQFfaSqVpEM9EDwoklE8jTljfTMiUh0w4q7gy6hxlV2eBLwLOKCNQPHlgTVEQ6QerNh
-         gvho3itP/hIjy0yNQhlmPS5cJDCTl+Bzq7PkVwE7Ym2YcEnht/NpCpYDjHa1bI2V+OHo
-         jaSQwikq5ZN638mZB1C9QxAWVGq5jI01uqdtujZGQsxFwONTUkplOt5RpSRE2izbhMdP
-         PGhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EuPkGgGoA4uFnzzhRpbE+z2Ng4wCuaRwpxF2iWsUijA=;
-        b=bbkSo66mXipL5VRxKNzucQFY7eTZcESlvxwIwY3CjMCrYFQ1BHHeF7FZ6EB2PKWW3x
-         2eBL1lwJoPCNIcsPK1qHgE24iU6dFpIhppSdAP7GUKZb1n6oXX5zKugHRtLKQmX0QFM6
-         h8cxLGUw6FrHSR/x/nZgIelz7dcmUkCkbMqDlZiHtP3TVU8jDpSak0MZL/zz/AmBrl7f
-         WyqU8WoIjvmawMvknub1LzDKhtPLBDnZRFZZZXYOfXXQgnsoxFoGteC51lZBYxWpbBOm
-         M8+3nyhpNRYXkBm6lxBSXMY9dWlPdlBCRvIKSzfOskkn5HxTUq0sdLUASwl0EJUaR7kN
-         eNVQ==
-X-Gm-Message-State: AOAM532KoXRFMMyeHblerAjEbuIB3nqdpRzTkBSRQ7buuxOah7TZHeYk
-        +EpfkV2Dfo71J4hPysNhmvuupbK4w/fEvA==
-X-Google-Smtp-Source: ABdhPJyAchnSnolYBWmZv09ugRhHS7C6rEn3A/iT1BpFHdOiKazIDWAW7iSHQLuTy3FG9SdAtk664Q==
-X-Received: by 2002:adf:ec47:: with SMTP id w7mr18264154wrn.175.1600105463301;
-        Mon, 14 Sep 2020 10:44:23 -0700 (PDT)
-Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
-        by smtp.gmail.com with ESMTPSA id d5sm22863202wrb.28.2020.09.14.10.44.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 10:44:22 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, viro@zeniv.linux.org.uk
-Subject: [RFC PATCH] fs: micro-optimization remove branches by adjusting flag values
-Date:   Mon, 14 Sep 2020 19:43:38 +0200
-Message-Id: <20200914174338.9808-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726156AbgINRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:46:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725957AbgINRqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:46:08 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B880F20759;
+        Mon, 14 Sep 2020 17:46:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600105567;
+        bh=3wv5YYaOrtwO17mATcoJS3+/FHc69mJnFaSTkKbnTVo=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Kw1qKfruwUZ1BsB+fT0TQAz1qtOTq5XgFUYqCtidQOVyotF7es3WLj+oShzjCBKIu
+         0A73Q5YgwYRXvP3RKyiSIu2XMlB1Tlh2aQ/0Ztg8sLUI90cohJ0ALimIxIoaUeF4hs
+         23YEL+cFl3CttK+flMJhAsuzfuY3R+EqKcj1zKNI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 80E453522BA0; Mon, 14 Sep 2020 10:46:07 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 10:46:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        colin.king@canonical.com, grandmaster@al2klimov.de,
+        joel@joelfernandes.org, madhuparnabhowmik10@gmail.com,
+        neeraju@codeaurora.org, paul.gortmaker@windriver.com,
+        qiang.zhang@windriver.com, rdunlap@infradead.org,
+        tklauser@distanz.ch, weiyongjun1@huawei.com, kernel-team@fb.com
+Subject: [GIT PULL tip/core/rcu] RCU commits for v5.10
+Message-ID: <20200914174607.GA12722@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+Hello, Ingo!
 
-When flags A and B have equal values than the following code
+This pull request contains the following changes:
 
-if(flags1 & A)
-	flags2 |= B;
+1.	Documentation updates.
 
-is equivalent to
+	https://lore.kernel.org/lkml/20200831175419.GA31013@paulmck-ThinkPad-P72
 
-flags2 |= (flags1 & A);
+2.	Miscellaneous fixes.
 
-The latter code should generate less instructions and be faster as one
-branch is omitted in it.
+	https://lore.kernel.org/lkml/20200831180050.GA32590@paulmck-ThinkPad-P72
 
-Introduced patch changes the value of 'LOOKUP_EMPTY' and makes it equal
-to the value of 'AT_EMPTY_PATH'. Thanks to that, few branches can be
-changed in a way showed above which improves both performance and the
-size of the code.
+3.	Torture-test updates.
 
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- fs/exec.c             | 14 ++++++++++----
- fs/fhandle.c          |  4 ++--
- fs/namespace.c        |  4 ++--
- fs/open.c             |  8 ++++----
- fs/stat.c             |  4 ++--
- fs/utimes.c           |  6 +++---
- include/linux/namei.h |  4 ++--
- 7 files changed, 25 insertions(+), 19 deletions(-)
+	https://lore.kernel.org/lkml/20200831180348.GA416@paulmck-ThinkPad-P72
 
-diff --git a/fs/exec.c b/fs/exec.c
-index a91003e28eaa..39e1ada1ee6c 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -904,8 +904,8 @@ static struct file *do_open_execat(int fd, struct filename *name, int flags)
- 		return ERR_PTR(-EINVAL);
- 	if (flags & AT_SYMLINK_NOFOLLOW)
- 		open_exec_flags.lookup_flags &= ~LOOKUP_FOLLOW;
--	if (flags & AT_EMPTY_PATH)
--		open_exec_flags.lookup_flags |= LOOKUP_EMPTY;
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	open_exec_flags.lookup_flags |= (flags & AT_EMPTY_PATH);
- 
- 	file = do_filp_open(fd, name, &open_exec_flags);
- 	if (IS_ERR(file))
-@@ -2176,7 +2176,10 @@ SYSCALL_DEFINE5(execveat,
- 		const char __user *const __user *, envp,
- 		int, flags)
- {
--	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
-+	int lookup_flags;
-+
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags = (flags & AT_EMPTY_PATH);
- 
- 	return do_execveat(fd,
- 			   getname_flags(filename, lookup_flags, NULL),
-@@ -2197,7 +2200,10 @@ COMPAT_SYSCALL_DEFINE5(execveat, int, fd,
- 		       const compat_uptr_t __user *, envp,
- 		       int,  flags)
- {
--	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
-+	int lookup_flags;
-+
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags = (flags & AT_EMPTY_PATH);
- 
- 	return compat_do_execveat(fd,
- 				  getname_flags(filename, lookup_flags, NULL),
-diff --git a/fs/fhandle.c b/fs/fhandle.c
-index 01263ffbc4c0..579bf462bf89 100644
---- a/fs/fhandle.c
-+++ b/fs/fhandle.c
-@@ -102,8 +102,8 @@ SYSCALL_DEFINE5(name_to_handle_at, int, dfd, const char __user *, name,
- 		return -EINVAL;
- 
- 	lookup_flags = (flag & AT_SYMLINK_FOLLOW) ? LOOKUP_FOLLOW : 0;
--	if (flag & AT_EMPTY_PATH)
--		lookup_flags |= LOOKUP_EMPTY;
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags |= (flag & AT_EMPTY_PATH);
- 	err = user_path_at(dfd, name, lookup_flags, &path);
- 	if (!err) {
- 		err = do_sys_name_to_handle(&path, handle, mnt_id);
-diff --git a/fs/namespace.c b/fs/namespace.c
-index 098f981dce54..319f42d11236 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -2456,8 +2456,8 @@ SYSCALL_DEFINE3(open_tree, int, dfd, const char __user *, filename, unsigned, fl
- 		lookup_flags &= ~LOOKUP_AUTOMOUNT;
- 	if (flags & AT_SYMLINK_NOFOLLOW)
- 		lookup_flags &= ~LOOKUP_FOLLOW;
--	if (flags & AT_EMPTY_PATH)
--		lookup_flags |= LOOKUP_EMPTY;
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags |= (flags & AT_EMPTY_PATH);
- 
- 	if (detached && !may_mount())
- 		return -EPERM;
-diff --git a/fs/open.c b/fs/open.c
-index 9af548fb841b..8b6fe1e89811 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -410,8 +410,8 @@ static long do_faccessat(int dfd, const char __user *filename, int mode, int fla
- 
- 	if (flags & AT_SYMLINK_NOFOLLOW)
- 		lookup_flags &= ~LOOKUP_FOLLOW;
--	if (flags & AT_EMPTY_PATH)
--		lookup_flags |= LOOKUP_EMPTY;
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags |= (flags & AT_EMPTY_PATH);
- 
- 	if (!(flags & AT_EACCESS)) {
- 		old_cred = access_override_creds();
-@@ -692,8 +692,8 @@ int do_fchownat(int dfd, const char __user *filename, uid_t user, gid_t group,
- 		goto out;
- 
- 	lookup_flags = (flag & AT_SYMLINK_NOFOLLOW) ? 0 : LOOKUP_FOLLOW;
--	if (flag & AT_EMPTY_PATH)
--		lookup_flags |= LOOKUP_EMPTY;
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags |= (flag & AT_EMPTY_PATH);
- retry:
- 	error = user_path_at(dfd, filename, lookup_flags, &path);
- 	if (error)
-diff --git a/fs/stat.c b/fs/stat.c
-index 44f8ad346db4..a9feb7a7e9ec 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -168,8 +168,8 @@ static inline unsigned vfs_stat_set_lookup_flags(unsigned *lookup_flags,
- 		*lookup_flags &= ~LOOKUP_FOLLOW;
- 	if (flags & AT_NO_AUTOMOUNT)
- 		*lookup_flags &= ~LOOKUP_AUTOMOUNT;
--	if (flags & AT_EMPTY_PATH)
--		*lookup_flags |= LOOKUP_EMPTY;
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	*lookup_flags |= (flags & AT_EMPTY_PATH);
- 
- 	return 0;
- }
-diff --git a/fs/utimes.c b/fs/utimes.c
-index fd3cc4226224..95a48dbda7e1 100644
---- a/fs/utimes.c
-+++ b/fs/utimes.c
-@@ -79,15 +79,15 @@ static int do_utimes_path(int dfd, const char __user *filename,
- 		struct timespec64 *times, int flags)
- {
- 	struct path path;
--	int lookup_flags = 0, error;
-+	int lookup_flags, error;
- 
- 	if (flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH))
- 		return -EINVAL;
- 
-+	BUILD_BUG_ON(AT_EMPTY_PATH != LOOKUP_EMPTY);
-+	lookup_flags = (flags & AT_EMPTY_PATH);
- 	if (!(flags & AT_SYMLINK_NOFOLLOW))
- 		lookup_flags |= LOOKUP_FOLLOW;
--	if (flags & AT_EMPTY_PATH)
--		lookup_flags |= LOOKUP_EMPTY;
- 
- retry:
- 	error = user_path_at(dfd, filename, lookup_flags, &path);
-diff --git a/include/linux/namei.h b/include/linux/namei.h
-index a4bb992623c4..52f8015717c0 100644
---- a/include/linux/namei.h
-+++ b/include/linux/namei.h
-@@ -21,7 +21,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT};
- #define LOOKUP_FOLLOW		0x0001	/* follow links at the end */
- #define LOOKUP_DIRECTORY	0x0002	/* require a directory */
- #define LOOKUP_AUTOMOUNT	0x0004  /* force terminal automount */
--#define LOOKUP_EMPTY		0x4000	/* accept empty path [user_... only] */
-+#define LOOKUP_EMPTY		0x1000	/* accept empty path [user_... only], AT_EMPTY_PATH set */
- #define LOOKUP_DOWN		0x8000	/* follow mounts in the starting point */
- #define LOOKUP_MOUNTPOINT	0x0080	/* follow mounts in the end */
- 
-@@ -36,7 +36,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT};
- 
- /* internal use only */
- #define LOOKUP_PARENT		0x0010
--#define LOOKUP_JUMPED		0x1000
-+#define LOOKUP_JUMPED		0x4000
- #define LOOKUP_ROOT		0x2000
- #define LOOKUP_ROOT_GRABBED	0x0008
- 
--- 
-2.20.1
+4.	New smp_call_function() torture test.
 
+	https://lore.kernel.org/lkml/20200831180731.GA582@paulmck-ThinkPad-P72
+
+5.	Strict grace periods for KASAN.  The point of this series is to find
+	RCU-usage bugs, so the corresponding new RCU_STRICT_GRACE_PERIOD
+	Kconfig option depends on both DEBUG_KERNEL and RCU_EXPERT, and is
+	further disabled by dfefault.  Finally, the help text includes
+	a goodly list of scary caveats.
+
+	https://lore.kernel.org/lkml/20200831181101.GA950@paulmck-ThinkPad-P72
+
+6.	Debugging for smp_call_function().
+
+	https://lore.kernel.org/lkml/20200831181356.GA1224@paulmck-ThinkPad-P72
+
+The fix for the kvfree_rcu() issue noted by Sebastian in response to my
+v5.9 pull request is still in the works, as was discussed at the end
+of the Real Time Microconference at Linux Plumbers Conference a few
+weeks ago.  Uladislau has produced early prototype patches following
+the plan outlined at that Microconference.  Initial testing results
+are encouraging, so I hope to be able to include them in my v5.11 pull
+request.  I had of course hoped to include these fixes in this pull
+request, and the reason for the additional delay is that the first N
+proposed solutions all had fatal flaws.  I nevertheless have high hopes
+for the current proposed solution N+1.
+
+In the meantime, all of the commits in this pull request have been
+subjected to the kbuild test robot and -next testing, and are available
+in the git repository based on 5.9-rc1 at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git for-mingo
+
+for you to fetch changes up to 6fe208f63a79f4f726f3be2b78ea3dd40487b657:
+
+  Merge branch 'csd.2020.09.04a' into HEAD (2020-09-04 11:54:52 -0700)
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+      rcutorture: Replace HTTP links with HTTPS ones
+
+Colin Ian King (1):
+      refperf: Avoid null pointer dereference when buf fails to allocate
+
+Joel Fernandes (Google) (6):
+      rcu/trace: Print negative GP numbers correctly
+      rcu/trace: Use gp_seq_req in acceleration's rcu_grace_period tracepoint
+      rcu: Clarify comments about FQS loop reporting quiescent states
+      rcu: Make FQS more aggressive in complaining about offline CPUs
+      rcutorture: Output number of elapsed grace periods
+      rcu/segcblist: Prevent useless GP start if no CBs to accelerate
+
+Madhuparna Bhowmik (2):
+      rculist: Introduce list/hlist_for_each_entry_srcu() macros
+      kvm: mmu: page_track: Fix RCU list API usage
+
+Neeraj Upadhyay (2):
+      rcu/tree: Force quiescent state on callback overload
+      rcu/tree: Remove CONFIG_PREMPT_RCU check in force_qs_rnp()
+
+Paul E. McKenney (60):
+      lib: Add backtrace_idle parameter to force backtrace of idle CPUs
+      rcu: Remove KCSAN stubs
+      rcu: Remove KCSAN stubs from update.c
+      srcu: Remove KCSAN stubs
+      rcu: Initialize at declaration time in rcu_exp_handler()
+      nocb: Clarify RCU nocb CPU error message
+      nocb: Remove show_rcu_nocb_state() false positive printout
+      rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_divisor
+      rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_resched_ns
+      rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_kick_kthreads
+      rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_cpu_stall_ftrace_dump
+      rcu: Move rcu_cpu_started per-CPU variable to rcu_data
+      rcu/nocb: Add a warning for non-GP kthread running GP code
+      rcu: Remove unused __rcu_is_watching() function
+      scftorture: Add smp_call_function() torture test
+      torture: Declare parse-console.sh independence from rcutorture
+      torture: Add scftorture to the rcutorture scripting
+      scftorture: Implement weighted primitive selection
+      tick-sched: Clarify "NOHZ: local_softirq_pending" warning
+      scftorture: Summarize per-thread statistics
+      scftorture: Add smp_call_function_single() memory-ordering checks
+      scftorture: Add smp_call_function_many() memory-ordering checks
+      scftorture: Add smp_call_function() memory-ordering checks
+      scftorture: Consolidate scftorture_invoke_one() check and kfree()
+      scftorture: Consolidate scftorture_invoke_one() scf_check initialization
+      scftorture: Flag errors in torture-compatible manner
+      scftorture: Prevent compiler from reducing race probabilities
+      scftorture: Check unexpected "switch" statement value
+      scftorture: Block scftorture_invoker() kthreads for offline CPUs
+      scftorture: Adapt memory-ordering test to UP operation
+      scftorture: Add cond_resched() to test loop
+      rcuperf: Change rcuperf to rcuscale
+      rcu: Add Kconfig option for strict RCU grace periods
+      rcu: Reduce leaf fanout for strict RCU grace periods
+      rcu: Restrict default jiffies_till_first_fqs for strict RCU GPs
+      rcu: Force DEFAULT_RCU_BLIMIT to 1000 for strict RCU GPs
+      rcu: Always set .need_qs from __rcu_read_lock() for strict GPs
+      rcu: Do full report for .need_qs for strict GPs
+      rcu: Attempt QS when CPU discovers GP for strict GPs
+      rcu: IPI all CPUs at GP start for strict GPs
+      rcu: IPI all CPUs at GP end for strict GPs
+      rcu: Provide optional RCU-reader exit delay for strict GPs
+      rcu: Execute RCU reader shortly after rcu_core for strict GPs
+      rcu: Report QS for outermost PREEMPT=n rcu_read_unlock() for strict GPs
+      rcu: Remove unused "cpu" parameter from rcu_report_qs_rdp()
+      rcutorture: Remove KCSAN stubs
+      torture: Update initrd documentation
+      rcutorture: Add CONFIG_PROVE_RCU_LIST to TREE05
+      torture: Add kvm.sh --help and update help message
+      rcutorture: Properly set rcu_fwds for OOM handling
+      rcutorture: Properly synchronize with OOM notifier
+      rcutorture: Hoist OOM registry up one level
+      rcutorture: Allow pointer leaks to test diagnostic code
+      torture: Add gdb support
+      Merge branches 'doc.2020.08.24a', 'fixes.2020.09.03b' and 'torture.2020.08.24a' into HEAD
+      Merge branch 'scftorture.2020.08.24a' into HEAD
+      Merge branch 'strictgp.2020.08.24a' into HEAD
+      smp: Add source and destination CPUs to __call_single_data
+      kernel/smp: Provide CSD lock timeout diagnostics
+      Merge branch 'csd.2020.09.04a' into HEAD
+
+Paul Gortmaker (1):
+      torture: document --allcpus argument added to the kvm.sh script
+
+Randy Dunlap (2):
+      doc: Drop doubled words from RCU Data-Structures.rst
+      doc: Drop doubled words from RCU requirements documentation
+
+Tobias Klauser (2):
+      docs: Fix typo in synchronize_rcu() function name
+      rcu: Fix kerneldoc comments in rcupdate.h
+
+Wei Yongjun (3):
+      scftorture: Make symbol 'scf_torture_rand' static
+      locktorture: Make function torture_percpu_rwsem_init() static
+      smp: Make symbol 'csd_bug_count' static
+
+Zqiang (1):
+      rcu: Shrink each possible cpu krcp
+
+ .../RCU/Design/Data-Structures/Data-Structures.rst |   2 +-
+ .../RCU/Design/Requirements/Requirements.rst       |   4 +-
+ Documentation/RCU/whatisRCU.rst                    |   2 +-
+ Documentation/admin-guide/kernel-parameters.txt    | 153 +++++-
+ MAINTAINERS                                        |   3 +-
+ arch/x86/kvm/mmu/page_track.c                      |   6 +-
+ include/linux/rculist.h                            |  48 ++
+ include/linux/rcupdate.h                           |  19 +-
+ include/linux/rcutiny.h                            |   1 -
+ include/linux/rcutree.h                            |   1 -
+ include/linux/smp.h                                |   3 +
+ include/linux/smp_types.h                          |   3 +
+ include/trace/events/rcu.h                         |  54 +-
+ kernel/Makefile                                    |   2 +
+ kernel/entry/common.c                              |   2 +-
+ kernel/locking/locktorture.c                       |   2 +-
+ kernel/rcu/Kconfig                                 |   8 +-
+ kernel/rcu/Kconfig.debug                           |  17 +-
+ kernel/rcu/Makefile                                |   2 +-
+ kernel/rcu/rcu_segcblist.c                         |  10 +-
+ kernel/rcu/{rcuperf.c => rcuscale.c}               | 330 ++++++------
+ kernel/rcu/rcutorture.c                            |  61 ++-
+ kernel/rcu/refscale.c                              |   8 +-
+ kernel/rcu/srcutree.c                              |  13 -
+ kernel/rcu/tree.c                                  | 165 ++++--
+ kernel/rcu/tree.h                                  |   2 +
+ kernel/rcu/tree_exp.h                              |   6 +-
+ kernel/rcu/tree_plugin.h                           |  40 +-
+ kernel/rcu/tree_stall.h                            |   8 +-
+ kernel/rcu/update.c                                |  13 -
+ kernel/scftorture.c                                | 575 +++++++++++++++++++++
+ kernel/smp.c                                       | 134 +++++
+ kernel/time/tick-sched.c                           |   2 +-
+ lib/Kconfig.debug                                  |  21 +
+ lib/nmi_backtrace.c                                |   6 +-
+ ...rf-ftrace.sh => kvm-recheck-rcuscale-ftrace.sh} |   6 +-
+ ...-recheck-rcuperf.sh => kvm-recheck-rcuscale.sh} |  14 +-
+ .../selftests/rcutorture/bin/kvm-recheck-scf.sh    |  38 ++
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     |  33 +-
+ tools/testing/selftests/rcutorture/bin/kvm.sh      |  36 +-
+ .../selftests/rcutorture/bin/parse-console.sh      |  11 +-
+ .../selftests/rcutorture/configs/rcu/TREE05        |   1 +
+ .../selftests/rcutorture/configs/rcuperf/CFcommon  |   2 -
+ .../configs/{rcuperf => rcuscale}/CFLIST           |   0
+ .../selftests/rcutorture/configs/rcuscale/CFcommon |   2 +
+ .../rcutorture/configs/{rcuperf => rcuscale}/TINY  |   0
+ .../rcutorture/configs/{rcuperf => rcuscale}/TREE  |   0
+ .../configs/{rcuperf => rcuscale}/TREE54           |   0
+ .../configs/{rcuperf => rcuscale}/ver_functions.sh |   4 +-
+ .../selftests/rcutorture/configs/scf/CFLIST        |   2 +
+ .../selftests/rcutorture/configs/scf/CFcommon      |   2 +
+ .../selftests/rcutorture/configs/scf/NOPREEMPT     |   9 +
+ .../rcutorture/configs/scf/NOPREEMPT.boot          |   1 +
+ .../selftests/rcutorture/configs/scf/PREEMPT       |   9 +
+ .../rcutorture/configs/scf/ver_functions.sh        |  30 ++
+ tools/testing/selftests/rcutorture/doc/initrd.txt  |  36 +-
+ .../selftests/rcutorture/doc/rcu-test-image.txt    |  41 +-
+ 57 files changed, 1582 insertions(+), 421 deletions(-)
+ rename kernel/rcu/{rcuperf.c => rcuscale.c} (64%)
+ create mode 100644 kernel/scftorture.c
+ rename tools/testing/selftests/rcutorture/bin/{kvm-recheck-rcuperf-ftrace.sh => kvm-recheck-rcuscale-ftrace.sh} (92%)
+ rename tools/testing/selftests/rcutorture/bin/{kvm-recheck-rcuperf.sh => kvm-recheck-rcuscale.sh} (84%)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
+ delete mode 100644 tools/testing/selftests/rcutorture/configs/rcuperf/CFcommon
+ rename tools/testing/selftests/rcutorture/configs/{rcuperf => rcuscale}/CFLIST (100%)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/rcuscale/CFcommon
+ rename tools/testing/selftests/rcutorture/configs/{rcuperf => rcuscale}/TINY (100%)
+ rename tools/testing/selftests/rcutorture/configs/{rcuperf => rcuscale}/TREE (100%)
+ rename tools/testing/selftests/rcutorture/configs/{rcuperf => rcuscale}/TREE54 (100%)
+ rename tools/testing/selftests/rcutorture/configs/{rcuperf => rcuscale}/ver_functions.sh (88%)
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/CFLIST
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/CFcommon
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT.boot
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/PREEMPT
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh
