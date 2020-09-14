@@ -2,210 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B00268B04
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65663268B99
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgINMdQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 08:33:16 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2816 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726498AbgINMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:32:16 -0400
-Received: from lhreml713-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 71917FA49058FFD59948;
-        Mon, 14 Sep 2020 13:13:45 +0100 (IST)
-Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
- lhreml713-chm.china.huawei.com (10.201.108.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 14 Sep 2020 13:13:45 +0100
-Received: from lhreml715-chm.china.huawei.com ([10.201.108.66]) by
- lhreml715-chm.china.huawei.com ([10.201.108.66]) with mapi id 15.01.1913.007;
- Mon, 14 Sep 2020 13:13:45 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     Shiju Jose <shiju.jose@huawei.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-CC:     Linuxarm <linuxarm@huawei.com>
-Subject: RE: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
-        specific HW errors
-Thread-Topic: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
-        specific HW errors
-Thread-Index: AQHWge9vw3KZA5696kitxl2toth2IaloGvNg
-Date:   Mon, 14 Sep 2020 12:13:45 +0000
-Message-ID: <cb811df3c4cc4f349c4a8da251592904@huawei.com>
-References: <20200903123456.1823-1-shiju.jose@huawei.com>
-In-Reply-To: <20200903123456.1823-1-shiju.jose@huawei.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.25.227]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726258AbgINNAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:00:08 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:50168 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgINMwS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:52:18 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kHnOL-008gH1-8y; Mon, 14 Sep 2020 06:15:29 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:56556 helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kHnOK-00075s-47; Mon, 14 Sep 2020 06:15:29 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, christian@brauner.io,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, Eric Sandeen <sandeen@sandeen.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com
+References: <00000000000005f0b605af42ab4e@google.com>
+Date:   Mon, 14 Sep 2020 07:15:07 -0500
+In-Reply-To: <00000000000005f0b605af42ab4e@google.com> (syzbot's message of
+        "Mon, 14 Sep 2020 02:29:15 -0700")
+Message-ID: <87zh5stv04.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-XM-SPF: eid=1kHnOK-00075s-47;;;mid=<87zh5stv04.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18B+cBqqvytF6PuLq3hLPyIGnQyI2PO/dI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3685]
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 749 ms - load_scoreonly_sql: 0.14 (0.0%),
+        signal_user_changed: 14 (1.9%), b_tie_ro: 12 (1.6%), parse: 1.82
+        (0.2%), extract_message_metadata: 27 (3.6%), get_uri_detail_list: 6
+        (0.7%), tests_pri_-1000: 20 (2.7%), tests_pri_-950: 1.40 (0.2%),
+        tests_pri_-900: 1.55 (0.2%), tests_pri_-90: 197 (26.3%), check_bayes:
+        190 (25.4%), b_tokenize: 14 (1.8%), b_tok_get_all: 74 (9.9%),
+        b_comp_prob: 3.6 (0.5%), b_tok_touch_all: 94 (12.5%), b_finish: 1.20
+        (0.2%), tests_pri_0: 472 (63.1%), check_dkim_signature: 0.66 (0.1%),
+        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 0.50 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 6 (0.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: KASAN: unknown-crash Read in do_exit
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com> writes:
 
-Can you help to merge this series?
+> Hello,
+>
+> syzbot found the following issue on:
 
-Thanks,
-Shiju
+Skimming the code it appears this is a feature not a bug.
 
->-----Original Message-----
->From: Linuxarm [mailto:linuxarm-bounces@huawei.com] On Behalf Of Shiju
->Jose
->Sent: 03 September 2020 13:35
->To: linux-acpi@vger.kernel.org; linux-pci@vger.kernel.org; linux-
->kernel@vger.kernel.org; rjw@rjwysocki.net; helgaas@kernel.org;
->bp@alien8.de; james.morse@arm.com; lorenzo.pieralisi@arm.com;
->robh@kernel.org; lenb@kernel.org; tony.luck@intel.com;
->dan.carpenter@oracle.com; andriy.shevchenko@linux.intel.com
->Cc: Linuxarm <linuxarm@huawei.com>
->Subject: [PATCH v15 0/2] ACPI / APEI: Add support to notify the vendor
->specific HW errors
+The stack_not_used code deliberately reads the unused/unitiailized
+portion of the stack, to see if that part of the stack was used.
+
+Perhaps someone wants to make this play nice with KASAN?
+
+KASAN should be able to provide better information than reading the
+stack to see if it is still zeroed out.
+
+Eric
+
+> HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=170a7cf1900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d9ae84069cff753e94bf
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10642545900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141f2bed900000
 >
->CPER records describing a firmware-first error are identified by GUID.
->The ghes driver currently logs, but ignores any unknown CPER records.
->This prevents describing errors that can't be represented by a standard entry,
->that would otherwise allow a driver to recover from an error.
->The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of version 2.8).
+> Bisection is inconclusive: the issue happens on the oldest tested release.
 >
->patch set
->1. add the notifier chain for these non-standard/vendor-records
->   in the ghes driver.
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b9ffcd900000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1479ffcd900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1079ffcd900000
 >
->2. add the driver to handle HiSilicon HIP PCIe controller's errors.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com
 >
->Changes:
+> ==================================================================
+> BUG: KASAN: unknown-crash in stack_not_used include/linux/sched/task_stack.h:101 [inline]
+> BUG: KASAN: unknown-crash in check_stack_usage kernel/exit.c:692 [inline]
+> BUG: KASAN: unknown-crash in do_exit+0x24a6/0x29f0 kernel/exit.c:849
+> Read of size 8 at addr ffffc9000cf30130 by task syz-executor624/10359
 >
->V15:
->1. Change in the HIP PCIe error handling driver
->   for a comment by Andy Shevchenko.
->   Removed "depends on ACPI" as it already depends on
->   it through ACPI_APEI_GHES.
->
->V14:
->1. Add patch[1] posted by James to the series.
->
->2. Following changes made for Bjorn's comments,
->2.1 Deleted stub code from ghes.h
->2.2 Made CONFIG_PCIE_HISI_ERR depend on CONFIG_ACPI_APEI_GHES.
->
->V13:
->1. Following changes in the HIP PCIe error handling driver.
->1.1 Add Bjorn's acked-by.
->1.2. Address the comments and macros order Bjorn mentioned.
->     Fix the words in the commit.
->
->V12:
->1. Changed the Signed-off-by tag to Co-developed-by tag in the patch
->   "ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records"
->
->V11:
->1. Following modifications made by James Morse in the APEI patch
->   for the vendor error record.
->   - Removed kfifo and ghes_gdata_pool. Expanded commit message.
->
->2. Changes in the HIP PCIe error handling driver
->   for the comments by Andy Shevchenko.
->
->V10:
->1. Changes for Bjorn's comments on HIP PCIe error handler driver
->   and APEI patch.
->
->2. Changes in the HIP PCIe error handler driver
->   for the feedbacks by Andy Shevchenko.
->
->V9:
->1. Fixed 2 improvements suggested by the kbuild test robot.
->1.1 Change ghes_gdata_pool_init() as static function.
->1.2. Removed using buffer to store the error data for
->     logging in the hisi_pcie_handle_error()
->
->V8:
->1. Removed reporting the standard errors through the interface
->   because of the conflict with the recent patches in the
->   memory error handling path.
->2. Fix comments by Dan Carpenter.
->
->V7:
->1. Add changes in the APEI driver suggested by Borislav Petkov, for
->   queuing up all the non-fatal HW errors to the work queue and
->   notify the registered kernel drivers from the bottom half using
->   blocking notifier, common interface for both standard and
->   vendor-spcific errors.
->2. Fix for further feedbacks in v5 HIP PCIe error handler driver
->   by Bjorn Helgaas.
->
->V6:
->1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
->
->V5:
->1. Fix comments from James Morse.
->1.1 Changed the notification method to use the atomic_notifier_chain.
->1.2 Add the error handled status for the user space.
->
->V4:
->1. Fix for the following smatch warning in the PCIe error driver,
->   reported by kbuild test robot<lkp@intel.com>:
->   warn: should '((((1))) << (9 + i))' be a 64 bit type?
->   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
->	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
->
->V3:
->1. Fix the comments from Bjorn Helgaas.
->
->V2:
->1. Changes in the HiSilicon PCIe controller's error handling driver
->   for the comments from Bjorn Helgaas.
->
->2. Changes in the APEI interface to support reporting the vendor error
->   for module with multiple devices, but use the same section type.
->   In the error handler will use socket id/sub module id etc to distinguish
->   the device.
->
->V1:
->1. Fix comments from James Morse.
->
->2. add driver to handle HiSilicon hip08 PCIe controller's errors,
->   which is an application of the above interface.
->
->Shiju Jose (1):
->  ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records
->
->Yicong Yang (1):
->  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
->
-> drivers/acpi/apei/ghes.c                 |  63 +++++
-> drivers/pci/controller/Kconfig           |   7 +
-> drivers/pci/controller/Makefile          |   1 +
-> drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
-> include/acpi/ghes.h                      |  18 ++
-> 5 files changed, 416 insertions(+)
-> create mode 100644 drivers/pci/controller/pcie-hisi-error.c
->
->--
->2.17.1
+> CPU: 1 PID: 10359 Comm: syz-executor624 Not tainted 5.9.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+>  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
+>  __kasan_report mm/kasan/report.c:513 [inline]
+>  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+>  stack_not_used include/linux/sched/task_stack.h:101 [inline]
+>  check_stack_usage kernel/exit.c:692 [inline]
+>  do_exit+0x24a6/0x29f0 kernel/exit.c:849
+>  do_group_exit+0x125/0x310 kernel/exit.c:903
+>  get_signal+0x428/0x1f00 kernel/signal.c:2757
+>  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
+>  exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
+>  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
+>  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x446b99
+> Code: Bad RIP value.
+> RSP: 002b:00007f70f5ed9d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+> RAX: 0000000000002878 RBX: 00000000006dbc58 RCX: 0000000000446b99
+> RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000020002004ffc
+> RBP: 00000000006dbc50 R08: ffffffffffffffff R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc5c
+> R13: 00007f70f5ed9d20 R14: 00007f70f5ed9d20 R15: 000000000000002d
 >
 >
->_______________________________________________
->Linuxarm mailing list
->Linuxarm@huawei.com
->http://hulk.huawei.com/mailman/listinfo/linuxarm
+> Memory state around the buggy address:
+>  ffffc9000cf30000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>  ffffc9000cf30080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>>ffffc9000cf30100: 00 00 00 00 00 00 70 07 00 00 77 00 00 00 00 00
+>                                      ^
+>  ffffc9000cf30180: 00 00 70 07 00 00 70 07 00 00 00 00 77 00 70 07
+>  ffffc9000cf30200: 00 70 07 00 77 00 00 00 00 00 70 07 00 00 00 00
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
