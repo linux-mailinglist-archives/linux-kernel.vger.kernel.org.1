@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BDA26959F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB822695A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726056AbgINT1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgINT1C (ORCPT
+        id S1726043AbgINT1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:27:45 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24384 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725914AbgINT1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:27:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D413C06174A;
-        Mon, 14 Sep 2020 12:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ElivZyaPzL8sTWfizym2+Owr1Ypn3yVUWdClnfRy/rE=; b=uCnI10CpbKyLkMZsRbCBF8NO8I
-        E0yhU73bDJ+60I30Oz519RlDzCfRHrFUhKPMZve1jMRdXNNATwE4LrhysZFcnCpm6h7sB29Veomcx
-        asEg1ycd3JxU9n64NMwptG2j9hrxUDUvfm1kDx8EM9i4ps7ZMziPmHbhSFji8qmWxOzmbw351PhxO
-        VGKkvuAwTmqfPnVWqf7ySl5Z7rlPMGqJBYTrs6V1EbEgvhSbX4zTqwTYdOOX67arGecaoWCbDekkp
-        JdhCKFTeEt7oCGR7nAZF+V+Q+eq5F8Ogj7FnRXq9YDFCCDeK/3f2UFfhxU4/b5IjD7cCCYotzFC8q
-        RHNnIO1A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHu7r-0004CT-Sp; Mon, 14 Sep 2020 19:26:55 +0000
-Date:   Mon, 14 Sep 2020 20:26:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Anmol Karn <anmol.karan123@gmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Necip Fazil Yildiran <necip@google.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH] idr: remove WARN_ON_ONCE() when
- trying to check id
-Message-ID: <20200914192655.GW6583@casper.infradead.org>
-References: <20200914071724.202365-1-anmol.karan123@gmail.com>
- <20200914110803.GL6583@casper.infradead.org>
- <20200914184755.GB213347@Thinkpad>
+        Mon, 14 Sep 2020 15:27:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600111660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FCNGaTB2XTlKwuW28Ajr6nro1HFL/b6q2oKuURy+WoM=;
+        b=NdMgJwM3F9WSt3qK5gb255nuC5RhL2+tcy5kUatD/0iNCZBipuYWTviEwTMTJBPDToFwyI
+        DZkzaFGGwsxiZrbdo0iu7R3HTxvZmksnCvfTUhrlZL5YfY4OtMNEEGRaueemKF5nhivDAL
+        8zNqHSM2WFeSoVlQd5a8UkNttSjS4y0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-298-heMWj_LSM02Qa5NoAQQtnQ-1; Mon, 14 Sep 2020 15:27:36 -0400
+X-MC-Unique: heMWj_LSM02Qa5NoAQQtnQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E039B107465E;
+        Mon, 14 Sep 2020 19:27:33 +0000 (UTC)
+Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D85C35DA60;
+        Mon, 14 Sep 2020 19:27:27 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 14:27:25 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Dan Williams <dan.j.williams@intel.com>, X86 ML <x86@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20200914192725.cqja3icshjemvcxw@treble>
+References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
+ <20200914175604.GF680@zn.tnic>
+ <CAPcyv4hqxs1zuXb5jkA-6Fm72Vu0ZDCfqeWJKSePM+zFyY9kzg@mail.gmail.com>
+ <20200914192156.GG680@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200914184755.GB213347@Thinkpad>
+In-Reply-To: <20200914192156.GG680@zn.tnic>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:17:55AM +0530, Anmol Karn wrote:
-> On Mon, Sep 14, 2020 at 12:08:03PM +0100, Matthew Wilcox wrote:
-> > On Mon, Sep 14, 2020 at 12:47:24PM +0530, Anmol Karn wrote:
-> > > idr_get_next() gives WARN_ON_ONCE() when it gets (id > INT_MAX) true
-> > > and this happens when syzbot does fuzzing, and that warning is
-> > > expected, but WARN_ON_ONCE() is not required here and, cecking
-> > > the condition and returning NULL value would be suffice.
-> > > 
-> > > Reference: commit b9959c7a347 ("filldir[64]: remove WARN_ON_ONCE() for bad directory entries")
-> > > Reported-and-tested-by: syzbot+f7204dcf3df4bb4ce42c@syzkaller.appspotmail.com
-> > > Link: https://syzkaller.appspot.com/bug?extid=f7204dcf3df4bb4ce42c 
-> > > Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+On Mon, Sep 14, 2020 at 09:21:56PM +0200, Borislav Petkov wrote:
+> On Mon, Sep 14, 2020 at 11:48:55AM -0700, Dan Williams wrote:
+> > > Err, stupid question: can this macro then be folded into access_ok() so
+> > > that you don't have to touch so many places and the check can happen
+> > > automatically?
 > > 
-> > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
+> > I think that ends up with more changes because it changes the flow of
+> > access_ok() from returning a boolean to returning a modified user
+> > address that can be used in the speculative path.
 > 
-> Hello sir,
+> I mean something like the totally untested, only to show intent hunk
+> below? (It is late here so I could very well be missing an aspect):
 > 
-> I have looked into the patch, and it seems the problem is fixed to the root cause
-> in this patch, but not yet merged due to some backport issues, so, please ignore 
-> this patch(sent by me), and please let me know if i can contribute to fixing this 
-> bug's root cause.
+> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+> index 2bffba2a1b23..c94e1589682c 100644
+> --- a/arch/x86/include/asm/uaccess.h
+> +++ b/arch/x86/include/asm/uaccess.h
+> @@ -7,6 +7,7 @@
+>  #include <linux/compiler.h>
+>  #include <linux/kasan-checks.h>
+>  #include <linux/string.h>
+> +#include <linux/nospec.h>
+>  #include <asm/asm.h>
+>  #include <asm/page.h>
+>  #include <asm/smap.h>
+> @@ -92,8 +93,15 @@ static inline bool pagefault_disabled(void);
+>   */
+>  #define access_ok(addr, size)					\
+>  ({									\
+> +	bool range;							\
+> +	typeof(addr) a = addr, b;					\
+> +									\
+>  	WARN_ON_IN_IRQ();						\
+> -	likely(!__range_not_ok(addr, size, user_addr_max()));		\
+> +									\
+> +	range = __range_not_ok(addr, size, user_addr_max());		\
+> +	b = (typeof(addr)) array_index_nospec((__force unsigned long)addr, TASK_SIZE_MAX); \
+> +									\
+> +	likely(!range && a == b);					\
 
-The root cause is that the network maintainers believe I have a far
-greater interest in the qrtr code than I actually do, and the maintainer
-of the qrtr code is not doing anything.
+That's not going to work because 'a == b' can (and will) be
+misspeculated.
+
+-- 
+Josh
+
