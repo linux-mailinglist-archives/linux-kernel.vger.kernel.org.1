@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EBB269061
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38037269076
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgINPno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbgINPik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:38:40 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726301AbgINPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:44:00 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:27822 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726131AbgINPij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:38:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600097917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OR1/eIYGZZvLMmu+vbBsRmOl+sNgRAjamn/gYhzlyVw=;
+        b=WkafuasLFWnjaUyxH4dg3aOfIdJGuE38pmX7FaVfdw7mnZvPwyg5k7tFamH3BtbW0pZSX7
+        WgivpklpA60dZJA6vDKERh2E7HHwHMvvB3RuNLYziYeO6B9fVQdq7mnnUMfvBzMaSanbIB
+        +GtfRIcaC/EfNFgH82T/XGhSM0/temY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-7RRGZ5r0MjGx9LbAHOJTHA-1; Mon, 14 Sep 2020 11:38:30 -0400
+X-MC-Unique: 7RRGZ5r0MjGx9LbAHOJTHA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB91322204;
-        Mon, 14 Sep 2020 15:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600097908;
-        bh=tGgg30b0UwGAiVeeMU334OIR6bWHk4P6xBpiFv81zpQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnWE3OQEG5NmPV6Q3zBx67lv6nmYQZgaDVZ68K1p7Fv13rDNI9D/au2COJEFfHxty
-         LV8TMYWiHkYFQEcdCLd+zGnRfQIu31e3pOmzxi0wl8zvMyB/+eQzD8tjB+IiTZjjcZ
-         nYXusKOZULgAsa/Sv40W8NCHgQFBzWxdnPxu8nbQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     himadrispandya@gmail.com, dvyukov@google.com,
-        linux-usb@vger.kernel.org
-Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v3 09/11] sound: hiface: move to use usb_control_msg_send()
-Date:   Mon, 14 Sep 2020 17:37:54 +0200
-Message-Id: <20200914153756.3412156-10-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
-References: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5AFF81CAF8;
+        Mon, 14 Sep 2020 15:38:26 +0000 (UTC)
+Received: from treble (ovpn-115-26.rdu2.redhat.com [10.10.115.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D4F8260C0F;
+        Mon, 14 Sep 2020 15:38:14 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 10:38:12 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200914153812.c6uh3spqmcy2ft3d@treble>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200914151816.u6camicid4bd5lgo@treble>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usb_control_msg_send() call can return an error if a "short" write
-happens, so move the driver over to using that call instead.
+On Mon, Sep 14, 2020 at 10:18:16AM -0500, Josh Poimboeuf wrote:
+> Hi Jarko,
+> 
+> It looks like some of the patches weren't delivered to the lists.
+> Patches 0, 1, 8, 9, and 17 seem to be missing.
+> 
+> Lore agrees with me:
+> 
+>   https://lore.kernel.org/linux-sgx/20200911124019.42178-1-jarkko.sakkinen@linux.intel.com/
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v3:
- - no change from v2
+And my first email to you bounced, similar to an email I tried sending
+to Kristen a few weeks ago.  Something weird going on with Intel mail
+servers?
 
-v2:
- - Added reviewed-by from Takashi
-
- sound/usb/hiface/pcm.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/sound/usb/hiface/pcm.c b/sound/usb/hiface/pcm.c
-index a148caa5f48e..f9c924e3964e 100644
---- a/sound/usb/hiface/pcm.c
-+++ b/sound/usb/hiface/pcm.c
-@@ -156,16 +156,14 @@ static int hiface_pcm_set_rate(struct pcm_runtime *rt, unsigned int rate)
- 	 * This control message doesn't have any ack from the
- 	 * other side
- 	 */
--	ret = usb_control_msg(device, usb_sndctrlpipe(device, 0),
--			      HIFACE_SET_RATE_REQUEST,
--			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
--			      rate_value, 0, NULL, 0, 100);
--	if (ret < 0) {
-+	ret = usb_control_msg_send(device, 0,
-+				   HIFACE_SET_RATE_REQUEST,
-+				   USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+				   rate_value, 0, NULL, 0, 100);
-+	if (ret)
- 		dev_err(&device->dev, "Error setting samplerate %d.\n", rate);
--		return ret;
--	}
- 
--	return 0;
-+	return ret;
- }
- 
- static struct pcm_substream *hiface_pcm_get_substream(struct snd_pcm_substream
 -- 
-2.28.0
+Josh
 
