@@ -2,107 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCE9268277
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29B826827B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbgINCNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbgINCNg (ORCPT
+        id S1726027AbgINCOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:14:22 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59360 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbgINCOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:13:36 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FB6C061788
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 19:13:35 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q4so4652871pjh.5
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 19:13:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=NTPEhSTHlRsn+Cr9ilSj+EM6hitMM44IwHm5ITwwFyY=;
-        b=MxlbuPZImhwgz1/KkQsCtpWd69+Vk4LNfsIL1smDk0f/vodky9XyMh9DULU3t55a5Y
-         y78Tz3mMLN2otwjgLxSOdbOLNt2IuC5CuFBcDYOHnb4c9hDPgZLYYLwkyCKjK5mVaSWY
-         B41MRnZUS7OlkFB22Jvju5zrllrdFuM2OQwh9lN+hr5IM4Zvc0fi5NWCKCshRW8bOMpE
-         Qc36gU5Hfo7cU9vIvGSa8j3nIYqPfiwJZn+VduSbGfB8clTvBp5efJLg39oObGt/LxdZ
-         EIg9etPuQ3y3BXfWTECz4a4LJHDNBdM5Bi9fBsNNrDrIVvrXUrYoK6No5tqyxQLBtKgD
-         ZeWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=NTPEhSTHlRsn+Cr9ilSj+EM6hitMM44IwHm5ITwwFyY=;
-        b=FaFAMc8vQ3AdLID1+5b8xtR4Cxcy9SeGAGexuQaAnigw0t4SHbi3RNQgwIyz0BehC8
-         elhkaicHaLY0KjFwdke2nXDDT+hCXNDX+AjTFjf8KFWNf0RbYTmZX58kFY6Ocl49vINy
-         sVUus7C+rSD+YGsQnyS1yG3MgBuAnkjCEuY76ynJaZPNiOTIx5QTD4x1GGBp9opRy4sL
-         0nyhQHNidVy/XjISY/x6teVCj1QqmMFl6suVh4JfEjyU1G+tVoRLWZZ0Sa1Py7x1WLnm
-         0bD+L2j+07jGgSdlXTapmAND1qq5HWqNlEV0goUFMQmwEFcxXs6wz9jaYYC3BRKqE678
-         kkew==
-X-Gm-Message-State: AOAM533NVpumUrhDCHbmWGzf1U4MDtnsnVkQUxqh/gSFzzttcbWOR5la
-        CR12WrporxddyI46MDpooi/MdrdHr31jbzph6lOR+w==
-X-Google-Smtp-Source: ABdhPJwPmDs31o3K2/y1tjcMZou2BVHfgm37DJtiS4Lu/KcTILWqFACtnVlH7NvcUpGunLOFo5I7Y9Xkfx9Jzfs90Nc=
-X-Received: by 2002:a17:90a:d704:: with SMTP id y4mr12510199pju.159.1600049614763;
- Sun, 13 Sep 2020 19:13:34 -0700 (PDT)
+        Sun, 13 Sep 2020 22:14:18 -0400
+Received: from [IPv6:2804:14c:483:7989::1000] (unknown [IPv6:2804:14c:483:7989::1000])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5D90629601A;
+        Mon, 14 Sep 2020 03:14:11 +0100 (BST)
+Subject: Re: [PATCH v5 1/7] media: v4l2: Extend pixel formats to unify
+ single/multi-planar handling (and more)
+To:     Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
+        linux-media@vger.kernel.org
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        tfiga@chromium.org, hiroh@chromium.org, nicolas@ndufresne.ca,
+        Brian.Starkey@arm.com, kernel@collabora.com,
+        narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
+        frkoenig@chromium.org, mjourdan@baylibre.com,
+        stanimir.varbanov@linaro.org
+References: <20200804192939.2251988-1-helen.koike@collabora.com>
+ <20200804192939.2251988-2-helen.koike@collabora.com>
+ <767d6287-bd9c-b342-d14c-124e58c143e6@xs4all.nl>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <9293c7c8-9750-a79c-19ac-954a0629e04d@collabora.com>
+Date:   Sun, 13 Sep 2020 23:14:07 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <CAB4CAwfqbaR7_ypZDp=hi_3u_F2E5eYv5ExUoSPK97qcTxiWZQ@mail.gmail.com>
-In-Reply-To: <CAB4CAwfqbaR7_ypZDp=hi_3u_F2E5eYv5ExUoSPK97qcTxiWZQ@mail.gmail.com>
-From:   Chris Chiu <chiu@endlessm.com>
-Date:   Mon, 14 Sep 2020 10:13:24 +0800
-Message-ID: <CAB4CAwezTL6LeUeW5QApC4AVyu2t-pH1CBQSNMPCMC6VXZTX4A@mail.gmail.com>
-Subject: Re: mt7615: Fail to load firmware on AZWAVE-CB434NF module
-To:     sean.wang@mediatek.com, ryder.lee@mediatek.com,
-        Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        nbd@nbd.name, lorenzo@kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <767d6287-bd9c-b342-d14c-124e58c143e6@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 8, 2020 at 8:33 PM Chris Chiu <chiu@endlessm.com> wrote:
->
-> Hi Sean, Ryder,
->     We have an ASUS laptop X532EQ with the wifi module AZWAVE-CB434NF
-> which fails to bring up the wifi interface on kernel 5.9.0-rc1. The
-> dmesg shows the firmware load error.
->
-> [   25.630850] mt7615e 0000:2d:00.0: Message -4294967280 (seq 1) timeout
-> [   25.630851] mt7615e 0000:2d:00.0: Failed to get patch semaphore
-> [   25.630853] mt7615e 0000:2d:00.0: mediatek/mt7663pr2h.bin not
-> found, switching to mediatek/mt7663pr2h_rebb.bin
-> [   46.111154] mt7615e 0000:2d:00.0: Message -4294967280 (seq 2) timeout
-> [   46.111178] mt7615e 0000:2d:00.0: Failed to get patch semaphore
-> [   46.111179] mt7615e 0000:2d:00.0: failed to load mediatek/mt7663pr2h_rebb.bin
->
-> The lspci information for the device shows as follows
-> 0000:2d:00.0 Network controller [0280]: MEDIATEK Corp. Device [14c3:7663]
->         Subsystem: AzureWave Device [1a3b:4341]
->         Flags: bus master, fast devsel, latency 0, IRQ 177
->         Memory at 6032100000 (64-bit, prefetchable) [size=1M]
->         Memory at 6032200000 (64-bit, prefetchable) [size=16K]
->         Memory at 6032204000 (64-bit, prefetchable) [size=4K]
->         Capabilities: [80] Express Endpoint, MSI 1f
->         Capabilities: [e0] MSI: Enable+ Count=1/32 Maskable+ 64bit+
->         Capabilities: [f8] Power Management version 3
->         Capabilities: [100] Vendor Specific Information: ID=1556 Rev=1
-> Len=008 <?>
->         Capabilities: [108] Latency Tolerance Reporting
->         Capabilities: [110] L1 PM Substates
->         Capabilities: [200] Advanced Error Reporting
->         Kernel driver in use: mt7615e
->         Kernel modules: mt7615e
->
-> I also tried the latest linux-firmware with the most up to date
-> mediatek firmware
-> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/?id=7a237c6ee2c7af48723c356461ef80270a52d2c6.
-> But still get the same error.
->
-> Any suggestions on what I can do here?
->
-> Chris
+Hi Hans,
 
-Gentle ping. What should I do for the next step?
+On 9/9/20 8:41 AM, Hans Verkuil wrote:
+> Hi Helen,
+> 
+> Some review comments, concentrating on the uAPI.
+> 
+> On 04/08/2020 21:29, Helen Koike wrote:
+>> This is part of the multiplanar and singleplanar unification process.
+>> v4l2_ext_pix_format is supposed to work for both cases.
+>>
+>> We also add the concept of modifiers already employed in DRM to expose
+>> HW-specific formats (like tiled or compressed formats) and allow
+>> exchanging this information with the DRM subsystem in a consistent way.
+>>
+>> Note that only V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] are accepted in
+>> v4l2_ext_format, other types will be rejected if you use the
+>> {G,S,TRY}_EXT_PIX_FMT ioctls.
+>>
+>> New hooks have been added to v4l2_ioctl_ops to support those new ioctls
+>> in drivers, but, in the meantime, the core takes care of converting
+>> {S,G,TRY}_EXT_PIX_FMT requests into {S,G,TRY}_FMT so that old drivers can
+>> still work if the userspace app/lib uses the new ioctls.
+>> The conversion is also done the other around to allow userspace
+>> apps/libs using {S,G,TRY}_FMT to work with drivers implementing the
+>> _ext_ hooks.
+>>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+>> ---
+>> Changes in v5:
+>> - change sizes and reorder fields to avoid holes in the struct and make
+>>   it the same for 32 and 64 bits
+>> - removed __attribute__ ((packed)) from uapi structs
+>> - Fix doc warning from make htmldocs
+>> - Updated commit message with EXT_PIX prefix for the ioctls.
+>>
+>> Changes in v4:
+>> - Use v4l2_ext_pix_format directly in the ioctl, drop v4l2_ext_format,
+>> making V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] the only valid types.
+>> - Add reserved fields
+>> - Removed num_planes from struct v4l2_ext_pix_format
+>> - Removed flag field from struct v4l2_ext_pix_format, since the only
+>>   defined value is V4L2_PIX_FMT_FLAG_PREMUL_ALPHA only used by vsp1,
+>>   where we can use modifiers, or add it back later through the reserved
+>>   bits.
+>> - In v4l2_ext_format_to_format(), check if modifier is != MOD_LINEAR &&
+>>   != MOD_INVALID
+>> - Fix type assignment in v4l_g_fmt_ext_pix()
+>> - Rebased on top of media/master (post 5.8-rc1)
+>>
+>> Changes in v3:
+>> - Rebased on top of media/master (post 5.4-rc1)
+>>
+>> Changes in v2:
+>> - Move the modifier in v4l2_ext_format (was formerly placed in
+>>   v4l2_ext_plane)
+>> - Fix a few bugs in the converters and add a strict parameter to
+>>   allow conversion of uninitialized/mis-initialized objects
+>> ---
+>>  drivers/media/v4l2-core/v4l2-dev.c   |  21 +-
+>>  drivers/media/v4l2-core/v4l2-ioctl.c | 585 +++++++++++++++++++++++----
+>>  include/media/v4l2-ioctl.h           |  34 ++
+>>  include/uapi/linux/videodev2.h       |  56 +++
+>>  4 files changed, 615 insertions(+), 81 deletions(-)
+>>
+> 
+> <snip>
+> 
+>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>> index c7b70ff53bc1d..7123c6a4d9569 100644
+>> --- a/include/uapi/linux/videodev2.h
+>> +++ b/include/uapi/linux/videodev2.h
+>> @@ -2254,6 +2254,58 @@ struct v4l2_pix_format_mplane {
+>>  	__u8				reserved[7];
+>>  } __attribute__ ((packed));
+>>  
+>> +/**
+>> + * struct v4l2_plane_ext_pix_format - additional, per-plane format definition
+>> + * @sizeimage:		maximum size in bytes required for data, for which
+>> + *			this plane will be used.
+>> + *			Should be set to zero for unused planes.
+>> + * @bytesperline:	distance in bytes between the leftmost pixels in two
+>> + *			adjacent lines
+>> + * @reserved:		extra space reserved for future fields, must be set to 0
+>> + */
+>> +struct v4l2_plane_ext_pix_format {
+>> +	__u32 sizeimage;
+>> +	__u32 bytesperline;
+>> +	__u32 reserved;
+> 
+> I'd use reserved[4] here.
+> 
+>> +};
+>> +
+>> +/**
+>> + * struct v4l2_ext_pix_format - extended single/multiplanar format definition
+>> + * @type:		type of the data stream; V4L2_BUF_TYPE_VIDEO_CAPTURE or
+>> + *			V4L2_BUF_TYPE_VIDEO_OUTPUT
+>> + * @width:		image width in pixels
+>> + * @height:		image height in pixels
+>> + * @field:		enum v4l2_field; field order (for interlaced video)
+>> + * @pixelformat:	little endian four character code (fourcc)
+>> + * @modifier:		modifier applied to the format (used for tiled formats
+>> + *			and other kind of HW-specific formats, like compressed
+>> + *			formats)
+> 
+> This should refer to the drm.h header since we're reusing the DRM modifiers.
+> 
+>> + * @colorspace:		enum v4l2_colorspace; supplemental to pixelformat
+>> + * @plane_fmt:		per-plane information
+>> + * @ycbcr_enc:		enum v4l2_ycbcr_encoding, Y'CbCr encoding
+>> + * @hsv_enc:		enum v4l2_hsv_encoding, HSV encoding
+>> + * @quantization:	enum v4l2_quantization, colorspace quantization
+>> + * @xfer_func:		enum v4l2_xfer_func, colorspace transfer function
+>> + * @reserved:		extra space reserved for future fields, must be set to 0
+>> + */
+>> +struct v4l2_ext_pix_format {
+>> +	__u32 type;
+>> +	__u32 width;
+>> +	__u32 height;
+>> +	__u32 field;
+>> +	__u64 modifier;
+>> +	__u32 pixelformat;
+>> +	__u32 colorspace;
+>> +	struct v4l2_plane_ext_pix_format plane_fmt[VIDEO_MAX_PLANES];
+>> +	union {
+>> +		__u32 ycbcr_enc;
+>> +		__u32 hsv_enc;
+>> +	};
+>> +	__u32 quantization;
+>> +	__u32 xfer_func;
+> 
+> I'd reorder this:
+> 
+> 	struct v4l2_plane_ext_pix_format plane_fmt[VIDEO_MAX_PLANES];
+> 	__u32 pixelformat;
+> 	__u32 colorspace;
+> 	__u32 xfer_func;
+> 	union {
+> 		__u32 ycbcr_enc;
+> 		__u32 hsv_enc;
+> 	};
+> 	__u32 quantization;
+> 
+> The reason for reordering is that I like to keep the colorimetry fields in
+> that order since that is how these fields are processed mathematically: you
+> apply the colorspace matrix first, then the transfer function, then optionally
+> convert to Y'CbCr or HSV and finally you quantize the result.
+> 
+> There is also a __u32 flags; field missing (needed for V4L2_PIX_FMT_FLAG_PREMUL_ALPHA
+> and for the upcoming CSC support).
+
+We discussed this on v4 https://patchwork.linuxtv.org/project/linux-media/cover/20200717115435.2632623-1-helen.koike@collabora.com/
+
+The idea is to replace V4L2_PIX_FMT_FLAG_PREMUL_ALPHA by a modifier, and this API
+won't need CSC, since the colorspace fields are read-write.
+
+Regards,
+Helen
+
+> 
+>> +	__u32 reserved[9];
+>> +};
+>> +
+>>  /**
+>>   * struct v4l2_sdr_format - SDR format definition
+>>   * @pixelformat:	little endian four character code (fourcc)
+>> @@ -2571,6 +2623,10 @@ struct v4l2_create_buffers {
+>>  
+>>  #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
+>>  
+>> +#define VIDIOC_G_EXT_PIX_FMT	_IOWR('V', 104, struct v4l2_ext_pix_format)
+>> +#define VIDIOC_S_EXT_PIX_FMT	_IOWR('V', 105, struct v4l2_ext_pix_format)
+>> +#define VIDIOC_TRY_EXT_PIX_FMT	_IOWR('V', 106, struct v4l2_ext_pix_format)
+>> +
+>>  /* Reminder: when adding new ioctls please add support for them to
+>>     drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+>>  
+>>
+> 
+> Regards,
+> 
+> 	Hans
+> 
