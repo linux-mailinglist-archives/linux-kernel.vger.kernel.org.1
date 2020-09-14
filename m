@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE22268E9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27F75268E94
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgINOvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:51:48 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:35895 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726300AbgINOum (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:50:42 -0400
-Received: from localhost (unknown [103.82.80.9])
-        (Authenticated sender: me@yadavpratyush.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 9CDBE100007;
-        Mon, 14 Sep 2020 14:50:24 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 20:20:22 +0530
-From:   Pratyush Yadav <me@yadavpratyush.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Jungseung Lee <js07.lee@samsung.com>
-Subject: Re: [PATCH v2 1/4] mtd: spi-nor: cleanup common code
-Message-ID: <20200914145022.rdjfaw5vzk7gzvfy@yadavpratyush.com>
-References: <20200911222634.31804-1-michael@walle.cc>
- <20200911222634.31804-2-michael@walle.cc>
- <20200914094046.tccoc54n7e36zzyr@yadavpratyush.com>
- <6d52e1bdbbefc9383904e28bcc1c78a7@walle.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d52e1bdbbefc9383904e28bcc1c78a7@walle.cc>
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
+        id S1726385AbgINO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726706AbgINOv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:51:58 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BAD520715;
+        Mon, 14 Sep 2020 14:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600095117;
+        bh=a1JalLnTBAaxUOfrKmYR9snF+OmsXWm89BgkakJgbtY=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=nHlZxjObjD7RILUNaeRVhzLzrOscBBQnb049NK7Yru+8eWh4YiKW/a3s0V8AA7qRi
+         XjU463tCuCy+ATejyKUCV06FhpHxkXJ3afF+6hxo7gX5hYF/UtAwqno023/mh4W98f
+         ZSsq9Le8WOkOHrA9gNfVNN7x7BiOihLCGyBRgOhQ=
+Date:   Mon, 14 Sep 2020 15:51:09 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     perex@perex.cz, alexandre.torgue@st.com, arnaud.pouliquen@st.com,
+        lgirdwood@gmail.com, Olivier Moysan <olivier.moysan@st.com>,
+        tiwai@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20200911081507.7276-1-olivier.moysan@st.com>
+References: <20200911081507.7276-1-olivier.moysan@st.com>
+Subject: Re: [PATCH] ASoC: stm32: sai: add pm_runtime support
+Message-Id: <160009506912.439.13820832041582523614.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/09/20 01:09PM, Michael Walle wrote:
-> Hi Pratyush,
-> 
-> Am 2020-09-14 11:40, schrieb Pratyush Yadav:
-> > Hi Michael,
-> > 
-> > *sigh* This patch will cause a _lot_ of conflicts with my series [0]. It
-> > should hopefully go in the next merge window so maybe you can rebase on
-> > top of it? Dunno.
-> 
-> Could you pick up this patch in some form in your series? It looks like your
-> series touches most/some of the functions. The patch just removes code
-> repetitions.
+On Fri, 11 Sep 2020 10:15:07 +0200, Olivier Moysan wrote:
+> Enable support of pm_runtime on STM32 SAI driver to allow
+> SAI power state monitoring.
+> pm_runtime_put_autosuspend() is called from ASoC framework
+> on pcm device close.
+> The pmdown_time delay is available in runtime context, and may be set
+> in SAI driver to take into account shutdown delay on playback.
+> However, this shutdown delay is already handled in the DAPMs
+> of the audio codec linked to SAI CPU DAI.
+> So, the choice is made, not to support this delay on CPU DAI side.
 
-I don't want to make any last-minute changes that could end up blocking 
-the series. Its been pending for many months now.
+Applied to
 
-> TBH I don't need this patch as I just can implement my new one-byte command
-> using the current "if (nor->spimem) {} else {}" pattern.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-It is up to you what you want to do about the patch. Maybe you can drop 
-it now and send it later when things have settled down? Dunno.
+Thanks!
 
--- 
-Regards,
-Pratyush Yadav
+[1/1] ASoC: stm32: sai: add pm_runtime support
+      commit: 4e723e7565c4031568fb9db18253cfbf6442831d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
