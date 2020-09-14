@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCEA268419
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCA7268429
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgINFcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:32:04 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:51727 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726010AbgINFcE (ORCPT
+        id S1726106AbgINFke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:40:34 -0400
+Received: from host-88-217-225-28.customer.m-online.net ([88.217.225.28]:57700
+        "EHLO mail.dev.tdt.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726003AbgINFkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:32:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U8psLXS_1600061520;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U8psLXS_1600061520)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 14 Sep 2020 13:32:00 +0800
-Date:   Mon, 14 Sep 2020 13:32:00 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     tj@kernel.org, axboe@kernel.dk
-Cc:     baolin.wang7@gmail.com, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Some improvements for blk-throttle
-Message-ID: <20200914053200.GA128318@VM20190228-100.tbsite.net>
-Reply-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-References: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
+        Mon, 14 Sep 2020 01:40:32 -0400
+X-Greylist: delayed 455 seconds by postgrey-1.27 at vger.kernel.org; Mon, 14 Sep 2020 01:40:31 EDT
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id A74C4207C1;
+        Mon, 14 Sep 2020 05:32:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 07:32:54 +0200
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] drivers/net/wan/x25_asy: Remove an unnecessary
+ x25_type_trans call
+Organization: TDT AG
+In-Reply-To: <20200912021807.365158-1-xie.he.0141@gmail.com>
+References: <20200912021807.365158-1-xie.he.0141@gmail.com>
+Message-ID: <4d6345b6b072f60366aec9626809da95@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.1.5
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tejun and Jens,
+On 2020-09-12 04:18, Xie He wrote:
+> x25_type_trans only needs to be called before we call netif_rx to pass
+> the skb to upper layers.
+> 
+> It does not need to be called before lapb_data_received. The LAPB 
+> module
+> does not need the fields that are set by calling it.
+> 
+> In the other two X.25 drivers - lapbether and hdlc_x25. x25_type_trans
+> is only called before netif_rx and not before lapb_data_received.
+> 
+> Cc: Martin Schiller <ms@dev.tdt.de>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  drivers/net/wan/x25_asy.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wan/x25_asy.c b/drivers/net/wan/x25_asy.c
+> index 5a7cf8bf9d0d..ab56a5e6447a 100644
+> --- a/drivers/net/wan/x25_asy.c
+> +++ b/drivers/net/wan/x25_asy.c
+> @@ -202,8 +202,7 @@ static void x25_asy_bump(struct x25_asy *sl)
+>  		return;
+>  	}
+>  	skb_put_data(skb, sl->rbuff, count);
+> -	skb->protocol = x25_type_trans(skb, sl->dev);
+> -	err = lapb_data_received(skb->dev, skb);
+> +	err = lapb_data_received(sl->dev, skb);
+>  	if (err != LAPB_OK) {
+>  		kfree_skb(skb);
+>  		printk(KERN_DEBUG "x25_asy: data received err - %d\n", err);
 
-On Mon, Sep 07, 2020 at 04:10:12PM +0800, Baolin Wang wrote:
-> Hi All,
-> 
-> This patch set did some clean-ups, as well as removing some unnecessary
-> bps/iops limitation calculation when checking if can dispatch a bio or
-> not for a tg. Please help to review. Thanks.
+Acked-by: Martin Schiller <ms@dev.tdt.de>
 
-Any comments for this patch set?
-
-> 
-> Baolin Wang (5):
->   blk-throttle: Fix some comments' typos
->   blk-throttle: Use readable READ/WRITE macros
->   blk-throttle: Define readable macros instead of static variables
->   blk-throttle: Avoid calculating bps/iops limitation repeatedly
->   blk-throttle: Avoid checking bps/iops limitation if bps or iops is    
->     unlimited
-> 
->  block/blk-throttle.c | 59 ++++++++++++++++++++++++++++++++--------------------
->  1 file changed, 36 insertions(+), 23 deletions(-)
-> 
-> -- 
-> 1.8.3.1
