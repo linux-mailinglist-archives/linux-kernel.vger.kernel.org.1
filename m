@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239522686ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5042686EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgINIMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbgINIMB (ORCPT
+        id S1726214AbgINIMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:12:33 -0400
+Received: from smtpout1.mo529.mail-out.ovh.net ([178.32.125.2]:53401 "EHLO
+        smtpout1.mo529.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726197AbgINILw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:12:01 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71E9C06174A;
-        Mon, 14 Sep 2020 01:11:17 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id r10so3819609oor.5;
-        Mon, 14 Sep 2020 01:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BiWoOjbocYfXto48nFLnUJJva/vgzYIMpRgWmcqUVDs=;
-        b=Es9faI85dVSrPMxn0/fxuP7sdWsK/0diEepgIjPk/dolJsGVXyXaJcE84ZAqlfEbG8
-         VOav5EgR/PrSf54d3FbyzU27k2pPhCCGyuRVq8aOq9ZlKv8VczCg7YIkSEpGCtBXZAxn
-         wmvqi/bMDSg6n9YTstMaOB4kWx9bGuAUKl0mOuRS6msZz0vQ18NnAds3hsu4mFjq3lJD
-         bcPZaUVgI3LqfDfOvKhV1V4jH2PvEqAyIodcnKcHZjWog7Dcd6Bb7iBhxVL/amy5OsgA
-         lbdM8oMAVGm9FI37sD7pzz5DifOVGork/yNa+a9cd4WtCGnGth0hZ/oBiZ5ytRVsnhXE
-         VSvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BiWoOjbocYfXto48nFLnUJJva/vgzYIMpRgWmcqUVDs=;
-        b=bLZho3gkzks2LkRmg3fX3XAF7N2plp5MMoGt+nl/Bbc2Ktylkw6b/18aVeZ6RBqLZa
-         qYWbg5jFdkWikzDvAuuEFak8piTpYOEC5L7ca6oWQEjjepcTpbQIPrDL7YwkaBc8g/3J
-         a1BGHAnAwG3vamtWXMJTdxJsKdnv+mKmMWtsVS+zK4VMn8vcz6NZpJerxD1mMYQr6B8z
-         qfxPIW50GZkLCktBCXMN+b4FAKUVWW4dEbaqbF5cP/mcpKki6goAvukkGhZ+xYXNCgMO
-         61KiOBciRsINFlnmyZ7VAbY9WOoOrFIQE/KniPD05+olCr0lu/5IDidG3Qc+Bi5vf7HC
-         uWsQ==
-X-Gm-Message-State: AOAM530qP5SFD238HBGmsoXfopvSS7RTEVBBZNmz/eW3uvN/eiJ0v70/
-        mAJkgGTiBbY6zLEAodRV1jHoVtTxL9uYpW+m0Mw=
-X-Google-Smtp-Source: ABdhPJxZhyRmN42yl3RF+whdW88Pd2by4L0LHlHrWkTJzCU4W1n0q8o+I3PJmU1dSGpY31ECu/Dr7d9iqvYxm9/8VfM=
-X-Received: by 2002:a4a:5403:: with SMTP id t3mr9632108ooa.11.1600071076339;
- Mon, 14 Sep 2020 01:11:16 -0700 (PDT)
+        Mon, 14 Sep 2020 04:11:52 -0400
+Received: from mxplan5.mail.ovh.net (unknown [10.108.20.173])
+        by mo529.mail-out.ovh.net (Postfix) with ESMTPS id 7875E5ACBA04;
+        Mon, 14 Sep 2020 10:11:13 +0200 (CEST)
+Received: from kaod.org (37.59.142.105) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 14 Sep
+ 2020 10:11:12 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-105G006e148709d-5730-4a06-a133-7cccf876b69a,
+                    33559CD024D4F69900824C14C2AC4808F9346AFD) smtp.auth=groug@kaod.org
+Date:   Mon, 14 Sep 2020 10:11:11 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+CC:     Jianyong Wu <jianyong.wu@arm.com>, <ericvh@gmail.com>,
+        <lucho@ionkov.net>, <v9fs-developer@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <justin.he@arm.com>
+Subject: Re: [PATCH RFC 1/4] fs/9p: fix create-unlink-getattr idiom
+Message-ID: <20200914101111.5b73712c@bahia.lan>
+In-Reply-To: <20200914060036.GA18115@nautica>
+References: <20200914033754.29188-1-jianyong.wu@arm.com>
+        <20200914033754.29188-2-jianyong.wu@arm.com>
+        <20200914060036.GA18115@nautica>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200810134252.68614-1-alexandru.ardelean@analog.com> <20200810134252.68614-8-alexandru.ardelean@analog.com>
-In-Reply-To: <20200810134252.68614-8-alexandru.ardelean@analog.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 14 Sep 2020 11:11:05 +0300
-Message-ID: <CA+U=Dsr41kKGXmgE1KjdTzAso3rwtNXAEoSy+Li=uym7G=D=Jw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] clk: axi-clk-gen: misc updates to the driver
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, mturquette@baylibre.com,
-        Stephen Boyd <sboyd@kernel.org>,
-        Moritz Fischer <mdf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.105]
+X-ClientProxiedBy: DAG8EX1.mxp5.local (172.16.2.71) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: 83ec8991-ebcb-4f23-9ce0-abdac57f350b
+X-Ovh-Tracer-Id: 2711448452248279401
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudeiiedgtdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfhisehtjeertdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeefuddtieejjeevheekieeltefgleetkeetheettdeifeffvefhffelffdtfeeljeenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtohepjhhushhtihhnrdhhvgesrghrmhdrtghomh
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 4:41 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> These patches synchronize the driver with the current state in the
-> Analog Devices Linux tree:
->   https://github.com/analogdevicesinc/linux/
->
-> They have been in the tree for about 2-3, so they did receive some
-> testing.
+On Mon, 14 Sep 2020 08:00:36 +0200
+Dominique Martinet <asmadeus@codewreck.org> wrote:
 
-Ping on this series.
-Do I need to do a re-send?
+> Jianyong Wu wrote on Mon, Sep 14, 2020:
+> > Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
+> 
+> Just on a note on that mail: gkurz@linux.vnet.ibm.com has no longer been
+> working for a while, probably want to update to groug@kaod.org in both
+> first two patches.
+> Greg, sorry I had forgotten to fix Cc earlier, can you confirm?
+> 
 
->
-> Highlights are:
-> * Add support for fractional dividers (Lars-Peter Clausen)
-> * Enable support for ZynqMP (UltraScale) (Dragos Bogdan)
-> * Support frequency limits for ZynqMP (Mathias Tausen)
->   - And continued by Mircea Caprioru, to read them from the IP cores
->
-> Changelog v1 -> v2:
-> - in patch 'include: fpga: adi-axi-common.h: add definitions for supported FPGAs'
->   * converted enums to #define
->   * added Intel FPGA definitions
->   * added Device-Package definitions
->   * added INTEL / XILINX in the define names
->  definitions according to:
->  https://github.com/analogdevicesinc/hdl/blob/4e438261aa319b1dda4c593c155218a93b1d869b/library/scripts/adi_intel_device_info_enc.tcl
->  https://github.com/analogdevicesinc/hdl/blob/4e438261aa319b1dda4c593c155218a93b1d869b/library/scripts/adi_xilinx_device_info_enc.tcl
->
-> Dragos Bogdan (1):
->   clk: axi-clkgen: add support for ZynqMP (UltraScale)
->
-> Lars-Peter Clausen (2):
->   clk: axi-clkgen: Add support for fractional dividers
->   clk: axi-clkgen: Set power bits for fractional mode
->
-> Mathias Tausen (1):
->   clk: axi-clkgen: Respect ZYNQMP PFD/VCO frequency limits
->
-> Mircea Caprioru (2):
->   include: fpga: adi-axi-common.h: add definitions for supported FPGAs
->   clk: axi-clkgen: Add support for FPGA info
->
->  drivers/clk/Kconfig                 |   2 +-
->  drivers/clk/clk-axi-clkgen.c        | 253 ++++++++++++++++++++++------
->  include/linux/fpga/adi-axi-common.h | 103 +++++++++++
->  3 files changed, 302 insertions(+), 56 deletions(-)
->
-> --
-> 2.17.1
->
+Np :) and yes I confirm that groug@kaod.org is to be used now.
+
+14a36a435343 ("mailmap: add entry for Greg Kurz")
+
+> 
+> I'll (re)do a proper review of the first three patches again in a bit
+> but iirc they looked good on paper, will resend a mail if required.
+> 
+
