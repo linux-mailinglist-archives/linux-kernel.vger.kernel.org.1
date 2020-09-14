@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FED62691BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:37:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7426A2691B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgINQhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:37:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47608 "EHLO mail.kernel.org"
+        id S1726375AbgINQfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726020AbgINPiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726055AbgINPiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 11:38:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28CD120EDD;
-        Mon, 14 Sep 2020 15:38:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC67C208DB;
+        Mon, 14 Sep 2020 15:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600097881;
-        bh=eMnr+X3ACCBlvUcal7w11UX5fuuRTjnCIruIdTho9mY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0Ax3veUWya2pauThyCeqC044APqyL6V/aqtPNVrTaTYfcQqtVxDnXxkIcr1psOgIM
-         TTYoB4t4vYmxxKpa21YExO0UKGXlblUkC6KCLR4AbaHKorJkvArXPcCV4/ReplxRoa
-         auKSCyMB+dvEXpOu5HePg0CKpK0OLbUQsm3atgvI=
+        s=default; t=1600097892;
+        bh=K8GDmgIFok61DBUhIpFd8GKKp/6PoQOtGoTpJAfvjV4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f8A/tP09/VdJtaE+8mhb6hj4aJFUw7hWS4RjTJvFMbVRTV5DlQoZSeJ/dbIyjjK6P
+         otm4FHhaHt6yHc8pfIbd0RU0UCXy1svPu77Xkmmpo7xGIg1W+cIY1YOaIUF32oqnhW
+         wz1S8q3dSA8dQD+UQq7ICE8A2tAgWVYdTZ+JU19w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     himadrispandya@gmail.com, dvyukov@google.com,
         linux-usb@vger.kernel.org
@@ -31,10 +31,12 @@ Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
         johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
         alsa-devel@alsa-project.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v3 00/11] USB: new USB control message helper functions
-Date:   Mon, 14 Sep 2020 17:37:45 +0200
-Message-Id: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+Subject: [PATCH v3 02/11] USB: add usb_control_msg_send() and usb_control_msg_recv()
+Date:   Mon, 14 Sep 2020 17:37:47 +0200
+Message-Id: <20200914153756.3412156-3-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+References: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -42,92 +44,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a recent discussion about a USB networking bug found by syzbot, and
-fixed by Himadri Pandya, the design of the existing usb_control_msg()
-call was brought up as not being the "nicest" thing to use by Dmitry
-Vyukov:
-        https://lore.kernel.org/r/CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com
+New core functions to make sending/receiving USB control messages easier
+and saner.
 
-The function makes it hard to get right, in that it will return the
-number of bytes sent/received, but almost no one checks to see if a
-short read/write happens.  With a malicious, or broken, USB device, this
-can cause drivers to act on data that they did not anticipate, and
-sometimes copy internal kernel data out to userspace.
+In discussions, it turns out that the large majority of users of
+usb_control_msg() do so in potentially incorrect ways.  The most common
+issue is where a "short" message is received, yet never detected
+properly due to "incorrect" error handling.
 
-So let's fix this up by creating two new functions,
-usb_control_msg_send() and usb_control_msg_recv().  These functions
-either complete the full transation, or they return an error, a short
-send/recv is now an error.
+Handle all of this in the USB core with two new functions to try to make
+working with USB control messages simpler.
 
-They also accept data off of the stack, saving individual drivers the
-pain of having to constantly allocate memory on their own for tiny
-messages, thereby saving overall kernel code space.
+No more need for dynamic data, messages can be on the stack, and only
+"complete" send/receive will work without causing an error.
 
-The api also does not require a raw USB "pipe" to be sent to the
-function, as we know the direction, so just pass in the endpoint number
-instead, again making it easier on the USB driver author to use.
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v3:
+ - no change from v2
 
-This series first takes a helper function out of the sound core for
-verifying USB endpoints to be able to use internally, and then adds the
-new functions, converts over some internal USB code to use them, and
-then starts to clean up some drivers using these new functions, as an
-example of the savings that can happen by using these functions.
+v2:
+ - no change from v1
 
-Thanks to Dmitry and Himadri for the idea on how to do all of this.
+ drivers/usb/core/message.c | 133 +++++++++++++++++++++++++++++++++++++
+ include/linux/usb.h        |   6 ++
+ 2 files changed, 139 insertions(+)
 
-greg k-h
-
------
-
-Changes from v2:
-	- add Andy's reviewed-by: to patch 3
-	- remove unneeded change in usb_enable_link_state() in hub.c
-	  in patch 4
-
-Changes from v1:
-        - added acks from Takashi Iwai
-        - dropped changes to one function in patch 04 thanks to review
-          from Alan Stern
-        - typo fix in comment in patch 01
-        - added new patch 11 to remove some unneeded checks in the sound
-          drivers for endpoint statuses that would always be true.
-
-
-
-Greg Kroah-Hartman (11):
-  USB: move snd_usb_pipe_sanity_check into the USB core
-  USB: add usb_control_msg_send() and usb_control_msg_recv()
-  USB: core: message.c: use usb_control_msg_send() in a few places
-  USB: core: hub.c: use usb_control_msg_send() in a few places
-  USB: legousbtower: use usb_control_msg_recv()
-  sound: usx2y: move to use usb_control_msg_send()
-  sound: 6fire: move to use usb_control_msg_send() and
-    usb_control_msg_recv()
-  sound: line6: move to use usb_control_msg_send() and
-    usb_control_msg_recv()
-  sound: hiface: move to use usb_control_msg_send()
-  Bluetooth: ath3k: use usb_control_msg_send() and
-    usb_control_msg_recv()
-  ALSA: remove calls to usb_pipe_type_check for control endpoints
-
- drivers/bluetooth/ath3k.c       |  90 +++++------------
- drivers/usb/core/hub.c          |  99 ++++++++----------
- drivers/usb/core/message.c      | 171 ++++++++++++++++++++++++++++----
- drivers/usb/core/urb.c          |  31 ++++--
- drivers/usb/misc/legousbtower.c |  60 ++++-------
- include/linux/usb.h             |   7 ++
- sound/usb/6fire/firmware.c      |  38 +++----
- sound/usb/helper.c              |  16 +--
- sound/usb/helper.h              |   1 -
- sound/usb/hiface/pcm.c          |  14 ++-
- sound/usb/line6/driver.c        |  69 +++++--------
- sound/usb/line6/podhd.c         |  17 ++--
- sound/usb/line6/toneport.c      |   8 +-
- sound/usb/mixer_scarlett_gen2.c |   2 +-
- sound/usb/quirks.c              |  12 +--
- sound/usb/usx2y/us122l.c        |  42 ++------
- 16 files changed, 336 insertions(+), 341 deletions(-)
-
+diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
+index ae1de9cc4b09..1dc53b12a26a 100644
+--- a/drivers/usb/core/message.c
++++ b/drivers/usb/core/message.c
+@@ -162,6 +162,139 @@ int usb_control_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
+ }
+ EXPORT_SYMBOL_GPL(usb_control_msg);
+ 
++/**
++ * usb_control_msg_send - Builds a control "send" message, sends it off and waits for completion
++ * @dev: pointer to the usb device to send the message to
++ * @endpoint: endpoint to send the message to
++ * @request: USB message request value
++ * @requesttype: USB message request type value
++ * @value: USB message value
++ * @index: USB message index value
++ * @driver_data: pointer to the data to send
++ * @size: length in bytes of the data to send
++ * @timeout: time in msecs to wait for the message to complete before timing
++ *	out (if 0 the wait is forever)
++ *
++ * Context: !in_interrupt ()
++ *
++ * This function sends a control message to a specified endpoint that is not
++ * expected to fill in a response (i.e. a "send message") and waits for the
++ * message to complete, or timeout.
++ *
++ * Do not use this function from within an interrupt context. If you need
++ * an asynchronous message, or need to send a message from within interrupt
++ * context, use usb_submit_urb(). If a thread in your driver uses this call,
++ * make sure your disconnect() method can wait for it to complete. Since you
++ * don't have a handle on the URB used, you can't cancel the request.
++ *
++ * The data pointer can be made to a reference on the stack, or anywhere else,
++ * as it will not be modified at all.  This does not have the restriction that
++ * usb_control_msg() has where the data pointer must be to dynamically allocated
++ * memory (i.e. memory that can be successfully DMAed to a device).
++ *
++ * Return: If successful, 0 is returned, Otherwise, a negative error number.
++ */
++int usb_control_msg_send(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 const void *driver_data, __u16 size, int timeout)
++{
++	unsigned int pipe = usb_sndctrlpipe(dev, endpoint);
++	int ret;
++	u8 *data = NULL;
++
++	if (usb_pipe_type_check(dev, pipe))
++		return -EINVAL;
++
++	if (size) {
++		data = kmemdup(driver_data, size, GFP_KERNEL);
++		if (!data)
++			return -ENOMEM;
++	}
++
++	ret = usb_control_msg(dev, pipe, request, requesttype, value, index,
++			      data, size, timeout);
++	kfree(data);
++
++	if (ret < 0)
++		return ret;
++	if (ret == size)
++		return 0;
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(usb_control_msg_send);
++
++/**
++ * usb_control_msg_recv - Builds a control "receive" message, sends it off and waits for completion
++ * @dev: pointer to the usb device to send the message to
++ * @endpoint: endpoint to send the message to
++ * @request: USB message request value
++ * @requesttype: USB message request type value
++ * @value: USB message value
++ * @index: USB message index value
++ * @driver_data: pointer to the data to be filled in by the message
++ * @size: length in bytes of the data to be received
++ * @timeout: time in msecs to wait for the message to complete before timing
++ *	out (if 0 the wait is forever)
++ *
++ * Context: !in_interrupt ()
++ *
++ * This function sends a control message to a specified endpoint that is
++ * expected to fill in a response (i.e. a "receive message") and waits for the
++ * message to complete, or timeout.
++ *
++ * Do not use this function from within an interrupt context. If you need
++ * an asynchronous message, or need to send a message from within interrupt
++ * context, use usb_submit_urb(). If a thread in your driver uses this call,
++ * make sure your disconnect() method can wait for it to complete. Since you
++ * don't have a handle on the URB used, you can't cancel the request.
++ *
++ * The data pointer can be made to a reference on the stack, or anywhere else
++ * that can be successfully written to.  This function does not have the
++ * restriction that usb_control_msg() has where the data pointer must be to
++ * dynamically allocated memory (i.e. memory that can be successfully DMAed to a
++ * device).
++ *
++ * The "whole" message must be properly received from the device in order for
++ * this function to be successful.  If a device returns less than the expected
++ * amount of data, then the function will fail.  Do not use this for messages
++ * where a variable amount of data might be returned.
++ *
++ * Return: If successful, 0 is returned, Otherwise, a negative error number.
++ */
++int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 void *driver_data, __u16 size, int timeout)
++{
++	unsigned int pipe = usb_rcvctrlpipe(dev, endpoint);
++	int ret;
++	u8 *data;
++
++	if (!size || !driver_data || usb_pipe_type_check(dev, pipe))
++		return -EINVAL;
++
++	data = kmalloc(size, GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	ret = usb_control_msg(dev, pipe, request, requesttype, value, index,
++			      data, size, timeout);
++
++	if (ret < 0)
++		goto exit;
++
++	if (ret == size) {
++		memcpy(driver_data, data, size);
++		ret = 0;
++	} else {
++		ret = -EINVAL;
++	}
++
++exit:
++	kfree(data);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(usb_control_msg_recv);
++
+ /**
+  * usb_interrupt_msg - Builds an interrupt urb, sends it off and waits for completion
+  * @usb_dev: pointer to the usb device to send the message to
+diff --git a/include/linux/usb.h b/include/linux/usb.h
+index 0b3963d7ec38..a5460f08126e 100644
+--- a/include/linux/usb.h
++++ b/include/linux/usb.h
+@@ -1802,6 +1802,12 @@ extern int usb_bulk_msg(struct usb_device *usb_dev, unsigned int pipe,
+ 	int timeout);
+ 
+ /* wrappers around usb_control_msg() for the most common standard requests */
++int usb_control_msg_send(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 const void *data, __u16 size, int timeout);
++int usb_control_msg_recv(struct usb_device *dev, __u8 endpoint, __u8 request,
++			 __u8 requesttype, __u16 value, __u16 index,
++			 void *data, __u16 size, int timeout);
+ extern int usb_get_descriptor(struct usb_device *dev, unsigned char desctype,
+ 	unsigned char descindex, void *buf, int size);
+ extern int usb_get_status(struct usb_device *dev,
 -- 
 2.28.0
 
