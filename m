@@ -2,102 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE54269894
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BEB269895
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgINWId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:08:33 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:33525 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725979AbgINWId (ORCPT
+        id S1726098AbgINWIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgINWIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:08:33 -0400
-Received: by mail-io1-f66.google.com with SMTP id r25so1912192ioj.0;
-        Mon, 14 Sep 2020 15:08:32 -0700 (PDT)
+        Mon, 14 Sep 2020 18:08:37 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407FBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 15:08:37 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id c3so224723plz.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 15:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ACcaZ7zDQbpB1KvqQAlAsDR8BmSbNCNG05Rdb2jou+A=;
+        b=lCvAw4eDj179Tcmto2DAiULdnxNCHmni70ucCSNAkKQJeImpWuVV7trWDtTapcOL0y
+         KTt02PXDk0Au6TvOlAuldSlt9I3qPkCJkfqZhXSZyeVyT15k6Ex1n82Vmau+v9SDB+uG
+         9GI5GKvau/1++P8IY2KzG+Y4at908FcZ6wwYI/JQ+SpYwO3aUyqFnUwUgF4u3pr6qFYz
+         jeEeDvmfoCTnlpH6hoH5jI/UOc32jb2DOZxJt4qZbzgujR3gc7Dlybaoh6Ib2H8r7drH
+         oov5zRXnBEk/lj8ZWI7bw8MGX+rE+xKN1L4R5eoi8Ga3LKlK2P52ZiPCbrjVtyShIayj
+         x5Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HfVeQ81fFlvBzyeQzVxZZpi/9tbQOUKFJsP3PWI05Uc=;
-        b=sTB5GH9mQbWPoFRaU6oSigDmL0bHqQDA4SHQvdnvc9C6mb9AJYlHj3JbQYpGaO/hrr
-         2W+O8dGHx8qKULnZFEeDM46ZwIeDP1BjmRds+ZX5b1eNJb3whCnvnRC8avfv2qIiJXEj
-         48jOkikaJv6n+W3nhst6ZzV8A92kUop4tIjUhZ+W2DG0Pncn/+Z9XMqCjfk3RnA7NhFM
-         +Fo311wkPe3/MCKdGkxgw4RJWD6z8Rn+F6NIttLda9ODZMVUoZM7dSceOUa4H9XNV37u
-         tCHLKEry7/QQlV4/emqqShb2KpWdG7xrrnioUPE5RZYxbjhp4Bx17ESJ6h1q6xd117Gt
-         hmdA==
-X-Gm-Message-State: AOAM530zVQ48FksqFTN6mnL8HRJ8rWh0IdGsq0jmnU7taiMtkbAn1lch
-        Pg3YC4cSDGLUU9WMzkTN8Q==
-X-Google-Smtp-Source: ABdhPJzOEWAxnZG+kDpP3Y4L1MtUa0ni/O8Jr2Ub5j+QdhNiZ4nS4jkbiRz6otnEmg9u4/zC1QacmQ==
-X-Received: by 2002:a05:6602:15c5:: with SMTP id f5mr11938387iow.42.1600121312167;
-        Mon, 14 Sep 2020 15:08:32 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id m15sm7558130ild.8.2020.09.14.15.08.30
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ACcaZ7zDQbpB1KvqQAlAsDR8BmSbNCNG05Rdb2jou+A=;
+        b=k/ftQ+0yIpm/wPJFfOvwk7swX+4tWQgXmMUlUjfYM2MOPXpjSgM13RA6NFiawHdabD
+         5Zp2yuefPYBwpqE582D7/ls9QAFoa26AqO1hrnO7JLzdEuh4zcNsjOoue/qcR2pADRqV
+         3IA7XMgC1YsIAYOXznIFw/CI8mOgRm0bP/sqlwXFJlAeirysMtBEsyZUbILN9SQd5+X0
+         SZe95Cv3fmhggUmvZfwZ2VJCCGEVX0qZxO3jIb9k+l/MHcC0b8KrSrVSFiW8/uJ3x/Lq
+         ST7AwbUcPmcopUfq3HX+wCFc0RZn9O7xvVGNggE0c6Yq7BagLFP5nZdx9yem3OL9swwn
+         qiew==
+X-Gm-Message-State: AOAM5301+kVJR+eV5AfC4ws2NeFQrhJak5YROLLNYcboU7JmQaLHajLU
+        Vsab8Dey4pkVp8EbPLk/UYSYYA==
+X-Google-Smtp-Source: ABdhPJw1Q+4tj8NPap6ki/0ZVLo0cdZL3ydf1phEcI0gjrnyfRFwo0oiBuEUPiYZMvklRbg2odmQlw==
+X-Received: by 2002:a17:90b:408b:: with SMTP id jb11mr1369784pjb.164.1600121316292;
+        Mon, 14 Sep 2020 15:08:36 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id l9sm10244020pgg.29.2020.09.14.15.08.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 15:08:31 -0700 (PDT)
-Received: (nullmailer pid 346892 invoked by uid 1000);
-        Mon, 14 Sep 2020 22:08:29 -0000
-Date:   Mon, 14 Sep 2020 16:08:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active"
- property
-Message-ID: <20200914220829.GA330122@bogus>
-References: <20200904130000.691933-1-thierry.reding@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904130000.691933-1-thierry.reding@gmail.com>
+        Mon, 14 Sep 2020 15:08:35 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 15:08:35 -0700 (PDT)
+X-Google-Original-Date: Mon, 14 Sep 2020 15:08:31 PDT (-0700)
+Subject:     Re: [PATCH] cpuidle: add riscv cpuidle driver
+In-Reply-To: <1600048323-2964-1-git-send-email-liush@allwinnertech.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        rjw@rjwysocki.net, daniel.lezcano@linaro.org,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        wangkefeng.wang@huawei.com, kernel@esmil.dk, zong.li@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, liush@allwinnertech.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     liush@allwinnertech.com
+Message-ID: <mhng-e743b908-36de-4226-832d-bc5acbbfd81b@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 02:59:57PM +0200, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
-> 
-> Reserved memory regions can be marked as "active" if hardware is
-> expected to access the regions during boot and before the operating
-> system can take control. One example where this is useful is for the
-> operating system to infer whether the region needs to be identity-
-> mapped through an IOMMU.
-
-I like simple solutions, but this hardly seems adequate to solve the 
-problem of passing IOMMU setup from bootloader/firmware to the OS. Like 
-what is the IOVA that's supposed to be used if identity mapping is not 
-used?
-
-If you know enough about the regions to assume identity mapping, then 
-can't you know if active or not?
-
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
+On Sun, 13 Sep 2020 18:52:03 PDT (-0700), liush@allwinnertech.com wrote:
+> This patch adds a cpuidle driver for systems based RISCV architecture.
+> This patch supports state WFI. Other states will be supported in the
+> future.
+>
+> Signed-off-by: liush <liush@allwinnertech.com>
 > ---
->  .../bindings/reserved-memory/reserved-memory.txt           | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> index 4dd20de6977f..163d2927e4fc 100644
-> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> @@ -63,6 +63,13 @@ reusable (optional) - empty property
->        able to reclaim it back. Typically that means that the operating
->        system can use that region to store volatile or cached data that
->        can be otherwise regenerated or migrated elsewhere.
-> +active (optional) - empty property
-> +    - If this property is set for a reserved memory region, it indicates
-> +      that some piece of hardware may be actively accessing this region.
-> +      Should the operating system want to enable IOMMU protection for a
-> +      device, all active memory regions must have been identity-mapped
-> +      in order to ensure that non-quiescent hardware during boot can
-> +      continue to access the memory.
->  
->  Linux implementation note:
->  - If a "linux,cma-default" property is present, then Linux will use the
-> -- 
-> 2.28.0
-> 
+>  arch/riscv/Kconfig               |  7 +++++
+>  arch/riscv/include/asm/cpuidle.h |  7 +++++
+>  arch/riscv/kernel/Makefile       |  1 +
+>  arch/riscv/kernel/cpuidle.c      |  8 ++++++
+>  drivers/cpuidle/Kconfig          |  5 ++++
+>  drivers/cpuidle/Kconfig.riscv    | 11 ++++++++
+>  drivers/cpuidle/Makefile         |  4 +++
+>  drivers/cpuidle/cpuidle-riscv.c  | 55 ++++++++++++++++++++++++++++++++++++++++
+>  8 files changed, 98 insertions(+)
+>  create mode 100644 arch/riscv/include/asm/cpuidle.h
+>  create mode 100644 arch/riscv/kernel/cpuidle.c
+>  create mode 100644 drivers/cpuidle/Kconfig.riscv
+>  create mode 100644 drivers/cpuidle/cpuidle-riscv.c
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index df18372..c7ddb9d 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -86,6 +86,7 @@ config RISCV
+>  	select SPARSE_IRQ
+>  	select SYSCTL_EXCEPTION_TRACE
+>  	select THREAD_INFO_IN_TASK
+> +	select CPU_IDLE
+>
+>  config ARCH_MMAP_RND_BITS_MIN
+>  	default 18 if 64BIT
+> @@ -407,6 +408,12 @@ config BUILTIN_DTB
+>  	depends on RISCV_M_MODE
+>  	depends on OF
+>
+> +menu "CPU Power Management"
+> +
+> +source "drivers/cpuidle/Kconfig"
+> +
+> +endmenu
+> +
+>  menu "Power management options"
+>
+>  source "kernel/power/Kconfig"
+> diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/cpuidle.h
+> new file mode 100644
+> index 00000000..2599d2f
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/cpuidle.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __RISCV_CPUIDLE_H
+> +#define __RISCV_CPUIDLE_H
+> +
+> +extern void cpu_do_idle(void);
+> +
+> +#endif
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index dc93710..396ba9c 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -29,6 +29,7 @@ obj-y	+= riscv_ksyms.o
+>  obj-y	+= stacktrace.o
+>  obj-y	+= cacheinfo.o
+>  obj-y	+= patch.o
+> +obj-y	+= cpuidle.o
+
+Presumably we want this to be a Kconfig option, if only to avoid excess size on
+the smaller systems?
+
+>  obj-$(CONFIG_MMU) += vdso.o vdso/
+>
+>  obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
+> diff --git a/arch/riscv/kernel/cpuidle.c b/arch/riscv/kernel/cpuidle.c
+> new file mode 100644
+> index 00000000..a3289e7
+> --- /dev/null
+> +++ b/arch/riscv/kernel/cpuidle.c
+> @@ -0,0 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <asm/cpuidle.h>
+> +
+> +void cpu_do_idle(void)
+> +{
+> +	__asm__ __volatile__ ("wfi");
+> +
+
+We have wait_for_interrupt() that does this already, but it's one line so it
+doesn't really matter.  Either way, there's an extra newline here.
+
+Additionally, we have arch_cpu_idle() which is calling cpu_do_idle() on other
+platforms.  Presumably we should be doing something similar, under the
+assumption that we will eventually have cpu_do_idle() hook into CPU idle
+drivers here?
+
+> +}
+> diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
+> index c0aeedd..f6be0fd 100644
+> --- a/drivers/cpuidle/Kconfig
+> +++ b/drivers/cpuidle/Kconfig
+> @@ -62,6 +62,11 @@ depends on PPC
+>  source "drivers/cpuidle/Kconfig.powerpc"
+>  endmenu
+>
+> +menu "RISCV CPU Idle Drivers"
+> +depends on RISCV
+> +source "drivers/cpuidle/Kconfig.riscv"
+> +endmenu
+> +
+>  config HALTPOLL_CPUIDLE
+>  	tristate "Halt poll cpuidle driver"
+>  	depends on X86 && KVM_GUEST
+> diff --git a/drivers/cpuidle/Kconfig.riscv b/drivers/cpuidle/Kconfig.riscv
+> new file mode 100644
+> index 00000000..e86d36b
+> --- /dev/null
+> +++ b/drivers/cpuidle/Kconfig.riscv
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# RISCV CPU Idle drivers
+> +#
+> +config RISCV_CPUIDLE
+> +        bool "Generic RISCV CPU idle Driver"
+> +        select DT_IDLE_STATES
+> +	select CPU_IDLE_MULTIPLE_DRIVERS
+
+Looks like there's some space/tab issues here.  IIRC checkpatch will catch this
+sort of thing.
+
+> +        help
+> +          Select this option to enable generic cpuidle driver for RISCV.
+> +	  Now only support C0 State.
+> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
+> index 26bbc5e..4c83c4e 100644
+> --- a/drivers/cpuidle/Makefile
+> +++ b/drivers/cpuidle/Makefile
+> @@ -34,3 +34,7 @@ obj-$(CONFIG_MIPS_CPS_CPUIDLE)		+= cpuidle-cps.o
+>  # POWERPC drivers
+>  obj-$(CONFIG_PSERIES_CPUIDLE)		+= cpuidle-pseries.o
+>  obj-$(CONFIG_POWERNV_CPUIDLE)		+= cpuidle-powernv.o
+> +
+> +###############################################################################
+> +# RISCV drivers
+> +obj-$(CONFIG_RISCV_CPUIDLE)		+= cpuidle-riscv.o
+> diff --git a/drivers/cpuidle/cpuidle-riscv.c b/drivers/cpuidle/cpuidle-riscv.c
+> new file mode 100644
+> index 00000000..5dddcfa
+> --- /dev/null
+> +++ b/drivers/cpuidle/cpuidle-riscv.c
+> @@ -0,0 +1,55 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * RISC-V CPU idle driver.
+> + *
+> + * Copyright (C) 2020-2022 Allwinner Ltd
+> + *
+> + * Based on code - driver/cpuidle/cpuidle-at91.c
+> + *
+> + */
+> +#include <linux/cpuidle.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/cpu_pm.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/slab.h>
+> +#include <linux/platform_device.h>
+> +#include <asm/cpuidle.h>
+> +
+> +#define MAX_IDLE_STATES	1
+> +
+> +/* TODO: Implement deeper idle states */
+> +static int riscv_low_level_suspend_enter(int state)
+> +{
+> +	return 0;
+
+As far as I can tell, this driver just doesn't do anything?  Assuming that's
+the case, it's probably best to just drop everything but cpu_do_idle() until we
+have something to exercise this.
+
+> +}
+> +
+> +/* Actual code that puts the SoC in different idle states */
+> +static int riscv_enter_idle(struct cpuidle_device *dev,
+> +			struct cpuidle_driver *drv,
+> +			       int index)
+> +{
+> +	return CPU_PM_CPU_IDLE_ENTER_PARAM(riscv_low_level_suspend_enter,
+> +					   index, 0);
+> +}
+> +
+> +static struct cpuidle_driver riscv_idle_driver = {
+> +	.name			= "riscv_idle",
+> +	.owner			= THIS_MODULE,
+> +	.states[0]		= {
+> +		.enter			= riscv_enter_idle,
+> +		.exit_latency		= 1,
+> +		.target_residency	= 1,
+> +		.name			= "WFI",
+> +		.desc			= "RISCV WFI",
+> +	},
+> +	.state_count = MAX_IDLE_STATES,
+> +};
+> +
+> +static int __init riscv_cpuidle_init(void)
+> +{
+> +	return cpuidle_register(&riscv_idle_driver, NULL);
+> +}
+> +
+> +device_initcall(riscv_cpuidle_init);
