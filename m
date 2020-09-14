@@ -2,146 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2A92687FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A442687FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgINJGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:06:46 -0400
-Received: from mail-eopbgr700064.outbound.protection.outlook.com ([40.107.70.64]:23008
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        id S1726258AbgINJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:07:40 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12251 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726110AbgINJGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:06:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fu5Kluvur/1cQHqUVWNe1m8OhHw4l54CfA3LOm89LO8v3bUiY7lpD+ujC3Ium88L1igPS2IgNbggJ+8coQUGFfz1XIoeBScbUZMsmmdQUNE2QlOUFR3GeJUNIj8VqNG7apIrBBSALEH/vPIHUhCf150/lUmm11PG4lKZ8nzLNrdVgxcQ/lKE7oR6+cspSq0FQK2pcGeyLOt/no1HwGsVJ2KxE2Ew/C/fgqLk3aXqIpkwwdB1V9LtENkEcRnt0ml3gtwiWfF0jWwJiBNqLGu//XPd6jULReCh78XZ5iz5SVvZePu9RjAshpQ0R7+PQq8HveBUzD6J6wsne/pw5de9Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OHIlsQZJ/lbsypyE/2m0tKIro9ZIX1IVoMFm/LHuL+s=;
- b=kNU8CCri7Co0Tl36ES4x7OUkEo2DKpfrCo1CBXTlk5lKxmx3oAGt7FDXEaZ+SSRPsmOzor8/b1KVzTggFHNELPYujtNizek5XtG7scj8nrjXoqGRpm5rpolX1wE4H6gG+IN8WjJNRTo3Eiv+fs1cmKbZ+6PGjYanNDd6hcPraXldvDX51nQBGFpRfCNOP7dEvTZdSxuXAY/olh5E5MtRuSgup7igXFmCdUASYYwbZpeIpCKM7WI/kQjXW84Ra0z78o5q8Yuhdi06TYuheDhfnlMYdJaJxmNOem9cakKdpBv0bSY3AZV3ABZaaM9YUKUkDl/8zxCDcedGGWkoHBsEsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=infinera.com; dmarc=pass action=none header.from=infinera.com;
- dkim=pass header.d=infinera.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=infinera.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OHIlsQZJ/lbsypyE/2m0tKIro9ZIX1IVoMFm/LHuL+s=;
- b=X0TnHGZcSrrfDGu4wtZpHGhwP/rtR7Xh0ko+8KE84Uu/WSjb7tGZ+gEFDwb/uj20hKIJ7lpAiXRsssTOqJKiyIMN2OzHn1t1tFjm54vZQvcTvs8uFQYVKt9nwjgdLH0/a4X4YyRwFz+ACcqmTIVdmlSjoJYJizuym5zo8Tx0GIY=
-Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
- (2603:10b6:910:45::21) by CY4PR10MB1943.namprd10.prod.outlook.com
- (2603:10b6:903:11a::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
- 2020 09:06:36 +0000
-Received: from CY4PR1001MB2389.namprd10.prod.outlook.com
- ([fe80::7c3b:e8e3:3d1b:284d]) by CY4PR1001MB2389.namprd10.prod.outlook.com
- ([fe80::7c3b:e8e3:3d1b:284d%7]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
- 09:06:36 +0000
-From:   Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To:     "broonie@kernel.org" <broonie@kernel.org>,
-        "npiggin@gmail.com" <npiggin@gmail.com>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: fsl-espi: Only process interrupts for expected
- events
-Thread-Topic: [PATCH] spi: fsl-espi: Only process interrupts for expected
- events
-Thread-Index: AQHWglNX/MkS6yQMU06L+lI5I1P9i6lnLtiAgABJ/gCAAG8xgA==
-Date:   Mon, 14 Sep 2020 09:06:36 +0000
-Message-ID: <7ae62a6e39195af79eb8415f98d64ba5a1789d8d.camel@infinera.com>
-References: <20200904002812.7300-1-chris.packham@alliedtelesis.co.nz>
-         <ecedc71d-100a-7d7a-ff7f-ef1a3086dd74@alliedtelesis.co.nz>
-         <1600050281.5iiy8pkb7z.astroid@bobo.none>
-In-Reply-To: <1600050281.5iiy8pkb7z.astroid@bobo.none>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.37.92 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=infinera.com;
-x-originating-ip: [88.131.87.201]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0b6f2e28-46ef-4b8a-7c2d-08d8588d7bd7
-x-ms-traffictypediagnostic: CY4PR10MB1943:
-x-microsoft-antispam-prvs: <CY4PR10MB1943B9B4517E2A960E6D1AC0F4230@CY4PR10MB1943.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0TIZOBoZN+FpKtWDngocoG870EHHdq/iRUE18KGrb+gQWvs46s7M0k7WKddRnXWZUC0byjcyTEXWCtzuOjxG/QW7mTqddNahpLMIY9BD7sTXSH/vs0ej1ty2E5xRec4HfZUQx4YPTZ5AYZ0iOINcVbTFIQgeFa7/D1mLGXVxo0/Ii8+7hG4hu0isicKfbPkdrUMP1rtqx3WyfYo+EUbn2sayBKWCTe5/+ltNqXycz3FH935DUFp53yw+Us4hKKPckoTEyuZ6KSbV7pdEmQIsLx7t4S8Ez8f2+pmYBisBFdWG0ViogSvCJtgwkVuJjPaUoxrcA+9Kf5fQWL3UE0xPpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39860400002)(396003)(54906003)(5660300002)(110136005)(6512007)(6486002)(316002)(71200400001)(2616005)(66556008)(66476007)(478600001)(8936002)(2906002)(53546011)(64756008)(66446008)(36756003)(6506007)(26005)(8676002)(66946007)(83380400001)(76116006)(91956017)(86362001)(186003)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: P1Ga8YsOs0KbKjCySpOli/t5xrDt4G29K2chYij0oKFYUNheZEHGQhM3MNPqzmb6nZr6pYUD74RqIYqTYqRtBUaGyzRGb4+cUXG7X3k7p5vk7Lg+8wqIINj4qg50Byp7SeKvPfRzJukZUgJZbWs5nxfvz+2CFzYJdsK0Ywanoqg0TqZD0E3mLDaKf28ezX0tOY51O9f64yn3xMTwyrzffVNERXMz+oG8pocwAtrDwLjqsXzLJxEy8lQhXWT/1xUFuWsMkUuuQPs/hDWpKtpO8tn5KttJM82bkrH+4szzxi8mTpPib/ghu1yNL/qaIXHMYXePKwggDTGg+9AbZauDfUN0zj/e5Tcj+FP3mfY+e2YzHlNJ+cLXDl3gnU5rQffsyT1ApQZSxNrirKCXyQ0NQ6cJy+NlTrGwDpcVB+T0YXzwsQpFCS75k905Hd7mePKKhF2ZC9voa8tagMGsiPoM7j0030d/DJy7CR2s4qtI0pNjzTUpQ5zaH8qaXFrrTJ6a+4QRLRZramkBKEDW8oV1yJVOcTnGQ/mPdEWVvYUPvggmESrL0agNAW1YTwD3e3xhXwZoF8a7meBU/4u9eGSgZxgEnw0xuU4mW+fkeE6DrVbh+/3dbMyJ64VcgUvWKE5o90vEULMR7KlVFxja60v+qw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B54D11ED1530094EA0F116D330AB50F3@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726110AbgINJHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:07:38 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 81DD0430855B451F977F;
+        Mon, 14 Sep 2020 17:07:36 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
+ 17:07:21 +0800
+Subject: Re: [PATCH v3 2/3] irqchip: dw-apb-ictl: support hierarchy irq domain
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20200909065836.2631-1-thunder.leizhen@huawei.com>
+ <20200909065836.2631-3-thunder.leizhen@huawei.com>
+ <87o8m9r9uw.wl-maz@kernel.org>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <244f8985-f26d-f956-8d54-98acf141a478@huawei.com>
+Date:   Mon, 14 Sep 2020 17:07:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: infinera.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2389.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b6f2e28-46ef-4b8a-7c2d-08d8588d7bd7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 09:06:36.2928
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 285643de-5f5b-4b03-a153-0ae2dc8aaf77
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U2VNkKMxraK7S4mfZycH25Jb2q0k+Cg65An/Jfx1Xa3rxPFjqmtIi5NitG9daCzKtIKYGQJYaKcUoyhi61YeKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1943
+In-Reply-To: <87o8m9r9uw.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA5LTE0IGF0IDEyOjI4ICsxMDAwLCBOaWNob2xhcyBQaWdnaW4gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+IEV4Y2VycHRzIGZyb20gQ2hyaXMgUGFja2hhbSdzIG1lc3NhZ2Ugb2YgU2VwdGVt
-YmVyIDE0LCAyMDIwIDg6MDMgYW06DQo+ID4gSGkgQWxsLA0KPiA+IA0KPiA+IE9uIDQvMDkvMjAg
-MTI6MjggcG0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+ID4gPiBUaGUgU1BJRSByZWdpc3RlciBj
-b250YWlucyBjb3VudHMgZm9yIHRoZSBUWCBGSUZPIHNvIGFueSB0aW1lIHRoZSBpcnENCj4gPiA+
-IGhhbmRsZXIgd2FzIGludm9rZWQgd2Ugd291bGQgYXR0ZW1wdCB0byBwcm9jZXNzIHRoZSBSWC9U
-WCBmaWZvcy4gVXNlIHRoZQ0KPiA+ID4gU1BJTSB2YWx1ZSB0byBtYXNrIHRoZSBldmVudHMgc28g
-dGhhdCB3ZSBvbmx5IHByb2Nlc3MgaW50ZXJydXB0cyB0aGF0DQo+ID4gPiB3ZXJlIGV4cGVjdGVk
-Lg0KPiA+ID4gDQo+ID4gPiBUaGlzIHdhcyBhIGxhdGVudCBpc3N1ZSBleHBvc2VkIGJ5IGNvbW1p
-dCAzMjgyYTNkYTI1YmQgKCJwb3dlcnBjLzY0Og0KPiA+ID4gSW1wbGVtZW50IHNvZnQgaW50ZXJy
-dXB0IHJlcGxheSBpbiBDIikuDQo+ID4gPiANCj4gPiA+IFNpZ25lZC1vZmYtYnk6IENocmlzIFBh
-Y2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gPiA+IENjOiBzdGFi
-bGVAdmdlci5rZXJuZWwub3JnDQo+ID4gPiAtLS0NCj4gPiBwaW5nPw0KPiANCj4gSSBkb24ndCBr
-bm93IHRoZSBjb2RlL2hhcmR3YXJlIGJ1dCB0aGFua3MgZm9yIHRyYWNraW5nIHRoaXMgZG93bi4N
-Cj4gDQo+IFdhcyB0aGVyZSBhbnl0aGluZyBtb3JlIHRvIGJlIGRvbmUgd2l0aCBKb2NrZSdzIG9i
-c2VydmF0aW9ucywgb3Igd291bGQNCj4gdGhhdCBiZSBhIGZvbGxvdy11cCBwYXRjaCBpZiBhbnl0
-aGluZz8NCg0KUGF0Y2ggaXMgZ29vZCBJTUhPLCB0aGVyZSBtYXkgYmUgbW9yZSB0byBmaXggdy5y
-LnQgY2xlYXJpbmcgdGhlIElSUXMNCg0KPiANCj4gSWYgdGhpcyBwYXRjaCBmaXhlcyB5b3VyIHBy
-b2JsZW0gaXQgc2hvdWxkIHByb2JhYmx5IGdvIGluLCB1bmxlc3MgdGhlcmUNCj4gYXJlIGFueSBv
-YmplY3Rpb25zLg0KDQpJdCBzaG91bGQgZ28gaW4gSSB0aGluay4NCg0KIEpvY2tlDQoNCj4gDQo+
-IFRoYW5rcywNCj4gTmljaw0KPiANCj4gPiA+IA0KPiA+ID4gTm90ZXM6DQo+ID4gPiDCoMKgwqDC
-oMKgSSd2ZSB0ZXN0ZWQgdGhpcyBvbiBhIFQyMDgwUkRCIGFuZCBhIGN1c3RvbSBib2FyZCB1c2lu
-ZyB0aGUgVDIwODEgU29DLiBXaXRoDQo+ID4gPiDCoMKgwqDCoMKgdGhpcyBjaGFuZ2UgSSBkb24n
-dCBzZWUgYW55IHNwdXJpb3VzIGluc3RhbmNlcyBvZiB0aGUgIlRyYW5zZmVyIGRvbmUgYnV0DQo+
-ID4gPiDCoMKgwqDCoMKgU1BJRV9ET04gaXNuJ3Qgc2V0ISIgb3IgIlRyYW5zZmVyIGRvbmUgYnV0
-IHJ4L3R4IGZpZm8ncyBhcmVuJ3QgZW1wdHkhIiBtZXNzYWdlcw0KPiA+ID4gwqDCoMKgwqDCoGFu
-ZCB0aGUgdXBkYXRlcyB0byBzcGkgZmxhc2ggYXJlIHN1Y2Nlc3NmdWwuDQo+ID4gPiANCj4gPiA+
-IMKgwqDCoMKgwqBJIHRoaW5rIHRoaXMgc2hvdWxkIGdvIGludG8gdGhlIHN0YWJsZSB0cmVlcyB0
-aGF0IGNvbnRhaW4gMzI4MmEzZGEyNWJkIGJ1dCBJDQo+ID4gPiDCoMKgwqDCoMKgaGF2ZW4ndCBh
-ZGRlZCBhIEZpeGVzOiB0YWcgYmVjYXVzZSBJIHRoaW5rIDMyODJhM2RhMjViZCBleHBvc2VkIHRo
-ZSBpc3N1ZSBhcw0KPiA+ID4gwqDCoMKgwqDCoG9wcG9zZWQgdG8gY2F1c2luZyBpdC4NCj4gPiA+
-IA0KPiA+ID4gwqDCoGRyaXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jIHwgNSArKystLQ0KPiA+ID4g
-wqDCoDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4g
-PiANCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktZnNsLWVzcGkuYyBiL2RyaXZl
-cnMvc3BpL3NwaS1mc2wtZXNwaS5jDQo+ID4gPiBpbmRleCA3ZTdjOTJjYWZkYmIuLmNiMTIwYjY4
-YzBlMiAxMDA2NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvc3BpL3NwaS1mc2wtZXNwaS5jDQo+ID4g
-PiArKysgYi9kcml2ZXJzL3NwaS9zcGktZnNsLWVzcGkuYw0KPiA+ID4gQEAgLTU3NCwxMyArNTc0
-LDE0IEBAIHN0YXRpYyB2b2lkIGZzbF9lc3BpX2NwdV9pcnEoc3RydWN0IGZzbF9lc3BpICplc3Bp
-LCB1MzIgZXZlbnRzKQ0KPiA+ID4gwqDCoHN0YXRpYyBpcnFyZXR1cm5fdCBmc2xfZXNwaV9pcnEo
-czMyIGlycSwgdm9pZCAqY29udGV4dF9kYXRhKQ0KPiA+ID4gwqDCoHsNCj4gPiA+IMKgwqDCoMKg
-wqBzdHJ1Y3QgZnNsX2VzcGkgKmVzcGkgPSBjb250ZXh0X2RhdGE7DQo+ID4gPiAtICAgIHUzMiBl
-dmVudHM7DQo+ID4gPiArICAgIHUzMiBldmVudHMsIG1hc2s7DQo+ID4gPiANCj4gPiA+IMKgwqDC
-oMKgwqBzcGluX2xvY2soJmVzcGktPmxvY2spOw0KPiA+ID4gDQo+ID4gPiDCoMKgwqDCoMKgLyog
-R2V0IGludGVycnVwdCBldmVudHModHgvcngpICovDQo+ID4gPiDCoMKgwqDCoMKgZXZlbnRzID0g
-ZnNsX2VzcGlfcmVhZF9yZWcoZXNwaSwgRVNQSV9TUElFKTsNCj4gPiA+IC0gICAgaWYgKCFldmVu
-dHMpIHsNCj4gPiA+ICsgICAgbWFzayA9IGZzbF9lc3BpX3JlYWRfcmVnKGVzcGksIEVTUElfU1BJ
-TSk7DQo+ID4gPiArICAgIGlmICghKGV2ZW50cyAmIG1hc2spKSB7DQo+ID4gPiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoHNwaW5fdW5sb2NrKCZlc3BpLT5sb2NrKTsNCj4gPiA+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIElSUV9OT05FOw0KPiA+ID4gwqDCoMKgwqDCoH0NCg0K
+
+
+On 2020/9/13 23:10, Marc Zyngier wrote:
+> On Wed, 09 Sep 2020 07:58:35 +0100,
+> Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>
+>> Add support to use dw-apb-ictl as primary interrupt controller.
+>>
+>> Suggested-by: Marc Zyngier <maz@kernel.org>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> Tested-by: Haoyu Lv <lvhaoyu@huawei.com>
+>> ---
+>>  drivers/irqchip/Kconfig           |  2 +-
+>>  drivers/irqchip/irq-dw-apb-ictl.c | 76 +++++++++++++++++++++++++++----
+>>  2 files changed, 69 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+>> index bfc9719dbcdc..7c2d1c8fa551 100644
+>> --- a/drivers/irqchip/Kconfig
+>> +++ b/drivers/irqchip/Kconfig
+>> @@ -148,7 +148,7 @@ config DAVINCI_CP_INTC
+>>  config DW_APB_ICTL
+>>  	bool
+>>  	select GENERIC_IRQ_CHIP
+>> -	select IRQ_DOMAIN
+>> +	select IRQ_DOMAIN_HIERARCHY
+>>  
+>>  config FARADAY_FTINTC010
+>>  	bool
+>> diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
+>> index 5458004242e9..3c7bebe1b947 100644
+>> --- a/drivers/irqchip/irq-dw-apb-ictl.c
+>> +++ b/drivers/irqchip/irq-dw-apb-ictl.c
+>> @@ -17,6 +17,7 @@
+>>  #include <linux/irqchip/chained_irq.h>
+>>  #include <linux/of_address.h>
+>>  #include <linux/of_irq.h>
+>> +#include <linux/interrupt.h>
+>>  
+>>  #define APB_INT_ENABLE_L	0x00
+>>  #define APB_INT_ENABLE_H	0x04
+>> @@ -26,6 +27,27 @@
+>>  #define APB_INT_FINALSTATUS_H	0x34
+>>  #define APB_INT_BASE_OFFSET	0x04
+>>  
+>> +/* irq domain of the primary interrupt controller. */
+>> +static struct irq_domain *dw_apb_ictl_irq_domain;
+>> +
+>> +static void __irq_entry dw_apb_ictl_handle_irq(struct pt_regs *regs)
+>> +{
+>> +	struct irq_domain *d = dw_apb_ictl_irq_domain;
+>> +	int n;
+>> +
+>> +	for (n = 0; n < d->revmap_size; n += 32) {
+>> +		struct irq_chip_generic *gc = irq_get_domain_generic_chip(d, n);
+>> +		u32 stat = readl_relaxed(gc->reg_base + APB_INT_FINALSTATUS_L);
+>> +
+>> +		while (stat) {
+>> +			u32 hwirq = ffs(stat) - 1;
+>> +
+>> +			handle_domain_irq(d, hwirq, regs);
+>> +			stat &= ~BIT(hwirq);
+>> +		}
+>> +	}
+>> +}
+>> +
+>>  static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
+>>  {
+>>  	struct irq_domain *d = irq_desc_get_handler_data(desc);
+>> @@ -50,6 +72,30 @@ static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
+>>  	chained_irq_exit(chip, desc);
+>>  }
+>>  
+>> +static int dw_apb_ictl_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
+>> +				unsigned int nr_irqs, void *arg)
+>> +{
+>> +	int i, ret;
+>> +	irq_hw_number_t hwirq;
+>> +	unsigned int type = IRQ_TYPE_NONE;
+>> +	struct irq_fwspec *fwspec = arg;
+>> +
+>> +	ret = irq_domain_translate_onecell(domain, fwspec, &hwirq, &type);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	for (i = 0; i < nr_irqs; i++)
+>> +		irq_map_generic_chip(domain, virq + i, hwirq + i);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct irq_domain_ops dw_apb_ictl_irq_domain_ops = {
+>> +	.translate = irq_domain_translate_onecell,
+>> +	.alloc = dw_apb_ictl_irq_domain_alloc,
+>> +	.free = irq_domain_free_irqs_top,
+>> +};
+>> +
+>>  #ifdef CONFIG_PM
+>>  static void dw_apb_ictl_resume(struct irq_data *d)
+>>  {
+>> @@ -75,13 +121,20 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+>>  	void __iomem *iobase;
+>>  	int ret, nrirqs, parent_irq, i;
+>>  	u32 reg;
+>> -	const struct irq_domain_ops *domain_ops = &irq_generic_chip_ops;
+>> -
+>> -	/* Map the parent interrupt for the chained handler */
+>> -	parent_irq = irq_of_parse_and_map(np, 0);
+>> -	if (parent_irq <= 0) {
+>> -		pr_err("%pOF: unable to parse irq\n", np);
+>> -		return -EINVAL;
+>> +	const struct irq_domain_ops *domain_ops;
+>> +
+>> +	if (!parent || (np == parent)) {
+>> +		/* It's used as the primary interrupt controller */
+>> +		parent_irq = 0;
+>> +		domain_ops = &dw_apb_ictl_irq_domain_ops;
+>> +	} else {
+>> +		/* Map the parent interrupt for the chained handler */
+>> +		parent_irq = irq_of_parse_and_map(np, 0);
+>> +		if (parent_irq <= 0) {
+>> +			pr_err("%pOF: unable to parse irq\n", np);
+>> +			return -EINVAL;
+>> +		}
+>> +		domain_ops = &irq_generic_chip_ops;
+>>  	}
+>>  
+>>  	ret = of_address_to_resource(np, 0, &r);
+>> @@ -144,10 +197,17 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+>>  		gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
+>>  		gc->chip_types[0].chip.irq_unmask = irq_gc_mask_clr_bit;
+>>  		gc->chip_types[0].chip.irq_resume = dw_apb_ictl_resume;
+>> +		if (!parent_irq)
+>> +			gc->chip_types[0].chip.irq_eoi = irq_gc_noop;
+> 
+> Again: what is that for? The level flow doesn't use any EOI callback.
+
+OK, I will remove it. Yes, irq_eoi is only needed by handle_fasteoi_irq().
+
+> 
+>>  	}
+>>  
+>> -	irq_set_chained_handler_and_data(parent_irq,
+>> +	if (parent_irq) {
+>> +		irq_set_chained_handler_and_data(parent_irq,
+>>  				dw_apb_ictl_handle_irq_cascaded, domain);
+>> +	} else {
+>> +		dw_apb_ictl_irq_domain = domain;
+>> +		set_handle_irq(dw_apb_ictl_handle_irq);
+> 
+> This only exists on architectures that select GENERIC_IRQ_MULTI_HANDLER,
+> and yet this driver is used on some arc system (AXS10x), which doesn't
+> have this option selected.
+> 
+> Please make sure this at least builds on all supported architectures.
+
+OK, I will intsall the gcc of arc and csky, and build it.
+
+> 
+> 	M.
+> 
+
