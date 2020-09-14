@@ -2,2203 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D532693C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFEB2693CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgINRm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S1726178AbgINRnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726015AbgINMX2 (ORCPT
+        with ESMTP id S1726060AbgINMX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 08:23:28 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE1FC0610D6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:19:38 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqlgD0Pd4z9sTM;
-        Mon, 14 Sep 2020 22:15:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1600085721;
-        bh=7NoV63yMdr6O/IpkEvN+2zjeoLr6ziFZjIa5VhmV7+o=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=C8wpQ464H5ZeZhWRGzy2TrPL75Up5l9BWlbwntVWhowYUf42xUdk3QzJvFN0Y3Wlp
-         JKu3bO3XYCQUzsjaaDxyIJkOPs1vQZQnGolcrTmYkSSS2X+kW5yTLt1/KN82VJfPxD
-         mYbjpkyFPipmHm1nulOlLAymFHkdHVz5KjJWkxf1MamYELbkTCWASlPxjDlEDNv37g
-         yhOQsCJN2frrdjy6U4xATZvNUvTLLDFs0nRQX5lcGSP9v5ZPlR5EpdrNvEPIsV4iB4
-         587uLvZc4IrkgGelTwGvmFsDQ3E6CgI3/Onr8c+BaEpcf6znlsHrvLdPm922NrRv/G
-         qCPPMYtfpNTWg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 00/15] selftests/seccomp: Refactor change_syscall()
-In-Reply-To: <20200912110820.597135-1-keescook@chromium.org>
-References: <20200912110820.597135-1-keescook@chromium.org>
-Date:   Mon, 14 Sep 2020 22:15:18 +1000
-Message-ID: <87wo0wpnah.fsf@mpe.ellerman.id.au>
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C54BC0698C2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:18:40 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id h126so11657839ybg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=95MkvjALtD+pWjI9L+dX9jS5l3VsX/dwVwk6PdF2H90=;
+        b=BUvMIK5XM9/nSld70H/GBdIBvh2rIH9jwVh7E1IIo3gf+O+eVnOdStAbg+NveSxK7z
+         e/XTV+vzv/3uHTlycyTHZ6NAP3kzlg0reNW4YWL71VPf1wB8oGisMQBQgAgMNPIx3cnN
+         Vvdt2NZHPLkg9yIAdHfj9DXEGJdPO7P5XqRo7dAiPsBeZhDsOwN1CtuCy4G+Msha0XO0
+         JslegxXzxikldWKnjhEcEWvtQKwuSqXWQJRSm0llo1ZOmwPqN/v29jLjAWYhfeJHfWgq
+         FcK3c/fpRNXSvH2lCrn/2KY4t2uEbmR4g5XA1l31V2d0hsN7k0jwLeisbZ0ZByI78EPU
+         CfCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=95MkvjALtD+pWjI9L+dX9jS5l3VsX/dwVwk6PdF2H90=;
+        b=SjG+aboNeR1Wks5TVRzq9aoICGV4LRdCxBzslaUdHbKFr7jJLDscyfKkV5L82EXP0R
+         ctpSfRdpueqRyFQnsAAHnx2wUzNrqiP8WH2OqdKtgbBUaP5SNCy5RG3rfQR2aXgqPwCr
+         UZXZpwaDjaPgrnqUm4U3ji5JFK8H96Y6BFlYY7oCdipDIO4ys8yiuV+PLbasYFL/c1/5
+         1R/2JeTnRV8kz+aMEdJnrjM1TyL9FX0DtzflkAh7L/VIGXm771wvlzINVFtPCE1J71fw
+         EPYmQOXs25GUWOHKYHZrDnI6KK+N5TwYOJGMoBlx/YG2U6JDctbZeJM1BHBhrehni1Dc
+         m3xQ==
+X-Gm-Message-State: AOAM530wzH3WeulbH9Y5DhMFc6OvO6H/rZj+Lmi/peHbdoHw+oc1YDvk
+        7ShtENV6szqJNiKDYz/DXFt1f1LyEX5rafggwwoVzw==
+X-Google-Smtp-Source: ABdhPJxjgaCTkVcsuVGglaPfAZXtOAa3ztmw6wM6ggRMFf1DI4xOOd4Bkak99KEX4rW77bs7qnBN4tc79sW8Wyszurk=
+X-Received: by 2002:a25:db88:: with SMTP id g130mr20706294ybf.193.1600085919205;
+ Mon, 14 Sep 2020 05:18:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200910060403.144524-1-josephsih@chromium.org>
+ <20200910140342.v3.1.I56de28ec171134cb9f97062e2c304a72822ca38b@changeid> <20200910081842.yunymr2l4fnle5nl@pali>
+In-Reply-To: <20200910081842.yunymr2l4fnle5nl@pali>
+From:   Joseph Hwang <josephsih@google.com>
+Date:   Mon, 14 Sep 2020 20:18:27 +0800
+Message-ID: <CAHFy418Ln9ONHGVhg513g0v+GxUZMDtLpe5NFONO3HuAZz=r7g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] Bluetooth: btusb: define HCI packet sizes of USB Alts
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
-> Hi,
+On Thu, Sep 10, 2020 at 4:18 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
 >
-> This refactors the seccomp selftest macros used in change_syscall(),
-> in an effort to remove special cases for mips, arm, arm64, and xtensa,
-> which paves the way for powerpc fixes.
+> On Thursday 10 September 2020 14:04:01 Joseph Hwang wrote:
+> > It is desirable to define the HCI packet payload sizes of
+> > USB alternate settings so that they can be exposed to user
+> > space.
+> >
+> > Reviewed-by: Alain Michaud <alainm@chromium.org>
+> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> > ---
+> >
+> > Changes in v3:
+> > - Set hdev->sco_mtu to rp->sco_mtu if the latter is smaller.
+> >
+> > Changes in v2:
+> > - Used sco_mtu instead of a new sco_pkt_len member in hdev.
+> > - Do not overwrite hdev->sco_mtu in hci_cc_read_buffer_size
+> >   if it has been set in the USB interface.
+> >
+> >  drivers/bluetooth/btusb.c | 45 +++++++++++++++++++++++++++++----------
+> >  net/bluetooth/hci_event.c | 14 +++++++++++-
+> >  2 files changed, 47 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> > index fe80588c7bd3a8..651d5731a6c6cf 100644
+> > --- a/drivers/bluetooth/btusb.c
+> > +++ b/drivers/bluetooth/btusb.c
+> > @@ -459,6 +459,24 @@ static const struct dmi_system_id btusb_needs_rese=
+t_resume_table[] =3D {
+> >  #define BTUSB_WAKEUP_DISABLE 14
+> >  #define BTUSB_USE_ALT1_FOR_WBS       15
+> >
+> > +/* Per core spec 5, vol 4, part B, table 2.1,
+> > + * list the hci packet payload sizes for various ALT settings.
+> > + * This is used to set the packet length for the wideband speech.
+> > + * If a controller does not probe its usb alt setting, the default
+> > + * value will be 0. Any clients at upper layers should interpret it
+> > + * as a default value and set a proper packet length accordingly.
+> > + *
+> > + * To calculate the HCI packet payload length:
+> > + *   for alternate settings 1 - 5:
+> > + *     hci_packet_size =3D suggested_max_packet_size * 3 (packets) -
+> > + *                       3 (HCI header octets)
+> > + *   for alternate setting 6:
+> > + *     hci_packet_size =3D suggested_max_packet_size - 3 (HCI header o=
+ctets)
+> > + *   where suggested_max_packet_size is {9, 17, 25, 33, 49, 63}
+> > + *   for alt settings 1 - 6.
 >
-> I'm not entirely done testing, but all-arch build tests and x86_64
-> selftests pass. I'll be doing arm, arm64, and i386 selftests shortly,
-> but I currently don't have an easy way to check xtensa, mips, nor
-> powerpc. Any help there would be appreciated!
+> Thank you for update, now I see what you mean!
+>
+> > + */
+> > +static const int hci_packet_size_usb_alt[] =3D { 0, 24, 48, 72, 96, 14=
+4, 60 };
+>
+> Now the another question, why you are using hci_packet_size_usb_alt[1]
+> and hci_packet_size_usb_alt[6] values from this array?
 
-The series builds fine for me, and all the tests pass (see below).
+Will answer it per the spec in the next patch series.
 
-Thanks for picking up those changes to deal with powerpc being oddball.
+>
+> > +
+> >  struct btusb_data {
+> >       struct hci_dev       *hdev;
+> >       struct usb_device    *udev;
+> > @@ -3959,6 +3977,15 @@ static int btusb_probe(struct usb_interface *int=
+f,
+> >       hdev->notify =3D btusb_notify;
+> >       hdev->prevent_wake =3D btusb_prevent_wake;
+> >
+> > +     if (id->driver_info & BTUSB_AMP) {
+> > +             /* AMP controllers do not support SCO packets */
+> > +             data->isoc =3D NULL;
+> > +     } else {
+> > +             /* Interface orders are hardcoded in the specification */
+> > +             data->isoc =3D usb_ifnum_to_if(data->udev, ifnum_base + 1=
+);
+> > +             data->isoc_ifnum =3D ifnum_base + 1;
+> > +     }
+> > +
+> >  #ifdef CONFIG_PM
+> >       err =3D btusb_config_oob_wake(hdev);
+> >       if (err)
+> > @@ -4022,6 +4049,10 @@ static int btusb_probe(struct usb_interface *int=
+f,
+> >               hdev->set_diag =3D btintel_set_diag;
+> >               hdev->set_bdaddr =3D btintel_set_bdaddr;
+> >               hdev->cmd_timeout =3D btusb_intel_cmd_timeout;
+> > +
+> > +             if (btusb_find_altsetting(data, 6))
+> > +                     hdev->sco_mtu =3D hci_packet_size_usb_alt[6];
+>
+> Why you are setting this sco_mtu only for Intel adapter? Is not this
+> whole code generic to USB?
 
-Tested-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Please refer to the answer to the Realtek adapter below. Thanks.
 
-cheers
+>
+> > +
+> >               set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks)=
+;
+> >               set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+> >               set_bit(HCI_QUIRK_NON_PERSISTENT_DIAG, &hdev->quirks);
+> > @@ -4063,15 +4094,6 @@ static int btusb_probe(struct usb_interface *int=
+f,
+> >               btusb_check_needs_reset_resume(intf);
+> >       }
+> >
+> > -     if (id->driver_info & BTUSB_AMP) {
+> > -             /* AMP controllers do not support SCO packets */
+> > -             data->isoc =3D NULL;
+> > -     } else {
+> > -             /* Interface orders are hardcoded in the specification */
+> > -             data->isoc =3D usb_ifnum_to_if(data->udev, ifnum_base + 1=
+);
+> > -             data->isoc_ifnum =3D ifnum_base + 1;
+> > -     }
+> > -
+> >       if (IS_ENABLED(CONFIG_BT_HCIBTUSB_RTL) &&
+> >           (id->driver_info & BTUSB_REALTEK)) {
+> >               hdev->setup =3D btrtl_setup_realtek;
+> > @@ -4083,9 +4105,10 @@ static int btusb_probe(struct usb_interface *int=
+f,
+> >                * (DEVICE_REMOTE_WAKEUP)
+> >                */
+> >               set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
+> > -             if (btusb_find_altsetting(data, 1))
+> > +             if (btusb_find_altsetting(data, 1)) {
+> >                       set_bit(BTUSB_USE_ALT1_FOR_WBS, &data->flags);
+> > -             else
+> > +                     hdev->sco_mtu =3D hci_packet_size_usb_alt[1];
+>
+> And this part of code which you write is Realtek specific.
+
+We currently only have Intel and Realtek platforms to test with. If
+making it generic without proper testing platforms is fine, I will
+make it generic. Or do you think it might be better to make it
+customized with particular vendors for now; and make it generic later
+when it works well with sufficient vendors?
+
+>
+> I thought that this is something generic to bluetooth usb as you pointed
+> to bluetooth documentation "core spec 5, vol 4, part B, table 2.1".
+>
+> > +             } else
+> >                       bt_dev_err(hdev, "Device does not support ALT set=
+ting 1");
+> >       }
+>
+> Also this patch seems to be for me incomplete or not fully correct as
+> USB altsetting is chosen in function btusb_work() and it depends on
+> selected AIR mode (which is configured by another setsockopt).
+>
+> So despite what is written in commit message, this patch looks for me
+> like some hack for Intel and Realtek bluetooth adapters and does not
+> solve problems in vendor independent manner.
+
+You are right that sco_mtu should be changed according to the air
+mode. Here are some issues to handle and what I plan to do. I would
+like to solicit your comments before I submit the next series.
+
+[Issue 1] The air mode is determined in btusb_work() which is
+triggered by hci_sync_conn_complete_evt(). So =E2=80=9Cconn->mtu =3D
+hdev->sco_mtu=E2=80=9D should not be done in  sco_conn_add() in the early
+connecting stage. Instead, it will be moved to near the end of
+hci_sync_conn_complete_evt().
+
+[Issue 2] The btusb_work() is performed by a worker. There would be a
+timing issue here if we let btusb_work() to do =E2=80=9Chdev->sco_mtu =3D
+hci_packet_size_usb_alt[i]=E2=80=9D because there is no guarantee how soon =
+the
+btusb_work() can be finished and get =E2=80=9Chdev->sco_mtu=E2=80=9D value =
+set
+correctly. In order to avoid the potential race condition, I suggest
+to determine air_mode in btusb_notify() before
+schedule_work(&data->work) is executed so that =E2=80=9Chdev->sco_mtu =3D
+hci_packet_size_usb_alt[i]=E2=80=9D is guaranteed to be performed when
+btusb_notify() finished. In this way, hci_sync_conn_complete_evt() can
+set conn->mtu correctly as described in [Issue 1] above.
+
+[Issue 3] Concerning CVSD: The above flow is good when the transparent
+mode is selected. When it is the CVSD mode, we should set
+hdev->sco_mtu and conn->mtu back to the original mtu size returned by
+hci_cc_read_buffer_size(). This is because we do not have a reliable
+way to determine what size is used with CVSD. AFAIK, controllers
+connected through USB use 48 bytes; and controllers connected through
+UART use 60 bytes. It seems to me that these numbers are not recorded
+in the kernel(?). It seems beyond the scope of this patch to set the
+proper value for CVSD. So we will let hdev->sco_mtu and conn->mtu go
+back to their original values and are not affected by this patch.
+
+I am wondering if such directions of fixing this patch look good to you?
+
+Thanks and regards!
+Joseph
 
 
-./seccomp_bpf
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-#            OK  global.user_notification_fault_recv
-ok 43 global.user_notification_fault_recv
-#  RUN           global.seccomp_get_notif_sizes ...
-#            OK  global.seccomp_get_notif_sizes
-ok 44 global.seccomp_get_notif_sizes
-#  RUN           global.user_notification_continue ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-#            OK  global.user_notification_fault_recv
-ok 43 global.user_notification_fault_recv
-#  RUN           global.seccomp_get_notif_sizes ...
-#            OK  global.seccomp_get_notif_sizes
-ok 44 global.seccomp_get_notif_sizes
-#  RUN           global.user_notification_continue ...
-#            OK  global.user_notification_continue
-ok 45 global.user_notification_continue
-#  RUN           global.user_notification_filter_empty ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-#            OK  global.user_notification_fault_recv
-ok 43 global.user_notification_fault_recv
-#  RUN           global.seccomp_get_notif_sizes ...
-#            OK  global.seccomp_get_notif_sizes
-ok 44 global.seccomp_get_notif_sizes
-#  RUN           global.user_notification_continue ...
-#            OK  global.user_notification_continue
-ok 45 global.user_notification_continue
-#  RUN           global.user_notification_filter_empty ...
-#            OK  global.user_notification_filter_empty
-ok 46 global.user_notification_filter_empty
-#  RUN           global.user_notification_filter_empty_threaded ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-#            OK  global.user_notification_fault_recv
-ok 43 global.user_notification_fault_recv
-#  RUN           global.seccomp_get_notif_sizes ...
-#            OK  global.seccomp_get_notif_sizes
-ok 44 global.seccomp_get_notif_sizes
-#  RUN           global.user_notification_continue ...
-#            OK  global.user_notification_continue
-ok 45 global.user_notification_continue
-#  RUN           global.user_notification_filter_empty ...
-#            OK  global.user_notification_filter_empty
-ok 46 global.user_notification_filter_empty
-#  RUN           global.user_notification_filter_empty_threaded ...
-#            OK  global.user_notification_filter_empty_threaded
-ok 47 global.user_notification_filter_empty_threaded
-#  RUN           global.user_notification_addfd ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-#            OK  global.user_notification_fault_recv
-ok 43 global.user_notification_fault_recv
-#  RUN           global.seccomp_get_notif_sizes ...
-#            OK  global.seccomp_get_notif_sizes
-ok 44 global.seccomp_get_notif_sizes
-#  RUN           global.user_notification_continue ...
-#            OK  global.user_notification_continue
-ok 45 global.user_notification_continue
-#  RUN           global.user_notification_filter_empty ...
-#            OK  global.user_notification_filter_empty
-ok 46 global.user_notification_filter_empty
-#  RUN           global.user_notification_filter_empty_threaded ...
-#            OK  global.user_notification_filter_empty_threaded
-ok 47 global.user_notification_filter_empty_threaded
-#  RUN           global.user_notification_addfd ...
-#            OK  global.user_notification_addfd
-ok 48 global.user_notification_addfd
-#  RUN           global.user_notification_addfd_rlimit ...
-TAP version 13
-1..86
-# Starting 86 tests from 7 test cases.
-#  RUN           global.kcmp ...
-#            OK  global.kcmp
-ok 1 global.kcmp
-#  RUN           global.mode_strict_support ...
-#            OK  global.mode_strict_support
-ok 2 global.mode_strict_support
-#  RUN           global.mode_strict_cannot_call_prctl ...
-#            OK  global.mode_strict_cannot_call_prctl
-ok 3 global.mode_strict_cannot_call_prctl
-#  RUN           global.no_new_privs_support ...
-#            OK  global.no_new_privs_support
-ok 4 global.no_new_privs_support
-#  RUN           global.mode_filter_support ...
-#            OK  global.mode_filter_support
-ok 5 global.mode_filter_support
-#  RUN           global.mode_filter_without_nnp ...
-#            OK  global.mode_filter_without_nnp
-ok 6 global.mode_filter_without_nnp
-#  RUN           global.filter_size_limits ...
-#            OK  global.filter_size_limits
-ok 7 global.filter_size_limits
-#  RUN           global.filter_chain_limits ...
-#            OK  global.filter_chain_limits
-ok 8 global.filter_chain_limits
-#  RUN           global.mode_filter_cannot_move_to_strict ...
-#            OK  global.mode_filter_cannot_move_to_strict
-ok 9 global.mode_filter_cannot_move_to_strict
-#  RUN           global.mode_filter_get_seccomp ...
-#            OK  global.mode_filter_get_seccomp
-ok 10 global.mode_filter_get_seccomp
-#  RUN           global.ALLOW_all ...
-#            OK  global.ALLOW_all
-ok 11 global.ALLOW_all
-#  RUN           global.empty_prog ...
-#            OK  global.empty_prog
-ok 12 global.empty_prog
-#  RUN           global.log_all ...
-#            OK  global.log_all
-ok 13 global.log_all
-#  RUN           global.unknown_ret_is_kill_inside ...
-#            OK  global.unknown_ret_is_kill_inside
-ok 14 global.unknown_ret_is_kill_inside
-#  RUN           global.unknown_ret_is_kill_above_allow ...
-#            OK  global.unknown_ret_is_kill_above_allow
-ok 15 global.unknown_ret_is_kill_above_allow
-#  RUN           global.KILL_all ...
-#            OK  global.KILL_all
-ok 16 global.KILL_all
-#  RUN           global.KILL_one ...
-#            OK  global.KILL_one
-ok 17 global.KILL_one
-#  RUN           global.KILL_one_arg_one ...
-#            OK  global.KILL_one_arg_one
-ok 18 global.KILL_one_arg_one
-#  RUN           global.KILL_one_arg_six ...
-#            OK  global.KILL_one_arg_six
-ok 19 global.KILL_one_arg_six
-#  RUN           global.KILL_thread ...
-#            OK  global.KILL_thread
-ok 20 global.KILL_thread
-#  RUN           global.KILL_process ...
-#            OK  global.KILL_process
-ok 21 global.KILL_process
-#  RUN           global.arg_out_of_range ...
-#            OK  global.arg_out_of_range
-ok 22 global.arg_out_of_range
-#  RUN           global.ERRNO_valid ...
-#            OK  global.ERRNO_valid
-ok 23 global.ERRNO_valid
-#  RUN           global.ERRNO_zero ...
-#            OK  global.ERRNO_zero
-ok 24 global.ERRNO_zero
-#  RUN           global.ERRNO_capped ...
-#            OK  global.ERRNO_capped
-ok 25 global.ERRNO_capped
-#  RUN           global.ERRNO_order ...
-#            OK  global.ERRNO_order
-ok 26 global.ERRNO_order
-#  RUN           global.negative_ENOSYS ...
-#            OK  global.negative_ENOSYS
-ok 27 global.negative_ENOSYS
-#  RUN           global.seccomp_syscall ...
-#            OK  global.seccomp_syscall
-ok 28 global.seccomp_syscall
-#  RUN           global.seccomp_syscall_mode_lock ...
-#            OK  global.seccomp_syscall_mode_lock
-ok 29 global.seccomp_syscall_mode_lock
-#  RUN           global.detect_seccomp_filter_flags ...
-#            OK  global.detect_seccomp_filter_flags
-ok 30 global.detect_seccomp_filter_flags
-#  RUN           global.TSYNC_first ...
-#            OK  global.TSYNC_first
-ok 31 global.TSYNC_first
-#  RUN           global.syscall_restart ...
-#            OK  global.syscall_restart
-ok 32 global.syscall_restart
-#  RUN           global.filter_flag_log ...
-#            OK  global.filter_flag_log
-ok 33 global.filter_flag_log
-#  RUN           global.get_action_avail ...
-#            OK  global.get_action_avail
-ok 34 global.get_action_avail
-#  RUN           global.get_metadata ...
-#            OK  global.get_metadata
-ok 35 global.get_metadata
-#  RUN           global.user_notification_basic ...
-#            OK  global.user_notification_basic
-ok 36 global.user_notification_basic
-#  RUN           global.user_notification_with_tsync ...
-#            OK  global.user_notification_with_tsync
-ok 37 global.user_notification_with_tsync
-#  RUN           global.user_notification_kill_in_middle ...
-#            OK  global.user_notification_kill_in_middle
-ok 38 global.user_notification_kill_in_middle
-#  RUN           global.user_notification_signal ...
-#            OK  global.user_notification_signal
-ok 39 global.user_notification_signal
-#  RUN           global.user_notification_closed_listener ...
-#            OK  global.user_notification_closed_listener
-ok 40 global.user_notification_closed_listener
-#  RUN           global.user_notification_child_pid_ns ...
-#            OK  global.user_notification_child_pid_ns
-ok 41 global.user_notification_child_pid_ns
-#  RUN           global.user_notification_sibling_pid_ns ...
-#            OK  global.user_notification_sibling_pid_ns
-ok 42 global.user_notification_sibling_pid_ns
-#  RUN           global.user_notification_fault_recv ...
-#            OK  global.user_notification_fault_recv
-ok 43 global.user_notification_fault_recv
-#  RUN           global.seccomp_get_notif_sizes ...
-#            OK  global.seccomp_get_notif_sizes
-ok 44 global.seccomp_get_notif_sizes
-#  RUN           global.user_notification_continue ...
-#            OK  global.user_notification_continue
-ok 45 global.user_notification_continue
-#  RUN           global.user_notification_filter_empty ...
-#            OK  global.user_notification_filter_empty
-ok 46 global.user_notification_filter_empty
-#  RUN           global.user_notification_filter_empty_threaded ...
-#            OK  global.user_notification_filter_empty_threaded
-ok 47 global.user_notification_filter_empty_threaded
-#  RUN           global.user_notification_addfd ...
-#            OK  global.user_notification_addfd
-ok 48 global.user_notification_addfd
-#  RUN           global.user_notification_addfd_rlimit ...
-#            OK  global.user_notification_addfd_rlimit
-ok 49 global.user_notification_addfd_rlimit
-#  RUN           TRAP.dfl ...
-#            OK  TRAP.dfl
-ok 50 TRAP.dfl
-#  RUN           TRAP.ign ...
-#            OK  TRAP.ign
-ok 51 TRAP.ign
-#  RUN           TRAP.handler ...
-#            OK  TRAP.handler
-ok 52 TRAP.handler
-#  RUN           precedence.allow_ok ...
-#            OK  precedence.allow_ok
-ok 53 precedence.allow_ok
-#  RUN           precedence.kill_is_highest ...
-#            OK  precedence.kill_is_highest
-ok 54 precedence.kill_is_highest
-#  RUN           precedence.kill_is_highest_in_any_order ...
-#            OK  precedence.kill_is_highest_in_any_order
-ok 55 precedence.kill_is_highest_in_any_order
-#  RUN           precedence.trap_is_second ...
-#            OK  precedence.trap_is_second
-ok 56 precedence.trap_is_second
-#  RUN           precedence.trap_is_second_in_any_order ...
-#            OK  precedence.trap_is_second_in_any_order
-ok 57 precedence.trap_is_second_in_any_order
-#  RUN           precedence.errno_is_third ...
-#            OK  precedence.errno_is_third
-ok 58 precedence.errno_is_third
-#  RUN           precedence.errno_is_third_in_any_order ...
-#            OK  precedence.errno_is_third_in_any_order
-ok 59 precedence.errno_is_third_in_any_order
-#  RUN           precedence.trace_is_fourth ...
-#            OK  precedence.trace_is_fourth
-ok 60 precedence.trace_is_fourth
-#  RUN           precedence.trace_is_fourth_in_any_order ...
-#            OK  precedence.trace_is_fourth_in_any_order
-ok 61 precedence.trace_is_fourth_in_any_order
-#  RUN           precedence.log_is_fifth ...
-#            OK  precedence.log_is_fifth
-ok 62 precedence.log_is_fifth
-#  RUN           precedence.log_is_fifth_in_any_order ...
-#            OK  precedence.log_is_fifth_in_any_order
-ok 63 precedence.log_is_fifth_in_any_order
-#  RUN           TRACE_poke.read_has_side_effects ...
-#            OK  TRACE_poke.read_has_side_effects
-ok 64 TRACE_poke.read_has_side_effects
-#  RUN           TRACE_poke.getpid_runs_normally ...
-#            OK  TRACE_poke.getpid_runs_normally
-ok 65 TRACE_poke.getpid_runs_normally
-#  RUN           TRACE_syscall.ptrace.negative_ENOSYS ...
-#            OK  TRACE_syscall.ptrace.negative_ENOSYS
-ok 66 TRACE_syscall.ptrace.negative_ENOSYS
-#  RUN           TRACE_syscall.ptrace.syscall_allowed ...
-#            OK  TRACE_syscall.ptrace.syscall_allowed
-ok 67 TRACE_syscall.ptrace.syscall_allowed
-#  RUN           TRACE_syscall.ptrace.syscall_redirected ...
-#            OK  TRACE_syscall.ptrace.syscall_redirected
-ok 68 TRACE_syscall.ptrace.syscall_redirected
-#  RUN           TRACE_syscall.ptrace.syscall_errno ...
-#            OK  TRACE_syscall.ptrace.syscall_errno
-ok 69 TRACE_syscall.ptrace.syscall_errno
-#  RUN           TRACE_syscall.ptrace.syscall_faked ...
-#            OK  TRACE_syscall.ptrace.syscall_faked
-ok 70 TRACE_syscall.ptrace.syscall_faked
-#  RUN           TRACE_syscall.ptrace.skip_after ...
-#            OK  TRACE_syscall.ptrace.skip_after
-ok 71 TRACE_syscall.ptrace.skip_after
-#  RUN           TRACE_syscall.ptrace.kill_after ...
-#            OK  TRACE_syscall.ptrace.kill_after
-ok 72 TRACE_syscall.ptrace.kill_after
-#  RUN           TRACE_syscall.seccomp.negative_ENOSYS ...
-#            OK  TRACE_syscall.seccomp.negative_ENOSYS
-ok 73 TRACE_syscall.seccomp.negative_ENOSYS
-#  RUN           TRACE_syscall.seccomp.syscall_allowed ...
-#            OK  TRACE_syscall.seccomp.syscall_allowed
-ok 74 TRACE_syscall.seccomp.syscall_allowed
-#  RUN           TRACE_syscall.seccomp.syscall_redirected ...
-#            OK  TRACE_syscall.seccomp.syscall_redirected
-ok 75 TRACE_syscall.seccomp.syscall_redirected
-#  RUN           TRACE_syscall.seccomp.syscall_errno ...
-#            OK  TRACE_syscall.seccomp.syscall_errno
-ok 76 TRACE_syscall.seccomp.syscall_errno
-#  RUN           TRACE_syscall.seccomp.syscall_faked ...
-#            OK  TRACE_syscall.seccomp.syscall_faked
-ok 77 TRACE_syscall.seccomp.syscall_faked
-#  RUN           TRACE_syscall.seccomp.skip_after ...
-#            OK  TRACE_syscall.seccomp.skip_after
-ok 78 TRACE_syscall.seccomp.skip_after
-#  RUN           TRACE_syscall.seccomp.kill_after ...
-#            OK  TRACE_syscall.seccomp.kill_after
-ok 79 TRACE_syscall.seccomp.kill_after
-#  RUN           TSYNC.siblings_fail_prctl ...
-#            OK  TSYNC.siblings_fail_prctl
-ok 80 TSYNC.siblings_fail_prctl
-#  RUN           TSYNC.two_siblings_with_ancestor ...
-#            OK  TSYNC.two_siblings_with_ancestor
-ok 81 TSYNC.two_siblings_with_ancestor
-#  RUN           TSYNC.two_sibling_want_nnp ...
-#            OK  TSYNC.two_sibling_want_nnp
-ok 82 TSYNC.two_sibling_want_nnp
-#  RUN           TSYNC.two_siblings_with_no_filter ...
-#            OK  TSYNC.two_siblings_with_no_filter
-ok 83 TSYNC.two_siblings_with_no_filter
-#  RUN           TSYNC.two_siblings_with_one_divergence ...
-#            OK  TSYNC.two_siblings_with_one_divergence
-ok 84 TSYNC.two_siblings_with_one_divergence
-#  RUN           TSYNC.two_siblings_with_one_divergence_no_tid_in_err ...
-#            OK  TSYNC.two_siblings_with_one_divergence_no_tid_in_err
-ok 85 TSYNC.two_siblings_with_one_divergence_no_tid_in_err
-#  RUN           TSYNC.two_siblings_not_under_filter ...
-#            OK  TSYNC.two_siblings_not_under_filter
-ok 86 TSYNC.two_siblings_not_under_filter
-# PASSED: 86 / 86 tests passed.
-# Totals: pass:86 fail:0 xfail:0 xpass:0 skip:0 error:0
+
+--=20
+
+Joseph Shyh-In Hwang
+Email: josephsih@google.com
