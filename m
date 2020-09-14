@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FD02697BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAFA2697BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgINVch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:32:37 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:37541 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgINVcg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:32:36 -0400
-Received: by mail-pf1-f193.google.com with SMTP id w7so666392pfi.4;
-        Mon, 14 Sep 2020 14:32:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GxPkXhqlAFVkhBlcdAangH+5G5NOYVoOkH633FrRrJM=;
-        b=LSU5wCcQV3AIRcBPq5tO7BcB6RnUP/Na6BgwBhnWafBS7T9fphrqgX5yUHGU1H5a/j
-         ZMqqvJlJ+X42NUpOeYq0iCHIP85F1rbRog6fIGiwmQuHZyDFu0po2MWahF8k+tT0UUHT
-         ILYPAfuXo862NuEjVzGn6ZBhcIfhxDAoFsrFQ+5STdgGoMdU1w86wMulcV59unus9ASL
-         XNfE+epISqeCDtnGchvSu7AkP7rRWQcCo969XVH2LZG2tPW1D1NRo137YjT2zgbPFsyj
-         4H7a3cGsvo5Jja8ZF0KoTJ1+WJTAWxgyv3SarnPTwKFCx/sxgB5AxznNfZ1iS02UWGgO
-         OgpQ==
-X-Gm-Message-State: AOAM5303zYIZS/j3QytfNYEZJB3jjo2zsx/RWRoTrOE1BRIliAPCtQPh
-        J4Or3hURuyHl4CJHd9akQ0c=
-X-Google-Smtp-Source: ABdhPJxWp+umJLT77yalayofcGiM3KtEpRnsJ8b5unXVtulF3tO6PepWq9IA7NWnyIwqUcaeAqDJ/A==
-X-Received: by 2002:aa7:9dd2:0:b029:13e:d13d:a109 with SMTP id g18-20020aa79dd20000b029013ed13da109mr14628525pfq.37.1600119155199;
-        Mon, 14 Sep 2020 14:32:35 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id i15sm4620056pfk.145.2020.09.14.14.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 14:32:34 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 14:32:32 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, "Xu, Yilun" <yilun.xu@intel.com>,
-        "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: Re: [PATCH 1/3] fpga: dfl: move dfl_device_id to mod_devicetable.h
-Message-ID: <20200914213232.GA1040@epycbox.lan>
-References: <1599544129-17594-1-git-send-email-yilun.xu@intel.com>
- <1599544129-17594-2-git-send-email-yilun.xu@intel.com>
- <aaa2d9a5-f5ae-d026-91c9-730403f04050@redhat.com>
- <20200910084106.GB16318@yilunxu-OptiPlex-7050>
- <ad9ba1cf-e02f-c09e-f639-2df60f080e5f@redhat.com>
- <DM6PR11MB3819E2EA499781899B7384F385240@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S1726091AbgINVdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58384 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725920AbgINVdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:33:09 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A3E620759;
+        Mon, 14 Sep 2020 21:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600119188;
+        bh=V+P1X8VC4JsERiUXw7iot+idRi6jC6V9C36vEtjNvyk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WgZuChsrB0e4d8z/5eqq6wJtTbFIGPzTLgBvuDy2FLzX9VMg6XQukLIE+nbNYqnyO
+         uQnCrmmoi+mKWebxdCDxNSKV78z+fYm11boRbrGeA3N8ANJkLiWuVl+YmDwki+srAI
+         X5Hn+R/mJTCg+F5icKwklzpJ7XhtrBp3gpTbYU6I=
+Date:   Mon, 14 Sep 2020 14:33:06 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
+ to devlink reload command
+Message-ID: <20200914143306.4ab0f4c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1600063682-17313-2-git-send-email-moshe@mellanox.com>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+        <1600063682-17313-2-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819E2EA499781899B7384F385240@DM6PR11MB3819.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hao,
+On Mon, 14 Sep 2020 09:07:48 +0300 Moshe Shemesh wrote:
+> @@ -3011,12 +3060,41 @@ static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
+>  			return PTR_ERR(dest_net);
+>  	}
+>  
+> -	err = devlink_reload(devlink, dest_net, info->extack);
+> +	if (info->attrs[DEVLINK_ATTR_RELOAD_ACTION])
+> +		action = nla_get_u8(info->attrs[DEVLINK_ATTR_RELOAD_ACTION]);
+> +	else
+> +		action = DEVLINK_RELOAD_ACTION_DRIVER_REINIT;
+> +
+> +	if (action == DEVLINK_RELOAD_ACTION_UNSPEC || action > DEVLINK_RELOAD_ACTION_MAX) {
+> +		NL_SET_ERR_MSG_MOD(info->extack, "Invalid reload action");
+> +		return -EINVAL;
+> +	} else if (!devlink_reload_action_is_supported(devlink, action)) {
+> +		NL_SET_ERR_MSG_MOD(info->extack, "Requested reload action is not supported");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	err = devlink_reload(devlink, dest_net, action, info->extack, &actions_performed);
+>  
+>  	if (dest_net)
+>  		put_net(dest_net);
+>  
+> -	return err;
+> +	if (err)
+> +		return err;
+> +
+> +	WARN_ON(!actions_performed);
+> +	msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
+> +	if (!msg)
+> +		return -ENOMEM;
+> +
+> +	err = devlink_nl_reload_actions_performed_fill(msg, devlink, actions_performed,
+> +						       DEVLINK_CMD_RELOAD, info->snd_portid,
+> +						       info->snd_seq, 0);
+> +	if (err) {
+> +		nlmsg_free(msg);
+> +		return err;
+> +	}
+> +
+> +	return genlmsg_reply(msg, info);
 
-On Fri, Sep 11, 2020 at 06:50:18AM +0000, Wu, Hao wrote:
-> > On 9/10/20 1:41 AM, Xu Yilun wrote:
-> > > On Wed, Sep 09, 2020 at 05:55:33AM -0700, Tom Rix wrote:
-> > >> On 9/7/20 10:48 PM, Xu Yilun wrote:
-> > >>> In order to support MODULE_DEVICE_TABLE() for dfl device driver, this
-> > >>> patch moves struct dfl_device_id to mod_devicetable.h
-> > >>>
-> > >>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > >>> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > >>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > >>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > >>> ---
-> > >>>  drivers/fpga/dfl.h              | 13 +------------
-> > >>>  include/linux/mod_devicetable.h | 12 ++++++++++++
-> > >>>  2 files changed, 13 insertions(+), 12 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> > >>> index 5dc758f..d5b0760 100644
-> > >>> --- a/drivers/fpga/dfl.h
-> > >>> +++ b/drivers/fpga/dfl.h
-> > >>> @@ -26,6 +26,7 @@
-> > >>>  #include <linux/slab.h>
-> > >>>  #include <linux/uuid.h>
-> > >>>  #include <linux/fpga/fpga-region.h>
-> > >>> +#include <linux/mod_devicetable.h>
-> 
-> Please fix the order for the new one, other places to good to me.
-> Acked-by: Wu Hao <hao.wu@intel.com>  for DFL related changes after this fix.
-
-Do you mean the order of the includes, like alphabeticized? If it's
-minor I can fix it up when applying.
-
-Thanks,
-Moritz
+I think generating the reply may break existing users. Only generate
+the reply if request contained DEVLINK_ATTR_RELOAD_ACTION (or any other
+new attribute which existing users can't pass).
