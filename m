@@ -2,149 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804B82695C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7E92695C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 21:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726061AbgINTjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 15:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        id S1725994AbgINTmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 15:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725914AbgINTji (ORCPT
+        with ESMTP id S1725914AbgINTmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 15:39:38 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA7AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:39:38 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id b12so712244edz.11
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:39:38 -0700 (PDT)
+        Mon, 14 Sep 2020 15:42:12 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99897C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:42:10 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id v54so1034530qtj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 12:42:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lG5XGf95bwNJOiL8PcjSLhdHd8W32J8QXR/kZviOKdg=;
-        b=KMb8YL82jYt+MdR+06nAv1SDjyBvY4xZgeT/ZSDzaA/sIk4BMgBJiDBRB+e1bufy3+
-         8ZUWjMH8ilySI8ll0tpW9SGHNcwfcXvuO/ogAr+JiAJ+gLYB2oFiAISVMsXaZiFZKhG6
-         rNV9jXE4AzKiGnJtbZ01dTfsAaRXm01QgaG5C8WCbA0mkKFr6J1uj1+DZPrJ9hzkpFLt
-         7CafX7kXEWTa72gmB4FzIyzXC1KrE0sLckGmAtvfbSZqoUxrNCh+knJSNyZnBMhxAxTx
-         dNPT5gnmXVGLWsSSXLj6HwJ+ZnTlIAmp/gH/hWa2wQfaMmrOBh6HBlLkbN6H+zlGsjQ8
-         UTIw==
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bV57W/EOWURMleEzGNWcf5dyMu6bebp1Bh//1ts4NWM=;
+        b=ycFv4BvlBYEkf4hQQlNujtn6QNIE5wc63ULQhK/2rdi3VgfJU/q02dwetcIo2piGTH
+         rh/aYu1xqMcmOyvTuxx+ofXk9NejE5iYqXBRPCZv1yZGAewKXIe8FTxOdG7k/J6M1sxE
+         7G4lDmw6QFHiyI5TTTVyysspAIwYVgx7l5jrE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lG5XGf95bwNJOiL8PcjSLhdHd8W32J8QXR/kZviOKdg=;
-        b=QmmJuz3vFGdWC9AJEgauqoX481GHClD0j4tnZHr18AHBQ5QO9zZ5mRaA2PVKMowrS/
-         lG7ieufcnqKYnCPjf/2D3UlFz7zzYd+g//1H17oI31RjgSJCrPYgLj7BsRTz6C09Mcak
-         MeJfDpbTrMhSM/GFmReOTnbDdA8QA4bq4/SHdGfdZ49JhpQ49Jiy6quembivzouqsYnc
-         TwlmpmESZZYwITze1OqoP22QRIfrHK57bPVTDNrkJRXxGs6RCYcJEGww7gHDwL2L0n6U
-         dL2OFELYlqkEU4E623HdCo3z9Ieos8ylOct9xyghmvq+DeHFYuH+4yWCyLP+yZ9n2iyV
-         P1LA==
-X-Gm-Message-State: AOAM533nS983c5P8lqhLMIbEm0MRGRJ6x1avP9RMZ4qugfeOCFPCLoyj
-        KyKenxNJIBvgWOHXo9kjd7mxP30ufu5uEXNo3au6Ug==
-X-Google-Smtp-Source: ABdhPJxc/PtfgEbkD4fcsDei9QMBxurLSxbpcXluh3HHDXLs/uUkzi3B73RmIjNWnbIXKDpCIS3Fg5qNSvIHPX0J6v4=
-X-Received: by 2002:a50:e807:: with SMTP id e7mr19255309edn.84.1600112376719;
- Mon, 14 Sep 2020 12:39:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bV57W/EOWURMleEzGNWcf5dyMu6bebp1Bh//1ts4NWM=;
+        b=HFCdX52RxCW2SDV3A+X1WtC1YlGFNCOwKeN6njn0fM3+dxv15xtG1AyYvnkGKArp1I
+         8+TQG8Aobb2W6U7ygFBJbWm26nmEc/JU3vwCjwSBDemco83VpA9OA1e7hpxTcbnTxnIe
+         xO5n5YU+l7P79+ubxOev7GJlE1QNdhx6FwWKN8UhW35kG5VrXAm1g0mKfuTT7OfKV3gz
+         frQJd2Hpv+I8sW+VfUgvch4IJTVxwtBYAaJGnUkTB8gjFuA171fR0gM0ZDV/D4BXWAGR
+         BdRwtyGZ1d2pLONDni8Dkj9dvgCZSH5DiFr8yZIGQrFAK5sap0AP93j8yWnaRAvMWVhT
+         Acmg==
+X-Gm-Message-State: AOAM532gP3qmMnlbY0GLsV2MaFNrrzMzq5Awsfl7SC4uAyxQntwchFpI
+        zRrxh++vczsbKZOPJ1M/WfDyS0YrRhj31A==
+X-Google-Smtp-Source: ABdhPJxbhI7ln6hIC6I1YHJZhDkQq9/+B5olyYYdwWGSbKtZqDX4OuVuBiAuMqDC7ZA4iMYVUGfbAQ==
+X-Received: by 2002:aed:38c9:: with SMTP id k67mr2489411qte.6.1600112529305;
+        Mon, 14 Sep 2020 12:42:09 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id k68sm13520108qkc.33.2020.09.14.12.42.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 12:42:08 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 15:42:08 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: RCU: Question on force_qs_rnp
+Message-ID: <20200914194208.GA2579423@google.com>
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200910202107.3799376-1-keescook@chromium.org>
- <20200910202107.3799376-6-keescook@chromium.org> <202009101634.52ED6751AD@keescook>
- <CAG48ez2fP7yupg6Th+Hg0tL3o06p2PR1HtQcvy4Ro+Q5T2Nfkw@mail.gmail.com> <20200913152724.GB2873@ubuntu>
-In-Reply-To: <20200913152724.GB2873@ubuntu>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 14 Sep 2020 21:39:10 +0200
-Message-ID: <CAG48ez3aQXb3EuGRVvLLo7BxycqJ4Y2mL83QhY9-QMK_qkfCuQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 5/6] security/fbfam: Detect a fork brute force attack
-To:     John Wood <john.wood@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 6:56 PM John Wood <john.wood@gmx.com> wrote:
-> On Fri, Sep 11, 2020 at 02:01:56AM +0200, Jann Horn wrote:
-> > On Fri, Sep 11, 2020 at 1:49 AM Kees Cook <keescook@chromium.org> wrote:
-> > > On Thu, Sep 10, 2020 at 01:21:06PM -0700, Kees Cook wrote:
-> > > > diff --git a/fs/coredump.c b/fs/coredump.c
-> > > > index 76e7c10edfc0..d4ba4e1828d5 100644
-> > > > --- a/fs/coredump.c
-> > > > +++ b/fs/coredump.c
-> > > > @@ -51,6 +51,7 @@
-> > > >  #include "internal.h"
-> > > >
-> > > >  #include <trace/events/sched.h>
-> > > > +#include <fbfam/fbfam.h>
-> > > >
-> > > >  int core_uses_pid;
-> > > >  unsigned int core_pipe_limit;
-> > > > @@ -825,6 +826,7 @@ void do_coredump(const kernel_siginfo_t *siginfo)
-> > > >  fail_creds:
-> > > >       put_cred(cred);
-> > > >  fail:
-> > > > +     fbfam_handle_attack(siginfo->si_signo);
-> > >
-> > > I don't think this is the right place for detecting a crash -- isn't
-> > > this only for the "dumping core" condition? In other words, don't you
-> > > want to do this in get_signal()'s "fatal" block? (i.e. very close to the
-> > > do_coredump, but without the "should I dump?" check?)
-> > >
-> > > Hmm, but maybe I'm wrong? It looks like you're looking at noticing the
-> > > process taking a signal from SIG_KERNEL_COREDUMP_MASK ?
-> > >
-> > > (Better yet: what are fatal conditions that do NOT match
-> > > SIG_KERNEL_COREDUMP_MASK, and should those be covered?)
-> > >
-> > > Regardless, *this* looks like the only place without an LSM hook. And it
-> > > doesn't seem unreasonable to add one here. I assume it would probably
-> > > just take the siginfo pointer, which is also what you're checking.
-> >
-> > Good point, making this an LSM might be a good idea.
-> >
-> > > e.g. for include/linux/lsm_hook_defs.h:
-> > >
-> > > LSM_HOOK(int, 0, task_coredump, const kernel_siginfo_t *siginfo);
-> >
-> > I guess it should probably be an LSM_RET_VOID hook? And since, as you
-> > said, it's not really semantically about core dumping, maybe it should
-> > be named task_fatal_signal or something like that.
->
-> If I understand correctly you propose to add a new LSM hook without return
-> value and place it here:
->
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index a38b3edc6851..074492d23e98 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2751,6 +2751,8 @@ bool get_signal(struct ksignal *ksig)
->                         do_coredump(&ksig->info);
->                 }
->
-> +               // Add the new LSM hook here
-> +
->                 /*
->                  * Death signals, no core dump.
->                  */
+On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
+> Hello Paul
+> 
+> I have some questions for you .
+> in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
+> report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
+> after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0, 
+> we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
 
-It should probably be in the "if (sig_kernel_coredump(signr)) {"
-branch. And I'm not sure whether it should be before or after
-do_coredump() - if you do it after do_coredump(), the hook will have
-to wait until the core dump file has been written, which may take a
-little bit of time.
+Could you clarify what good is this going to do? What problem are you trying to
+address?
+
+You could have a task that is blocked in an RCU leaf node, but the
+force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
+CPU could be dyntick-idle and a quiescent state is reported. However, the GP
+must not end and the rcu leaf node should still be present in its parent
+intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
+any relevance.
+
+Or am I missing the point of the question?
+
+thanks,
+
+ - Joel
+
