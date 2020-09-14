@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EC4268CF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71490268CF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgINOJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:09:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56652 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726750AbgINNsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:48:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9250CB197;
-        Mon, 14 Sep 2020 13:47:37 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 15:47:13 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Chunxin Zang <zangchunxin@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [External] Re: [PATCH v2] mm/vmscan: fix infinite loop in
- drop_slab_node
-Message-ID: <20200914134713.GS16999@dhcp22.suse.cz>
-References: <20200909152047.27905-1-zangchunxin@bytedance.com>
- <20200914093032.GG16999@dhcp22.suse.cz>
- <CAKRVAeP1yPDTcdcW+H6EnMrDHsWGNkooGcSyeYWHi8CXCc+u4Q@mail.gmail.com>
+        id S1726751AbgINOJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:09:22 -0400
+Received: from mail-eopbgr70134.outbound.protection.outlook.com ([40.107.7.134]:5093
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726360AbgINNs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 09:48:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ju/HFJkCd68rknEiHG8k7/3L9FjxkoiHFkZ4c+Fiigf41hbr7XcCPrpTrfVVFyUY9oNmPitQKJDml7BdgE28A93GaaCrVeCchXtnilusTHhEZwaUU6HABOFKCfdVBpH4VVa2CUtQXGoW60OUwSVH4GY/YYBrwW8e38P66Yx9qa5uU3H7CHUD3tF5a4mqH5Ngf3lxNayxzC38VUqZPVtxtCtCRJpPJbjXdoQ7+1TQvlq8Zpa3r+wdZ26WyaO9NpIqGznmPuB6tX3Fp4xOMPsdh1PRr6zXHUMPgCLhbWBcStk8cBvzJEPrp9ipRmqgQphDuFMWj+n/xJrHW3sWLLCxPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ctdJOMAS/8/lk1Wu+dToGMzmf1RnEVFjH623PemXIbg=;
+ b=A1Z8hMhhKrddIWJuoZecMTXgVz4HH8ZffG6gUoohkM2PZ+Yybw37eHDRo1//94bo5mQiKc+5lQaYo4YVbmTSNzlYYPp7Oy8eIWmGqhnY+62Iv3VYftpM2yvsKAqrtF/tcT8nTYRFTrW1FYObopKy7NY0GN3lOTnFGXe1aV4XbgH0gwRE0jB357TD0BlXx51lVB/fW18d0nsstnq1Z8GPRvU87DZFeWYgF4vHFWRhe4ELi08c4WfVSG/Ha8sTHdXV5bKrvKNKADKmh9lKJgVtNflLbloeSvAuC4GuoBOYaqd33nCDRkrWZaRnwGCMwuaETfxOgIhLWWuqroQT2YOd0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
+ dkim=pass header.d=habana.ai; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ctdJOMAS/8/lk1Wu+dToGMzmf1RnEVFjH623PemXIbg=;
+ b=G5D4lceAWko/n3JEEK2mTIb/Bq/9cwUpExfTRQ4Kgqj4RpDii4PI+rcwmQF6xsasIKsP3rVPv65FrwgC8AjFMD2xfthBVbCFBR3MWDISVwuOFs3JFCZ/9RWUTNv4q+JYkOpK/OTvdsavMxfbH/Q8g3etiU0FidyH18JhCfQLkTU=
+Received: from AM0PR02MB5523.eurprd02.prod.outlook.com (2603:10a6:208:15e::24)
+ by AM0PR02MB4017.eurprd02.prod.outlook.com (2603:10a6:208:d3::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
+ 2020 13:48:14 +0000
+Received: from AM0PR02MB5523.eurprd02.prod.outlook.com
+ ([fe80::7c43:7d52:92d9:5c93]) by AM0PR02MB5523.eurprd02.prod.outlook.com
+ ([fe80::7c43:7d52:92d9:5c93%5]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 13:48:14 +0000
+From:   Omer Shpigelman <oshpigelman@habana.ai>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Oded Gabbay <oded.gabbay@gmail.com>
+CC:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        SW_Drivers <SW_Drivers@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: RE: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
+Thread-Topic: [PATCH 12/15] habanalabs/gaudi: add debugfs entries for the NIC
+Thread-Index: AQHWh40omder6N4vxkGSFhcLRyGM56liS0gAgAACjoCAAAGYgIAAAGuAgAADoQCABcipsA==
+Date:   Mon, 14 Sep 2020 13:48:14 +0000
+Message-ID: <AM0PR02MB552316B9A1635C18F8464116B8230@AM0PR02MB5523.eurprd02.prod.outlook.com>
+References: <20200910161126.30948-1-oded.gabbay@gmail.com>
+        <20200910161126.30948-13-oded.gabbay@gmail.com>
+        <20200910130138.6d595527@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf113A_=da2fGxgMbq_V0OcHsxdp5MpfHiUfeew+gEdnjaQ@mail.gmail.com>
+        <20200910131629.65b3e02c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAFCwf10XdCDhLeyiArc29PAJ_7=BGpdiUvFRotvFHieiaRn=aA@mail.gmail.com>
+ <20200910133058.0fe0f5e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200910133058.0fe0f5e3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=habana.ai;
+x-originating-ip: [141.226.12.25]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 865d05dd-f140-43ff-ef37-08d858b4d41d
+x-ms-traffictypediagnostic: AM0PR02MB4017:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR02MB4017D514703203BF5043DD6DB8230@AM0PR02MB4017.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6T8MTg2QTo8gOLUeI9UuLEia+ZNsSeZKqZVf2UZGpeCf5XO9gy19J78yqb6040ILRGLXn3jTZme/NZaWbM3TMBiRvnr4HVPqaN0aAz99IEiJJYgM2LL8T/Vpx41LSDp+b7f65HsT2CVCp4BD6hCdaU/pLnYvmg61n/2AiNrsdI8UZfrhl84/uGD8g0kcdX26+1fKuedKya0juZyzBY3/vqVoZ/EjMm/bZLZhw90dFT/r2mzD6QDGVDsXXagfPyIFl+Ofa/9udiV2UTZ+iqUZQj990sajhPlDwIUGkayXByvgHN2AIX6KvIJJR4Zz9bjG
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB5523.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39850400004)(376002)(346002)(396003)(366004)(33656002)(4326008)(26005)(316002)(52536014)(508600001)(5660300002)(71200400001)(2906002)(66446008)(54906003)(66476007)(110136005)(8676002)(64756008)(7696005)(66556008)(66946007)(76116006)(186003)(8936002)(6506007)(9686003)(53546011)(55016002)(86362001)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: qWGGXQ1DktplMi0+bu94t2jz92qzXVEZe7FKBWC3sf3WuPKkXtHhEdj78+saDj8w2IH6D49YgWviOnkhu+ijsqJkVauFDmVsk3hiOlzJFOIlACskDaFjutTMGmUllAZFGqlCUeben7yQabNibiwXkdlKS+XeGpjtm3J7tlSDI+QhN0BEvdxqVOucqzr+LnuKSLSW5JQGp+WKL7tjSQrPymp4nLDlqo4GTrcw27kajq102wovZQSwyOJanEWP/MxZxa4nXAdyeFi+yuI5M17wAyRdJipJXv5bZLA6rCwPZDeinU1LBNN7nf2lVfZOqQiA+avx/fDjbpOn9syqhoZ3fpdOxicU9GDrvJoSltVL7JjcooOkSpH1VNjQFXTCt/YiePxKgD6kQ/CP7YlSRrsVRfXA5AnE7ta0C/e6q22wg3j2GO8M9z3B0XbpnJPoZiFgwAMj0VmBwpTeR365YxrwXMNDmVcoI8PBwgqXj1k8aJ4UntpugeUw+ZUm3uty64oFAgQcyjVxCsp1nGjJ32NqP/Jl8LonwFxn1h2C2cK24SEeII+nnKn/8rRp6fsZF7mVtZ3inF1ujmT9dz52VtHMdPv+LTTYPBvEB0V6qfwUqbbdn2Q7uy/sgeupPgHjDHGPn8WigPVRli6H1dzhiLOzqA==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKRVAeP1yPDTcdcW+H6EnMrDHsWGNkooGcSyeYWHi8CXCc+u4Q@mail.gmail.com>
+X-OriginatorOrg: habana.ai
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB5523.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 865d05dd-f140-43ff-ef37-08d858b4d41d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 13:48:14.8344
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GaXmfzDysgq8GnfF2ky0Oaol77F9jTGPcfsQ2af4yjHpQKmrPikzEMadocRt3lZLNRK048/VN2OrOcwOmw7wmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR02MB4017
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14-09-20 21:25:59, Chunxin Zang wrote:
-> On Mon, Sep 14, 2020 at 5:30 PM Michal Hocko <mhocko@suse.com> wrote:
-> 
-> > The subject is misleading because this patch doesn't fix an infinite
-> > loop, right? It just allows the userspace to interrupt the operation.
-> >
-> >
-> Yes,  so we are making a separate patch follow Vlastimil's recommendations.
-> Use double of threshold to end the loop.
-
-That still means the changelog needs an update
- 
-> On Thu, Sep 10, 2020 at 1:59 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > >
-> > ...
-> > - IMHO it's still worth to bail out in your scenario even without a
-> > signal, e.g.
-> > by the doubling of threshold. But it can be a separate patch.
-> > Thanks!
-> > ...
-> 
-> 
-> 
-> On Wed 09-09-20 23:20:47, zangchunxin@bytedance.com wrote:
-> > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > >
-> > > On our server, there are about 10k memcg in one machine. They use memory
-> > > very frequently. When I tigger drop caches，the process will infinite loop
-> > > in drop_slab_node.
-> >
-> > Is this really an infinite loop, or it just takes a lot of time to
-> > process all the metadata in that setup? If this is really an infinite
-> > loop then we should look at it. My current understanding is that the
-> > operation would finish at some time it just takes painfully long to get
-> > there.
-> >
-> 
-> Yes,  it's really an infinite loop.  Every loop spends a lot of time. In
-> this time,
-> memcg will alloc/free memory,  so the next loop, the total of  'freed'
-> always bigger than 10.
-
-I am still not sure I follow. Do you mean that there is somebody
-constantly generating more objects to reclaim?
-Maybe we are just not agreeing on the definition of an infinite loop but
-in my book that means that the final condition can never be met. While a
-busy adding new object might indeed cause drop caches to loop for a long
-time this is to be expected from that interface as it is supposed to
-drop all the cache and that can grow during the operation.
--- 
-Michal Hocko
-SUSE Labs
+T24gVGh1LCBTZXAgMTAsIDIwMjAgYXQgMTE6MzEgUE0gSmFrdWIgS2ljaW5za2kgPGt1YmFAa2Vy
+bmVsLm9yZz4gd3JvdGU6DQo+IE9uIFRodSwgMTAgU2VwIDIwMjAgMjM6MTc6NTkgKzAzMDAgT2Rl
+ZCBHYWJiYXkgd3JvdGU6DQo+ID4gPiBEb2Vzbid0IHNlZW0gbGlrZSB0aGlzIG9uZSBzaG93cyBh
+bnkgbW9yZSBpbmZvcm1hdGlvbiB0aGFuIGNhbiBiZQ0KPiA+ID4gcXVlcmllZCB3aXRoIGV0aHRv
+b2wsIHJpZ2h0Pw0KPiA+IGNvcnJlY3QsIGl0IGp1c3QgZGlzcGxheXMgaXQgaW4gYSBmb3JtYXQg
+dGhhdCBpcyBtdWNoIG1vcmUgcmVhZGFibGUNCj4gDQo+IFlvdSBjYW4gY2F0IC9zeXMvY2xhc3Mv
+bmV0LyRpZmMvY2FycmllciBpZiB5b3Ugd2FudCAwLzEuDQo+IA0KPiA+ID4gPiBuaWNfbWFjX2xv
+b3BiYWNrDQo+ID4gPiA+IGlzIHRvIHNldCBhIHBvcnQgdG8gbG9vcGJhY2sgbW9kZSBhbmQgb3V0
+IG9mIGl0LiBJdCdzIG5vdCByZWFsbHkNCj4gPiA+ID4gY29uZmlndXJhdGlvbiBidXQgcmF0aGVy
+IGEgbW9kZSBjaGFuZ2UuDQo+ID4gPg0KPiA+ID4gV2hhdCBpcyB0aGlzIGxvb3BiYWNrIGZvcj8g
+VGVzdGluZz8NCj4gPg0KPiA+IENvcnJlY3QuDQo+IA0KPiBMb29wYmFjayB0ZXN0IGlzIGNvbW1v
+bmx5IGltcGxlbWVudGVkIHZpYSBldGh0b29sIC10DQoNClRoaXMgZGVidWdmcyBlbnRyeSBpcyBv
+bmx5IHRvIHNldCB0aGUgcG9ydCB0byBsb29wYmFjayBtb2RlLCBub3QgcnVubmluZyBhIGxvb3Bi
+YWNrIHRlc3QuDQpIZW5jZSBJTU8gYWRkaW5nIGEgcHJpdmF0ZSBmbGFnIGlzIG1vcmUgc3VpdGFi
+bGUgaGVyZSBhbmQgcGxlYXNlIGNvcnJlY3QgbWUgaWYgSSdtIHdyb25nLg0KQnV0IGVpdGhlciB3
+YXksIGRvaW5nIHRoYXQgZnJvbSBldGh0b29sIGluc3RlYWQgb2YgZGVidWdmcyBpcyBub3QgYSBn
+b29kIHByYWN0aWNlIGluIG91ciBjYXNlLg0KRHVlIHRvIEhXIGxpbWl0YXRpb25zLCB3aGVuIHdl
+IHN3aXRjaCBhIHBvcnQgdG8vZnJvbSBsb29wYmFjayBtb2RlLCB3ZSBuZWVkIHRvIHJlc2V0IHRo
+ZSBkZXZpY2UuDQpTaW5jZSBldGh0b29sIHdvcmtzIG9uIHNwZWNpZmljIGludGVyZmFjZSByYXRo
+ZXIgdGhhbiBhbiBlbnRpcmUgZGV2aWNlLCB3ZSdsbCBuZWVkIHRvIHJlc2V0IHRoZSBkZXZpY2Ug
+MTAgdGltZXMgaW4gb3JkZXIgdG8gc3dpdGNoIHRoZSBlbnRpcmUgZGV2aWNlIHRvIGxvb3BiYWNr
+IG1vZGUuDQpNb3Jlb3ZlciwgcnVubmluZyB0aGlzIGNvbW1hbmQgZm9yIG9uZSBpbnRlcmZhY2Ug
+YWZmZWN0cyBvdGhlciBpbnRlcmZhY2VzIHdoaWNoIGlzIG5vdCBkZXNpcmFibGUgd2hlbiB1c2lu
+ZyBldGh0b29sIEFGQUlLLg0KSXMgdGhlcmUgYW55IG90aGVyIGFjY2VwdGFibGUgZGVidWdmcy1s
+aWtlIG1lY2hhbmlzbSBmb3IgdGhhdD8NCg0KVGhhbmtzLA0KT21lcg0K
