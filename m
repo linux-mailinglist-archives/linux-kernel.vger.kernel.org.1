@@ -2,355 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B541E268432
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9618268436
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgINFpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S1726070AbgINFql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgINFp1 (ORCPT
+        with ESMTP id S1726035AbgINFqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:45:27 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1FAC06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:45:43 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u13so10655795pgh.1
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:45:43 -0700 (PDT)
+        Mon, 14 Sep 2020 01:46:37 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BF9C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:46:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id q9so9381418wmj.2
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=glNkNRmAU7RgWAdV6/8XgRfmftYWgIcuHxeSjWhpb4E=;
-        b=f+UxwzwJdNkNO/6FibwIffKu3/WUBpoItsoZOlKwJS4ClrjUc7OGQF7rLPhEigPZrD
-         P/LSX8+T0lA3hfpw5AJkM2NzUkVtMTw+9eXZGTFkXle3dbuefjzuP2u56A2i+hXb7OBS
-         W2PuJ5VHlKpm+lL6TEhMU+GNl78UdYZrwSXR8X1NodmFpXwcR/hAvQXErMxPamXpnQ+i
-         e7LrcwOCXlaxCD1NmKZo+P4elpUvLPpQTXFZiTwOJ/D5o5fBSR7sqcLYsXMvIbF2Srpm
-         nw8JyadTJoQswyU5VQR/8+t87+W975kkrMDZWJ6d4f/8/ytcVgIc4TVionvfw8J8K8rP
-         sCog==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sDD9xbXrOHoErjZLRR+/+AtDLaCnVmHRrkVezZM912Y=;
+        b=eY+okMC8xfBiRH3cE/90LzCYt3zAjKBnNwVqBIqPfCCKGfS4LiZkI1tz5tVuAKD9Bt
+         gHHBuuvOIghEFOViq4ZTL21bCZXni8/Zlat4xIzctM+SS4EZdWsHZhBzUfXknGocvPSZ
+         mn+q3/tooHeVkXczfc+2yfawVsDQCwVVlOXbeB0gLAozyKoOoX7PO0KpkOk0jzw0OKiz
+         3VTlXVTjQia8VZeLobuuTUCrBFsjKu2CQdjs7vPq06bmvTkCRG7NOvMKj6xW/SGdOY9S
+         MQSRrUXP4HCb/O+HyjwfRdOpOfcCETks981G/J9Y+KeI7juc5WC4LpooQ2Fz/esbZE+4
+         Vf8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=glNkNRmAU7RgWAdV6/8XgRfmftYWgIcuHxeSjWhpb4E=;
-        b=hIi20FwxrDWbA4D7vdzqor1A1bqmvpdRQPU9G7f6DZ7CHZemU6KAO2go9QQfvhFBy9
-         Nz11JEGeOoHIyxOYal+SCOcV10J2h23wT1Ie3JrzP5jYPry49591gCktUynV56wpTlN+
-         PLnuZwrvYoyRlRG0GcnNBha1G0ZWEklw8X6JYGyF93LsYrJ+q1rcDTeYMRTbZsPthcYp
-         gRnLQPbVCOXup0qOQDt2xeRmnfP3rF/ybkiPRDQmZWkv+iBeShkEZxkCWI+3iZm/cA05
-         M103N6PzfVVUGaGJ70hA8yII1IMYER/Nww0lCJ6lzPET9sQ+oOeul4hS9GLB/a5lnvKr
-         a2Vg==
-X-Gm-Message-State: AOAM532d+bzn94UakAayPjzvdzLkLUJlPxNBaflWqka/JnzuwlKIkgnB
-        +AseyJnhlOHQ6ln6gw8yha2xqw==
-X-Google-Smtp-Source: ABdhPJwJlVuw6Kfa4Kii14VYrNit18OMZbeOflpyEGiQalFWMkzBvdH+JWxjbUFip9q52oZ+8dThvQ==
-X-Received: by 2002:aa7:8aca:0:b029:13e:d13d:a13e with SMTP id b10-20020aa78aca0000b029013ed13da13emr12165811pfd.38.1600062342826;
-        Sun, 13 Sep 2020 22:45:42 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id y13sm7342708pgs.53.2020.09.13.22.45.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 22:45:42 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 14:45:37 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 15/21] mmc: sdhci: UHS-II support, modify
- set_power() to handle vdd2
-Message-ID: <20200914054537.GA2738017@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111140.29725-1-benchuanggli@gmail.com>
- <97c43596-a18f-4c7a-c226-5209772d91d1@intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sDD9xbXrOHoErjZLRR+/+AtDLaCnVmHRrkVezZM912Y=;
+        b=XsAeFZ+6oazElhSs1MZSLsW8xX5w716ztFrormEMAfrlXjH9K3XuxI7VTmz9dA0cyu
+         8/C7aak91TMQXkd6wPvL1IE6NAzK1dc4Owz7LxugoJtQt0DL+lIAphEVfsy48by+eT/l
+         MPqWMd1Qi53r1XLJFhSvcPOeJXy+/MrqNAGD1v0FSUhAZdTUJfeB0V6LaiLA3usqA4Od
+         xPcEerE7yJjP9q1p47HYbu3ojVY3FxukGlYF8h386vgGYV199YOfx5bhD3x2qxrAe03f
+         lwh2DajPG4FaE6TEQJma6rMQcTCqXNPEhtqqcyLHhPmsK+0qHaG4+dP4kr1U5FpvTZvq
+         pIjw==
+X-Gm-Message-State: AOAM530uXzjPG38v7snWR2OOhsXvMyNwgDxEN0g6p5uCM5P5pFcnSJ/O
+        eHLtpGeLV0yHTsKOPT0wTXdxJg==
+X-Google-Smtp-Source: ABdhPJyUVCGBR93hL6wzG0lCe51kAZFFaJG76CajpH7T3daMVWhHg+pdihb6Vi5OLEnx0XzSO+6QCg==
+X-Received: by 2002:a05:600c:22c5:: with SMTP id 5mr13272418wmg.34.1600062412115;
+        Sun, 13 Sep 2020 22:46:52 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a402:e7fb:d494:d130? ([2a01:e34:ed2f:f020:a402:e7fb:d494:d130])
+        by smtp.googlemail.com with ESMTPSA id h204sm17849917wmf.35.2020.09.13.22.46.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 13 Sep 2020 22:46:51 -0700 (PDT)
+Subject: Re: [PATCH] cpuidle: add riscv cpuidle driver
+To:     liush <liush@allwinnertech.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, rjw@rjwysocki.net,
+        anup.patel@wdc.com, atish.patra@wdc.com, damien.lemoal@wdc.com,
+        wangkefeng.wang@huawei.com, kernel@esmil.dk, zong.li@sifive.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <1600048323-2964-1-git-send-email-liush@allwinnertech.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <80bc85f5-fba3-5f08-4d73-372b5f495833@linaro.org>
+Date:   Mon, 14 Sep 2020 07:46:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97c43596-a18f-4c7a-c226-5209772d91d1@intel.com>
+In-Reply-To: <1600048323-2964-1-git-send-email-liush@allwinnertech.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adrian,
-
-On Fri, Aug 21, 2020 at 05:11:18PM +0300, Adrian Hunter wrote:
-> On 10/07/20 2:11 pm, Ben Chuang wrote:
-> > From: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > 
-> > VDD2 is used for powering UHS-II interface.
-> > Modify sdhci_set_power_and_bus_voltage(), sdhci_set_power_noreg()
-> > and sdhci_set_power_noreg() to handle VDD2.
+On 14/09/2020 03:52, liush wrote:
+> This patch adds a cpuidle driver for systems based RISCV architecture.
+> This patch supports state WFI. Other states will be supported in the
+> future.
 > 
-> vdd2 is always 1.8 V and I suspect there may never be support for anything
-> else, so we should start with 1.8 V only.
+> Signed-off-by: liush <liush@allwinnertech.com>
+> ---
 
-What do you mean here?
-You don't want to add an extra argument, vdd2, to sdhci_set_power().
-Correct?
+[ ... ]
 
-> Also can we create uhs2_set_power_reg() and uhs2_set_power_noreg() and use
-> the existing ->set_power() callback
+>  
+>  obj-$(CONFIG_RISCV_M_MODE)	+= traps_misaligned.o
+> diff --git a/arch/riscv/kernel/cpuidle.c b/arch/riscv/kernel/cpuidle.c
+> new file mode 100644
+> index 00000000..a3289e7
+> --- /dev/null
+> +++ b/arch/riscv/kernel/cpuidle.c
+> @@ -0,0 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <asm/cpuidle.h>
+> +
+> +void cpu_do_idle(void)
+> +{
+> +	__asm__ __volatile__ ("wfi");
+> +
 
-Again what do you expect here?
+extra line
 
-Do you want to see any platform-specific mmc driver who supports UHS-II
-to implement its own call back like:
+> +}
 
-void sdhci_foo_set_power(struct sdhci_host *host, unsigned char mode,
-                                  unsigned short vdd)
-{
-        sdhci_set_power(host, mode,vdd);
+As for the next deeper states should end up with the cpu_do_idle
+function, isn't there an extra operation with the wfi() like flushing
+the l1 cache?
 
-        /* in case that sdhci_uhs2 module is not inserted */
-        if (!(mmc->caps & MMC_CAP_UHS2))
-                return;
+> diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
+> index c0aeedd..f6be0fd 100644
+> --- a/drivers/cpuidle/Kconfig
+> +++ b/drivers/cpuidle/Kconfig
+> @@ -62,6 +62,11 @@ depends on PPC
+>  source "drivers/cpuidle/Kconfig.powerpc"
+>  endmenu
+>  
+> +menu "RISCV CPU Idle Drivers"
+> +depends on RISCV
+> +source "drivers/cpuidle/Kconfig.riscv"
+> +endmenu
+> +
+>  config HALTPOLL_CPUIDLE
+>  	tristate "Halt poll cpuidle driver"
+>  	depends on X86 && KVM_GUEST
+> diff --git a/drivers/cpuidle/Kconfig.riscv b/drivers/cpuidle/Kconfig.riscv
+> new file mode 100644
+> index 00000000..e86d36b
+> --- /dev/null
+> +++ b/drivers/cpuidle/Kconfig.riscv
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# RISCV CPU Idle drivers
+> +#
+> +config RISCV_CPUIDLE
+> +        bool "Generic RISCV CPU idle Driver"
+> +        select DT_IDLE_STATES
+> +	select CPU_IDLE_MULTIPLE_DRIVERS
+> +        help
+> +          Select this option to enable generic cpuidle driver for RISCV.
+> +	  Now only support C0 State.
 
-        /* vdd2 specific operation */
-        if (IS_ERR_OR_NULL(host->mmc->supply.vmmc2))
-                sdhci_uhs2_set_power_noreg(host, mode);
-        else
-                sdhci_uhs2_set_power_reg(host, mode);
+Identation
 
-        /* maybe more platform-specific initialization */
-}
+Rest looks ok for me.
 
-struct sdhci_ops sdhci_foo_ops = {
-        .set_power = sdhci_foo_set_power,
-        ...
-}
 
-Is this what you mean?
-(I'm not quite sure yet that sdhci_ush2_set_power_noreg() can be split off
-from sdhci_set_power_noreg().)
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
--Takahiro Akashi
-
-}
-
-> > 
-> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > ---
-> >  drivers/mmc/host/sdhci-omap.c     |  2 +-
-> >  drivers/mmc/host/sdhci-pci-core.c |  4 +--
-> >  drivers/mmc/host/sdhci-pxav3.c    |  4 +--
-> >  drivers/mmc/host/sdhci-xenon.c    |  4 +--
-> >  drivers/mmc/host/sdhci.c          | 42 ++++++++++++++++++++++++-------
-> >  drivers/mmc/host/sdhci.h          |  9 +++----
-> >  6 files changed, 43 insertions(+), 22 deletions(-)
-> > 
-> > diff --git a/drivers/mmc/host/sdhci-omap.c b/drivers/mmc/host/sdhci-omap.c
-> > index 1ec74c2d5c17..1926585debe5 100644
-> > --- a/drivers/mmc/host/sdhci-omap.c
-> > +++ b/drivers/mmc/host/sdhci-omap.c
-> > @@ -678,7 +678,7 @@ static void sdhci_omap_set_clock(struct sdhci_host *host, unsigned int clock)
-> >  }
-> >  
-> >  static void sdhci_omap_set_power(struct sdhci_host *host, unsigned char mode,
-> > -			  unsigned short vdd)
-> > +			  unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	struct mmc_host *mmc = host->mmc;
-> >  
-> > diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-> > index bb6802448b2f..40f5a24a8982 100644
-> > --- a/drivers/mmc/host/sdhci-pci-core.c
-> > +++ b/drivers/mmc/host/sdhci-pci-core.c
-> > @@ -629,12 +629,12 @@ static int bxt_get_cd(struct mmc_host *mmc)
-> >  #define SDHCI_INTEL_PWR_TIMEOUT_UDELAY	100
-> >  
-> >  static void sdhci_intel_set_power(struct sdhci_host *host, unsigned char mode,
-> > -				  unsigned short vdd)
-> > +				  unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	int cntr;
-> >  	u8 reg;
-> >  
-> > -	sdhci_set_power(host, mode, vdd);
-> > +	sdhci_set_power(host, mode, vdd, -1);
-> >  
-> >  	if (mode == MMC_POWER_OFF)
-> >  		return;
-> > diff --git a/drivers/mmc/host/sdhci-pxav3.c b/drivers/mmc/host/sdhci-pxav3.c
-> > index e55037ceda73..457e9425339a 100644
-> > --- a/drivers/mmc/host/sdhci-pxav3.c
-> > +++ b/drivers/mmc/host/sdhci-pxav3.c
-> > @@ -298,12 +298,12 @@ static void pxav3_set_uhs_signaling(struct sdhci_host *host, unsigned int uhs)
-> >  }
-> >  
-> >  static void pxav3_set_power(struct sdhci_host *host, unsigned char mode,
-> > -			    unsigned short vdd)
-> > +			    unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	struct mmc_host *mmc = host->mmc;
-> >  	u8 pwr = host->pwr;
-> >  
-> > -	sdhci_set_power_noreg(host, mode, vdd);
-> > +	sdhci_set_power_noreg(host, mode, vdd, -1);
-> >  
-> >  	if (host->pwr == pwr)
-> >  		return;
-> > diff --git a/drivers/mmc/host/sdhci-xenon.c b/drivers/mmc/host/sdhci-xenon.c
-> > index 4703cd540c7f..2b0ebb91895a 100644
-> > --- a/drivers/mmc/host/sdhci-xenon.c
-> > +++ b/drivers/mmc/host/sdhci-xenon.c
-> > @@ -214,12 +214,12 @@ static void xenon_set_uhs_signaling(struct sdhci_host *host,
-> >  }
-> >  
-> >  static void xenon_set_power(struct sdhci_host *host, unsigned char mode,
-> > -		unsigned short vdd)
-> > +		unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	struct mmc_host *mmc = host->mmc;
-> >  	u8 pwr = host->pwr;
-> >  
-> > -	sdhci_set_power_noreg(host, mode, vdd);
-> > +	sdhci_set_power_noreg(host, mode, vdd, -1);
-> >  
-> >  	if (host->pwr == pwr)
-> >  		return;
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index d38d734ec83f..ca3d4a506e01 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -2089,12 +2089,15 @@ void sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
-> >  EXPORT_SYMBOL_GPL(sdhci_set_clock);
-> >  
-> >  static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
-> > -				unsigned short vdd)
-> > +				unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	struct mmc_host *mmc = host->mmc;
-> >  
-> >  	mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
-> >  
-> > +	if (mmc->caps & MMC_CAP_UHS2 && !IS_ERR(mmc->supply.vmmc2))
-> > +		mmc_regulator_set_ocr(mmc, mmc->supply.vmmc2, vdd2);
-> > +
-> >  	if (mode != MMC_POWER_OFF)
-> >  		sdhci_writeb(host, SDHCI_POWER_ON, SDHCI_POWER_CONTROL);
-> >  	else
-> > @@ -2102,7 +2105,7 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
-> >  }
-> >  
-> >  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> > -			   unsigned short vdd)
-> > +			   unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	u8 pwr = 0;
-> >  
-> > @@ -2133,6 +2136,20 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> >  		}
-> >  	}
-> >  
-> > +	if (mode != MMC_POWER_OFF) {
-> > +		if (vdd2 != (unsigned short)-1) {
-> > +			switch (1 << vdd2) {
-> > +			case MMC_VDD2_165_195:
-> > +				pwr |= SDHCI_VDD2_POWER_180;
-> > +				break;
-> > +			default:
-> > +				WARN(1, "%s: Invalid vdd2 %#x\n",
-> > +				     mmc_hostname(host->mmc), vdd2);
-> > +				break;
-> > +			}
-> > +		}
-> > +	}
-> > +
-> >  	if (host->pwr == pwr)
-> >  		return;
-> >  
-> > @@ -2159,7 +2176,13 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> >  			sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
-> >  
-> >  		pwr |= SDHCI_POWER_ON;
-> > +		if (vdd2 != (unsigned short)-1)
-> > +			pwr |= SDHCI_VDD2_POWER_ON;
-> > +
-> > +		sdhci_writeb(host, pwr & 0xf, SDHCI_POWER_CONTROL);
-> > +		mdelay(5);
-> >  		sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
-> > +		mdelay(5);
-> >  
-> >  		if (host->quirks2 & SDHCI_QUIRK2_CARD_ON_NEEDS_BUS_ON)
-> >  			sdhci_runtime_pm_bus_on(host);
-> > @@ -2175,12 +2198,12 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> >  EXPORT_SYMBOL_GPL(sdhci_set_power_noreg);
-> >  
-> >  void sdhci_set_power(struct sdhci_host *host, unsigned char mode,
-> > -		     unsigned short vdd)
-> > +		     unsigned short vdd, unsigned short vdd2)
-> >  {
-> >  	if (IS_ERR(host->mmc->supply.vmmc))
-> > -		sdhci_set_power_noreg(host, mode, vdd);
-> > +		sdhci_set_power_noreg(host, mode, vdd, vdd2);
-> >  	else
-> > -		sdhci_set_power_reg(host, mode, vdd);
-> > +		sdhci_set_power_reg(host, mode, vdd, vdd2);
-> >  }
-> >  EXPORT_SYMBOL_GPL(sdhci_set_power);
-> >  
-> > @@ -2192,14 +2215,15 @@ EXPORT_SYMBOL_GPL(sdhci_set_power);
-> >   */
-> >  void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
-> >  				     unsigned char mode,
-> > -				     unsigned short vdd)
-> > +				     unsigned short vdd,
-> > +				     unsigned short vdd2)
-> >  {
-> >  	if (!IS_ERR(host->mmc->supply.vmmc)) {
-> >  		struct mmc_host *mmc = host->mmc;
-> >  
-> >  		mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
-> >  	}
-> > -	sdhci_set_power_noreg(host, mode, vdd);
-> > +	sdhci_set_power_noreg(host, mode, vdd, -1);
-> >  }
-> >  EXPORT_SYMBOL_GPL(sdhci_set_power_and_bus_voltage);
-> >  
-> > @@ -2377,9 +2401,9 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> >  	}
-> >  
-> >  	if (host->ops->set_power)
-> > -		host->ops->set_power(host, ios->power_mode, ios->vdd);
-> > +		host->ops->set_power(host, ios->power_mode, ios->vdd, -1);
-> >  	else
-> > -		sdhci_set_power(host, ios->power_mode, ios->vdd);
-> > +		sdhci_set_power(host, ios->power_mode, ios->vdd, -1);
-> >  
-> >  	/* 4.0 host support */
-> >  	if (host->version >= SDHCI_SPEC_400) {
-> > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> > index ecf55394ea46..f6732f33f29f 100644
-> > --- a/drivers/mmc/host/sdhci.h
-> > +++ b/drivers/mmc/host/sdhci.h
-> > @@ -689,7 +689,7 @@ struct sdhci_ops {
-> >  
-> >  	void	(*set_clock)(struct sdhci_host *host, unsigned int clock);
-> >  	void	(*set_power)(struct sdhci_host *host, unsigned char mode,
-> > -			     unsigned short vdd);
-> > +			     unsigned short vdd, unsigned short vdd2);
-> >  
-> >  	u32		(*irq)(struct sdhci_host *host, u32 intmask);
-> >  
-> > @@ -852,13 +852,10 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
-> >  		   unsigned int *actual_clock);
-> >  void sdhci_set_clock(struct sdhci_host *host, unsigned int clock);
-> >  void sdhci_enable_clk(struct sdhci_host *host, u16 clk);
-> > -void sdhci_set_power(struct sdhci_host *host, unsigned char mode,
-> > -		     unsigned short vdd);
-> >  void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
-> >  				     unsigned char mode,
-> > -				     unsigned short vdd);
-> > -void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
-> > -			   unsigned short vdd);
-> > +				     unsigned short vdd,
-> > +				     unsigned short vdd2);
-> >  void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq);
-> >  int sdhci_request_atomic(struct mmc_host *mmc, struct mmc_request *mrq);
-> >  void sdhci_set_bus_width(struct sdhci_host *host, int width);
-> > 
-> 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
