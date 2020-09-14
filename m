@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086B7269739
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B2426973A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgINU4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:56:23 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19086 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbgINU4U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:56:20 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5fd8e70000>; Mon, 14 Sep 2020 13:56:07 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 14 Sep 2020 13:56:20 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 14 Sep 2020 13:56:20 -0700
-Received: from [10.2.52.22] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 14 Sep
- 2020 20:56:19 +0000
-Subject: Re: [PATCH] mm/gup.c: Handling ERR within unpin_user_pages()
-To:     Souptick Joarder <jrdr.linux@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <1600007555-11650-1-git-send-email-jrdr.linux@gmail.com>
- <20200913145520.GH6583@casper.infradead.org>
- <CAFqt6zYru2VfaBFHEB6+7vMPXUbgX8R5f+GHqxaGjhP8QZEyzw@mail.gmail.com>
- <20200914140814.GE1221970@ziepe.ca>
- <CAFqt6zasxyAc9heAFuQ0xXuwpk8s7RThordModvLVDNDfFYvkA@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <e56f3bd8-c025-cd68-a7b2-cb1e8eafae72@nvidia.com>
-Date:   Mon, 14 Sep 2020 13:56:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726133AbgINU4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725978AbgINU4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 16:56:42 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F09B2193E;
+        Mon, 14 Sep 2020 20:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600117002;
+        bh=91ZQHPpXzVYPM1kY5tNaht13UGMxQL4Ref/OgbCg9h0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rUX3bhtctscjf/GF6iRwny6FU/Y4zB+mOFYpGbV8pOvplCLWDQp72DCUpp9qXhbdn
+         q/ifxj3kSWyHz9Bkuj9N3OhbFnwqFzY2jpeazQ9CbvkwhIcsGBmlus5ZQzQqvci3IV
+         +3DkM4GJNK7HvJx5ACofl3KIgHk4JvqEiEP1lpbI=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 146F53522718; Mon, 14 Sep 2020 13:56:42 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 13:56:42 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mathieu.desnoyers@efficios.com" <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: RCU: Question on force_qs_rnp
+Message-ID: <20200914205642.GE29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <BYAPR11MB2632C4C06386B39BB5488428FF230@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200914194208.GA2579423@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFqt6zasxyAc9heAFuQ0xXuwpk8s7RThordModvLVDNDfFYvkA@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1600116967; bh=+oWEarvEQBjCBkRKG8S6c1RiGqvrOZjaYdIkoM8VZak=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=lxOEgomUBCeFRQfM06OboOEEMpuSYIM1iyaBr3WI8AKriJzrsnI1SRg08LANEPTYv
-         U7L8Nc3YNQbbNqdGzEiEhnjxPnM+hEaAdwn13wHAy/lUry/ocsvIVzA4Sy9GWRy0wL
-         nTz3ChKIy0byq8u7cc7O8VpdxADX7YnR7ulzMEwR0WL5eRaRXAnMOyja8gCNQBdRLS
-         q8pqDeF8wsICChU8kSfv7p6jCNjh5/fyOG6CRPm9bolkr/fLhWbxGoqAtDpS1hH8Pf
-         fFKR7wx8HsG1Y0RJmRhgVAvByGa07r+Wy8f+Eugz8bj8TfwP5JsiaNT3/5M4MNqm0W
-         qo1FTAerE34dg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914194208.GA2579423@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/20 1:52 PM, Souptick Joarder wrote:
-> On Mon, Sep 14, 2020 at 7:38 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>
->> On Mon, Sep 14, 2020 at 07:20:34AM +0530, Souptick Joarder wrote:
->>> On Sun, Sep 13, 2020 at 8:25 PM Matthew Wilcox <willy@infradead.org> wrote:
->>>>
->>>> On Sun, Sep 13, 2020 at 08:02:35PM +0530, Souptick Joarder wrote:
->>>>> It is possible that a buggy caller of unpin_user_pages()
->>>>> (specially in error handling path) may end up calling it with
->>>>> npages < 0 which is unnecessary.
->>>>> @@ -328,6 +328,9 @@ void unpin_user_pages(struct page **pages, unsigned long npages)
->>>>>   {
->>>>>        unsigned long index;
->>>>>
->>>>> +     if (WARN_ON_ONCE(npages < 0))
->>>>> +             return;
->>>>
->>>> But npages is unsigned long.  So it can't be less than zero.
->>>
->>> Sorry, I missed it.
->>>
->>> Then, it means if npages is assigned with -ERRNO by caller, unpin_user_pages()
->>> may end up calling a big loop, which is unnecessary.
->>
->> How will a caller allocate memory of the right size and still manage
->> to call with the wrong npages? Do you have an example of a broken caller?
+On Mon, Sep 14, 2020 at 03:42:08PM -0400, Joel Fernandes wrote:
+> On Mon, Sep 14, 2020 at 07:55:18AM +0000, Zhang, Qiang wrote:
+> > Hello Paul
+> > 
+> > I have some questions for you .
+> > in force_qs_rnp func ,  if  "f(rdp)" func return true we will call rcu_report_qs_rnp func
+> > report a quiescent state for this rnp node, and clear grpmask form rnp->qsmask.
+> > after that ,  can we make a check for this rnp->qsmask,  if  rnp->qsmask == 0, 
+> > we will check blocked readers in this rnp node,  instead of jumping directly to the next node .
 > 
-> These are two broken callers which might end up calling unpin_user_pages()
-> with -ERRNO.
-> drivers/rapidio/devices/rio_mport_cdev.c#L952
-> drivers/misc/mic/scif/scif_rma.c#L1399
+> Could you clarify what good is this going to do? What problem are you trying to
+> address?
 > 
-> They both are in error handling paths, so might not have any serious impact.
-> But theoretically possible.
+> You could have a task that is blocked in an RCU leaf node, but the
+> force_qs_rnp() decided to call rcu_report_qs_rnp(). This is perfectly Ok. The
+> CPU could be dyntick-idle and a quiescent state is reported. However, the GP
+> must not end and the rcu leaf node should still be present in its parent
+> intermediate nodes ->qsmask. In this case, the ->qsmask == 0 does not have
+> any relevance.
 > 
+> Or am I missing the point of the question?
 
-Eventually, I settled on fixing up the callers so that they match the gup/pup
-API better. In other words, gup/pup has signed int for both input and return
-value, and the callers need to handle that perfectly.
+Hello, Qiang,
 
-So let's fix up the callers.
+Another way of making Joel's point is to say that the additional check
+you are asking for is already being done, but by rcu_report_qs_rnp().
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+							Thanx, Paul
