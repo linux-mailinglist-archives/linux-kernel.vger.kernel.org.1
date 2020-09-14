@@ -2,173 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5573E268C21
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00D1268CA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726577AbgINNWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:22:43 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37360 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726723AbgINNOl (ORCPT
+        id S1726709AbgINN50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:57:26 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:39184 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726806AbgINNzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:14:41 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08EDEaIO010071;
-        Mon, 14 Sep 2020 08:14:36 -0500
+        Mon, 14 Sep 2020 09:55:17 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08EC0iP5130965;
+        Mon, 14 Sep 2020 07:00:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600089276;
-        bh=ODiKENSdzK4s3WG2D1yPBUfjra2xw8BwLPSrreBdVXg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=CbfjXf529a0uVnIv4Wtkk9nZb0qrRMJketYNpnyGVMu9b3UoEF9GoUH1wRtA+pBIh
-         OrevxtYidRzIMxQ2uApCax+ZioWyGN1zmn5VajLzuhyi8550nGRAK4aShoEJ2KRPPj
-         IfQ9Ni62IiSiLz5cqkHUrL03wOfggftOu0elOpOE=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08EDEa4Q116335
+        s=ti-com-17Q1; t=1600084844;
+        bh=RDHuKPy8mKrjcYu0NQ4FQ0Fc7xmwGprvqmX5xWjnGbs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=muxrOerW8n3EOwJDD2MGefnErXTaO9jA4+nkbijtWShwHXrIZpKabH4P5LwpnPnxW
+         PwTo198QOZVtGJfnDgEZL/Owge2250TuFghQhkl4hvw4Ufdw5QSNFFqtsMiQRtmBXx
+         vhIvM4BfR6f0P9m9K0A+gpkxnbts72fS8vfV1lPY=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08EC0icu121790
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 14 Sep 2020 08:14:36 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 14 Sep 2020 07:00:44 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
- Sep 2020 08:14:36 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2020 07:00:43 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 14 Sep 2020 08:14:36 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08EDEafs060421;
-        Mon, 14 Sep 2020 08:14:36 -0500
-Date:   Mon, 14 Sep 2020 08:14:36 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <t-kristo@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH 1/2] arm64: dts: ti: k3-j721e-main: Add PCIe
- device tree nodes
-Message-ID: <20200914131436.fxtvximxcrtnqddm@akan>
-References: <20200901140628.8800-1-kishon@ti.com>
- <20200901140628.8800-2-kishon@ti.com>
- <20200901145204.ayybrzqjcfhiqnfq@akan>
- <5f23246a-a9d7-495d-a4ec-d392ad95a450@ti.com>
- <4b17cace-09d5-af8c-6e7f-9358cfdceb4d@ti.com>
- <e914e527-00fc-2614-fa74-f2137dbcfaf9@ti.com>
- <20200914115207.wq4pmgrszhtgctdu@akan>
- <9fe50c76-8d78-c1fe-e8f5-b43eecd32db8@ti.com>
+ Frontend Transport; Mon, 14 Sep 2020 07:00:43 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08EC0dgP075243;
+        Mon, 14 Sep 2020 07:00:40 -0500
+Subject: Re: [PATCH 1/3] mtd: spi-nor: sst: fix write support for SST_WRITE
+ marked devices
+To:     Marco Felsch <m.felsch@pengutronix.de>,
+        <tudor.ambarus@microchip.com>, <miquel.raynal@bootlin.com>,
+        <richard@nod.at>, <sergei.shtylyov@cogentembedded.com>,
+        <boris.brezillon@collabora.com>, <michael@walle.cc>,
+        <j.neuschaefer@gmx.net>
+CC:     <linux-mtd@lists.infradead.org>, <kernel@pengutronix.de>,
+        <linux-kernel@vger.kernel.org>
+References: <20200911144703.25409-1-m.felsch@pengutronix.de>
+ <20200911144703.25409-2-m.felsch@pengutronix.de>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <dc80d00a-27a3-6c75-5820-97ad2e297d8e@ti.com>
+Date:   Mon, 14 Sep 2020 17:30:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9fe50c76-8d78-c1fe-e8f5-b43eecd32db8@ti.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20200911144703.25409-2-m.felsch@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17:43-20200914, Kishon Vijay Abraham I wrote:
-> Hi Nishanth,
-> 
-> On 14/09/20 5:22 pm, Nishanth Menon wrote:
-> > On 16:53-20200914, Kishon Vijay Abraham I wrote:
-> >> Hi Rob,
-> >>
-> >> On 02/09/20 1:07 pm, Kishon Vijay Abraham I wrote:
-> >>> Hi Rob,
-> >>>
-> >>> On 02/09/20 10:24 am, Kishon Vijay Abraham I wrote:
-> >>>> Hi Nishanth,
-> >>>>
-> >>>> On 01/09/20 8:22 pm, Nishanth Menon wrote:
-> >>>>> On 19:36-20200901, Kishon Vijay Abraham I wrote:
-> >>>>>> Add PCIe device tree node (both RC and EP) for the four
-> >>>>>> PCIe instances here.
-> >>>>>>
-> >>>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> >>>>>> ---
-> >>>>>>   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 218
-> >>>>>> ++++++++++++++++++++++
-> >>>>>>   arch/arm64/boot/dts/ti/k3-j721e.dtsi      |   5 +-
-> >>>>>>   2 files changed, 222 insertions(+), 1 deletion(-)
-> >>>>>
-> >>>>>
-> >>>>> Did you look at the diff of the dtbs_check before and after this
-> >>>>> series? I see: https://pastebin.ubuntu.com/p/9fyfrTjx9M/
-> >>>>
-> >>>> I didn't see any errors when I checked for individual bindings
-> >>>> a0393678@a0393678-ssd:~/repos/linux$ mkconfig64 dtbs_check
-> >>>> DT_SCHEMA_FILES="Documentation/devicetree/bindings/pci/ti,j721e-pci-ep.yaml"
-> >>>>
-> >>>>    SCHEMA  Documentation/devicetree/bindings/processed-schema.yaml
-> >>>>    DTC     arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-> >>>>    DTC     arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
-> >>>>    CHECK   arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-> >>>>    CHECK   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
-> >>>> a0393678@a0393678-ssd:~/repos/linux$ mkconfig64 dtbs_check
-> >>>> DT_SCHEMA_FILES="Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml"
-> >>>>
-> >>>>    SCHEMA  Documentation/devicetree/bindings/processed-schema.yamlsimple-bus
-> >>>>    DTC     arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-> >>>>    DTC     arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
-> >>>>    CHECK   arch/arm64/boot/dts/ti/k3-am654-base-board.dt.yaml
-> >>>>    CHECK   arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml
-> >>>
-> >>> Can you give hint on why I get ranges is too long error
-> >>> https://pastebin.ubuntu.com/p/cPm2tg3dcV/ which I give mkconfig64
-> >>> dtbs_check but don't see an error when I include "DT_SCHEMA_FILES"?
-> >>
-> >> I debugged this and looks like PCIe "ranges" property conflicts with
-> >> simple-bus.
-> >>
-> >> A diff like below helps to solve the issue
-> >> diff --git a/schemas/simple-bus.yaml b/schemas/simple-bus.yaml
-> >> index 248ac9d..ed818ef 100644
-> >> --- a/schemas/simple-bus.yaml
-> >> +++ b/schemas/simple-bus.yaml
-> >> @@ -39,7 +39,7 @@ patternProperties:
-> >>          oneOf:
-> >>            - items:
-> >>                minItems: 3
-> >> -              maxItems: 6
-> >> +              maxItems: 7
-> >>              minItems: 0
-> >>              maxItems: 1024
-> >>            - $ref: "types.yaml#/definitions/flag"
-> >>
-> >> If this looks right to you, I can post a patch for it. Without fixing
-> >> this we would see false errors for PCIe DT nodes.
-> > 
-> > https://github.com/devicetree-org/dt-schema/commit/3baf308b01786788e3ccb9824fce6d7136b21214
-> > 
-> > Part of v2020.08.1? Am i missing something?
-> 
-> I think I was using a different repo
-> https://github.com/robherring/dt-schema.git.
-> 
-> Do you see the following issues you reported earlier with v2020.08.1?
-> 
-> +/home/nmenon/Src/opensource/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
-> bus@100000: pcie@2900000:ranges: [[16777216, 0, 268439552, 0, 268439552,
-> 0, 65536], [33554432, 0, 268505088, 0, 268505088, 0, 134148096]] is not
-> valid under any of the given schemas (Possible causes of the failure):
-> +
-> /home/nmenon/Src/opensource/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
-> bus@100000: pcie@2900000:ranges: True was expected
-> +
-> /home/nmenon/Src/opensource/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
-> bus@100000: pcie@2900000:ranges:0: [16777216, 0, 268439552, 0,
-> 268439552, 0, 65536] is too long
-> +
-> /home/nmenon/Src/opensource/linux/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
-> bus@100000: pcie@2900000:ranges:1: [33554432, 0, 268505088, 0,
-> 268505088, 0, 134148096] is too long
 
 
-Arrgh.. you are right.. Looks like one of my PCs still had 2020.8
-instead of 2020.8.1. We just need to figure out what is going on with
-syscon.yaml as against ti,j721e-system-controller.yaml..
+On 9/11/20 8:17 PM, Marco Felsch wrote:
+> The sst write support for devices using the special SST_WRITE routine
+> is broken since commit commit df5c21002cf4 ("mtd: spi-nor: use spi-mem
+> dirmap API") because the spi_nor_create_write_dirmap() function checks
+> SPINOR_OP_AAI_WP and sst_write_second. These checks are not valid during
+> probe. The check seems also to be broken since the "op->addr.nbytes = 0"
+> causes the devm_spi_mem_dirmap_create() function to return
+> PTR_ERR(-EINVAL) and the probe() function will fail.
+> 
+> It seems that the commit only copy'n'pasted the existing logic. Use the
+> correct SST_WRITE flag and return 0 to fix both issues.
+> 
+> Fixes: df5c21002cf4 ("mtd: spi-nor: use spi-mem dirmap API")
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> ---
+>  drivers/mtd/spi-nor/core.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index 65eff4ce6ab1..31869ac245a8 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -3289,15 +3289,21 @@ static int spi_nor_create_write_dirmap(struct spi_nor *nor)
+>  	};
+>  	struct spi_mem_op *op = &info.op_tmpl;
+>  
+> +	/*
+> +	 * Most SST SPI-NOR's have a special write routine.which should so
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+s/SPI-NOR/SPI NOR.
+
+> +	 * dirmap.wdesc is not supported for these.
+
+Or How about more readable version:
+
+"Most SST flashes have special sequence for writing data to the flash
+and therefore cannot support writes through direct mapping APIs."
+
+> +	 */
+> +	if (nor->info->flags & SST_WRITE) {
+> +		nor->dirmap.wdesc = NULL;
+
+nor->dirmap.wdesc is known to be NULL at this point. So no need to set
+to NULL again.
+
+> +		return 0;
+> +	}
+> +
+>  	/* get transfer protocols. */
+>  	op->cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+>  	op->addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+>  	op->dummy.buswidth = op->addr.buswidth;
+>  	op->data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+>  
+> -	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+> -		op->addr.nbytes = 0;
+> -
+>  	nor->dirmap.wdesc = devm_spi_mem_dirmap_create(nor->dev, nor->spimem,
+>  						       &info);
+>  	return PTR_ERR_OR_ZERO(nor->dirmap.wdesc);
+> 
