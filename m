@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375B4269187
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFBD269189
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgINQbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:31:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
+        id S1726452AbgINQbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:31:20 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:41804 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgINQ2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:28:42 -0400
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 629272193E;
-        Mon, 14 Sep 2020 16:28:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600100921;
-        bh=pTHUzLOL7yQ7KHlU8FqTM4q2ulJSImgxhsRDEBT9D90=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=f1t3LpmAmG8KQ8INfWDUlJFKMspPvrkvB1M/OkMqaKVY4vrQmok6pRJ4mcKtAT5/g
-         EL6uhQHkGeY1AqSRqAqNU8PRWBM/El557sajYAPtZc+W9AtpmB8skCoC3y0deKABbe
-         N9k7gj4aAYKr0WB8B29ZpGDfXbP0/OBThVnMZDFg=
-Received: by mail-oi1-f171.google.com with SMTP id i17so465270oig.10;
-        Mon, 14 Sep 2020 09:28:41 -0700 (PDT)
-X-Gm-Message-State: AOAM533NWLdeiRRl2N/AhoEmQBOfE1kNN2Hxx6WonbLJN7LW0kyc85rJ
-        qh6yl0s4e+jPYRtFwzmqOTI8ZUVx7pS+rFEWVKg=
-X-Google-Smtp-Source: ABdhPJz2QJsVSEa5+w0C22n+i5dshGbeO3RZt/ANYubXMffn3SaQ7xSBbkBid2vHXu1jwZ27PZfLMyxFiGm0m5vbmwE=
-X-Received: by 2002:a05:6808:8e5:: with SMTP id d5mr128143oic.33.1600100920731;
- Mon, 14 Sep 2020 09:28:40 -0700 (PDT)
+        id S1726396AbgINQah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:30:37 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 08EGT9Np012442;
+        Mon, 14 Sep 2020 18:29:09 +0200
+Date:   Mon, 14 Sep 2020 18:29:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Amit Klein <aksecurity@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        George Spelvin <lkml@sdf.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "tytso@mit.edu" <tytso@mit.edu>, Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Subject: Re: [PATCH 1/2] random32: make prandom_u32() output unpredictable
+Message-ID: <20200914162909.GA12439@1wt.eu>
+References: <20200901064302.849-1-w@1wt.eu>
+ <20200901064302.849-2-w@1wt.eu>
+ <b460c51a3fa1473b8289d6030a46abdb@AcuMS.aculab.com>
+ <20200901131623.GB1059@1wt.eu>
+ <CANEQ_+Kuw6cxWRBE6NyXkr=8p3W-1f=o1q91ZESeueEnna9fvw@mail.gmail.com>
+ <CA+icZUUmQeww+94dVOe1JFFQRkvUYVZP3g2GP+gOsdX4kP4x+A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
- <20200806163551.14395-2-andrei.botila@oss.nxp.com> <20200821034651.GA25442@gondor.apana.org.au>
- <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com> <20200908221019.GA23497@gondor.apana.org.au>
- <67159207-1082-48be-d085-971a84b525e0@nxp.com>
-In-Reply-To: <67159207-1082-48be-d085-971a84b525e0@nxp.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 14 Sep 2020 19:28:29 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
-Message-ID: <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
- more than 8B IV
-To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUUmQeww+94dVOe1JFFQRkvUYVZP3g2GP+gOsdX4kP4x+A@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 at 19:24, Horia Geant=C4=83 <horia.geanta@nxp.com> wrot=
-e:
->
-> On 9/9/2020 1:10 AM, Herbert Xu wrote:
-> > On Tue, Sep 08, 2020 at 01:35:04PM +0300, Horia Geant=C4=83 wrote:
-> >>
-> >>> Just go with the get_unaligned unconditionally.
-> >>
-> >> Won't this lead to sub-optimal code for ARMv7
-> >> in case the IV is aligned?
+On Mon, Sep 14, 2020 at 06:16:40PM +0200, Sedat Dilek wrote:
+> On Mon, Sep 14, 2020 at 4:53 PM Amit Klein <aksecurity@gmail.com> wrote:
 > >
-> > If this should be optimised in ARMv7 then that should be done
-> > in get_unaligned itself and not open-coded.
+> > Hi
 > >
-> I am not sure what's wrong with avoiding using the unaligned accessors
-> in case data is aligned.
->
-> Documentation/core-api/unaligned-memory-access.rst clearly states:
-> These macros work for memory accesses of any length (not just 32 bits as
-> in the examples above). Be aware that when compared to standard access of
-> aligned memory, using these macros to access unaligned memory can be cost=
-ly in
-> terms of performance.
->
-> So IMO it makes sense to use get_unaligned() only when needed.
-> There are several cases of users doing this, e.g. siphash.
->
+> > Is this patch being pushed to any branch? I don't see it deployed anywhere (unless I'm missing something...).
+> >
+> 
+> It's here:
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git/log/?h=20200901-siphash-noise
 
-For ARMv7 code, using the unaligned accessors unconditionally is fine,
-and it will not affect performance.
+By the way I didn't get any feedback from those who initially disagreed
+with the one that was mergd, so for now I'm not doing anything on it
+anymore. I can propose it again for 5.10-rc1 but will not push anymore
+if there's no interest behind it.
 
-In general, when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is defined,
-you can use the unaligned accessors. If it is not, it helps to have
-different code paths.
-
-This is a bit murky, and through the years, the interpretation of
-unaligned-memory-access.rst has shifted a bit, but in this case, it
-makes no sense to make the distinction.
+Cheers,
+Willy
