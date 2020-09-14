@@ -2,84 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A21326877E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9FF268787
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgINItI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:49:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53396 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgINItG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:49:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E071BAC46;
-        Mon, 14 Sep 2020 08:49:19 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 10:49:04 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mm: replace memmap_context by memplug_context
-Message-ID: <20200914084904.GA16999@dhcp22.suse.cz>
-References: <20200911134831.53258-1-ldufour@linux.ibm.com>
- <20200911134831.53258-2-ldufour@linux.ibm.com>
+        id S1726236AbgINIu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgINIuG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 04:50:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AF3C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:50:05 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so17783247wrm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 01:50:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Z76iN5dKrEwSbBG4O9fZZwE0qBKlqiQkkuHppjnLYk=;
+        b=I4Wog418XUa15zpIkSdZkM0NfYYZFUjtsBkNZ/nbw/Vs16KcGu6uLbhnVEfgX/mnzm
+         ngoZJMAxMmv4IxCIuOMUpm5SE+/85fyREV/XPkPMYm3dgvKcgMlbLFzS1cmalD84aXon
+         0TXQg1ex1N/stApONUWBM15sM/2NPvq71eKY6xdsdLIOTY788Au2Gs/V3qPU9YRM8d84
+         OvxVM/yV1/P1pPkB0PxNuskRmkB3+Bny/JmF7paTyd8qfKe4q9Ok5Ga+DOb2XH4aYiLX
+         /g2tNeUFNF7b42K/SJLaE2ns2DWLx5d1aTkMYM/GF5jy2FMHQL/c+23W2mJlcBqgRkYZ
+         j4NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=2Z76iN5dKrEwSbBG4O9fZZwE0qBKlqiQkkuHppjnLYk=;
+        b=jbKC9L8eaf8X5OFkufXLLcln3pYNYQ7bCMZrIl0OBin4CD27xBHOHdzNMxB3/7B1uy
+         2QqAzvwck+LXk7xkwP20bIJ0F+vyxJlTi5ofE/YhJfpOMDrnFCnRK25iuiYodZ3iXU/H
+         TpcOZoVP7WuoTIcmJNyP2IEiA+oKus1DepMJQnTShWXTSoO8o4QMYxlyIc06ulsulSDg
+         3MzZC6JswbHGS+Blh0yIFBG5UvTlGjAPS7HRAGANShgVOp1p+guzS0CUEH4cSrdlydfA
+         +Vh0sNjjvKrW/oAUDmg4ZitCD/2OOMsrV1263XXTKtTJguAnmHINyZ3uCwiYsJnvMsgK
+         b9xA==
+X-Gm-Message-State: AOAM532CdDCrwBI3tXHQVcekaicmSG7bJ4N5+HnnIri+o2Jej/AGuj6k
+        izSs2ahUJdadwSL0iqEjCVLaATA6UWqYhQ==
+X-Google-Smtp-Source: ABdhPJziOaoLyqZezVgUbtyPAxvBCTpzyAkveYpRhKWSfKSVWKFznTfHP8u9zRb8BEszGSJh/ZyEYQ==
+X-Received: by 2002:adf:f7d0:: with SMTP id a16mr14104094wrq.381.1600073403505;
+        Mon, 14 Sep 2020 01:50:03 -0700 (PDT)
+Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
+        by smtp.gmail.com with ESMTPSA id j14sm20378080wrr.66.2020.09.14.01.50.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 14 Sep 2020 01:50:02 -0700 (PDT)
+From:   Michal Simek <michal.simek@xilinx.com>
+To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com
+Cc:     Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        linux-arm-kernel@lists.infradead.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 0/3] can: xilinx_can: Some minor changes
+Date:   Mon, 14 Sep 2020 10:49:55 +0200
+Message-Id: <cover.1600073396.git.michal.simek@xilinx.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911134831.53258-2-ldufour@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 11-09-20 15:48:29, Laurent Dufour wrote:
-> The memmap_context is used to detect whether a memory operation is due to a
-> hot-add operation or happening at boot time.
-> 
-> Makes it general to the hotplug operation, renaming it at memplug_context
-> and move its define in the corresponding header.
-> 
-> There is no functional change introduced by this patch
+Hi,
 
-I do not want to nit picking on naming but we want to look at this from
-the initialization POV rather than hotplug. So....
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-[...]
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index 375515803cd8..cd2bd21d3a4d 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -15,6 +15,15 @@ struct memory_block;
->  struct resource;
->  struct vmem_altmap;
->  
-> +/*
-> + * Memory plugin context, use to differentiate memory added at boot time and
-> + * hot-plugged memory.
-> + */
-> +enum memplug_context {
-> +	MEMPLUG_EARLY,
-> +	MEMPLUG_HOTPLUG,
-> +};
+recently some small patches come to our internal tree. We started to use
+coverity which found 2 issues (last two patches) which is simply to fix.
 
-/*
- * Memory initialization context, use to differentiate memory added by
- * the platform statically or via memory hotplug interface.
- */
-enum meminit_context {
-	MEMINIT_EARLY,
-	MEMINIT_HOTPLUG
-}
+Thanks,
+Michal
+
+
+Srinivas Neeli (3):
+  can: xilinx_can: Limit CANFD brp to 2
+  can: xilinx_can: Check return value of set_reset_mode
+  can: xilinx_can: Fix incorrect variable and initialize with a default
+    value
+
+ drivers/net/can/xilinx_can.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.28.0
+
