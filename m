@@ -2,116 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BAF268EA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37C1268E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726914AbgINO6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgINO6P (ORCPT
+        id S1726654AbgINOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:50:02 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:38821 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726799AbgINOrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:58:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7879BC06174A;
-        Mon, 14 Sep 2020 07:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=5I0Wekw7PGkNV3dZaIEsA8c8Eplwzl97xo8vYosQxdI=; b=jKw8RqKuJ++oQ1SuLItg20t5TM
-        m+tQOTB1YJulvaPmWR9W2ftI6DOR4X1yaVUwJmeeH2dkVth5Xu644krytFCPwhsgvlfLbRV664WHp
-        77xXf9YegU0pIUXzWHOmpFJpKtGGsbPXNvPXoSd/dKLY/pOsq8jeFeiR94UCcY+8ZOQCaFr2gUKLa
-        2U0tm2OMKgcLKJdgX3t5I1pqOpwZyNHwZZnPGKBlKRwbY4KpmBVnEkvtM0LdVmzxiakDhHhAknAf0
-        Tyh5ZEgG0X79MNLFtpN3VbcWaBqxePH/TV3qtXdqKxvw8EOUMV2DzB+LhDFoQND29BAXMvHObrhYe
-        Tr7br70Q==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHpvN-00023B-Gu; Mon, 14 Sep 2020 14:57:45 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 05/17] net/au1000-eth: stop using DMA_ATTR_NON_CONSISTENT
-Date:   Mon, 14 Sep 2020 16:44:21 +0200
-Message-Id: <20200914144433.1622958-6-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
-References: <20200914144433.1622958-1-hch@lst.de>
+        Mon, 14 Sep 2020 10:47:39 -0400
+Received: by mail-oi1-f193.google.com with SMTP id y6so143698oie.5;
+        Mon, 14 Sep 2020 07:47:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xXmiKOGJxLdtOythJHwnbZ/9MTtxjprRDh5NW6fGqZE=;
+        b=T+508UsMQ3KDmiYwa0NHhNNGrmdmx9GkkSKk4rTRE3eMrAhfSjq83N3eGR8cUgk68z
+         6z/LDpIm9X5XqKBhHYhUhcRkS5uzoWEKCJR5KtC2/31oulaOef2INTi8bRdrZqCpWQV8
+         bw57uZMtduRbmd+tb92/sua6pW6bqAvtG5x61KgCn7zVhku8Nfs97UsuOsY6h7mtnVIH
+         Bz2wTXv6KNUKSNb/+7xMnGRIT8y4sWnyxUju5pKo8jX6EbTOzt1iV4vqdYO9Iao+mbV7
+         YWHvEqrpxVAbWgPhluEUE7sg8lFOzscJg+4RgsCav+YkabZiBBJh7V5LSAjj3jLnlIZ7
+         63Cg==
+X-Gm-Message-State: AOAM532M1hGbnb8P9sSkaRsbTI/s6e7gt+sav0bRYWQRMIGJUa/WyQeS
+        KC81nD3N/qHSLCLzWJTvWe66AlPdmDn+EFq35ns=
+X-Google-Smtp-Source: ABdhPJy9ncGnp1eMb+q/xwc/WTE6IYf82utcaATWzgDC0b2bF3UWJbUmhvMYmlsX4IqNoMjBPOSTfnBa5f4QkSxGI1k=
+X-Received: by 2002:aca:3bc3:: with SMTP id i186mr8078289oia.148.1600094858794;
+ Mon, 14 Sep 2020 07:47:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20200913182850.32660-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200913182850.32660-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 14 Sep 2020 16:47:27 +0200
+Message-ID: <CAMuHMdWjnQGKt12_=Z1Lc4fE2hecC6V7ELYpGW6FP2zm8mBp=w@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: sh-pfc: r8a7790: Add VIN1-B and VIN2-G pins,
+ groups and functions
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The au1000-eth driver contains none of the manual cache synchronization
-required for using DMA_ATTR_NON_CONSISTENT.  From what I can tell it
-can be used on both dma coherent and non-coherent DMA platforms, but
-I suspect it has been buggy on the non-coherent platforms all along.
+Hi Prabhakar,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/net/ethernet/amd/au1000_eth.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+CC Laurent, Niklas
 
-diff --git a/drivers/net/ethernet/amd/au1000_eth.c b/drivers/net/ethernet/amd/au1000_eth.c
-index 75dbd221dc594b..19e195420e2434 100644
---- a/drivers/net/ethernet/amd/au1000_eth.c
-+++ b/drivers/net/ethernet/amd/au1000_eth.c
-@@ -1131,10 +1131,9 @@ static int au1000_probe(struct platform_device *pdev)
- 	/* Allocate the data buffers
- 	 * Snooping works fine with eth on all au1xxx
- 	 */
--	aup->vaddr = (u32)dma_alloc_attrs(&pdev->dev, MAX_BUF_SIZE *
-+	aup->vaddr = (u32)dma_alloc_coherent(&pdev->dev, MAX_BUF_SIZE *
- 					  (NUM_TX_BUFFS + NUM_RX_BUFFS),
--					  &aup->dma_addr, 0,
--					  DMA_ATTR_NON_CONSISTENT);
-+					  &aup->dma_addr, 0);
- 	if (!aup->vaddr) {
- 		dev_err(&pdev->dev, "failed to allocate data buffers\n");
- 		err = -ENOMEM;
-@@ -1310,9 +1309,8 @@ static int au1000_probe(struct platform_device *pdev)
- err_remap2:
- 	iounmap(aup->mac);
- err_remap1:
--	dma_free_attrs(&pdev->dev, MAX_BUF_SIZE * (NUM_TX_BUFFS + NUM_RX_BUFFS),
--			(void *)aup->vaddr, aup->dma_addr,
--			DMA_ATTR_NON_CONSISTENT);
-+	dma_free_coherent(&pdev->dev, MAX_BUF_SIZE * (NUM_TX_BUFFS + NUM_RX_BUFFS),
-+			(void *)aup->vaddr, aup->dma_addr);
- err_vaddr:
- 	free_netdev(dev);
- err_alloc:
-@@ -1344,9 +1342,8 @@ static int au1000_remove(struct platform_device *pdev)
- 		if (aup->tx_db_inuse[i])
- 			au1000_ReleaseDB(aup, aup->tx_db_inuse[i]);
- 
--	dma_free_attrs(&pdev->dev, MAX_BUF_SIZE * (NUM_TX_BUFFS + NUM_RX_BUFFS),
--			(void *)aup->vaddr, aup->dma_addr,
--			DMA_ATTR_NON_CONSISTENT);
-+	dma_free_coherent(&pdev->dev, MAX_BUF_SIZE * (NUM_TX_BUFFS + NUM_RX_BUFFS),
-+			(void *)aup->vaddr, aup->dma_addr);
- 
- 	iounmap(aup->macdma);
- 	iounmap(aup->mac);
--- 
-2.28.0
+On Sun, Sep 13, 2020 at 8:29 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add pins, groups and functions for the VIN1-B [data/clk/sync] and VIN2-G [data].
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+> Changes for v2:
+> * Added complete list of VIN1-B pins
+> * Renamed vin2_data8_g to vin2_data8g
+> * Sorted vin1_sync_b pins
+>
+> v1 - https://patchwork.kernel.org/patch/11761191/
 
+Thanks for the update!
+
+> --- a/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
+> +++ b/drivers/pinctrl/sh-pfc/pfc-r8a7790.c
+
+> @@ -3874,6 +3940,14 @@ static const unsigned int vin1_sync_mux[] = {
+>         VI1_HSYNC_N_MARK,
+>         VI1_VSYNC_N_MARK,
+>  };
+> +static const unsigned int vin1_sync_b_pins[] = {
+> +       RCAR_GP_PIN(1, 24), /* HSYNC */
+> +       RCAR_GP_PIN(1, 25), /* VSYNC */
+> +};
+> +static const unsigned int vin1_sync_b_mux[] = {
+> +       VI1_HSYNC_N_B_MARK,
+> +       VI1_VSYNC_N_B_MARK,
+> +};
+>  static const unsigned int vin1_field_pins[] = {
+>         RCAR_GP_PIN(1, 13),
+>  };
+
+Missing field_b and clkenb_b.
+
+> @@ -3959,6 +4039,18 @@ static const unsigned int vin2_data18_mux[] = {
+>         VI2_R4_MARK, VI2_R5_MARK,
+>         VI2_R6_MARK, VI2_R7_MARK,
+>  };
+> +static const unsigned int vin2_data8g_pins[] = {
+> +       RCAR_GP_PIN(0, 27), RCAR_GP_PIN(0, 28),
+> +       RCAR_GP_PIN(0, 29), RCAR_GP_PIN(1, 10),
+> +       RCAR_GP_PIN(1, 4), RCAR_GP_PIN(1, 5),
+> +       RCAR_GP_PIN(1, 6), RCAR_GP_PIN(1, 7),
+> +};
+> +static const unsigned int vin2_data8g_mux[] = {
+> +       VI2_G0_MARK, VI2_G1_MARK,
+> +       VI2_G2_MARK, VI2_G3_MARK,
+> +       VI2_G4_MARK, VI2_G5_MARK,
+> +       VI2_G6_MARK, VI2_G7_MARK,
+> +};
+
+Laurent, Niklas: are you happy with the name "vin2_data8g", or do
+you have a better suggestion?
+
+>  static const unsigned int vin2_sync_pins[] = {
+>         RCAR_GP_PIN(1, 16), /* HSYNC */
+>         RCAR_GP_PIN(1, 21), /* VSYNC */
+
+> @@ -4310,15 +4402,25 @@ static const struct {
+>                 VIN_DATA_PIN_GROUP(vin1_data, 10),
+>                 VIN_DATA_PIN_GROUP(vin1_data, 8),
+>                 VIN_DATA_PIN_GROUP(vin1_data, 4),
+> +               VIN_DATA_PIN_GROUP(vin1_data, 24, _b),
+> +               VIN_DATA_PIN_GROUP(vin1_data, 20, _b),
+> +               SH_PFC_PIN_GROUP(vin1_data18_b),
+> +               VIN_DATA_PIN_GROUP(vin1_data, 16, _b),
+> +               VIN_DATA_PIN_GROUP(vin1_data, 12, _b),
+> +               VIN_DATA_PIN_GROUP(vin1_data, 10, _b),
+> +               VIN_DATA_PIN_GROUP(vin1_data, 8, _b),
+
+Missing vin1_data4_b.
+
+>                 SH_PFC_PIN_GROUP(vin1_sync),
+> +               SH_PFC_PIN_GROUP(vin1_sync_b),
+>                 SH_PFC_PIN_GROUP(vin1_field),
+>                 SH_PFC_PIN_GROUP(vin1_clkenb),
+>                 SH_PFC_PIN_GROUP(vin1_clk),
+> +               SH_PFC_PIN_GROUP(vin1_clk_b),
+>                 VIN_DATA_PIN_GROUP(vin2_data, 24),
+>                 SH_PFC_PIN_GROUP(vin2_data18),
+>                 VIN_DATA_PIN_GROUP(vin2_data, 16),
+>                 VIN_DATA_PIN_GROUP(vin2_data, 8),
+>                 VIN_DATA_PIN_GROUP(vin2_data, 4),
+> +               SH_PFC_PIN_GROUP(vin2_data8g),
+>                 SH_PFC_PIN_GROUP(vin2_sync),
+>                 SH_PFC_PIN_GROUP(vin2_field),
+>                 SH_PFC_PIN_GROUP(vin2_clkenb),
+> @@ -4784,10 +4886,19 @@ static const char * const vin1_groups[] = {
+>         "vin1_data10",
+>         "vin1_data8",
+>         "vin1_data4",
+> +       "vin1_data24_b",
+> +       "vin1_data20_b",
+> +       "vin1_data18_b",
+> +       "vin1_data16_b",
+> +       "vin1_data12_b",
+> +       "vin1_data10_b",
+> +       "vin1_data8_b",
+
+Missing vin1_data4_b.
+
+>         "vin1_sync",
+> +       "vin1_sync_b",
+>         "vin1_field",
+>         "vin1_clkenb",
+>         "vin1_clk",
+> +       "vin1_clk_b",
+>  };
+>
+>  static const char * const vin2_groups[] = {
+
+The rest looks good to me.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
