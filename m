@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53154268AA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB362268AFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbgINMFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:05:11 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:45806 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgINMDN (ORCPT
+        id S1726482AbgINMaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgINM1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:03:13 -0400
-Received: by mail-yb1-f195.google.com with SMTP id p81so11599921ybc.12;
-        Mon, 14 Sep 2020 05:01:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f1Xvnib1KAvoqjyhzUrY6wqtD7BsCds6nReVVkX9WQM=;
-        b=i1Z/uoC9R4wZHX4JyAtEAPR/qpgQAxaw4VXlczfeqn5hm+bXcA5uIJsBwIL1HQv4ON
-         MJZtwrjpDF/WONVIWt45625Bgk/pRC9x0KW3uYcryuRQGqCPjtHcR7zjSw4N4W7VPEKw
-         xCQ3BwLS5Zc5EVUzJxuHOfhi8c2h9O9nv6GbQ9iabae4uZxpj1dSBsDq1qpAp/s0QZOL
-         d5TTgArmfl0xsi1M5eDcytRy7UacqHU4VAOXti5kjkJ5wBFVLPFjv4vGqZslLTbAAAld
-         ZLWiRGBpSc71SkdxWWdnAM7GV7oBWwl1jG4sFaAqDm85UhxNYewaIDtMDP/Nzf42UAwi
-         gDYg==
-X-Gm-Message-State: AOAM530W91Q7+AO3T+naTcU1ackshz8PdEHkuULDoiueNyHEQNlJY2LU
-        v973v8QHZPsNcTlOw2+EePNmLgi2tudas4sMUq3GtdKB
-X-Google-Smtp-Source: ABdhPJy72w8a2dXJqwISoVPXy6X0f6peo1TA5+SnjUmc3HqjNuicmMLWTtDJxeSF1zpkGqCB77dveuzxHxvy766AYgg=
-X-Received: by 2002:a05:6830:1008:: with SMTP id a8mr8317812otp.107.1600084321973;
- Mon, 14 Sep 2020 04:52:01 -0700 (PDT)
+        Mon, 14 Sep 2020 08:27:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107B6C0612F2;
+        Mon, 14 Sep 2020 04:56:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sovkMljeHeE8QiqrRubge8NYzTKoGU5H5cGDXKlh4Do=; b=vUB6uayCQphbQuNntBPspugAbh
+        jOnkcmA2i0c1bK3N378QEG6urxYN2R7PkOVb1UBFygrhBxVKmvJMjSakYenuJpOACgtx48gHNx+Og
+        OjV/0iCsw0wHglN8SOZU9DcEQyzQl7SWZIGlWIHGw1wA20VEHpisZSEb6BLPX8fG7L7A+/Cetvyyo
+        hvCQE07SWyK0xzyh330bETJW80DBj35QKQDo5dF7JehFVwCkWjyJWZWIyUfDCpjhryV40uYeeZUag
+        tRBzRfTAjPKaeFXjbX7UurmQrcJmocUWXkD10jTTSuoo42EsMmxfEZeOH34uT3zkVyXpjvEMBB6N5
+        QVntRK2g==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHn5T-0007T5-Al; Mon, 14 Sep 2020 11:55:59 +0000
+Date:   Mon, 14 Sep 2020 12:55:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        gandalf@winds.org, Qian Cai <cai@lca.pw>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: Re: BUG: kernel NULL pointer dereference, address: RIP:
+ 0010:shmem_getpage_gfp.isra.0+0x470/0x750
+Message-ID: <20200914115559.GN6583@casper.infradead.org>
+References: <CA+G9fYvmut-pJT-HsFRCxiEzOnkOjC8UcksX4v8jUvyLYeXTkQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200911080929.15058-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200911080929.15058-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Sep 2020 13:51:50 +0200
-Message-ID: <CAMuHMdUsxo14TA4qEajZcvJa=M9dO71Vvk8mDcvaOvTBmAOYNw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: r8a7742: Add VSP support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvmut-pJT-HsFRCxiEzOnkOjC8UcksX4v8jUvyLYeXTkQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 10:09 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add VSP support to R8A7742 (RZ/G1H) SoC dtsi.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+On Mon, Sep 14, 2020 at 03:49:43PM +0530, Naresh Kamboju wrote:
+> While running LTP fs on qemu x86 and qemu_i386 these kernel BUGs noticed.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+I actually sent the fix for this a couple of days ago [1], but I think Andrew
+overlooked it while constructing the -mm tree.  Here's a fix you can
+apply to the -mm tree:
 
-Gr{oetje,eeting}s,
+[1] https://lore.kernel.org/linux-mm/20200912032042.GA6583@casper.infradead.org/
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/mm/shmem.c b/mm/shmem.c
+index d2a46ef7df43..58bc9e326d0d 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1793,7 +1793,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 	struct mm_struct *charge_mm;
+ 	struct page *page;
+ 	enum sgp_type sgp_huge = sgp;
+-	pgoff_t hindex;
++	pgoff_t hindex = index;
+ 	int error;
+ 	int once = 0;
+ 	int alloced = 0;
+@@ -1822,6 +1822,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 		return error;
+ 	}
+ 
++	if (page)
++		hindex = page->index;
+ 	if (page && sgp == SGP_WRITE)
+ 		mark_page_accessed(page);
+ 
+@@ -1832,6 +1834,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 		unlock_page(page);
+ 		put_page(page);
+ 		page = NULL;
++		hindex = index;
+ 	}
+ 	if (page || sgp == SGP_READ)
+ 		goto out;
+@@ -1982,7 +1985,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 		goto unlock;
+ 	}
+ out:
+-	*pagep = page + index - page->index;
++	*pagep = page + index - hindex;
+ 	return 0;
+ 
+ 	/*
