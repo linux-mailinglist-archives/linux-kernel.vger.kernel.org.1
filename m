@@ -2,163 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B0626827D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8CB268280
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725983AbgINCRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:17:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27753 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725965AbgINCRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:17:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600049831; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=D1hRyfc52WtHMpJxHxAiS1jEtfY8/MohItXtIX/3i6k=; b=mSlhfJ3vNjdgibTYd0IwNGYUJ6h1fvjjkBHbWH/gPZgU7j4R0hKEqbOPWbjycq+UOx213ygf
- cBILq2k9akz8kQWpS64u4Gmtd8xxZRtdhbMy+qZvUBAc/EilEN5zFOAqjyCqc1LdiNttXYV5
- QVMytqDmLN4IalFY1sBUbtGUgcQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f5ed2a7698ee477d1dd4af2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 02:17:11
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 54235C43385; Mon, 14 Sep 2020 02:17:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBFB6C433C6;
-        Mon, 14 Sep 2020 02:17:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBFB6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
-Date:   Mon, 14 Sep 2020 10:17:00 +0800
-From:   Tingwei Zhang <tingweiz@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     tingwei@codeaurora.org, mathieu.poirier@linaro.org,
-        alexander.shishkin@linux.intel.com, mike.leach@linaro.org,
-        tsoni@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        kim.phillips@arm.com, lkp@intel.com, jinlmao@codeaurora.org,
-        gregkh@linuxfoundation.org, coresight@lists.linaro.org,
-        rdunlap@infradead.org, ykaukab@suse.de, linux@armlinux.org.uk,
-        linux-kernel@vger.kernel.org, leo.yan@linaro.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v10 14/24] coresight: allow funnel driver to be built as
- module
-Message-ID: <20200914021659.GA22686@codeaurora.org>
-References: <20200821034445.967-1-tingwei@codeaurora.org>
- <20200821034445.967-15-tingwei@codeaurora.org>
- <3d4bf829-abca-3f5f-fa2f-282305a9dc7a@arm.com>
+        id S1726009AbgINCSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgINCSQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 22:18:16 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A6EC06174A;
+        Sun, 13 Sep 2020 19:18:16 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w7so11289035pfi.4;
+        Sun, 13 Sep 2020 19:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5ctOhTHxOolnlh5TPIYvHhN0DI5aH/8Wn2gnRn9uyfU=;
+        b=Q5LHpPGACyqsbY7QE8dJizCKdFa+fRxQbS5af9M0O3K6fplgNLy/mwTtw0PxZtJzMQ
+         vsWhlwJRA2LeVg8EqQ0ZQi5SHVtGyfjbsjHG8Kvd560UsXg2Je/TiSPuZzCEm3KJkkeQ
+         H6zCZ6ieJNaj4eNgb6nWFoUdlw6O1f4nH1R48dhWy2Jbnw16KAEUNMU5sq063Q98hZRk
+         uW1U2izrJMpKaUaJRn+JLqq/2Dbn0ZYbrIhvPnTePt+f+80NnBLaMuCVl041MqRq9JnY
+         XrYhXl0mnGs8QFpRlyIL8REXOgX+cpyi7l9S7DQM96QT83zm/gcii4OURUbJGqSUl4KJ
+         JUCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5ctOhTHxOolnlh5TPIYvHhN0DI5aH/8Wn2gnRn9uyfU=;
+        b=ATGztfpAnmgsM58NQfgEbYbr3kGarhg2jTsvbx45HMMLzzfEdJSEuk0GAfLcULnrv8
+         LEmKEvhVRtYfiWnzeCjtEJvhwgfJ0/35tTIKp8A56SqWk1hh71alQuSM+PbC5j014kUN
+         tBeCOwj0zkgDgHH5psIQE+qbnkGc9RIeNVf2a4M/XZH+3h6e6WKZtfjIUdNRNg2EeZx4
+         hHhDmNsxcJx0hen7A+MEqDhogDWDpuYAKS2atV9xr43VFXpjW5x3NJLSEoIhQuKmArXM
+         S7KSfGIYBuJMpw9N1FWRH3UNdE85U9BrJAxmMoCMYno6SfDvu8EYJtSBYDIr04wWVpBk
+         hIOQ==
+X-Gm-Message-State: AOAM530HY359Cia/ur14dvr3c84ie1cNL8snJdljsWvMWV6EqSGrqNl6
+        XQM856oygk7k0qxlmsHebt2N3y7LvwWX3w==
+X-Google-Smtp-Source: ABdhPJx72Hlhqco1iFweESzw6h/Gw+Dzg93zCAOwxlZB2NlZtygME8RtAyyQV8DgRxq+gsoFHe/ssQ==
+X-Received: by 2002:a17:902:ab92:: with SMTP id f18mr12385449plr.12.1600049895446;
+        Sun, 13 Sep 2020 19:18:15 -0700 (PDT)
+Received: from dhcp-12-153.nay.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id o20sm7312743pgh.63.2020.09.13.19.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 19:18:14 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tim.Bird@sony.com,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv4 kselftest next] selftests/run_kselftest.sh: make each test individually selectable
+Date:   Mon, 14 Sep 2020 10:17:58 +0800
+Message-Id: <20200914021758.420874-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200911083053.2816576-1-liuhangbin@gmail.com>
+References: <20200911083053.2816576-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d4bf829-abca-3f5f-fa2f-282305a9dc7a@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 09:24:52PM +0800, Suzuki K Poulose wrote:
-> On 08/21/2020 04:44 AM, Tingwei Zhang wrote:
-> >From: Kim Phillips <kim.phillips@arm.com>
-> >
-> >Allow to build coresight-funnel as module, for ease of development.
-> >
-> >- combine static and dynamic funnel init into single
-> >   module_init/exit call
-> >- add funnel_remove functions, for module unload
-> >- add a MODULE_DEVICE_TABLE for autoloading on boot
-> >
-> >Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >Cc: Leo Yan <leo.yan@linaro.org>
-> >Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> >Cc: Randy Dunlap <rdunlap@infradead.org>
-> >Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
-> >Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >Cc: Russell King <linux@armlinux.org.uk>
-> >Co-developed-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-> >Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-> >Signed-off-by: Kim Phillips <kim.phillips@arm.com>
-> >Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> >Reported-by: kernel test robot <lkp@intel.com>
-> >Tested-by: Mike Leach <mike.leach@linaro.org>
-> >Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >---
-> >  .../hwtracing/coresight/coresight-funnel.c    | 64 ++++++++++++++++++-
-> >  1 file changed, 62 insertions(+), 2 deletions(-)
-> >
-> >diff --git a/drivers/hwtracing/coresight/coresight-funnel.c
-> b/drivers/hwtracing/coresight/coresight-funnel.c
-> >index 900690a9f7f0..07bc20391fac 100644
-> >--- a/drivers/hwtracing/coresight/coresight-funnel.c
-> >+++ b/drivers/hwtracing/coresight/coresight-funnel.c
-> >@@ -274,6 +274,15 @@ static int funnel_probe(struct device *dev, struct
-> resource *res)
-> >  	return ret;
-> >  }
-> >+static int __exit funnel_remove(struct device *dev)
-> >+{
-> >+	struct funnel_drvdata *drvdata = dev_get_drvdata(dev);
-> >+
-> >+	coresight_unregister(drvdata->csdev);
-> >+
-> >+	return 0;
-> >+}
-> >+
-> >  #ifdef CONFIG_PM
-> >  static int funnel_runtime_suspend(struct device *dev)
-> >  {
-> >@@ -319,20 +328,32 @@ static int static_funnel_probe(struct
-> platform_device *pdev)
-> >  	return ret;
-> >  }
-> >+static int __exit static_funnel_remove(struct platform_device *pdev)
-> >+{
-> >+	funnel_remove(&pdev->dev);
-> >+	pm_runtime_disable(&pdev->dev);
-> >+	return 0;
-> >+}
-> >+
-> >  static const struct of_device_id static_funnel_match[] = {
-> >  	{.compatible = "arm,coresight-static-funnel"},
-> >  	{}
-> >  };
-> >+MODULE_DEVICE_TABLE(of, static_funnel_match);
-> >+
-> >  #ifdef CONFIG_ACPI
-> >  static const struct acpi_device_id static_funnel_ids[] = {
-> >  	{"ARMHC9FE", 0},
-> >  	{},
-> >  };
-> >+
-> >+MODULE_DEVICE_TABLE(acpi, static_funnel_ids);
-> >  #endif
-> >  static struct platform_driver static_funnel_driver = {
-> >  	.probe          = static_funnel_probe,
-> >+	.remove          = static_funnel_remove,
-> >  	.driver         = {
-> >  		.name   = "coresight-static-funnel",
-> >  		.of_match_table = static_funnel_match,
-> 
-> Sorry missed this. Please set the owner field here. With that :
-> 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-Thanks, Suzuki. I'll add owner in v11.
+Currently, after generating run_kselftest.sh, there is no way to choose
+which test we could run. All the tests are listed together and we have
+to run all every time. This patch enhanced the run_kselftest.sh to make
+the tests individually selectable. e.g.
 
-Thanks,
-Tingwei 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+  $ ./run_kselftest.sh -t "bpf size timers"
+
+Before the patch:
+================
+
+$ cat run_kselftest.sh
+\#!/bin/sh
+BASE_DIR=$(realpath $(dirname $0))
+cd $BASE_DIR
+. ./kselftest/runner.sh
+ROOT=$PWD
+if [ "$1" = "--summary" ]; then
+  logfile=$BASE_DIR/output.log
+  cat /dev/null > $logfile
+fi
+[ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
+cd android
+run_many        \
+        "run.sh"
+cd $ROOT
+...<snip>...
+[ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
+cd zram
+run_many        \
+        "zram.sh"
+cd $ROOT
+
+After the patch:
+===============
+
+$ cat run_kselftest.sh
+\#!/bin/sh
+BASE_DIR=$(realpath $(dirname $0))
+. ./kselftest/runner.sh
+TESTS="android ...<snip>... filesystems/binderfs ...<snip>... zram"
+
+run_android()
+{
+        [ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
+        cd android
+        run_many        \
+                "run.sh"
+        cd $ROOT
+}
+
+...<snip>...
+
+run_filesystems_binderfs()
+{
+        [ -w /dev/kmsg ] && echo "kselftest: Running tests in filesystems/binderfs" >> /dev/kmsg
+        cd filesystems/binderfs
+        run_many        \
+                "binderfs_test"
+        cd $ROOT
+}
+
+...<snip>...
+
+run_zram()
+{
+        [ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
+        cd zram
+        run_many        \
+                "zram.sh"
+        cd $ROOT
+}
+
+usage()
+{
+        cat <<EOF
+usage: ${0##*/} OPTS
+        -s | --summary          Only print summary info and put detailed log in output.log
+        -t | --tests            Test name you want to run specifically
+        -h | --help             Show this usage info
+EOF
+}
+
+while true; do
+        case "$1" in
+        -s | --summary ) logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;
+        -t | --tests ) TESTS=$2; shift 2 ;;
+        -h | --help ) usage; exit 0;;
+        "" ) break;;
+        * ) usage; exit 1;;
+        esac
+done
+
+cd $BASE_DIR
+ROOT=$PWD
+for folder in $TESTS; do
+        folder=$(echo $folder | tr -s '/-' '_')
+        run_$folder
+done
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+
+---
+v4:
+Add parameter -l to list available tests, suggested by Bird, Tim
+
+v3:
+1) rebase the patch to latest code
+2) move `tr -s "/-" "_"` in for loop at the end so user could use test
+   folder name directly. Before the fix, user need to use
+   ./run_kselftest.sh -t 'networking_forwarding'. Now they can just run
+   ./run_kselftest.sh -t 'networking/forwarding' directly.
+
+v2: update document and commit description.
+---
+ Documentation/dev-tools/kselftest.rst |  8 +++++
+ tools/testing/selftests/Makefile      | 51 +++++++++++++++++++++------
+ tools/testing/selftests/lib.mk        |  2 +-
+ 3 files changed, 50 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/dev-tools/kselftest.rst b/Documentation/dev-tools/kselftest.rst
+index 469d115a95f1..7b92f9c177f6 100644
+--- a/Documentation/dev-tools/kselftest.rst
++++ b/Documentation/dev-tools/kselftest.rst
+@@ -151,6 +151,14 @@ note some tests will require root privileges::
+    $ cd kselftest
+    $ ./run_kselftest.sh
+ 
++Or you can run some specific test cases in the installed Kselftests by::
++
++   $ ./run_kselftest.sh -t "bpf size timers"
++
++You can view the available tests to run with::
++
++   $ ./run_kselftest.sh -l
++
+ Packaging selftests
+ ===================
+ 
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 15c1c1359c50..4c8159dd2bd7 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -225,13 +225,9 @@ ifdef INSTALL_PATH
+ 	@# Ask all targets to emit their test scripts
+ 	echo "#!/bin/sh" > $(ALL_SCRIPT)
+ 	echo "BASE_DIR=\$$(realpath \$$(dirname \$$0))" >> $(ALL_SCRIPT)
+-	echo "cd \$$BASE_DIR" >> $(ALL_SCRIPT)
+ 	echo ". ./kselftest/runner.sh" >> $(ALL_SCRIPT)
+-	echo "ROOT=\$$PWD" >> $(ALL_SCRIPT)
+-	echo "if [ \"\$$1\" = \"--summary\" ]; then" >> $(ALL_SCRIPT)
+-	echo "  logfile=\$$BASE_DIR/output.log" >> $(ALL_SCRIPT)
+-	echo "  cat /dev/null > \$$logfile" >> $(ALL_SCRIPT)
+-	echo "fi" >> $(ALL_SCRIPT)
++	echo "TESTS=\"$(TARGETS)\"" >> $(ALL_SCRIPT)
++	echo "" >> $(ALL_SCRIPT);
+ 
+ 	@# While building run_kselftest.sh skip also non-existent TARGET dirs:
+ 	@# they could be the result of a build failure and should NOT be
+@@ -239,15 +235,50 @@ ifdef INSTALL_PATH
+ 	for TARGET in $(TARGETS); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+ 		[ ! -d $(INSTALL_PATH)/$$TARGET ] && echo "Skipping non-existent dir: $$TARGET" && continue; \
+-		echo "[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
+-		echo "cd $$TARGET" >> $(ALL_SCRIPT); \
+-		echo -n "run_many" >> $(ALL_SCRIPT); \
++		echo "run_$$TARGET()" | tr -s "/-" "_" >> $(ALL_SCRIPT); \
++		echo "{" >> $(ALL_SCRIPT); \
++		echo -e "\t[ -w /dev/kmsg ] && echo \"kselftest: Running tests in $$TARGET\" >> /dev/kmsg" >> $(ALL_SCRIPT); \
++		echo -e "\tcd $$TARGET" >> $(ALL_SCRIPT); \
++		echo -en "\trun_many" >> $(ALL_SCRIPT); \
+ 		echo -n "Emit Tests for $$TARGET\n"; \
+ 		$(MAKE) -s --no-print-directory OUTPUT=$$BUILD_TARGET -C $$TARGET emit_tests >> $(ALL_SCRIPT); \
+ 		echo "" >> $(ALL_SCRIPT);	    \
+-		echo "cd \$$ROOT" >> $(ALL_SCRIPT); \
++		echo -e "\tcd \$$ROOT" >> $(ALL_SCRIPT); \
++		echo "}" >> $(ALL_SCRIPT); \
++		echo "" >> $(ALL_SCRIPT); \
+ 	done;
+ 
++	echo "usage()" >> $(ALL_SCRIPT);
++	echo "{" >> $(ALL_SCRIPT);
++	echo -e "\tcat <<EOF" >> $(ALL_SCRIPT);
++	echo "usage: \$${0##*/} OPTS" >> $(ALL_SCRIPT);
++	echo -e "\t-s | --summary\t\tOnly print summary info and put detailed log in output.log" >> $(ALL_SCRIPT);
++	echo -e "\t-t | --tests\t\tTest name you want to run specifically" >> $(ALL_SCRIPT);
++	echo -e "\t-l | --list\t\tList the available tests" >> $(ALL_SCRIPT);
++	echo -e "\t-h | --help\t\tShow this usage info" >> $(ALL_SCRIPT);
++	echo "EOF" >> $(ALL_SCRIPT);
++	echo "}" >> $(ALL_SCRIPT);
++	echo "" >> $(ALL_SCRIPT);
++
++	echo "while true; do" >> $(ALL_SCRIPT);
++	echo -e "\tcase \"\$$1\" in" >> $(ALL_SCRIPT);
++	echo -e "\t-s | --summary ) logfile=\$$BASE_DIR/output.log; cat /dev/null > \$$logfile; shift ;;" >> $(ALL_SCRIPT);
++	echo -e "\t-t | --tests ) TESTS=\$$2; shift 2 ;;" >> $(ALL_SCRIPT);
++	echo -e "\t-l | --list ) echo \$$TESTS; exit 0 ;;" >> $(ALL_SCRIPT);
++	echo -e "\t-h | --help ) usage; exit 0 ;;" >> $(ALL_SCRIPT);
++	echo -e "\t\"\" ) break;;" >> $(ALL_SCRIPT);
++	echo -e "\t* ) usage; exit 1;;" >> $(ALL_SCRIPT);
++	echo -e "\tesac" >> $(ALL_SCRIPT);
++	echo "done" >> $(ALL_SCRIPT);
++	echo "" >> $(ALL_SCRIPT);
++
++	echo "cd \$$BASE_DIR" >> $(ALL_SCRIPT)
++	echo "ROOT=\$$PWD" >> $(ALL_SCRIPT)
++
++	echo "for folder in \$$TESTS; do" >> $(ALL_SCRIPT); \
++	echo -e "\tfolder=\$$(echo \$$folder | tr -s '/-' '_')" >> $(ALL_SCRIPT); \
++	echo -e "\trun_\$$folder" >> $(ALL_SCRIPT); \
++	echo "done" >> $(ALL_SCRIPT); \
+ 	chmod u+x $(ALL_SCRIPT)
+ else
+ 	$(error Error: set INSTALL_PATH to use install)
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index 51124b962d56..3c4c94a5d184 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -108,7 +108,7 @@ emit_tests:
+ 	for TEST in $(TEST_GEN_PROGS) $(TEST_CUSTOM_PROGS) $(TEST_PROGS); do \
+ 		BASENAME_TEST=`basename $$TEST`;	\
+ 		echo "	\\";				\
+-		echo -n "	\"$$BASENAME_TEST\"";	\
++		echo -ne "\t\t\"$$BASENAME_TEST\"";	\
+ 	done;						\
+ 
+ # define if isn't already. It is undefined in make O= case.
+-- 
+2.25.4
+
