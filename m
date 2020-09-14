@@ -2,403 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6728C2683F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DFC2683EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgINFH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:07:27 -0400
-Received: from mga05.intel.com ([192.55.52.43]:35136 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725981AbgINFH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:07:26 -0400
-IronPort-SDR: M6RpdmtLaJNiZ/azQsoU+BtcFDLYWoCp/fod+oYRLfkfLTtp53Nbca+plpsLccwizGC6n7Zyxe
- FBwVXSC/m2Jg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="243856108"
-X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
-   d="scan'208";a="243856108"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 22:07:20 -0700
-IronPort-SDR: ZvRF2QjnvV0NLOwP+i5EthsmuoK18RpWKyWZYNLez5Vtiafbr8tV5cPsB2ij7c1kqKezq9oCnn
- /H0zr3Zjh5CA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
-   d="scan'208";a="408752246"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2020 22:07:16 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v4 5/5] iommu/vt-d: Add is_aux_domain support
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20200901033422.22249-1-baolu.lu@linux.intel.com>
- <20200901033422.22249-6-baolu.lu@linux.intel.com>
- <20200910160556.15fe7acd@w520.home>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <5c6a3e0e-f328-9b89-ff83-101cae920aef@linux.intel.com>
-Date:   Mon, 14 Sep 2020 13:01:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726065AbgINFB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726031AbgINFBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 01:01:53 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC36C06178A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:01:52 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id r7so21237824ejs.11
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:01:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kLBgeAeD/eYecfRvIFAQJBbTpFzHZDgJjRWkQ8jAF0Q=;
+        b=i5WUuzNFph73k8AD7KUDkSxPGy4j0NBC7UAa4aZZbG0McYS48HgarD+njorlIoPfpI
+         0k7RZDQ/JELRTuhTj0sMfUIp+dhoewCkacJ0hXfByYJG45yioTSVnFKGDuuy1edcd7tP
+         v/r4IdYiyWY/ZV5zQQ8WEHTNHNyXQUeJ3ffD6UwQFvjlYn9kq8s7n6BSaZ1z0Nylmhfh
+         9nWUbHQYMkQ11GICzzA667jXAmNOJNlHchyjSwpQlGsXAG8npkWCBoSxMz4O+A/v7GTX
+         UlTjGLiRBjYkTzji0eleEGUP5lWR1u5u/t64pet2mR93lenyUZiHAOtesDLLwkqVP5Mv
+         1KGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kLBgeAeD/eYecfRvIFAQJBbTpFzHZDgJjRWkQ8jAF0Q=;
+        b=TlRacGNqiemlK5/TzFKI1BBZZMj67wakuydjdMz7MBAmqcMvkhldT5XIL72wpScwgh
+         vzjrtlK7AwWCT7yvkHfPcSMfeSbV7LBYJVseuGuWNvu7qZryjdRh43REmJnOuw8imTYK
+         /YhI8/lD91HMuUQClKsvnP8Hik+KjrtkkoVftpeq2D1BC6mCg8LWqL7t/zSi4/PLqonI
+         XwvR20UhtTEFdPevijixpeDphdsoGxdKW9Hw0jQoAucbWVamLp8nvN0G81rm/wmSZVK1
+         9DNz7u/dyUhWL2QYZNcqr+TqBGaY6nyvDnlWdiLB5Gr5xMF8YcVwZmw18KoXYTeTVWcF
+         5+Zw==
+X-Gm-Message-State: AOAM530KQmUi7BmzgL1vJ+52lPUMVMb7LSmT/2UwZ7syIz85u0f4Nj5a
+        XelkktdK/LVoqYRlEvRY0T+A7Lk59Ji+QZzP/QbrOg==
+X-Google-Smtp-Source: ABdhPJzvS6fSEUbLJEATG0CNrkkBFTi2bcRzQpE6Ubg3ntgTSD/m1vW5vpUHgcOd5Av4BJgXDAHa5OWx1/2Q7QG0J50=
+X-Received: by 2002:a17:906:f8d2:: with SMTP id lh18mr13418562ejb.44.1600059710987;
+ Sun, 13 Sep 2020 22:01:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200910160556.15fe7acd@w520.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200903223332.881541-1-haoluo@google.com> <20200903223332.881541-5-haoluo@google.com>
+ <CAEf4BzYbpp2jiODvN=GO4R4SNpw-w5shPMaR+=jssv7fNLA0oA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYbpp2jiODvN=GO4R4SNpw-w5shPMaR+=jssv7fNLA0oA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Sun, 13 Sep 2020 22:01:39 -0700
+Message-ID: <CA+khW7goxucH5dNcW5nU+9r7JgCHo=MkL1orDsju-OOv7u1UNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce bpf_per_cpu_ptr()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+Thanks for review, Andrii.
 
-On 9/11/20 6:05 AM, Alex Williamson wrote:
-> On Tue,  1 Sep 2020 11:34:22 +0800
-> Lu Baolu <baolu.lu@linux.intel.com> wrote:
-> 
->> With subdevice information opt-in through iommu_ops.aux_at(de)tach_dev()
->> interfaces, the vendor iommu driver is able to learn the knowledge about
->> the relationships between the subdevices and the aux-domains. Implement
->> is_aux_domain() support based on the relationship knowledges.
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 125 ++++++++++++++++++++++++++----------
->>   include/linux/intel-iommu.h |  17 +++--
->>   2 files changed, 103 insertions(+), 39 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index 3c12fd06856c..50431c7b2e71 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -334,6 +334,8 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
->>   				     struct device *dev);
->>   static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
->>   					    dma_addr_t iova);
->> +static bool intel_iommu_dev_feat_enabled(struct device *dev,
->> +					 enum iommu_dev_features feat);
->>   
->>   #ifdef CONFIG_INTEL_IOMMU_DEFAULT_ON
->>   int dmar_disabled = 0;
->> @@ -1832,6 +1834,7 @@ static struct dmar_domain *alloc_domain(int flags)
->>   		domain->flags |= DOMAIN_FLAG_USE_FIRST_LEVEL;
->>   	domain->has_iotlb_device = false;
->>   	INIT_LIST_HEAD(&domain->devices);
->> +	INIT_LIST_HEAD(&domain->subdevices);
->>   
->>   	return domain;
->>   }
->> @@ -2580,7 +2583,7 @@ static struct dmar_domain *dmar_insert_one_dev_info(struct intel_iommu *iommu,
->>   	info->iommu = iommu;
->>   	info->pasid_table = NULL;
->>   	info->auxd_enabled = 0;
->> -	INIT_LIST_HEAD(&info->auxiliary_domains);
->> +	INIT_LIST_HEAD(&info->subdevices);
->>   
->>   	if (dev && dev_is_pci(dev)) {
->>   		struct pci_dev *pdev = to_pci_dev(info->dev);
->> @@ -5137,21 +5140,28 @@ static void intel_iommu_domain_free(struct iommu_domain *domain)
->>   		domain_exit(to_dmar_domain(domain));
->>   }
->>   
->> -/*
->> - * Check whether a @domain could be attached to the @dev through the
->> - * aux-domain attach/detach APIs.
->> - */
->> -static inline bool
->> -is_aux_domain(struct device *dev, struct iommu_domain *domain)
->> +/* Lookup subdev_info in the domain's subdevice siblings. */
->> +static struct subdev_info *
->> +subdev_lookup_domain(struct dmar_domain *domain, struct device *dev,
->> +		     struct device *subdev)
->>   {
->> -	struct device_domain_info *info = get_domain_info(dev);
->> +	struct subdev_info *sinfo = NULL, *tmp;
->>   
->> -	return info && info->auxd_enabled &&
->> -			domain->type == IOMMU_DOMAIN_UNMANAGED;
->> +	assert_spin_locked(&device_domain_lock);
->> +
->> +	list_for_each_entry(tmp, &domain->subdevices, link_domain) {
->> +		if ((!dev || tmp->pdev == dev) && tmp->dev == subdev) {
->> +			sinfo = tmp;
->> +			break;
->> +		}
->> +	}
->> +
->> +	return sinfo;
->>   }
->>   
->> -static void auxiliary_link_device(struct dmar_domain *domain,
->> -				  struct device *dev)
->> +static void
->> +subdev_link_device(struct dmar_domain *domain, struct device *dev,
->> +		   struct subdev_info *sinfo)
->>   {
->>   	struct device_domain_info *info = get_domain_info(dev);
->>   
->> @@ -5159,12 +5169,13 @@ static void auxiliary_link_device(struct dmar_domain *domain,
->>   	if (WARN_ON(!info))
->>   		return;
->>   
->> -	domain->auxd_refcnt++;
->> -	list_add(&domain->auxd, &info->auxiliary_domains);
->> +	list_add(&info->subdevices, &sinfo->link_phys);
->> +	list_add(&domain->subdevices, &sinfo->link_domain);
->>   }
->>   
->> -static void auxiliary_unlink_device(struct dmar_domain *domain,
->> -				    struct device *dev)
->> +static void
->> +subdev_unlink_device(struct dmar_domain *domain, struct device *dev,
->> +		     struct subdev_info *sinfo)
->>   {
->>   	struct device_domain_info *info = get_domain_info(dev);
->>   
->> @@ -5172,24 +5183,30 @@ static void auxiliary_unlink_device(struct dmar_domain *domain,
->>   	if (WARN_ON(!info))
->>   		return;
->>   
->> -	list_del(&domain->auxd);
->> -	domain->auxd_refcnt--;
->> +	list_del(&sinfo->link_phys);
->> +	list_del(&sinfo->link_domain);
->> +	kfree(sinfo);
->>   
->> -	if (!domain->auxd_refcnt && domain->default_pasid > 0)
->> +	if (list_empty(&domain->subdevices) && domain->default_pasid > 0)
->>   		ioasid_free(domain->default_pasid);
->>   }
->>   
->> -static int aux_domain_add_dev(struct dmar_domain *domain,
->> -			      struct device *dev)
->> +static int aux_domain_add_dev(struct dmar_domain *domain, struct device *dev,
->> +			      struct device *subdev)
->>   {
->>   	int ret;
->>   	unsigned long flags;
->>   	struct intel_iommu *iommu;
->> +	struct subdev_info *sinfo;
->>   
->>   	iommu = device_to_iommu(dev, NULL, NULL);
->>   	if (!iommu)
->>   		return -ENODEV;
->>   
->> +	sinfo = kzalloc(sizeof(*sinfo), GFP_KERNEL);
->> +	if (!sinfo)
->> +		return -ENOMEM;
->> +
->>   	if (domain->default_pasid <= 0) {
->>   		int pasid;
->>   
->> @@ -5199,7 +5216,8 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
->>   				     NULL);
->>   		if (pasid == INVALID_IOASID) {
->>   			pr_err("Can't allocate default pasid\n");
->> -			return -ENODEV;
->> +			ret = -ENODEV;
->> +			goto pasid_failed;
->>   		}
->>   		domain->default_pasid = pasid;
->>   	}
->> @@ -5225,7 +5243,10 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
->>   		goto table_failed;
->>   	spin_unlock(&iommu->lock);
->>   
->> -	auxiliary_link_device(domain, dev);
->> +	sinfo->dev = subdev;
->> +	sinfo->domain = domain;
->> +	sinfo->pdev = dev;
->> +	subdev_link_device(domain, dev, sinfo);
-> 
-> 
-> The unlink path frees sinfo, would it make more sense to pass subdev,
-> domain, and dev to the link function and let it allocate the sinfo
-> struct and return it on success?  I'm not sure if you're pre-allocating
-> it to avoid something hard to unwind, but it feels asymmetric between
-> the link and unlink semantics.  Thanks,
+One question, should I add bpf_{per, this}_cpu_ptr() to the
+bpf_base_func_proto() in kernel/bpf/helpers.c?
 
-You are right. I should make the link and unlink helpers symmetric. I
-will move free() out to the caller.
+On Fri, Sep 4, 2020 at 1:04 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Sep 3, 2020 at 3:35 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > Add bpf_per_cpu_ptr() to help bpf programs access percpu vars.
+> > bpf_per_cpu_ptr() has the same semantic as per_cpu_ptr() in the kernel
+> > except that it may return NULL. This happens when the cpu parameter is
+> > out of range. So the caller must check the returned value.
+> >
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+> >  include/linux/bpf.h            |  3 ++
+> >  include/linux/btf.h            | 11 ++++++
+> >  include/uapi/linux/bpf.h       | 17 +++++++++
+> >  kernel/bpf/btf.c               | 10 ------
+> >  kernel/bpf/verifier.c          | 66 +++++++++++++++++++++++++++++++---
+> >  kernel/trace/bpf_trace.c       | 18 ++++++++++
+> >  tools/include/uapi/linux/bpf.h | 17 +++++++++
+> >  7 files changed, 128 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index c6d9f2c444f4..6b2034f7665e 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -292,6 +292,7 @@ enum bpf_arg_type {
+> >         ARG_PTR_TO_ALLOC_MEM,   /* pointer to dynamically allocated memory */
+> >         ARG_PTR_TO_ALLOC_MEM_OR_NULL,   /* pointer to dynamically allocated memory or NULL */
+> >         ARG_CONST_ALLOC_SIZE_OR_ZERO,   /* number of allocated bytes requested */
+> > +       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
+> >  };
+> >
+> >  /* type of values returned from helper functions */
+> > @@ -305,6 +306,7 @@ enum bpf_return_type {
+> >         RET_PTR_TO_SOCK_COMMON_OR_NULL, /* returns a pointer to a sock_common or NULL */
+> >         RET_PTR_TO_ALLOC_MEM_OR_NULL,   /* returns a pointer to dynamically allocated memory or NULL */
+> >         RET_PTR_TO_BTF_ID_OR_NULL,      /* returns a pointer to a btf_id or NULL */
+> > +       RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL, /* returns a pointer to a valid memory or a btf_id or NULL */
+> >  };
+> >
+> >  /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
+> > @@ -385,6 +387,7 @@ enum bpf_reg_type {
+> >         PTR_TO_RDONLY_BUF_OR_NULL, /* reg points to a readonly buffer or NULL */
+> >         PTR_TO_RDWR_BUF,         /* reg points to a read/write buffer */
+> >         PTR_TO_RDWR_BUF_OR_NULL, /* reg points to a read/write buffer or NULL */
+> > +       PTR_TO_PERCPU_BTF_ID,    /* reg points to percpu kernel type */
+> >  };
+> >
+> >  /* The information passed from prog-specific *_is_valid_access
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index 592373d359b9..07b7de1c05b0 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -71,6 +71,11 @@ btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+> >              i < btf_type_vlen(struct_type);                    \
+> >              i++, member++)
+> >
+> > +#define for_each_vsi(i, struct_type, member)                   \
+>
+> datasec_type?
+>
 
-Best regards,
-baolu
+Hmmm, right. It seems to come when copy-pasted from "for_each_member".
 
-> 
-> Alex
-> 
-> 
->>   
->>   	spin_unlock_irqrestore(&device_domain_lock, flags);
->>   
->> @@ -5236,27 +5257,36 @@ static int aux_domain_add_dev(struct dmar_domain *domain,
->>   attach_failed:
->>   	spin_unlock(&iommu->lock);
->>   	spin_unlock_irqrestore(&device_domain_lock, flags);
->> -	if (!domain->auxd_refcnt && domain->default_pasid > 0)
->> +	if (list_empty(&domain->subdevices) && domain->default_pasid > 0)
->>   		ioasid_free(domain->default_pasid);
->> +pasid_failed:
->> +	kfree(sinfo);
->>   
->>   	return ret;
->>   }
->>   
->> -static void aux_domain_remove_dev(struct dmar_domain *domain,
->> -				  struct device *dev)
->> +static void
->> +aux_domain_remove_dev(struct dmar_domain *domain, struct device *dev,
->> +		      struct device *subdev)
->>   {
->>   	struct device_domain_info *info;
->>   	struct intel_iommu *iommu;
->> +	struct subdev_info *sinfo;
->>   	unsigned long flags;
->>   
->> -	if (!is_aux_domain(dev, &domain->domain))
->> +	if (!intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) ||
->> +	    domain->domain.type != IOMMU_DOMAIN_UNMANAGED)
->>   		return;
->>   
->>   	spin_lock_irqsave(&device_domain_lock, flags);
->>   	info = get_domain_info(dev);
->>   	iommu = info->iommu;
->> -
->> -	auxiliary_unlink_device(domain, dev);
->> +	sinfo = subdev_lookup_domain(domain, dev, subdev);
->> +	if (!sinfo) {
->> +		spin_unlock_irqrestore(&device_domain_lock, flags);
->> +		return;
->> +	}
->> +	subdev_unlink_device(domain, dev, sinfo);
->>   
->>   	spin_lock(&iommu->lock);
->>   	intel_pasid_tear_down_entry(iommu, dev, domain->default_pasid, false);
->> @@ -5319,7 +5349,8 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
->>   		return -EPERM;
->>   	}
->>   
->> -	if (is_aux_domain(dev, domain))
->> +	if (intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) &&
->> +	    domain->type == IOMMU_DOMAIN_UNMANAGED)
->>   		return -EPERM;
->>   
->>   	/* normally dev is not mapped */
->> @@ -5344,14 +5375,15 @@ intel_iommu_aux_attach_device(struct iommu_domain *domain,
->>   {
->>   	int ret;
->>   
->> -	if (!is_aux_domain(dev, domain))
->> +	if (!intel_iommu_dev_feat_enabled(dev, IOMMU_DEV_FEAT_AUX) ||
->> +	    domain->type != IOMMU_DOMAIN_UNMANAGED)
->>   		return -EPERM;
->>   
->>   	ret = prepare_domain_attach_device(domain, dev);
->>   	if (ret)
->>   		return ret;
->>   
->> -	return aux_domain_add_dev(to_dmar_domain(domain), dev);
->> +	return aux_domain_add_dev(to_dmar_domain(domain), dev, subdev);
->>   }
->>   
->>   static void intel_iommu_detach_device(struct iommu_domain *domain,
->> @@ -5364,7 +5396,7 @@ static void
->>   intel_iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev,
->>   			      struct device *subdev)
->>   {
->> -	aux_domain_remove_dev(to_dmar_domain(domain), dev);
->> +	aux_domain_remove_dev(to_dmar_domain(domain), dev, subdev);
->>   }
->>   
->>   /*
->> @@ -6020,6 +6052,32 @@ static bool intel_iommu_is_attach_deferred(struct iommu_domain *domain,
->>   	return attach_deferred(dev);
->>   }
->>   
->> +static int
->> +intel_iommu_domain_get_attr(struct iommu_domain *domain,
->> +			    enum iommu_attr attr, void *data)
->> +{
->> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
->> +	unsigned long flags;
->> +	int ret;
->> +
->> +	if (domain->type != IOMMU_DOMAIN_UNMANAGED)
->> +		return -EINVAL;
->> +
->> +	switch (attr) {
->> +	case DOMAIN_ATTR_IS_AUX:
->> +		spin_lock_irqsave(&device_domain_lock, flags);
->> +		ret = !IS_ERR_OR_NULL(subdev_lookup_domain(dmar_domain,
->> +							   NULL, data));
->> +		spin_unlock_irqrestore(&device_domain_lock, flags);
->> +		break;
->> +	default:
->> +		ret = -EINVAL;
->> +		break;
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->>   static int
->>   intel_iommu_domain_set_attr(struct iommu_domain *domain,
->>   			    enum iommu_attr attr, void *data)
->> @@ -6073,6 +6131,7 @@ const struct iommu_ops intel_iommu_ops = {
->>   	.domain_alloc		= intel_iommu_domain_alloc,
->>   	.domain_free		= intel_iommu_domain_free,
->>   	.domain_set_attr	= intel_iommu_domain_set_attr,
->> +	.domain_get_attr	= intel_iommu_domain_get_attr,
->>   	.attach_dev		= intel_iommu_attach_device,
->>   	.detach_dev		= intel_iommu_detach_device,
->>   	.aux_attach_dev		= intel_iommu_aux_attach_device,
->> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
->> index b1ed2f25f7c0..47ba1904c691 100644
->> --- a/include/linux/intel-iommu.h
->> +++ b/include/linux/intel-iommu.h
->> @@ -526,11 +526,9 @@ struct dmar_domain {
->>   					/* Domain ids per IOMMU. Use u16 since
->>   					 * domain ids are 16 bit wide according
->>   					 * to VT-d spec, section 9.3 */
->> -	unsigned int	auxd_refcnt;	/* Refcount of auxiliary attaching */
->> -
->>   	bool has_iotlb_device;
->>   	struct list_head devices;	/* all devices' list */
->> -	struct list_head auxd;		/* link to device's auxiliary list */
->> +	struct list_head subdevices;	/* all subdevices' list */
->>   	struct iova_domain iovad;	/* iova's that belong to this domain */
->>   
->>   	struct dma_pte	*pgd;		/* virtual address */
->> @@ -603,14 +601,21 @@ struct intel_iommu {
->>   	struct dmar_drhd_unit *drhd;
->>   };
->>   
->> +/* Per subdevice private data */
->> +struct subdev_info {
->> +	struct list_head link_phys;	/* link to phys device siblings */
->> +	struct list_head link_domain;	/* link to domain siblings */
->> +	struct device *pdev;		/* physical device derived from */
->> +	struct device *dev;		/* subdevice node */
->> +	struct dmar_domain *domain;	/* aux-domain */
->> +};
->> +
->>   /* PCI domain-device relationship */
->>   struct device_domain_info {
->>   	struct list_head link;	/* link to domain siblings */
->>   	struct list_head global; /* link to global list */
->>   	struct list_head table;	/* link to pasid table */
->> -	struct list_head auxiliary_domains; /* auxiliary domains
->> -					     * attached to this device
->> -					     */
->> +	struct list_head subdevices; /* subdevices sibling */
->>   	u32 segment;		/* PCI segment number */
->>   	u8 bus;			/* PCI bus number */
->>   	u8 devfn;		/* PCI devfn number */
-> 
+> > +       for (i = 0, member = btf_type_var_secinfo(struct_type); \
+> > +            i < btf_type_vlen(struct_type);                    \
+> > +            i++, member++)
+> > +
+> >  static inline bool btf_type_is_ptr(const struct btf_type *t)
+> >  {
+> >         return BTF_INFO_KIND(t->info) == BTF_KIND_PTR;
+> > @@ -155,6 +160,12 @@ static inline const struct btf_member *btf_type_member(const struct btf_type *t)
+> >         return (const struct btf_member *)(t + 1);
+> >  }
+> >
+> > +static inline const struct btf_var_secinfo *btf_type_var_secinfo(
+> > +               const struct btf_type *t)
+> > +{
+> > +       return (const struct btf_var_secinfo *)(t + 1);
+> > +}
+> > +
+> >  #ifdef CONFIG_BPF_SYSCALL
+> >  const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id);
+> >  const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index ab00ad9b32e5..d0ec94d5bdbf 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3596,6 +3596,22 @@ union bpf_attr {
+> >   *             the data in *dst*. This is a wrapper of copy_from_user().
+> >   *     Return
+> >   *             0 on success, or a negative error in case of failure.
+> > + *
+> > + * void *bpf_per_cpu_ptr(const void *percpu_ptr, u32 cpu)
+> > + *     Description
+> > + *             Take a pointer to a percpu ksym, *percpu_ptr*, and return a
+> > + *             pointer to the percpu kernel variable on *cpu*. A ksym is an
+> > + *             extern variable decorated with '__ksym'. For ksym, there is a
+> > + *             global var (either static or global) defined of the same name
+> > + *             in the kernel. The ksym is percpu if the global var is percpu.
+> > + *             The returned pointer points to the global percpu var on *cpu*.
+> > + *
+> > + *             bpf_per_cpu_ptr() has the same semantic as per_cpu_ptr() in the
+> > + *             kernel, except that bpf_per_cpu_ptr() may return NULL. This
+> > + *             happens if *cpu* is larger than nr_cpu_ids. The caller of
+> > + *             bpf_per_cpu_ptr() must check the returned value.
+> > + *     Return
+> > + *             A generic pointer pointing to the kernel percpu variable on *cpu*.
+>
+> Or NULL, if *cpu* is invalid.
+>
+
+Ack.
+
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -3747,6 +3763,7 @@ union bpf_attr {
+> >         FN(inode_storage_delete),       \
+> >         FN(d_path),                     \
+> >         FN(copy_from_user),             \
+> > +       FN(bpf_per_cpu_ptr),            \
+> >         /* */
+> >
+>
+> [...]
+>
+> > @@ -4003,6 +4008,15 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >                         if (type != expected_type)
+> >                                 goto err_type;
+> >                 }
+> > +       } else if (arg_type == ARG_PTR_TO_PERCPU_BTF_ID) {
+> > +               expected_type = PTR_TO_PERCPU_BTF_ID;
+> > +               if (type != expected_type)
+> > +                       goto err_type;
+> > +               if (!reg->btf_id) {
+> > +                       verbose(env, "Helper has invalid btf_id in R%d\n", regno);
+> > +                       return -EACCES;
+> > +               }
+> > +               meta->ret_btf_id = reg->btf_id;
+> >         } else if (arg_type == ARG_PTR_TO_BTF_ID) {
+> >                 bool ids_match = false;
+> >
+> > @@ -5002,6 +5016,30 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+> >                 regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
+> >                 regs[BPF_REG_0].id = ++env->id_gen;
+> >                 regs[BPF_REG_0].mem_size = meta.mem_size;
+> > +       } else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL) {
+>
+> Given this is internal implementation detail, this return type is
+> fine, but I'm wondering if it would be better to just make
+> PTR_TO_BTF_ID to allow not just structs? E.g., if we have an int, just
+> allow reading those 4 bytes.
+>
+> Not sure what the implications are in terms of implementation, but
+> conceptually that shouldn't be a problem, given we do have BTF type ID
+> describing size and all.
+>
+
+Yeah. Totally agree. I looked at it initially. My take is
+PTR_TO_BTF_ID is meant for struct types. It required some code
+refactoring to break this assumption. I can add it to my TODO list and
+investigate it if this makes more sense.
+
+> > +               const struct btf_type *t;
+> > +
+> > +               mark_reg_known_zero(env, regs, BPF_REG_0);
+> > +               t = btf_type_skip_modifiers(btf_vmlinux, meta.ret_btf_id, NULL);
+> > +               if (!btf_type_is_struct(t)) {
+> > +                       u32 tsize;
+> > +                       const struct btf_type *ret;
+> > +                       const char *tname;
+> > +
+> > +                       /* resolve the type size of ksym. */
+> > +                       ret = btf_resolve_size(btf_vmlinux, t, &tsize);
+> > +                       if (IS_ERR(ret)) {
+> > +                               tname = btf_name_by_offset(btf_vmlinux, t->name_off);
+> > +                               verbose(env, "unable to resolve the size of type '%s': %ld\n",
+> > +                                       tname, PTR_ERR(ret));
+> > +                               return -EINVAL;
+> > +                       }
+> > +                       regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
+> > +                       regs[BPF_REG_0].mem_size = tsize;
+> > +               } else {
+> > +                       regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
+> > +                       regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+> > +               }
+> >         } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
+> >                 int ret_btf_id;
+> >
+>
+> [...]
+>
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index b2a5380eb187..d474c1530f87 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1144,6 +1144,22 @@ static const struct bpf_func_proto bpf_d_path_proto = {
+> >         .allowed        = bpf_d_path_allowed,
+> >  };
+> >
+> > +BPF_CALL_2(bpf_per_cpu_ptr, const void *, ptr, u32, cpu)
+> > +{
+> > +       if (cpu >= nr_cpu_ids)
+> > +               return 0;
+> > +
+> > +       return (u64)per_cpu_ptr(ptr, cpu);
+>
+> not sure, but on 32-bit arches this might cause compilation warning,
+> case to (unsigned long) instead?
+>
+
+Ah, I see, good catch! Will fix, thanks.
+
+
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
+> > +       .func           = bpf_per_cpu_ptr,
+> > +       .gpl_only       = false,
+> > +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL,
+> > +       .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
+> > +       .arg2_type      = ARG_ANYTHING,
+> > +};
+> > +
+>
+> [...]
