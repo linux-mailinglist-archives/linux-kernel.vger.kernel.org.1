@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC39268E11
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1917A268E49
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgINOnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
+        id S1726640AbgINOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726373AbgINOlq (ORCPT
+        with ESMTP id S1726836AbgINOrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 10:41:46 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A26C06174A;
-        Mon, 14 Sep 2020 07:41:45 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id b79so307729wmb.4;
-        Mon, 14 Sep 2020 07:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gzOaZ+9doo3e9MINvriYLJ9c1FIG4zynst8IxgcsqLk=;
-        b=DZRmIViiCZ7QQ2zUCEkCO6A+Z8C/eQt5ChkUIcvGdpfHx2ZBvUrQVJYqVEy3q51kz5
-         TFjGe/XLCvjKAVfXsEWklgJifUm7U2fZd8GGh5HIrkEI99SnlZu9W5EwKNlfbQh+BC09
-         yFRn5BWABqTgO5JlMIPjVZHSefwvy74dKAFlNtvoMpMJ4qimbdybBqXZb8HjPHKdrxX5
-         GASM6TYlww19XOCuX/Hw3sNgsTbVvCs6WCQVDwDIWpUsVKeET46idgGEKjFgqeZBSsx3
-         oM7WUXix9EckT6kHc+VfN8cD3MAqk19MPaZ05zZREXdZgsYIRphqax1yS600WzNzEs76
-         uYtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gzOaZ+9doo3e9MINvriYLJ9c1FIG4zynst8IxgcsqLk=;
-        b=Z/TRvRLQ+xZHGkbWKKnI2BHk1sq61TzYZPZQyTCEg+Jj0T4hrjEU8zDaX98p6kBYWt
-         uTqREvmx4jcgV7AEyb/iFhmlb9PaxonDmy7zWsxkCK43YU7gVYFKm2R0ERk1NM4RSF12
-         9WEckUKurKiCX6zn5OyDj43KyHAnzsTwkaMHbz3NNqmN1nghmSuj3ZAxrKRsdRJBACLn
-         i2+AjFyOkmBOToEo05/QEBHRTWXu8q0Qnw7h9NEwZ2cxHFkgYFgw9cw0J22SejSNydrs
-         oy8WMeekOGl8PVCPrExFyfWeA9tCPZN95AMGK7ql9N4qWP2fxECy4YxB4w53zuaA6eZ3
-         WUKg==
-X-Gm-Message-State: AOAM532sW/b16+zDplZAzavdqwC3FlMxoMlX6XcvjAZ7+8Q5hlKhsiZm
-        Pjlg8+WDpax1TwTi4APZsKw=
-X-Google-Smtp-Source: ABdhPJzXcOhHK7by7NsLZ4cIfrt/nXVH6TUtlu6R6APi9nfMpl32uOzvpNNw0ngxZ245uA+1Kjin0g==
-X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr15168395wml.176.1600094504093;
-        Mon, 14 Sep 2020 07:41:44 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
-        by smtp.gmail.com with ESMTPSA id g12sm21329806wro.89.2020.09.14.07.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 07:41:43 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     linus.walleij@linaro.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] pinctrl: bcm: fix kconfig dependency warning when !GPIOLIB
-Date:   Mon, 14 Sep 2020 17:40:26 +0300
-Message-Id: <20200914144025.371370-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 14 Sep 2020 10:47:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17069C061788;
+        Mon, 14 Sep 2020 07:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ZNjtOprQ0CMyI4ATRWqucmdOpx+hHcpY44uRUfjYcDA=; b=N4NdSCqp08oFrOv3mtyviiYwas
+        oNsCF+Dc8Ja0cguO7+ZPTYUzH37/R/e85Vh80cBfx4KckZelgIyQd543/M1egNtkylVU6AB/wVfBM
+        Tlkxi46PvOhn46tciCiOecLWzjs46m9we7uYxaasaogiTmImYuOdp/gt2FgdFngL+ZN6LS6utTo0O
+        Hm9LbW/uDyDkAIigJFLQXrAZkOr7o09fPL6HdPU4QQq1TyT5bp3IWI2Cw1qQE5T5w1y0VaAfJxPRZ
+        aK96DU68S1PJnrr+xN+ybqrGZgNzPzvroduSeid9Yw4t5OHe2QnIzFzfQyScSm13brcMUjUX0bu0P
+        Q8mlhOfQ==;
+Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHpkk-0001Er-WB; Mon, 14 Sep 2020 14:46:47 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org
+Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
+Subject: a saner API for allocating DMA addressable pages v2
+Date:   Mon, 14 Sep 2020 16:44:16 +0200
+Message-Id: <20200914144433.1622958-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PINCTRL_BCM2835 is enabled and GPIOLIB is disabled, it results in the
-following Kbuild warning:
+Hi all,
 
-WARNING: unmet direct dependencies detected for GPIOLIB_IRQCHIP
-  Depends on [n]: GPIOLIB [=n]
-  Selected by [y]:
-  - PINCTRL_BCM2835 [=y] && PINCTRL [=y] && OF [=y] && (ARCH_BCM2835 [=n] || ARCH_BRCMSTB [=n] || COMPILE_TEST [=y])
+this series replaced the DMA_ATTR_NON_CONSISTENT flag to dma_alloc_attrs
+with a separate new dma_alloc_pages API, which is available on all
+platforms.  In addition to cleaning up the convoluted code path, this
+ensures that other drivers that have asked for better support for
+non-coherent DMA to pages with incurring bounce buffering over can finally
+be properly supported.
 
-The reason is that PINCTRL_BCM2835 selects GPIOLIB_IRQCHIP without
-depending on or selecting GPIOLIB while GPIOLIB_IRQCHIP is subordinate to
-GPIOLIB.
+I'm still a little unsure about the API naming, as alloc_pages sort of
+implies a struct page return value, but we return a kernel virtual
+address.  The other alternative would be to name the API
+dma_alloc_noncoherent, but the whole non-coherent naming seems to put
+people off.  As a follow up I plan to move the implementation of the
+DMA_ATTR_NO_KERNEL_MAPPING flag over to this framework as well, given
+that is also is a fundamentally non coherent allocation.  The replacement
+for that flag would then return a struct page, as it is allowed to
+actually return pages without a kernel mapping as the name suggested
+(although most of the time they will actually have a kernel mapping..)
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+In addition to the conversions of the existing non-coherent DMA users,
+I've also added a patch to convert the firewire ohci driver to use
+the new dma_alloc_pages API.
 
-Fixes: 85ae9e512f43 ("pinctrl: bcm2835: switch to GPIOLIB_IRQCHIP")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- drivers/pinctrl/bcm/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Note that I haven't carried over any Tested-by: tags for the noncoherent
+allocation conversions as there was a bit of a patch reshuffle, but the
+result should be the same.
 
-diff --git a/drivers/pinctrl/bcm/Kconfig b/drivers/pinctrl/bcm/Kconfig
-index dcf7df797af7..0ed14de0134c 100644
---- a/drivers/pinctrl/bcm/Kconfig
-+++ b/drivers/pinctrl/bcm/Kconfig
-@@ -23,6 +23,7 @@ config PINCTRL_BCM2835
- 	select PINMUX
- 	select PINCONF
- 	select GENERIC_PINCONF
-+	select GPIOLIB
- 	select GPIOLIB_IRQCHIP
- 	default ARCH_BCM2835 || ARCH_BRCMSTB
- 	help
--- 
-2.25.1
+The first patch is queued up for 5.9 in the media tree, but included here
+for completeness.
 
+
+A git tree is available here:
+
+    git://git.infradead.org/users/hch/misc.git dma_alloc_pages
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/dma_alloc_pages
+
+
+Changes since v1:
+ - rebased on the latests dma-mapping tree, which merged many of the
+   cleanups
+ - fix an argument passing typo in 53c700, caught by sparse
+ - rename a few macro arguments in 53c700
+ - pass the right device to the DMA API in the lib82596 drivers
+ - fix memory ownershiptransfers in sgiseeq
+ - better document what a page in the direct kernel mapping means
+ - split into dma_alloc_pages that returns a struct page and is in the
+   direct mapping vs dma_alloc_noncoherent that can be vmapped
+ - conver the firewire ohci driver to dma_alloc_pages
+
+Diffstat:
