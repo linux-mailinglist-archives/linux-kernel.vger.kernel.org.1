@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676472697C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9E62697C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgINVgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:36:24 -0400
-Received: from smtp.infotech.no ([82.134.31.41]:55713 "EHLO smtp.infotech.no"
+        id S1726046AbgINVhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:37:16 -0400
+Received: from mga17.intel.com ([192.55.52.151]:65304 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725953AbgINVgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:36:24 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.infotech.no (Postfix) with ESMTP id B8EF52041CB;
-        Mon, 14 Sep 2020 23:36:19 +0200 (CEST)
-X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
-Received: from smtp.infotech.no ([127.0.0.1])
-        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3vys0KX8cFqd; Mon, 14 Sep 2020 23:36:12 +0200 (CEST)
-Received: from xtwo70.bingwo.ca (host-45-78-251-166.dyn.295.ca [45.78.251.166])
-        by smtp.infotech.no (Postfix) with ESMTPA id 1DE0220417A;
-        Mon, 14 Sep 2020 23:36:11 +0200 (CEST)
-From:   Douglas Gilbert <dgilbert@interlog.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-block@vger.kernel.org, axboe@kernel.dk
-Subject: [PATCH] tools/io_uring: fix compile breakage
-Date:   Mon, 14 Sep 2020 17:36:09 -0400
-Message-Id: <20200914213609.141577-1-dgilbert@interlog.com>
-X-Mailer: git-send-email 2.25.1
+        id S1725978AbgINVhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:37:12 -0400
+IronPort-SDR: M1rvg5w6s6IWdEDKkfXhNQ7SjWUY05USmYB1fanmF54ptbFfDEfZJo7Q2vlslWLkevsAxbT610
+ LaQly1E9a7Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="139175439"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="139175439"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:37:10 -0700
+IronPort-SDR: 1qipLXuLehnUbJKq9UzwT7QTjP6+RAK1R5zgEyJ/aLk/KMGY7LnGD83MNiUBXPz7U9DQG9V43J
+ KTK3QppWsmmw==
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="507297459"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:37:10 -0700
+Date:   Mon, 14 Sep 2020 14:37:08 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 25/35] KVM: x86: Update __get_sregs() / __set_sregs()
+ to support SEV-ES
+Message-ID: <20200914213708.GC7192@sjchrist-ice>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <e08f56496a52a3a974310fbe05bb19100fd6c1d8.1600114548.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e08f56496a52a3a974310fbe05bb19100fd6c1d8.1600114548.git.thomas.lendacky@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It would seem none of the kernel continuous integration does this:
-    $ cd tools/io_uring
-    $ make
+On Mon, Sep 14, 2020 at 03:15:39PM -0500, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> Since many of the registers used by the SEV-ES are encrypted and cannot
+> be read or written, adjust the __get_sregs() / __set_sregs() to only get
+> or set the registers being tracked (efer, cr0, cr4 and cr8) once the VMSA
+> is encrypted.
 
-Otherwise it may have noticed:
-   cc -Wall -Wextra -g -D_GNU_SOURCE   -c -o io_uring-bench.o
-	 io_uring-bench.c
-io_uring-bench.c:133:12: error: static declaration of ‘gettid’
-	 follows non-static declaration
-  133 | static int gettid(void)
-      |            ^~~~~~
-In file included from /usr/include/unistd.h:1170,
-                 from io_uring-bench.c:27:
-/usr/include/x86_64-linux-gnu/bits/unistd_ext.h:34:16: note:
-	 previous declaration of ‘gettid’ was here
-   34 | extern __pid_t gettid (void) __THROW;
-      |                ^~~~~~
-make: *** [<builtin>: io_uring-bench.o] Error 1
-
-The problem on Ubuntu 20.04 (with lk 5.9.0-rc5) is that unistd.h
-already defines gettid(). So prefix the local definition with
-"lk_".
-
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
----
- tools/io_uring/io_uring-bench.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/io_uring/io_uring-bench.c b/tools/io_uring/io_uring-bench.c
-index 0f257139b003..7703f0118385 100644
---- a/tools/io_uring/io_uring-bench.c
-+++ b/tools/io_uring/io_uring-bench.c
-@@ -130,7 +130,7 @@ static int io_uring_register_files(struct submitter *s)
- 					s->nr_files);
- }
- 
--static int gettid(void)
-+static int lk_gettid(void)
- {
- 	return syscall(__NR_gettid);
- }
-@@ -281,7 +281,7 @@ static void *submitter_fn(void *data)
- 	struct io_sq_ring *ring = &s->sq_ring;
- 	int ret, prepped;
- 
--	printf("submitter=%d\n", gettid());
-+	printf("submitter=%d\n", lk_gettid());
- 
- 	srand48_r(pthread_self(), &s->rand);
- 
--- 
-2.25.1
-
+Is there an actual use case for writing said registers after the VMSA is
+encrypted?  Assuming there's a separate "debug mode" and live migration has
+special logic, can KVM simply reject the ioctl() if guest state is protected?
