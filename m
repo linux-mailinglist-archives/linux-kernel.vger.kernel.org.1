@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1382684B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A434F2684B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgINGUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgINGT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:19:59 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA005C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:19:58 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id q13so21453107ejo.9
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OPWNvv2kZKctpbCV5DaDmYimW34Kcud5VzQfi7Xnkyc=;
-        b=a0bp8QrNiHY/XDpAKBCEXGpK4nesHUgOvIqiaHQ/49/zhPg9G9bMJrl+0kD50tu+BN
-         zJrhlnPXT9LQNjSyVwOF1BZfFMxS7aHAjONIckGM6ssXdV3xR90WKRKmVT72QtMoTHc5
-         02iM0zN1sJIwCCHo00jljpmXWbsNYB1LrZA778IywvEN1oU+aVNoYoqLerxRreONkIXw
-         7LRwUVGoaOE6L+exYogI4sgqyVR7GbOcnDT9DPb4gAzPBN+vCF80pMrCQZvhPCRZRbiH
-         lIxhT9AhuugbMOrH4k144DA2+LivRf9UzfcU+EzCq8nStJ27d8jHjG1G7F/vJEap2AUw
-         PSGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OPWNvv2kZKctpbCV5DaDmYimW34Kcud5VzQfi7Xnkyc=;
-        b=Vh3zYMg4J2tDpExHULf7Y1dwPEI99zvllC21tse1bWP8J2gAVdoNgPObaMEHlyVuBk
-         vxDFZ2f97sJtGgroCyFopIe5RGakoTsr3xopPj/1rIpU8y9glwuWtsCgUjGi/Kyjo5c9
-         pgDI/Zm/RbY6+iVplxFMFdT9pBeDAJgyn3SRBDn4aVSa+OkbJWFZbNedKEwQNF/L/XV9
-         tgcM3LTSEwqB5sg5gUDyXQUZOdu97HHbpIJ2tbQ6kKwRlohAAEhcxXqFIvoH97aNKgdr
-         Q6+GGrHMRuDxMm2sydtQ1d+tgJ1CC6yZHZXaFGTa3mbUUI5x5Ngs7x/DI7IolSOSsF2M
-         /sbA==
-X-Gm-Message-State: AOAM532GZa/xxWb45nRfwUJrFDYGBCVw4AIsHpOFQXsmaIBebj4XYdk+
-        /bd4UcVkeEf6gDkR9vMwUUWj7R8Ef1kfZg==
-X-Google-Smtp-Source: ABdhPJxTX6eaqt+d7327S219jroTAm/VsVceytUy20ioHotlZJMs5l8aRJUNIYUqEBETCgzQhnqKug==
-X-Received: by 2002:a17:906:914b:: with SMTP id y11mr13608778ejw.145.1600064396976;
-        Sun, 13 Sep 2020 23:19:56 -0700 (PDT)
-Received: from ntb.Speedport_W_921V_1_46_000 (p5b363350.dip0.t-ipconnect.de. [91.54.51.80])
-        by smtp.googlemail.com with ESMTPSA id p12sm7024641ejb.42.2020.09.13.23.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 23:19:56 -0700 (PDT)
-From:   Petr Malat <oss@malat.biz>
-To:     linux-kernel@vger.kernel.org
-Cc:     nickrterrell@gmail.com, gustavoars@kernel.org,
-        Petr Malat <oss@malat.biz>
-Subject: [PATCH] zstd: Fix decompression of large window archives on 32-bit platforms
-Date:   Mon, 14 Sep 2020 08:19:31 +0200
-Message-Id: <20200914061931.21886-1-oss@malat.biz>
-X-Mailer: git-send-email 2.20.1
+        id S1726117AbgINGUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:20:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726027AbgINGUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:20:44 -0400
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C79FF207C3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600064444;
+        bh=8yrIONlA7T6epKuACwY7mydmwH8bBcfbQ9uiv/lSUHA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=huN7E5LTGuYVvWBq0G48DvFGua2cYGantzDvXfUhhJ0DH5QgWXAVbTRGP+F6m43+k
+         VAImKGCZKqTisH1nUVoGJhGfh+Ou1D009FLLEHhaLkqLAllwU/cNK3wROAGk/lbLV+
+         vuxjRCMF3q0k5C1+TfcpaCeRv3PkiOuSMM8F+jDc=
+Received: by mail-lj1-f171.google.com with SMTP id a22so17541249ljp.13
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:20:43 -0700 (PDT)
+X-Gm-Message-State: AOAM5310IAsNBuDH0oa0BzZnPitbs/9WjkkXX/XJn6UXZEvpIIzvGaNW
+        fssLsVqF/lCWHqK12wJVEt7StwWbtHsDZlP3TrE=
+X-Google-Smtp-Source: ABdhPJxZhljT8pCP3GGpRoDBqAKY6v2Rd4z1ygyBL3kG9+juiniMaTz2w5weP9cysIAIweiK+/Cj84vXAytmwxqQU1I=
+X-Received: by 2002:a2e:9c8d:: with SMTP id x13mr4247446lji.392.1600064442189;
+ Sun, 13 Sep 2020 23:20:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-3-jolsa@kernel.org>
+ <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+In-Reply-To: <CAM9d7cg6Vx=MGN5cP9uHxKv=kxW-Q0+zSQM5Qws10L6jaRLyow@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 13 Sep 2020 23:20:31 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7sd5wD1a+aeRs+6ppgurxF6QsAcOLSh_JzgZA7AaGCMQ@mail.gmail.com>
+Message-ID: <CAPhsuW7sd5wD1a+aeRs+6ppgurxF6QsAcOLSh_JzgZA7AaGCMQ@mail.gmail.com>
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems some optimization has been removed from the code without removing
-the if condition which should activate it only on 64-bit platforms and as
-a result the code responsible for decompression with window larger than
-8MB was disabled on 32-bit platforms.
+On Sun, Sep 13, 2020 at 10:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Add new version of mmap event. The MMAP3 record is an
+> > augmented version of MMAP2, it adds build id value to
+> > identify the exact binary object behind memory map:
+> >
+> >   struct {
+> >     struct perf_event_header header;
+> >
+> >     u32                      pid, tid;
+> >     u64                      addr;
+> >     u64                      len;
+> >     u64                      pgoff;
+> >     u32                      maj;
+> >     u32                      min;
+> >     u64                      ino;
+> >     u64                      ino_generation;
+> >     u32                      prot, flags;
+> >     u32                      reserved;
 
-Signed-off-by: Petr Malat <oss@malat.biz>
----
- lib/zstd/decompress.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+I guess we need reserved _after_ buildid, no?
 
-diff --git a/lib/zstd/decompress.c b/lib/zstd/decompress.c
-index db6761ea4deb..509a3b8d51b9 100644
---- a/lib/zstd/decompress.c
-+++ b/lib/zstd/decompress.c
-@@ -1457,12 +1457,8 @@ static size_t ZSTD_decompressBlock_internal(ZSTD_DCtx *dctx, void *dst, size_t d
- 		ip += litCSize;
- 		srcSize -= litCSize;
- 	}
--	if (sizeof(size_t) > 4) /* do not enable prefetching on 32-bits x86, as it's performance detrimental */
--				/* likely because of register pressure */
--				/* if that's the correct cause, then 32-bits ARM should be affected differently */
--				/* it would be good to test this on ARM real hardware, to see if prefetch version improves speed */
--		if (dctx->fParams.windowSize > (1 << 23))
--			return ZSTD_decompressSequencesLong(dctx, dst, dstCapacity, ip, srcSize);
-+	if (dctx->fParams.windowSize > (1 << 23))
-+		return ZSTD_decompressSequencesLong(dctx, dst, dstCapacity, ip, srcSize);
- 	return ZSTD_decompressSequences(dctx, dst, dstCapacity, ip, srcSize);
- }
- 
--- 
-2.20.1
+> >     u8                       buildid[20];
+>
+> Do we need maj, min, ino, ino_generation for mmap3 event?
+> I think they are to compare binaries, then we can do it with
+> build-id (and I think it'd be better)..
 
++1 we shouldn't need maj, min, etc.
+
+Thanks,
+Song
+
+[...]
