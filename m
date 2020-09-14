@@ -2,164 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C137F268476
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0E926847E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgINGJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:09:57 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:59494 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726080AbgINGIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:08:22 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 14 Sep 2020 09:08:18 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (dev-l-vrt-135.mtl.labs.mlnx [10.234.135.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 08E68IaM020980;
-        Mon, 14 Sep 2020 09:08:18 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Debian-10) with ESMTP id 08E68ICl017409;
-        Mon, 14 Sep 2020 09:08:18 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 08E68I9E017408;
-        Mon, 14 Sep 2020 09:08:18 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net-next RFC v4 15/15] devlink: Add Documentation/networking/devlink/devlink-reload.rst
-Date:   Mon, 14 Sep 2020 09:08:02 +0300
-Message-Id: <1600063682-17313-16-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+        id S1726107AbgINGKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:10:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726094AbgINGKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:10:09 -0400
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 411CD221E7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:10:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600063806;
+        bh=gRfQi8Y/zVpyvyp+ighIXW73BdG51yD5X7tJ3596N1A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YVUJRDj0Ic1/CpKcLrV0F3HgmCgmH+afICkTmLfhWwrcRiHDr2CnKLJu5PqesWAS+
+         9Zzj9TvouRnL/lw9j98/mekrrxex4dTJA1xLKj7vCdPUDH/gIncTCnKQ1ohJqcLuV9
+         /LOEwjEqKAtiUAApf2bpwJfMexk6zXP7RSr7/Qlg=
+Received: by mail-lf1-f41.google.com with SMTP id q8so12102683lfb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 23:10:06 -0700 (PDT)
+X-Gm-Message-State: AOAM532NBdx8gKIC8gdzWunG7pnraMzpP7aFTfbY1msTDdySJOgxMLGz
+        Ylc0OrPFCqOtrd0uYTLtsGilqOzoUVlMWv0qkAA=
+X-Google-Smtp-Source: ABdhPJzfD85LEbn1RMbKHVgRbfr5GGWW4QkAKY8dPx11eG7y/46JHyMRK2g+W5HH90o7lPdnpSi7Vea1ckAXY6/XeGY=
+X-Received: by 2002:a19:7902:: with SMTP id u2mr4091112lfc.515.1600063804480;
+ Sun, 13 Sep 2020 23:10:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200913210313.1985612-1-jolsa@kernel.org> <20200913210313.1985612-2-jolsa@kernel.org>
+In-Reply-To: <20200913210313.1985612-2-jolsa@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 13 Sep 2020 23:09:53 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7jkH7kmG9HZ_fs2dGq=G=AE17ofexkKkVLD-qCYC0=dg@mail.gmail.com>
+Message-ID: <CAPhsuW7jkH7kmG9HZ_fs2dGq=G=AE17ofexkKkVLD-qCYC0=dg@mail.gmail.com>
+Subject: Re: [PATCH 01/26] bpf: Move stack_map_get_build_id into lib
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devlink reload rst documentation file.
-Update index file to include it.
+On Sun, Sep 13, 2020 at 2:05 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Moving stack_map_get_build_id into lib with
+> prototype in linux/buildid.h header:
+>
+>   int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
+>
+> This function returns build id for given struct vm_area_struct.
+> There is no functional change to stack_map_get_build_id function.
+>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
----
-v3 -> v4:
-- Remove reload action fw_activate_no_reset
-- Add reload actions limit levels and document the no_reset limit level
-  constrains
-v2 -> v3:
-- Devlink reload returns the actions done
-- Replace fw_live_patch action by fw_activate_no_reset
-- Explain fw_activate meaning
-v1 -> v2:
-- Instead of reload levels driver,fw_reset,fw_live_patch have reload
-  actions driver_reinit,fw_activate,fw_live_patch
----
- .../networking/devlink/devlink-reload.rst     | 80 +++++++++++++++++++
- Documentation/networking/devlink/index.rst    |  1 +
- 2 files changed, 81 insertions(+)
- create mode 100644 Documentation/networking/devlink/devlink-reload.rst
-
-diff --git a/Documentation/networking/devlink/devlink-reload.rst b/Documentation/networking/devlink/devlink-reload.rst
-new file mode 100644
-index 000000000000..6ac9dddd2208
---- /dev/null
-+++ b/Documentation/networking/devlink/devlink-reload.rst
-@@ -0,0 +1,80 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==============
-+Devlink Reload
-+==============
-+
-+``devlink-reload`` provides mechanism to either reload driver entities,
-+applying ``devlink-params`` and ``devlink-resources`` new values or firmware
-+activation depends on reload action selected.
-+
-+Reload actions
-+==============
-+
-+User may select a reload action.
-+By default ``driver_reinit`` action is selected.
-+
-+.. list-table:: Possible reload actions
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``driver-reinit``
-+     - Devlink driver entities re-initialization, including applying
-+       new values to devlink entities which are used during driver
-+       load such as ``devlink-params`` in configuration mode
-+       ``driverinit`` or ``devlink-resources``
-+   * - ``fw_activate``
-+     - Firmware activate. Activates new firmware if such image is stored and
-+       pending activation. This action involves firmware reset, if no new image
-+       pending this action will reload current firmware image.
-+
-+Note that when required to do firmware activation some drivers may need
-+to reload the driver. On the other hand some drivers may need to reset
-+the firmware to reinitialize the driver entities. Therefore, the devlink
-+reload command returns the actions which were actually performed.
-+
-+Reload action limit levels
-+==========================
-+
-+By default reload actions are not limited and Driver implementation may
-+include reset or downtime as needed to perform the actions.
-+
-+However, some drivers support action limit levels, which limits the action
-+implementation to specific constrains.
-+
-+.. list-table:: Possible reload action limit levels
-+   :widths: 5 90
-+
-+   * - Name
-+     - Description
-+   * - ``no_reset``
-+     - No reset allowed, no down time allowed, no link flap and no
-+       configuration is lost.
-+
-+Change namespace
-+================
-+
-+All devlink instances are created in init_net and stay there for a
-+lifetime. Allow user to be able to move devlink instances into
-+namespaces during devlink reload operation. That ensures proper
-+re-instantiation of driver objects, including netdevices.
-+
-+example usage
-+-------------
-+
-+.. code:: shell
-+
-+    $ devlink dev reload help
-+    $ devlink dev reload DEV [ netns { PID | NAME | ID } ] [ action { driver_reinit | fw_activate } ] [limit_level no_reset]
-+
-+    # Run reload command for devlink driver entities re-initialization:
-+    $ devlink dev reload pci/0000:82:00.0 action driver_reinit
-+    reload_actions_performed:
-+      driver_reinit
-+
-+    # Run reload command to activate firmware:
-+    # Note that mlx5 driver reloads the driver while activating firmware
-+    $ devlink dev reload pci/0000:82:00.0 action fw_activate
-+    reload_actions_performed:
-+      driver_reinit fw_activate
-diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
-index 7684ae5c4a4a..d82874760ae2 100644
---- a/Documentation/networking/devlink/index.rst
-+++ b/Documentation/networking/devlink/index.rst
-@@ -20,6 +20,7 @@ general.
-    devlink-params
-    devlink-region
-    devlink-resource
-+   devlink-reload
-    devlink-trap
- 
- Driver-specific documentation
--- 
-2.17.1
-
+Acked-by: Song Liu <songliubraving@fb.com>
