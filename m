@@ -2,298 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C511268302
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3792682D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgINDIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:08:23 -0400
-Received: from mga06.intel.com ([134.134.136.31]:14035 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725982AbgINDIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:08:22 -0400
-IronPort-SDR: QNUCvnFEKlUiTHOY4VpZkN12iWKkIIzxBnEFXAK7z4dYjFlCRWcZf37zm6i7Yem6nWr3eyiXy2
- /4Rkg07k58NQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="220572090"
-X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
-   d="scan'208";a="220572090"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 20:08:19 -0700
-IronPort-SDR: MM5/sFSifKGqGPPL5Uqo4zu6Mz4fdHmevk1+AaGj0Csw64JOdeOSEMSWn24AFq1rwcg9CWswTx
- e8b1YEkqRZ8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
-   d="scan'208";a="408731471"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2020 20:08:16 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] iommu: Add iommu_at(de)tach_subdev_group()
-To:     Alex Williamson <alex.williamson@redhat.com>
-References: <20200901033422.22249-1-baolu.lu@linux.intel.com>
- <20200901033422.22249-3-baolu.lu@linux.intel.com>
- <20200910160547.0a8b9891@w520.home>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <01d80e65-c372-4944-753f-454a190a8cd0@linux.intel.com>
-Date:   Mon, 14 Sep 2020 11:02:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726082AbgINDFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:05:13 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:11909 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726077AbgINDE5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:04:57 -0400
+X-UUID: dc56d82dbdf7408182f56039e4498751-20200914
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=f0kzjVmwqblGm6hAm3dDzi082TxqtdMiNNxITJJd1ZQ=;
+        b=m/1dDOD3AwBXaytMOlacNS2ZPv2uvSh9fYnMQcbWvO0xyRqQNPZIUGsksP9y/A1n2A5GZnZyzzKxcq3B38Ms/LFnR6+4I7nfzLE1Up4Nplbd/vK2ItO2V6B3GF1GLbarnxdXLcA3iKc339pj17TgTffa1fTxshASIksNiPUgI8A=;
+X-UUID: dc56d82dbdf7408182f56039e4498751-20200914
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1445396928; Mon, 14 Sep 2020 11:04:49 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 14 Sep 2020 11:04:47 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 14 Sep 2020 11:04:46 +0800
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ryan Case <ryandcase@chromium.org>,
+        Mark Brown <broonie@kernel.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        Mike Turquette <mturquette@linaro.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: [PATCH V5 00/17] Add driver for dvfsrc, support for active state of scpsys
+Date:   Mon, 14 Sep 2020 11:04:27 +0800
+Message-ID: <1600052684-21198-1-git-send-email-henryc.chen@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200910160547.0a8b9891@w520.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+VGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gdjUuOS1yYzEgYW5kIGhhdmUgZGVwZW5kZW5jeSBwYXRj
+aGVzIGFzIGZvbGxvd2luZywNClt2MTcsMDAvMTJdIE1lZGlhdGVrIE1UODE4MyBzY3BzeXMgc3Vw
+cG9ydA0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9jb3Zlci8xMTcwMzI1My8NClswLzNd
+IE1lZGlhdGVrIE1UODE5MiBzY3BzeXMgc3VwcG9ydA0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVs
+Lm9yZy9jb3Zlci8xMTc1NTg5Ny8NCg0KVGhlIHBhdGNoc2V0cyBhZGQgc3VwcG9ydCBmb3IgTWVk
+aWFUZWsgaGFyZHdhcmUgbW9kdWxlIG5hbWVkIERWRlNSQw0KKGR5bmFtaWMgdm9sdGFnZSBhbmQg
+ZnJlcXVlbmN5IHNjYWxpbmcgcmVzb3VyY2UgY29sbGVjdG9yKS4gVGhlIERWRlNSQyBpcw0KYSBI
+VyBtb2R1bGUgd2hpY2ggaXMgdXNlZCB0byBjb2xsZWN0IGFsbCB0aGUgcmVxdWVzdHMgZnJvbSBi
+b3RoIHNvZnR3YXJlDQphbmQgaGFyZHdhcmUgYW5kIHR1cm4gaW50byB0aGUgZGVjaXNpb24gb2Yg
+bWluaW11bSBvcGVyYXRpbmcgdm9sdGFnZSBhbmQNCm1pbmltdW0gRFJBTSBmcmVxdWVuY3kgdG8g
+ZnVsZmlsbCB0aG9zZSByZXF1ZXN0cy4NCg0KU28sIFRoaXMgc2VyaWVzIGlzIHRvIGltcGxlbWVu
+dCB0aGUgZHZmc3JjIGRyaXZlciB0byBjb2xsZWN0IGFsbCB0aGUNCnJlcXVlc3RzIG9mIG9wZXJh
+dGluZyB2b2x0YWdlIG9yIERSQU0gYmFuZHdpZHRoIGZyb20gb3RoZXIgZGV2aWNlIGRyaXZlcnMN
+Cmxpa2VzIEdQVS9DYW1lcmEgdGhyb3VnaCAzIGZyYW1ld29ya3MgYmFzaWNhbGx5Og0KDQoxLiBp
+bnRlcmNvbm5lY3QgZnJhbWV3b3JrOiB0byBhZ2dyZWdhdGUgdGhlIGJhbmR3aWR0aA0KICAgcmVx
+dWlyZW1lbnRzIGZyb20gZGlmZmVyZW50IGNsaWVudHMNCg0KWzFdIGh0dHBzOi8vcGF0Y2h3b3Jr
+Lmtlcm5lbC5vcmcvY292ZXIvMTA3NjYzMjkvDQoNClRoZXJlIGhhcyBhIGh3IG1vZHVsZSAiRFJB
+TSBzY2hlZHVsZXIiLCB3aGljaCB1c2VkIHRvIGNvbnRyb2wgdGhlIHRocm91Z2hwdXQuDQpUaGUg
+RFZGU1JDIHdpbGwgY29sbGVjdCBmb3JlY2FzdCBkYXRhIG9mIGRyYW0gYmFuZHdpZHRoIGZyb20N
+ClNXIGNvbnN1bWVycyhjYW1lcmEvZ3B1Li4uKSwgYW5kIGFjY29yZGluZyB0aGUgZm9yZWNhc3Qg
+dG8gY2hhbmdlIHRoZSBEUkFNDQpmcmVxdWVuY3kNCg0KMi4gQWN0aXZlIHN0YXRlIG1hbmFnZW1l
+bnQgb2YgcG93ZXIgZG9tYWluc1sxXTogdG8gaGFuZGxlIHRoZSBvcGVyYXRpbmcNCiAgIHZvbHRh
+Z2UvZHJhbSBvcHAgcmVxdWlyZW1lbnQgZnJvbSBkaWZmZXJlbnQgcG93ZXIgZG9tYWlucw0KDQpb
+Ml0gaHR0cHM6Ly9sd24ubmV0L0FydGljbGVzLzc0NDA0Ny8NCg0KMy4gUmVndWFsdG9yIGZyYW1l
+d29yazogdG8gaGFuZGxlIHRoZSBvcGVyYXRpbmcgdm9sdGFnZSByZXF1aXJlbWVudCBmcm9tIHVz
+ZXIgb3INCiAgIGNvc3VtZXIgd2hpY2ggbm90IGJlbG9uZyBhbnkgcG93ZXIgZG9tYWluDQoNCkNo
+YW5nZXMgaW4gVjU6DQoqIFN1cHBvcnQgbW9yZSBwbGF0Zm9ybSBtdDY4NzMvbXQ4MTkyDQoqIERy
+b3AgdGhlIGNvbXBhdGlibGUgYW5kIGludGVyY29ubmVjdCBwcm92aWRlciBub2RlIGFuZCBtYWtl
+IHRoZSBwYXJlbnQgbm9kZSBhbg0KaW50ZXJjb25uZWN0IHByb3ZpZGVyLiAoUm9iL0dlb3JnaSkN
+CiogTWFrZSBtb2RpZmljYXRpb24gb2YgaW50ZXJjb25uZWN0IGRyaXZlciBmcm9tIGNvZGluZyBz
+dWdnZXN0aW9uLiAoR2VvcmdpKQ0KKiBNb3ZlIGludGVyY29ubmVjdCBkaWFncmFtIGludG8gdGhl
+IGNvbW1pdCB0ZXh0IG9mIHBhdGNoLiAoR2VvcmdpKQ0KKiBSZWdpc3RlciB0aGUgaW50ZXJjb25u
+ZWN0IHByb3ZpZGVyIGFzIGEgcGxhdGZvcm0gc3ViLWRldmljZS4gKEdlb3JnaSkNCg0KQ2hhbmdl
+cyBpbiBWNDoNCiogQWRkIGFja2VkIFRBRyBvbiBkdC1iaW5kaW5ncyBwYXRjaGVzLiAoUm9iKQ0K
+KiBEZWNsYXJhdGlvbiBvZiBlbWlfaWNjX2FnZ3JlZ2F0ZSBzaW5jZSB0aGUgcHJvdG90eXBlIG9m
+IGFnZ3JlZ2F0ZSBmdW5jdGlvbg0KaGFzIGNoYW5nZWQgbWVhbndoaWxlLiAoR2VvcmdpKQ0KKiBV
+c2VkIGVtaV9pY2NfcmVtb3ZlIGluc3RlYWQgb2YgaWNjX3Byb3ZpZGVyX2RlbCBvbiBwcm9iZS4g
+KEdlb3JnaSkNCiogQWRkIGR2ZnNyYyByZWd1bGF0b3IgZHJpdmVyIGludG8gc2VyaWVzLg0KKiBC
+dWcgZml4ZWQgb2YgbXQ4MTgzX2dldF9jdXJyZW50X2xldmVsLg0KKiBBZGQgbXV0ZXggcHJvdGVj
+dGlvbiBmb3IgcHN0YXRlIG9wZXJhdGlvbiBvbiBkdmZzcmNfc2V0X3BlcmZvcm1hbmNlLg0KDQpD
+aGFuZ2VzIGluIFYzOg0KKiBSZW1vdmUgUkZDIGZyb20gdGhlIHN1YmplY3QgcHJlZml4IG9mIHRo
+ZSBzZXJpZXMNCiogQ29tYmluZSBkdC1iaW5kaW5nIHBhdGNoIGFuZCBtb3ZlIGludGVyY29ubmVj
+dCBkdC1iaW5kaW5nIGRvY3VtZW50IGludG8NCmR2ZnNyYy4gKFJvYikNCiogUmVtb3ZlIHVudXNl
+ZCBoZWFkZXIsIGFkZCB1bml0IGRlc2NpcnB0aW9uIHRvIHRoZSBiYW5kd2lkdGgsIHJlbmFtZSBj
+b21wYXRpYmxlDQpuYW1lIG9uIGludGVyY29ubmVjdCBkcml2ZXIuIChHZW9yZ2kpDQoqIEZpeGVk
+IHNvbWUgY29kaW5nIHN0eWxlOiBjaGVjayBmbG93LCBuYW1pbmcsIHVzZWQgcmVhZHhfcG9sbF90
+aW1lb3V0DQpvbiBkdmZzcmMgZHJpdmVyLiAoUnlhbikNCiogUmVuYW1lIGludGVyY29ubmVjdCBk
+cml2ZXIgbXQ4MTgzLmMgdG8gbXRrLWVtaS5jDQoqIFJlbmFtZSBpbnRlcmNvbm5lY3QgaGVhZGVy
+IG10ayxtdDgxODMuaCB0byBtdGssZW1pLmgNCiogbXRrLXNjcHN5cy5jOiBBZGQgb3BwIHRhYmxl
+IGNoZWNrIGZpcnN0IHRvIGF2b2lkIE9GIHJ1bnRpbWUgcGFyc2UgZmFpbGVkDQoNCkNoYW5nZXMg
+aW4gUkZDIFYyOg0KKiBSZW1vdmUgdGhlIERUIHByb3BlcnR5IGRyYW1fdHlwZS4gKFJvYikNCiog
+VXNlZCBnZW5lcmljIGR0cyBwcm9wZXJ0eSAnb3BwLWxldmVsJyB0byBnZXQgdGhlIHBlcmZvcm1h
+Y2Ugc3RhdGUuIChTdGVwaGVuKQ0KKiBSZW1vdmUgdW5lY2Vzc2FyeSBkZXBlbmRlbmN5IGNvbmZp
+ZyBvbiBLY29uZmlnLiAoU3RlcGhlbikNCiogUmVtb3ZlIHVudXNlZCBoZWFkZXIgZmlsZSwgZml4
+ZWQgc29tZSBjb2Rpbmcgc3R5bGUgaXNzdWUsIHR5cG8sDQplcnJvciBoYW5kbGluZyBvbiBkdmZz
+cmMgZHJpdmVyLiAoTmljb2xhcy9TdGVwaGVuKQ0KKiBSZW1vdmUgaXJxIGhhbmRsZXIgb24gZHZm
+c3JjIGRyaXZlci4gKFN0ZXBoZW4pDQoqIFJlbW92ZSBpbml0IHRhYmxlIG9uIGR2ZnNyYyBkcml2
+ZXIsIGNvbWJpbmUgaHcgaW5pdCBvbiB0cnVzdHpvbmUuDQoqIEFkZCBpbnRlcmNvbm5lY3Qgc3Vw
+cG9ydCBvZiBtdDgxODMgdG8gYWdncmVnYXRlIHRoZSBlbWkgYmFuZHdpZHRoLg0KKEdlb3JnaSkN
+Cg0KVjQ6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BhdGNod29yay9jb3Zlci8xMjA5Mjg0Lw0K
+VjM6IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIvMTExMTg4NjcvDQpSRkMgVjI6
+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3BhdGNod29yay9wYXRjaC8xMDY4MTEzLw0KUkZDIFYx
+OiBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvY292ZXIvMTAyODUzNS8NCg==
 
-On 9/11/20 6:05 AM, Alex Williamson wrote:
-> On Tue,  1 Sep 2020 11:34:19 +0800
-> Lu Baolu <baolu.lu@linux.intel.com> wrote:
-> 
->> This adds two new APIs for the use cases like vfio/mdev where subdevices
->> derived from physical devices are created and put in an iommu_group. The
->> new IOMMU API interfaces mimic the vfio_mdev_at(de)tach_domain() directly,
->> testing whether the resulting device supports IOMMU_DEV_FEAT_AUX and using
->> an aux vs non-aux at(de)tach.
->>
->> By doing this we could
->>
->> - Set the iommu_group.domain. The iommu_group.domain is private to iommu
->>    core (therefore vfio code cannot set it), but we need it set in order
->>    for iommu_get_domain_for_dev() to work with a group attached to an aux
->>    domain.
->>
->> - Prefer to use the _attach_group() interfaces while the _attach_device()
->>    interfaces are relegated to special cases.
->>
->> Link: https://lore.kernel.org/linux-iommu/20200730134658.44c57a67@x1.home/
->> Link: https://lore.kernel.org/linux-iommu/20200730151703.5daf8ad4@x1.home/
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/iommu.c | 136 ++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/iommu.h |  20 +++++++
->>   2 files changed, 156 insertions(+)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 38cdfeb887e1..fb21c2ff4861 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2757,6 +2757,142 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
->>   }
->>   EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
->>   
->> +static int __iommu_aux_attach_device(struct iommu_domain *domain,
->> +				     struct device *phys_dev,
->> +				     struct device *sub_dev)
->> +{
->> +	int ret;
->> +
->> +	if (unlikely(!domain->ops->aux_attach_dev))
->> +		return -ENODEV;
->> +
->> +	ret = domain->ops->aux_attach_dev(domain, phys_dev, sub_dev);
->> +	if (!ret)
->> +		trace_attach_device_to_domain(sub_dev);
->> +
->> +	return ret;
->> +}
->> +
->> +static void __iommu_aux_detach_device(struct iommu_domain *domain,
->> +				      struct device *phys_dev,
->> +				      struct device *sub_dev)
->> +{
->> +	if (unlikely(!domain->ops->aux_detach_dev))
->> +		return;
->> +
->> +	domain->ops->aux_detach_dev(domain, phys_dev, sub_dev);
->> +	trace_detach_device_from_domain(sub_dev);
->> +}
->> +
->> +static int __iommu_attach_subdev_group(struct iommu_domain *domain,
->> +				       struct iommu_group *group,
->> +				       iommu_device_lookup_t fn)
->> +{
->> +	struct group_device *device;
->> +	struct device *phys_dev;
->> +	int ret = -ENODEV;
->> +
->> +	list_for_each_entry(device, &group->devices, list) {
->> +		phys_dev = fn(device->dev);
->> +		if (!phys_dev) {
->> +			ret = -ENODEV;
->> +			break;
->> +		}
->> +
->> +		if (iommu_dev_feature_enabled(phys_dev, IOMMU_DEV_FEAT_AUX))
->> +			ret = __iommu_aux_attach_device(domain, phys_dev,
->> +							device->dev);
->> +		else
->> +			ret = __iommu_attach_device(domain, phys_dev);
->> +
->> +		if (ret)
->> +			break;
->> +	}
->> +
->> +	return ret;
->> +}
->> +
->> +static void __iommu_detach_subdev_group(struct iommu_domain *domain,
->> +					struct iommu_group *group,
->> +					iommu_device_lookup_t fn)
->> +{
->> +	struct group_device *device;
->> +	struct device *phys_dev;
->> +
->> +	list_for_each_entry(device, &group->devices, list) {
->> +		phys_dev = fn(device->dev);
->> +		if (!phys_dev)
->> +			break;
-> 
-> 
-> Seems like this should be a continue rather than a break.  On the
-> unwind path maybe we're relying on holding the group mutex and
-> deterministic behavior from the fn() callback to unwind to the same
-> point, but we still have an entirely separate detach interface and I'm
-> not sure we couldn't end up with an inconsistent state if we don't
-> iterate each group device here.  Thanks,
-
-Yes, agreed.
-
-Best regards,
-baolu
-
-> 
-> Alex
-> 
->> +
->> +		if (iommu_dev_feature_enabled(phys_dev, IOMMU_DEV_FEAT_AUX))
->> +			__iommu_aux_detach_device(domain, phys_dev, device->dev);
->> +		else
->> +			__iommu_detach_device(domain, phys_dev);
->> +	}
->> +}
->> +
->> +/**
->> + * iommu_attach_subdev_group - attach domain to an iommu_group which
->> + *			       contains subdevices.
->> + *
->> + * @domain: domain
->> + * @group:  iommu_group which contains subdevices
->> + * @fn:     callback for each subdevice in the @iommu_group to retrieve the
->> + *          physical device where the subdevice was created from.
->> + *
->> + * Returns 0 on success, or an error value.
->> + */
->> +int iommu_attach_subdev_group(struct iommu_domain *domain,
->> +			      struct iommu_group *group,
->> +			      iommu_device_lookup_t fn)
->> +{
->> +	int ret = -ENODEV;
->> +
->> +	mutex_lock(&group->mutex);
->> +	if (group->domain) {
->> +		ret = -EBUSY;
->> +		goto unlock_out;
->> +	}
->> +
->> +	ret = __iommu_attach_subdev_group(domain, group, fn);
->> +	if (ret)
->> +		__iommu_detach_subdev_group(domain, group, fn);
->> +	else
->> +		group->domain = domain;
->> +
->> +unlock_out:
->> +	mutex_unlock(&group->mutex);
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_attach_subdev_group);
->> +
->> +/**
->> + * iommu_detach_subdev_group - detach domain from an iommu_group which
->> + *			       contains subdevices
->> + *
->> + * @domain: domain
->> + * @group:  iommu_group which contains subdevices
->> + * @fn:     callback for each subdevice in the @iommu_group to retrieve the
->> + *          physical device where the subdevice was created from.
->> + *
->> + * The domain must have been attached to @group via iommu_attach_subdev_group().
->> + */
->> +void iommu_detach_subdev_group(struct iommu_domain *domain,
->> +			       struct iommu_group *group,
->> +			       iommu_device_lookup_t fn)
->> +{
->> +	mutex_lock(&group->mutex);
->> +	if (!group->domain)
->> +		goto unlock_out;
->> +
->> +	__iommu_detach_subdev_group(domain, group, fn);
->> +	group->domain = NULL;
->> +
->> +unlock_out:
->> +	mutex_unlock(&group->mutex);
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_detach_subdev_group);
->> +
->>   /**
->>    * iommu_sva_bind_device() - Bind a process address space to a device
->>    * @dev: the device
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index 871267104915..b9df8b510d4f 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -48,6 +48,7 @@ struct iommu_fault_event;
->>   typedef int (*iommu_fault_handler_t)(struct iommu_domain *,
->>   			struct device *, unsigned long, int, void *);
->>   typedef int (*iommu_dev_fault_handler_t)(struct iommu_fault *, void *);
->> +typedef struct device *(*iommu_device_lookup_t)(struct device *);
->>   
->>   struct iommu_domain_geometry {
->>   	dma_addr_t aperture_start; /* First address that can be mapped    */
->> @@ -631,6 +632,12 @@ bool iommu_dev_feature_enabled(struct device *dev, enum iommu_dev_features f);
->>   int iommu_aux_attach_device(struct iommu_domain *domain, struct device *dev);
->>   void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
->>   int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
->> +int iommu_attach_subdev_group(struct iommu_domain *domain,
->> +			      struct iommu_group *group,
->> +			      iommu_device_lookup_t fn);
->> +void iommu_detach_subdev_group(struct iommu_domain *domain,
->> +			       struct iommu_group *group,
->> +			       iommu_device_lookup_t fn);
->>   
->>   struct iommu_sva *iommu_sva_bind_device(struct device *dev,
->>   					struct mm_struct *mm,
->> @@ -1019,6 +1026,19 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
->>   	return -ENODEV;
->>   }
->>   
->> +static inline int
->> +iommu_attach_subdev_group(struct iommu_domain *domain, struct iommu_group *group,
->> +			  iommu_device_lookup_t fn)
->> +{
->> +	return -ENODEV;
->> +}
->> +
->> +static inline void
->> +iommu_detach_subdev_group(struct iommu_domain *domain, struct iommu_group *group,
->> +			  iommu_device_lookup_t fn)
->> +{
->> +}
->> +
->>   static inline struct iommu_sva *
->>   iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
->>   {
-> 
