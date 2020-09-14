@@ -2,213 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126BC2684E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE445268527
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgINGbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:31:51 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11829 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726082AbgINGbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:31:35 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6E366DE75CDFA232D192;
-        Mon, 14 Sep 2020 14:31:32 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
- 14:31:24 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] scsi: use module_platform_driver to simplify the code
-Date:   Mon, 14 Sep 2020 14:54:03 +0800
-Message-ID: <20200914065403.3726462-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726090AbgINGyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:54:20 -0400
+Received: from mga01.intel.com ([192.55.52.88]:33536 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726039AbgINGyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:54:20 -0400
+IronPort-SDR: 9z7zLBqthAIuv2/W1wASKCv2JFUZPMQcJObAD3FqMuugDfJLE7QjmXrTGDyhaq4rb4hP7rs8Fl
+ iRnRmNyioq5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="177092748"
+X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
+   d="scan'208";a="177092748"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 23:54:19 -0700
+IronPort-SDR: pdEiVDhMyKt7oIChbRSjZKBN4EcgjafmPS4ykn+81MtIwHwnqFCNhEEN4umDbCbm4DxCu/3qLv
+ 5KhEZ4b/34+g==
+X-IronPort-AV: E=Sophos;i="5.76,425,1592895600"; 
+   d="scan'208";a="286329780"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 23:54:17 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 9E6CE20815; Mon, 14 Sep 2020 09:54:15 +0300 (EEST)
+Date:   Mon, 14 Sep 2020 09:54:15 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v4 1/3] media: i2c: ov772x: Parse endpoint properties
+Message-ID: <20200914065415.GK26842@paasikivi.fi.intel.com>
+References: <20200913184247.618-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200913184247.618-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913184247.618-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-module_platform_driver() makes the code simpler by eliminating
-boilerplate code.
+Hi Prabhakar,
 
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- drivers/scsi/jazz_esp.c   | 14 +-------------
- drivers/scsi/mac_esp.c    | 14 +-------------
- drivers/scsi/qlogicpti.c  | 14 +-------------
- drivers/scsi/sni_53c710.c | 14 +-------------
- drivers/scsi/sun3x_esp.c  | 14 +-------------
- drivers/scsi/sun_esp.c    | 14 +-------------
- 6 files changed, 6 insertions(+), 78 deletions(-)
+Thanks for the patchset.
 
-diff --git a/drivers/scsi/jazz_esp.c b/drivers/scsi/jazz_esp.c
-index 7f683e42c798..f0ed6863cc70 100644
---- a/drivers/scsi/jazz_esp.c
-+++ b/drivers/scsi/jazz_esp.c
-@@ -201,21 +201,9 @@ static struct platform_driver esp_jazz_driver = {
- 		.name	= "jazz_esp",
- 	},
- };
--
--static int __init jazz_esp_init(void)
--{
--	return platform_driver_register(&esp_jazz_driver);
--}
--
--static void __exit jazz_esp_exit(void)
--{
--	platform_driver_unregister(&esp_jazz_driver);
--}
-+module_platform_driver(esp_jazz_driver);
- 
- MODULE_DESCRIPTION("JAZZ ESP SCSI driver");
- MODULE_AUTHOR("Thomas Bogendoerfer (tsbogend@alpha.franken.de)");
- MODULE_LICENSE("GPL");
- MODULE_VERSION(DRV_VERSION);
--
--module_init(jazz_esp_init);
--module_exit(jazz_esp_exit);
-diff --git a/drivers/scsi/mac_esp.c b/drivers/scsi/mac_esp.c
-index 1c78bc10c790..6d23ab5aee56 100644
---- a/drivers/scsi/mac_esp.c
-+++ b/drivers/scsi/mac_esp.c
-@@ -439,22 +439,10 @@ static struct platform_driver esp_mac_driver = {
- 		.name	= DRV_MODULE_NAME,
- 	},
- };
--
--static int __init mac_esp_init(void)
--{
--	return platform_driver_register(&esp_mac_driver);
--}
--
--static void __exit mac_esp_exit(void)
--{
--	platform_driver_unregister(&esp_mac_driver);
--}
-+module_platform_driver(esp_mac_driver);
- 
- MODULE_DESCRIPTION("Mac ESP SCSI driver");
- MODULE_AUTHOR("Finn Thain");
- MODULE_LICENSE("GPL v2");
- MODULE_VERSION(DRV_VERSION);
- MODULE_ALIAS("platform:" DRV_MODULE_NAME);
--
--module_init(mac_esp_init);
--module_exit(mac_esp_exit);
-diff --git a/drivers/scsi/qlogicpti.c b/drivers/scsi/qlogicpti.c
-index 48ff7d88af86..d84e218d32cb 100644
---- a/drivers/scsi/qlogicpti.c
-+++ b/drivers/scsi/qlogicpti.c
-@@ -1468,22 +1468,10 @@ static struct platform_driver qpti_sbus_driver = {
- 	.probe		= qpti_sbus_probe,
- 	.remove		= qpti_sbus_remove,
- };
--
--static int __init qpti_init(void)
--{
--	return platform_driver_register(&qpti_sbus_driver);
--}
--
--static void __exit qpti_exit(void)
--{
--	platform_driver_unregister(&qpti_sbus_driver);
--}
-+module_platform_driver(qpti_sbus_driver);
- 
- MODULE_DESCRIPTION("QlogicISP SBUS driver");
- MODULE_AUTHOR("David S. Miller (davem@davemloft.net)");
- MODULE_LICENSE("GPL");
- MODULE_VERSION("2.1");
- MODULE_FIRMWARE("qlogic/isp1000.bin");
--
--module_init(qpti_init);
--module_exit(qpti_exit);
-diff --git a/drivers/scsi/sni_53c710.c b/drivers/scsi/sni_53c710.c
-index 03d43f016397..9e2e196bc202 100644
---- a/drivers/scsi/sni_53c710.c
-+++ b/drivers/scsi/sni_53c710.c
-@@ -124,16 +124,4 @@ static struct platform_driver snirm710_driver = {
- 		.name	= "snirm_53c710",
- 	},
- };
--
--static int __init snirm710_init(void)
--{
--	return platform_driver_register(&snirm710_driver);
--}
--
--static void __exit snirm710_exit(void)
--{
--	platform_driver_unregister(&snirm710_driver);
--}
--
--module_init(snirm710_init);
--module_exit(snirm710_exit);
-+module_platform_driver(snirm710_driver);
-diff --git a/drivers/scsi/sun3x_esp.c b/drivers/scsi/sun3x_esp.c
-index f37df79e37e1..7de82f2c9757 100644
---- a/drivers/scsi/sun3x_esp.c
-+++ b/drivers/scsi/sun3x_esp.c
-@@ -270,22 +270,10 @@ static struct platform_driver esp_sun3x_driver = {
- 		.name   = "sun3x_esp",
- 	},
- };
--
--static int __init sun3x_esp_init(void)
--{
--	return platform_driver_register(&esp_sun3x_driver);
--}
--
--static void __exit sun3x_esp_exit(void)
--{
--	platform_driver_unregister(&esp_sun3x_driver);
--}
-+module_platform_driver(esp_sun3x_driver);
- 
- MODULE_DESCRIPTION("Sun3x ESP SCSI driver");
- MODULE_AUTHOR("Thomas Bogendoerfer (tsbogend@alpha.franken.de)");
- MODULE_LICENSE("GPL");
- MODULE_VERSION(DRV_VERSION);
--
--module_init(sun3x_esp_init);
--module_exit(sun3x_esp_exit);
- MODULE_ALIAS("platform:sun3x_esp");
-diff --git a/drivers/scsi/sun_esp.c b/drivers/scsi/sun_esp.c
-index 964130d2c8a6..5dc38d35745b 100644
---- a/drivers/scsi/sun_esp.c
-+++ b/drivers/scsi/sun_esp.c
-@@ -606,21 +606,9 @@ static struct platform_driver esp_sbus_driver = {
- 	.probe		= esp_sbus_probe,
- 	.remove		= esp_sbus_remove,
- };
--
--static int __init sunesp_init(void)
--{
--	return platform_driver_register(&esp_sbus_driver);
--}
--
--static void __exit sunesp_exit(void)
--{
--	platform_driver_unregister(&esp_sbus_driver);
--}
-+module_platform_driver(esp_sbus_driver);
- 
- MODULE_DESCRIPTION("Sun ESP SCSI driver");
- MODULE_AUTHOR("David S. Miller (davem@davemloft.net)");
- MODULE_LICENSE("GPL");
- MODULE_VERSION(DRV_VERSION);
--
--module_init(sunesp_init);
--module_exit(sunesp_exit);
+On Sun, Sep 13, 2020 at 07:42:45PM +0100, Lad Prabhakar wrote:
+> Parse endpoint properties using v4l2_fwnode_endpoint_alloc_parse()
+> to determine bus-type and store it locally in priv data.
+> 
+> Also for backward compatibility with the existing DT where bus-type
+> isnt specified fallback to V4L2_MBUS_PARALLEL.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  drivers/media/i2c/ov772x.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> index 2cc6a678069a..551082aa7026 100644
+> --- a/drivers/media/i2c/ov772x.c
+> +++ b/drivers/media/i2c/ov772x.c
+> @@ -31,6 +31,7 @@
+>  #include <media/v4l2-ctrls.h>
+>  #include <media/v4l2-device.h>
+>  #include <media/v4l2-event.h>
+> +#include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-image-sizes.h>
+>  #include <media/v4l2-subdev.h>
+>  
+> @@ -434,6 +435,7 @@ struct ov772x_priv {
+>  #ifdef CONFIG_MEDIA_CONTROLLER
+>  	struct media_pad pad;
+>  #endif
+> +	enum v4l2_mbus_type		  bus_type;
+>  };
+>  
+>  /*
+> @@ -1354,6 +1356,8 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+>  
+>  static int ov772x_probe(struct i2c_client *client)
+>  {
+> +	struct v4l2_fwnode_endpoint bus_cfg = { .bus_type = 0 };
+> +	struct fwnode_handle	*ep;
+>  	struct ov772x_priv	*priv;
+>  	int			ret;
+>  	static const struct regmap_config ov772x_regmap_config = {
+> @@ -1415,6 +1419,26 @@ static int ov772x_probe(struct i2c_client *client)
+>  		goto error_clk_put;
+>  	}
+>  
+> +	ep = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> +					    NULL);
+> +	if (!ep) {
+> +		dev_err(&client->dev, "endpoint node not found\n");
+> +		ret = -EINVAL;
+> +		goto error_clk_put;
+> +	}
+> +
+> +	bus_cfg.bus_type = V4L2_MBUS_PARALLEL;
+> +	ret = v4l2_fwnode_endpoint_alloc_parse(ep, &bus_cfg);
+> +	priv->bus_type = bus_cfg.bus_type;
+> +	v4l2_fwnode_endpoint_free(&bus_cfg);
+> +	if (ret) {
+> +		/* For backward compatibility with the existing DT where
+> +		 * bus-type isnt specified fallback to V4L2_MBUS_PARALLEL
+
+"isn't", "fall back", and a period, please.
+
+> +		 */
+> +		priv->bus_type = V4L2_MBUS_PARALLEL;
+> +		dev_notice(&client->dev, "Falling back to V4L2_MBUS_PARALLEL mode\n");
+
+I'd just use dev_dbg().
+
+> +	}
+> +
+>  	ret = ov772x_video_probe(priv);
+>  	if (ret < 0)
+>  		goto error_gpio_put;
+
 -- 
-2.25.1
+Regards,
 
+Sakari Ailus
