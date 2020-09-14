@@ -2,151 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482B4268F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C12A268F3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbgINPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:11:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:39566 "EHLO foss.arm.com"
+        id S1726387AbgINPLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:11:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:39614 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgINPKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:10:37 -0400
+        id S1726036AbgINPKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:10:48 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF34B1FB;
-        Mon, 14 Sep 2020 08:10:34 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C727914F6;
+        Mon, 14 Sep 2020 08:10:40 -0700 (PDT)
 Received: from seattle-bionic.arm.com.Home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC77D3F718;
-        Mon, 14 Sep 2020 08:10:33 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFFEA3F718;
+        Mon, 14 Sep 2020 08:10:39 -0700 (PDT)
 From:   Oliver Swede <oli.swede@arm.com>
 To:     catalin.marinas@arm.com, will@kernel.org
 Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.indradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 00/14] Optimise and update memcpy, user copy and string routines 
-Date:   Mon, 14 Sep 2020 15:09:44 +0000
-Message-Id: <20200914150958.2200-1-oli.swede@arm.com>
+Subject: [PATCH v5 05/14] arm64: Import latest version of Cortex Strings' strcmp
+Date:   Mon, 14 Sep 2020 15:09:49 +0000
+Message-Id: <20200914150958.2200-6-oli.swede@arm.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200914150958.2200-1-oli.swede@arm.com>
+References: <20200914150958.2200-1-oli.swede@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+From: Sam Tebbs <sam.tebbs@arm.com>
 
-In this version the backtracking fixups are replaced with a two-stage
-approach that maintains the accuracy in v4 and still uses the fault address,
-but provides a copy-routine-independent mechanism for determining the fault
-address.
+Import the latest version of Cortex Strings' strcmp function.
 
-The same constraints on the fixup routine (the available information being
-src,dst,count,faddr) are used here, but in a more straightforward way that
-could allow the copy template to be re-used with the new optimized copy
-routines, and for the fixups to also apply to future copy routines.
+The upstream source is src/aarch64/strcmp.S as of commit 90b61261ceb4
+in https://git.linaro.org/toolchain/cortex-strings.git.
 
-There is a secondary in-order copy invoked which is expected to fault, and
-this is byte-wise to provide the second fixup with the exact fault address,
-which helps to avoid the need to special-case fixups for unprivileged
-load/store accesses.
+Signed-off-by: Sam Tebbs <sam.tebbs@arm.com>
+[ rm: update attribution, expand commit message ]
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Oliver Swede <oli.swede@arm.com>
+---
+ arch/arm64/lib/strcmp.S | 272 +++++++++++++++++-----------------------
+ 1 file changed, 113 insertions(+), 159 deletions(-)
 
-This alternative came about shortly after posting v4 and builds on a
-discussion between Robin and I regarding a new idea for a cleaner approach
-to the fixup routines, and I found some time to prototype it a couple of
-weeks ago (previously been busy with moving teams internally and also wanted
-to wait for further feedback before re-submitting to avoid excessive
-revisions). A solution akin to this was incidentally one of my initial
-thoughts but took a different direction as had previously assumed there
-would be problems faulting from within a fixup routine (please point out
-any issues with this that I may be unaware of - so far it has only been
-tested internally on a couple of machines under basic workloads).
-
-In order to provide additional information to the fixup that could reduce
-the overhead of the secondary copy for large copy sizes, we also discussed
-a potential magnitude N to jump back by from the first fault rather than
-initiate from the beginning, on the basis that this is a basic property to
-identify in the algorithm and one that could apply to future copy routines
-simply by increasing this value. It holds for long copies due to the
-cortex-strings implementation effectively copying in an in-order manner in
-chunks of 64B (but out-of-order within each chunk). However, I have included
-this as a standalone patch as this is based on an assumption about the
-algorithm.
-
-I thought that you might consequently like to have a look at v5 in deciding
-whether or not to use separate algorithms for in-kernel/uaccess copy routines
-(re feedback from v4).
-
-Comments welcome,
-
-Many thanks,
-Oli
-
-Changes since v4:
-* Replaces the fixup routines in v4, which would require an understanding of
-and be subject to change with newer optimizations, with another approach that
-provides the same level of accuracy;
-* Introduces an intermediate fixup routine that initiates an in-order copy;
-* Configures a value to jump back from the fault address by before starting
-the copy;
-* Adds the additional macros to the copy template to account for the second
-fixup, and reduces the total number of new macros initially added;
-* Removes the special-case for UAO in the fixup (please see patch 14 in v4)
-as this is now handled by the copy template substituting in the unprivileged
-variants for the in-order copy, so the same fixups should apply to those
-systems without modification;
-* Repurpose commit 11 to exclusively check for overlapping buffers in
-copy_in_user() calls and return the full width for these cases as it may result
-in unusual behaviour, due implementations invoking memmov routines for which the
-fixup wouldn't be applicable;
-* In the process of rebasing to v5.9-rc4, moves Sam's fixup-offset
-implementation in eatable.h to occur after bpf-related checks
-* Rephrases commit messages in patches 9-14 for clarity and to reflect the
-new changes.
-
-This revision was tested on two machines (UAO & non-UAO) internally using a
-custom test module (planning on posting this shortly).
-
-v4: https://lore.kernel.org/linux-arm-kernel/f52401d9-787c-667b-c1ec-8b91106d6d14@arm.com/
-
-Oliver Swede (5):
-  arm64: usercopy: Store the arguments on stack
-  arm64: usercopy: Check for overlapping buffers in fixup
-  arm64: usercopy: Add intermediate fixup routine
-  arm64: usercopy: Add conclusive fixup routine
-  arm64: usercopy: Reduce overhead in fixup
-
-Robin Murphy (2):
-  arm64: kprobes: Drop open-coded exception fixup
-  arm64: Tidy up _asm_extable_faultaddr usage
-
-Sam Tebbs (7):
-  arm64: Allow passing fault address to fixup handlers
-  arm64: Import latest version of Cortex Strings' memcmp
-  arm64: Import latest version of Cortex Strings' memmove
-  arm64: Import latest version of Cortex Strings' strcmp
-  arm64: Import latest version of Cortex Strings' strlen
-  arm64: Import latest version of Cortex Strings' strncmp
-  arm64: Import latest optimization of memcpy
-
- arch/arm64/include/asm/alternative.h |  36 ---
- arch/arm64/include/asm/assembler.h   |  13 +
- arch/arm64/include/asm/extable.h     |  11 +-
- arch/arm64/kernel/probes/kprobes.c   |   7 -
- arch/arm64/lib/copy_from_user.S      | 117 +++++++--
- arch/arm64/lib/copy_in_user.S        | 122 +++++++--
- arch/arm64/lib/copy_template.S       | 375 +++++++++++++++------------
- arch/arm64/lib/copy_template_user.S  |  32 +++
- arch/arm64/lib/copy_to_user.S        | 118 +++++++--
- arch/arm64/lib/copy_user_fixup.S     |  94 +++++++
- arch/arm64/lib/memcmp.S              | 333 +++++++++---------------
- arch/arm64/lib/memcpy.S              |  47 ++--
- arch/arm64/lib/memmove.S             | 232 ++++++-----------
- arch/arm64/lib/strcmp.S              | 272 ++++++++-----------
- arch/arm64/lib/strlen.S              | 247 ++++++++++++------
- arch/arm64/lib/strncmp.S             | 363 ++++++++++++--------------
- arch/arm64/mm/extable.c              |  27 +-
- arch/arm64/mm/fault.c                |   2 +-
- 18 files changed, 1323 insertions(+), 1125 deletions(-)
- create mode 100644 arch/arm64/lib/copy_template_user.S
- create mode 100644 arch/arm64/lib/copy_user_fixup.S
-
+diff --git a/arch/arm64/lib/strcmp.S b/arch/arm64/lib/strcmp.S
+index 4e79566726c8..e00ff46c4ffc 100644
+--- a/arch/arm64/lib/strcmp.S
++++ b/arch/arm64/lib/strcmp.S
+@@ -1,13 +1,11 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (C) 2013 ARM Ltd.
+- * Copyright (C) 2013 Linaro.
++ * Copyright (c) 2012,2018 Linaro Limited. All rights reserved.
+  *
+- * This code is based on glibc cortex strings work originally authored by Linaro
+- * be found @
++ * This code is based on glibc Cortex Strings work originally authored by
++ * Linaro, found at:
+  *
+- * http://bazaar.launchpad.net/~linaro-toolchain-dev/cortex-strings/trunk/
+- * files/head:/src/aarch64/
++ * https://git.linaro.org/toolchain/cortex-strings.git
+  */
+ 
+ #include <linux/linkage.h>
+@@ -25,60 +23,106 @@
+  * or be greater than s2.
+  */
+ 
++#define L(label) .L ## label
++
+ #define REP8_01 0x0101010101010101
+ #define REP8_7f 0x7f7f7f7f7f7f7f7f
+ #define REP8_80 0x8080808080808080
+ 
+ /* Parameters and result.  */
+-src1		.req	x0
+-src2		.req	x1
+-result		.req	x0
++#define src1		x0
++#define src2		x1
++#define result		x0
+ 
+ /* Internal variables.  */
+-data1		.req	x2
+-data1w		.req	w2
+-data2		.req	x3
+-data2w		.req	w3
+-has_nul		.req	x4
+-diff		.req	x5
+-syndrome	.req	x6
+-tmp1		.req	x7
+-tmp2		.req	x8
+-tmp3		.req	x9
+-zeroones	.req	x10
+-pos		.req	x11
+-
++#define data1		x2
++#define data1w		w2
++#define data2		x3
++#define data2w		w3
++#define has_nul		x4
++#define diff		x5
++#define syndrome	x6
++#define tmp1		x7
++#define tmp2		x8
++#define tmp3		x9
++#define zeroones	x10
++#define pos		x11
++
++	/* Start of performance-critical section  -- one 64B cache line.  */
+ SYM_FUNC_START_WEAK_PI(strcmp)
+ 	eor	tmp1, src1, src2
+ 	mov	zeroones, #REP8_01
+ 	tst	tmp1, #7
+-	b.ne	.Lmisaligned8
++	b.ne	L(misaligned8)
+ 	ands	tmp1, src1, #7
+-	b.ne	.Lmutual_align
+-
+-	/*
+-	* NUL detection works on the principle that (X - 1) & (~X) & 0x80
+-	* (=> (X - 1) & ~(X | 0x7f)) is non-zero iff a byte is zero, and
+-	* can be done in parallel across the entire word.
+-	*/
+-.Lloop_aligned:
++	b.ne	L(mutual_align)
++	/* NUL detection works on the principle that (X - 1) & (~X) & 0x80
++	   (=> (X - 1) & ~(X | 0x7f)) is non-zero iff a byte is zero, and
++	   can be done in parallel across the entire word.  */
++L(loop_aligned):
+ 	ldr	data1, [src1], #8
+ 	ldr	data2, [src2], #8
+-.Lstart_realigned:
++L(start_realigned):
+ 	sub	tmp1, data1, zeroones
+ 	orr	tmp2, data1, #REP8_7f
+ 	eor	diff, data1, data2	/* Non-zero if differences found.  */
+ 	bic	has_nul, tmp1, tmp2	/* Non-zero if NUL terminator.  */
+ 	orr	syndrome, diff, has_nul
+-	cbz	syndrome, .Lloop_aligned
+-	b	.Lcal_cmpresult
+-
+-.Lmutual_align:
+-	/*
+-	* Sources are mutually aligned, but are not currently at an
+-	* alignment boundary.  Round down the addresses and then mask off
+-	* the bytes that preceed the start point.
+-	*/
++	cbz	syndrome, L(loop_aligned)
++	/* End of performance-critical section  -- one 64B cache line.  */
++
++L(end):
++CPU_LE(rev	syndrome, syndrome)
++CPU_LE(rev	data1, data1)
++	/* The MS-non-zero bit of the syndrome marks either the first bit
++	   that is different, or the top bit of the first zero byte.
++	   Shifting left now will bring the critical information into the
++	   top bits.  */
++CPU_LE(clz	pos, syndrome)
++CPU_LE(rev	data2, data2)
++CPU_LE(lsl	data1, data1, pos)
++CPU_LE(lsl	data2, data2, pos)
++	/* But we need to zero-extend (char is unsigned) the value and then
++	   perform a signed 32-bit subtraction.  */
++CPU_LE(lsr	data1, data1, #56)
++CPU_LE(sub	result, data1, data2, lsr #56)
++CPU_LE(ret)
++	/* For big-endian we cannot use the trick with the syndrome value
++	   as carry-propagation can corrupt the upper bits if the trailing
++	   bytes in the string contain 0x01.  */
++	/* However, if there is no NUL byte in the dword, we can generate
++	   the result directly.  We can't just subtract the bytes as the
++	   MSB might be significant.  */
++CPU_BE(cbnz	has_nul, 1f)
++CPU_BE(cmp	data1, data2)
++CPU_BE(cset	result, ne)
++CPU_BE(cneg	result, result, lo)
++CPU_BE(ret)
++1:
++	/* Re-compute the NUL-byte detection, using a byte-reversed value.  */
++CPU_BE(rev	tmp3, data1)
++CPU_BE(sub	tmp1, tmp3, zeroones)
++CPU_BE(orr	tmp2, tmp3, #REP8_7f)
++CPU_BE(bic	has_nul, tmp1, tmp2)
++CPU_BE(rev	has_nul, has_nul)
++CPU_BE(orr	syndrome, diff, has_nul)
++CPU_BE(clz	pos, syndrome)
++	/* The MS-non-zero bit of the syndrome marks either the first bit
++	   that is different, or the top bit of the first zero byte.
++	   Shifting left now will bring the critical information into the
++	   top bits.  */
++CPU_BE(lsl	data1, data1, pos)
++CPU_BE(lsl	data2, data2, pos)
++	/* But we need to zero-extend (char is unsigned) the value and then
++	   perform a signed 32-bit subtraction.  */
++CPU_BE(lsr	data1, data1, #56)
++CPU_BE(sub	result, data1, data2, lsr #56)
++CPU_BE(ret)
++
++L(mutual_align):
++	/* Sources are mutually aligned, but are not currently at an
++	   alignment boundary.  Round down the addresses and then mask off
++	   the bytes that preceed the start point.  */
+ 	bic	src1, src1, #7
+ 	bic	src2, src2, #7
+ 	lsl	tmp1, tmp1, #3		/* Bytes beyond alignment -> bits.  */
+@@ -87,137 +131,47 @@ SYM_FUNC_START_WEAK_PI(strcmp)
+ 	ldr	data2, [src2], #8
+ 	mov	tmp2, #~0
+ 	/* Big-endian.  Early bytes are at MSB.  */
+-CPU_BE( lsl	tmp2, tmp2, tmp1 )	/* Shift (tmp1 & 63).  */
++CPU_BE(lsl	tmp2, tmp2, tmp1)    /* Shift (tmp1 & 63).  */
+ 	/* Little-endian.  Early bytes are at LSB.  */
+-CPU_LE( lsr	tmp2, tmp2, tmp1 )	/* Shift (tmp1 & 63).  */
+-
++CPU_LE(lsr	tmp2, tmp2, tmp1)	/* Shift (tmp1 & 63).  */
+ 	orr	data1, data1, tmp2
+ 	orr	data2, data2, tmp2
+-	b	.Lstart_realigned
+-
+-.Lmisaligned8:
+-	/*
+-	* Get the align offset length to compare per byte first.
+-	* After this process, one string's address will be aligned.
+-	*/
+-	and	tmp1, src1, #7
+-	neg	tmp1, tmp1
+-	add	tmp1, tmp1, #8
+-	and	tmp2, src2, #7
+-	neg	tmp2, tmp2
+-	add	tmp2, tmp2, #8
+-	subs	tmp3, tmp1, tmp2
+-	csel	pos, tmp1, tmp2, hi /*Choose the maximum. */
+-.Ltinycmp:
++	b	L(start_realigned)
++
++L(misaligned8):
++	/* Align SRC1 to 8 bytes and then compare 8 bytes at a time, always
++	   checking to make sure that we don't access beyond page boundary in
++	   SRC2.  */
++	tst	src1, #7
++	b.eq	L(loop_misaligned)
++L(do_misaligned):
+ 	ldrb	data1w, [src1], #1
+ 	ldrb	data2w, [src2], #1
+-	subs	pos, pos, #1
+-	ccmp	data1w, #1, #0, ne  /* NZCV = 0b0000.  */
+-	ccmp	data1w, data2w, #0, cs  /* NZCV = 0b0000.  */
+-	b.eq	.Ltinycmp
+-	cbnz	pos, 1f /*find the null or unequal...*/
+ 	cmp	data1w, #1
+-	ccmp	data1w, data2w, #0, cs
+-	b.eq	.Lstart_align /*the last bytes are equal....*/
+-1:
+-	sub	result, data1, data2
+-	ret
+-
+-.Lstart_align:
+-	ands	xzr, src1, #7
+-	b.eq	.Lrecal_offset
+-	/*process more leading bytes to make str1 aligned...*/
+-	add	src1, src1, tmp3
+-	add	src2, src2, tmp3
+-	/*load 8 bytes from aligned str1 and non-aligned str2..*/
++	ccmp	data1w, data2w, #0, cs	/* NZCV = 0b0000.  */
++	b.ne	L(done)
++	tst	src1, #7
++	b.ne	L(do_misaligned)
++
++L(loop_misaligned):
++	/* Test if we are within the last dword of the end of a 4K page.  If
++	   yes then jump back to the misaligned loop to copy a byte at a time.  */
++	and	tmp1, src2, #0xff8
++	eor	tmp1, tmp1, #0xff8
++	cbz	tmp1, L(do_misaligned)
+ 	ldr	data1, [src1], #8
+ 	ldr	data2, [src2], #8
+ 
+ 	sub	tmp1, data1, zeroones
+ 	orr	tmp2, data1, #REP8_7f
+-	bic	has_nul, tmp1, tmp2
+-	eor	diff, data1, data2 /* Non-zero if differences found.  */
+-	orr	syndrome, diff, has_nul
+-	cbnz	syndrome, .Lcal_cmpresult
+-	/*How far is the current str2 from the alignment boundary...*/
+-	and	tmp3, tmp3, #7
+-.Lrecal_offset:
+-	neg	pos, tmp3
+-.Lloopcmp_proc:
+-	/*
+-	* Divide the eight bytes into two parts. First,backwards the src2
+-	* to an alignment boundary,load eight bytes from the SRC2 alignment
+-	* boundary,then compare with the relative bytes from SRC1.
+-	* If all 8 bytes are equal,then start the second part's comparison.
+-	* Otherwise finish the comparison.
+-	* This special handle can garantee all the accesses are in the
+-	* thread/task space in avoid to overrange access.
+-	*/
+-	ldr	data1, [src1,pos]
+-	ldr	data2, [src2,pos]
+-	sub	tmp1, data1, zeroones
+-	orr	tmp2, data1, #REP8_7f
+-	bic	has_nul, tmp1, tmp2
+-	eor	diff, data1, data2  /* Non-zero if differences found.  */
+-	orr	syndrome, diff, has_nul
+-	cbnz	syndrome, .Lcal_cmpresult
+-
+-	/*The second part process*/
+-	ldr	data1, [src1], #8
+-	ldr	data2, [src2], #8
+-	sub	tmp1, data1, zeroones
+-	orr	tmp2, data1, #REP8_7f
+-	bic	has_nul, tmp1, tmp2
+-	eor	diff, data1, data2  /* Non-zero if differences found.  */
++	eor	diff, data1, data2	/* Non-zero if differences found.  */
++	bic	has_nul, tmp1, tmp2	/* Non-zero if NUL terminator.  */
+ 	orr	syndrome, diff, has_nul
+-	cbz	syndrome, .Lloopcmp_proc
++	cbz	syndrome, L(loop_misaligned)
++	b	L(end)
+ 
+-.Lcal_cmpresult:
+-	/*
+-	* reversed the byte-order as big-endian,then CLZ can find the most
+-	* significant zero bits.
+-	*/
+-CPU_LE( rev	syndrome, syndrome )
+-CPU_LE( rev	data1, data1 )
+-CPU_LE( rev	data2, data2 )
+-
+-	/*
+-	* For big-endian we cannot use the trick with the syndrome value
+-	* as carry-propagation can corrupt the upper bits if the trailing
+-	* bytes in the string contain 0x01.
+-	* However, if there is no NUL byte in the dword, we can generate
+-	* the result directly.  We cannot just subtract the bytes as the
+-	* MSB might be significant.
+-	*/
+-CPU_BE( cbnz	has_nul, 1f )
+-CPU_BE( cmp	data1, data2 )
+-CPU_BE( cset	result, ne )
+-CPU_BE( cneg	result, result, lo )
+-CPU_BE( ret )
+-CPU_BE( 1: )
+-	/*Re-compute the NUL-byte detection, using a byte-reversed value. */
+-CPU_BE(	rev	tmp3, data1 )
+-CPU_BE(	sub	tmp1, tmp3, zeroones )
+-CPU_BE(	orr	tmp2, tmp3, #REP8_7f )
+-CPU_BE(	bic	has_nul, tmp1, tmp2 )
+-CPU_BE(	rev	has_nul, has_nul )
+-CPU_BE(	orr	syndrome, diff, has_nul )
+-
+-	clz	pos, syndrome
+-	/*
+-	* The MS-non-zero bit of the syndrome marks either the first bit
+-	* that is different, or the top bit of the first zero byte.
+-	* Shifting left now will bring the critical information into the
+-	* top bits.
+-	*/
+-	lsl	data1, data1, pos
+-	lsl	data2, data2, pos
+-	/*
+-	* But we need to zero-extend (char is unsigned) the value and then
+-	* perform a signed 32-bit subtraction.
+-	*/
+-	lsr	data1, data1, #56
+-	sub	result, data1, data2, lsr #56
++L(done):
++	sub	result, data1, data2
+ 	ret
+ SYM_FUNC_END_PI(strcmp)
+ EXPORT_SYMBOL_NOKASAN(strcmp)
 -- 
 2.17.1
 
