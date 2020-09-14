@@ -2,167 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A27F269212
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F90269237
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgINQtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:49:51 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1205 "EHLO mga05.intel.com"
+        id S1726370AbgINQzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:55:50 -0400
+Received: from mga06.intel.com ([134.134.136.31]:22800 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbgINQtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:49:13 -0400
-IronPort-SDR: J17kJ9PV7a6B7ZCBi4+TSvSL3CTrmt2Yf5x5gPdZ0B327NQfmQ4j4SLENyOTZav7jdmyDf55oy
- YLV49dJUaGQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="243943445"
+        id S1726028AbgINQta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:49:30 -0400
+IronPort-SDR: k9nx0JRIppzFqoh8vYH26k2mTMxI29e/dnimL5GwI1JZ5rLjcg7vGBWhwZfizLgqSOHi83jzfh
+ XJMqAD8eNgcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="220665952"
 X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="243943445"
+   d="scan'208";a="220665952"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:49:11 -0700
-IronPort-SDR: 09cRRwKArsvcBxrjjWRJ/J2HN8kjvBqVl576i5IoVev7npTBQJkJhymBOHyTaZsQXJUZ/ksZAA
- /mdxEOJpmmFw==
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:49:27 -0700
+IronPort-SDR: Pm7ODHiCR14OAqKMe6ftIHPePn/ldSOJmEGdRKEsdBg/QTPXWwHDj+P9U9nih+5WtzffrcquYz
+ cz48HB1H/SOg==
 X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
-   d="scan'208";a="287677623"
-Received: from daser-mobl.ger.corp.intel.com (HELO localhost) ([10.252.38.230])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:49:05 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     x86@kernel.org, linux-sgx@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: [PATCH v37 17/24] x86/sgx: ptrace() support for the SGX driver
-Date:   Mon, 14 Sep 2020 19:49:01 +0300
-Message-Id: <20200914164901.6503-1-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+   d="scan'208";a="507207696"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:49:26 -0700
+Date:   Mon, 14 Sep 2020 09:49:24 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiong Zhang <xiong.y.zhang@intel.com>,
+        Wayne Boyer <wayne.boyer@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Add capability to zap only sptes for the
+ affected memslot
+Message-ID: <20200914164923.GH6855@sjchrist-ice>
+References: <51637a13-f23b-8b76-c93a-76346b4cc982@redhat.com>
+ <20200709211253.GW24919@linux.intel.com>
+ <49c7907a-3ab4-b5db-ccb4-190b990c8be3@redhat.com>
+ <20200710042922.GA24919@linux.intel.com>
+ <20200713122226.28188f93@x1.home>
+ <20200713190649.GE29725@linux.intel.com>
+ <20200721030319.GD20375@linux.intel.com>
+ <20200721100036.464d4440@w520.home>
+ <20200723155711.GD21891@linux.intel.com>
+ <20200723123544.6268b465@w520.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723123544.6268b465@w520.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add VMA callbacks for ptrace() that can be used with debug enclaves.
-With debug enclaves data can be read and write the memory word at a time
-by using ENCLS(EDBGRD) and ENCLS(EDBGWR) leaf instructions.
+On Thu, Jul 23, 2020 at 12:35:44PM -0600, Alex Williamson wrote:
+> On Thu, 23 Jul 2020 08:57:11 -0700
+> Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+> 
+> > On Tue, Jul 21, 2020 at 10:00:36AM -0600, Alex Williamson wrote:
+> > > On Mon, 20 Jul 2020 20:03:19 -0700
+> > > Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+> > >   
+> > > > +Weijiang
+> > > > 
+> > > > On Mon, Jul 13, 2020 at 12:06:50PM -0700, Sean Christopherson wrote:  
+> > > > > The only ideas I have going forward are to:
+> > > > > 
+> > > > >   a) Reproduce the bug outside of your environment and find a resource that
+> > > > >      can go through the painful bisection.    
+> > > > 
+> > > > We're trying to reproduce the original issue in the hopes of biesecting, but
+> > > > have not yet discovered the secret sauce.  A few questions:
+> > > > 
+> > > >   - Are there any known hardware requirements, e.g. specific flavor of GPU?  
+> > > 
+> > > I'm using an old GeForce GT635, I don't think there's anything special
+> > > about this card.  
+> > 
+> > Would you be able to provide your QEMU command line?  Or at least any
+> > potentially relevant bits?  Still no luck reproducing this on our end.
 
-Acked-by: Jethro Beekman <jethro@fortanix.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- arch/x86/kernel/cpu/sgx/encl.c | 87 ++++++++++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
+*sigh*
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 11ec2df59b54..7f8df2c8ef35 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -333,10 +333,97 @@ static int sgx_vma_mprotect(struct vm_area_struct *vma,
- 	return mprotect_fixup(vma, pprev, start, end, newflags);
- }
- 
-+static int sgx_edbgrd(struct sgx_encl *encl, struct sgx_encl_page *page,
-+		      unsigned long addr, void *data)
-+{
-+	unsigned long offset = addr & ~PAGE_MASK;
-+	int ret;
-+
-+
-+	ret = __edbgrd(sgx_get_epc_addr(page->epc_page) + offset, data);
-+	if (ret)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int sgx_edbgwr(struct sgx_encl *encl, struct sgx_encl_page *page,
-+		      unsigned long addr, void *data)
-+{
-+	unsigned long offset = addr & ~PAGE_MASK;
-+	int ret;
-+
-+	ret = __edbgwr(sgx_get_epc_addr(page->epc_page) + offset, data);
-+	if (ret)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int sgx_vma_access(struct vm_area_struct *vma, unsigned long addr,
-+			  void *buf, int len, int write)
-+{
-+	struct sgx_encl *encl = vma->vm_private_data;
-+	struct sgx_encl_page *entry = NULL;
-+	char data[sizeof(unsigned long)];
-+	unsigned long align;
-+	unsigned int flags;
-+	int offset;
-+	int cnt;
-+	int ret = 0;
-+	int i;
-+
-+	/* If process was forked, VMA is still there but vm_private_data is set
-+	 * to NULL.
-+	 */
-+	if (!encl)
-+		return -EFAULT;
-+
-+	flags = atomic_read(&encl->flags);
-+
-+	if (!(flags & SGX_ENCL_DEBUG) || !(flags & SGX_ENCL_INITIALIZED) ||
-+	    (flags & SGX_ENCL_DEAD))
-+		return -EFAULT;
-+
-+	for (i = 0; i < len; i += cnt) {
-+		entry = sgx_encl_reserve_page(encl, (addr + i) & PAGE_MASK);
-+		if (IS_ERR(entry)) {
-+			ret = PTR_ERR(entry);
-+			break;
-+		}
-+
-+		align = ALIGN_DOWN(addr + i, sizeof(unsigned long));
-+		offset = (addr + i) & (sizeof(unsigned long) - 1);
-+		cnt = sizeof(unsigned long) - offset;
-+		cnt = min(cnt, len - i);
-+
-+		ret = sgx_edbgrd(encl, entry, align, data);
-+		if (ret)
-+			goto out;
-+
-+		if (write) {
-+			memcpy(data + offset, buf + i, cnt);
-+			ret = sgx_edbgwr(encl, entry, align, data);
-+			if (ret)
-+				goto out;
-+		} else
-+			memcpy(buf + i, data + offset, cnt);
-+
-+out:
-+		mutex_unlock(&encl->lock);
-+
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret < 0 ? ret : i;
-+}
-+
- const struct vm_operations_struct sgx_vm_ops = {
- 	.open = sgx_vma_open,
- 	.fault = sgx_vma_fault,
- 	.mprotect = sgx_vma_mprotect,
-+	.access = sgx_vma_access,
- };
- 
- /**
--- 
-2.25.1
+The "good" news is that we were able to reproduce and bisect the "fix".
 
+That bad news is that the "fix" is the fracturing of large pages for the
+iTLB multi-hit bug, added by commit b8e8c8303ff2 ("kvm: mmu: ITLB_MULTIHIT
+mitigation").  The GPU pass-through failures can be reproduced by loading
+KVM with kvm.nx_huge_pages=0.
+
+So, we have another data point, but still no clear explanation of exactly
+what is broken.
