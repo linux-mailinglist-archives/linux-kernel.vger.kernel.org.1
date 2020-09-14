@@ -2,152 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7081B26879A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EBA26879E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgINIwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
+        id S1726123AbgINIxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgINIwA (ORCPT
+        with ESMTP id S1726135AbgINIxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:52:00 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9228DC06174A;
-        Mon, 14 Sep 2020 01:51:59 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e17so9817366wme.0;
-        Mon, 14 Sep 2020 01:51:59 -0700 (PDT)
+        Mon, 14 Sep 2020 04:53:06 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46699C06174A;
+        Mon, 14 Sep 2020 01:53:06 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id a8so16013243ilk.1;
+        Mon, 14 Sep 2020 01:53:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KxikpLF2+OFbtV/m24+r7ZSnG57yMpe1VFQzaF4Sh7Y=;
-        b=B1dtRXvaJGYTVutAJNv3z79M7R6GBPsh2uIjFBZbWBF7hJp40praNGFVH7FUKE5LCg
-         CVuRMmh5gqEsJc3ipH65REMFaszMwap7k0x5vKSP9jaQnJzVOK6m+gDZJjTfUKh6dK/h
-         vODikBsj5ASKoiGlBFVHxTWaPOwbLcgA36MC/BhQLndrzWxziYjhgGLnyFru3RW0SGXC
-         rUCs2ICuswFkHSbyzH/Dv9T6FswXONoNtH9bXiYl6KB0yHsjRoTp3LNFFzgNHmcr+Oxw
-         WoImJWAPfSL0BsJCYlYWrfndV9J+U4wG3/I6+UCo7AupfHU5TlgMaiHdrU3XACHL0K3F
-         cJnA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=T5blx8lW5RBmUkqia/MfWKUSWxCaOKkHJt1n0OFhjb8=;
+        b=pwI5R544nBDLeZrf6ZYom+3nqKZgTTUGq8yhfwTuop2RItzV7BCkgpCPzFmX8awAT+
+         +0EHNdBtbADpmqOGDynxt7TCygd8ZhfzYCr4NF938i/Xzv0ImsSrkQm3G3MKjyBBZ+3b
+         5uAAvG6GgMq4GOXKmD1M3ezGpGjDeVIyPjABU04YL+kmsKoNp1hPtUBxs3cZAoyeN/hp
+         pv9fe3jfXYiFLYYvQVy8ZiAnFtnIL+IeD8mcYVRMU0P3mEw8FOddf1YE4Gg6UbUlL8tp
+         6vyr4qCNQSmsErj9nQUuv1FrPKlvTXf/bguL//rktufNqeJUUehMSaIPHCTAvK5GolNe
+         Jjgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KxikpLF2+OFbtV/m24+r7ZSnG57yMpe1VFQzaF4Sh7Y=;
-        b=qMVzX7RlZhQqO33XOVwSBlv3fv5zbH19XsUyFyPA+lf8eeKIoX7JKSTM1LDu/5rvYc
-         cqypN6NDwnnkN6tOQcWuYR4TcjSmplN6GZRqeeWU1shU/rBL4tp5jIDzNRZlmgvo/eV1
-         d5zhJmkK5XBut/kiSL2xQ0otD5v5lu57B8lArImFqBJ/ws5hFDD7hJrv6/dg6cyu/JVf
-         GldOQpgDw+p54qcwEf5kmsC6bVeayttCKFehU1PPhxnzaLcjNTrJifBcfVEePHhN+sXI
-         o86DdcI6fe42tNMiuAsgcEZKidByJx86ozeARrkKipkqOods6Z4EUFO67UpZixUUAw4l
-         wJJw==
-X-Gm-Message-State: AOAM531Fzl80oT7zT4OI7tYpnjY8A+av+V8yhUQfdoBxh8L8uJRRLnmn
-        1a/vrdtiojFxXIHm/YmxNSo=
-X-Google-Smtp-Source: ABdhPJyCifLIgNPlZsCx1owCD98no3A41z96/U1P34QFDGdnvOhcuAVFARIco+QqAJk7eXqTT8/QSw==
-X-Received: by 2002:a1c:740c:: with SMTP id p12mr13810557wmc.176.1600073518255;
-        Mon, 14 Sep 2020 01:51:58 -0700 (PDT)
-Received: from BV030612LT (oi48z9.static.otenet.gr. [79.129.51.141])
-        by smtp.gmail.com with ESMTPSA id h76sm19258310wme.10.2020.09.14.01.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 01:51:57 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 11:51:54 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        parthiban@linumiz.com, Saravanan Sekar <sravanhome@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org,
-        Parthiban Nallathambi <pn@denx.de>
-Subject: Re: [PATCH v6 2/3] irqchip: Add Actions Semi Owl SIRQ controller
-Message-ID: <20200914085154.GA8474@BV030612LT>
-References: <cover.1599552438.git.cristian.ciocaltea@gmail.com>
- <1167b847f6fe1da3834aeaadf5710ddac54f06a0.1599552438.git.cristian.ciocaltea@gmail.com>
- <c5115d27739e1664f808ff5f1fc315e8@kernel.org>
- <20200914070227.GA4491@BV030612LT>
- <b9053e939dea2b67ba9804aec1a110f5@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=T5blx8lW5RBmUkqia/MfWKUSWxCaOKkHJt1n0OFhjb8=;
+        b=czmvVaT1BC8o3rRwSO33FNY0b2/XU3itFfmMfWjbZJw8WR5aanVPxwwe9eWHwx1Z8F
+         3M6+/4iy7PdKVGv5/j7S94vtHPtlnCTu4o29glzCYAxaFj+2K4f4UhlRGeDNyzoaTgSL
+         eP/hR4iw9+lf+QfLLaLThEqHR1JIv56QqDE6jGgg1A5Pi588nfFKx7YwK92pgtbOZvSk
+         Ryr7GDrEbhGpqbFlx+GVu8z/R20DJ+tF3mh9fO7kijS7VnB33VjIQ6F1fuUjO+Mvcv1G
+         bTBw6vjLuLC6t8gBcG44Q7GHV7oFEmt0CTy3ckLLIsebyISLj4v6b8t+yZkHeCrjz2H4
+         o7Kg==
+X-Gm-Message-State: AOAM532Kub4birqnkB87EfaNLW1zmznsvAlrogkwdMcFm7ODK/441j3t
+        PrtnvXBM5HhHrByuMXJVfUZQWAfSOaUnOZ5VanigmZbB6gzNBQ==
+X-Google-Smtp-Source: ABdhPJw+T5Ark5LxMUndS6SNu7VCFUXc/F2RHXVoAHsK1bYmraQeU5sa2ysv043ZtuHZwITikGt33SyhopnruDg1xz0=
+X-Received: by 2002:a05:6e02:13ae:: with SMTP id h14mr1587717ilo.208.1600073582860;
+ Mon, 14 Sep 2020 01:53:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b9053e939dea2b67ba9804aec1a110f5@kernel.org>
+References: <1600070215-3901-1-git-send-email-yangtiezhu@loongson.cn> <tencent_13F0F91E196BCF3F0E458509@qq.com>
+In-Reply-To: <tencent_13F0F91E196BCF3F0E458509@qq.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Mon, 14 Sep 2020 16:52:51 +0800
+Message-ID: <CAAhV-H4ogJYcK9E9hQ663dGcJn4GjWZUSp47xgzTtjAZ-nrybA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] PCI/portdrv: Only disable Bus Master on kexec
+ reboot and connected PCI devices
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@openvz.org>,
+        Khalid Aziz <khalid.aziz@oracle.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        zhouyanjie <zhouyanjie@wanyeetech.com>, git <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 09:07:18AM +0100, Marc Zyngier wrote:
-> Cristian,
-> 
-> On 2020-09-14 08:02, Cristian Ciocaltea wrote:
-> > Hi Marc,
-> > 
-> > On Fri, Sep 11, 2020 at 05:22:41PM +0100, Marc Zyngier wrote:
-> > > On 2020-09-08 09:20, Cristian Ciocaltea wrote:
-> > > > This interrupt controller is found in the Actions Semi Owl SoCs (S500,
-> > > > S700 and S900) and provides support for handling up to 3 external
-> > > > interrupt lines.
-> > > >
-> > > > Each line can be independently configured as interrupt and triggers on
-> > > > either of the edges or either of the levels. Additionally, each line
-> > > > can also be masked individually.
-> > > >
-> > > > The patch is based on the work started by Parthiban Nallathambi:
-> > > > https://lore.kernel.org/lkml/20181126100356.2840578-1-pn@denx.de/
-> > > >
-> > > > Signed-off-by: Parthiban Nallathambi <pn@denx.de>
-> > > > Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> > > > [cristi: optimized DT, various fixes/cleanups/improvements]
-> > > > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > 
-> > > Who is the author of these patches? If this is a co-development,
-> > > please
-> > > use the relevant tags. Otherwise, the author of the patch must come as
-> > > the first SoB.
-> > 
-> > I took the authorship for the driver patch, as mentioned in the cover
-> > letter. So, if I understand correctly, my SoB should be moved on top and
-> > I assume I also need to drop the related comment line.
-> 
-> Not quite. Please look at Documentation/process/submitting-patches.rst.
+Hi, Tiezhu,
 
-Yes, I have read it, but most probably I missed the information that
-clarifies this authorship change handling.
+How do you test kexec? kexec -e or systemctl kexec? Or both?
+P.S., Please also CC my gmail (chenhuacai@gmail.com) since lemote.com
+has some communication problems.
 
-> If Parthiban and Saravanan haven't authored anything in this patch,
-> then drop them from the SoB list.
+Huacai
 
-Sorry I haven't properly explained this before!
-
-Their contributions to the driver code stopped in 2018, when v3 of the
-patch series has been submitted.
-
-> If they have contributed to the
-> patch (which I expect), then their SoB must be preceded by their own
-> Co-developed-by: tag.
-
-Starting with v4, the work has been done exclusively by myself.
-
-> To sum it up, it probably should look like:
-> 
-> Co-developed-by: Parthiban Nallathambi <pn@denx.de>
-> Signed-off-by: Parthiban Nallathambi <pn@denx.de>
-> Co-developed-by: Saravanan Sekar <sravanhome@gmail.com>
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> 
-> This is of course an assumption, and you should check it with the
-> individuals above.
-
-I have recently contacted Parthiban and he agreed that I can take the
-authorship. So I should proceed with the 1st approach?
-
-> Thanks,
-> 
->         M.
-> -- 
-> Jazz is not dead. It just smells funny...
-
-Thanks,
-Cristi
+>
+> =E9=99=88=E5=8D=8E=E6=89=8D=E6=B1=9F=E8=8B=8F=E8=88=AA=E5=A4=A9=E9=BE=99=
+=E6=A2=A6=E4=BF=A1=E6=81=AF=E6=8A=80=E6=9C=AF=E6=9C=89=E9=99=90=E5=85=AC=E5=
+=8F=B8/=E7=A0=94=E5=8F=91=E4=B8=AD=E5=BF=83/=E8=BD=AF=E4=BB=B6=E9=83=A8   -=
+----------------- Original ------------------From:  "Tiezhu Yang"<yangtiezh=
+u@loongson.cn>;Date:  Mon, Sep 14, 2020 03:57 PMTo:  "Bjorn Helgaas"<bhelga=
+as@google.com>; Cc:  "linux-pci"<linux-pci@vger.kernel.org>; "linux-kernel"=
+<linux-kernel@vger.kernel.org>; "Rafael J. Wysocki"<rafael.j.wysocki@intel.=
+com>; "Konstantin Khlebnikov"<khlebnikov@openvz.org>; "Khalid Aziz"<khalid.=
+aziz@oracle.com>; "Vivek Goyal"<vgoyal@redhat.com>; "Lukas Wunner"<lukas@wu=
+nner.de>; "Oliver O'Halloran"<oohall@gmail.com>; "Huacai Chen"<chenhc@lemot=
+e.com>; "Jiaxun Yang"<jiaxun.yang@flygoat.com>; "Xuefeng Li"<lixuefeng@loon=
+gson.cn>; Subject:  [RFC PATCH v3] PCI/portdrv: Only disable Bus Master on =
+kexec reboot and connected PCI devices After commit 745be2e700cd ("PCIe: po=
+rtdrv: call pci_disable_device
+> during remove") and commit cc27b735ad3a ("PCI/portdrv: Turn off PCIe
+> services during shutdown"), it also calls pci_disable_device() during
+> shutdown, this leads to shutdown or reboot failure occasionally due to
+> clear PCI_COMMAND_MASTER on the device in do_pci_disable_device().
+>
+> drivers/pci/pci.c
+> static void do_pci_disable_device(struct pci_dev *dev)
+> {
+>         u16 pci_command;
+>
+>         pci_read_config_word(dev, PCI_COMMAND, &pci_command);
+>         if (pci_command & PCI_COMMAND_MASTER) {
+>                 pci_command &=3D ~PCI_COMMAND_MASTER;
+>                 pci_write_config_word(dev, PCI_COMMAND, pci_command);
+>         }
+>
+>         pcibios_disable_device(dev);
+> }
+>
+> When remove "pci_command &=3D ~PCI_COMMAND_MASTER;", it can work well whe=
+n
+> shutdown or reboot.
+>
+> As Oliver O'Halloran said, no need to call pci_disable_device() when
+> actually shutting down, but we should call pci_disable_device() before
+> handing over to the new kernel on kexec reboot, so we can do some
+> condition checks which are already executed afterwards by the function
+> pci_device_shutdown(), this is done by commit 4fc9bbf98fd6 ("PCI: Disable
+> Bus Master only on kexec reboot") and commit 6e0eda3c3898 ("PCI: Don't tr=
+y
+> to disable Bus Master on disconnected PCI devices").
+>
+> drivers/pci/pci-driver.c
+> static void pci_device_shutdown(struct device *dev)
+> {
+>  ...
+>         if (drv && drv->shutdown)
+>                 drv->shutdown(pci_dev);
+>
+>         /*
+>          * If this is a kexec reboot, turn off Bus Master bit on the
+>          * device to tell it to not continue to do DMA. Don't touch
+>          * devices in D3cold or unknown states.
+>          * If it is not a kexec reboot, firmware will hit the PCI
+>          * devices with big hammer and stop their DMA any way.
+>          */
+>         if (kexec_in_progress && (pci_dev->current_state <=3D PCI_D3hot))
+>                 pci_clear_master(pci_dev);
+> }
+>
+> [   36.159446] Call Trace:
+> [   36.241688] [<ffffffff80211434>] show_stack+0x9c/0x130
+> [   36.326619] [<ffffffff80661b70>] dump_stack+0xb0/0xf0
+> [   36.410403] [<ffffffff806a8240>] pcie_portdrv_shutdown+0x18/0x78
+> [   36.495302] [<ffffffff8069c6b4>] pci_device_shutdown+0x44/0x90
+> [   36.580027] [<ffffffff807aac90>] device_shutdown+0x130/0x290
+> [   36.664486] [<ffffffff80265448>] kernel_power_off+0x38/0x80
+> [   36.748272] [<ffffffff80265634>] __do_sys_reboot+0x1a4/0x258
+> [   36.831985] [<ffffffff80218b90>] syscall_common+0x34/0x58
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  drivers/pci/pcie/portdrv_core.c |  1 -
+>  drivers/pci/pcie/portdrv_pci.c  | 14 +++++++++++++-
+>  2 files changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_c=
+ore.c
+> index 50a9522..1991aca 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -491,7 +491,6 @@ void pcie_port_device_remove(struct pci_dev *dev)
+>  {
+>         device_for_each_child(&dev->dev, NULL, remove_iter);
+>         pci_free_irq_vectors(dev);
+> -       pci_disable_device(dev);
+>  }
+>
+>  /**
+> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pc=
+i.c
+> index 3a3ce40..cab37a8 100644
+> --- a/drivers/pci/pcie/portdrv_pci.c
+> +++ b/drivers/pci/pcie/portdrv_pci.c
+> @@ -143,6 +143,18 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
+>         }
+>
+>         pcie_port_device_remove(dev);
+> +       pci_disable_device(dev);
+> +}
+> +
+> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
+> +{
+> +       if (pci_bridge_d3_possible(dev)) {
+> +               pm_runtime_forbid(&dev->dev);
+> +               pm_runtime_get_noresume(&dev->dev);
+> +               pm_runtime_dont_use_autosuspend(&dev->dev);
+> +       }
+> +
+> +       pcie_port_device_remove(dev);
+>  }
+>
+>  static pci_ers_result_t pcie_portdrv_error_detected(struct pci_dev *dev,
+> @@ -211,7 +223,7 @@ static struct pci_driver pcie_portdriver =3D {
+>
+>         .probe          =3D pcie_portdrv_probe,
+>         .remove         =3D pcie_portdrv_remove,
+> -       .shutdown       =3D pcie_portdrv_remove,
+> +       .shutdown       =3D pcie_portdrv_shutdown,
+>
+>         .err_handler    =3D &pcie_portdrv_err_handler,
+>
+> --
+> 2.1.0
