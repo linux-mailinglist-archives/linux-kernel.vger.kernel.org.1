@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18340268977
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8FF268979
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgINKmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgINKlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:41:11 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CE1C06174A;
-        Mon, 14 Sep 2020 03:41:02 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id m6so18178180wrn.0;
-        Mon, 14 Sep 2020 03:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KK6ppy+gk7UiuxPQUTeMnH2C+XIbYHWEr8o1+X2zUXc=;
-        b=BInOJyjRPk8YQPjXak4SQncm/Rnt8fnKX7KW2tMQ/nQFgfRwbs8qs6TnLWKjquskxH
-         20X3fPs0KriO+DOKwTWqMn8pL5SXBUwuJo+ycG30xuFk6E6mRBuf/aK9XaQYA8k8/Zaj
-         yW1MoQJ2Rq1MI1lrkZ9zin98cM6faweGYrxaMQcUU1wkyTgK35oBPBk49ApYIjm1xdos
-         ANzm54kNz9mYsw+/s3Jlxd3F2qYNuLcqJo+bjt2hw+OUx5BqFOK6U53lq6bc1PSzNhLc
-         0X8sAZ4hjlWhZ2Adyuj3ylvxzsxgEtoHWRFTHvlZvSfJM29zD6p8I7abQHNC8ascpd5j
-         97Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KK6ppy+gk7UiuxPQUTeMnH2C+XIbYHWEr8o1+X2zUXc=;
-        b=kcggpbOv2LPvJi+szcVW2nApU2qDVqgk0Ohek6tQ/vBNtlqKw1IoIYnzhF3rsVLAcr
-         zV5WDZIr0uOI9o8WhLIESAz4xflqK3NJGStX66mEJ8BScbFSvuUfZHyL53QUnY/lgnzE
-         hNpCF5UPHoEVLQNFstup/eFrqUObC5YONRC5hh2a3XySsvdU12bZXcrFqGoYDWbouJaR
-         SohKxENFfNCWMP2CA1MFUJBRtsgm8fQqfAITwFlKQQ5by++xbFRJgsXIJmvZCT4I9nlr
-         +9av3zQtuIcguQo/xzgmz/lnvN9vtJb2/5fr3ORKKobYEBzee5L9yLDyBI9WefA6OZAv
-         +1ag==
-X-Gm-Message-State: AOAM5306D8T2OFHi2hmKxXuO22J2LS95Q/nqFggt3JrIOBSXupxFqFun
-        7ZDLpX8ucSEPeQ6NgnvPKwU=
-X-Google-Smtp-Source: ABdhPJx9quePo/D3nopjLPPXnThJTb3/w0LqiOFeKU3H19JP8qXFQKfegHyv6mSo8JfrdYKfWGgNLg==
-X-Received: by 2002:a5d:4f09:: with SMTP id c9mr14577754wru.427.1600080061284;
-        Mon, 14 Sep 2020 03:41:01 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id j14sm19012868wmj.19.2020.09.14.03.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 03:41:00 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:40:58 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: Re: [v2 PATCH] crypto: sun4i-ss - Fix sparse endianness markers
-Message-ID: <20200914104058.GA14265@Red>
-References: <202009061621.J89kO43Q%lkp@intel.com>
- <20200907062400.GA15841@gondor.apana.org.au>
- <20200907160029.GC11894@Red>
- <20200908050036.GA19817@gondor.apana.org.au>
- <20200910122248.GA22506@Red>
- <20200911041354.GA5275@gondor.apana.org.au>
+        id S1726514AbgINKnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:43:02 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37999 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726466AbgINKmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 06:42:40 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bqjc052t6z9sTS;
+        Mon, 14 Sep 2020 20:42:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600080146;
+        bh=jqSJTAAE2viP+VO1tceykIVX3foZjPzbA2zwdIB6bEI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PlHbxoBHG5ylBadCb1uIKkkEA099PgfyJFldyi+NHbZfDaCtkzM6SFCtuBcHki+XO
+         j88VvgTfUiAqoPvu2P6c1kM2+TEK4VXYjvgp0GQqtQdHa4O5+YjBFlQlDRSxEN9xbU
+         9MN7LRZnZva62eVRmLnVdp0WEWJqvUgb3F6Gkv8h3AJi9j2DsB6N+SZnMFhLm4FnoV
+         bmsxyC3MOSX3s42hADtlc6M9hxlYioX2EYSt+hAuuZkq/MC/+KUVyjjkYa4ZUKsJSK
+         CyoLooZWXlxbqM8TUtfgjwoaVbztAj3vs9OZW5J9sa3n2uEYommZMPVSt8q3fVUDRt
+         yfcAj785z1T3g==
+Date:   Mon, 14 Sep 2020 20:42:23 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        Wolfram Sang <wsa@kernel.org>,
+        Evan Nimmo <Evan.Nimmo@alliedtelesis.co.nz>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
+        "jdelvare@suse.de" <jdelvare@suse.de>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 1/1] i2c: algo-pca: Reapply i2c bus settings after
+ reset
+Message-ID: <20200914204223.5a96f84d@canb.auug.org.au>
+In-Reply-To: <CAHp75Vf-1vqHjqNixXtnziCd6squwwj0sEArZ8C1YiDwafhk7Q@mail.gmail.com>
+References: <20200908203247.14374-1-evan.nimmo@alliedtelesis.co.nz>
+        <20200909082338.GC2272@ninjato>
+        <5410e288-e369-0310-1b8e-061c95e46164@alliedtelesis.co.nz>
+        <20200911194526.GB909@ninjato>
+        <61c139a0-26fc-8cd1-0b54-b7cb9d9c0648@alliedtelesis.co.nz>
+        <CAHp75VdtE_UBsNrSxbVPprmp7=-iVCrXv9x6Tu82b4q2ODfKQg@mail.gmail.com>
+        <CAHp75Vf-1vqHjqNixXtnziCd6squwwj0sEArZ8C1YiDwafhk7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911041354.GA5275@gondor.apana.org.au>
+Content-Type: multipart/signed; boundary="Sig_/cHmrJ/D4znt7MYG1cUv/aML";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 02:13:55PM +1000, Herbert Xu wrote:
-> On Thu, Sep 10, 2020 at 02:22:48PM +0200, Corentin Labbe wrote:
+--Sig_/cHmrJ/D4znt7MYG1cUv/aML
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Andy,
+
+On Mon, 14 Sep 2020 11:51:04 +0300 Andy Shevchenko <andy.shevchenko@gmail.c=
+om> wrote:
+>
+> On Mon, Sep 14, 2020 at 11:50 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
 > >
-> > I get some md5 error on both A20+BE:
-> > alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=129 ksize=0\", cfg=\"random: inplace use_finup nosimd src_divs=[<reimport,nosimd>85.99%@+3999, 5.85%@+30, <reimport>0.96%@+25, <reimport,nosimd>5.9%@+2263, <flush,nosimd>2.11%@+1950] iv_offset=2 key_offset=43\"
-> > and A33+BE:
-> > [   84.469045] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=322 ksize=0\", cfg=\"random: inplace may_sleep use_finup src_divs=[<reimport>99.1%@+2668, <reimport>0.88%@alignmask+3630, 0.11%@+3403] iv_offset=33\"
-> > +[   84.469074] need:35966fc8 b31ea266 2bf064e9 f20f40ad
-> > +[   84.469084] have:e29e4491 f3b6effc fa366691 00e04bd9
-> > 
-> > Thoses errors are random. (1 boot out of 2)
-> 
-> Do these really go away without this patch applied? AFAICS the
-> generated code should be identical.
-> 
+> > On Mon, Sep 14, 2020 at 12:27 AM Chris Packham
+> > <Chris.Packham@alliedtelesis.co.nz> wrote: =20
+> > > On 12/09/20 7:45 am, Wolfram Sang wrote: =20
+> > =20
+> > > I'm happy to route it to stable@ if you think it's worth it but I don=
+'t
+> > > think there's a specific Fixes: reference that can be used. The curre=
+nt
+> > > behavior appears to have been that way since before git (looks like we
+> > > noticed in 2014 but it's taken me 6 years to nag people into sending
+> > > their fixes upstream). =20
+> >
+> > JFYI: there is a history.git repository from History Group on
+> > kernel.org. You may dig till the very beginning of the kernel (yes,
+> > it's not properly formed Git history, but it will give you a hash
+> > commit as a reference. =20
+>=20
+> Stephen, btw, does your scripts that validate Fixes, take into
+> consideration references to history.git?
 
-I got this on next-20200910/multi_v7_defconfig BigEndian
-[   12.137856] alg: hash: skipping comparison tests for md5-sun4i-ss because md5-generic is unavailable
-md5-sun4i-ss md5 reqs=763
-[   98.286632] alg: ahash: md5 test failed (wrong result) on test vector \"random: psize=65 ksize=0\", cfg=\"random: use_finup src_divs=[95.28%@+1052, <reimport>0.61%@+4046, 0.87%@+24, <reimport,nosimd>3.24%@+542] key_offset=54\"
+I assuming you are referring to
+https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
 
-So sun4i-ss is not involved.
-Strangely /proc/crypto show:
-name         : md5                                                                                  
-driver       : md5-generic                                                                          
-module       : md5                                                                                  
-priority     : 0                                                                                    
-refcnt       : 1                                                                                    
-selftest     : passed                                                                               
-internal     : no                                                                                   
-type         : shash                                                                                
-blocksize    : 64                                                                                   
-digestsize   : 16
+I have found a few by hand in the past (I also missed a few), but I
+guess I could expend the checks.
 
-and I didnt see anything failed/unknow in /proc/crypto
+Maybe that tree could be put somewhere that appears more permanent if
+we are going to permanently refer to it? (Or has that happened already?)
+--=20
+Cheers,
+Stephen Rothwell
 
-Why the failed algorithm is not visible ?
+--Sig_/cHmrJ/D4znt7MYG1cUv/aML
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9fSQ8ACgkQAVBC80lX
+0Gy2Sgf/Uk1aL4NRj/kH6KJ6MvTqkkqOH4OcuMvhjgPGgwjvDpRFWXw3K9c4XxbU
+DN3dshR27b4lOn3g4pB5Fy6Xr41f5fX7L3z5Qw0fzmsxmdNHyh/V+7UUvGhOTQo9
+0ON2Z2at3wKyEuUIweOrWV52twydCRMwr9cDE3io+76ro2b4UOX/M4jlnSSE4HT1
+o6WTsuYAgpdYf+cWeejOs5AMEOukYxsmN9Zmr4rEeCaOCZdFOTTuBCvedI+989qK
+8Capogbs3ZzBufYKm7i1v4LVzb0Dc0pqA4cfvKN6MoAs3K+PxusctkzZQfvAIaPq
+Y5K1lkYJ9Mq/VQqkhsR4sM8BWIxfjg==
+=wEB6
+-----END PGP SIGNATURE-----
+
+--Sig_/cHmrJ/D4znt7MYG1cUv/aML--
