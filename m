@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DCB268A3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D0E268A42
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbgINLlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:41:20 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:54065 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgINL2T (ORCPT
+        id S1726110AbgINLmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:42:11 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35465 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgINL2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 07:28:19 -0400
-Received: by mail-wm1-f66.google.com with SMTP id x23so10259568wmi.3;
+Received: by mail-wm1-f67.google.com with SMTP id y15so10878835wmi.0;
         Mon, 14 Sep 2020 04:28:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OZX/9xWeZ+zP3pP2tlhsq9nW4Y9VjDF3kLRmkcKtgjc=;
-        b=moevYX85MMyp53ceQSdKdlE8LWEkB2cGS0AQAZ6rH7le/EQXNU6rTi3gcM0ES3Fgkj
-         9kQ6LpW2+jqBb/DoSe0a+p0DKJSwRvXGyuTdkoImmjnZ2cBBqEsSU/0Oe98AYkFX4Y1n
-         OHuX/+MGuy9KJzDRKVMpIFvvrzPxYPVCKG3JIRghlADCocq0BId1gWL/eims1Qp4jJoQ
-         eWRKqmOsuodNsvSJR/jLumVydUU5TnID79TBhbJsZ55lQsy2FDzsocde6aZsuBO1HvvV
-         NyULN4a2eHZXeBUoJ12T5VG/N1RNEHF9apBRt6SLr2M1CpQI2srOTRUqLK4RTylOWV9a
-         QL+Q==
-X-Gm-Message-State: AOAM532oALcn3EVucC0xVxIBIO3aEqzLhHgjwDAoVjjpxrShi/Jk3qxx
-        p06bdweYuBxb5sJh0N9REnR8rHRva/M=
-X-Google-Smtp-Source: ABdhPJy1/tqucPdAU8b/c7VL7XG75PLuqU/JAbXL0ZSZRJzZ2Ga6nYJZox2oFMQc3kNXmNo5egmXAA==
-X-Received: by 2002:a1c:2ed0:: with SMTP id u199mr14123824wmu.125.1600082895923;
-        Mon, 14 Sep 2020 04:28:15 -0700 (PDT)
+        bh=E5gZOMWCKMKk580URxqoyALVdSaE1aGhUW3u1REOZ5I=;
+        b=BAHxS0o4OZM0oSO1wdCh0WLt0MEpSJ6IZ0/KCekxDnWWm2wX66klMlx+KItPPg2u+C
+         fRCSBdS63aNnWO3E2nVLiqMlZ7JU4CBqsVYkuCSMx9NnPR5YXvedmLb5kpYwrCLYapS6
+         109MpxtClbqnvKhcyhPogj8wMVBjOcHSPDlSnWuhv06ALng8y1HhVCtqjgWJpP8YZ7eB
+         L3yP3VOIiPZcJbU6dPW8Y3+CXkymCRLf1oBzcgcmmYWt/72KHX5zl17qVvVoMPphZkHu
+         Lk+ncwPCnlWor6A2wjzfbKmknIv4BlDQCRJybm+EPQBRuCwrLMFYtITAODMMgUNABDF5
+         9okw==
+X-Gm-Message-State: AOAM5339BSYGu//WVGq+JGqw4XVdfJSSJEAjea+YSEUlCrTmfU1XWadr
+        FbkZRMhzFizPAsE+/VRwvYc7pTmG9EY=
+X-Google-Smtp-Source: ABdhPJyLH9akdmKsMw9n3pT4HKtXuSpu5lR8A6RNMOd9JnBbyvoEOL+Sr6ZvZFG4SHsB3dL2Fye3xg==
+X-Received: by 2002:a7b:cb82:: with SMTP id m2mr15239917wmi.56.1600082896796;
+        Mon, 14 Sep 2020 04:28:16 -0700 (PDT)
 Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s12sm12024606wmd.20.2020.09.14.04.28.15
+        by smtp.gmail.com with ESMTPSA id s12sm12024606wmd.20.2020.09.14.04.28.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:28:15 -0700 (PDT)
+        Mon, 14 Sep 2020 04:28:16 -0700 (PDT)
 From:   Wei Liu <wei.liu@kernel.org>
 To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
 Cc:     virtualization@lists.linux-foundation.org,
@@ -50,10 +50,11 @@ Cc:     virtualization@lists.linux-foundation.org,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH RFC v1 06/18] x86/hyperv: allocate output arg pages if required
-Date:   Mon, 14 Sep 2020 11:27:50 +0000
-Message-Id: <20200914112802.80611-7-wei.liu@kernel.org>
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch@vger.kernel.org (open list:GENERIC INCLUDE/ASM HEADER FILES)
+Subject: [PATCH RFC v1 07/18] x86/hyperv: extract partition ID from Microsoft Hypervisor if necessary
+Date:   Mon, 14 Sep 2020 11:27:51 +0000
+Message-Id: <20200914112802.80611-8-wei.liu@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200914112802.80611-1-wei.liu@kernel.org>
 References: <20200914112802.80611-1-wei.liu@kernel.org>
@@ -64,120 +65,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When Linux runs as the root partition, it will need to make hypercalls
-which return data from the hypervisor.
-
-Allocate pages for storing results when Linux runs as the root
-partition.
+We will need the partition ID for executing some hypercalls later.
 
 Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
+Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
 Signed-off-by: Wei Liu <wei.liu@kernel.org>
 ---
- arch/x86/hyperv/hv_init.c       | 45 +++++++++++++++++++++++++++++----
- arch/x86/include/asm/mshyperv.h |  1 +
- 2 files changed, 41 insertions(+), 5 deletions(-)
+ arch/x86/hyperv/hv_init.c         | 26 ++++++++++++++++++++++++++
+ arch/x86/include/asm/mshyperv.h   |  2 ++
+ include/asm-generic/hyperv-tlfs.h |  6 ++++++
+ 3 files changed, 34 insertions(+)
 
 diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index cac8e4c56261..ebba4be4185d 100644
+index ebba4be4185d..0eec1ed32023 100644
 --- a/arch/x86/hyperv/hv_init.c
 +++ b/arch/x86/hyperv/hv_init.c
-@@ -45,6 +45,9 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
- void  __percpu **hyperv_pcpu_input_arg;
- EXPORT_SYMBOL_GPL(hyperv_pcpu_input_arg);
+@@ -30,6 +30,9 @@
+ bool hv_root_partition;
+ EXPORT_SYMBOL_GPL(hv_root_partition);
  
-+void  __percpu **hyperv_pcpu_output_arg;
-+EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
++u64 hv_current_partition_id;
++EXPORT_SYMBOL_GPL(hv_current_partition_id);
 +
- u32 hv_max_vp_index;
- EXPORT_SYMBOL_GPL(hv_max_vp_index);
+ void *hv_hypercall_pg;
+ EXPORT_SYMBOL_GPL(hv_hypercall_pg);
  
-@@ -75,14 +78,29 @@ static int hv_cpu_init(unsigned int cpu)
- 	u64 msr_vp_index;
- 	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
- 	void **input_arg;
--	struct page *pg;
-+	struct page *input_pg;
+@@ -345,6 +348,26 @@ static struct syscore_ops hv_syscore_ops = {
+ 	.resume		= hv_resume,
+ };
  
- 	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
- 	/* hv_cpu_init() can be called with IRQs disabled from hv_resume() */
--	pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
--	if (unlikely(!pg))
-+	input_pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
-+	if (unlikely(!input_pg))
- 		return -ENOMEM;
--	*input_arg = page_address(pg);
-+	*input_arg = page_address(input_pg);
++void __init hv_get_partition_id(void)
++{
++	struct hv_get_partition_id *output_page;
++	int status;
++	unsigned long flags;
 +
-+	if (hv_root_partition) {
-+		struct page *output_pg;
-+		void **output_arg;
++	local_irq_save(flags);
++	output_page = *this_cpu_ptr(hyperv_pcpu_output_arg);
++	status = hv_do_hypercall(HVCALL_GET_PARTITION_ID, NULL, output_page) &
++		HV_HYPERCALL_RESULT_MASK;
++	if (status != HV_STATUS_SUCCESS)
++		pr_err("Failed to get partition ID: %d\n", status);
++	else
++		hv_current_partition_id = output_page->partition_id;
++	local_irq_restore(flags);
 +
-+		output_pg = alloc_page(irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
-+		if (unlikely(!output_pg)) {
-+			free_page((unsigned long)*input_arg);
-+			*input_arg = NULL;
-+			return -ENOMEM;
-+		}
++	/* No point in proceeding if this failed */
++	BUG_ON(status != HV_STATUS_SUCCESS);
++}
 +
-+		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
-+		*output_arg = page_address(output_pg);
-+	}
+ /*
+  * This function is to be invoked early in the boot sequence after the
+  * hypervisor has been detected.
+@@ -440,6 +463,9 @@ void __init hyperv_init(void)
  
- 	hv_get_vp_index(msr_vp_index);
+ 	register_syscore_ops(&hv_syscore_ops);
  
-@@ -209,14 +227,25 @@ static int hv_cpu_die(unsigned int cpu)
- 	unsigned int new_cpu;
- 	unsigned long flags;
- 	void **input_arg;
--	void *input_pg = NULL;
-+	void *input_pg = NULL, *output_pg = NULL;
++	if (hv_root_partition)
++		hv_get_partition_id();
++
+ 	return;
  
- 	local_irq_save(flags);
- 	input_arg = (void **)this_cpu_ptr(hyperv_pcpu_input_arg);
- 	input_pg = *input_arg;
- 	*input_arg = NULL;
-+
-+	if (hv_root_partition) {
-+		void **output_arg;
-+
-+		output_arg = (void **)this_cpu_ptr(hyperv_pcpu_output_arg);
-+		output_pg = *output_arg;
-+		*output_arg = NULL;
-+	}
-+
- 	local_irq_restore(flags);
-+
- 	free_page((unsigned long)input_pg);
-+	free_page((unsigned long)output_pg);
- 
- 	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
- 		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
-@@ -350,6 +379,12 @@ void __init hyperv_init(void)
- 
- 	BUG_ON(hyperv_pcpu_input_arg == NULL);
- 
-+	/* Allocate the per-CPU state for output arg for root */
-+	if (hv_root_partition) {
-+		hyperv_pcpu_output_arg = alloc_percpu(void  *);
-+		BUG_ON(hyperv_pcpu_output_arg == NULL);
-+	}
-+
- 	/* Allocate percpu VP index */
- 	hv_vp_index = kmalloc_array(num_possible_cpus(), sizeof(*hv_vp_index),
- 				    GFP_KERNEL);
+ remove_cpuhp_state:
 diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index 2a2cc81beac6..f5c62140f28d 100644
+index f5c62140f28d..4039302e0ae9 100644
 --- a/arch/x86/include/asm/mshyperv.h
 +++ b/arch/x86/include/asm/mshyperv.h
-@@ -63,6 +63,7 @@ static inline void hv_disable_stimer0_percpu_irq(int irq) {}
- #if IS_ENABLED(CONFIG_HYPERV)
- extern void *hv_hypercall_pg;
+@@ -65,6 +65,8 @@ extern void *hv_hypercall_pg;
  extern void  __percpu  **hyperv_pcpu_input_arg;
-+extern void  __percpu  **hyperv_pcpu_output_arg;
+ extern void  __percpu  **hyperv_pcpu_output_arg;
  
++extern u64 hv_current_partition_id;
++
  static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
  {
+ 	u64 input_address = input ? virt_to_phys(input) : 0;
+diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+index e6903589a82a..87b1a79b19eb 100644
+--- a/include/asm-generic/hyperv-tlfs.h
++++ b/include/asm-generic/hyperv-tlfs.h
+@@ -141,6 +141,7 @@ struct ms_hyperv_tsc_page {
+ #define HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX	0x0013
+ #define HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX	0x0014
+ #define HVCALL_SEND_IPI_EX			0x0015
++#define HVCALL_GET_PARTITION_ID			0x0046
+ #define HVCALL_GET_VP_REGISTERS			0x0050
+ #define HVCALL_SET_VP_REGISTERS			0x0051
+ #define HVCALL_POST_MESSAGE			0x005c
+@@ -407,6 +408,11 @@ struct hv_tlb_flush_ex {
+ 	u64 gva_list[];
+ } __packed;
+ 
++/* HvGetPartitionId hypercall (output only) */
++struct hv_get_partition_id {
++	u64 partition_id;
++} __packed;
++
+ /* HvRetargetDeviceInterrupt hypercall */
+ union hv_msi_entry {
+ 	u64 as_uint64;
 -- 
 2.20.1
 
