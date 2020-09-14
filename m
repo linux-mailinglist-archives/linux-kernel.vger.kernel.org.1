@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780262693E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16A82693DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgINRog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgINMFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:05:41 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBA4C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:05:40 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id u13so11398093pgh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GsOIVPKx7/GKwttOx4gkrBI8E8JMmQp3RWxUAc5wfcY=;
-        b=G1oJRVfApka43Z3M51QifLTqy6wQ/iKgboQET0cTsUGhqa2VvUp8zDM8KlmGoMSTn2
-         4Nrv8KQBR0s4z0UdeuHvXlON0PxsuBLT2bR5RsbPH5Ds+0mk4ZSITL47v4bUSSrYxRf+
-         3JbtyFmqXOdHv5OcDFVVpHHmldqYsBpLMfDiqL+XHgcz8n+Rw6WA48PDWy7xI28TERZO
-         OX3Ivrdkp571bX+Qwd4tBKr+MUvOr2dhIor2S9JPGrGrcy3jqr9YXy3I4nvalNuVLHrq
-         pXLybs29hC36HQhOnDUctrx6f05OvpzbtddhDB62gOnd0DXz75rX20WGUGWvRC2TiNCL
-         7h3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GsOIVPKx7/GKwttOx4gkrBI8E8JMmQp3RWxUAc5wfcY=;
-        b=jSBT5qT73ltSg95EwfwAWvK5LfSNZO06tImeZ/pUILD6Eu3GwgsLyklNbBN3dKytys
-         uw5iZXeohmKOFBoZB+NZrObBYj5QRAtJji43AlvYplBHmdu/EKn4/IXcVUemK9oIVnnF
-         aQuNXfSZvHOrRdL1IKOTr+w98SrPI5AzgDcO091fSvGiX44izl/euGOzWcD00ZFLhvUP
-         Bv6Tj5N1nSgmZFK9uGq5ZZXJuJ3KN7TI7AcO+ZVAGXUo0XW/skH3FooZnM7d5j9jCXcf
-         04kV9cYrj2z/wPucFlSVoCJkEFNiukOxUzq3tvoXOMqEjy6f15QyHIc7VIElcm2SrolC
-         S3nw==
-X-Gm-Message-State: AOAM5325Q3C/X1rkNzi8UE/7Uo03IwSvAnQBZ2vumLApccc8uTPd6sW5
-        dLL9Hg1Lw1NLVBcyAhHDdamaNZ8n1pz0JgJ8UrQCFw==
-X-Google-Smtp-Source: ABdhPJy0PPAh9+CRT36/WnNcBPpBRgPC600c1hQtAsuYJZS5GFpKJtb5l5v2LAjd1XIksmtFfFkruvL0x/daNTrYq1o=
-X-Received: by 2002:a17:902:a605:b029:d0:cbe1:e714 with SMTP id
- u5-20020a170902a605b02900d0cbe1e714mr14271096plq.34.1600085139550; Mon, 14
- Sep 2020 05:05:39 -0700 (PDT)
+        id S1726191AbgINRoH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Sep 2020 13:44:07 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2812 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726102AbgINMGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:06:30 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 9D53517D0D1F819FF294;
+        Mon, 14 Sep 2020 13:06:08 +0100 (IST)
+Received: from fraeml708-chm.china.huawei.com (10.206.15.36) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 14 Sep 2020 13:05:49 +0100
+Received: from lhreml722-chm.china.huawei.com (10.201.108.73) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 14 Sep 2020 14:05:48 +0200
+Received: from lhreml722-chm.china.huawei.com ([10.201.108.73]) by
+ lhreml722-chm.china.huawei.com ([10.201.108.73]) with mapi id 15.01.1913.007;
+ Mon, 14 Sep 2020 13:05:48 +0100
+From:   Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+CC:     "stefanb@linux.vnet.ibm.com" <stefanb@linux.vnet.ibm.com>,
+        "sunyuqiong1988@gmail.com" <sunyuqiong1988@gmail.com>,
+        "mkayaalp@cs.binghamton.edu" <mkayaalp@cs.binghamton.edu>,
+        "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "christian@brauner.io" <christian@brauner.io>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: RE: [RFC PATCH 00/30] ima: Introduce IMA namespace
+Thread-Topic: [RFC PATCH 00/30] ima: Introduce IMA namespace
+Thread-Index: AQHWdXPBkpeRDLdh20+fyp1BiEOjYak9+wmAgASx5lCAEwwJgIASd/FA
+Date:   Mon, 14 Sep 2020 12:05:48 +0000
+Message-ID: <2a9fa5a443a84f77992959773369beb2@huawei.com>
+References: <N> <20200818152037.11869-1-krzysztof.struczynski@huawei.com>
+         <1597767571.3898.15.camel@HansenPartnership.com>
+         <401a2f36149f450291d1742aeb6c2260@huawei.com>
+ <5331e60b5a1afb55e2bc778db1b95998466b687d.camel@linux.ibm.com>
+In-Reply-To: <5331e60b5a1afb55e2bc778db1b95998466b687d.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.217.147]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20200912155100.25578-1-songmuchun@bytedance.com>
- <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
- <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
- <20200914091844.GE16999@dhcp22.suse.cz> <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
- <20200914103205.GI16999@dhcp22.suse.cz> <CAMZfGtWBSCFWw7QN66-ZLTb8oT7UALkyaGONjcjB93DyeeXXTA@mail.gmail.com>
- <20200914115724.GO16999@dhcp22.suse.cz>
-In-Reply-To: <20200914115724.GO16999@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 20:05:03 +0800
-Message-ID: <CAMZfGtUBAO8AApzuDZZviCUpPyy4-JTCpXTRSzimq=K9aG467g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 7:57 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 14-09-20 19:46:36, Muchun Song wrote:
-> > On Mon, Sep 14, 2020 at 6:32 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 14-09-20 17:43:42, Muchun Song wrote:
-> > > > On Mon, Sep 14, 2020 at 5:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 14-09-20 12:02:33, Muchun Song wrote:
-> > > > > > On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > > > >
-> > > > > > > On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
-> > > > > > >
-> > > > > > > > The memory_stat_format() returns a format string, but the return buf
-> > > > > > > > may not including the trailing '\0'. So the users may read the buf
-> > > > > > > > out of bounds.
-> > > > > > >
-> > > > > > > That sounds serious.  Is a cc:stable appropriate?
-> > > > > > >
-> > > > > >
-> > > > > > Yeah, I think we should cc:stable.
-> > > > >
-> > > > > Is this a real problem? The buffer should contain 36 lines which makes
-> > > > > it more than 100B per line. I strongly suspect we are not able to use
-> > > > > that storage up.
-> > > >
-> > > > Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
-> > > > Otherwise, the return buf string has no trailing null('\0'). But users treat buf
-> > > > as a string(and read the string oob). It is wrong. Thanks.
-> > >
-> > > I am not sure I follow you. vsnprintf which is used by seq_printf will
-> > > add \0 if there is a room for that. And I argue there is a lot of room
-> > > in the buffer so a corner case where the buffer gets full doesn't happen
-> > > with the current code.
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Wednesday, September 2, 2020 8:53 PM
+> > > So I think this can work in the use case where the system owner is
+> > > responsible for doing the logging and attestation and the tenants just
+> > > trust the owner without requiring an attestation.  However, in a multi-
+> > > tenant system you need a way for the attestation to be per-container
+> > > (because the combined list of who executed what would be a security
+> > > leak between tenants).  Since we can't virtualise the PCRs without
+> > > introducing a vtpm this is going to require a vtpm infrastructure like
+> > > that used for virtual machines and then we can do IMA logging per
+> > > container.
 > >
-> > Thanks for your explanation. Yeah, seq_printf will add \0 if there is a
-> > room for that. So I agree with you that the "Fixes" tag is wrong. There
-> > is nothing to fix. Sorry for the noise.
+> > I agree and wonder if we should decouple the attestation trust model,
+> > which depends on the specific use case (e.g. multi/single tenant,
+> > public/private cloud), from the IMA logic of linking the measurements to
+> > the container. Indeed, attestation from within the container might require
+> > anchoring to a vTPM/vPCR and the current measurement tagging mechanism
+> can
+> > support several ways of anchoring them to a (virtual) root of trust.
 > >
-> > I think that if someone uses seq_buf_putc(maybe in the feature) at the
-> > end of memory_stat_format(). It will break the rule and there is no \0.
-> > So this patch can just make the code robust but need to change the
-> > commit log and remove the Fixes tag.
->
-> Please see my other reply. Adding \0 is not really sufficient. If we
-> want to have a robust code to handle the small buffer then we need to
-> make sure that all counters will make it to the userspace. Short output
-> is simply a broken result. Implementing this properly is certainly
-> possible, the question is whether this is worth addressing. It is not
-> like we are adding a lot of output into this file and it is quite likely
-> that the code is good as it is.
+> > > I don't think the above has to be in your first patch set, we just have
+> > > to have an idea of how it could be done to show that nothing in this
+> > > patch set precludes a follow on from doing this.
+> >
+> > Given that virtualizing trust anchors seems like a separate problem in
+> > which industry consensus is not easy to reach for all use cases, an
+> > anchoring mechanism should probably be a separate IMA feature.
+> 
+> Other trust anchors for "trusted keys" has been discussed, but I wasn't
+> aware of any discussion about other trust anchors for the IMA
+> measurement list.  The IMA measurement list is very much tied to a TPM.
+> 
 
-Got it. Thanks.
+Agreed. I wouldn't consider anything else than the TPM in the IMA
+measurement list context. The anchoring mechanism mentioned above
+pertained to the possible extensions of the TPM anchor in the
+containerized environment, like the vTPM.
 
-> --
-> Michal Hocko
-> SUSE Labs
+> Including container measurements in the host measurement list, will
+> unnecessarily cause the host measurement list to grow.  The decision of
+> what should and shouldn't be included in the host measurement list
+> shouldn't be defined by the container.
+> 
 
+The container has no impact on the measurement list entries other than the
+ones related to the processes running within the container. This in turn,
+the same as for the original IMA, is defined by the (container's) policy,
+loaded on the container's creation.
 
+Best regards,
+Krzysztof
 
--- 
-Yours,
-Muchun
+> Mimi
+> 
+> 
+
