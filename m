@@ -2,140 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318C426923B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34EF269215
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbgINQ4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:56:31 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:44888 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbgINQsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:48:40 -0400
-Received: by mail-pg1-f195.google.com with SMTP id 7so211228pgm.11;
-        Mon, 14 Sep 2020 09:48:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=v48L7JGX53l/CPfgPRdRY47vGmb+Jr3vZoi7acfa0+s=;
-        b=R1otZGJKzYcNcf/JYO0gR3t3fgIgp5hM03CWtrRL4qEeO9VFvVY/9tpQDjM4OiQU2f
-         Ys90t0atxrSx5Ya2X9UuzX37h/hvEi1zSnusYYziBYV2NTaxgszkEuhD/ZoTNK97OiT/
-         yCqIzwT4eGRIaRxOjy9iYrRqo8DPp+FGaOEkyiZxsTp4muJ85gTwxbPiKiymvnccV4Xy
-         AQI/ksytNeCmMNmZshCKFGIYR97IB1kBtLybkAOi23jOsgF/6Upa8xLoP9DgLa0kB510
-         MKM08AFmilTy0b9oqryyaQB2dhzrBypTFoXiDt8m/2WxY5jRF4++DYPHoxLG7GhXal6R
-         ci/Q==
-X-Gm-Message-State: AOAM531O8FrBWLVWpX7mKw7E7pV1kWEjjviw/McpFImNlIgtMs5A64VA
-        zAjPpSdFK5/sHj7tP+fyNQh4ADD24Xk=
-X-Google-Smtp-Source: ABdhPJyePguPzBlUFLzaQLcFKfIEGTMzHj3PRVFNJ8tN5cMZO0FSobDirkqph0ea+MOsi32QmGimIA==
-X-Received: by 2002:a62:d44e:0:b029:13c:1611:652f with SMTP id u14-20020a62d44e0000b029013c1611652fmr14027695pfl.15.1600102089878;
-        Mon, 14 Sep 2020 09:48:09 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:3f5a:7698:1b81:cc96? ([2601:647:4000:d7:3f5a:7698:1b81:cc96])
-        by smtp.gmail.com with ESMTPSA id g23sm10805716pfh.133.2020.09.14.09.48.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 09:48:08 -0700 (PDT)
-Subject: Re: [PATCH] blk-mq: fix hang issue in blk_queue_enter()
-To:     Yang Yang <yang.yang@vivo.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     onlyfever@icloud.com
-References: <20200914071903.65704-1-yang.yang@vivo.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <1f7aa460-6a6c-d200-786e-bfccf5fc2bff@acm.org>
-Date:   Mon, 14 Sep 2020 09:48:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726163AbgINQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:50:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:32085 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbgINQss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 12:48:48 -0400
+IronPort-SDR: xF8PDkDLtmTDS93vmYvKGYWHMChrLZxW6yvb3jAxcChAXEVWSJX5/WuHZq0gnIwSpX6qcKaw+T
+ 3dALmbhZQfSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="159152722"
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="159152722"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:48:43 -0700
+IronPort-SDR: kDHukqaL6LWboEvt6nEuR33BsFePmgMNsR+Hh9EYTIja/azfG66jWIXyelpQAW9aMsAWai2Duh
+ NTQc4zi82s5w==
+X-IronPort-AV: E=Sophos;i="5.76,426,1592895600"; 
+   d="scan'208";a="482418134"
+Received: from schreifr-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.38.230])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 09:48:30 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: [PATCH v37 08/24] x86/sgx: Initialize metadata for Enclave Page Cache (EPC) sections
+Date:   Mon, 14 Sep 2020 19:48:24 +0300
+Message-Id: <20200914164824.6304-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200914071903.65704-1-yang.yang@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-14 00:19, Yang Yang wrote:
-> There is a race between blk_queue_enter() and block layer's runtime
-> suspend.
-> 
->  CPU0                                CPU1
->  ---------------------------------   -------------------------------
->  blk_pre_runtime_suspend(q) {        blk_queue_enter() {
->    /* q->rpm_status=RPM_ACTIVE */
->    blk_set_pm_only(q)
->    /* q->pm_only=1 */
->    blk_freeze_queue_start(q)
->    blk_mq_unfreeze_queue(q)
->                                        if (percpu_ref_tryget_live()) {
->                                          /* pm=0 && q->pm_only=1 */
->                                          if (pm || !blk_queue_pm_only(q)) {
->                                          } else {
->                                            percpu_ref_put()
->                                          }
->                                        }
->                                        wait_event(q->mq_freeze_wq,
->                                          (!q->mq_freeze_depth &&
->                                          /* q->rpm_status=RPM_ACTIVE
->                                             q->pm_only=1 */
->                                          (pm || (blk_pm_request_resume(q),
->                                           !blk_queue_pm_only(q)))) ||
->                                           blk_queue_dying(q))
->                                      }
->    spin_lock_irq(&q->queue_lock)
->    q->rpm_status = RPM_SUSPENDING
->    spin_unlock_irq(&q->queue_lock)
->  }
-> 
-> At this point blk_pm_request_resume() missed the chance to resume the
-> queue, so blk_queue_enter() may wait here forever.
-> The solution is to wake up the mq_freeze_wq after runtime suspend
-> completed, make blk_pm_request_resume() reexamine the q->rpm_status flag.
-> 
-> Signed-off-by: Yang Yang <yang.yang@vivo.com>
-> ---
->  block/blk-pm.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/block/blk-pm.c b/block/blk-pm.c
-> index b85234d758f7..dec7d0aef606 100644
-> --- a/block/blk-pm.c
-> +++ b/block/blk-pm.c
-> @@ -132,6 +132,8 @@ void blk_post_runtime_suspend(struct request_queue *q, int err)
->  
->  	if (err)
->  		blk_clear_pm_only(q);
-> +	else
-> +		wake_up_all(&q->mq_freeze_wq);
->  }
->  EXPORT_SYMBOL(blk_post_runtime_suspend);
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Please verify whether the following patch series also fixes the reported
-hang: https://lore.kernel.org/linux-block/20200906012219.17893-1-bvanassche@acm.org/T/#t
+Enumerate Enclave Page Cache (EPC) sections via CPUID and add the data
+structures necessary to track EPC pages so that they can be easily borrowed
+for different uses.
 
-Thanks,
+Embed section index to the first eight bits of the EPC page descriptor.
+Existing client hardware supports only a single section, while upcoming
+server hardware will support at most eight sections. Thus, eight bits
+should be enough for long term needs.
 
-Bart.
+Acked-by: Jethro Beekman <jethro@fortanix.com>
+Reviewed-by: Darren Kenny <darren.kenny@oracle.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Co-developed-by: Serge Ayoun <serge.ayoun@intel.com>
+Signed-off-by: Serge Ayoun <serge.ayoun@intel.com>
+Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ arch/x86/Kconfig                 |  17 +++
+ arch/x86/kernel/cpu/Makefile     |   1 +
+ arch/x86/kernel/cpu/sgx/Makefile |   2 +
+ arch/x86/kernel/cpu/sgx/main.c   | 216 +++++++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/sgx.h    |  52 ++++++++
+ 5 files changed, 288 insertions(+)
+ create mode 100644 arch/x86/kernel/cpu/sgx/Makefile
+ create mode 100644 arch/x86/kernel/cpu/sgx/main.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/sgx.h
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7101ac64bb20..90fe47577dd7 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1927,6 +1927,23 @@ config X86_INTEL_TSX_MODE_AUTO
+ 	  side channel attacks- equals the tsx=auto command line parameter.
+ endchoice
+ 
++config INTEL_SGX
++	bool "Intel SGX"
++	depends on X86_64 && CPU_SUP_INTEL
++	depends on CRYPTO=y
++	depends on CRYPTO_SHA256=y
++	select SRCU
++	select MMU_NOTIFIER
++	help
++	  Intel(R) Software Guard eXtensions (SGX) is a set of CPU instructions
++	  that can be used by applications to set aside private regions of code
++	  and data, referred to as enclaves. An enclave's private memory can
++	  only be accessed by code running within the enclave. Accesses from
++	  outside the enclave, including other enclaves, are disallowed by
++	  hardware.
++
++	  If unsure, say N.
++
+ config EFI
+ 	bool "EFI runtime service support"
+ 	depends on ACPI
+diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
+index 93792b457b81..c80d804fd02b 100644
+--- a/arch/x86/kernel/cpu/Makefile
++++ b/arch/x86/kernel/cpu/Makefile
+@@ -48,6 +48,7 @@ obj-$(CONFIG_X86_MCE)			+= mce/
+ obj-$(CONFIG_MTRR)			+= mtrr/
+ obj-$(CONFIG_MICROCODE)			+= microcode/
+ obj-$(CONFIG_X86_CPU_RESCTRL)		+= resctrl/
++obj-$(CONFIG_INTEL_SGX)			+= sgx/
+ 
+ obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o
+ 
+diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/Makefile
+new file mode 100644
+index 000000000000..79510ce01b3b
+--- /dev/null
++++ b/arch/x86/kernel/cpu/sgx/Makefile
+@@ -0,0 +1,2 @@
++obj-y += \
++	main.o
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+new file mode 100644
+index 000000000000..c5831e3db14a
+--- /dev/null
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -0,0 +1,216 @@
++// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++// Copyright(c) 2016-17 Intel Corporation.
++
++#include <linux/freezer.h>
++#include <linux/highmem.h>
++#include <linux/kthread.h>
++#include <linux/pagemap.h>
++#include <linux/ratelimit.h>
++#include <linux/sched/mm.h>
++#include <linux/sched/signal.h>
++#include <linux/slab.h>
++#include "encls.h"
++
++struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
++static int sgx_nr_epc_sections;
++static struct task_struct *ksgxswapd_tsk;
++
++static void sgx_sanitize_section(struct sgx_epc_section *section)
++{
++	struct sgx_epc_page *page;
++	LIST_HEAD(secs_list);
++	int ret;
++
++	while (!list_empty(&section->unsanitized_page_list)) {
++		if (kthread_should_stop())
++			return;
++
++		spin_lock(&section->lock);
++
++		page = list_first_entry(&section->unsanitized_page_list,
++					struct sgx_epc_page, list);
++
++		ret = __eremove(sgx_get_epc_addr(page));
++		if (!ret)
++			list_move(&page->list, &section->page_list);
++		else
++			list_move_tail(&page->list, &secs_list);
++
++		spin_unlock(&section->lock);
++
++		cond_resched();
++	}
++}
++
++static int ksgxswapd(void *p)
++{
++	int i;
++
++	set_freezable();
++
++	/*
++	 * Reset all pages to uninitialized state. Pages could be in initialized
++	 * on kmemexec.
++	 */
++	for (i = 0; i < sgx_nr_epc_sections; i++)
++		sgx_sanitize_section(&sgx_epc_sections[i]);
++
++	/*
++	 * 2nd round for the SECS pages as they cannot be removed when they
++	 * still hold child pages.
++	 */
++	for (i = 0; i < sgx_nr_epc_sections; i++) {
++		sgx_sanitize_section(&sgx_epc_sections[i]);
++
++		/* Should never happen. */
++		if (!list_empty(&sgx_epc_sections[i].unsanitized_page_list))
++			WARN(1, "EPC section %d has unsanitized pages.\n", i);
++	}
++
++	return 0;
++}
++
++static bool __init sgx_page_reclaimer_init(void)
++{
++	struct task_struct *tsk;
++
++	tsk = kthread_run(ksgxswapd, NULL, "ksgxswapd");
++	if (IS_ERR(tsk))
++		return false;
++
++	ksgxswapd_tsk = tsk;
++
++	return true;
++}
++
++static void __init sgx_free_epc_section(struct sgx_epc_section *section)
++{
++	struct sgx_epc_page *page;
++
++	while (!list_empty(&section->page_list)) {
++		page = list_first_entry(&section->page_list,
++					struct sgx_epc_page, list);
++		list_del(&page->list);
++		kfree(page);
++	}
++
++	while (!list_empty(&section->unsanitized_page_list)) {
++		page = list_first_entry(&section->unsanitized_page_list,
++					struct sgx_epc_page, list);
++		list_del(&page->list);
++		kfree(page);
++	}
++
++	memunmap(section->va);
++}
++
++static bool __init sgx_setup_epc_section(u64 addr, u64 size,
++					 unsigned long index,
++					 struct sgx_epc_section *section)
++{
++	unsigned long nr_pages = size >> PAGE_SHIFT;
++	struct sgx_epc_page *page;
++	unsigned long i;
++
++	section->va = memremap(addr, size, MEMREMAP_WB);
++	if (!section->va)
++		return false;
++
++	section->pa = addr;
++	spin_lock_init(&section->lock);
++	INIT_LIST_HEAD(&section->page_list);
++	INIT_LIST_HEAD(&section->unsanitized_page_list);
++
++	for (i = 0; i < nr_pages; i++) {
++		page = kzalloc(sizeof(*page), GFP_KERNEL);
++		if (!page)
++			goto err_out;
++
++		page->desc = (addr + (i << PAGE_SHIFT)) | index;
++		list_add_tail(&page->list, &section->unsanitized_page_list);
++	}
++
++	return true;
++
++err_out:
++	sgx_free_epc_section(section);
++	return false;
++}
++
++static void __init sgx_page_cache_teardown(void)
++{
++	int i;
++
++	for (i = 0; i < sgx_nr_epc_sections; i++)
++		sgx_free_epc_section(&sgx_epc_sections[i]);
++}
++
++/**
++ * A section metric is concatenated in a way that @low bits 12-31 define the
++ * bits 12-31 of the metric and @high bits 0-19 define the bits 32-51 of the
++ * metric.
++ */
++static inline u64 __init sgx_calc_section_metric(u64 low, u64 high)
++{
++	return (low & GENMASK_ULL(31, 12)) +
++	       ((high & GENMASK_ULL(19, 0)) << 32);
++}
++
++static bool __init sgx_page_cache_init(void)
++{
++	u32 eax, ebx, ecx, edx, type;
++	u64 pa, size;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
++		cpuid_count(SGX_CPUID, i + SGX_CPUID_FIRST_VARIABLE_SUB_LEAF,
++			    &eax, &ebx, &ecx, &edx);
++
++		type = eax & SGX_CPUID_SUB_LEAF_TYPE_MASK;
++		if (type == SGX_CPUID_SUB_LEAF_INVALID)
++			break;
++
++		if (type != SGX_CPUID_SUB_LEAF_EPC_SECTION) {
++			pr_err_once("Unknown EPC section type: %u\n", type);
++			break;
++		}
++
++		pa = sgx_calc_section_metric(eax, ebx);
++		size = sgx_calc_section_metric(ecx, edx);
++
++		pr_info("EPC section 0x%llx-0x%llx\n", pa, pa + size - 1);
++
++		if (!sgx_setup_epc_section(pa, size, i, &sgx_epc_sections[i])) {
++			pr_err("No free memory for an EPC section\n");
++			break;
++		}
++
++		sgx_nr_epc_sections++;
++	}
++
++	if (!sgx_nr_epc_sections) {
++		pr_err("There are zero EPC sections.\n");
++		return false;
++	}
++
++	return true;
++}
++
++static void __init sgx_init(void)
++{
++	if (!boot_cpu_has(X86_FEATURE_SGX))
++		return;
++
++	if (!sgx_page_cache_init())
++		return;
++
++	if (!sgx_page_reclaimer_init())
++		goto err_page_cache;
++
++	return;
++
++err_page_cache:
++	sgx_page_cache_teardown();
++}
++
++device_initcall(sgx_init);
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+new file mode 100644
+index 000000000000..dff4f5f16d09
+--- /dev/null
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -0,0 +1,52 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) */
++#ifndef _X86_SGX_H
++#define _X86_SGX_H
++
++#include <linux/bitops.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/rwsem.h>
++#include <linux/types.h>
++#include <asm/asm.h>
++#include "arch.h"
++
++#undef pr_fmt
++#define pr_fmt(fmt) "sgx: " fmt
++
++struct sgx_epc_page {
++	unsigned long desc;
++	struct list_head list;
++};
++
++/*
++ * The firmware can define multiple chunks of EPC to the different areas of the
++ * physical memory e.g. for memory areas of the each node. This structure is
++ * used to store EPC pages for one EPC section and virtual memory area where
++ * the pages have been mapped.
++ */
++struct sgx_epc_section {
++	unsigned long pa;
++	void *va;
++	struct list_head page_list;
++	struct list_head unsanitized_page_list;
++	spinlock_t lock;
++};
++
++#define SGX_EPC_SECTION_MASK		GENMASK(7, 0)
++#define SGX_MAX_EPC_SECTIONS		(SGX_EPC_SECTION_MASK + 1)
++
++extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
++
++static inline struct sgx_epc_section *sgx_get_epc_section(struct sgx_epc_page *page)
++{
++	return &sgx_epc_sections[page->desc & SGX_EPC_SECTION_MASK];
++}
++
++static inline void *sgx_get_epc_addr(struct sgx_epc_page *page)
++{
++	struct sgx_epc_section *section = sgx_get_epc_section(page);
++
++	return section->va + (page->desc & PAGE_MASK) - section->pa;
++}
++
++#endif /* _X86_SGX_H */
+-- 
+2.25.1
+
