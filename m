@@ -2,80 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3252683F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D662683FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgINFKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgINFKR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:10:17 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DC7C06174A;
-        Sun, 13 Sep 2020 22:10:16 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b124so11549568pfg.13;
-        Sun, 13 Sep 2020 22:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3WLhLt0PwfR9OQF5tY/Lv2Pa4vaTznyMvtAVH8fVm9Q=;
-        b=KxnWRLVKkq5rcnkFZOUupXe4pKRG+gabI5P+TliSFbrOddPX6JeRxMXfjPvs6B/F3w
-         vWI1gmFDCtCV0qOOA0Sbu+vc8urYDCKXFLDggQLCahsA3CkiyfTcZyBEQHClU20/rTeo
-         lATSCyGPViM2RIbASgimY1sd5UxFdARD+ywlfILl149PhQ1vnLG87V4blaJye0o0kCE0
-         c0GmznbGid59xMvepLpn1cm5kgevLIFgG6EAl9DPQ64KOIh0mGaNR0GiIcQuF9JtZzw3
-         liUVIzbGAGY/GR8S8JDQ32dlJcxtn5D4/LMoCl/b7q1+4x+kZ+238Uc6dPk3LbafW/EP
-         GbmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3WLhLt0PwfR9OQF5tY/Lv2Pa4vaTznyMvtAVH8fVm9Q=;
-        b=XLDC1pvqNKoBfGyLqLpoOVoGDw10BQBoW2zHX2BOyTkULmbNzLByCOqo03PgisIMxE
-         zeMF1yBjg8zGrCrmJzTyO15ZCe37ZPxYTnxeYp2wsZfLDBM04uWrxImlMXqPjaFtvhE4
-         1JdKA59mXgvAZdPBOnE3fEJwurrcdPL6/wzktE8m5/OD2+it3S7Lirz3+J7rf6kpoTJE
-         hPo/aLE8gZ6apfTlS/9GvH8FnrB0v+4WTMFtsR21o8MTBJD0WtUb36yTsgb78T3JdPMB
-         Keu2TqFPlLDYQThSY6QT5X7EZTzzvVXxU8r+adWgzwJA557BEDm0CU1eCWfx6saordMv
-         YaQQ==
-X-Gm-Message-State: AOAM533vhpTyz833+EZgpT1S89FDgQlF+t7E8ysd4eJX66V4CEabS6LJ
-        jbWz30Fv2fWZNMFr2pCuL7pi/l1PVCcmYAamUc8=
-X-Google-Smtp-Source: ABdhPJwaa3Y5NEOD9ZnHkNvg1jMyGFXOHRss1Rp6qLtL3K8MHBMBOT9wB5KSGiT1F3rrDOYiSLXJbA==
-X-Received: by 2002:a63:e249:: with SMTP id y9mr9722975pgj.117.1600060216008;
-        Sun, 13 Sep 2020 22:10:16 -0700 (PDT)
-Received: from localhost.localdomain ([49.207.209.61])
-        by smtp.gmail.com with ESMTPSA id f12sm5264961pfa.31.2020.09.13.22.10.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Sep 2020 22:10:15 -0700 (PDT)
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-To:     davem@davemloft.net
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] net: fix uninit value error in __sys_sendmmsg
-Date:   Mon, 14 Sep 2020 10:39:43 +0530
-Message-Id: <20200914050944.29441-1-anant.thazhemadam@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200913.142522.1753407855743748880.davem@davemloft.net>
-References: <20200913.142522.1753407855743748880.davem@davemloft.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726042AbgINFPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:15:22 -0400
+Received: from mga11.intel.com ([192.55.52.93]:57559 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726008AbgINFPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 01:15:05 -0400
+IronPort-SDR: rxlcdfKVmp0mvLaz3hdEcg1ChM8sW5wiUIE3btVMsc3OIKI2M2uEkaX3aNXFqGzhRHzVnGvMTX
+ EyY+E2ErD93A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9743"; a="156468456"
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="156468456"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2020 22:15:04 -0700
+IronPort-SDR: frHF+jSJnimuf5NPQhx+GIwwSstc9kPe7amjN4xJhaKzHG9xNz3i4mVMRJ0sY9/QvARvy56gBj
+ pJ7Ry4kHrQsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,424,1592895600"; 
+   d="scan'208";a="338162217"
+Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Sep 2020 22:15:02 -0700
+From:   muhammad.husaini.zulkifli@intel.com
+To:     adrian.hunter@intel.com, michal.simek@xilinx.com,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     lakshmi.bai.raja.subramanian@intel.com
+Subject: [PATCH v1 1/1] mmc: sdhci-of-arasan: Enable UHS-1 support for Keem Bay SOC
+Date:   Mon, 14 Sep 2020 13:12:14 +0800
+Message-Id: <20200914051214.13918-2-muhammad.husaini.zulkifli@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200914051214.13918-1-muhammad.husaini.zulkifli@intel.com>
+References: <20200914051214.13918-1-muhammad.husaini.zulkifli@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I can assure you that when I said "I think", I meant it in an assertive manner,
-and not an assumptive one, but I can understand how that could easily get lost 
-in translation.
-I wouldn't have sent in the patch if I had caught the build warning, and once 
-again, my apologies for not fixing it sooner, like I should have.
-I didn't mean to disrespect or offend anyone, and it definitely wasn't my 
-intention to waste anybody's time. Needless to say, something like this won't 
-happen again from my end. :)
-I have sent in a v2 for this, which doesn't add a build warning to the system.
-Thank you for your time, and once again, my apologies.
+From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-Thanks,
-Anant
+Voltage switching sequence is needed to support UHS-1 interface
+as Keem Bay EVM is using external voltage regulator to switch between
+1.8V and 3.3V.
+
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ drivers/mmc/host/sdhci-of-arasan.c | 140 +++++++++++++++++++++++++++++
+ 1 file changed, 140 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
+index f186fbd016b1..c133408d0c74 100644
+--- a/drivers/mmc/host/sdhci-of-arasan.c
++++ b/drivers/mmc/host/sdhci-of-arasan.c
+@@ -16,7 +16,9 @@
+  */
+ 
+ #include <linux/clk-provider.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/mfd/syscon.h>
++#include <linux/arm-smccc.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/phy/phy.h>
+@@ -41,6 +43,11 @@
+ #define SDHCI_ITAPDLY_ENABLE		0x100
+ #define SDHCI_OTAPDLY_ENABLE		0x40
+ 
++/* Setting for Keem Bay IO Pad 1.8 Voltage Selection */
++#define KEEMBAY_AON_SIP_FUNC_ID		0x8200ff26
++#define KEEMBAY_AON_SET_1V8_VOLT	0x01
++#define KEEMBAY_AON_SET_3V3_VOLT	0x00
++
+ /* Default settings for ZynqMP Clock Phases */
+ #define ZYNQMP_ICLK_PHASE {0, 63, 63, 0, 63,  0,   0, 183, 54,  0, 0}
+ #define ZYNQMP_OCLK_PHASE {0, 72, 60, 0, 60, 72, 135, 48, 72, 135, 0}
+@@ -150,6 +157,7 @@ struct sdhci_arasan_data {
+ 	struct regmap	*soc_ctl_base;
+ 	const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
+ 	unsigned int	quirks;
++	struct gpio_desc *uhs_gpio;
+ 
+ /* Controller does not have CD wired and will not function normally without */
+ #define SDHCI_ARASAN_QUIRK_FORCE_CDTEST	BIT(0)
+@@ -361,6 +369,121 @@ static int sdhci_arasan_voltage_switch(struct mmc_host *mmc,
+ 	return -EINVAL;
+ }
+ 
++static int sdhci_arasan_keembay_set_voltage(int volt)
++{
++#if IS_ENABLED(CONFIG_HAVE_ARM_SMCCC)
++	struct arm_smccc_res res;
++
++	arm_smccc_smc(KEEMBAY_AON_SIP_FUNC_ID, volt, 0, 0, 0, 0, 0, 0, &res);
++	if (res.a0)
++		return -EINVAL;
++	return 0;
++#else
++	return -EINVAL;
++#endif
++}
++
++static int sdhci_arasan_keembay_voltage_switch(struct mmc_host *mmc,
++				       struct mmc_ios *ios)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
++	struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
++	u16 ctrl_2;
++	u16 clk;
++	int ret;
++
++	switch (ios->signal_voltage) {
++	case MMC_SIGNAL_VOLTAGE_180:
++		clk  = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
++		clk &= ~SDHCI_CLOCK_CARD_EN;
++		sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
++
++		clk  = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
++		if (clk & SDHCI_CLOCK_CARD_EN)
++			return -EAGAIN;
++
++		sdhci_writeb(host, SDHCI_POWER_ON | SDHCI_POWER_180,
++				   SDHCI_POWER_CONTROL);
++
++		/* Set VDDIO_B voltage to Low for 1.8V */
++		gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 0);
++
++		/*
++		 * This is like final gatekeeper. Need to ensure changed voltage
++		 * is settled before and after turn on this bit.
++		 */
++		usleep_range(1000, 1100);
++
++		ret = sdhci_arasan_keembay_set_voltage(KEEMBAY_AON_SET_1V8_VOLT);
++		if (ret)
++			return ret;
++
++		usleep_range(1000, 1100);
++
++		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		ctrl_2 |= SDHCI_CTRL_VDD_180;
++		sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
++
++		/* Sleep for 5ms to stabilize 1.8V regulator */
++		usleep_range(5000, 5500);
++
++		/* 1.8V regulator output should be stable within 5 ms */
++		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		if (!(ctrl_2 & SDHCI_CTRL_VDD_180))
++			return -EAGAIN;
++
++		clk  = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
++		clk |= SDHCI_CLOCK_CARD_EN;
++		sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
++		break;
++	case MMC_SIGNAL_VOLTAGE_330:
++		/* Set VDDIO_B voltage to High for 3.3V */
++		gpiod_set_value_cansleep(sdhci_arasan->uhs_gpio, 1);
++
++		/*
++		 * This is like final gatekeeper. Need to ensure changed voltage
++		 * is settled before and after turn on this bit.
++		 */
++		usleep_range(1000, 1100);
++
++		ret = sdhci_arasan_keembay_set_voltage(KEEMBAY_AON_SET_3V3_VOLT);
++		if (ret)
++			return ret;
++
++		usleep_range(1000, 1100);
++
++		/* Set 1.8V Signal Enable in the Host Control2 register to 0 */
++		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		ctrl_2 &= ~SDHCI_CTRL_VDD_180;
++		sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
++
++		/* Sleep for 5ms to stabilize 3.3V regulator */
++		usleep_range(5000, 5500);
++
++		/* 3.3V regulator output should be stable within 5 ms */
++		ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
++		if (ctrl_2 & SDHCI_CTRL_VDD_180)
++			return -EAGAIN;
++
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int sdhci_arasan_keembay_select_drive_strength(struct mmc_card *card,
++					unsigned int max_dtr, int host_drv,
++					int card_drv, int *drv_type)
++{
++	if (card->host->ios.signal_voltage == MMC_SIGNAL_VOLTAGE_180)
++		*drv_type = MMC_SET_DRIVER_TYPE_C;
++
++	return 0;
++}
++
+ static const struct sdhci_ops sdhci_arasan_ops = {
+ 	.set_clock = sdhci_arasan_set_clock,
+ 	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
+@@ -1521,6 +1644,7 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 	struct sdhci_pltfm_host *pltfm_host;
+ 	struct sdhci_arasan_data *sdhci_arasan;
+ 	struct device_node *np = pdev->dev.of_node;
++	struct device *dev = &pdev->dev;
+ 	const struct sdhci_arasan_of_data *data;
+ 
+ 	match = of_match_node(sdhci_arasan_of_match, pdev->dev.of_node);
+@@ -1600,6 +1724,22 @@ static int sdhci_arasan_probe(struct platform_device *pdev)
+ 		host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+ 	}
+ 
++	if (of_device_is_compatible(np, "intel,keembay-sdhci-5.1-sd")) {
++		struct gpio_desc *uhs;
++
++		uhs = devm_gpiod_get_optional(dev, "uhs", GPIOD_OUT_HIGH);
++		if (IS_ERR(uhs))
++			return dev_err_probe(dev, PTR_ERR(uhs), "can't get uhs gpio\n");
++
++		sdhci_arasan->uhs_gpio = uhs;
++
++		host->mmc_host_ops.start_signal_voltage_switch =
++			sdhci_arasan_keembay_voltage_switch;
++
++		host->mmc_host_ops.select_drive_strength =
++			sdhci_arasan_keembay_select_drive_strength;
++	}
++
+ 	sdhci_arasan_update_baseclkfreq(host);
+ 
+ 	ret = sdhci_arasan_register_sdclk(sdhci_arasan, clk_xin, &pdev->dev);
+-- 
+2.17.1
+
