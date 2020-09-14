@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E382691C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FED62691BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgINQjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:39:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726360AbgINPhK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:37:10 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D66C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:37:09 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u21so60175ljl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 08:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mzx2NgkB1nDMETbz5EDQ8LndFJVrNLUdv8ics0I+18I=;
-        b=Afg6QaB+BSz1GeEiUUoLpaauFp1bmrgB23nL8XxTsNnVonXaOkJFrJd6jdtjqTM1E2
-         7JlIwQwEe60FXwjMxUkjaSxnOKit5jPzs29jiYrCp0OR+JKTLAZo2LshQdwhiYtmKoC8
-         WdYvMRlhRTD1XtrcSb9ed/dvOLW8xcU2pbsNRaRZCUaWe5ylREbLDrsLZAWV5/qDGTtF
-         8tAyWxeapw0IfCZ42u/fmSTmHadUVsc2vCUD+EZtcKzXLTyAwFLHIzvaf/tr6Jml2BQF
-         yU66ii6gQB4gOrHvnkv3KMBogvEKNyK99/NQLkPQtMVgWL47x9DfvCXSLlzYAOF6WuxX
-         bPlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mzx2NgkB1nDMETbz5EDQ8LndFJVrNLUdv8ics0I+18I=;
-        b=CM5KZB4Ioc1Fd2Ekj2lDWSnyuaZZDiTQiEsoKjkCL49Ns/XUawdIrR0YXM+PFfr6ih
-         Gsy4edjgqGIQ7MPW6iqRIYsoInxAFXuYXpKODdyDtmNkQW6geDeJdazqVD8P9QVrLe8i
-         lKriFIgx0Dxt/HkGQJMTA7BVH/FNjeoZmrqqqRwmJnTev4zk+pgVuGqJrXjVeLqyfQjj
-         qq5jTWOIH8ZQZSnPwLizG1dcNy2lf5WZSR0s/Y70AJBQeKwvfBOAlwmTbBNx3bsmG2H9
-         7a8V/kZhzJJbNWSumISPEkRTuKolZFVmcekCDG0oRMzSz/2+QcpxS6pCQAuUJoT6C+WF
-         8V1w==
-X-Gm-Message-State: AOAM532hb5fr6su+AOqT7aJjWlVgB2POA0fofCfqm21p/5lzjIcLfz5w
-        Zv6pFBTuwNy8cJmxeufA0fE4M6p4MLQn9Dq+hdS7qQ==
-X-Google-Smtp-Source: ABdhPJxoCOS6P041CkwHWmWs49WLL5Tsg/V9xbDyqYe8Aj0ctcgkfx7sQ26IixpG8vthsak05IPxPNQff5X8ZJ1S6Yg=
-X-Received: by 2002:a2e:3511:: with SMTP id z17mr4982462ljz.58.1600097827616;
- Mon, 14 Sep 2020 08:37:07 -0700 (PDT)
+        id S1726358AbgINQhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:37:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726020AbgINPiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:38:16 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 28CD120EDD;
+        Mon, 14 Sep 2020 15:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600097881;
+        bh=eMnr+X3ACCBlvUcal7w11UX5fuuRTjnCIruIdTho9mY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0Ax3veUWya2pauThyCeqC044APqyL6V/aqtPNVrTaTYfcQqtVxDnXxkIcr1psOgIM
+         TTYoB4t4vYmxxKpa21YExO0UKGXlblUkC6KCLR4AbaHKorJkvArXPcCV4/ReplxRoa
+         auKSCyMB+dvEXpOu5HePg0CKpK0OLbUQsm3atgvI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org
+Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v3 00/11] USB: new USB control message helper functions
+Date:   Mon, 14 Sep 2020 17:37:45 +0200
+Message-Id: <20200914153756.3412156-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200914024452.19167-1-longman@redhat.com> <20200914150928.7841-1-longman@redhat.com>
-In-Reply-To: <20200914150928.7841-1-longman@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 14 Sep 2020 08:36:56 -0700
-Message-ID: <CALvZod58vQ3hQAAwT8=7MO9-Xvnb=Fms37E0gW-qT746gS54uw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 8:09 AM Waiman Long <longman@redhat.com> wrote:
->
-> The mem_cgroup_get_max() function used to get memory+swap max from
-> both the v1 memsw and v2 memory+swap page counters & return the maximum
-> of these 2 values. This is redundant and it is more efficient to just
-> get either the v1 or the v2 values depending on which one is currently
-> in use.
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
+In a recent discussion about a USB networking bug found by syzbot, and
+fixed by Himadri Pandya, the design of the existing usb_control_msg()
+call was brought up as not being the "nicest" thing to use by Dmitry
+Vyukov:
+        https://lore.kernel.org/r/CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+The function makes it hard to get right, in that it will return the
+number of bytes sent/received, but almost no one checks to see if a
+short read/write happens.  With a malicious, or broken, USB device, this
+can cause drivers to act on data that they did not anticipate, and
+sometimes copy internal kernel data out to userspace.
+
+So let's fix this up by creating two new functions,
+usb_control_msg_send() and usb_control_msg_recv().  These functions
+either complete the full transation, or they return an error, a short
+send/recv is now an error.
+
+They also accept data off of the stack, saving individual drivers the
+pain of having to constantly allocate memory on their own for tiny
+messages, thereby saving overall kernel code space.
+
+The api also does not require a raw USB "pipe" to be sent to the
+function, as we know the direction, so just pass in the endpoint number
+instead, again making it easier on the USB driver author to use.
+
+This series first takes a helper function out of the sound core for
+verifying USB endpoints to be able to use internally, and then adds the
+new functions, converts over some internal USB code to use them, and
+then starts to clean up some drivers using these new functions, as an
+example of the savings that can happen by using these functions.
+
+Thanks to Dmitry and Himadri for the idea on how to do all of this.
+
+greg k-h
+
+-----
+
+Changes from v2:
+	- add Andy's reviewed-by: to patch 3
+	- remove unneeded change in usb_enable_link_state() in hub.c
+	  in patch 4
+
+Changes from v1:
+        - added acks from Takashi Iwai
+        - dropped changes to one function in patch 04 thanks to review
+          from Alan Stern
+        - typo fix in comment in patch 01
+        - added new patch 11 to remove some unneeded checks in the sound
+          drivers for endpoint statuses that would always be true.
+
+
+
+Greg Kroah-Hartman (11):
+  USB: move snd_usb_pipe_sanity_check into the USB core
+  USB: add usb_control_msg_send() and usb_control_msg_recv()
+  USB: core: message.c: use usb_control_msg_send() in a few places
+  USB: core: hub.c: use usb_control_msg_send() in a few places
+  USB: legousbtower: use usb_control_msg_recv()
+  sound: usx2y: move to use usb_control_msg_send()
+  sound: 6fire: move to use usb_control_msg_send() and
+    usb_control_msg_recv()
+  sound: line6: move to use usb_control_msg_send() and
+    usb_control_msg_recv()
+  sound: hiface: move to use usb_control_msg_send()
+  Bluetooth: ath3k: use usb_control_msg_send() and
+    usb_control_msg_recv()
+  ALSA: remove calls to usb_pipe_type_check for control endpoints
+
+ drivers/bluetooth/ath3k.c       |  90 +++++------------
+ drivers/usb/core/hub.c          |  99 ++++++++----------
+ drivers/usb/core/message.c      | 171 ++++++++++++++++++++++++++++----
+ drivers/usb/core/urb.c          |  31 ++++--
+ drivers/usb/misc/legousbtower.c |  60 ++++-------
+ include/linux/usb.h             |   7 ++
+ sound/usb/6fire/firmware.c      |  38 +++----
+ sound/usb/helper.c              |  16 +--
+ sound/usb/helper.h              |   1 -
+ sound/usb/hiface/pcm.c          |  14 ++-
+ sound/usb/line6/driver.c        |  69 +++++--------
+ sound/usb/line6/podhd.c         |  17 ++--
+ sound/usb/line6/toneport.c      |   8 +-
+ sound/usb/mixer_scarlett_gen2.c |   2 +-
+ sound/usb/quirks.c              |  12 +--
+ sound/usb/usx2y/us122l.c        |  42 ++------
+ 16 files changed, 336 insertions(+), 341 deletions(-)
+
+-- 
+2.28.0
+
