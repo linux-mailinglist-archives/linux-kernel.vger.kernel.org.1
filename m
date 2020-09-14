@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69A9268B58
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51164268B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgINMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:43:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33484 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbgINMep (ORCPT
+        id S1726506AbgINMns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgINMeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:34:45 -0400
+        Mon, 14 Sep 2020 08:34:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC6FC061352
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:33:57 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1600086835;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dZ5TYwH4vMZ+mXqJdNF+1k7rK0dHej1wLlZdVM4kZyw=;
-        b=3CaChOKWICs0qlp/tKZ34pyt7YERhPfiHC34x/qYetE76Rr99w6od9XDEPyPuKxzG1OH/N
-        hDt4JBsbA7eg856fY4oALHK/OypCJI99koOqXiRm1wMTRrv4TAZA6/tk5LI0QMSVcjjZnx
-        KhukLVW1zONltGBp6v1Q0kNaWSStJ04cOoKIilbD6AFz2DmwwpzGf7MVNBY8Xe5f/Aq5P0
-        faq+CJhu37RDtjikOLA8UhsNfSmPcgyqmQgXxkTz2RaJ8pfj1wAJuxPYYXKtcJuizZWipT
-        1xuobCGCjSwY7SUfq/T8PKA241ABCj0HBf6yFOkpEfV5NbfNl7gmNeGFN149xA==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mre6yumQNixs3sJP94kLwCnxbf0olWD4WOU/qcoBk7U=;
+        b=S9ZlsDzY+B6jKlKcsYf9ZHD6KKt7ayytAN47wZ3LozYxnHeJXnI0SOFIhagppjApQP9bJ9
+        rI/ozcAGpOw3O4k3a7y8pv2YqlsmvMO+3aGmFLenmjRNm7PLnkKZsphI9i97YywtMV1TNZ
+        5BjTUgv7TjbeMnCrTORkn4KOUMyJqYKR45sj5m5sNsQWeyWzHxvsnbU6UyfGNlezIiElP9
+        cKpeMjHtQPqeWmmu4p3UJxqLBOzOladB/YaF4+ozni6UhfiEBe7sujMmIU1E18B7Qvpb2s
+        NGYKGZK1EZTKQ9YQRtTaI/2eitU2r9rFMzX4gC6DoXTm2xiv4nAjMzE5pz5AjA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1600086835;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dZ5TYwH4vMZ+mXqJdNF+1k7rK0dHej1wLlZdVM4kZyw=;
-        b=FKpzDBe1+FOOuXulLu2OuGuPvWiyMCYuAW2a8Zh4Lwo6p18pFjnjO2qhTd7QFb48kBHlwx
-        zmBh7NMUlO91x6DA==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mre6yumQNixs3sJP94kLwCnxbf0olWD4WOU/qcoBk7U=;
+        b=Xyt9njIL1qRfmvCQL5nwj99sfcbu2kjnnUia4MIbnT7uCMAqO9C6arFXWqLE0NnF5CUKiJ
+        /dmK7GptP+NSTlDA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -43,9 +48,11 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Andrea Parri <parri.andrea@gmail.com>,
         Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk v5 0/6] printk: reimplement LOG_CONT handling
-Date:   Mon, 14 Sep 2020 14:39:48 +0206
-Message-Id: <20200914123354.832-1-john.ogness@linutronix.de>
+Subject: [PATCH printk v5 1/6] printk: ringbuffer: relocate get_data()
+Date:   Mon, 14 Sep 2020 14:39:49 +0206
+Message-Id: <20200914123354.832-2-john.ogness@linutronix.de>
+In-Reply-To: <20200914123354.832-1-john.ogness@linutronix.de>
+References: <20200914123354.832-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -53,91 +60,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Move the internal get_data() function as-is above prb_reserve() so
+that a later change can make use of the static function.
 
-Here is v5 for the second series to rework the printk subsystem.
-(The v4 is here [0].) This series implements a new ringbuffer
-feature that allows the last record to be extended. Petr Mladek
-provided the initial proof of concept [1] for this.
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+---
+ kernel/printk/printk_ringbuffer.c | 116 +++++++++++++++---------------
+ 1 file changed, 58 insertions(+), 58 deletions(-)
 
-Using the record extension feature, LOG_CONT is re-implemented
-in a way that exactly preserves its behavior, but avoids the
-need for an extra buffer. In particular, it avoids the need for
-any synchronization that such a buffer requires.
-
-This series deviates from the agreements [2] made at the meeting
-during LPC2019 in Lisbon. The test results of the v1 series,
-which implemented LOG_CONT as agreed upon, showed that the
-effects on existing userspace tools using /dev/kmsg (journalctl,
-dmesg) were not acceptable [3].
-
-Patch 5 introduces *four* new memory barrier pairs. Two of them
-are insignificant additions (data_realloc:A/desc_read:D and
-data_realloc:A/data_push_tail:B) because they are alternate path
-memory barriers that exactly match the purpose and context of
-the two existing memory barrier pairs they provide an alternate
-path for. The other two new memory barrier pairs are significant
-additions:
-
-desc_reopen_last:A / _prb_commit:B - When reopening a descriptor,
-    ensure the state transitions back to desc_reserved before
-    fully trusting the descriptor data.
-
-_prb_commit:B / desc_reserve:D - When committing a descriptor,
-    ensure the state transitions to desc_committed before checking
-    the head ID to see if the descriptor needs to be finalized.
-
-The test module used to test the ringbuffer is available
-here [4].
-
-The series is based on the printk-rework branch of the printk git
-tree:
-
-e60768311af8 ("scripts/gdb: update for lockless printk ringbuffer")
-
-The list of changes since v4:
-
-printk_ringbuffer
-=================
-
-- desc_read(): revert setting @state_var when inconsistent (a
-  separate series [5] is addressing this bug)
-
-- desc_reserve(): use DESC_SV() when setting reserved
-
-- data_realloc(): also do nothing if the size is the same
-
-- prb_reserve_in_last(): adjust dataless checks/warnings to match
-  the non-dataless case
-
-- prb_reserve_in_last(): fix length modifier in warnings
-
-- change comments about "state flags" to just talk about "states"
-
-John Ogness
-
-[0] https://lkml.kernel.org/r/20200908202859.2736-1-john.ogness@linutronix.de
-[1] https://lkml.kernel.org/r/20200812163908.GH12903@alley
-[2] https://lkml.kernel.org/r/87k1acz5rx.fsf@linutronix.de
-[3] https://lkml.kernel.org/r/20200811160551.GC12903@alley
-[4] https://github.com/Linutronix/prb-test.git
-[5] https://lkml.kernel.org/r/20200914094803.27365-1-john.ogness@linutronix.de
-
-John Ogness (6):
-  printk: ringbuffer: relocate get_data()
-  printk: ringbuffer: add BLK_DATALESS() macro
-  printk: ringbuffer: clear initial reserved fields
-  printk: ringbuffer: change representation of states
-  printk: ringbuffer: add finalization/extension support
-  printk: reimplement log_cont using record extension
-
- Documentation/admin-guide/kdump/gdbmacros.txt |  13 +-
- kernel/printk/printk.c                        | 110 +--
- kernel/printk/printk_ringbuffer.c             | 683 ++++++++++++++----
- kernel/printk/printk_ringbuffer.h             |  35 +-
- scripts/gdb/linux/dmesg.py                    |  12 +-
- 5 files changed, 615 insertions(+), 238 deletions(-)
-
+diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+index 0659b50872b5..aa6e31a27601 100644
+--- a/kernel/printk/printk_ringbuffer.c
++++ b/kernel/printk/printk_ringbuffer.c
+@@ -1038,6 +1038,64 @@ static unsigned int space_used(struct prb_data_ring *data_ring,
+ 		DATA_SIZE(data_ring) - DATA_INDEX(data_ring, blk_lpos->begin));
+ }
+ 
++/*
++ * Given @blk_lpos, return a pointer to the writer data from the data block
++ * and calculate the size of the data part. A NULL pointer is returned if
++ * @blk_lpos specifies values that could never be legal.
++ *
++ * This function (used by readers) performs strict validation on the lpos
++ * values to possibly detect bugs in the writer code. A WARN_ON_ONCE() is
++ * triggered if an internal error is detected.
++ */
++static const char *get_data(struct prb_data_ring *data_ring,
++			    struct prb_data_blk_lpos *blk_lpos,
++			    unsigned int *data_size)
++{
++	struct prb_data_block *db;
++
++	/* Data-less data block description. */
++	if (LPOS_DATALESS(blk_lpos->begin) && LPOS_DATALESS(blk_lpos->next)) {
++		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
++			*data_size = 0;
++			return "";
++		}
++		return NULL;
++	}
++
++	/* Regular data block: @begin less than @next and in same wrap. */
++	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next) &&
++	    blk_lpos->begin < blk_lpos->next) {
++		db = to_block(data_ring, blk_lpos->begin);
++		*data_size = blk_lpos->next - blk_lpos->begin;
++
++	/* Wrapping data block: @begin is one wrap behind @next. */
++	} else if (DATA_WRAPS(data_ring, blk_lpos->begin + DATA_SIZE(data_ring)) ==
++		   DATA_WRAPS(data_ring, blk_lpos->next)) {
++		db = to_block(data_ring, 0);
++		*data_size = DATA_INDEX(data_ring, blk_lpos->next);
++
++	/* Illegal block description. */
++	} else {
++		WARN_ON_ONCE(1);
++		return NULL;
++	}
++
++	/* A valid data block will always be aligned to the ID size. */
++	if (WARN_ON_ONCE(blk_lpos->begin != ALIGN(blk_lpos->begin, sizeof(db->id))) ||
++	    WARN_ON_ONCE(blk_lpos->next != ALIGN(blk_lpos->next, sizeof(db->id)))) {
++		return NULL;
++	}
++
++	/* A valid data block will always have at least an ID. */
++	if (WARN_ON_ONCE(*data_size < sizeof(db->id)))
++		return NULL;
++
++	/* Subtract block ID space from size to reflect data size. */
++	*data_size -= sizeof(db->id);
++
++	return &db->data[0];
++}
++
+ /**
+  * prb_reserve() - Reserve space in the ringbuffer.
+  *
+@@ -1192,64 +1250,6 @@ void prb_commit(struct prb_reserved_entry *e)
+ 	local_irq_restore(e->irqflags);
+ }
+ 
+-/*
+- * Given @blk_lpos, return a pointer to the writer data from the data block
+- * and calculate the size of the data part. A NULL pointer is returned if
+- * @blk_lpos specifies values that could never be legal.
+- *
+- * This function (used by readers) performs strict validation on the lpos
+- * values to possibly detect bugs in the writer code. A WARN_ON_ONCE() is
+- * triggered if an internal error is detected.
+- */
+-static const char *get_data(struct prb_data_ring *data_ring,
+-			    struct prb_data_blk_lpos *blk_lpos,
+-			    unsigned int *data_size)
+-{
+-	struct prb_data_block *db;
+-
+-	/* Data-less data block description. */
+-	if (LPOS_DATALESS(blk_lpos->begin) && LPOS_DATALESS(blk_lpos->next)) {
+-		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
+-			*data_size = 0;
+-			return "";
+-		}
+-		return NULL;
+-	}
+-
+-	/* Regular data block: @begin less than @next and in same wrap. */
+-	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next) &&
+-	    blk_lpos->begin < blk_lpos->next) {
+-		db = to_block(data_ring, blk_lpos->begin);
+-		*data_size = blk_lpos->next - blk_lpos->begin;
+-
+-	/* Wrapping data block: @begin is one wrap behind @next. */
+-	} else if (DATA_WRAPS(data_ring, blk_lpos->begin + DATA_SIZE(data_ring)) ==
+-		   DATA_WRAPS(data_ring, blk_lpos->next)) {
+-		db = to_block(data_ring, 0);
+-		*data_size = DATA_INDEX(data_ring, blk_lpos->next);
+-
+-	/* Illegal block description. */
+-	} else {
+-		WARN_ON_ONCE(1);
+-		return NULL;
+-	}
+-
+-	/* A valid data block will always be aligned to the ID size. */
+-	if (WARN_ON_ONCE(blk_lpos->begin != ALIGN(blk_lpos->begin, sizeof(db->id))) ||
+-	    WARN_ON_ONCE(blk_lpos->next != ALIGN(blk_lpos->next, sizeof(db->id)))) {
+-		return NULL;
+-	}
+-
+-	/* A valid data block will always have at least an ID. */
+-	if (WARN_ON_ONCE(*data_size < sizeof(db->id)))
+-		return NULL;
+-
+-	/* Subtract block ID space from size to reflect data size. */
+-	*data_size -= sizeof(db->id);
+-
+-	return &db->data[0];
+-}
+-
+ /*
+  * Count the number of lines in provided text. All text has at least 1 line
+  * (even if @text_size is 0). Each '\n' processed is counted as an additional
 -- 
 2.20.1
 
