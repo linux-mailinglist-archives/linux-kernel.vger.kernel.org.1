@@ -2,137 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC3426948B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB2D269491
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbgINSMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgINSLo (ORCPT
+        id S1726095AbgINSNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:13:31 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:40471 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgINSNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:11:44 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC880C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:11:43 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id c196so282326pfc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:11:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=luFapq4yAWnCh7gOtzb0s4k6GBMzLQ8znDPJIALRzIo=;
-        b=zA+3jq+1Hh4VmiPiah+gMCdRVVajSsyvGlrNdRoP/xsQe2jec1OxYNoyEF/2ef5uT3
-         nVG2hbzdNP0uT2eclJt1AUw7b5zvZs0ggTMDrFo1edgHFGeHtxIZvNpvL9p1tA0+4hA2
-         lJwQZEp/3C1FN/a8P7ZhVP8Be+Z/H2OpkPH9j0zO5NVG9r7+A7duyT3Fw7WSoBf5encB
-         eVvt7fWZ5G3uWUXu3BRkjSwiFXQJmJ+5BGsrAnGONfqBbb+icZWbX2NKyhTQc7aOPTpT
-         KdJAaLOAkFEHW9qo7mp4azWEtIrA4eY/+HmGiuR93/S1zZGo9eVlLpiQhebu6dFVFZ6w
-         wTZQ==
+        Mon, 14 Sep 2020 14:13:06 -0400
+Received: by mail-io1-f67.google.com with SMTP id j2so1107148ioj.7;
+        Mon, 14 Sep 2020 11:13:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=luFapq4yAWnCh7gOtzb0s4k6GBMzLQ8znDPJIALRzIo=;
-        b=G5N94WBPpV09JmkAPM7wD6zmfsHKfnG405wpB3/v9sPlL920QiNxUoyC7J7of6Sse1
-         ecjx/tKIiHdSUtOGC3yYXcxFONjUnv/3Im+2wQJQaHisGvono2IL7Dw9yIUGj7NLANmY
-         SCVlDlJ//uuFvl8/5HNtzcLKTVgTGJcBjb3A6JVo1eSZ0AWILclVGqyeoxwDR8tnmpej
-         Dc08qHOaghX/w/zMQzDpVlRkdbH43Dr1bfxQ3M11CyE0PBf/XU6nDPSrsRf6zrYwVyw+
-         uantrKi1GMg6EVPSCNj+J6DN866rj/e+etplzmDxt5321R9l+O4z7vniqZZg8kJkJ3JD
-         tyXg==
-X-Gm-Message-State: AOAM5337FQphH0BufY+gqQhQY/76+ngFLHejyuXtUNjZ5wLrDhfK1KG4
-        J+7ogcsT5B4iplUQ+xmDe0u9fw==
-X-Google-Smtp-Source: ABdhPJyjDBiZiomw9v+dab/SIgwqqqddv11VHrmH3pw8Tb1URCEEbZec5yn7uyiyDsXxd8fEfZeNzA==
-X-Received: by 2002:a05:6a00:1356:b029:13e:d13d:a084 with SMTP id k22-20020a056a001356b029013ed13da084mr14544516pfu.27.1600107103411;
-        Mon, 14 Sep 2020 11:11:43 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id x20sm11052073pfr.190.2020.09.14.11.11.42
+        bh=flh8Qx49o5v1NWGlnIlQV9lzKDaYx8c+g/EflzEDRhM=;
+        b=o2UZzP6beHtmsBbT/84NPmvhtzBBM8D5/a7OlKfZxQe3rfphQqSU53yV4d1GobmQG4
+         1mhC+8fAiM+NS2XeEWt40eHpSOeeWVUut9MfIoagMwG5bIbXV9AfGrCoF9eLjzxPzBYL
+         L+s/yGzmJlE8U6lJik3461yU8cloqa6ka2HC0b841kLTiYoHD09ZLzSrJN2kCkkbMGVV
+         LQiHb4UVbuNEk4szn2XAQfAqtUAwUOT1CCHDqmZ9yygsPNdXdyYLftN0JnTSAv7/sThC
+         xjefT8vR1fjRvYY/oaO6BsFq75ky+dCm+C+YQS9rpP/Aq6cn0MertZFY1AfgXQBmlr0D
+         ht3w==
+X-Gm-Message-State: AOAM531enpUmkHETchRK0sxbCH2fXurl4+nLGLLC4ywiBD3iYxDH6Zt+
+        YhXnz9/fnALjyUT86nZIOw==
+X-Google-Smtp-Source: ABdhPJzYORTqGUQ1Z+gz8wZ6y5/SfEqw40DmQXnoNlX57jjbB08mw8PJvJmpD1E7x1n5FyiJvddW5w==
+X-Received: by 2002:a02:4b07:: with SMTP id q7mr14986215jaa.84.1600107181794;
+        Mon, 14 Sep 2020 11:13:01 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m19sm7410692ila.40.2020.09.14.11.12.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 11:11:42 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:11:40 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     tingwei@codeaurora.org, alexander.shishkin@linux.intel.com,
-        mike.leach@linaro.org, kim.phillips@arm.com,
-        gregkh@linuxfoundation.org, leo.yan@linaro.org,
-        rdunlap@infradead.org, linux@armlinux.org.uk, ykaukab@suse.de,
-        tsoni@codeaurora.org, saiprakash.ranjan@codeaurora.org,
-        jinlmao@codeaurora.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 09/24] coresight: etm3x: allow etm3x to be built as a
- module
-Message-ID: <20200914181140.GD3238264@xps15>
-References: <20200821034445.967-1-tingwei@codeaurora.org>
- <20200821034445.967-10-tingwei@codeaurora.org>
- <0c2abd02-4fe6-5eaa-e9d3-41811f062ac1@arm.com>
+        Mon, 14 Sep 2020 11:13:00 -0700 (PDT)
+Received: (nullmailer pid 4166255 invoked by uid 1000);
+        Mon, 14 Sep 2020 18:12:57 -0000
+Date:   Mon, 14 Sep 2020 12:12:57 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Stefan Agner <stefan@agner.ch>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org
+Subject: Re: [PATCH 2/6] dt-bindings: gpio: Convert bindings for Maxim
+ MAX732x family to dtschema
+Message-ID: <20200914181257.GA4163345@bogus>
+References: <20200829094024.31842-1-krzk@kernel.org>
+ <20200829094024.31842-2-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0c2abd02-4fe6-5eaa-e9d3-41811f062ac1@arm.com>
+In-Reply-To: <20200829094024.31842-2-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 02:17:05PM +0100, Suzuki K Poulose wrote:
-> On 08/21/2020 04:44 AM, Tingwei Zhang wrote:
-> > From: Kim Phillips <kim.phillips@arm.com>
-> > 
-> > Allow to build coresight-etm3x as a module, for ease of development.
-> > 
-> > - Kconfig becomes a tristate, to allow =m
-> > - append -core to source file name to allow module to
-> >    be called coresight-etm3x by the Makefile
-> > - add an etm_remove function, for module unload
-> > - add a MODULE_DEVICE_TABLE for autoloading on boot
-> > 
-> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Cc: Leo Yan <leo.yan@linaro.org>
-> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Russell King <linux@armlinux.org.uk>
-> > Signed-off-by: Kim Phillips <kim.phillips@arm.com>
-> > Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
-> > Reviewed-by: Mike Leach <mike.leach@linaro.org>
+On Sat, Aug 29, 2020 at 11:40:20AM +0200, Krzysztof Kozlowski wrote:
+> Convert the Maxim MAX732x family of GPIO expanders bindings to device
+> tree schema by merging it with existing PCA95xx schema.  These are quite
+> similar so merging reduces duplication.
 > 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  .../devicetree/bindings/gpio/gpio-max732x.txt | 58 ---------------
+>  .../bindings/gpio/gpio-pca95xx.yaml           | 72 ++++++++++++++++++-
+>  2 files changed, 70 insertions(+), 60 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-max732x.txt
 > 
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm3x.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> > similarity index 97%
-> > rename from drivers/hwtracing/coresight/coresight-etm3x.c
-> > rename to drivers/hwtracing/coresight/coresight-etm3x-core.c
-> > index bf22dcfd3327..ba9c86497acb 100644
-> > --- a/drivers/hwtracing/coresight/coresight-etm3x.c
-> > +++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-> > @@ -895,6 +895,23 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
-> >   	return ret;
-> >   }
-> > +static int __exit etm_remove(struct amba_device *adev)
-> > +{
-> > +	struct etm_drvdata *drvdata = dev_get_drvdata(&adev->dev);
-> > +
-> > +	etm_perf_symlink(drvdata->csdev, false);
-> > +
-> > +	if (--etm_count == 0) {
-> > +		cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
-> > +		if (hp_online)
-> > +			cpuhp_remove_state_nocalls(hp_online);
-> > +	}
-> > +
-> > +	coresight_unregister(drvdata->csdev);
-> > +
-> > +	return 0;
-> > +}
-> > +
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-max732x.txt b/Documentation/devicetree/bindings/gpio/gpio-max732x.txt
+> deleted file mode 100644
+> index b3a9c0c32823..000000000000
+> --- a/Documentation/devicetree/bindings/gpio/gpio-max732x.txt
+> +++ /dev/null
+> @@ -1,58 +0,0 @@
+> -* MAX732x-compatible I/O expanders
+> -
+> -Required properties:
+> -  - compatible: Should be one of the following:
+> -    - "maxim,max7319": For the Maxim MAX7319
+> -    - "maxim,max7320": For the Maxim MAX7320
+> -    - "maxim,max7321": For the Maxim MAX7321
+> -    - "maxim,max7322": For the Maxim MAX7322
+> -    - "maxim,max7323": For the Maxim MAX7323
+> -    - "maxim,max7324": For the Maxim MAX7324
+> -    - "maxim,max7325": For the Maxim MAX7325
+> -    - "maxim,max7326": For the Maxim MAX7326
+> -    - "maxim,max7327": For the Maxim MAX7327
+> -  - reg: I2C slave address for this device.
+> -  - gpio-controller: Marks the device node as a GPIO controller.
+> -  - #gpio-cells: Should be 2.
+> -    - first cell is the GPIO number
+> -    - second cell specifies GPIO flags, as defined in <dt-bindings/gpio/gpio.h>.
+> -      Only the GPIO_ACTIVE_HIGH and GPIO_ACTIVE_LOW flags are supported.
+> -
+> -Optional properties:
+> -
+> -  The I/O expander can detect input state changes, and thus optionally act as
+> -  an interrupt controller. When the expander interrupt line is connected all the
+> -  following properties must be set. For more information please see the
+> -  interrupt controller device tree bindings documentation available at
+> -  Documentation/devicetree/bindings/interrupt-controller/interrupts.txt.
+> -
+> -  - interrupt-controller: Identifies the node as an interrupt controller.
+> -  - #interrupt-cells: Number of cells to encode an interrupt source, shall be 2.
+> -    - first cell is the pin number
+> -    - second cell is used to specify flags
+> -  - interrupts: Interrupt specifier for the controllers interrupt.
+> -
+> -Please refer to gpio.txt in this directory for details of the common GPIO
+> -bindings used by client devices.
+> -
+> -Example 1. MAX7325 with interrupt support enabled (CONFIG_GPIO_MAX732X_IRQ=y):
+> -
+> -	expander: max7325@6d {
+> -		compatible = "maxim,max7325";
+> -		reg = <0x6d>;
+> -		gpio-controller;
+> -		#gpio-cells = <2>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <2>;
+> -		interrupt-parent = <&gpio4>;
+> -		interrupts = <29 IRQ_TYPE_EDGE_FALLING>;
+> -	};
+> -
+> -Example 2. MAX7325 with interrupt support disabled (CONFIG_GPIO_MAX732X_IRQ=n):
+> -
+> -	expander: max7325@6d {
+> -		compatible = "maxim,max7325";
+> -		reg = <0x6d>;
+> -		gpio-controller;
+> -		#gpio-cells = <2>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> index c5bb24b3b7b5..e90433b7d52b 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> @@ -9,6 +9,10 @@ title: NXP PCA95xx I2C GPIO multiplexer
+>  maintainers:
+>    - Krzysztof Kozlowski <krzk@kernel.org>
+>  
+> +description: |+
+> +  Bindings for the family of I2C GPIO multiplexers/expanders: NXP PCA95xx,
+> +  Maxim MAX73xx
+> +
+>  properties:
+>    compatible:
+>      enum:
+> @@ -17,6 +21,15 @@ properties:
+>        - maxim,max7312
+>        - maxim,max7313
+>        - maxim,max7315
+> +      - maxim,max7319
+> +      - maxim,max7320
+> +      - maxim,max7321
+> +      - maxim,max7322
+> +      - maxim,max7323
+> +      - maxim,max7324
+> +      - maxim,max7325
+> +      - maxim,max7326
+> +      - maxim,max7327
+>        - nxp,pca6416
+>        - nxp,pca9505
+>        - nxp,pca9534
+> @@ -69,11 +82,11 @@ properties:
+>    reset-gpios:
+>      description:
+>        GPIO specification for the RESET input. This is an active low signal to
+> -      the PCA953x.
+> +      the PCA953x.  Not valid for Maxim MAX732x devices.
+>  
+>    vcc-supply:
+>      description:
+> -      Optional power supply
+> +      Optional power supply.  Not valid for Maxim MAX732x devices.
+>  
+>  required:
+>    - compatible
+> @@ -83,6 +96,27 @@ required:
+>  
+>  unevaluatedProperties: false
+>  
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - maxim,max7320
+> +              - maxim,max7321
+> +              - maxim,max7322
+> +              - maxim,max7323
+> +              - maxim,max7324
+> +              - maxim,max7325
+> +              - maxim,max7326
+> +              - maxim,max7327
+> +    then:
+> +      properties:
+> +        reset-gpios:
+> +          maxItems: 0
+> +        vcc-supply:
+> +          maxItems: 0
+
+reset-gpios: false
+vcc-supply: false
+
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/irq.h>
+> @@ -136,3 +170,37 @@ examples:
+>              ti,micbias = <0>;	/* 2.1V */
+>          };
+>      };
+> +
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    i2c2 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        // MAX7325 with interrupt support enabled
+> +        gpio@6d {
+> +            compatible = "maxim,max7325";
+> +            reg = <0x6d>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +            interrupt-controller;
+> +            #interrupt-cells = <2>;
+> +            interrupt-parent = <&gpio4>;
+> +            interrupts = <29 IRQ_TYPE_EDGE_FALLING>;
+> +        };
+> +    };
+> +
+> +  - |
+> +    i2c3 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        // MAX7325 with interrupt support disabled
+> +        gpio@6e {
+> +            compatible = "maxim,max7325";
+> +            reg = <0x6e>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +        };
+> +    };
+> -- 
+> 2.17.1
 > 
-> Don't we need to fix the races like we did for ETMv4 ?
-
-This is one of the things I wanted to get back to but Suzuki beat me to it.
-
-I am now done reviewing this set.
-
-Thanks,
-Mathieu
-
-> 
-> Suzuki
