@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE73B268890
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3710F268891
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgINJgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
+        id S1726381AbgINJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgINJfz (ORCPT
+        with ESMTP id S1726273AbgINJgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:35:55 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B7BC06174A;
-        Mon, 14 Sep 2020 02:35:55 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id k13so3868832oor.2;
-        Mon, 14 Sep 2020 02:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=r9cbH5W71i4ID4miB4mL4ql1K0EFgtyqFKMoedqtXIw=;
-        b=L+p4RPrbK7472Kq7cKPf3EFxE/ienX0dyXoGoL6wtty2tvGxR155yhqBOQ3GuIRlTH
-         W7Az56geOL/eLxslsvt8dXrDObCvR9G2xJZsL1sA++zRXbGMPqeDnwrUlwGQpWDXDTNb
-         A3Hq6Xnl6pPzr7kw87Xzk9iLUx4gcS7r+CbASHz2iLKrOf7qRwqwCBR0t8shJJtRFlm1
-         8UeIcrWnn+LNJxxtQ5I2WT66XJzBu3WU7cx8Me6xxqbjJELIqaHc6s8lWPmHghKYzBsM
-         Q4EfiCNsgoo9ZceYa0v9gSEduhbDo4pRhr9V2uc5hDEjGt58oN+7cn/yX7DvEA9Htk53
-         kPkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=r9cbH5W71i4ID4miB4mL4ql1K0EFgtyqFKMoedqtXIw=;
-        b=ihNvp2hsv1oQggJExf8Ds3c114qxto8Ly8pqsfaqZBQt0U7bBKRL859j4FW2F08QCc
-         fe/AIhSENYCHyIws/3gQQ24knfmVeDpefm6P7PElICtuBVbGw/6TmBMZ5U2R10NXCu2w
-         Ushfsjy/qeTKzmUcRPpmNGWK/l7NjUVpJuRqfmcjbzXrf3uDaXq1rW+LWAIkPuz4ZjW5
-         bdOkPTua6FGYmJQohcP6PKDfu1R4NNZ/9ipWvfyIyZ8rPRf+pGOD6ei6UZc+CNcXxnw9
-         giTewo3nTXerr6qSAX48t5TFpJYH3/IOmnsgpJrnjH2qM30llm+Y844y8FwE2r3SXefu
-         uWhQ==
-X-Gm-Message-State: AOAM533yNEuATHb/uEBaT0kakFyT6GFk/AFnJuypHCI3Oa7yzFepkBkp
-        5GJsEuxGt/q0FXaMSDdHLgBitTtVWyWeVbEnefo=
-X-Google-Smtp-Source: ABdhPJzCoAkRyfjVFXcXLJnHBrJrT55KV39gIdmZHdePO2XQX+TRRd5m9eTZB313pO4ugmJMrfGde2bfAgNavd1ELtA=
-X-Received: by 2002:a4a:2c02:: with SMTP id o2mr9510259ooo.24.1600076154986;
- Mon, 14 Sep 2020 02:35:54 -0700 (PDT)
+        Mon, 14 Sep 2020 05:36:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62512C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:36:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rFo3P/yVEyT/riHvD1+zwROozsgCZ0ZeAptyOa2H33c=; b=T9KZTDpWfoB57jBow3SI6kuA7g
+        bd2gJINBMhS9DcpnlC24QPiXMjh4ndu42NvJvZCt0qQW4XErhdg9CxyUKOLjy0mz2Xoa7yRvtVocI
+        VWnlXKgPGq7yoFebdCt9aM48eLlepjUVDt1ZJ8qhqPGScMD8ayI8e17U90u5LXXKxYRQjAKJKajt1
+        wlFk02oHJEOqi2GL4H3Mjh7ADfonFV0OYdXXepN5F4MowWEgvBTCZFKAoSA8NwRgUvnC/Gn/aCTaJ
+        aNTJtyLD/gfv1KsENa8kbns/F1/X0QTupv5hDXi6HdHXdY03KooduRqFrjmUixb3V5hY7WC7UAMim
+        2+hYyHDA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHku3-0007eb-As; Mon, 14 Sep 2020 09:36:03 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FEE73012C3;
+        Mon, 14 Sep 2020 11:36:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2D6192CA75AAC; Mon, 14 Sep 2020 11:36:02 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 11:36:02 +0200
+From:   peterz@infradead.org
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+Message-ID: <20200914093602.GN1362448@hirez.programming.kicks-ass.net>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-3-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <20200812004158.GA1447296@rani.riverdale.lan> <20200812004308.1448603-1-nivedita@alum.mit.edu>
- <CA+icZUVdTT1Vz8ACckj-SQyKi+HxJyttM52s6HUtCDLFCKbFgQ@mail.gmail.com>
- <CAKwvOdmHxsLzou=6WN698LOGq9ahWUmztAHfUYYAUcgpH1FGRA@mail.gmail.com>
- <20200825145652.GA780995@rani.riverdale.lan> <20200913223455.GA349140@rani.riverdale.lan>
- <CAMj1kXFnuzdmPxCytCbFdgtLo8Bb4k247ePgbLuZ1mANEn=azw@mail.gmail.com> <20200914091627.GA153848@gmail.com>
-In-Reply-To: <20200914091627.GA153848@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 14 Sep 2020 11:35:43 +0200
-Message-ID: <CA+icZUXnkBwrHxfCkAraPWzSks2RhRAfDr9=m-tDympmCp2zng@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/boot/compressed: Disable relocation relaxation
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        e5ten.arch@gmail.com,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200913210313.1985612-3-jolsa@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:16 AM Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> > On Mon, 14 Sep 2020 at 01:34, Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> > >
-> > > On Tue, Aug 25, 2020 at 10:56:52AM -0400, Arvind Sankar wrote:
-> > > > On Sat, Aug 15, 2020 at 01:56:49PM -0700, Nick Desaulniers wrote:
-> > > > > Hi Ingo,
-> > > > > I saw you picked up Arvind's other series into x86/boot.  Would you
-> > > > > mind please including this, as well?  Our CI is quite red for x86...
-> > > > >
-> > > > > EOM
-> > > > >
-> > > >
-> > > > Hi Ingo, while this patch is unnecessary after the series in
-> > > > tip/x86/boot, it is still needed for 5.9 and older. Would you be able to
-> > > > send it in for the next -rc? It shouldn't hurt the tip/x86/boot series,
-> > > > and we can add a revert on top of that later.
-> > > >
-> > > > Thanks.
-> > >
-> > > Ping.
-> > >
-> > > https://lore.kernel.org/lkml/20200812004308.1448603-1-nivedita@alum.mit.edu/
-> >
-> > Acked-by: Ard Biesheuvel <ardb@kernel.org>
->
-> Thanks guys - queued up in tip:x86/urgent.
->
+On Sun, Sep 13, 2020 at 11:02:49PM +0200, Jiri Olsa wrote:
+> Add new version of mmap event. The MMAP3 record is an
+> augmented version of MMAP2, it adds build id value to
+> identify the exact binary object behind memory map:
+> 
+>   struct {
+>     struct perf_event_header header;
+> 
+>     u32                      pid, tid;
+>     u64                      addr;
+>     u64                      len;
+>     u64                      pgoff;
+>     u32                      maj;
+>     u32                      min;
+>     u64                      ino;
+>     u64                      ino_generation;
+>     u32                      prot, flags;
+>     u32                      reserved;
+>     u8                       buildid[20];
+>     char                     filename[];
+>     struct sample_id         sample_id;
+>   };
+> 
 
-Thanks.
-Did you push it?
-
-Git-Web on <git.kernel.org> seems to be slow this Morning - checked
-Linus Git an hour ago.
-Does Anyone know what's going on?
-
-- Sedat
+So weren't there still open problems with mmap2 that also needed
+addressing? I seem to have forgotten :/
