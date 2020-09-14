@@ -2,296 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D941326858A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A759268587
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgINHLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        id S1726113AbgINHL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726088AbgINHLp (ORCPT
+        with ESMTP id S1726070AbgINHL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:11:45 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D22C06174A;
-        Mon, 14 Sep 2020 00:11:45 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so11843062pfi.4;
-        Mon, 14 Sep 2020 00:11:45 -0700 (PDT)
+        Mon, 14 Sep 2020 03:11:26 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14EE4C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 00:11:26 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z1so17435810wrt.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 00:11:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=7N/PmwNPxp4BkLvHmN/1LOiA1C9sbfjSm26pD91k4wc=;
-        b=maLgvjwkaubbSe4eJOjAnPDyEOw5DnQdjhL8v5Z9oCWMVDDl0uriBZmzG6Z5cgcijC
-         EbrZHOZXU9DsDGIqyaWQF0E4zVQJDY9QBm7oRhY9fTJT0fZSLBj+n/KXuihk5293QFeO
-         otDHf0Djhmmi80h5xXzYRRggi0iXIsfQXXJaOIb6RsqGeWpkTRpauzcrgGkIPzXHQVJ5
-         ukjeFVOqbiyD6PZWLlFFEV7SUARmJSB905ntJHkO5LX0VbS6QRV7UTRtpe5wppJwVeG9
-         vSHgC5Zx3jTaTEH7osfdJLBGg1O7/WryNW2HifmnXMZ6DJ2ADs+wL2SQN9s7BqpWfDEv
-         mS1Q==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zCeerB1JSj7Ad5/NePzzCyRJn16Be5wrFWWH1CWiDP0=;
+        b=X55de4su8ACUlJzml7jbOdk740UeBZL1QwYX0385QEl8yyFdpcIvMBswozXI9Iwi5d
+         KjGu3pvIc/WJcfXlGJT3CCBr1yU4aa2EKuwMrNk2rw0TaoYVpguYEZkjcxyC+HxICaqj
+         fPaATeZl5KF7sn+32WoC+XjDF0l4B0XagqZDM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=7N/PmwNPxp4BkLvHmN/1LOiA1C9sbfjSm26pD91k4wc=;
-        b=hWSebScvfNIe2v7ZY38dDuBbBKGf6+CfOFmXH5sbpN0/JXvl5OBmWNyGMOjiysgfZ1
-         l1BYHinlhgPo+bUKRAVrXEnkpu3LhlcVjkQlaqYfSNoT0SFHUzL6OOi4Fa5BjexVd43e
-         GD79+7j+AW0+hIv32EGDLrudzWg7yGs4SYIMq5f2+fEe86jAK41V0uGJGJ86+yHI0nWy
-         /WRLWppfeTDLwodXbs85oc324t+rcRer2/PAUpRNTG09G/l2u9v/eymXTDIhCAQm1RCs
-         aCdmuZYRzUDBSz+p3Z6YX4UCU3W1ADiwYssJHAkGzb0a6d75PgUh+95sOzd3F2FcUPD3
-         c/Cg==
-X-Gm-Message-State: AOAM531JIy0dCngB6aOGXhnwkac0t4dP/ESE7JQNCeo31HIr6Qgaf3b+
-        mes3lbzqhs2kLrk/RCQq9HI=
-X-Google-Smtp-Source: ABdhPJxz09lA1lAoBVoLLzEQCHG5/2e1h3CH2m/duUKF1bISI9RjjtPDZC/h+aaDBOmAMZvcMS0QXg==
-X-Received: by 2002:a17:902:8491:b029:d1:9bd3:6653 with SMTP id c17-20020a1709028491b02900d19bd36653mr13449959plo.1.1600067504696;
-        Mon, 14 Sep 2020 00:11:44 -0700 (PDT)
-Received: from localhost.localdomain ([43.224.245.179])
-        by smtp.gmail.com with ESMTPSA id l7sm7518885pjz.56.2020.09.14.00.11.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 00:11:44 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, javi.merino@kernel.org,
-        rui.zhang@intel.com, amitk@kernel.org, lukasz.luba@arm.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhuguangqing@xiaomi.com
-Subject: [PATCH] thermal: cooling: Remove unused variable *tz
-Date:   Mon, 14 Sep 2020 15:11:01 +0800
-Message-Id: <20200914071101.13575-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zCeerB1JSj7Ad5/NePzzCyRJn16Be5wrFWWH1CWiDP0=;
+        b=l0nkNJJJkTsJSFebY4uo2/E/dTvzqASvAoEnjBwJkAY4gfUwCa1X/HXtzgcUtZOc8M
+         Xhc0DfXtKdJwosygFhcHqzwIPlAsamSvEBeosMxLYlZ75i35IR9vNma2VU26gJqpf83B
+         ub098x/R28k1SF8qkOiE4OhQwodfQ9rPiVBJWXfliWPcxmMTi6A1z0nNbsz4c5cXhqzZ
+         QQZglrg+dZm+uCcY6QYdM7loD1RHO7BEyQNy5WjXqULCjo0rx5j6OQi1cvOuQ7Hy8WbA
+         44rI+pIVZ5JgDHifVkpd8VIydNKyEtBtzTh4UbxoZqU3ueA52cNzoVT1L0kJC8KNtqO7
+         QJTQ==
+X-Gm-Message-State: AOAM533Tc0q3dEXW+3aQsiWdxiEShh+uBMbsKh+rL7UmqjnO997ysEf+
+        kTs47MFU5DGELkZ1KvQaDKQh1WDH+06kHyjtqEMRnQ==
+X-Google-Smtp-Source: ABdhPJx1POr9ptHGzWWSxkqesqTMHmNyfnUZTuDp4ZxAnJYirIn+uphhC/pcSaZjMrvjb+RpqSRrO0hwrCGElxPN/YY=
+X-Received: by 2002:a5d:4d01:: with SMTP id z1mr14188706wrt.366.1600067481657;
+ Mon, 14 Sep 2020 00:11:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200911102534.25218-1-srinath.mannam@broadcom.com> <20200911151659.GA868760@bjorn-Precision-5520>
+In-Reply-To: <20200911151659.GA868760@bjorn-Precision-5520>
+From:   Srinath Mannam <srinath.mannam@broadcom.com>
+Date:   Mon, 14 Sep 2020 12:41:10 +0530
+Message-ID: <CABe79T7sdW7GBhNR=VQ9kXY1JOOimY3wsQZ0xxTbN9rz2j5z5w@mail.gmail.com>
+Subject: Re: [PATCH v2] iommu/dma: Fix IOVA reserve dma ranges
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, poza@codeaurora.org,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhuguangqing <zhuguangqing@xiaomi.com>
+On Fri, Sep 11, 2020 at 8:47 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+Hi Bjorn,
+Thanks for review.
+> On Fri, Sep 11, 2020 at 03:55:34PM +0530, Srinath Mannam wrote:
+> > Fix IOVA reserve failure in the case when address of first memory region
+> > listed in dma-ranges is equal to 0x0.
+> >
+> > Fixes: aadad097cd46f ("iommu/dma: Reserve IOVA for PCIe inaccessible DMA address")
+> > Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+> > ---
+> > Changes from v1:
+> >    Removed unnecessary changes based on Robin's review comments.
+> >
+> >  drivers/iommu/dma-iommu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> > index 5141d49a046b..682068a9aae7 100644
+> > --- a/drivers/iommu/dma-iommu.c
+> > +++ b/drivers/iommu/dma-iommu.c
+> > @@ -217,7 +217,7 @@ static int iova_reserve_pci_windows(struct pci_dev *dev,
+> >                       lo = iova_pfn(iovad, start);
+> >                       hi = iova_pfn(iovad, end);
+> >                       reserve_iova(iovad, lo, hi);
+> > -             } else {
+> > +             } else if (end < start) {
+> >                       /* dma_ranges list should be sorted */
+> >                       dev_err(&dev->dev, "Failed to reserve IOVA\n");
+>
+It is very unlikely to come to this error, dma_ranges list is sorted
+in "devm_of_pci_get_host_bridge_resources" function.
+> You didn't actually change the error message, but the message would be
+> way more useful if it included the IOVA address range, e.g., the
+> format used in pci_register_host_bridge():
+>
+>   bus address [%#010llx-%#010llx]
+I will add this change and send the next patchset.
 
-1. devfreq_cooling.c: The variable *tz is not used in
-devfreq_cooling_get_requested_power(), devfreq_cooling_state2power()
-and devfreq_cooling_power2state().
-
-2. cpufreq_cooling.c: After 84fe2cab48590, the variable *tz is not used
-anymore in cpufreq_get_requested_power(), cpufreq_state2power() and
-cpufreq_power2state().
-
-Remove the variable *tz.
-
-Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
----
- drivers/thermal/cpufreq_cooling.c     |  8 +-------
- drivers/thermal/devfreq_cooling.c     |  3 ---
- drivers/thermal/gov_power_allocator.c |  6 +++---
- drivers/thermal/thermal_core.c        | 12 +++++-------
- drivers/thermal/thermal_core.h        |  4 ++--
- include/linux/thermal.h               |  9 +++------
- 6 files changed, 14 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index 6cf23a54e853..cc2959f22f01 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -182,7 +182,6 @@ static u32 get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev,
- /**
-  * cpufreq_get_requested_power() - get the current power
-  * @cdev:	&thermal_cooling_device pointer
-- * @tz:		a valid thermal zone device pointer
-  * @power:	pointer in which to store the resulting power
-  *
-  * Calculate the current power consumption of the cpus in milliwatts
-@@ -203,7 +202,6 @@ static u32 get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev,
-  * Return: 0 on success, -E* if getting the static power failed.
-  */
- static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
--				       struct thermal_zone_device *tz,
- 				       u32 *power)
- {
- 	unsigned long freq;
-@@ -253,7 +251,6 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
- /**
-  * cpufreq_state2power() - convert a cpu cdev state to power consumed
-  * @cdev:	&thermal_cooling_device pointer
-- * @tz:		a valid thermal zone device pointer
-  * @state:	cooling device state to be converted
-  * @power:	pointer in which to store the resulting power
-  *
-@@ -266,7 +263,6 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
-  * when calculating the static power.
-  */
- static int cpufreq_state2power(struct thermal_cooling_device *cdev,
--			       struct thermal_zone_device *tz,
- 			       unsigned long state, u32 *power)
- {
- 	unsigned int freq, num_cpus, idx;
-@@ -288,7 +284,6 @@ static int cpufreq_state2power(struct thermal_cooling_device *cdev,
- /**
-  * cpufreq_power2state() - convert power to a cooling device state
-  * @cdev:	&thermal_cooling_device pointer
-- * @tz:		a valid thermal zone device pointer
-  * @power:	power in milliwatts to be converted
-  * @state:	pointer in which to store the resulting state
-  *
-@@ -306,8 +301,7 @@ static int cpufreq_state2power(struct thermal_cooling_device *cdev,
-  * device.
-  */
- static int cpufreq_power2state(struct thermal_cooling_device *cdev,
--			       struct thermal_zone_device *tz, u32 power,
--			       unsigned long *state)
-+			       u32 power, unsigned long *state)
- {
- 	unsigned int target_freq;
- 	u32 last_load, normalised_power;
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index a12d29096229..dfab49a67252 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -229,7 +229,6 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
- 
- 
- static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cdev,
--					       struct thermal_zone_device *tz,
- 					       u32 *power)
- {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
-@@ -289,7 +288,6 @@ static int devfreq_cooling_get_requested_power(struct thermal_cooling_device *cd
- }
- 
- static int devfreq_cooling_state2power(struct thermal_cooling_device *cdev,
--				       struct thermal_zone_device *tz,
- 				       unsigned long state,
- 				       u32 *power)
- {
-@@ -308,7 +306,6 @@ static int devfreq_cooling_state2power(struct thermal_cooling_device *cdev,
- }
- 
- static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
--				       struct thermal_zone_device *tz,
- 				       u32 power, unsigned long *state)
- {
- 	struct devfreq_cooling_device *dfc = cdev->devdata;
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index 5cb518d8f156..ab0be26f0816 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -96,7 +96,7 @@ static u32 estimate_sustainable_power(struct thermal_zone_device *tz)
- 		if (instance->trip != params->trip_max_desired_temperature)
- 			continue;
- 
--		if (power_actor_get_min_power(cdev, tz, &min_power))
-+		if (power_actor_get_min_power(cdev, &min_power))
- 			continue;
- 
- 		sustainable_power += min_power;
-@@ -388,7 +388,7 @@ static int allocate_power(struct thermal_zone_device *tz,
- 		if (!cdev_is_power_actor(cdev))
- 			continue;
- 
--		if (cdev->ops->get_requested_power(cdev, tz, &req_power[i]))
-+		if (cdev->ops->get_requested_power(cdev, &req_power[i]))
- 			continue;
- 
- 		if (!total_weight)
-@@ -398,7 +398,7 @@ static int allocate_power(struct thermal_zone_device *tz,
- 
- 		weighted_req_power[i] = frac_to_int(weight * req_power[i]);
- 
--		if (power_actor_get_max_power(cdev, tz, &max_power[i]))
-+		if (power_actor_get_max_power(cdev, &max_power[i]))
- 			continue;
- 
- 		total_req_power += req_power[i];
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index a6616e530a84..85cdba7f7b3e 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -603,7 +603,6 @@ static void thermal_zone_device_check(struct work_struct *work)
- /**
-  * power_actor_get_max_power() - get the maximum power that a cdev can consume
-  * @cdev:	pointer to &thermal_cooling_device
-- * @tz:		a valid thermal zone device pointer
-  * @max_power:	pointer in which to store the maximum power
-  *
-  * Calculate the maximum power consumption in milliwats that the
-@@ -613,18 +612,17 @@ static void thermal_zone_device_check(struct work_struct *work)
-  * power_actor API or -E* on other error.
-  */
- int power_actor_get_max_power(struct thermal_cooling_device *cdev,
--			      struct thermal_zone_device *tz, u32 *max_power)
-+			      u32 *max_power)
- {
- 	if (!cdev_is_power_actor(cdev))
- 		return -EINVAL;
- 
--	return cdev->ops->state2power(cdev, tz, 0, max_power);
-+	return cdev->ops->state2power(cdev, 0, max_power);
- }
- 
- /**
-  * power_actor_get_min_power() - get the mainimum power that a cdev can consume
-  * @cdev:	pointer to &thermal_cooling_device
-- * @tz:		a valid thermal zone device pointer
-  * @min_power:	pointer in which to store the minimum power
-  *
-  * Calculate the minimum power consumption in milliwatts that the
-@@ -634,7 +632,7 @@ int power_actor_get_max_power(struct thermal_cooling_device *cdev,
-  * power_actor API or -E* on other error.
-  */
- int power_actor_get_min_power(struct thermal_cooling_device *cdev,
--			      struct thermal_zone_device *tz, u32 *min_power)
-+			      u32 *min_power)
- {
- 	unsigned long max_state;
- 	int ret;
-@@ -646,7 +644,7 @@ int power_actor_get_min_power(struct thermal_cooling_device *cdev,
- 	if (ret)
- 		return ret;
- 
--	return cdev->ops->state2power(cdev, tz, max_state, min_power);
-+	return cdev->ops->state2power(cdev, max_state, min_power);
- }
- 
- /**
-@@ -670,7 +668,7 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
- 	if (!cdev_is_power_actor(cdev))
- 		return -EINVAL;
- 
--	ret = cdev->ops->power2state(cdev, instance->tz, power, &state);
-+	ret = cdev->ops->power2state(cdev, power, &state);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-index e00fc5585ea8..764c2de31771 100644
---- a/drivers/thermal/thermal_core.h
-+++ b/drivers/thermal/thermal_core.h
-@@ -66,9 +66,9 @@ static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
- }
- 
- int power_actor_get_max_power(struct thermal_cooling_device *cdev,
--			      struct thermal_zone_device *tz, u32 *max_power);
-+			      u32 *max_power);
- int power_actor_get_min_power(struct thermal_cooling_device *cdev,
--			      struct thermal_zone_device *tz, u32 *min_power);
-+			      u32 *min_power);
- int power_actor_set_power(struct thermal_cooling_device *cdev,
- 			  struct thermal_instance *ti, u32 power);
- /**
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 42ef807e5d84..00612e233d20 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -84,12 +84,9 @@ struct thermal_cooling_device_ops {
- 	int (*get_max_state) (struct thermal_cooling_device *, unsigned long *);
- 	int (*get_cur_state) (struct thermal_cooling_device *, unsigned long *);
- 	int (*set_cur_state) (struct thermal_cooling_device *, unsigned long);
--	int (*get_requested_power)(struct thermal_cooling_device *,
--				   struct thermal_zone_device *, u32 *);
--	int (*state2power)(struct thermal_cooling_device *,
--			   struct thermal_zone_device *, unsigned long, u32 *);
--	int (*power2state)(struct thermal_cooling_device *,
--			   struct thermal_zone_device *, u32, unsigned long *);
-+	int (*get_requested_power)(struct thermal_cooling_device *, u32 *);
-+	int (*state2power)(struct thermal_cooling_device *, unsigned long, u32 *);
-+	int (*power2state)(struct thermal_cooling_device *, u32, unsigned long *);
- };
- 
- struct thermal_cooling_device {
--- 
-2.17.1
-
+Thanks & Regards,
+Srinath.
+>
+> Incidentally, the pr_err() in copy_reserved_iova() looks bogus; it
+> prints iova->pfn_low twice, when it should probably print the base and
+> size or (my preference) something like the above:
+>
+>         pr_err("Reserve iova range %lx@%lx failed\n",
+>                iova->pfn_lo, iova->pfn_lo);
+>
+> >                       return -EINVAL;
+> > --
+> > 2.17.1
+> >
