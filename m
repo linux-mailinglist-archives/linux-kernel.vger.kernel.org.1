@@ -2,173 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239AF2691E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFB726920C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgINQmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726172AbgINPNb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:13:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226CBC06174A;
-        Mon, 14 Sep 2020 08:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=RqQGv7rUrofRqLyMSzfEtcHVgVUslC8cDoNR577KrIg=; b=dP3pKRmpC+I0E+dOSbraRXJ35X
-        3haQwB40uPuLpGR5zn67wQbMCYeYUDIDCnlsB5tNCLi9vaoDWIjbKg2ty0ncKAbUYHiAWQ1Gwe4T2
-        /L1d3ii2rUMCke8WZymWHb2tl/HocPOnGFPqgOwVy0kntsQ5+2r+a5DBRhRIc7Qwt5AhJHft+rUwc
-        cUuL4BH3aNOU3nrCkiiuv/cztMGgjnYHVBqE36sUV2hPE4iUig7eK9l316jWvenjHMhEIQ2Nevj2v
-        NzaWOE2Dnmj9Uqr/OYUKSLadMvLX2JkZjrKxFODSeBkgfvxBjLKXD/2ClVZgj/x7V7GdULKR4vyHX
-        B3N9jL+g==;
-Received: from 089144214092.atnat0023.highway.a1.net ([89.144.214.92] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHqAB-0003UL-04; Mon, 14 Sep 2020 15:13:03 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 12/17] 53c700: convert to dma_alloc_noncoherent
-Date:   Mon, 14 Sep 2020 16:44:28 +0200
-Message-Id: <20200914144433.1622958-13-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200914144433.1622958-1-hch@lst.de>
-References: <20200914144433.1622958-1-hch@lst.de>
+        id S1725978AbgINQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:47:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726034AbgINPJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:09:19 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6381720829;
+        Mon, 14 Sep 2020 15:09:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600096158;
+        bh=0ROvPwI9GHsA6soQBVXwOuivIgyaZ2vSEX0i8eZ+57s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KJlRnz/O4V5mlRC/axk0yDSKCcbjoVr0zU0uJHLx9DH6OAkHdR+adl/yCvsg5kmHY
+         GiL0ONjceNB+vn2xXKhpJ3I3SWINlX7TJhq+69reYdD60FYnHv4h6DKcvw7NjyPGmJ
+         VFlDL20ElYv2bhWDVt3uJkMZB5HxTS2fGuEQBYm4=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kHq6W-00Biog-Ec; Mon, 14 Sep 2020 16:09:16 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Date:   Mon, 14 Sep 2020 16:09:16 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>,
+        kernel-team@android.com,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH v3 08/16] irqchip/gic: Configure SGIs as standard
+ interrupts
+In-Reply-To: <65565f85-d932-37f3-a8cd-dbd13d7dbfad@samsung.com>
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-9-maz@kernel.org>
+ <CGME20200914130601eucas1p23ce276d168dee37909b22c75499e68da@eucas1p2.samsung.com>
+ <a917082d-4bfd-a6fd-db88-36e75f5f5921@samsung.com>
+ <8642847d83ef5bb15663d0246d6af668@kernel.org>
+ <65565f85-d932-37f3-a8cd-dbd13d7dbfad@samsung.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <14e2c690bf99280588538989014c7356@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: m.szyprowski@samsung.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com, linux-samsung-soc@vger.kernel.org, krzk@kernel.org, b.zolnierkie@samsung.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new non-coherent DMA API including proper ownership transfers.
+Marek,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/scsi/53c700.c | 11 +++++++++--
- drivers/scsi/53c700.h | 16 ++++++++--------
- 2 files changed, 17 insertions(+), 10 deletions(-)
+On 2020-09-14 14:26, Marek Szyprowski wrote:
+> Hi Marc,
+> 
+> On 14.09.2020 15:13, Marc Zyngier wrote:
+>> On 2020-09-14 14:06, Marek Szyprowski wrote:
+>>> On 01.09.2020 16:43, Marc Zyngier wrote:
+>>>> Change the way we deal with GIC SGIs by turning them into proper
+>>>> IRQs, and calling into the arch code to register the interrupt range
+>>>> instead of a callback.
+>>>> 
+>>>> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+>>>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>>> This patch landed in linux next-20200914 as commit ac063232d4b0
+>>> ("irqchip/gic: Configure SGIs as standard interrupts"). Sadly it 
+>>> breaks
+>>> booting of all Samsung Exynos 4210/4412 based boards (dual/quad ARM
+>>> Cortex A9 based). Here are the last lines from the bootlog:
+>>> 
+>>> [    0.106322] CPU: Testing write buffer coherency: ok
+>>> [    0.109895] CPU0: Spectre v2: using BPIALL workaround
+>>> [    0.116057] CPU0: thread -1, cpu 0, socket 9, mpidr 80000900
+>>> [    0.123885] Setting up static identity map for 0x40100000 -
+>>> 0x40100060
+>>> [    0.130191] rcu: Hierarchical SRCU implementation.
+>>> [    0.137195] soc soc0: Exynos: CPU[EXYNOS4210] PRO_ID[0x43210211]
+>>> REV[0x11] Detected
+>>> [    0.145129] smp: Bringing up secondary CPUs ...
+>>> [    0.156279] CPU1: thread -1, cpu 1, socket 9, mpidr 80000901
+>>> [    0.156291] CPU1: Spectre v2: using BPIALL workaround
+>>> [    2.716379] random: fast init done
+>> 
+>> Thanks for the report. Is this the funky non-banked GIC?
+> 
+> Both Exynos 4210 and 4412 use non-zero cpu-offset in GIC node in
+> device-tree: arch/arm/boot/dts/exynos{4210,4412}.dtsi, so I assume that
+> the GIC registers are not banked.
 
-diff --git a/drivers/scsi/53c700.c b/drivers/scsi/53c700.c
-index 9a343f8ecb6c3e..5117d90ccd9edf 100644
---- a/drivers/scsi/53c700.c
-+++ b/drivers/scsi/53c700.c
-@@ -269,18 +269,25 @@ NCR_700_get_SXFER(struct scsi_device *SDp)
- 					      spi_period(SDp->sdev_target));
- }
- 
-+static inline dma_addr_t virt_to_dma(struct NCR_700_Host_Parameters *h, void *p)
-+{
-+	return h->pScript + ((uintptr_t)p - (uintptr_t)h->script);
-+}
-+
- static inline void dma_sync_to_dev(struct NCR_700_Host_Parameters *h,
- 		void *addr, size_t size)
- {
- 	if (h->noncoherent)
--		dma_cache_sync(h->dev, addr, size, DMA_TO_DEVICE);
-+		dma_sync_single_for_device(h->dev, virt_to_dma(h, addr),
-+					   size, DMA_BIDIRECTIONAL);
- }
- 
- static inline void dma_sync_from_dev(struct NCR_700_Host_Parameters *h,
- 		void *addr, size_t size)
- {
- 	if (h->noncoherent)
--		dma_cache_sync(h->dev, addr, size, DMA_FROM_DEVICE);
-+		dma_sync_single_for_device(h->dev, virt_to_dma(h, addr), size,
-+					   DMA_BIDIRECTIONAL);
- }
- 
- struct Scsi_Host *
-diff --git a/drivers/scsi/53c700.h b/drivers/scsi/53c700.h
-index 0f545b05fe611d..c9f8c497babb3d 100644
---- a/drivers/scsi/53c700.h
-+++ b/drivers/scsi/53c700.h
-@@ -423,33 +423,33 @@ struct NCR_700_Host_Parameters {
- #define NCR_710_MIN_XFERP	0
- #define NCR_700_MIN_PERIOD	25 /* for SDTR message, 100ns */
- 
--#define script_patch_32(dev, script, symbol, value) \
-+#define script_patch_32(h, script, symbol, value) \
- { \
- 	int i; \
- 	dma_addr_t da = value; \
- 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
- 		__u32 val = bS_to_cpu((script)[A_##symbol##_used[i]]) + da; \
- 		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
--		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
-+		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
- 		DEBUG((" script, patching %s at %d to %pad\n", \
- 		       #symbol, A_##symbol##_used[i], &da)); \
- 	} \
- }
- 
--#define script_patch_32_abs(dev, script, symbol, value) \
-+#define script_patch_32_abs(h, script, symbol, value) \
- { \
- 	int i; \
- 	dma_addr_t da = value; \
- 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
- 		(script)[A_##symbol##_used[i]] = bS_to_host(da); \
--		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
-+		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
- 		DEBUG((" script, patching %s at %d to %pad\n", \
- 		       #symbol, A_##symbol##_used[i], &da)); \
- 	} \
- }
- 
- /* Used for patching the SCSI ID in the SELECT instruction */
--#define script_patch_ID(dev, script, symbol, value) \
-+#define script_patch_ID(h, script, symbol, value) \
- { \
- 	int i; \
- 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
-@@ -457,13 +457,13 @@ struct NCR_700_Host_Parameters {
- 		val &= 0xff00ffff; \
- 		val |= ((value) & 0xff) << 16; \
- 		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
--		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
-+		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
- 		DEBUG((" script, patching ID field %s at %d to 0x%x\n", \
- 		       #symbol, A_##symbol##_used[i], val)); \
- 	} \
- }
- 
--#define script_patch_16(dev, script, symbol, value) \
-+#define script_patch_16(h, script, symbol, value) \
- { \
- 	int i; \
- 	for(i=0; i< (sizeof(A_##symbol##_used) / sizeof(__u32)); i++) { \
-@@ -471,7 +471,7 @@ struct NCR_700_Host_Parameters {
- 		val &= 0xffff0000; \
- 		val |= ((value) & 0xffff); \
- 		(script)[A_##symbol##_used[i]] = bS_to_host(val); \
--		dma_sync_to_dev((dev), &(script)[A_##symbol##_used[i]], 4); \
-+		dma_sync_to_dev((h), &(script)[A_##symbol##_used[i]], 4); \
- 		DEBUG((" script, patching short field %s at %d to 0x%x\n", \
- 		       #symbol, A_##symbol##_used[i], val)); \
- 	} \
+Annoyingly, it seems to work correctly in QEMU:
+
+root@unassigned-hostname:~# cat /proc/interrupts
+            CPU0       CPU1
+  40:          0          0     GIC-0  89 Level     mct_comp_irq
+  41:      16144          0     GIC-0  74 Level     mct_tick0
+  42:          0      15205     GIC-0  80 Level     mct_tick1
+  43:          0          0  COMBINER  18 Edge      arm-pmu
+  44:          0          0  COMBINER  26 Edge      arm-pmu
+  46:       2270          0     GIC-0 107 Level     mmc0
+  48:        878          0     GIC-0  84 Level     13800000.serial
+  52:          0          0     GIC-0  90 Level     13860000.i2c
+  54:          0          0     GIC-0  67 Level     12680000.pdma
+  55:          0          0     GIC-0  68 Level     12690000.pdma
+  56:          0          0     GIC-0  66 Level     12850000.mdma
+  59:          0          0  COMBINER  45 Edge      13620000.sysmmu
+  60:          0          0  COMBINER  46 Edge      13630000.sysmmu
+  61:          0          0  COMBINER  44 Edge      12e20000.sysmmu
+  62:          0          0  COMBINER  34 Edge      11a20000.sysmmu
+  63:          0          0  COMBINER  35 Edge      11a30000.sysmmu
+  64:          0          0  COMBINER  36 Edge      11a40000.sysmmu
+  65:          0          0  COMBINER  37 Edge      11a50000.sysmmu
+  66:          0          0  COMBINER  38 Edge      11a60000.sysmmu
+  67:          0          0  COMBINER  40 Edge      12a30000.sysmmu
+  68:          0          0  COMBINER  42 Edge      11e20000.sysmmu
+  74:          0          0     GIC-0  79 Level     11400000.pinctrl
+  75:          0          0     GIC-0  78 Level     11000000.pinctrl
+  77:          0          0  COMBINER  39 Edge      12a20000.sysmmu
+  78:          0          0  COMBINER  43 Edge      12220000.sysmmu
+IPI0:          0          1  CPU wakeup interrupts
+IPI1:          0          0  Timer broadcast interrupts
+IPI2:         32         63  Rescheduling interrupts
+IPI3:       3925       5381  Function call interrupts
+IPI4:          0          0  CPU stop interrupts
+IPI5:       4375       3778  IRQ work interrupts
+IPI6:          0          0  completion interrupts
+Err:          0
+
+Do you happen to know whether the QEMU emulation is trustworthy?
+
+Thanks,
+
+         M.
 -- 
-2.28.0
-
+Jazz is not dead. It just smells funny...
