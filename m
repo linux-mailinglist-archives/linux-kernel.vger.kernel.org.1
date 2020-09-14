@@ -2,166 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E4B2687D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779CD2687F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgINJDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:03:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgINJDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:03:32 -0400
-Received: from mail.kernel.org (ip5f5ad5d8.dynamic.kabel-deutschland.de [95.90.213.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D026122204;
-        Mon, 14 Sep 2020 09:03:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600074212;
-        bh=Zw9W1+amdegwYUXpErBc4E+AxdH3bMvY1OFaDGkbQ00=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WXL9tfmwiy0chbrtPHG0uJ6XcHylhfF0jSwByKqMF936C20EzLEjujlqlMyGODmDL
-         drjFz1az2uNp7OLUkqhbCat6Wsst4PFY3LZd54jlSrvbtDYXA6vWw+CIg1U5wYxFXN
-         ewT6qN4KiV4TsGfBfKdQWPgU6XZvU+njrIvmclVI=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kHkOW-002dzq-8Z; Mon, 14 Sep 2020 11:03:28 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH RFC 11/11] media: vidtv: increment byte and block counters
-Date:   Mon, 14 Sep 2020 11:03:26 +0200
-Message-Id: <20aa6d0916d8475bb57539743963bba97d929eb9.1600073975.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1600073975.git.mchehab+huawei@kernel.org>
-References: <cover.1600073975.git.mchehab+huawei@kernel.org>
+        id S1726343AbgINJGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:06:06 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51298 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726123AbgINJGE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:06:04 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08E95BZ4082332;
+        Mon, 14 Sep 2020 04:05:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600074311;
+        bh=45CXssVozVwhmXELW2YCJrIEZQb3TtLXZl+9P6aTm6s=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ET5CnVI/n8H0X3va1EDV/i1fq/RuOHbmrDJCKQr3SpYoFYu2tj1lPBmV+pj4WV5Wm
+         gN3SSBpfGLdmgPYeDletfQ2Egos/pBCCURtkwrB+i+5ly/0tmG0kiKt8HNvD1EgWpI
+         6mv67qzaj0WCN+B0/SljGgoAXTPukF97ju+qbU3M=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08E95A7Q129588;
+        Mon, 14 Sep 2020 04:05:10 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 14
+ Sep 2020 04:05:10 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 14 Sep 2020 04:05:10 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08E951i9030437;
+        Mon, 14 Sep 2020 04:05:01 -0500
+Subject: Re: [PATCH v2 01/15] dt-bindings: gpio: convert bindings for NXP
+ PCA953x family to dtschema
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+References: <20200910175733.11046-1-krzk@kernel.org>
+ <20200910175733.11046-2-krzk@kernel.org>
+ <CACPK8XdocAX5mOXf3VP29cNXH+6unYunB9NiT3qFVKyzR6WXPg@mail.gmail.com>
+ <CAJKOXPe6Tf0B5W27XaD5zLk77OBzGCHpirhTdZjFH0oh8GvWgg@mail.gmail.com>
+ <c162b6ad-57f1-a75a-11e3-9c80c60bd845@ti.com>
+ <CACRpkdbrrzkYVW13V89PJ5_WRGhxSL0rOxAHA_7hYSyw28Shvg@mail.gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <1d295310-880a-0ca7-273b-ad07f1a0498b@ti.com>
+Date:   Mon, 14 Sep 2020 12:04:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CACRpkdbrrzkYVW13V89PJ5_WRGhxSL0rOxAHA_7hYSyw28Shvg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for incrementing DVBv5 stats for block counters
-and post/pre BER byte counts.
 
-For now, the errors won't be incremented yet.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/test-drivers/vidtv/vidtv_bridge.c |  2 +-
- drivers/media/test-drivers/vidtv/vidtv_bridge.h |  3 +++
- drivers/media/test-drivers/vidtv/vidtv_mux.c    | 16 +++++++++++++++-
- drivers/media/test-drivers/vidtv/vidtv_mux.h    |  6 +++++-
- 4 files changed, 24 insertions(+), 3 deletions(-)
+On 12/09/2020 13:07, Linus Walleij wrote:
+> On Fri, Sep 11, 2020 at 11:54 AM Grygorii Strashko
+> <grygorii.strashko@ti.com> wrote:
+> 
+>> More over, there is already generic schema for gpio hogs: gpio-hog.yaml
+> 
+> Where is this? I don't have it in my GPIO devel branch for sure, and
+> it is not in linux-next either so not in Bartosz' tree.
+> 
+> I did suggest that I want a gpio-common.yaml file which includes the
+> hogs.
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-index cb32f82f88f9..108e7937e9c1 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-@@ -172,7 +172,7 @@ static int vidtv_start_streaming(struct vidtv_dvb *dvb)
- 	mux_args.priv                        = dvb;
- 
- 	dvb->streaming = true;
--	dvb->mux = vidtv_mux_init(dev, mux_args);
-+	dvb->mux = vidtv_mux_init(dvb->fe[0], dev, mux_args);
- 	vidtv_mux_start_thread(dvb->mux);
- 
- 	dev_dbg_ratelimited(dev, "Started streaming\n");
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.h b/drivers/media/test-drivers/vidtv/vidtv_bridge.h
-index fd65f9838b10..78fe8472fa37 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_bridge.h
-+++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.h
-@@ -12,6 +12,9 @@
- #ifndef VIDTV_BRIDGE_H
- #define VIDTV_BRIDGE_H
- 
-+/*
-+ * For now, only one frontend is supported. See vidtv_start_streaming()
-+ */
- #define NUM_FE 1
- 
- #include <linux/i2c.h>
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.c b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-index d1db9dc6dc89..5d1a275d504b 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_mux.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_mux.c
-@@ -381,6 +381,7 @@ static void vidtv_mux_tick(struct work_struct *work)
- 	struct vidtv_mux *m = container_of(work,
- 					   struct vidtv_mux,
- 					   mpeg_thread);
-+	struct dtv_frontend_properties *c = &m->fe->dtv_property_cache;
- 	u32 nbytes;
- 	u32 npkts;
- 
-@@ -411,6 +412,17 @@ static void vidtv_mux_tick(struct work_struct *work)
- 
- 		vidtv_mux_clear(m);
- 
-+		/*
-+		 * Update bytes and packet counts at DVBv5 stats
-+		 *
-+		 * For now, both pre and post bit counts are identical,
-+		 * but post BER count can be lower than pre BER, if the error
-+		 * correction logic discards packages.
-+		 */
-+		c->pre_bit_count.stat[0].uvalue = nbytes;
-+		c->post_bit_count.stat[0].uvalue = nbytes;
-+		c->block_count.stat[0].uvalue += npkts;
-+
- 		usleep_range(VIDTV_SLEEP_USECS, VIDTV_MAX_SLEEP_USECS);
- 	}
- }
-@@ -435,12 +447,14 @@ void vidtv_mux_stop_thread(struct vidtv_mux *m)
- 	}
- }
- 
--struct vidtv_mux *vidtv_mux_init(struct device *dev,
-+struct vidtv_mux *vidtv_mux_init(struct dvb_frontend *fe,
-+				 struct device *dev,
- 				 struct vidtv_mux_init_args args)
- {
- 	struct vidtv_mux *m = kzalloc(sizeof(*m), GFP_KERNEL);
- 
- 	m->dev = dev;
-+	m->fe = fe;
- 	m->timing.pcr_period_usecs = args.pcr_period_usecs;
- 	m->timing.si_period_usecs  = args.si_period_usecs;
- 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_mux.h b/drivers/media/test-drivers/vidtv/vidtv_mux.h
-index 67de85fd50aa..2caa60623e97 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_mux.h
-+++ b/drivers/media/test-drivers/vidtv/vidtv_mux.h
-@@ -18,6 +18,8 @@
- #include <linux/types.h>
- #include <linux/hashtable.h>
- #include <linux/workqueue.h>
-+#include <media/dvb_frontend.h>
-+
- #include "vidtv_psi.h"
- 
- /**
-@@ -100,6 +102,7 @@ struct vidtv_mux_pid_ctx {
-  * @priv: Private data.
-  */
- struct vidtv_mux {
-+	struct dvb_frontend *fe;
- 	struct device *dev;
- 
- 	struct vidtv_mux_timing timing;
-@@ -153,7 +156,8 @@ struct vidtv_mux_init_args {
- 	void *priv;
- };
- 
--struct vidtv_mux *vidtv_mux_init(struct device *dev,
-+struct vidtv_mux *vidtv_mux_init(struct dvb_frontend *fe,
-+				 struct device *dev,
- 				 struct vidtv_mux_init_args args);
- void vidtv_mux_destroy(struct vidtv_mux *m);
- 
+There it is (am I missing smth?):
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master
+
+as per:
+https://www.kernel.org/doc/html/latest/devicetree/writing-schema.html
+
+
+
 -- 
-2.26.2
-
+Best regards,
+grygorii
