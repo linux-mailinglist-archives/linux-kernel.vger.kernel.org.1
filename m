@@ -2,140 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D262697F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2A4269814
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726172AbgINVov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:44:51 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:40713 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgINVoT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:44:19 -0400
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S1726255AbgINVpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726228AbgINVp0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:45:26 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 2A25923E4C;
-        Mon, 14 Sep 2020 23:44:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1600119849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p5We/KRQicU22waTdBcUF4kbV8vyQwKFNG5VkQR8ubs=;
-        b=bey4KerF59JHv5RHlPeV/f3KxPIjjYCVgSt5+uTYmvZENe6S9owIfNX+RCu1bB45KaHh1O
-        79L8lJ6NAIVe/JbPj2igdIYMzNqLDAGifU52I5lPcRYg3FxDfkbMdR/KcI/BC2eVG+inMz
-        DXACX/KZF7NW09UcEoOhw58Fklxwo6M=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v10 13/13] arm64: defconfig: enable the sl28cpld board management controller
-Date:   Mon, 14 Sep 2020 23:43:41 +0200
-Message-Id: <20200914214341.14268-14-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200914214341.14268-1-michael@walle.cc>
-References: <20200914214341.14268-1-michael@walle.cc>
+        by mail.kernel.org (Postfix) with ESMTPSA id EAB2C208DB;
+        Mon, 14 Sep 2020 21:45:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600119925;
+        bh=MrKDcm4QhfS4JW43IvNQBg7V7LnF4erm6voWMCdgFxA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2l8Ws3d83rQUjHn8OWu7OLJJ9jrIvf/33FT9bhBB937ks0x1wrhlqmPy8Y+fpCbHZ
+         PTrSYaHfIZ+R89c4huMs3KO6KnGNWhjr+79O0DvdGWhwAq6I75hNRVD1b7IZAbrlLX
+         Ikr/yBUEVfESQZPk/B4Lf+O2tsLmwfMyjx4jTmQc=
+Date:   Mon, 14 Sep 2020 14:45:22 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Huazhong Tan <tanhuazhong@huawei.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <salil.mehta@huawei.com>,
+        <yisen.zhuang@huawei.com>, <linuxarm@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>
+Subject: Re: [PATCH net-next 5/6] net: hns3: use writel() to optimize the
+ barrier operation
+Message-ID: <20200914144522.02d469a8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1600085217-26245-6-git-send-email-tanhuazhong@huawei.com>
+References: <1600085217-26245-1-git-send-email-tanhuazhong@huawei.com>
+        <1600085217-26245-6-git-send-email-tanhuazhong@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the kernel modules for the board management controller "sl28cpld"
-which is used on the SMARC-sAL28 board.
+On Mon, 14 Sep 2020 20:06:56 +0800 Huazhong Tan wrote:
+> From: Yunsheng Lin <linyunsheng@huawei.com>
+> 
+> writel() can be used to order I/O vs memory by default when
+> writing portable drivers. Use writel() to replace wmb() +
+> writel_relaxed(), and writel() is dma_wmb() + writel_relaxed()
+> for ARM64, so there is an optimization here because dma_wmb()
+> is a lighter barrier than wmb().
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-Changes since v9:
- - none
+Cool, although lots of drivers will need a change like this now. 
 
-Changes since v8:
- - none
+And looks like memory-barriers.txt is slightly, eh, not coherent there,
+between the documentation of writeX() and dma_wmb() :S
 
-Changes since v7:
- - added new virtual symbol CONFIG_MFD_SL28CPLD
+	3. A writeX() by a CPU thread to the peripheral will first wait for the
+	   completion of all prior writes to memory either issued by, or
+	   propagated to, the same thread. This ensures that writes by the CPU
+	   to an outbound DMA buffer allocated by dma_alloc_coherent() will be
+	   visible to a DMA engine when the CPU writes to its MMIO control
+	   register to trigger the transfer.
 
-Changes since v6:
- - none
 
-Changes since v5:
- - new patch
 
- arch/arm64/configs/defconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
+ (*) dma_wmb();
+ (*) dma_rmb();
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 63003ec116ee..6b410dec4447 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -510,6 +510,7 @@ CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
- CONFIG_GPIO_BD9571MWV=m
- CONFIG_GPIO_MAX77620=y
-+CONFIG_GPIO_SL28CPLD=m
- CONFIG_POWER_AVS=y
- CONFIG_QCOM_CPR=y
- CONFIG_ROCKCHIP_IODOMAIN=y
-@@ -523,6 +524,7 @@ CONFIG_SENSORS_ARM_SCPI=y
- CONFIG_SENSORS_LM90=m
- CONFIG_SENSORS_PWM_FAN=m
- CONFIG_SENSORS_RASPBERRYPI_HWMON=m
-+CONFIG_SENSORS_SL28CPLD=m
- CONFIG_SENSORS_INA2XX=m
- CONFIG_SENSORS_INA3221=m
- CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
-@@ -545,6 +547,7 @@ CONFIG_QCOM_TSENS=y
- CONFIG_QCOM_SPMI_TEMP_ALARM=m
- CONFIG_UNIPHIER_THERMAL=y
- CONFIG_WATCHDOG=y
-+CONFIG_SL28CPLD_WATCHDOG=m
- CONFIG_ARM_SP805_WATCHDOG=y
- CONFIG_ARM_SBSA_WATCHDOG=y
- CONFIG_ARM_SMC_WATCHDOG=y
-@@ -570,6 +573,7 @@ CONFIG_MFD_MAX77620=y
- CONFIG_MFD_SPMI_PMIC=y
- CONFIG_MFD_RK808=y
- CONFIG_MFD_SEC_CORE=y
-+CONFIG_MFD_SL28CPLD=y
- CONFIG_MFD_ROHM_BD718XX=y
- CONFIG_MFD_WCD934X=m
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
-@@ -971,8 +975,10 @@ CONFIG_PWM_MESON=m
- CONFIG_PWM_RCAR=m
- CONFIG_PWM_ROCKCHIP=y
- CONFIG_PWM_SAMSUNG=y
-+CONFIG_PWM_SL28CPLD=m
- CONFIG_PWM_SUN4I=m
- CONFIG_PWM_TEGRA=m
-+CONFIG_SL28CPLD_INTC=y
- CONFIG_QCOM_PDC=y
- CONFIG_RESET_IMX7=y
- CONFIG_RESET_QCOM_AOSS=y
--- 
-2.20.1
+     These are for use with consistent memory to guarantee the ordering
+     of writes or reads of shared memory accessible to both the CPU and a
+     DMA capable device.
 
+     For example, consider a device driver that shares memory with a device
+     and uses a descriptor status value to indicate if the descriptor belongs
+     to the device or the CPU, and a doorbell to notify it when new
+     descriptors are available:
+
+	if (desc->status != DEVICE_OWN) {
+		/* do not read data until we own descriptor */
+		dma_rmb();
+
+		/* read/modify data */
+		read_data = desc->data;
+		desc->data = write_data;
+
+		/* flush modifications before status update */
+		dma_wmb();
+
+		/* assign ownership */
+		desc->status = DEVICE_OWN;
+
+		/* notify device of new descriptors */
+		writel(DESC_NOTIFY, doorbell);
+	}
+
+     The dma_rmb() allows us guarantee the device has released ownership
+     before we read the data from the descriptor, and the dma_wmb() allows
+     us to guarantee the data is written to the descriptor before the device
+     can see it now has ownership.  Note that, when using writel(), a prior
+     wmb() is not needed to guarantee that the cache coherent memory writes
+     have completed before writing to the MMIO region.  The cheaper
+     writel_relaxed() does not provide this guarantee and must not be used
+     here.
