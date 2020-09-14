@@ -2,170 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D6D2688F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616032688FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 12:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgINKIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 06:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgINKHw (ORCPT
+        id S1726390AbgINKJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 06:09:43 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59827 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726239AbgINKJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 06:07:52 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668C6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:07:51 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id s13so10034548wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uVsG0Kkb3udXixOXzcX/0nWy6iMIi/f0mWhUtwVsfPg=;
-        b=LQEpOLVMWVXWQajzwR4iS7CsWBaOQXjEAZrW/0AbAvZo/cIGqyeTJ6om5D+vZbISyK
-         0QTG3tbRdRvfu5g6id4Ze2iJ37oCVKkaGaX+DLTCKkb4j5uRVSZEFDwh0K5gBXCzPywg
-         6AG0xezXTQ1Z30tZVWI0/AsYdyEStjM191omA81i99oQbB1XWpaDQfY4R1pWfzHI3K66
-         X2vlQl20cKyloNby1I5kcdH7EFzDh9TjpcNa30/c7/nHE78C+Op94vjmfDDqQsUIro2c
-         90d16uQPY8bJVW/ZY8Xf3Rx2B+cHo48nuoxm9lo4ZbeYFMKgb8UsJkbJzUDUJy+uyRlI
-         P0Rw==
+        Mon, 14 Sep 2020 06:09:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600078180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BkR2wFIeHykLu1I53wtenqdg5Hq76Lrpn7XVwBMj+gs=;
+        b=h/AlI4EQszCp+b7HA8ATV2XKtMiFsEkYEVPUf3XaoV4+7LQ03yHPDXTTc8dC5soXR0iZZ0
+        E6i15n5FzQkUotdxW7WN4yHPxB3kfTLwdICqNfjN6qvZoPbiyBLCqV82fu5X/6YdbfR+OV
+        dDBKa9Nnhx8DUdATcIFT6/GwOWZBIF4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-wsmwvYclNBSL7S_s5WwbkQ-1; Mon, 14 Sep 2020 06:09:39 -0400
+X-MC-Unique: wsmwvYclNBSL7S_s5WwbkQ-1
+Received: by mail-wr1-f70.google.com with SMTP id a12so6710380wrg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 03:09:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uVsG0Kkb3udXixOXzcX/0nWy6iMIi/f0mWhUtwVsfPg=;
-        b=kwy4mJQAvcqEEYJhnED7ZXk5LkcNq4X9FQZAc6M/JNRdBHNPEY95HoQZKkdceAFal/
-         R023MRbMUAyz3dgqRYPQ+h6oz/bztKTJM3FaF7VWPGc2f3u7MVtApKvVB8HWB0wi53gC
-         baa+CKbduqMl5+Lo3uiGymFzcqpYW9DqUEnTIl8HcPT/qOR5lw6a4vJRV9pG9e1s+r5z
-         mdx6+nVmyI3ly3SCuAlucQ5laCUc0utD14N7cWa6ggYWMJbDM96pg8dfDBPIy+b3+q3h
-         DmymW0ujzTkaD4D3pXusHU5EaXOddWVj7uMkqODDdTToYU14jUSwN7QJlS59q2szZW6h
-         g4aQ==
-X-Gm-Message-State: AOAM530kGrjCSBya6NXBmxpJH1PSAi0rFkDKzMX8X1y+CExI2aHsafN5
-        +qasiz2aMkr5ZOQa6MfDls8+wihNSYEmHA==
-X-Google-Smtp-Source: ABdhPJy7yaAiQnoYnvIRyEyNMlmXPfg0k2YcwNad5xpdcHp3LRUdvhMwnY1tCif6jgR1LLtk+5L9Ug==
-X-Received: by 2002:a1c:770c:: with SMTP id t12mr15252565wmi.121.1600078067958;
-        Mon, 14 Sep 2020 03:07:47 -0700 (PDT)
-Received: from localhost.localdomain (188.147.112.12.nat.umts.dynamic.t-mobile.pl. [188.147.112.12])
-        by smtp.gmail.com with ESMTPSA id t4sm20485749wrr.26.2020.09.14.03.07.46
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BkR2wFIeHykLu1I53wtenqdg5Hq76Lrpn7XVwBMj+gs=;
+        b=aBRsTuYNg84IhaD559ItVyav6z2c7yq3Kn+UJRdhf+9EXwN6DLWZs5cK8ebAx4ELxA
+         ZpYHLS9l6KkixzAyFuxFNUVcQNnJT5AJBjQaUW9dsPe/ddw0Ae0EqHzVehFKiUc5M1K8
+         PT4NfvQp003FqR9B0GEHbodOmpMVPrq+tiJXts3YAhx7UReCVDn3DUyc1BMD0d0neecZ
+         wGD3tEiYzBsBH+eeTSpby2H0FmByBjiorDVXhyzaP5urn3+7DdvGecQnqcQo3CVkZ7+h
+         oD3xYedikXcKkzC1uxHNmbOeNilADDcnuZRjj4VY0A4JhVXa1510l90KqqebOkqlVQTA
+         ogQQ==
+X-Gm-Message-State: AOAM530/XpRhXumRETtNVlayM7ONiJ5FdavZ9hfJKc8eMK6Ku4msGYy8
+        IJ4G3IA8PHy6PqeT9MXVCG5+jJWFIJ3FQVRxkWOQs3eIMC1t/C8F/UtSeXlVgOpAz5ORLIe5zAH
+        hKuL/J9jtVZkDLCwcipVSovaq
+X-Received: by 2002:adf:fcc7:: with SMTP id f7mr14987100wrs.274.1600078177976;
+        Mon, 14 Sep 2020 03:09:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/ToRxQvrK1r21O6lGoGYyx4hT44wtlqfX0pqKBwFRdmqFFC82RD0AME4+CcGVMmoWPlEghg==
+X-Received: by 2002:adf:fcc7:: with SMTP id f7mr14987077wrs.274.1600078177779;
+        Mon, 14 Sep 2020 03:09:37 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id 185sm19860640wma.18.2020.09.14.03.09.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 03:07:47 -0700 (PDT)
-From:   mateusznosek0@gmail.com
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Mateusz Nosek <mateusznosek0@gmail.com>, akpm@linux-foundation.org
-Subject: [RFC PATCH] mm/page_alloc.c: micro-optimization reduce oom critical section size
-Date:   Mon, 14 Sep 2020 12:06:54 +0200
-Message-Id: <20200914100654.21746-1-mateusznosek0@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 14 Sep 2020 03:09:37 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH 1/1] Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload
+In-Reply-To: <1600026449-23651-1-git-send-email-mikelley@microsoft.com>
+References: <1600026449-23651-1-git-send-email-mikelley@microsoft.com>
+Date:   Mon, 14 Sep 2020 12:09:36 +0200
+Message-ID: <87imcgllen.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Nosek <mateusznosek0@gmail.com>
+Michael Kelley <mikelley@microsoft.com> writes:
 
-Most operations from '__alloc_pages_may_oom' do not require oom_mutex hold.
-Exception is 'out_of_memory'. The patch refactors '__alloc_pages_may_oom'
-to reduce critical section size and improve overall system performance.
+> vmbus_wait_for_unload() looks for a CHANNELMSG_UNLOAD_RESPONSE message
+> coming from Hyper-V.  But if the message isn't found for some reason,
+> the panic path gets hung forever.  Add a timeout of 10 seconds to prevent
+> this.
 
-Signed-off-by: Mateusz Nosek <mateusznosek0@gmail.com>
----
- mm/page_alloc.c | 45 ++++++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+If I remember correctly, the problem I was observing back then was that
+if CHANNELMSG_UNLOAD_RESPONSE is not delivered, Hyper-V won't respond to
+the consequent CHANNELMSG_INITIATE_CONTACT/CHANNELMSG_REQUESTOFFERS
+(don't remember exactly) so we either hang here or crash in the kdump
+kernel because we can't find any devices. Maybe the problem was only
+with some ancient Hyper-V versions or it was fixed.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b9bd75cacf02..b07f950a5825 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3935,18 +3935,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 		.order = order,
- 	};
- 	struct page *page;
--
--	*did_some_progress = 0;
--
--	/*
--	 * Acquire the oom lock.  If that fails, somebody else is
--	 * making progress for us.
--	 */
--	if (!mutex_trylock(&oom_lock)) {
--		*did_some_progress = 1;
--		schedule_timeout_uninterruptible(1);
--		return NULL;
--	}
-+	bool success;
- 
- 	/*
- 	 * Go through the zonelist yet one more time, keep very high watermark
-@@ -3959,14 +3948,17 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 				      ~__GFP_DIRECT_RECLAIM, order,
- 				      ALLOC_WMARK_HIGH|ALLOC_CPUSET, ac);
- 	if (page)
--		goto out;
-+		return page;
-+
-+	/* Check if somebody else is making progress for us. */
-+	*did_some_progress = mutex_is_locked(&oom_lock);
- 
- 	/* Coredumps can quickly deplete all memory reserves */
- 	if (current->flags & PF_DUMPCORE)
--		goto out;
-+		return NULL;
- 	/* The OOM killer will not help higher order allocs */
- 	if (order > PAGE_ALLOC_COSTLY_ORDER)
--		goto out;
-+		return NULL;
- 	/*
- 	 * We have already exhausted all our reclaim opportunities without any
- 	 * success so it is time to admit defeat. We will skip the OOM killer
-@@ -3976,12 +3968,12 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 	 * The OOM killer may not free memory on a specific node.
- 	 */
- 	if (gfp_mask & (__GFP_RETRY_MAYFAIL | __GFP_THISNODE))
--		goto out;
-+		return NULL;
- 	/* The OOM killer does not needlessly kill tasks for lowmem */
- 	if (ac->highest_zoneidx < ZONE_NORMAL)
--		goto out;
-+		return NULL;
- 	if (pm_suspended_storage())
--		goto out;
-+		return NULL;
- 	/*
- 	 * XXX: GFP_NOFS allocations should rather fail than rely on
- 	 * other request to make a forward progress.
-@@ -3992,8 +3984,20 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 	 * failures more gracefully we should just bail out here.
- 	 */
- 
-+	/*
-+	 * Acquire the oom lock.  If that fails, somebody else is
-+	 * making progress for us.
-+	 */
-+	if (!mutex_trylock(&oom_lock)) {
-+		*did_some_progress = 1;
-+		schedule_timeout_uninterruptible(1);
-+		return NULL;
-+	}
-+	success = out_of_memory(&oc);
-+	mutex_unlock(&oom_lock);
-+
- 	/* Exhausted what can be done so it's blame time */
--	if (out_of_memory(&oc) || WARN_ON_ONCE(gfp_mask & __GFP_NOFAIL)) {
-+	if (success || WARN_ON_ONCE(gfp_mask & __GFP_NOFAIL)) {
- 		*did_some_progress = 1;
- 
- 		/*
-@@ -4004,8 +4008,7 @@ __alloc_pages_may_oom(gfp_t gfp_mask, unsigned int order,
- 			page = __alloc_pages_cpuset_fallback(gfp_mask, order,
- 					ALLOC_NO_WATERMARKS, ac);
- 	}
--out:
--	mutex_unlock(&oom_lock);
-+
- 	return page;
- }
- 
+>
+> Fixes: 415719160de3 ("Drivers: hv: vmbus: avoid scheduling in interrupt context in vmbus_initiate_unload()")
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> ---
+>  drivers/hv/channel_mgmt.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> index 591106c..1d44bb6 100644
+> --- a/drivers/hv/channel_mgmt.c
+> +++ b/drivers/hv/channel_mgmt.c
+> @@ -731,7 +731,7 @@ static void vmbus_wait_for_unload(void)
+>  	void *page_addr;
+>  	struct hv_message *msg;
+>  	struct vmbus_channel_message_header *hdr;
+> -	u32 message_type;
+> +	u32 message_type, i;
+>  
+>  	/*
+>  	 * CHANNELMSG_UNLOAD_RESPONSE is always delivered to the CPU which was
+> @@ -741,8 +741,11 @@ static void vmbus_wait_for_unload(void)
+>  	 * functional and vmbus_unload_response() will complete
+>  	 * vmbus_connection.unload_event. If not, the last thing we can do is
+>  	 * read message pages for all CPUs directly.
+> +	 *
+> +	 * Wait no more than 10 seconds so that the panic path can't get
+> +	 * hung forever in case the response message isn't seen.
+>  	 */
+> -	while (1) {
+> +	for (i = 0; i < 1000; i++) {
+>  		if (completion_done(&vmbus_connection.unload_event))
+>  			break;
+
+LGTM,
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
 -- 
-2.20.1
+Vitaly
 
