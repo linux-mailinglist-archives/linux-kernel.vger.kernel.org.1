@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C889A269006
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F8B26900A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgINPd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:33:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33986 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726127AbgINPcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:32:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600097529;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hYwIPUBVeru2C0Pit6Q9ISN4S7/HsDvY1EPeSpcccVM=;
-        b=LQuQpX9f9EWiy3Ak6ldiEouM4QEucsMgFjX2FhtMadDtr9Ykjcfdv8pCHIFCX/VI0O7YZc
-        PvkZGtVSzS2QAcKsPtIhbcQwEV9jxr+m32RzguoUrYVCttw7u0+o2o4uf/Wo+ceCTAsdlH
-        Ja3YwoiQdVjynt1msgIq7/FJ4wsCOWs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-3FfxvtFdMpeMPgPdPi2dfQ-1; Mon, 14 Sep 2020 11:32:05 -0400
-X-MC-Unique: 3FfxvtFdMpeMPgPdPi2dfQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726379AbgINPe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726198AbgINPco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:32:44 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D008E800C60;
-        Mon, 14 Sep 2020 15:32:02 +0000 (UTC)
-Received: from gondolin (ovpn-112-214.ams2.redhat.com [10.36.112.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D8ECD7A1FC;
-        Mon, 14 Sep 2020 15:31:52 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 17:31:49 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v10 05/16] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-Message-ID: <20200914173149.70fa59d9.cohuck@redhat.com>
-In-Reply-To: <20200821195616.13554-6-akrowiak@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-6-akrowiak@linux.ibm.com>
-Organization: Red Hat GmbH
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DAEB206E9;
+        Mon, 14 Sep 2020 15:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600097564;
+        bh=gTKPtzpMtztC4ctRjQPPjEeiA/8BCcW7/oPDOu+9JCU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zxVrkaYYu1Fag8lBzLeWxE0v4qmohn6eo8S2oCTGBGk6Yj5cnNybruzMZd0fSlZ/1
+         sVESJfG7xVQXAaxSErJNjjrDQi8gDof8zuXSaoBIWuubR5TzyEJpJdGGhHNqh/CE+Z
+         2K0pJ3epzyAKS5wz7JuY/bnZlgp6DZbzAMUMkJeg=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3E29340D3D; Mon, 14 Sep 2020 12:32:42 -0300 (-03)
+Date:   Mon, 14 Sep 2020 12:32:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     peterz@infradead.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 02/26] perf: Introduce mmap3 version of mmap event
+Message-ID: <20200914153242.GE160517@kernel.org>
+References: <20200913210313.1985612-1-jolsa@kernel.org>
+ <20200913210313.1985612-3-jolsa@kernel.org>
+ <CABPqkBTk+SwTAxXDa6HL8TqvEmUunfMZxpAtx6CebNbd+3hEHw@mail.gmail.com>
+ <20200914090811.GM1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914090811.GM1362448@hirez.programming.kicks-ass.net>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 15:56:05 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> Let's implement the callback to indicate when an APQN
-> is in use by the vfio_ap device driver. The callback is
-> invoked whenever a change to the apmask or aqmask would
-> result in one or more queue devices being removed from the driver. The
-> vfio_ap device driver will indicate a resource is in use
-> if the APQN of any of the queue devices to be removed are assigned to
-> any of the matrix mdevs under the driver's control.
+Em Mon, Sep 14, 2020 at 11:08:11AM +0200, peterz@infradead.org escreveu:
+> On Sun, Sep 13, 2020 at 11:41:00PM -0700, Stephane Eranian wrote:
+> > On Sun, Sep 13, 2020 at 2:03 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> > what happens if I set mmap3 and mmap2?
+> > 
+> > I think using mmap3 for every mmap may be overkill as you add useless
+> > 20 bytes to an mmap record.
+> > I am not sure if your code handles the case where mmap3 is not needed
+> > because there is no buildid, e.g, anonymous memory.
+> > It seems to me you've written the patch in such a way that if the user
+> > tool supports mmap3, then it supersedes mmap2, and thus
+> > you need all the fields of mmap2. But if could be more interesting to
+> > return either MMAP2 or MMAP3 depending on tool support
+> > and type of mmap, that would certainly save 20 bytes on any anon mmap.
+> > But maybe that logic is already in your patch and I missed it.
 > 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     |  1 +
->  drivers/s390/crypto/vfio_ap_ops.c     | 68 ++++++++++++++++++++-------
->  drivers/s390/crypto/vfio_ap_private.h |  2 +
->  3 files changed, 53 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index 24cdef60039a..aae5b3d8e3fa 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -175,6 +175,7 @@ static int __init vfio_ap_init(void)
->  	memset(&vfio_ap_drv, 0, sizeof(vfio_ap_drv));
->  	vfio_ap_drv.probe = vfio_ap_queue_dev_probe;
->  	vfio_ap_drv.remove = vfio_ap_queue_dev_remove;
-> +	vfio_ap_drv.in_use = vfio_ap_mdev_resource_in_use;
->  	vfio_ap_drv.ids = ap_queue_ids;
->  
->  	ret = ap_driver_register(&vfio_ap_drv, THIS_MODULE, VFIO_AP_DRV_NAME);
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 2e37ee82e422..fc1aa6f947eb 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -515,18 +515,36 @@ vfio_ap_mdev_verify_queues_reserved_for_apid(struct ap_matrix_mdev *matrix_mdev,
->  	return 0;
->  }
->  
-> +#define MDEV_SHARING_ERR "Userspace may not re-assign queue %02lx.%04lx " \
-> +			 "already assigned to %s"
+> That, and what if you don't want any of that buildid nonsense at all? I
+> always kill that because it makes perf pointlessly slow and has
+> absolutely no upsides for me.
 
-Ah, I spoke too soon; this is what I had been looking for :)
+So, for you nothing should change, no MMAP3 used, no collection at the
+end (which is your pet peeve).
 
+I'm not saying this is what is in his patches right now, but what I
+think his patches should be doing.
+
+- Arnaldo
