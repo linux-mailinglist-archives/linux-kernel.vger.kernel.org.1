@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69D426880B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8ED26880C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgINJNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:13:52 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34591 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726241AbgINJNu (ORCPT
+        id S1726289AbgINJOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:14:04 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54145 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726284AbgINJOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:13:50 -0400
+        Mon, 14 Sep 2020 05:14:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600074828;
+        s=mimecast20190719; t=1600074837;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
         bh=CfJskBQHpZ9+0kSwLmzC02tWH8sjBa4yGY+QGL9Ecbg=;
-        b=FtP8l8fMwzl0jvHoqjRjd4RDub0Ohrp2sPKbHa6+i5kVWpHgirjnq0i6nVycH4aCDAByZX
-        IIjP14Cp0ZwbmV5MDYl7nZ5VOkgw9if2QO3zyNvpqu61nD+GhQFFYRAqcWpg0gaEALGQ28
-        dB24RG1Mz6w4SlHggRltTe3Etn6aaVo=
+        b=cy/llAoH/ik1fOffYstaawNlSu/8zhyVx50fSNmtkSrZrWyWkS27jvCwdm07d9ztae2Lre
+        HfrEFv8I/9CSLC4BojNyfamnzNfd4s3AYOS6Xg9ZHiPoWbVslnZEGCtJPnFqVB0qTIrpDL
+        etFiLfuVDTnxQ+GYmpusstqGSwbG3gM=
 Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
  [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-7camMntEO4W0-MTwNZbGeA-1; Mon, 14 Sep 2020 05:13:46 -0400
-X-MC-Unique: 7camMntEO4W0-MTwNZbGeA-1
-Received: by mail-ed1-f72.google.com with SMTP id c3so9016569eds.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:13:46 -0700 (PDT)
+ us-mta-310-ByrWbMASNMq5Z0PXhXpXKA-1; Mon, 14 Sep 2020 05:13:55 -0400
+X-MC-Unique: ByrWbMASNMq5Z0PXhXpXKA-1
+Received: by mail-ed1-f72.google.com with SMTP id x14so9001802edv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:13:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=CfJskBQHpZ9+0kSwLmzC02tWH8sjBa4yGY+QGL9Ecbg=;
-        b=cqzzGKK2vv4k6GtH1yf68qn1dvsD2Wn3xXOxYdHERbKo1d4Ke7tGVLFUoFQl8FiZkC
-         T3W/ajZPNHqeenGEx0gDMN60dKCuwhlLFDCZ1eehG2uSAzffjhqQzzBDGGFuRUliSJjf
-         M3O99tQxsRh7ojyGCOS2tgWAOvs2kQYcQw+/aeDiV5xCXtus/LABcesBJm/NiHSUE3LY
-         iiiK0HErnolF63PxcVC4e4l8LLjR093vbMvdjq4Pl34sFgtS2yd0rG8FZs3PhEghV+mv
-         g8+DaTPf2vEHGzhM+5tnIKeXjSdrMspy6Xy6Q3BLJEGcpTta6d+CYsyzNR7wX9rgvAg5
-         8gWw==
-X-Gm-Message-State: AOAM532eKaWlobROvVvsUPa2gaAOCXvrZeO7rDkhOryvKgBoIpbeocBl
-        yBNZ63mmV2R9gVICYduDWn9Et0HI6NX6B0qCl2vYG/eKWUWP3m4XPX2B/hiKcl4r4ifPtpL22Q0
-        yET9pL1d+L3cPns20YxUbGi85
-X-Received: by 2002:a17:906:68d2:: with SMTP id y18mr14016451ejr.197.1600074824650;
-        Mon, 14 Sep 2020 02:13:44 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRZmcoCy7+DaBt2o179H5nEOGxtpTraCEQvULjlk/r0/smYMTBVKBQjSpLLEFFxUCDhCilxg==
-X-Received: by 2002:a17:906:68d2:: with SMTP id y18mr14016430ejr.197.1600074824315;
-        Mon, 14 Sep 2020 02:13:44 -0700 (PDT)
+        b=F01p6uDZOwV4xRSkRpyafGNsDsf4e304JRM7Rk1im2lW5Ii1C/cnyCXYA6kpteZMgz
+         qSbmqnqK5MrATn7gBY3cRDUYUSvF83cgQYG9eqMt1pPJLmWpe3eSZ04uoNepzAKlhZnh
+         nkQnsJokmSbv2Vrmh7vEkoGa0z1ykuN4H73iVAoWZdh3U7Ks0CmhohMr7st97HYNAIsu
+         SFMVwnlw5MLhNqzht7BtIXVA7pkrh6WjGFZWPwzeB1/l2DKWKvL6+4nn72AlefGKG/BO
+         8HqehacnuApOxryvf6Vghb+DMgbqKGP+6rxldx5HUXcaEgMolGNKtMxenLvrmxKBpJ65
+         Dz7w==
+X-Gm-Message-State: AOAM533IuveAAtafYDqbheDmdYU/PxuDWmiuLx9xw77UZ8a9KeAoFhIn
+        NcO+CesX/pxNWXCWJVsGnFlhM5bR3fo93C+OkWhpf3GdzkpirOR4HpAftDSIW9FVnsNjd8xotEd
+        97uB5yhk8kJqA4ATjun6feuf0
+X-Received: by 2002:a17:906:cf82:: with SMTP id um2mr13570484ejb.49.1600074834291;
+        Mon, 14 Sep 2020 02:13:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJysL1pyes10CScG4wjxSTQHVK5ShSVXdhDVlsBVuhhKnzo+TmMEVrrtEd6BYfUO/oEh2yB8qg==
+X-Received: by 2002:a17:906:cf82:: with SMTP id um2mr13570450ejb.49.1600074833896;
+        Mon, 14 Sep 2020 02:13:53 -0700 (PDT)
 Received: from x1.localdomain ([78.108.130.193])
-        by smtp.gmail.com with ESMTPSA id ce14sm8914912edb.25.2020.09.14.02.13.43
+        by smtp.gmail.com with ESMTPSA id ot19sm7243799ejb.121.2020.09.14.02.13.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 02:13:43 -0700 (PDT)
+        Mon, 14 Sep 2020 02:13:53 -0700 (PDT)
 Subject: Re: [PATCH] Introduce support for Systems Management Driver over WMI
  for Dell Systems
 To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
@@ -68,8 +68,8 @@ References: <20200730143122.10237-1-divya_bharathi@dell.com>
  <d3de1d27-25ac-be43-54d8-dcbfffa31e1d@redhat.com>
  <DM6PR19MB26364970D0981212E811E1B0FA2E0@DM6PR19MB2636.namprd19.prod.outlook.com>
 From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <97b3e266-1e20-6cf5-8960-c60b1b04f6bc@redhat.com>
-Date:   Mon, 14 Sep 2020 11:13:42 +0200
+Message-ID: <67ca316a-227f-80f6-ad22-7d08112b2584@redhat.com>
+Date:   Mon, 14 Sep 2020 11:13:52 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
