@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3E626831E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5517268328
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 05:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgINDaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 23:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35042 "EHLO mail.kernel.org"
+        id S1725997AbgINDgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 23:36:14 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:55890 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725993AbgINDaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 23:30:04 -0400
-Received: from X1 (unknown [209.33.215.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC401208E4;
-        Mon, 14 Sep 2020 03:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600054203;
-        bh=DGwweu43/njL3LpV4klh5m/GnEyyp3xKZ/SaT3e4Ar8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ul7X1DJkQ2mHtCjDAyKaHbsrLvx9QsZ5unplMQAgQAYdj182YvU1s5lKCGvf27E5h
-         4FSvcsTScs1Vh0phky7sY44ySIyiIKGvlMMM1+G9eASOKDf43wwiJcrf8WLkam0DLc
-         2X+CNpmT1xOejERYJ3ks/o1ZSgFLtMJRkqBThxZo=
-Date:   Sun, 13 Sep 2020 20:30:02 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lib/string.c: Clarify kerndoc for stpcpy()
-Message-Id: <20200913203002.332df6c673d4ca365a5d8f76@linux-foundation.org>
-In-Reply-To: <202009061325.8B4A75057@keescook>
-References: <202009060302.4574D8D0E0@keescook>
-        <20200906160809.GA1620946@rani.riverdale.lan>
-        <202009061325.8B4A75057@keescook>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725972AbgINDgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 23:36:04 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 56CEB200653;
+        Mon, 14 Sep 2020 05:36:02 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A0C51200442;
+        Mon, 14 Sep 2020 05:35:51 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id DFE0F40299;
+        Mon, 14 Sep 2020 05:35:37 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, catalin.marinas@arm.com,
+        will@kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, oleksandr.suvorov@toradex.com,
+        peng.fan@nxp.com, andreas@kemnade.info, hverkuil-cisco@xs4all.nl,
+        olof@lixom.net, krzk@kernel.org, geert+renesas@glider.be,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, aisheng.dong@nxp.com,
+        lkundrak@v3.sk, joel@jms.id.au, bjorn.andersson@linaro.org,
+        leoyang.li@nxp.com, vkoul@kernel.org, michael@walle.cc,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V2 RESEND 1/4] gpio: mxc: Support module build
+Date:   Mon, 14 Sep 2020 11:29:04 +0800
+Message-Id: <1600054147-29997-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 6 Sep 2020 13:26:32 -0700 Kees Cook <keescook@chromium.org> wrote:
+Change config to tristate, add module device table, module author,
+description and license to support module build for i.MX GPIO driver.
 
-> On Sun, Sep 06, 2020 at 12:08:09PM -0400, Arvind Sankar wrote:
-> > On Sun, Sep 06, 2020 at 03:06:29AM -0700, Kees Cook wrote:
-> > > Fix the language around return values to indicate destination instead of
-> > > source.
-> > > 
-> > > Reported-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > Link: https://lore.kernel.org/lkml/CAK7LNAQvQBhjYgSkvm-dVyNz2Jd2C2qAtfyRk-rngEDfjkc38g
-> > > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > > This is a fix for lib-stringc-implement-stpcpy.patch in -mm.
-> > > 
-> > > Andrew, please note that it would be nice to get this into -rc6
-> > > to unbreak the clang builds.
-> > > 
-> > > Thanks!
-> > > ---
-> > >  lib/string.c | 12 ++++++------
-> > >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/lib/string.c b/lib/string.c
-> > > index 6bd0cf0fb009..32a56436c7eb 100644
-> > > --- a/lib/string.c
-> > > +++ b/lib/string.c
-> > > @@ -280,12 +280,12 @@ EXPORT_SYMBOL(strscpy_pad);
-> > >   * @src: pointer to the beginning of string being copied from. Must not overlap
-> > >   *       dest.
-> > >   *
-> > > - * stpcpy differs from strcpy in a key way: the return value is the new
-> > > - * %NUL-terminated character. (for strcpy, the return value is a pointer to
-> > > - * src. This interface is considered unsafe as it doesn't perform bounds
-> > > - * checking of the inputs. As such it's not recommended for usage. Instead,
-> > > - * its definition is provided in case the compiler lowers other libcalls to
-> > > - * stpcpy.
-> > > + * stpcpy differs from strcpy in a key way: the return value is a pointer
-> > > + * to the new %NUL-terminated character in @dest. (For strcpy, the return
-> > > + * value is a pointer to the start of @dest. This interface is considered
-> > 					      ^ need closing parenthesis
-> > 
-> > Thanks.
-> 
-> *face in hands* Yup. Andrew, do you want to poke that yourself or should
-> I send a fix-fix? :)
+As this is a SoC GPIO module, it provides common functions for most
+of the peripheral devices, such as GPIO pins control, secondary
+interrupt controller for GPIO pins IRQ etc., without GPIO driver, most
+of the peripheral devices will NOT work properly, so GPIO module is
+similar with clock, pinctrl driver that should be loaded ONCE and
+never unloaded.
 
-I haven't got onto the stpcpy() base patch yet, so a full resend of
-a v4 would be nice please.
+Since MXC GPIO driver needs to have init function to register syscore
+ops once, here still use subsys_initcall(), NOT module_platform_driver().
+
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V1:
+	- no code change, just add detail explanation about why this patch
+	  does NOT support module unloaded.
+---
+ drivers/gpio/Kconfig    | 2 +-
+ drivers/gpio/gpio-mxc.c | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index 5cfdaf3..c7292a5 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -397,7 +397,7 @@ config GPIO_MVEBU
+ 	select REGMAP_MMIO
+ 
+ config GPIO_MXC
+-	def_bool y
++	tristate "i.MX GPIO support"
+ 	depends on ARCH_MXC || COMPILE_TEST
+ 	select GPIO_GENERIC
+ 	select GENERIC_IRQ_CHIP
+diff --git a/drivers/gpio/gpio-mxc.c b/drivers/gpio/gpio-mxc.c
+index 64278a4..643f4c55 100644
+--- a/drivers/gpio/gpio-mxc.c
++++ b/drivers/gpio/gpio-mxc.c
+@@ -15,6 +15,7 @@
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
+ #include <linux/irqchip/chained_irq.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/syscore_ops.h>
+@@ -158,6 +159,7 @@ static const struct of_device_id mxc_gpio_dt_ids[] = {
+ 	{ .compatible = "fsl,imx7d-gpio", .data = &mxc_gpio_devtype[IMX35_GPIO], },
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, mxc_gpio_dt_ids);
+ 
+ /*
+  * MX2 has one interrupt *for all* gpio ports. The list is used
+@@ -604,3 +606,7 @@ static int __init gpio_mxc_init(void)
+ 	return platform_driver_register(&mxc_gpio_driver);
+ }
+ subsys_initcall(gpio_mxc_init);
++
++MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
++MODULE_DESCRIPTION("i.MX GPIO Driver");
++MODULE_LICENSE("GPL");
+-- 
+2.7.4
+
