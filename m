@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED6926835D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14713268361
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgINEGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:06:35 -0400
-Received: from bmailout1.hostsharing.net ([83.223.95.100]:60919 "EHLO
-        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgINEGf (ORCPT
+        id S1726016AbgINEMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbgINEMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:06:35 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 68B8C3000118B;
-        Mon, 14 Sep 2020 06:06:25 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 47DB9372AB; Mon, 14 Sep 2020 06:06:25 +0200 (CEST)
-Date:   Mon, 14 Sep 2020 06:06:25 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Konstantin Khlebnikov <khlebnikov@openvz.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Vivek Goyal <vgoyal@redhat.com>, oohall@gmail.com,
-        rafael.j.wysocki@intel.com, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec
- reboot and connected PCI devices
-Message-ID: <20200914040625.GA20033@wunner.de>
-References: <1600028950-10644-1-git-send-email-yangtiezhu@loongson.cn>
+        Mon, 14 Sep 2020 00:12:46 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4E2C06174A;
+        Sun, 13 Sep 2020 21:12:43 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id d20so15699489qka.5;
+        Sun, 13 Sep 2020 21:12:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4o8RiiIeaPF2zk+jHK0lxqhUIj20gFmE3NZMfj4jASE=;
+        b=q0VNm+NCAOkP3UHGcO43wBi7uIiYu8Kk5SjsLlEL5eT9lANDY8IGZwKyPxfSzx8Uz0
+         UiVFfRpnVLRNV9+FcSqJAlJSdHGF0I0km5pJsi6ERXH43D4Y75pPaCaLFbuerDx7QS6n
+         LyrxN4OlOAoJY8R+5nsiOKcOlqAa4ObjQXCbt2m2rQJOp8K5ZAtcc0AJcNAioWRe6LiQ
+         2UbIcOigvBjGNCuBMxuYh0NWtfCJQncUXkKuqNi8FmmyUykLCelAr6IKOxcRmRaEdJbq
+         OGvHxBuZI/ziM00T+iVm1GrjolAs3z2etY19xbZ4l61yPtYdDS7jTW0pwHWxHRjIoBsB
+         DulA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4o8RiiIeaPF2zk+jHK0lxqhUIj20gFmE3NZMfj4jASE=;
+        b=mXVQMazV2RiZo2zms3Fia/c6OSgwxlecAqruP3iWSdmYvHOxyFvrD6mlYi6dSCgk/A
+         0lmprl82t86J1LIkh3qEw3w7BRloyzT98ZbbrBVkD6JroEJhJkVOTNIL5xk2Qlx9TXZS
+         GGAkt7mN7n53az+FjaXo06vcl1zWvKlP/b/FS/X91/r/X+BMDSw+8dCEMAScoY5rkivY
+         eA04u9+x5WiDztKSPIW0dBjPUeucbHNL9k9MLQ6UBOeYRA3DlwPchsuP5U9scyGyv+cz
+         X1wfuZffy7koO/dIyrmjmme/1P7MJZ6plK2sn1u9oSao5oVGs+tmoMxXYGp83/GUgNaA
+         HlbA==
+X-Gm-Message-State: AOAM533+FArNXFv3ePNcL4Z+lXdN7MQkgyMijVXBvyI54LYGEHb86HJk
+        LeuJYYCymjkX3nClelSu3v4=
+X-Google-Smtp-Source: ABdhPJyy7rjpXizx9K98PSN0CKUJxoD3UnOeQPTEx6bOtOU4oOacDfwttILbZ9f21OPLFHge+6boiA==
+X-Received: by 2002:a37:a054:: with SMTP id j81mr10359104qke.23.1600056752350;
+        Sun, 13 Sep 2020 21:12:32 -0700 (PDT)
+Received: from ubuntu-n2-xlarge-x86 ([2604:1380:45d1:2600::1])
+        by smtp.gmail.com with ESMTPSA id o4sm12672845qkk.75.2020.09.13.21.12.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Sep 2020 21:12:31 -0700 (PDT)
+Date:   Sun, 13 Sep 2020 21:12:29 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     trix@redhat.com
+Cc:     arend.vanspriel@broadcom.com, franky.lin@broadcom.com,
+        hante.meuleman@broadcom.com, chi-hsien.lin@cypress.com,
+        wright.feng@cypress.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, ndesaulniers@google.com, smoch@web.de,
+        dan.carpenter@oracle.com, double.lo@cypress.com, digetx@gmail.com,
+        frank.kao@cypress.com, amsr@cypress.com, stanley.hsu@cypress.com,
+        saravanan.shanmugham@cypress.com, jean-philippe@linaro.org,
+        linville@tuxdriver.com, linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] brcmfmac: initialize variable
+Message-ID: <20200914041229.GA1600388@ubuntu-n2-xlarge-x86>
+References: <20200913143522.20390-1-trix@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600028950-10644-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200913143522.20390-1-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 04:29:10AM +0800, Tiezhu Yang wrote:
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -143,6 +144,28 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
->  	}
->  
->  	pcie_port_device_remove(dev);
-> +	pci_disable_device(dev);
-> +}
-> +
-> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
-> +{
-> +	if (pci_bridge_d3_possible(dev)) {
-> +		pm_runtime_forbid(&dev->dev);
-> +		pm_runtime_get_noresume(&dev->dev);
-> +		pm_runtime_dont_use_autosuspend(&dev->dev);
-> +	}
-> +
-> +	pcie_port_device_remove(dev);
-> +
-> +	/*
-> +	 * If this is a kexec reboot, turn off Bus Master bit on the
-> +	 * device to tell it to not continue to do DMA. Don't touch
-> +	 * devices in D3cold or unknown states.
-> +	 * If it is not a kexec reboot, firmware will hit the PCI
-> +	 * devices with big hammer and stop their DMA any way.
-> +	 */
-> +	if (kexec_in_progress && (dev->current_state <= PCI_D3hot))
-> +		pci_disable_device(dev);
+On Sun, Sep 13, 2020 at 07:35:22AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis flags this problem
+> sdio.c:3265:13: warning: Branch condition evaluates to
+>   a garbage value
+>         } else if (pending) {
+>                    ^~~~~~~
+> 
+> brcmf_sdio_dcmd_resp_wait() only sets pending to true.
+> So pending needs to be initialized to false.
+> 
+> Fixes: 5b435de0d786 ("net: wireless: add brcm80211 drivers")
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-The last portion of this function is already executed afterwards by
-pci_device_shutdown().  You don't need to duplicate it here:
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
-device_shutdown()
-  dev->bus->shutdown() == pci_device_shutdown()
-    drv->shutdown() == pcie_portdrv_shutdown()
-      pci_disable_device()
-    pci_disable_device()
-
-Thanks,
-
-Lukas
+> ---
+>  drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+> index d4989e0cd7be..403b123710ec 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+> @@ -3233,7 +3233,7 @@ brcmf_sdio_bus_rxctl(struct device *dev, unsigned char *msg, uint msglen)
+>  {
+>  	int timeleft;
+>  	uint rxlen = 0;
+> -	bool pending;
+> +	bool pending = false;
+>  	u8 *buf;
+>  	struct brcmf_bus *bus_if = dev_get_drvdata(dev);
+>  	struct brcmf_sdio_dev *sdiodev = bus_if->bus_priv.sdio;
+> -- 
+> 2.18.1
+> 
