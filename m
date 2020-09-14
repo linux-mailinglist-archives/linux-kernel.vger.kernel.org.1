@@ -2,111 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225612694AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DECA2694B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgINSVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:21:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725944AbgINSUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:20:54 -0400
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67E9321D7B;
-        Mon, 14 Sep 2020 18:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600107653;
-        bh=BAjJTlDtrbfSxx3WpXifRRlUlkkL6nq/6bBLXSRWPJM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kPWTPtFmGeAcUwV2ZzcSWRLVUn+chuLd0NhGULBRQ+mOorNLZ19F5q/V2RhCj2MRj
-         vN3hZ1c3c87HkfKtvIQpoAf/F7rrxQgnJ5PTgfWTl9lNtg4pqyVtSwWPubgfqOnNCI
-         +zRYSUDpw8rpBpZQ/xk8gLHFcEZgPE+EE9CWAb5g=
-Received: by mail-lf1-f47.google.com with SMTP id d15so266429lfq.11;
-        Mon, 14 Sep 2020 11:20:53 -0700 (PDT)
-X-Gm-Message-State: AOAM533aiOb13/7WyyO9G5jKLmSQHASmgMA6xp2fBHTuSKdSB4SlPY/M
-        fGKSPkMoPt3UKHXR0B0u60htp59IdV1r96R3V8o=
-X-Google-Smtp-Source: ABdhPJxoTxm1xcGm5mS9x2ZonnbPk6/jiP4lwuM2k2GJ8gJUA03fMwGd0MKe4URzQ/whPBokmgSVduJDna9EJ/Gucek=
-X-Received: by 2002:a19:992:: with SMTP id 140mr4464849lfj.273.1600107651627;
- Mon, 14 Sep 2020 11:20:51 -0700 (PDT)
+        id S1726086AbgINSWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbgINSVO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 14:21:14 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C8C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:21:14 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d13so467034pgl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bxVplJc+j25YZx49J1PHku+gqhyQgloCcvrgKIa9smQ=;
+        b=ehB3c/w6zP/NpUxCCiuSzpbu4ddmh0c+zKwmHa8epMH9PFohzaiLQn5gJcfMIIHgpm
+         PP12eR66FqNtJ37qJAHsLrXdvSPlWmlhtr3KMofZk/2S87HjYW0qSdOnYqYWYPSIYSp8
+         BVuh2ZmJ1BYfXjgSmqxDr4T8FgLMkNNeLHoQY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bxVplJc+j25YZx49J1PHku+gqhyQgloCcvrgKIa9smQ=;
+        b=OaLBpRAdBxSpdg4/5wm8xB1lb5A5Ros+bsjJCPceNZMIX/THVuCYU1WNtGba2KydNc
+         xQfsl/KPmtBL2dTYJgFzIrji+eiThXAHmOljSy+wHLEQMrt7Xjf50Ni3VobsM9LnTvKz
+         koQ4SUDY8lHO1Yz6hTwlkx+C12OWeFMSDCLyqF5WIl9sfbTs92jDHi+dqKpWrOxwhLQK
+         SeACj7BJnqtSKpzz9DD+D5RImWsGFzDajpKmdKVueRCqrjQIMiAZ2OxySNsXwYbXEpXF
+         L6k2VUiH4fcQQwZOjunlR4oJPR4o29IXGGtpDwc45v5ZeEhF3iRlOAt9+jA16jT/P8Og
+         4rpg==
+X-Gm-Message-State: AOAM531sLiUcNuT3rh3UESkCSxrbjvLzH3egdELtygTvd+xfUEjS+aP+
+        Het9jKjtzKAKq8zJ7Sfir6t0xw==
+X-Google-Smtp-Source: ABdhPJwatzAymoJIOo7xZCtD46dvJZ88g4TjvHB7N2jbl9SzH/gjYFAi95QGAqDj5IjmElPdixoxag==
+X-Received: by 2002:a17:902:9a02:: with SMTP id v2mr15331929plp.151.1600107673438;
+        Mon, 14 Sep 2020 11:21:13 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id m21sm10857065pfo.13.2020.09.14.11.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 11:21:12 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH] interconnect: qcom: osm-l3: Mark more structures const
+Date:   Mon, 14 Sep 2020 11:21:12 -0700
+Message-Id: <20200914182112.513981-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
-In-Reply-To: <20200911143022.414783-1-nicolas.rybowski@tessares.net>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Sep 2020 11:20:40 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
-Message-ID: <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
-To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 8:07 AM Nicolas Rybowski
-<nicolas.rybowski@tessares.net> wrote:
->
-> is_mptcp is a field from struct tcp_sock used to indicate that the
-> current tcp_sock is part of the MPTCP protocol.
->
-> In this protocol, a first socket (mptcp_sock) is created with
-> sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
-> isn't directly on the wire. This is the role of the subflow (kernel)
-> sockets which are classical tcp_sock with sk_protocol set to
-> IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
-> sockets is the is_mptcp field from tcp_sock.
->
-> Such an exposure in BPF is thus required to be able to differentiate
-> plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
-> programs.
->
-> The choice has been made to silently pass the case when CONFIG_MPTCP is
-> unset by defaulting is_mptcp to 0 in order to make BPF independent of
-> the MPTCP configuration. Another solution is to make the verifier fail
-> in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
-> '#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
-> will not run if MPTCP is not set.
->
-> An example use-case is provided in
-> https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
->
-> Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
-> ---
->  include/uapi/linux/bpf.h       | 1 +
->  net/core/filter.c              | 9 ++++++++-
->  tools/include/uapi/linux/bpf.h | 1 +
->  3 files changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 7dd314176df7..7d179eada1c3 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
->         __u32 delivered;        /* Total data packets delivered incl. rexmits */
->         __u32 delivered_ce;     /* Like the above but only ECE marked packets */
->         __u32 icsk_retransmits; /* Number of unrecovered [RTO] timeouts */
-> +       __u32 is_mptcp;         /* Is MPTCP subflow? */
+These structures aren't modified at runtime. Mark them const so they get
+moved to read-only memory. We have to cast away const in one place when
+we store into the data member of struct icc_node. This is paired with a
+re-const of the data member when it is extracted in qcom_icc_set().
 
-Shall we have an __u32 flags, and make is_mptcp a bit of it?
+Cc: Sibi Sankar <sibis@codeaurora.org>
+Cc: Evan Green <evgreen@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/interconnect/qcom/osm-l3.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Thanks,
-Song
-[...]
+diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
+index 96fb9ff5ff2e..ba2ee6683a82 100644
+--- a/drivers/interconnect/qcom/osm-l3.c
++++ b/drivers/interconnect/qcom/osm-l3.c
+@@ -57,12 +57,12 @@ struct qcom_icc_node {
+ };
+ 
+ struct qcom_icc_desc {
+-	struct qcom_icc_node **nodes;
++	const struct qcom_icc_node **nodes;
+ 	size_t num_nodes;
+ };
+ 
+ #define DEFINE_QNODE(_name, _id, _buswidth, ...)			\
+-		static struct qcom_icc_node _name = {			\
++	static const struct qcom_icc_node _name = {			\
+ 		.name = #_name,						\
+ 		.id = _id,						\
+ 		.buswidth = _buswidth,					\
+@@ -73,7 +73,7 @@ struct qcom_icc_desc {
+ DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, SDM845_SLAVE_OSM_L3);
+ DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16);
+ 
+-static struct qcom_icc_node *sdm845_osm_l3_nodes[] = {
++static const struct qcom_icc_node *sdm845_osm_l3_nodes[] = {
+ 	[MASTER_OSM_L3_APPS] = &sdm845_osm_apps_l3,
+ 	[SLAVE_OSM_L3] = &sdm845_osm_l3,
+ };
+@@ -86,7 +86,7 @@ static const struct qcom_icc_desc sdm845_icc_osm_l3 = {
+ DEFINE_QNODE(sc7180_osm_apps_l3, SC7180_MASTER_OSM_L3_APPS, 16, SC7180_SLAVE_OSM_L3);
+ DEFINE_QNODE(sc7180_osm_l3, SC7180_SLAVE_OSM_L3, 16);
+ 
+-static struct qcom_icc_node *sc7180_osm_l3_nodes[] = {
++static const struct qcom_icc_node *sc7180_osm_l3_nodes[] = {
+ 	[MASTER_OSM_L3_APPS] = &sc7180_osm_apps_l3,
+ 	[SLAVE_OSM_L3] = &sc7180_osm_l3,
+ };
+@@ -100,7 +100,7 @@ static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
+ {
+ 	struct qcom_osm_l3_icc_provider *qp;
+ 	struct icc_provider *provider;
+-	struct qcom_icc_node *qn;
++	const struct qcom_icc_node *qn;
+ 	struct icc_node *n;
+ 	unsigned int index;
+ 	u32 agg_peak = 0;
+@@ -145,7 +145,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+ 	const struct qcom_icc_desc *desc;
+ 	struct icc_onecell_data *data;
+ 	struct icc_provider *provider;
+-	struct qcom_icc_node **qnodes;
++	const struct qcom_icc_node **qnodes;
+ 	struct icc_node *node;
+ 	size_t num_nodes;
+ 	struct clk *clk;
+@@ -235,7 +235,8 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
+ 		}
+ 
+ 		node->name = qnodes[i]->name;
+-		node->data = qnodes[i];
++		/* Cast away const and add it back in qcom_icc_set() */
++		node->data = (void *)qnodes[i];
+ 		icc_node_add(node, provider);
+ 
+ 		for (j = 0; j < qnodes[i]->num_links; j++)
+-- 
+Sent by a computer, using git, on the internet
+
