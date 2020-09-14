@@ -2,131 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6CE2698AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D342698AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 00:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbgINWNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 18:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgINWNn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 18:13:43 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1DCC06174A;
-        Mon, 14 Sep 2020 15:13:42 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id s19so999300ybc.5;
-        Mon, 14 Sep 2020 15:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RglK90z0a3hBYnR6IDE3hTgXU5PR2qc3m3JzZSIHXEE=;
-        b=WF+Tg8zxtyrao/CwpX5gyb6UeGKrgNQGSWbA+RWUHIQued+PwD1BcQIUUfteaGfVBi
-         O2WlvV4PVa5HOp01iHKbSva9Yv2/s0qOF48xyUdjw+hxbJV9v7bkET/VqQkJxJ3ViQ/I
-         Ob4obTCB5uX2btl6KaC2bjv98UHkxSwq9h7wvaBsVPyHZIgRy2RxbGhp9hXPR83j37ip
-         cU9JB7UEtC/5q0ofqPXM519g9ghBDw7GTzmJm/dfNatdmaspPlZvdUCpmlsI+bMfCYtg
-         /rvhHYYTrMLYiVBcZdwRGr70JIF3SioNQeVXLHj2mahuPl3wiIXIsUWS1mwaXDtJ9mJh
-         3R6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RglK90z0a3hBYnR6IDE3hTgXU5PR2qc3m3JzZSIHXEE=;
-        b=YvoMMu8jrJygBz66CJCwrGC7lVftiLqpKRgrPKqx1kCkC+NFdxXG6N/3tFj80I0hiO
-         AWr5E6SDJGcMTO9yME+ddxkmtYF09L2ftYslRpagJcPI76uLZVXde8zNImDsBqdEB2bd
-         kpQrH1RF8qZwtKlTKLMs+RaijsnxZWiuM4l9pBpwiQT+xuxb4a5+tDpFwmaRduRuu3MY
-         xSLpaNFSWMr/xA4QGIGyXtG14xFIkzj8BzxzXtSyIM8tN1oq363DSVWHZ/M7D00W5cEE
-         MdvdwXBX4f33FMd9cCj4y0EOkkd3m5OEHcDWHJBkBYeRL+0/yMBqwErsHDPvv8XsHh5F
-         IugQ==
-X-Gm-Message-State: AOAM533kqP7MZ1z7KE3assJhsaGXOAwPCGpISZuHPI/P5hHU8xBCqGOc
-        bwamO0dGfFCueJYRZAOsIaBmZq4BkeSAJx31rfQ=
-X-Google-Smtp-Source: ABdhPJz+Rr4zt5euw9s6DupxpOtAgiiDAXem4HuNapVvUp7m3R0+L27kNPJyawdySJn5s+jhU5PA5bDXGiQcYYyBWjo=
-X-Received: by 2002:a25:e655:: with SMTP id d82mr24894623ybh.347.1600121621869;
- Mon, 14 Sep 2020 15:13:41 -0700 (PDT)
+        id S1726117AbgINWOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 18:14:00 -0400
+Received: from mga14.intel.com ([192.55.52.115]:54052 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgINWN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 18:13:59 -0400
+IronPort-SDR: MP6Dz+yE3CrwgtDPQ7t+Itl/PzdHl1j5xAXllFwHvCborAdQe7ArmsdVkbIisiJYQWXjzBrg5M
+ dOsdHplLlBgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="158452604"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="158452604"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 15:13:58 -0700
+IronPort-SDR: w9uGGY2SLnY0hUE/8JkinGmaLcF1dPRyWmFepJ8cBoudrEw521Phbftd1y4KRywM0iy+UVwsBj
+ Jem4WnLzxTnA==
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="345588471"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 15:13:58 -0700
+Date:   Mon, 14 Sep 2020 15:13:57 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC PATCH 22/35] KVM: SVM: Add support for CR0 write traps for
+ an SEV-ES guest
+Message-ID: <20200914221353.GJ7192@sjchrist-ice>
+References: <cover.1600114548.git.thomas.lendacky@amd.com>
+ <68f885b63b18e5c72eae92c9c681296083c0ccd8.1600114548.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW74oqvhySsVqLKrtz9r-EJxHrXza0gSGK2nm6GnKjmakQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 14 Sep 2020 15:13:31 -0700
-Message-ID: <CAEf4Bza3yEmxEOXoS-sFBCBXju4O_z4XhC2Um+FM-3F793kz-A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: expose is_mptcp flag to bpf_tcp_sock
-To:     Song Liu <song@kernel.org>
-Cc:     Nicolas Rybowski <nicolas.rybowski@tessares.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68f885b63b18e5c72eae92c9c681296083c0ccd8.1600114548.git.thomas.lendacky@amd.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:21 AM Song Liu <song@kernel.org> wrote:
->
-> On Fri, Sep 11, 2020 at 8:07 AM Nicolas Rybowski
-> <nicolas.rybowski@tessares.net> wrote:
-> >
-> > is_mptcp is a field from struct tcp_sock used to indicate that the
-> > current tcp_sock is part of the MPTCP protocol.
-> >
-> > In this protocol, a first socket (mptcp_sock) is created with
-> > sk_protocol set to IPPROTO_MPTCP (=262) for control purpose but it
-> > isn't directly on the wire. This is the role of the subflow (kernel)
-> > sockets which are classical tcp_sock with sk_protocol set to
-> > IPPROTO_TCP. The only way to differentiate such sockets from plain TCP
-> > sockets is the is_mptcp field from tcp_sock.
-> >
-> > Such an exposure in BPF is thus required to be able to differentiate
-> > plain TCP sockets from MPTCP subflow sockets in BPF_PROG_TYPE_SOCK_OPS
-> > programs.
-> >
-> > The choice has been made to silently pass the case when CONFIG_MPTCP is
-> > unset by defaulting is_mptcp to 0 in order to make BPF independent of
-> > the MPTCP configuration. Another solution is to make the verifier fail
-> > in 'bpf_tcp_sock_is_valid_ctx_access' but this will add an additional
-> > '#ifdef CONFIG_MPTCP' in the BPF code and a same injected BPF program
-> > will not run if MPTCP is not set.
-> >
-> > An example use-case is provided in
-> > https://github.com/multipath-tcp/mptcp_net-next/tree/scripts/bpf/examples
-> >
-> > Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> > Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> > Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> > Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
-> > ---
-> >  include/uapi/linux/bpf.h       | 1 +
-> >  net/core/filter.c              | 9 ++++++++-
-> >  tools/include/uapi/linux/bpf.h | 1 +
-> >  3 files changed, 10 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 7dd314176df7..7d179eada1c3 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -4060,6 +4060,7 @@ struct bpf_tcp_sock {
-> >         __u32 delivered;        /* Total data packets delivered incl. rexmits */
-> >         __u32 delivered_ce;     /* Like the above but only ECE marked packets */
-> >         __u32 icsk_retransmits; /* Number of unrecovered [RTO] timeouts */
-> > +       __u32 is_mptcp;         /* Is MPTCP subflow? */
->
-> Shall we have an __u32 flags, and make is_mptcp a bit of it?
->
+On Mon, Sep 14, 2020 at 03:15:36PM -0500, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b65bd0c986d4..6f5988c305e1 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -799,11 +799,29 @@ bool pdptrs_changed(struct kvm_vcpu *vcpu)
+>  }
+>  EXPORT_SYMBOL_GPL(pdptrs_changed);
+>  
+> +static void kvm_post_set_cr0(struct kvm_vcpu *vcpu, unsigned long old_cr0,
+> +			     unsigned long cr0)
 
-Bitfields are slow and more annoying to rewrite in verifier, so having
-an __u32 field is actually good.
+What about using __kvm_set_cr*() instead of kvm_post_set_cr*()?  That would
+show that __kvm_set_cr*() is a subordinate of kvm_set_cr*(), and from the
+SVM side would provide the hint that the code is skipping the front end of
+kvm_set_cr*().
 
-> Thanks,
-> Song
-> [...]
+> +{
+> +	unsigned long update_bits = X86_CR0_PG | X86_CR0_WP;
+> +
+> +	if ((cr0 ^ old_cr0) & X86_CR0_PG) {
+> +		kvm_clear_async_pf_completion_queue(vcpu);
+> +		kvm_async_pf_hash_reset(vcpu);
+> +	}
+> +
+> +	if ((cr0 ^ old_cr0) & update_bits)
+> +		kvm_mmu_reset_context(vcpu);
+> +
+> +	if (((cr0 ^ old_cr0) & X86_CR0_CD) &&
+> +	    kvm_arch_has_noncoherent_dma(vcpu->kvm) &&
+> +	    !kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+> +		kvm_zap_gfn_range(vcpu->kvm, 0, ~0ULL);
+> +}
+> +
+>  int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+>  {
+>  	unsigned long old_cr0 = kvm_read_cr0(vcpu);
+>  	unsigned long pdptr_bits = X86_CR0_CD | X86_CR0_NW | X86_CR0_PG;
+> -	unsigned long update_bits = X86_CR0_PG | X86_CR0_WP;
+>  
+>  	cr0 |= X86_CR0_ET;
+>  
+> @@ -842,22 +860,23 @@ int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+>  
+>  	kvm_x86_ops.set_cr0(vcpu, cr0);
+>  
+> -	if ((cr0 ^ old_cr0) & X86_CR0_PG) {
+> -		kvm_clear_async_pf_completion_queue(vcpu);
+> -		kvm_async_pf_hash_reset(vcpu);
+> -	}
+> +	kvm_post_set_cr0(vcpu, old_cr0, cr0);
+>  
+> -	if ((cr0 ^ old_cr0) & update_bits)
+> -		kvm_mmu_reset_context(vcpu);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_set_cr0);
+>  
+> -	if (((cr0 ^ old_cr0) & X86_CR0_CD) &&
+> -	    kvm_arch_has_noncoherent_dma(vcpu->kvm) &&
+> -	    !kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+> -		kvm_zap_gfn_range(vcpu->kvm, 0, ~0ULL);
+> +int kvm_track_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+
+I really dislike the "track" terminology.  For me, using "track" as the verb
+in a function implies the function activates tracking.  But it's probably a
+moot point, because similar to EFER, I don't see any reason to put the front
+end of the emulation into x86.c.  Both getting old_cr0 and setting
+vcpu->arch.cr0 can be done in svm.c
+
+> +{
+> +	unsigned long old_cr0 = kvm_read_cr0(vcpu);
+> +
+> +	vcpu->arch.cr0 = cr0;
+> +
+> +	kvm_post_set_cr0(vcpu, old_cr0, cr0);
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL_GPL(kvm_set_cr0);
+> +EXPORT_SYMBOL_GPL(kvm_track_cr0);
+>  
+>  void kvm_lmsw(struct kvm_vcpu *vcpu, unsigned long msw)
+>  {
+> -- 
+> 2.28.0
+> 
