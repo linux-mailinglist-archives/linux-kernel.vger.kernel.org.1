@@ -2,233 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29B826827B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B0626827D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgINCOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:14:22 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59360 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbgINCOS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:14:18 -0400
-Received: from [IPv6:2804:14c:483:7989::1000] (unknown [IPv6:2804:14c:483:7989::1000])
+        id S1725983AbgINCRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:17:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:27753 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725965AbgINCRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 22:17:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600049831; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=D1hRyfc52WtHMpJxHxAiS1jEtfY8/MohItXtIX/3i6k=; b=mSlhfJ3vNjdgibTYd0IwNGYUJ6h1fvjjkBHbWH/gPZgU7j4R0hKEqbOPWbjycq+UOx213ygf
+ cBILq2k9akz8kQWpS64u4Gmtd8xxZRtdhbMy+qZvUBAc/EilEN5zFOAqjyCqc1LdiNttXYV5
+ QVMytqDmLN4IalFY1sBUbtGUgcQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f5ed2a7698ee477d1dd4af2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 02:17:11
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54235C43385; Mon, 14 Sep 2020 02:17:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: koike)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 5D90629601A;
-        Mon, 14 Sep 2020 03:14:11 +0100 (BST)
-Subject: Re: [PATCH v5 1/7] media: v4l2: Extend pixel formats to unify
- single/multi-planar handling (and more)
-To:     Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@iki.fi,
-        linux-media@vger.kernel.org
-Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
-        tfiga@chromium.org, hiroh@chromium.org, nicolas@ndufresne.ca,
-        Brian.Starkey@arm.com, kernel@collabora.com,
-        narmstrong@baylibre.com, linux-kernel@vger.kernel.org,
-        frkoenig@chromium.org, mjourdan@baylibre.com,
-        stanimir.varbanov@linaro.org
-References: <20200804192939.2251988-1-helen.koike@collabora.com>
- <20200804192939.2251988-2-helen.koike@collabora.com>
- <767d6287-bd9c-b342-d14c-124e58c143e6@xs4all.nl>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <9293c7c8-9750-a79c-19ac-954a0629e04d@collabora.com>
-Date:   Sun, 13 Sep 2020 23:14:07 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBFB6C433C6;
+        Mon, 14 Sep 2020 02:17:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBFB6C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
+Date:   Mon, 14 Sep 2020 10:17:00 +0800
+From:   Tingwei Zhang <tingweiz@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     tingwei@codeaurora.org, mathieu.poirier@linaro.org,
+        alexander.shishkin@linux.intel.com, mike.leach@linaro.org,
+        tsoni@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        kim.phillips@arm.com, lkp@intel.com, jinlmao@codeaurora.org,
+        gregkh@linuxfoundation.org, coresight@lists.linaro.org,
+        rdunlap@infradead.org, ykaukab@suse.de, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org, leo.yan@linaro.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v10 14/24] coresight: allow funnel driver to be built as
+ module
+Message-ID: <20200914021659.GA22686@codeaurora.org>
+References: <20200821034445.967-1-tingwei@codeaurora.org>
+ <20200821034445.967-15-tingwei@codeaurora.org>
+ <3d4bf829-abca-3f5f-fa2f-282305a9dc7a@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <767d6287-bd9c-b342-d14c-124e58c143e6@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3d4bf829-abca-3f5f-fa2f-282305a9dc7a@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Sun, Sep 13, 2020 at 09:24:52PM +0800, Suzuki K Poulose wrote:
+> On 08/21/2020 04:44 AM, Tingwei Zhang wrote:
+> >From: Kim Phillips <kim.phillips@arm.com>
+> >
+> >Allow to build coresight-funnel as module, for ease of development.
+> >
+> >- combine static and dynamic funnel init into single
+> >   module_init/exit call
+> >- add funnel_remove functions, for module unload
+> >- add a MODULE_DEVICE_TABLE for autoloading on boot
+> >
+> >Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >Cc: Leo Yan <leo.yan@linaro.org>
+> >Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> >Cc: Randy Dunlap <rdunlap@infradead.org>
+> >Cc: Suzuki K Poulose <Suzuki.Poulose@arm.com>
+> >Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >Cc: Russell King <linux@armlinux.org.uk>
+> >Co-developed-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+> >Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+> >Signed-off-by: Kim Phillips <kim.phillips@arm.com>
+> >Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+> >Reported-by: kernel test robot <lkp@intel.com>
+> >Tested-by: Mike Leach <mike.leach@linaro.org>
+> >Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >---
+> >  .../hwtracing/coresight/coresight-funnel.c    | 64 ++++++++++++++++++-
+> >  1 file changed, 62 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/drivers/hwtracing/coresight/coresight-funnel.c
+> b/drivers/hwtracing/coresight/coresight-funnel.c
+> >index 900690a9f7f0..07bc20391fac 100644
+> >--- a/drivers/hwtracing/coresight/coresight-funnel.c
+> >+++ b/drivers/hwtracing/coresight/coresight-funnel.c
+> >@@ -274,6 +274,15 @@ static int funnel_probe(struct device *dev, struct
+> resource *res)
+> >  	return ret;
+> >  }
+> >+static int __exit funnel_remove(struct device *dev)
+> >+{
+> >+	struct funnel_drvdata *drvdata = dev_get_drvdata(dev);
+> >+
+> >+	coresight_unregister(drvdata->csdev);
+> >+
+> >+	return 0;
+> >+}
+> >+
+> >  #ifdef CONFIG_PM
+> >  static int funnel_runtime_suspend(struct device *dev)
+> >  {
+> >@@ -319,20 +328,32 @@ static int static_funnel_probe(struct
+> platform_device *pdev)
+> >  	return ret;
+> >  }
+> >+static int __exit static_funnel_remove(struct platform_device *pdev)
+> >+{
+> >+	funnel_remove(&pdev->dev);
+> >+	pm_runtime_disable(&pdev->dev);
+> >+	return 0;
+> >+}
+> >+
+> >  static const struct of_device_id static_funnel_match[] = {
+> >  	{.compatible = "arm,coresight-static-funnel"},
+> >  	{}
+> >  };
+> >+MODULE_DEVICE_TABLE(of, static_funnel_match);
+> >+
+> >  #ifdef CONFIG_ACPI
+> >  static const struct acpi_device_id static_funnel_ids[] = {
+> >  	{"ARMHC9FE", 0},
+> >  	{},
+> >  };
+> >+
+> >+MODULE_DEVICE_TABLE(acpi, static_funnel_ids);
+> >  #endif
+> >  static struct platform_driver static_funnel_driver = {
+> >  	.probe          = static_funnel_probe,
+> >+	.remove          = static_funnel_remove,
+> >  	.driver         = {
+> >  		.name   = "coresight-static-funnel",
+> >  		.of_match_table = static_funnel_match,
+> 
+> Sorry missed this. Please set the owner field here. With that :
+> 
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>
+Thanks, Suzuki. I'll add owner in v11.
 
-On 9/9/20 8:41 AM, Hans Verkuil wrote:
-> Hi Helen,
-> 
-> Some review comments, concentrating on the uAPI.
-> 
-> On 04/08/2020 21:29, Helen Koike wrote:
->> This is part of the multiplanar and singleplanar unification process.
->> v4l2_ext_pix_format is supposed to work for both cases.
->>
->> We also add the concept of modifiers already employed in DRM to expose
->> HW-specific formats (like tiled or compressed formats) and allow
->> exchanging this information with the DRM subsystem in a consistent way.
->>
->> Note that only V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] are accepted in
->> v4l2_ext_format, other types will be rejected if you use the
->> {G,S,TRY}_EXT_PIX_FMT ioctls.
->>
->> New hooks have been added to v4l2_ioctl_ops to support those new ioctls
->> in drivers, but, in the meantime, the core takes care of converting
->> {S,G,TRY}_EXT_PIX_FMT requests into {S,G,TRY}_FMT so that old drivers can
->> still work if the userspace app/lib uses the new ioctls.
->> The conversion is also done the other around to allow userspace
->> apps/libs using {S,G,TRY}_FMT to work with drivers implementing the
->> _ext_ hooks.
->>
->> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
->> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->> ---
->> Changes in v5:
->> - change sizes and reorder fields to avoid holes in the struct and make
->>   it the same for 32 and 64 bits
->> - removed __attribute__ ((packed)) from uapi structs
->> - Fix doc warning from make htmldocs
->> - Updated commit message with EXT_PIX prefix for the ioctls.
->>
->> Changes in v4:
->> - Use v4l2_ext_pix_format directly in the ioctl, drop v4l2_ext_format,
->> making V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] the only valid types.
->> - Add reserved fields
->> - Removed num_planes from struct v4l2_ext_pix_format
->> - Removed flag field from struct v4l2_ext_pix_format, since the only
->>   defined value is V4L2_PIX_FMT_FLAG_PREMUL_ALPHA only used by vsp1,
->>   where we can use modifiers, or add it back later through the reserved
->>   bits.
->> - In v4l2_ext_format_to_format(), check if modifier is != MOD_LINEAR &&
->>   != MOD_INVALID
->> - Fix type assignment in v4l_g_fmt_ext_pix()
->> - Rebased on top of media/master (post 5.8-rc1)
->>
->> Changes in v3:
->> - Rebased on top of media/master (post 5.4-rc1)
->>
->> Changes in v2:
->> - Move the modifier in v4l2_ext_format (was formerly placed in
->>   v4l2_ext_plane)
->> - Fix a few bugs in the converters and add a strict parameter to
->>   allow conversion of uninitialized/mis-initialized objects
->> ---
->>  drivers/media/v4l2-core/v4l2-dev.c   |  21 +-
->>  drivers/media/v4l2-core/v4l2-ioctl.c | 585 +++++++++++++++++++++++----
->>  include/media/v4l2-ioctl.h           |  34 ++
->>  include/uapi/linux/videodev2.h       |  56 +++
->>  4 files changed, 615 insertions(+), 81 deletions(-)
->>
-> 
-> <snip>
-> 
->> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->> index c7b70ff53bc1d..7123c6a4d9569 100644
->> --- a/include/uapi/linux/videodev2.h
->> +++ b/include/uapi/linux/videodev2.h
->> @@ -2254,6 +2254,58 @@ struct v4l2_pix_format_mplane {
->>  	__u8				reserved[7];
->>  } __attribute__ ((packed));
->>  
->> +/**
->> + * struct v4l2_plane_ext_pix_format - additional, per-plane format definition
->> + * @sizeimage:		maximum size in bytes required for data, for which
->> + *			this plane will be used.
->> + *			Should be set to zero for unused planes.
->> + * @bytesperline:	distance in bytes between the leftmost pixels in two
->> + *			adjacent lines
->> + * @reserved:		extra space reserved for future fields, must be set to 0
->> + */
->> +struct v4l2_plane_ext_pix_format {
->> +	__u32 sizeimage;
->> +	__u32 bytesperline;
->> +	__u32 reserved;
-> 
-> I'd use reserved[4] here.
-> 
->> +};
->> +
->> +/**
->> + * struct v4l2_ext_pix_format - extended single/multiplanar format definition
->> + * @type:		type of the data stream; V4L2_BUF_TYPE_VIDEO_CAPTURE or
->> + *			V4L2_BUF_TYPE_VIDEO_OUTPUT
->> + * @width:		image width in pixels
->> + * @height:		image height in pixels
->> + * @field:		enum v4l2_field; field order (for interlaced video)
->> + * @pixelformat:	little endian four character code (fourcc)
->> + * @modifier:		modifier applied to the format (used for tiled formats
->> + *			and other kind of HW-specific formats, like compressed
->> + *			formats)
-> 
-> This should refer to the drm.h header since we're reusing the DRM modifiers.
-> 
->> + * @colorspace:		enum v4l2_colorspace; supplemental to pixelformat
->> + * @plane_fmt:		per-plane information
->> + * @ycbcr_enc:		enum v4l2_ycbcr_encoding, Y'CbCr encoding
->> + * @hsv_enc:		enum v4l2_hsv_encoding, HSV encoding
->> + * @quantization:	enum v4l2_quantization, colorspace quantization
->> + * @xfer_func:		enum v4l2_xfer_func, colorspace transfer function
->> + * @reserved:		extra space reserved for future fields, must be set to 0
->> + */
->> +struct v4l2_ext_pix_format {
->> +	__u32 type;
->> +	__u32 width;
->> +	__u32 height;
->> +	__u32 field;
->> +	__u64 modifier;
->> +	__u32 pixelformat;
->> +	__u32 colorspace;
->> +	struct v4l2_plane_ext_pix_format plane_fmt[VIDEO_MAX_PLANES];
->> +	union {
->> +		__u32 ycbcr_enc;
->> +		__u32 hsv_enc;
->> +	};
->> +	__u32 quantization;
->> +	__u32 xfer_func;
-> 
-> I'd reorder this:
-> 
-> 	struct v4l2_plane_ext_pix_format plane_fmt[VIDEO_MAX_PLANES];
-> 	__u32 pixelformat;
-> 	__u32 colorspace;
-> 	__u32 xfer_func;
-> 	union {
-> 		__u32 ycbcr_enc;
-> 		__u32 hsv_enc;
-> 	};
-> 	__u32 quantization;
-> 
-> The reason for reordering is that I like to keep the colorimetry fields in
-> that order since that is how these fields are processed mathematically: you
-> apply the colorspace matrix first, then the transfer function, then optionally
-> convert to Y'CbCr or HSV and finally you quantize the result.
-> 
-> There is also a __u32 flags; field missing (needed for V4L2_PIX_FMT_FLAG_PREMUL_ALPHA
-> and for the upcoming CSC support).
-
-We discussed this on v4 https://patchwork.linuxtv.org/project/linux-media/cover/20200717115435.2632623-1-helen.koike@collabora.com/
-
-The idea is to replace V4L2_PIX_FMT_FLAG_PREMUL_ALPHA by a modifier, and this API
-won't need CSC, since the colorspace fields are read-write.
-
-Regards,
-Helen
-
-> 
->> +	__u32 reserved[9];
->> +};
->> +
->>  /**
->>   * struct v4l2_sdr_format - SDR format definition
->>   * @pixelformat:	little endian four character code (fourcc)
->> @@ -2571,6 +2623,10 @@ struct v4l2_create_buffers {
->>  
->>  #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
->>  
->> +#define VIDIOC_G_EXT_PIX_FMT	_IOWR('V', 104, struct v4l2_ext_pix_format)
->> +#define VIDIOC_S_EXT_PIX_FMT	_IOWR('V', 105, struct v4l2_ext_pix_format)
->> +#define VIDIOC_TRY_EXT_PIX_FMT	_IOWR('V', 106, struct v4l2_ext_pix_format)
->> +
->>  /* Reminder: when adding new ioctls please add support for them to
->>     drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
->>  
->>
-> 
-> Regards,
-> 
-> 	Hans
-> 
+Thanks,
+Tingwei 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
