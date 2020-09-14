@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C1026835A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4118626835B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726020AbgINEDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgINEDK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:03:10 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9272C061787
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 21:03:09 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d13so2229256pgl.6
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 21:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dWdl+yaQbYEtdR4On3P7CGGpC+OD3QLDLkmMq6+C9k0=;
-        b=CqIfTLtozQ3xvA/KXFvjkKb1zYdS2iyiXoVFEvA0vmD2FVJ2slyMgvSYQ00c8x7ytj
-         mx61VL523WNZigppR8w4h/OfvHx0V+eROTHrLyDK0xMG3Q16At3IMZVLEVrm6smf4LQj
-         Hm2mKdquGXG4js/HGAiwxp+2xYuFK3YPdudZHFzhQszumUV3IJSRZXKjZiuVessize+V
-         ceqaoE/OpxcPAb+ASWwOkBOjlZ2MFCpWp48AaphS6mTD39B20SZQ+OCgYZ6qytmaRPnu
-         A2P4M7baDBpOgQzsToSWLad01UMxaRUgCxc8NUQeTxn+66zGl7EL2Ao3fNh+GKSwaLUX
-         c4zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dWdl+yaQbYEtdR4On3P7CGGpC+OD3QLDLkmMq6+C9k0=;
-        b=RXfj9cl9Txf8fD4urtDMHxbjWK4gs4byVuVb4BzwOBNo08n5QXR2j6CHNt3kFOheFX
-         iIRnug7iMrqNvDf30SA72SAe2H3gpfzsWmCfDdgcszRP1xnRbK2Re+dx7XQ0hyApmUas
-         +L3n/3eIEvUYYHAb0q0epAwp+8BUVGR3Zx2DK3AMn6hhtpGmowfJVfh0pulhluG4wbNn
-         CszY9qQJk7uua0+1jjb0GM/CzdDocc+FHGMHNhjgc4GCWZdbRIdFf8Qo2h4tfh0zcLQm
-         62rGOIjsG/qVREFlama3c0dpHi/ohwLmJaC6qdTuza1YSB6cpYLRUAJMKMufXNczmwQZ
-         0iog==
-X-Gm-Message-State: AOAM5319Sdp8R5emrCDaL9bI8vIevMICSJ/Sgm3L4yAGVabI7+KPUZ/P
-        Mq7IZgBnA1U9K8NTXCBcg+PfVSieyvG6RAwhNP/BHg==
-X-Google-Smtp-Source: ABdhPJwJ5ImAc3zR+/ovbzQJqIFTBNyvaOQXjxE6WDS4XTm9eE+0WpjDQqQFxAhAREZOjstjQnmqTWIg/GfIct7L4vs=
-X-Received: by 2002:a17:902:a70e:b029:d1:9be4:b49c with SMTP id
- w14-20020a170902a70eb02900d19be4b49cmr13241634plq.20.1600056189287; Sun, 13
- Sep 2020 21:03:09 -0700 (PDT)
+        id S1726005AbgINEFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:05:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:58374 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgINEFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 00:05:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 799661045;
+        Sun, 13 Sep 2020 21:05:52 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B12343F718;
+        Sun, 13 Sep 2020 21:05:49 -0700 (PDT)
+Subject: Re: [PATCH V2] arm64/hotplug: Improve memory offline event notifier
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+References: <1598241869-28416-1-git-send-email-anshuman.khandual@arm.com>
+ <20200911140603.GB12835@gaia>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <fb62eba1-bc8a-3cc9-eca3-fe929e365f46@arm.com>
+Date:   Mon, 14 Sep 2020 09:35:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20200912155100.25578-1-songmuchun@bytedance.com> <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
-In-Reply-To: <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 12:02:33 +0800
-Message-ID: <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200911140603.GB12835@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
->
-> > The memory_stat_format() returns a format string, but the return buf
-> > may not including the trailing '\0'. So the users may read the buf
-> > out of bounds.
->
-> That sounds serious.  Is a cc:stable appropriate?
->
 
-Yeah, I think we should cc:stable.
 
--- 
-Yours,
-Muchun
+On 09/11/2020 07:36 PM, Catalin Marinas wrote:
+> Hi Anshuman,
+> 
+> On Mon, Aug 24, 2020 at 09:34:29AM +0530, Anshuman Khandual wrote:
+>> This brings about three different changes to the sole memory event notifier
+>> for arm64 platform and improves it's robustness while also enhancing debug
+>> capabilities during potential memory offlining error conditions.
+>>
+>> This moves the memory notifier registration bit earlier in the boot process
+>> from device_initcall() to setup_arch() which will help in guarding against
+>> potential early boot memory offline requests.
+>>
+>> This enables MEM_OFFLINE memory event handling. It will help intercept any
+>> possible error condition such as if boot memory some how still got offlined
+>> even after an expilicit notifier failure, potentially by a future change in
+>> generic hotplug framework. This would help detect such scenarious and help
+>> debug further.
+>>
+>> It also adds a validation function which scans entire boot memory and makes
+>> sure that early memory sections are online. This check is essential for the
+>> memory notifier to work properly as it cannot prevent boot memory offlining
+>> if they are not online to begin with. But this additional sanity check is
+>> enabled only with DEBUG_VM.
+> 
+> Could you please split this in separate patches rather than having a
+> single one doing three somewhat related things?
+
+Sure, will do.
+
+> 
+>> --- a/arch/arm64/kernel/setup.c
+>> +++ b/arch/arm64/kernel/setup.c
+>> @@ -376,6 +376,14 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+>>  			"This indicates a broken bootloader or old kernel\n",
+>>  			boot_args[1], boot_args[2], boot_args[3]);
+>>  	}
+>> +
+>> +	/*
+>> +	 * Register the memory notifier which will prevent boot
+>> +	 * memory offlining requests - early enough. But there
+>> +	 * should not be any actual offlinig request till memory
+>> +	 * block devices are initialized with memory_dev_init().
+>> +	 */
+>> +	memory_hotremove_notifier();
+> 
+> Why can this not be an early_initcall()? As you said, memory_dev_init()
+> is called much later, after the SMP was initialised.
+
+This proposal moves memory_hotremove_notifier() to setup_arch() because it
+could and there is no harm in calling this too early than required for now.
+But in case generic MM sequence of events during memory init changes later,
+this notifier will still work.
+
+IIUC, the notifier chain registration can be called very early in the boot
+process without much problem. There are some precedence on other platforms.
+
+1. arch/s390/mm/init.c   		  - In device_initcall() via s390_cma_mem_init()
+2. arch/s390/mm/setup.c  		  - In setup_arch() via reserve_crashkernel()
+3. arch/powerpc/platforms/pseries/cmm.c   - In module_init() via cmm_init()
+4. arch/powerpc/platforms/pseries/iommu.c - via iommu_init_early_pSeries()
+					    via pSeries_init()
+				            via pSeries_probe() aka ppc_md.porbe()
+					    via probe_machine()
+					    via setup_arch()
+
+> 
+> You could even combine this with validate_bootmem_online_state() in a
+> single early_initcall() which, after checking, registers the notifier.
+> 
+
+Yes, that will be definitely simpler but there might be still some value
+in having this registration in setup_arch() which guard against future
+generic MM changes while keeping it separate from the sanity check i.e
+validate_bootmem_online_state() which is enabled only with DEBUG_VM. But
+will combine both in early_initcall() with some name changes if that is
+preferred.
