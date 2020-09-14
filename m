@@ -2,100 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 139EF268C79
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A803D268C6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726726AbgINNqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:46:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55768 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726705AbgINNhi (ORCPT
+        id S1726360AbgINNnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 09:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbgINNjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:37:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600090655;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VDFf7hbL2ujN8s8a2I30Af1l7eed0ojFf/+W47iXnwU=;
-        b=ZMHzV3rL0l2XVtNsq5bqpNxInsY2wMIR1WhZtWhyIQWXertPiWnFJlNrfsBJpEraSa3S3m
-        GYpnUMUxBwhjQiJG3DsdSq+lLh9FpJ82ZV7rrT6C/CCKVgRsTtYHGfM9UX5QXG+bb3tBIa
-        dCbHqBwf3sGGtwmW/aP/NWMoMZu1lDU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-295-5ULj2_lnPJOnQqboJzlpJg-1; Mon, 14 Sep 2020 09:37:32 -0400
-X-MC-Unique: 5ULj2_lnPJOnQqboJzlpJg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5884D425CB;
-        Mon, 14 Sep 2020 13:37:30 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.195.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BCD57839F;
-        Mon, 14 Sep 2020 13:37:26 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     x86@kernel.org
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin King <colin.king@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH tip] KVM: nSVM: avoid freeing uninitialized pointers in svm_set_nested_state()
-Date:   Mon, 14 Sep 2020 15:37:25 +0200
-Message-Id: <20200914133725.650221-1-vkuznets@redhat.com>
+        Mon, 14 Sep 2020 09:39:45 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85278C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:39:42 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id nw23so12774ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 06:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GFasB2K7R8ZSOSGRVKhFgfIN6nhjMFHPa6vWb6Sd2sg=;
+        b=Z+DFg/UC/F02eEslAg1GggoQLJle+HByhyB/w2hE20SHWm6xNYRV40uCUVVYYLieS6
+         JURyQ/FhSPKry7ObpDnQ4k0PB57TwH+/Vv+cvH+CLrTz+3z4xR0Hdogz1AJc9+l0Pzth
+         TiiaTTUblalT57Ob/X/Tx4O2xzOL5O7vx9iHhe8fDJoEh+B3JT0ZugCqoN28I00zc0Bk
+         woni2JAzc9Fwmsd4s8pE5Ow9PjrkIHXjQoj0/8wdLw3AfXHxrgQGVkS408CN1PGLvLC4
+         1XZQpoiJlfWGjP5j00i0m+Tc6ruiS1hyKRwx1BqHIdymXsh0k8cJi5rTHnsoe5W/e7zJ
+         EZEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GFasB2K7R8ZSOSGRVKhFgfIN6nhjMFHPa6vWb6Sd2sg=;
+        b=UwMIQT0kqgsJZNksKerre7QYV1HvHzRXtUjVz4DB4vdpfktECcayyPQda9nP4ONe1e
+         lOid45R7pnyX7oCt8Ns3uJImPM621qbEZ3fu+UZood5chV8aag2haRwEtm/9Ub5r3wOg
+         qolbKwRFAeaY1MrbGc2tuIsKUCOkQITH3oVaR57KKft7Su3+7un7I1vFHghrwNrZRoKW
+         lzqvZbIGKrZgb/StlS74zyyVnYfe9M5n8YeWNdMxgVysJ06K3vMjlT/3PhtPuc5+3+Z5
+         zTmGvy8XDw9BxYfn6nBSuANJCxoc2PJmZ2tsqSUcao+FRwDE6QqpLHQeq0jQnkd09Q7Z
+         x/nA==
+X-Gm-Message-State: AOAM532lfBPj5F2qL8UldQd1f+6Ogceoy7BKU2Vh2QOaAHm/Z+gRYDIM
+        59ziChxQKwZky9Pxx5MqnkovjQ==
+X-Google-Smtp-Source: ABdhPJwqBA3GajmyCQzgHV43g9Zw8M9RURyOEgmywA9X5KLm2su86kci9kQ6RIB3g/C1sauLMHXgZQ==
+X-Received: by 2002:a17:906:1b11:: with SMTP id o17mr15598515ejg.67.1600090781196;
+        Mon, 14 Sep 2020 06:39:41 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id h64sm3455641edd.50.2020.09.14.06.39.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 06:39:40 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 15:39:39 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4 03/15] devlink: Add reload action stats
+Message-ID: <20200914133939.GG2236@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-4-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600063682-17313-4-git-send-email-moshe@mellanox.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The save and ctl pointers are passed uninitialized to kfree() when
-svm_set_nested_state() follows the 'goto out_set_gif' path. While
-the issue could've been fixed by initializing these on-stack varialbles
-to NULL, it seems preferable to eliminate 'out_set_gif' label completely
-as it is not actually a failure path and duplicating a single svm_set_gif()
-call doesn't look too bad.
+Mon, Sep 14, 2020 at 08:07:50AM CEST, moshe@mellanox.com wrote:
+>Add reload action stats to hold the history per reload action type and
+>limit level.
 
-Fixes: 6ccbd29ade0d ("KVM: SVM: nested: Don't allocate VMCB structures on stack")
-Addresses-Coverity: ("Uninitialized pointer read")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reported-by: Joerg Roedel <jroedel@suse.de>
-Reported-by: Colin King <colin.king@canonical.com>
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Empty line missing.
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 598a769f1961..67e6d053985d 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -1094,7 +1094,8 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 
- 	if (!(kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE)) {
- 		svm_leave_nested(svm);
--		goto out_set_gif;
-+		svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
-+		return 0;
- 	}
- 
- 	if (!page_address_valid(vcpu, kvm_state->hdr.svm.vmcb_pa))
-@@ -1150,7 +1151,6 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 	if (!nested_svm_vmrun_msrpm(svm))
- 		return -EINVAL;
- 
--out_set_gif:
- 	svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
- 
- 	ret = 0;
--- 
-2.25.4
 
+>For example, the number of times fw_activate has been performed on this
+>device since the driver module was added or if the firmware activation
+>was performed with or without reset.
+>Add devlink notification on stats update.
+>
+>The function devlink_reload_actions_implicit_actions_performed() is
+>exported to enable also drivers update on reload actions performed,
+>for example in case firmware activation with reset finished
+>successfully but was initiated by remote host.
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>---
+>v3 -> v4:
+>- Renamed reload_actions_cnts to reload_action_stats
+>- Add devlink notifications on stats update
+>- Renamed devlink_reload_actions_implicit_actions_performed() and add
+>  function comment in code
+>v2 -> v3:
+>- New patch
+>---
+> include/net/devlink.h |  7 ++++++
+> net/core/devlink.c    | 58 ++++++++++++++++++++++++++++++++++++++++---
+> 2 files changed, 62 insertions(+), 3 deletions(-)
+>
+>diff --git a/include/net/devlink.h b/include/net/devlink.h
+>index dddd9ee5b8a9..b4feb92e0269 100644
+>--- a/include/net/devlink.h
+>+++ b/include/net/devlink.h
+>@@ -20,6 +20,9 @@
+> #include <uapi/linux/devlink.h>
+> #include <linux/xarray.h>
+> 
+>+#define DEVLINK_RELOAD_ACTION_STATS_ARRAY_SIZE \
+>+	(__DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX * __DEVLINK_RELOAD_ACTION_MAX)
+>+
+> struct devlink_ops;
+> 
+> struct devlink {
+>@@ -38,6 +41,7 @@ struct devlink {
+> 	struct list_head trap_policer_list;
+> 	const struct devlink_ops *ops;
+> 	struct xarray snapshot_ids;
+>+	u32 reload_action_stats[DEVLINK_RELOAD_ACTION_STATS_ARRAY_SIZE];
+> 	struct device *dev;
+> 	possible_net_t _net;
+> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
+>@@ -1397,6 +1401,9 @@ void
+> devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter);
+> 
+> bool devlink_is_reload_failed(const struct devlink *devlink);
+>+void devlink_reload_implicit_actions_performed(struct devlink *devlink,
+>+					       enum devlink_reload_action_limit_level limit_level,
+>+					       unsigned long actions_performed);
+> 
+> void devlink_flash_update_begin_notify(struct devlink *devlink);
+> void devlink_flash_update_end_notify(struct devlink *devlink);
+>diff --git a/net/core/devlink.c b/net/core/devlink.c
+>index 60aa0c4a3726..cbf746966913 100644
+>--- a/net/core/devlink.c
+>+++ b/net/core/devlink.c
+>@@ -2981,11 +2981,58 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
+> }
+> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
+> 
+>+static void
+>+devlink_reload_action_stats_update(struct devlink *devlink,
+>+				   enum devlink_reload_action_limit_level limit_level,
+>+				   unsigned long actions_performed)
+>+{
+>+	int stat_idx;
+>+	int action;
+>+
+>+	if (!actions_performed)
+>+		return;
+>+
+>+	if (WARN_ON(limit_level > DEVLINK_RELOAD_ACTION_LIMIT_LEVEL_MAX))
+>+		return;
+>+	for (action = 0; action <= DEVLINK_RELOAD_ACTION_MAX; action++) {
+>+		if (!test_bit(action, &actions_performed))
+>+			continue;
+>+		stat_idx = limit_level * __DEVLINK_RELOAD_ACTION_MAX + action;
+>+		devlink->reload_action_stats[stat_idx]++;
+>+	}
+>+	devlink_notify(devlink, DEVLINK_CMD_NEW);
+>+}
+>+
+>+/**
+>+ *	devlink_reload_implicit_actions_performed - Update devlink on reload actions
+>+ *	  performed which are not a direct result of devlink reload call.
+>+ *
+>+ *	This should be called by a driver after performing reload actions in case it was not
+>+ *	a result of devlink reload call. For example fw_activate was performed as a result
+>+ *	of devlink reload triggered fw_activate on another host.
+>+ *	The motivation for this function is to keep data on reload actions performed on this
+>+ *	function whether it was done due to direct devlink reload call or not.
+>+ *
+>+ *	@devlink: devlink
+>+ *	@limit_level: reload action limit level
+>+ *	@actions_performed: bitmask of actions performed
+>+ */
+>+void devlink_reload_implicit_actions_performed(struct devlink *devlink,
+>+					       enum devlink_reload_action_limit_level limit_level,
+>+					       unsigned long actions_performed)
+
+What I'm a bit scarred of that the driver would call this from withing
+reload_down()/up() ops. Perheps this could be WARN_ON'ed here (or in
+devlink_reload())?
+
+
+>+{
+>+	if (!devlink_reload_supported(devlink))
+
+Hmm. I think that the driver does not have to support the reload and can
+still be reloaded by another instance and update the stats here. Why
+not?
+
+
+>+		return;
+>+	devlink_reload_action_stats_update(devlink, limit_level, actions_performed);
+>+}
+>+EXPORT_SYMBOL_GPL(devlink_reload_implicit_actions_performed);
+>+
+> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 			  enum devlink_reload_action action,
+> 			  enum devlink_reload_action_limit_level limit_level,
+>-			  struct netlink_ext_ack *extack, unsigned long *actions_performed)
+>+			  struct netlink_ext_ack *extack, unsigned long *actions_performed_out)
+> {
+>+	unsigned long actions_performed;
+> 	int err;
+> 
+> 	if (!devlink->reload_enabled)
+>@@ -2998,9 +3045,14 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
+> 		devlink_reload_netns_change(devlink, dest_net);
+> 
+>-	err = devlink->ops->reload_up(devlink, action, limit_level, extack, actions_performed);
+>+	err = devlink->ops->reload_up(devlink, action, limit_level, extack, &actions_performed);
+> 	devlink_reload_failed_set(devlink, !!err);
+>-	return err;
+>+	if (err)
+>+		return err;
+>+	devlink_reload_action_stats_update(devlink, limit_level, actions_performed);
+>+	if (actions_performed_out)
+
+Just make the caller to provide valid pointer, as I suggested in the
+other patch review.
+
+
+>+		*actions_performed_out = actions_performed;
+>+	return 0;
+> }
+> 
+> static int
+>-- 
+>2.17.1
+>
