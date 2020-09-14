@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8A726951E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E42D269522
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 20:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbgINSm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 14:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgINSmi (ORCPT
+        id S1726079AbgINSnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 14:43:55 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:63903 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725957AbgINSnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 14:42:38 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E0EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:42:31 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d9so338351pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 11:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/0N1kgY4YSskKhtqicU+MJ56FlC+m73zDjYCiR+Q+4A=;
-        b=U8JwsRuQylQ/N4j0Os9z7VbzjHcCPIh2U1adn08h+ARrGqo9UqxlRe19UQwz36Cvul
-         9rTibomVDcAgcJf052jJoNC5xh7phJQLQwX13DhEzR23K8TLI57Iz70v3bso0BvbwATi
-         WNFQIJHVJcXamKwjH/iet5kkUdrrCfa+lMKyo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/0N1kgY4YSskKhtqicU+MJ56FlC+m73zDjYCiR+Q+4A=;
-        b=ZW6zwK6jJlxdserh/mAG63RYVHMYpuiutHk2MKw0mp2ZtSdyPzJ/PZoQFKt28VByxk
-         qWwVrevQREKxdyC22p/wDbW16Q4KeWxUp8/h7XzCae21BTtY9GBnWr3jDFTP18AsvIyA
-         cF7KUFEoJYttgpi9e5Z2eLCiY1J4qTv3xBCRLpJRB0NLdmqSBbTSYUqcZrbGBjlTf0Se
-         v7dCkuzSx7mNq0WM15evhaT86GBU9H+zP3LhLyfZamotsd89hwmI99lteq+gG/Envjm6
-         gAsaV8ewJoVbvKAqyDZcTg4EmOxp7qJ+FBQPjgCUb4i9ew4bq1sBwvbTmUin3ishaig4
-         eDlw==
-X-Gm-Message-State: AOAM532zKrWk/vAylEwwfE/46Z08Ughjwa6ZWKdmU28PduHgOpXWwxq9
-        R15pvrGzMIHijanzu93TNJ4hFw==
-X-Google-Smtp-Source: ABdhPJxJXJLZVn7PXxzlK/sOGuAY0mmNTwXAWorffgP/IANILSesIVCB6gXi809M/9nfMwGvaRbCIQ==
-X-Received: by 2002:a63:7b16:: with SMTP id w22mr11501114pgc.17.1600108950799;
-        Mon, 14 Sep 2020 11:42:30 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id s24sm9072901pgv.55.2020.09.14.11.42.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 11:42:30 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 11:42:29 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [RFC PATCH] USB: misc: Add usb_hub_pwr driver
-Message-ID: <20200914184229.GC2022397@google.com>
-References: <20200901132005.RFC.1.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <20200902053048.GB6837@b29397-desktop>
- <20200902174536.GE3419728@google.com>
- <20200903014559.GB11250@b29397-desktop>
+        Mon, 14 Sep 2020 14:43:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600109028; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IBd2kyb8hWOOqIOXc0Or7ejrYcX2YVrlRG3QUaCL7C8=;
+ b=rdovm9iSTo99/GLoJ8Cy3QtBc7eFVZmgbFgEhiH6bC3MT6VutBhXbkhZ8qJ1yqsdvB3fe4iW
+ PLotzPd60Cm8MrTLlDB+A6MbuGZ7F51ykMoiyIbrAQUk3Gc/DO+imHCgeZ672ziKXPozCB9g
+ 7YvaLG2cwa2ktHJYrQNm9P53kVE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f5fb9c2238e1efa376f0c70 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 18:43:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4CBEBC43387; Mon, 14 Sep 2020 18:43:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4935DC433CA;
+        Mon, 14 Sep 2020 18:43:12 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200903014559.GB11250@b29397-desktop>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 14 Sep 2020 11:43:12 -0700
+From:   nguyenb@codeaurora.org
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 2/2] scsi: ufs: Support reading UFS's Vcc voltage from
+ device tree
+In-Reply-To: <BY5PR04MB67051C08A73119B554E4F352FC220@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <cover.1598939393.git.nguyenb@codeaurora.org>
+ <69db325a09d5c3fa7fc260db031b1e498b601c25.1598939393.git.nguyenb@codeaurora.org>
+ <BY5PR04MB67051C08A73119B554E4F352FC220@BY5PR04MB6705.namprd04.prod.outlook.com>
+Message-ID: <170592eceb26da041f276cf4ca33aaf2@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-sorry for the delayed reply, I got distracted by other things and ran into
-issues with my mail setup.
-
-On Thu, Sep 03, 2020 at 01:46:18AM +0000, Peter Chen wrote:
-> On 20-09-02 10:45:36, Matthias Kaehlcke wrote:
-> > > 
-> > > Hi Matthias,
-> > > 
-> > > I did similar several years ago [1], but the concept (power sequence)
-> > > doesn't be accepted by power maintainer.
-> > 
-> > Yeah, I saw that, I think I even reviewed or tested some early version
-> > of it :)
-> > 
-> > > Your patch introduce an new way to fix this long-term issue, I have an
-> > > idea to fix it more generally.
-> > 
-> > > - Create a table (say usb_pm_table) for USB device which needs to do
-> > > initial power on and power management during suspend suspend/resume based
-> > > on VID and PID, example: usb/core/quirks.c
-> > > - After hub (both roothub and intermediate hub) device is created, search
-> > > the DT node under this hub, and see if the device is in usb_pm_table. If
-> > > it is in it, create a platform device, say usb-power-supply, and the
-> > > related driver is like your usb_hub_psupply.c, the parent of this device
-> > > is controller device.
-> > 
-> > This part isn't clear to me. How would the DT look like? Would it have a
-> > single node per physical hub chip or one node for each 'logical' hub?
-> > Similarly, would there be a single plaform device or multiple?
-> 
-> One power supply platform device for one physical device, and DT only
-> describes physical device. HUB driver only probes non-SS HUB port to
-> avoid create two power supply device for SS HUB, there should be no
-> SS-only HUB.
-
-I agree that there should be only one platform device per physical device.
-Probing only the non-SS hub should work to avoid multiple instances, however
-it doesn't work for the extended use case, where the hub is powered off
-during system suspend, but only when no wakeup capable devices are connected
-to any of the 'logical' hubs. For this to work the driver that controls the
-regulators, GPIOs, ... needs to have knowledge of all 'logical' hubs.
-
-I just sent v1 of this driver, which reworks things a bit, but for now
-there is still one platform device instantiated through the DT, and
-one DT entry for every 'logical' hub.
-
-I'm open to keep discussing alternative designs, as long as they can also
-cover the use case of conditionally powering the hub off during system
-suspend. We can probably continue the discussion on v1, unless it takes
-me longer than
+On 2020-09-13 02:37, Avri Altman wrote:
+>> 
+>> The UFS specifications supports a range of Vcc operating voltage
+>> from 2.4-3.6V depending on the device and manufacturers.
+>> Allows selecting the UFS Vcc voltage level by setting the
+>> UFS's entry vcc-voltage-level in the device tree. If UFS's
+>> vcc-voltage-level setting is not found in the device tree,
+>> use default values provided by the driver.
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd-pltfrm.c | 15 ++++++++++++---
+>>  1 file changed, 12 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c 
+>> b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>> index 3db0af6..48f429c 100644
+>> --- a/drivers/scsi/ufs/ufshcd-pltfrm.c
+>> +++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
+>> @@ -104,10 +104,11 @@ static int ufshcd_parse_clock_info(struct 
+>> ufs_hba
+>> *hba)
+>>  static int ufshcd_populate_vreg(struct device *dev, const char *name,
+>>                 struct ufs_vreg **out_vreg)
+>>  {
+>> -       int ret = 0;
+>> +       int len, ret = 0;
+>>         char prop_name[MAX_PROP_SIZE];
+>>         struct ufs_vreg *vreg = NULL;
+>>         struct device_node *np = dev->of_node;
+>> +       const __be32 *prop;
+>> 
+>>         if (!np) {
+>>                 dev_err(dev, "%s: non DT initialization\n", __func__);
+>> @@ -138,8 +139,16 @@ static int ufshcd_populate_vreg(struct device 
+>> *dev,
+>> const char *name,
+>>                         vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
+>>                         vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
+>>                 } else {
+>> -                       vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+>> -                       vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+>> +                       prop = of_get_property(np, 
+>> "vcc-voltage-level", &len);
+>> +                       if (!prop || (len != (2 * sizeof(__be32)))) {
+>> +                               dev_warn(dev, "%s vcc-voltage-level 
+>> property.\n",
+>> +                                       prop ? "invalid format" : 
+>> "no");
+>> +                               vreg->min_uV = UFS_VREG_VCC_MIN_UV;
+>> +                               vreg->max_uV = UFS_VREG_VCC_MAX_UV;
+>> +                       } else {
+>> +                               vreg->min_uV = be32_to_cpup(&prop[0]);
+>> +                               vreg->max_uV = be32_to_cpup(&prop[1]);
+>> +                       }
+>>                 }
+>>         } else if (!strcmp(name, "vccq")) {
+>>                 vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
+>> --
+> Maybe instead call ufshcd_populate_vreg with the new name,
+> To not break the function flow, and just add another else if ?
+Could you please clarify your comments? Are you suggesting to create a 
+new function?
+Thank you.
