@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6384268DAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B49268DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 16:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgINOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 10:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726583AbgINNGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 09:06:03 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9EE722267;
-        Mon, 14 Sep 2020 13:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600088718;
-        bh=MzWnIxtOue9UZv1v1Vab4i0yZPiIvaGLn0jYHvew5aY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kwhnv5/zl00RRXY17cN6NHgle0dG4pa383Dm5rXUg/S+k0DUU/YGQ2g6oqwn/pzaN
-         WuzNFbzrT+9KMS4Lr98zLs9U/h4ODgktGoQBz6CJMqxrJoE08VJpUd0z/DoGs9zKk0
-         VzQR0i8mfPpAe7o3Ky0G92yKpt4ubafHU/MM6vcs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Milburn <dmilburn@redhat.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 13/19] nvme-rdma: cancel async events before freeing event struct
-Date:   Mon, 14 Sep 2020 09:04:56 -0400
-Message-Id: <20200914130502.1804708-13-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200914130502.1804708-1-sashal@kernel.org>
-References: <20200914130502.1804708-1-sashal@kernel.org>
+        id S1726294AbgINOcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 10:32:02 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:17443 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726583AbgINOav (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 10:30:51 -0400
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 08EEUArI003959;
+        Mon, 14 Sep 2020 23:30:10 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 08EEUArI003959
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600093810;
+        bh=UaE0Zy68kPNweus87sVFzfnVevHrKCIDC5eT9Rp0vmc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nR1kdS/c/XWFDV04iV0J5iNaTyzmspagmzGfhWZniLm708cIVFF3JgM98uhJlactE
+         pJjbDdUDtvZnphtMRmdvfRnHKCi/Q+wUhfHNRNtHBVUfR1+xaA1mFhcrzoPuTrW1Sf
+         kK39BVda6bcM/6Xzl/gTk5Ky7oBcltK/66KCZuu26+bYddSvrD3+go9km/6XfXNpsI
+         JAy9c1cTExb88UuyQXqB7Oxfmyql864Os1jw9pjQmEV5VEJzseKmP5I7JghRedf9dQ
+         OK7SOvnSec7G+WOmx3QGKgQGoE8rt0eXVuC0MKwPxpOYznoXYhHNAHjMcy28ZzKJyQ
+         rTYFf4sVWaeMw==
+X-Nifty-SrcIP: [209.85.210.170]
+Received: by mail-pf1-f170.google.com with SMTP id z19so12777515pfn.8;
+        Mon, 14 Sep 2020 07:30:10 -0700 (PDT)
+X-Gm-Message-State: AOAM533yqr7dIN3yhBLvzUI2nNm2nZXRzuexOEARs0YRngc0nKzcP4NZ
+        Cw6LcVXZckSmMesv+BP8oFa5Purby9qm7R+bUq4=
+X-Google-Smtp-Source: ABdhPJyQXe2Mipf+fHBb44hIw0BNL+a1xlhuXiTpfn4rOcTnA3hzYUkK4BHA467v6gIx62gaYCq18XrKTbQIhz4saTw=
+X-Received: by 2002:aa7:93a8:0:b029:13c:1611:6534 with SMTP id
+ x8-20020aa793a80000b029013c16116534mr13503727pff.6.1600093809514; Mon, 14 Sep
+ 2020 07:30:09 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200914133559.GA126210@localhost.localdomain>
+In-Reply-To: <20200914133559.GA126210@localhost.localdomain>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 14 Sep 2020 23:29:32 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASDLZ_=b5vM48mBT1SsLY-m5bXWBVBf7FbqJMGtc5XaMw@mail.gmail.com>
+Message-ID: <CAK7LNASDLZ_=b5vM48mBT1SsLY-m5bXWBVBf7FbqJMGtc5XaMw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: Run syncconfig with -s
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Milburn <dmilburn@redhat.com>
+On Mon, Sep 14, 2020 at 10:36 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> > BTW., there's another, rather spurious bug I recently triggered in kbuild.
+> >
+> > Occasionally when I Ctrl-C a kernel build on a system with a lot of CPUs,
+> > the .o.cmd file gets corrupted:
+>
+> Those are temporary files, truncated at page boundary.
+>
+>         $ stat -c %s XXX.pata_sil680.mod.o.cmd
+>         12288
+>
+> I tried to fix this by inserting shell 'trap' directive but it failed
+> somewhere else.
+>
+>         cmd_and_fixdep =                                                     \
+>         $(cmd);                                                              \
+>         scripts/basic/fixdep $(depfile) $@ '$(make-cmd)' > $(dot-target).cmd;\
+>         rm -f $(depfile)
 
-[ Upstream commit 925dd04c1f9825194b9e444c12478084813b2b5d ]
 
-Cancel async event work in case async event has been queued up, and
-nvme_rdma_submit_async_event() runs after event has been freed.
 
-Signed-off-by: David Milburn <dmilburn@redhat.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/nvme/host/rdma.c | 1 +
- 1 file changed, 1 insertion(+)
+No. It is *OK* to have broken .o.cmd files
+as long as .o files are deleted on error or interruption
+(and this should be automatically handled by GNU Make).
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index f393a6193252e..8a11e26d17683 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -739,6 +739,7 @@ static void nvme_rdma_destroy_admin_queue(struct nvme_rdma_ctrl *ctrl,
- 		nvme_rdma_free_tagset(&ctrl->ctrl, ctrl->ctrl.admin_tagset);
- 	}
- 	if (ctrl->async_event_sqe.data) {
-+		cancel_work_sync(&ctrl->ctrl.async_event_work);
- 		nvme_rdma_free_qe(ctrl->device->dev, &ctrl->async_event_sqe,
- 				sizeof(struct nvme_command), DMA_TO_DEVICE);
- 		ctrl->async_event_sqe.data = NULL;
+
+.o.cmd is included only when the corresponding .o exists.
+
+
+This is explained in the case [2] of commit
+392885ee82d35d515ba2af7b72c5e357c3002113
+
+
+
 -- 
-2.25.1
-
+Best Regards
+Masahiro Yamada
