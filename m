@@ -2,146 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386342692A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5EF2692BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726354AbgINRLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:11:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726348AbgINRK6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:10:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600103457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=I5P62Hiq3MDE/ITWq+Gs4wWfI0W/ONirmBfvBCwTwE8=;
-        b=B+lqCnQhhkBjB8zUMBYuu2vmoClQKaLruMYwl6zVv92waI8gISeYMKOpmTshU4EG59PYKR
-        qAVgkXfmobFmZBlNdmxuUKPUI/jSYBR6EE2WMszIu+6RN8201+pfx2s4CGrKU6eeH/up2v
-        AJ+T2DGWcBB85k6r3uNL0iM1AQQXXX0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-550-iiWMN5bxMbevuEST_91L9A-1; Mon, 14 Sep 2020 13:10:53 -0400
-X-MC-Unique: iiWMN5bxMbevuEST_91L9A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ADA35801FDD;
-        Mon, 14 Sep 2020 17:10:50 +0000 (UTC)
-Received: from [10.36.112.147] (ovpn-112-147.ams2.redhat.com [10.36.112.147])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C17EC60C0F;
-        Mon, 14 Sep 2020 17:10:47 +0000 (UTC)
-Subject: Re: [PATCH v2 1/3] mm: replace memmap_context by memplug_context
-To:     Laurent Dufour <ldufour@linux.ibm.com>, akpm@linux-foundation.org,
-        Oscar Salvador <osalvador@suse.de>, mhocko@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
-        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20200914165042.96218-1-ldufour@linux.ibm.com>
- <20200914165042.96218-2-ldufour@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <d6ade681-2fb1-a1df-5673-bceacd1dfc55@redhat.com>
-Date:   Mon, 14 Sep 2020 19:10:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200914165042.96218-2-ldufour@linux.ibm.com>
+        id S1726106AbgINRNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:13:39 -0400
+Received: from mail-eopbgr140079.outbound.protection.outlook.com ([40.107.14.79]:39006
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726033AbgINRMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:12:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g79RKX/IGLkC3Ym/9GmhEx96UeZAZwA/kn4SuHHcowzXtyNBFIsWtAE2xhxY5hOR6xJE5WY2ohzIpQjGyhhUjhNnIMswm8fI0trKVlUTaj8j+oEUyz9DHnL3LuBqlu/xA8Ah5u73LFxH8cwR6a7/ZrfteaMm06vAiTStDY+JHFP0EFXik58mPLgPSC8gSV30kNtAuwyI0PA9OYxnuW1I1PBQUVOJhyUzg9qmG0jAggPQFM9OqJsoZfs4Be+ZGSSAcTUT6Z+G7cQG+B7r/LJhEw4KnvtdR1d1+HcvJDeFD168wV3OKbz6AWww5S18Vk3DLb5Aos5GCGf3u1JBHheWsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+lEMaqZPAGmfUmG53kQ2EAfcxgjdj7Bo38ItSZvEgZA=;
+ b=RDezNg4WSzmJ+7SRQF8DIHFjx85ZIpJEzyRCoJBMzehUJOtBc8NDGbzuI9W3jEv8OB9U1VvDdTvo0kGie/Y9WKo9X6Jv+smR70jvFLcHGhJnOUi5Q/tHbfsCPhDSM2UIL2krVrSCf5U73PQBFqnfHN8rwiwGxTh4k1qof5Pa0pwfno845n2BN3hLE2TnNDxikEqmugewiRfzHh1XwHRFgsNuY4GGdszuKdsJFzfMTWqhGtJqwtE2UwOs4PiROYKP5XBzofj/LIOrr+wVGjWt9Y81K0q3tLXKCSDIyH6DPZExz/6QzZp6eNKjKEsx1KQ0ibsNBAQnoaQmKCqeFYGXuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+lEMaqZPAGmfUmG53kQ2EAfcxgjdj7Bo38ItSZvEgZA=;
+ b=bNVDaxYOP3DSkLe6eHyQk7t3+IL/dRnGO+aYpeIyEiod3xvPBngVWYkTv17J/LND2rtHg/exWsfEwcMyVDjHzZS+AEKId9WR4uL2ycom2PzdiBiejFfSMvKxslfraDIpVn+9l03MpGLSJv6r+ALeTGvFpvvyaP7t/F+H+G9vaXo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+ by VI1PR04MB4047.eurprd04.prod.outlook.com (2603:10a6:803:40::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Mon, 14 Sep
+ 2020 17:12:17 +0000
+Received: from VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::847a:fcdb:3b92:7a7d]) by VI1PR04MB4046.eurprd04.prod.outlook.com
+ ([fe80::847a:fcdb:3b92:7a7d%5]) with mapi id 15.20.3370.019; Mon, 14 Sep 2020
+ 17:12:17 +0000
+Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
+ more than 8B IV
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+ <20200806163551.14395-2-andrei.botila@oss.nxp.com>
+ <20200821034651.GA25442@gondor.apana.org.au>
+ <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com>
+ <20200908221019.GA23497@gondor.apana.org.au>
+ <67159207-1082-48be-d085-971a84b525e0@nxp.com>
+ <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <38f9904b-5bf7-ea99-ed8a-27cb49f405bd@nxp.com>
+Date:   Mon, 14 Sep 2020 20:12:14 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM4PR05CA0036.eurprd05.prod.outlook.com (2603:10a6:205::49)
+ To VI1PR04MB4046.eurprd04.prod.outlook.com (2603:10a6:803:4d::29)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (78.97.206.147) by AM4PR05CA0036.eurprd05.prod.outlook.com (2603:10a6:205::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Mon, 14 Sep 2020 17:12:16 +0000
+X-Originating-IP: [78.97.206.147]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: a9860642-231e-407d-99ae-08d858d1553a
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4047:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB404759822DDA4197F0722C1E98230@VI1PR04MB4047.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CPxR1hqQFG5KPQZWLLjzheieMGgeIisxN4n/+wb5Cz6T/VFM9/w++KCef+OA95kpyzcxtMaUlLQ2dBAvJp4AJWiWV5fYU1YIVtLxgOFea2iQGoh3GUG4A5Sk0Mg1hyi/euy77jkZ+qJQJ/cOYk9iTfCZgGllSXhnyaj68lb3kmK5GOegLT9/f6HG7HKMMFj2RsOBzkivLs8xy/riYj4kwjlAz/B1cRnL0teE2Fk8p5ykej2mOym4kKSVL7sF1NPkJZQFqozeeQvOkRW6R1toj+ykUhSGXIixJVomw/Lx4+zy72smAmdEVCD6XDbnweDIk6XXTdrHau3xPz3avbedn++BxVkJ76um1ZrwJXqCYDKA6LKJTs7qGWrLlBtm40Zk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(39860400002)(376002)(31696002)(4326008)(16576012)(52116002)(26005)(66476007)(66556008)(86362001)(53546011)(66946007)(83380400001)(54906003)(956004)(5660300002)(2616005)(6486002)(478600001)(186003)(16526019)(8676002)(6916009)(8936002)(316002)(36756003)(2906002)(31686004)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: cF7IHlGBwd/Yc2TeiHRHti3q85kp1oxGHTG+CesXv2dCTm2dgVZAtgorm1mrcOfoIoUKe629lTY47muUTNqPHfCf/fSb45RIxUpKOT0qutDoDUcYq6rEk1dMz39k8COWEbzD5KuC9wE/uqhnmo32egk0//ue2N83CUZaLrtIG3iFO2ZQvig9jQBTPlQ40qlL52KYqbAF1NBhGRZ/WCQbLCYwHPmvRbvmH+AZwOt5uN0GXWR+lrtgEAkl0HGWQz+qNroV2N9f3dwhBe2aHxOXGEWUr1krzcssRFbvq9VqRdbXTyKXS8APR9SUUosyvQ4Hwp20kPryNLTVeF68BGNfehXWOpm0x4YB507DMCDEnwN+Ofz+vC1oauWwcUQZ8Oq8gTHXCIhKpeR5R4pHGicD3hcKN1ztu6wdk2h7irGj79rkYCItjFtzDRffI2Jf2qwSFnhfKFkpVF9HnYmsxNsvitLaDdh3eti2vqAUsmvkkae9fqGK91xndDrkLnN+0wjtr5FoRaJjr2W3RlQtX19bOzRfzcX+mM2JKZYxGple1onJOIBkUWeRw3LYdt8PLZVsKy/rknWFPPOUvO5II3ER3L2jSauIP5I0+I0zu77EMQkFzE6fdd/p6dGvzsWzAzyDI00/ud/cKprFzGdXAtuJDw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9860642-231e-407d-99ae-08d858d1553a
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2020 17:12:17.5877
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TAQ0T3thXMUC77FsVJdVhd4xCCGjh4xohxCRVqZ8asTk+Pf3KGdWoIyCnhDCSKL9kan8KsEPIqNCBOfz+09/6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4047
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.09.20 18:50, Laurent Dufour wrote:
-> The memmap_context is used to detect whether a memory operation is due to a
-> hot-add operation or happening at boot time.
+On 9/14/2020 7:28 PM, Ard Biesheuvel wrote:
+> On Mon, 14 Sep 2020 at 19:24, Horia Geantă <horia.geanta@nxp.com> wrote:
+>>
+>> On 9/9/2020 1:10 AM, Herbert Xu wrote:
+>>> On Tue, Sep 08, 2020 at 01:35:04PM +0300, Horia Geantă wrote:
+>>>>
+>>>>> Just go with the get_unaligned unconditionally.
+>>>>
+>>>> Won't this lead to sub-optimal code for ARMv7
+>>>> in case the IV is aligned?
+>>>
+>>> If this should be optimised in ARMv7 then that should be done
+>>> in get_unaligned itself and not open-coded.
+>>>
+>> I am not sure what's wrong with avoiding using the unaligned accessors
+>> in case data is aligned.
+>>
+>> Documentation/core-api/unaligned-memory-access.rst clearly states:
+>> These macros work for memory accesses of any length (not just 32 bits as
+>> in the examples above). Be aware that when compared to standard access of
+>> aligned memory, using these macros to access unaligned memory can be costly in
+>> terms of performance.
+>>
+>> So IMO it makes sense to use get_unaligned() only when needed.
+>> There are several cases of users doing this, e.g. siphash.
+>>
 > 
-> Make it general to the hotplug operation and rename it at memplug_context.
+> For ARMv7 code, using the unaligned accessors unconditionally is fine,
+> and it will not affect performance.
 > 
-> There is no functional change introduced by this patch
+> In general, when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is defined,
+> you can use the unaligned accessors. If it is not, it helps to have
+> different code paths.
 > 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
-> ---
->  arch/ia64/mm/init.c    |  6 +++---
->  include/linux/mm.h     |  2 +-
->  include/linux/mmzone.h | 11 ++++++++---
->  mm/memory_hotplug.c    |  2 +-
->  mm/page_alloc.c        | 10 +++++-----
->  5 files changed, 18 insertions(+), 13 deletions(-)
+arch/arm/include/asm/unaligned.h doesn't make use of
+linux/unaligned/access_ok.h, even if CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+is set.
+
+I understand the comment in the file, however using get_unaligned()
+unconditionally takes away the opportunity to generate optimized code
+(using ldrd/ldm) when data is aligned.
+
+> This is a bit murky, and through the years, the interpretation of
+> unaligned-memory-access.rst has shifted a bit, but in this case, it
+> makes no sense to make the distinction.
 > 
-> diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-> index 0b3fb4c7af29..b5054b5e77c8 100644
-> --- a/arch/ia64/mm/init.c
-> +++ b/arch/ia64/mm/init.c
-> @@ -538,7 +538,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
->  	if (map_start < map_end)
->  		memmap_init_zone((unsigned long)(map_end - map_start),
->  				 args->nid, args->zone, page_to_pfn(map_start),
-> -				 MEMMAP_EARLY, NULL);
-> +				 MEMPLUG_EARLY, NULL);
 
-I am pretty sure that won't compile (MEMINIT_EARLY).
-
-(same at other places)
-
-
--- 
 Thanks,
-
-David / dhildenb
-
+Horia
