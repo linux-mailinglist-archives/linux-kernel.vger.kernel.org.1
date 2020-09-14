@@ -2,117 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E828269717
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27547269715
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726217AbgINUwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:52:19 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26577 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726196AbgINUwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726156AbgINUwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 14 Sep 2020 16:52:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600116721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgINUvz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 16:51:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4839C06174A;
+        Mon, 14 Sep 2020 13:51:54 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 20:51:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600116713;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zdR+cMNYakSsSzOJ13pwg3JzHjsrpMrZyrN1lwqXeTQ=;
-        b=h0OFv+HySBQcjLq2n/MzQDnDvU98WgVMXEXIE4BUTGtJ/cmiWjmcRREGj4tIOQN95eYuDa
-        hoQvAPQczQGglZ/WRSxPB74aOyDnprfR/9f4rRrrYJYrihz67iVOgI8dI1fG5gnELCmiWZ
-        d+/NWFMMBEgLi00zl9K39p1TcreS5co=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-xZOsD-92Oi6Um44-kN2YeA-1; Mon, 14 Sep 2020 16:51:57 -0400
-X-MC-Unique: xZOsD-92Oi6Um44-kN2YeA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 227BC1882FB5;
-        Mon, 14 Sep 2020 20:51:55 +0000 (UTC)
-Received: from krava (unknown [10.40.192.180])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6793360C0F;
-        Mon, 14 Sep 2020 20:51:51 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 22:51:50 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 15/26] perf tools: Synthesize proc tasks with mmap3
-Message-ID: <20200914205150.GC1714160@krava>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <20200913210313.1985612-16-jolsa@kernel.org>
- <20200914160738.GJ160517@kernel.org>
+        bh=ydzS4LjDHHuUQo7y+TMVzF9Spgu4/8ruP1ZAuxKKJ4U=;
+        b=GMztMAEAMqlzffkpCTI2elIHG6Egg7omz1FDsK4r684ySHnti5IvuGKTOZeaI4VnH024GB
+        oC3bMMskdVBAgb3ZbQ39H2YU+cBhYiEz5GOMMKtupLCucHL/faE8Vy7XvL/YIUxS+jECQz
+        twWZUbypVX+SthCi55jpKhWg1Zp+SYG3PyzKb1sA+YPAy2yrxb9rU2HG5bGdqB6GhgTtYv
+        UiXlhgy/dx1KheyeIDa7pwI0a0APJIsY1ykGpUdGl3KDpQSYVuaodQ/Lhi/UGg8OSourAA
+        5NLTBuTOBi3m/wruVXHU11ztOFGmtrYqYvwFGobqPe9llXWkSQ1oNI4JjXdAeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600116713;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ydzS4LjDHHuUQo7y+TMVzF9Spgu4/8ruP1ZAuxKKJ4U=;
+        b=I1W2F+DThpQRC7FJcwSbAgVZu+7A+giwZtiXR9K/u/vLAbC4ed1jAGOgXPUIe/Np5OJTuU
+        BSCNSQNX1YkEkZAg==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/urgent] core/entry: Report syscall correctly for trace and audit
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200912005826.586171-1-keescook@chromium.org>
+References: <20200912005826.586171-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914160738.GJ160517@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Message-ID: <160011671176.15536.7429378178023419747.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 01:07:38PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Sun, Sep 13, 2020 at 11:03:02PM +0200, Jiri Olsa escreveu:
-> > Synthesizing proc tasks with mmap3 events so we can
-> > get build id data for synthesized maps as well.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/util/mmap.c             |  2 +-
-> >  tools/perf/util/synthetic-events.c | 72 +++++++++++++++++-------------
-> >  2 files changed, 43 insertions(+), 31 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
-> > index ab7108d22428..51f6f86580a9 100644
-> > --- a/tools/perf/util/mmap.c
-> > +++ b/tools/perf/util/mmap.c
-> > @@ -33,7 +33,7 @@ void mmap_cpu_mask__scnprintf(struct mmap_cpu_mask *mask, const char *tag)
-> >  
-> >  	len = bitmap_scnprintf(mask->bits, mask->nbits, buf, MASK_SIZE);
-> >  	buf[len] = '\0';
-> > -	pr_debug("%p: %s mask[%zd]: %s\n", mask, tag, mask->nbits, buf);
-> > +	pr_debug2("%p: %s mask[%zd]: %s\n", mask, tag, mask->nbits, buf);
-> >  }
-> 
-> Can this be in a separate patch?
+The following commit has been merged into the core/urgent branch of tip:
 
-ok
+Commit-ID:     b6ec413461034d49f9e586845825adb35ba308f6
+Gitweb:        https://git.kernel.org/tip/b6ec413461034d49f9e586845825adb35ba308f6
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Fri, 11 Sep 2020 17:58:26 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 14 Sep 2020 22:49:51 +02:00
 
->   
-> >  size_t mmap__mmap_len(struct mmap *map)
-> > diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-> > index 89b390623b63..bd6e7b84283d 100644
-> > --- a/tools/perf/util/synthetic-events.c
-> > +++ b/tools/perf/util/synthetic-events.c
-> > @@ -379,7 +379,7 @@ int perf_event__synthesize_mmap_events(struct perf_tool *tool,
-> >  	}
-> >  	io__init(&io, io.fd, bf, sizeof(bf));
-> >  
-> > -	event->header.type = PERF_RECORD_MMAP2;
-> > +	event->header.type = PERF_RECORD_MMAP3;
-> 
-> This also needs to check if the user is interested in build-id records.
-> If it is disabled, then using this new tool with mmap3 support will
-> generate perf.data files that will bot be grokked by older tools,
-> introducing an annoyance for people not interested in build-ids.
+core/entry: Report syscall correctly for trace and audit
 
-ok, this should disappear with if we stay with mmap2
-and do that union stuff
+On v5.8 when doing seccomp syscall rewrites (e.g. getpid into getppid
+as seen in the seccomp selftests), trace (and audit) correctly see the
+rewritten syscall on entry and exit:
 
-thanks,
-jirka
+	seccomp_bpf-1307  [000] .... 22974.874393: sys_enter: NR 110 (...
+	seccomp_bpf-1307  [000] .N.. 22974.874401: sys_exit: NR 110 = 1304
 
+With mainline we see a mismatched enter and exit (the original syscall
+is incorrectly visible on entry):
+
+	seccomp_bpf-1030  [000] ....    21.806766: sys_enter: NR 39 (...
+	seccomp_bpf-1030  [000] ....    21.806767: sys_exit: NR 110 = 1027
+
+When ptrace or seccomp change the syscall, this needs to be visible to
+trace and audit at that time as well. Update the syscall earlier so they
+see the correct value.
+
+Fixes: d88d59b64ca3 ("core/entry: Respect syscall number rewrites")
+Reported-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20200912005826.586171-1-keescook@chromium.org
+
+---
+ kernel/entry/common.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 1868359..6fdb610 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -60,13 +60,15 @@ static long syscall_trace_enter(struct pt_regs *regs, long syscall,
+ 			return ret;
+ 	}
+ 
++	/* Either of the above might have changed the syscall number */
++	syscall = syscall_get_nr(current, regs);
++
+ 	if (unlikely(ti_work & _TIF_SYSCALL_TRACEPOINT))
+ 		trace_sys_enter(regs, syscall);
+ 
+ 	syscall_enter_audit(regs, syscall);
+ 
+-	/* The above might have changed the syscall number */
+-	return ret ? : syscall_get_nr(current, regs);
++	return ret ? : syscall;
+ }
+ 
+ static __always_inline long
