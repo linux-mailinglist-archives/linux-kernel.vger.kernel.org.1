@@ -2,168 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65663268B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 15:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7829268B0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgINNAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 09:00:08 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:50168 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgINMwS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:52:18 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kHnOL-008gH1-8y; Mon, 14 Sep 2020 06:15:29 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:56556 helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kHnOK-00075s-47; Mon, 14 Sep 2020 06:15:29 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, christian@brauner.io,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, Eric Sandeen <sandeen@sandeen.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com
-References: <00000000000005f0b605af42ab4e@google.com>
-Date:   Mon, 14 Sep 2020 07:15:07 -0500
-In-Reply-To: <00000000000005f0b605af42ab4e@google.com> (syzbot's message of
-        "Mon, 14 Sep 2020 02:29:15 -0700")
-Message-ID: <87zh5stv04.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726282AbgINMcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:32:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726506AbgINMbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 08:31:35 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB9392220E;
+        Mon, 14 Sep 2020 12:20:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600086050;
+        bh=YriLuLaFHzLfRAoXWiSCNiRverNlmw+ZAkR2pmdisCw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lAyrt8Msk+qgwcGynhjL1jG4JJFYSkJICoVwEG5X9Ki7q5+u+PiE6K8WMcPcy+ceH
+         U+kw1F/b3sDTAl7If26HeT3jr9hABXjuKmlYEJWe5CIisAHxCp/aTHbi1ce6fuL/AR
+         RengwapvOITAcODLACP75ilW4+B3IOrCJUaO4k+g=
+Date:   Mon, 14 Sep 2020 13:20:43 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200914122042.GA24441@willie-the-truck>
+References: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kHnOK-00075s-47;;;mid=<87zh5stv04.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18B+cBqqvytF6PuLq3hLPyIGnQyI2PO/dI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3685]
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 749 ms - load_scoreonly_sql: 0.14 (0.0%),
-        signal_user_changed: 14 (1.9%), b_tie_ro: 12 (1.6%), parse: 1.82
-        (0.2%), extract_message_metadata: 27 (3.6%), get_uri_detail_list: 6
-        (0.7%), tests_pri_-1000: 20 (2.7%), tests_pri_-950: 1.40 (0.2%),
-        tests_pri_-900: 1.55 (0.2%), tests_pri_-90: 197 (26.3%), check_bayes:
-        190 (25.4%), b_tokenize: 14 (1.8%), b_tok_get_all: 74 (9.9%),
-        b_comp_prob: 3.6 (0.5%), b_tok_touch_all: 94 (12.5%), b_finish: 1.20
-        (0.2%), tests_pri_0: 472 (63.1%), check_dkim_signature: 0.66 (0.1%),
-        check_dkim_adsp: 2.4 (0.3%), poll_dns_idle: 0.50 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 6 (0.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: KASAN: unknown-crash Read in do_exit
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914083622.116554-1-ilias.apalodimas@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com> writes:
+On Mon, Sep 14, 2020 at 11:36:21AM +0300, Ilias Apalodimas wrote:
+> Running the eBPF test_verifier leads to random errors looking like this:
+> 
+> [ 6525.735488] Unexpected kernel BRK exception at EL1
+> [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
+> [ 6525.741609] Modules linked in: nls_utf8 cifs libdes libarc4 dns_resolver fscache binfmt_misc nls_ascii nls_cp437 vfat fat aes_ce_blk crypto_simd cryptd aes_ce_cipher ghash_ce gf128mul efi_pstore sha2_ce sha256_arm64 sha1_ce evdev efivars efivarfs ip_tables x_tables autofs4 btrfs blake2b_generic xor xor_neon zstd_compress raid6_pq libcrc32c crc32c_generic ahci xhci_pci libahci xhci_hcd igb libata i2c_algo_bit nvme realtek usbcore nvme_core scsi_mod t10_pi netsec mdio_devres of_mdio gpio_keys fixed_phy libphy gpio_mb86s7x
+> [ 6525.787760] CPU: 3 PID: 7881 Comm: test_verifier Tainted: G        W         5.9.0-rc1+ #47
+> [ 6525.796111] Hardware name: Socionext SynQuacer E-series DeveloperBox, BIOS build #1 Jun  6 2020
+> [ 6525.804812] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
+> [ 6525.810390] pc : bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
+> [ 6525.815613] lr : bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
+> [ 6525.820832] sp : ffff8000130cbb80
+> [ 6525.824141] x29: ffff8000130cbbb0 x28: 0000000000000000
+> [ 6525.829451] x27: 000005ef6fcbf39b x26: 0000000000000000
+> [ 6525.834759] x25: ffff8000130cbb80 x24: ffff800011dc7038
+> [ 6525.840067] x23: ffff8000130cbd00 x22: ffff0008f624d080
+> [ 6525.845375] x21: 0000000000000001 x20: ffff800011dc7000
+> [ 6525.850682] x19: 0000000000000000 x18: 0000000000000000
+> [ 6525.855990] x17: 0000000000000000 x16: 0000000000000000
+> [ 6525.861298] x15: 0000000000000000 x14: 0000000000000000
+> [ 6525.866606] x13: 0000000000000000 x12: 0000000000000000
+> [ 6525.871913] x11: 0000000000000001 x10: ffff8000000a660c
+> [ 6525.877220] x9 : ffff800010951810 x8 : ffff8000130cbc38
+> [ 6525.882528] x7 : 0000000000000000 x6 : 0000009864cfa881
+> [ 6525.887836] x5 : 00ffffffffffffff x4 : 002880ba1a0b3e9f
+> [ 6525.893144] x3 : 0000000000000018 x2 : ffff8000000a4374
+> [ 6525.898452] x1 : 000000000000000a x0 : 0000000000000009
+> [ 6525.903760] Call trace:
+> [ 6525.906202]  bpf_prog_c3d01833289b6311_F+0xc8/0x9f4
+> [ 6525.911076]  bpf_prog_d53bb52e3f4483f9_F+0x38/0xc8c
+> [ 6525.915957]  bpf_dispatcher_xdp_func+0x14/0x20
+> [ 6525.920398]  bpf_test_run+0x70/0x1b0
+> [ 6525.923969]  bpf_prog_test_run_xdp+0xec/0x190
+> [ 6525.928326]  __do_sys_bpf+0xc88/0x1b28
+> [ 6525.932072]  __arm64_sys_bpf+0x24/0x30
+> [ 6525.935820]  el0_svc_common.constprop.0+0x70/0x168
+> [ 6525.940607]  do_el0_svc+0x28/0x88
+> [ 6525.943920]  el0_sync_handler+0x88/0x190
+> [ 6525.947838]  el0_sync+0x140/0x180
+> [ 6525.951154] Code: d4202000 d4202000 d4202000 d4202000 (d4202000)
+> [ 6525.957249] ---[ end trace cecc3f93b14927e2 ]---
+> 
+> The reason seems to be the offset[] creation and usage ctx->offset[]
 
-> Hello,
->
-> syzbot found the following issue on:
+"seems to be"? Are you unsure?
 
-Skimming the code it appears this is a feature not a bug.
+> while building the eBPF body.  The code currently omits the first 
+> instruction, since build_insn() will increase our ctx->idx before saving 
+> it.  When "taken loop with back jump to 1st insn" test runs it will
+> eventually call bpf2a64_offset(-1, 2, ctx). Since negative indexing is
+> permitted, the current outcome depends on the value stored in
+> ctx->offset[-1], which has nothing to do with our array.
+> If the value happens to be 0 the tests will work. If not this error
+> triggers.
+> 
+> So let's fix it by creating the ctx->offset[] correctly in the first
+> place and account for the extra instruction while calculating the arm
+> instruction offsets.
 
-The stack_not_used code deliberately reads the unused/unitiailized
-portion of the stack, to see if that part of the stack was used.
+No Fixes: tag?
 
-Perhaps someone wants to make this play nice with KASAN?
+> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 
-KASAN should be able to provide better information than reading the
-stack to see if it is still zeroed out.
+Non-author signoffs here. What's going on?
 
-Eric
-
-> HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=170a7cf1900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=d9ae84069cff753e94bf
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10642545900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141f2bed900000
->
-> Bisection is inconclusive: the issue happens on the oldest tested release.
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b9ffcd900000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1479ffcd900000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1079ffcd900000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: unknown-crash in stack_not_used include/linux/sched/task_stack.h:101 [inline]
-> BUG: KASAN: unknown-crash in check_stack_usage kernel/exit.c:692 [inline]
-> BUG: KASAN: unknown-crash in do_exit+0x24a6/0x29f0 kernel/exit.c:849
-> Read of size 8 at addr ffffc9000cf30130 by task syz-executor624/10359
->
-> CPU: 1 PID: 10359 Comm: syz-executor624 Not tainted 5.9.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
->  __kasan_report mm/kasan/report.c:513 [inline]
->  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
->  stack_not_used include/linux/sched/task_stack.h:101 [inline]
->  check_stack_usage kernel/exit.c:692 [inline]
->  do_exit+0x24a6/0x29f0 kernel/exit.c:849
->  do_group_exit+0x125/0x310 kernel/exit.c:903
->  get_signal+0x428/0x1f00 kernel/signal.c:2757
->  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
->  exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
->  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
->  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x446b99
-> Code: Bad RIP value.
-> RSP: 002b:00007f70f5ed9d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-> RAX: 0000000000002878 RBX: 00000000006dbc58 RCX: 0000000000446b99
-> RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000020002004ffc
-> RBP: 00000000006dbc50 R08: ffffffffffffffff R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc5c
-> R13: 00007f70f5ed9d20 R14: 00007f70f5ed9d20 R15: 000000000000002d
->
->
-> Memory state around the buggy address:
->  ffffc9000cf30000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffffc9000cf30080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>ffffc9000cf30100: 00 00 00 00 00 00 70 07 00 00 77 00 00 00 00 00
->                                      ^
->  ffffc9000cf30180: 00 00 70 07 00 00 70 07 00 00 00 00 77 00 70 07
->  ffffc9000cf30200: 00 70 07 00 77 00 00 00 00 00 70 07 00 00 00 00
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+Will
