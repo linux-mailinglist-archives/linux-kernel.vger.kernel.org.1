@@ -2,66 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610F1268F15
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E46268F34
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 17:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgINPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 11:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726028AbgINPHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:07:35 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726168AbgINPKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 11:10:32 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45503 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726039AbgINPJv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:09:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600096190;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=6+JqwjvDWrEa3i/FAJIeAH613qFKBYUmXeFNszVZCpA=;
+        b=ZFG7Q4czu8S8EgavPdWBYpc8cHNMNA1DuOS2Abjp6aKlovdY0cuzfE/KBm4Odg098zDVS6
+        A6HlnoLmZPdVMPKZdc+4iPOKGM+yQHoprP3O5dMbAmQtELfo074KAKJ32+va0bgJuQfNhv
+        RF/wVcQyC6IopHnPrpj8AoiEr5/enlU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-ld3toLdkPHSfv9Ugq9g3GQ-1; Mon, 14 Sep 2020 11:09:46 -0400
+X-MC-Unique: ld3toLdkPHSfv9Ugq9g3GQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B52CA20829;
-        Mon, 14 Sep 2020 15:07:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600096055;
-        bh=V3/far4j5J/ompVAq3Gu1Xzbic6PsatK795CwgtYLtw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IvLNo2OdWWgeMdGtk0Ym99FxTC82IleK73rFwU+2z0OWokNTygXXjHcdI8TdvkHCM
-         /8hxRe2eU5LHkBi2JWgRHb6mirJrDewWw3BeyZy8FPsm4sOX1/sMaYGVWtyNkv3fPh
-         Htklbwaj+1QdGw9M8FVvTwquub29NbefPUy/Bjds=
-From:   Will Deacon <will@kernel.org>
-To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, shan.gavin@gmail.com,
-        linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        mark.rutland@arm.com
-Subject: Re: [PATCH v2] arm64/mm: Refactor {pgd, pud, pmd, pte}_ERROR()
-Date:   Mon, 14 Sep 2020 16:07:28 +0100
-Message-Id: <160008622201.2014428.16589477357188793973.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200913234730.23145-1-gshan@redhat.com>
-References: <20200913234730.23145-1-gshan@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61ABD91313E;
+        Mon, 14 Sep 2020 15:09:44 +0000 (UTC)
+Received: from llong.com (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D111260DA0;
+        Mon, 14 Sep 2020 15:09:37 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+Date:   Mon, 14 Sep 2020 11:09:28 -0400
+Message-Id: <20200914150928.7841-1-longman@redhat.com>
+In-Reply-To: <20200914024452.19167-1-longman@redhat.com>
+References: <20200914024452.19167-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020 09:47:30 +1000, Gavin Shan wrote:
-> The function __{pgd, pud, pmd, pte}_error() are introduced so that
-> they can be called by {pgd, pud, pmd, pte}_ERROR(). However, some
-> of the functions could never be called when the corresponding page
-> table level isn't enabled. For example, __{pud, pmd}_error() are
-> unused when PUD and PMD are folded to PGD.
-> 
-> This removes __{pgd, pud, pmd, pte}_error() and call pr_err() from
-> {pgd, pud, pmd, pte}_ERROR() directly, similar to what x86/powerpc
-> are doing. With this, the code looks a bit simplified either.
+The mem_cgroup_get_max() function used to get memory+swap max from
+both the v1 memsw and v2 memory+swap page counters & return the maximum
+of these 2 values. This is redundant and it is more efficient to just
+get either the v1 or the v2 values depending on which one is currently
+in use.
 
-Applied to arm64 (for-next/misc), thanks!
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ mm/memcontrol.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-[1/1] arm64/mm: Refactor {pgd, pud, pmd, pte}_ERROR()
-      https://git.kernel.org/arm64/c/2cf660eb81e9
-
-Cheers,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8c74f1200261..cad1ac4551ad 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+  */
+ unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+ {
+-	unsigned long max;
+-
+-	max = READ_ONCE(memcg->memory.max);
+-	if (mem_cgroup_swappiness(memcg)) {
+-		unsigned long memsw_max;
+-		unsigned long swap_max;
+-
+-		memsw_max = memcg->memsw.max;
+-		swap_max = READ_ONCE(memcg->swap.max);
+-		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+-		max = min(max + swap_max, memsw_max);
++	unsigned long max = READ_ONCE(memcg->memory.max);
++
++	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
++		if (mem_cgroup_swappiness(memcg))
++			max += min(READ_ONCE(memcg->swap.max),
++				   (unsigned long)total_swap_pages);
++	} else { /* v1 */
++		if (mem_cgroup_swappiness(memcg)) {
++			/* Calculate swap excess capacity from memsw limit */
++			unsigned long swap = READ_ONCE(memcg->memsw.max) - max;
++
++			max += min(swap, (unsigned long)total_swap_pages);
++		}
+ 	}
+ 	return max;
+ }
 -- 
-Will
+2.18.1
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
