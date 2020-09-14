@@ -2,211 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B76026915A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620E3269152
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgINQVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:21:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726378AbgINQRA (ORCPT
+        id S1725999AbgINQVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:21:04 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:29880 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726399AbgINQRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 12:17:00 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34824C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:16:50 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l67so279455ybb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 09:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=YI5TFjrZrW6iX6wLKYhaDvA2UAvnRhVpfjmVtoFV008=;
-        b=vXMRc/pNGgQ0c8UXl2DPqopDPJA6DtVr6/XcYChPaglz/iNglFqK+mTodoVaHIdwpq
-         C63+5CRQO9d5ztZ7r+1Sno5e3tFMg7ZXQ8fjZ/qU4P0tAQhOlGrOed070oTIGc0RJk3Y
-         r+CIvaxawo4c7O13+z0RXgz8AODB/woVEs8iKVP9Lv0IriRJA0DNi1zTHuxsf4ck56dd
-         iTMoPK899e5pa3fFdpKcQ7EZAF9ohW2tXpd4m2uDwHpi3EQYnXV5V5o0vEYUBQZVzVSU
-         hD520P01MTbJhxV2wfRFrGTbKLPSln2glDgk43McGyxujSODT7H1Ye/jvP5Uja4yG0uO
-         T2Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YI5TFjrZrW6iX6wLKYhaDvA2UAvnRhVpfjmVtoFV008=;
-        b=Y0K4p9JHhH6WQzcHH0ykQ50fQ/CwkpeHpZIZ6+jTSqzWdWBiZhT1J/9M6+V4+/0hdn
-         9d7tGQD5AFgZrppjEiTGm737JfDNa2VCw/w4riXF3sCVMmS+DpytDjOJWcUjl24bqTAM
-         lAjcy3VX/pphBziP0ILb8xGRhYYoln+d9h+WiFI6Eu2z3pPMSjxrB9PLj5iKPQuDlDNJ
-         rNmt37LAr0cYGgpcWeI5lQCRWLdg2XT+CZ6e25/Uin4ePAp0mazMKulFLsRIL1hgYKi2
-         S1/YtAk3WOw9ZgcdzmVlyqFrtTC6OZdhu06DovVdJxuvbmXm/if/tQcQMrTzfouLWRb7
-         0FsQ==
-X-Gm-Message-State: AOAM530WWuagbNYlCQ22Wm9/4+VCh+coRGz5jmehaUXE+pnjXGBg7vzw
-        LsdPEaitZjExpGrYpPYDdeJm8Sh0lpbZKe5zVIE=
-X-Google-Smtp-Source: ABdhPJwD7JVagoDruqSqJDoFs6vE126qHPtYArFvvt+8uZMKEwM2SSkjvjwott5vd30JoTaEVIfYPDYNURSk750kq7o=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:ce90:: with SMTP id
- x138mr2809847ybe.95.1600100209393; Mon, 14 Sep 2020 09:16:49 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 09:16:43 -0700
-In-Reply-To: <20200914160958.889694-1-ndesaulniers@google.com>
-Message-Id: <20200914161643.938408-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20200914160958.889694-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
-Subject: [PATCH v5] lib/string.c: implement stpcpy
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Andy Lavr <andy.lavr@gmail.com>, Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        stable@vger.kernel.org
+        Mon, 14 Sep 2020 12:17:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600100236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1rPx5UZdSZkkl2+kwuF5ixN5RaMtxpW+jRF3FLv45IQ=;
+        b=KRNEXBborX3A9tVgtRspLMtWMCXVkIdc7Cnt6O+yJJKZa4SEpoqarG94BfsaoqwePGaO9d
+        7ldvKQQHaLFLZUezsEvGc6QsSdbFIpUaLmVg1ePDIKk1grl28qcFoNmjrWUqoX8B3h/aae
+        zV8l10EA7qebgY0ajMG+AQaiaJ7BhWQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-pEpxIfFmOVWf5HYfLbDg2w-1; Mon, 14 Sep 2020 12:17:12 -0400
+X-MC-Unique: pEpxIfFmOVWf5HYfLbDg2w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 262721882FBB;
+        Mon, 14 Sep 2020 16:17:10 +0000 (UTC)
+Received: from ovpn-113-249.rdu2.redhat.com (ovpn-113-249.rdu2.redhat.com [10.10.113.249])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D8377513D;
+        Mon, 14 Sep 2020 16:17:08 +0000 (UTC)
+Message-ID: <c48c5eaa09d1ea5b78b12b545c034d1e937c49ba.camel@redhat.com>
+Subject: Re: [PATCH v2 3/8] mm: Optimise madvise WILLNEED
+From:   Qian Cai <cai@redhat.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org
+Cc:     intel-gfx@lists.freedesktop.org, Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Auld <matthew.auld@intel.com>
+Date:   Mon, 14 Sep 2020 12:17:07 -0400
+In-Reply-To: <20200910183318.20139-4-willy@infradead.org>
+References: <20200910183318.20139-1-willy@infradead.org>
+         <20200910183318.20139-4-willy@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM implemented a recent "libcall optimization" that lowers calls to
-`sprintf(dest, "%s", str)` where the return value is used to
-`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-in parsing format strings.  `stpcpy` is just like `strcpy` except it
-returns the pointer to the new tail of `dest`.  This optimization was
-introduced into clang-12.
+On Thu, 2020-09-10 at 19:33 +0100, Matthew Wilcox (Oracle) wrote:
+> Instead of calling find_get_entry() for every page index, use an XArray
+> iterator to skip over NULL entries, and avoid calling get_page(),
+> because we only want the swap entries.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Implement this so that we don't observe linkage failures due to missing
-symbol definitions for `stpcpy`.
+Reverting the "Return head pages from find_*_entry" patchset [1] up to this
+patch fixed the issue that LTP madvise06 test [2] would trigger endless soft-
+lockups below. It does not help after applied patches fixed other separate
+issues in the patchset [3][4].
 
-Similar to last year's fire drill with:
-commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+[1] https://lore.kernel.org/intel-gfx/20200910183318.20139-1-willy@infradead.org/ 
+[2] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/madvise/madvise06.c
+[3] https://lore.kernel.org/intel-gfx/20200914112738.GM6583@casper.infradead.org/
+[4] https://lore.kernel.org/lkml/20200914115559.GN6583@casper.infradead.org/
 
-The kernel is somewhere between a "freestanding" environment (no full libc)
-and "hosted" environment (many symbols from libc exist with the same
-type, function signature, and semantics).
+[ 2653.179563][    C4] CPU: 4 PID: 23320 Comm: madvise06 Not tainted 5.9.0-rc5-next-20200914+ #2
+[ 2653.220176][    C4] Hardware name: HP ProLiant BL660c Gen9, BIOS I38 10/17/2018
+[ 2653.254908][    C4] RIP: 0010:lock_acquire+0x211/0x8e0
+[ 2653.278534][    C4] Code: 83 c0 03 38 d0 7c 08 84 d2 0f 85 3a 05 00 00 8b 85 04 08 00 00 83 e8 01 89 85 04 08 00 00 66 85 c0 0f 85 9a 04 00 00 41 52 9d <48> b8 00 00 00 00 00 fc ff df 48 01 c3 c7 03 00 00 00 00 c7 43 08
+[ 2653.369929][    C4] RSP: 0018:ffffc9000e1bf9f0 EFLAGS: 00000246
+[ 2653.399398][    C4] RAX: 0000000000000000 RBX: 1ffff92001c37f41 RCX: 1ffff92001c37f27
+[ 2653.437720][    C4] RDX: 0000000000000000 RSI: 0000000029956a3e RDI: ffff889042f40844
+[ 2653.475829][    C4] RBP: ffff889042f40040 R08: fffffbfff5083905 R09: fffffbfff5083905
+[ 2653.511611][    C4] R10: 0000000000000246 R11: fffffbfff5083904 R12: ffffffffa74ce320
+[ 2653.547396][    C4] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[ 2653.582938][    C4] FS:  00007f1fc85e4600(0000) GS:ffff88881e100000(0000) knlGS:0000000000000000
+[ 2653.622910][    C4] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2653.652310][    C4] CR2: 0000000000620050 CR3: 000000054d438002 CR4: 00000000001706e0
+[ 2653.688228][    C4] Call Trace:
+[ 2653.702537][    C4]  ? rcu_read_unlock+0x40/0x40
+[ 2653.723647][    C4]  ? find_held_lock+0x33/0x1c0
+[ 2653.744708][    C4]  ? __read_swap_cache_async+0x18f/0x870
+[ 2653.770547][    C4]  get_swap_device+0xf5/0x280
+rcu_read_lock at include/linux/rcupdate.h:642
+(inlined by) get_swap_device at mm/swapfile.c:1303
+[ 2653.791303][    C4]  ? get_swap_device+0xce/0x280
+[ 2653.812693][    C4]  ? swap_page_trans_huge_swapped+0x2a0/0x2a0
+[ 2653.839963][    C4]  __read_swap_cache_async+0x10c/0x870
+__read_swap_cache_async at mm/swap_state.c:469
+[ 2653.864243][    C4]  ? rcu_read_lock_sched_held+0x9c/0xd0
+[ 2653.890657][    C4]  ? find_get_incore_page+0x220/0x220
+[ 2653.916978][    C4]  ? rcu_read_lock_held+0x9c/0xb0
+[ 2653.940235][    C4]  ? find_held_lock+0x33/0x1c0
+[ 2653.961325][    C4]  ? do_madvise.part.30+0xd11/0x1b70
+[ 2653.984922][    C4]  ? lock_downgrade+0x730/0x730
+[ 2654.006502][    C4]  read_swap_cache_async+0x60/0xb0
+read_swap_cache_async at mm/swap_state.c:564
+[ 2654.029694][    C4]  ? __read_swap_cache_async+0x870/0x870
+[ 2654.055486][    C4]  ? xas_find+0x410/0x6c0
+[ 2654.074663][    C4]  do_madvise.part.30+0xd47/0x1b70
+force_shm_swapin_readahead at mm/madvise.c:243
+(inlined by) madvise_willneed at mm/madvise.c:277
+(inlined by) madvise_vma at mm/madvise.c:939
+(inlined by) do_madvise at mm/madvise.c:1142
+[ 2654.097959][    C4]  ? find_held_lock+0x33/0x1c0
+[ 2654.119031][    C4]  ? swapin_walk_pmd_entry+0x430/0x430
+[ 2654.143518][    C4]  ? down_read_nested+0x420/0x420
+[ 2654.165748][    C4]  ? rcu_read_lock_sched_held+0x9c/0xd0
+[ 2654.190523][    C4]  ? __x64_sys_madvise+0xa1/0x110
+[ 2654.212973][    C4]  __x64_sys_madvise+0xa1/0x110
+[ 2654.233976][    C4]  ? syscall_enter_from_user_mode+0x1c/0x50
+[ 2654.260983][    C4]  do_syscall_64+0x33/0x40
+[ 2654.281132][    C4]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 2654.307623][    C4] RIP: 0033:0x7f1fc80fca6b
+[ 2654.327125][    C4] Code: 64 89 02 b8 ff ff ff ff c3 48 8b 15 17 54 2c 00 f7 d8 64 89 02 b8 ff ff ff ff eb bc 0f 1f 00 f3 0f 1e fa b8 1c 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ed 53 2c 00 f7 d8 64 89 01 48
+[ 2654.420246][    C4] RSP: 002b:00007fff53609998 EFLAGS: 00000202 ORIG_RAX: 000000000000001c
+[ 2654.458926][    C4] RAX: ffffffffffffffda RBX: 00007f1fc85e4580 RCX: 00007f1fc80fca6b
+[ 2654.494295][    C4] RDX: 0000000000000003 RSI: 0000000019000000 RDI: 00007f1faf006000
+[ 2654.530104][    C4] RBP: 00007f1faf006000 R08: 0000000000000000 R09: 00007fff53609284
+[ 2654.566057][    C4] R10: 0000000000000003 R11: 0000000000000202 R12: 0000000000000000
+[ 2654.601697][    C4] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+...
+[ 2846.587644][  T353] Showing all locks held in the system:
+[ 2846.622367][  T353] 1 lock held by khungtaskd/353:
+[ 2846.644378][  T353]  #0: ffffffffa74ce320 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire.constprop.51+0x0/0x30
+[ 2846.695738][  T353] 1 lock held by khugepaged/361:
+[ 2846.718056][  T353]  #0: ffffffffa75418e8 (lock#4){+.+.}-{3:3}, at: lru_add_drain_all+0x55/0x5f0
+[ 2846.758184][  T353] 1 lock held by madvise06/23320:
+[ 2846.780486][  T353] 
+[ 2846.790445][  T353] =============================================
 
-As H. Peter Anvin notes, there's not really a great way to inform the
-compiler that you're targeting a freestanding environment but would like
-to opt-in to some libcall optimizations (see pr/47280 below), rather than
-opt-out.
-
-Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-and Clang, and Clang is missing many __builtin_* definitions, which I
-consider a bug in Clang and am working on fixing.
-
-Masahiro summarizes the subtle distinction between compilers justly:
-  To prevent transformation from foo() into bar(), there are two ways in
-  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
-  only one in GCC; -fno-buitin-foo.
-
-(Any difference in that behavior in Clang is likely a bug from a missing
-__builtin_* definition.)
-
-Masahiro also notes:
-  We want to disable optimization from foo() to bar(),
-  but we may still benefit from the optimization from
-  foo() into something else. If GCC implements the same transform, we
-  would run into a problem because it is not -fno-builtin-bar, but
-  -fno-builtin-foo that disables that optimization.
-
-  In this regard, -fno-builtin-foo would be more future-proof than
-  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
-  may want to prevent calls from foo() being optimized into calls to
-  bar(), but we still may want other optimization on calls to foo().
-
-It seems that compilers today don't quite provide the fine grain control
-over which libcall optimizations pseudo-freestanding environments would
-prefer.
-
-Finally, Kees notes that this interface is unsafe, so we should not
-encourage its use.  As such, I've removed the declaration from any
-header, but it still needs to be exported to avoid linkage errors in
-modules.
-
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Suggested-by: Joe Perches <joe@perches.com>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://bugs.llvm.org/show_bug.cgi?id=47162
-Link: https://bugs.llvm.org/show_bug.cgi?id=47280
-Link: https://github.com/ClangBuiltLinux/linux/issues/1126
-Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
-Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
-Link: https://reviews.llvm.org/D85963
----
-Changes V5:
-* fix missing parens in comment.
-
-Changes V4:
-* Roll up Kees' comment fixup from
-  https://lore.kernel.org/lkml/202009060302.4574D8D0E0@keescook/#t.
-* Keep Nathan's tested by tag.
-* Add Kees' reviewed by tag from
-  https://lore.kernel.org/lkml/202009031446.3865FE82B@keescook/.
-
-Changes V3:
-* Drop Sami's Tested by tag; newer patch.
-* Add EXPORT_SYMBOL as per Andy.
-* Rewrite commit message, rewrote part of what Masahiro said to be
-  generic in terms of foo() and bar().
-* Prefer %NUL-terminated to NULL terminated. NUL is the ASCII character
-  '\0', as per Arvind and Rasmus.
-
-Changes V2:
-* Added Sami's Tested by; though the patch changed implementation, the
-  missing symbol at link time was the problem Sami was observing.
-* Fix __restrict -> __restrict__ typo as per Joe.
-* Drop note about restrict from commit message as per Arvind.
-* Fix NULL -> NUL as per Arvind; NUL is ASCII '\0'. TIL
-* Fix off by one error as per Arvind; I had another off by one error in
-  my test program that was masking this.
-
- lib/string.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/lib/string.c b/lib/string.c
-index 6012c385fb31..4288e0158d47 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
- }
- EXPORT_SYMBOL(strscpy_pad);
- 
-+/**
-+ * stpcpy - copy a string from src to dest returning a pointer to the new end
-+ *          of dest, including src's %NUL-terminator. May overrun dest.
-+ * @dest: pointer to end of string being copied into. Must be large enough
-+ *        to receive copy.
-+ * @src: pointer to the beginning of string being copied from. Must not overlap
-+ *       dest.
-+ *
-+ * stpcpy differs from strcpy in a key way: the return value is a pointer
-+ * to the new %NUL-terminating character in @dest. (For strcpy, the return
-+ * value is a pointer to the start of @dest). This interface is considered
-+ * unsafe as it doesn't perform bounds checking of the inputs. As such it's
-+ * not recommended for usage. Instead, its definition is provided in case
-+ * the compiler lowers other libcalls to stpcpy.
-+ */
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
-+char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
-+{
-+	while ((*dest++ = *src++) != '\0')
-+		/* nothing */;
-+	return --dest;
-+}
-+EXPORT_SYMBOL(stpcpy);
-+
- #ifndef __HAVE_ARCH_STRCAT
- /**
-  * strcat - Append one %NUL-terminated string to another
--- 
-2.28.0.618.gf4bc123cb7-goog
+> ---
+>  mm/madvise.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index dd1d43cf026d..96189acd6969 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -224,25 +224,28 @@ static void force_shm_swapin_readahead(struct
+> vm_area_struct *vma,
+>  		unsigned long start, unsigned long end,
+>  		struct address_space *mapping)
+>  {
+> -	pgoff_t index;
+> +	XA_STATE(xas, &mapping->i_pages, linear_page_index(vma, start));
+> +	pgoff_t end_index = end / PAGE_SIZE;
+>  	struct page *page;
+> -	swp_entry_t swap;
+>  
+> -	for (; start < end; start += PAGE_SIZE) {
+> -		index = ((start - vma->vm_start) >> PAGE_SHIFT) + vma->vm_pgoff;
+> +	rcu_read_lock();
+> +	xas_for_each(&xas, page, end_index) {
+> +		swp_entry_t swap;
+>  
+> -		page = find_get_entry(mapping, index);
+> -		if (!xa_is_value(page)) {
+> -			if (page)
+> -				put_page(page);
+> +		if (!xa_is_value(page))
+>  			continue;
+> -		}
+> +		rcu_read_unlock();
+> +
+>  		swap = radix_to_swp_entry(page);
+>  		page = read_swap_cache_async(swap, GFP_HIGHUSER_MOVABLE,
+>  							NULL, 0, false);
+>  		if (page)
+>  			put_page(page);
+> +
+> +		rcu_read_lock();
+> +		xas_reset(&xas);
+>  	}
+> +	rcu_read_unlock();
+>  
+>  	lru_add_drain();	/* Push any new pages onto the LRU now */
+>  }
 
