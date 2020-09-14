@@ -2,217 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019C6268B7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA76268B74
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbgINMwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 08:52:01 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:50020 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgINMsd (ORCPT
+        id S1726580AbgINMvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 08:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbgINMsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Sep 2020 08:48:33 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kHntg-00ABqm-0Z; Mon, 14 Sep 2020 06:47:52 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kHnte-0002Hj-Mj; Mon, 14 Sep 2020 06:47:51 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <00000000000005f0b605af42ab4e@google.com>
-        <87zh5stv04.fsf@x220.int.ebiederm.org>
-        <CACT4Y+ZcrHFS45-NFxZKWdoesCdLwk-_1YvMJr01FRL1sG-ZeQ@mail.gmail.com>
-Date:   Mon, 14 Sep 2020 07:47:30 -0500
-In-Reply-To: <CACT4Y+ZcrHFS45-NFxZKWdoesCdLwk-_1YvMJr01FRL1sG-ZeQ@mail.gmail.com>
-        (Dmitry Vyukov's message of "Mon, 14 Sep 2020 14:23:01 +0200")
-Message-ID: <87imcgtti5.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404F1C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:47:59 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id a12so17403174eds.13
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 05:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OgGiEsLuSuiUe7mlIYYTMOaSRD7tRf9jAKMOWkJf9zs=;
+        b=QFRPSGVQl7B+K/P2IZsQvAYmbAXW++iaHs8RsX8FifHoNzVt3vliZEMqSv3Pfsje0z
+         hT+PZPy+mnzak0iEQzBnudiUlAAuaw4S/vdxGSbTErE2Py23lR2yE+gtgjE2oOjfgcKY
+         VinxEusaZtclWKO2KNMMXkoZC+8cIlxLvQrHESJcDLNDzAr9VmWljDq+ARl6w6Bat4Ug
+         CkULXJ2fYOw9EDT8sc/mZvxHj3aPeIkWeijRG8MvsJeDGflDMidBb0wEBko/bLbcEzK8
+         V93heRhefUiy/8fBCPvOWy8bPjbsQKivmyGFHpTH5wkMGveB1vel91jKtI45KPKF5rqc
+         ZrSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OgGiEsLuSuiUe7mlIYYTMOaSRD7tRf9jAKMOWkJf9zs=;
+        b=Qd90yQlwgyT3u004ovBmC3UjqhdtaOLn7CJrUi03DKerM09ykaLtih0E1T2q9mmwaK
+         TWOfsE4Cm3813G2e0TlAzusiu6awl86O573B2PZMx91ise1ScVLEtPic48aR5H0IDbYp
+         KFUM0dsmdfg4wBvscZf3Hsp04bakPIP3Pga/kU/Ry+9wJiJY0vVjVhpiLaDx/3ioh9iM
+         k6HANpdt+QHXzgGdUcubs/XjSjpsH6m7Q8gYS0B+5K+cm1IhE2ykO3lzsk/R1W9srWeF
+         ypHnDVYZBZCCzAeqdVtwkENhCw+GRFTsVycEmmkRje9Am9ll0lf/kvweAX97X3a5OHuS
+         gp7A==
+X-Gm-Message-State: AOAM533P3S2ZpO7bcVpjrutuQY8htetkN7V+ktV7v77oO6mdi/1wHskJ
+        eTULiGlq2r2dOs9jJjkntLJ+YpswxfGaXbbaRORNztWfll8=
+X-Google-Smtp-Source: ABdhPJxIivdRt4uyXS9BgZTHKrXstL1j9lZiOyppCPUn8u7Gwy/aAA6UM6Ecd0klQSsnMBoyQYxvQTiLRTY6uRSHy+w=
+X-Received: by 2002:a05:6402:17ec:: with SMTP id t12mr16394883edy.328.1600087677902;
+ Mon, 14 Sep 2020 05:47:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kHnte-0002Hj-Mj;;;mid=<87imcgtti5.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19LXviMypYNBasGVGCTSKwCdfsubmY84mc=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,
-        XM_B_SpammyWords,XM_B_SpammyWords2 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3594]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.8 XM_B_SpammyWords2 Two or more commony used spammy words
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Dmitry Vyukov <dvyukov@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 979 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 12 (1.2%), b_tie_ro: 10 (1.1%), parse: 1.46
-        (0.1%), extract_message_metadata: 35 (3.6%), get_uri_detail_list: 9
-        (0.9%), tests_pri_-1000: 30 (3.1%), tests_pri_-950: 1.38 (0.1%),
-        tests_pri_-900: 1.08 (0.1%), tests_pri_-90: 231 (23.6%), check_bayes:
-        218 (22.3%), b_tokenize: 25 (2.6%), b_tok_get_all: 14 (1.4%),
-        b_comp_prob: 5 (0.5%), b_tok_touch_all: 168 (17.2%), b_finish: 2.7
-        (0.3%), tests_pri_0: 648 (66.2%), check_dkim_signature: 1.07 (0.1%),
-        check_dkim_adsp: 2.4 (0.2%), poll_dns_idle: 0.58 (0.1%), tests_pri_10:
-        2.2 (0.2%), tests_pri_500: 12 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: KASAN: unknown-crash Read in do_exit
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20200909102640.1657622-1-warthog618@gmail.com>
+In-Reply-To: <20200909102640.1657622-1-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 14 Sep 2020 14:47:47 +0200
+Message-ID: <CAMpxmJUfsYtc_+e_gCaJuA=68U1e7df5URHCGj+bdaTqtJiHdw@mail.gmail.com>
+Subject: Re: [PATCH v8 00/20] gpio: cdev: add uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> writes:
-
-> On Mon, Sep 14, 2020 at 2:15 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> syzbot <syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com> writes:
->>
->> > Hello,
->> >
->> > syzbot found the following issue on:
->>
->> Skimming the code it appears this is a feature not a bug.
->>
->> The stack_not_used code deliberately reads the unused/unitiailized
->> portion of the stack, to see if that part of the stack was used.
->>
->> Perhaps someone wants to make this play nice with KASAN?
->>
->> KASAN should be able to provide better information than reading the
->> stack to see if it is still zeroed out.
->>
->> Eric
+On Wed, Sep 9, 2020 at 12:27 PM Kent Gibson <warthog618@gmail.com> wrote:
 >
-> Hi Eric,
+> This patchset defines and implements a new version of the
+> GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
+> support for debounce, event sequence numbers, and allow for requested
+> lines with different configurations.
+> It provides some future proofing by adding optional configuration fields
+> and padding reserved for future use.
 >
-> Thanks for looking into this.
+> The series can be partitioned into three blocks; the first two patches
+> are minor fixes that impact later patches, the next eleven contain the
+> v2 uAPI definition and implementation, and the final seven port the GPIO
+> tools to the v2 uAPI and extend them to use new uAPI features.
 >
-> There may be something else in play here. Unused parts of the stack
-> are supposed to have zero shadow. The stack instrumentation code
-> assumes that. If there is some garbage left in the shadow (like these
-> "70 07 00 00 77" in this case), then it will lead to very obscure
-> false positives later (e.g. some out-of-bounds on stack which can't be
-> explained easily).
-> If some code does something like "jongjmp", then we should clear the
-> stack at the point of longjmp. I think we did something similar for
-> something called jprobles, but jprobes were removed at some point.
+> The more complicated patches include their own commentary where
+> appropriate.
 >
-> Oh, wait, the reproducer uses /dev/fb. And as far as I understand
-> /dev/fd smashes kernel memory left and right. So most likely it's some
-> wild out of bounds write in /dev/fb.
+> Cheers,
+> Kent.
+>
+> Changes for v8:
+>  - fix BUILD_BUG_ON conditions and relocate them before the return in
+>    gpiolib_cdev_register() (patch 07)
+>
+> Changes for v7:
+>  - use _BITULL for ULL flag definitions (patch 04)
+>  - add check on kmalloc_array return value in linereq_get_values()
+>    (patch 07) and linereq_set_values_unlocked() (patch 11)
+>  - restore v1 functions used by gpio-mockup selftests (patch 17)
+>
+> Changes for v6:
+>  - flags variable in linereq_create() should be u64 not unsigned long
+>    (patch 07)
+>  - remove restrictions on configuration changes - any change from one
+>    valid state to another valid state is allowed. (patches 09, 10, 12)
+>
+> Changes for v5:
+>
+> All changes for v5 fix issues with the gpiolib-cdev.c implementation,
+> in patches 07-12.
+> The uAPI is unchanged from v4, as is the port of the tools.
+>
+>  - use IS_ALIGNED in BUILD_BUG_ON checks (patch 07)
+>  - relocate BUILD_BUG_ON checks to gpiolib_cdev_register (patch 07)
+>  - s/requies/requires/ (patch 07)
+>  - use unsigned int for variables that are never negative
+>  - change lineinfo_get() parameter from cmd to bool watch (patch 08)
+>  - flagsv2 in gpio_v2_line_info_to_v1() should be u64, not int (patch 08)
+>  - change "_locked" suffixed function names to "_unlocked" (patch 10 and
+>    11)
+>  - be less eager breaking long lines
+>  - move commentary into checkin comment where appropriate - particularly
+>    patch 12
+>  - restructure the request/line split - rename struct line to
+>    struct linereq, and struct edge_detector to struct line, and relocate
+>    the desc field from linereq to line.  The linereq name was selected
+>    over line_request as function names such as linereq_set_values() are
+>    more clearly associated with requests than line_request_set_values(),
+>    particularly as there is also a struct line.  And linereq is as
+>    informative as linerequest, so I went with the shortened form.
+>
+> Changes for v4:
+>  - bitmap width clarification in gpiod.h (patch 04)
+>  - fix info offset initialisation bug (patch 08 and inserting patch 01)
+>  - replace strncpy with strscpy to remove compiler warnings
+>    (patch 08 and inserting patch 02)
+>  - fix mask handling in line_get_values (patch 07)
+>
+> Changes for v3:
+>  - disabling the character device from the build requires EXPERT
+>  - uAPI revisions (see patch 02)
+>  - replace padding_not_zeroed with calls to memchr_inv
+>  - don't use bitops on 64-bit flags as that doesn't work on BE-32
+>  - accept first attribute matching a line in gpio_v2_line_config.attrs
+>    rather than the last
+>  - rework lsgpio port to uAPI v2 as flags reverted to v1 like layout
+>    (since patch v2)
+>  - swapped patches 17 and 18 to apply debounce to multiple monitored
+>    lines
+>
+> Changes for v2:
+>  - split out cleanup patches into a separate series.
+>  - split implementation patch into a patch for each ioctl or major feature.
+>  - split tool port patch into a patch per tool.
+>  - rework uAPI to allow requested lines with different configurations.
+> Kent Gibson (20):
+>   gpiolib: cdev: desc_to_lineinfo should set info offset
+>   gpiolib: cdev: replace strncpy with strscpy
+>   gpio: uapi: define GPIO_MAX_NAME_SIZE for array sizes
+>   gpio: uapi: define uAPI v2
+>   gpiolib: make cdev a build option
+>   gpiolib: add build option for CDEV v1 ABI
+>   gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and
+>     GPIO_V2_LINE_GET_VALUES_IOCTL
+>   gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
+>     GPIO_V2_GET_LINEINFO_WATCH_IOCTL
+>   gpiolib: cdev: support edge detection for uAPI v2
+>   gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
+>   gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
+>   gpiolib: cdev: support setting debounce
+>   gpio: uapi: document uAPI v1 as deprecated
+>   tools: gpio: port lsgpio to v2 uAPI
+>   tools: gpio: port gpio-watch to v2 uAPI
+>   tools: gpio: rename nlines to num_lines
+>   tools: gpio: port gpio-hammer to v2 uAPI
+>   tools: gpio: port gpio-event-mon to v2 uAPI
+>   tools: gpio: add multi-line monitoring to gpio-event-mon
+>   tools: gpio: add debounce support to gpio-event-mon
+>
+>  drivers/gpio/Kconfig        |   29 +-
+>  drivers/gpio/Makefile       |    2 +-
+>  drivers/gpio/gpiolib-cdev.c | 1278 +++++++++++++++++++++++++++++++++--
+>  drivers/gpio/gpiolib-cdev.h |   15 +
+>  drivers/gpio/gpiolib.c      |    5 +
+>  drivers/gpio/gpiolib.h      |    6 +
+>  include/uapi/linux/gpio.h   |  317 ++++++++-
+>  tools/gpio/gpio-event-mon.c |  146 ++--
+>  tools/gpio/gpio-hammer.c    |   56 +-
+>  tools/gpio/gpio-utils.c     |  176 ++++-
+>  tools/gpio/gpio-utils.h     |   48 +-
+>  tools/gpio/gpio-watch.c     |   16 +-
+>  tools/gpio/lsgpio.c         |   60 +-
+>  13 files changed, 1949 insertions(+), 205 deletions(-)
+>
+>
+> base-commit: feeaefd378cae2f6840f879d6123ef265f8aee79
+> --
+> 2.28.0
+>
 
-So I am confused.  The output in the console does not match the log
-below.  Further the memory addresses in the report don't make a bit
-of sense.  Incrementing by 0x80 and only printing 16 bytes which is 0x10.
+Hi Arnd,
 
-I am simply responding to the fact that KASAN is complaining about an
-out of bounds/uniitialized access in stack_not_used.
+If you have a moment: could you take a look at this series -
+especially the uAPI header (patch 4)? If you don't have it in your
+inbox then let us know and we'll ask Kent to resend it with you in
+copy.
 
-Which seems a legitimate thing to do, but that seems to indicate
-two debugging primitives are fighting each other.
-
-So why we have several very different traces I don't understand.
-Unless you are right and something is causing corruption.
-
-At which point this needs to be delivered to whomever can dig into this.
-
-
-Eric
-
->> > HEAD commit:    729e3d09 Merge tag 'ceph-for-5.9-rc5' of git://github.com/..
->> > git tree:       upstream
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=170a7cf1900000
->> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
->> > dashboard link: https://syzkaller.appspot.com/bug?extid=d9ae84069cff753e94bf
->> > compiler:       gcc (GCC) 10.1.0-syz 20200507
->> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10642545900000
->> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=141f2bed900000
->> >
->> > Bisection is inconclusive: the issue happens on the oldest tested release.
->> >
->> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b9ffcd900000
->> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=1479ffcd900000
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=1079ffcd900000
->> >
->> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> > Reported-by: syzbot+d9ae84069cff753e94bf@syzkaller.appspotmail.com
->> >
->> > ==================================================================
->> > BUG: KASAN: unknown-crash in stack_not_used include/linux/sched/task_stack.h:101 [inline]
->> > BUG: KASAN: unknown-crash in check_stack_usage kernel/exit.c:692 [inline]
->> > BUG: KASAN: unknown-crash in do_exit+0x24a6/0x29f0 kernel/exit.c:849
->> > Read of size 8 at addr ffffc9000cf30130 by task syz-executor624/10359
->> >
->> > CPU: 1 PID: 10359 Comm: syz-executor624 Not tainted 5.9.0-rc4-syzkaller #0
->> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> > Call Trace:
->> >  __dump_stack lib/dump_stack.c:77 [inline]
->> >  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->> >  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
->> >  __kasan_report mm/kasan/report.c:513 [inline]
->> >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
->> >  stack_not_used include/linux/sched/task_stack.h:101 [inline]
->> >  check_stack_usage kernel/exit.c:692 [inline]
->> >  do_exit+0x24a6/0x29f0 kernel/exit.c:849
->> >  do_group_exit+0x125/0x310 kernel/exit.c:903
->> >  get_signal+0x428/0x1f00 kernel/signal.c:2757
->> >  arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
->> >  exit_to_user_mode_loop kernel/entry/common.c:159 [inline]
->> >  exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:190
->> >  syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
->> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> > RIP: 0033:0x446b99
->> > Code: Bad RIP value.
->> > RSP: 002b:00007f70f5ed9d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
->> > RAX: 0000000000002878 RBX: 00000000006dbc58 RCX: 0000000000446b99
->> > RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000020002004ffc
->> > RBP: 00000000006dbc50 R08: ffffffffffffffff R09: 0000000000000000
->> > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc5c
->> > R13: 00007f70f5ed9d20 R14: 00007f70f5ed9d20 R15: 000000000000002d
->> >
->> >
->> > Memory state around the buggy address:
->> >  ffffc9000cf30000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> >  ffffc9000cf30080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->> >>ffffc9000cf30100: 00 00 00 00 00 00 70 07 00 00 77 00 00 00 00 00
->> >                                      ^
->> >  ffffc9000cf30180: 00 00 70 07 00 00 70 07 00 00 00 00 77 00 70 07
->> >  ffffc9000cf30200: 00 70 07 00 77 00 00 00 00 00 70 07 00 00 00 00
->> > ==================================================================
->> >
->> >
->> > ---
->> > This report is generated by a bot. It may contain errors.
->> > See https://goo.gl/tpsmEJ for more information about syzbot.
->> > syzbot engineers can be reached at syzkaller@googlegroups.com.
->> >
->> > syzbot will keep track of this issue. See:
->> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->> > syzbot can test patches for this issue, for details see:
->> > https://goo.gl/tpsmEJ#testing-patches
+Best regards,
+Bartosz Golaszewski
