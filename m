@@ -2,90 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4EC268272
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753CA268273
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 04:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgINCK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Sep 2020 22:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgINCKZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Sep 2020 22:10:25 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06503C06174A;
-        Sun, 13 Sep 2020 19:10:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqVFB71Dnz9sTR;
-        Mon, 14 Sep 2020 12:10:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600049423;
-        bh=czzVw1X9umrKlqXKzA6kNpSv3y0geLZMHepujkNHsls=;
-        h=Date:From:To:Cc:Subject:From;
-        b=feeTzdN++0/grAHhmuNK6MMODXgfLyP7FP8Zbl/OjKfTsFJSa1sYqLrjeiqBaTgLu
-         TMi1VExhWSjlhoIXnwYRvkkXdPHhx+VRr1FadcqmeaeIIEPkc5gnzfYF9aw/42ZdXB
-         I0eS+OqgbCoyFd2fs4aXn265N6y16dY6pejUE/yL9KCYD3AVLOCFzEw+/VDD1Ul12C
-         REZeePRcIA95ABRkMIzW8sUJ8Pa21h+2+bBWs5V9FRYVIKwiiNAq2biK9/SuXl8faK
-         Ri4g2gsMTgDRs3YtqRygwOv5cIQ1rM+gY7rJV5Y1piC0D+xYshi/N9UT58dZ9oX9vY
-         72ThWCVYlQ69g==
-Date:   Mon, 14 Sep 2020 12:10:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-msm tree
-Message-ID: <20200914121022.2c5c494a@canb.auug.org.au>
+        id S1726017AbgINCKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Sep 2020 22:10:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51680 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725965AbgINCKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 13 Sep 2020 22:10:43 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4FE7837DAEF3B9BAE1FC;
+        Mon, 14 Sep 2020 10:10:39 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 14 Sep 2020 10:10:31 +0800
+Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>
+CC:     Hillf Danton <hdanton@sina.com>, Paolo Abeni <pabeni@redhat.com>,
+        "Jike Song" <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        "David Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>
+References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
+ <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com>
+ <20200825032312.11776-1-hdanton@sina.com>
+ <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
+ <20200825162329.11292-1-hdanton@sina.com>
+ <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
+ <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com>
+ <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
+ <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AM7fd2vUOQ@mail.gmail.com>
+ <20200827125747.5816-1-hdanton@sina.com>
+ <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com>
+ <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
+ <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com>
+ <20200903101957.428-1-hdanton@sina.com>
+ <CACS=qqLKSpnRrgROm8jzzFid3MH97phPXWsk28b371dfu0mnVA@mail.gmail.com>
+ <CAM_iQpUq9-wja3JHz9+TMeXGyAOmJfZDxWUZJ9v25i7vd0Z-Wg@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <c97908eb-5a0b-363c-93fd-59c037bbd9f0@huawei.com>
+Date:   Mon, 14 Sep 2020 10:10:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9IVE0RfM5BBrakyo_BPayQZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <CAM_iQpUq9-wja3JHz9+TMeXGyAOmJfZDxWUZJ9v25i7vd0Z-Wg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9IVE0RfM5BBrakyo_BPayQZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2020/9/11 4:19, Cong Wang wrote:
+> On Thu, Sep 3, 2020 at 8:21 PM Kehuan Feng <kehuan.feng@gmail.com> wrote:
+>> I also tried Cong's patch (shown below on my tree) and it could avoid
+>> the issue (stressing for 30 minutus for three times and not jitter
+>> observed).
+> 
+> Thanks for verifying it!
+> 
+>>
+>> --- ./include/net/sch_generic.h.orig 2020-08-21 15:13:51.787952710 +0800
+>> +++ ./include/net/sch_generic.h 2020-09-03 21:36:11.468383738 +0800
+>> @@ -127,8 +127,7 @@
+>>  static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>>  {
+>>   if (qdisc->flags & TCQ_F_NOLOCK) {
+>> - if (!spin_trylock(&qdisc->seqlock))
+>> - return false;
+>> + spin_lock(&qdisc->seqlock);
+>>   } else if (qdisc_is_running(qdisc)) {
+>>   return false;
+>>   }
+>>
+>> I am not actually know what you are discussing above. It seems to me
+>> that Cong's patch is similar as disabling lockless feature.
+> 
+>>From performance's perspective, yeah. Did you see any performance
+> downgrade with my patch applied? It would be great if you can compare
+> it with removing NOLOCK. And if the performance is as bad as no
+> NOLOCK, then we can remove the NOLOCK bit for pfifo_fast, at least
+> for now.
 
-Hi all,
+It seems the lockless qdisc may have below concurrent problem:
+  cpu0:                                                           cpu1:
+q->enqueue							    .
+qdisc_run_begin(q)  						    .
+__qdisc_run(q) ->qdisc_restart() -> dequeue_skb()		    .
+		                 -> sch_direct_xmit()		    .
+ 								    .
+                                                                q->enqueue
+				                             qdisc_run_begin(q)			
+qdisc_run_end(q)
 
-After merging the drm-msm tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
 
-drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c: In function 'msm_dsi_pll_7nm_ini=
-t':
-drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c:882:19: warning: conversion from =
-'long long unsigned int' to 'long unsigned int' changes value from '5000000=
-000' to '705032704' [-Woverflow]
-  882 |   pll->max_rate =3D 5000000000UL;
-      |                   ^~~~~~~~~~~~
+cpu1 enqueue a skb without calling __qdisc_run(), and cpu0 did not see the
+enqueued skb when calling __qdisc_run(q) because cpu1 may enqueue the skb
+after cpu0 called __qdisc_run(q) and before cpu0 called qdisc_run_end(q).
 
-Introduced by commit
 
-  1ef7c99d145c ("drm/msm/dsi: add support for 7nm DSI PHY/PLL")
+Kehuan, do you care to try the below patch if it is the same problem?
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index d60e7c3..c97c1ed 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -36,6 +36,7 @@ struct qdisc_rate_table {
+ enum qdisc_state_t {
+ 	__QDISC_STATE_SCHED,
+ 	__QDISC_STATE_DEACTIVATED,
++	__QDISC_STATE_ENQUEUED,
+ };
 
---Sig_/9IVE0RfM5BBrakyo_BPayQZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+ struct qdisc_size_table {
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 0362419..5985648 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3748,6 +3748,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+ 	qdisc_calculate_pkt_len(skb, q);
 
------BEGIN PGP SIGNATURE-----
+ 	if (q->flags & TCQ_F_NOLOCK) {
++		set_bit(__QDISC_STATE_ENQUEUED, &q->state);
++		smp_mb__after_atomic();
+ 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+ 		qdisc_run(q);
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9e0Q4ACgkQAVBC80lX
-0GxEPgf/TMDfbnrfkqc9iJBa138krCqyN1HIsRvTqGuhLfzum5SCMxBIF+0U+8Gr
-DWbAbmeiARV207duUIJZfz+qzvxYum8tSMd+9vB9eW42iVZKT4kTqHNA6UtU6Amw
-WlnXaJJ56TTN+FP5w2KWNKt/PCWHuyw565t6SB0l39XKVN5DSYaqx93Kkr9ue2IS
-ts6eWlNpvDN7wY3oKdPzeQCsIsCmlTSACcpwKlgk0BCOkICFHGfVAEWGMZJztnEl
-ZZMlUoyoSWaRhG+4+X6VrT11013np44cNeko0UuRnFSP6mNuJVKDN2+fLy8/Wuo4
-h2zrUw7znsr/LjiG2mt+8UB0oF4B6w==
-=V6Cz
------END PGP SIGNATURE-----
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 265a61d..c389641 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -381,6 +381,8 @@ void __qdisc_run(struct Qdisc *q)
+ 	int quota = dev_tx_weight;
+ 	int packets;
 
---Sig_/9IVE0RfM5BBrakyo_BPayQZ--
++	clear_bit(__QDISC_STATE_ENQUEUED, &q->state);
++	smp_mb__after_atomic();
+ 	while (qdisc_restart(q, &packets)) {
+ 		quota -= packets;
+ 		if (quota <= 0) {
+@@ -388,6 +390,9 @@ void __qdisc_run(struct Qdisc *q)
+ 			break;
+ 		}
+ 	}
++
++	if (test_bit(__QDISC_STATE_ENQUEUED, &q->state))
++		__netif_schedule(q);
+ }
+
+ unsigned long dev_trans_start(struct net_device *dev)
+
+
+> 
+> Thanks.
+> 
