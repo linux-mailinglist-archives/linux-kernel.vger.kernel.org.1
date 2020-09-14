@@ -2,89 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31AE2683AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4262683AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725995AbgINE35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgINE34 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:29:56 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7864EC06174A;
-        Sun, 13 Sep 2020 21:29:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726028AbgINEbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:31:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51571 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgINEbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 00:31:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600057861; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=88UihbQrOz0bvm/bZjwFSbpcpa8STz3Eo/uF7Jfs0XM=; b=H4z+K0N7ecz/fq6RN/1pvy0GXiAL86FAHO1a0k2aiKyHTmyOV5p2c89qf3S0ntyMBSIWjPV+
+ PRGBYUPQS42nT4pW5bMypEkOjFA4AIptjzg5DeBgzlO4e7esnFsWel9hvpyu/7BAFqyI0swY
+ yMOj/+UyrX0oKb9fy9JUoivzc+w=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f5ef200380a624e4dee7924 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 14 Sep 2020 04:30:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7542FC433CA; Mon, 14 Sep 2020 04:30:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.4] (unknown [171.49.233.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BqYL84NKlz9sTN;
-        Mon, 14 Sep 2020 14:29:52 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600057792;
-        bh=6b/mDq/3QAr/1YD62GFOqQo1PLtnCBY+v0GMC/ZiQY4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uSgQvy9/JBGr0hlf1vwJfGBABebHsrUCdW+AaOnyx/PPNZPaJZ3LAPIqkks+rgsWw
-         IdEZcm55BXUPfMSyBKuGYqCCVgfmoB86C+2wj4UESi5KsGCBV4BBH8z5GSDkPL97uk
-         uin4RrKvPQ56FWXwWoPteQkJpX3HZREZpuZYz/oGGOSWCkUvu33O7BXaehobOrTUD2
-         x9d+3yNlG6BeRK/EDlvElKJwDeU7KCPvug768G13zTz9+xoTbcrrsz7TtjzPSSN74v
-         dEV9azRhT5SDzaHiGXZvFTgYSPKbQIjjYs3pu0q7QP54qpB3Qeo5X9cZms5HnnE6J7
-         ttmak12b3Rv+Q==
-Date:   Mon, 14 Sep 2020 14:29:51 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Brad Kim <brad.kim@sifive.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the dmaengine tree
-Message-ID: <20200914142951.66cd3498@canb.auug.org.au>
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87E1FC433C6;
+        Mon, 14 Sep 2020 04:30:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87E1FC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH] trace: Fix race in trace_open and buffer resize call
+To:     rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+Message-ID: <d4691a90-9a47-b946-f2cd-bb1fce3981b0@codeaurora.org>
+Date:   Mon, 14 Sep 2020 10:00:50 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T_6P2ekptJ7jjOZECFQy7tb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T_6P2ekptJ7jjOZECFQy7tb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Steven,
 
-Hi all,
+Please let us know, if below change looks good.
+Or let us know some other way to solve this.
 
-After merging the dmaengine tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+Thanks,
+Gaurav
 
-drivers/dma/sf-pdma/sf-pdma.c: In function 'sf_pdma_donebh_tasklet':
-drivers/dma/sf-pdma/sf-pdma.c:287:23: warning: unused variable 'desc' [-Wun=
-used-variable]
-  287 |  struct sf_pdma_desc *desc =3D chan->desc;
-      |                       ^~~~
 
-Introduced by commit
 
-  8f6b6d060602 ("dmaengine: sf-pdma: Fix an error that calls callback twice=
-")
+On 9/4/2020 11:39 AM, Gaurav Kohli wrote:
+> Below race can come, if trace_open and resize of
+> cpu buffer is running parallely on different cpus
+> CPUX                                CPUY
+> 				    ring_buffer_resize
+> 				    atomic_read(&buffer->resize_disabled)
+> tracing_open
+> tracing_reset_online_cpus
+> ring_buffer_reset_cpu
+> rb_reset_cpu
+> 				    rb_update_pages
+> 				    remove/insert pages
+> resetting pointer
+> This race can cause data abort or some times infinte loop in
+> rb_remove_pages and rb_insert_pages while checking pages
+> for sanity.
+> Take ring buffer lock in trace_open to avoid resetting of cpu buffer.
+> 
+> Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+> 
+> diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+> index 136ea09..55f9115 100644
+> --- a/include/linux/ring_buffer.h
+> +++ b/include/linux/ring_buffer.h
+> @@ -163,6 +163,8 @@ bool ring_buffer_empty_cpu(struct trace_buffer *buffer, int cpu);
+>   
+>   void ring_buffer_record_disable(struct trace_buffer *buffer);
+>   void ring_buffer_record_enable(struct trace_buffer *buffer);
+> +void ring_buffer_mutex_acquire(struct trace_buffer *buffer);
+> +void ring_buffer_mutex_release(struct trace_buffer *buffer);
+>   void ring_buffer_record_off(struct trace_buffer *buffer);
+>   void ring_buffer_record_on(struct trace_buffer *buffer);
+>   bool ring_buffer_record_is_on(struct trace_buffer *buffer);
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 93ef0ab..638ec8f 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -3632,6 +3632,25 @@ void ring_buffer_record_enable(struct trace_buffer *buffer)
+>   EXPORT_SYMBOL_GPL(ring_buffer_record_enable);
+>   
+>   /**
+> + * ring_buffer_mutex_acquire - prevent resetting of buffer
+> + * during resize
+> + */
+> +void ring_buffer_mutex_acquire(struct trace_buffer *buffer)
+> +{
+> +	mutex_lock(&buffer->mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_acquire);
+> +
+> +/**
+> + * ring_buffer_mutex_release - prevent resetting of buffer
+> + * during resize
+> + */
+> +void ring_buffer_mutex_release(struct trace_buffer *buffer)
+> +{
+> +	mutex_unlock(&buffer->mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
+> +/**
+>    * ring_buffer_record_off - stop all writes into the buffer
+>    * @buffer: The ring buffer to stop writes to.
+>    *
+> @@ -4918,6 +4937,8 @@ void ring_buffer_reset(struct trace_buffer *buffer)
+>   	struct ring_buffer_per_cpu *cpu_buffer;
+>   	int cpu;
+>   
+> +	/* prevent another thread from changing buffer sizes */
+> +	mutex_lock(&buffer->mutex);
+>   	for_each_buffer_cpu(buffer, cpu) {
+>   		cpu_buffer = buffer->buffers[cpu];
+>   
+> @@ -4936,6 +4957,7 @@ void ring_buffer_reset(struct trace_buffer *buffer)
+>   		atomic_dec(&cpu_buffer->record_disabled);
+>   		atomic_dec(&cpu_buffer->resize_disabled);
+>   	}
+> +	mutex_unlock(&buffer->mutex);
+>   }
+>   EXPORT_SYMBOL_GPL(ring_buffer_reset);
+>   
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index f40d850..392e9aa 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -2006,6 +2006,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
+>   	if (!buffer)
+>   		return;
+>   
+> +	ring_buffer_mutex_acquire(buffer);
+> +
+>   	ring_buffer_record_disable(buffer);
+>   
+>   	/* Make sure all commits have finished */
+> @@ -2016,6 +2018,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
+>   	ring_buffer_reset_online_cpus(buffer);
+>   
+>   	ring_buffer_record_enable(buffer);
+> +
+> +	ring_buffer_mutex_release(buffer);
+>   }
+>   
+>   /* Must have trace_types_lock held */
+> 
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/T_6P2ekptJ7jjOZECFQy7tb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9e8b8ACgkQAVBC80lX
-0GxvfAgAkUberfm0WWPsAXdCHTlAsoduLqL1I4l5d3hwti3Roexf2a62YJYfxf+V
-zQjus9S1FzPUP9EQVcGv/RccbrM0mPcul/44Ifn4Fo1KZbn0GaAD/T+zm/SdaABl
-LkM59tFuRuAhqP4nMIIXLFHNdW0EK6RQ9FzqPOk3vfS62SHQ9FgZ6cHhJF8ympmC
-8HHKHy8RtpWRz9QbvJCuNEP01WFsAoB1AyV6cJELCyHitfHYqutn7I+xEHu+Lcdr
-R7qSi16GMDIPg+BMHDVWTb8ZziQyQ6KMrDho5TqPCAMTKUxFTexBPVf9O72h0uBd
-zifnzHZ/heliyOkOyS58SGYXjwZXcg==
-=rg+f
------END PGP SIGNATURE-----
-
---Sig_/T_6P2ekptJ7jjOZECFQy7tb--
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
