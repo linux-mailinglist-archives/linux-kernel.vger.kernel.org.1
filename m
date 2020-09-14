@@ -2,196 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA622683F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619292683F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 07:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbgINFFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 01:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725983AbgINFE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 01:04:56 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA94EC06178A
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:04:55 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id c8so16226223edv.5
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Sep 2020 22:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qw29AdXtCYZRa8G3I3RQgCCnOcHR3ivBh4i+1lH4G8A=;
-        b=KmOcYLCNEj8MDt2SlHWzXxvKI5SNE6/iVdmXJePY2lFlJcMbJFQ5uAqQF5dppIdFN6
-         6MoWXQGDSpynqFq837oenEx5Wk2hEzAuDwMgHfcPbEBFDV9K7S3pBx1liT33N2SCYM4H
-         agoYwSqNxOM3ekeAtL76nES5g5I45mZKPQ9dnFvhbYbyuqxO2Nxm41DRbQ0HhHF1spwP
-         t0mpCRAajJwTWjR1FaJ6EQzwdUrVmfXHU40IZ7TMTG4d3nqMRrlwA7YFhYuKepa0f0eh
-         sKbAzW23vIfeIFGefD5Blgv/wsF+u+3AMizvwZWwPaDOxQDB2Ni6xTL5X4QjFt2J0SCT
-         Yy2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qw29AdXtCYZRa8G3I3RQgCCnOcHR3ivBh4i+1lH4G8A=;
-        b=S1IRxk+bKCbWvZxN51853taBOGFz1MJHOOyGOwDmvj1LzumpgBEB0gX1oYaH9RsENj
-         vBDweH+USAXAG06XrTP80Es3s6xGekBklfMc9ojHVVIErl8p+6STMedTdD+W1/9DEeKd
-         Wqx1XB5rCYixo7p25NGXAvF7IWilPAD0IhglFQyghDSyUfKrpIN0fbnhtYXfWGuVT54d
-         0iDabSI9lh4HlrjbyaQE3GGgMVwWHmNXkT/lBKfRC++4FNivf3D/fj5r7kuArxvS3BPL
-         ACOjquZOphQ2NCjPgW5l0+fxV+6fzcftIKowVivDDRBKwTQX1gkrBiCX1/Yk8Nrd5O3f
-         urUQ==
-X-Gm-Message-State: AOAM5325k1/qIUIvvt1DlPMgvjtTJFU45ny0O2/KXhkJVOMpopTpv+/H
-        gQPvrXducQr9rwFQ+970uLhBzGG9j3DTghQQDaMM7Q==
-X-Google-Smtp-Source: ABdhPJylxkCeLNpusq7Kv7ORjJaYhNOus9fuu//uDY4QHsj0OCxPfeDDfiLhoChbm0j82d3PuxI5tlh4lc49+YOVygQ=
-X-Received: by 2002:aa7:dc18:: with SMTP id b24mr14613834edu.285.1600059893857;
- Sun, 13 Sep 2020 22:04:53 -0700 (PDT)
+        id S1726044AbgINFId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 01:08:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725973AbgINFIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 01:08:32 -0400
+Received: from localhost (unknown [122.171.195.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 485CA214F1;
+        Mon, 14 Sep 2020 05:08:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600060111;
+        bh=Y9f9oHcyH6DkphYw0zWNlWuzPp02Ukru9FVhh8BRI8g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e4iDpbBrDOwMWPOB0qj348GDQrkjdDWFfoDvq14aAVhHSsk+syIQTbBjoSwqIBans
+         OcNVW0eM3711Gjn5+paiV5NL6Dj5kgiMSj4buLQyyxv/kcTVhT/6RKKTm2QvoeHbPk
+         nMTIxZ6IA28GtfTdCeufWnvl/vfU08WdVKq+oCnE=
+Date:   Mon, 14 Sep 2020 10:38:25 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        gregkh@linuxfoundation.org,
+        Bard liao <yung-chuan.liao@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/3] soundwire: SDCA: add helper macro to access
+ controls
+Message-ID: <20200914050825.GA2968@vkoul-mobl>
+References: <20200901162225.33343-1-pierre-louis.bossart@linux.intel.com>
+ <20200901162225.33343-3-pierre-louis.bossart@linux.intel.com>
+ <20200904050244.GT2639@vkoul-mobl>
+ <f35a0ae7-2779-0c69-9ef3-0d0e298888ac@linux.intel.com>
+ <20200909075555.GK77521@vkoul-mobl>
+ <184867c2-9f0c-bffe-2eb7-e9c5735614b0@linux.intel.com>
+ <20200910062223.GQ77521@vkoul-mobl>
+ <adf51127-2813-cdf0-e5a6-f5ec3b0d33fa@linux.intel.com>
+ <20200911070649.GU77521@vkoul-mobl>
+ <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
 MIME-Version: 1.0
-References: <20200903223332.881541-1-haoluo@google.com> <20200903223332.881541-6-haoluo@google.com>
- <CAEf4Bza2W9jO3FRCf_y44SwhUHr=WoCLigqLh3pUMMOaUBF64w@mail.gmail.com>
-In-Reply-To: <CAEf4Bza2W9jO3FRCf_y44SwhUHr=WoCLigqLh3pUMMOaUBF64w@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Sun, 13 Sep 2020 22:04:42 -0700
-Message-ID: <CA+khW7hJV5iwmwnTNL5Uw07szfjtMoqumGO9BVhAyddevH3hMA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 5/6] bpf: Introduce bpf_this_cpu_ptr()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21606609-8aaf-c7b2-ffaf-c7d37de1fa3f@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for taking a look!
+Hi Pierre,
 
-On Fri, Sep 4, 2020 at 1:09 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Sep 3, 2020 at 3:35 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Add bpf_this_cpu_ptr() to help access percpu var on this cpu. This
-> > helper always returns a valid pointer, therefore no need to check
-> > returned value for NULL. Also note that all programs run with
-> > preemption disabled, which means that the returned pointer is stable
-> > during all the execution of the program.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
->
-> looks good, few small things, but otherwise:
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-[...]
-> >
-> >  /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index d0ec94d5bdbf..e7ca91c697ed 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3612,6 +3612,19 @@ union bpf_attr {
-> >   *             bpf_per_cpu_ptr() must check the returned value.
-> >   *     Return
-> >   *             A generic pointer pointing to the kernel percpu variable on *cpu*.
-> > + *
-> > + * void *bpf_this_cpu_ptr(const void *percpu_ptr)
-> > + *     Description
-> > + *             Take a pointer to a percpu ksym, *percpu_ptr*, and return a
-> > + *             pointer to the percpu kernel variable on this cpu. See the
-> > + *             description of 'ksym' in **bpf_per_cpu_ptr**\ ().
-> > + *
-> > + *             bpf_this_cpu_ptr() has the same semantic as this_cpu_ptr() in
-> > + *             the kernel. Different from **bpf_per_cpu_ptr**\ (), it would
-> > + *             never return NULL.
-> > + *     Return
-> > + *             A generic pointer pointing to the kernel percpu variable on
->
-> what's "a generic pointer"? is it as opposed to sk_buff pointer or something?
->
-
-Ack. "A pointer" should be good enough. I wrote "generic pointer"
-because the per_cpu_ptr() in kernel code is a macro, whose returned
-value is a typed pointer, IIUC. But here we are missing the type. This
-is another difference between this helper and per_cpu_ptr(). But this
-may not matter.
-
-> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index a702600ff581..e070d2abc405 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -5016,8 +5016,10 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
-> >                 regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
-> >                 regs[BPF_REG_0].id = ++env->id_gen;
-> >                 regs[BPF_REG_0].mem_size = meta.mem_size;
-> > -       } else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL) {
-> > +       } else if (fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL ||
-> > +                  fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID) {
-> >                 const struct btf_type *t;
-> > +               bool not_null = fn->ret_type == RET_PTR_TO_MEM_OR_BTF_ID;
->
-> nit: this is fine, but I'd inline it below
->
-
-Ack.
-
-> >
-> >                 mark_reg_known_zero(env, regs, BPF_REG_0);
-> >                 t = btf_type_skip_modifiers(btf_vmlinux, meta.ret_btf_id, NULL);
-> > @@ -5034,10 +5036,12 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
-> >                                         tname, PTR_ERR(ret));
-> >                                 return -EINVAL;
-> >                         }
-> > -                       regs[BPF_REG_0].type = PTR_TO_MEM_OR_NULL;
-> > +                       regs[BPF_REG_0].type = not_null ?
-> > +                               PTR_TO_MEM : PTR_TO_MEM_OR_NULL;
-> >                         regs[BPF_REG_0].mem_size = tsize;
-> >                 } else {
-> > -                       regs[BPF_REG_0].type = PTR_TO_BTF_ID_OR_NULL;
-> > +                       regs[BPF_REG_0].type = not_null ?
-> > +                               PTR_TO_BTF_ID : PTR_TO_BTF_ID_OR_NULL;
-> >                         regs[BPF_REG_0].btf_id = meta.ret_btf_id;
-> >                 }
-> >         } else if (fn->ret_type == RET_PTR_TO_BTF_ID_OR_NULL) {
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index d474c1530f87..466acf82a9c7 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -1160,6 +1160,18 @@ static const struct bpf_func_proto bpf_per_cpu_ptr_proto = {
-> >         .arg2_type      = ARG_ANYTHING,
-> >  };
-> >
-> > +BPF_CALL_1(bpf_this_cpu_ptr, const void *, percpu_ptr)
-> > +{
-> > +       return (u64)this_cpu_ptr(percpu_ptr);
->
-> see previous comment, this might trigger unnecessary compilation
-> warnings on 32-bit arches
->
-
-Ack. Will cast to "unsigned long". Thanks for catching this!
-
-
-> > +}
-> > +
-> > +static const struct bpf_func_proto bpf_this_cpu_ptr_proto = {
-> > +       .func           = bpf_this_cpu_ptr,
-> > +       .gpl_only       = false,
-> > +       .ret_type       = RET_PTR_TO_MEM_OR_BTF_ID,
-> > +       .arg1_type      = ARG_PTR_TO_PERCPU_BTF_ID,
-> > +};
-> > +
->
+On 11-09-20, 09:50, Pierre-Louis Bossart wrote:
+> > > > > > > > > + *	25		0 (Reserved)
+> > > > > > > > > + *	24:22		Function Number [2:0]
+> > > > > > > > > + *	21		Entity[6]
+> > > > > > > > > + *	20:19		Control Selector[5:4]
+> > > > > > > > > + *	18		0 (Reserved)
+> > > > > > > > > + *	17:15		Control Number[5:3]
+> > > > > > > > > + *	14		Next
+> > > > > > > > > + *	13		MBQ
+> > > > > > > > > + *	12:7		Entity[5:0]
+> > > > > > > > > + *	6:3		Control Selector[3:0]
+> > > > > > > > > + *	2:0		Control Number[2:0]
+> 
 > [...]
+> 
+> > > > > 
+> > > > > #define SDCA_CONTROL_DEST_MASK1 GENMASK(20, 19)
+> > > > > #define SDCA_CONTROL_ORIG_MASK1 GENMASK(5, 4)
+> > > > > #define SDCA_CONTROL_DEST_MASK2 GENMASK(6, 3)
+> > > > > #define SDCA_CONTROL_ORIG_MASK2 GENMASK(3, 0)
+> > 
+> > I think I missed ORIG and DEST stuff, what does this mean here?
+> 
+> If you missed this, it means my explanations are not good enough and I need
+> to make it clearer in the commit log/documentation. Point taken, I'll
+> improve this for the next version.
+> 
+> > Relooking at the bit definition, for example 'Control Number' is defined
+> > in both 17:15 as well as 2:0, why is that. Is it split?
+> > 
+> > How does one program a control number into this?
+> 
+> A Control Number is represented on 6 bits.
+> 
+> See the documentation above.
+> 
+> 	17:15		Control Selector[5:3]
+> 	2:0		Control Selector[2:0]
+> 
+> The 3 MSBs for into bits 17:15 of the address, and the 3 LSBs into bits 2:0
+> of the address. The second part is simpler for Control Number but for
+> entities and control selectors the LSB positions don't match.
+> 
+> Yes it's convoluted but it was well-intended: in most cases, there is a
+> limited number of entities, control selectors, channel numbers, and putting
+> the LSBs together in the 16-LSB of the address helps avoid reprogramming
+> paging registers: all the addresses for a given function typically map into
+> the same page.
+> 
+> That said, I am not sure the optimization is that great in the end, because
+> we end-up having to play with bits for each address. Fewer changes of the
+> paging registers but tons of operations in the core.
+> 
+> I wasn't around when this mapping was defined, and it is what is is now.
+> There's hardware built based on this formula so we have to make it work.
+> 
+> Does this clarify the usage?
+
+Thanks, that is very helpful. I have overlooked this bit.
+
+For LSB bits, I dont think this is an issue. I expect it to work, for example:
+#define CONTROL_LSB_MASK  GENMASK(2, 0)
+        foo |= u32_encode_bits(control, CONTROL_LSB_MASK);
+
+would mask the control value and program that in specific bitfeild.
+
+But for MSB bits, I am not sure above will work so, you may need to extract
+the bits and then use, for example:
+#define CONTROL_MSB_BITS        GENMASK(5, 3)
+#define CONTROL_MSB_MASK        GENMASK(17, 15)
+
+        control = FIELD_GET(CONTROL_MSB_BITS, control);
+        foo |= u32_encode_bits(control, CONTROL_MSB_MASK);
+
+> If you have a better suggestion that the FIELD_PREP/FIELD_GET use, I am all
+> ears. At the end of the day, the mapping is pre-defined and we don't have
+> any degree of freedom. What I do want is that this macro/inline function is
+> shared by all codec drivers so that we don't have different interpretations
+> of how the address is constructed.
+
+Absolutely, this need to be defined here and used by everyone else.
+
+-- 
+~Vinod
