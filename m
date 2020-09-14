@@ -2,164 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED8726935E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F74226935C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 19:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgINRau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 13:30:50 -0400
-Received: from mail-bn8nam12on2092.outbound.protection.outlook.com ([40.107.237.92]:45504
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726250AbgINR3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 13:29:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=if7VTnrUWwiE2n/cY3JgGagft7RrVld+sqZSlN95privyzBMIJMCB10XqyKK7F2WrwA/Ix7VDa/YQgzPX9Qf8x+oLdXalxTqCCwy/Ld38VMBUouiNuoxtYHAMYMNDh3GSNhHum+J6mkXuPAgrEllf9ROZAPcwWzdYBWZDV9knwyS7SHIHmdihtPlg1sTNODuoMjIax6eitOl6ug0mgX5I0p8G1vNl5x1nil9ChmDWPnj2ri+wpkOe0yTuGcmCDgKdxGauDXI9MCyjSPe5cbC+nrdptDVIi38BDoSH30g07rhUhgd6br+IcaVHUb1xZ8q/eoVTDrxE2PAm9Kv0BKkFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZGyMofrWd/RuvOSgAUGffYYdhYlUnHJVjBHjFenv6XE=;
- b=KP9Dspmp7TCd4E7sb0fHBGfN5Zk5jA39bjk45yvD4dbtM8FM0WJC885XlYelE/Xtk9+WabWbSyny9zzuEx6LOYt+DU8IiAtPYOL/NJDqa5x7NRy4AuZFNMFLLRDmxqwbqsIs/EM0nE8Ofcdt9sFTCx/7phiUzuldQkAQo+qg10ngoyw/k2GAmAWUw9ArcYBGBj/HLXSD8tbgr7kUuB1XLztHYf76xsY6+Rvqsry7PzLO6t392xrEBh+50vxe5iy1WxWPklNT0/MBKK1f5n+OkqCw8bacsccGsUMerwCR/gCE740HmIByNWJBNXDcp16vEsL77uynqVDHsela9fWncw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZGyMofrWd/RuvOSgAUGffYYdhYlUnHJVjBHjFenv6XE=;
- b=gRHWPDKTDfP8Oi/Ps2CyLKESwivxiZ+JL8sxtyPfhw6REE977mC6Q/eOgBwEesJWUPQWU+37Ep1fpugeS/+We+FKSjnMtNQKxTvMjuktrHPCi4u2ORvPmom0VZExMZJW+3R8fEXfaL502/R9r07QQshIYT4MtwsuCXKGixvywaY=
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (2603:10b6:302:a::16)
- by MW2PR2101MB0970.namprd21.prod.outlook.com (2603:10b6:302:4::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.6; Mon, 14 Sep
- 2020 17:29:12 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::d00b:3909:23b:83f1]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::d00b:3909:23b:83f1%4]) with mapi id 15.20.3412.001; Mon, 14 Sep 2020
- 17:29:11 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Andrea Parri <parri.andrea@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>
-Subject: RE: [PATCH v7 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Thread-Topic: [PATCH v7 1/3] Drivers: hv: vmbus: Add vmbus_requestor data
- structure for VMBus hardening
-Thread-Index: AQHWhTK4CcuAC1huL0WTSe45bNSLyqldtpaQgACpd4CACg3pMA==
-Date:   Mon, 14 Sep 2020 17:29:11 +0000
-Message-ID: <MW2PR2101MB1052FD464D63F86B4DD1BE7BD7230@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20200907161920.71460-1-parri.andrea@gmail.com>
- <20200907161920.71460-2-parri.andrea@gmail.com>
- <MW2PR2101MB1052338B4D3B7020A2191EB7D7280@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <20200908075216.GA5638@andrea>
-In-Reply-To: <20200908075216.GA5638@andrea>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-09-14T17:29:10Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c639015d-7cd4-4652-9e49-ebf9b695db6e;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 98425044-fd5d-4309-6c00-08d858d3b1f2
-x-ms-traffictypediagnostic: MW2PR2101MB0970:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR2101MB0970EE7CF937DC31B3E7F660D7230@MW2PR2101MB0970.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VEnLgmZ44tYa2NoodUfTqvMNvsqR+J3u5PkQ01WWjIkMFDexD3OW2e+WR6zGVIA5AQ+IJQBDI2pGqmCTkh54ewX2APJbE/7VLZsPjLk/ExjOkghcwRv57zGWyd1Ps3WM50Y02CrXZLAHRijHvZP4UnkhfL5Kc9k/lqD3lkwXZhW20ja4kFqz8f3LH20+T3OIBrXeVerEAkI3wafb/IecWH4akIOlDjT2ZaGzDWjBLaHQgVegSl91JigHExIHFWuMhieXEzrSp8x5Mv00YIPRWIWoWmU/v4rEqVXOLhJX85FV6Lif5GhO4g9CP88Amt92cNAnxSPLQalix3qF56Jh9rFoEDj0tv42LqzZrw72RfxTZ3Qz09xoS4aP9mp9yAAB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(55016002)(83380400001)(186003)(82960400001)(107886003)(6506007)(66446008)(66946007)(82950400001)(6916009)(66476007)(7696005)(66556008)(86362001)(64756008)(76116006)(8676002)(9686003)(478600001)(8936002)(26005)(52536014)(316002)(10290500003)(2906002)(71200400001)(5660300002)(4326008)(8990500004)(54906003)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: OhWno/CKG5gHXWsnXee6k2rNA/0HpHVfzuFLOpC4hCZsAq9/gnOm1PriofxodN0LBvOegGOXFXqH6Rb8Iwi2/cgwmSDoGy2CISqzJbC38wl/VYtxhmGxES/2QyzC53f1N0Neg26BJfvEIFUXuXVa+XajdifsEoa0tOuFCelSWixhrKZFISwklhLm56v1JsCDUZS9mEA13OkpDdRquTJyvUDR1ITbaHqMxj+O7sNfm8wINxyZYtsKS9949DuJvmMHUAhZwtT/lNpV/RHEIMh830Iw4ldYFRK7yyuaofKLoqaZikVouBC6WRnFrw/bJbezZRWfABb/0gh4e/9+3iViXKihSr1TNo4KvMOZ51zVClqxHtscO8ePxvK5US9NB+3tedI/ttbxNwYX+FMY64GhNecbvA1K9Zk4NLVywvFFBiU6YrV5HwKh+Q95hs1z8LalkjAZkMmPbCll4DbAoQF3bf/SpvEhe4t4b9+6G+C3BGVt2RsQPvcSRygpYzOc+iR4UDV35Ugy5sd+46Aq7AteYsGS/ywS4zAy5Lnc1GXWeYjQr9XuR0OVzHchW6AMLffHLNmLGMR6My+g0F+pSLFtsVUCCVJzryi+aaeKGNSPU+0utY4y7C9Zlmrt87yLxpMTkdknBi7jywm1j7I+CMFv6g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98425044-fd5d-4309-6c00-08d858d3b1f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2020 17:29:11.7624
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /DT2RxAcByQATLTX61vvjeCvOJDLQA3HkOEpcjH6tbj+/KpDy+FOkOXATWrKYBa90xrihE1x6hhUwpTgerk2W58160mkhuaWdW3szoW0hi4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0970
+        id S1726391AbgINRal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 13:30:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726362AbgINR37 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 13:29:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600104591;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aEDgkNV/uj4fx524Kzkj6ifXfGUTh3ZY0EQttVZHh6s=;
+        b=EksXBMZdR+JranwvjG8BRMSIkMdSXiUkZJdz+EmMRa9g52ULPJD/QIhZz+ZuWgKbhfEzjV
+        gcADpnVVi79h+09zRkFkLapYUvD1XZR8E6hs2ZDPybPZ6V9FLmtagEj77KYTBLOfLiTOJ/
+        m7HEP9QNYyaEchs40ncWElubw8EpWHU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-Z7IM2OXIPQmcCdNpBW7s7g-1; Mon, 14 Sep 2020 13:29:45 -0400
+X-MC-Unique: Z7IM2OXIPQmcCdNpBW7s7g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9F0884639B;
+        Mon, 14 Sep 2020 17:29:42 +0000 (UTC)
+Received: from ovpn-113-249.rdu2.redhat.com (ovpn-113-249.rdu2.redhat.com [10.10.113.249])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBB1060C87;
+        Mon, 14 Sep 2020 17:29:37 +0000 (UTC)
+Message-ID: <d7bdc37f6e3f98379289b262aea812e1894cd69b.camel@redhat.com>
+Subject: Re: WARNING: suspicious RCU usage: race/events/tlb.h:57 suspicious
+ rcu_dereference_check() usage!
+From:   Qian Cai <cai@redhat.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        rcu@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Linux PM <linux-pm@vger.kernel.org>
+Cc:     ": Paul E. McKenney" <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>
+Date:   Mon, 14 Sep 2020 13:29:34 -0400
+In-Reply-To: <CA+G9fYuRquEtm53yz9SYqa6O5gg4e6d9BCmDn163Fe2VwhWcJw@mail.gmail.com>
+References: <CA+G9fYuRquEtm53yz9SYqa6O5gg4e6d9BCmDn163Fe2VwhWcJw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri <parri.andrea@gmail.com> Sent: Tuesday, September 8, 202=
-0 12:54 AM
->=20
-> > > @@ -300,6 +303,22 @@ int hv_ringbuffer_write(struct vmbus_channel *ch=
-annel,
-> > >  						     kv_list[i].iov_len);
-> > >  	}
-> > >
-> > > +	/*
-> > > +	 * Allocate the request ID after the data has been copied into the
-> > > +	 * ring buffer.  Once this request ID is allocated, the completion
-> > > +	 * path could find the data and free it.
-> > > +	 */
-> > > +
-> > > +	if (desc->flags =3D=3D VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED)=
- {
-> > > +		rqst_id =3D vmbus_next_request_id(&channel->requestor, requestid);
-> > > +		if (rqst_id =3D=3D VMBUS_RQST_ERROR) {
-> > > +			pr_err("No request id available\n");
-> > > +			return -EAGAIN;
-> > > +		}
-> > > +	}
-> > > +	desc =3D hv_get_ring_buffer(outring_info) + old_write;
-> > > +	desc->trans_id =3D (rqst_id =3D=3D VMBUS_NO_RQSTOR) ? requestid : r=
-qst_id;
-> > > +
-> >
-> > This is a nit, but the above would be clearer to me if written like thi=
-s:
-> >
-> > 	flags =3D desc->flags;
-> > 	if (flags =3D=3D VMBUS_DATA_PACKET_FLAG_COMPLETION_REQUESTED) {
-> > 		rqst_id =3D vmbus_next_request_id(&channel->requestor, requestid);
-> > 		if (rqst_id =3D=3D VMBUS_RQST_ERROR) {
-> > 			pr_err("No request id available\n");
-> > 			return -EAGAIN;
-> > 		}
-> > 	} else {
-> > 		rqst_id =3D requestid;
-> > 	}
-> > 	desc =3D hv_get_ring_buffer(outring_info) + old_write;
-> > 	desc->trans_id =3D rqst_id;
-> >
-> > The value of the flags field controls what will be used as the value fo=
-r the
-> > rqst_id.  Having another test to see which value will be used as the tr=
-ans_id
-> > somehow feels a bit redundant.  And then rqst_id doesn't have to be ini=
-tialized.
->=20
-> Agreed, will apply in the next version.
->=20
+On Wed, 2020-09-09 at 10:08 +0530, Naresh Kamboju wrote:
+> While booting x86_64 with Linux next 20200908 tag kernel this warning
+> was noticed.
 
-In an offline conversation, Andrea has pointed out that my proposed changes
-don't work.  After a second look, I'll agreed that Andrea's code is the bes=
-t that
-can be done, so my comments can be ignored.
+This pretty much looks like the same issue in:
 
-Michael
+https://lore.kernel.org/lkml/20200902035146.GA45826@roeck-us.net/
+
+Can you revert the patchset to see if it is related?
+
+> 
+> metadata:
+>   git branch: master
+>   git repo: 
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   git commit: dff9f829e5b0181d4ed9d35aa62d695292399b54
+>   git describe: next-20200908
+>   kernel-config:
+> http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei7-64/lkft/linux-next/853/config
+> 
+> warning logs:
+> ---------------------
+> [   18.874329] Freeing unused kernel image (rodata/data gap) memory: 2012K
+> [   18.881107] Run /sbin/init as init process
+> [   18.905611]
+> [   18.907190] =============================
+> [   18.911194] WARNING: suspicious RCU usage
+> [   18.915199] 5.9.0-rc4-next-20200908 #1 Not tainted
+> [   18.919982] -----------------------------
+> [   18.923984] /usr/src/kernel/include/trace/events/tlb.h:57
+> suspicious rcu_dereference_check() usage!
+> [   18.933016]
+> [   18.933016] other info that might help us debug this:
+> [   18.933016]
+> [   18.941006]
+> [   18.941006] rcu_scheduler_active = 2, debug_locks = 1
+> [   18.947523] RCU used illegally from extended quiescent state!
+> [   18.953261] no locks held by swapper/2/0.
+> [   18.957264]
+> [   18.957264] stack backtrace:
+> [   18.961619] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
+> 5.9.0-rc4-next-20200908 #1
+> [   18.969007] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   18.976392] Call Trace:
+> [   18.978844]  dump_stack+0x7d/0x9f
+> [   18.982158]  lockdep_rcu_suspicious+0xce/0xf0
+> [   18.986517]  switch_mm_irqs_off+0x441/0x450
+> [   18.990702]  switch_mm+0x1b/0x50
+> [   18.993936]  leave_mm+0x34/0x40
+> [   18.997082]  acpi_idle_enter_bm+0x23/0x120
+> [   19.001180]  acpi_idle_enter+0x189/0x2a0
+> [   19.005104]  ? rcu_eqs_enter.constprop.85+0xb2/0x180
+> [   19.010072]  cpuidle_enter_state+0xa5/0x4b0
+> [   19.015265]  cpuidle_enter+0x2e/0x40
+> [   19.015268]  do_idle+0x226/0x2b0
+> [   19.015273]  cpu_startup_entry+0x1d/0x20
+> [   19.015275]  start_secondary+0x114/0x150
+> [   19.029943]  secondary_startup_64+0xb6/0xc0
+> [   19.034141]
+> [   19.034142] =============================
+> [   19.034142] WARNING: suspicious RCU usage
+> [   19.034142] 5.9.0-rc4-next-20200908 #1 Not tainted
+> [   19.034143] -----------------------------
+> [   19.034143] /usr/src/kernel/include/trace/events/lock.h:37
+> suspicious rcu_dereference_check() usage!
+> [   19.034143]
+> [   19.034144] other info that might help us debug this:
+> [   19.034144]
+> [   19.034144]
+> [   19.034145] rcu_scheduler_active = 2, debug_locks = 1
+> [   19.034145] RCU used illegally from extended quiescent state!
+> [   19.034146] no locks held by swapper/2/0.
+> [   19.034146]
+> [   19.034146] stack backtrace:
+> [   19.034147] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
+> 5.9.0-rc4-next-20200908 #1
+> [   19.034147] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   19.034147] Call Trace:
+> [   19.034148]  dump_stack+0x7d/0x9f
+> [   19.034148]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034148]  lock_acquire+0x327/0x390
+> [   19.034149]  _raw_spin_lock+0x2f/0x40
+> [   19.034149]  ? vprintk_emit+0x78/0x2f0
+> [   19.034149]  vprintk_emit+0x78/0x2f0
+> [   19.034149]  vprintk_default+0x1f/0x30
+> [   19.034150]  vprintk_func+0x51/0xf0
+> [   19.034150]  printk+0x52/0x6e
+> [   19.034150]  ? __lock_acquire+0x32a/0x19f0
+> [   19.034151]  lockdep_rcu_suspicious+0x20/0xf0
+> [   19.034151]  switch_mm_irqs_off+0x441/0x450
+> [   19.034151]  switch_mm+0x1b/0x50
+> [   19.034152]  leave_mm+0x34/0x40
+> [   19.034152]  acpi_idle_enter_bm+0x23/0x120
+> [   19.034152]  acpi_idle_enter+0x189/0x2a0
+> [   19.034153]  ? rcu_eqs_enter.constprop.85+0xb2/0x180
+> [   19.034153]  cpuidle_enter_state+0xa5/0x4b0
+> [   19.034153]  cpuidle_enter+0x2e/0x40
+> [   19.034154]  do_idle+0x226/0x2b0
+> [   19.034154]  cpu_startup_entry+0x1d/0x20
+> [   19.034154]  start_secondary+0x114/0x150
+> [   19.034155]  secondary_startup_64+0xb6/0xc0
+> [   19.034155]
+> [   19.034155] =============================
+> [   19.034156] WARNING: suspicious RCU usage
+> [   19.034156] 5.9.0-rc4-next-20200908 #1 Not tainted
+> [   19.034156] -----------------------------
+> [   19.034157] /usr/src/kernel/include/trace/events/lock.h:63
+> suspicious rcu_dereference_check() usage!
+> [   19.034157]
+> [   19.034157] other info that might help us debug this:
+> [   19.034158]
+> [   19.034158]
+> [   19.034158] rcu_scheduler_active = 2, debug_locks = 1
+> [   19.034159] RCU used illegally from extended quiescent state!
+> [   19.034159] 1 lock held by swapper/2/0:
+> [   19.034159]  #0: ffffffffbed25f58 (logbuf_lock){-...}-{2:2}, at:
+> vprintk_emit+0x78/0x2f0
+> [   19.034161]
+> [   19.034161] stack backtrace:
+> [   19.034162] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
+> 5.9.0-rc4-next-20200908 #1
+> [   19.034162] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   19.034162] Call Trace:
+> [   19.034163]  dump_stack+0x7d/0x9f
+> [   19.034163]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034163]  ? vprintk_emit+0x9e/0x2f0
+> [   19.034164]  lock_release+0x246/0x270
+> [   19.034164]  _raw_spin_unlock+0x1a/0x30
+> [   19.034164]  vprintk_emit+0x9e/0x2f0
+> [   19.034165]  vprintk_default+0x1f/0x30
+> [   19.034165]  vprintk_func+0x51/0xf0
+> [   19.034165]  printk+0x52/0x6e
+> [   19.034166]  ? __lock_acquire+0x32a/0x19f0
+> [   19.034166]  lockdep_rcu_suspicious+0x20/0xf0
+> [   19.034166]  switch_mm_irqs_off+0x441/0x450
+> [   19.034167]  switch_mm+0x1b/0x50
+> [   19.034167]  leave_mm+0x34/0x40
+> [   19.034167]  acpi_idle_enter_bm+0x23/0x120
+> [   19.034167]  acpi_idle_enter+0x189/0x2a0
+> [   19.034168]  ? rcu_eqs_enter.constprop.85+0xb2/0x180
+> [   19.034168]  cpuidle_enter_state+0xa5/0x4b0
+> [   19.034168]  cpuidle_enter+0x2e/0x40
+> [   19.034169]  do_idle+0x226/0x2b0
+> [   19.034169]  cpu_startup_entry+0x1d/0x20
+> [   19.034169]  start_secondary+0x114/0x150
+> [   19.034170]  secondary_startup_64+0xb6/0xc0
+> [   19.034170]
+> [   19.034170] =============================
+> [   19.034171] WARNING: suspicious RCU usage
+> [   19.034171] 5.9.0-rc4-next-20200908 #1 Not tainted
+> [   19.034171] -----------------------------
+> [   19.034172] /usr/src/kernel/include/trace/events/sched.h:90
+> suspicious rcu_dereference_check() usage!
+> [   19.034172]
+> [   19.034172] other info that might help us debug this:
+> [   19.034173]
+> [   19.034173]
+> [   19.034173] rcu_scheduler_active = 2, debug_locks = 1
+> [   19.034174] RCU used illegally from extended quiescent state!
+> [   19.034174] 2 locks held by swapper/2/0:
+> [   19.034174]  #0: ffffffffbed25ff8 ((console_sem).lock){-...}-{2:2},
+> at: up+0x16/0x50
+> [   19.034176]  #1: ffff90dbeea90800 (&p->pi_lock){-.-.}-{2:2}, at:
+> try_to_wake_up+0x52/0x7a0
+> [   19.034178]
+> [   19.034178] stack backtrace:
+> [   19.034178] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
+> 5.9.0-rc4-next-20200908 #1
+> [   19.034179] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   19.034179] Call Trace:
+> [   19.034179]  dump_stack+0x7d/0x9f
+> [   19.034180]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034180]  try_to_wake_up+0x6a4/0x7a0
+> [   19.034180]  ? find_held_lock+0x35/0xa0
+> [   19.034181]  wake_up_process+0x15/0x20
+> [   19.034181]  __up.isra.4+0x39/0x40
+> [   19.034181]  up+0x46/0x50
+> [   19.034182]  __up_console_sem+0x32/0x60
+> [   19.034182]  console_unlock+0x346/0x5c0
+> [   19.034182]  vprintk_emit+0x1d1/0x2f0
+> [   19.034183]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034183]  vprintk_default+0x1f/0x30
+> [   19.034183]  vprintk_func+0x51/0xf0
+> [   19.034184]  ? rcu_nmi_exit+0x12a/0x260
+> [   19.034184]  printk+0x52/0x6e
+> [   19.034184]  ? kernel_text_address+0x96/0xf0
+> [   19.034185]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034185]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034185]  show_trace_log_lvl+0x32f/0x3b0
+> [   19.034186]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034186]  show_stack+0x30/0x40
+> [   19.034186]  dump_stack+0x7d/0x9f
+> [   19.034186]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034187]  switch_mm_irqs_off+0x441/0x450
+> [   19.034187]  switch_mm+0x1b/0x50
+> [   19.034187]  leave_mm+0x34/0x40
+> [   19.034188]  acpi_idle_enter_bm+0x23/0x120
+> [   19.034188]  acpi_idle_enter+0x189/0x2a0
+> [   19.034188]  ? rcu_eqs_enter.constprop.85+0xb2/0x180
+> [   19.034189]  cpuidle_enter_state+0xa5/0x4b0
+> [   19.034189]  cpuidle_enter+0x2e/0x40
+> [   19.034189]  do_idle+0x226/0x2b0
+> [   19.034190]  cpu_startup_entry+0x1d/0x20
+> [   19.034190]  start_secondary+0x114/0x150
+> [   19.034190]  secondary_startup_64+0xb6/0xc0
+> [   19.034191]
+> [   19.034191] =============================
+> [   19.034191] WARNING: suspicious RCU usage
+> [   19.034192] 5.9.0-rc4-next-20200908 #1 Not tainted
+> [   19.034192] -----------------------------
+> [   19.034192] /usr/src/kernel/include/linux/rcupdate.h:643
+> rcu_read_lock() used illegally while idle!
+> [   19.034193]
+> [   19.034193] other info that might help us debug this:
+> [   19.034193]
+> [   19.034194]
+> [   19.034194] rcu_scheduler_active = 2, debug_locks = 1
+> [   19.034194] RCU used illegally from extended quiescent state!
+> [   19.034195] 3 locks held by swapper/2/0:
+> [   19.034195]  #0: ffffffffbed25ff8 ((console_sem).lock){-...}-{2:2},
+> at: up+0x16/0x50
+> [   19.034196]  #1: ffff90dbeea90800 (&p->pi_lock){-.-.}-{2:2}, at:
+> try_to_wake_up+0x52/0x7a0
+> [   19.034198]  #2: ffffffffbed28580 (rcu_read_lock){....}-{1:2}, at:
+> select_task_rq_fair+0xd0/0x10a0
+> [   19.034199]
+> [   19.034200] stack backtrace:
+> [   19.034200] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
+> 5.9.0-rc4-next-20200908 #1
+> [   19.034201] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   19.034201] Call Trace:
+> [   19.034201]  dump_stack+0x7d/0x9f
+> [   19.034202]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034202]  select_task_rq_fair+0x4aa/0x10a0
+> [   19.034202]  ? show_stack+0x30/0x40
+> [   19.034203]  try_to_wake_up+0x181/0x7a0
+> [   19.034203]  ? find_held_lock+0x35/0xa0
+> [   19.034203]  wake_up_process+0x15/0x20
+> [   19.034203]  __up.isra.4+0x39/0x40
+> [   19.034204]  up+0x46/0x50
+> [   19.034204]  __up_console_sem+0x32/0x60
+> [   19.034204]  console_unlock+0x346/0x5c0
+> [   19.034205]  vprintk_emit+0x1d1/0x2f0
+> [   19.034205]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034205]  vprintk_default+0x1f/0x30
+> [   19.034206]  vprintk_func+0x51/0xf0
+> [   19.034206]  ? rcu_nmi_exit+0x12a/0x260
+> [   19.034206]  printk+0x52/0x6e
+> [   19.034207]  ? kernel_text_address+0x96/0xf0
+> [   19.034207]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034207]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034208]  show_trace_log_lvl+0x32f/0x3b0
+> [   19.034208]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034208]  show_stack+0x30/0x40
+> [   19.034209]  dump_stack+0x7d/0x9f
+> [   19.034209]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034209]  switch_mm_irqs_off+0x441/0x450
+> [   19.034210]  switch_mm+0x1b/0x50
+> [   19.034210]  leave_mm+0x34/0x40
+> [   19.034210]  acpi_idle_enter_bm+0x23/0x120
+> [   19.034211]  acpi_idle_enter+0x189/0x2a0
+> [   19.034211]  ? rcu_eqs_enter.constprop.85+0xb2/0x180
+> [   19.034211]  cpuidle_enter_state+0xa5/0x4b0
+> [   19.034212]  cpuidle_enter+0x2e/0x40
+> [   19.034212]  do_idle+0x226/0x2b0
+> [   19.034212]  cpu_startup_entry+0x1d/0x20
+> [   19.034213]  start_secondary+0x114/0x150
+> [   19.034213]  secondary_startup_64+0xb6/0xc0
+> [   19.034213]
+> [   19.034214] =============================
+> [   19.034214] WARNING: suspicious RCU usage
+> [   19.034214] 5.9.0-rc4-next-20200908 #1 Not tainted
+> [   19.034215] -----------------------------
+> [   19.034215] /usr/src/kernel/kernel/sched/fair.c:6694 suspicious
+> rcu_dereference_check() usage!
+> [   19.034215]
+> [   19.034216] other info that might help us debug this:
+> [   19.034216]
+> [   19.034216]
+> [   19.034217] rcu_scheduler_active = 2, debug_locks = 1
+> [   19.034217] RCU used illegally from extended quiescent state!
+> [   19.034217] 3 locks held by swapper/2/0:
+> [   19.034217]  #0: ffffffffbed25ff8 ((console_sem).lock){-...}-{2:2},
+> at: up+0x16/0x50
+> [   19.034219]  #1: ffff90dbeea90800 (&p->pi_lock){-.-.}-{2:2}, at:
+> try_to_wake_up+0x52/0x7a0
+> [   19.034220]  #2: ffffffffbed28580 (rcu_read_lock){....}-{1:2}, at:
+> select_task_rq_fair+0xd0/0x10a0
+> [   19.034222]
+> [   19.034222] stack backtrace:
+> [   19.034223] CPU: 2 PID: 0 Comm: swapper/2 Not tainted
+> 5.9.0-rc4-next-20200908 #1
+> [   19.034223] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+> 2.2 05/23/2018
+> [   19.034223] Call Trace:
+> [   19.034224]  dump_stack+0x7d/0x9f
+> [   19.034224]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034224]  select_task_rq_fair+0x448/0x10a0
+> [   19.034225]  ? show_stack+0x30/0x40
+> [   19.034225]  try_to_wake_up+0x181/0x7a0
+> [   19.034225]  ? find_held_lock+0x35/0xa0
+> [   19.034226]  wake_up_process+0x15/0x20
+> [   19.034226]  __up.isra.4+0x39/0x40
+> [   19.034226]  up+0x46/0x50
+> [   19.034227]  __up_console_sem+0x32/0x60
+> [   19.034227]  console_unlock+0x346/0x5c0
+> [   19.034227]  vprintk_emit+0x1d1/0x2f0
+> [   19.034228]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034228]  vprintk_default+0x1f/0x30
+> [   19.034228]  vprintk_func+0x51/0xf0
+> [   19.034228]  ? rcu_nmi_exit+0x12a/0x260
+> [   19.034229]  printk+0x52/0x6e
+> [   19.034229]  ? kernel_text_address+0x96/0xf0
+> [   19.034229]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034230]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034230]  show_trace_log_lvl+0x32f/0x3b0
+> [   19.034230]  ? cpuidle_enter_state+0xa5/0x4b0
+> [   19.034231]  show_stack+0x30/0x40
+> [   19.034231]  dump_stack+0x7d/0x9f
+> [   19.034231]  lockdep_rcu_suspicious+0xce/0xf0
+> [   19.034232]  switch_mm_irqs_off+0x441/0x450
+> [   19.034232]  switch_mm+0x1b/0x50
+> [   19.034232]  leave_mm+0x34/0x40
+> [   19.034233]  acpi_idle_enter_bm+0x23/0x120
+> [   19.034233]  acpi_idle_enter+0x189/0x2a0
+> [   19.034233]  ? rcu_eqs_enter.constprop.85+0xb2/0x180
+> [   19.034234]  cpuidle_enter_state+0xa5/0x4b0
+> [   19.034234]  cpuidle_enter+0x2e/0x40
+> [   19.034234]  do_idle+0x226/0x2b0
+> [   19.034235]  cpu_startup_entry+0x1d/0x20
+> [   19.034235]  start_secondary+0x114/0x150
+> [   19.034235]  secondary_startup_64+0xb6/0xc0
+> 
+> Full test log,
+> 
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20200908/testrun/3171064/suite/linux-log-parser/test/check-kernel-bug-1743477/log
+> 
+> 
+
