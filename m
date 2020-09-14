@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BEA269764
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A0D269768
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgINVGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:06:55 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:44944 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgINVGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:06:53 -0400
-Received: by mail-il1-f195.google.com with SMTP id h11so921993ilj.11;
-        Mon, 14 Sep 2020 14:06:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FRJbFV8TtlGV/fuyCW0Lk1ZSMLH7Q700y+hxSQgxsfo=;
-        b=sINR7wRD5TT6MDdQilkxCNQCCAXE5L8NSA7OXuuGMONsY80Q+khrVN2oXRVjtMQIu6
-         Q0RmJriK6GIXCqA/6qIgHEOd7Pqb0L2Jo3xOAsn55RLtRT8GG+bhJuE5piaDytgjpED3
-         gLmxfGe+h0pwNSV4k4o15S1l8yIL5pz2JmFpu+mrstbm/s67xjOmg6bN5neQpa7wXI9Z
-         DkkM6jUPIW8Q/oaHe97MX91WgAkJIYm37U/Nx903o1NP8dmPMaHXuI9utUtcTzcPIf/3
-         dH5rNRoyRp2WZly2m7AF9UdAwQvK27eBQXgBIQlOgemvBG56KCuyuXHh0cVg6C2RkCjm
-         KgQg==
-X-Gm-Message-State: AOAM530eQlkAaQSwsEL66Oone7hi+uWOk3JQFrlH1v87+Rp7/r4nwL2b
-        LCEKv1jwQ4xw2FgTpw4wPQ==
-X-Google-Smtp-Source: ABdhPJy1UZ4bKOaDZXU8JkHivfNSgDajTheO8EfjgjoB1lHsSZqfP+N6vIe6wRPTQ8EPihst8YK4WQ==
-X-Received: by 2002:a92:910a:: with SMTP id t10mr13679580ild.256.1600117611352;
-        Mon, 14 Sep 2020 14:06:51 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w15sm7488380ilq.46.2020.09.14.14.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 14:06:50 -0700 (PDT)
-Received: (nullmailer pid 249445 invoked by uid 1000);
-        Mon, 14 Sep 2020 21:06:48 -0000
-Date:   Mon, 14 Sep 2020 15:06:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        srv_heupstream@mediatek.com, Sascha Hauer <kernel@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [PATCH 1/3] dt-bindings: soc: Add MT8192 power dt-bindings
-Message-ID: <20200914210648.GA249407@bogus>
-References: <1599201895-11013-1-git-send-email-weiyi.lu@mediatek.com>
- <1599201895-11013-2-git-send-email-weiyi.lu@mediatek.com>
+        id S1726055AbgINVIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:08:14 -0400
+Received: from mga05.intel.com ([192.55.52.43]:32504 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725978AbgINVIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:08:11 -0400
+IronPort-SDR: aZwxG13IRNdWtKCjMm97HUq6Tw014BYFyH3uZs9nrCCU1TnNG48CTOmNPQ20K3qzxOPRo38yLI
+ jWylPzA2DLKw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="243992776"
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="243992776"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:08:10 -0700
+IronPort-SDR: U9N+DKLdMu+ewb++IVuN349jio0EA0DdYQq4BLqyw4wSagQO+4hwxOqBqHnyxlKQT0UkUrqb6L
+ fF1EIgHcCQ5A==
+X-IronPort-AV: E=Sophos;i="5.76,427,1592895600"; 
+   d="scan'208";a="482495517"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 14:08:09 -0700
+Date:   Mon, 14 Sep 2020 14:08:08 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 1/2] KVM: VMX: Move IRQ invocation to assembly subroutine
+Message-ID: <20200914210808.GC7084@sjchrist-ice>
+References: <20200914195634.12881-1-sean.j.christopherson@intel.com>
+ <20200914195634.12881-2-sean.j.christopherson@intel.com>
+ <CAFULd4aNVW1Wzs=Y9+-wwFw2FyjHZRKe=SPkJ7uBdGmbN6i47A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1599201895-11013-2-git-send-email-weiyi.lu@mediatek.com>
+In-Reply-To: <CAFULd4aNVW1Wzs=Y9+-wwFw2FyjHZRKe=SPkJ7uBdGmbN6i47A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Sep 2020 14:44:53 +0800, Weiyi Lu wrote:
-> Add power dt-bindings of MT8192
+On Mon, Sep 14, 2020 at 10:37:25PM +0200, Uros Bizjak wrote:
+> On Mon, Sep 14, 2020 at 9:56 PM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
+> >
+> > Move the asm blob that invokes the appropriate IRQ handler after VM-Exit
+> > into a proper subroutine.  Slightly rework the blob so that it plays
+> > nice with objtool without any additional hints (existing hints aren't
+> > able to handle returning with a seemingly modified stack size).
+> >
+> > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Cc: Uros Bizjak <ubizjak@gmail.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > ---
+> >  arch/x86/kvm/vmx/vmenter.S | 28 ++++++++++++++++++++++++++++
+> >  arch/x86/kvm/vmx/vmx.c     | 33 +++------------------------------
+> >  2 files changed, 31 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> > index 799db084a336..baec1e0fefc5 100644
+> > --- a/arch/x86/kvm/vmx/vmenter.S
+> > +++ b/arch/x86/kvm/vmx/vmenter.S
+> > @@ -4,6 +4,7 @@
+> >  #include <asm/bitsperlong.h>
+> >  #include <asm/kvm_vcpu_regs.h>
+> >  #include <asm/nospec-branch.h>
+> > +#include <asm/segment.h>
+> >
+> >  #define WORD_SIZE (BITS_PER_LONG / 8)
+> >
+> > @@ -294,3 +295,30 @@ SYM_FUNC_START(vmread_error_trampoline)
+> >
+> >         ret
+> >  SYM_FUNC_END(vmread_error_trampoline)
+> > +
+> > +SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
+> > +       /*
+> > +        * Unconditionally create a stack frame.  RSP needs to be aligned for
+> > +        * x86-64, getting the correct RSP on the stack (for x86-64) would take
+> > +        * two instructions anyways, and it helps make objtool happy (see below).
+> > +        */
+> > +       push %_ASM_BP
+> > +       mov %rsp, %_ASM_BP
 > 
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/scpsys.txt    |  5 ++++
->  include/dt-bindings/power/mt8192-power.h           | 32 ++++++++++++++++++++++
->  2 files changed, 37 insertions(+)
->  create mode 100644 include/dt-bindings/power/mt8192-power.h
-> 
+> _ASM_SP instead of %rsp to avoid assembly failure for 32bit targets.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+*sigh*  Thanks!  I'll build i386 this time...
