@@ -2,212 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C282683B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6122683B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 06:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgINEbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 00:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgINEbT (ORCPT
+        id S1725996AbgINEf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 00:35:57 -0400
+Received: from relay4.mymailcheap.com ([137.74.80.154]:37457 "EHLO
+        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbgINEfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 00:31:19 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB5BC06174A;
-        Sun, 13 Sep 2020 21:31:19 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id r25so18620692ioj.0;
-        Sun, 13 Sep 2020 21:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DsZ3lIX5gUOeOkzUQTxhWkAmsPOYNnnOW1gG/K3R+V8=;
-        b=mF7Fd5B/3mpOxdJjmfoNJUK/K22MJ090gLMjEthMfdykhBuVHEU18C0B0F1gWP3lAd
-         925DZjFFHEvr6MFwjW/V8ur2f0pa8w5ElPtg5Ow9F+se1YEQenEttI+8SK++lGjgUDc9
-         8YWL5PLHXqoU+ocKChI/rs8Hq9EpSh0Wi8G1A+DrIceHokKJJI+7s5bRTFRu/rLy5GWm
-         j+SopgnGiQgrtBKINA6LaRE2EtOV6X0JKgF6LIalu/6rI5cRGsvjEjOVttktHyfmdWpw
-         3yVKX+58AYGi9p3SMzxMZSjXzvQHAOBQ3b5QG8HUBR/Hz8GGTeX7wQ4wYcwxE2Ffumn4
-         ghew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DsZ3lIX5gUOeOkzUQTxhWkAmsPOYNnnOW1gG/K3R+V8=;
-        b=dmkKRWJkEDVIj6KfDHjEFcZw5vP7zdXEiIbsGGuCitjUKTgTcA0Avj3ljVKTXT6kTj
-         K+0mphDL+z36XNLohQ+96sasU9Vgzq/eCYpUTkBTdjjTJMi2IT4kdVOsy2hzr45bfF/s
-         UFxU3Vf4wVhYyo/7nWykQ2O4/JFAZlXRRZJt+UeFmnSlrsd49sLvmdg5Fv6N+KY3VPZw
-         Z4FeFwgYv7Ubz4z2ZicqjZ+eGe1X4lkxJqDPz8pQsWnDW2PJI6RrLtrWo2fL02ho49YA
-         R0u/n+fcDtR3wA2A/whJ/I7NwdDxXjdtqkLE0S0anHQKn3IgLy09GJojJ8w57gOn7Upy
-         2o6g==
-X-Gm-Message-State: AOAM531PsOVEHe5QsWVzEvTfnld+XWh+H7sAVheoXXYAVTP8Adyga8eP
-        yJ8wEmzQ+w6UvvK/hhNCiJkjPL/12bUTyZg9f8I=
-X-Google-Smtp-Source: ABdhPJyc/K58LLbl09KQIaVix4ILpCnjQsbupppbIRjarJBAcenkAAUClCCW5KkB5yqaySHyBt7agDekXVbJHzd3iTU=
-X-Received: by 2002:a5d:8604:: with SMTP id f4mr10017634iol.196.1600057876290;
- Sun, 13 Sep 2020 21:31:16 -0700 (PDT)
+        Mon, 14 Sep 2020 00:35:55 -0400
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id 928593F1CF;
+        Mon, 14 Sep 2020 06:35:51 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 5F0322A7D9;
+        Mon, 14 Sep 2020 06:35:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1600058151;
+        bh=A/5yL0BOx2box3oKLSTZYopSLFSON7BKKBi1tNjw4YM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=zMM2Ns4/V9cr3stuZl6W/6DYsZ4fSPamg5k4C2IAGS8qSy+B5a9sP4Z9LFMymfXrp
+         rjZapn1/fgd+kmMlAvAPxLoZdKUgOyATlglm9HK3ARW8mSehP0vDJaJZZj1yf8DJ6N
+         INLQeW+jP5UkB1pfK+oxLXsDKLqTCFUGf0YxJU8k=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2LzTw4deotr6; Mon, 14 Sep 2020 06:35:49 +0200 (CEST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Mon, 14 Sep 2020 06:35:49 +0200 (CEST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id B5B3240EEC;
+        Mon, 14 Sep 2020 04:35:46 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="uJnqo27J";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (li1197-90.members.linode.com [45.79.98.90])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 8E72540FFE;
+        Mon, 14 Sep 2020 04:32:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1600057933;
+        bh=A/5yL0BOx2box3oKLSTZYopSLFSON7BKKBi1tNjw4YM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=uJnqo27J/0mSbwtRX9cy2MozObgWFyl4cykt+vo0a1ym5mpfUAFIg1+FM4aCnb9NZ
+         q2VfNINpsLAuWqaC+wRz7O2TJwjakPGvGz+4Ftl3zlrL6/cZdNOsqOhJL9ZH5hAnf/
+         AwbSPyh/15Qe7v/mJnMc1At2yW4H9wueMxlxUB+Y=
+Subject: Re: [PATCH] MIPS: Remove unused BOOT_MEM_INIT_RAM
+To:     Youling Tang <tangyouling@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1599875955-9207-1-git-send-email-tangyouling@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <f2349dc3-8086-64ee-e2d7-7a69afac6623@flygoat.com>
+Date:   Mon, 14 Sep 2020 12:32:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <1600028950-10644-1-git-send-email-yangtiezhu@loongson.cn> <tencent_44F0201A70619BA613F16BA4@qq.com>
-In-Reply-To: <tencent_44F0201A70619BA613F16BA4@qq.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Mon, 14 Sep 2020 12:31:04 +0800
-Message-ID: <CAAhV-H5-X9OcBe3iRxF8PnKW-0j_10FVqm8cbiqW2-Lv4mTTdQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec
- reboot and connected PCI devices
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Konstantin Khlebnikov <khlebnikov@openvz.org>,
-        Khalid Aziz <khalid.aziz@oracle.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Lukas Wunner <lukas@wunner.de>, oohall <oohall@gmail.com>,
-        "rafael.j.wysocki" <rafael.j.wysocki@intel.com>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        zhouyanjie <zhouyanjie@wanyeetech.com>, git <git@xen0n.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1599875955-9207-1-git-send-email-tangyouling@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: B5B3240EEC
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tiezhu
 
-> ------------------ Original ------------------
-> From:  "Tiezhu Yang"<yangtiezhu@loongson.cn>;
-> Date:  Mon, Sep 14, 2020 04:29 AM
-> To:  "Bjorn Helgaas"<bhelgaas@google.com>;
-> Cc:  "Konstantin Khlebnikov"<khlebnikov@openvz.org>; "Khalid Aziz"<khalid=
-.aziz@oracle.com>; "Vivek Goyal"<vgoyal@redhat.com>; "Lukas Wunner"<lukas@w=
-unner.de>; "oohall"<oohall@gmail.com>; "rafael.j.wysocki"<rafael.j.wysocki@=
-intel.com>; "Xuefeng Li"<lixuefeng@loongson.cn>; "Huacai Chen"<chenhc@lemot=
-e.com>; "Jiaxun Yang"<jiaxun.yang@flygoat.com>; "linux-pci"<linux-pci@vger.=
-kernel.org>; "linux-kernel"<linux-kernel@vger.kernel.org>;
-> Subject:  [RFC PATCH v2] PCI/portdrv: Only disable Bus Master on kexec re=
-boot and connected PCI devices
->
->
->
-> After commit 745be2e700cd ("PCIe: portdrv: call pci_disable_device
-> during remove") and commit cc27b735ad3a ("PCI/portdrv: Turn off PCIe
-> services during shutdown"), it also calls pci_disable_device() during
-> shutdown, this leads to shutdown or reboot failure occasionally due to
-> clear PCI_COMMAND_MASTER on the device in do_pci_disable_device().
->
-> drivers/pci/pci.c
-> static void do_pci_disable_device(struct pci_dev *dev)
-> {
->         u16 pci_command;
->
->         pci_read_config_word(dev, PCI_COMMAND, &pci_command);
->         if (pci_command & PCI_COMMAND_MASTER) {
->                 pci_command &=3D ~PCI_COMMAND_MASTER;
->                 pci_write_config_word(dev, PCI_COMMAND, pci_command);
->         }
->
->         pcibios_disable_device(dev);
-> }
->
-> When remove "pci_command &=3D ~PCI_COMMAND_MASTER;", it can work well.
->
-> As Oliver O'Halloran said, no need to call pci_disable_device() when
-> actually shutting down, but we should call pci_disable_device() before
-> handing over to the new kernel on kexec reboot, so we can do some
-> condition checks which are similar with pci_device_shutdown(), this is
-> done by commit 4fc9bbf98fd6 ("PCI: Disable Bus Master only on kexec
-> reboot") and commit 6e0eda3c3898 ("PCI: Don't try to disable Bus Master
-> on disconnected PCI devices").
->
-> drivers/pci/pci-driver.c
-> static void pci_device_shutdown(struct device *dev)
-> {
-> ...
->
->         /*
->          * If this is a kexec reboot, turn off Bus Master bit on the
->          * device to tell it to not continue to do DMA. Don't touch
->          * devices in D3cold or unknown states.
->          * If it is not a kexec reboot, firmware will hit the PCI
->          * devices with big hammer and stop their DMA any way.
->          */
->         if (kexec_in_progress && (pci_dev->current_state <=3D PCI_D3hot))
->                 pci_clear_master(pci_dev);
-> }
-Have you really tried kexec? Why do you think kexec can disable pci
-device successfully while normal reboot/poweroff cannot?
 
-Huacai
+ÔÚ 2020/9/12 9:59, Youling Tang Ð´µÀ:
+> Commit a94e4f24ec83 ("MIPS: init: Drop boot_mem_map") left
+> the BOOT_MEM_INIT_RAM unused, remove it.
 >
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
 > ---
->  drivers/pci/pcie/portdrv_core.c |  1 -
->  drivers/pci/pcie/portdrv_pci.c  | 25 ++++++++++++++++++++++++-
->  2 files changed, 24 insertions(+), 2 deletions(-)
+>   arch/mips/include/asm/bootinfo.h | 1 -
+>   1 file changed, 1 deletion(-)
 >
-> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_c=
-ore.c
-> index 50a9522..1991aca 100644
-> --- a/drivers/pci/pcie/portdrv_core.c
-> +++ b/drivers/pci/pcie/portdrv_core.c
-> @@ -491,7 +491,6 @@ void pcie_port_device_remove(struct pci_dev *dev)
->  {
->         device_for_each_child(&dev->dev, NULL, remove_iter);
->         pci_free_irq_vectors(dev);
-> -       pci_disable_device(dev);
->  }
->
->  /**
-> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pc=
-i.c
-> index 3a3ce40..ce89a9e8 100644
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -15,6 +15,7 @@
->  #include <linux/init.h>
->  #include <linux/aer.h>
->  #include <linux/dmi.h>
-> +#include <linux/kexec.h>
->
->  #include "../pci.h"
->  #include "portdrv.h"
-> @@ -143,6 +144,28 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
->         }
->
->         pcie_port_device_remove(dev);
-> +       pci_disable_device(dev);
-> +}
-> +
-> +static void pcie_portdrv_shutdown(struct pci_dev *dev)
-> +{
-> +       if (pci_bridge_d3_possible(dev)) {
-> +               pm_runtime_forbid(&dev->dev);
-> +               pm_runtime_get_noresume(&dev->dev);
-> +               pm_runtime_dont_use_autosuspend(&dev->dev);
-> +       }
-> +
-> +       pcie_port_device_remove(dev);
-> +
-> +       /*
-> +        * If this is a kexec reboot, turn off Bus Master bit on the
-> +        * device to tell it to not continue to do DMA. Don't touch
-> +        * devices in D3cold or unknown states.
-> +        * If it is not a kexec reboot, firmware will hit the PCI
-> +        * devices with big hammer and stop their DMA any way.
-> +        */
-> +       if (kexec_in_progress && (dev->current_state <=3D PCI_D3hot))
-> +               pci_disable_device(dev);
->  }
->
->  static pci_ers_result_t pcie_portdrv_error_detected(struct pci_dev *dev,
-> @@ -211,7 +234,7 @@ static void pcie_portdrv_err_resume(struct pci_dev *d=
-ev)
->
->         .probe          =3D pcie_portdrv_probe,
->         .remove         =3D pcie_portdrv_remove,
-> -       .shutdown       =3D pcie_portdrv_remove,
-> +       .shutdown       =3D pcie_portdrv_shutdown,
->
->         .err_handler    =3D &pcie_portdrv_err_handler,
->
-> --
-> 1.8.3.1
+> diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
+> index 147c932..39196ae 100644
+> --- a/arch/mips/include/asm/bootinfo.h
+> +++ b/arch/mips/include/asm/bootinfo.h
+> @@ -91,7 +91,6 @@ extern unsigned long mips_machtype;
+>   #define BOOT_MEM_RAM		1
+>   #define BOOT_MEM_ROM_DATA	2
+>   #define BOOT_MEM_RESERVED	3
+> -#define BOOT_MEM_INIT_RAM	4
+
+If you're willing to remove that you'd better turn the memtype struct
+into a enum.
+
+Btw: It seems you've done a lot of minor clean-up works recently,
+if you'd like to I think you can try to turn all the platforms into memblock
+and remove all these gules between memblock and legacy code.
+
+Thanks.
+
+- Jiaxun
+
+>   #define BOOT_MEM_NOMAP		5
+>   
+>   extern void add_memory_region(phys_addr_t start, phys_addr_t size, long type);
