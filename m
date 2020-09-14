@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1252684DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F94E2684E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgINGbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:31:38 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11828 "EHLO huawei.com"
+        id S1726113AbgINGbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:31:47 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11830 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726067AbgINGba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:31:30 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E0B77305C6FCFD67C0F9;
-        Mon, 14 Sep 2020 14:31:27 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
- 14:31:21 +0800
+        id S1726098AbgINGbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 02:31:37 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E34E6C0B2D3D50EC1778;
+        Mon, 14 Sep 2020 14:31:33 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 14 Sep 2020
+ 14:31:22 +0800
 From:   Liu Shixin <liushixin2@huawei.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>
-CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH -next] iio: adc: palmas_gpadc: use module_platform_driver to simplify the code
-Date:   Mon, 14 Sep 2020 14:54:01 +0800
-Message-ID: <20200914065401.3726354-1-liushixin2@huawei.com>
+Subject: [PATCH -next] pinctrl: sprd: use module_platform_driver to simplify the code
+Date:   Mon, 14 Sep 2020 14:54:02 +0800
+Message-ID: <20200914065402.3726408-1-liushixin2@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,33 +43,33 @@ boilerplate code.
 
 Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 ---
- drivers/iio/adc/palmas_gpadc.c | 13 +------------
+ drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c | 13 +------------
  1 file changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/drivers/iio/adc/palmas_gpadc.c b/drivers/iio/adc/palmas_gpadc.c
-index 1ca6570be66a..889b88768b63 100644
---- a/drivers/iio/adc/palmas_gpadc.c
-+++ b/drivers/iio/adc/palmas_gpadc.c
-@@ -834,18 +834,7 @@ static struct platform_driver palmas_gpadc_driver = {
- 		.of_match_table = of_palmas_gpadc_match_tbl,
- 	},
+diff --git a/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c b/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c
+index 06c8671b40e7..d14f382f2392 100644
+--- a/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c
++++ b/drivers/pinctrl/sprd/pinctrl-sprd-sc9860.c
+@@ -946,18 +946,7 @@ static struct platform_driver sprd_pinctrl_driver = {
+ 	.remove = sprd_pinctrl_remove,
+ 	.shutdown = sprd_pinctrl_shutdown,
  };
 -
--static int __init palmas_gpadc_init(void)
+-static int sprd_pinctrl_init(void)
 -{
--	return platform_driver_register(&palmas_gpadc_driver);
+-	return platform_driver_register(&sprd_pinctrl_driver);
 -}
--module_init(palmas_gpadc_init);
+-module_init(sprd_pinctrl_init);
 -
--static void __exit palmas_gpadc_exit(void)
+-static void sprd_pinctrl_exit(void)
 -{
--	platform_driver_unregister(&palmas_gpadc_driver);
+-	platform_driver_unregister(&sprd_pinctrl_driver);
 -}
--module_exit(palmas_gpadc_exit);
-+module_platform_driver(palmas_gpadc_driver);
+-module_exit(sprd_pinctrl_exit);
++module_platform_driver(sprd_pinctrl_driver);
  
- MODULE_DESCRIPTION("palmas GPADC driver");
- MODULE_AUTHOR("Pradeep Goudagunta<pgoudagunta@nvidia.com>");
+ MODULE_DESCRIPTION("SPREADTRUM Pin Controller Driver");
+ MODULE_AUTHOR("Baolin Wang <baolin.wang@spreadtrum.com>");
 -- 
 2.25.1
 
