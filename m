@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9FC2691E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90442691DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 18:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgINQmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 12:42:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726121AbgINPNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:13:13 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39BDB20829;
-        Mon, 14 Sep 2020 15:13:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600096393;
-        bh=2n6xn1dNb+jBWIYWoXM59/cL0r2SN9OLGc/w/yYX4lc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CX21HqYOSTW7DxJJi9tuQNthrvklblenjRZ8AKtZedFGn5cnOcyTnun31WvqoZvUu
-         vt/mlbJvtmTMtGM+Rx2kQUQeVHlUaFraOTtA7nKxTyzGlBe6INrZLXSaayWu4LpVSr
-         Q1/eyCA5lY3hFIeaFqEteERMOwqykEL70biA9hwA=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1370440D3D; Mon, 14 Sep 2020 12:13:11 -0300 (-03)
-Date:   Mon, 14 Sep 2020 12:13:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [RFC 00/26] perf: Add mmap3 support
-Message-ID: <20200914151310.GA160517@kernel.org>
-References: <20200913210313.1985612-1-jolsa@kernel.org>
- <CAM9d7ci4VUuAguynK76Zd7YSnNoAErsgabucUjb3qcuXj5m7Pg@mail.gmail.com>
+        id S1726370AbgINQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 12:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgINPOn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 11:14:43 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FA5C061788;
+        Mon, 14 Sep 2020 08:14:43 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q5so454175qkc.2;
+        Mon, 14 Sep 2020 08:14:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding:content-disposition;
+        bh=OD2XGGa27niJ7TfndrV66ShmAkg6komZ0A4btIli5fk=;
+        b=P+nQWL2MURjqda1ZVX9DJ8IR0t30mmzUNd4HNxEXyrVN8l+fLbRK2ltS8ggA4172Sd
+         7kOFn1UWubddBYc7hjQ5HXMdXNP+AXSJd9/pG2huzfkohjpqik9rbxG00tLpbgm5n7eg
+         mEOWwpZ/ROC/vClWjwd5l/C3CPWKrut4Ns4MTofEMyDY0b3ZbiMEIhBsQnfpY/uyq7lH
+         S9EZMDfsjmdZfUsUqPeLSAFE3oU1HIchpxRUlkX6lAxEs9ZoZQPeQkzxTK6JqXyR9CfB
+         UdXZUdCJneZ/6FeZFu0GmCF/TjHkVyYpXjxwzOg3utLMQDn017sgCnPKHg8jTjiXKcha
+         5udg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding
+         :content-disposition;
+        bh=OD2XGGa27niJ7TfndrV66ShmAkg6komZ0A4btIli5fk=;
+        b=b5UZ3vDM74NcU7dEeGw0Sz9pIT3l5yYi9T/p6ZB7CXC9rd2fjjyBmo4c1/CL210Jyv
+         UYXlrsBHEqDVPPGsplTaN/G1JhZo3kqpmtDh+gvqbjsOXQ/61u0sc2AHoADhiPGYcpVt
+         fa/wN/LqSMhBUSMlZpdoiJf5R4O+1Jo1CnfcOJZWMP5mKg+fEdIfIOY9WAewDDMOYOdR
+         oXlAbX3MY4zjetaSexL+tkwPjyWD9q0depG9AyqPIN6gCG65ZYZPelG6tBJK7wZbu9T3
+         2sE8dfWTHjGNBePuSgdJ/YWY4X4nSfAS7ukf6HMOHWNS3WXCmxyNhhy91MBV+qQcxoSc
+         pwgw==
+X-Gm-Message-State: AOAM5326zhKSrAqe6Bx9c82+NS5YqbQbo1M4UTmXYODH2s/oxVUsWQcA
+        RCaukm+VEqVwhzJPYgrXW96/ph+eOqUxgw==
+X-Google-Smtp-Source: ABdhPJwrXM+XaygDRbo/q8a5SAU2SNgQC2MoeRECyx1qlERfPCeS15qH8dENP0qXFobAjBK8J+Btqw==
+X-Received: by 2002:a05:620a:1125:: with SMTP id p5mr13033953qkk.328.1600096482105;
+        Mon, 14 Sep 2020 08:14:42 -0700 (PDT)
+Received: from dwls-dell ([2804:14d:72b1:8920:a2ce:f815:f14d:bfac])
+        by smtp.gmail.com with ESMTPSA id 2sm9293971qtg.20.2020.09.14.08.14.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Sep 2020 08:14:41 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 12:14:38 -0300
+From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     "=?utf-8?Q?linux-kernel=40vger.kernel.org?=" 
+        <linux-kernel@vger.kernel.org>,
+        "=?utf-8?Q?linux-media=40vger.kernel.org?=" 
+        <linux-media@vger.kernel.org>
+Message-ID: <68DDA2DD-4341-45A9-99CF-BF41573C9AED@getmailspring.com>
+In-Reply-To: <47ccbcbd23e44159bbb11274b540d7c2bb66be7c.1600073975.git.mchehab+huawei@kernel.org>
+References: <47ccbcbd23e44159bbb11274b540d7c2bb66be7c.1600073975.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH RFC 06/11] media: vidtv: get rid of some endiannes
+ nonsense
+X-Mailer: Mailspring
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <CAM9d7ci4VUuAguynK76Zd7YSnNoAErsgabucUjb3qcuXj5m7Pg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Sep 14, 2020 at 02:25:25PM +0900, Namhyung Kim escreveu:
-> On Mon, Sep 14, 2020 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > while playing with perf daemon support I realized I need
-> > the build id data in mmap events, so we don't need to care
-> > about removed/updated binaries during long perf runs.
+Hi Mauro,
 
-> > This RFC patchset adds new mmap3 events that copies mmap2
-> > event and adds build id in it. It makes mmap3 the default
-> > mmap event for synthesizing kernel/modules/tasks and adds
-> > some tooling enhancements to enable the workflow below.
+> Genmask is always highest order to low order. It doesn't make
+> any sense to make it depends on endiannes.
+> 
 
-> Cool! It's nice that we can skip the final build-id collection stage
-> with this while data size will be bigger.
+I added these #ifdefs due to this:
 
-Yeah, this is something long overdue, comes with extra cost for people
-not wanting build-ids, but then they can just use MMAP2 or even MMAP if
-that is enough.
+https://lwn.net/Articles/741762/
 
-More comments on the other patches.
+i.e.
 
-- Arnaldo
+Fields to access are specified as GENMASK() values - an N-bit field
+starting at bit #M is encoded as GENMASK(M + N - 1, N).  Note that
+bit numbers refer to endianness of the object we are working with -
+e.g. GENMASK(11, 0) in __be16 refers to the second byte and the lower
+4 bits of the first byte.  In __le16 it would refer to the first byte
+and the lower 4 bits of the second byte, etc.
+
+I am not 100% sure, but maybe we actually need them? 
+
+- Daniel
+
