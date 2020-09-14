@@ -2,134 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293B6268854
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC80626884E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 11:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbgINJ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 05:29:57 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:38185 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbgINJ3T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 05:29:19 -0400
-Received: by mail-il1-f208.google.com with SMTP id m10so12234136ild.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 02:29:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=XNz8rAWRwDSB4qLa5Er/aLq5jf0OHNVN8KLrKvJxLcw=;
-        b=t4zYlPVmLsykcTrYLDtDri+0/RhzvVwPZyMrLqBuNcE1iKsCzaBMxeF7TZGvTZwIAP
-         PRs699dAYTecTOwLphcVEr7mnolh1jJHKu1i4kvtQkYEqHa9nrxXGj1rSOFMFvxuuAne
-         +rLqkVGLzmI3Tt5S8BGQQjMdh4MEMdrUDQStMcPms4Xt+W17B01nwcWk8aCnfxOB/xBE
-         wsFK57wxDMNwhjlLzX60x24641aRAM1MbZNkG70oqZRWu7896YXWbkRsrQFwHj/V6g6O
-         iSyUdyRkAlyTcQbYgiL6dNamIm0meoB1QnZCunWsm5pchrajotimPEW8NL1LtqrB989y
-         Uv0A==
-X-Gm-Message-State: AOAM531kL/SVpgpJU9Uf2yfmFwGjkjUatpdIdrqAyMooOdrkfse7VKFl
-        7IcW85N+WudOOJyfUXX9HdcDHXH3zsWbMwLbz6Da5tJ6sG6u
-X-Google-Smtp-Source: ABdhPJxHShYTCq5VPvPNidXlRLuL3r8+sKhR33reRm7KxkvGkIlMeDayTVW4ju/EQonWWkqY9K1xaW5M0mcZ0GmOLjvH0sH2Dhj8
+        id S1726347AbgINJ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 05:29:49 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:46300 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726239AbgINJ3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 05:29:44 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 5E50A54CCD72579BDE52;
+        Mon, 14 Sep 2020 17:29:41 +0800 (CST)
+Received: from [10.57.101.250] (10.57.101.250) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 14 Sep 2020 17:29:33 +0800
+Subject: Re: [PATCH 3/3] ARM: dts: add SD5203 dts
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200903122734.2369-1-thunder.leizhen@huawei.com>
+ <20200903122734.2369-4-thunder.leizhen@huawei.com>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>
+From:   Wei Xu <xuwei5@hisilicon.com>
+Message-ID: <5F5F37FD.8090401@hisilicon.com>
+Date:   Mon, 14 Sep 2020 17:29:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.2.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:a047:: with SMTP id f7mr12133531jah.31.1600075758907;
- Mon, 14 Sep 2020 02:29:18 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 02:29:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000039349f05af42abf6@google.com>
-Subject: kernel BUG at net/wireless/core.h:LINE!
-From:   syzbot <syzbot+c6912b3cb4479c7fa902@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200903122734.2369-4-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.57.101.250]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Zhen,
 
-syzbot found the following issue on:
+On 2020/9/3 20:27, Zhen Lei wrote:
+> From: Kefeng Wang <wangkefeng.wang@huawei.com>
+> 
+> Add sd5203.dts for Hisilicon SD5203 SoC platform.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  arch/arm/boot/dts/Makefile   |  2 +
+>  arch/arm/boot/dts/sd5203.dts | 90 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 92 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/sd5203.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 4572db3fa5ae..1d1262df5c55 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -357,6 +357,8 @@ dtb-$(CONFIG_ARCH_MPS2) += \
+>  	mps2-an399.dtb
+>  dtb-$(CONFIG_ARCH_MOXART) += \
+>  	moxart-uc7112lx.dtb
+> +dtb-$(CONFIG_ARCH_SD5203) += \
+> +	sd5203.dtb
+>  dtb-$(CONFIG_SOC_IMX1) += \
+>  	imx1-ads.dtb \
+>  	imx1-apf9328.dtb
+> diff --git a/arch/arm/boot/dts/sd5203.dts b/arch/arm/boot/dts/sd5203.dts
+> new file mode 100644
+> index 000000000000..99da46072f72
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/sd5203.dts
+> @@ -0,0 +1,90 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2020 Hisilicon Limited.
+> + *
+> + * DTS file for Hisilicon SD5203 Board
+> + */
+> +
+> +/dts-v1/;
+> +
+> +/ {
+> +	model = "Hisilicon SD5203";
+> +	compatible = "hisilicon,sd5203";
 
-HEAD commit:    e4c26faa Merge tag 'usb-5.9-rc5' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1130fc43900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c61610091f4ca8c4
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6912b3cb4479c7fa902
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Can you please add the binding document as well?
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> +	interrupt-parent = <&vic>;
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +
+> +	chosen {
+> +		bootargs="console=ttyS0,9600 earlycon=uart8250,mmio32,0x1600d000";
+> +	};
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +	};
+> +
+> +	cpu {
+> +		compatible = "arm,arm926ej-s";
+> +		device_type = "cpu";
+> +	};
+> +
+> +	memory@30000000 {
+> +		device_type = "memory";
+> +		reg = <0x30000000 0x8000000>;
+> +	};
+> +
+> +	soc {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "simple-bus";
+> +		ranges;
+> +
+> +		vic: interrupt-controller@10130000 {
+> +			compatible = "hisilicon,sd5203-vic";
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6912b3cb4479c7fa902@syzkaller.appspotmail.com
+Ditto.
+Thanks!
 
-------------[ cut here ]------------
-kernel BUG at net/wireless/core.h:112!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 16597 Comm: syz-executor.2 Not tainted 5.9.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:wiphy_to_rdev net/wireless/core.h:112 [inline]
-RIP: 0010:wiphy_to_rdev net/wireless/core.h:110 [inline]
-RIP: 0010:cfg80211_mlme_unregister_socket+0x51e/0xa80 net/wireless/mlme.c:590
-Code: 7f 78 0f 94 c3 31 ff 89 de e8 9e 3c f2 f9 84 db 0f 84 c4 fd ff ff e8 51 40 f2 f9 e8 cb 68 7e f9 e9 b5 fd ff ff e8 42 40 f2 f9 <0f> 0b e8 3b 40 f2 f9 65 8b 1d b4 85 7f 78 bf 3f 00 00 00 89 de e8
-RSP: 0018:ffffc900160f7bc0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffff8880148a0000
-RDX: ffff8880295e0040 RSI: ffffffff87820d9e RDI: ffff888000158c10
-RBP: ffff888000158c10 R08: 0000000000000001 R09: ffffffff8c5f5a17
-R10: fffffbfff18beb42 R11: 0000000000000001 R12: ffff8880295000f8
-R13: 00000000d44708d8 R14: ffff888000158c10 R15: 0000000000000000
-FS:  000000000195a940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000016a3b73 CR3: 00000002184e8000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- nl80211_netlink_notify net/wireless/nl80211.c:17292 [inline]
- nl80211_netlink_notify+0x377/0x970 net/wireless/nl80211.c:17265
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- __blocking_notifier_call_chain kernel/notifier.c:284 [inline]
- __blocking_notifier_call_chain kernel/notifier.c:271 [inline]
- blocking_notifier_call_chain kernel/notifier.c:295 [inline]
- blocking_notifier_call_chain+0x67/0x90 kernel/notifier.c:292
- netlink_release+0xc51/0x1cf0 net/netlink/af_netlink.c:775
- __sock_release+0xcd/0x280 net/socket.c:596
- sock_close+0x18/0x20 net/socket.c:1277
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:163 [inline]
- exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:190
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:265
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x416f41
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 04 1b 00 00 c3 48 83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:000000000169fbe0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000416f41
-RDX: 0000000000000000 RSI: ffffffff87f73c69 RDI: 0000000000000004
-RBP: 0000000000000001 R08: ffffffff8134b98a R09: 00000000274ea8f8
-R10: 000000000169fcd0 R11: 0000000000000293 R12: 000000000118d940
-R13: 000000000118d940 R14: ffffffffffffffff R15: 000000000118d12c
-Modules linked in:
----[ end trace a8a42bc9a64facd3 ]---
-RIP: 0010:wiphy_to_rdev net/wireless/core.h:112 [inline]
-RIP: 0010:wiphy_to_rdev net/wireless/core.h:110 [inline]
-RIP: 0010:cfg80211_mlme_unregister_socket+0x51e/0xa80 net/wireless/mlme.c:590
-Code: 7f 78 0f 94 c3 31 ff 89 de e8 9e 3c f2 f9 84 db 0f 84 c4 fd ff ff e8 51 40 f2 f9 e8 cb 68 7e f9 e9 b5 fd ff ff e8 42 40 f2 f9 <0f> 0b e8 3b 40 f2 f9 65 8b 1d b4 85 7f 78 bf 3f 00 00 00 89 de e8
-RSP: 0018:ffffc900160f7bc0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffff8880148a0000
-RDX: ffff8880295e0040 RSI: ffffffff87820d9e RDI: ffff888000158c10
-RBP: ffff888000158c10 R08: 0000000000000001 R09: ffffffff8c5f5a17
-R10: fffffbfff18beb42 R11: 0000000000000001 R12: ffff8880295000f8
-R13: 00000000d44708d8 R14: ffff888000158c10 R15: 0000000000000000
-FS:  000000000195a940(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30e29000 CR3: 00000002184e8000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Best Regards,
+Wei
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +			reg = <0x10130000 0x1000>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <1>;
+> +		};
+> +
+> +		refclk125mhz: refclk125mhz {
+> +			compatible = "fixed-clock";
+> +			#clock-cells = <0>;
+> +			clock-frequency = <125000000>;
+> +		};
+> +
+> +		timer0: timer@16002000 {
+> +			compatible = "arm,sp804", "arm,primecell";
+> +			reg = <0x16002000 0x1000>;
+> +			interrupts = <4>;
+> +			clocks = <&refclk125mhz>;
+> +			clock-names = "apb_pclk";
+> +		};
+> +
+> +		timer1: timer@16003000 {
+> +			compatible = "arm,sp804", "arm,primecell";
+> +			reg = <0x16003000 0x1000>;
+> +			interrupts = <5>;
+> +			clocks = <&refclk125mhz>;
+> +			clock-names = "apb_pclk";
+> +		};
+> +
+> +		uart0: serial@1600D000 {
+> +			compatible = "snps,dw-apb-uart";
+> +			reg = <0x1600D000 0x1000>;
+> +			bus_id = "uart0";
+> +			clocks = <&refclk125mhz>;
+> +			clock-names = "apb_pclk";
+> +			reg-shift = <2>;
+> +			interrupts = <17>;
+> +		};
+> +
+> +		uart1: serial@1600C000 {
+> +			compatible = "snps,dw-apb-uart";
+> +			reg = <0x1600C000 0x1000>;
+> +			clocks = <&refclk125mhz>;
+> +			clock-names = "apb_pclk";
+> +			reg-shift = <2>;
+> +			interrupts = <16>;
+> +			status = "disabled";
+> +		};
+> +	};
+> +};
+> 
