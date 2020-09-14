@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83731268A4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9AD268A51
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbgINLpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:45:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:35062 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726066AbgINLlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:41:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE8AF106F;
-        Mon, 14 Sep 2020 04:41:14 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5361C3F68F;
-        Mon, 14 Sep 2020 04:41:13 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:41:11 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     John Dias <joaodias@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, qianjun.kernel@gmail.com,
-        tglx@linutronix.de, will@kernel.org, luto@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, laoar.shao@gmail.com,
-        urezki@gmail.com, Wei Wang <wvw@google.com>,
-        Quentin Perret <qperret@google.com>
-Subject: Re: [PATCH V6 1/1] Softirq:avoid large sched delay from the pending
- softirqs
-Message-ID: <20200914114110.esjlzcukfx5emkke@e107158-lin.cambridge.arm.com>
-References: <20200909090931.8836-1-qianjun.kernel@gmail.com>
- <20200911164644.eqjqjucvqfvrmr67@e107158-lin.cambridge.arm.com>
- <20200911182832.GL1362448@hirez.programming.kicks-ass.net>
- <CA+njcd3HFV5Gqtt9qzTAzpnA4-4ngPBQ7T0gwgc0Fm9_VoJLcQ@mail.gmail.com>
+        id S1726133AbgINLr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgINLmO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:42:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF44C061788
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hVctvVnEQDm46Jm3XKV/WTVkUbioAqpNFIq60oMOVeU=; b=QGZghH66ot7xadcJLkzNIDQbja
+        0eLsXJVvZkEgQf3dwziAR/kFj3tfsQ8sheRuGVDDdkpYWzZw8Ch6PBP8J8A8GlpWWd5yQyDSd9s+b
+        ObsQuph448tK15VqNmZnkI6+TtnM5+zIxDkm/pYI8Uo+Jc9cmILJIwj6jkupL36nMNHMvAkdqxs6S
+        jduuRmOz9us1eWnF1Zxx/qFJ5lsT+0WMZX2IlwpmlnU5T4JUqHwj4Vx9VONLs4pP2TTXn7FSbeGWJ
+        oDW1mymXyMlye6RHiFfGA0TxtgtYGrzQQqOic+6PFLUBthhzyrcWcvWN7hlpcB33UlQfWDqdQ1AGl
+        OBaXVIag==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHmrz-0006dy-Vw; Mon, 14 Sep 2020 11:42:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E35C7303A02;
+        Mon, 14 Sep 2020 13:42:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D3C962B09E055; Mon, 14 Sep 2020 13:42:02 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 13:42:02 +0200
+From:   peterz@infradead.org
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org, valentin.schneider@arm.com,
+        pauld@redhat.com
+Subject: Re: [PATCH 0/4] sched/fair: Improve fairness between cfs tasks
+Message-ID: <20200914114202.GQ1362448@hirez.programming.kicks-ass.net>
+References: <20200914100340.17608-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+njcd3HFV5Gqtt9qzTAzpnA4-4ngPBQ7T0gwgc0Fm9_VoJLcQ@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20200914100340.17608-1-vincent.guittot@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/20 12:14, John Dias wrote:
-> I agree that the rt-softirq interaction patches are a gross hack (and I
-> wrote the original versions, so it's my grossness). The problem is that
-> even a 1ms delay in executing those low-latency audio threads is enough to
-> cause obvious glitching in audio under very real circumstances, which is
-> not an acceptable user experience -- and some softirq handlers run for >1ms
-> on their own. (And 1ms is a high upper bound, not a median target.)
+On Mon, Sep 14, 2020 at 12:03:36PM +0200, Vincent Guittot wrote:
+> Vincent Guittot (4):
+>   sched/fair: relax constraint on task's load during load balance
+>   sched/fair: reduce minimal imbalance threshold
+>   sched/fair: minimize concurrent LBs between domain level
+>   sched/fair: reduce busy load balance interval
 
-AFAIK professional audio apps have the toughest limit of sub 10ms. 120MHz
-screens impose a stricter limit on display pipeline too to finish its frame in
-8ms.
+I see nothing objectionable there, a little more testing can't hurt, but
+I'm tempted to apply them.
 
-1ms is too short and approaches PREEMPT_RT realm.
-
-Is it possible to expand on the use case here? What application requires this
-constraint?
-
-Thanks
-
---
-Qais Yousef
+Phil, Mel, any chance you can run them through your respective setups?
