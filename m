@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51B8268A32
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97580268A4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgINLiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:38:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50982 "EHLO mx2.suse.de"
+        id S1725985AbgINLql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbgINLhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:37:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9154AD0F;
-        Mon, 14 Sep 2020 11:37:38 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 13:37:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v2 1/3] mm/memcg: Clean up obsolete enum charge_type
-Message-ID: <20200914113722.GL16999@dhcp22.suse.cz>
-References: <20200914024452.19167-1-longman@redhat.com>
- <20200914024452.19167-2-longman@redhat.com>
+        id S1726133AbgINLlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:41:20 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4CA7A21741;
+        Mon, 14 Sep 2020 11:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600083595;
+        bh=jfYDZi4DW4IOpzXJuohR3BO8aZlZ4pA6gWH4B3GTn5U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gSIGuE3g1O06P/z1/XCMSefnqo/QtiYAaTwMUxaMsxFeLqfLrWuN8cX+7XBkq+MnA
+         UAuGJWZjNXdYDaAIPFR0Nejsp3uIM4JWWJR9/PJAWAz23xqDMeqJsZt9DZW9Ywi+1y
+         MzNdtkdxKyykwrjiiazJGYU2em1l+FqYTiKU1XAo=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-next 0/4] Improve ODP by using HMM API
+Date:   Mon, 14 Sep 2020 14:39:45 +0300
+Message-Id: <20200914113949.346562-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914024452.19167-2-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 13-09-20 22:44:50, Waiman Long wrote:
-> Since commit 0a31bc97c80c ("mm: memcontrol: rewrite uncharge API") and
-> commit 00501b531c47 ("mm: memcontrol: rewrite charge API") in v3.17, the
-> enum charge_type was no longer used anywhere. However, the enum itself
-> was not removed at that time. Remove the obsolete enum charge_type now.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Based on:
+https://lore.kernel.org/lkml/20200914112653.345244-1-leon@kernel.org/
 
-> ---
->  mm/memcontrol.c | 8 --------
->  1 file changed, 8 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index cfa6cbad21d5..8c74f1200261 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -197,14 +197,6 @@ static struct move_charge_struct {
->  #define	MEM_CGROUP_MAX_RECLAIM_LOOPS		100
->  #define	MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS	2
->  
-> -enum charge_type {
-> -	MEM_CGROUP_CHARGE_TYPE_CACHE = 0,
-> -	MEM_CGROUP_CHARGE_TYPE_ANON,
-> -	MEM_CGROUP_CHARGE_TYPE_SWAPOUT,	/* for accounting swapcache */
-> -	MEM_CGROUP_CHARGE_TYPE_DROP,	/* a page was unused swap cache */
-> -	NR_CHARGE_TYPE,
-> -};
-> -
->  /* for encoding cft->private value on file */
->  enum res_type {
->  	_MEM,
-> -- 
-> 2.18.1
-> 
+---------------------------------------------------------------------------------------
+From Yishai:
 
--- 
-Michal Hocko
-SUSE Labs
+This series improves ODP performance by moving to use the HMM API as of below.
+
+The get_user_pages_remote() functionality was replaced by HMM:
+- No need anymore to allocate and free memory to hold its output per call.
+- No need anymore to use the put_page() to unpin the pages.
+- The logic to detect contiguous pages is done based on the returned order
+  from HMM, no need to run per page, and evaluate.
+
+Moving to use the HMM enables to reduce page faults in the system by using the
+snapshot mode. This mode allows existing pages in the CPU to become presented
+to the device without faulting.
+
+This non-faulting mode may be used explicitly by an application with some new
+option of advice MR (i.e. PREFETCH_NO_FAULT) and is used upon ODP MR
+registration internally as part of initiating the device page table.
+
+To achieve the above, internal changes in the ODP data structures were done
+and some flows were cleaned-up/adapted accordingly.
+
+Thanks
+
+Yishai Hadas (4):
+  IB/core: Improve ODP to use hmm_range_fault()
+  IB/core: Enable ODP sync without faulting
+  RDMA/mlx5: Extend advice MR to support non faulting mode
+  RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
+
+ drivers/infiniband/Kconfig              |   1 +
+ drivers/infiniband/core/umem_odp.c      | 286 ++++++++++--------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h    |   6 +
+ drivers/infiniband/hw/mlx5/mr.c         |  14 +-
+ drivers/infiniband/hw/mlx5/odp.c        |  50 +++--
+ include/rdma/ib_umem_odp.h              |  21 +-
+ include/uapi/rdma/ib_user_ioctl_verbs.h |   1 +
+ 7 files changed, 178 insertions(+), 201 deletions(-)
+
+--
+2.26.2
+
