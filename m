@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20702268547
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2B8268573
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgINHDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:03:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51263 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgINHDH (ORCPT
+        id S1726122AbgINHEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:04:50 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:39025 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726042AbgINHEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:03:07 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kHiVX-0002Tq-2H; Mon, 14 Sep 2020 07:02:35 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Kailang Yang <kailang@realtek.com>,
-        Jian-Hong Pan <jian-hong@endlessm.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Huacai Chen <chenhc@lemote.com>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ALSA: hda/realtek: Enable front panel headset LED on Lenovo ThinkStation P520
-Date:   Mon, 14 Sep 2020 15:02:29 +0800
-Message-Id: <20200914070231.13192-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 14 Sep 2020 03:04:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0U8qdePo_1600067075;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U8qdePo_1600067075)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 14 Sep 2020 15:04:37 +0800
+Subject: Re: [PATCH v6 0/8] crpyto: introduce OSCCA certificate and SM2
+ asymmetric algorithm
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-security-module@vger.kernel.org,
+        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+ <20200911042442.GA5420@gondor.apana.org.au>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <be5f7e28-5645-3923-ceb5-d840e41ad2ed@linux.alibaba.com>
+Date:   Mon, 14 Sep 2020 15:04:35 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
+MIME-Version: 1.0
+In-Reply-To: <20200911042442.GA5420@gondor.apana.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Lenovo P520, the front panel headset LED isn't lit up right now.
+Hi，
 
-Realtek states that the LED needs to be enabled by ALC233's GPIO2, so
-let's do it accordingly to light the LED up.
+On 9/11/20 12:24 PM, Herbert Xu wrote:
+> On Thu, Sep 03, 2020 at 09:12:34PM +0800, Tianjia Zhang wrote:
+>>
+>> ---
+>> v6 changes:
+>>    1. remove mpi_sub_ui function from mpi library.
+>>    2. rebase on mainline.
+> 
+> This series is still missing acks for patches 6-8.  Without them
+> it cannot proceed.
+> 
+> Thanks,
+> 
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+This series has some review suggestions for patches 6-8, but the 
+maintainer of asymmetric keys David Howells <dhowells@redhat.com>, I 
+can’t get in touch. The email has been sent successfully. Can you help 
+ping him ?
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c521a1f17096..ba941bd0b792 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6017,6 +6017,7 @@ static void alc_fixup_thinkpad_acpi(struct hda_codec *codec,
- #include "hp_x360_helper.c"
- 
- enum {
-+	ALC269_FIXUP_GPIO2,
- 	ALC269_FIXUP_SONY_VAIO,
- 	ALC275_FIXUP_SONY_VAIO_GPIO2,
- 	ALC269_FIXUP_DELL_M101Z,
-@@ -6194,6 +6195,10 @@ enum {
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-+	[ALC269_FIXUP_GPIO2] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio2,
-+	},
- 	[ALC269_FIXUP_SONY_VAIO] = {
- 		.type = HDA_FIXUP_PINCTLS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -7013,6 +7018,8 @@ static const struct hda_fixup alc269_fixups[] = {
- 	[ALC233_FIXUP_LENOVO_MULTI_CODECS] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc233_alc662_fixup_lenovo_dual_codecs,
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_GPIO2
- 	},
- 	[ALC233_FIXUP_ACER_HEADSET_MIC] = {
- 		.type = HDA_FIXUP_VERBS,
--- 
-2.17.1
-
+Thanks and best,
+Tianjia
