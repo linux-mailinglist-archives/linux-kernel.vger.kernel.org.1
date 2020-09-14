@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C758A26865F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC1A268666
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 09:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgINHqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 03:46:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50625 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgINHqT (ORCPT
+        id S1726106AbgINHqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 03:46:48 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:57852 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725999AbgINHq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 03:46:19 -0400
+        Mon, 14 Sep 2020 03:46:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600069578;
+        s=mimecast20190719; t=1600069585;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=YlgJj09YwKKXy1UPyDOx/ceUgDZtNbHiT4LgjkWaOuA=;
-        b=fOkzV5P+s5yiNZtTr7eV1Otimfrm3hJGFGM6qLGY5nsLxy6hkpPPkbnXZNXQw+qZ4/s1Tq
-        NlQulxd+WvdQ/WGRfpkeGx2He69vwZIvei2RXTaXy3DrnDNbobv2PjT8nYSPrQ94X5EMOP
-        HgpNh1bmSykZTTJ1N+qb04KSn7wjwtg=
+        bh=e6k7XbhwdQtgb74dvxk7XbvmLz5THf14xQW0aloCpus=;
+        b=PnV8nKs1vnxwC1Qq6rU/DqhlM8jb+qebrUlLLHQgSRQPQwG5eRIydmR1cicSc1H0+wr7QE
+        CUxNSJFw1WbH+T/qg3c/aAuOSRFyZRAh0+2NWo/4mWnjZW/xNDr7ZywJH+e/WvSWfwXq7S
+        Yu4u3mZM0WwzwJrhgOXx8ZoQmnVgk3k=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-igB1FE4tMcGwZMEvGrociw-1; Mon, 14 Sep 2020 03:46:14 -0400
-X-MC-Unique: igB1FE4tMcGwZMEvGrociw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-225-th3x1RIONkqPN2TQzPRypg-1; Mon, 14 Sep 2020 03:46:23 -0400
+X-MC-Unique: th3x1RIONkqPN2TQzPRypg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2BDD964086;
-        Mon, 14 Sep 2020 07:46:13 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85A92100559C;
+        Mon, 14 Sep 2020 07:46:22 +0000 (UTC)
 Received: from [10.36.114.162] (ovpn-114-162.ams2.redhat.com [10.36.114.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 97A0960BE2;
-        Mon, 14 Sep 2020 07:46:05 +0000 (UTC)
-Subject: Re: [PATCH 3/3] virtio-mem: Constify mem_id_table
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7390C5D98C;
+        Mon, 14 Sep 2020 07:46:11 +0000 (UTC)
+Subject: Re: [PATCH 1/3] virtio-balloon: Constify id_table
 To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
         virtualization@lists.linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -42,7 +42,7 @@ Cc:     linux-kernel@vger.kernel.org,
         Jason Wang <jasowang@redhat.com>,
         Gerd Hoffmann <kraxel@redhat.com>
 References: <20200911203509.26505-1-rikard.falkeborn@gmail.com>
- <20200911203509.26505-4-rikard.falkeborn@gmail.com>
+ <20200911203509.26505-2-rikard.falkeborn@gmail.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -89,41 +89,41 @@ Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat GmbH
-Message-ID: <4fe879b1-77de-4e88-773d-8836f9170f87@redhat.com>
-Date:   Mon, 14 Sep 2020 09:46:03 +0200
+Message-ID: <84eec652-68f6-f0de-ce9f-1e05c55ad7ab@redhat.com>
+Date:   Mon, 14 Sep 2020 09:46:10 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200911203509.26505-4-rikard.falkeborn@gmail.com>
+In-Reply-To: <20200911203509.26505-2-rikard.falkeborn@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11.09.20 22:35, Rikard Falkeborn wrote:
-> mem_id_table is not modified, so make it const to allow the compiler to
-> put it in read-only memory.
+> id_table is not modified, so make it const to allow the compiler to put
+> it in read-only memory.
 > 
 > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 > ---
->  drivers/virtio/virtio_mem.c | 2 +-
+>  drivers/virtio/virtio_balloon.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-> index 834b7c13ef3d..1d0f3ab2b509 100644
-> --- a/drivers/virtio/virtio_mem.c
-> +++ b/drivers/virtio/virtio_mem.c
-> @@ -1926,7 +1926,7 @@ static unsigned int virtio_mem_features[] = {
->  #endif
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 31cc97f2f515..481611c09dae 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -128,7 +128,7 @@ struct virtio_balloon {
+>  	struct page_reporting_dev_info pr_dev_info;
 >  };
 >  
-> -static struct virtio_device_id virtio_mem_id_table[] = {
-> +static const struct virtio_device_id virtio_mem_id_table[] = {
->  	{ VIRTIO_ID_MEM, VIRTIO_DEV_ANY_ID },
+> -static struct virtio_device_id id_table[] = {
+> +static const struct virtio_device_id id_table[] = {
+>  	{ VIRTIO_ID_BALLOON, VIRTIO_DEV_ANY_ID },
 >  	{ 0 },
 >  };
 > 
