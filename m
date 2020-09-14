@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A904268A60
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A44268A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 14:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbgINLyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        id S1726102AbgINLjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbgINLuG (ORCPT
+        with ESMTP id S1726096AbgINL2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:50:06 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D37C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:50:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a17so18377223wrn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:50:05 -0700 (PDT)
+        Mon, 14 Sep 2020 07:28:32 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E58C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:28:32 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id k14so1276346edo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:28:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8iJIrFiPrthxhWR/A1W4z3Dcqg+LQz4AuT3GYaAloBA=;
-        b=FqbYrnRQxKtvT4FZdy8KmgpIW72P0WkrZEi2B7ArJtMBbSoRZflgSaJAXYG/zwTnU+
-         QLtnMCMTZQ3EmMhMGAWP8vk0KHeffvl9kHstfSZi0ZCLaog7Xu6jnyCgM8J3maTU9JQV
-         9G2t3RB/ZyialxoMtxnjhVqZ/Yz5D7M7qB+epat9cWSN1/fyRrEHd81t/Gxr8P2ja8lL
-         Ky4e/ACib+0SodL8CDuBNdT0EmEvzDM74RllOsoa1DxI6E7DIyx32bmXsefayTzUm8Mz
-         DJibCIphznDl0cMKQZpeNVCTRqadEL6PLO2+dHNvk0LKMoE9t60VbDrPFHSJ1SPcA+yl
-         VN3w==
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ueJpq893gUO+axrd/5TX/kkh5xlTqV0vp+NxtBKI8r8=;
+        b=vEOkSlbiTR0FB7u5nOEqCxgF9Y0JIfTIUnHf+eYnro+P2y7hFd86mdqfPNxSkRIl93
+         K7lKy2LzTfI9cEUQrobvXAyvWk1R9xdNZOuZ5kwq39uZXSjs+S1xxvAl0LXSMxtcn3YO
+         c6fBfNNbeOxb2SPvsud0lI+3s6LIkSbqnMdmHnIpt4C75aINOJPrtpFF9D9lhQ+KNPpI
+         8VJEdmYEYvfwYV0zC/CPSHVThI0LHAD1kkBPmuygCWyjc6seLYPGu80m9CWiys3g6eN5
+         yVMCSIW8L5KlaQPWzMt5kNMJvpxQqi8ogOTQmzl0gS80zHJqH79PeJgzyDjqH90N/OTr
+         de1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8iJIrFiPrthxhWR/A1W4z3Dcqg+LQz4AuT3GYaAloBA=;
-        b=SJq+D3P9CkEhyJY4YdLTj/abySTno9yCLqvPcMtJ0pITzjhodjNvUQK3vP4incfOBB
-         eCeFYe88BC6IclT7y9aZ3YTceL3VZeIguSMF/DBWCQj/jWnD0qmwPZzHWJi0UrK8Jywk
-         PSgK76G+ve9ME2O4+oun8iuXHS3T2eWEPLxwB6PGpQ+2noZ11RAyjy3LI8vU+vwkuCKB
-         rcXnrqlblqY15qZaY7of/7hkmB7ImLOaiXoIfYaTZ8y4wDvaCY2lwToT0rOqQGYdZdcU
-         VJpnij7j5AK5z0Zvt1RT9pZPt+5OUoJv32REWkvwnU2eSWTvoknxHlMdvJLvqAd7nNrY
-         qoIA==
-X-Gm-Message-State: AOAM530Jdu9sIHI22LrI9G4P+X9qIgMlCSTuOQ5slv6v8MSm5zFy4R5V
-        ymsEWEcSlRTzCnuO0eZQJ6qXIu6p2PhohEEMLZrCt1LSi2urVw==
-X-Google-Smtp-Source: ABdhPJy6MIIdbvLYKBOQIzmZLcO7OWcE4uQ0vDEm/jLOAh6B4JGz5ZPiZggdqVLrP+uq6zNUPFLurlO2Qnos9mx+P/g=
-X-Received: by 2002:adf:db48:: with SMTP id f8mr16058134wrj.144.1600084204302;
- Mon, 14 Sep 2020 04:50:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ueJpq893gUO+axrd/5TX/kkh5xlTqV0vp+NxtBKI8r8=;
+        b=TI71grHEVR9ahlLjuyXaC3qsoK6H7eZzoPdg8j+ZBn9ahNj/Wk1hqCcuiDrRaC5w84
+         V08WvBhTddSxK6RHOVULDq8gHW8QbPhrTukNrO9xUEDg0BZwfl3FETQAZ5IdRfB/XVpR
+         C80dRrG3Xcd93MYbdrkTYvgg5UF7d4LLACGFDCKND0o19HIqe5/JfwWGX9Gl2iis3t9F
+         negyh7lxIYpgorewn0STHdFdRoQ17kOLa+nDBUWzYO73yKJtdLcNsx3c2lje4rSkIj2w
+         3iPy31sSZxVjRsQqea3bfqJ7+5ieKZ8+mNKItI6M2isJCEvyk4e00ccQqZlTPz9wfF17
+         pqaw==
+X-Gm-Message-State: AOAM533adwMVm7s6rPD/KI6yzvyIPc0ffSA52aLtiaGDVSficlSk1p7F
+        EQud44GEdc6Ssr6q/wcn/PG2RA==
+X-Google-Smtp-Source: ABdhPJxxa22k0tyYYsZqkw575AdHLtFmcfXeXtQgasSchDYyiAjATwRvMqf2bds7G+REYxRqdiOb1A==
+X-Received: by 2002:a05:6402:1151:: with SMTP id g17mr17054933edw.227.1600082911058;
+        Mon, 14 Sep 2020 04:28:31 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id c8sm7500970ejp.30.2020.09.14.04.28.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 04:28:30 -0700 (PDT)
+Date:   Mon, 14 Sep 2020 13:28:29 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Michael Chan <michael.chan@broadcom.com>
+Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
+ to devlink reload command
+Message-ID: <20200914112829.GC2236@nanopsycho.orion>
+References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
+ <1600063682-17313-2-git-send-email-moshe@mellanox.com>
+ <CAACQVJochmfmUgKSvSTe4McFvG6=ffBbkfXsrOJjiCDwQVvaRw@mail.gmail.com>
+ <20200914093234.GB2236@nanopsycho.orion>
+ <CAACQVJqVV_YLfV002wxU2s1WJUa3_AvqwMMVr8KLAtTa0d9iOw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200912002341.4869-1-atish.patra@wdc.com> <20200912104502.GF2142832@kernel.org>
-In-Reply-To: <20200912104502.GF2142832@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 14 Sep 2020 17:19:52 +0530
-Message-ID: <CAAhSdy1D2BC4Z=nf7Tv6znQMMGwaVNH0QhO0Oj6gqYwwbnLt_g@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V: Consider sparse memory while removing unusable memory
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Zong Li <zong.li@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAACQVJqVV_YLfV002wxU2s1WJUa3_AvqwMMVr8KLAtTa0d9iOw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 12, 2020 at 4:15 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> Hello Atish,
->
-> On Fri, Sep 11, 2020 at 05:23:41PM -0700, Atish Patra wrote:
-> > Currently, any usable memory area beyond page_offset is removed by adding the
-> > memory sizes from each memblock. That may not work for sparse memory
-> > as memory regions can be very far apart resulting incorrect removal of some
-> > usable memory.
->
-> If I understand correctly, the memory with physical addresses larger
-> than (-PAGE_OFFSET) cannot be used. Since it was aready
-> memblock_add()'ed during device tree parsing, you need to remove it from
-> memblock.
+Mon, Sep 14, 2020 at 11:54:55AM CEST, vasundhara-v.volam@broadcom.com wrote:
+>On Mon, Sep 14, 2020 at 3:02 PM Jiri Pirko <jiri@resnulli.us> wrote:
+>>
+>> Mon, Sep 14, 2020 at 09:08:58AM CEST, vasundhara-v.volam@broadcom.com wrote:
+>> >On Mon, Sep 14, 2020 at 11:39 AM Moshe Shemesh <moshe@mellanox.com> wrote:
+>>
+>> [...]
+>>
+>>
+>> >> @@ -1126,15 +1126,24 @@ mlxsw_devlink_core_bus_device_reload_down(struct devlink *devlink,
+>> >>  }
+>> >>
+>> >>  static int
+>> >> -mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink,
+>> >> -                                       struct netlink_ext_ack *extack)
+>> >> +mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink, enum devlink_reload_action action,
+>> >> +                                       struct netlink_ext_ack *extack,
+>> >> +                                       unsigned long *actions_performed)
+>> >Sorry for repeating again, for fw_activate action on our device, all
+>> >the driver entities undergo reset asynchronously once user initiates
+>> >"devlink dev reload action fw_activate" and reload_up does not have
+>> >much to do except reporting actions that will be/being performed.
+>> >
+>> >Once reset is complete, the health reporter will be notified using
+>>
+>> Hmm, how is the fw reset related to health reporter recovery? Recovery
+>> happens after some error event. I don't believe it is wise to mix it.
+>Our device has a fw_reset health reporter, which is updated on reset
+>events and firmware activation is one among them. All non-fatal
+>firmware reset events are reported on fw_reset health reporter.
 
--PAGE_OFFSET represents the size of memory addressable by the kernel and
-not the last physical address.
+Hmm, interesting. In that case, assuming this is fine, should we have
+some standard in this. I mean, if the driver supports reset, should it
+also define the "fw_reset" reporter to report such events?
 
-mem_start + (-PAGE_OFFSET) will be the last physical address usable by kernel.
+Jakub, what is your take here?
 
->
-> For that you can use memblock_enforce_memory_limit(-PAGE_OFFSET).
-
-I think we should use memblock_enforce_memory_limit(mem_start - PAGE_OFFSET).
-
-Regards,
-Anup
 
 >
-> > Just use the start of the first memory block and the end of the last memory
-> > block to compute the size of the total memory that can be used.
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > ---
-> >  arch/riscv/mm/init.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > index 787c75f751a5..188281fc2816 100644
-> > --- a/arch/riscv/mm/init.c
-> > +++ b/arch/riscv/mm/init.c
-> > @@ -147,7 +147,6 @@ void __init setup_bootmem(void)
-> >  {
-> >       struct memblock_region *reg;
-> >       phys_addr_t mem_size = 0;
-> > -     phys_addr_t total_mem = 0;
-> >       phys_addr_t mem_start, end = 0;
-> >       phys_addr_t vmlinux_end = __pa_symbol(&_end);
-> >       phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> > @@ -155,18 +154,17 @@ void __init setup_bootmem(void)
-> >       /* Find the memory region containing the kernel */
-> >       for_each_memblock(memory, reg) {
-> >               end = reg->base + reg->size;
-> > -             if (!total_mem)
-> > +             if (!mem_start)
-> >                       mem_start = reg->base;
-> >               if (reg->base <= vmlinux_start && vmlinux_end <= end)
-> >                       BUG_ON(reg->size == 0);
-> > -             total_mem = total_mem + reg->size;
-> >       }
-> >
-> >       /*
-> >        * Remove memblock from the end of usable area to the
-> >        * end of region
-> >        */
-> > -     mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> > +     mem_size = min(end - mem_start, (phys_addr_t)-PAGE_OFFSET);
-> >       if (mem_start + mem_size < end)
-> >               memblock_remove(mem_start + mem_size,
-> >                               end - mem_start - mem_size);
-> > --
-> > 2.24.0
-> >
+>>
+>> Instead, why don't you block in reload_up() until the reset is complete?
 >
-> --
-> Sincerely yours,
-> Mike.
+>Though user initiate "devlink dev reload" event on a single interface,
+>all driver entities undergo reset and all entities recover
+>independently. I don't think we can block the reload_up() on the
+>interface(that user initiated the command), until whole reset is
+>complete.
+
+Why not? mlxsw reset takes up to like 10 seconds for example.
+
+
+>>
+>>
+>> >devlink_health_reporter_recovery_done(). Returning from reload_up does
+>> >not guarantee successful activation of firmware. Status of reset will
+>> >be notified to the health reporter via
+>> >devlink_health_reporter_state_update().
+>> >
+>> >I am just repeating this, so I want to know if I am on the same page.
+>> >
+>> >Thanks.
+>>
+>> [...]
