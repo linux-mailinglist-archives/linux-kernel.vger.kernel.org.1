@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F27268A5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D78268A62
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 13:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgINLwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 07:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726148AbgINLsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 07:48:32 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F16C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:48:30 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e17so10323362wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 04:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/AhZpyl4i8SQbKTfnwUmt0Ow0fuH1tW4/N+hsM5LmxE=;
-        b=uQ1qKJad6ONK2I9zSeCcW3EcuegrfA6TyzXNGCTxig1ojMO7caJmoTtZX9hKjIIvTq
-         zaDXW+gCx02cq8ouVNbnIdSuT0ggNDM4WOv3HbxnWj5O/dhOuD7xFLDeLSwPOBUFTaHG
-         CIviKGRX+tMLG+918/sRR/NB7g9KcUz/A/0zr89RABUZgQZbRxewuBdqGPoMBqNqPndY
-         8pllDuTyin0iDBXfW73KJB+5ycfqri0Pt4x07/+sntU2E4FbdtZkHodWtGP9v7WHm9DV
-         B9sD1RJPz07Hhr4dEWF0lJICUGCWaDoitOokaNC2Mj2Jje/vlJ4p/mqrptwoS/x9J7Ad
-         WzIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/AhZpyl4i8SQbKTfnwUmt0Ow0fuH1tW4/N+hsM5LmxE=;
-        b=JcFDuzEV4keth4ivsvGihuPyO0+hPpjOk4h9mdh+cBw/AA8FrmIwLiZqcBtV0FoEPi
-         xY9DlvBxkkOi4OewhDezW5RikM+fr9i1N5OzddXCd3eiHzBvOZlJ6wB3yPx1Qy+JiGQv
-         z8xI+faGvGVHSdyeZdooVjjx1AIsYSbkarSJXpzhtqvZVWB9lpkr3+HCOfYhJczL/LiW
-         j18GWy0NeUR04cX+lssvT1VrNs3fi0g8nxCgFNmNHONd4hlrr9DRJJVIJ1vyYeeENhAB
-         sZLjn/nhym7CT8x2Qr2FuyvGSM6SaNSwtcYCTqBV5+CpiS1H3jz0KHX8fZu4vGwI0K1t
-         MA3g==
-X-Gm-Message-State: AOAM532a2r1F0A+xpG3Uas+oC+kTG19OO9I4U1kMolnojdZQW9QV4e5k
-        e14BDhC3GcaVfgNk+zAnkKU=
-X-Google-Smtp-Source: ABdhPJz+eFLzDlLT9CFvpFwHsIvzE/DQK8WtHAzFn7XOfw8a0cH14LOzIF3aFVv99HP4D4XNOv9zPw==
-X-Received: by 2002:a1c:96:: with SMTP id 144mr14662074wma.84.1600084109563;
-        Mon, 14 Sep 2020 04:48:29 -0700 (PDT)
-Received: from localhost.localdomain ([85.153.229.188])
-        by smtp.gmail.com with ESMTPSA id 9sm18535063wmf.7.2020.09.14.04.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:48:28 -0700 (PDT)
-From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
-To:     vgupta@synopsys.com
-Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@pgazz.com, jeho@cs.utexas.edu,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Subject: [PATCH] arc: plat-hsdk: fix kconfig dependency warning when !RESET_CONTROLLER
-Date:   Mon, 14 Sep 2020 14:46:52 +0300
-Message-Id: <20200914114651.105219-1-fazilyildiran@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726130AbgINL5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 07:57:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58736 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726145AbgINLs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:48:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11374AC19;
+        Mon, 14 Sep 2020 11:48:41 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 13:48:25 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+Message-ID: <20200914114825.GM16999@dhcp22.suse.cz>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914024452.19167-3-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200914024452.19167-3-longman@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When ARC_SOC_HSDK is enabled and RESET_CONTROLLER is disabled, it results
-in the following Kbuild warning:
+On Sun 13-09-20 22:44:51, Waiman Long wrote:
+> The mem_cgroup_get_max() function used to get memory+swap max from
+> both the v1 memsw and v2 memory+swap page counters & return the maximum
+> of these 2 values. This is redundant and it is more efficient to just
+> get either the v1 or the v2 values depending on which one is currently
+> in use.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  mm/memcontrol.c | 20 +++++++++-----------
+>  1 file changed, 9 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 8c74f1200261..ca36bed588d1 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+>   */
+>  unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+>  {
+> -	unsigned long max;
+> -
+> -	max = READ_ONCE(memcg->memory.max);
+> -	if (mem_cgroup_swappiness(memcg)) {
+> -		unsigned long memsw_max;
+> -		unsigned long swap_max;
+> -
+> -		memsw_max = memcg->memsw.max;
+> -		swap_max = READ_ONCE(memcg->swap.max);
+> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+> -		max = min(max + swap_max, memsw_max);
+> +	unsigned long max = READ_ONCE(memcg->memory.max);
+> +
+> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+> +		if (mem_cgroup_swappiness(memcg))
+> +			max += min(READ_ONCE(memcg->swap.max),
+> +				   (unsigned long)total_swap_pages);
+> +	} else { /* v1 */
+> +		if (mem_cgroup_swappiness(memcg))
+> +			max = memcg->memsw.max;
 
-WARNING: unmet direct dependencies detected for RESET_HSDK
-  Depends on [n]: RESET_CONTROLLER [=n] && HAS_IOMEM [=y] && (ARC_SOC_HSDK [=y] || COMPILE_TEST [=n])
-  Selected by [y]:
-  - ARC_SOC_HSDK [=y] && ISA_ARCV2 [=y]
+I agree that making v1 vs. v2 distinction here makes the code more
+obvious. But I do not think your code is correct for v1. In a default
+state it would lead to max = PAGE_COUNTER_MAX which is not something
+we want, right?
 
-The reason is that ARC_SOC_HSDK selects RESET_HSDK without depending on or
-selecting RESET_CONTROLLER while RESET_HSDK is subordinate to
-RESET_CONTROLLER.
+instead you want
+		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-Fixes: a528629dfd3b ("ARC: [plat-hsdk] select CONFIG_RESET_HSDK from Kconfig")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
----
- arch/arc/plat-hsdk/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arc/plat-hsdk/Kconfig b/arch/arc/plat-hsdk/Kconfig
-index ce8101834518..6b5c54576f54 100644
---- a/arch/arc/plat-hsdk/Kconfig
-+++ b/arch/arc/plat-hsdk/Kconfig
-@@ -8,5 +8,6 @@ menuconfig ARC_SOC_HSDK
- 	select ARC_HAS_ACCL_REGS
- 	select ARC_IRQ_NO_AUTOSAVE
- 	select CLK_HSDK
-+	select RESET_CONTROLLER
- 	select RESET_HSDK
- 	select HAVE_PCI
+>  	}
+>  	return max;
+>  }
+> -- 
+> 2.18.1
+> 
+
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
