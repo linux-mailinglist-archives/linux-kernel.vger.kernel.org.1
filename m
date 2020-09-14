@@ -2,87 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A01F2696B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AABF2696A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 22:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726093AbgINUdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 16:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbgINUSL (ORCPT
+        id S1726328AbgINUai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 16:30:38 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:52572 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726308AbgINUaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 16:18:11 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3800C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:18:08 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id 77so284891uaj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:18:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uRAd4TkY3E5awHOzVDefEmGhmwZQ3nO0bhizEoI0HSk=;
-        b=GAIXLWY1Gkag3cBGyczpELHlw5MF0yNt5vDmgLJoF87oRETi1yDXkgPQkHDRGWqsx4
-         QrQ/dSZ7d4/bQlCV3/8x3foAPwYavqzDw59vRHLTL6mi54R0MfZDMKNuNak3XWqP9ME/
-         3tfFnCHsI5R9ObHlpAsLlAG+CaSJ4SJ8R4wqQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uRAd4TkY3E5awHOzVDefEmGhmwZQ3nO0bhizEoI0HSk=;
-        b=h/sihXqeSeRh0Hj5+HGzOefw3w22e8ua4KCtN8mLaNl+kOneRghglPs+IsWiQNMKF3
-         pShJ0y/jCmQ4lWhRSlEFINZdTW0PGY9lLN8+/jGo2E6x95myyoH4S4cDftu4hpFlrKt5
-         O9RKGDC8SbiS06geGVqA/nXEvoA6uV3LWkboTvj3lia4DhDuSGGQwISed0/D+qGSU7OO
-         fi3Wht2w4H+0iaPDnZaNNqpxmHDHHLgIktR0KVNOBcZEv2qxNDYYbTXRhbWvU2ZpozBD
-         UOSugd3Mqtlv2uCx3JuQDpakghROJFpNrdzIyIgY+xRj46NEqj7khfPR75mQ7qR8TVxm
-         fYlA==
-X-Gm-Message-State: AOAM532VHd7aJYXmk7BYeT5E3Gx18S45x0uStOYhtFdvr5FhmNgWNODX
-        rTqYoSH6Ik135AZA6DWo61ixok6xWX2e6g==
-X-Google-Smtp-Source: ABdhPJy5ONHwHuqvBKMT9ity4OEuJzaqq+YQuKBqKIGL9+y+NE87YDeBw1qXwM+GMI1avbxKiNICSw==
-X-Received: by 2002:ab0:73da:: with SMTP id m26mr7874580uaq.136.1600114687777;
-        Mon, 14 Sep 2020 13:18:07 -0700 (PDT)
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com. [209.85.221.170])
-        by smtp.gmail.com with ESMTPSA id f2sm1790059vsc.23.2020.09.14.13.18.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 13:18:07 -0700 (PDT)
-Received: by mail-vk1-f170.google.com with SMTP id b4so267404vkh.9
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 13:18:06 -0700 (PDT)
-X-Received: by 2002:a1f:bf53:: with SMTP id p80mr8344769vkf.5.1600114686429;
- Mon, 14 Sep 2020 13:18:06 -0700 (PDT)
+        Mon, 14 Sep 2020 16:30:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9D1521C0B79; Mon, 14 Sep 2020 22:30:21 +0200 (CEST)
+Date:   Mon, 14 Sep 2020 22:30:06 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: Yet another ethernet PHY LED control proposal
+Message-ID: <20200914203006.GA20984@duo.ucw.cz>
+References: <20200912011045.35bad071@nic.cz>
 MIME-Version: 1.0
-References: <20200813080345.1.I85bb28f9ea3fa3bf797ecaf0a5218ced4cfaa6e2@changeid>
-In-Reply-To: <20200813080345.1.I85bb28f9ea3fa3bf797ecaf0a5218ced4cfaa6e2@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 14 Sep 2020 13:17:54 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UQP4bFSEuYMUyDqj4BAB6Kk52FdZQ9r+67jBnJn5uX6A@mail.gmail.com>
-Message-ID: <CAD=FV=UQP4bFSEuYMUyDqj4BAB6Kk52FdZQ9r+67jBnJn5uX6A@mail.gmail.com>
-Subject: Re: [PATCH] soc: qcom: socinfo: add SC7180 entry to soc_id array
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
+Content-Disposition: inline
+In-Reply-To: <20200912011045.35bad071@nic.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
 
-On Thu, Aug 13, 2020 at 8:04 AM Douglas Anderson <dianders@chromium.org> wrote:
->
-> Add an entry for SC7180 SoC.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->  drivers/soc/qcom/socinfo.c | 1 +
->  1 file changed, 1 insertion(+)
+--BOKacYhQ+x31HxR3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Any status update on this patch?  It's tiny but it'd be nice to get
-landed!  :-)  Thanks!
+Hi!
 
--Doug
+> I have been thinking about another way to implement ABI for HW control
+> of ethernet PHY connected LEDs.
+>=20
+> This proposal is inspired by the fact that for some time there is a
+> movement in the kernel to do transparent HW offloading of things (DSA
+> is an example of that).
+
+And it is good proposal.
+
+> So currently we have the `netdev` trigger. When this is enabled for a
+> LED, new files will appear in that LED's sysfs directory:
+>   - `device_name` where user is supposed to write interface name
+>   - `link` if set to 1, the LED will be ON if the interface is linked
+>   - `rx` if set to 1, the LED will blink on receive event
+>   - `tx` if set to 1, the LED will blink on transmit event
+>   - `interval` specifies duration of the LED blink
+>=20
+> Now what is interesting is that almost all combinations of link/rx/tx
+> settings are offloadable to a Marvell PHY! (Not to all LEDs, though...)
+>=20
+> So what if we abandoned the idea of a `hw` trigger, and instead just
+> allowed a LED trigger to be offloadable, if that specific LED supports
+> it?
+>=20
+> For the HW mode for different speed we can just expand the `link` sysfs
+> file ABI, so that if user writes a specific speed to this file, instead
+> of just "1", the LED will be on if the interface is linked on that
+> specific speed. Or maybe another sysfs file could be used for "light on
+> N mbps" setting...
+>=20
+> Afterwards we can figure out other possible modes.
+>=20
+> What do you think?
+
+If this can be implemented (and it probably can) it is the best
+solution :-).
+
+Best regards,
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--BOKacYhQ+x31HxR3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX1/SzgAKCRAw5/Bqldv6
+8nyOAKCXZm+yb0nWq0MRdfDiltwvT2EfXACgrPumGW+HW9kr2bppVAtd5dXx9Ro=
+=G7da
+-----END PGP SIGNATURE-----
+
+--BOKacYhQ+x31HxR3--
