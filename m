@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D2F269744
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0019A269742
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 23:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgINVBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 17:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbgINVBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 17:01:01 -0400
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14C2821D24;
-        Mon, 14 Sep 2020 21:01:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600117260;
-        bh=F3PEmIDj5PsX21DEDZlDPQZKaY42uEMzhiOeDRcD5kE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qHDu01Ep74IqEUFVflDvaWVFS/AXlHDFkVM8UfKuN216aGOUOgOEoEodgL5PToGjK
-         KxtFM9RApBwVur20DYVSW9F78Un/LpzZgmpzIzJlCdaEQe5cZPlj95WFSqFHamg95j
-         7YD/zLIqTW1QyxL51ntIE1vmMu7NH8iYuVRzhPnc=
-Received: by mail-lj1-f171.google.com with SMTP id v23so922422ljd.1;
-        Mon, 14 Sep 2020 14:00:59 -0700 (PDT)
-X-Gm-Message-State: AOAM5314my43e3uhPcx+XCYUeStieHi47CUsTbb7V2GnxOH7FJo/pUwh
-        exFZp1uz2nXPrfp1R1+ipNbI3eZmqEWpMhzLSiI=
-X-Google-Smtp-Source: ABdhPJx7qdiVmj1sX187oBLQwliwXcyi7XyVZXjqUwGWJBMJBcFKfvZdMyg112+oyHMwCpu3E4TZfx7dpSSnbVt5VAM=
-X-Received: by 2002:a2e:9c15:: with SMTP id s21mr5790370lji.27.1600117258411;
- Mon, 14 Sep 2020 14:00:58 -0700 (PDT)
+        id S1726066AbgINVA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 17:00:56 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:33548 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgINVAv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 14 Sep 2020 17:00:51 -0400
+Received: by mail-io1-f66.google.com with SMTP id r25so1728230ioj.0;
+        Mon, 14 Sep 2020 14:00:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1vtjUkAlc6mhyHfdc10mPS+CwPbTLyIyM4ON46GRum8=;
+        b=FBxy3Y7WJZtFpdWi0MV0lX9A2IgepaTbZPVS6noGeyzZZhHCT/Ioud/PWqO5/8AS9j
+         aVZZSbRPsoJA35277Pu9FAsi1nXHrMW2RJSPuF7Ik25wX8QIFC04SK4oAk99Xnd2QFpR
+         dApJ0jjzD9PpydPSHezPPzk0nutCTbiiNDJim+RNBFgpC5j/6iShdVLK96vqKG+5u34E
+         fVZSDibAjVS6VMhywTlkJdwm7ULXaSRFs50W0sU5t84R+EFwtXj4ExUuKU5CqHOolHFv
+         QBbLLRXe/wwxv91aTiWNd+IeNoXyd0mThyvIE2K/mC89Bx5BoCkn10cLN/T2NNE6dOmI
+         6mcw==
+X-Gm-Message-State: AOAM533IGzb3kR3rNCNBHaabH3HNkeFbDhFaw82DA2iA86YqqeMyd6gR
+        pvbWamW5F2MD/utFFqsbZg==
+X-Google-Smtp-Source: ABdhPJy2m12YZdezzBzT5cv+XqRojOX9fZtGmNqp9vR+dLVfSYmXhGC3JOTufd8GnIvv7owiKKtK6A==
+X-Received: by 2002:a6b:590c:: with SMTP id n12mr13081561iob.25.1600117250111;
+        Mon, 14 Sep 2020 14:00:50 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id a20sm7638304ilq.57.2020.09.14.14.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Sep 2020 14:00:49 -0700 (PDT)
+Received: (nullmailer pid 239411 invoked by uid 1000);
+        Mon, 14 Sep 2020 21:00:47 -0000
+Date:   Mon, 14 Sep 2020 15:00:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT
+ properties
+Message-ID: <20200914210047.GA232617@bogus>
+References: <20200903221828.3657250-1-swboyd@chromium.org>
 MIME-Version: 1.0
-References: <20200911143022.414783-1-nicolas.rybowski@tessares.net> <20200911143022.414783-3-nicolas.rybowski@tessares.net>
-In-Reply-To: <20200911143022.414783-3-nicolas.rybowski@tessares.net>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 14 Sep 2020 14:00:47 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7Qk8bea0efQspCOBbBaahgYt5eebvwvnGrA3xz9tw1Tg@mail.gmail.com>
-Message-ID: <CAPhsuW7Qk8bea0efQspCOBbBaahgYt5eebvwvnGrA3xz9tw1Tg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/5] bpf: add 'bpf_mptcp_sock' structure and helper
-To:     Nicolas Rybowski <nicolas.rybowski@tessares.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        mptcp@lists.01.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903221828.3657250-1-swboyd@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 8:15 AM Nicolas Rybowski
-<nicolas.rybowski@tessares.net> wrote:
->
-> In order to precisely identify the parent MPTCP connection of a subflow,
-> it is required to access the mptcp_sock's token which uniquely identify a
-> MPTCP connection.
->
-> This patch adds a new structure 'bpf_mptcp_sock' exposing the 'token' field
-> of the 'mptcp_sock' extracted from a subflow's 'tcp_sock'. It also adds the
-> declaration of a new BPF helper of the same name to expose the newly
-> defined structure in the userspace BPF API.
->
-> This is the foundation to expose more MPTCP-specific fields through BPF.
->
-> Currently, it is limited to the field 'token' of the msk but it is
-> easily extensible.
->
-> Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> Acked-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> Signed-off-by: Nicolas Rybowski <nicolas.rybowski@tessares.net>
+On Thu, Sep 03, 2020 at 03:18:28PM -0700, Stephen Boyd wrote:
+> We need to set various bits in the hardware registers for this device to
+> operate properly depending on how it is installed. Add a handful of DT
+> properties to configure these things.
+> 
+> Cc: Daniel Campello <campello@chromium.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: <devicetree@vger.kernel.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+> 
+> I haven't written any code to handle these properties yet. I'd rather do
+> that once the binding patch is reviewed. Patch based on iio.git testing
+> branch.
+> 
+>  .../iio/proximity/semtech,sx9310.yaml         | 182 ++++++++++++++++++
+>  1 file changed, 182 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
+> index 5739074d3592..e74b81483c14 100644
+> --- a/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
+> +++ b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
+> @@ -40,6 +40,169 @@ properties:
+>    "#io-channel-cells":
+>      const: 1
+>  
+> +  semtech,cs0-ground:
+> +    description: Indicates the CS0 sensor is connected to ground.
+> +    type: boolean
+> +
+> +  semtech,combined-sensors:
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#definitions/uint32
+> +      - enum: [0, 1, 2, 3]
+> +    default: 0
+> +    description:
+> +      Which sensors are combined. 0 for CS3, 1 for CS0+CS1, 2 for CS1+CS2,
+> +      and 3 for all sensors.
+> +
+> +  semtech,cs0-gain-factor:
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#definitions/uint32
+> +      - enum: [1, 2, 4, 8]
+> +    default: 1
+> +    description:
+> +      Gain factor for CS0 (and combined if any) sensor.
+> +
+> +  semtech,cs1-gain-factor:
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#definitions/uint32
+> +      - enum: [1, 2, 4, 8]
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Now that everyone is trained on 'allOf', you can drop it. json-schema 
+draft8 changed this behavior.
+
+Rob
