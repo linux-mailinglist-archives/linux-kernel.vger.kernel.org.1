@@ -2,95 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0535268796
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55376268797
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 10:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgINIv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 04:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgINIvV (ORCPT
+        id S1726285AbgINIvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 04:51:32 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39458 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726146AbgINIv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 04:51:21 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F09BC06174A;
-        Mon, 14 Sep 2020 01:51:21 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so5147966pjg.1;
-        Mon, 14 Sep 2020 01:51:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lCYJOvBnmYQwjSsVW47kOt6RwIjtREyjTLgJLFKBKow=;
-        b=Qd4HMQAcOI5GQbVfMeXt0PI72rUDwpQu+PrVBldm3vUjUxYAgE4Vc1juHXOXEQjnpC
-         ph1qm1VmByNQmDTmyiaD5Z+0hZADB5DNqwXT+G2vn+odRSAOsrgQMdvZD6BoMokkW7Nq
-         ltzITKDEfsrBIQdHXxrixsyT/pPcIXcOQL3ADcB/NomrlFYlcUcfi+KzyxXF0D0g1BeS
-         v5/Q4Mk4SVHSfavh+ybjsuJq3R4DlpflHFLyPTW4kK2ihWJIlXnifOOUBh36V7G+f8Ue
-         QixRB5/uHuBtorVpIS+DF4TEca7qHYRDWVfhdb9geV3K6vI0RjiBkQHeqZxFEp1R8cDG
-         HX5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lCYJOvBnmYQwjSsVW47kOt6RwIjtREyjTLgJLFKBKow=;
-        b=d+nOgMtjSGzXzNedmZ84mk7AhbmcBOCqHiT7ZoOzvMhCSVV54HKYmJOFS1rL9Vp5L5
-         deDE2GJQTs2jyT6+D30PyLX9alyQB3BBlaQi0v6iUwkoO0sDO6iI34xm4EdEfwIVCUWf
-         3y8fZlOrKTve68yq1SoR0gP7Ybw8PH/eC//5J4bG+fu4V/yI3v9WYCD9bLYntT+WzKSv
-         gqdooNt/TDAvETzDAlom1PIwmP9O6j7Rc+BsHpCHIZK1wDnXfphR25ds3iSCXj8khtad
-         e65kXSF5iWk3YNMuuMB5JF6k9ZBLbvfHWgDfMuICUB5moEJfSkk3HCPKJ7os1mVCiNsi
-         pYuA==
-X-Gm-Message-State: AOAM532eQCXnxnpsYE3p+FTuTdXGJ80v5I0xHkXXEPHL4Y4VV8kPb8M5
-        nK92HiG8wuJ5sHMHMpTbXiy30LTRwgrZJHybSqU=
-X-Google-Smtp-Source: ABdhPJxX/OoYtokGwKj/MNnDohvbRGjeeiLArPWnKTtOLIMoZQYRL+4pu03zj/AMiRQRPX9M0UjzHuD4qAZ4nM0++8M=
-X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr12467343pjb.181.1600073480979;
- Mon, 14 Sep 2020 01:51:20 -0700 (PDT)
+        Mon, 14 Sep 2020 04:51:27 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08E8WPap036016;
+        Mon, 14 Sep 2020 04:51:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pLyhdJPyBNu1pv9ssiGleRiJI3PFTEZtqOCJCI/uhek=;
+ b=VFkZodfcAlpIzHnmcR/z8CiPhmKg7cZJE//LlJ8d1vyiUUpLIvhH7B7pc3DTP8Ot6YBx
+ 2Px2ETguE/Px9sW0pMpOpVwJlELWwWGyVxJO4dmXAPVbMfwN4flBt+Wjj2eQgKM7ZGgN
+ 83YtwBsWD8LRxh/63u9osqF5x+67D0zatgZpBqZUtVGsyMsfdVzlkfEqsXyhyVG8f/uA
+ gLjmD+u7ea5HqRvpSGrY4dIIn0TL0Sy8KUjL6EVRmazqDTZUj0dYgnH4CSE/KDtty3mR
+ 6fzWqxqbiQShHZRyXI/nuM9OvZ5tZwaUMPWAxzZZi0wwWLG8QAOJPUWyMewOJoa//eEN fg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33j4sy90qs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Sep 2020 04:51:13 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08E8WqZq038274;
+        Mon, 14 Sep 2020 04:51:13 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33j4sy90pn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Sep 2020 04:51:12 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08E8n9d8026128;
+        Mon, 14 Sep 2020 08:51:11 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 33gny81289-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Sep 2020 08:51:10 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08E8p8tT19530022
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Sep 2020 08:51:08 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EED8711C052;
+        Mon, 14 Sep 2020 08:51:07 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28EF811C04A;
+        Mon, 14 Sep 2020 08:51:07 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.51.157])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 14 Sep 2020 08:51:07 +0000 (GMT)
+Subject: Re: [PATCH 1/3] mm: replace memmap_context by memplug_context
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mm@kvack.org, "Rafael J . Wysocki" <rafael@kernel.org>,
+        nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200911134831.53258-1-ldufour@linux.ibm.com>
+ <20200911134831.53258-2-ldufour@linux.ibm.com>
+ <20200914084904.GA16999@dhcp22.suse.cz>
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+Message-ID: <d3843235-2e02-a4ad-494c-20222a7e3b45@linux.ibm.com>
+Date:   Mon, 14 Sep 2020 10:51:06 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200908203247.14374-1-evan.nimmo@alliedtelesis.co.nz>
- <20200909082338.GC2272@ninjato> <5410e288-e369-0310-1b8e-061c95e46164@alliedtelesis.co.nz>
- <20200911194526.GB909@ninjato> <61c139a0-26fc-8cd1-0b54-b7cb9d9c0648@alliedtelesis.co.nz>
- <CAHp75VdtE_UBsNrSxbVPprmp7=-iVCrXv9x6Tu82b4q2ODfKQg@mail.gmail.com>
-In-Reply-To: <CAHp75VdtE_UBsNrSxbVPprmp7=-iVCrXv9x6Tu82b4q2ODfKQg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 14 Sep 2020 11:51:04 +0300
-Message-ID: <CAHp75Vf-1vqHjqNixXtnziCd6squwwj0sEArZ8C1YiDwafhk7Q@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] i2c: algo-pca: Reapply i2c bus settings after reset
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Evan Nimmo <Evan.Nimmo@alliedtelesis.co.nz>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "jarkko.nikula@linux.intel.com" <jarkko.nikula@linux.intel.com>,
-        "jdelvare@suse.de" <jdelvare@suse.de>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200914084904.GA16999@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-13_09:2020-09-10,2020-09-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ spamscore=0 suspectscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009140067
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:50 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Sep 14, 2020 at 12:27 AM Chris Packham
-> <Chris.Packham@alliedtelesis.co.nz> wrote:
-> > On 12/09/20 7:45 am, Wolfram Sang wrote:
->
-> > I'm happy to route it to stable@ if you think it's worth it but I don't
-> > think there's a specific Fixes: reference that can be used. The current
-> > behavior appears to have been that way since before git (looks like we
-> > noticed in 2014 but it's taken me 6 years to nag people into sending
-> > their fixes upstream).
->
-> JFYI: there is a history.git repository from History Group on
-> kernel.org. You may dig till the very beginning of the kernel (yes,
-> it's not properly formed Git history, but it will give you a hash
-> commit as a reference.
+Le 14/09/2020 à 10:49, Michal Hocko a écrit :
+> On Fri 11-09-20 15:48:29, Laurent Dufour wrote:
+>> The memmap_context is used to detect whether a memory operation is due to a
+>> hot-add operation or happening at boot time.
+>>
+>> Makes it general to the hotplug operation, renaming it at memplug_context
+>> and move its define in the corresponding header.
+>>
+>> There is no functional change introduced by this patch
+> 
+> I do not want to nit picking on naming but we want to look at this from
+> the initialization POV rather than hotplug. So....
+>>
+>> Suggested-by: David Hildenbrand <david@redhat.com>
+>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+> [...]
+>> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+>> index 375515803cd8..cd2bd21d3a4d 100644
+>> --- a/include/linux/memory_hotplug.h
+>> +++ b/include/linux/memory_hotplug.h
+>> @@ -15,6 +15,15 @@ struct memory_block;
+>>   struct resource;
+>>   struct vmem_altmap;
+>>   
+>> +/*
+>> + * Memory plugin context, use to differentiate memory added at boot time and
+>> + * hot-plugged memory.
+>> + */
+>> +enum memplug_context {
+>> +	MEMPLUG_EARLY,
+>> +	MEMPLUG_HOTPLUG,
+>> +};
+> 
+> /*
+>   * Memory initialization context, use to differentiate memory added by
+>   * the platform statically or via memory hotplug interface.
+>   */
+> enum meminit_context {
+> 	MEMINIT_EARLY,
+> 	MEMINIT_HOTPLUG
+> }
+> 
 
-Stephen, btw, does your scripts that validate Fixes, take into
-consideration references to history.git?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Sounds good too.
+What about its definition's place, in include/mm/zone.h as David suggested ?
