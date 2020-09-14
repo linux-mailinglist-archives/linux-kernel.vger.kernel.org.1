@@ -2,257 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCE02684D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74782684D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Sep 2020 08:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgINGYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 02:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
+        id S1726071AbgINGZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 02:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726003AbgINGYK (ORCPT
+        with ESMTP id S1726003AbgINGZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 02:24:10 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4824C06174A;
-        Sun, 13 Sep 2020 23:24:09 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bqbsy45RSz9sTK;
-        Mon, 14 Sep 2020 16:24:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600064646;
-        bh=yDp0vXxjzmfSYCaoog5kzFZseJ0NfAuRuJ4WI1fMDKA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qt7bGQ9Ku+/iJJqEK0V1kqEEInvoX4B2ckmKmAJXsf3IK31UN45yyIUdEMECzl66E
-         pwh8WUsPkW4uLEKOzYuOEr4I+H8QZeIAySeqm5EkzMqg49TFCEQtzLtzqt0VgAWKfO
-         IRynojbj9ahKp+/TquyUOrgdnEhhed8MvkWVXH9xElBPWVp7E4VURKEwb3xvlTDr2S
-         1KMELLgwfiz9OLOSQg0qFsuWuHvyPI5ovlHEeQFXPQoXOf3fX1NwRa3564OMGNlItn
-         208+zySvdI/VF31W1UbHUyk8E9fYZpIykY72dGugo9aLx70irQGPWsGYfv+rQNRtNE
-         SjNiewo1DhMJw==
-Date:   Mon, 14 Sep 2020 16:24:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the v4l-dvb tree
-Message-ID: <20200914162405.4804f571@canb.auug.org.au>
+        Mon, 14 Sep 2020 02:25:08 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE8FC06174A;
+        Sun, 13 Sep 2020 23:25:07 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id mm21so4920451pjb.4;
+        Sun, 13 Sep 2020 23:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m+ubujVIMN5tvcfBHHHzSWGRiDzzBaa34xu4brJPkZA=;
+        b=b2nvnA8cEwUSr1B8BNTmLgZZiEwXPDr5vS58ZrXeAcwAEi2Nm5TjW4Al3Rdt2gXw7y
+         85mDl5MgokeogcLvFXVrTeuZFbibtUHRRTKDMvRhG+Wld4EhLIcDXtAVKFzX2ovT/DaX
+         KaOo6G8dg6FvOh1siJG1i9RZci8MiYHRtU2ZpufYYAG6bUgYX9yWd0o5a8NdjYTvT10W
+         leIh/LF50FKb+siy8na4vF4so/rfYQ1Qg6l1tmE7BOICS/7YPDIH1G3LSfgHAAu1znhD
+         E1RYipyIzjJOywhIfwKDjn43RkPb5rIokvduzbmVgObZluiHf8ML32EW2fPw+6V7LzPr
+         Z72A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m+ubujVIMN5tvcfBHHHzSWGRiDzzBaa34xu4brJPkZA=;
+        b=WqsK1J6rIlvE+/QySvC99LdqsxPWInzLZshhRx0a6T4Lg4/WY8/tX3frfjjm9JMBUl
+         iAkNt+iSRKrAQzyfG50hHXdbAmG/jyC1G7045xwMBhdnhbDmQzZN7g51+ILxt3rH/ulw
+         69NR/9GiGx19UCyb/J0j7QJsBfxvp1Ov8tTkoLxEYJ1O1POuOOWAYucOZQWWaJfNNnll
+         Y1RKWMTg5j8YOFhhsvCSXSXSrY0QaCWQlB608mUBCvvpgMewONfAeHTEaSwmkXV2Ojkd
+         Qu+jKueU54paV+N8IgyyEPgE2jIYJl8BDPMTzXugNiS24Ty+sxFUloTMWRpAzttQZAPd
+         jcUw==
+X-Gm-Message-State: AOAM531aKjUoJzt8x7BT2xgEv9RAFhuhg6Nvys50HkfhicFWzsaFkV4U
+        uDxyYOlmyGFRK3xxmH1WpYAIpIbhStFMD5CM/UU=
+X-Google-Smtp-Source: ABdhPJwRx6qk8cMtTCIKYEE9S79qxd5Xzvnh1youlhWSlyLGiktQO5Xn3ANgRN6hpuaOx18p1ICjJMxr0k8mNYDFob8=
+X-Received: by 2002:a17:90b:816:: with SMTP id bk22mr12802874pjb.66.1600064707356;
+ Sun, 13 Sep 2020 23:25:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/LcfCOcGk8TxgJEc3q7a2PWK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200912021807.365158-1-xie.he.0141@gmail.com> <4d6345b6b072f60366aec9626809da95@dev.tdt.de>
+In-Reply-To: <4d6345b6b072f60366aec9626809da95@dev.tdt.de>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sun, 13 Sep 2020 23:24:56 -0700
+Message-ID: <CAJht_EOkUS3JWqpFEvogB6T190L9NM=JuZFENdL4eVf0BkAthQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] drivers/net/wan/x25_asy: Remove an unnecessary
+ x25_type_trans call
+To:     Martin Schiller <ms@dev.tdt.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/LcfCOcGk8TxgJEc3q7a2PWK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Sep 13, 2020 at 10:32 PM Martin Schiller <ms@dev.tdt.de> wrote:
+>
+> Acked-by: Martin Schiller <ms@dev.tdt.de>
 
-Hi all,
-
-After merging the v4l-dvb tree, today's linux-next build (powerpc
-allyesconfig) failed like this:
-
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_sdt_se=
-rv_get_desc_loop_len':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:103:9: note: in expansion of m=
-acro 'GENMASK'
-  103 |  mask =3D GENMASK(0, 11);
-      |         ^~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_pmt_st=
-ream_get_desc_loop_len':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:118:9: note: in expansion of m=
-acro 'GENMASK'
-  118 |  mask =3D GENMASK(0, 9);
-      |         ^~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_pmt_ge=
-t_desc_loop_len':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:133:9: note: in expansion of m=
-acro 'GENMASK'
-  133 |  mask =3D GENMASK(0, 9);
-      |         ^~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_get_se=
-c_len':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:148:9: note: in expansion of m=
-acro 'GENMASK'
-  148 |  mask =3D GENMASK(0, 11);
-      |         ^~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_get_pa=
-t_program_pid':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:163:9: note: in expansion of m=
-acro 'GENMASK'
-  163 |  mask =3D GENMASK(0, 12);
-      |         ^~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_pmt_st=
-ream_get_elem_pid':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:178:9: note: in expansion of m=
-acro 'GENMASK'
-  178 |  mask =3D GENMASK(0, 12);
-      |         ^~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c: In function 'vidtv_psi_set_se=
-c_len':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_psi.c:209:9: note: in expansion of m=
-acro 'GENMASK'
-  209 |  mask =3D GENMASK(13, 15);
-      |         ^~~~~~~
-make[5]: *** [scripts/Makefile.build:283: drivers/media/test-drivers/vidtv/=
-vidtv_psi.o] Error 1
-In file included from include/linux/bits.h:22,
-                 from include/linux/ratelimit_types.h:5,
-                 from include/linux/printk.h:10,
-                 from drivers/media/test-drivers/vidtv/vidtv_pes.c:17:
-drivers/media/test-drivers/vidtv/vidtv_pes.c: In function 'vidtv_pes_write_=
-pts_dts':
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_pes.c:94:10: note: in expansion of m=
-acro 'GENMASK'
-   94 |  mask1 =3D GENMASK(30, 32);
-      |          ^~~~~~~
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_pes.c:95:10: note: in expansion of m=
-acro 'GENMASK'
-   95 |  mask2 =3D GENMASK(15, 29);
-      |          ^~~~~~~
-include/linux/build_bug.h:16:51: error: negative width in bit-field '<anony=
-mous>'
-   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); }=
-)))
-      |                                                   ^
-include/linux/bits.h:24:3: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-   24 |  (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
-      |   ^~~~~~~~~~~~~~~~~
-include/linux/bits.h:38:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
-   38 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-      |   ^~~~~~~~~~~~~~~~~~~
-drivers/media/test-drivers/vidtv/vidtv_pes.c:96:10: note: in expansion of m=
-acro 'GENMASK'
-   96 |  mask3 =3D GENMASK(0, 14);
-      |          ^~~~~~~
-
-Caused by commit
-
-  f90cf6079bf6 ("media: vidtv: add a bridge driver")
-
-I have disabled CONFIG_DVB_VIDTV for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/LcfCOcGk8TxgJEc3q7a2PWK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9fDIUACgkQAVBC80lX
-0GxwCQgAjPQGhJuJd/iyEIgvrCzYauCPQFZZ+JwjDvm3COIBml3DUUgkzqx99Mec
-vrURk0kK94wsSfHDuKfqVdQ/ruI9Wq/dfVXoSDXsMIMllKfE41lYygDQYN43Gxn2
-Ur6vUVwaq2lq3lhjI+NoweDDoW88N0piTrd3lDVGl4acxH4eIqhUXXFOWh7RLpTU
-zpyy52W7belrB2EsEzNoDdTPVS8COgcHiAXZq2ZJ6oILZSogIGMk4l/crKTDMZe7
-qSRDJ9N5SDUpkTfkdWveThXyHSxWrCLjRHRFc11MV0q4QA4NHjBfBwuEj1+FrJGh
-kxyf/svZp42Raq06yPCi2pzwaKQX/A==
-=loin
------END PGP SIGNATURE-----
-
---Sig_/LcfCOcGk8TxgJEc3q7a2PWK--
+Thank you, Martin!
