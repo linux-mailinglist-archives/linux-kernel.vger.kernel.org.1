@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D42269C6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F07F269C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 05:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgIODSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 23:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S1726155AbgIODSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 23:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgIODS1 (ORCPT
+        with ESMTP id S1726143AbgIODSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 23:18:27 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697C8C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:18:27 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l191so1235499pgd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:18:27 -0700 (PDT)
+        Mon, 14 Sep 2020 23:18:32 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9EBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:18:31 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 67so1197678pgd.12
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 20:18:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8eWJlS23lXDdfOxnmIsaJG6z5c4e92Yg34rdxNx93sw=;
-        b=ZZTQXFhwLLCZ/7ymRjJfYMR+sl/fuyF3PaQASfHVg0CiZylM4cscLcxwATvB8QZ+yz
-         ae5Y7+7pQ4yrjBa3sHpRTauDTu7zcA/+zOSW37cv3+ci9gQa9E7V1wQOqseURoAiy5T/
-         /OxiB00XJgzddDHFhHFsDwVxehjt0UB2RIM1XZdAY5EU2t3TipWfIJLIpkXdNU+VMAHs
-         /QyNJTgxIt7FJ/xMwMnHe3zr9YHEu3pNraQGzYHTGJziTCGG88aZom+jsr92MEG+1LPX
-         EkSIMfbIQNAT4aEnm3C28zH1LAKVq8P7rD9GFVxpbqX61HiOvhb8MNfYnF/a5kjwDlXW
-         l06w==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=s1Wi1n1k1tvzjnZGeYsh38Zudyl6wqadvm40u/suu/c=;
+        b=dIBsZUDYd/7184/XcKDI8HAYfGuTigLGhCMgBju8zBvUqjVCNV2z7MgxpEWZZ2jQRR
+         4UwxWW47T1OOD0a7tcR5rshMP5dxKMokwKujihhpON88oSoLhfy0LWIieUpxgC4CDHJ2
+         foO7k0KAdwtbZJmAE85g4GlyKoPU6wqzMnAXrP/cEN4LCj7GPw/NUhj2s/mEzHIpVVoj
+         +/P9Xn2QvtdughH11d15PVXj0gYXloRfaU8fZZkniPV0NDnDUSRYq7P+q6DHZSxwNTf3
+         6wFuN0hbOC5YGQwwSOOcA/cpV8Mgfahu3t9EWxQ01GAFD7MoHzcCpeKrguvuqlrwjcDw
+         aSHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=8eWJlS23lXDdfOxnmIsaJG6z5c4e92Yg34rdxNx93sw=;
-        b=c8RGNmyYKMO+dF6tCLVQva7WQCj9eteAxoRqT+6MKi3bx1CJoF0YyLDbN3rhvpTEDR
-         c7kGZFhDL0jBeKxZjT+IElExqJJmldaLfsqbhjYciDXFQ+u40dFxnvnxsAbQG+Y0QQdv
-         veMB4FMwwFb4l92VYEtORjv18rs5aWOnm3gLV8tyZzTK9x0Snq7RgYAHRXzZk8uDnr/z
-         G0kfkFV694aTMVWYhghSW/lodRMj12g3i3IbYsbgCKGKtI/GlB4VBb6yduouTECDNreD
-         02QTP8LmZKlJI9iVWRtnkCZNyy9/Rp5KcDQ6c5ICRGN3edqi1T/qpOIltPTdc+s60Z90
-         6G9A==
-X-Gm-Message-State: AOAM531+4qIB6W/eoqkh6gL89+DKQfmpRJPgJh0E1lGxws+EWY95XziS
-        NaTh9+hSeqcNuhBv62oG6zc=
-X-Google-Smtp-Source: ABdhPJy13NZVS5g+bs4u3ayAseXDHnaGn8fhN1VzEPuA/1CU++hPOmfl4A1G31lRZs+2TvbnPvXpVw==
-X-Received: by 2002:a63:8e4a:: with SMTP id k71mr12896843pge.326.1600139906149;
-        Mon, 14 Sep 2020 20:18:26 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=s1Wi1n1k1tvzjnZGeYsh38Zudyl6wqadvm40u/suu/c=;
+        b=CfV1CUkNQNenpqVH5v1XakLKhqiREuQFfTcgm5jxt+3ta+zp7oQ8gyYFj0RTnm+ZyQ
+         45qiihpWI3AHKPWiO68TfT1KfO34vOKNB/MZ62JfVw7OrxzBNEfSXmozcKQK7VxEEZL7
+         jz8Ga+KFEaPyykPphxulNL8R+EvpR3WobJgmGKYb+Djy3K9gOq3eWcynwsYtDVd2CuOI
+         c9i8Ol5EkHTHvbp5Nh20iYIvbPTZi2oCfbybk1x802DQ5CO+ZexsnV6Fa48NbApcnszw
+         GCov6BlPNnB8eC245kHOpIDKVk3dWqN0SZakylX/k/cGILr3wqwB4xyTSJ+ISbHv1ewS
+         12fA==
+X-Gm-Message-State: AOAM531S6BBJjYX/O6NwUZl2WcaAm5ujWkV/X54nqSYfQjag/daK7LXU
+        ZCErmi1+ub7Lag/9FeMrQgU=
+X-Google-Smtp-Source: ABdhPJwuOjx4xuI0eB/i1N7Aq4vigYTdeRlPbsiTxb1oTEXcqBORzmUI2JVPB3ByQ05uCZIlimOANg==
+X-Received: by 2002:a63:64c2:: with SMTP id y185mr13172867pgb.125.1600139911574;
+        Mon, 14 Sep 2020 20:18:31 -0700 (PDT)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id a24sm10584582pju.25.2020.09.14.20.18.22
+        by smtp.gmail.com with ESMTPSA id a24sm10584582pju.25.2020.09.14.20.18.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 20:18:25 -0700 (PDT)
+        Mon, 14 Sep 2020 20:18:30 -0700 (PDT)
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -58,11 +58,15 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Stephane Eranian <eranian@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCHSET v2 00/11] perf tools: Fix various memory leaks
-Date:   Tue, 15 Sep 2020 12:18:08 +0900
-Message-Id: <20200915031819.386559-1-namhyung@kernel.org>
+        Ian Rogers <irogers@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 01/11] perf metric: Fix some memory leaks
+Date:   Tue, 15 Sep 2020 12:18:09 +0900
+Message-Id: <20200915031819.386559-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+In-Reply-To: <20200915031819.386559-1-namhyung@kernel.org>
+References: <20200915031819.386559-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,75 +74,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+I found some memory leaks while reading the metric code.  Some are
+real and others only occur in the error path.  When it failed during
+metric or event parsing, it should release all resources properly.
 
-I've found and fixed a bunch of memory leaks during perf pmu and
-metric tests with address sanitizer.  Before this, the tests were
-mostly failed due to the leaks since ASAN makes it return non-zero.
+Cc: Kajol Jain <kjain@linux.ibm.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Fixes: b18f3e365019d ("perf stat: Support JSON metrics in perf stat")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/metricgroup.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-Now I'm seeing no error with ASAN like below:
-
-  $ ./perf test pmu metric
-   9: Parse perf pmu format                                 : Ok
-  10: PMU events                                            :
-  10.1: PMU event table sanity                              : Ok
-  10.2: PMU event map aliases                               : Ok
-  10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
-  10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
-  67: Parse and process metrics                             : Ok
-
-The failure in 10.3 seems due to parse errors like below:
-
-  Multiple errors dropping message: unknown term 'filter_opc' for pmu 'uncore_cbox_0'
-  (valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
-                branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
-		nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size)
-
-
-  Parse event failed metric 'DRAM_Parallel_Reads' id 'arb/event=0x80,umask=0x2,thresh=1/'
-    expr 'arb@event\=0x80\,umask\=0x2@ / arb@event\=0x80\,umask\=0x2\,thresh\=1@'
-  Error string 'unknown term 'thresh' for pmu 'uncore_arb'' help
-    'valid terms: event,edge,inv,umask,cmask,config,config1,config2,name,period,freq,
-                  branch_type,time,call-graph,stack-size,no-inherit,inherit,max-stack,
-		  nr,no-overwrite,overwrite,driver-config,percore,aux-output,aux-sample-size'
-
-
-* Changes from v1:
- - Add 'Acked-by: Jiri'
-
-
-The patches are also available at 'perf/metric-fix-v2' branch on
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks
-Namhyung
-
-
-Namhyung Kim (11):
-  perf metric: Fix some memory leaks
-  perf metric: Fix some memory leaks - part 2
-  perf evlist: Fix cpu/thread map leak
-  perf parse-event: Fix cpu map leaks
-  perf parse-event: Fix memory leak in evsel->unit
-  perf test: Fix memory leaks in parse-metric test
-  perf metric: Release expr_parse_ctx after testing
-  perf metric: Free metric when it failed to resolve
-  perf metric: Do not free metric when failed to resolve
-  perf test: Free aliases for PMU event map aliases test
-  perf test: Free formats for perf pmu parse test
-
- tools/perf/tests/parse-metric.c | 14 ++++++++-----
- tools/perf/tests/pmu-events.c   |  5 +++++
- tools/perf/tests/pmu.c          |  1 +
- tools/perf/util/evlist.c        | 11 ++++++++---
- tools/perf/util/metricgroup.c   | 35 +++++++++++++++++++++++----------
- tools/perf/util/parse-events.c  |  9 +++++++--
- tools/perf/util/pmu.c           | 13 +++++++++++-
- tools/perf/util/pmu.h           |  2 ++
- tools/perf/util/stat-shadow.c   |  8 +++++---
- 9 files changed, 74 insertions(+), 24 deletions(-)
-
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index d03bac65a3c2..90d14c63babb 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -529,6 +529,9 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
+ 						continue;
+ 					strlist__add(me->metrics, s);
+ 				}
++
++				if (!raw)
++					free(s);
+ 			}
+ 			free(omg);
+ 		}
+@@ -1041,7 +1044,7 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 	ret = metricgroup__add_metric_list(str, metric_no_group,
+ 					   &extra_events, &metric_list, map);
+ 	if (ret)
+-		return ret;
++		goto out;
+ 	pr_debug("adding %s\n", extra_events.buf);
+ 	bzero(&parse_error, sizeof(parse_error));
+ 	ret = __parse_events(perf_evlist, extra_events.buf, &parse_error, fake_pmu);
+@@ -1049,11 +1052,11 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
+ 		parse_events_print_error(&parse_error, extra_events.buf);
+ 		goto out;
+ 	}
+-	strbuf_release(&extra_events);
+ 	ret = metricgroup__setup_events(&metric_list, metric_no_merge,
+ 					perf_evlist, metric_events);
+ out:
+ 	metricgroup__free_metrics(&metric_list);
++	strbuf_release(&extra_events);
+ 	return ret;
+ }
+ 
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
