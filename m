@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CFC26AC85
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB68726ACB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbgIOStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727812AbgIORZO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:25:14 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C22C06178A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 10:22:55 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e42006096e946d741c4e4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:6096:e946:d741:c4e4])
+        id S1727898AbgIOS5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:57:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727279AbgIORXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:23:08 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6CD321EC0268;
-        Tue, 15 Sep 2020 19:21:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600190513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=JO/BJln6+VhiNncCauMkRlCcTkl9Kn6f84sTOpoazpg=;
-        b=YcyLUqDxMPbtOgMA9A5nqkYPUS1MKbmMrWICT8LAHBhA7+QWojjLGDb9ZoGixwS6bSVb1q
-        2dJqfHErHJBosB3C5tF89YkTnIJoWdITggy3bcKuiCarola0d4ApkBtLdF0bfFqeIpCCLi
-        wK0HysijJfK6c8qhW627xg8wVycblwE=
-Date:   Tue, 15 Sep 2020 19:21:52 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        "Li, Philip" <philip.li@intel.com>, x86-ml <x86@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING
- e6eb15c9ba3165698488ae5c34920eea20eaa38e
-Message-ID: <20200915172152.GR14436@zn.tnic>
-References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com>
- <20200915135519.GJ14436@zn.tnic>
- <20200915141816.GC28738@shao2-debian>
- <20200915160554.GN14436@zn.tnic>
- <20200915170248.gcv54pvyckteyhk3@treble>
+        by mail.kernel.org (Postfix) with ESMTPSA id B4A2321D1B;
+        Tue, 15 Sep 2020 17:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600190554;
+        bh=vZaOdC9zd2ZYi/o8U519NqAOticZXrG0R+WZlDkyJyk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=qTmRhYpq+VQS/UwssViSYfiAHzDnWUkc+I+1dxcviT7PtmKnlQVvtUefOW1mqQFX8
+         tHPqMcOjK7WnfZl9RFu/mHtSUVoINwXbega1S5LQjZS9H4PUXqH/FD4W2FK/GIzosa
+         0mEVmlCOYr/xVLOnFuw0WmqSZKcCwag/ioi2VT8w=
+Date:   Tue, 15 Sep 2020 12:22:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pci tree
+Message-ID: <20200915172232.GA1403447@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915170248.gcv54pvyckteyhk3@treble>
+In-Reply-To: <20200915105326.GA3351@e121166-lin.cambridge.arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:02:48PM -0500, Josh Poimboeuf wrote:
-> If somebody can share the .o file, I can take a look.
+On Tue, Sep 15, 2020 at 11:53:26AM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Sep 15, 2020 at 01:47:21PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > On Wed, 9 Sep 2020 10:06:20 -0600 Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Tue, Sep 8, 2020 at 8:37 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+> > > > After merging the pci tree, today's linux-next build (arm
+> > > > multi_v7_defconfig) produced this warning:  
+> > > 
+> > > Uggg. I guess 0-day just doesn't do arm32 builds anymore as it caught
+> > > more obscure build issues, but not this one (and some others I've had
+> > > recently).
+> > > 
+> > > > drivers/pci/controller/dwc/pci-dra7xx.c: In function 'dra7xx_pcie_establish_link':
+> > > > drivers/pci/controller/dwc/pci-dra7xx.c:142:6: warning: unused variable 'exp_cap_off' [-Wunused-variable]
+> > > >   142 |  u32 exp_cap_off = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> > > >       |      ^~~~~~~~~~~
+> > > >
+> > > > Introduced by commit
+> > > >
+> > > >   3af45d34d30c ("PCI: dwc: Centralize link gen setting")
+> > 
+> > I am still getting this warning.
+> 
+> I have pushed out a fix-up on my pci/dwc branch, the warning should
+> disappear as soon as Bjorn pulls it.
 
-If only I could reproduce...
-
-So I built:
-
-/home/share/src/llvm/tc-build/install/bin/clang-12 --version
-ClangBuiltLinux clang version 12.0.0 (https://github.com/llvm/llvm-project 74a9c6d7e1c49cd0e3a8e8072b8aa03f7a84caff)
-Target: x86_64-unknown-linux-gnu
-Thread model: posix
-InstalledDir: /home/share/src/llvm/tc-build/install/bin
-
-and I don't trigger that warning even with that compiler.
-
-What I do get is a lot of those pairs:
-
-init/calibrate.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-init/calibrate.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-init/version.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-init/version.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-certs/system_keyring.o: warning: objtool: asan.module_ctor()+0xc: call without frame pointer save/setup
-certs/system_keyring.o: warning: objtool: asan.module_dtor()+0xc: call without frame pointer save/setup
-...
-
-and a link fail at the end.
-
-ld: arch/x86/events/core.o: in function `events_sysfs_show':
-core.c:(.text+0x469b): undefined reference to `stpcpy'
-ld: arch/x86/events/core.o: in function `events_ht_sysfs_show':
-core.c:(.text+0x46f7): undefined reference to `stpcpy'
-ld: drivers/tty/tty_io.o: in function `alloc_tty_struct':
-tty_io.c:(.text+0x2da5): undefined reference to `stpcpy'
-ld: drivers/tty/tty_io.o: in function `tty_register_device_attr':
-tty_io.c:(.text+0x6a09): undefined reference to `stpcpy'
-ld: drivers/tty/tty_io.o: in function `show_cons_active':
-tty_io.c:(.text+0xa819): undefined reference to `stpcpy'
-ld: drivers/scsi/scsi_transport_sas.o:scsi_transport_sas.c:(.text+0x6139): more undefined references to `stpcpy' follow
-make: *** [Makefile:1166: vmlinux] Error 1
-
-
-I'm thinking clang12 is too unstable to take it seriously...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks for the reminder.  Should be fixed.
