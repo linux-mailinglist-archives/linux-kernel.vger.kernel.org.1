@@ -2,118 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF39126ABFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F12026ABFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgIOScE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:32:04 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:61940 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727963AbgIOSOA (ORCPT
+        id S1727861AbgIOScl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727923AbgIOSNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 14:14:00 -0400
+        Tue, 15 Sep 2020 14:13:08 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFFCC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:04:58 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id k15so2380611pfc.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 11:04:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600193640; x=1631729640;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=yVTvCnm6cPdQdKTtHm7qSpOYIbJyd2LOLnWAd3G4RqQ=;
-  b=Kc5UOrlCqhEctIZyV/Xw5SNjx75sRsvjtXg6fWjCdg03j0gtQQ408gCX
-   iJLh+JuENuik6RlAcleV4uYKViC8ssiWnsrGSqE27gzYSALJJoNzop2p7
-   K4kK4TF3+8o4eQwunx9//kskNx5RhBLZAZ87C3dBBG5rP13s+IZZZ2WXk
-   8=;
-X-IronPort-AV: E=Sophos;i="5.76,430,1592870400"; 
-   d="scan'208";a="68219168"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 15 Sep 2020 18:03:04 +0000
-Received: from EX13D31EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id A1D8BA1F15;
-        Tue, 15 Sep 2020 18:03:00 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.34) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 15 Sep 2020 18:02:42 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 0/2] DAMON: Improve User Space Interface
-Date:   Tue, 15 Sep 2020 20:02:22 +0200
-Message-ID: <20200915180225.17439-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c2yuM9K/g3v3IWVnsZSay3LazI4xrYVdjzE0nJv3Z6E=;
+        b=i5ppXVeHVqikPXUMtlZUEOZ+Y7P0tkaESXeHwXNwUaVb6+Wv2GKluiYcs8ZGPyM4On
+         U+MQk9mX5PilB1VQuP0D7VWAtK2ItWJw8tlZngcS2teBroefv2vMYV8Qug2QVJN/p4rj
+         to2Vn+PIjWw4cbTKV60pBxS324atxpqwddQS6b3ln0Hazk2yAiXJQmvqbdMOsLCviDYK
+         6dwlhVi06aQ9FQuY5uxuhAtmiuAQar0KaNJmovLRUZ8ikhGLPBOpALkQ2wiZMJmc1o2Y
+         AmoVrIARjNGHIoCh9Eh+k6VmT+UiAqE6pthUQun2Lhbq9ciYNuzLhK7da1JorO/XSX7r
+         VOLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c2yuM9K/g3v3IWVnsZSay3LazI4xrYVdjzE0nJv3Z6E=;
+        b=CN/dcSKOYB+gqMW0FRkH094S7RY0PGxRDtcyPKdjJjtbWMwvX5cxe7Hmok+MMkaXYE
+         yXTCAIh1N+cAEObD6JM63cP2NsgZwBpTB9k3/amK8uVtMhmFP3VLXMSEY0fxVv2O8gQ1
+         +o/Qg6pZqXgQ+ZnV6UIez97nA7fNFUh2EDACrED1GfgiZomxErfK8K9S9gMG12IAsoEb
+         33m0tUoiPzAdNVUaoqBM1fVWSaP3Z0+E6L5rsiwNXlbqOKeNmg/nj0yA1bApEd9ZFmIb
+         12P2aS307/sglSM3z3nx4aUhN0apQrxaysJ1/5wW4ocYm9OC3NDIVR42+3z4Z3a+Jtst
+         ZBeg==
+X-Gm-Message-State: AOAM5328yuuUBMqXvOf3iCuhNi1pTSDL5t5f3Nd4ug8Ym5wGE94ewt0t
+        p7uKH9T10feRY6ubxGsBe3uGBH28GUubwl10fPp7DA==
+X-Google-Smtp-Source: ABdhPJxVO4o7U359dFVF1ZgIxgLnE+gsz4NWTpl+T+FbHrsOvgyE10hdHGWuMKQbjAHZsdKWINNWT9aZsVhOchRhZjY=
+X-Received: by 2002:a63:7882:: with SMTP id t124mr5873220pgc.381.1600193096424;
+ Tue, 15 Sep 2020 11:04:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13D06UWC004.ant.amazon.com (10.43.162.97) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+References: <5f60c4e0.Ru0MTgSE9A7mqhpG%lkp@intel.com> <20200915135519.GJ14436@zn.tnic>
+ <20200915141816.GC28738@shao2-debian> <20200915160554.GN14436@zn.tnic>
+ <20200915170248.gcv54pvyckteyhk3@treble> <20200915172152.GR14436@zn.tnic>
+ <20200915173430.GS14436@zn.tnic> <CAKwvOdnqJJ8Ot6sRvVUTyuwA_zhRQXOnMU9KS6aVcTqRGb3JmA@mail.gmail.com>
+ <20200915180141.GU14436@zn.tnic>
+In-Reply-To: <20200915180141.GU14436@zn.tnic>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 15 Sep 2020 11:04:45 -0700
+Message-ID: <CAKwvOdmVTh8Erha=e97RUp4w-LOq==gV2wyj_0vi176_ZrhTGQ@mail.gmail.com>
+Subject: Re: [tip:x86/seves] BUILD SUCCESS WITH WARNING e6eb15c9ba3165698488ae5c34920eea20eaa38e
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Rong Chen <rong.a.chen@intel.com>,
+        "Li, Philip" <philip.li@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        kernel test robot <lkp@intel.com>, x86-ml <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Tue, Sep 15, 2020 at 11:01 AM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Sep 15, 2020 at 10:41:24AM -0700, Nick Desaulniers wrote:
+> > We want them finding bugs in unreleased versions of the compiler,
+> > before those bugs in ship in release.  This is a good thing.
+>
+> The bug report should probably say that compiler used is an unreleased
+> one so that I can prioritize better.
 
-NOTE: This is only an RFC for future features of DAMON patchset[1], which is
-not merged in the mainline yet.  The aim of this RFC is to show how DAMON would
-be evolved once it is merged in.  So, if you have some interest in this RFC,
-please consider reviewing the DAMON patchset, either.
-
-After posting DAMON patchset[1], we received a number of comments.  Based on
-those, we listed and shared future works for DAMON in the kernel summit
-2020[2] and had a poll for the priorities of the works.  As a result, the user
-space interface improvement received a second highest priority[3].  For the
-reason, this patchset is came out.
-
-The 1st patch puts more information in the monitoring thread name so that user
-space could charge the DAMON's CPU usage on them by themselves, in fine
-granularity.  The 2nd patch makes multiple monitoring contexts available using
-the debugfs interface.
-
-[1] https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/
-[2] https://linuxplumbersconf.org/event/7/contributions/659/
-[3] https://lore.kernel.org/linux-mm/20200831112235.2675-1-sjpark@amazon.com/
-
-Baseline and Complete Git Trees
-===============================
-
-The patches are based on the v5.8 plus DAMON v20 patchset[1], RFC v14 of DAMOS
-patchset, RFC v8 of physical address space support patchset, and some more
-trivial fixes (s/snprintf/scnprintf).  You can also clone the complete git
-tree:
-
-    $ git clone git://github.com/sjp38/linux -b damon-usi/rfc/v1
-
-The web is also available:
-https://github.com/sjp38/linux/releases/tag/damon-usi/rfc/v1
-
-[1] https://lore.kernel.org/linux-mm/20200817105137.19296-1-sjpark@amazon.com/
-[2] https://lore.kernel.org/linux-mm/20200804142430.15384-1-sjpark@amazon.com/
-[3] https://lore.kernel.org/linux-mm/20200831104730.28970-1-sjpark@amazon.com/
-
-SeongJae Park (2):
-  mm/damon: Put more information in kdamond thread name
-  mm/damon/debugfs: Support multiple contexts
-
- include/linux/damon.h |   2 +
- mm/damon-test.h       |  34 ++--
- mm/damon.c            | 361 +++++++++++++++++++++++++++++++++---------
- 3 files changed, 308 insertions(+), 89 deletions(-)
-
+That's not unreasonable.  Calling attention to W=1, randconfig, or
+unreleased compiler would help.  I tend to deprioritize the first two.
 -- 
-2.17.1
-
+Thanks,
+~Nick Desaulniers
