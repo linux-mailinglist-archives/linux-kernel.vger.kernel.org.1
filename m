@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9445326AB3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAB426AB41
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 19:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgIORy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 13:54:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55404 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727431AbgIORhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:37:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600191450; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=SfPogHCOVXzD1t3NOZd7E7xh1krkIKc4i6JLC9hjcYw=; b=qJDNg3TxnlXJvDth/W/CBJHShOdi6wifsNyfC0cqhNkZgH+hbOXfkvteaEaXlWH+Re0W7BoT
- 5TKFzFozMWFP9cuzarqWyAbgkut5EUvT1E+bf207cpVp2eUKA9Gh4Po6NA8w+xhX0jitt8vF
- sUiZ0HhsH6LmOfTYKwzZLl+hEWs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f60fbd5be06707b34317b46 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 17:37:25
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0DA1DC43382; Tue, 15 Sep 2020 17:37:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A6A5BC433CA;
-        Tue, 15 Sep 2020 17:37:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A6A5BC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ohad@wizery.com, evgreen@chromium.org, swboyd@chromium.org,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: [PATCH] remoteproc: qcom_q6v5: Assign mpss region to Q6 before MBA cold boot
-Date:   Tue, 15 Sep 2020 23:07:13 +0530
-Message-Id: <20200915173713.28098-1-sibis@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1727732AbgIOR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 13:56:05 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:39429 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727954AbgIORkD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 13:40:03 -0400
+Received: by mail-oi1-f194.google.com with SMTP id c13so4814319oiy.6;
+        Tue, 15 Sep 2020 10:39:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cgIuMsWuKwLw8HKrfM3Yi4VFysbOGkj72Chl+nIZli0=;
+        b=I9tjUnqnJuwKijvQsV126O8Mtx3BuNYcy5r3+lJ9rRdiiQHoEqCYscfd3KDXpjIjAD
+         O5Zjw95hY2LZAKugxI7+o8rnqebBh1Iakminxm6X6YM95Uu55rTMCk3XJIjHbDrdUL6m
+         Oa5SAICa78VmEZbwlQTVvqrpB6qDbMP66ihubjzwDNwmQ9P81PJ2KD8/cWCJ5X9WKwHC
+         2phe4nMNB1gSJP6MheOZexAVANsJnWE1oLQXGlaBU0U13k2fsCOY41rMpbhcDngllKgB
+         tz/MtHpqJ+7NHRtCHfom4ORx5JvchlWMMw5vi8zlYFwYcAINhCe1GzjgjA355gOoA+1X
+         priA==
+X-Gm-Message-State: AOAM533a5VaLsNskPO5ri5McgN+MkmmEWR93Hd4dEb7AWssLzcsO96/n
+        d38vGxV5LvvO5NsGm4Em4djykdD1RgbZybwNmwM=
+X-Google-Smtp-Source: ABdhPJxTm261fqP6s7VUyOJQXiMU4X0GOiKkSTJ3sNxgOmXbn0mO9MLalI7UITQ64YpedQWLzF8Gls774vUxN4TYflI=
+X-Received: by 2002:aca:fd95:: with SMTP id b143mr396668oii.68.1600191582446;
+ Tue, 15 Sep 2020 10:39:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1597286952-5706-1-git-send-email-wangqing@vivo.com>
+ <CAJZ5v0h=UmD33X_i80X3ww7nC=xQL7V8XaoNq2XvU_XcdQGfZQ@mail.gmail.com> <4e23dc722419e82d13772afc8e060d3203fd5a86.camel@intel.com>
+In-Reply-To: <4e23dc722419e82d13772afc8e060d3203fd5a86.camel@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 15 Sep 2020 19:39:31 +0200
+Message-ID: <CAJZ5v0jG-8Cwi1TfVDfgu+=q1MT+aY+aG15cAuthK7AvS1vYuQ@mail.gmail.com>
+Subject: Re: [PATCH] acpi/nfit: Use kobj_to_dev() instead
+To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        "wangqing@vivo.com" <wangqing@vivo.com>
+Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On secure devices which support warm reset, the modem subsystem requires
-access to the mpss region to clear them out. Hence assign the mpss region
-to Q6 before MBA cold boot. This will be a nop during a modem SSR.
+On Sat, Aug 15, 2020 at 12:52 AM Verma, Vishal L
+<vishal.l.verma@intel.com> wrote:
+>
+> On Fri, 2020-08-14 at 17:28 +0200, Rafael J. Wysocki wrote:
+> > On Thu, Aug 13, 2020 at 4:54 AM Wang Qing <wangqing@vivo.com> wrote:
+> > > Use kobj_to_dev() instead of container_of()
+> > >
+> > > Signed-off-by: Wang Qing <wangqing@vivo.com>
+> >
+> > LGTM
+> >
+> > Dan, any objections?
+>
+> Looks good to me - you can add:
+> Acked-by: Vishal Verma <vishal.l.verma@intel.com>
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
----
+Applied as 5.10 material, thanks!
 
-I didn't want to add any new flags for warm reset support because
-calling xfer for mpss to q6 shouldn't have any side effects on
-platforms that don't support warm resets.
-
- drivers/remoteproc/qcom_q6v5_mss.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index c401bcc263fa5..cc5b7edc02c73 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -931,6 +931,18 @@ static int q6v5_mba_load(struct q6v5 *qproc)
- 		goto assert_reset;
- 	}
- 
-+	/**
-+	 * On secure devices which support warm reboot, the modem subsystem's cold boot is similar
-+	 * to an SSR sequence i.e the mba requires access to the modem memory to clear it out during
-+	 * Q6 cold boot. For modem SSR it will be a nop.
-+	 */
-+	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm, false, true,
-+				      qproc->mpss_phys, qproc->mpss_size);
-+	if (ret) {
-+		dev_err(qproc->dev, "assigning Q6 access to mpss memory failed: %d\n", ret);
-+		goto disable_active_clks;
-+	}
-+
- 	/* Assign MBA image access in DDR to q6 */
- 	ret = q6v5_xfer_mem_ownership(qproc, &qproc->mba_perm, false, true,
- 				      qproc->mba_phys, qproc->mba_size);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> > > ---
+> > >  drivers/acpi/nfit/core.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+> > > index fa4500f..3bb350b
+> > > --- a/drivers/acpi/nfit/core.c
+> > > +++ b/drivers/acpi/nfit/core.c
+> > > @@ -1382,7 +1382,7 @@ static bool ars_supported(struct nvdimm_bus *nvdimm_bus)
+> > >
+> > >  static umode_t nfit_visible(struct kobject *kobj, struct attribute *a, int n)
+> > >  {
+> > > -       struct device *dev = container_of(kobj, struct device, kobj);
+> > > +       struct device *dev = kobj_to_dev(kobj);
+> > >         struct nvdimm_bus *nvdimm_bus = to_nvdimm_bus(dev);
+> > >
+> > >         if (a == &dev_attr_scrub.attr && !ars_supported(nvdimm_bus))
+> > > @@ -1667,7 +1667,7 @@ static struct attribute *acpi_nfit_dimm_attributes[] = {
+> > >  static umode_t acpi_nfit_dimm_attr_visible(struct kobject *kobj,
+> > >                 struct attribute *a, int n)
+> > >  {
+> > > -       struct device *dev = container_of(kobj, struct device, kobj);
+> > > +       struct device *dev = kobj_to_dev(kobj);
+> > >         struct nvdimm *nvdimm = to_nvdimm(dev);
+> > >         struct nfit_mem *nfit_mem = nvdimm_provider_data(nvdimm);
+> > >
+> > > --
+> > > 2.7.4
+> > >
