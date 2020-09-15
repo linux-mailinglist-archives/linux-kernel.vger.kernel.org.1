@@ -2,135 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549A626A1AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC43226A1B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgIOJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:07:40 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:34765 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726142AbgIOJHh (ORCPT
+        id S1726309AbgIOJKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIOJKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:07:37 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id I6vzk9pSoTSPzI6w0kShyV; Tue, 15 Sep 2020 11:07:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1600160853; bh=wwgZWe1k5L04vcWJJRmyzQwwC5HDOt9tNCdtKEKUfM4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=AvyVm+K9CZ3/f55Jz4WhHcI2RSUdCQ5nYp5KCh6Tt3y7V61WW8gCkKn732nfH556B
-         mwmrlfwA1D+Utwa/q9AA386I4uEaQ56k1MP+HCe6e/KEGuZt93TszOY5ziZMq0YHHK
-         n8mjLHY+5tpF9y5AW03c4p7l0avnPA8KwSCRnL4//Q3goMPCrHwbSMOiOHD4BwuruZ
-         BJ/O9mEbCdjGI01IVS6DMJTa1S136jj+6XpBhGFFVbpgBjkratBoVA9JvDLLVxrkA3
-         N8w/X9ZB7RpxbJ3ZsTlkUBxG3oo6R0iXzx/MrzB9S0S+xmRvx2IP4TS/DyddU5SFmC
-         wReH6wsfwVXhw==
-Subject: Re: [PATCH v2] media: rcar-vin: Update crop and compose settings for
- every s_fmt call
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-References: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <b57b499a-b6d1-dfbb-29bb-5daa3fad5982@xs4all.nl>
-Date:   Tue, 15 Sep 2020 11:07:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 15 Sep 2020 05:10:45 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E1DC06174A;
+        Tue, 15 Sep 2020 02:10:44 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id t10so2501836wrv.1;
+        Tue, 15 Sep 2020 02:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=txzfbZrnakH2vaBjHQaalxnwyww01JCiom2JkdV9wmw=;
+        b=kUnELQITvGByzN0wd3bKx6OJ8cJu1FkJ9Pr9qtd4PWLcZRGOmv2Ig3K2HXRQLNwwT3
+         Z4Vak+BFA2C6caVthL7H6Nl0hDPfI0nmPbEJn5i+FrRPU09AsFQyAlWpYvZLhvLZzZXU
+         MuePsAIavbIZHbxXqMd1q5YNAMQW0kBM30a2mabmO1DARz/MxyxXDAQ/FT5IgUe+hS7Y
+         t1hlautpQ5hfbOzDumuqW4NCwbgmOLDFBATHnjI02gGFxidmilgni0GutfSB3QUxH8yH
+         jOG1NSmiCsVPUY5iXX6lBwO6qoEI+g2fKq311AdqErkcp2+U5MBm+3nUbbYHeeJ3+DZZ
+         3ZXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=txzfbZrnakH2vaBjHQaalxnwyww01JCiom2JkdV9wmw=;
+        b=sSp+/ksMyv+B+USefKPsIBXeidhlw6my9HNoWOf/79YdBedXw4qK1qFyTY6NxpJihm
+         UdhXs82uML+NPXMRuNS4pK+FT0GpB7QoK9IY00gKRd+qy9UzpCASiep99E/gZaHx3QHg
+         yQsLqSH1pb4gPRvHfTHmsnnREPD6OGQy1/3LG8VOU0Iucoo1AGJxApjY6ZdcL1KXRg2n
+         BH82pUpks4MiiT3ibpOLx3hP5RjefPQAPzbHxEX629sJEJoWgRdOnp1CfVpcPUyOJ6Ic
+         tOV0z9n9vs/U7Cw8hVGaWZl3X+4IpL3ShUye6n1IXgxxT7nUJHkxm0rh69suixiciAWB
+         EuZQ==
+X-Gm-Message-State: AOAM531nj9STB83gLLdBWuUBXhAbuuehAzBKhnhDRqi/gFNjvAG990ID
+        8bko1ZPUHUQ9H0Ps77MzRAU=
+X-Google-Smtp-Source: ABdhPJyrM+kjDYT88l6l/yATdBcYMsvxnYG7dYhRpSdBRWmEE30T7FpRxEL3HiiAJTKwT3PHNC4CwQ==
+X-Received: by 2002:adf:f88d:: with SMTP id u13mr21801771wrp.213.1600161043205;
+        Tue, 15 Sep 2020 02:10:43 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id k4sm25899060wrx.51.2020.09.15.02.10.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 02:10:42 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     andy@infradead.org
+Cc:     matan@svgalib.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] platform/x86: fix kconfig dependency warning for LG_LAPTOP
+Date:   Tue, 15 Sep 2020 12:09:23 +0300
+Message-Id: <20200915090922.16423-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200913182140.32466-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfL9AmPTSsKXQObvKm86FCv7Isd4OPiVUewhjHs1Gji1DbNPs5Cdk7aH7z8iPeuLuGJ9QRwUtmgoQ+7hIR1zKzZ0PYKWsDHMhp8uNWvPq4FtyfdQ5NLG0
- uxfMgMGMdgLllC9+C0twdYbRlPcIp465mZ/gh4OPVZ+VxH/yB7V8wafedZXC/g4vTW8IPWvQPBYuz+wciPuERij9DWGbaK+bZYkvJ1VpjDcaVBXBN/T/LoE6
- B+byNZGRvAt6MFnBmm5DX5IYrU4FYBQ01HGkDTDJ7SN+9zkuWVX+Kgars3VYLVontLMSMfQUP/pbGsbitRO6HZD5Uz/w1kaiHk6+AoG8pZvPzrZBWpBK703v
- koKXNCPH5XRX/GcyZ0Wu/xogrmL2VsZZzDnl/8mSo1Fb2U+URosdH2yRBQkYCGCwrOUxtU7Qd8WWZdxyl9tZ22Je1Al2eEleZY9ymqppp27sgsZHS89YHAtx
- ohiyqHMAh8QK/fgF1oVZEhYTONQm3KLiN4cYF2hRV9V7Sof21bxiqwlr/oY+xkS1HrP3YEhZbmEgy0tsUxBekiCEmGp6uSKDAtapkzTJsOUvgeoVj051TN3i
- oZbyNeXIZgDjv9J04B7sUb/Y7j6fzlBMQ3DjxITVcB8lsy2HFNqL+OLiu0/uNsbCL+dEMcJKKT5w+3TC+H7g5XRX3gVZSWZtT7o8zjo8MKVKZw==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2020 20:21, Lad Prabhakar wrote:
-> The crop and compose settings for VIN in non mc mode werent updated
-> in s_fmt call this resulted in captured images being clipped.
-> 
-> With the below sequence on the third capture where size is set to
-> 640x480 resulted in clipped image of size 320x240.
-> 
-> high(640x480) -> low (320x240) -> high (640x480)
-> 
-> This patch makes sure the VIN crop and compose settings are updated.
+When LG_LAPTOP is enabled and NEW_LEDS is disabled, it results in the
+following Kbuild warning:
 
-I'm not sure the original behavior was wrong at all.
+WARNING: unmet direct dependencies detected for LEDS_CLASS
+  Depends on [n]: NEW_LEDS [=n]
+  Selected by [y]:
+  - LG_LAPTOP [=y] && X86 [=y] && X86_PLATFORM_DEVICES [=y] && ACPI [=y] && ACPI_WMI [=y] && INPUT [=y]
 
-When calling S_FMT(320x240) it should force the crop and compose rectangles
-into 320x240, but when calling S_FMT(640x480) the crop and compose rectangles
-do not need to be modified and are kept. It is up to userspace to update those
-crop/compose rectangles.
+The reason is that LG_LAPTOP selects LEDS_CLASS without depending on or
+selecting NEW_LEDS while LEDS_CLASS is subordinate to NEW_LEDS.
 
-Calling S_FMT must, however, update the crop/compose bounds/default rectangles
-where applicable.
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-Note that the crop coordinates are against the video source resolution, *not*
-the format width/height. So this patch is definitely wrong in that respect.
+Fixes: dbf0c5a6b1f8 ("platform/x86: Add LG Gram laptop special features driver")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/platform/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-Regards,
-
-	Hans
-
-> 
-> Fixes: 104464f573d ("media: rcar-vin: Do not reset the crop and compose rectangles in s_fmt")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
-> Changes for v2:
-> * Dropped redundant code mapping crop and compose rects
-> 
-> v1 - https://lkml.org/lkml/2020/7/31/364
-> ---
->  drivers/media/platform/rcar-vin/rcar-v4l2.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar-vin/rcar-v4l2.c b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> index 0e066bba747e..1bd59a8453b4 100644
-> --- a/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> +++ b/drivers/media/platform/rcar-vin/rcar-v4l2.c
-> @@ -305,7 +305,7 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
->  			      struct v4l2_format *f)
->  {
->  	struct rvin_dev *vin = video_drvdata(file);
-> -	struct v4l2_rect fmt_rect, src_rect;
-> +	struct v4l2_rect src_rect;
->  	int ret;
->  
->  	if (vb2_is_busy(&vin->queue))
-> @@ -317,14 +317,11 @@ static int rvin_s_fmt_vid_cap(struct file *file, void *priv,
->  		return ret;
->  
->  	vin->format = f->fmt.pix;
-> -
-> -	fmt_rect.top = 0;
-> -	fmt_rect.left = 0;
-> -	fmt_rect.width = vin->format.width;
-> -	fmt_rect.height = vin->format.height;
-> -
-> -	v4l2_rect_map_inside(&vin->crop, &src_rect);
-> -	v4l2_rect_map_inside(&vin->compose, &fmt_rect);
-> +	vin->crop.top = 0;
-> +	vin->crop.left = 0;
-> +	vin->crop.width = vin->format.width;
-> +	vin->crop.height = vin->format.height;
-> +	vin->compose = vin->crop;
->  	vin->src_rect = src_rect;
->  
->  	return 0;
-> 
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 40219bba6801..81f6079d08e6 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1112,6 +1112,7 @@ config LG_LAPTOP
+ 	depends on ACPI_WMI
+ 	depends on INPUT
+ 	select INPUT_SPARSEKMAP
++	select NEW_LEDS
+ 	select LEDS_CLASS
+ 	help
+ 	 This driver adds support for hotkeys as well as control of keyboard
+-- 
+2.25.1
 
