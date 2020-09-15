@@ -2,132 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4880726B81B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4BD26B80B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726723AbgIPAgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgION1L (ORCPT
+        id S1726908AbgIPAfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:35:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29622 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726498AbgIONbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:27:11 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C58DC0611C3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:26:51 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id q9so3377472wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2AzBYLhEtS2P6fcBoO+d1UipgtAgkG/Sw1GDkWlDdZY=;
-        b=s6zHIO8W3MlZAtsztq2A0WykjjjQ/qRzOjhzbehHnjHUPUJ+ZOWy/Nxrz8U56S712U
-         xXo8LMCaGOrhbb6oO3YjKFBAR1Pa35n4VgKl2TiAxWeIVKQK2BsdoBYIaLxhREHXeh8g
-         NuWwzDxitLE7yYaed0SbPNo3x52FO+RUxkR+x9e+/g+b/+AyPknj2zKU7vIdzwF8fbKN
-         ZX3f4di93i6DxMUghbDSnE1k69xCF1FuA+byk4+54zxRnZhcnZ3CYEt7Qe3cOiiSY358
-         VkMYCck8CUHgoBrlP2yZKQiwZMofjyrLreuE4V7RB0ux1F3K+lbSxNXijfBtIGrf/0/k
-         xwwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2AzBYLhEtS2P6fcBoO+d1UipgtAgkG/Sw1GDkWlDdZY=;
-        b=AVAWoFd5R+VjB2bMEruuflsKp9wWua7jPvjmsfIX7U2pT+4hewqvRX41Qn2GH2Fvn9
-         mF1p3JobE4DtD4BAeP0VuJeen9UIzo8byy2ERZneW2YYUJQh4OLlMtguxZdI1DeeL4tO
-         V8eHnyOpJ95ZTwzBP4g3N5kzKkhPakTgL+/+eyx86X7CPJH/I3+tEzA2aTG6XnKnuNQ6
-         Au//GiUbDxjwmBq3WlVPQAnQ0qVaxqa0A2iBZgtjQH/tc3Wwaw5JCMhYc20Hf+OzQXbN
-         EnTly6WthXfjhenR0m04jl1BfbmQ32NG8VBMV9KYd/OXI2bGagzmRYET5H7MRElUeA/W
-         eiTQ==
-X-Gm-Message-State: AOAM533r27VWG5d1B8zGzF+5XiAzyPVS+3mvdUtUcpD62XNfHQ+WQcxb
-        Q1T3O/6VUyo4jHY98a+xTZj8CcLTcPhr0GrN
-X-Google-Smtp-Source: ABdhPJyJAYJbdgSzg7qz4jZgXvVAK0DSvc1GSLpLKiUZ+tnkoR/XfxxP5krr5Wcsy5DvgCksu8Xe4g==
-X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr4692488wme.188.1600176409854;
-        Tue, 15 Sep 2020 06:26:49 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id h4sm25019281wrm.54.2020.09.15.06.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:26:49 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:26:48 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4 01/15] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200915132648.GO2236@nanopsycho.orion>
-References: <1600063682-17313-1-git-send-email-moshe@mellanox.com>
- <1600063682-17313-2-git-send-email-moshe@mellanox.com>
- <20200914143306.4ab0f4c1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <777fd1b8-1262-160e-a711-31e5f6e2c37c@nvidia.com>
+        Tue, 15 Sep 2020 09:31:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600176604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/cZ5S90LvfH2YJYUGQ9z5j9iiMm9I7jxn7rvlohnMLk=;
+        b=Q4Fq7zow+AfcGQeijopLkolzAT6KEQAh0l9+2Gp4XijKW/HlXoeCKZUYZtaZTP1YXIfRJZ
+        yofb15OXK6cCAc6qcZuzukbLeKxSM8T4nUYAYel805Gokou0tZG8sbUclHE1dEzRj6CnBF
+        ZZTGCfnJ/ze6NBl+bsZISAneCYJUysA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-Zg1z-YgENxyUPmq8b_SO_g-1; Tue, 15 Sep 2020 09:27:47 -0400
+X-MC-Unique: Zg1z-YgENxyUPmq8b_SO_g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9D7E1882FC9;
+        Tue, 15 Sep 2020 13:27:41 +0000 (UTC)
+Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 849BA75144;
+        Tue, 15 Sep 2020 13:27:27 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 08:27:25 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v37 02/24] x86/cpufeatures: x86/msr: Add Intel SGX Launch
+ Control hardware bits
+Message-ID: <20200915132725.a2qbdio3jsu7rsqs@treble>
+References: <20200911124019.42178-1-jarkko.sakkinen@linux.intel.com>
+ <20200911124019.42178-3-jarkko.sakkinen@linux.intel.com>
+ <20200914151816.u6camicid4bd5lgo@treble>
+ <20200914153812.c6uh3spqmcy2ft3d@treble>
+ <20200915095716.GI3612@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <777fd1b8-1262-160e-a711-31e5f6e2c37c@nvidia.com>
+In-Reply-To: <20200915095716.GI3612@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Sep 15, 2020 at 02:56:48PM CEST, moshe@nvidia.com wrote:
->
->On 9/15/2020 12:33 AM, Jakub Kicinski wrote:
->> External email: Use caution opening links or attachments
->> 
->> 
->> On Mon, 14 Sep 2020 09:07:48 +0300 Moshe Shemesh wrote:
->> > @@ -3011,12 +3060,41 @@ static int devlink_nl_cmd_reload(struct sk_buff *skb, struct genl_info *info)
->> >                        return PTR_ERR(dest_net);
->> >        }
->> > 
->> > -     err = devlink_reload(devlink, dest_net, info->extack);
->> > +     if (info->attrs[DEVLINK_ATTR_RELOAD_ACTION])
->> > +             action = nla_get_u8(info->attrs[DEVLINK_ATTR_RELOAD_ACTION]);
->> > +     else
->> > +             action = DEVLINK_RELOAD_ACTION_DRIVER_REINIT;
->> > +
->> > +     if (action == DEVLINK_RELOAD_ACTION_UNSPEC || action > DEVLINK_RELOAD_ACTION_MAX) {
->> > +             NL_SET_ERR_MSG_MOD(info->extack, "Invalid reload action");
->> > +             return -EINVAL;
->> > +     } else if (!devlink_reload_action_is_supported(devlink, action)) {
->> > +             NL_SET_ERR_MSG_MOD(info->extack, "Requested reload action is not supported");
->> > +             return -EOPNOTSUPP;
->> > +     }
->> > +
->> > +     err = devlink_reload(devlink, dest_net, action, info->extack, &actions_performed);
->> > 
->> >        if (dest_net)
->> >                put_net(dest_net);
->> > 
->> > -     return err;
->> > +     if (err)
->> > +             return err;
->> > +
->> > +     WARN_ON(!actions_performed);
->> > +     msg = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_KERNEL);
->> > +     if (!msg)
->> > +             return -ENOMEM;
->> > +
->> > +     err = devlink_nl_reload_actions_performed_fill(msg, devlink, actions_performed,
->> > +                                                    DEVLINK_CMD_RELOAD, info->snd_portid,
->> > +                                                    info->snd_seq, 0);
->> > +     if (err) {
->> > +             nlmsg_free(msg);
->> > +             return err;
->> > +     }
->> > +
->> > +     return genlmsg_reply(msg, info);
->> I think generating the reply may break existing users. Only generate
->> the reply if request contained DEVLINK_ATTR_RELOAD_ACTION (or any other
->> new attribute which existing users can't pass).
->
->
->OK, I can do that. But I update stats and generate devlink notification
->anyway, that should fine, right ?
+On Tue, Sep 15, 2020 at 12:57:16PM +0300, Jarkko Sakkinen wrote:
+> On Mon, Sep 14, 2020 at 10:38:26AM -0500, Josh Poimboeuf wrote:
+> > On Mon, Sep 14, 2020 at 10:18:16AM -0500, Josh Poimboeuf wrote:
+> > > Hi Jarko,
+> > > 
+> > > It looks like some of the patches weren't delivered to the lists.
+> > > Patches 0, 1, 8, 9, and 17 seem to be missing.
+> > > 
+> > > Lore agrees with me:
+> > > 
+> > >   https://lore.kernel.org/linux-sgx/20200911124019.42178-1-jarkko.sakkinen@linux.intel.com/
+> > 
+> > And my first email to you bounced, similar to an email I tried sending
+> > to Kristen a few weeks ago.  Something weird going on with Intel mail
+> > servers?
+> 
+> Possible. I don't honestly know what is going on.
+> 
+> At least now all the patches are out:
+> 
+> https://lore.kernel.org/linux-sgx/
+> 
+> Not sure if a resend would make sense for the full patch set but maybe I
+> just do quick iteration and send v38 soon. And just in case use some alt
+> smtp server.
 
-Yes.
+I see the v37 missing patches now, but they're not threaded with the
+original thread.  v38 has some missing patches as well.
 
->
+-- 
+Josh
+
