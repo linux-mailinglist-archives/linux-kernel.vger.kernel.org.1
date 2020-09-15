@@ -2,168 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B19C26A345
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8974326A347
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgIOKh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:37:26 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54885 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgIOKhO (ORCPT
+        id S1726179AbgIOKjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbgIOKjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:37:14 -0400
-Received: by mail-wm1-f68.google.com with SMTP id s13so2841294wmh.4;
-        Tue, 15 Sep 2020 03:37:12 -0700 (PDT)
+        Tue, 15 Sep 2020 06:39:00 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265BAC06174A;
+        Tue, 15 Sep 2020 03:38:59 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id w1so2533792edr.3;
+        Tue, 15 Sep 2020 03:38:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c3jB30FXinHk1vqreTb0FjmJR543UrMd5qpLCkLHc4w=;
+        b=FkbLqe5j79Y3flURMQRs/zE0angx6uXxaL+yCDWTZbw6YGqIh+xfK4nj1K+aBQrI5O
+         eTuCXP1ezFqunylOKHBXMvg272EsC5q7+w4pkEXOmdVOYCr8gScWxLYC3r+YhofKTeBl
+         sB6V54nQiIfvQ9j0cKZ0KCzhmL78uQdhH3ea4TxcPMW/l17C3GgCGRzdfnBlZ2eiim7N
+         B932/rQJgZ4QlWKQgCoQSZPLYTdIwYIgETxb9UxY5kGWs7ELCjKzKOuI5Y/u7/wrLTFr
+         xK6s76kG84XIl6dvsEek8QTsQMKVa6gLadOaEs4zTzjoEAZC/327Xmgi3V0VfOj4gofw
+         aZbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h0FEvhe81Rt7AJ2NQ20nZUIPRKHUuLpPLW8xH6sCpcw=;
-        b=hfRgbSGlk9jJV5G7YD2Dh6pfhkj5DAM5FZabKqOxqI1gYlYKvO3db9c1pNh98SvaQf
-         nwQY9pq1rQ8uFDJFML4upMSBP0FDGrYutOx2NYB2xUsthgXNsb+HONA+H94iRbuQBVIq
-         HBKp2YnZf9yiFO1zhYcJhIabpISYX4DKdjfSlxyvDpBp2wTh4j+Cz3mNDY8a99yII1xX
-         TDJuWfZV2sOA6B+PK980+AGD/oKHsJZ6xl/Bg/Fs1P7xIYnU4S20gwr6dIbM1+9P0Sbg
-         HVyCov59JTijbxfzRyPWIZMqHceIApWanUfyxgRJK2gGfXyTg+hJFVCRAkDx5rHq2dBd
-         DHGA==
-X-Gm-Message-State: AOAM532fEeNGYxj1Tkj1zk9lbRYISwSb9N71xKRsUQzqktx6TJIb05Dy
-        XZvZH+8J/lyjllpSHdCzjRg=
-X-Google-Smtp-Source: ABdhPJwg7n4w+itzegzVWPPOZkBcOPB0WndjT4F4m973xvzCeNDMUFYC3+o1/zUpLvG8qH84vO5ILA==
-X-Received: by 2002:a1c:2b43:: with SMTP id r64mr3863166wmr.164.1600166231873;
-        Tue, 15 Sep 2020 03:37:11 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id g12sm25361404wro.89.2020.09.15.03.37.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c3jB30FXinHk1vqreTb0FjmJR543UrMd5qpLCkLHc4w=;
+        b=mtuoxgxiHDJues461j14VkIlS59WzklwXGQ/esshOPNBFOdTGchZ8LrRpogQcHminq
+         /AX3JLHrbFTv+IoClhO+u7fmh095Sew4D8f9T0/hI/muJzA1oIoRlbkqgo2dodnli3kF
+         r1wZuldQP9138w0sCw3DJ8EFJ4KxwDklqRZUzD/GMuRb2rT8YEh/9hHzWaL6ZZcG4zUm
+         djTR/JTc1ZiknN1IRhzN+jQPVq43QbKQkvd5CmJRoE2eUwv/O7kUdE5ZVbKJXqY7t2AD
+         iIUPYH4CSEsbYc6CQGAwP0DJ6hMYEgC5loXjSwtWt2refWafHvFz7fKKL7p+mngd4Rlc
+         O2xw==
+X-Gm-Message-State: AOAM5318EX/oxFnbV+JZMeaw5k62+ybqgzTjNrsFlXToGu+tg4iKD2gM
+        acjne07tsk/0dlZVujIFTNBdNxRR5fC2yw==
+X-Google-Smtp-Source: ABdhPJy/SPLxboZEOboeecHx7QJmOx9MPRY7Y2Mc4rraWHknoawIb2y19wvi4nnJXhjGwkEeOBLxQA==
+X-Received: by 2002:aa7:de82:: with SMTP id j2mr22683170edv.3.1600166338376;
+        Tue, 15 Sep 2020 03:38:58 -0700 (PDT)
+Received: from localhost.localdomain ([85.153.229.188])
+        by smtp.gmail.com with ESMTPSA id q26sm9886066ejr.97.2020.09.15.03.38.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 03:37:11 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 10:37:10 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nudasnev@microsoft.com>,
-        Lillian Grassin-Drake <ligrassi@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH RFC v1 08/18] x86/hyperv: handling hypercall page setup
- for root
-Message-ID: <20200915103710.cqmdvzh5lys4wsqo@liuwe-devbox-debian-v2>
-References: <20200914112802.80611-1-wei.liu@kernel.org>
- <20200914112802.80611-9-wei.liu@kernel.org>
- <87v9gfjpoi.fsf@vitty.brq.redhat.com>
+        Tue, 15 Sep 2020 03:38:57 -0700 (PDT)
+From:   Necip Fazil Yildiran <fazilyildiran@gmail.com>
+To:     mturquette@baylibre.com
+Cc:     maxime@cerno.tech, sboyd@kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paul@pgazz.com, jeho@cs.utexas.edu,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Subject: [PATCH] clk: bcm: fix kconfig dependency warning for CLK_BCM2711_DVP
+Date:   Tue, 15 Sep 2020 13:37:50 +0300
+Message-Id: <20200915103749.38126-1-fazilyildiran@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9gfjpoi.fsf@vitty.brq.redhat.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:32:29PM +0200, Vitaly Kuznetsov wrote:
-> Wei Liu <wei.liu@kernel.org> writes:
-> 
-> > When Linux is running as the root partition, the hypercall page will
-> > have already been setup by Hyper-V. Copy the content over to the
-> > allocated page.
-> 
-> And we can't setup a new hypercall page by writing something different
-> to HV_X64_MSR_HYPERCALL, right?
-> 
+When CLK_BCM2711_DVP is enabled and RESET_CONTROLLER is disabled, it
+results in the following Kbuild warning:
 
-My understanding is that we can't, but Sunil can maybe correct me.
+WARNING: unmet direct dependencies detected for RESET_SIMPLE
+  Depends on [n]: RESET_CONTROLLER [=n]
+  Selected by [y]:
+  - CLK_BCM2711_DVP [=y] && (ARCH_BCM2835 [=n] || COMPILE_TEST [=y]) && COMMON_CLK [=y]
 
-> >
-> > The suspend, resume and cleanup paths remain untouched because they are
-> > not supported in this setup yet.
-> >
-> > Signed-off-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Signed-off-by: Nuno Das Neves <nudasnev@microsoft.com>
-> > Co-Developed-by: Lillian Grassin-Drake <ligrassi@microsoft.com>
-> > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Co-Developed-by: Nuno Das Neves <nudasnev@microsoft.com>
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> >  arch/x86/hyperv/hv_init.c | 26 ++++++++++++++++++++++++--
-> >  1 file changed, 24 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> > index 0eec1ed32023..26233aebc86c 100644
-> > --- a/arch/x86/hyperv/hv_init.c
-> > +++ b/arch/x86/hyperv/hv_init.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/cpuhotplug.h>
-> >  #include <linux/syscore_ops.h>
-> >  #include <clocksource/hyperv_timer.h>
-> > +#include <linux/highmem.h>
-> >  
-> >  /* Is Linux running as the root partition? */
-> >  bool hv_root_partition;
-> > @@ -448,8 +449,29 @@ void __init hyperv_init(void)
-> >  
-> >  	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> >  	hypercall_msr.enable = 1;
-> > -	hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
-> > -	wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> > +
-> > +	if (hv_root_partition) {
-> > +		struct page *pg;
-> > +		void *src, *dst;
-> > +
-> > +		/*
-> > +		 * Order is important here. We must enable the hypercall page
-> > +		 * so it is populated with code, then copy the code to an
-> > +		 * executable page.
-> > +		 */
-> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> > +
-> > +		pg = vmalloc_to_page(hv_hypercall_pg);
-> > +		dst = kmap(pg);
-> > +		src = memremap(hypercall_msr.guest_physical_address << PAGE_SHIFT, PAGE_SIZE,
-> > +				MEMREMAP_WB);
-> 
-> memremap() can fail...
+The reason is that CLK_BCM2711_DVP selects RESET_SIMPLE without depending
+on or selecting RESET_CONTROLLER while RESET_SIMPLE is subordinate to
+RESET_CONTROLLER.
 
-And we don't care here, if it fails, we would rather it panic or oops.
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
 
-I was relying on the fact that copying from / to a NULL pointer will
-cause the kernel to crash. But of course it wouldn't hurt to explicitly
-panic here.
+Fixes: 1bc95972715a ("clk: bcm: Add BCM2711 DVP driver")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+---
+ drivers/clk/bcm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> > +		memcpy(dst, src, PAGE_SIZE);
-> > +		memunmap(src);
-> > +		kunmap(pg);
-> > +	} else {
-> > +		hypercall_msr.guest_physical_address = vmalloc_to_pfn(hv_hypercall_pg);
-> > +		wrmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
-> > +	}
-> 
-> Why can't we do wrmsrl() for both cases here?
-> 
+diff --git a/drivers/clk/bcm/Kconfig b/drivers/clk/bcm/Kconfig
+index 784f12c72365..ec738f74a026 100644
+--- a/drivers/clk/bcm/Kconfig
++++ b/drivers/clk/bcm/Kconfig
+@@ -5,6 +5,7 @@ config CLK_BCM2711_DVP
+ 	depends on ARCH_BCM2835 ||COMPILE_TEST
+ 	depends on COMMON_CLK
+ 	default ARCH_BCM2835
++	select RESET_CONTROLLER
+ 	select RESET_SIMPLE
+ 	help
+ 	  Enable common clock framework support for the Broadcom BCM2711
+-- 
+2.25.1
 
-Because the hypercall page has already been set up when Linux is the
-root.
-
-I could've tried writing to the MSR again, but because the behaviour
-here is not documented and subject to change so I didn't bother trying.
-
-Wei.
-
-> >  
-> >  	/*
-> >  	 * Ignore any errors in setting up stimer clockevents
-> 
-> -- 
-> Vitaly
-> 
