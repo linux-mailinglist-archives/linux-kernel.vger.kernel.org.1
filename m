@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D012A26B413
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E2B26B403
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgIOXQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:16:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48014 "EHLO mail.kernel.org"
+        id S1727362AbgIOXOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727226AbgIOOj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:39:28 -0400
+        id S1727267AbgIOOkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:40:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C8352247F;
-        Tue, 15 Sep 2020 14:29:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 424F22224F;
+        Tue, 15 Sep 2020 14:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600180148;
-        bh=3tVEL9LVItzvKwZldSDlQxl6dlxncELWiN11WrGvPpM=;
+        s=default; t=1600179428;
+        bh=mw/vX+faStu9IryxYt3RVKN2OL0/03dNc1jU51kLGdc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nPRmkghBKbH9Wgl4ZdoA3mgh90125zGYD4FcvvhPH1uJOdQ3liRxV68BmVs5gY8WZ
-         rCtkOn1CO+Z/4cAC0TuC4nkT2mnn7c1YUgEKJaYAlrMSW+f7l8gXCN1R2jKp2D5ydS
-         PkcbHeamqQ7wauI1iUctt/CeLMxGuE75E2VTQ7OM=
+        b=hivEswWw8XFs0DRMTGvmqVcICmGKAL6N2/AZuGJdlDWitfNGhN6ayIbM2mgUzQiMl
+         GFiw3+KX0PZEWAqqibpLY79ykZzHn0lGC+J5M1HviLCU9opv4940OrU5aRIFwXuYQb
+         ASlilJBBHEs0t7QBt3g0B6bRue+O4w54n9KNaSPU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.8 128/177] btrfs: free data reloc tree on failed mount
-Date:   Tue, 15 Sep 2020 16:13:19 +0200
-Message-Id: <20200915140659.783409162@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 55/78] btrfs: require only sector size alignment for parent eb bytenr
+Date:   Tue, 15 Sep 2020 16:13:20 +0200
+Message-Id: <20200915140636.327869429@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200915140653.610388773@linuxfoundation.org>
-References: <20200915140653.610388773@linuxfoundation.org>
+In-Reply-To: <20200915140633.552502750@linuxfoundation.org>
+References: <20200915140633.552502750@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +43,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 9e3aa8054453d23d9f477f0cdae70a6a1ea6ec8a upstream.
+commit ea57788eb76dc81f6003245427356a1dcd0ac524 upstream.
 
-While testing a weird problem with -o degraded, I noticed I was getting
-leaked root errors
+[BUG]
+A completely sane converted fs will cause kernel warning at balance
+time:
 
-  BTRFS warning (device loop0): writable mount is not allowed due to too many missing devices
-  BTRFS error (device loop0): open_ctree failed
-  BTRFS error (device loop0): leaked root -9-0 refcount 1
+  [ 1557.188633] BTRFS info (device sda7): relocating block group 8162107392 flags data
+  [ 1563.358078] BTRFS info (device sda7): found 11722 extents
+  [ 1563.358277] BTRFS info (device sda7): leaf 7989321728 gen 95 total ptrs 213 free space 3458 owner 2
+  [ 1563.358280] 	item 0 key (7984947200 169 0) itemoff 16250 itemsize 33
+  [ 1563.358281] 		extent refs 1 gen 90 flags 2
+  [ 1563.358282] 		ref#0: tree block backref root 4
+  [ 1563.358285] 	item 1 key (7985602560 169 0) itemoff 16217 itemsize 33
+  [ 1563.358286] 		extent refs 1 gen 93 flags 258
+  [ 1563.358287] 		ref#0: shared block backref parent 7985602560
+  [ 1563.358288] 			(parent 7985602560 is NOT ALIGNED to nodesize 16384)
+  [ 1563.358290] 	item 2 key (7985635328 169 0) itemoff 16184 itemsize 33
+  ...
+  [ 1563.358995] BTRFS error (device sda7): eb 7989321728 invalid extent inline ref type 182
+  [ 1563.358996] ------------[ cut here ]------------
+  [ 1563.359005] WARNING: CPU: 14 PID: 2930 at 0xffffffff9f231766
 
-This is the DATA_RELOC root, which gets read before the other fs roots,
-but is included in the fs roots radix tree.  Handle this by adding a
-btrfs_drop_and_free_fs_root() on the data reloc root if it exists.  This
-is ok to do here if we fail further up because we will only drop the ref
-if we delete the root from the radix tree, and all other cleanup won't
-be duplicated.
+Then with transaction abort, and obviously failed to balance the fs.
 
-CC: stable@vger.kernel.org # 5.8+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+[CAUSE]
+That mentioned inline ref type 182 is completely sane, it's
+BTRFS_SHARED_BLOCK_REF_KEY, it's some extra check making kernel to
+believe it's invalid.
+
+Commit 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref
+type") introduced extra checks for backref type.
+
+One of the requirement is, parent bytenr must be aligned to node size,
+which is not correct.
+
+One example is like this:
+
+0	1G  1G+4K		2G 2G+4K
+	|   |///////////////////|//|  <- A chunk starts at 1G+4K
+            |   |	<- A tree block get reserved at bytenr 1G+4K
+
+Then we have a valid tree block at bytenr 1G+4K, but not aligned to
+nodesize (16K).
+
+Such chunk is not ideal, but current kernel can handle it pretty well.
+We may warn about such tree block in the future, but should not reject
+them.
+
+[FIX]
+Change the alignment requirement from node size alignment to sector size
+alignment.
+
+Also, to make our lives a little easier, also output @iref when
+btrfs_get_extent_inline_ref_type() failed, so we can locate the item
+easier.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205475
+Fixes: 64ecdb647ddb ("Btrfs: add one more sanity check for shared ref type")
+CC: stable@vger.kernel.org # 4.14+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+[ update comments and messages ]
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/disk-io.c |    2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/extent-tree.c |   19 +++++++++----------
+ fs/btrfs/print-tree.c  |   12 +++++++-----
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3446,6 +3446,8 @@ fail_block_groups:
- 	btrfs_put_block_group_cache(fs_info);
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1057,12 +1057,11 @@ int btrfs_get_extent_inline_ref_type(con
+ 			if (type == BTRFS_SHARED_BLOCK_REF_KEY) {
+ 				ASSERT(eb->fs_info);
+ 				/*
+-				 * Every shared one has parent tree
+-				 * block, which must be aligned to
+-				 * nodesize.
++				 * Every shared one has parent tree block,
++				 * which must be aligned to sector size.
+ 				 */
+ 				if (offset &&
+-				    IS_ALIGNED(offset, eb->fs_info->nodesize))
++				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+ 					return type;
+ 			}
+ 		} else if (is_data == BTRFS_REF_TYPE_DATA) {
+@@ -1071,12 +1070,11 @@ int btrfs_get_extent_inline_ref_type(con
+ 			if (type == BTRFS_SHARED_DATA_REF_KEY) {
+ 				ASSERT(eb->fs_info);
+ 				/*
+-				 * Every shared one has parent tree
+-				 * block, which must be aligned to
+-				 * nodesize.
++				 * Every shared one has parent tree block,
++				 * which must be aligned to sector size.
+ 				 */
+ 				if (offset &&
+-				    IS_ALIGNED(offset, eb->fs_info->nodesize))
++				    IS_ALIGNED(offset, eb->fs_info->sectorsize))
+ 					return type;
+ 			}
+ 		} else {
+@@ -1086,8 +1084,9 @@ int btrfs_get_extent_inline_ref_type(con
+ 	}
  
- fail_tree_roots:
-+	if (fs_info->data_reloc_root)
-+		btrfs_drop_and_free_fs_root(fs_info, fs_info->data_reloc_root);
- 	free_root_pointers(fs_info, true);
- 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+ 	btrfs_print_leaf((struct extent_buffer *)eb);
+-	btrfs_err(eb->fs_info, "eb %llu invalid extent inline ref type %d",
+-		  eb->start, type);
++	btrfs_err(eb->fs_info,
++		  "eb %llu iref 0x%lx invalid extent inline ref type %d",
++		  eb->start, (unsigned long)iref, type);
+ 	WARN_ON(1);
  
+ 	return BTRFS_REF_TYPE_INVALID;
+--- a/fs/btrfs/print-tree.c
++++ b/fs/btrfs/print-tree.c
+@@ -95,9 +95,10 @@ static void print_extent_item(struct ext
+ 			 * offset is supposed to be a tree block which
+ 			 * must be aligned to nodesize.
+ 			 */
+-			if (!IS_ALIGNED(offset, eb->fs_info->nodesize))
+-				pr_info("\t\t\t(parent %llu is NOT ALIGNED to nodesize %llu)\n",
+-					offset, (unsigned long long)eb->fs_info->nodesize);
++			if (!IS_ALIGNED(offset, eb->fs_info->sectorsize))
++				pr_info(
++			"\t\t\t(parent %llu not aligned to sectorsize %u)\n",
++					offset, eb->fs_info->sectorsize);
+ 			break;
+ 		case BTRFS_EXTENT_DATA_REF_KEY:
+ 			dref = (struct btrfs_extent_data_ref *)(&iref->offset);
+@@ -112,8 +113,9 @@ static void print_extent_item(struct ext
+ 			 * must be aligned to nodesize.
+ 			 */
+ 			if (!IS_ALIGNED(offset, eb->fs_info->nodesize))
+-				pr_info("\t\t\t(parent %llu is NOT ALIGNED to nodesize %llu)\n",
+-				     offset, (unsigned long long)eb->fs_info->nodesize);
++				pr_info(
++			"\t\t\t(parent %llu not aligned to sectorsize %u)\n",
++				     offset, eb->fs_info->sectorsize);
+ 			break;
+ 		default:
+ 			pr_cont("(extent %llu has INVALID ref type %d)\n",
 
 
