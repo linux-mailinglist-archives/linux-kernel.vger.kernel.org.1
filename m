@@ -2,165 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A01269DC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD80F269DC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgIOFYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:24:02 -0400
-Received: from mga05.intel.com ([192.55.52.43]:9052 "EHLO mga05.intel.com"
+        id S1726114AbgIOFWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:22:51 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58502 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726073AbgIOFYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:24:01 -0400
-IronPort-SDR: 5fDPHJgc6/nEFfTmuzOIW4xt2JhKPlkOZ5y9DBDDe3uXpb/HIrMtVOEh43V0pPgJES4eve9zKu
- JZ/75CBj69pA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="244034476"
-X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
-   d="scan'208";a="244034476"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 22:23:58 -0700
-IronPort-SDR: u6gi3wPJ1Gc8j2ISZDQLErhIL1K48EjVlDFiwVY+ViO+p3ZUpHkMc7ZRhG4PTLAAGJyknB+da+
- BrxWUxWS/7PQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
-   d="scan'208";a="482621835"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga005.jf.intel.com with ESMTP; 14 Sep 2020 22:23:55 -0700
-Date:   Tue, 15 Sep 2020 13:19:33 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: Re: [PATCH v2 2/4] dfl: add dfl bus support to MODULE_DEVICE_TABLE()
-Message-ID: <20200915051933.GA13516@yilunxu-OptiPlex-7050>
-References: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
- <1600140473-12351-3-git-send-email-yilun.xu@intel.com>
- <20200915035927.GB2217@epycbox.lan>
- <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S1726057AbgIOFWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:22:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600147367; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=+DxdXglsCm9GNu2FhjIm9kRGho72XduQ5AptOxX+trE=;
+ b=SRD44rkMj4sIIOLHReKcG/osrNr7oC8tZ92aWS2mVgJTpcj/okRjGYEMaqztiB+mk/DHDWxg
+ eyTdnLGFRcrgYUo+MO65YCY9jPqae8oaxBfMOK9C+HpW2cc0LuvZvoT5vaVi3+ZibgAw1VeI
+ +DsTlnXnEIXctBRnN/Tr83wUkyc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f604fa74f13e63f0462764d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 15 Sep 2020 05:22:47
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 792F5C433F1; Tue, 15 Sep 2020 05:22:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 60003C433CA;
+        Tue, 15 Sep 2020 05:22:45 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 15 Sep 2020 10:52:45 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>
+Subject: Re: [PATCHv4 2/2] soc: qcom: llcc: Support chipsets that can write to
+ llcc regs
+In-Reply-To: <160010921920.4188128.15524650302574745988@swboyd.mtv.corp.google.com>
+References: <cover.1599974998.git.saiprakash.ranjan@codeaurora.org>
+ <84742b96802d94da00006be8d51cadce4ae04f9f.1599974998.git.saiprakash.ranjan@codeaurora.org>
+ <160010921920.4188128.15524650302574745988@swboyd.mtv.corp.google.com>
+Message-ID: <590f9bacf06d735a7961ddb8234299ca@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:08:38PM +0800, Wu, Hao wrote:
-> > On Tue, Sep 15, 2020 at 11:27:51AM +0800, Xu Yilun wrote:
-> > > Device Feature List (DFL) is a linked list of feature headers within the
-> > > device MMIO space. It is used by FPGA to enumerate multiple sub features
-> > > within it. Each feature can be uniquely identified by DFL type and
-> > > feature id, which can be read out from feature headers.
-> > >
-> > > A dfl bus helps DFL framework modularize DFL device drivers for different
-> > > sub features. The dfl bus matches its devices and drivers by DFL type and
-> > > feature id.
-> > >
-> > > This patch add dfl bus support to MODULE_DEVICE_TABLE() by adding info
-> > > about struct dfl_device_id in devicetable-offsets.c and add a dfl entry
-> > > point in file2alias.c.
-> > >
-> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > Acked-by: Wu Hao <hao.wu@intel.com>
+On 2020-09-15 00:16, Stephen Boyd wrote:
+> Quoting Sai Prakash Ranjan (2020-09-14 04:13:00)
+>> From: "Isaac J. Manjarres" <isaacm@codeaurora.org>
+>> 
+>> Older chipsets may not be allowed to configure certain LLCC registers
+>> as that is handled by the secure side software. However, this is not
+>> the case for newer chipsets and they must configure these registers
+>> according to the contents of the SCT table, while keeping in mind that
+>> older targets may not have these capabilities. So add support to allow
+>> such configuration of registers to enable capacity based allocation
+>> and power collapse retention for capable chipsets.
+>> 
+>> Reason for choosing capacity based allocation rather than the default
+>> way based allocation is because capacity based allocation allows more
+>> finer grain partition and provides more flexibility in configuration.
+>> As for the retention through power collapse, it has an advantage where
+>> the cache hits are more when we wake up from power collapse although
+>> it does burn more power but the exact power numbers are not known at
+>> the moment.
+>> 
+>> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>> (saiprakash.ranjan@codeaurora.org: use existing config and reword 
+>> commit msg)
 > 
-> Yilun,
+> Should be [ not (
 > 
-> I haven't acked-by this patch as it doesn't modify any dfl files, ideally you
 
-Sorry, I misunderstood your comments "Acked-by: xxx for DFL related changes after
-this fix".
+Ok
 
-> need acked-by from real maintainer of scripts/mod code, right?
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>  drivers/soc/qcom/llcc-qcom.c | 27 +++++++++++++++++++++++++--
+>>  1 file changed, 25 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/soc/qcom/llcc-qcom.c 
+>> b/drivers/soc/qcom/llcc-qcom.c
+>> index 60ee31842dea..6aedccff49bb 100644
+>> --- a/drivers/soc/qcom/llcc-qcom.c
+>> +++ b/drivers/soc/qcom/llcc-qcom.c
+>> @@ -375,6 +382,22 @@ static int qcom_llcc_cfg_program(struct 
+>> platform_device *pdev)
+>>                 if (ret)
+>>                         return ret;
+>> 
+>> +               if (cfg->need_llcc_cfg) {
+>> +                       u32 disable_cap_alloc, retain_pc;
+>> +
+>> +                       disable_cap_alloc = 
+>> llcc_table[i].dis_cap_alloc << llcc_table[i].slice_id;
+>> +                       ret = regmap_write(drv_data->bcast_regmap,
+>> +                                       LLCC_TRP_SCID_DIS_CAP_ALLOC, 
+>> disable_cap_alloc);
+>> +                       if (ret)
+>> +                               return ret;
+>> +
+>> +                       retain_pc = llcc_table[i].retain_on_pc << 
+>> llcc_table[i].slice_id;
+>> +                       ret = regmap_write(drv_data->bcast_regmap,
+>> +                                       LLCC_TRP_PCB_ACT, retain_pc);
+>> +                       if (ret)
+>> +                               return ret;
+>> +               }
+>> +
+>>                 if (llcc_table[i].activate_on_init) {
+>>                         desc.slice_id = llcc_table[i].slice_id;
+>>                         ret = llcc_slice_activate(&desc);
+> 
+> I thought all of this stuff would move into the config function. So the
+> for loop is simplified to a function call and return if failure.
 
-Ideally yes. From the MAINTAINERS it is Masahiro Yamada, I added him on the "to"
-list. But I see some other patches (also for devtable entries) in kernel
-don't have his acked-by.
+The config function was specifically for attribute config
+not for other llcc configs like these, so I will rename
+qcom_llcc_attr_cfg() to _qcom_llcc_cfg_program() and move
+everything there.
 
-Hi Moritz:
+As a side note, I have your mails in my inbox but these
+messages are not appearing in the list [1]. For Patch 2,
+its on the list [2]. I have noticed same thing on your
+messages for previous patches, where your reply for one
+patch was on the list but the other one was missing, you
+might have to check that.
 
-Do you have any ideas on that?
+[1] https://lore.kernel.org/patchwork/patch/1305132/
+[2] https://lore.kernel.org/patchwork/patch/1305133/
+
+Same with lore.kernel.org/lkml/ links but since url was big, I gave the
+above patchwork links.
 
 Thanks,
-Yilun.
+Sai
 
-> 
-> Thanks
-> Hao
-> 
-> > > ---
-> > > v2: add comments for the format of modalias
-> > > ---
-> > >  scripts/mod/devicetable-offsets.c |  4 ++++
-> > >  scripts/mod/file2alias.c          | 17 +++++++++++++++++
-> > >  2 files changed, 21 insertions(+)
-> > >
-> > > diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-
-> > offsets.c
-> > > index 27007c1..d8350ee 100644
-> > > --- a/scripts/mod/devicetable-offsets.c
-> > > +++ b/scripts/mod/devicetable-offsets.c
-> > > @@ -243,5 +243,9 @@ int main(void)
-> > >  DEVID(mhi_device_id);
-> > >  DEVID_FIELD(mhi_device_id, chan);
-> > >
-> > > +DEVID(dfl_device_id);
-> > > +DEVID_FIELD(dfl_device_id, type);
-> > > +DEVID_FIELD(dfl_device_id, feature_id);
-> > > +
-> > >  return 0;
-> > >  }
-> > > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
-> > > index 2417dd1..9fd2e60 100644
-> > > --- a/scripts/mod/file2alias.c
-> > > +++ b/scripts/mod/file2alias.c
-> > > @@ -1368,6 +1368,22 @@ static int do_mhi_entry(const char *filename,
-> > void *symval, char *alias)
-> > >  return 1;
-> > >  }
-> > >
-> > > +/* Looks like: dfl:tNfN */
-> > > +static int do_dfl_entry(const char *filename, void *symval, char *alias)
-> > > +{
-> > > +DEF_FIELD(symval, dfl_device_id, type);
-> > > +DEF_FIELD(symval, dfl_device_id, feature_id);
-> > > +
-> > > +/*
-> > > + * type contains 4 valid bits and feature_id contains 12 valid bits
-> > > + * according to DFL specification.
-> > > + */
-> > > +sprintf(alias, "dfl:t%01Xf%03X", type, feature_id);
-> > > +
-> > > +add_wildcard(alias);
-> > > +return 1;
-> > > +}
-> > > +
-> > >  /* Does namelen bytes of name exactly match the symbol? */
-> > >  static bool sym_is(const char *name, unsigned namelen, const char
-> > *symbol)
-> > >  {
-> > > @@ -1442,6 +1458,7 @@ static const struct devtable devtable[] = {
-> > >  {"tee", SIZE_tee_client_device_id, do_tee_entry},
-> > >  {"wmi", SIZE_wmi_device_id, do_wmi_entry},
-> > >  {"mhi", SIZE_mhi_device_id, do_mhi_entry},
-> > > +{"dfl", SIZE_dfl_device_id, do_dfl_entry},
-> > >  };
-> > >
-> > >  /* Create MODULE_ALIAS() statements.
-> > > --
-> > > 2.7.4
-> > >
-> > Applied to for-next,
-> >
-> > Thanks
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
