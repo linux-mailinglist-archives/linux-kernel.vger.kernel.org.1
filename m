@@ -2,150 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AC526A2A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925A326A2A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 12:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgIOKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 06:02:58 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:29987 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgIOKCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 06:02:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1600164172; x=1631700172;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VDuFAZKE9N46+36zzKBBpzaXvyDd1MrM8aOiIAUSOH8=;
-  b=cKICjDU+JzmnWaU1KH4rD34ssV7LdGpRZ63hyZy6w9R6hCt9bEoOYTeT
-   ppfBDImDvRSWVSvjK5VlqZAUZXjYvqLbM0ywoRqpAFpbZ/RkGPjDqJcQx
-   BBk+8em8gnSTWUQcV/mnFSwgMJQq1p+92Fl4W0xob71OhfDx1YcXeLNOS
-   u7wDm84lO4u5955EK7RlOsQc1ohwq2WP5/8meLCPQQUVucvecIDrWhyfI
-   8FwYPiiPcRNxRCwiczVbKDt930X3JBZXxyCiZaYa79VQln8TTRBWzxMXP
-   /5XvHWFMNcDkuV8jg/8WneH3rxjqnFbVBn+FyQ6L4oW1j6IdPr1sKR9sN
-   A==;
-IronPort-SDR: 60d1DH5BYDUTQVvtML3UYotGwxATmlj7AZjfXzE7e5K7TW52BW/opeeRGeurkNBpxQeI/4ZD+g
- Yh+orLXzKlUPHPb2d+sS4+6UBCEPwh8Cj5TovDlgBfVQ0lqfXrnm6u4BFEGpXWkERvuVQIt9/k
- fHeTH6mJ0IF7N1alc8H+aGbXpXNupPsEqZEi1MZIOfnxzwFuIWXVl+9+HaqEX/+LmKT53z0mJ4
- MZ2rZtYU7GTAxLtLp3rWe6oeqGW+wXwDCKxknrpK851s7qWk4aIttXeNiExXzKpc9kUEqw5XFu
- QkM=
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="91846117"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Sep 2020 03:02:52 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Sep 2020 03:02:42 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 15 Sep 2020 03:02:50 -0700
-Date:   Tue, 15 Sep 2020 10:00:16 +0000
-From:   "henrik.bjoernlund@microchip.com" <henrik.bjoernlund@microchip.com>
-To:     Nikolay Aleksandrov <nikolay@nvidia.com>
-CC:     "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jiri@mellanox.com" <jiri@mellanox.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "horatiu.vultur@microchip.com" <horatiu.vultur@microchip.com>
-Subject: Re: [PATCH RFC 7/7] bridge: cfm: Bridge port remove.
-Message-ID: <20200915100016.tqxsgef6dts2rbno@soft-test08>
-References: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
- <20200904091527.669109-8-henrik.bjoernlund@microchip.com>
- <d84df90ff3fd079ba0fec33f865ce4a257ab23d8.camel@nvidia.com>
+        id S1726219AbgIOKCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 06:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726095AbgIOKCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 06:02:23 -0400
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D84B7208E4;
+        Tue, 15 Sep 2020 10:02:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600164143;
+        bh=bloC0DiaT8sXmuZq81VgrUSwH6mwHCWsuQgPOyMjmhY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xmUbdUU/grhTqFr5DfQGzVSi/0/k/fNv8C5DHPeI3y3LX0bLTWWwOW3WMYFDif652
+         cgynsQ1tLIaJjFqfWwkvJLfUQuIK/0Ah1bw6pTW/S/ACqpU53a72Vzv1WHPgIPH6J2
+         EVs9QR48cbqno0F2EfMKGN9wo9S1NYSo+lCBeWqk=
+Received: by mail-ot1-f52.google.com with SMTP id m12so2703944otr.0;
+        Tue, 15 Sep 2020 03:02:22 -0700 (PDT)
+X-Gm-Message-State: AOAM5308Ebya9d/ENzngAy07R6/W3Xf8NqR3ZMXFZDBdHNpifm67anqq
+        smezAhHfe+jacGrxBnRPd+CrCSq9SyAajV4SUlE=
+X-Google-Smtp-Source: ABdhPJyCLfuAZfgvdjiB3bwribA2IhelGEBildE1rSVUXwByVqbt5phlD5yN7BGpgfsIJMRUyR8612vf3ZLdujnXFAQ=
+X-Received: by 2002:a9d:6250:: with SMTP id i16mr13050883otk.77.1600164142207;
+ Tue, 15 Sep 2020 03:02:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <d84df90ff3fd079ba0fec33f865ce4a257ab23d8.camel@nvidia.com>
+References: <20200914204209.256266093@linutronix.de> <CAHk-=win80rdof8Pb=5k6gT9j_v+hz-TQzKPVastZDvBe9RimQ@mail.gmail.com>
+ <871rj4owfn.fsf@nanos.tec.linutronix.de> <CAHk-=wj0eUuVQ=hRFZv_nY7g5ZLt7Fy3K7SMJL0ZCzniPtsbbg@mail.gmail.com>
+ <CAHk-=wjOV6f_ddg+QVCF6RUe+pXPhSR2WevnNyOs9oT+q2ihEA@mail.gmail.com>
+ <20200915033024.GB25789@gondor.apana.org.au> <CAHk-=wgX=ynJAXYYOAM7J8Tee8acERrGOopNu6ZcLN=SEXdGKA@mail.gmail.com>
+ <CAHk-=wie0Kb-+XOZNasoay7AKCaQ8Ew8=LyvWTBeiPXC3v2GSA@mail.gmail.com>
+ <20200915070523.GA26629@gondor.apana.org.au> <878sdb5qp5.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <878sdb5qp5.fsf@nanos.tec.linutronix.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 13:02:10 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com>
+Message-ID: <CAMj1kXHsqZzfJ2qmsrUWEU_XWxmR1PhY3zo-yz9Vau90-WphXg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: lib/chacha20poly1305 - Set SG_MITER_ATOMIC unconditionally
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the review. I will update the next version as suggested.
+On Tue, 15 Sep 2020 at 12:34, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Tue, Sep 15 2020 at 17:05, Herbert Xu wrote:
+> > On Mon, Sep 14, 2020 at 11:55:53PM -0700, Linus Torvalds wrote:
+> >>
+> >> Maybe we could hide it behind a debug option, at least.
+> >>
+> >> Or, alterantively, introduce a new "debug_preempt_count" that doesn't
+> >> actually disable preemption, but warns about actual sleeping
+> >> operations..
+> >
+> > I'm more worried about existing users of kmap_atomic relying on
+> > the preemption disabling semantics.  Short of someone checking
+> > on every single instance (and that would include derived cases
+> > such as all users of sg miter), I think the safer option is to
+> > create something brand new and then migrate the existing users
+> > to it.  Something like
+> >
+> > static inline void *kmap_atomic_ifhigh(struct page *page)
+> > {
+> >       if (PageHighMem(page))
+> >               return kmap_atomic(page);
+> >       return page_address(page);
+> > }
+> >
+> > static inline void kunmap_atomic_ifhigh(struct page *page, void *addr)
+> > {
+> >       if (PageHighMem(page))
+> >               kunmap_atomic(addr);
+> > }
+>
+> Hmm, that still has the issue that the code between map and unmap must
+> not sleep and the conversion must carefully check whether anything in
+> this region relies on preemption being disabled by kmap_atomic()
+> regardless of highmem or not.
+>
+> kmap_atomic() is at least consistent vs. preemption, the above not so
+> much.
+>
 
-The 09/08/2020 13:58, Nikolay Aleksandrov wrote:
-> 
-> On Fri, 2020-09-04 at 09:15 +0000, Henrik Bjoernlund wrote:
-> > This is addition of CFM functionality to delete MEP instances
-> > on a port that is removed from the bridge.
-> > A MEP can only exist on a port that is related to a bridge.
-> >
-> > Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
-> > ---
-> >  net/bridge/br_cfm.c     | 13 +++++++++++++
-> >  net/bridge/br_if.c      |  1 +
-> >  net/bridge/br_private.h |  6 ++++++
-> >  3 files changed, 20 insertions(+)
-> >
-> > diff --git a/net/bridge/br_cfm.c b/net/bridge/br_cfm.c
-> > index b7fed2c1d8ec..c724ce020ce3 100644
-> > --- a/net/bridge/br_cfm.c
-> > +++ b/net/bridge/br_cfm.c
-> > @@ -921,3 +921,16 @@ bool br_cfm_created(struct net_bridge *br)
-> >  {
-> >       return !list_empty(&br->mep_list);
-> >  }
-> > +
-> > +/* Deletes the CFM instances on a specific bridge port
-> > + * note: called under rtnl_lock
-> > + */
-> > +void br_cfm_port_del(struct net_bridge *br, struct net_bridge_port *port)
-> > +{
-> > +     struct br_cfm_mep *mep;
-> > +
-> > +     list_for_each_entry_rcu(mep, &br->mep_list, head,
-> > +                             lockdep_rtnl_is_held())
-> 
-> Use standard/non-rcu list traversing, rtnl is already held.
-> 
-> > +             if (mep->create.ifindex == port->dev->ifindex)
-> > +                     mep_delete_implementation(br, mep);
-> > +}
-> > diff --git a/net/bridge/br_if.c b/net/bridge/br_if.c
-> > index a0e9a7937412..f7d2f472ae24 100644
-> > --- a/net/bridge/br_if.c
-> > +++ b/net/bridge/br_if.c
-> > @@ -334,6 +334,7 @@ static void del_nbp(struct net_bridge_port *p)
-> >       spin_unlock_bh(&br->lock);
-> >
-> >       br_mrp_port_del(br, p);
-> > +     br_cfm_port_del(br, p);
-> >
-> >       br_ifinfo_notify(RTM_DELLINK, NULL, p);
-> >
-> > diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-> > index 53bcbdd21f34..5617255f0c0c 100644
-> > --- a/net/bridge/br_private.h
-> > +++ b/net/bridge/br_private.h
-> > @@ -1369,6 +1369,7 @@ int br_cfm_parse(struct net_bridge *br, struct net_bridge_port *p,
-> >                struct nlattr *attr, int cmd, struct netlink_ext_ack *extack);
-> >  int br_cfm_rx_frame_process(struct net_bridge_port *p, struct sk_buff *skb);
-> >  bool br_cfm_created(struct net_bridge *br);
-> > +void br_cfm_port_del(struct net_bridge *br, struct net_bridge_port *p);
-> >  int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br);
-> >  int br_cfm_status_fill_info(struct sk_buff *skb,
-> >                           struct net_bridge *br,
-> > @@ -1393,6 +1394,11 @@ static inline bool br_cfm_created(struct net_bridge *br)
-> >       return false;
-> >  }
-> >
-> > +static inline void br_cfm_port_del(struct net_bridge *br,
-> > +                                struct net_bridge_port *p)
-> > +{
-> > +}
-> > +
-> >  static inline int br_cfm_config_fill_info(struct sk_buff *skb, struct net_bridge *br)
-> >  {
-> >       return -EOPNOTSUPP;
-> 
+But that is really the point. I don't *want* to be forced to disable
+preemption in brand new code simply because some legacy highmem API
+conflates being callable from atomic context with instantiating an
+atomic context by disabling preemption for no good reason. IIUC, in
+the past, you would really only call kmap_atomic() if you absolutely
+had to, and so you would never rely on the preemption disabling
+semantics accidentally. By making kmap_atomic() the preferred API even
+for calls from non-atomic contexts, this line has blurred and we no
+longer know why individual kmap_atomic() occurrences exist in the
+first place.
 
--- 
-/Henrik
+> I'd rather go for a preemptible/sleepable version of highmem mapping
+> which is in itself consistent for both highmen and not highmem.
+>
+
+I don't think we need to obsess about highmem, although we should
+obviously take care not to regress its performance unnecessarily. What
+I want to avoid is to burden a brand new subsystem with legacy highmem
+baggage simply because we could not agree on how to avoid that.
