@@ -2,62 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A3C269DC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A01269DC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbgIOFTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:19:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55570 "EHLO mail.kernel.org"
+        id S1726131AbgIOFYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:24:02 -0400
+Received: from mga05.intel.com ([192.55.52.43]:9052 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726046AbgIOFTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:19:10 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3364A20738;
-        Tue, 15 Sep 2020 05:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600147149;
-        bh=CA2Dl08uqAcZG/fMLIsvFYuOmef0QJmiUrJXYeTwhUk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yXWFXSMtcPe4ErpGURe67VoWhUlsUimOxobUBuu7Z6xoxbyZDtldCMP6DiIbybJuD
-         m1nyBb/ylXhd+dG77w2uZ6bBPBmKuVq7u4SSn3wFZykfb7WvT83jq+4WjUSXvF0dm8
-         StMNILKJH8BoUgt4KFuqCNtv5gf02SURLNjNdZ6E=
-Date:   Tue, 15 Sep 2020 07:19:07 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     b.zolnierkie@samsung.com, linux-fbdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, rdunlap@infradead.org, daniel@ffwll.ch,
-        yuanmingbuaa@gmail.com, w@1wt.eu, nopitydays@gmail.com,
-        zhangyunhai@nsfocus.com, luto@amacapital.net,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH] docs : fb : vesafb.rst : Removed scrollback related lines
-Message-ID: <20200915051907.GA12074@kroah.com>
-References: <20200915051219.19479-1-unixbhaskar@gmail.com>
+        id S1726073AbgIOFYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 01:24:01 -0400
+IronPort-SDR: 5fDPHJgc6/nEFfTmuzOIW4xt2JhKPlkOZ5y9DBDDe3uXpb/HIrMtVOEh43V0pPgJES4eve9zKu
+ JZ/75CBj69pA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="244034476"
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="244034476"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2020 22:23:58 -0700
+IronPort-SDR: u6gi3wPJ1Gc8j2ISZDQLErhIL1K48EjVlDFiwVY+ViO+p3ZUpHkMc7ZRhG4PTLAAGJyknB+da+
+ BrxWUxWS/7PQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,428,1592895600"; 
+   d="scan'208";a="482621835"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga005.jf.intel.com with ESMTP; 14 Sep 2020 22:23:55 -0700
+Date:   Tue, 15 Sep 2020 13:19:33 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     "Wu, Hao" <hao.wu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>
+Subject: Re: [PATCH v2 2/4] dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+Message-ID: <20200915051933.GA13516@yilunxu-OptiPlex-7050>
+References: <1600140473-12351-1-git-send-email-yilun.xu@intel.com>
+ <1600140473-12351-3-git-send-email-yilun.xu@intel.com>
+ <20200915035927.GB2217@epycbox.lan>
+ <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915051219.19479-1-unixbhaskar@gmail.com>
+In-Reply-To: <DM6PR11MB381970CD3C77534AA3E4C76385200@DM6PR11MB3819.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 10:42:19AM +0530, Bhaskar Chowdhury wrote:
-> This patch removed the scrollback related lines from this file : vesafb.rst
+On Tue, Sep 15, 2020 at 12:08:38PM +0800, Wu, Hao wrote:
+> > On Tue, Sep 15, 2020 at 11:27:51AM +0800, Xu Yilun wrote:
+> > > Device Feature List (DFL) is a linked list of feature headers within the
+> > > device MMIO space. It is used by FPGA to enumerate multiple sub features
+> > > within it. Each feature can be uniquely identified by DFL type and
+> > > feature id, which can be read out from feature headers.
+> > >
+> > > A dfl bus helps DFL framework modularize DFL device drivers for different
+> > > sub features. The dfl bus matches its devices and drivers by DFL type and
+> > > feature id.
+> > >
+> > > This patch add dfl bus support to MODULE_DEVICE_TABLE() by adding info
+> > > about struct dfl_device_id in devicetable-offsets.c and add a dfl entry
+> > > point in file2alias.c.
+> > >
+> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > Acked-by: Wu Hao <hao.wu@intel.com>
 > 
-> In the effect of this commit hashes : 50145474f6ef4a9c19205b173da6264a644c7489
-> and 973c096f6a85e5b5f2a295126ba6928d9a6afd45
+> Yilun,
+> 
+> I haven't acked-by this patch as it doesn't modify any dfl files, ideally you
 
-When referencing git commits, please follow the documented way of doing
-this:
-	50145474f6ef ("fbcon: remove soft scrollback code")
+Sorry, I misunderstood your comments "Acked-by: xxx for DFL related changes after
+this fix".
 
-Can you fix this up and resend?
+> need acked-by from real maintainer of scripts/mod code, right?
 
-And you have a few too many ' ' in your subject :)
+Ideally yes. From the MAINTAINERS it is Masahiro Yamada, I added him on the "to"
+list. But I see some other patches (also for devtable entries) in kernel
+don't have his acked-by.
 
-thanks,
+Hi Moritz:
 
-greg k-h
+Do you have any ideas on that?
+
+Thanks,
+Yilun.
+
+> 
+> Thanks
+> Hao
+> 
+> > > ---
+> > > v2: add comments for the format of modalias
+> > > ---
+> > >  scripts/mod/devicetable-offsets.c |  4 ++++
+> > >  scripts/mod/file2alias.c          | 17 +++++++++++++++++
+> > >  2 files changed, 21 insertions(+)
+> > >
+> > > diff --git a/scripts/mod/devicetable-offsets.c b/scripts/mod/devicetable-
+> > offsets.c
+> > > index 27007c1..d8350ee 100644
+> > > --- a/scripts/mod/devicetable-offsets.c
+> > > +++ b/scripts/mod/devicetable-offsets.c
+> > > @@ -243,5 +243,9 @@ int main(void)
+> > >  DEVID(mhi_device_id);
+> > >  DEVID_FIELD(mhi_device_id, chan);
+> > >
+> > > +DEVID(dfl_device_id);
+> > > +DEVID_FIELD(dfl_device_id, type);
+> > > +DEVID_FIELD(dfl_device_id, feature_id);
+> > > +
+> > >  return 0;
+> > >  }
+> > > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+> > > index 2417dd1..9fd2e60 100644
+> > > --- a/scripts/mod/file2alias.c
+> > > +++ b/scripts/mod/file2alias.c
+> > > @@ -1368,6 +1368,22 @@ static int do_mhi_entry(const char *filename,
+> > void *symval, char *alias)
+> > >  return 1;
+> > >  }
+> > >
+> > > +/* Looks like: dfl:tNfN */
+> > > +static int do_dfl_entry(const char *filename, void *symval, char *alias)
+> > > +{
+> > > +DEF_FIELD(symval, dfl_device_id, type);
+> > > +DEF_FIELD(symval, dfl_device_id, feature_id);
+> > > +
+> > > +/*
+> > > + * type contains 4 valid bits and feature_id contains 12 valid bits
+> > > + * according to DFL specification.
+> > > + */
+> > > +sprintf(alias, "dfl:t%01Xf%03X", type, feature_id);
+> > > +
+> > > +add_wildcard(alias);
+> > > +return 1;
+> > > +}
+> > > +
+> > >  /* Does namelen bytes of name exactly match the symbol? */
+> > >  static bool sym_is(const char *name, unsigned namelen, const char
+> > *symbol)
+> > >  {
+> > > @@ -1442,6 +1458,7 @@ static const struct devtable devtable[] = {
+> > >  {"tee", SIZE_tee_client_device_id, do_tee_entry},
+> > >  {"wmi", SIZE_wmi_device_id, do_wmi_entry},
+> > >  {"mhi", SIZE_mhi_device_id, do_mhi_entry},
+> > > +{"dfl", SIZE_dfl_device_id, do_dfl_entry},
+> > >  };
+> > >
+> > >  /* Create MODULE_ALIAS() statements.
+> > > --
+> > > 2.7.4
+> > >
+> > Applied to for-next,
+> >
+> > Thanks
