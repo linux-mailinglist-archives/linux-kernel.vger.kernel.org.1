@@ -2,212 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED37D26A607
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAA026A5FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 15:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgIONNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 09:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgIONLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:11:05 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7181C06178A;
-        Tue, 15 Sep 2020 06:11:04 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id ef16so1650609qvb.8;
-        Tue, 15 Sep 2020 06:11:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Op4Uh59qL63YT0usxFuHkJ5g//0WvryB7nEITuGpAyc=;
-        b=Oqj/bAONA2sJIdV5yutBnpoAGEHbw9fTdjKwNzNrTZz2NxlgFczbBVmY8gsXFf/xAk
-         cTykHtIbYNMs4svrJOp3ggc3OMr9jmSpDfMdyQK0DWd8xf1HnlAfnETAflX/jvpnEaTd
-         Gg9Mv+xbQgn2TaS91TAqnm4D6N969BlA10Hbf6IWCkTGpDeVX5OzLVpjUGp2wDhx3Wbt
-         kZzW4CJABhvSEK+fdgiGs/9QWGc0BA403RLbf7FVs/fF58dLTLCL3cTcfjbFZxW605gn
-         vNrImzCGQaerPs/HUmNASonfnOaQIoPm9n1Zh4pVbeeTTeFYElMJ6HCQc9OrB+MoBXNk
-         nLhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Op4Uh59qL63YT0usxFuHkJ5g//0WvryB7nEITuGpAyc=;
-        b=tFre3+Nkj9dYA61VniZDPenc/xHh7whGbG/5HzpGRhe+vIYEVcRZogl85LhofWgpNs
-         mmz0sd8MFf0Cc1w9MF4QhOBPiq0BbKmfrOIHxON3Gz5GhWU3Fr3aVDvPSG0jW9IoxAJm
-         4mo31Lr/2sa+KUKNB41V2Fu0dt8U4yWniOxljMv6Tzpj6x+Kinw72DOiEJQfdYRvcpdn
-         MSUEZlE5Cg38OEiRnnCgC3lcUM5Gdd/dHOFDpr53XpLGxaDavVhQELJIO6kKEjhDceMp
-         xNuc/Zy6hIfMa76pBtAYPXjzyuPfrumaUsQ63wZ1SIN35bleENhua6fvm2PlvPGsZUat
-         evNA==
-X-Gm-Message-State: AOAM532Lc7plTz8b0yl1U9KFqKPiUVeO6msEhU/+0SaIUbM/XoNHeBej
-        yOkSgr7FiykSmzOYFleccBA=
-X-Google-Smtp-Source: ABdhPJy05oYi7s4PC56Edy9zJPTT0/PPHMpyT8eWNskZGJZtl2QRbpSCK/nd/kMp4G/ZZcJxS/ftvw==
-X-Received: by 2002:a0c:b3d7:: with SMTP id b23mr1621388qvf.33.1600175464043;
-        Tue, 15 Sep 2020 06:11:04 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id 192sm16643833qkm.110.2020.09.15.06.11.02
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 06:11:03 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 946BB27C005A;
-        Tue, 15 Sep 2020 09:11:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 15 Sep 2020 09:11:02 -0400
-X-ME-Sender: <xms:Zb1gX8qRDhtX5w6CZFFdZGmlnCTO-MftyszEDnH7GAhlo2nmHK6nNQ>
-    <xme:Zb1gXyqrXXb6aVbxaa9S3rLNb81AADl9V3pnuNI7UxW19fDO70RP0Y3oazy3Zmabp
-    oUeVYQOMB1pV-DtNw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrtddtgdeftdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpeevieejtdfhieejfeduheehvdevgedugeethefggfdtvdeutdevgeetvddvfeeg
-    tdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeehvddrudehhedrudduud
-    drjedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    sghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtie
-    egqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhi
-    gihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:Zb1gXxP1wbur_9-ZJOtcxBZYh6hMkSfVy7A3KORuuq-XSsoOOWpIwQ>
-    <xmx:Zb1gXz7XK-AqXKCYD0YFvwGudQinH4lYr57_1QBnv14eh01PdQGnFg>
-    <xmx:Zb1gX74deEO9sXVagDCHd4qa5IReZtpVNfFXTWqFHb4nD84ntK_7yA>
-    <xmx:Zr1gX_gK1QexdA2I8iiWXgA9X-F4ABBK1FNdmOahRaI7vo2BgKhW6PLpwF0>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0CDD4328005D;
-        Tue, 15 Sep 2020 09:11:00 -0400 (EDT)
-Date:   Tue, 15 Sep 2020 21:10:59 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Qian Cai <cai@redhat.com>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2 0/5] seqlock: Introduce PREEMPT_RT support
-Message-ID: <20200915131059.GB127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
- <224bd11b533dd2acff3f6cce51ab4ca676eb4f9f.camel@redhat.com>
- <20200915124817.GA127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+        id S1726534AbgIONMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 09:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726498AbgIONLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:11:14 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC0A520872;
+        Tue, 15 Sep 2020 13:11:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600175470;
+        bh=u/HTMK9SYBgCqASpK328ZsVw4zxDrK6hSpUMfxoRGKw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zV2bRb447YudntQTxCq5cx2hsf+YfN2kbD2p5EqaMRL+St1Y33ZWmsv2Ze0mdR7Sf
+         Se+09pdD9vpCL9V9m6Xn0izS8bxbmU8jedSPALDVzeQZQqREX3WSQ/AbA/pxSHDgRG
+         QQbW/1YpEn7age6n20mMP155ep19TpDqgMmAPNtM=
+Date:   Tue, 15 Sep 2020 14:11:03 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
+        Jiri Olsa <jolsa@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
+Message-ID: <20200915131102.GA26439@willie-the-truck>
+References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915124817.GA127490@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+In-Reply-To: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 08:48:17PM +0800, Boqun Feng wrote:
-> On Mon, Sep 14, 2020 at 08:20:53PM -0400, Qian Cai wrote:
-> > On Fri, 2020-09-04 at 17:32 +0200, Ahmed S. Darwish wrote:
-> > > Hi,
-> > > 
-> > > Changelog-v2
-> > > ============
-> > > 
-> > >   - Standardize on seqcount_LOCKNAME_t as the canonical reference for
-> > >     sequence counters with associated locks, instead of v1
-> > >     seqcount_LOCKTYPE_t.
-> > > 
-> > >   - Use unique prefix "seqprop_*" for all seqcount_t/seqcount_LOCKNAME_t
-> > >     property accessors.
-> > > 
-> > >   - Touch-up the lock-unlock rationale for more clarity. Enforce writer
-> > >     non-preemitiblity using "__seq_enforce_writer_non_preemptibility()".
-> > > 
-> > > Cover letter (v1)
-> > > =================
-> > > 
-> > > https://lkml.kernel.org/r/20200828010710.5407-1-a.darwish@linutronix.de
-> > > 
-> > > Preemption must be disabled before entering a sequence counter write
-> > > side critical section.  Otherwise the read side section can preempt the
-> > > write side section and spin for the entire scheduler tick.  If that
-> > > reader belongs to a real-time scheduling class, it can spin forever and
-> > > the kernel will livelock.
-> > > 
-> > > Disabling preemption cannot be done for PREEMPT_RT though: it can lead
-> > > to higher latencies, and the write side sections will not be able to
-> > > acquire locks which become sleeping locks (e.g. spinlock_t).
-> > > 
-> > > To remain preemptible, while avoiding a possible livelock caused by the
-> > > reader preempting the writer, use a different technique: let the reader
-> > > detect if a seqcount_LOCKNAME_t writer is in progress. If that's the
-> > > case, acquire then release the associated LOCKNAME writer serialization
-> > > lock. This will allow any possibly-preempted writer to make progress
-> > > until the end of its writer serialization lock critical section.
-> > > 
-> > > Implement this lock-unlock technique for all seqcount_LOCKNAME_t with
-> > > an associated (PREEMPT_RT) sleeping lock, and for seqlock_t.
-> > 
-> > Reverting this patchset [1] from today's linux-next fixed a splat below. The
-> > splat looks like a false positive anyway because the existing locking dependency
-> > chains from the task #1 here:
-> > 
-> > &s->seqcount#2 ---> pidmap_lock
-> > 
-> > [  528.078061][ T7867] -> #1 (pidmap_lock){....}-{2:2}:
-> > [  528.078078][ T7867]        lock_acquire+0x10c/0x560
-> > [  528.078089][ T7867]        _raw_spin_lock_irqsave+0x64/0xb0
-> > [  528.078108][ T7867]        free_pid+0x5c/0x160
-> > free_pid at kernel/pid.c:131
-> > [  528.078127][ T7867]        release_task.part.40+0x59c/0x7f0
-> > __unhash_process at kernel/exit.c:76
-> > (inlined by) __exit_signal at kernel/exit.c:147
-> > (inlined by) release_task at kernel/exit.c:198
-> > [  528.078145][ T7867]        do_exit+0x77c/0xda0
-> > exit_notify at kernel/exit.c:679
-> > (inlined by) do_exit at kernel/exit.c:826
-> > [  528.078163][ T7867]        kthread+0x148/0x1d0
-> > [  528.078182][ T7867]        ret_from_kernel_thread+0x5c/0x80
-> > 
-> > It is write_seqlock(&sig->stats_lock) in __exit_signal(), but the &s->seqcount#2 
-> > in read_mems_allowed_begin() is read_seqcount_begin(&current->mems_allowed_seq), 
-> > so there should be no deadlock?
-> > 
+Hi Ilias,
+
+On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
+> Running the eBPF test_verifier leads to random errors looking like this:
 > 
-> I think this happened because seqcount_##lockname##_init() is defined at
-> function rather than macro, so when the seqcount_init() gets expand in
-> that function, the lock_class_key of seqcount will be a static variable
-> of seqcount_##lockname##_init() function, as a result, all
-> seqcount_##lockname##_t in the same compile unit (in this case it's
-> kernel/fork.c) share the same lock class key, and lockdep thought they
-> are the same lock ;-)
-> 
+> [ 6525.735488] Unexpected kernel BRK exception at EL1
+> [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
 
-Don't know how to fix this properly, but below is an ugly attemption,
-only build test, just food for thoughts.
+Does this happen because we poison the BPF memory with BRK instructions?
+Maybe we should look at using a special immediate so we can detect this,
+rather than end up in the ptrace handler.
 
-Regards,
-Boqun
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index f8912e45be7a..0974effff58c 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -143,9 +143,13 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
+>  	}
+>  }
+>  
+> -static inline int bpf2a64_offset(int bpf_to, int bpf_from,
+> +static inline int bpf2a64_offset(int bpf_insn, int off,
+>  				 const struct jit_ctx *ctx)
+>  {
+> +	/* arm64 offset is relative to the branch instruction */
+> +	int bpf_from = bpf_insn + 1;
+> +	/* BPF JMP offset is relative to the next instruction */
+> +	int bpf_to = bpf_insn + off + 1;
+>  	int to = ctx->offset[bpf_to];
+>  	/* -1 to account for the Branch instruction */
+>  	int from = ctx->offset[bpf_from] - 1;
 
---------------->8
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index f73c7eb68f27..938a5053def3 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -84,14 +84,18 @@ static inline void __seqcount_init(seqcount_t *s, const char *name,
- # define SEQCOUNT_DEP_MAP_INIT(lockname)				\
- 		.dep_map = { .name = #lockname }
- 
-+# define MSIOCU 8 /* MAX SEQCOUNT IN ON COMPILE UNIT */
- /**
-  * seqcount_init() - runtime initializer for seqcount_t
-  * @s: Pointer to the seqcount_t instance
-  */
- # define seqcount_init(s)						\
- 	do {								\
--		static struct lock_class_key __key;			\
--		__seqcount_init((s), #s, &__key);			\
-+		static struct lock_class_key __key[MSIOCU];		\
-+		static int idx = 0;					\
-+									\
-+		BUG_ON(idx >= MSIOCU);					\
-+		__seqcount_init((s), #s, &__key[idx++]);		\
- 	} while (0)
- 
- static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+I think this is a bit confusing with all the variables. How about just
+doing:
+
+	/* BPF JMP offset is relative to the next BPF instruction */
+	bpf_insn++;
+
+	/*
+	 * Whereas arm64 branch instructions encode the offset from the
+	 * branch itself, so we must subtract 1 from the instruction offset.
+	 */
+	return ctx->offset[bpf_insn + off] - ctx->offset[bpf_insn] - 1;
+
+> @@ -642,7 +646,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>  
+>  	/* JUMP off */
+>  	case BPF_JMP | BPF_JA:
+> -		jmp_offset = bpf2a64_offset(i + off, i, ctx);
+> +		jmp_offset = bpf2a64_offset(i, off, ctx);
+>  		check_imm26(jmp_offset);
+>  		emit(A64_B(jmp_offset), ctx);
+>  		break;
+> @@ -669,7 +673,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>  	case BPF_JMP32 | BPF_JSLE | BPF_X:
+>  		emit(A64_CMP(is64, dst, src), ctx);
+>  emit_cond_jmp:
+> -		jmp_offset = bpf2a64_offset(i + off, i, ctx);
+> +		jmp_offset = bpf2a64_offset(i, off, ctx);
+>  		check_imm19(jmp_offset);
+>  		switch (BPF_OP(code)) {
+>  		case BPF_JEQ:
+> @@ -912,18 +916,26 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+>  		const struct bpf_insn *insn = &prog->insnsi[i];
+>  		int ret;
+>  
+> +		/*
+> +		 * offset[0] offset of the end of prologue, start of the
+> +		 * first insn.
+> +		 * offset[x] - offset of the end of x insn.
+
+So does offset[1] point at the last arm64 instruction for the first BPF
+instruction, or does it point to the first arm64 instruction for the second
+BPF instruction?
+
+> +		 */
+> +		if (ctx->image == NULL)
+> +			ctx->offset[i] = ctx->idx;
+> +
+>  		ret = build_insn(insn, ctx, extra_pass);
+>  		if (ret > 0) {
+>  			i++;
+>  			if (ctx->image == NULL)
+> -				ctx->offset[i] = ctx->idx;
+> +				ctx->offset[i] = ctx->offset[i - 1];
+
+Does it matter that we set the offset for both halves of a 16-byte BPF
+instruction? I think that's a change in behaviour here.
+
+>  			continue;
+>  		}
+> -		if (ctx->image == NULL)
+> -			ctx->offset[i] = ctx->idx;
+>  		if (ret)
+>  			return ret;
+>  	}
+> +	if (ctx->image == NULL)
+> +		ctx->offset[i] = ctx->idx;
+
+I think it would be cleared to set ctx->offset[0] before the for loop (with
+a comment about what it is) and then change the for loop to iterate from 1
+all the way to prog->len.
+
+Will
