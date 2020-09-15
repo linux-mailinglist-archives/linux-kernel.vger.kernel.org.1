@@ -2,101 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F19B26A4E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B1126A50E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbgIOMRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:17:14 -0400
-Received: from mga04.intel.com ([192.55.52.120]:46049 "EHLO mga04.intel.com"
+        id S1726290AbgIOMY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgIOMQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:16:28 -0400
-IronPort-SDR: U+DEJS9vnOaw3pGqqeBlAldGIfYDNaZEGr6O3KdJZYp2YiIf4h6MvH8bzRTbBCO3S4FV7xKCaF
- h/Kw8NokypaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156636516"
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="156636516"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 05:16:18 -0700
-IronPort-SDR: zHcTlE409gQ8N5SSotwtoKhpNs93GndkkJ7e1WDuvrjKIKX3TlNReDnWOh5z4E1dXzLnnJOZ9d
- g1WMyy/wQzNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,429,1592895600"; 
-   d="scan'208";a="409183643"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 05:16:15 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 15:16:15 +0300
-Date:   Tue, 15 Sep 2020 15:16:15 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 04/14] usb: typec: tcpci: Add a getter method to
- retrieve tcpm_port reference
-Message-ID: <20200915121615.GE1139641@kuha.fi.intel.com>
-References: <20200901025927.3596190-1-badhri@google.com>
- <20200901025927.3596190-5-badhri@google.com>
+        id S1726448AbgIOMSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:18:18 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2A7321973;
+        Tue, 15 Sep 2020 12:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600172297;
+        bh=8v64DVAyftKdPimFBnWLzZ3RfUMMy6+f5rrlSrneC2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1gtJxQQXZht4IGu8BSMjsIhGl3YN3yuj64/Q1KPmDiQbOlXk9Iy7l5OR5AJ7wvuZW
+         KR1ul9Vp4j7SBImA19YJX9UZKMwL33bhXA8KANXktQ/yKY/apn/UixmF5pa7BY+aPZ
+         cmrxvUS+WTghO3/vzvO5FgjWnSQBgPtwR/m1snvA=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B40B840D3D; Tue, 15 Sep 2020 09:18:14 -0300 (-03)
+Date:   Tue, 15 Sep 2020 09:18:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 04/11] perf parse-event: Fix cpu map leaks
+Message-ID: <20200915121814.GE720847@kernel.org>
+References: <20200915031819.386559-1-namhyung@kernel.org>
+ <20200915031819.386559-5-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901025927.3596190-5-badhri@google.com>
+In-Reply-To: <20200915031819.386559-5-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 07:59:17PM -0700, Badhri Jagan Sridharan wrote:
-> Allow chip level drivers to retrieve reference to tcpm_port.
+Em Tue, Sep 15, 2020 at 12:18:12PM +0900, Namhyung Kim escreveu:
+> Like evlist cpu map, evsel's cpu map should have proper refcount by
+> releasing the original count after creation.
+
+"releasing original count after creation"?
+
+There are two fixes here, one its legit, i.e. when failing to create
+the new evsel, if you created the perf_cpu_map, drop the refcount,
+which, in this case, will free it since perf_cpu_map__new() sets it to
+1.
+
+But what about the other? Humm, I see, since a new refcount is being
+obtained, then we need to drop the first.
+
+This all got complicated, perhaps the following patch is simpler?
+
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index c4d2394e2b2dc60f..3dceeacf8669bc5d 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -353,18 +353,20 @@ __add_event(struct list_head *list, int *idx,
+ 	    const char *cpu_list)
+ {
+ 	struct evsel *evsel;
+-	struct perf_cpu_map *cpus = pmu ? pmu->cpus :
++	struct perf_cpu_map *cpus = pmu ? perf_cpu_map__get(pmu->cpus) :
+ 			       cpu_list ? perf_cpu_map__new(cpu_list) : NULL;
+ 
+ 	if (init_attr)
+ 		event_attr_init(attr);
+ 
+ 	evsel = evsel__new_idx(attr, *idx);
+-	if (!evsel)
++	if (!evsel) {
++		perf_cpu_map__put(cpus);
+ 		return NULL;
++	}
+ 
+ 	(*idx)++;
+-	evsel->core.cpus   = perf_cpu_map__get(cpus);
++	evsel->core.cpus     = cpus;
+ 	evsel->core.own_cpus = perf_cpu_map__get(cpus);
+ 	evsel->core.system_wide = pmu ? pmu->is_uncore : false;
+ 	evsel->auto_merge_stats = auto_merge_stats;
+ 
+
+---
+
+I.e. if we're going to share pmu->cpus, grab the necessary refcount at
+that point, if we're going to create one (pmu == NULL), then
+perf_cpu_map__new() will have the refcount we need (will set it to 1).
+
+Then, if we fail to create the new evsel, we just drop the refcount we
+got either from perf_cpu_map__get(pmu->cpus) or from
+perf_cpu_map__new(cpu_list) (NULL is ok for __put() operations, that
+covers that last ': NULL').
+
+And then, when we go make evsel->core.cpus share that cpu_map, we know
+we have the necessary refcount already, right?
+
+No need to later on drop the one obtained previously via:
+
+  evsel->core.cpus   = perf_cpu_map__get(cpus);
+
+And we don't need to drop it later when we want to drop the extra
+refcount it gets when pmu == NULL.
+
+- Arnaldo
+
+> This fixes the following ASAN report:
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-I'm still wondering if this is the right way. Ideally the glue drivers
-should not need to deal with the tcpm_port at all directly, only with
-the tcpci handle they have. But FWIW:
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
-> Change since v1:
-> - Changing patch version to v6 to fix version number confusion.
-> ---
->  drivers/usb/typec/tcpm/tcpci.c | 6 ++++++
->  drivers/usb/typec/tcpm/tcpci.h | 2 ++
->  2 files changed, 8 insertions(+)
+>   Direct leak of 840 byte(s) in 70 object(s) allocated from:
+>     #0 0x7fe36703f628 in malloc (/lib/x86_64-linux-gnu/libasan.so.5+0x107628)
+>     #1 0x559fbbf611ca in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
+>     #2 0x559fbbf6229c in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:237
+>     #3 0x559fbbcc6c6d in __add_event util/parse-events.c:357
+>     #4 0x559fbbcc6c6d in add_event_tool util/parse-events.c:408
+>     #5 0x559fbbcc6c6d in parse_events_add_tool util/parse-events.c:1414
+>     #6 0x559fbbd8474d in parse_events_parse util/parse-events.y:439
+>     #7 0x559fbbcc95da in parse_events__scanner util/parse-events.c:2096
+>     #8 0x559fbbcc95da in __parse_events util/parse-events.c:2141
+>     #9 0x559fbbc2788b in check_parse_id tests/pmu-events.c:406
+>     #10 0x559fbbc2788b in check_parse_id tests/pmu-events.c:393
+>     #11 0x559fbbc2788b in check_parse_fake tests/pmu-events.c:436
+>     #12 0x559fbbc2788b in metric_parse_fake tests/pmu-events.c:553
+>     #13 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:599
+>     #14 0x559fbbc27e2d in test_parsing_fake tests/pmu-events.c:574
+>     #15 0x559fbbc0109b in run_test tests/builtin-test.c:410
+>     #16 0x559fbbc0109b in test_and_print tests/builtin-test.c:440
+>     #17 0x559fbbc03e69 in __cmd_test tests/builtin-test.c:695
+>     #18 0x559fbbc03e69 in cmd_test tests/builtin-test.c:807
+>     #19 0x559fbbc691f4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:312
+>     #20 0x559fbbb071a8 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:364
+>     #21 0x559fbbb071a8 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:408
+>     #22 0x559fbbb071a8 in main /home/namhyung/project/linux/tools/perf/perf.c:538
+>     #23 0x7fe366b68cc9 in __libc_start_main ../csu/libc-start.c:308
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-> index 7d9491ba62fb..b960fe5a0f28 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.c
-> +++ b/drivers/usb/typec/tcpm/tcpci.c
-> @@ -38,6 +38,12 @@ struct tcpci_chip {
->  	struct tcpci_data data;
->  };
+> And I've failed which commit introduced this bug as the code was
+> heavily changed since then. ;-/
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/parse-events.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index c4d2394e2b2d..b35e4bb1cecb 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -360,8 +360,11 @@ __add_event(struct list_head *list, int *idx,
+>  		event_attr_init(attr);
 >  
-> +struct tcpm_port *tcpci_get_tcpm_port(struct tcpci *tcpci)
-> +{
-> +	return tcpci->port;
-> +}
-> +EXPORT_SYMBOL_GPL(tcpci_get_tcpm_port);
-> +
->  static inline struct tcpci *tcpc_to_tcpci(struct tcpc_dev *tcpc)
->  {
->  	return container_of(tcpc, struct tcpci, tcpc);
-> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-> index cf9d8b63adcb..04c49a0b0368 100644
-> --- a/drivers/usb/typec/tcpm/tcpci.h
-> +++ b/drivers/usb/typec/tcpm/tcpci.h
-> @@ -150,4 +150,6 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
->  void tcpci_unregister_port(struct tcpci *tcpci);
->  irqreturn_t tcpci_irq(struct tcpci *tcpci);
+>  	evsel = evsel__new_idx(attr, *idx);
+> -	if (!evsel)
+> +	if (!evsel) {
+> +		if (!pmu)
+> +			perf_cpu_map__put(cpus);
+>  		return NULL;
+> +	}
 >  
-> +struct tcpm_port;
-> +struct tcpm_port *tcpci_get_tcpm_port(struct tcpci *tcpci);
->  #endif /* __LINUX_USB_TCPCI_H */
+>  	(*idx)++;
+>  	evsel->core.cpus   = perf_cpu_map__get(cpus);
+> @@ -369,6 +372,8 @@ __add_event(struct list_head *list, int *idx,
+>  	evsel->core.system_wide = pmu ? pmu->is_uncore : false;
+>  	evsel->auto_merge_stats = auto_merge_stats;
+>  
+> +	if (!pmu)
+> +		perf_cpu_map__put(cpus);
+>  	if (name)
+>  		evsel->name = strdup(name);
+>  
 > -- 
-> 2.28.0.402.g5ffc5be6b7-goog
+> 2.28.0.618.gf4bc123cb7-goog
+> 
 
 -- 
-heikki
+
+- Arnaldo
