@@ -2,117 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F1B26B6A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E76326B7C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbgIPAIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
+        id S1726797AbgIPA3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgIOO2g (ORCPT
+        with ESMTP id S1726669AbgIONti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:28:36 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C617C061221
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:27:50 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id e4so1343871pln.10
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:27:50 -0700 (PDT)
+        Tue, 15 Sep 2020 09:49:38 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9E1C061A28
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:36:57 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id g96so3191978otb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:36:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7vhjnhaOBNypT0J1caJeAb0BF+ROLuuFdlB5WaLOXWw=;
-        b=dTQmO6eKwduT7IaIh4/3GtHGWGXulgiVyvo2tcuLJKe4T8M1CUzMgkss5IffOi6IqT
-         GbVXsPhP6n6MZSyyXBzDuTlaczde+R2addAWfJ4X6ol6rjBTo0FZPAtgdCIn+qI8jmSc
-         Cc3MqrYmn7lvDnH2KviU1J01FNR46KrC8zJKV8JMCpYLThIEiUgKtoscqDPlNfUAspSY
-         frbzNx+MmCx9EWDBhGa+fFpHUlbeFDaJMbhQP2JCHA7fqNOmC3gD4keSwLJ9NG8woET0
-         gVUS2Afhrp8ZCp3U2vR3fOfQ+PH8IIC9XOItqeGg8wv9KEix8ZHHOgZaYjQBhsC8gWdP
-         JGzQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5nixci3CSSlm0JVJHjLv8kSY8PhichT9C9IRwcdycYA=;
+        b=frM1guUPtYEMHzBHOmBXc1LJN0o/Mhxc876Up3RbNvLAopbQ51jsxn66hMudOWe+7D
+         qb0q6byNtnMAi7YZ/5QVMXXBGRO8H+YZre3Z0q+2wt1a/4W5UmqMAoPDfsHXvx/gaacZ
+         f9VKtNiD/2RmhiywtqC6DD11yNsMPRZHlVGu+H8XXcT7nMXl0TKxbHdXwp2msnugNfda
+         5FMcbZ5ppng5F+r02LNIJJvEOmSKmXygmLJuVT1IevEOJqkJpB2Z9xq0q0A5nRd25IjN
+         FsYcvSBU0Fre2hTvb7hD+Dc7Ro39e+TKVPUsoQrkRDiwf2ncucLBcd23rPxa1gqOO8pG
+         g65w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=7vhjnhaOBNypT0J1caJeAb0BF+ROLuuFdlB5WaLOXWw=;
-        b=cCGhZ+d2d4wnD306IHGxSVeL/IkzYS/bGX5kbcOLb8dvfLFUwEF234tf7rp52woIFr
-         wT0x2pU3xm0XygV61AUWqJd4ccrW/ovF45UEGYA0GnaRjYqfeWCZZ9cjdaIjUayMomG6
-         IK/ZK9o5Okjtw5eFsVnIb3VWNYxj9mIhrTO31mF6vMs9gIVwEH0jO3+mIFnxFt938Sfy
-         nPwxN72NPKFyZKwQa/neqcx+lQnYHzZunGHYEbaJqFRu/Q63iqQwv4vUaUApmYjp7I2X
-         63BMJ+YGlSYQiTZIRvsdbcKs/qNPGg+bifuPydbWIqoaTPtTt++X9S/zf8tLkgXHj45T
-         F/4g==
-X-Gm-Message-State: AOAM532D55HLQTgL76SYkkGqF39z8DthD5EDFH5OfPyIJxkPQhM20VTa
-        TpTYzU0qS1r4B3IebxVNHDGfgg==
-X-Google-Smtp-Source: ABdhPJw12ixCnD+C0yvcpiXBUPv8NOwFo2xCyijS3BEGCK93LIB7TvFraxv5Y3HdSHelDvkDyLH6AA==
-X-Received: by 2002:a17:90a:ead8:: with SMTP id ev24mr4174614pjb.89.1600176469553;
-        Tue, 15 Sep 2020 06:27:49 -0700 (PDT)
-Received: from Zs-MacBook-Pro.local.net ([103.136.220.73])
-        by smtp.gmail.com with ESMTPSA id a13sm9644029pfl.184.2020.09.15.06.27.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Sep 2020 06:27:48 -0700 (PDT)
-From:   zangchunxin@bytedance.com
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Chunxin Zang <zangchunxin@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v4] mm/vmscan: add a fatal signals check in drop_slab_node
-Date:   Tue, 15 Sep 2020 21:27:41 +0800
-Message-Id: <20200915132741.84869-1-zangchunxin@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        bh=5nixci3CSSlm0JVJHjLv8kSY8PhichT9C9IRwcdycYA=;
+        b=aA5RyOx+oztYs1tW7nAqt7Zer4zHvAs6WHkX/TuQczvhQVE4rvGkB2qE+4MXQxkevH
+         n1Iyx/PmwHPR7Rc8XlWCIVCEnVv0ugzuKtJzyqusR09SNo12srdIpoBzeV0OxG2ouz4A
+         kWhPZQ84PRmgYfw8yKh3Xw8nX+mdAEdAd3/mY1Fr0JKzw2Hn4Il5aWZ4ENNCZpQsTJU9
+         aYTBPy172yVZ+yNn8suwMQi0iBlSkBLwkdL0+jJnt22obc6NlhEydrmmtPsHmQFyearK
+         oOV9YHQ1ahnvGASPQpnxFLi7D47EecjmQZ9k4qWcrXpgc4sx0pI6rx5eKomzR4vdXYK4
+         NxhQ==
+X-Gm-Message-State: AOAM530+hkgOwyx8DOAbUpiTt3w5f52+xmi49BsOAfv4ALTgSwg1G9qf
+        j9klChVVIUOcpz62MbMBfag9UVOjvBM6QqRZ
+X-Google-Smtp-Source: ABdhPJx6pSgCgdr+Rct0Mxa3o9lj8STvJmmRBbJOVmXhNia2GSJl/blPThqV+VQFP2sH8jbgfvKpMw==
+X-Received: by 2002:a9d:315:: with SMTP id 21mr13659132otv.278.1600177016337;
+        Tue, 15 Sep 2020 06:36:56 -0700 (PDT)
+Received: from [192.168.1.10] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o13sm5597673otj.2.2020.09.15.06.36.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Sep 2020 06:36:55 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: fix the bug of child process can't do io task
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Yinyin Zhu <zhuyinyin@bytedance.com>, viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200915130245.89585-1-zhuyinyin@bytedance.com>
+ <e206f1b4-1f22-c3f5-21a6-cec498d9c830@kernel.dk>
+Message-ID: <0d66eabc-3b8b-2f84-05b7-981c2b6fe5dd@kernel.dk>
+Date:   Tue, 15 Sep 2020 07:36:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <e206f1b4-1f22-c3f5-21a6-cec498d9c830@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunxin Zang <zangchunxin@bytedance.com>
+On 9/15/20 7:25 AM, Jens Axboe wrote:
+> On 9/15/20 7:02 AM, Yinyin Zhu wrote:
+>> when parent process setup a io_uring_instance, the ctx->sqo_mm was
+>> assigned of parent process'mm. Then it fork a child
+>> process. So the child process inherits the io_uring_instance fd from
+>> parent process. Then the child process submit a io task to the io_uring
+>> instance. The kworker will do the io task actually, and use
+>> the ctx->sqo_mm as its mm, but this ctx->sqo_mm is parent process's mm,
+>> not the child process's mm. so child do the io task unsuccessfully. To
+>> fix this bug, when a process submit a io task to the kworker, assign the
+>> ctx->sqo_mm with this process's mm.
+> 
+> Hmm, what's the test case for this? There's a 5.9 regression where we
+> don't always grab the right context for certain linked cases, below
+> is the fix. Does that fix your case?
 
-On our server, there are about 10k memcg in one machine. They use memory
-very frequently. We have observed that drop_caches can take a
-considerable amount of time, and can't stop it.
+Ah hang on, you're on the 5.4 code base... I think this is a better
+approach. Any chance you can test it?
 
-There are two reasons:
-1. There is somebody constantly generating more objects to reclaim
-   on drop_caches, result the 'freed' always bigger than 10.
-2. The process has no chance to process signals.
+The problem with yours is that you can have multiple pending async
+ones, and you can't just re-assign ctx->sqo_mm. That one should only
+be used by the SQPOLL thread.
 
-We can get the following info through 'ps':
 
-  root:~# ps -aux | grep drop
-  root  357956 ... R    Aug25 21119854:55 echo 3 > /proc/sys/vm/drop_caches
-  root 1771385 ... R    Aug16 21146421:17 echo 3 > /proc/sys/vm/drop_caches
-
-Add a bail out on the fatal signals in the main loop so that the
-operation can be terminated by userspace.
-
-Signed-off-by: Chunxin Zang <zangchunxin@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
-
-	changelogs in v4:
-	changelogs in v3: 
-	1) Fix some descriptive problems pointed out by Michal Hocko.
-		v2 named: mm/vmscan: fix infinite loop in drop_slab_node
-
-	changelogs in v2: 
-	1) via check fatal signal break loop.
-
- mm/vmscan.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b6d84326bdf2..6b2b5d420510 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -704,6 +704,9 @@ void drop_slab_node(int nid)
- 	do {
- 		struct mem_cgroup *memcg = NULL;
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 2a539b794f3b..e8a4b4ae7006 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -514,7 +514,7 @@ static inline void io_queue_async_work(struct io_ring_ctx *ctx,
+ 		}
+ 	}
  
-+		if (signal_pending(current))
-+			return;
-+
- 		freed = 0;
- 		memcg = mem_cgroup_iter(NULL, NULL, NULL);
- 		do {
+-	req->task = current;
++	req->task = get_task_struct(current);
+ 
+ 	spin_lock_irqsave(&ctx->task_lock, flags);
+ 	list_add(&req->task_list, &ctx->task_list);
+@@ -1832,6 +1832,7 @@ static void io_poll_complete_work(struct work_struct *work)
+ 	spin_unlock_irq(&ctx->completion_lock);
+ 
+ 	io_cqring_ev_posted(ctx);
++	put_task_struct(req->task);
+ 	io_put_req(req);
+ out:
+ 	revert_creds(old_cred);
+@@ -2234,11 +2235,11 @@ static void io_sq_wq_submit_work(struct work_struct *work)
+ 
+ 		ret = 0;
+ 		if (io_req_needs_user(req) && !cur_mm) {
+-			if (!mmget_not_zero(ctx->sqo_mm)) {
++			if (!mmget_not_zero(req->task->mm)) {
+ 				ret = -EFAULT;
+ 				goto end_req;
+ 			} else {
+-				cur_mm = ctx->sqo_mm;
++				cur_mm = req->task->mm;
+ 				use_mm(cur_mm);
+ 				old_fs = get_fs();
+ 				set_fs(USER_DS);
+@@ -2275,6 +2276,7 @@ static void io_sq_wq_submit_work(struct work_struct *work)
+ 		}
+ 
+ 		/* drop submission reference */
++		put_task_struct(req->task);
+ 		io_put_req(req);
+ 
+ 		if (ret) {
+
 -- 
-2.11.0
+Jens Axboe
 
