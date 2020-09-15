@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C19526B7E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917FA26B7FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgIPAbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgIONox (ORCPT
+        id S1726660AbgIPAdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:33:47 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:57437 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbgIONm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:44:53 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23620C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:43:41 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o8so3275732otl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:43:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=B9DG7AFGOCi4fDIA/pebWsaF98Vfs0PhS8LEaercJUM=;
-        b=owBOhW6EC7dR5wsl+J+VKIlsez0gsh9VM0JvmxWSZxWow81fml9LtpKBl4uX3tavXV
-         lElVW/PinQeJb5cLZZBBk/hdlHr1yq52Wkrb0rFD4RVn9+JEFDqKJU8Y7VZ5bhPUPNdA
-         myx4gU3MvUS5aCqwKxtuOgU3CQJAApWfYy5D9KWp7VZd5rokkIOL6Q9OrP9I8YmnI7Mv
-         2PyW4S3jl2HsHVAiOLxJfZXZRs7z5AzcfxmmvFnMN//9OXoO3FQ/RI2Z3H0B74PlaAfI
-         RpQegVQmIbVCJjxHPj8nkKUT7KsN2AiACJCN1d6eHiY+GRQkr0sp8YN6uRo0yzcY7IdA
-         ICfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B9DG7AFGOCi4fDIA/pebWsaF98Vfs0PhS8LEaercJUM=;
-        b=DSOa04jVLYzaH734a1Y03C4gxEEpBqcNAUPFnYxy9J8QDLSLHzjfqxrZoFc73+iQXs
-         AoqIRQ0Ucex2ct6fNV78isP81ck4QdeZ82I0wMxG0aLPD6COdr6p90FhXavOwoG3myRl
-         UvpysEcflaq8RBNNBPv0DWkQJ6C2OdHsBoskZAwSEP7yeP1MwVCDA5kweW2VExBBZeXD
-         WDvUOPlENB1Zr1WhVniSdwSA/NXc/BRZsUklS7JnOGe/7WkRA26G0R9Mi3jhUTHLPX1+
-         +fJ2uI9XjcSdklACF3QBUbbZoXIZZBMZUOivgMBZx3KxMdUZKLP3+USoBhBbQWMpWy2e
-         CivA==
-X-Gm-Message-State: AOAM530dU9wB86MG91/NE1UmepeEloLhhocF30qChEy/FuvOiQXVl/G+
-        OsuH6zp1xxGjDAbbWjgIE9LFXw==
-X-Google-Smtp-Source: ABdhPJwGr+GRet1pRxe3nZ/L2fOWfupvdFYKrPB2ph9ZOkRDUTpxsjgx1wdTPacAmCm2yl+UzZeslA==
-X-Received: by 2002:a9d:7b48:: with SMTP id f8mr13079469oto.297.1600177420799;
-        Tue, 15 Sep 2020 06:43:40 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id w19sm5635176otq.70.2020.09.15.06.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:43:40 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 08:43:35 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     nguyenb@codeaurora.org
-Cc:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] scsi: dt-bindings: ufs: Add vcc-voltage-level for
- UFS
-Message-ID: <20200915134335.GE670377@yoga>
-References: <cover.1598939393.git.nguyenb@codeaurora.org>
- <0a9d395dc38433501f9652a9236856d0ac840b77.1598939393.git.nguyenb@codeaurora.org>
- <20200915044154.GB670377@yoga>
- <748d238a3d9e53834a498c6f37f9f3c9@codeaurora.org>
+        Tue, 15 Sep 2020 09:42:29 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 7DAB660004;
+        Tue, 15 Sep 2020 13:41:29 +0000 (UTC)
+Date:   Tue, 15 Sep 2020 15:45:19 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 2/3] media: docs: v4l2-subdev: move "Subdev registration"
+ to a subsection
+Message-ID: <20200915134519.5u3vedcyek5ivvjq@uno.localdomain>
+References: <20200904215141.20862-1-luca@lucaceresoli.net>
+ <20200904215141.20862-2-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <748d238a3d9e53834a498c6f37f9f3c9@codeaurora.org>
+In-Reply-To: <20200904215141.20862-2-luca@lucaceresoli.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Sep 03:14 CDT 2020, nguyenb@codeaurora.org wrote:
+Hi Luca,
 
-> On 2020-09-14 21:41, Bjorn Andersson wrote:
-> > On Tue 01 Sep 01:00 CDT 2020, Bao D. Nguyen wrote:
-> > 
-> > > UFS's specifications supports a range of Vcc operating
-> > > voltage levels. Add documentation for the UFS's Vcc voltage
-> > > levels setting.
-> > > 
-> > > Signed-off-by: Can Guo <cang@codeaurora.org>
-> > > Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> > > Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> > > b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> > > index 415ccdd..7257b32 100644
-> > > --- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> > > +++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> > > @@ -23,6 +23,8 @@ Optional properties:
-> > >                            with "phys" attribute, provides phandle
-> > > to UFS PHY node
-> > >  - vdd-hba-supply        : phandle to UFS host controller supply
-> > > regulator node
-> > >  - vcc-supply            : phandle to VCC supply regulator node
-> > > +- vcc-voltage-level     : specifies voltage levels for VCC supply.
-> > > +                          Should be specified in pairs (min, max),
-> > > units uV.
-> > 
-> > What exactly are these pairs representing?
-> The pair is the min and max Vcc voltage request to the PMIC chip.
-> As a result, the regulator output voltage would only be in this range.
-> 
+On Fri, Sep 04, 2020 at 11:51:40PM +0200, Luca Ceresoli wrote:
+> The subdev registration topic is pretty lengthy, and takes more than
+> half of the "V4L2 sub-devices" section. Help readers in finding their
+> way through the document by dedicating a subsection to
+> "Subdev registration".
+>
+> Each of the two registration methods takes many paragraphs, but since
+> adding a subsubsection would be overkill, just emphasize them in bold.
 
-If you have static min/max voltage constraints for a device on a
-particular board the right way to handle this is to adjust the board's
-regulator-min-microvolt and regulator-max-microvolt accordingly - and
-not call regulator_set_voltage() from the river at all.
+I see bold being used mostly for C symbols names, I don't know if
+that's a kind of convention or not.
 
-In other words, you shouldn't add this new property to describe
-something already described in the node vcc-supply points to.
+I would not mind a subsection to be honest...
+I think the patch is good and I'll provide a tag, maybe others can
+provide opinions too!
 
-Regards,
-Bjorn
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
 
-> > 
-> > Is this supposed to be 3 pairs of (min,max) for vcc, vcc and vccq2 to be
-> > passed into a regulator_set_voltage() for each regulator?
-> Yes, that's right. I should include the other power supplies in this change
-> as well.
-> > 
-> > Or are these some sort of "operating points" for the vcc-supply?
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > >  - vccq-supply           : phandle to VCCQ supply regulator node
-> > >  - vccq2-supply          : phandle to VCCQ2 supply regulator node
-> > >  - vcc-supply-1p8        : For embedded UFS devices, valid VCC range
-> > > is 1.7-1.95V
-> > > --
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> > > Forum,
-> > > a Linux Foundation Collaborative Project
-> > > 
+Thanks
+  j
+
+>
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  Documentation/driver-api/media/v4l2-subdev.rst | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/Documentation/driver-api/media/v4l2-subdev.rst b/Documentation/driver-api/media/v4l2-subdev.rst
+> index 9a7dddd97f5a..fb66163deb38 100644
+> --- a/Documentation/driver-api/media/v4l2-subdev.rst
+> +++ b/Documentation/driver-api/media/v4l2-subdev.rst
+> @@ -138,6 +138,9 @@ ensures that width, height and the media bus pixel code are equal on both source
+>  and sink of the link. Subdev drivers are also free to use this function to
+>  perform the checks mentioned above in addition to their own checks.
+>
+> +Subdev registration
+> +~~~~~~~~~~~~~~~~~~~
+> +
+>  There are currently two ways to register subdevices with the V4L2 core. The
+>  first (traditional) possibility is to have subdevices registered by bridge
+>  drivers. This can be done when the bridge driver has the complete information
+> @@ -157,7 +160,7 @@ below.
+>  Using one or the other registration method only affects the probing process, the
+>  run-time bridge-subdevice interaction is in both cases the same.
+>
+> -In the synchronous case a device (bridge) driver needs to register the
+> +In the **synchronous** case a device (bridge) driver needs to register the
+>  :c:type:`v4l2_subdev` with the v4l2_device:
+>
+>  	:c:func:`v4l2_device_register_subdev <v4l2_device_register_subdev>`
+> @@ -238,9 +241,9 @@ contain several subdevs that use an I2C bus, but also a subdev that is
+>  controlled through GPIO pins. This distinction is only relevant when setting
+>  up the device, but once the subdev is registered it is completely transparent.
+>
+> -In the asynchronous case subdevice probing can be invoked independently of the
+> -bridge driver availability. The subdevice driver then has to verify whether all
+> -the requirements for a successful probing are satisfied. This can include a
+> +In the **asynchronous** case subdevice probing can be invoked independently of
+> +the bridge driver availability. The subdevice driver then has to verify whether
+> +all the requirements for a successful probing are satisfied. This can include a
+>  check for a master clock availability. If any of the conditions aren't satisfied
+>  the driver might decide to return ``-EPROBE_DEFER`` to request further reprobing
+>  attempts. Once all conditions are met the subdevice shall be registered using
+> --
+> 2.28.0
+>
