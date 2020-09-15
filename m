@@ -2,138 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13C626B27A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7383E26B267
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 00:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727689AbgIOWsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 18:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        id S1727534AbgIOWrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 18:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727488AbgIOPpB (ORCPT
+        with ESMTP id S1727491AbgIOPpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 11:45:01 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8BDC061797
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:44:58 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 16so4684102qkf.4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 08:44:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jr9FyPebxkKqG5Q+7PXT2kwXR4HeYkXnIjay9uV7M3A=;
-        b=rFHVNAT/L/p+uTassh8kWHyPPmM6zU7jhMji4JUNPpHOH6vp7+SknoNXEUaxITlZJo
-         C47l3vrn5M1foQsDyM7MD13TTYbOSoz+k3xxYu2RBF/1DXBmgX5hCizpgqmu7GxO2Qn7
-         t+UA0UhrW0z+v7akhpkjQXmNzcd1NdyF9egZIXmLbC6cB5UgKlerScIbcv3AVVTn3Fsc
-         SIOsbC7nIY+6OOkvdDsfHVxDKHqeJrx5J2v8OoZnq5BvJ7UDU5nXuKIkPxIn3QTCEXTN
-         jo8hO5NeFIqIKE2GyopxS/cZDkUROZKl0oZCNrBm7aRWQrRt7F4pkll8G1GT259vH8V6
-         gV1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jr9FyPebxkKqG5Q+7PXT2kwXR4HeYkXnIjay9uV7M3A=;
-        b=c7bCQx2eJqZeFI1SPjZwPF90cuvhv64BRYUnw9IhO1wFeQ6qY+IpUTtWUGdh89uEYD
-         7+r/uIpjbSbOKArEz5p/LqPMCqHT6DO3cKdj9eOhvThEJUle/z+tKnNsNHqt6Rm0QqL4
-         Q46uJSNl+F2xn6JZs+gGEoVRtWTokJVMZ4LWFkCkLpVvHUZPj5/kj9nDrrEv9MvoEqup
-         ll7hoJf8iWWc/35ie1jGlxkuNIYTqh4hWzQQyUumtRLBuSoedCiedrh75MfCHe6kJoeZ
-         AuxzbxIstBuf7E1CeiTt3p9TonBzwsvgPr01qmLEgMJqYZqLizkaNWfuh/P8azRlGhLn
-         X7ug==
-X-Gm-Message-State: AOAM530v2anTxDFtnQm0XMU/4MyYQ2a4CH++s249YwpQx7a8Mt/wG9Sx
-        YGGvs1XbsT8kY3amz9bXGulUeA==
-X-Google-Smtp-Source: ABdhPJy/FgcqpjL803/QUt6DpehETtocnf+0DIjdU+tNjllUdMmC353O7wtD73sn2n4/M/TjNpyT2Q==
-X-Received: by 2002:a37:a054:: with SMTP id j81mr17048838qke.23.1600184697935;
-        Tue, 15 Sep 2020 08:44:57 -0700 (PDT)
-Received: from uller (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
-        by smtp.gmail.com with ESMTPSA id n136sm15988518qkn.14.2020.09.15.08.44.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 08:44:57 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:44:55 +0000
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH] irqchip/qcom-pdc: Allow QCOM_PDC to be loadable as a
- permanent module
-Message-ID: <20200915154455.GG478@uller>
-References: <20200912125148.1271481-7-maz@kernel.org>
- <20200914210423.67579-1-john.stultz@linaro.org>
+        Tue, 15 Sep 2020 11:45:07 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE4EC061353;
+        Tue, 15 Sep 2020 08:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=gUZlssLy9UpUFUzUUCOc7PANoLHYkS36G70FuogZvb8=; b=zrgVHfSTZglugojNEb8HXIzBxp
+        6R1zZhKMLMt5Dvsabny+4pvxMQhm6V1JmPmfcwouiourPdiUh/k3JejnXSrIfNhk7bmfX3q6RMwls
+        9eLWk/1HXQVbrbJGmaIqzzh96xZaIxZk67aFsVGWJcgoowvo/ju2Qqx8hYqC6Ozips/6APnRPi3OJ
+        T0CpQFsJhMhgbjGVobHrY7LJwsaEnoQzpSJntNJvlSUQkurgJjbVh24HXIiAZXNc7VBt3AapozQ5q
+        g7NC6IZgvgdQsWRPdyisf8KHzZTHhMALJs0Q4M9Jo7dlP5x411Sg3ZNF2o81r+fAYKW4oLlh4o1Tk
+        CTroo6iA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kID8g-0005BT-KU; Tue, 15 Sep 2020 15:45:02 +0000
+Subject: Re: [PATCH v4] mm: memcontrol: Add the missing numa_stat interface
+ for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>, tj@kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, corbet@lwn.net,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20200915055825.5279-1-songmuchun@bytedance.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a3e2a7bf-ae5a-9ca8-74f9-57af795f0380@infradead.org>
+Date:   Tue, 15 Sep 2020 08:44:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914210423.67579-1-john.stultz@linaro.org>
+In-Reply-To: <20200915055825.5279-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Sep 21:04 UTC 2020, John Stultz wrote:
+Hi,
 
-> Allows qcom-pdc driver to be loaded as a permanent module.
+On 9/14/20 10:58 PM, Muchun Song wrote:
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
 > 
-> An earlier version of this patch was merged in a larger patchset
-> but was reverted entirely when issues were found with other
-> drivers, so now that Marc has provided a better solution in his
-> Hybrid probing patch set, I wanted to re-submit this change.
-> 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Maulik Shah <mkshah@codeaurora.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Suggested-by: Shakeel Butt <shakeelb@google.com>
 > ---
->  drivers/irqchip/Kconfig    | 2 +-
->  drivers/irqchip/qcom-pdc.c | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
+>  changelog in v4:
+>  1. Fix some document problems pointed out by Randy Dunlap.
+>  2. Remove memory_numa_stat_format() suggested by Shakeel Butt.
 > 
-> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-> index bfc9719dbcdc..bb70b7177f94 100644
-> --- a/drivers/irqchip/Kconfig
-> +++ b/drivers/irqchip/Kconfig
-> @@ -425,7 +425,7 @@ config GOLDFISH_PIC
->           for Goldfish based virtual platforms.
+>  changelog in v3:
+>  1. Fix compiler error on powerpc architecture reported by kernel test robot.
+>  2. Fix a typo from "anno" to "anon".
+> 
+>  changelog in v2:
+>  1. Add memory.numa_stat interface in cgroup v2.
+> 
+>  Documentation/admin-guide/cgroup-v2.rst | 72 +++++++++++++++++++++
+>  mm/memcontrol.c                         | 86 +++++++++++++++++++++++++
+>  2 files changed, 158 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 6be43781ec7f..bcb7b202e88d 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
+>  		collapsing an existing range of pages. This counter is not
+>  		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
 >  
->  config QCOM_PDC
-> -	bool "QCOM PDC"
-> +	tristate "QCOM PDC"
->  	depends on ARCH_QCOM
->  	select IRQ_DOMAIN_HIERARCHY
->  	help
-> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-> index 8543fa23da10..59eb3c8473b0 100644
-> --- a/drivers/irqchip/qcom-pdc.c
-> +++ b/drivers/irqchip/qcom-pdc.c
-> @@ -433,3 +433,5 @@ static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
->  IRQCHIP_HYBRID_DRIVER_BEGIN(qcom_pdc)
->  IRQCHIP_MATCH("qcom,pdc", qcom_pdc_init)
->  IRQCHIP_HYBRID_DRIVER_END(qcom_pdc)
-> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Power Domain Controller");
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.17.1
-> 
+> +  memory.numa_stat
+> +	A read-only flat-keyed file which exists on non-root cgroups.
+> +
+> +	This breaks down the cgroup's memory footprint into different
+> +	types of memory, type-specific details, and other information
+> +	per node on the state of the memory management system.
+> +
+> +	This is useful for providing visibility into the NUMA locality
+> +	information within an memcg since the pages are allowed to be
+> +	allocated from any physical node. One of the use cases is evaluating
+> +	application performance by combining this information with the
+> +	application's CPU allocation.
+> +
+> +	All memory amounts are in bytes.
+> +
+> +	The output format of memory.numa_stat is::
+> +
+> +	  type N0=<bytes in node 0 pages> N1=<bytes in node 1 pages> ...
+
+I'm OK with Shakeel's suggested change here.
+
+> +	The entries are ordered to be human readable, and new entries
+> +	can show up in the middle. Don't rely on items remaining in a
+> +	fixed position; use the keys to look up specific values!
+> +
+> +	  anon
+> +		Amount of memory per node used in anonymous mappings such
+> +		as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
+> +
+> +	  file
+> +		Amount of memory per node used to cache filesystem data,
+> +		including tmpfs and shared memory.
+> +
+> +	  kernel_stack
+> +		Amount of memory per node allocated to kernel stacks.
+> +
+> +	  shmem
+> +		Amount of cached filesystem data per node that is swap-backed,
+> +		such as tmpfs, shm segments, shared anonymous mmap()s.
+> +
+> +	  file_mapped
+> +		Amount of cached filesystem data per node mapped with mmap().
+> +
+> +	  file_dirty
+> +		Amount of cached filesystem data per node that was modified but
+> +		not yet written back to disk.
+> +
+> +	  file_writeback
+> +		Amount of cached filesystem data per node that was modified and
+> +		is currently being written back to disk.
+> +
+> +	  anon_thp
+> +		Amount of memory per node used in anonymous mappings backed by
+> +		transparent hugepages.
+> +
+> +	  inactive_anon, active_anon, inactive_file, active_file, unevictable
+> +		Amount of memory, swap-backed and filesystem-backed,
+> +		per node on the internal memory management lists used
+> +		by the page reclaim algorithm.
+> +
+> +		As these represent internal list state (e.g. shmem pages are on
+> +		anon memory management lists), inactive_foo + active_foo may not
+> +		be equal to the value for the foo counter, since the foo counter
+> +		is type-based, not list-based.
+> +
+> +	  slab_reclaimable
+> +		Amount of memory per node used for storing in-kernel data
+> +		structures which might be reclaimed, such as dentries and
+> +		inodes.
+> +
+> +	  slab_unreclaimable
+> +		Amount of memory per node used for storing in-kernel data
+> +		structures which cannot be reclaimed on memory pressure.
+> +
+>    memory.swap.current
+>  	A read-only single value file which exists on non-root
+>  	cgroups.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 75cd1a1e66c8..ff919ef3b57b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_NUMA
+> +struct numa_stat {
+> +	const char *name;
+> +	unsigned int ratio;
+> +	enum node_stat_item idx;
+> +};
+> +
+> +static struct numa_stat numa_stats[] = {
+> +	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> +	{ "file", PAGE_SIZE, NR_FILE_PAGES },
+> +	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> +	{ "shmem", PAGE_SIZE, NR_SHMEM },
+> +	{ "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> +	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> +	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	/*
+> +	 * The ratio will be initialized in numa_stats_init(). Because
+> +	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
+> +	 * constant(e.g. powerpc).
+> +	 */
+> +	{ "anon_thp", 0, NR_ANON_THPS },
+> +#endif
+> +	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> +	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> +	{ "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> +	{ "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> +	{ "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> +	{ "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> +	{ "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> +};
+> +
+> +static int __init numa_stats_init(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +		if (numa_stats[i].idx == NR_ANON_THPS)
+> +			numa_stats[i].ratio = HPAGE_PMD_SIZE;
+> +#endif
+> +	}
+
+Although the loop may be needed sometime in the future due to
+other changes.. why couldn't it be like this for now?
+
+
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> +		if (numa_stats[i].idx == NR_ANON_THPS)
+> +			numa_stats[i].ratio = HPAGE_PMD_SIZE;
+> +	}
+> +#endif
+
+
+> +
+> +	return 0;
+> +}
+> +pure_initcall(numa_stats_init);
+
+
+thanks.
+-- 
+~Randy
+
