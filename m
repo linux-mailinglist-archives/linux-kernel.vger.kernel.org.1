@@ -2,186 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF13269F02
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02956269EF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 08:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726202AbgIOG7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 02:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbgIOG7M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 02:59:12 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2DEC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:59:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gf14so1234996pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 23:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RM0TRqzdIYCRaUY20HBu5jkowpibtAwtQdq920OxMMs=;
-        b=qR9Ll7o2RG84QZEO0G0K6fbhcvZiZVgrOUGDc66w1LqUYkulRaX0ftd6SwoYkdtURI
-         U0yTWO9e2+ndVVAFUm/pafo49RX/HI78yjPbVO/H4jVp02YO9nKLTAAiQHFGP2n9GtO0
-         z1eQYNT19GwkhQMcKKDxkMd3NpSu7mX9V7zb1Kke032s23emHHPJW97oU2xIrHxoo+jp
-         j7SPIF9asXQbjBWQot6TNWd4mi5xSWJJqljHpXWk7EJDJf1b95vFmyNAZOV32svQDlLV
-         uU1p0bQ8tFCRIXUxebamqfogTjKKgDNKf29V5GcMKN3UVDmBgUlw7YQB1W5pHw9pVT6v
-         QTKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=RM0TRqzdIYCRaUY20HBu5jkowpibtAwtQdq920OxMMs=;
-        b=o/C83bMr0reEvLN8XlwrzWFRLtmMs8sWGb8+G6ZVhCnveapKQB5m+7OOh15WYMEvNm
-         ViQsRNQXekeJsASx5heo7RklHEidCPrZSDzplouUsPz0n7hKGMav5z8fg+cBTg2Ai8ud
-         1t0PrxIJr3/P1/gJCW49cQSCLbDJxCWQT+EGDsDhv8f45IoT41deVWjIdSwkGgH/OJPQ
-         xS5Ibe1HHuovn71dB+/x1dsoL+lpWXxACee/eOTt0WqusZilvxKS8y1G/fm2WSRNYOma
-         TF7yY87DcLLOEFH4i5wn1NAMr1nBKu+D97BjNFwHINpi56omtimmSfuOYJJAqX+Gn8JY
-         2Yng==
-X-Gm-Message-State: AOAM5317tTYyscyL77PBZ3JxjcU6XaQHW+c/b624RXPsao3zo6LIevYM
-        t0KSiIYHuL/41YxI0ExCKp+rww==
-X-Google-Smtp-Source: ABdhPJyoGkzadOVUWljNrZd3YqDBySXqpwl1WGOMORc4+5w7Wd+P7Fj5Dke9nLAdoa1qiFtPnHmMbA==
-X-Received: by 2002:a17:902:d714:b029:d0:cbe1:e7a2 with SMTP id w20-20020a170902d714b02900d0cbe1e7a2mr17469495ply.19.1600153151832;
-        Mon, 14 Sep 2020 23:59:11 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id o20sm11034207pgh.63.2020.09.14.23.59.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 23:59:11 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 15:59:02 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 11/21] mmc: sdhci: UHS-II support, export host
- operations to core
-Message-ID: <20200915065902.GE2860208@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111044.29509-1-benchuanggli@gmail.com>
- <5f3dc200-b9ef-a678-25b7-3bff3a529703@intel.com>
+        id S1726200AbgIOG5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 02:57:21 -0400
+Received: from mail-vi1eur05on2074.outbound.protection.outlook.com ([40.107.21.74]:62944
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726033AbgIOG5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 02:57:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J5tQkDB1avc7RELppDI1DN2+8fVPWM7DU+ihkA/WWEtZGVIpERbTZkTZRSkGyRACcES5UC0NX+pxRCGaO7TbPJl+zw5c0ZBy6LQzyJUNQamZcAOowdEXLye98Q5bLB5NJfZWPPccYUxga2fDgLOaUDwJ13zo6MNXe1NsBtWCuWgL/KuwQ83X7Ivpdbg6657f4BZNEG05Zs7kzm2qbHtTl0idnBLWyr/kovBtRlgnLjgsBE7UC0Z/IyFwVokDufx2fVUZvfOyQWGzHrC53+3YEsnlb2NaK8GeV0mxA3spzhVttu6IoEo3IizuUU27F6kCG8biLa2wrbcy9D4Y6cgBDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FX7vQFVUH/ZtwXP5QINwk9PfVBMGxobUEwp07n85BYQ=;
+ b=MP+iilyttMfjjWL5eE58LANeCHHCebjExTCh+gpahlTOBkNcdsa539BAlsoN5VBqp9CtjBQTD5O04py6mzfXQk12u8/DFa3tbA/XmVr6s2yF3Vfh8KPtmmZSHKRYDXXRFFLFlOW9anVXXPAUlQthjLzReC5Hc+/iNGkpZyV1VVc8SZDcUG7EudIeUMRMTYqGHr0ory4L0lFG3TTd/CfQb9e2rg6rcZaKHo7lFjk3UeQxWaYe+OThDo8a06HIgFD2TQaByQ4C18IxbZX3sg/+Q8cTmSVbGzn02/t+P3EqsMbgYDiDPfPJ1l0kNRUe8C20Y8kjZOd+5rrqeU9Tu9waFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FX7vQFVUH/ZtwXP5QINwk9PfVBMGxobUEwp07n85BYQ=;
+ b=clicT7FBWoFZVFJbQZk7BE7Kuyv9LbSATxn/S5UDHxwJnjYVeXKoYtLT6BQ3TrZJsY+KOFOmPxmWvwLdM6I//AVB80wJE7Xr+/UmO+bR/iOxf/43P+uMv/K0xTgOvam84oURv2fd0XSCQvLT1QiNGLv2LHXG6YniBzZK3mAubUY=
+Authentication-Results: mess.org; dkim=none (message not signed)
+ header.d=none;mess.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB7PR04MB4107.eurprd04.prod.outlook.com (2603:10a6:5:1e::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16; Tue, 15 Sep
+ 2020 06:57:09 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::d12e:689a:169:fd68]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::d12e:689a:169:fd68%8]) with mapi id 15.20.3370.019; Tue, 15 Sep 2020
+ 06:57:08 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     sean@mess.org, mchehab@kernel.org, linux-media@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, LnxRevLi@nxp.com
+Subject: [PATCH] media: rc: gpio-ir-recv: add QoS support for cpuidle system
+Date:   Tue, 15 Sep 2020 22:57:34 +0800
+Message-Id: <20200915145734.24022-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0060.apcprd02.prod.outlook.com
+ (2603:1096:4:54::24) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f3dc200-b9ef-a678-25b7-3bff3a529703@intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0060.apcprd02.prod.outlook.com (2603:1096:4:54::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.16 via Frontend Transport; Tue, 15 Sep 2020 06:57:06 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 84ba4019-96e4-4728-a701-08d859449050
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4107:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB41073C3ADE0229CD2D06AFDAE6200@DB7PR04MB4107.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NKjrIALnTaWX/V9+nRA/2aMjlBcSBXh5NvFu/1722Phto0VwMu8KzEnRYNi5ir561ESoZEAuc7iR4GYIJiQhD40JHuM/rb3VdFaUGk0Zqo4qN6HLEYTMEpA7qnfBUn5Egke5ZQ4HdzbkTygMyRtIiAexIMesozUYx4x2zPhkzgpGdhBGwcQ1OC+vzxU23xyUMeXsbxD/okaaNXlpcna+ehnXgEyzbykIt8fax0xWNVrruM4H5VDKbvdvBgrAWvrOtWSG6CNqf8ySszkqedMGq8b+AzVrj5ED5AKrXp8+NOmxl8UyNrzhPhgreL8JuN6fanI7pkUNW5STndwvZLgJFq8AwpNqYUASw2Gc3MREY2XjjVhmI5NlTUhgdH/4KYZTSfaIk6m36wqWdZUAOmodzw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(6486002)(83380400001)(16526019)(186003)(66476007)(478600001)(66946007)(66556008)(26005)(52116002)(6666004)(6506007)(8936002)(8676002)(4326008)(2906002)(5660300002)(36756003)(956004)(2616005)(86362001)(69590400008)(1076003)(6512007)(316002)(3714002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: HmbSH4VTX3bmLQ+H22/MKc861jSyhXlu0zX6EkcL00kJ+mYyn/SAY8jDa9R81QWBEOaz7HRNOSWKBsq+9PDYbuklSh9GWmtVN8xqk7jCW7SYU/Iz9lB520fVfS/PAwbMjddhvMkp7+pe8SrDTb3Y0CswKmFaU6jCznaNPlQeZCNjOStmLa2KvkSy/g4Bbm/tJCmWNCWfk1GSeV/yWzGFj4C1HkedGiYtiKkX8myZnHQod9tjoV0ejKfkRjidzhp/Fu8EbTYOjjrSun0dKngmYay2rydCKiG/gWzC2VoHuDnON6827myRlsRdvXpo4tCbZ8xrbdBc9eA6jeNAqrfaLDSDKei5CDRydulbZaaZJaapEMIUizooBQwg4/H9rEmVJzAT5L/ItaIu0WE9ZDWMNoxPbituPIuhtz5Q15KYngxByH6W2JFJehPsIDxU4hD3IgHmn7ninV8TnuY3fY/75+5rcJetILzvozNcR5UDZLiH1PfSXoGmHGKlpoZBczQv9UxDkr6TxDpRBJSntNHcXkG5Ul60Y3YOM7N4FvZ/PbWljuc7ljMvg1Gu+LJU/SESWBkKflY8dsAdai2zKq029qyeq/pwcubzthHhVs51RT3v78SvUcfgC/kDR27wn6ME7OXbijq0VdPH9k8OteElXQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84ba4019-96e4-4728-a701-08d859449050
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Sep 2020 06:57:08.8938
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ds87vP2AzJ9aMvfJ8Xz+lTpUv2lHgespLa1sBptrRkdipFrsVCN4RYlgl2ZFYS4SFyWfRRI6CkxpUr0fmeo10A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 05:05:44PM +0300, Adrian Hunter wrote:
-> On 10/07/20 2:10 pm, Ben Chuang wrote:
-> > From: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > 
-> > Export sdhci-specific UHS-II operations to core.
-> > 
-> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > ---
-> >  drivers/mmc/host/sdhci.c | 70 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 70 insertions(+)
-> > 
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index c2f6923d296c..aaf41954511a 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -2977,6 +2977,70 @@ static void sdhci_card_event(struct mmc_host *mmc)
-> >  	spin_unlock_irqrestore(&host->lock, flags);
-> >  }
-> >  
-> > +#if IS_ENABLED(CONFIG_MMC_SDHCI_UHS2)
-> > +static int sdhci_uhs2_detect_init(struct mmc_host *mmc)
-> > +{
-> > +	struct sdhci_host *host = mmc_priv(mmc);
-> > +	int ret;
-> > +
-> > +	if (sdhci_uhs2_ops.do_detect_init)
-> > +		ret = sdhci_uhs2_ops.do_detect_init(host);
-> > +	else
-> > +		return 0;
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static int sdhci_uhs2_set_reg(struct mmc_host *mmc, enum uhs2_act act)
-> > +{
-> > +	struct sdhci_host *host = mmc_priv(mmc);
-> > +	int ret;
-> > +
-> > +	if (sdhci_uhs2_ops.do_set_reg)
-> > +		ret = sdhci_uhs2_ops.do_set_reg(host, act);
-> > +	else
-> > +		ret = 0;
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void sdhci_uhs2_disable_clk(struct mmc_host *mmc)
-> > +{
-> > +	struct sdhci_host *host = mmc_priv(mmc);
-> > +	u16 clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> > +
-> > +	clk &= ~SDHCI_CLOCK_CARD_EN;
-> > +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> > +}
-> > +
-> > +static void sdhci_uhs2_enable_clk(struct mmc_host *mmc)
-> > +{
-> > +	struct sdhci_host *host = mmc_priv(mmc);
-> > +	u16 clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> > +	ktime_t timeout;
-> > +
-> > +	clk |= SDHCI_CLOCK_CARD_EN;
-> > +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
-> > +
-> > +	/* Wait max 20 ms */
-> > +	timeout = ktime_add_ms(ktime_get(), 20);
-> > +	while (1) {
-> > +		bool timedout = ktime_after(ktime_get(), timeout);
-> > +
-> > +		clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> > +		if (clk & SDHCI_CLOCK_INT_STABLE)
-> > +			break;
-> > +		if (timedout) {
-> > +			pr_err("%s: Internal clock never stabilised.\n",
-> > +			       mmc_hostname(host->mmc));
-> > +			sdhci_dumpregs(host);
-> > +			return;
-> > +		}
-> > +		udelay(10);
-> > +	}
-> > +}
-> > +#endif /* CONFIG_MMC_SDHCI_UHS2 */
-> 
-> Please put all uhs2 functions in sdhci-uhs2.c and call them through sdhci_ops.
+GPIO IR receive is much rely on interrupt response, uneven interrupt
+latency will lead to incorrect timing, so the decoder fails to decode
+it. The issue is particularly acute on systems which supports
+cpuidle, dynamically disable and enable cpuidle can solve this problem
+to a great extent.
 
-Okay although the logic itself in sdhci_uhs2_[enable|disable]_clk()
-doesn't seem to be UHS-II specific.
+However, there is a downside to this approach, the measurement of header
+on the first frame may incorrect. Test on i.MX8M serials, when enable
+cpuidle, interrupt latency could be about 500us.
 
--Takahiro Akashi
+With this patch:
+1. has no side effect on non-cpuidle system.
+2. latency is still much longer for the first gpio interrupt on cpuidle
+system, so the first frame may not be decoded. Generally, RC would transmit
+multiple frames at once press, we can sacrifice the first frame.
 
-> 
-> > +
-> >  static const struct mmc_host_ops sdhci_ops = {
-> >  	.request	= sdhci_request,
-> >  	.post_req	= sdhci_post_req,
-> > @@ -2992,6 +3056,12 @@ static const struct mmc_host_ops sdhci_ops = {
-> >  	.execute_tuning			= sdhci_execute_tuning,
-> >  	.card_event			= sdhci_card_event,
-> >  	.card_busy	= sdhci_card_busy,
-> > +#if IS_ENABLED(CONFIG_MMC_SDHCI_UHS2)
-> > +	.uhs2_detect_init	= sdhci_uhs2_detect_init,
-> > +	.uhs2_set_reg		= sdhci_uhs2_set_reg,
-> > +	.uhs2_disable_clk	= sdhci_uhs2_disable_clk,
-> > +	.uhs2_enable_clk	= sdhci_uhs2_enable_clk,
-> > +#endif /* CONFIG_MMC_SDHCI_UHS2 */
-> >  };
-> >  
-> >  /*****************************************************************************\
-> > 
-> 
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+---
+ drivers/media/rc/gpio-ir-recv.c | 49 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/rc/gpio-ir-recv.c b/drivers/media/rc/gpio-ir-recv.c
+index a20413008c3c..42c942ce98cd 100644
+--- a/drivers/media/rc/gpio-ir-recv.c
++++ b/drivers/media/rc/gpio-ir-recv.c
+@@ -11,6 +11,8 @@
+ #include <linux/of.h>
+ #include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/pm_qos.h>
+ #include <linux/irq.h>
+ #include <media/rc-core.h>
+ 
+@@ -20,17 +22,36 @@ struct gpio_rc_dev {
+ 	struct rc_dev *rcdev;
+ 	struct gpio_desc *gpiod;
+ 	int irq;
++	struct pm_qos_request qos;
+ };
+ 
+ static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
+ {
+-	int val;
++	int ret, val;
+ 	struct gpio_rc_dev *gpio_dev = dev_id;
++	struct device *dev = gpio_dev->rcdev->dev.parent;
++
++	/*
++	 * For cpuidle system:
++	 * Respond to interrupt taking more latency when cpu in idle.
++	 * Invoke asynchronous pm runtime get from interrupt context,
++	 * this may introduce a millisecond delay to call resume callback,
++	 * where to disable cpuilde.
++	 *
++	 * Two issues lead to fail to decode first frame, one is latency to
++	 * respond interupt, another is delay introduced by async api.
++	 */
++	ret = pm_runtime_get(dev);
++	if (ret < 0)
++		return IRQ_NONE;
+ 
+ 	val = gpiod_get_value(gpio_dev->gpiod);
+ 	if (val >= 0)
+ 		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
+ 
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+@@ -92,6 +113,12 @@ static int gpio_ir_recv_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, gpio_dev);
+ 
++
++	pm_runtime_set_autosuspend_delay(dev, (rcdev->timeout / 1000 / 1000));
++	pm_runtime_use_autosuspend(dev);
++	pm_runtime_set_suspended(dev);
++	pm_runtime_enable(dev);
++
+ 	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
+ 				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
+ 				"gpio-ir-recv-irq", gpio_dev);
+@@ -122,9 +149,29 @@ static int gpio_ir_recv_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int gpio_ir_recv_runtime_suspend(struct device *dev)
++{
++	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
++
++	cpu_latency_qos_remove_request(&gpio_dev->qos);
++
++	return 0;
++}
++
++static int gpio_ir_recv_runtime_resume(struct device *dev)
++{
++	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
++
++	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
++
++	return 0;
++}
++
+ static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
+ 	.suspend        = gpio_ir_recv_suspend,
+ 	.resume         = gpio_ir_recv_resume,
++	.runtime_suspend = gpio_ir_recv_runtime_suspend,
++	.runtime_resume  = gpio_ir_recv_runtime_resume,
+ };
+ #endif
+ 
+-- 
+2.17.1
+
