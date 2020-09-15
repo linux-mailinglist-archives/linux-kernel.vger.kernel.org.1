@@ -2,263 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83B7269B18
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACC9269AF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 03:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgIOB2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Sep 2020 21:28:52 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:52362 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgIOB2e (ORCPT
+        id S1726086AbgIOBTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Sep 2020 21:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbgIOBTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Sep 2020 21:28:34 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 653D22A027; Mon, 14 Sep 2020 21:28:30 -0400 (EDT)
-To:     "David S. Miller" <davem@davemloft.net>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc:     "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        "Joshua Thompson" <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-Message-Id: <52189e8ee3f8b578e8477f4f05a2c880629209c2.1600132677.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH v3] ide/macide: Convert Mac IDE driver to platform driver
-Date:   Tue, 15 Sep 2020 11:17:57 +1000
+        Mon, 14 Sep 2020 21:19:18 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30DEC06174A;
+        Mon, 14 Sep 2020 18:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Cc:From:References:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=v9FWm4hfn+Gl7QRXgXNxLaYsXltVQy8MIpwN6KsfkPU=; b=APwmWzHow9lj1CoVKgq9lWkz3L
+        z9nA9PnAK5TNUuzh8Q1nmMyi/UFC6SABsKF2E/vx8KGzRhMlrpf4qVpcUMcOd1OSB6A1ArPj0D6hm
+        LPy8MurFW8NUL36E7pPIWZRuATJhJJjakeE9JdwRWHQbP8rSdPZ0UDOI9xfjom/+3diDYuPxhvfiZ
+        rxjZWzJCu1FBt4cNgg6QXNRh7aE75dmJgv1mLOQc5C9+gkHiAKzE59RH63BnHgRDeAPoxorOlsQtO
+        lqzVIpL2w4FasBymgzaxO05jqJjbE3zzzVgPxeElT66cfvdGZL36wYZ/AGGyrgtfSbHB/77L9H+ul
+        HcMKMEuA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHzcW-0002kl-V7; Tue, 15 Sep 2020 01:18:57 +0000
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+References: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yuan Ming <yuanmingbuaa@gmail.com>, Willy Tarreau <w@1wt.eu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        NopNop Nop <nopitydays@gmail.com>,
+        =?UTF-8?B?5byg5LqR5rW3?= <zhangyunhai@nsfocus.com>,
+        Andy Lutomirski <luto@amacapital.net>
+Message-ID: <c9cd22ec-60dc-d761-b488-d3a1392708c0@infradead.org>
+Date:   Mon, 14 Sep 2020 18:18:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <git-mailbomb-linux-master-50145474f6ef4a9c19205b173da6264a644c7489@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add platform devices for the Mac IDE controller variants. Convert the
-macide module into a platform driver to support two of those variants.
-For the third, use a generic "pata_platform" driver instead.
-This enables automatic loading of the appropriate module and begins
-the process of replacing the driver with libata alternatives.
+HI--
 
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Joshua Thompson <funaho@jurai.org>
-References: commit 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-References: commit 7ad19a99ad431 ("ide: officially deprecated the legacy IDE driver")
-Tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
-This patch was tested successfully on a Powerbook 190 (MAC_IDE_BABOON)
-using both pata_platform and ide_platform drivers.
-The next step will be to try using these generic drivers with the other
-IDE controller variants (MAC_IDE_QUADRA or MAC_IDE_PB) so that the macide
-driver can be entirely replaced with libata drivers.
+On 9/14/20 3:48 PM, Linux Kernel Mailing List wrote:
+> Commit:     50145474f6ef4a9c19205b173da6264a644c7489
+> Parent:     856deb866d16e29bd65952e0289066f6078af773
+> Refname:    refs/heads/master
+> Web:        https://git.kernel.org/torvalds/c/50145474f6ef4a9c19205b173da6264a644c7489
+> Author:     Linus Torvalds <torvalds@linux-foundation.org>
+> AuthorDate: Mon Sep 7 11:45:27 2020 -0700
+> Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+> CommitDate: Mon Sep 14 10:06:15 2020 -0700
+> 
+>     fbcon: remove soft scrollback code
+>     
+>     This (and the VGA soft scrollback) turns out to have various nasty small
+>     special cases that nobody really is willing to fight.  The soft
+>     scrollback code was really useful a few decades ago when you typically
+>     used the console interactively as the main way to interact with the
+>     machine, but that just isn't the case any more.
 
-Changed since v2:
- - Enabled CONFIG_BLK_DEV_PLATFORM in multi_defconfig.
- - Replaced dev_get_drvdata() with platform_get_drvdata().
+and:
 
-Changed since v1:
- - Adopted DEFINE_RES_MEM and DEFINE_RES_IRQ macros.
- - Dropped IORESOURCE_IRQ_SHAREABLE flag as it is ignored by pata_platform.c
-   and IRQF_SHARED makes no difference in this case.
- - Removed redundant release_mem_region() call.
- - Enabled CONFIG_BLK_DEV_PLATFORM in mac_defconfig. We might also enable
-   CONFIG_PATA_PLATFORM but IMO migration to libata should be a separate
-   patch (as this patch has some unrelated benefits).
----
- arch/m68k/configs/mac_defconfig   |  1 +
- arch/m68k/configs/multi_defconfig |  1 +
- arch/m68k/mac/config.c            | 41 +++++++++++++++++++
- drivers/ide/macide.c              | 66 ++++++++++++++++++++-----------
- 4 files changed, 86 insertions(+), 23 deletions(-)
+> Commit:     973c096f6a85e5b5f2a295126ba6928d9a6afd45
+> Parent:     06a0df4d1b8b13b551668e47b11fd7629033b7df
+> Refname:    refs/heads/master
+> Web:        https://git.kernel.org/torvalds/c/973c096f6a85e5b5f2a295126ba6928d9a6afd45
+> Author:     Linus Torvalds <torvalds@linux-foundation.org>
+> AuthorDate: Wed Sep 9 14:53:50 2020 -0700
+> Committer:  Linus Torvalds <torvalds@linux-foundation.org>
+> CommitDate: Mon Sep 14 10:06:15 2020 -0700
+> 
+>     vgacon: remove software scrollback support
 
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 6087798662601..f770970fe4e99 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -317,6 +317,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_MAC_IDE=y
- CONFIG_RAID_ATTRS=m
- CONFIG_SCSI=y
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 0abb53c38c20d..f93c3021f20d4 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -346,6 +346,7 @@ CONFIG_DUMMY_IRQ=m
- CONFIG_IDE=y
- CONFIG_IDE_GD_ATAPI=y
- CONFIG_BLK_DEV_IDECD=y
-+CONFIG_BLK_DEV_PLATFORM=y
- CONFIG_BLK_DEV_GAYLE=y
- CONFIG_BLK_DEV_BUDDHA=y
- CONFIG_BLK_DEV_FALCON_IDE=y
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 5c9f3a2d65388..43fc29180cb58 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -24,6 +24,7 @@
- #include <linux/init.h>
- #include <linux/vt_kern.h>
- #include <linux/platform_device.h>
-+#include <linux/ata_platform.h>
- #include <linux/adb.h>
- #include <linux/cuda.h>
- #include <linux/pmu.h>
-@@ -940,6 +941,26 @@ static const struct resource mac_scsi_ccl_rsrc[] __initconst = {
- 	},
- };
- 
-+static const struct resource mac_ide_quadra_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_F),
-+};
-+
-+static const struct resource mac_ide_pb_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x104),
-+	DEFINE_RES_IRQ(IRQ_NUBUS_C),
-+};
-+
-+static const struct resource mac_pata_baboon_rsrc[] __initconst = {
-+	DEFINE_RES_MEM(0x50F1A000, 0x38),
-+	DEFINE_RES_MEM(0x50F1A038, 0x04),
-+	DEFINE_RES_IRQ(IRQ_BABOON_1),
-+};
-+
-+static const struct pata_platform_info mac_pata_baboon_data __initconst = {
-+	.ioport_shift = 2,
-+};
-+
- int __init mac_platform_init(void)
- {
- 	phys_addr_t swim_base = 0;
-@@ -1048,6 +1069,26 @@ int __init mac_platform_init(void)
- 		break;
- 	}
- 
-+	/*
-+	 * IDE device
-+	 */
-+
-+	switch (macintosh_config->ide_type) {
-+	case MAC_IDE_QUADRA:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_quadra_rsrc, ARRAY_SIZE(mac_ide_quadra_rsrc));
-+		break;
-+	case MAC_IDE_PB:
-+		platform_device_register_simple("mac_ide", -1,
-+			mac_ide_pb_rsrc, ARRAY_SIZE(mac_ide_pb_rsrc));
-+		break;
-+	case MAC_IDE_BABOON:
-+		platform_device_register_resndata(NULL, "pata_platform", -1,
-+			mac_pata_baboon_rsrc, ARRAY_SIZE(mac_pata_baboon_rsrc),
-+			&mac_pata_baboon_data, sizeof(mac_pata_baboon_data));
-+		break;
-+	}
-+
- 	/*
- 	 * Ethernet device
- 	 */
-diff --git a/drivers/ide/macide.c b/drivers/ide/macide.c
-index 3c6bb8599303b..8a201a467886b 100644
---- a/drivers/ide/macide.c
-+++ b/drivers/ide/macide.c
-@@ -18,10 +18,11 @@
- #include <linux/delay.h>
- #include <linux/ide.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/macintosh.h>
--#include <asm/macints.h>
--#include <asm/mac_baboon.h>
-+
-+#define DRV_NAME "mac_ide"
- 
- #define IDE_BASE 0x50F1A000	/* Base address of IDE controller */
- 
-@@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-  * Probe for a Macintosh IDE interface
-  */
- 
--static int __init macide_init(void)
-+static int mac_ide_probe(struct platform_device *pdev)
- {
--	unsigned long base;
--	int irq;
-+	struct resource *mem, *irq;
- 	struct ide_hw hw, *hws[] = { &hw };
- 	struct ide_port_info d = macide_port_info;
-+	struct ide_host *host;
-+	int rc;
- 
- 	if (!MACH_IS_MAC)
- 		return -ENODEV;
- 
--	switch (macintosh_config->ide_type) {
--	case MAC_IDE_QUADRA:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_F;
--		break;
--	case MAC_IDE_PB:
--		base = IDE_BASE;
--		irq = IRQ_NUBUS_C;
--		break;
--	case MAC_IDE_BABOON:
--		base = BABOON_BASE;
--		d.port_ops = NULL;
--		irq = IRQ_BABOON_1;
--		break;
--	default:
-+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem)
-+		return -ENODEV;
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq)
- 		return -ENODEV;
-+
-+	if (!devm_request_mem_region(&pdev->dev, mem->start,
-+				     resource_size(mem), DRV_NAME)) {
-+		dev_err(&pdev->dev, "resources busy\n");
-+		return -EBUSY;
- 	}
- 
- 	printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
- 			 mac_ide_name[macintosh_config->ide_type - 1]);
- 
--	macide_setup_ports(&hw, base, irq);
-+	macide_setup_ports(&hw, mem->start, irq->start);
- 
--	return ide_host_add(&d, hws, 1, NULL);
-+	rc = ide_host_add(&d, hws, 1, &host);
-+	if (rc)
-+		return rc;
-+
-+	platform_set_drvdata(pdev, host);
-+	return 0;
- }
- 
--module_init(macide_init);
-+static int mac_ide_remove(struct platform_device *pdev)
-+{
-+	struct ide_host *host = platform_get_drvdata(pdev);
-+
-+	ide_host_remove(host);
-+	return 0;
-+}
-+
-+static struct platform_driver mac_ide_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+	},
-+	.probe  = mac_ide_probe,
-+	.remove = mac_ide_remove,
-+};
-+
-+module_platform_driver(mac_ide_driver);
- 
-+MODULE_ALIAS("platform:" DRV_NAME);
- MODULE_LICENSE("GPL");
+
+
+diffstats:
+
+> ---
+>  drivers/video/fbdev/core/fbcon.c | 334 +--------------------------------------
+>  1 file changed, 4 insertions(+), 330 deletions(-)
+
+>  arch/powerpc/configs/pasemi_defconfig |   1 -
+>  arch/powerpc/configs/ppc6xx_defconfig |   1 -
+>  arch/x86/configs/i386_defconfig       |   1 -
+>  arch/x86/configs/x86_64_defconfig     |   1 -
+>  drivers/video/console/Kconfig         |  46 -------
+>  drivers/video/console/vgacon.c        | 221 +---------------------------------
+>  6 files changed, 1 insertion(+), 270 deletions(-)
+
+
+
+
+Now someone can remove the documentation for scrollback (and "no-scroll")...
+
+
 -- 
-2.26.2
+~Randy
 
