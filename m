@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D47026A76F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D607126A789
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 16:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbgIOOpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 10:45:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43012 "EHLO mail.kernel.org"
+        id S1727327AbgIOOup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 10:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727045AbgIOOb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 10:31:29 -0400
+        id S1727081AbgIOOca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 10:32:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D959422BEF;
-        Tue, 15 Sep 2020 14:23:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E84C222B8;
+        Tue, 15 Sep 2020 14:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600179788;
-        bh=sqMiux7YFL12oeLmvSHQEdY+BOA8nNfOb2gJMb81Z9c=;
+        s=default; t=1600179829;
+        bh=uXyLgWWtXvtKawlnH3XELolzRHSpqGxGipb5/muov4s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=klksSWbMZHmkhGoOYqvCpxH2sRRWHD0Kvce1+Gqwv2UTS92IZB6Z9Gu4Qx3cbp9NX
-         z4+WvwFAvvxsIYMuCrZADZreWxXACIT2kwX4FAqCYtGFGDnP+yEN5vDD8a8nsaMiDE
-         jrj+YaNsEZk/Yk2M1oPkbcuiLnUqCVq1j3+Z/nb8=
+        b=SK2Hbyu6hL8hnVt1JaxZawEFntdF41YAFnT1hE1eBwhcuJ+3SBGl6CgQSyLmYahq6
+         8vmWGxVABK89cTn3PgOaTSqJQrWpQyTqCefv+I86BdkIW7nGr9Yti62onLjGD425V3
+         MXAl5/tITBzOICKdp4IL9WoPBHzkNkUGG50XkerE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladis Dronov <vdronov@redhat.com>
-Subject: [PATCH 5.4 118/132] debugfs: Fix module state check condition
-Date:   Tue, 15 Sep 2020 16:13:40 +0200
-Message-Id: <20200915140650.024329304@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Thierer <mthierer@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.4 127/132] usb: Fix out of sync data toggle if a configured device is reconfigured
+Date:   Tue, 15 Sep 2020 16:13:49 +0200
+Message-Id: <20200915140650.462889400@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200915140644.037604909@linuxfoundation.org>
 References: <20200915140644.037604909@linuxfoundation.org>
@@ -42,43 +43,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladis Dronov <vdronov@redhat.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit e3b9fc7eec55e6fdc8beeed18f2ed207086341e2 upstream.
+commit cfd54fa83a5068b61b7eb28d3c117d8354c74c7a upstream.
 
-The '#ifdef MODULE' check in the original commit does not work as intended.
-The code under the check is not built at all if CONFIG_DEBUG_FS=y. Fix this
-by using a correct check.
+Userspace drivers that use a SetConfiguration() request to "lightweight"
+reset an already configured usb device might cause data toggles to get out
+of sync between the device and host, and the device becomes unusable.
 
-Fixes: 275678e7a9be ("debugfs: Check module state before warning in {full/open}_proxy_open()")
-Signed-off-by: Vladis Dronov <vdronov@redhat.com>
+The xHCI host requires endpoints to be dropped and added back to reset the
+toggle. If USB core notices the new configuration is the same as the
+current active configuration it will avoid these extra steps by calling
+usb_reset_configuration() instead of usb_set_configuration().
+
+A SetConfiguration() request will reset the device side data toggles.
+Make sure usb_reset_configuration() function also drops and adds back the
+endpoints to ensure data toggles are in sync.
+
+To avoid code duplication split the current usb_disable_device() function
+and reuse the endpoint specific part.
+
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200811150129.53343-1-vdronov@redhat.com
+Tested-by: Martin Thierer <mthierer@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200901082528.12557-1-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/debugfs/file.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/core/message.c |   93 ++++++++++++++++++++-------------------------
+ 1 file changed, 43 insertions(+), 50 deletions(-)
 
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -176,7 +176,7 @@ static int open_proxy_open(struct inode
- 		goto out;
+--- a/drivers/usb/core/message.c
++++ b/drivers/usb/core/message.c
+@@ -1204,6 +1204,34 @@ void usb_disable_interface(struct usb_de
+ 	}
+ }
  
- 	if (!fops_get(real_fops)) {
--#ifdef MODULE
-+#ifdef CONFIG_MODULES
- 		if (real_fops->owner &&
- 		    real_fops->owner->state == MODULE_STATE_GOING)
- 			goto out;
-@@ -311,7 +311,7 @@ static int full_proxy_open(struct inode
- 		goto out;
++/*
++ * usb_disable_device_endpoints -- Disable all endpoints for a device
++ * @dev: the device whose endpoints are being disabled
++ * @skip_ep0: 0 to disable endpoint 0, 1 to skip it.
++ */
++static void usb_disable_device_endpoints(struct usb_device *dev, int skip_ep0)
++{
++	struct usb_hcd *hcd = bus_to_hcd(dev->bus);
++	int i;
++
++	if (hcd->driver->check_bandwidth) {
++		/* First pass: Cancel URBs, leave endpoint pointers intact. */
++		for (i = skip_ep0; i < 16; ++i) {
++			usb_disable_endpoint(dev, i, false);
++			usb_disable_endpoint(dev, i + USB_DIR_IN, false);
++		}
++		/* Remove endpoints from the host controller internal state */
++		mutex_lock(hcd->bandwidth_mutex);
++		usb_hcd_alloc_bandwidth(dev, NULL, NULL, NULL);
++		mutex_unlock(hcd->bandwidth_mutex);
++	}
++	/* Second pass: remove endpoint pointers */
++	for (i = skip_ep0; i < 16; ++i) {
++		usb_disable_endpoint(dev, i, true);
++		usb_disable_endpoint(dev, i + USB_DIR_IN, true);
++	}
++}
++
+ /**
+  * usb_disable_device - Disable all the endpoints for a USB device
+  * @dev: the device whose endpoints are being disabled
+@@ -1217,7 +1245,6 @@ void usb_disable_interface(struct usb_de
+ void usb_disable_device(struct usb_device *dev, int skip_ep0)
+ {
+ 	int i;
+-	struct usb_hcd *hcd = bus_to_hcd(dev->bus);
  
- 	if (!fops_get(real_fops)) {
--#ifdef MODULE
-+#ifdef CONFIG_MODULES
- 		if (real_fops->owner &&
- 		    real_fops->owner->state == MODULE_STATE_GOING)
- 			goto out;
+ 	/* getting rid of interfaces will disconnect
+ 	 * any drivers bound to them (a key side effect)
+@@ -1263,22 +1290,8 @@ void usb_disable_device(struct usb_devic
+ 
+ 	dev_dbg(&dev->dev, "%s nuking %s URBs\n", __func__,
+ 		skip_ep0 ? "non-ep0" : "all");
+-	if (hcd->driver->check_bandwidth) {
+-		/* First pass: Cancel URBs, leave endpoint pointers intact. */
+-		for (i = skip_ep0; i < 16; ++i) {
+-			usb_disable_endpoint(dev, i, false);
+-			usb_disable_endpoint(dev, i + USB_DIR_IN, false);
+-		}
+-		/* Remove endpoints from the host controller internal state */
+-		mutex_lock(hcd->bandwidth_mutex);
+-		usb_hcd_alloc_bandwidth(dev, NULL, NULL, NULL);
+-		mutex_unlock(hcd->bandwidth_mutex);
+-		/* Second pass: remove endpoint pointers */
+-	}
+-	for (i = skip_ep0; i < 16; ++i) {
+-		usb_disable_endpoint(dev, i, true);
+-		usb_disable_endpoint(dev, i + USB_DIR_IN, true);
+-	}
++
++	usb_disable_device_endpoints(dev, skip_ep0);
+ }
+ 
+ /**
+@@ -1521,6 +1534,9 @@ EXPORT_SYMBOL_GPL(usb_set_interface);
+  * The caller must own the device lock.
+  *
+  * Return: Zero on success, else a negative error code.
++ *
++ * If this routine fails the device will probably be in an unusable state
++ * with endpoints disabled, and interfaces only partially enabled.
+  */
+ int usb_reset_configuration(struct usb_device *dev)
+ {
+@@ -1536,10 +1552,7 @@ int usb_reset_configuration(struct usb_d
+ 	 * calls during probe() are fine
+ 	 */
+ 
+-	for (i = 1; i < 16; ++i) {
+-		usb_disable_endpoint(dev, i, true);
+-		usb_disable_endpoint(dev, i + USB_DIR_IN, true);
+-	}
++	usb_disable_device_endpoints(dev, 1); /* skip ep0*/
+ 
+ 	config = dev->actconfig;
+ 	retval = 0;
+@@ -1552,34 +1565,10 @@ int usb_reset_configuration(struct usb_d
+ 		mutex_unlock(hcd->bandwidth_mutex);
+ 		return -ENOMEM;
+ 	}
+-	/* Make sure we have enough bandwidth for each alternate setting 0 */
+-	for (i = 0; i < config->desc.bNumInterfaces; i++) {
+-		struct usb_interface *intf = config->interface[i];
+-		struct usb_host_interface *alt;
+-
+-		alt = usb_altnum_to_altsetting(intf, 0);
+-		if (!alt)
+-			alt = &intf->altsetting[0];
+-		if (alt != intf->cur_altsetting)
+-			retval = usb_hcd_alloc_bandwidth(dev, NULL,
+-					intf->cur_altsetting, alt);
+-		if (retval < 0)
+-			break;
+-	}
+-	/* If not, reinstate the old alternate settings */
++
++	/* xHCI adds all endpoints in usb_hcd_alloc_bandwidth */
++	retval = usb_hcd_alloc_bandwidth(dev, config, NULL, NULL);
+ 	if (retval < 0) {
+-reset_old_alts:
+-		for (i--; i >= 0; i--) {
+-			struct usb_interface *intf = config->interface[i];
+-			struct usb_host_interface *alt;
+-
+-			alt = usb_altnum_to_altsetting(intf, 0);
+-			if (!alt)
+-				alt = &intf->altsetting[0];
+-			if (alt != intf->cur_altsetting)
+-				usb_hcd_alloc_bandwidth(dev, NULL,
+-						alt, intf->cur_altsetting);
+-		}
+ 		usb_enable_lpm(dev);
+ 		mutex_unlock(hcd->bandwidth_mutex);
+ 		return retval;
+@@ -1588,8 +1577,12 @@ reset_old_alts:
+ 			USB_REQ_SET_CONFIGURATION, 0,
+ 			config->desc.bConfigurationValue, 0,
+ 			NULL, 0, USB_CTRL_SET_TIMEOUT);
+-	if (retval < 0)
+-		goto reset_old_alts;
++	if (retval < 0) {
++		usb_hcd_alloc_bandwidth(dev, NULL, NULL, NULL);
++		usb_enable_lpm(dev);
++		mutex_unlock(hcd->bandwidth_mutex);
++		return retval;
++	}
+ 	mutex_unlock(hcd->bandwidth_mutex);
+ 
+ 	/* re-init hc/hcd interface/endpoint state */
 
 
