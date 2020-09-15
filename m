@@ -2,122 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F4226ADE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D3D26ADEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 21:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727637AbgIOTpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 15:45:00 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:36266 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727917AbgIOTnf (ORCPT
+        id S1727871AbgIOTpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 15:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727899AbgIOToY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 15:43:35 -0400
-Received: by mail-io1-f67.google.com with SMTP id d190so5491148iof.3;
-        Tue, 15 Sep 2020 12:43:26 -0700 (PDT)
+        Tue, 15 Sep 2020 15:44:24 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C6FC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:44:23 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id c18so4527819wrm.9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 12:44:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cc84912ps9QzBUrSER3j4GRi1EEaiC0ms1w3qlDFryQ=;
+        b=aEQyiLWSOdLI4o7RIrCD77KLfP9RTLKwjeaNeEcI7p0ufgj6Cwg0oD/xgFdaGhYEeK
+         teKZXHaAOcOo3CTdOaCNr4PUxQplO9fazQEU/d617gbFnAU7lVzHq9wnWNtakwC2b9G4
+         CaBh6qEHyRCvuew+3cabF3oISRn4cepWn/+gmlYYwGHDPdSijPs45RdJs43GbthH7EHF
+         J5Ez3dnqQcrxn79ysb3lfe4qGZQUM80N6Hfy0rbbJvOH1IyOkDx59k3tJrSTJNJ59BRE
+         R3ExEmZ6iiRzrZ0jNdn3idP7zl/u3JbFLZUkMJfjzl9xZbh/+8328HvAJhp2+U9/JRep
+         SYBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eRZQhzTMmUeiuKlmoGBp2VVdP4CJK3/kYrIG+y2NeFo=;
-        b=FndszHdbYrZQNqsIosY+6r7P27hHS3zIteobKpRLAgbLBm1LfZsUS/3bT3leDHF258
-         bc+lSdyJ9f/xzo90Wv5IrQkuRxZSsdceqf1M3CLMWZl/VdrT2nMIzwZLNulnxX9LlEsd
-         f/QHhFv9EQXK214jl1FS0zCr7CbZ8//z/kCi9grbFDz/odfwltokEm5oPMCWCyZEiJvK
-         4tb0ylNqJltPAc6pFbxvCoIVTQGog2ps4vFFhJKsinDD0KVMtMcWtJN8uCLV1bf35LB9
-         pVyqH97OboEyonATKZGBtuCC09N9tFhIHHy+WW7U5SvF/H/7an7pWuJPJShu9hEW4h+L
-         Emeg==
-X-Gm-Message-State: AOAM531x3Qc+JwfFx8LHiisVMwsflab2cE8KJUxWymNZIMhR8NMdAXil
-        BLS/4luLWAOuiF39eYK7Fg==
-X-Google-Smtp-Source: ABdhPJxnXWTYKNffPmeuhGOFEm7G5Yf/fEtWzDxYMOeM7FZMNDfZGxx3N8Ni10M0QTyXrE9I8ZxqQA==
-X-Received: by 2002:a6b:700f:: with SMTP id l15mr16331604ioc.168.1600199006137;
-        Tue, 15 Sep 2020 12:43:26 -0700 (PDT)
-Received: from xps15 ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id n68sm9704118ila.43.2020.09.15.12.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 12:43:25 -0700 (PDT)
-Received: (nullmailer pid 2381919 invoked by uid 1000);
-        Tue, 15 Sep 2020 19:43:24 -0000
-Date:   Tue, 15 Sep 2020 13:43:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Wolfram Sang <wolfram@the-dreams.de>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] dt-bindings: i2c: imx: Add properties and use
- unevaluatedProperties
-Message-ID: <20200915194324.GA2379924@bogus>
-References: <20200910182244.5815-1-krzk@kernel.org>
- <20200910182244.5815-3-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cc84912ps9QzBUrSER3j4GRi1EEaiC0ms1w3qlDFryQ=;
+        b=kAj/r3vuvwnEJrGgqCuPQBNkj9lU5I5W9csHHwP8G7M2hb24CrlYatjtN/CkphGwEk
+         P+1EVap6vrDMUjJyNeO8HbnCb17OycCETcNHnr1fXrTs+g8tHtn4zXTUwvBDkiP4ZV/C
+         mvS/dHDKhVOJDedn8QkMyrElojT1LpXr6UhVQasbEYt6aGIzU3RhL2ZJ3HEmY1x+v3JL
+         6UpJIpK6Jp0hj9zu9Oh4e0sEQbTT/wTinM/EwsxDwppfw3ZUJoa9lCmlR2PEi4m76yXZ
+         rt5HOd/ahZ9sbwj6MaP+yjYy8w+8zXwiYiOYrs7v0MtObOo+HF82Hxg+AMMJA0qo8zGa
+         xunQ==
+X-Gm-Message-State: AOAM532M7Y8IrKg2eBg29pTsdIDNmuuKUF0A5yeYdFYuemmW00it52RX
+        pIQ31hhQXY9MdEVu+wDgGRbcuG50lQHQkBrpkDg=
+X-Google-Smtp-Source: ABdhPJzOePrptUE3RAcwh0Ybv8+dGJ8Y7Ir6h24d+B4f9X84uHxDb5x1cF2UQnnahPWpshF4Qeh6SmHVUxzfyYLHFhk=
+X-Received: by 2002:adf:dd82:: with SMTP id x2mr24399319wrl.419.1600199062537;
+ Tue, 15 Sep 2020 12:44:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910182244.5815-3-krzk@kernel.org>
+References: <20200910032636.27296-1-yuehaibing@huawei.com> <62c4312b-9e92-23bb-0823-7f1aca125c0f@amd.com>
+In-Reply-To: <62c4312b-9e92-23bb-0823-7f1aca125c0f@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 15 Sep 2020 15:44:11 -0400
+Message-ID: <CADnq5_OTqZFZ9urP+aUK+KNuvSpkNSM2m0E4=DZYn4d+uaTS2w@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/amd/display: Fix possible memleak in dp_trigger_hotplug()
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Lipski, Mikita" <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 10, 2020 at 08:22:43PM +0200, Krzysztof Kozlowski wrote:
-> Additional properties actually might appear (e.g. power-domains) so
-> describe all typical properties, reference generic i2c schema and use
-> unevaluatedProperties to fix dtbs_check warnings like:
-> 
->   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: i2c@30a20000:
->     '#address-cells', '#size-cells', 'pmic@25' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> Changes since v2:
-> 1. None
-> 
-> Changes since v1:
-> 1. Add more properties and include /schemas/i2c/i2c-controller.yaml#
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-imx.yaml | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/i2c/i2c-imx.yaml b/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
-> index 810536953177..19c9daba6e9f 100644
-> --- a/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/i2c-imx.yaml
-> @@ -9,6 +9,9 @@ title: Freescale Inter IC (I2C) and High Speed Inter IC (HS-I2C) for i.MX
->  maintainers:
->    - Wolfram Sang <wolfram@the-dreams.de>
->  
-> +allOf:
-> +  - $ref: /schemas/i2c/i2c-controller.yaml#
-> +
->  properties:
->    compatible:
->      oneOf:
-> @@ -38,6 +41,9 @@ properties:
->                - fsl,imx8mp-i2c
->            - const: fsl,imx21-i2c
->  
-> +  '#address-cells': true
-> +  '#size-cells': true
+Applied.  Thanks,
 
-Drop these.
+Alex
 
-> +
->    reg:
->      maxItems: 1
->  
-> @@ -75,7 +81,7 @@ required:
->    - interrupts
->    - clocks
->  
-> -additionalProperties: false
-> +unevaluatedProperties: false
->  
->  examples:
->    - |
-> -- 
-> 2.17.1
-> 
+On Thu, Sep 10, 2020 at 11:34 AM Harry Wentland <harry.wentland@amd.com> wrote:
+>
+> On 2020-09-09 11:26 p.m., YueHaibing wrote:
+> > If parse_write_buffer_into_params() fails, we should free
+> > wr_buf before return.
+> >
+> > Fixes: 6f77b2ac6280 ("drm/amd/display: Add connector HPD trigger debugfs entry")
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>
+> Harry
+>
+> > ---
+> >   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> > index 83da24aced45..11e16fbe484d 100644
+> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
+> > @@ -1089,8 +1089,10 @@ static ssize_t dp_trigger_hotplug(struct file *f, const char __user *buf,
+> >       if (parse_write_buffer_into_params(wr_buf, wr_buf_size,
+> >                                               (long *)param, buf,
+> >                                               max_param_num,
+> > -                                             &param_nums))
+> > +                                             &param_nums)) {
+> > +             kfree(wr_buf);
+> >               return -EINVAL;
+> > +     }
+> >
+> >       if (param_nums <= 0) {
+> >               DRM_DEBUG_DRIVER("user data not be read\n");
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
