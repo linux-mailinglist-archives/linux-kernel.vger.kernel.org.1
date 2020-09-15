@@ -2,215 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E5E26B39C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEA626B39D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbgIOXGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:06:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
+        id S1727531AbgIOXG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727221AbgIOOsG (ORCPT
+        with ESMTP id S1726736AbgIOOsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Sep 2020 10:48:06 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75737C0612F2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:53:49 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w2so3479885wmi.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:53:49 -0700 (PDT)
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F90FC06121E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:54:01 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id d15so3152205lfq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 06:54:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mpt5/mY5yPLcWPN5dAxKWZ1iKOvnWN/naNw5pxswiPQ=;
-        b=pWfAOQepoqKVe8FVv3PSRnE2yNbCHL5v9IqR0LbagyAtChnGvMpbyFpYy+ah7a+MDp
-         VHUKM4CuzkFAiSoTN8zgTwkV2aT3nxZP2r7v/FxeCqfIP5gfpAe3HZlsnuuGZ9ccjvYm
-         S1AH7wlrJhWUXEGlA4ipsYAl+ChToZ9akzjOnAQ8MMRU8odgwXVqgE37YELU22uOWKgn
-         3mAKu2tw8898QfUe05BFKktyMTRrAoo+3ySa3XY0iN33XUiOL7EFVniVk43BB6B7R48Q
-         uVfXKufART+6oiSDUqycqChiI70DAA7zh61WEJ+0JYLEv9ZnvNfbLHoOFVh4eNbifNUu
-         QVow==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ePEgJYcBWrhr7muyl2siRCTK9L57Ry0nh+Btj8rtlQc=;
+        b=R9uJhZs2koe9dinXPuA2NgCgCBbx9zPE8BC4JQmGK0zjFtHAOJ0OvmDNcE+W3yfLT+
+         Z1VQZKj4NIfbUGOq/I7NDMouDden3fCHbC10bIH3DRi2dlh7n1BhOKSAuDfRFm74rJEg
+         l4nnhv501aw81OpJsEEKylFYiEwfqMqdzHLAynbWjtjy5QMMHUpiC6dvaE/Sv0wdIl00
+         RAjGRqncpfHC+LV8n4EcDewNqLJhVLFljplof3+F2kiPTcUng6gYw0xXiWlDS+5Le+TJ
+         T7Zs4gicVeidpuCHbk9Y0s4P7LELaY/CZCAKtpa56e/VhSssmbocaQRwRtjNjDvydEd+
+         wFCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mpt5/mY5yPLcWPN5dAxKWZ1iKOvnWN/naNw5pxswiPQ=;
-        b=SndTwMSfOunVrwvoH74ixPIZCXOvd8cMgKNFnqtnZ7djhOlIqKEj7CaqngrUmkX/P1
-         V4FvNTDbg0TVNQi1u92Ur1IwIcPzMJ6rBRSKp1AzpktOoO0+I+AaLt++5A1Gz9zhggFL
-         7wn79M6tH9KETuuPJRRfAqduS9kPXxkztGw0gmQVU7+3wBFISlHP3oweSHm1PDOZ08qd
-         94OWZopnZzaJzCGWMLFC5z6RimccBv8K2EEB1vr80t5CMdczMFy1vSZ5fRbxFd4/VCfV
-         vKeGlZTup7VsCRixOQJu1qma0Bd9ICF2ZQdUdR6r6T0S7rP7U4Poc+QARfwYDW+mPPA/
-         GjTg==
-X-Gm-Message-State: AOAM532ypzN8Wp/EmKkxvWjGQUsh/YqKzJ9IBLsI5v8VyslD+AvSTNEC
-        qRODzdEeAJMizl7QSX1FVClAgw==
-X-Google-Smtp-Source: ABdhPJzm5SHWJFNWCUa7kV3RRw1MZ+vh7bUDJxal2VMBlb8NwYHz0xngZah25PvZFFKwKcpd4oT0Kw==
-X-Received: by 2002:a1c:2bc7:: with SMTP id r190mr4993218wmr.116.1600178027842;
-        Tue, 15 Sep 2020 06:53:47 -0700 (PDT)
-Received: from apalos.home (athedsl-246545.home.otenet.gr. [85.73.10.175])
-        by smtp.gmail.com with ESMTPSA id a10sm23545590wmj.38.2020.09.15.06.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Sep 2020 06:53:47 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 16:53:44 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     bpf@vger.kernel.org, ardb@kernel.org, naresh.kamboju@linaro.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: bpf: Fix branch offset in JIT
-Message-ID: <20200915135344.GA113966@apalos.home>
-References: <20200914160355.19179-1-ilias.apalodimas@linaro.org>
- <20200915131102.GA26439@willie-the-truck>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ePEgJYcBWrhr7muyl2siRCTK9L57Ry0nh+Btj8rtlQc=;
+        b=FLtv9egGDNDGsiKWM8AVEKnJbn86Xmfv672eAR4DB5+JfOsedTcGQ/LD6phjId26va
+         AAh6pTy60o5NjXPZm5bFCuln6jNXhVsBHYKFlhjgbwBu+X/QVB+a63QdrgZ/Dr08GGIB
+         wZ5ej9i7fNgpplxE2rGp3NrqGcrplprbgOwuVRANbTC2iiQ30hJ37kj3GMHTySdn5S5m
+         T1KUhz5ZHPrtt+8CPpJQVJLgT3f3NzmOo19GAIQOL7WiUDdXOda7o4BoOSVuEX+L/0u9
+         ZJYGxsdTco6jPxWvX/FdqNrOhFkshn7RvdXSRY82TT3W9abbD1/dtdEQLQ/OQrk9aFDe
+         oYOA==
+X-Gm-Message-State: AOAM532sCfVgsUYptpMA5I88PEG0ZqY9OfALWbKLCNlFewJFu9JDDXmD
+        TKR5ZIt5uar7JWtiWEnPZstShaiA5SgY3f6UUIih1g==
+X-Google-Smtp-Source: ABdhPJxpL+DWyC0FoTO1YAWYVnlZAdQJ5WxGvtfVW7gwpqnEEE8vaCj5NbgMNP60cY78yTLqrL4BOkDVYACEyGq6G/w=
+X-Received: by 2002:a19:771d:: with SMTP id s29mr2365496lfc.521.1600178038699;
+ Tue, 15 Sep 2020 06:53:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915131102.GA26439@willie-the-truck>
+References: <20200915055825.5279-1-songmuchun@bytedance.com>
+In-Reply-To: <20200915055825.5279-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 15 Sep 2020 06:53:47 -0700
+Message-ID: <CALvZod52oXCF49GuU1GM3Zk25n1hgCVwKqz1ckigPHMuCQhvDQ@mail.gmail.com>
+Subject: Re: [PATCH v4] mm: memcontrol: Add the missing numa_stat interface
+ for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:11:03PM +0100, Will Deacon wrote:
-> Hi Ilias,
-> 
-> On Mon, Sep 14, 2020 at 07:03:55PM +0300, Ilias Apalodimas wrote:
-> > Running the eBPF test_verifier leads to random errors looking like this:
-> > 
-> > [ 6525.735488] Unexpected kernel BRK exception at EL1
-> > [ 6525.735502] Internal error: ptrace BRK handler: f2000100 [#1] SMP
-> 
-> Does this happen because we poison the BPF memory with BRK instructions?
-> Maybe we should look at using a special immediate so we can detect this,
-> rather than end up in the ptrace handler.
+On Mon, Sep 14, 2020 at 10:59 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Suggested-by: Shakeel Butt <shakeelb@google.com>
 
-As discussed offline this is what aarch64_insn_gen_branch_imm() will return for
-offsets > 128M and yes replacing the handler with a more suitable message would 
-be good.
+Small nits below.
 
-> 
-> > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> > index f8912e45be7a..0974effff58c 100644
-> > --- a/arch/arm64/net/bpf_jit_comp.c
-> > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > @@ -143,9 +143,13 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
-> >  	}
-> >  }
-> >  
-> > -static inline int bpf2a64_offset(int bpf_to, int bpf_from,
-> > +static inline int bpf2a64_offset(int bpf_insn, int off,
-> >  				 const struct jit_ctx *ctx)
-> >  {
-> > +	/* arm64 offset is relative to the branch instruction */
-> > +	int bpf_from = bpf_insn + 1;
-> > +	/* BPF JMP offset is relative to the next instruction */
-> > +	int bpf_to = bpf_insn + off + 1;
-> >  	int to = ctx->offset[bpf_to];
-> >  	/* -1 to account for the Branch instruction */
-> >  	int from = ctx->offset[bpf_from] - 1;
-> 
-> I think this is a bit confusing with all the variables. How about just
-> doing:
-> 
-> 	/* BPF JMP offset is relative to the next BPF instruction */
-> 	bpf_insn++;
-> 
-> 	/*
-> 	 * Whereas arm64 branch instructions encode the offset from the
-> 	 * branch itself, so we must subtract 1 from the instruction offset.
-> 	 */
-> 	return ctx->offset[bpf_insn + off] - ctx->offset[bpf_insn] - 1;
-> 
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Sure
+> ---
+>  changelog in v4:
+>  1. Fix some document problems pointed out by Randy Dunlap.
+>  2. Remove memory_numa_stat_format() suggested by Shakeel Butt.
+>
+>  changelog in v3:
+>  1. Fix compiler error on powerpc architecture reported by kernel test robot.
+>  2. Fix a typo from "anno" to "anon".
+>
+>  changelog in v2:
+>  1. Add memory.numa_stat interface in cgroup v2.
+>
+>  Documentation/admin-guide/cgroup-v2.rst | 72 +++++++++++++++++++++
+>  mm/memcontrol.c                         | 86 +++++++++++++++++++++++++
+>  2 files changed, 158 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 6be43781ec7f..bcb7b202e88d 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
+>                 collapsing an existing range of pages. This counter is not
+>                 present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
+>
+> +  memory.numa_stat
+> +       A read-only flat-keyed file which exists on non-root cgroups.
+> +
+> +       This breaks down the cgroup's memory footprint into different
+> +       types of memory, type-specific details, and other information
+> +       per node on the state of the memory management system.
+> +
+> +       This is useful for providing visibility into the NUMA locality
+> +       information within an memcg since the pages are allowed to be
+> +       allocated from any physical node. One of the use cases is evaluating
 
-> > @@ -642,7 +646,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
-> >  
-> >  	/* JUMP off */
-> >  	case BPF_JMP | BPF_JA:
-> > -		jmp_offset = bpf2a64_offset(i + off, i, ctx);
-> > +		jmp_offset = bpf2a64_offset(i, off, ctx);
-> >  		check_imm26(jmp_offset);
-> >  		emit(A64_B(jmp_offset), ctx);
-> >  		break;
-> > @@ -669,7 +673,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
-> >  	case BPF_JMP32 | BPF_JSLE | BPF_X:
-> >  		emit(A64_CMP(is64, dst, src), ctx);
-> >  emit_cond_jmp:
-> > -		jmp_offset = bpf2a64_offset(i + off, i, ctx);
-> > +		jmp_offset = bpf2a64_offset(i, off, ctx);
-> >  		check_imm19(jmp_offset);
-> >  		switch (BPF_OP(code)) {
-> >  		case BPF_JEQ:
-> > @@ -912,18 +916,26 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
-> >  		const struct bpf_insn *insn = &prog->insnsi[i];
-> >  		int ret;
-> >  
-> > +		/*
-> > +		 * offset[0] offset of the end of prologue, start of the
-> > +		 * first insn.
-> > +		 * offset[x] - offset of the end of x insn.
-> 
-> So does offset[1] point at the last arm64 instruction for the first BPF
-> instruction, or does it point to the first arm64 instruction for the second
-> BPF instruction?
-> 
+use case
 
-Right this isn't exactly a good comment. 
-I'll change it to something like:
+> +       application performance by combining this information with the
+> +       application's CPU allocation.
+> +
+> +       All memory amounts are in bytes.
+> +
+> +       The output format of memory.numa_stat is::
+> +
+> +         type N0=<bytes in node 0 pages> N1=<bytes in node 1 pages> ...
 
-offset[0] - offset of the end of prologue, start of the 1st insn.
-offset[1] - offset of the end of 1st insn.
+I would remove 'pages' here as it can be confusing. Just <bytes on node 0>...
 
-> > +		 */
-> > +		if (ctx->image == NULL)
-> > +			ctx->offset[i] = ctx->idx;
-> > +
-> >  		ret = build_insn(insn, ctx, extra_pass);
-> >  		if (ret > 0) {
-> >  			i++;
-> >  			if (ctx->image == NULL)
-> > -				ctx->offset[i] = ctx->idx;
-> > +				ctx->offset[i] = ctx->offset[i - 1];
-> 
-> Does it matter that we set the offset for both halves of a 16-byte BPF
-> instruction? I think that's a change in behaviour here.
-
-Yes it is, but from reading around that's what I understood.
-for 16-byte eBPF instructions both should point to the start of 
-the corresponding jited arm64 instruction.
-If I am horribly wrong about this, please shout.
-
-> 
-> >  			continue;
-> >  		}
-> > -		if (ctx->image == NULL)
-> > -			ctx->offset[i] = ctx->idx;
-> >  		if (ret)
-> >  			return ret;
-> >  	}
-> > +	if (ctx->image == NULL)
-> > +		ctx->offset[i] = ctx->idx;
-> 
-> I think it would be cleared to set ctx->offset[0] before the for loop (with
-> a comment about what it is) and then change the for loop to iterate from 1
-> all the way to prog->len.
-> 
-
-Sure
-
-> Will
-
-Thanks
-/Ilias
+> +
+> +       The entries are ordered to be human readable, and new entries
+> +       can show up in the middle. Don't rely on items remaining in a
+> +       fixed position; use the keys to look up specific values!
+> +
+> +         anon
+> +               Amount of memory per node used in anonymous mappings such
+> +               as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
+> +
+> +         file
+> +               Amount of memory per node used to cache filesystem data,
+> +               including tmpfs and shared memory.
+> +
+> +         kernel_stack
+> +               Amount of memory per node allocated to kernel stacks.
+> +
+> +         shmem
+> +               Amount of cached filesystem data per node that is swap-backed,
+> +               such as tmpfs, shm segments, shared anonymous mmap()s.
+> +
+> +         file_mapped
+> +               Amount of cached filesystem data per node mapped with mmap().
+> +
+> +         file_dirty
+> +               Amount of cached filesystem data per node that was modified but
+> +               not yet written back to disk.
+> +
+> +         file_writeback
+> +               Amount of cached filesystem data per node that was modified and
+> +               is currently being written back to disk.
+> +
+> +         anon_thp
+> +               Amount of memory per node used in anonymous mappings backed by
+> +               transparent hugepages.
+> +
+> +         inactive_anon, active_anon, inactive_file, active_file, unevictable
+> +               Amount of memory, swap-backed and filesystem-backed,
+> +               per node on the internal memory management lists used
+> +               by the page reclaim algorithm.
+> +
+> +               As these represent internal list state (e.g. shmem pages are on
+> +               anon memory management lists), inactive_foo + active_foo may not
+> +               be equal to the value for the foo counter, since the foo counter
+> +               is type-based, not list-based.
+> +
+> +         slab_reclaimable
+> +               Amount of memory per node used for storing in-kernel data
+> +               structures which might be reclaimed, such as dentries and
+> +               inodes.
+> +
+> +         slab_unreclaimable
+> +               Amount of memory per node used for storing in-kernel data
+> +               structures which cannot be reclaimed on memory pressure.
+> +
+>    memory.swap.current
+>         A read-only single value file which exists on non-root
+>         cgroups.
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 75cd1a1e66c8..ff919ef3b57b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
+>         return 0;
+>  }
+>
+> +#ifdef CONFIG_NUMA
+> +struct numa_stat {
+> +       const char *name;
+> +       unsigned int ratio;
+> +       enum node_stat_item idx;
+> +};
+> +
+> +static struct numa_stat numa_stats[] = {
+> +       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> +       { "file", PAGE_SIZE, NR_FILE_PAGES },
+> +       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> +       { "shmem", PAGE_SIZE, NR_SHMEM },
+> +       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> +       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> +       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       /*
+> +        * The ratio will be initialized in numa_stats_init(). Because
+> +        * on some architectures, the macro of HPAGE_PMD_SIZE is not
+> +        * constant(e.g. powerpc).
+> +        */
+> +       { "anon_thp", 0, NR_ANON_THPS },
+> +#endif
+> +       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> +       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> +       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> +       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> +       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> +       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> +       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> +};
+> +
+> +static int __init numa_stats_init(void)
+> +{
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +               if (numa_stats[i].idx == NR_ANON_THPS)
+> +                       numa_stats[i].ratio = HPAGE_PMD_SIZE;
+> +#endif
+> +       }
+> +
+> +       return 0;
+> +}
+> +pure_initcall(numa_stats_init);
+> +
+> +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> +                                          unsigned int nid,
+> +                                          enum node_stat_item idx)
+> +{
+> +       VM_BUG_ON(nid >= nr_node_ids);
+> +       return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
+> +}
+> +
+> +static int memory_numa_stat_show(struct seq_file *m, void *v)
+> +{
+> +       int i;
+> +       struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+> +
+> +       for (i = 0; i < ARRAY_SIZE(numa_stats); i++) {
+> +               int nid;
+> +
+> +               seq_printf(m, "%s", numa_stats[i].name);
+> +               for_each_node_state(nid, N_MEMORY) {
+> +                       u64 size;
+> +
+> +                       size = memcg_node_page_state(memcg, nid,
+> +                                                    numa_stats[i].idx);
+> +                       VM_WARN_ON_ONCE(!numa_stats[i].ratio);
+> +                       size *= numa_stats[i].ratio;
+> +                       seq_printf(m, " N%d=%llu", nid, size);
+> +               }
+> +               seq_putc(m, '\n');
+> +       }
+> +
+> +       return 0;
+> +}
+> +#endif
+> +
+>  static int memory_oom_group_show(struct seq_file *m, void *v)
+>  {
+>         struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+> @@ -6502,6 +6582,12 @@ static struct cftype memory_files[] = {
+>                 .name = "stat",
+>                 .seq_show = memory_stat_show,
+>         },
+> +#ifdef CONFIG_NUMA
+> +       {
+> +               .name = "numa_stat",
+> +               .seq_show = memory_numa_stat_show,
+> +       },
+> +#endif
+>         {
+>                 .name = "oom.group",
+>                 .flags = CFTYPE_NOT_ON_ROOT | CFTYPE_NS_DELEGATABLE,
+> --
+> 2.20.1
+>
