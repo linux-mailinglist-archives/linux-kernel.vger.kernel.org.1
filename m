@@ -2,189 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A92326ACC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD74D26AC99
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 20:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgIOS7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 14:59:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727859AbgIORLn (ORCPT
+        id S1727794AbgIOSww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 14:52:52 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43237 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727823AbgIORYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 13:11:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600189880;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=loEBv4Feu/uhuUMsYWaNbRsF9hQKeLg7J5OdvPtrWdU=;
-        b=IWmDzkFJ1PSJ6CHE50SX+kN+z1bXENocSFYO7oDkYj9PM9LZ+a87EXfs81Bs+GX2ArMx+g
-        tVLMwbtt/D+LWcJFhUVY4mBjAArphtzx1QLrJtMe73mkFsZZahLt6LkgXcD9W17EHwx8VG
-        966994MY4z7LuxKzSdhdI0dRAncBG4E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-XpKsoTYeMbagOUIEzuuRFQ-1; Tue, 15 Sep 2020 12:52:06 -0400
-X-MC-Unique: XpKsoTYeMbagOUIEzuuRFQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D174109106A;
-        Tue, 15 Sep 2020 16:52:04 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5159175124;
-        Tue, 15 Sep 2020 16:52:04 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id BD66A18338EF;
-        Tue, 15 Sep 2020 16:52:03 +0000 (UTC)
-Date:   Tue, 15 Sep 2020 12:52:01 -0400 (EDT)
-From:   Bob Peterson <rpeterso@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Daniel Craig <Daniel.Craig@csiro.au>,
-        Nicolas Courtel <courtel@cena.fr>,
-        Salvatore Bonaccorso <carnil@debian.org>
-Message-ID: <1934025224.17237499.1600188721184.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20200912064713.GA291675@eldamar.local>
-References: <20200623195316.864547658@linuxfoundation.org> <20200623195323.968867013@linuxfoundation.org> <20200910194319.GA131386@eldamar.local> <20200911115816.GB3717176@kroah.com> <942693093.16771250.1599826115915.JavaMail.zimbra@redhat.com> <20200911122024.GA3758477@kroah.com> <1542145456.16781948.1599828554609.JavaMail.zimbra@redhat.com> <20200912064713.GA291675@eldamar.local>
-Subject: Re: [PATCH 4.19 142/206] gfs2: fix use-after-free on transaction
- ail lists
+        Tue, 15 Sep 2020 13:24:14 -0400
+Received: by mail-qt1-f196.google.com with SMTP id g3so3765105qtq.10;
+        Tue, 15 Sep 2020 10:24:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IlLyj2saxTTjsywCjSXJt2Rce2uMyGTitfwMxI+v+Kg=;
+        b=bWoNyZ4d0WGjLTVjn6VokQimjGERYkPWQh/McKBdpSP8vAuCg+6aT8Gy/n9qBEhzSR
+         02v+4xWOOKRQlkhQqvtuNPxBZjco5IbNdEHN6y5BiackCbafwOyY9RGWoGq7GYBI4BZX
+         XM9tSvxYT9GpiSLHYqAl10RJ01mQUzLBBaxdvuBEW+5+9DegShUvATrRm9IHMK063ZyK
+         QZQWI/RTB98SPwyaeGi4f6TZXnYDrvib/eRbM05ocZUP6UlJcexJhn8cNOxyLOgukOwm
+         cO4QOrjDB9ar/cbOPF7w8A+7yc2ctnAW4e2aU2c9Mx/qYLxT/R5HkZk3ltZF36/SUUAo
+         3DLQ==
+X-Gm-Message-State: AOAM5328mMEpZrnD/sAEOcs7/TdiAvH7fGx5rqh1AsrkgNHGUzfarJsR
+        Q50U3N7fDxz002uTopvW7ChriKSrqXRPtUY=
+X-Google-Smtp-Source: ABdhPJzvXSvuBSSIbmk0BXjqKM7yXBjjp5/cHX5mDIy0KLIb2rQdnPHckzSsVC1ZOZe2R9OMCrPjoA==
+X-Received: by 2002:a05:6638:14c8:: with SMTP id l8mr18794773jak.136.1600188830508;
+        Tue, 15 Sep 2020 09:53:50 -0700 (PDT)
+Received: from xps15 ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id m8sm7937079ioq.11.2020.09.15.09.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Sep 2020 09:53:49 -0700 (PDT)
+Received: (nullmailer pid 2112732 invoked by uid 1000);
+        Tue, 15 Sep 2020 16:53:46 -0000
+Date:   Tue, 15 Sep 2020 10:53:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-power@fi.rohmeurope.com, Rob Herring <robh+dt@kernel.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Robert Jones <rjones@gateworks.com>,
+        devicetree@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH] dt-bindings: mfd: Correct interrupt flags in examples
+Message-ID: <20200915165346.GA2112678@bogus>
+References: <20200908145900.4423-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.3.112.23, 10.4.195.2]
-Thread-Topic: gfs2: fix use-after-free on transaction ail lists
-Thread-Index: JUQwB/kHy/7oSBolHvvd5mXAxiqiBw==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200908145900.4423-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Original Message -----
-> Hi Bob, hi Greg,
+On Tue, 08 Sep 2020 16:59:00 +0200, Krzysztof Kozlowski wrote:
+> GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+> These are simple defines so they could be used in DTS but they will not
+> have the same meaning:
+> 1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+> 2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 > 
-> On Fri, Sep 11, 2020 at 08:49:14AM -0400, Bob Peterson wrote:
-> > ----- Original Message -----
-> > > On Fri, Sep 11, 2020 at 08:08:35AM -0400, Bob Peterson wrote:
-> > > > ----- Original Message -----
-> > > > > On Thu, Sep 10, 2020 at 09:43:19PM +0200, Salvatore Bonaccorso wrote:
-> > > > > > Hi,
-> > > > > > 
-> > > > > > On Tue, Jun 23, 2020 at 09:57:50PM +0200, Greg Kroah-Hartman wrote:
-> > > > > > > From: Bob Peterson <rpeterso@redhat.com>
-> > > > > > > 
-> > > > > > > [ Upstream commit 83d060ca8d90fa1e3feac227f995c013100862d3 ]
-> > > > > > > 
-> > > > > > > Before this patch, transactions could be merged into the system
-> > > > > > > transaction by function gfs2_merge_trans(), but the transaction
-> > > > > > > ail
-> > > > > > > lists were never merged. Because the ail flushing mechanism can
-> > > > > > > run
-> > > > > > > separately, bd elements can be attached to the transaction's
-> > > > > > > buffer
-> > > > > > > list during the transaction (trans_add_meta, etc) but quickly
-> > > > > > > moved
-> > > > > > > to its ail lists. Later, in function gfs2_trans_end, the
-> > > > > > > transaction
-> > > > > > > can be freed (by gfs2_trans_end) while it still has bd elements
-> > > > > > > queued to its ail lists, which can cause it to either lose track
-> > > > > > > of
-> > > > > > > the bd elements altogether (memory leak) or worse, reference the
-> > > > > > > bd
-> > > > > > > elements after the parent transaction has been freed.
-> > > > > > > 
-> > > > > > > Although I've not seen any serious consequences, the problem
-> > > > > > > becomes
-> > > > > > > apparent with the previous patch's addition of:
-> > > > > > > 
-> > > > > > > 	gfs2_assert_warn(sdp, list_empty(&tr->tr_ail1_list));
-> > > > > > > 
-> > > > > > > to function gfs2_trans_free().
-> > > > > > > 
-> > > > > > > This patch adds logic into gfs2_merge_trans() to move the merged
-> > > > > > > transaction's ail lists to the sdp transaction. This prevents the
-> > > > > > > use-after-free. To do this properly, we need to hold the ail
-> > > > > > > lock,
-> > > > > > > so we pass sdp into the function instead of the transaction
-> > > > > > > itself.
-> > > > > > > 
-> > > > > > > Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-> > > > > > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > (snip)
-> > > > > > 
-> > > > > > In Debian two user confirmed issues on writing on a GFS2 partition
-> > > > > > with this commit applied. The initial Debian report is at
-> > > > > > https://bugs.debian.org/968567 and Daniel Craig reported it into
-> > > > > > Bugzilla at https://bugzilla.kernel.org/show_bug.cgi?id=209217 .
-> > > > > > 
-> > > > > > Writing to a gfs2 filesystem fails and results in a soft lookup of
-> > > > > > the
-> > > > > > machine for kernels with that commit applied. I cannot reporduce
-> > > > > > the
-> > > > > > issue myself due not having a respective setup available, but
-> > > > > > Daniel
-> > > > > > described a minimal serieos of steps to reproduce the issue.
-> > > > > > 
-> > > > > > This might affect as well other stable series where this commit was
-> > > > > > applied, as there was a similar report for someone running 5.4.58
-> > > > > > in
-> > > > > > https://www.redhat.com/archives/linux-cluster/2020-August/msg00000.html
-> > > > > 
-> > > > > Can you report this to the gfs2 developers?
-> > > > > 
-> > > > > thanks,
-> > > > > 
-> > > > > greg k-h
-> > > > 
-> > > > Hi Greg,
-> > > > 
-> > > > No need. The patch came from the gfs2 developers. I think he just wants
-> > > > it added to a stable release.
-> > > 
-> > > What commit needs to be added to a stable release?
-> > > 
-> > > confused,
-> > > 
-> > > greg k-h
-> > 
-> > Sorry Greg,
-> > 
-> > It's pretty early here and the caffeine hadn't quite hit my system.
-> > The problem is most likely that 4.19.132 is missing this upstream patch:
-> > 
-> > cbcc89b630447ec7836aa2b9242d9bb1725f5a61
-> > 
-> > I'm not sure how or why 83d060ca8d90fa1e3feac227f995c013100862d3 got
-> > put into stable without a stable CC but cbcc89b6304 is definitely
-> > required.
-> > 
-> > I'd like to suggest Salvatore try cherry-picking this patch to see if
-> > it fixes the problem, and if so, perhaps Greg can add it to stable.
+> Correct the interrupt flags, assuming the author of the code wanted some
+> logical behavior behind the name "ACTIVE_xxx", this is:
+>   ACTIVE_LOW => IRQ_TYPE_LEVEL_LOW
 > 
-> I can confirm (Daniel was able to test): Applying cbcc89b63044 ("gfs2:
-> initialize transaction tr_ailX_lists earlier") fixes the issue. So
-> would be great if you can pick that up for stable for those series
-> which had 83d060ca8d90 ("gfs2: fix use-after-free on transaction ail
-> lists") as well.
-> 
-> Regards,
-> Salvatore
-> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/mfd/act8945a.txt          | 2 +-
+>  Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml    | 3 ++-
+>  Documentation/devicetree/bindings/mfd/rohm,bd70528-pmic.txt | 2 +-
+>  3 files changed, 4 insertions(+), 3 deletions(-)
 > 
 
-Hi Greg,
-
-As per Salvatore's email above, can you please cherry-pick GFS2 patch
-cbcc89b630447ec7836aa2b9242d9bb1725f5a61 to the stable releases like
-4.19 to which ("gfs2: fix use-after-free on transaction ail lists")
-(83d060ca8d90fa1e3feac227f995c013100862d3) was applied? Thanks.
-
-Regards,
-
-Bob Peterson
-GFS2 File System
-
+Acked-by: Rob Herring <robh@kernel.org>
