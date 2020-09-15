@@ -2,278 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D5526A5B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A7426A5BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 14:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgIOM70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 08:59:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
+        id S1726511AbgIOM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 08:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgIOMsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 08:48:52 -0400
-Received: from mail.kernel.org (ip5f5ad5a5.dynamic.kabel-deutschland.de [95.90.213.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726133AbgIOMvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 08:51:36 -0400
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 445D520756;
-        Tue, 15 Sep 2020 12:48:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6244C208E4;
+        Tue, 15 Sep 2020 12:51:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600174130;
-        bh=dDewxaTd6rf5Yj/ysduSMJ6+rnwFo6zXzSIeKBfh77w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CejuvIUCr0yyK9Wt1e8GaM6ueM5DKlRV5AXvPUpIKacTe3z0PpASUqDWvbKOPTDgf
-         p1vSzZLAG9FL6yzV79jOSNi5cGqdLLMoJfP0nfv20hz39bGbQRdF8rg4f3tsoYknEc
-         yF5Bh9CPgIgvV/EWx1KyVhUEV/zBHwJf5aLtos2c=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kIAO7-004fKp-Ob; Tue, 15 Sep 2020 14:48:47 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH] media: vidtv: get rid of its own sinusoidal waveform
-Date:   Tue, 15 Sep 2020 14:48:46 +0200
-Message-Id: <7fe9e01dba10df2f2d7ef57e02009dcd45969bf9.1600174122.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        s=default; t=1600174295;
+        bh=LZdWBbrQL6aLS9TPzr03MYYTgUas3AG592iIebFzvkU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FFq7+BT9hy5ZKiscMBmdmlXtVVYLlW3CjYdt2GIlkM4m7EiyyNLKzEMQ7dfpASbhU
+         gi8QVcVAw30MEJe+WVHltDJ+CNdQiYdBk0mVmKqltDwxXAVWRxUoocZGMKD3FMUelF
+         CXrTzU7wKnc++Gj9wARmP8impN+ulxnwG1r+wvH4=
+Received: by mail-ot1-f48.google.com with SMTP id o8so3107602otl.4;
+        Tue, 15 Sep 2020 05:51:35 -0700 (PDT)
+X-Gm-Message-State: AOAM533K6K0+/z8F0IF2HF1GHrSi1ZeWqfz+ohQZ32ZM4PSP2kiphSBw
+        4CNfDdqgktn0yW0rUWSFuiiUJE15LEFexpJazKI=
+X-Google-Smtp-Source: ABdhPJxFOZom2HvyLT9wSeZw9331mqOrV+ArfgN713zaP5D2cxQ+/wJ6mMWlSt81zfYm1Uons7cLMXundrI+hUlDDhs=
+X-Received: by 2002:a9d:6193:: with SMTP id g19mr12413615otk.108.1600174294568;
+ Tue, 15 Sep 2020 05:51:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200806163551.14395-1-andrei.botila@oss.nxp.com>
+ <20200806163551.14395-2-andrei.botila@oss.nxp.com> <20200821034651.GA25442@gondor.apana.org.au>
+ <c360d691-8253-bd99-af92-83d9f8e86a2d@nxp.com> <20200908221019.GA23497@gondor.apana.org.au>
+ <67159207-1082-48be-d085-971a84b525e0@nxp.com> <CAMj1kXGg7bSh57kwE57mKRocNRPZCeXifwjF53-3Jb6LYsfZTg@mail.gmail.com>
+ <38f9904b-5bf7-ea99-ed8a-27cb49f405bd@nxp.com> <CAMj1kXH0jOQms9y1MywORywoKjxQ2p8ttv+Xf9KTOkfORX5XWw@mail.gmail.com>
+ <4393bf96-30fd-0d1c-73fe-f5ef7c967f76@nxp.com> <CAMj1kXFeZP7_TQ73yLq0dfb=3wMS0VxqbKKUCGny0xHW1xL+5g@mail.gmail.com>
+ <89b9c29d-afb1-0082-66f6-8bb930710884@nxp.com>
+In-Reply-To: <89b9c29d-afb1-0082-66f6-8bb930710884@nxp.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 15 Sep 2020 15:51:23 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHxzX25e0ex4HiyeXyxZhkrWBrewF5s8ZqiSk5Cd2DXVQ@mail.gmail.com>
+Message-ID: <CAMj1kXHxzX25e0ex4HiyeXyxZhkrWBrewF5s8ZqiSk5Cd2DXVQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND 1/9] crypto: caam/jr - add fallback for XTS with
+ more than 8B IV
+To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "Andrei Botila (OSS)" <andrei.botila@oss.nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead, use the code from linux/fixp-arith.h.
+On Tue, 15 Sep 2020 at 15:45, Horia Geant=C4=83 <horia.geanta@nxp.com> wrot=
+e:
+>
+> On 9/15/2020 1:26 PM, Ard Biesheuvel wrote:
+> > On Tue, 15 Sep 2020 at 13:02, Horia Geant=C4=83 <horia.geanta@nxp.com> =
+wrote:
+> >>
+> >> On 9/14/2020 9:20 PM, Ard Biesheuvel wrote:
+> >>> On Mon, 14 Sep 2020 at 20:12, Horia Geant=C4=83 <horia.geanta@nxp.com=
+> wrote:
+> >>>>
+> >>>> On 9/14/2020 7:28 PM, Ard Biesheuvel wrote:
+> >>>>> On Mon, 14 Sep 2020 at 19:24, Horia Geant=C4=83 <horia.geanta@nxp.c=
+om> wrote:
+> >>>>>>
+> >>>>>> On 9/9/2020 1:10 AM, Herbert Xu wrote:
+> >>>>>>> On Tue, Sep 08, 2020 at 01:35:04PM +0300, Horia Geant=C4=83 wrote=
+:
+> >>>>>>>>
+> >>>>>>>>> Just go with the get_unaligned unconditionally.
+> >>>>>>>>
+> >>>>>>>> Won't this lead to sub-optimal code for ARMv7
+> >>>>>>>> in case the IV is aligned?
+> >>>>>>>
+> >>>>>>> If this should be optimised in ARMv7 then that should be done
+> >>>>>>> in get_unaligned itself and not open-coded.
+> >>>>>>>
+> >>>>>> I am not sure what's wrong with avoiding using the unaligned acces=
+sors
+> >>>>>> in case data is aligned.
+> >>>>>>
+> >>>>>> Documentation/core-api/unaligned-memory-access.rst clearly states:
+> >>>>>> These macros work for memory accesses of any length (not just 32 b=
+its as
+> >>>>>> in the examples above). Be aware that when compared to standard ac=
+cess of
+> >>>>>> aligned memory, using these macros to access unaligned memory can =
+be costly in
+> >>>>>> terms of performance.
+> >>>>>>
+> >>>>>> So IMO it makes sense to use get_unaligned() only when needed.
+> >>>>>> There are several cases of users doing this, e.g. siphash.
+> >>>>>>
+> >>>>>
+> >>>>> For ARMv7 code, using the unaligned accessors unconditionally is fi=
+ne,
+> >>>>> and it will not affect performance.
+> >>>>>
+> >>>>> In general, when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS is defined,
+> >>>>> you can use the unaligned accessors. If it is not, it helps to have
+> >>>>> different code paths.
+> >>>>>
+> >>>> arch/arm/include/asm/unaligned.h doesn't make use of
+> >>>> linux/unaligned/access_ok.h, even if CONFIG_HAVE_EFFICIENT_UNALIGNED=
+_ACCESS
+> >>>> is set.
+> >>>>
+> >>>> I understand the comment in the file, however using get_unaligned()
+> >>>> unconditionally takes away the opportunity to generate optimized cod=
+e
+> >>>> (using ldrd/ldm) when data is aligned.
+> >>>>
+> >>>
+> >>> But the minimal optimization that is possible here (one ldrd/ldm
+> >>> instruction vs two ldr instructions) is defeated by the fact that you
+> >>> are using a conditional branch to select between the two. And this is
+> >>> not even a hot path to begin with,
+> >>>
+> >> This is actually on the hot path (encrypt/decrypt callbacks),
+> >> but you're probably right that the conditional branching is going to o=
+ffset
+> >> the optimized code.
+> >>
+> >
+> > This is called once per XTS request, right? And you are saying the
+> > extra cycle makes a difference?
+> >
+> Yes, once per request and no, not super-important.
+>
+> >> To avoid branching, code could be rewritten as:
+> >>
+> >> #ifdef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> >>         size =3D *(u64 *)(req->iv + (ivsize / 2));
+> >> #else
+> >>         size =3D get_unaligned((u64 *)(req->iv + (ivsize / 2)));
+> >> #endif
+> >>
+> >> however in this case ARMv7 would suffer since
+> >> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=3Dy and
+> >> ldrd/ldm for accesses not word-aligned are inefficient - lead to traps=
+.
+> >>
+> >
+> > CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS means 'just use the unaligned
+> > accessors as they are basically free'. Casting a potentially
+> > misaligned u8* to a u64* is not permitted by the C standard.
+> >
+> Seems that I misunderstood CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS.
+>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../media/test-drivers/vidtv/vidtv_s302m.c    | 176 +++---------------
- 1 file changed, 31 insertions(+), 145 deletions(-)
+You're not the only one :-) I have been intending to get the
+discussion going with the networking folks, who rely heavily on this
+as well.
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_s302m.c b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-index f8049cdf564a..d16e567e2ddb 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_s302m.c
-@@ -26,6 +26,8 @@
- #include <linux/jiffies.h>
- #include <linux/printk.h>
- #include <linux/ratelimit.h>
-+#include <linux/fixp-arith.h>
-+
- #include <linux/math64.h>
- #include <asm/byteorder.h>
- 
-@@ -64,141 +66,10 @@ static const u8 reverse[256] = {
- 	0x3F, 0xBF, 0x7F, 0xFF,
- };
- 
--/*
-- * This buffer contains PCM audio samples of a sine wave, compatible with
-- * S302. If this is used as a source, a userspace media application should be able
-- * to play it.
-- */
--static u16 s302m_sin_lut[S302M_SIN_LUT_NUM_ELEM] = {
--	0x8000, 0x80c9, 0x8192, 0x825b, 0x8324, 0x83ed, 0x84b6, 0x857e,
--	0x8647, 0x8710, 0x87d9, 0x88a1, 0x896a, 0x8a32, 0x8afb, 0x8bc3,
--	0x8c8b, 0x8d53, 0x8e1b, 0x8ee3, 0x8fab, 0x9072, 0x9139, 0x9201,
--	0x92c7, 0x938e, 0x9455, 0x951b, 0x95e1, 0x96a7, 0x976d, 0x9833,
--	0x98f8, 0x99bd, 0x9a82, 0x9b47, 0x9c0b, 0x9ccf, 0x9d93, 0x9e56,
--	0x9f19, 0x9fdc, 0xa09f, 0xa161, 0xa223, 0xa2e5, 0xa3a6, 0xa467,
--	0xa527, 0xa5e8, 0xa6a7, 0xa767, 0xa826, 0xa8e5, 0xa9a3, 0xaa61,
--	0xab1f, 0xabdc, 0xac98, 0xad55, 0xae10, 0xaecc, 0xaf87, 0xb041,
--	0xb0fb, 0xb1b5, 0xb26e, 0xb326, 0xb3de, 0xb496, 0xb54d, 0xb603,
--	0xb6b9, 0xb76f, 0xb824, 0xb8d8, 0xb98c, 0xba3f, 0xbaf2, 0xbba4,
--	0xbc56, 0xbd07, 0xbdb7, 0xbe67, 0xbf17, 0xbfc5, 0xc073, 0xc121,
--	0xc1cd, 0xc279, 0xc325, 0xc3d0, 0xc47a, 0xc524, 0xc5cc, 0xc675,
--	0xc71c, 0xc7c3, 0xc869, 0xc90f, 0xc9b3, 0xca57, 0xcafb, 0xcb9d,
--	0xcc3f, 0xcce0, 0xcd81, 0xce20, 0xcebf, 0xcf5d, 0xcffb, 0xd097,
--	0xd133, 0xd1ce, 0xd268, 0xd302, 0xd39a, 0xd432, 0xd4c9, 0xd55f,
--	0xd5f5, 0xd689, 0xd71d, 0xd7b0, 0xd842, 0xd8d3, 0xd964, 0xd9f3,
--	0xda82, 0xdb0f, 0xdb9c, 0xdc28, 0xdcb3, 0xdd3d, 0xddc7, 0xde4f,
--	0xded7, 0xdf5d, 0xdfe3, 0xe068, 0xe0eb, 0xe16e, 0xe1f0, 0xe271,
--	0xe2f1, 0xe370, 0xe3ee, 0xe46b, 0xe4e8, 0xe563, 0xe5dd, 0xe656,
--	0xe6cf, 0xe746, 0xe7bc, 0xe831, 0xe8a6, 0xe919, 0xe98b, 0xe9fc,
--	0xea6d, 0xeadc, 0xeb4a, 0xebb7, 0xec23, 0xec8e, 0xecf8, 0xed61,
--	0xedc9, 0xee30, 0xee96, 0xeefa, 0xef5e, 0xefc1, 0xf022, 0xf083,
--	0xf0e2, 0xf140, 0xf19d, 0xf1f9, 0xf254, 0xf2ae, 0xf307, 0xf35e,
--	0xf3b5, 0xf40a, 0xf45f, 0xf4b2, 0xf504, 0xf555, 0xf5a5, 0xf5f3,
--	0xf641, 0xf68d, 0xf6d8, 0xf722, 0xf76b, 0xf7b3, 0xf7fa, 0xf83f,
--	0xf884, 0xf8c7, 0xf909, 0xf94a, 0xf989, 0xf9c8, 0xfa05, 0xfa41,
--	0xfa7c, 0xfab6, 0xfaee, 0xfb26, 0xfb5c, 0xfb91, 0xfbc5, 0xfbf8,
--	0xfc29, 0xfc59, 0xfc88, 0xfcb6, 0xfce3, 0xfd0e, 0xfd39, 0xfd62,
--	0xfd89, 0xfdb0, 0xfdd5, 0xfdfa, 0xfe1d, 0xfe3e, 0xfe5f, 0xfe7e,
--	0xfe9c, 0xfeb9, 0xfed5, 0xfeef, 0xff09, 0xff21, 0xff37, 0xff4d,
--	0xff61, 0xff74, 0xff86, 0xff97, 0xffa6, 0xffb4, 0xffc1, 0xffcd,
--	0xffd8, 0xffe1, 0xffe9, 0xfff0, 0xfff5, 0xfff9, 0xfffd, 0xfffe,
--	0xffff, 0xfffe, 0xfffd, 0xfff9, 0xfff5, 0xfff0, 0xffe9, 0xffe1,
--	0xffd8, 0xffcd, 0xffc1, 0xffb4, 0xffa6, 0xff97, 0xff86, 0xff74,
--	0xff61, 0xff4d, 0xff37, 0xff21, 0xff09, 0xfeef, 0xfed5, 0xfeb9,
--	0xfe9c, 0xfe7e, 0xfe5f, 0xfe3e, 0xfe1d, 0xfdfa, 0xfdd5, 0xfdb0,
--	0xfd89, 0xfd62, 0xfd39, 0xfd0e, 0xfce3, 0xfcb6, 0xfc88, 0xfc59,
--	0xfc29, 0xfbf8, 0xfbc5, 0xfb91, 0xfb5c, 0xfb26, 0xfaee, 0xfab6,
--	0xfa7c, 0xfa41, 0xfa05, 0xf9c8, 0xf989, 0xf94a, 0xf909, 0xf8c7,
--	0xf884, 0xf83f, 0xf7fa, 0xf7b3, 0xf76b, 0xf722, 0xf6d8, 0xf68d,
--	0xf641, 0xf5f3, 0xf5a5, 0xf555, 0xf504, 0xf4b2, 0xf45f, 0xf40a,
--	0xf3b5, 0xf35e, 0xf307, 0xf2ae, 0xf254, 0xf1f9, 0xf19d, 0xf140,
--	0xf0e2, 0xf083, 0xf022, 0xefc1, 0xef5e, 0xeefa, 0xee96, 0xee30,
--	0xedc9, 0xed61, 0xecf8, 0xec8e, 0xec23, 0xebb7, 0xeb4a, 0xeadc,
--	0xea6d, 0xe9fc, 0xe98b, 0xe919, 0xe8a6, 0xe831, 0xe7bc, 0xe746,
--	0xe6cf, 0xe656, 0xe5dd, 0xe563, 0xe4e8, 0xe46b, 0xe3ee, 0xe370,
--	0xe2f1, 0xe271, 0xe1f0, 0xe16e, 0xe0eb, 0xe068, 0xdfe3, 0xdf5d,
--	0xded7, 0xde4f, 0xddc7, 0xdd3d, 0xdcb3, 0xdc28, 0xdb9c, 0xdb0f,
--	0xda82, 0xd9f3, 0xd964, 0xd8d3, 0xd842, 0xd7b0, 0xd71d, 0xd689,
--	0xd5f5, 0xd55f, 0xd4c9, 0xd432, 0xd39a, 0xd302, 0xd268, 0xd1ce,
--	0xd133, 0xd097, 0xcffb, 0xcf5d, 0xcebf, 0xce20, 0xcd81, 0xcce0,
--	0xcc3f, 0xcb9d, 0xcafb, 0xca57, 0xc9b3, 0xc90f, 0xc869, 0xc7c3,
--	0xc71c, 0xc675, 0xc5cc, 0xc524, 0xc47a, 0xc3d0, 0xc325, 0xc279,
--	0xc1cd, 0xc121, 0xc073, 0xbfc5, 0xbf17, 0xbe67, 0xbdb7, 0xbd07,
--	0xbc56, 0xbba4, 0xbaf2, 0xba3f, 0xb98c, 0xb8d8, 0xb824, 0xb76f,
--	0xb6b9, 0xb603, 0xb54d, 0xb496, 0xb3de, 0xb326, 0xb26e, 0xb1b5,
--	0xb0fb, 0xb041, 0xaf87, 0xaecc, 0xae10, 0xad55, 0xac98, 0xabdc,
--	0xab1f, 0xaa61, 0xa9a3, 0xa8e5, 0xa826, 0xa767, 0xa6a7, 0xa5e8,
--	0xa527, 0xa467, 0xa3a6, 0xa2e5, 0xa223, 0xa161, 0xa09f, 0x9fdc,
--	0x9f19, 0x9e56, 0x9d93, 0x9ccf, 0x9c0b, 0x9b47, 0x9a82, 0x99bd,
--	0x98f8, 0x9833, 0x976d, 0x96a7, 0x95e1, 0x951b, 0x9455, 0x938e,
--	0x92c7, 0x9201, 0x9139, 0x9072, 0x8fab, 0x8ee3, 0x8e1b, 0x8d53,
--	0x8c8b, 0x8bc3, 0x8afb, 0x8a32, 0x896a, 0x88a1, 0x87d9, 0x8710,
--	0x8647, 0x857e, 0x84b6, 0x83ed, 0x8324, 0x825b, 0x8192, 0x80c9,
--	0x8000, 0x7f36, 0x7e6d, 0x7da4, 0x7cdb, 0x7c12, 0x7b49, 0x7a81,
--	0x79b8, 0x78ef, 0x7826, 0x775e, 0x7695, 0x75cd, 0x7504, 0x743c,
--	0x7374, 0x72ac, 0x71e4, 0x711c, 0x7054, 0x6f8d, 0x6ec6, 0x6dfe,
--	0x6d38, 0x6c71, 0x6baa, 0x6ae4, 0x6a1e, 0x6958, 0x6892, 0x67cc,
--	0x6707, 0x6642, 0x657d, 0x64b8, 0x63f4, 0x6330, 0x626c, 0x61a9,
--	0x60e6, 0x6023, 0x5f60, 0x5e9e, 0x5ddc, 0x5d1a, 0x5c59, 0x5b98,
--	0x5ad8, 0x5a17, 0x5958, 0x5898, 0x57d9, 0x571a, 0x565c, 0x559e,
--	0x54e0, 0x5423, 0x5367, 0x52aa, 0x51ef, 0x5133, 0x5078, 0x4fbe,
--	0x4f04, 0x4e4a, 0x4d91, 0x4cd9, 0x4c21, 0x4b69, 0x4ab2, 0x49fc,
--	0x4946, 0x4890, 0x47db, 0x4727, 0x4673, 0x45c0, 0x450d, 0x445b,
--	0x43a9, 0x42f8, 0x4248, 0x4198, 0x40e8, 0x403a, 0x3f8c, 0x3ede,
--	0x3e32, 0x3d86, 0x3cda, 0x3c2f, 0x3b85, 0x3adb, 0x3a33, 0x398a,
--	0x38e3, 0x383c, 0x3796, 0x36f0, 0x364c, 0x35a8, 0x3504, 0x3462,
--	0x33c0, 0x331f, 0x327e, 0x31df, 0x3140, 0x30a2, 0x3004, 0x2f68,
--	0x2ecc, 0x2e31, 0x2d97, 0x2cfd, 0x2c65, 0x2bcd, 0x2b36, 0x2aa0,
--	0x2a0a, 0x2976, 0x28e2, 0x284f, 0x27bd, 0x272c, 0x269b, 0x260c,
--	0x257d, 0x24f0, 0x2463, 0x23d7, 0x234c, 0x22c2, 0x2238, 0x21b0,
--	0x2128, 0x20a2, 0x201c, 0x1f97, 0x1f14, 0x1e91, 0x1e0f, 0x1d8e,
--	0x1d0e, 0x1c8f, 0x1c11, 0x1b94, 0x1b17, 0x1a9c, 0x1a22, 0x19a9,
--	0x1930, 0x18b9, 0x1843, 0x17ce, 0x1759, 0x16e6, 0x1674, 0x1603,
--	0x1592, 0x1523, 0x14b5, 0x1448, 0x13dc, 0x1371, 0x1307, 0x129e,
--	0x1236, 0x11cf, 0x1169, 0x1105, 0x10a1, 0x103e, 0xfdd, 0xf7c,
--	0xf1d, 0xebf, 0xe62, 0xe06, 0xdab, 0xd51, 0xcf8, 0xca1,
--	0xc4a, 0xbf5, 0xba0, 0xb4d, 0xafb, 0xaaa, 0xa5a, 0xa0c,
--	0x9be, 0x972, 0x927, 0x8dd, 0x894, 0x84c, 0x805, 0x7c0,
--	0x77b, 0x738, 0x6f6, 0x6b5, 0x676, 0x637, 0x5fa, 0x5be,
--	0x583, 0x549, 0x511, 0x4d9, 0x4a3, 0x46e, 0x43a, 0x407,
--	0x3d6, 0x3a6, 0x377, 0x349, 0x31c, 0x2f1, 0x2c6, 0x29d,
--	0x276, 0x24f, 0x22a, 0x205, 0x1e2, 0x1c1, 0x1a0, 0x181,
--	0x163, 0x146, 0x12a, 0x110, 0xf6, 0xde, 0xc8, 0xb2,
--	0x9e, 0x8b, 0x79, 0x68, 0x59, 0x4b, 0x3e, 0x32,
--	0x27, 0x1e, 0x16, 0xf, 0xa, 0x6, 0x2, 0x1,
--	0x0, 0x1, 0x2, 0x6, 0xa, 0xf, 0x16, 0x1e,
--	0x27, 0x32, 0x3e, 0x4b, 0x59, 0x68, 0x79, 0x8b,
--	0x9e, 0xb2, 0xc8, 0xde, 0xf6, 0x110, 0x12a, 0x146,
--	0x163, 0x181, 0x1a0, 0x1c1, 0x1e2, 0x205, 0x22a, 0x24f,
--	0x276, 0x29d, 0x2c6, 0x2f1, 0x31c, 0x349, 0x377, 0x3a6,
--	0x3d6, 0x407, 0x43a, 0x46e, 0x4a3, 0x4d9, 0x511, 0x549,
--	0x583, 0x5be, 0x5fa, 0x637, 0x676, 0x6b5, 0x6f6, 0x738,
--	0x77b, 0x7c0, 0x805, 0x84c, 0x894, 0x8dd, 0x927, 0x972,
--	0x9be, 0xa0c, 0xa5a, 0xaaa, 0xafb, 0xb4d, 0xba0, 0xbf5,
--	0xc4a, 0xca1, 0xcf8, 0xd51, 0xdab, 0xe06, 0xe62, 0xebf,
--	0xf1d, 0xf7c, 0xfdd, 0x103e, 0x10a1, 0x1105, 0x1169, 0x11cf,
--	0x1236, 0x129e, 0x1307, 0x1371, 0x13dc, 0x1448, 0x14b5, 0x1523,
--	0x1592, 0x1603, 0x1674, 0x16e6, 0x1759, 0x17ce, 0x1843, 0x18b9,
--	0x1930, 0x19a9, 0x1a22, 0x1a9c, 0x1b17, 0x1b94, 0x1c11, 0x1c8f,
--	0x1d0e, 0x1d8e, 0x1e0f, 0x1e91, 0x1f14, 0x1f97, 0x201c, 0x20a2,
--	0x2128, 0x21b0, 0x2238, 0x22c2, 0x234c, 0x23d7, 0x2463, 0x24f0,
--	0x257d, 0x260c, 0x269b, 0x272c, 0x27bd, 0x284f, 0x28e2, 0x2976,
--	0x2a0a, 0x2aa0, 0x2b36, 0x2bcd, 0x2c65, 0x2cfd, 0x2d97, 0x2e31,
--	0x2ecc, 0x2f68, 0x3004, 0x30a2, 0x3140, 0x31df, 0x327e, 0x331f,
--	0x33c0, 0x3462, 0x3504, 0x35a8, 0x364c, 0x36f0, 0x3796, 0x383c,
--	0x38e3, 0x398a, 0x3a33, 0x3adb, 0x3b85, 0x3c2f, 0x3cda, 0x3d86,
--	0x3e32, 0x3ede, 0x3f8c, 0x403a, 0x40e8, 0x4198, 0x4248, 0x42f8,
--	0x43a9, 0x445b, 0x450d, 0x45c0, 0x4673, 0x4727, 0x47db, 0x4890,
--	0x4946, 0x49fc, 0x4ab2, 0x4b69, 0x4c21, 0x4cd9, 0x4d91, 0x4e4a,
--	0x4f04, 0x4fbe, 0x5078, 0x5133, 0x51ef, 0x52aa, 0x5367, 0x5423,
--	0x54e0, 0x559e, 0x565c, 0x571a, 0x57d9, 0x5898, 0x5958, 0x5a17,
--	0x5ad8, 0x5b98, 0x5c59, 0x5d1a, 0x5ddc, 0x5e9e, 0x5f60, 0x6023,
--	0x60e6, 0x61a9, 0x626c, 0x6330, 0x63f4, 0x64b8, 0x657d, 0x6642,
--	0x6707, 0x67cc, 0x6892, 0x6958, 0x6a1e, 0x6ae4, 0x6baa, 0x6c71,
--	0x6d38, 0x6dfe, 0x6ec6, 0x6f8d, 0x7054, 0x711c, 0x71e4, 0x72ac,
--	0x7374, 0x743c, 0x7504, 0x75cd, 0x7695, 0x775e, 0x7826, 0x78ef,
--	0x79b8, 0x7a81, 0x7b49, 0x7c12, 0x7cdb, 0x7da4, 0x7e6d, 0x7f36
--};
-+/* Used by the tone generator */
-+#define SAMPLE_RATE	48000
-+#define PI		180
-+#define NOTE_A4		440
- 
- static struct vidtv_access_unit *vidtv_s302m_access_unit_init(struct vidtv_access_unit *head)
- {
-@@ -312,6 +183,22 @@ static void vidtv_s302m_compute_pts_v(struct vidtv_encoder *e)
- static u16 vidtv_s302m_get_sample(struct vidtv_encoder *e)
- {
- 	u16 sample;
-+	int pos;
-+
-+	if (!e->src_buf) {
-+		/*
-+		 * Simple tone generator. For now, just generates a 440 Hz
-+		 * sinusoidal wave.
-+		 */
-+		pos = (2 * PI * e->src_buf_offset * NOTE_A4 / SAMPLE_RATE);
-+
-+		if (pos == 360)
-+			e->src_buf_offset = 0;
-+		else
-+			e->src_buf_offset++;
-+
-+		return (fixp_sin32(pos % (2 * PI)) >> 16) + 0x8000;
-+	}
- 
- 	/* bug somewhere */
- 	if (e->src_buf_offset > e->src_buf_sz) {
-@@ -393,14 +280,11 @@ static u32 vidtv_s302m_write_h(struct vidtv_encoder *e, u32 p_sz)
- 
- static void vidtv_s302m_write_frames(struct vidtv_encoder *e)
- {
--	u32 nbytes = 0;
-+	struct vidtv_access_unit *au = e->access_units;
- 	u32 nbytes_per_unit = 0;
-+	u32 nbytes = 0;
- 	u32 au_sz = 0;
--
--	struct vidtv_access_unit *au = e->access_units;
--
--	u16 sample = 0;
--
-+	u16 sample;
- 	u32 j;
- 
- 	while (au) {
-@@ -413,8 +297,10 @@ static void vidtv_s302m_write_frames(struct vidtv_encoder *e)
- 			sample = vidtv_s302m_get_sample(e);
- 			nbytes_per_unit += vidtv_s302m_write_frame(e, sample);
- 
--			e->sample_count++;
--			e->src_buf_offset += sizeof(u16);
-+			if (e->src_buf) {
-+				e->sample_count++;
-+				e->src_buf_offset += sizeof(u16);
-+			}
- 		}
- 
- 		au->nbytes = nbytes_per_unit;
-@@ -503,8 +389,8 @@ struct vidtv_encoder
- 
- 	e->sample_count = 0;
- 
--	e->src_buf = (args.src_buf) ? args.src_buf : &s302m_sin_lut;
--	e->src_buf_sz = (args.src_buf) ? args.src_buf_sz : S302M_SIN_LUT_NUM_ELEM * sizeof(u16);
-+	e->src_buf = (args.src_buf) ? args.src_buf : NULL;
-+	e->src_buf_sz = (args.src_buf) ? args.src_buf_sz : 0;
- 	e->src_buf_offset = 0;
- 
- 	e->is_video_encoder = false;
--- 
-2.26.2
+> Looking at its usage, e.g. ether_addr_equal() or __crypto_memneq_*(),
+> I see similar casts of pointers possibly misaligned.
+>
 
+Yes, that is the confusion. CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+should indicate whether using the unaligned accessors is fine in all
+cases, or whether you should find other ways to load the data more
+efficiently (compare NET_IP_ALIGN, which shifts the entire IP header
+so the 32-bit address field appear aligned in memory)
+
+CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS does *not* mean that you can
+simply cast any pointer to any type and dereference it, but the
+meaning appears to have shifted this way over the years (and the
+Documentation/ was even updated to this effect)
+
+Pre-v6 ARM (and MIPS as well, IIRC) require byte sized accesses and
+shift/or sequences to do unaligned accesses, whereas v6 and up simply
+allows ldr from a misaligned address. So in the former case, you could
+use cra_alignmask to align the data in memory, while the latter case
+can ignore it. (arch/arm/crypto/aes-cipher-glue.c uses this as well)
+
+> >> Would it be ok to use:
+> >> #if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && !defined(CONFIG=
+_ARM)
+> >> to workaround the ARMv7 inconsistency?
+> >>
+> >
+> > No, please just use the get_unaligned() accessor.
+> >
+> Ok.
+>
+> Thanks,
+> Horia
