@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9D226A1C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30D126A1BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 11:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgIOJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 05:12:13 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60358 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726130AbgIOJLv (ORCPT
+        id S1726342AbgIOJLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 05:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIOJLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 05:11:51 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08F98H9f022258;
-        Tue, 15 Sep 2020 11:11:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=a2n/VyvPL5cAo3F9MDe6vyiMgotrwIrVTK+SWyJLDSw=;
- b=KVJs7BeeDzxet4I8mZSqnmowPgBQk6tXj46ILQIpe4DZ8lC++wmMx/jOK3mbJLA6z5oq
- Hjzg7j/vJfJBm1PRQiaeVC2xvom049KRmzsHzHqqqCT9U50qfMlrM7nmB76i4wlZUSxm
- wQPzCjp9tir9Bjj8115ZYgPqasuUiVhq7Om5OyJTF5MM4sFuH3qukIVfJ5enkQrbXv3F
- zCiGbYWMsoV5BKQyRS/jS9pS6eqFco/h/g8D6BSVM297Ei2Ij/hWG0QXI/mYFc0BDBAQ
- Fvwr0PgCPdXs2gsCUNHXCie/5/S81VkYiYjR7onHGquXbAEnWaSQCdzSCxrfmIIFocJu vw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33gn7gxnpv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Sep 2020 11:11:32 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CEEEB10002A;
-        Tue, 15 Sep 2020 11:11:31 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3FA592A447E;
-        Tue, 15 Sep 2020 11:11:31 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 15 Sep 2020 11:11:30
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <wsa@kernel.org>, <pierre-yves.mordret@st.com>
-CC:     <alexandre.torgue@st.com>, <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH 1/2] i2c: stm32: fix slot id after introduction of host-notify support
-Date:   Tue, 15 Sep 2020 11:11:30 +0200
-Message-ID: <1600161090-9899-1-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 15 Sep 2020 05:11:41 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1051EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 02:11:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0e42006449c187a2f3906a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:4200:6449:c187:a2f3:906a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 79C2E1EC058B;
+        Tue, 15 Sep 2020 11:11:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600161099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7cElbsFu165XZezhnZrU812OzCS0YyaUHu8PEBoV30Q=;
+        b=kEh0yS+AFJe7QKe1jOcpLOXl133/rNnmNZgrFA3QBN5ep8h75s+/ykEAvnl4keObG3wiCo
+        mHv53ddkHgb6DApcRVQeal9zajn5bAtFoAOGJgkgk9vRZGSj7Z2g6UYgJJXNCiZSTSYoOD
+        AIHYZOS2vJGJjACK5Sv4QNgdGXF11e4=
+Date:   Tue, 15 Sep 2020 11:11:32 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Youquan Song <youquan.song@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/8] x86/mce: Provide method to find out the type of
+ exception handle
+Message-ID: <20200915091132.GD14436@zn.tnic>
+References: <20200908175519.14223-1-tony.luck@intel.com>
+ <20200908175519.14223-4-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-15_05:2020-09-15,2020-09-15 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200908175519.14223-4-tony.luck@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 68302245720a ("i2c: stm32f7: Add SMBus Host-Notify protocol support")
-added a new slot specific for handling host-notify however failed
-to update the previous slot ID leading to having the 7bit address
-only slot with the wrong number.
+On Tue, Sep 08, 2020 at 10:55:14AM -0700, Tony Luck wrote:
+> Avoid a proliferation of ex_has_*_handler() functions by having just
+> one function that returns the type of the handler (if any).
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  arch/x86/include/asm/extable.h     |  9 ++++++++-
+>  arch/x86/kernel/cpu/mce/severity.c |  5 ++++-
+>  arch/x86/mm/extable.c              | 12 ++++++++----
+>  3 files changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/extable.h b/arch/x86/include/asm/extable.h
+> index d8c2198d543b..56ec02e024ad 100644
+> --- a/arch/x86/include/asm/extable.h
+> +++ b/arch/x86/include/asm/extable.h
+> @@ -29,10 +29,17 @@ struct pt_regs;
+>  		(b)->handler = (tmp).handler - (delta);		\
+>  	} while (0)
+>  
+> +enum handler_type {
+> +	HANDLER_NONE,
+> +	HANDLER_FAULT,
+> +	HANDLER_UACCESS,
+> +	HANDLER_OTHER
 
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
- drivers/i2c/busses/i2c-stm32f7.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+EX_HANDLER_* I guess - HANDLER is too generic.
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index b401940c5580..0880f6a4cd44 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1355,7 +1355,7 @@ static int stm32f7_i2c_get_free_slave_id(struct stm32f7_i2c_dev *i2c_dev,
- 	}
- 
- 	for (i = STM32F7_I2C_MAX_SLAVE - 1; i > 0; i--) {
--		if (i == 1 && (slave->flags & I2C_CLIENT_TEN))
-+		if (i == 2 && (slave->flags & I2C_CLIENT_TEN))
- 			continue;
- 		if (!i2c_dev->slave[i]) {
- 			*id = i;
+> @@ -125,17 +125,21 @@ __visible bool ex_handler_clear_fs(const struct exception_table_entry *fixup,
+>  }
+>  EXPORT_SYMBOL(ex_handler_clear_fs);
+>  
+> -__visible bool ex_has_fault_handler(unsigned long ip)
+> +__visible enum handler_type ex_fault_handler_type(unsigned long ip)
+
+Why __visible?
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
