@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E628026A095
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643D526A0A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 10:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgIOIWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 04:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726174AbgIOIWD (ORCPT
+        id S1726396AbgIOIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 04:23:15 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32355 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726178AbgIOIWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 04:22:03 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C747C061788
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:22:03 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id z2so2513685qtv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Sep 2020 01:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=qwBcvIBU5LOYe6OskRbMqT6V676HBWZDqSyC3uftkyQ=;
-        b=HslBmbeWTZm7v2sAgaH6pYCFXZ7p24g+9zKdqnDAv0NOj2E9u3HBm4SN0fyl+ARwBj
-         Br5Fx3dCbNIxlooxtHo2kNsfpAA33mhnz/XMM3D1dxVbbccet/Cdnq0YPagKQVeT5G5Z
-         5SH4ZPg/M3NnYHJMnQwe1o7DHXDijfry/Hkk8TniFYcpFEVfJKPAsZffKXxLz4fx/GNH
-         2OVlsrZpPKckQsTMFVXe21TmD0mXmiuVW6p7flm6WGT8oZNNGxB2AKQhZvouWtHvIIpY
-         /kn4MMUMqvaAB/HZgmb8IUarJy4R+n76AjBbuU7Twv7P+yN6t7ZUO6irhAOPgT+OiJ1g
-         DCfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=qwBcvIBU5LOYe6OskRbMqT6V676HBWZDqSyC3uftkyQ=;
-        b=b9RL70T30dR89sn58OwVl5eMQ32omGsMPLTV0//BHTIIc97okCmSBgaJC3qOZ4kNJ7
-         iBMpYp7JvWvjvFIPL89Oexbf6Ue0JW+y15JgPeECagb27x3pSTYqGdAwkO+c7rZzpSxU
-         qdfuPpd7qSIbVIq+3S3EBbAeoMDd/xvQlEd/5+FL0WkGiCxJX6MtZa9GSPA4+xDggV0h
-         R4v496Z1qEDN41mTaVITrtrwl+Geh8Q77wx+Sph6YkEd3O2AnpBC9i29dCN5ancj9mYz
-         87cew7rD/yDBFqDYFGZtXry0Qne6nSQ+80uwCTozEHMmF5b1XNRbbFUW4g9X28MC3yRS
-         gQNg==
-X-Gm-Message-State: AOAM533FLCQbyeY+vFm1ZBobBsM7qkuPt9eiQOMT3P9yn9r81OauX7/I
-        /v21zq2VmuXn/LHHbt9Zd5Kxsg==
-X-Google-Smtp-Source: ABdhPJyR6bVIaKYKABqifQ5Rex4fbJICMbVfXkItWNXtNqfqKaF5g9X1runG34cKop5c62nQTd0riQ==
-X-Received: by 2002:ac8:4a84:: with SMTP id l4mr4699277qtq.367.1600158122072;
-        Tue, 15 Sep 2020 01:22:02 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l92sm14161168qte.38.2020.09.15.01.21.57
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 15 Sep 2020 01:22:00 -0700 (PDT)
-Date:   Tue, 15 Sep 2020 01:21:56 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-In-Reply-To: <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2009150112130.1550@eggly.anvils>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org> <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils> <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com> <alpine.LSU.2.11.2009091524260.10087@eggly.anvils> <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com> <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
- <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Tue, 15 Sep 2020 04:22:55 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-71-5leh59vyMUmzAnr2F172FA-1; Tue, 15 Sep 2020 09:22:50 +0100
+X-MC-Unique: 5leh59vyMUmzAnr2F172FA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 15 Sep 2020 09:22:49 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 15 Sep 2020 09:22:49 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Josh Poimboeuf' <jpoimboe@redhat.com>
+CC:     'Borislav Petkov' <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Waiman Long" <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Mark Rutland" <mark.rutland@arm.com>
+Subject: RE: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Thread-Topic: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Thread-Index: AQHWisBV61WRef5OMEyULIupnNS1CKloouig///5HACAAMAeUA==
+Date:   Tue, 15 Sep 2020 08:22:49 +0000
+Message-ID: <18cc6ae97e1f4bf5a81167e0c1313935@AcuMS.aculab.com>
+References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
+ <20200914175604.GF680@zn.tnic>
+ <2e6a4d75b38248f1b8b3b874d36065f1@AcuMS.aculab.com>
+ <20200914215104.cjvycgie2wd3omtn@treble>
+In-Reply-To: <20200914215104.cjvycgie2wd3omtn@treble>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Sep 2020, Alex Shi wrote:
-> 
-> IIRC, all of comments are accepted and push to 
-> https://github.com/alexshi/linux.git lruv19
+RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMTQgU2VwdGVtYmVyIDIwMjAgMjI6NTENCj4g
+DQo+IE9uIE1vbiwgU2VwIDE0LCAyMDIwIGF0IDA5OjIzOjU5UE0gKzAwMDAsIERhdmlkIExhaWdo
+dCB3cm90ZToNCj4gPiBGcm9tOiBCb3Jpc2xhdiBQZXRrb3YNCj4gPiA+IFNlbnQ6IDE0IFNlcHRl
+bWJlciAyMDIwIDE4OjU2DQo+ID4gPg0KPiA+ID4gT24gVGh1LCBTZXAgMTAsIDIwMjAgYXQgMTI6
+MjI6NTNQTSAtMDUwMCwgSm9zaCBQb2ltYm9ldWYgd3JvdGU6DQo+ID4gPiA+ICsvKg0KPiA+ID4g
+PiArICogU2FuaXRpemUgYSB1c2VyIHBvaW50ZXIgc3VjaCB0aGF0IGl0IGJlY29tZXMgTlVMTCBp
+ZiBpdCdzIG5vdCBhIHZhbGlkIHVzZXINCj4gPiA+ID4gKyAqIHBvaW50ZXIuICBUaGlzIHByZXZl
+bnRzIHNwZWN1bGF0aXZlIGRlcmVmZXJlbmNlcyBvZiB1c2VyLWNvbnRyb2xsZWQgcG9pbnRlcnMN
+Cj4gPiA+ID4gKyAqIHRvIGtlcm5lbCBzcGFjZSB3aGVuIGFjY2Vzc19vaygpIHNwZWN1bGF0aXZl
+bHkgcmV0dXJucyB0cnVlLiAgVGhpcyBzaG91bGQgYmUNCj4gPiA+ID4gKyAqIGRvbmUgKmFmdGVy
+KiBhY2Nlc3Nfb2soKSwgdG8gYXZvaWQgYWZmZWN0aW5nIGVycm9yIGhhbmRsaW5nIGJlaGF2aW9y
+Lg0KPiA+ID4NCj4gPiA+IEVyciwgc3R1cGlkIHF1ZXN0aW9uOiBjYW4gdGhpcyBtYWNybyB0aGVu
+IGJlIGZvbGRlZCBpbnRvIGFjY2Vzc19vaygpIHNvDQo+ID4gPiB0aGF0IHlvdSBkb24ndCBoYXZl
+IHRvIHRvdWNoIHNvIG1hbnkgcGxhY2VzIGFuZCB0aGUgY2hlY2sgY2FuIGhhcHBlbg0KPiA+ID4g
+YXV0b21hdGljYWxseT8NCj4gPg0KPiA+IE15IHRob3VnaHRzIGFyZSB0aGF0IGFjY2Vzc19vaygp
+IGNvdWxkIHJldHVybiAwIGZvciBmYWlsIGFuZCB+MHUNCj4gPiBmb3Igc3VjY2Vzcy4NCj4gPiBZ
+b3UgY291bGQgdGhlbiBkbyAod2l0aCBhIGZldyBjYXN0cyk6DQo+ID4gCW1hc2sgPSBhY2Nlc3Nf
+b2socHRyLCBzaXplKTsNCj4gPiAJLyogU3RvcCBnY2MgdHJhY2tpbmcgdGhlIHZhbHVlIG9mIG1h
+c2suICovDQo+ID4gCWFzbSB2b2xhdGlsZSggIiIgOiAiK3IiIChtYXNrKSk7DQo+ID4gCWFkZHIg
+PSBwdHIgJiBtYXNrOw0KPiA+IAlpZiAoIWFkZHIgJiYgcHRyKSAgLy8gTGV0IE5VTEwgdGhyb3Vn
+aD8/DQo+ID4gCQlyZXR1cm4gLUVGQVVMVDsNCj4gPg0KPiA+IEkgdGhpbmsgdGhlcmUgYXJlIG90
+aGVyIGNoYW5nZXMgaW4gdGhlIHBpcGVsaW5lIHRvIHJlbW92ZQ0KPiA+IG1vc3Qgb2YgdGhlIGFj
+Y2Vzc19vaygpIGFwYXJ0IGZyb20gdGhvc2UgaW5zaWRlIHB1dC9nZXRfdXNlcigpDQo+ID4gYW5k
+IGNvcHlfdG8vZnJvbV91c2VyKCkuDQo+ID4gU28gdGhlIGNoYW5nZXMgc2hvdWxkIGJlIG1vcmUg
+bGltaXRlZCB0aGFuIHlvdSBtaWdodCB0aGluay4NCj4gDQo+IE1heWJlLCBidXQgSSBiZWxpZXZl
+IHRoYXQncyBzdGlsbCBnb2luZyB0byBlbmQgdXAgYSB0cmVld2lkZSBjaGFuZ2UuDQo+IA0KPiBB
+bmQsIGlmIHdlJ3JlIGdvaW5nIHRvIHRoZSB0cm91YmxlIG9mIGNoYW5naW5nIHRoZSBhY2Nlc3Nf
+b2soKQ0KPiBpbnRlcmZhY2UsIHdlIHNob3VsZCBjaGFuZ2UgaXQgZW5vdWdoIHRvIG1ha2Ugc3Vy
+ZSB0aGF0IGFjY2lkZW50YWwgdXNlcw0KPiBvZiB0aGUgb2xkIGludGVyZmFjZSAoYWZ0ZXIgeWVh
+cnMgb2YgbXVzY2xlIG1lbW9yeSkgd2lsbCBmYWlsIHRvIGJ1aWxkLg0KPiANCj4gV2UgY291bGQg
+ZWl0aGVyIGFkZCBhIDNyZCBhcmd1bWVudCwgb3IgcmVuYW1lIGl0IHRvIGFjY2Vzc19va19tYXNr
+KCkgb3INCj4gc29tZXRoaW5nLg0KDQpJdCB3b3VsZCB0YWtlIHNvbWUgdGhvdWdodCB0byBnZXQg
+cmlnaHQgKGFuZCBmb29sIHByb29mKSBzbyB3b3VsZCBuZWVkDQpuZXcgbmFtZXMgc28gaXQgY291
+bGQgY28tZXhpc3Qgd2l0aCB0aGUgZXhpc3RpbmcgY29kZSBzbyB0aGF0IHRoZQ0KY2hhbmdlcyBj
+b3VsZCAncmlwcGxlIHRocm91Z2gnIHRoZSBzb3VyY2UgdHJlZSBpbnN0ZWFkIG9mIGFsbCBoYXZp
+bmcgdG8NCmJlIG1hZGUgYXQgb25jZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
+cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
+MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-I just had to relax for the weekend, so no progress from me.
-I'll take a look at your tree tomorrow, er, later today.
-
-> If you don't minder, could you change everything and send out a new version
-> for further review?
-
-Sorry, no.  Tiresome though it is for both of us, I'll continue
-to send you comments, and leave all the posting to you.
-
-> Uh, I updated the testing with some new results here:
-> https://lkml.org/lkml/2020/8/26/212
-
-Right, I missed that, that's better, thanks.  Any other test results?
-
-Hugh
