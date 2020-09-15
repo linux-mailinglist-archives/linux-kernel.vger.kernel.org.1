@@ -2,170 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E539F26B801
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C8226B802
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 02:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgIPAeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 20:34:05 -0400
-Received: from mga09.intel.com ([134.134.136.24]:44345 "EHLO mga09.intel.com"
+        id S1726293AbgIPAeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 20:34:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:54077 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726455AbgIONko (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 09:40:44 -0400
-IronPort-SDR: joN5RT4p5Ggxm695IooCsjmHQnZlTWMlHWUSrCE1PzZRw7ZE5KbxVc82ZXy4Iz1h4rP7+q2Q6Z
- MU5TUuY2L7yg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="160187970"
+        id S1726433AbgIONkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 09:40:43 -0400
+IronPort-SDR: rvLm38eT33BJANj7itumgJdLySUFFNAbf/y/Az8d4GTl3tp2KhPD+TbLAcZ0LQXCLEmICfyo1v
+ jKjZWMem8jYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9744"; a="156647776"
 X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="160187970"
+   d="scan'208";a="156647776"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 06:38:07 -0700
-IronPort-SDR: 1LW4adCSbUnt4s0K6C7IcQp+jeqoshblniqRt8gVygmb4Yxp5orBIRgsmgid4xuysjdCOzoikM
- WFBbjpXq5TBA==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 06:38:14 -0700
+IronPort-SDR: UA5G45UrrFxSjjaOkVhRKjvbwuQAo7vjns7bzlxOA1Dv9YdCEEWDrppQTHv/iu18DRmJSdppJJ
+ LwFuPecApS6Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="331192786"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Sep 2020 06:38:04 -0700
-Subject: Re: [RFC PATCH v1 1/1] sched/fair: select idle cpu from idle cpumask
- in sched domain
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Jiang Biao <benbjiang@gmail.com>
-Cc:     Aubrey Li <aubrey.li@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200910054203.525420-1-aubrey.li@intel.com>
- <20200910054203.525420-2-aubrey.li@intel.com>
- <CAPJCdBm+eyvY3ZUU0sz8WxRhdKquCApTCb1rv8DBDCnG8kS0PA@mail.gmail.com>
- <CAKfTPtBXxFC_FJHbnRafN3-6Fs=kJxMvGaStiKtp8T06p5Xr4A@mail.gmail.com>
- <CAPJCdBn8GPM5ur6i90Lo1T95BPNAvCPASQdSTpOn_kjUxEi3LA@mail.gmail.com>
- <CAKfTPtC1DQOCmQRJYPO4zH99Nw622zx__a-4TKAJNHJJfLpvKg@mail.gmail.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <3c9c8db6-86c0-3f62-4a8e-a5df4cb03715@linux.intel.com>
-Date:   Tue, 15 Sep 2020 21:38:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+   d="scan'208";a="409202978"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 15 Sep 2020 06:38:10 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Sep 2020 16:38:09 +0300
+Date:   Tue, 15 Sep 2020 16:38:09 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        matthias.bgg@gmail.com, linux@roeck-us.net, cy_huang@richtek.com,
+        gene_chen@richtek.com, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] usb typec: mt6360: Add support for mt6360 Type-C
+ driver
+Message-ID: <20200915133809.GL1139641@kuha.fi.intel.com>
+References: <1598928042-22115-1-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtC1DQOCmQRJYPO4zH99Nw622zx__a-4TKAJNHJJfLpvKg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598928042-22115-1-git-send-email-u0084500@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/15 17:23, Vincent Guittot wrote:
-> On Tue, 15 Sep 2020 at 10:47, Jiang Biao <benbjiang@gmail.com> wrote:
->>
->> Hi, Vincent
->>
->> On Mon, 14 Sep 2020 at 20:26, Vincent Guittot
->> <vincent.guittot@linaro.org> wrote:
->>>
->>> On Sun, 13 Sep 2020 at 05:59, Jiang Biao <benbjiang@gmail.com> wrote:
->>>>
->>>> Hi, Aubrey
->>>>
->>>> On Fri, 11 Sep 2020 at 23:48, Aubrey Li <aubrey.li@intel.com> wrote:
->>>>>
->>>>> Added idle cpumask to track idle cpus in sched domain. When a CPU
->>>>> enters idle, its corresponding bit in the idle cpumask will be set,
->>>>> and when the CPU exits idle, its bit will be cleared.
->>>>>
->>>>> When a task wakes up to select an idle cpu, scanning idle cpumask
->>>>> has low cost than scanning all the cpus in last level cache domain,
->>>>> especially when the system is heavily loaded.
->>>>>
->>>>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
->>>>> ---
->>>>>  include/linux/sched/topology.h | 13 +++++++++++++
->>>>>  kernel/sched/fair.c            |  4 +++-
->>>>>  kernel/sched/topology.c        |  2 +-
->>>>>  3 files changed, 17 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
->>>>> index fb11091129b3..43a641d26154 100644
->>>>> --- a/include/linux/sched/topology.h
->>>>> +++ b/include/linux/sched/topology.h
->>>>> @@ -65,8 +65,21 @@ struct sched_domain_shared {
->>>>>         atomic_t        ref;
->>>>>         atomic_t        nr_busy_cpus;
->>>>>         int             has_idle_cores;
->>>>> +       /*
->>>>> +        * Span of all idle CPUs in this domain.
->>>>> +        *
->>>>> +        * NOTE: this field is variable length. (Allocated dynamically
->>>>> +        * by attaching extra space to the end of the structure,
->>>>> +        * depending on how many CPUs the kernel has booted up with)
->>>>> +        */
->>>>> +       unsigned long   idle_cpus_span[];
->>>>>  };
->>>>>
->>>>> +static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
->>>>> +{
->>>>> +       return to_cpumask(sds->idle_cpus_span);
->>>>> +}
->>>>> +
->>>>>  struct sched_domain {
->>>>>         /* These fields must be setup */
->>>>>         struct sched_domain __rcu *parent;      /* top domain must be null terminated */
->>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>>> index 6b3b59cc51d6..3b6f8a3589be 100644
->>>>> --- a/kernel/sched/fair.c
->>>>> +++ b/kernel/sched/fair.c
->>>>> @@ -6136,7 +6136,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->>>>>
->>>>>         time = cpu_clock(this);
->>>>>
->>>>> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
->>>>> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
->>>> Is the sds_idle_cpus() always empty if nohz=off?
->>>
->>> Good point
->>>
->>>> Do we need to initialize the idle_cpus_span with sched_domain_span(sd)?
->>>>
->>>>>
->>>>>         for_each_cpu_wrap(cpu, cpus, target) {
->>>>>                 if (!--nr)
->>>>> @@ -10182,6 +10182,7 @@ static void set_cpu_sd_state_busy(int cpu)
->>>>>         sd->nohz_idle = 0;
->>>>>
->>>>>         atomic_inc(&sd->shared->nr_busy_cpus);
->>>>> +       cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
->>>>>  unlock:
->>>>>         rcu_read_unlock();
->>>>>  }
->>>>> @@ -10212,6 +10213,7 @@ static void set_cpu_sd_state_idle(int cpu)
->>>>>         sd->nohz_idle = 1;
->>>>>
->>>>>         atomic_dec(&sd->shared->nr_busy_cpus);
->>>>> +       cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
->>>> This only works when entering/exiting tickless mode? :)
->>>> Why not update idle_cpus_span during tick_nohz_idle_enter()/exit()?
->>>
->>> set_cpu_sd_state_busy is only called during a tick in order to limit
->>> the rate of the update to once per tick per cpu at most and prevents
->>> any kind of storm of update if short running tasks wake/sleep all the
->>> time. We don't want to update a cpumask at each and every enter/leave
->>> idle.
->>>
->> Agree. But set_cpu_sd_state_busy seems not being reached when
->> nohz=off, which means it will not work for that case? :)
+On Tue, Sep 01, 2020 at 10:40:41AM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
 > 
-> Yes set_cpu_sd_state_idle/busy are nohz function
+> Mediatek MT6360 is a multi-functional IC that includes USB Type-C.
+> It works with Type-C Port Controller Manager to provide USB PD
+> and USB Type-C functionalities.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 
-Thanks Biao to point this out.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-If the shared idle cpumask is initialized with sched_domain_span(sd),
-then nohz=off case will remain the previous behavior.
+> ---
+> v1 to v2
+> 1. Add fix to Prevent the race condition from interrupt and tcpci port
+>    unregister during module remove.
+> 
+> v2 to v3
+> 1. Change comment style for the head of source code.
+> 2. No need to print error for platform_get_irq_byname.
+> 3. Fix tcpci_register_port check from IS_ERR_OR_NULL to IS_ERR.
+> 4. Rename driver/Kconfig/Makefile form mt6360 to mt636x.
+> 5. Rename DT binding documents from mt6360 to mt636x.
+> 
+> v3 to v4
+> 1. revert v3 item 4 for mt636x patch in driver/Kconfig/Makefile
+> 2. revert v3 item 5 for mt636x DT binding document.
+> 
+> v4 to v5
+> All changes are for DT binding document. See patch 2.
+> 1. Fix schema style (using spaces instead of tabs)
+> 2. move connector into the properties block.
+> 3. Add ports node into the binding example refer to USB HS/SS/DPMux.
+> 
+> ---
+>  drivers/usb/typec/tcpm/Kconfig        |   8 ++
+>  drivers/usb/typec/tcpm/Makefile       |   1 +
+>  drivers/usb/typec/tcpm/tcpci_mt6360.c | 212 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 221 insertions(+)
+>  create mode 100644 drivers/usb/typec/tcpm/tcpci_mt6360.c
+> 
+> diff --git a/drivers/usb/typec/tcpm/Kconfig b/drivers/usb/typec/tcpm/Kconfig
+> index fa3f393..58a64e1 100644
+> --- a/drivers/usb/typec/tcpm/Kconfig
+> +++ b/drivers/usb/typec/tcpm/Kconfig
+> @@ -27,6 +27,14 @@ config TYPEC_RT1711H
+>  	  Type-C Port Controller Manager to provide USB PD and USB
+>  	  Type-C functionalities.
+>  
+> +config TYPEC_MT6360
+> +	tristate "Mediatek MT6360 Type-C driver"
+> +	depends on MFD_MT6360
+> +	help
+> +	  Mediatek MT6360 is a multi-functional IC that includes
+> +	  USB Type-C. It works with Type-C Port Controller Manager
+> +	  to provide USB PD and USB Type-C functionalities.
+> +
+>  endif # TYPEC_TCPCI
+>  
+>  config TYPEC_FUSB302
+> diff --git a/drivers/usb/typec/tcpm/Makefile b/drivers/usb/typec/tcpm/Makefile
+> index a5ff6c8..7592ccb 100644
+> --- a/drivers/usb/typec/tcpm/Makefile
+> +++ b/drivers/usb/typec/tcpm/Makefile
+> @@ -5,3 +5,4 @@ obj-$(CONFIG_TYPEC_WCOVE)	+= typec_wcove.o
+>  typec_wcove-y			:= wcove.o
+>  obj-$(CONFIG_TYPEC_TCPCI)	+= tcpci.o
+>  obj-$(CONFIG_TYPEC_RT1711H)	+= tcpci_rt1711h.o
+> +obj-$(CONFIG_TYPEC_MT6360)	+= tcpci_mt6360.o
+> diff --git a/drivers/usb/typec/tcpm/tcpci_mt6360.c b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> new file mode 100644
+> index 00000000..f1bd9e0
+> --- /dev/null
+> +++ b/drivers/usb/typec/tcpm/tcpci_mt6360.c
+> @@ -0,0 +1,212 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2020 MediaTek Inc.
+> + *
+> + * Author: ChiYuan Huang <cy_huang@richtek.com>
+> + */
+> +
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/usb/tcpm.h>
+> +
+> +#include "tcpci.h"
+> +
+> +#define MT6360_REG_VCONNCTRL1	0x8C
+> +#define MT6360_REG_MODECTRL2	0x8F
+> +#define MT6360_REG_SWRESET	0xA0
+> +#define MT6360_REG_DEBCTRL1	0xA1
+> +#define MT6360_REG_DRPCTRL1	0xA2
+> +#define MT6360_REG_DRPCTRL2	0xA3
+> +#define MT6360_REG_I2CTORST	0xBF
+> +#define MT6360_REG_RXCTRL2	0xCF
+> +#define MT6360_REG_CTDCTRL2	0xEC
+> +
+> +/* MT6360_REG_VCONNCTRL1 */
+> +#define MT6360_VCONNCL_ENABLE	BIT(0)
+> +/* MT6360_REG_RXCTRL2 */
+> +#define MT6360_OPEN40M_ENABLE	BIT(7)
+> +/* MT6360_REG_CTDCTRL2 */
+> +#define MT6360_RPONESHOT_ENABLE	BIT(6)
+> +
+> +struct mt6360_tcpc_info {
+> +	struct tcpci_data tdata;
+> +	struct tcpci *tcpci;
+> +	struct device *dev;
+> +	int irq;
+> +};
+> +
+> +static inline int mt6360_tcpc_read16(struct regmap *regmap,
+> +				     unsigned int reg, u16 *val)
+> +{
+> +	return regmap_raw_read(regmap, reg, val, sizeof(u16));
+> +}
+> +
+> +static inline int mt6360_tcpc_write16(struct regmap *regmap,
+> +				      unsigned int reg, u16 val)
+> +{
+> +	return regmap_raw_write(regmap, reg, &val, sizeof(u16));
+> +}
+> +
+> +static int mt6360_tcpc_init(struct tcpci *tcpci, struct tcpci_data *tdata)
+> +{
+> +	struct regmap *regmap = tdata->regmap;
+> +	int ret;
+> +
+> +	ret = regmap_write(regmap, MT6360_REG_SWRESET, 0x01);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* after reset command, wait 1~2ms to wait IC action */
+> +	usleep_range(1000, 2000);
+> +
+> +	/* write all alert to masked */
+> +	ret = mt6360_tcpc_write16(regmap, TCPC_ALERT_MASK, 0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* config I2C timeout reset enable , and timeout to 200ms */
+> +	ret = regmap_write(regmap, MT6360_REG_I2CTORST, 0x8F);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* config CC Detect Debounce : 26.7*val us */
+> +	ret = regmap_write(regmap, MT6360_REG_DEBCTRL1, 0x10);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* DRP Toggle Cycle : 51.2 + 6.4*val ms */
+> +	ret = regmap_write(regmap, MT6360_REG_DRPCTRL1, 4);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* DRP Duyt Ctrl : dcSRC: /1024 */
+> +	ret = mt6360_tcpc_write16(regmap, MT6360_REG_DRPCTRL2, 330);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Enable VCONN Current Limit function */
+> +	ret = regmap_update_bits(regmap, MT6360_REG_VCONNCTRL1, MT6360_VCONNCL_ENABLE,
+> +				 MT6360_VCONNCL_ENABLE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Enable cc open 40ms when pmic send vsysuv signal */
+> +	ret = regmap_update_bits(regmap, MT6360_REG_RXCTRL2, MT6360_OPEN40M_ENABLE,
+> +				 MT6360_OPEN40M_ENABLE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Enable Rpdet oneshot detection */
+> +	ret = regmap_update_bits(regmap, MT6360_REG_CTDCTRL2, MT6360_RPONESHOT_ENABLE,
+> +				 MT6360_RPONESHOT_ENABLE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Set shipping mode off, AUTOIDLE on */
+> +	return regmap_write(regmap, MT6360_REG_MODECTRL2, 0x7A);
+> +}
+> +
+> +static irqreturn_t mt6360_irq(int irq, void *dev_id)
+> +{
+> +	struct mt6360_tcpc_info *mti = dev_id;
+> +
+> +	return tcpci_irq(mti->tcpci);
+> +}
+> +
+> +static int mt6360_tcpc_probe(struct platform_device *pdev)
+> +{
+> +	struct mt6360_tcpc_info *mti;
+> +	int ret;
+> +
+> +	mti = devm_kzalloc(&pdev->dev, sizeof(*mti), GFP_KERNEL);
+> +	if (!mti)
+> +		return -ENOMEM;
+> +
+> +	mti->dev = &pdev->dev;
+> +
+> +	mti->tdata.regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	if (!mti->tdata.regmap) {
+> +		dev_err(&pdev->dev, "Failed to get parent regmap\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	mti->irq = platform_get_irq_byname(pdev, "PD_IRQB");
+> +	if (mti->irq < 0)
+> +		return mti->irq;
+> +
+> +	mti->tdata.init = mt6360_tcpc_init;
+> +	mti->tcpci = tcpci_register_port(&pdev->dev, &mti->tdata);
+> +	if (IS_ERR(mti->tcpci)) {
+> +		dev_err(&pdev->dev, "Failed to register tcpci port\n");
+> +		return PTR_ERR(mti->tcpci);
+> +	}
+> +
+> +	ret = devm_request_threaded_irq(mti->dev, mti->irq, NULL, mt6360_irq, IRQF_ONESHOT,
+> +					dev_name(&pdev->dev), mti);
+> +	if (ret) {
+> +		dev_err(mti->dev, "Failed to register irq\n");
+> +		tcpci_unregister_port(mti->tcpci);
+> +		return ret;
+> +	}
+> +
+> +	device_init_wakeup(&pdev->dev, true);
+> +	platform_set_drvdata(pdev, mti);
+> +
+> +	return 0;
+> +}
+> +
+> +static int mt6360_tcpc_remove(struct platform_device *pdev)
+> +{
+> +	struct mt6360_tcpc_info *mti = platform_get_drvdata(pdev);
+> +
+> +	disable_irq(mti->irq);
+> +	tcpci_unregister_port(mti->tcpci);
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mt6360_tcpc_suspend(struct device *dev)
+> +{
+> +	struct mt6360_tcpc_info *mti = dev_get_drvdata(dev);
+> +
+> +	if (device_may_wakeup(dev))
+> +		enable_irq_wake(mti->irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mt6360_tcpc_resume(struct device *dev)
+> +{
+> +	struct mt6360_tcpc_info *mti = dev_get_drvdata(dev);
+> +
+> +	if (device_may_wakeup(dev))
+> +		disable_irq_wake(mti->irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(mt6360_tcpc_pm_ops, mt6360_tcpc_suspend, mt6360_tcpc_resume);
+> +
+> +static const struct of_device_id __maybe_unused mt6360_tcpc_of_id[] = {
+> +	{ .compatible = "mediatek,mt6360-tcpc", },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, mt6360_tcpc_of_id);
+> +
+> +static struct platform_driver mt6360_tcpc_driver = {
+> +	.driver = {
+> +		.name = "mt6360-tcpc",
+> +		.pm = &mt6360_tcpc_pm_ops,
+> +		.of_match_table = mt6360_tcpc_of_id,
+> +	},
+> +	.probe = mt6360_tcpc_probe,
+> +	.remove = mt6360_tcpc_remove,
+> +};
+> +module_platform_driver(mt6360_tcpc_driver);
+> +
+> +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
+> +MODULE_DESCRIPTION("MT6360 USB Type-C Port Controller Interface Driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.7.4
 
-Thanks,
--Aubrey
+-- 
+heikki
