@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EB6269E09
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580DC269E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Sep 2020 07:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgIOFsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 01:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        id S1726153AbgIOFsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 01:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgIOFsm (ORCPT
+        with ESMTP id S1726046AbgIOFsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 01:48:42 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62235C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:48:41 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id r19so754618pls.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:48:41 -0700 (PDT)
+        Tue, 15 Sep 2020 01:48:51 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B40C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:48:51 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l126so1291794pfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Sep 2020 22:48:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i6P44y5mpNfyLXR4RrG6FSEEHMj+iy7zvhbL9GfNdpo=;
-        b=d5fpZWid3HK1S3xeIBo+ue3RwJcRvMaqXA2dL6Lr92GKstsooZcdMke7Fq8vsiRI41
-         Ey17Xc6tNlQNXNx0S2hxaCGnhuY2Y2OnpPjTzRXLub5w0N7X/JxbD8I82KLgzYJxivrl
-         68MOS1P2Q86+kcaiKUH9xAmW8eP9Z7oTe1e0M=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ajoQueMBujUuw1C0JmEIu2PRwKxBFaE7by2u7sZoZh8=;
+        b=lhwF0mVEGZ9J3xNUDzGy1qYVGT40a/VHeqrvRc0rB+l4kY17O5nWvmZ3KwXPwgYMoO
+         +6HM2/5N/2OZUYKxr3mGw91wwiSlX5s+aNMBp3VtiHZO2jbVDTjA9IfBHKBAEWodac8z
+         oe6uDZK42z6+D+5MJefG+sNmpqgWbe5D19vrI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i6P44y5mpNfyLXR4RrG6FSEEHMj+iy7zvhbL9GfNdpo=;
-        b=PuRARuUidF5Y87uEKTdC1ov8BQ11UCs+Vqd3zZDQBGcY1jcZ5E8dHwbL/26I+wkCy2
-         0NV+Ibk6IgGaml5x3TNaMrJ2MVzfStuGfhR3FkC6QVxnqxGfDQXFRR0jmpAhJAC9aatm
-         3IU3j9WU4dyyLeFHd6+SNatf9uU7EziX/wFctJ7Exr1VuAwCP85dA/yurfzDOBh8nAXy
-         68o6RlwLrs7kQ++tgj0rlhi7E4b7waB5bI1VM88AcS+/FQ677rxfQy1hX8ucoLHQlFq/
-         JN2F2b5Cx1bkiSSJF/SrNrYAWrnOBpWlgQXCUjVsszdRUxaD9u/y48H2MTbVlG8riMVw
-         0gfA==
-X-Gm-Message-State: AOAM531hljlrX0YHchq9+1CJhLuU/IP/WwpH2nZdhI7bfOsuVUkLxay+
-        tu4hStAik5z6bzXWpJdHHDmfvg==
-X-Google-Smtp-Source: ABdhPJyBoTpUYRjmNE7S4RH/HZ+Wd5QDHCdP+aOrKbrqlSzxhloY/EzG1bmXclaKkAnFOoA370xwVw==
-X-Received: by 2002:a17:902:b186:b029:d1:cc21:9a7d with SMTP id s6-20020a170902b186b02900d1cc219a7dmr6444831plr.8.1600148920854;
-        Mon, 14 Sep 2020 22:48:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ajoQueMBujUuw1C0JmEIu2PRwKxBFaE7by2u7sZoZh8=;
+        b=aeiIChTHOdBZ2vUkcWROViEQ1sy7EioOVmMJn3FlEUhGcqZ9quwyTP7P4cJjN9YMaF
+         JS4GXZp9deNUwUa2ppUsWVB/vW1YRghwfUNRVWNYM+ywk90duA+FXwb7N20uPFGu28ZK
+         bYXNrEMbEEKb00AkQ18NNK9/sLNsqBD3hjQdLsWSdFRtpVkPlakySpXndPk7u6KOVkwj
+         YyZL8n6mySreTOg8RsDMxdb40+2AfMsA8AtdAnj73NRpJQm+Ip8qTnY1VTipf3S/BIwW
+         GVAEQNfQSU33WI3zL+fOHEYJSzq//b9zir8hRZ/YrU84uy3vylvo1OKCSclhFmLldGlw
+         JQdQ==
+X-Gm-Message-State: AOAM533nrff0wLWqxDK/+4iA42xEkGU9wBmCWv20u2r1Udgm+j6mfyXX
+        pgB1dZoAeudlhhV8o2/NbM95ow==
+X-Google-Smtp-Source: ABdhPJx0DAS8oOMzQIF5bJW2RhKW9+TgJutsnK0EusfXFCToH4RzyIAADhtvDYQNvLhwg1sFyQ8kyQ==
+X-Received: by 2002:a63:5d07:: with SMTP id r7mr620189pgb.440.1600148930542;
+        Mon, 14 Sep 2020 22:48:50 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
-        by smtp.gmail.com with ESMTPSA id gn24sm11034935pjb.8.2020.09.14.22.48.38
+        by smtp.gmail.com with ESMTPSA id gn24sm11034935pjb.8.2020.09.14.22.48.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 22:48:40 -0700 (PDT)
+        Mon, 14 Sep 2020 22:48:50 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     linux-serial@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -59,10 +59,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Eddie Huang <eddie.huang@mediatek.com>
-Subject: [PATCH v2 1/2] tty: serial: print earlycon info after match->setup
-Date:   Tue, 15 Sep 2020 13:48:25 +0800
-Message-Id: <20200915054825.3289105-1-hsinyi@chromium.org>
+Subject: [PATCH v2 2/2] tty: serial: 8250_mtk: set regshift for mmio32
+Date:   Tue, 15 Sep 2020 13:48:27 +0800
+Message-Id: <20200915054825.3289105-2-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.28.0.618.gf4bc123cb7-goog
+In-Reply-To: <20200915054825.3289105-1-hsinyi@chromium.org>
+References: <20200915054825.3289105-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,59 +72,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-8250 devices may modify iotype in their own earlycon setup. For example:
-8250_mtk and 8250_uniphier force iotype to be MMIO32. Print earlycon info
-after match->setup to reflect actual earlycon info.
+To use mmio32, we also need to set regshift.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
 Change:
-v1->v2: rename function
+v1->v2: none
 ---
- drivers/tty/serial/earlycon.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_mtk.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/earlycon.c b/drivers/tty/serial/earlycon.c
-index 2ae9190b64bb9..b70877932d47d 100644
---- a/drivers/tty/serial/earlycon.c
-+++ b/drivers/tty/serial/earlycon.c
-@@ -56,7 +56,6 @@ static void __init earlycon_init(struct earlycon_device *device,
- 				 const char *name)
- {
- 	struct console *earlycon = device->con;
--	struct uart_port *port = &device->port;
- 	const char *s;
- 	size_t len;
+diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
+index 7b0dec14c8b80..41f4120abdf29 100644
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -669,6 +669,7 @@ static int __init early_mtk8250_setup(struct earlycon_device *device,
+ 		return -ENODEV;
  
-@@ -70,6 +69,12 @@ static void __init earlycon_init(struct earlycon_device *device,
- 	len = s - name;
- 	strlcpy(earlycon->name, name, min(len + 1, sizeof(earlycon->name)));
- 	earlycon->data = &early_console_dev;
-+}
-+
-+static void __init earlycon_print_info(struct earlycon_device *device)
-+{
-+	struct console *earlycon = device->con;
-+	struct uart_port *port = &device->port;
+ 	device->port.iotype = UPIO_MEM32;
++	device->port.regshift = 2;
  
- 	if (port->iotype == UPIO_MEM || port->iotype == UPIO_MEM16 ||
- 	    port->iotype == UPIO_MEM32 || port->iotype == UPIO_MEM32BE)
-@@ -140,6 +145,7 @@ static int __init register_earlycon(char *buf, const struct earlycon_id *match)
- 
- 	earlycon_init(&early_console_dev, match->name);
- 	err = match->setup(&early_console_dev, buf);
-+	earlycon_print_info(&early_console_dev);
- 	if (err < 0)
- 		return err;
- 	if (!early_console_dev.con->write)
-@@ -302,6 +308,7 @@ int __init of_setup_earlycon(const struct earlycon_id *match,
- 	}
- 	earlycon_init(&early_console_dev, match->name);
- 	err = match->setup(&early_console_dev, options);
-+	earlycon_print_info(&early_console_dev);
- 	if (err < 0)
- 		return err;
- 	if (!early_console_dev.con->write)
+ 	return early_serial8250_setup(device, NULL);
+ }
 -- 
 2.28.0.618.gf4bc123cb7-goog
 
