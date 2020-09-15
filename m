@@ -2,163 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B043226B4B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2747826B4C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Sep 2020 01:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbgIOXaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Sep 2020 19:30:39 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1337 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727413AbgIOX3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Sep 2020 19:29:24 -0400
-IronPort-SDR: c5CYUpBXcMGvcRAcmH6DFwvTTrMRj3lo8uNT5xentpQbhb5cR+J7xvYE0UgH5UnZN8afLssxUR
- Ct0qgqsWbXqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9745"; a="158647438"
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="158647438"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:29:19 -0700
-IronPort-SDR: Wi6xhsSDxbd+zDpjEtWs1fQNfQEstja/dGnHtkNTPfdWsa6cmNibpeaGPiTaUjBtABaEOx6EIO
- u6CZf5jHPtUQ==
-X-IronPort-AV: E=Sophos;i="5.76,430,1592895600"; 
-   d="scan'208";a="346035920"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Sep 2020 16:29:17 -0700
-Subject: [PATCH v3 15/18] dmaengine: idxd: add error notification from host
- driver to mediated device
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     vkoul@kernel.org, megha.dey@intel.com, maz@kernel.org,
-        bhelgaas@google.com, tglx@linutronix.de,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        jgg@mellanox.com, rafael@kernel.org, netanelg@mellanox.com,
-        shahafs@mellanox.com, yan.y.zhao@linux.intel.com,
-        pbonzini@redhat.com, samuel.ortiz@intel.com, mona.hossain@intel.com
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Date:   Tue, 15 Sep 2020 16:29:17 -0700
-Message-ID: <160021255739.67751.18063125769657114052.stgit@djiang5-desk3.ch.intel.com>
-In-Reply-To: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
-References: <160021207013.67751.8220471499908137671.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/unknown-version
+        id S1727420AbgIOXbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Sep 2020 19:31:41 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42862 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727384AbgIOXag (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Sep 2020 19:30:36 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EA529FD8;
+        Wed, 16 Sep 2020 01:30:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1600212634;
+        bh=zIzDuf1sKDcdjxVaHFr72m3U6IU/kzjy98ujrCuNe7U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b7CmHkzjWKj408c2UdMQbTaLVvuS79BYfLqrvLwNuYCVUHZqyvwLEpbE4+k2KJjDt
+         85IoaKvkbNXPZn5Fo2fj3aC98878mMGPd0H6Uj1R496lar6TB2PLjJR0xQ6a4KAtdN
+         wwQj3z+JNadelAFPbOgMzZSI83h8HyJVA159mHv4=
+Date:   Wed, 16 Sep 2020 02:30:04 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     kieran.bingham+renesas@ideasonboard.com, airlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] drm: rcar-du: add missing put_device() call in
+ rcar_du_vsp_init()
+Message-ID: <20200915233004.GD14954@pendragon.ideasonboard.com>
+References: <20200910132354.692397-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200910132354.692397-1-yukuai3@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a device error occurs, the mediated device need to be notified in
-order to notify the guest of device error. Add support to notify the
-specific mdev when an error is wq specific and broadcast errors to all mdev
-when it's a generic device error.
+Hi Yu,
 
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
- drivers/dma/idxd/idxd.h |   12 ++++++++++++
- drivers/dma/idxd/irq.c  |    4 ++++
- drivers/dma/idxd/vdev.c |   32 ++++++++++++++++++++++++++++++++
- drivers/dma/idxd/vdev.h |    1 +
- 4 files changed, 49 insertions(+)
+Thank you for the patch.
 
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index f67c0036f968..07e1e3fcd4aa 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -359,4 +359,16 @@ void idxd_wq_del_cdev(struct idxd_wq *wq);
- int idxd_mdev_host_init(struct idxd_device *idxd);
- void idxd_mdev_host_release(struct idxd_device *idxd);
- 
-+#ifdef CONFIG_INTEL_IDXD_MDEV
-+void idxd_vidxd_send_errors(struct idxd_device *idxd);
-+void idxd_wq_vidxd_send_errors(struct idxd_wq *wq);
-+#else
-+static inline void idxd_vidxd_send_errors(struct idxd_device *idxd)
-+{
-+}
-+static inline void idxd_wq_vidxd_send_errors(struct idxd_wq *wq)
-+{
-+}
-+#endif /* CONFIG_INTEL_IDXD_MDEV */
-+
- #endif
-diff --git a/drivers/dma/idxd/irq.c b/drivers/dma/idxd/irq.c
-index 04f00255dae0..f9df0910b799 100644
---- a/drivers/dma/idxd/irq.c
-+++ b/drivers/dma/idxd/irq.c
-@@ -79,6 +79,8 @@ irqreturn_t idxd_misc_thread(int vec, void *data)
- 
- 			if (wq->type == IDXD_WQT_USER)
- 				wake_up_interruptible(&wq->idxd_cdev.err_queue);
-+			else if (wq->type == IDXD_WQT_MDEV)
-+				idxd_wq_vidxd_send_errors(wq);
- 		} else {
- 			int i;
- 
-@@ -87,6 +89,8 @@ irqreturn_t idxd_misc_thread(int vec, void *data)
- 
- 				if (wq->type == IDXD_WQT_USER)
- 					wake_up_interruptible(&wq->idxd_cdev.err_queue);
-+				else if (wq->type == IDXD_WQT_MDEV)
-+					idxd_wq_vidxd_send_errors(wq);
- 			}
- 		}
- 
-diff --git a/drivers/dma/idxd/vdev.c b/drivers/dma/idxd/vdev.c
-index fa7c27d746cc..ce2f19b9b860 100644
---- a/drivers/dma/idxd/vdev.c
-+++ b/drivers/dma/idxd/vdev.c
-@@ -978,3 +978,35 @@ void vidxd_do_command(struct vdcm_idxd *vidxd, u32 val)
- 		break;
- 	}
- }
-+
-+static void vidxd_send_errors(struct vdcm_idxd *vidxd)
-+{
-+	struct idxd_device *idxd = vidxd->idxd;
-+	u8 *bar0 = vidxd->bar0;
-+	union sw_err_reg *swerr = (union sw_err_reg *)(bar0 + IDXD_SWERR_OFFSET);
-+	union genctrl_reg *genctrl = (union genctrl_reg *)(bar0 + IDXD_GENCTRL_OFFSET);
-+	int i;
-+
-+	if (swerr->valid) {
-+		if (!swerr->overflow)
-+			swerr->overflow = 1;
-+		return;
-+	}
-+
-+	lockdep_assert_held(&idxd->dev_lock);
-+	for (i = 0; i < 4; i++) {
-+		swerr->bits[i] = idxd->sw_err.bits[i];
-+		swerr++;
-+	}
-+
-+	if (genctrl->softerr_int_en)
-+		vidxd_send_interrupt(vidxd, 0);
-+}
-+
-+void idxd_wq_vidxd_send_errors(struct idxd_wq *wq)
-+{
-+	struct vdcm_idxd *vidxd;
-+
-+	list_for_each_entry(vidxd, &wq->vdcm_list, list)
-+		vidxd_send_errors(vidxd);
-+}
-diff --git a/drivers/dma/idxd/vdev.h b/drivers/dma/idxd/vdev.h
-index e04c92c432d8..1bfdcdeed8e7 100644
---- a/drivers/dma/idxd/vdev.h
-+++ b/drivers/dma/idxd/vdev.h
-@@ -25,5 +25,6 @@ int vidxd_send_interrupt(struct vdcm_idxd *vidxd, int msix_idx);
- void vidxd_free_ims_entries(struct vdcm_idxd *vidxd);
- int vidxd_setup_ims_entries(struct vdcm_idxd *vidxd);
- void vidxd_do_command(struct vdcm_idxd *vidxd, u32 val);
-+void idxd_wq_vidxd_send_errors(struct idxd_wq *wq);
- 
- #endif
+On Thu, Sep 10, 2020 at 09:23:54PM +0800, Yu Kuai wrote:
+> if of_find_device_by_node() succeed, rcar_du_vsp_init() doesn't have
+> a corresponding put_device(). Thus add a jump target to fix the exception
+> handling for this function implementation.
+> 
+> Fixes: 6d62ef3ac30b ("drm: rcar-du: Expose the VSP1 compositor through KMS planes")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/gpu/drm/rcar-du/rcar_du_vsp.c | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+> index f1a81c9b184d..172ee3f3b21c 100644
+> --- a/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+> +++ b/drivers/gpu/drm/rcar-du/rcar_du_vsp.c
+> @@ -352,14 +352,16 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+>  
+>  	/* Find the VSP device and initialize it. */
+>  	pdev = of_find_device_by_node(np);
+> -	if (!pdev)
+> -		return -ENXIO;
+> +	if (!pdev) {
+> +		ret = -ENXIO;
+> +		goto put_device;
+> +	}
 
+This change isn't needed, and will actually cause a crash, as pdev is
+NULL.
+
+>  
+>  	vsp->vsp = &pdev->dev;
+>  
+>  	ret = vsp1_du_init(vsp->vsp);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto put_device;
+>  
+>  	 /*
+>  	  * The VSP2D (Gen3) has 5 RPFs, but the VSP1D (Gen2) is limited to
+> @@ -369,8 +371,10 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+>  
+>  	vsp->planes = devm_kcalloc(rcdu->dev, vsp->num_planes,
+>  				   sizeof(*vsp->planes), GFP_KERNEL);
+> -	if (!vsp->planes)
+> -		return -ENOMEM;
+> +	if (!vsp->planes) {
+> +		ret = -ENOMEM;
+> +		goto put_device;
+> +	}
+>  
+>  	for (i = 0; i < vsp->num_planes; ++i) {
+>  		enum drm_plane_type type = i < num_crtcs
+> @@ -387,7 +391,7 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+>  					       ARRAY_SIZE(rcar_du_vsp_formats),
+>  					       NULL, type, NULL);
+>  		if (ret < 0)
+> -			return ret;
+> +			goto put_device;
+>  
+>  		drm_plane_helper_add(&plane->plane,
+>  				     &rcar_du_vsp_plane_helper_funcs);
+> @@ -403,4 +407,7 @@ int rcar_du_vsp_init(struct rcar_du_vsp *vsp, struct device_node *np,
+>  	}
+>  
+>  	return 0;
+
+I would add a blank line here.
+
+> +put_device:
+
+And maybe name the label "error" ?
+
+> +	put_device(&pdev->dev);
+> +	return ret;
+>  }
+
+We need more than this, we also need to call put_device() when the
+driver is unloaded. The way to handle cleanup in DRM is through
+drmm_add_action() nowadays, and I think we could thus simply replace the
+change above with a cleanup action that is run both in the error path
+and at driver remove.
+
+I'll post a proposal in a reply to this e-mail.
+
+-- 
+Regards,
+
+Laurent Pinchart
